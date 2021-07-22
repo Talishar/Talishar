@@ -33,7 +33,7 @@ function PummelHit()
   global $defHand, $defPlayer;
   if(count($defHand) > 0)
   {
-    AddDecisionQueue("DISCARD", $defPlayer);
+    //AddDecisionQueue("DISCARD", $defPlayer);
   }
 }
 
@@ -44,6 +44,19 @@ function AddCurrentTurnEffect($cardID, $player)
   array_push($currentTurnEffects, $player);
 }
 
+function RemoveCurrentTurnEffect($index)
+{
+  global $currentTurnEffects;
+  unset($currentTurnEffects[$index+1]);
+  unset($currentTurnEffects[$index]);
+  $currentTurnEffects = array_values($currentTurnEffects);
+}
+
+function CurrentTurnEffectPieces()
+{
+  return 2;
+}
+
 function AddNextTurnEffect($cardID, $player)
 {
   global $nextTurnEffects;
@@ -51,11 +64,12 @@ function AddNextTurnEffect($cardID, $player)
   array_push($nextTurnEffects, $player);
 }
 
-function AddDecisionQueue($card, $player)
+function AddDecisionQueue($phase, $player, $parameter)
 {
   global $decisionQueue;
-  array_push($decisionQueue, $card);
+  array_push($decisionQueue, $phase);
   array_push($decisionQueue, $player);
+  array_push($decisionQueue, $parameter);
 }
 
 function DefenderArsenalToBottomOfDeck()
@@ -138,6 +152,20 @@ function Banish($player, $cardID, $from)
     array_push($theirBanish, $from);
   }
   //TODO: Banish stuff, e.g. Levia
+}
+
+function Boost()
+{
+  global $playerID, $myDeck, $myBanish, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumBoosted;
+  if(count($myDeck) == 0) { WriteLog("Could not boost. No cards left in deck."); return; }
+  $cardID = $myDeck[0];
+  Banish($playerID, $cardID, "BOOST");
+  unset($myDeck[0]);
+  $myDeck = array_values($myDeck);
+  $grantsGA = CardClass($card) == "MECHANOLOGIST";
+  WriteLog("Boost banished $cardID and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
+  $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+  ++$myClassState[$CS_NumBoosted];
 }
 
 ?>
