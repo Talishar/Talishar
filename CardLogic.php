@@ -1,6 +1,7 @@
 <?php
 
 include "CardDictionary.php";
+include "CoreLogic.php";
 
 function BlessingOfDeliveranceDestroy($amount)
 {
@@ -23,7 +24,7 @@ function BlessingOfDeliveranceDestroy($amount)
 function EmergingPowerDestroy($cardID)
 {
   global $mainPlayer;
-  $log = "Emerging Power gives the next Guardian attack this turn +" . AttackValue($cardID) . ".";
+  $log = "Emerging Power gives the next Guardian attack this turn +" . EffectAttackModifier($cardID) . ".";
   AddCurrentTurnEffect($cardID, $mainPlayer);
   return $log;
 }
@@ -33,7 +34,79 @@ function PummelHit()
   global $defHand, $defPlayer;
   if(count($defHand) > 0)
   {
-    //AddDecisionQueue("DISCARD", $defPlayer);
+    AddDecisionQueue("CHOOSEHAND", $defPlayer, GetDefHandIndices());
+    AddDecisionQueue("DISCARDMYHAND", $defPlayer, "-", 1);
+  }
+}
+
+function KatsuHit($index)
+{
+  global $mainPlayer;
+  AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1");
+  AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
+  AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
+  AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
+  AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
+  AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
+  AddDecisionQueue("EXHAUSTCHARACTER", $mainPlayer, $index, 1);
+}
+
+function LordOfWindIndices()
+{
+  $array = [];
+  $indices = SearchMyDiscardForCard("WTR107", "WTR108", "WTR109");
+  if($indices != "") array_push($array, $indices);
+  $indices = SearchMyDiscardForCard("WTR110", "WTR111", "WTR112");
+  if($indices != "") array_push($array, $indices);
+  $indices = SearchMyDiscardForCard("WTR83");
+  if($indices != "") array_push($array, $indices);
+  return implode(",", $array);
+}
+
+function NaturesPathPilgrimageHit()
+{
+  global $mainArsenal, $mainDeck;
+  if($mainArsenal == "" && count($mainDeck) > 0)
+  {
+    $type = CardType($mainDeck[0]);
+    if($type == "A" || $type == "AA")
+    {
+      $mainArsenal = $mainDeck[0];
+      array_shift($mainDeck);
+    }
+  }
+}
+
+function UnifiedDecreePlayEffect()
+{
+  global $myDeck, $mainPlayer;
+  if(count($myDeck) == 0) return;
+  WriteLog("Unified Decree reveals " . $myDeck[0] . ".");
+  if(CardType($myDeck[0]) == "AR")
+  {
+    Banish($mainPlayer, $myDeck[0], "TCC");
+    array_shift($myDeck);
+  }
+}
+
+function BottomDeck()
+{
+  global $myHand, $playerID;
+  if(count($myHand) > 0)
+  {
+    AddDecisionQueue("MAYCHOOSEHAND", $playerID, GetMyHandIndices());
+    AddDecisionQueue("DISCARDMYHAND", $playerID, "-", 1);
+    AddDecisionQueue("ADDBOTTOMMYDECK", $playerID, "-", 1);
+  }
+}
+
+function BottomDeckDraw()
+{
+  global $myHand, $playerID;
+  if(count($myHand) > 0)
+  {
+    BottomDeck();
+    AddDecisionQueue("DRAW", $playerID, "-", 1);
   }
 }
 
@@ -64,12 +137,147 @@ function AddNextTurnEffect($cardID, $player)
   array_push($nextTurnEffects, $player);
 }
 
-function AddDecisionQueue($phase, $player, $parameter)
+function HasEffect($cardID)
+{
+  global $currentTurnEffects;
+  for($i=0; $i<count($currentTurnEffects); $i += CurrentTurnEffectPieces())
+  {
+    if($currentTurnEffects[$i] == $cardID) return true;
+  }
+  return false;
+}
+
+function AddDecisionQueue($phase, $player, $parameter, $subsequent=0)
 {
   global $decisionQueue;
   array_push($decisionQueue, $phase);
   array_push($decisionQueue, $player);
   array_push($decisionQueue, $parameter);
+  array_push($decisionQueue, $subsequent);
+}
+
+  function ProcessDecisionQueue()
+  {
+    global $turn, $decisionQueue;
+    $count = count($turn);
+    if(count($turn) < 3) $turn[2] = "";
+    array_unshift($turn, "", "", "");
+    ContinueDecisionQueue("");
+  }
+
+  //Must be called with the my/their context
+  function ContinueDecisionQueue($lastResult="")
+  {
+    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt;
+    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESUMEPAYING")
+    {
+      if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
+      array_shift($turn);
+      array_shift($turn);
+      array_shift($turn);
+      if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY")
+      {
+        $decisionQueue = [];
+        PlayCardEffect($turn[2], $turn[3], $turn[4]);
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING")
+      {
+        $params = explode("-", $decisionQueue[2]);//Parameter
+        $decisionQueue = [];
+        if($lastResult == "") $lastResult = 0;
+        PlayCard($params[0], $params[1], $lastResult);
+      }
+      else
+      {
+        FinalizeAction();
+      }
+      return;
+    }
+    $phase = array_shift($decisionQueue);
+    $player = array_shift($decisionQueue);
+    $parameter = array_shift($decisionQueue);
+    $subsequent = array_shift($decisionQueue);
+    $turn[0] = $phase;
+    $turn[1] = $player;
+    $currentPlayer = $player;
+    $turn[2] = ($parameter == "<-" ? $lastResult : $parameter);
+    $return = "PASS";
+    if($subsequent != 1 || $lastResult != "PASS") $return = DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult);
+    if($parameter == "<-" && $lastResult == "-1") $return = "PASS";//Collapse the rest of the queue if this is a decision point with invalid parameters
+    if($return != "")
+    {
+      ContinueDecisionQueue($return);
+    }
+    else
+    {
+      if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
+    }
+  }
+
+  function FinalizeAction()
+  {
+    global $currentPlayer, $mainPlayer, $otherPlayer, $actionPoints, $turn, $combatChain;
+    if($turn[0] == "M")
+    {
+      if(count($combatChain) > 0)//Means we initiated a chain link
+      {
+        $turn[0] = "B";
+        $currentPlayer = $otherPlayer;
+        $turn[2] = "";
+      }
+      else {
+        if($actionPoints > 0)
+        {
+          $turn[0] = "M";
+          $currentPlayer = $mainPlayer;
+          $turn[2] = "";
+        }
+        else
+        {
+          $currentPlayer = $mainPlayer;
+          PassTurn();
+        }
+      }
+    }
+    else if($turn[0] == "A")
+    {
+      $turn[0] = "D";
+      $currentPlayer = $otherPlayer;
+      $turn[2] = "";
+    }
+    else if($turn[0] == "D")
+    {
+      $turn[0] = "A";
+      $currentPlayer = $otherPlayer;
+      $turn[2] = "";
+    }
+    else if($turn[0] == "B")
+    {
+      $turn[0] = "B";
+    }
+    return 0;
+  }
+
+function GiveAttackGoAgain()
+{
+  global $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+  $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+}
+
+function DefenderTopDeckToArsenal()
+{
+  global $defArsenal, $defDeck;
+  if($defArsenal != "" || count($defDeck) == 0) return;//Already something there
+  $defArsenal = array_shift($defDeck);
+  WriteLog("The top card of the defender's deck was put in their arsenal.");
+}
+
+function MainTopDeckToArsenal()
+{
+  global $mainArsenal, $mainDeck;
+  if($mainArsenal != "" || count($mainDeck) == 0) return;//Already something there
+  $mainArsenal = array_shift($mainDeck);
+  WriteLog("The top card of the main player's deck was put in their arsenal.");
 }
 
 function DefenderArsenalToBottomOfDeck()
@@ -88,7 +296,7 @@ function DefenderArsenalToDiscard()
 
 function Opt($cardID, $amount)
 {
-  global $playerID, $myDeck, $turn;
+  global $playerID, $myDeck, $turn, $currentPlayer;
   if($amount <= 0) return;
   $cards = "";
   for($i=0; $i<$amount; ++$i)
@@ -96,26 +304,20 @@ function Opt($cardID, $amount)
     $cards .= array_shift($myDeck);
     if($i < $amount-1) $cards .= ",";
   }
-  UpdateGameState($playerID);
-  $turn[2] = $turn[0];
-  $turn[3] = $cardID;
-  $turn[4] = $turn[1];
-  $turn[0] = "OPT";
-  $turn[5] = $cards;
-  $turn[1] = $playerID;
-  BuildMainPlayerGameState();
+  AddDecisionQueue("OPT", $currentPlayer, $cards);
 }
 
 function DiscardRandom()
 {
-  global $playerID,$myHand,$myDiscard,$myCharacter, $myClassState, $CS_Num6PowDisc;
+  global $playerID,$myHand,$myDiscard,$myCharacter, $myClassState, $CS_Num6PowDisc, $mainPlayer;
   if(count($myHand) == 0) return;
   $index = rand() % count($myHand);
+  $discarded = $myHand[$index];
   array_push($myDiscard, $myHand[$index]);
   //TODO: Intimidate if Rhinar, other discard stuff
   if(AttackValue($myHand[$index]) >= 6)
   {
-    if($myCharacter[0] == "WTR001" || $myCharacter[0] == "WTR002") {//Rhinar
+    if(($myCharacter[0] == "WTR001" || $myCharacter[0] == "WTR002") && $playerID == $mainPlayer) {//Rhinar
       WriteLog("Rhinar Intimidated.");
       Intimidate();
     }
@@ -124,6 +326,18 @@ function DiscardRandom()
   unset($myHand[$index]);
   $myHand = array_values($myHand);
   UpdateGameState($playerID);
+  return $discarded;
+};
+
+function DefDiscardRandom()
+{
+  global $defHand,$defDiscard;
+  if(count($defHand) == 0) return;
+  $index = rand() % count($defHand);
+  array_push($defDiscard, $defHand[$index]);
+  //TODO: other discard stuff
+  unset($defHand[$index]);
+  $defHand = array_values($defHand);
 };
 
 function Intimidate()
@@ -162,9 +376,9 @@ function Boost()
   Banish($playerID, $cardID, "BOOST");
   unset($myDeck[0]);
   $myDeck = array_values($myDeck);
-  $grantsGA = CardClass($card) == "MECHANOLOGIST";
+  $grantsGA = CardClass($cardID) == "MECHANOLOGIST";
   WriteLog("Boost banished $cardID and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
-  $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+  if($grantsGA) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; }
   ++$myClassState[$CS_NumBoosted];
 }
 
