@@ -54,6 +54,7 @@
   $CS_DEPRECATED = 13;
   $CS_NextNAACardGoAgain = 14;
   $CS_NumCharged = 15;
+  $CS_Num6PowBan = 16;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -114,6 +115,7 @@
     $mainClassState[$CS_DEPRECATED] = 0;
     $mainClassState[$CS_NextNAACardGoAgain] = 0;
     $mainClassState[$CS_NumCharged] = 0;
+    $mainClassState[$CS_Num6PowBan] = 0;
   }
 
   function ResetCharacterEffects()
@@ -124,4 +126,3 @@
   }
 
 ?>
-
