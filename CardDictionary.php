@@ -1,9 +1,49 @@
 <?php
 
   include "Constants.php";
+  include "CardDictionaries/ArcaneRising/ARCShared.php";
+  include "CardDictionaries/ArcaneRising/ARCGeneric.php";
+  include "CardDictionaries/ArcaneRising/ARCMechanologist.php";
+  include "CardDictionaries/ArcaneRising/ARCRanger.php";
+  include "CardDictionaries/ArcaneRising/ARCRuneblade.php";
+  include "CardDictionaries/ArcaneRising/ARCWizard.php";
+  include "CardDictionaries/Monarch/MONShared.php";
+  include "CardDictionaries/Monarch/MONGeneric.php";
+  include "CardDictionaries/Monarch/MONBrute.php";
+  include "CardDictionaries/Monarch/MONIllusionist.php";
+  include "CardDictionaries/Monarch/MONRuneblade.php";
+  include "CardDictionaries/Monarch/MONWarrior.php";
+  include "CardDictionaries/Monarch/MONTalent.php";
 
   function CardType($cardID)
   {
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      switch($class)
+      {
+        case "MECHANOLOGIST": return ARCMechanologistCardType($cardID);
+        case "RANGER": return ARCRangerCardType($cardID);
+        case "RUNEBLADE": return ARCRunebladeCardType($cardID);
+        case "WIZARD": return ARCWizardCardType($cardID);
+        case "GENERIC": return ARCGenericCardType($cardID);
+        default: return "";
+      }
+    }
+    else if($set == "MON")
+    {
+      switch($class)
+      {
+        case "BRUTE": return MONBruteCardType($cardID);
+        case "ILLUSIONIST": return MONIllusionistCardType($cardID);
+        case "RUNEBLADE": return MONRunebladeCardType($cardID);
+        case "WARRIOR": return MONWarriorCardType($cardID);
+        case "GENERIC": return MONGenericCardType($cardID);
+        case "NONE": return MONTalentCardType($cardID);
+        default: return "";
+      }
+    }
     switch($cardID)
     {
       case "WTR000": return "R";
@@ -100,10 +140,7 @@
       case "WTR218": case "WTR219": case "WTR220": return "A";
       case "WTR221": case "WTR222": case "WTR223": return "A";
       case "WTR225": return "T";
-      case "ARC007": case "ARC009": case "ARC019": return "A";
-      case "ARC008": case "ARC011": case "ARC023": case "ARC024": case "ARC025": case "ARC026": case "ARC027": case "ARC028": return "AA";
-      case "ARC029": case "ARC030": case "CRU103": case "CRU106": case "ARC031": return "AA";
-      case "ARC032": case "ARC033": case "ARC034": case "ARC203": return "A";
+      case "ARC203": return "A";
       case "ARC150": return "E";
       //CRU Brute
       case "CRU004": case "CRU005": return "W";
@@ -114,7 +151,18 @@
       case "CRU013": case "CRU014": case "CRU015": return "AA";
       case "CRU016": case "CRU017": case "CRU018": return "AA";
       case "CRU019": case "CRU020": case "CRU021": return "AA";
+      //CRU Guardian
+      case "CRU024": return "W";
+      case "CRU025": return "E";
+      case "CRU026": case "CRU027": return "AA";
+      case "CRU028": case "CRU029": case "CRU030": case "CRU031": return "A";
+      case "CRU032": case "CRU033": case "CRU034": return "AA";
+      case "CRU035": case "CRU036": case "CRU037": return "AA";
+      case "CRU038": case "CRU039": case "CRU040": return "A";
+      case "CRU041": case "CRU042": case "CRU043": return "I";
       //CRU Warrior
+      case "CRU077": return "C";
+      case "CRU079": case "CRU080": return "W";
       case "CRU081": return "E";
       case "CRU082": case "CRU083": return "AR";
       case "CRU084": return "A";
@@ -122,6 +170,8 @@
       case "CRU088": case "CRU089": case "CRU090": return "AR";
       case "CRU091": case "CRU092": case "CRU093": return "A";
       case "CRU094": case "CRU095": case "CRU096": return "A";
+      //CRU MECH:
+      case "CRU103": case "CRU106": return "AA";
       //CRU Generics
       case "CRU179": return "E";
       case "CRU180": return "AA";
@@ -139,6 +189,32 @@
 
   function CardSubType($cardID)
   {
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      switch($class)
+      {
+        case "MECHANOLOGIST": return ARCMechanologistCardSubType($cardID);
+        case "RANGER": return ARCRangerCardSubType($cardID);
+        case "RUNEBLADE": return ARCRunebladeCardSubType($cardID);
+        case "WIZARD": return ARCWizardCardSubType($cardID);
+        case "GENERIC": return ARCGenericCardSubType($cardID);
+      }
+    }
+    else if($set == "MON")
+    {
+      switch($class)
+      {
+        case "BRUTE": return MONBruteCardSubType($cardID);
+        case "ILLUSIONIST": return MONIllusionistCardSubType($cardID);
+        case "RUNEBLADE": return MONRunebladeCardSubType($cardID);
+        case "WARRIOR": return MONWarriorCardSubType($cardID);
+        case "GENERIC": return MONGenericCardSubType($cardID);
+        case "NONE": return MONTalentCardSubType($cardID);
+        default: return "";
+      }
+    }
     switch($cardID)
     {
       case "WTR003": return "Club";
@@ -168,10 +244,13 @@
       case "WTR158": return "Legs";
       case "WTR170": case "WTR171": case "WTR172": return "Item";
       case "WTR225": return "Aura";
-      case "ARC007": case "ARC019": return "Item";
       case "CRU004": case "CRU005": return "Claw";
       case "CRU006": return "Head";
       case "CRU024": return "Hammer";
+      case "CRU025": return "Arms";
+      case "CRU028": case "CRU029": case "CRU030": case "CRU031": return "Aura";
+      case "CRU038": case "CRU039": case "CRU040": return "Aura";
+      case "CRU079": case "CRU080": return "Sword";
       case "CRU179": return "Arms";
       default: return "";
     }
@@ -182,8 +261,15 @@
     switch($cardID)
     {
       case "WTR001": case "WTR038": case "WTR076": case "WTR113": return 40;
+      case "ARC001": case "ARC038": return 40;
+      case "MON001": case "MON029": case "MON119": case "MON153": return 40;
       default: return 20;
     }
+  }
+
+  function CardSet($cardID)
+  {
+    return substr($cardID, 0, 3);
   }
 
   function CardClass($cardID)
@@ -218,6 +304,19 @@
         else if($number >= 138 && $number <= 157) return "RUNEBLADE";
         else if($number >= 158 && $number <= 176) return "WIZARD";
         else return "GENERIC";
+      case "MON":
+        if($number == 0) return "NONE";
+        else if($number >= 1 && $number <= 28) return "ILLUSIONIST";//Light
+        else if($number >= 29 && $number <= 59) return "WARRIOR";//Light
+        else if($number >= 60 && $number <= 87) return "NONE";//Light
+        else if($number >= 88 && $number <= 104) return "ILLUSIONIST";
+        else if($number >= 105 && $number <= 118) return "WARRIOR";
+        else if($number >= 119 && $number <= 152) return "BRUTE";//Shadow
+        else if($number >= 153 && $number <= 186) return "RUNEBLADE";//Shadow
+        else if($number >= 187 && $number <= 220) return "NONE";//Shadow
+        else if($number >= 221 && $number <= 228) return "BRUTE";
+        else if($number >= 229 && $number <= 237) return "RUNEBLADE";
+        else return "GENERIC";
       default: return 0;
     }
   }
@@ -225,6 +324,32 @@
   //Minimum cost of the card
   function CardCost($cardID)
   {
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      switch($class)
+      {
+        case "MECHANOLOGIST": return ARCMechanologistCardCost($cardID);
+        case "RANGER": return ARCRangerCardCost($cardID);
+        case "RUNEBLADE": return ARCRunebladeCardCost($cardID);
+        case "WIZARD": return ARCWizardCardCost($cardID);
+        case "GENERIC": return ARCGenericCardCost($cardID);
+      }
+    }
+    else if($set == "MON")
+    {
+      switch($class)
+      {
+        case "BRUTE": return MONBruteCardCost($cardID);
+        case "ILLUSIONIST": return MONIllusionistCardCost($cardID);
+        case "RUNEBLADE": return MONRunebladeCardCost($cardID);
+        case "WARRIOR": return MONWarriorCardCost($cardID);
+        case "GENERIC": return MONGenericCardCost($cardID);
+        case "NONE": return MONTalentCardCost($cardID);
+        default: return "";
+      }
+    }
     switch($cardID)
     {
       case "WTR000": return -1;
@@ -232,10 +357,8 @@
       case "WTR078": case "WTR115": return 1;//TODO: Change ability costs to a different function
       case "CRU177": return 2;//TODO: Change ability costs to a different function
       case "ARC159": return 2;
-      case "ARC007": case "ARC009": case "ARC019": case "ARC026": case "ARC027": case "ARC028": return 0;
-      case "ARC032": case "ARC033": case "ARC034": return 0;
-      case "ARC029": case "ARC030": case "ARC031": case "ARC203": case "ARC204": case "ARC205": case "CRU106": return 1;
-      case "ARC008": case "ARC011": case "ARC023": case "ARC024": case "ARC025": case "CRU103": return 2;
+      case "ARC203": case "ARC204": case "ARC205": case "CRU106": return 1;
+      case "CRU103": return 2;
       //Now do in order
       //Brute
       case "WTR003": return 2;
@@ -323,6 +446,17 @@
       case "WTR215": case "WTR216": case "WTR217": return 0;
       case "WTR218": case "WTR219": case "WTR220": return 0;
       case "WTR221": case "WTR222": case "WTR223": return 3;
+      //CRU Guardian
+      case "CRU024": return 4;
+      case "CRU025": return 3;
+      case "CRU026": return 4;
+      case "CRU027": return 7;
+      case "CRU028": return 3;
+      case "CRU029": case "CRU030": case "CRU031": return 9;
+      case "CRU032": case "CRU033": case "CRU034": return 3;
+      case "CRU035": case "CRU036": case "CRU037": return 4;
+      case "CRU038": case "CRU039": case "CRU040": return 2;
+      case "CRU041": case "CRU042": case "CRU043": return 0;
       //CRU Brute
       case "CRU004": case "CRU005": return 2;
       case "CRU006": return 0;
@@ -332,6 +466,7 @@
       case "CRU016": case "CRU017": case "CRU018": return 3;
       case "CRU019": case "CRU020": case "CRU021": return 1;
       //CRU Warrior
+      case "CRU079": case "CRU080": return 1;
       case "CRU081": return 0;
       case "CRU082": return 0;
       case "CRU083": return 2;
@@ -351,6 +486,30 @@
     }
   }
 
+  function AbilityCost($cardID)
+  {
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      return ARCAbilityCost($cardID);
+    }
+    else if($set == "MON")
+    {
+      return MONAbilityCost($cardID);
+    }
+    return CardCost($cardID);
+  }
+
+  function ResourcesPaidBlockModifier($cardID, $amountPaid)
+  {
+    switch($cardID)
+    {
+      case "MON241": case "MON242": case "MON243": case "MON244": return ($amountPaid >= 1 ? 2 : 0);
+      default: return 0;
+    }
+  }
+
   function DynamicCost($cardID)
   {
     switch($cardID)
@@ -362,8 +521,44 @@
     }
   }
 
+  function BlockDynamicCost($cardID)
+  {
+    switch($cardID)
+    {
+      case "MON241": case "MON242": case "MON243": case "MON244": return "0,1";
+      default:
+        return "";
+    }
+  }
+
   function PitchValue($cardID)
   {
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      switch($class)
+      {
+        case "MECHANOLOGIST": return ARCMechanologistPitchValue($cardID);
+        case "RANGER": return ARCRangerPitchValue($cardID);
+        case "RUNEBLADE": return ARCRunebladePitchValue($cardID);
+        case "WIZARD": return ARCWizardPitchValue($cardID);
+        case "GENERIC": return ARCGenericPitchValue($cardID);
+      }
+    }
+    else if($set == "MON")
+    {
+      switch($class)
+      {
+        case "BRUTE": return MONBrutePitchValue($cardID);
+        case "ILLUSIONIST": return MONIllusionistPitchValue($cardID);
+        case "RUNEBLADE": return MONRunebladePitchValue($cardID);
+        case "WARRIOR": return MONWarriorPitchValue($cardID);
+        case "GENERIC": return MONGenericPitchValue($cardID);
+        case "NONE": return MONTalentPitchValue($cardID);
+        default: return "";
+      }
+    }
     switch($cardID)
     {
        case "WTR000": return 3;
@@ -371,10 +566,8 @@
        case "ARC002": case "CRU177": case "WTR153": return 0;
        case "WTR113": case "WTR114": case "WTR115": case "WTR117": return 0;
        case "ARC159": case "ARC200": case "WTR206": case "WTR066": case "WTR051": case "WTR069": case "WTR060": case "WTR215": case "WTR072": case "WTR054": return 1;
-       case "WTR032": case "WTR026": case "WTR023": case "WTR006": case "WTR017": return 1;
        case "WTR030": case "WTR027": case "WTR024": case "WTR018": case "CRU017": case "WTR207": case "WTR067": case "WTR061": case "WTR213": return 2;
-       case "ARC008": case "ARC011": case "ARC019": case "ARC023": case "ARC026": case "ARC029": case "ARC032": case "ARC203": case "CRU106": return 1;
-       case "ARC009": case "ARC024": case "ARC027": case "ARC030": case "ARC033": return 2;
+       case "ARC203": case "CRU106": return 1;
       //Now do in order
       //Brute
       case "WTR001": case "WTR002": case "WTR003": case "WTR004": case "WTR005": return 0;
@@ -410,6 +603,7 @@
       case "WTR123": case "WTR126": case "WTR129": case "WTR132": case "WTR135": case "WTR138": case "WTR141": case "WTR144": case "WTR147": return 1;
       case "WTR124": case "WTR127": case "WTR130": case "WTR133": case "WTR136": case "WTR139": case "WTR142": case "WTR145": case "WTR148": return 2;
       case "WTR125": case "WTR128": case "WTR131": case "WTR134": case "WTR137": case "WTR140": case "WTR143": case "WTR146": case "WTR149": return 3;
+      case "WTR150": return 0;
       case "WTR159": return 1;
       case "WTR160": return 2;
       case "WTR161": return 3;
@@ -424,6 +618,14 @@
       case "WTR201": case "WTR204": case "WTR207": case "WTR210": case "WTR213": case "WTR216": case "WTR219": case "WTR222": return 2;
       case "WTR175": case "WTR178": case "WTR181": case "WTR184": case "WTR187": case "WTR190": case "WTR193": case "WTR196": case "WTR199": return 3;
       case "WTR202": case "WTR205": case "WTR208": case "WTR211": case "WTR214": case "WTR217": case "WTR220": case "WTR223": return 3;
+      //CRU Guardian
+      case "CRU024": case "CRU025": return 0;
+      case "CRU026": return 1;
+      case "CRU027": return 2;
+      case "CRU028": return 3;
+      case "CRU029": case "CRU032": case "CRU035": case "CRU038": case "CRU041": return 1;
+      case "CRU030": case "CRU033": case "CRU036": case "CRU039": case "CRU042": return 2;
+      case "CRU031": case "CRU034": case "CRU037": case "CRU040": case "CRU043": return 3;
       //CRU Brute
       case "CRU004": case "CRU005": case "CRU006": return 0;
       case "CRU007": return 2;
@@ -433,6 +635,7 @@
       case "CRU011": case "CRU014": case "CRU017": case "CRU020": return 2;
       case "CRU012": case "CRU015": case "CRU018": case "CRU021": return 3;
       //CRU Warrior
+      case "CRU079": case "CRU080": return 0;
       case "CRU081": return 0;
       case "CRU082": case "CRU083": return 2;
       case "CRU085": case "CRU088": case "CRU091": case "CRU094": return 1;
@@ -453,11 +656,37 @@
 
   function BlockValue($cardID)
   {
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      switch($class)
+      {
+        case "MECHANOLOGIST": return ARCMechanologistBlockValue($cardID);
+        case "RANGER": return ARCRangerBlockValue($cardID);
+        case "RUNEBLADE": return ARCRunebladeBlockValue($cardID);
+        case "WIZARD": return ARCWizardBlockValue($cardID);
+        case "GENERIC": return ARCGenericBlockValue($cardID);
+      }
+    }
+    else if($set == "MON")
+    {
+      switch($class)
+      {
+        case "BRUTE": return MONBruteBlockValue($cardID);
+        case "ILLUSIONIST": return MONIllusionistBlockValue($cardID);
+        case "RUNEBLADE": return MONRunebladeBlockValue($cardID);
+        case "WARRIOR": return MONWarriorBlockValue($cardID);
+        case "GENERIC": return MONGenericBlockValue($cardID);
+        case "NONE": return MONTalentBlockValue($cardID);
+        default: return "";
+      }
+    }
     switch($cardID)
     {
       case "WTR000": return 0; 
       case "WTR038": case "WTR039": case "WTR040": return 0;
-      case "ARC002": case "ARC007": case "ARC019": case "CRU177": case "WTR153": return 0;
+      case "CRU177": case "WTR153": return 0;
       //Brute
       case "WTR001": case "WTR002": case "WTR003": return 0;
       case "WTR004": return 2;
@@ -514,9 +743,14 @@
       case "WTR218": case "WTR219": case "WTR220": return 2;
       case "WTR221": case "WTR222": case "WTR223": return 2;
       case "ARC150": return 1;
+      //CRU Guardian
+      case "CRU024": return 0;
+      case "CRU025": return 2;
+      case "CRU041": case "CRU042": case "CRU043": return 0;
       //CRU Brute
       case "CRU004": case "CRU005": case "CRU006": return 0;
       //CRU Warrior
+      case "CRU079": case "CRU080": return 0;
       case "CRU081": return 2;
       //CRU Generics
       case "CRU179": return 0;
@@ -531,7 +765,32 @@
 
   function AttackValue($cardID)
   {
-    //global $
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      switch($class)
+      {
+        case "MECHANOLOGIST": return ARCMechanologistAttackValue($cardID);
+        case "RANGER": return ARCRangerAttackValue($cardID);
+        case "RUNEBLADE": return ARCRunebladeAttackValue($cardID);
+        case "WIZARD": return ARCWizardAttackValue($cardID);
+        case "GENERIC": return ARCGenericAttackValue($cardID);
+      }
+    }
+    else if($set == "MON")
+    {
+      switch($class)
+      {
+        case "BRUTE": return MONBruteAttackValue($cardID);
+        case "ILLUSIONIST": return MONIllusionistAttackValue($cardID);
+        case "RUNEBLADE": return MONRunebladeAttackValue($cardID);
+        case "WARRIOR": return MONWarriorAttackValue($cardID);
+        case "GENERIC": return MONGenericAttackValue($cardID);
+        case "NONE": return MONTalentAttackValue($cardID);
+        default: return "";
+      }
+    }
     switch($cardID)
     {
       //Brute
@@ -593,17 +852,6 @@
       case "WTR203": return 4;
       case "WTR204": return 3;
       case "WTR205": return 2;
-      case "ARC008": return 10;
-      case "ARC011": return 5;
-      case "ARC023": return 6;
-      case "ARC024": return 5;
-      case "ARC025": return 4;
-      case "ARC026": return 4;
-      case "ARC027": return 3;
-      case "ARC028": return 2;
-      case "ARC029": return 5;
-      case "ARC030": return 4;
-      case "ARC031": return 3;
       case "ARC159": return 6;
       //CRU Brute
       case "CRU004": case "CRU005": return 3;
@@ -614,7 +862,15 @@
       case "CRU015": case "CRU019": return 4;
       case "CRU020": return 3;
       case "CRU021": return 2;
-      //CRU ???
+      //CRU Guardian
+       return 6;
+      case "CRU027": return 10;
+      case "CRU026": case "CRU035": return 8;
+      case "CRU032": case "CRU036": return 7;
+      case "CRU024": case "CRU033": case "CRU037": return 6;
+      case "CRU034": return 5;
+      //CRU Warrior
+      case "CRU079": case "CRU080": return 2;
       case "CRU103": return 4;
       case "CRU106": return 4;
       //CRU Generic
@@ -632,6 +888,15 @@
 
   function HasGoAgain($cardID)
   {
+    $set = CardSet($cardID);
+    if($set == "ARC")
+    {
+      return ARCHasGoAgain($cardID);
+    }
+    else if($set == "MON")
+    {
+      return MONHasGoAgain($cardID);
+    }
     global $myDeck;
     switch($cardID)
     {
@@ -659,7 +924,6 @@
       case "WTR147": case "WTR148": case "WTR149": return true;
       case "WTR218": case "WTR219": case "WTR220": return true;
       case "WTR223": case "WTR222": case "WTR221": return true;
-      case "ARC032": case "ARC033": case "ARC034": return true;
       case "ARC203": case "ARC204": case "ARC205": return true;
       case "WTR161": return count($myDeck) == 0;
       case "CRU084": return true;
@@ -675,8 +939,17 @@
     }
   }
 
-  function GetAbilityType($cardID)
+  function GetAbilityType($cardID, $index=-1)
   {
+    $set = CardSet($cardID);
+    if($set == "ARC")
+    {
+      return ARCAbilityType($cardID, $index);
+    }
+    else if($set == "MON")
+    {
+      return MONAbilityType($cardID, $index);
+    }
     switch($cardID)
     {
       case "WTR003": return "AA";
@@ -696,33 +969,42 @@
       case "WTR153": return "A";
       case "WTR170": return "I";
       case "WTR171": case "WTR172": return "A";
-      case "ARC019": return "A";
       case "CRU004": case "CRU005": return "AA";
       case "CRU006": return "A";
+      case "CRU024": return "AA";
+      case "CRU025": return "A";
+      case "CRU079": case "CRU080": return "AA";
       case "CRU081": return "A";
       case "CRU177": return "AA";
       default: return "";
     }
   }
 
-  function IsPlayable($cardID, $phase, $from)
+  function IsPlayable($cardID, $phase, $from, $index=-1)
   {
-    global $myHand;
+    global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed;
     $cardType = CardType($cardID);
-    if(IsStaticType($cardType, $from))
+    $subtype = CardSubType($cardID);
+    if($phase == "B" && $cardType == "E") return true;
+    $isStaticType = IsStaticType($cardType, $from);
+    if($isStaticType)
     {
-      $cardType = GetAbilityType($cardID);
+      $cardType = GetAbilityType($cardID, $index);
     }
     if(RequiresDiscard($cardID) || $cardID == "WTR159")
     {
       if($from == "HAND" && count($myHand) < 2) return false;//TODO: Account for where it was from
       else if(count($myHand) < 1) return false;
     }
-    if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID)) return false;
+    if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $from, $index)) return false;
     if($cardType == "I" && CanPlayInstant($phase)) return true;
-    if(($phase == "B" || $phase == "DR") && IsDominateActive() && NumBlockedFromHand() >= 1) return false;
+    if(($phase == "B" || $phase == "D") && $from == "HAND" && IsDominateActive() && NumBlockedFromHand() >= 1) return false;
+    if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
     if($phase == "B" && $cardType != "DR") return BlockValue($cardID);
     if($phase == "P" && PitchValue($cardID) > 0) return true;
+    if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
+    if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
+    if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && $myClassState[$CS_NumActionsPlayed] >= 1) return false;
     switch($cardType)
     {
       case "A": return $phase == "M";
@@ -736,18 +1018,24 @@
   function CanPlayInstant($phase)
   {
     if($phase == "M") return true;
-    if($phase == "B") return true;
+    //if($phase == "B") return true;
     if($phase == "A") return true;
     if($phase == "D") return true;
     return false;
   }
 
-  function IsPlayRestricted($cardID)
+  function IsPlayRestricted($cardID, $from="", $index=-1)
   {
-    global $myClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $CCS_HitsWithWeapon;
+    global $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $CCS_HitsWithWeapon, $currentPlayer;
+    global $CS_DamageTaken, $myArsenal, $myItems, $mySoul;
+    if(SearchCurrentTurnEffects("CRU032", $currentPlayer) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) return true;
     switch($cardID)
     {
-      case "ARC008": if($myClassState[$CS_NumBoosted] < 3) return true;
+      case "ARC005": return $myClassState[$CS_NumBoosted] < 1;
+      case "ARC008": return $myClassState[$CS_NumBoosted] < 3;
+      case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index+1] > 0 && (CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index+2] != 2));
+      case "ARC018": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index+1] > 0 && (CardType($combatChain[0]) != "AA" || $myItems[$index+2] != 2));
+      case "ARC041": return $myArsenal == "" || GetMyArsenalFacing() == "UP";
       case "WTR209": case "WTR210": case "WTR211":
         if(count($combatChain) == 0) return true;
         $subtype = CardSubtype($combatChain[0]);
@@ -780,7 +1068,7 @@
         if(count($combatChain) == 0) return true;
         if(CardType($combatChain[0]) != "AA") return true;
         if(CardCost($combatChain[0]) > 1) return true;
-        return;
+        return false;
       case "WTR206": case "WTR207": case "WTR208":
         if(count($combatChain) == 0) return true;
         $subtype = CardSubtype($combatChain[0]);
@@ -794,6 +1082,8 @@
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
         return $type != "AA";
+      case "MON029": case "MON030": return count($mySoul) == 0;
+      case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
       default: return false;
     }
   }
@@ -814,12 +1104,13 @@
     return false;
   }
 
-  function GoesOnCombatChain($phase, $cardID)
+  function GoesOnCombatChain($phase, $cardID, $from)
   {
-    $cardType = CardType($cardID);
+    if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
+    else $cardType = CardType($cardID);
     if($cardType == "I") return false;//Instants as yet never go on the combat chain
     if($phase == "B" || $phase == "A" || $phase == "D") return true;//Anything you play during these combat phases would go on the chain
-    if($phase == "M" && ($cardType == "AA" || GetAbilityType($cardID) == "AA")) return true;//If it's an attack action, it goes on the chain
+    if($phase == "M" && $cardType == "AA") return true;//If it's an attack action, it goes on the chain
     return false;
   }
 
@@ -837,6 +1128,7 @@
       case "WTR079": return true;
       case "WTR150": return true;
       case "WTR155": case "WTR156": case "WTR157": case "WTR158": return true;
+      case "ARC041": return true;
       default: return false;
     }
   }
@@ -849,6 +1141,7 @@
       case "WTR041": case "WTR042": return true;
       case "WTR080": return true;
       case "WTR116": return true;
+      case "ARC004": return true;
       case "ARC150": return true;
       default: return false;
     }
@@ -858,6 +1151,7 @@
   {
     switch($cardID)
     {
+      case "CRU025": return true;
       case "CRU081": return true;
       default: return false;
     }
@@ -894,6 +1188,16 @@
 
   function AbilityHasGoAgain($cardID)
   {
+    $set = CardSet($cardID);
+    $class = CardClass($cardID);
+    if($set == "ARC")
+    {
+      return ARCAbilityHasGoAgain($cardID);
+    }
+    else if($set == "MON")
+    {
+      return MONAbilityHasGoAgain($cardID);
+    }
     switch($cardID)
     {
       case "WTR038": case "WTR039": return true;
@@ -902,8 +1206,8 @@
       case "WTR152": return true;
       case "WTR153": return true;
       case "WTR171": return true;
-      case "ARC019": return true;
       case "CRU006": return true;
+      case "CRU025": return true;
       case "CRU081": return true;
       default: return false;
     }
@@ -917,25 +1221,13 @@
       case "WTR197": return true;
       case "ARC011": case "ARC012": case "ARC013": return true;
       case "ARC019": return true;
+      case "ARC038": case "ARC039": return true;
       case "CRU013": case "CRU014": case "CRU015": return true;
+      case "CRU038": case "CRU039": case "CRU040": return true;
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
       case "CRU106": case "CRU107": case "CRU108": return true;
+      case "MON278": case "MON279": case "MON280": return true;
       default: return false;
-    }
-  }
-
-  function HasBoost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC011": case "ARC012": case "ARC013":
-      case "ARC023": case "ARC024": case "ARC025":
-      case "ARC026": case "ARC027": case "ARC028":
-      case "ARC029": case "ARC030": case "ARC031":
-      case "CRU106": case "CRU107": case "CRU108":
-        return true;
-      default:
-        return false;
     }
   }
 

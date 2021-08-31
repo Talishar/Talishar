@@ -1,16 +1,26 @@
 <?php
 
+  include "CardSetters.php";
+
 function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter;
-  BuildMainPlayerGameState();
+  global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_ChainAttackBuff;
+    UpdateGameState($playerID);
+    BuildMainPlayerGameState();
+    $attackType = CardType($combatChain[0]);
+    $CanGainAttack = !SearchCurrentTurnEffects("CRU035", $mainPlayer) || $attackType != "AA";
+    $SnagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
     {
       $from = $combatChain[$i+1];
       $resourcesPaid = $combatChain[$i+2];
+
       if($combatChain[$i] == $mainPlayer)
       {
-        $totalAttack += AttackValue($combatChain[$i-1]) + AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
+        $attack = AttackValue($combatChain[$i-1]);
+        if($CanGainAttack || $i == 1 || $attack < 0) $totalAttack += $attack;
+        $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
+        if(($CanGainAttack && !$SnagActive) || $attack < 0) $totalAttack += $attack;
       }
       else
       {
@@ -31,7 +41,8 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
       {
         if($currentTurnEffects[$i+1] == $mainPlayer)
         {
-          $totalAttack += EffectAttackModifier($currentTurnEffects[$i]);
+          $attack = EffectAttackModifier($currentTurnEffects[$i]);
+          if($CanGainAttack || $attack < 0) $totalAttack += $attack;
         }
         else
         {
@@ -40,12 +51,27 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
       }
     }
 
-    $totalAttack += MainCharacterAttackModifiers();
+    $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
+    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    $attack = $combatChainState[$CCS_ChainAttackBuff];
+    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 }
 
-function DamagePlayer($damage, &$classState, &$health)
+function CombatDamagePlayer($playerID, $damage, &$classState, &$Auras, &$health)
 {
-  global $CS_DamagePrevention;
+
+  return DamagePlayer($playerID, $damage, $classState, $health, $Auras, "COMBAT");
+}
+
+function DamageOtherPlayer($amount, $type="DAMAGE")
+{
+  global $otherPlayer, $theirClassState, $theirHealth, $theirAuras;
+  return DamagePlayer($otherPlayer, $amount, $theirClassState, $theirHealth, $theirAuras, $type);
+}
+
+function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type="DAMAGE")
+{
+  global $CS_DamagePrevention, $CS_DamageTaken;
   $damage = $damage > 0 ? $damage : 0;
   if($damage <= $classState[$CS_DamagePrevention])
   {
@@ -57,6 +83,10 @@ function DamagePlayer($damage, &$classState, &$health)
     $damage -= $classState[$CS_DamagePrevention];
     $classState[$CS_DamagePrevention] = 0;
   }
+  $damage -= CurrentEffectDamagePrevention($playerID, $type, $damage);
+  $damage = $damage > 0 ? $damage : 0;
+  $damage = AuraTakeDamageAbilities($Auras, $damage);
+  if($damage > 0) $classState[$CS_DamageTaken] += $damage;
   PlayerLoseHealth($damage, $health);
   return $damage;
 }
@@ -69,6 +99,11 @@ function PlayerLoseHealth($amount, &$health)
   {
     PlayerWon($mainPlayer);
   }
+}
+
+function PlayerGainHealth($amount, &$health)
+{
+  $health += $amount;
 }
 
 function PlayerWon($playerID)
@@ -278,6 +313,20 @@ function NumCardsBlocking()
   return $num;
 }
 
+function NumAttacksBlocking()
+{
+  global $combatChain, $defPlayer;
+  $num = 0;
+  for($i=0; $i<count($combatChain); $i += CombatChainPieces())
+  {
+    if($combatChain[$i+1] == $defPlayer)
+    {
+      if(CardType($combatChain[$i]) == "AA") ++$num;
+    }
+  }
+  return $num;
+}
+
 function IHaveLessHealth()
 {
   global $myHealth, $theirHealth;
@@ -290,13 +339,13 @@ function DefHasLessHealth()
   return $defHealth < $mainHealth;
 }
 
-function GetIndices($count)
+function GetIndices($count, $add=0)
 {
   $indices = "";
   for($i=0; $i<$count; ++$i)
   {
     if($indices != "") $indices .= ",";
-    $indices .= $i;
+    $indices .= ($i + $add);
   }
   return $indices;
 }
@@ -318,6 +367,13 @@ function PlayMyAura($cardID)
   global $myAuras;
   array_push($myAuras, $cardID);
   array_push($myAuras, 0);
+}
+
+function PlayTheirAura($cardID)
+{
+  global $theirAuras;
+  array_push($theirAuras, $cardID);
+  array_push($theirAuras, 0);
 }
 
 function RollDie()
