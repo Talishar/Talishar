@@ -167,18 +167,20 @@ function HasEffect($cardID)
   return false;
 }
 
-function AddDecisionQueue($phase, $player, $parameter, $subsequent=0)
+function AddDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
 {
   global $decisionQueue;
   array_push($decisionQueue, $phase);
   array_push($decisionQueue, $player);
   array_push($decisionQueue, $parameter);
   array_push($decisionQueue, $subsequent);
+  array_push($decisionQueue, $makeCheckpoint);
 }
 
-function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0)
+function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
 {
   global $decisionQueue;
+  array_unshift($decisionQueue, $makeCheckpoint);
   array_unshift($decisionQueue, $subsequent);
   array_unshift($decisionQueue, $parameter);
   array_unshift($decisionQueue, $player);
@@ -197,7 +199,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0)
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
-    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt;
+    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESUMEPAYING")
     {
       if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
@@ -226,12 +228,13 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0)
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
     $subsequent = array_shift($decisionQueue);
+    $makeCheckpoint = array_shift($decisionQueue);
     $turn[0] = $phase;
     $turn[1] = $player;
     $currentPlayer = $player;
     $turn[2] = ($parameter == "<-" ? $lastResult : $parameter);
     $return = "PASS";
-    if($subsequent != 1 || $lastResult != "PASS") $return = DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult);
+    if($subsequent != 1 || $lastResult != "PASS") $return = DecisionQueueStaticEffect($phase, $player, ($parameter == "<-" ? $lastResult : $parameter), $lastResult);
     if($parameter == "<-" && $lastResult == "-1") $return = "PASS";//Collapse the rest of the queue if this is a decision point with invalid parameters
     if($return != "")
     {

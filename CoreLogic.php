@@ -1,6 +1,7 @@
 <?php
 
   include "CardSetters.php";
+  include "CardGetters.php";
 
 function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 {
@@ -67,6 +68,25 @@ function DamageOtherPlayer($amount, $type="DAMAGE")
 {
   global $otherPlayer, $theirClassState, $theirHealth, $theirAuras;
   return DamagePlayer($otherPlayer, $amount, $theirClassState, $theirHealth, $theirAuras, $type);
+}
+
+function DealDamage($player, $damage, $type)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainClassState, $mainHealth, $mainAuras;
+  global $defClassState, $defHealth, $defAuras;
+  global $myClassState, $myHealth, $myAuras;
+  global $theirClassState, $theirHealth, $theirAuras;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return DamagePlayer($player, $damage, $mainClassState, $mainHealth, $mainAuras, $type);
+    else return DamagePlayer($player, $damage, $defClassState, $defHealth, $defAuras, $type);
+  }
+  else
+  {
+    if($player == $currentPlayer) return DamagePlayer($player, $damage, $myClassState, $myHealth, $myAuras, $type);
+    else return DamagePlayer($player, $damage, $theirClassState, $theirHealth, $theirAuras, $type);
+  }
 }
 
 function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type="DAMAGE")
@@ -337,6 +357,22 @@ function DefHasLessHealth()
 {
   global $mainHealth, $defHealth;
   return $defHealth < $mainHealth;
+}
+
+function PlayerHasLessHealth($playerID)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainHealth, $defHealth, $myHealth, $theirHealth;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainHealth < $defHealth;
+    else return $defHealth < $mainHealth;
+  }
+  else
+  {
+    if($player == $currentPlayer) return $myHealth < $theirHealth;
+    else return $theirHealth < $myHealth;
+  }
 }
 
 function GetIndices($count, $add=0)
