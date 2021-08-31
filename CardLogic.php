@@ -79,12 +79,12 @@ function NaturesPathPilgrimageHit()
 
 function UnifiedDecreePlayEffect()
 {
-  global $myDeck, $mainPlayer;
+  global $myDeck, $mainPlayer, $mainBanish, $mainClassState;
   if(count($myDeck) == 0) return;
   WriteLog("Unified Decree reveals " . $myDeck[0] . ".");
   if(CardType($myDeck[0]) == "AR")
   {
-    Banish($mainPlayer, $myDeck[0], "TCC");
+    BanishCard($mainBanish, $mainClassState, $myDeck[0], "TCC");
     array_shift($myDeck);
   }
 }
@@ -115,6 +115,26 @@ function AddCurrentTurnEffect($cardID, $player)
   global $currentTurnEffects;
   array_push($currentTurnEffects, $cardID);
   array_push($currentTurnEffects, $player);
+}
+
+//This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
+function AddCurrentTurnEffectFromCombat($cardID, $player)
+{
+  global $currentTurnEffectsFromCombat;
+  array_push($currentTurnEffectsFromCombat, $cardID);
+  array_push($currentTurnEffectsFromCombat, $player);
+}
+
+function CopyCurrentTurnEffectsFromCombat()
+{
+  global $currentTurnEffects, $currentTurnEffectsFromCombat;
+WriteLog(count($currentTurnEffectsFromCombat));
+  for($i=0; $i<count($currentTurnEffectsFromCombat); $i += 2)
+  {
+WriteLog($currentTurnEffectsFromCombat[$i]);
+    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i], $currentTurnEffectsFromCombat[$i+1]);
+  }
+  $currentTurnEffectsFromCombat = [];
 }
 
 function RemoveCurrentTurnEffect($index)
@@ -154,6 +174,15 @@ function AddDecisionQueue($phase, $player, $parameter, $subsequent=0)
   array_push($decisionQueue, $player);
   array_push($decisionQueue, $parameter);
   array_push($decisionQueue, $subsequent);
+}
+
+function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0)
+{
+  global $decisionQueue;
+  array_unshift($decisionQueue, $subsequent);
+  array_unshift($decisionQueue, $parameter);
+  array_unshift($decisionQueue, $player);
+  array_unshift($decisionQueue, $phase);
 }
 
   function ProcessDecisionQueue()
@@ -307,6 +336,19 @@ function Opt($cardID, $amount)
   AddDecisionQueue("OPT", $currentPlayer, $cards);
 }
 
+function OptMain($amount)
+{
+  global $mainDeck, $turn, $mainPlayer;
+  if($amount <= 0) return;
+  $cards = "";
+  for($i=0; $i<$amount; ++$i)
+  {
+    $cards .= array_shift($mainDeck);
+    if($i < $amount-1) $cards .= ",";
+  }
+  AddDecisionQueue("OPT", $mainPlayer, $cards);
+}
+
 function DiscardRandom()
 {
   global $playerID,$myHand,$myDiscard,$myCharacter, $myClassState, $CS_Num6PowDisc, $mainPlayer;
@@ -342,16 +384,17 @@ function DefDiscardRandom()
 
 function Intimidate()
 {
-  global $playerID, $defPlayer, $theirHand;//For now we'll assume you can only intimidate the opponent
+  global $playerID, $theirBanish, $theirClassState, $defPlayer, $theirHand;//For now we'll assume you can only intimidate the opponent
   if(count($theirHand) == 0) return;//Nothing to do if they have no hand
   $index = rand() % count($theirHand);
-  Banish($defPlayer, $theirHand[$index], "INT");
+  BanishCard($theirBanish, $theirClassState, $theirHand[$index], "INT");
   unset($theirHand[$index]);
   $theirHand = array_values($theirHand);
   WriteLog("Intimidate triggered " . count($theirHand));
   UpdateGameState($playerID);
 }
 
+//Deprecated: Use BanishCard in CardSetters instead
 function Banish($player, $cardID, $from)
 {
   global $playerID, $myBanish, $theirBanish;
@@ -366,20 +409,6 @@ function Banish($player, $cardID, $from)
     array_push($theirBanish, $from);
   }
   //TODO: Banish stuff, e.g. Levia
-}
-
-function Boost()
-{
-  global $playerID, $myDeck, $myBanish, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumBoosted;
-  if(count($myDeck) == 0) { WriteLog("Could not boost. No cards left in deck."); return; }
-  $cardID = $myDeck[0];
-  Banish($playerID, $cardID, "BOOST");
-  unset($myDeck[0]);
-  $myDeck = array_values($myDeck);
-  $grantsGA = CardClass($cardID) == "MECHANOLOGIST";
-  WriteLog("Boost banished $cardID and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
-  if($grantsGA) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; }
-  ++$myClassState[$CS_NumBoosted];
 }
 
 ?>

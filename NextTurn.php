@@ -51,7 +51,7 @@
   else
   {
     echo("<h2>Please choose " . TypeToPlay($turn[0]));
-    if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0) . ")");
+    if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0) . ")");
     if(CanPassPhase($turn[0])) echo(" (or " . CreateButton($playerID, "Pass", 99, 0) . ")");
     if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
     echo(":</h2>");
@@ -107,18 +107,21 @@
 
   if($turn[0] == "OPT" && $turn[1] == $playerID)
   {
-    echo("<div display:inline;'>");
+    echo("<table><tr>");
     $options = explode(",", $turn[2]);
     for($i=0; $i<count($options); ++$i)
     {
+      echo("<td>");
       echo("<table><tr><td>");
       echo(Card($options[$i], "CardImages", 400));
       echo("</td></tr><tr><td>");
       echo(CreateButton($playerID, "Top", 8, $options[$i]));
       echo(CreateButton($playerID, "Bottom", 9, $options[$i]));
       echo("</td></tr>");
+      echo("</table>");
+      echo("</td>");
     }
-    echo("</div>");
+    echo("</tr></table>");
   }
 
   if($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID)
@@ -143,7 +146,7 @@
     echo("</div>");
   }
 
-  if($turn[0] == "MAYCHOOSEDISCARD" && $turn[1] == $playerID)
+  if(($turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);
@@ -218,7 +221,7 @@
     echo("</div>");
   }
 
-  if(($turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK") && $turn[1] == $playerID)
+  if(($turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $params = explode("-", $turn[2]);
@@ -231,6 +234,7 @@
       if($turn[0] == "MULTICHOOSEDISCARD") echo(Card($myDiscard[$options[$i]], "CardImages", 250));
       else if($turn[0] == "MULTICHOOSEHAND") echo(Card($myHand[$options[$i]], "CardImages", 250));
       else if($turn[0] == "MULTICHOOSEDECK") echo(Card($myDeck[$options[$i]], "CardImages", 250));
+      else if($turn[0] == "MULTICHOOSETEXT") echo(str_replace("_", " ", $options[$i]));
       echo("</td>");
     }
     echo("</tr><tr>");
@@ -272,9 +276,9 @@
   {
     echo("<div style='display:inline-block;'>");
     echo("<h3>Their Items:</h3>");
-    for($i=0; $i<count($theirItems); $i+=3)
+    for($i=0; $i<count($theirItems); $i+=ItemPieces())
     {
-      echo(Card($theirItems[$i], "CardImages", 180, 0, 1, 0, 0, $theirItems[$i+1]));
+      echo(Card($theirItems[$i], "CardImages", 180, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]));
     }
     echo("</div>");
   }
@@ -294,7 +298,8 @@
   if($theirArsenal != "")
   {
     echo("<div style='position: fixed; top:10px; left:83%; display:inline;'><h3 style='width:130px; background-color: rgba(255,255,255,0.70);'>Their Arsenal:</h3>");
-    echo(Card("cardBack", "CardImages", 180, 0, 0));
+    if($theirClassState[$CS_ArsenalFacing] == "UP") echo(Card($theirArsenal, "CardImages", 180, 0, 0));
+    else echo(Card("cardBack", "CardImages", 180, 0, 0));
     echo("</div>");
   }
 
@@ -302,10 +307,11 @@
   //Display the player's hand at the bottom of the screen
   echo("<div style='position: fixed; bottom:10px; width:40%; display:inline;'>");
   echo("<h3 style='background-color: rgba(255,255,255,0.70); width:100px;'>Your hand:</h3>");
-  echo("<div style='background-color: rgba(255,255,255,0.70); position: absolute; top:0px; left: 120px; height: 50px; width:350px; border:1px solid green; display:inline;'>");
+  echo("<div style='background-color: rgba(255,255,255,0.70); position: absolute; top:0px; left: 120px; height: 50px; width:500px; border:1px solid green; display:inline;'>");
   echo("<span style='position:relative; display:inline-block;'><img style='padding-left:20px; height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:10px; left:20px; width:50px; font-size:30; color:white; text-align:center;'>" . $myResources[0] . "</div></img></span>");
   echo("<div style='position:relative; display:inline-block; padding-left:20px; height:50px; width:100px;'><div style='position:relative;heigh:100%;width:100%;'><span style='position:absolute; font-size: 24px; top:15px; left:20px;'>$myHealth</span></div><img style='display:inline-block; height:100%; width:100%;' src='./CardImages/healthSymbol.png' /></div>");
   echo("<div style='position:relative; display:inline-block; top:-20px; height:50px; font-size:20; text-align:center; padding-left:20px;'>Deck: " . count($myDeck) . " cards</div>");
+  echo("<div style='position:relative; display:inline-block; top:-20px; height:50px; font-size:20; text-align:center; padding-left:20px;'>Soul: " . count($mySoul) . " cards</div>");
   echo("</div>");
   $actionType = $turn[0] == "ARS" ? 4 : 2;
   for($i=0; $i<count($myHand); ++$i) {
@@ -337,9 +343,9 @@
   {
     echo("<div style='display:inline-block;'>");
     echo("<h3>Your Items:</h3>");
-    for($i=0; $i<count($myItems); $i+=3)
+    for($i=0; $i<count($myItems); $i+=ItemPieces())
     {
-      echo(Card($myItems[$i], "CardImages", 180, $currentPlayer == $playerID && $turn[0] != "P" && IsPlayable($myItems[$i], $turn[0], "PLAY") ? 10 : 0, 1, 0, 0, $myItems[$i+1], strval($i)));
+      echo(Card($myItems[$i], "CardImages", 180, $currentPlayer == $playerID && $turn[0] != "P" && IsPlayable($myItems[$i], $turn[0], "PLAY", $i) ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, 0, $myItems[$i+1], strval($i)));
     }
     echo("</div>");
   }
@@ -460,6 +466,7 @@
       case "CHOOSEHAND": return 0;
       case "CHOOSEHANDCANCEL": return 0;
       case "MULTICHOOSEDISCARD": return 0;
+      case "CHOOSEDISCARDCANCEL": return 0;
       default: return 1;
     }
   }

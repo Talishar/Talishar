@@ -20,6 +20,7 @@
   $p1Banish = GetArray($handler);
   $p1ClassState = GetArray($handler);
   $p1CharacterEffects = GetArray($handler);
+  $p1Soul = GetArray($handler);
 
   //Player 2
   $p2Hand = GetArray($handler);
@@ -34,6 +35,7 @@
   $p2Banish = GetArray($handler);
   $p2ClassState = GetArray($handler);
   $p2CharacterEffects = GetArray($handler);
+  $p2Soul = GetArray($handler);
 
   $winner = trim(fgets($handler));
   $currentPlayer = trim(fgets($handler));
@@ -43,6 +45,7 @@
   $combatChain = GetArray($handler);
   $combatChainState = GetArray($handler);
   $currentTurnEffects = GetArray($handler);
+  $currentTurnEffectsFromCombat = GetArray($handler);
   $nextTurnEffects = GetArray($handler);
   $decisionQueue = GetArray($handler);
   $mainPlayer = trim(fgets($handler));
@@ -62,6 +65,7 @@
   $myBanish = $playerID==1 ? $p1Banish : $p2Banish;
   $myClassState = $playerID==1 ? $p1ClassState : $p2ClassState;
   $myCharacterEffects = $playerID==1 ? $p1CharacterEffects : $p2CharacterEffects;
+  $mySoul = $playerID==1 ? $p1Soul : $p2Soul;
   $theirHand = $playerID==1 ? $p2Hand : $p1Hand;
   $theirDeck = $playerID==1 ? $p2Deck : $p1Deck;
   $theirResources = $playerID==1 ? $p2Resources : $p1Resources;
@@ -75,6 +79,7 @@
   $theirBanish = $playerID==1 ? $p2Banish : $p1Banish;
   $theirClassState = $playerID==1 ? $p2ClassState : $p1ClassState;
   $theirCharacterEffects = $playerID==1 ? $p2CharacterEffects : $p1CharacterEffects;
+  $theirSoul = $playerID==1 ? $p2Soul : $p1Soul;
 
 
   function GetArray($handler)
@@ -93,6 +98,7 @@
     global $defCharacterEffects, $defDiscard;
     global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items, $p1CharacterEffects, $p1Discard;
     global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items, $p2CharacterEffects, $p2Discard;
+    global $p1Soul, $p2Soul, $mainSoul, $defSoul;
 
     if($mainPlayerGamestateStillBuilt) return;
 
@@ -109,6 +115,7 @@
     $mainClassState = $mainPlayer==1 ? $p1ClassState : $p2ClassState;
     $mainCharacterEffects = $mainPlayer==1 ? $p1CharacterEffects : $p2CharacterEffects;
     $mainDiscard = $mainPlayer==1 ? $p1Discard : $p2Discard;
+    $mainSoul = $mainPlayer==1 ? $p1Soul : $p2Soul;
     $defHand = $mainPlayer==1 ? $p2Hand : $p1Hand;
     $defDeck = $mainPlayer==1 ? $p2Deck : $p1Deck;
     $defResources = $mainPlayer==1 ? $p2Resources : $p1Resources;
@@ -122,6 +129,7 @@
     $defClassState = $mainPlayer == 1 ? $p2ClassState : $p1ClassState;
     $defCharacterEffects = $mainPlayer==1 ? $p2CharacterEffects : $p1CharacterEffects;
     $defDiscard = $mainPlayer==1 ? $p2Discard : $p1Discard;
+    $defSoul = $mainPlayer==1 ? $p2Soul : $p1Soul;
 
     $mainPlayerGamestateBuilt = 1;
     $mainPlayerGamestateStillBuilt = 1;
@@ -137,8 +145,9 @@
     global $p2CharacterEffects, $p2Discard;
     global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
     global $myCharacterEffects, $myDiscard;
-    global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirPitch, $theirBanish, $theirClassState, $theirItems;
+    global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
     global $theirCharacterEffects, $theirDiscard;
+    global $p1Soul, $p2Soul, $mySoul, $theirSoul;
     if($activePlayer==1) {
       $p1Deck = $myDeck;
       $p1Hand = $myHand;
@@ -153,6 +162,7 @@
       $p1ClassState = $myClassState;
       $p1CharacterEffects = $myCharacterEffects;
       $p1Discard = $myDiscard;
+      $p1Soul = $mySoul;
       $p2Deck = $theirDeck;
       $p2Hand = $theirHand;
       $p2Resources = $theirResources;
@@ -160,11 +170,13 @@
       $p2Arsenal = $theirArsenal;
       $playerHealths[1] = $theirHealth;
       $p2Items = $theirItems;
+      $p2Auras = $theirAuras;
       $p2Pitch = $theirPitch;
       $p2Banish = $theirBanish;
       $p2ClassState = $theirClassState;
       $p2CharacterEffects = $theirCharacterEffects;
       $p2Discard = $theirDiscard;
+      $p2Soul = $theirSoul;
     } else {
       $p2Deck = $myDeck;
       $p2Hand = $myHand;
@@ -179,6 +191,7 @@
       $p2ClassState = $myClassState;
       $p2CharacterEffects = $myCharacterEffects;
       $p2Discard = $myDiscard;
+      $p2Soul = $mySoul;
       $p1Deck = $theirDeck;
       $p1Hand = $theirHand;
       $p1Resources = $theirResources;
@@ -186,11 +199,13 @@
       $p1Arsenal = $theirArsenal;
       $playerHealths[0] = $theirHealth;
       $p1Items = $theirItems;
+      $p1Auras = $theirAuras;
       $p1Pitch = $theirPitch;
       $p1Banish = $theirBanish;
       $p1ClassState = $theirClassState;
       $p1CharacterEffects = $theirCharacterEffects;
       $p1Discard = $theirDiscard;
+      $p1Soul = $theirSoul;
     }
   }
 
@@ -205,6 +220,7 @@
     global $p1CharacterEffects, $p1Discard;
     global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
     global $p2CharacterEffects, $p2Discard;
+    global $p1Soul, $p2Soul, $mainSoul, $defSoul;
 
     $p1Deck = $mainPlayer==1 ? $mainDeck : $defDeck;
     $p1Hand = $mainPlayer==1 ? $mainHand : $defHand;
@@ -219,6 +235,7 @@
     $p1ClassState = $mainPlayer == 1 ? $mainClassState : $defClassState;
     $p1CharacterEffects = $mainPlayer == 1 ? $mainCharacterEffects : $defCharacterEffects;
     $p1Discard = $mainPlayer == 1 ? $mainDiscard : $defDiscard;
+    $p1Soul = $mainPlayer == 1 ? $mainSoul : $defSoul;
     $p2Deck = $mainPlayer==2 ? $mainDeck : $defDeck;
     $p2Hand = $mainPlayer==2 ? $mainHand : $defHand;
     $p2Resources = $mainPlayer==2 ? $mainResources : $defResources;
@@ -232,6 +249,7 @@
     $p2ClassState = $mainPlayer == 2 ? $mainClassState : $defClassState;
     $p2CharacterEffects = $mainPlayer == 2 ? $mainCharacterEffects : $defCharacterEffects;
     $p2Discard = $mainPlayer == 2 ? $mainDiscard : $defDiscard;
+    $p2Soul = $mainPlayer == 2 ? $mainSoul : $defSoul;
 
     $mainPlayerGamestateStillBuilt = 0;
   }

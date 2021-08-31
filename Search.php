@@ -16,6 +16,22 @@ function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class=""
   return $cardList;
 }
 
+function SearchMyDeckForCard($card1, $card2="", $card3="")
+{
+  global $myDeck;
+  $cardList = "";
+  for($i=0; $i<count($myDeck); ++$i)
+  {
+    $id = $myDeck[$i];
+    if($id == $card1 || $id == $card2 || $id == $card3)
+    {
+      if($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
+
 function SearchMainDeckForCard($card1, $card2="", $card3="")
 {
   global $mainDeck;
@@ -47,13 +63,13 @@ function SearchTheirDeck($type="", $subtype="", $maxCost=-1)
   return $cardList;
 }
 
-function SearchMyHand($type="", $subtype="", $maxCost=-1, $minCost=-1)
+function SearchMyHand($type="", $subtype="", $maxCost=-1, $minCost=-1, $maxAttack=-1)
 {
   global $myHand;
   $cardList = "";
   for($i=0; $i<count($myHand); ++$i)
   {
-    if(($type == "" || CardType($myHand[$i]) == $type) && ($subtype == "" || CardSubType($myHand[$i]) == $subtype) && ($maxCost == -1 || CardCost($myHand[$i]) <= $maxCost) && ($minCost == -1 || CardCost($myHand[$i]) >= $minCost))
+    if(($type == "" || CardType($myHand[$i]) == $type) && ($subtype == "" || CardSubType($myHand[$i]) == $subtype) && ($maxCost == -1 || CardCost($myHand[$i]) <= $maxCost) && ($minCost == -1 || CardCost($myHand[$i]) >= $minCost) && ($maxAttack == -1 || AttackValue($myHand[$i]) <= $maxAttack))
     {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
@@ -84,7 +100,24 @@ function SearchMyDiscard($type="", $subtype="", $maxCost=-1, $minCost=-1)
   $cardList = "";
   for($i=0; $i<count($myDiscard); ++$i)
   {
-    if(($type == "" || CardType($myDiscard[$i]) == $type) && ($subtype == "" || CardSubType($myDiscard[$i]) == $subtype) && ($maxCost == -1 || CardCost($myDiscard[$i]) <= $maxCost) && ($minCost == -1 || CardCost($myDiscard[$i]) >= $minCost))
+    $cID = $myDiscard[$i];
+    if(($type == "" || CardType($cID) == $type) && ($subtype == "" || CardSubType($cID) == $subtype) && ($maxCost == -1 || CardCost($cID) <= $maxCost) && ($minCost == -1 || CardCost($cID) >= $minCost))
+    {
+      if($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
+
+function SearchMainDiscard($type="", $subtype="", $maxCost=-1, $minCost=-1)
+{
+  global $mainDiscard;
+  $cardList = "";
+  for($i=0; $i<count($mainDiscard); ++$i)
+  {
+    $cID = $mainDiscard[$i];
+    if(($type == "" || CardType($cID) == $type) && ($subtype == "" || CardSubType($cID) == $subtype) && ($maxCost == -1 || CardCost($cID) <= $maxCost) && ($minCost == -1 || CardCost($cID) >= $minCost))
     {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
@@ -125,6 +158,20 @@ function SearchTheirDiscardForCard($card1, $card2="", $card3="")
   return $cardList;
 }
 
+function SearchEquipNegCounter(&$character)
+{
+  $equipList = "";
+  for($i=0; $i<count($character); $i += CharacterPieces())
+  {
+    if(CardType($character[$i]) == "E" && $character[$i+4] < 0)
+    {
+      if($equipList != "") $equipList = $equipList . ",";
+      $equipList = $equipList . $i;
+    }
+  }
+  return $equipList;
+}
+
 function CombineSearches($search1, $search2)
 {
   if($search2 == "") return $search1;
@@ -135,6 +182,55 @@ function CombineSearches($search1, $search2)
 function SearchCount($search)
 {
   return count(explode(",", $search));
+}
+
+function SearchCurrentTurnEffects($cardID, $player)
+{
+  global $currentTurnEffects;
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    if($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i+1] == $player) return true;
+  }
+}
+
+function SearchMainAuras($cardID)
+{
+  global $mainAuras, $defAuras;
+  for($i=0; $i<count($mainAuras); $i += AuraPieces())
+  {
+    if($mainAuras[$i] == $cardID) return true;
+  }
+  for($i=0; $i<count($defAuras); $i += AuraPieces())
+  {
+    if($defAuras[$i] == $cardID) return true;
+  }
+  return false;
+}
+
+function SearchPitchHighestAttack(&$pitch)
+{
+  $highest = 0;
+  for($i=0; $i<count($pitch); ++$i)
+  {
+    $av = AttackValue($pitch[$i]);
+    if($av > $highest) $highest = $av;
+  }
+  return $highest;
+}
+
+function SearchHighestAttackDefended()
+{
+  global $combatChain, $defPlayer;
+  $highest = 0;
+  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    if($combatChain[$i+1] == $defPlayer)
+    {
+      $av = AttackValue($combatChain[$i]);
+      if($av > $highest) $highest = $av;
+    }
+  }
+  return $highest;
 }
 
 ?>

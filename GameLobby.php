@@ -68,7 +68,7 @@ h2 {
 </style>
 </head>
 
-<body onload='reload()'>
+<body <?php if($lineCount == 1 || $playerID == 2) echo("onload='reload()'"); ?>>
 
 <div style="width:100%; height:100%; background-image: url('Images/rout.jpg'); background-size:cover; z-index=0;">
 

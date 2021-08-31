@@ -44,18 +44,17 @@ body {
   <div style="text-align:center;"><input type="submit" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">8/16/21 WALL STREET PATCH</h3>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Make log automatically scroll to the bottom when page loads</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Game actually ends</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Deck count for both players</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Minimized floating resource UI</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Show arsenal for other player</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Make dominate more a requirement than a suggestion</div>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Supported cards as of 8/15/21</h3>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All of WTR</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Warrior except Kassai and Cintari Saber</div>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">MON Light Warrior Update! 8/31/21 Supported cards:</h3>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL ARC Mechanologist</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL MON Light Warrior</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Generic except Chains of Eminence and Rifting</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Ranger except Silver the Tip</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Warrior except Kassai</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Brute except Kayo, Beast Within, Massacre, and Argh... Smash!</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Generic except Gambler's Gloves, Coax a Commotion, and Snag</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Guardian except Righteous Cleansing</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Generic except Gambler's Gloves</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Generic except Exude Confidence, Rouse the Ancients, Rally the Rearguard</div>
 
 </div>
 </div>
