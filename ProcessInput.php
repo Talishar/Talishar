@@ -241,6 +241,8 @@
     include "WriteGamestate.php";
   }
 
+  if($makeCheckpoint) MakeGamestateBackup();
+
   header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=" . $playerID);
 
   exit;

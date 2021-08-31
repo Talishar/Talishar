@@ -1412,7 +1412,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "ARC003":
       $myCharacter[$cardIndex+1] = 2;
       break;
-    case "ARC005": case "ARC042": case "ARC151": case "ARC153": case "ARC154":
+    case "ARC005": case "ARC042": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
       $myCharacter[$cardIndex+1] = 0;
       break;
     case "CRU006":
@@ -1440,9 +1440,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
-  global $playerID, $myCharacter, $myHand, $myDeck, $myDiscard, $myBanish, $mySoul, $mainHand, $combatChain, $myCharacterEffects;
+  global $playerID, $myCharacter, $myHand, $myDeck, $myDiscard, $myBanish, $mySoul, $mainHand, $combatChain, $myCharacterEffects, $myPitch;
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $myResources, $myHealth, $theirHealth, $myArsenal, $CCS_ChainAttackBuff;
-  global $defCharacter, $myClassState, $CS_NumCharged, $theirCharacter, $theirHand;
+  global $defCharacter, $myClassState, $CS_NumCharged, $theirCharacter, $theirHand, $otherPlayer;
   switch($phase)
   {
     case "FINALIZECHAINLINK":
@@ -1531,6 +1531,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDMYHAND":
       array_push($myHand, $lastResult);
+      return $lastResult;
+    case "ADDMYPITCH":
+      array_push($myPitch, $lastResult);
+      return $lastResult;
+    case "PITCHABILITY":
+      PitchAbility($lastResult);
       return $lastResult;
     case "ADDMYARSENAL":
       AddMyArsenal($lastResult, $parameter, "DOWN");
@@ -1621,11 +1627,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDTHEIRNEGDEFCOUNTER":
       $theirCharacter[$lastResult+4] -= 1;
       return "Added a negative defense counter.";
-    case "PAYRESOURCES":
-      return "1";
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       return "1";
+    case "OPTX":
+      Opt("NA", $parameter);
+      return $lastResult;
     case "ESTRIKE":
       switch($lastResult)
       {
@@ -1740,6 +1747,43 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINISHCHARGE":
       ++$myClassState[$CS_NumCharged];
       return $lastResult;
+    case "CHOOSEHERO":
+      return $otherPlayer;
+    case "DEALARCANE":
+      $target = $lastResult;
+      $damage = $parameter;
+      $arcaneBarrier = ArcaneBarrierChoices($target, $parameter);
+      //Create cancel point
+      PrependDecisionQueue("TAKEARCANE", $target, $damage, 1);
+      PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
+      PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
+      return $parameter;
+    case "TAKEARCANE":
+      $damage = DealDamage($player, $parameter - $lastResult, "ARCANE");
+      if($damage == 0) $damage = -1;
+      return $damage;
+    case "PAYRESOURCES":
+      if($lastResult < 0) $myResources[0] += (-1 * $lastResult);
+      else if($myResources[0] > 0)
+      {
+        $resources = $myResources[0];
+        $myResources[0] -= $lastResult;
+        $lastResult -= $resources;
+        if($myResources[0] < 0) $myResources[0] = 0;
+      }
+      if($lastResult > 0)
+      {
+        PrependDecisionQueue("PAYRESOURCES", $player, $parameter, 1);
+        PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
+        PrependDecisionQueue("PITCHABILITY", $player, "-", 1);
+        PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
+        PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+        PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "MYHAND", 1);
+      }
+      return $parameter;
+    case "SUBPITCHVALUE":
+      return $parameter - PitchValue($lastResult);
     default:
       return "";
   }

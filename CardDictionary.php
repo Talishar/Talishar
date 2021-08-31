@@ -251,6 +251,7 @@
       case "CRU028": case "CRU029": case "CRU030": case "CRU031": return "Aura";
       case "CRU038": case "CRU039": case "CRU040": return "Aura";
       case "CRU079": case "CRU080": return "Sword";
+      case "CRU081": return "Chest";
       case "CRU179": return "Arms";
       default: return "";
     }
@@ -261,7 +262,7 @@
     switch($cardID)
     {
       case "WTR001": case "WTR038": case "WTR076": case "WTR113": return 40;
-      case "ARC001": case "ARC038": return 40;
+      case "ARC001": case "ARC038": case "ARC075": case "ARC113": return 40;
       case "MON001": case "MON029": case "MON119": case "MON153": return 40;
       default: return 20;
     }

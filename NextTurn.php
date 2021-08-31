@@ -86,7 +86,7 @@
     echo("</div>");
   }
 
-  if($turn[0] == "BUTTONINPUT" && $turn[1] == $playerID)
+  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);
@@ -467,6 +467,7 @@
       case "CHOOSEHANDCANCEL": return 0;
       case "MULTICHOOSEDISCARD": return 0;
       case "CHOOSEDISCARDCANCEL": return 0;
+      case "CHOOSEARCANE": return 0;
       default: return 1;
     }
   }
