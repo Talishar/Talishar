@@ -135,6 +135,55 @@ function BanishFromSpecificSoul(&$soul, $player)
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
+function AddArcaneBonus($bonus, $player)
+{
+  global $CS_NextArcaneBonus;
+  $newBonus = GetClassState($player, $CS_NextArcaneBonus) + $bonus;
+  SetClassState($player, $CS_NextArcaneBonus, $newBonus);
+}
+
+function ConsumeArcaneBonus($player)
+{
+  global $CS_NextArcaneBonus;
+  $bonus = GetClassState($player, $CS_NextArcaneBonus);
+  SetClassState($player, $CS_NextArcaneBonus, 0);
+WriteLog($bonus);
+  return $bonus;
+}
+
+function GetClassState($player, $piece)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myClassState, $theirClassState, $mainClassState, $defClassState;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainClassState[$piece];
+    else return $defClassState[$piece];
+  }
+  else
+  {
+    if($player == $currentPlayer) return $myClassState[$piece];
+    else return $theirClassState[$piece];
+  }
+}
+
+
+function SetClassState($player, $piece, $value)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myClassState, $theirClassState, $mainClassState, $defClassState;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) $mainClassState[$piece] = $value;
+    else $defClassState[$piece] = $value;
+  }
+  else
+  {
+    if($player == $currentPlayer) $myClassState[$piece] = $value;
+    else $theirClassState[$piece] = $value;
+  }
+}
+
 
 ?>
 
