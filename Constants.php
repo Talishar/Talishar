@@ -55,6 +55,7 @@
   $CS_NextNAACardGoAgain = 14;
   $CS_NumCharged = 15;
   $CS_Num6PowBan = 16;
+  $CS_NextArcaneBonus = 17;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -99,7 +100,7 @@
   {
     global $mainClassState, $CS_Num6PowDisc, $CS_NumBoosted, $CS_AtksWWeapon, $CS_HitsWDawnblade, $CCS_HitsWithWeapon, $CS_CardsBanished;
     global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
-    global $CS_DEPRECATED, $CS_NextNAACardGoAgain, $CS_NumCharged;
+    global $CS_DEPRECATED, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -116,6 +117,7 @@
     $mainClassState[$CS_NextNAACardGoAgain] = 0;
     $mainClassState[$CS_NumCharged] = 0;
     $mainClassState[$CS_Num6PowBan] = 0;
+    $mainClassState[$CS_NextArcaneBonus] = 0;
   }
 
   function ResetCharacterEffects()
