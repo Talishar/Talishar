@@ -323,7 +323,7 @@
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
     if($myBanish[$i+1] == "INT") echo(Card($myBanish[$i], "CardImages", 180, 0, 1, 1));//Display intimidated cards grayed out and unplayable
-    if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC") echo(Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i)));//Display banished cards that are playable this chain link (e.g. Singing Steelblade)
+    if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC" || $myBanish[$i+1] == "INST") echo(Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i)));//Display banished cards that are playable this chain link (e.g. Singing Steelblade)
   }
   echo("</div>");
 

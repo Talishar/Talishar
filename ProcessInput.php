@@ -158,10 +158,11 @@
     case 14://Banish
       $index = $cardID;
       $cardID = $myBanish[$index];
+      if($myBanish[$index+1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       unset($myBanish[$index+1]);
       unset($myBanish[$index]);
       $myBanish = array_values($myBanish);
-      PlayCard($cardID, "BANISH");
+      PlayCard($cardID, "BANISH", -1, $index);
       break;
     case 15://CHOOSECOMBATCHAIN
       $index = $cardID;
@@ -637,7 +638,7 @@ function FinalizeChainLink()
             if($dynCostResolved >= 0)
             {
               $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
-              if($turn[0] == "B" && $cardType != "I") $myResources[1] = $dynCostResolved;
+              if($turn[0] == "B" && $cardType != "I" && !CanPlayAsInstant($cardID)) $myResources[1] = $dynCostResolved;
               else $myResources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID);
               if($myResources[1] < 0) $myResources[1] = 0;
             }
@@ -680,7 +681,7 @@ function FinalizeChainLink()
           $from = $turn[4];
         }
         //We've paid resources, now pay action points if applicable
-        if($turn[0] != "B" || $cardType == "I")
+        if($turn[0] != "B" || $cardType == "I" || CanPlayAsInstant($cardID))
         {
           $abilityType = GetAbilityType($cardID);
           $goAgainPrevented = CurrentEffectPreventsGoAgain();
@@ -697,7 +698,8 @@ function FinalizeChainLink()
               $hasGoAgain = true;
               $myClassState[$CS_NextNAACardGoAgain] = 0;
             }
-            if(($cardType == "A" || $cardType == "AA") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+            if(CanPlayAsInstant($cardID)) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
+            else if(($cardType == "A" || $cardType == "AA") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
             if($cardType == "A") { ResetCombatChainState(); UnsetMyCombatChainBanish(); }
           }
           if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
@@ -789,6 +791,7 @@ function FinalizeChainLink()
   function PlayCardEffect($cardID, $from, $resourcesPaid)
   {
     global $turn, $combatChain, $currentPlayer, $myDiscard, $combatChainState, $CCS_AttackPlayedFrom, $myClassState, $CS_PlayIndex;
+    global $CS_NextWizardNAAInstant;
     //Figure out where it goes
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
     else $cardType = CardType($cardID);
@@ -822,8 +825,9 @@ function FinalizeChainLink()
       }
     }
     //Resolve Effects
-    if($turn[0] != "B" || $cardType == "I")
+    if($turn[0] != "B" || $cardType == "I" || CanPlayAsInstant($cardID))
     {
+      ResetCardPlayed($cardID);
       CurrentEffectPlayAbility($cardID);
       if(HasBoost($cardID)) Boost();
       $playText = PlayAbility($cardID, $from, $resourcesPaid);

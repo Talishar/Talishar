@@ -44,11 +44,11 @@ body {
   <div style="text-align:center;"><input type="submit" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">MON Light Warrior Update! 8/31/21 Supported cards:</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">ARC Wizard Update! 8/31/21 Supported cards:</h3>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL ARC Mechanologist</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL MON Light Warrior</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Generic except Chains of Eminence and Rifting</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Generic except Chains of Eminence</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Ranger except Silver the Tip</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Warrior except Kassai</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Brute except Kayo, Beast Within, Massacre, and Argh... Smash!</div>
