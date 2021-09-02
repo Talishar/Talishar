@@ -91,7 +91,7 @@ function DealDamage($player, $damage, $type)
 
 function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type="DAMAGE")
 {
-  global $CS_DamagePrevention, $CS_DamageTaken;
+  global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken;
   $damage = $damage > 0 ? $damage : 0;
   if($damage <= $classState[$CS_DamagePrevention])
   {
@@ -106,7 +106,11 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type
   $damage -= CurrentEffectDamagePrevention($playerID, $type, $damage);
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($Auras, $damage);
-  if($damage > 0) $classState[$CS_DamageTaken] += $damage;
+  if($damage > 0)
+  {
+    $classState[$CS_DamageTaken] += $damage;
+    if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
+  }
   PlayerLoseHealth($damage, $health);
   return $damage;
 }
@@ -162,10 +166,16 @@ function UnsetMyCombatChainBanish()
 
 function UnsetTurnBanish()
 {
-  global $mainBanish;
+  global $mainBanish, $defBanish;
   for($i=0; $i<count($mainBanish); $i+=BanishPieces())
   {
     if($mainBanish[$i+1] == "TT") $mainBanish[$i+1] = "DECK";
+    if($mainBanish[$i+1] == "INST") $mainBanish[$i+1] = "DECK";
+  }
+  for($i=0; $i<count($defBanish); $i+=BanishPieces())
+  {
+    if($defBanish[$i+1] == "TT") $defBanish[$i+1] = "DECK";
+    if($defBanish[$i+1] == "INST") $defBanish[$i+1] = "DECK";
   }
   UnsetCombatChainBanish();
 }
@@ -415,6 +425,21 @@ function PlayTheirAura($cardID)
 function RollDie()
 {
   return random_int(1, 6);
+}
+
+function CanPlayAsInstant($cardID)
+{
+  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+  $cardType = CardType($cardID);
+  if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
+  {
+    if(CardClass($cardID) == "WIZARD" && $cardType == "A") return true;
+  }
+  if(GetClassState($currentPlayer, $CS_NextNAAInstant))
+  {
+    if($cardType == "A") return true;
+  }
+  return false;
 }
 
 ?>

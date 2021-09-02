@@ -2,7 +2,7 @@
 
 function BanishCardForPlayer($cardID, $player, $from, $modifier)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   if($mainPlayerGamestateStillBuilt)
@@ -12,7 +12,7 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier)
   }
   else
   {
-    if($player == $currentPlayer) BanishCard($myBanish, $myClassState, $cardID, $modifier);
+    if($player == $playerID) BanishCard($myBanish, $myClassState, $cardID, $modifier);
     else BanishCard($theirBanish, $theirClassState, $cardID, $modifier);
   }
 }
@@ -94,7 +94,7 @@ function SetCCAttackModifier($index, $amount)
 
 function AddSoul($cardID, $player, $from)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   if($mainPlayerGamestateStillBuilt)
   {
@@ -103,7 +103,7 @@ function AddSoul($cardID, $player, $from)
   }
   else
   {
-    if($player == $currentPlayer) AddSpecificSoul($cardID, $mySoul, $from);
+    if($player == $playerID) AddSpecificSoul($cardID, $mySoul, $from);
     else AddSpecificSoul($cardID, $theirSoul, $from);
   }
 }
@@ -115,7 +115,7 @@ function AddSpecificSoul($cardID, &$soul, $from)
 
 function BanishFromSoul($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   if($mainPlayerGamestateStillBuilt)
   {
@@ -124,7 +124,7 @@ function BanishFromSoul($player)
   }
   else
   {
-    if($player == $currentPlayer) BanishFromSpecificSoul($mySoul, $player);
+    if($player == $playerID) BanishFromSpecificSoul($mySoul, $player);
     else BanishFromSpecificSoul($theirSoul, $player);
   }
 }
@@ -147,30 +147,12 @@ function ConsumeArcaneBonus($player)
   global $CS_NextArcaneBonus;
   $bonus = GetClassState($player, $CS_NextArcaneBonus);
   SetClassState($player, $CS_NextArcaneBonus, 0);
-WriteLog($bonus);
   return $bonus;
 }
 
-function GetClassState($player, $piece)
-{
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
-  global $myClassState, $theirClassState, $mainClassState, $defClassState;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($player == $mainPlayer) return $mainClassState[$piece];
-    else return $defClassState[$piece];
-  }
-  else
-  {
-    if($player == $currentPlayer) return $myClassState[$piece];
-    else return $theirClassState[$piece];
-  }
-}
-
-
 function SetClassState($player, $piece, $value)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   if($mainPlayerGamestateStillBuilt)
   {
@@ -179,7 +161,7 @@ function SetClassState($player, $piece, $value)
   }
   else
   {
-    if($player == $currentPlayer) $myClassState[$piece] = $value;
+    if($player == $playerID) $myClassState[$piece] = $value;
     else $theirClassState[$piece] = $value;
   }
 }

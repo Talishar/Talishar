@@ -56,6 +56,9 @@
   $CS_NumCharged = 15;
   $CS_Num6PowBan = 16;
   $CS_NextArcaneBonus = 17;
+  $CS_NextWizardNAAInstant = 18;
+  $CS_ArcaneDamageTaken = 19;
+  $CS_NextNAAInstant = 20;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -100,7 +103,8 @@
   {
     global $mainClassState, $CS_Num6PowDisc, $CS_NumBoosted, $CS_AtksWWeapon, $CS_HitsWDawnblade, $CCS_HitsWithWeapon, $CS_CardsBanished;
     global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
-    global $CS_DEPRECATED, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus;
+    global $CS_DEPRECATED, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant;
+    global $CS_ArcaneDamageTaken, $CS_NextNAAInstant;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -118,6 +122,18 @@
     $mainClassState[$CS_NumCharged] = 0;
     $mainClassState[$CS_Num6PowBan] = 0;
     $mainClassState[$CS_NextArcaneBonus] = 0;
+    $mainClassState[$CS_NextWizardNAAInstant] = 0;
+    $mainClassState[$CS_ArcaneDamageTaken] = 0;
+    $mainClassState[$CS_NextNAAInstant] = 0;
+  }
+
+  function ResetCardPlayed($cardID)
+  {
+    global $currentPlayer, $myClassState, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+    $type = CardType($cardID);
+    $class = CardClass($cardID);
+    if($type == "A" && $class == "WIZARD") $myClassState[$CS_NextWizardNAAInstant] = 0;
+    if($type == "A") $myClassState[$CS_NextNAAInstant] = 0;
   }
 
   function ResetCharacterEffects()

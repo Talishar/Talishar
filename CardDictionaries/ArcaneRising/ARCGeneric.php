@@ -224,7 +224,7 @@
 
   function ARCGenericHitEffect($cardID)
   {
-    global $mainPlayer, $mainHealth;
+    global $mainPlayer, $mainHealth, $CS_NextNAAInstant;
     switch($cardID)
     {
       case "ARC159": DefenderArsenalToDiscard(); break;
@@ -243,6 +243,9 @@
         AddDecisionQueue("ADDMYHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("REVEALCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+        break;
+      case "ARC194": case "ARC195": case "ARC196":
+        SetClassState($mainPlayer, $CS_NextNAAInstant, 1);
         break;
       default: break;
     }

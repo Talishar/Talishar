@@ -998,7 +998,7 @@
       else if(count($myHand) < 1) return false;
     }
     if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $from, $index)) return false;
-    if($cardType == "I" && CanPlayInstant($phase)) return true;
+    if(($cardType == "I" || CanPlayAsInstant($cardID)) && CanPlayInstant($phase)) return true;
     if(($phase == "B" || $phase == "D") && $from == "HAND" && IsDominateActive() && NumBlockedFromHand() >= 1) return false;
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
     if($phase == "B" && $cardType != "DR") return BlockValue($cardID);

@@ -1461,6 +1461,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ARC014": $rv = SearchMyHand("", "Item", 2, -1, "MECHANOLOGIST"); break;
         case "ARC015": $rv = SearchMyHand("", "Item", 1, -1, "MECHANOLOGIST"); break;
         case "ARC016": $rv = SearchMyHand("", "Item", 0, -1, "MECHANOLOGIST"); break;
+        case "ARC121": $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD"); break;
+        case "ARC138": case "ARC139": case "ARC140": $rv = SearchHand($player, "A", "", $lastResult, -1, "WIZARD"); break;
         case "ARC185": case "ARC186": case "ARC187": $rv = SearchMainDeckForCard("ARC212", "ARC213", "ARC214"); break;
         case "CRU026": $rv = SearchEquipNegCounter($defCharacter); break;
         case "MYHAND": $rv = GetIndices(count($myHand)); break;
@@ -1488,6 +1490,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return MyDrawCard();
     case "BANISH":
       BanishCard($myBanish, $myClassState, $lastResult, $parameter);
+      return $lastResult;
+    case "MULTIBANISH":
+      $cards = explode(",", $lastResult);
+      $params = explode(",", $parameter);
+      for($i=0; $i<count($cards); ++$i)
+      {
+        BanishCardForPlayer($cards[$i], $player, $params[0], $params[1]);
+      }
       return $lastResult;
     case "REMOVECOMBATCHAIN":
       $cardID = $combatChain[$lastResult];
@@ -1594,14 +1604,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MULTIREMOVEDECK":
       $cards = "";
+      $deck = &GetDeck($player);
       for($i=0; $i<count($lastResult); ++$i)
       {
         if($cards != "") $cards .= ",";
-        $cards .= $myDeck[$lastResult[$i]];
-        unset($myDeck[$lastResult[$i]]);
+        $cards .= $deck[$lastResult[$i]];
+        unset($deck[$lastResult[$i]]);
       }
-      $myDeck = array_values($myDeck);
+      $deck = array_values($deck);
       return $cards;
+    case "PARAMDELIMTOARRAY":
+      return explode(",", $parameter);
     case "ADDSOUL":
       AddSoul($lastResult, $player, $parameter);
       return $lastResult;
@@ -1617,8 +1630,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REVEALMYCARD":
       WriteLog($myHand[$lastResult] . " was revealed.");
       return $lastResult;
+    case "DECKCARDS":
+      $indices = explode(",", $parameter);
+      $deck = &GetDeck($player);
+      for($i=0; $i<count($indices); ++$i)
+      {
+        if($rv != "") $return .= ",";
+        $rv .= $deck[$i];
+      }
+      return $rv;
     case "REVEALCARD":
       WriteLog($lastResult . " was revealed.");
+      return $lastResult;
+    case "REVEALCARDS":
+      $cards = explode(",", $lastResult);
+      for($i=0; $i<count($cards); ++$i)
+      {
+        WriteLog($cards[$i] . " was revealed.");
+      }
       return $lastResult;
     case "WRITECARDLOG":
       $message = implode(" ", explode("_", $parameter)) . $lastResult;
@@ -1632,6 +1661,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "1";
     case "OPTX":
       Opt("NA", $parameter);
+      return $lastResult;
+    case "NOPASS":
+      if($lastResult == "NO") return "PASS";
+      return 1;
+    case "LESSTHANPASS":
+      if($lastResult < $parameter) return "PASS";
+      return $lastResult;
+    case "ALLCARDTYPEORPASS":
+      $cards = explode(",", $lastResult);
+      for($i=0; $i<count($cards); ++$i)
+      {
+        if(CardType($cards[$i]) != $parameter) return "PASS";
+      }
+      return $lastResult;
+    case "ALLCARDCLASSORPASS":
+      $cards = explode(",", $lastResult);
+      for($i=0; $i<count($cards); ++$i)
+      {
+        if(CardClass($cards[$i]) != $parameter) return "PASS";
+      }
       return $lastResult;
     case "ESTRIKE":
       switch($lastResult)
@@ -1689,6 +1738,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $myCharacter[$parameter+1] = 0;
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         WriteLog("Refraction Bolters was destroyed and gave the current attack Go Again.");
+      }
+      return $lastResult;
+    case "TOMEOFAETHERWIND":
+      for($i=0; $i<count($lastResult); ++$i)
+      {
+        switch($lastResult[$i])
+        {
+          case "Buff_Arcane": AddArcaneBonus(1, $player); break;
+          case "Draw_card": MyDrawCard(); break;
+          default: break;
+        }
       }
       return $lastResult;
     case "COAXCOMMOTION":
@@ -1784,6 +1844,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $parameter;
     case "SUBPITCHVALUE":
       return $parameter - PitchValue($lastResult);
+    case "BUFFARCANE":
+      AddArcaneBonus($parameter, $player);
+      return $parameter;
     default:
       return "";
   }
