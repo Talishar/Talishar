@@ -1,5 +1,5 @@
 <?php
-  
+
   include "HostFiles/Redirector.php";
 
   $gameName=$_GET["gameName"];
@@ -28,7 +28,7 @@
   fwrite($handler, "M 1\r\n");//What phase/player is active
   fwrite($handler, "1\r\n");//Action points
   fwrite($handler, "\r\n");//Combat Chain
-  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0\r\n");//Combat Chain State
+  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0 0\r\n");//Combat Chain State
   fwrite($handler, "\r\n");//Current Turn Effects
   fwrite($handler, "\r\n");//Current Turn Effects From Combat
   fwrite($handler, "\r\n");//Next Turn Effects
