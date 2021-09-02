@@ -684,7 +684,7 @@
     }
     switch($cardID)
     {
-      case "WTR000": return 0; 
+      case "WTR000": return 0;
       case "WTR038": case "WTR039": case "WTR040": return 0;
       case "CRU177": case "WTR153": return 0;
       //Brute
@@ -1083,6 +1083,7 @@
         $type = CardType($combatChain[0]);
         return $type != "AA";
       case "MON029": case "MON030": return count($mySoul) == 0;
+      case "MON123": case "MON144": case "MON145":case "MON146": return count($mySoul) == 0;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
       default: return false;
     }
@@ -1293,4 +1294,3 @@
   }
 
 ?>
-

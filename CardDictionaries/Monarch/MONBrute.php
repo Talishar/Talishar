@@ -59,8 +59,8 @@
     {
       case "MON119": case "MON120": case "MON121": case "MON122": return 0;
       case "MON125": case "MON126": case "MON129": case "MON132": case "MON135": case "MON138": case "MON141": case "MON144": case "MON147": return 1;
-      case "MON123": case "MON124": case "MON130": case "MON133": case "MON136": case "MON139": case "MON142": case "MON145": case "MON148": return 1;
-      case "MON128": case "MON131": case "MON134": case "MON137": case "MON140": case "MON143": case "MON146": case "MON149": case "MON151": return 1;
+      case "MON123": case "MON124": case "MON130": case "MON133": case "MON136": case "MON139": case "MON142": case "MON145": case "MON148": return 2;
+      case "MON128": case "MON131": case "MON134": case "MON137": case "MON140": case "MON143": case "MON146": case "MON149": case "MON151": return 3;
       default: return 3;
     }
   }
@@ -90,6 +90,7 @@
 
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid)
   {
+    global $myClassState, $CS_Num6PowBan, $combatChain, $currentPlayer, $myCharacter;
     switch($cardID)
     {
 
@@ -107,14 +108,13 @@
 
   function Banish3GY()
   {
-    global $myClassState, $CS_6WasBanished
+    global $myClassState, $CS_Num6PowBan, $myDiscard, $myBanish;
   }
 
   function DebtSafe($player)
   {
     global $myClassState, $mainClassState, $CS_Num6PowBan, $mainPlayerGamestateStillBuilt;
-    if($mainPlayerGamestateStillBuilt) return $mainClassState[$CS_Num6PowBan] > 0;
-    else return $myClassState[$CS_Num6PowDisc] > 0;
+    return $myClassState[$CS_Num6PowBan] > 0;
   }
 
 ?>
