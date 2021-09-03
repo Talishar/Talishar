@@ -80,5 +80,27 @@ function &GetBanish($player)
   }
 }
 
+function &GetHealth($player)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myHealth, $theirHealth, $mainHealth, $defHealth;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainHealth;
+    else return $defHealth;
+  }
+  else
+  {
+    if($player == $playerID) return $myHealth;
+    else return $theirHealth;
+  }
+}
+
+function HasTakenDamage($player)
+{
+  global $CS_DamageTaken;
+  return GetClassState($player, $CS_DamageTaken) > 0;
+}
+
 ?>
 
