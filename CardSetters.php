@@ -56,7 +56,7 @@ function AddMainHand($cardID, $from)
 
 function AddMyArsenal($cardID, $from, $facing)
 {
-  global $myArsenal, $currentPlayer, $myClassState, $CS_ArsenalFacing, $actionPoints;
+  global $myArsenal, $currentPlayer, $myClassState, $CS_ArsenalFacing, $actionPoints, $otherPlayer;
   $myArsenal = $cardID;
   $myClassState[$CS_ArsenalFacing] = $facing;
   if($facing == "UP")
@@ -69,6 +69,7 @@ function AddMyArsenal($cardID, $from, $facing)
     {
       case "ARC057": case "ARC058": case "ARC059": AddCurrentTurnEffect($cardID, $currentPlayer); break;
       case "ARC063": case "ARC064": case "ARC065": Opt($cardID, 1); break;
+      case "CRU123": AddCurrentTurnEffect($cardID, $otherPlayer); break;
       default: break;
     }
   }
@@ -150,6 +151,14 @@ function ConsumeArcaneBonus($player)
   return $bonus;
 }
 
+function ConsumeDamagePrevention($player)
+{
+  global $CS_NextDamagePrevented;
+  $prevention = GetClassState($player, $CS_NextDamagePrevented);
+  SetClassState($player,$CS_NextDamagePrevented, 0);
+  return $prevention;
+}
+
 function SetClassState($player, $piece, $value)
 {
   global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
@@ -163,6 +172,22 @@ function SetClassState($player, $piece, $value)
   {
     if($player == $playerID) $myClassState[$piece] = $value;
     else $theirClassState[$piece] = $value;
+  }
+}
+
+function AddCharacterEffect($player, $index, $effect)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) { array_push($mainCharacterEffects, $index); array_push($mainCharacterEffects, $effect); }
+    else { array_push($defCharacterEffects, $index); array_push($defCharacterEffects, $effect); }
+  }
+  else
+  {
+    if($player == $playerID) { array_push($myCharacterEffects, $index); array_push($myCharacterEffects, $effect); }
+    else { array_push($theirCharacterEffects, $index); array_push($theirCharacterEffects, $effect); }
   }
 }
 

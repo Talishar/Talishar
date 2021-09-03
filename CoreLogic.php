@@ -60,7 +60,6 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 
 function CombatDamagePlayer($playerID, $damage, &$classState, &$Auras, &$health)
 {
-
   return DamagePlayer($playerID, $damage, $classState, $health, $Auras, "COMBAT");
 }
 
@@ -93,6 +92,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type
 {
   global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken;
   $damage = $damage > 0 ? $damage : 0;
+  if(ConsumeDamagePrevention($playerID)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
   if($damage <= $classState[$CS_DamagePrevention])
   {
     $classState[$CS_DamagePrevention] -= $damage;
@@ -113,6 +113,12 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type
   }
   PlayerLoseHealth($damage, $health);
   return $damage;
+}
+
+function LoseHealth($amount, $player)
+{
+  $health = &GetHealth($player);
+  PlayerLoseHealth($amount, $health);
 }
 
 function PlayerLoseHealth($amount, &$health)
@@ -258,21 +264,14 @@ function GetTheirEquipmentChoices()
 
 function ApplyEffectToEachWeapon($effectID)
 {
-  global $myCharacter;
+  global $myCharacter, $currentPlayer;
   for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
   {
     if(CardType($myCharacter[$i]) == "W")
     {
-      AddCharacterEffect($i, $effectID);
+      AddCharacterEffect($currentPlayer, $i, $effectID);
     }
   }
-}
-
-function AddCharacterEffect($index, $effectID)
-{
-  global $myCharacterEffects;
-  array_push($myCharacterEffects, $index);
-  array_push($myCharacterEffects, $effectID);
 }
 
 function FindMyCharacter($cardID)

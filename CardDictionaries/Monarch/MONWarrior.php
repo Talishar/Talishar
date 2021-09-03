@@ -19,6 +19,12 @@
       case "MON051": case "MON052": case "MON053": return "AA";
       case "MON054": case "MON055": case "MON056": return "AA";
       case "MON057": case "MON058": case "MON059": return "AR";
+      case "MON105": case "MON106": return "W";
+      case "MON107": case "MON108": return "E";
+      case "MON109": return "A";
+      case "MON110": case "MON111": case "MON112": return "A";
+      case "MON113": case "MON114": case "MON115": return "A";
+      case "MON116": case "MON117": case "MON118": return "A";
       default: return "";
     }
   }
@@ -28,6 +34,10 @@
     switch($cardID)
     {
       case "MON031": return "Sword";
+      case "MON105": return "Axe";
+      case "MON106": return "Axe";
+      case "MON107": return "Legs";
+      case "MON108": return "Arms";
       default: return "";
     }
   }
@@ -47,6 +57,10 @@
       case "MON051": case "MON052": case "MON053": return 0;
       case "MON054": case "MON055": case "MON056": return 1;
       case "MON057": case "MON058": case "MON059": return 0;
+      case "MON109": return 1;
+      case "MON110": case "MON111": case "MON112": return 1;
+      case "MON113": case "MON114": case "MON115": return 1;
+      case "MON116": case "MON117": case "MON118": return 1;
       default: return 0;
     }
   }
@@ -59,6 +73,10 @@
       case "MON032": case "MON033": case "MON034": case "MON035": return 2;
       case "MON036": case "MON039": case "MON042": case "MON045": case "MON048": case "MON051": case "MON054": case "MON057": return 1;
       case "MON037": case "MON040": case "MON043": case "MON046": case "MON049": case "MON052": case "MON055": case "MON058": return 2;
+      case "MON105": case "MON106": case "MON107": case "MON108": return 0;
+      case "MON109": return 1;
+      case "MON110": case "MON113": case "MON116": return 1;
+      case "MON111": case "MON114": case "MON117": return 2;
       default: return 3;
     }
   }
@@ -69,6 +87,8 @@
     {
       case "MON029": case "MON030": case "MON031": return 0;
       case "MON057": case "MON058": case "MON059": return 2;
+      case "MON105": case "MON106": return 0;
+      case "MON107": case "MON108": return 1;
       default: return 3;
     }
   }
@@ -85,13 +105,15 @@
       case "MON038": case "MON040": case "MON042": case "MON047": case "MON048": case "MON052": case "MON055": return 3;
       case "MON041": case "MON043": case "MON049": case "MON053": case "MON056": return 2;
       case "MON044": case "MON050": return 1;
+      case "MON105": case "MON106": return 2;
       default: return 0;
     }
   }
 
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $myClassState, $CS_NumCharged, $combatChain, $currentPlayer, $mySoul, $myCharacter;
+    global $myClassState, $CS_NumCharged, $combatChain, $currentPlayer, $mySoul, $myCharacter, $CS_AtksWWeapon, $CS_LastAttack;
+    global $combatChainState, $CCS_WeaponIndex;
     switch($cardID)
     {
       case "MON029": case "MON030":
@@ -133,6 +155,30 @@
       case "MON054": case "MON055": case "MON056":
         if($myClassState[$CS_NumCharged] > 0) { GiveAttackGoAgain(); $rv = "Take Flight gained Go Again."; }
         return $rv;
+      case "MON105":
+        if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
+        AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
+        return "Hatchet of Body got +1 attack this turn.";
+      case "MON106":
+        if(GetClassState($currentPlayer, $CS_LastAttack) != "MON105") return "";
+        AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
+        return "Hatchet of Mind got +1 attack this turn.";
+      case "MON108":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Gallantry Gold gives your weapon attacks this turn +1.";
+      case "MON109":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Spill Blood gives your axe attacks this turn +2 and Dominate.";
+      case "MON110": case "MON111": case "MON112":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Dusk Path Pilgrimage gives your next weapon attack +" . EffectAttackModifier($cardID) . " and lets you attack an additional time if it hits.";
+      case "MON113": case "MON114": case "MON115":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Plow through gives your next weapon attack +" . EffectAttackModifier($cardID) . " and gives it +1 when defended by an attack action card.";
+      case "MON116": case "MON117": case "MON118":
+        if(GetClassState($currentPlayer, $CS_AtksWWeapon) == 0) return "Second Swing did nothing because there were no weapon attacks this turn.";
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Second Swing gives your next attack +" . EffectAttackModifier($cardID) . ".";
       default: return "";
     }
   }
@@ -164,6 +210,14 @@
       PlayerGainHealth(1, $mainHealth);
       WriteLog("The revealed card is Light, so it is added to soul and the main player gains 1 life.");
     }
+  }
+
+  function DuskPathPilgrimageHit()
+  {
+    global $mainCharacter, $combatChainState, $CCS_WeaponIndex;
+    if($mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] == 0) return;//Do nothing if it's destroyed
+    $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2;
+    ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
   }
 
   function Charge()

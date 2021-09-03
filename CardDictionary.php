@@ -172,6 +172,16 @@
       case "CRU094": case "CRU095": case "CRU096": return "A";
       //CRU MECH:
       case "CRU103": case "CRU106": return "AA";
+      //CRU Ranger
+      case "CRU121": return "W";
+      case "CRU122": return "E";
+      case "CRU123": return "AA";
+      case "CRU124": return "A";
+      case "CRU125": return "I";
+      case "CRU126": case "CRU127": case "CRU128": return "DR";
+      case "CRU129": case "CRU130": case "CRU131": return "AA";
+      case "CRU132": case "CRU133": case "CRU134": return "AA";
+      case "CRU135": case "CRU136": case "CRU137": return "A";
       //CRU Generics
       case "CRU179": return "E";
       case "CRU180": return "AA";
@@ -252,6 +262,12 @@
       case "CRU038": case "CRU039": case "CRU040": return "Aura";
       case "CRU079": case "CRU080": return "Sword";
       case "CRU081": return "Chest";
+      case "CRU121": return "Bow";
+      case "CRU122": return "Legs";
+      case "CRU123": return "Arrow";
+      case "CRU126": case "CRU127": case "CRU128": return "Trap";
+      case "CRU129": case "CRU130": case "CRU131": return "Arrow";
+      case "CRU132": case "CRU133": case "CRU134": return "Arrow";
       case "CRU179": return "Arms";
       default: return "";
     }
@@ -262,7 +278,9 @@
     switch($cardID)
     {
       case "WTR001": case "WTR038": case "WTR076": case "WTR113": return 40;
-      case "ARC001": case "ARC038": case "ARC075": case "ARC113": return 40;
+      case "ARC001": case "ARC038": case "ARC075": return 40;
+      case "ARC113": return 30;
+      case "ARC114": return 15;
       case "MON001": case "MON029": case "MON119": case "MON153": return 40;
       default: return 20;
     }
@@ -476,6 +494,16 @@
       case "CRU088": case "CRU089": case "CRU090": return 1;
       case "CRU091": case "CRU092": case "CRU093": return 0;
       case "CRU094": case "CRU095": case "CRU096": return 1;
+      //CRU Ranger
+      case "CRU121": return 0;
+      case "CRU122": return 2;
+      case "CRU123": return 1;
+      case "CRU124": return 0;
+      case "CRU125": return 1;
+      case "CRU126": case "CRU127": case "CRU128": return 0;
+      case "CRU129": case "CRU130": case "CRU131": return 0;
+      case "CRU132": case "CRU133": case "CRU134": return 1;
+      case "CRU135": case "CRU136": case "CRU137": return 1;
       //CRU Generic
       case "CRU180": case "CRU181": case "CRU182": return 0;
       case "CRU183": case "CRU184": case "CRU185": return 0;
@@ -642,6 +670,13 @@
       case "CRU085": case "CRU088": case "CRU091": case "CRU094": return 1;
       case "CRU086": case "CRU089": case "CRU092": case "CRU095": return 2;
       case "CRU087": case "CRU090": case "CRU093": case "CRU096": return 3;
+      //CRU Ranger
+      case "CRU121": case "CRU122": return 0;
+      case "CRU123": return 1;
+      case "CRU124": case "CRU125": return 2;
+      case "CRU126": case "CRU129": case "CRU132": case "CRU135": return 1;
+      case "CRU127": case "CRU130": case "CRU133": case "CRU136": return 2;
+      case "CRU126": case "CRU131": case "CRU134": case "CRU137": return 3;
       //CRU Generic
       case "CRU180": return 1;
       case "CRU181": return 0;
@@ -753,6 +788,15 @@
       //CRU Warrior
       case "CRU079": case "CRU080": return 0;
       case "CRU081": return 2;
+      //CRU Ranger
+      case "CRU121": return 0;
+      case "CRU122": return 2;
+      case "CRU124": return 2;
+      case "CRU125": return 0;
+      case "CRU126": return 4;
+      case "CRU127": return 3;
+      case "CRU128": return 2;
+      case "CRU135": case "CRU136": case "CRU137": return 2;
       //CRU Generics
       case "CRU179": return 0;
       case "CRU180": return 2;
@@ -874,6 +918,12 @@
       case "CRU079": case "CRU080": return 2;
       case "CRU103": return 4;
       case "CRU106": return 4;
+      //CRU Ranger
+      case "CRU123": return 5;
+      case "CRU132": return 5;
+      case "CRU129": case "CRU133": return 4;
+      case "CRU130": case "CRU134": return 3;
+      case "CRU131": return 2;
       //CRU Generic
       case "CRU177": return 4;
       case "CRU180": return 4;
@@ -934,6 +984,8 @@
       //CRU Brute
       case "CRU009": return true;
       case "CRU019": case "CRU020": case "CRU021": return true;
+      //CRU Ranger
+      case "CRU124": case "CRU135": case "CRU136": case "CRU137": return true;
       //CRU Generic
       case "CRU181": case "CRU188": return true;
       default: return false;
@@ -976,6 +1028,8 @@
       case "CRU025": return "A";
       case "CRU079": case "CRU080": return "AA";
       case "CRU081": return "A";
+      case "CRU121": return "A";
+      case "CRU122": return "A";
       case "CRU177": return "AA";
       default: return "";
     }
@@ -1004,6 +1058,7 @@
     if($phase == "B" && $cardType != "DR") return BlockValue($cardID);
     if($phase == "P" && PitchValue($cardID) > 0) return true;
     if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
+    if($phase == "D" && $subtype == "Trap" && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && $myClassState[$CS_NumActionsPlayed] >= 1) return false;
     switch($cardType)
@@ -1011,7 +1066,7 @@
       case "A": return $phase == "M";
       case "AA": return $phase == "M";
       case "AR": return $phase == "A";
-      case "DR": return $phase == "D" && IsDefenseReactionPlayable($cardID);
+      case "DR": return $phase == "D" && IsDefenseReactionPlayable($cardID, $from);
       default: return false;
     }
   }
@@ -1079,6 +1134,7 @@
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
         return $type != "W";
+      case "CRU125": return !HasTakenDamage($currentPlayer);
       case "CRU186":
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
@@ -1089,10 +1145,11 @@
     }
   }
 
-  function IsDefenseReactionPlayable($cardID)
+  function IsDefenseReactionPlayable($cardID, $from)
   {
     global $combatChain;
     if($combatChain[0] == "ARC159") return false;
+    if(CurrentEffectPreventsDefenseReaction($from)) return false;
     return true;
   }
 
@@ -1130,6 +1187,7 @@
       case "WTR150": return true;
       case "WTR155": case "WTR156": case "WTR157": case "WTR158": return true;
       case "ARC041": return true;
+      case "CRU122": return true;
       default: return false;
     }
   }
@@ -1144,6 +1202,7 @@
       case "WTR116": return true;
       case "ARC004": return true;
       case "ARC150": return true;
+      case "MON107": case "MON108": return true;
       default: return false;
     }
   }
@@ -1210,6 +1269,7 @@
       case "CRU006": return true;
       case "CRU025": return true;
       case "CRU081": return true;
+      case "CRU121": case "CRU122": return true;
       default: return false;
     }
   }
@@ -1227,6 +1287,7 @@
       case "CRU038": case "CRU039": case "CRU040": return true;
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
       case "CRU106": case "CRU107": case "CRU108": return true;
+      case "MON109": return true;
       case "MON278": case "MON279": case "MON280": return true;
       default: return false;
     }

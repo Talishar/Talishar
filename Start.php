@@ -28,7 +28,7 @@
   fwrite($handler, "M 1\r\n");//What phase/player is active
   fwrite($handler, "1\r\n");//Action points
   fwrite($handler, "\r\n");//Combat Chain
-  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0\r\n");//Combat Chain State
+  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0 0\r\n");//Combat Chain State
   fwrite($handler, "\r\n");//Current Turn Effects
   fwrite($handler, "\r\n");//Current Turn Effects From Combat
   fwrite($handler, "\r\n");//Next Turn Effects
@@ -114,7 +114,7 @@
     fwrite($handler, "\r\n");//Discard
     fwrite($handler, "\r\n");//Pitch
     fwrite($handler, "\r\n");//Banish
-    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0\r\n");//Class State
+    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA\r\n");//Class State
     fwrite($handler, "\r\n");//Character effects
     fwrite($handler, "\r\n");//Soul
   }
