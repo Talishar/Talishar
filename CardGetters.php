@@ -96,6 +96,22 @@ function &GetHealth($player)
   }
 }
 
+function &GetItems($player)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myItems, $theirItems, $mainItems, $defItems;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainItems;
+    else return $defItems;
+  }
+  else
+  {
+    if($player == $playerID) return $myItems;
+    else return $theirItems;
+  }
+}
+
 function HasTakenDamage($player)
 {
   global $CS_DamageTaken;

@@ -74,11 +74,14 @@
   $CCS_AttackPlayedFrom = 8;
   $CCS_ChainAttackBuff= 9;
   $CCS_ChainLinkHitEffectsPrevented = 10;
+  $CCS_NumBoosted = 11;
+  $CCS_NextBoostBuff = 12;
 
   function ResetCombatChainState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
+    global $CCS_NumBoosted, $CCS_NextBoostBuff;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_LastAttack] = "NA";
@@ -90,6 +93,8 @@
     $combatChainState[$CCS_AttackPlayedFrom] = "NA";
     $combatChainState[$CCS_ChainAttackBuff] = 0;
     $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
+    $combatChainState[$CCS_NumBoosted] = 0;
+    $combatChainState[$CCS_NextBoostBuff] = 0;
   }
 
   function ResetChainLinkState()

@@ -255,6 +255,7 @@
       case "ARC026": case "ARC027": case "ARC028":
       case "ARC029": case "ARC030": case "ARC031":
       case "CRU106": case "CRU107": case "CRU108":
+      case "CRU109": case "CRU110": case "CRU111":
         return true;
       default:
         return false;
@@ -265,12 +266,21 @@
   {
     global $currentPlayer;
     AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
+    AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+    if(SearchCurrentTurnEffects("CRU102", $currentPlayer))
+    {
+      AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND", 1);
+      AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+    }
     AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
   }
 
   function DoBoost()
   {
-    global $playerID, $myDeck, $myBanish, $myClassState, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumBoosted, $currentPlayer, $actionPoints;
+    global $playerID, $myDeck, $myBanish, $myClassState, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumBoosted, $currentPlayer, $actionPoints, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff;
     if(count($myDeck) == 0) { WriteLog("Could not boost. No cards left in deck."); return; }
     ItemBoostEffects();
     if(SearchCurrentTurnEffects("ARC006", $currentPlayer)) ++$actionPoints;//High Octane
@@ -282,6 +292,9 @@
     WriteLog("Boost banished $cardID and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
     if($grantsGA) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; }
     ++$myClassState[$CS_NumBoosted];
+    ++$combatChainState[$CCS_NumBoosted];
+    $combatChain[5] += $combatChainState[$CCS_NextBoostBuff];
+    $combatChainState[$CCS_NextBoostBuff] = 0;
   }
 
   function ItemBoostEffects()

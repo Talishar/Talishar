@@ -122,7 +122,7 @@
       $cardID = $myItems[$index];
       $myClassState[$CS_PlayIndex] = $index;
       $set = CardSet($cardID);
-      if($set == "ARC")
+      if($set != "WTR")
       {
         PlayCard($cardID, "PLAY", -1);
       }
@@ -388,7 +388,7 @@
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 
     $damage = $totalAttack - $totalDefense;
-    $damageDone = CombatDamagePlayer($defPlayer, $damage, $defClassState, $defAuras, $defHealth);//Include prevention
+    $damageDone = DealDamage($defPlayer, $damage, "COMBAT");//Include prevention
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
     if($wasHit)//Resolve hit effects
