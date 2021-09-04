@@ -16,6 +16,12 @@ function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class=""
   return $cardList;
 }
 
+function SearchMyDeck($filterFunction)
+{
+  return array_values(array_filter(global $myDeck, $filterFunction));
+}
+
+
 function SearchMyDeckForCard($card1, $card2="", $card3="")
 {
   global $myDeck;
@@ -234,4 +240,3 @@ function SearchHighestAttackDefended()
 }
 
 ?>
-
