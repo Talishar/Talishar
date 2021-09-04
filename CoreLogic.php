@@ -58,11 +58,6 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 }
 
-function CombatDamagePlayer($playerID, $damage, &$classState, &$Auras, &$health)
-{
-  return DamagePlayer($playerID, $damage, $classState, $health, $Auras, "COMBAT");
-}
-
 function DamageOtherPlayer($amount, $type="DAMAGE")
 {
   global $otherPlayer, $theirClassState, $theirHealth, $theirAuras;
@@ -72,23 +67,23 @@ function DamageOtherPlayer($amount, $type="DAMAGE")
 function DealDamage($player, $damage, $type)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
-  global $mainClassState, $mainHealth, $mainAuras;
-  global $defClassState, $defHealth, $defAuras;
-  global $myClassState, $myHealth, $myAuras;
-  global $theirClassState, $theirHealth, $theirAuras;
+  global $mainClassState, $mainHealth, $mainAuras, $mainItems;
+  global $defClassState, $defHealth, $defAuras, $defItems;
+  global $myClassState, $myHealth, $myAuras, $myItems;
+  global $theirClassState, $theirHealth, $theirAuras, $theirItems;
   if($mainPlayerGamestateStillBuilt)
   {
-    if($player == $mainPlayer) return DamagePlayer($player, $damage, $mainClassState, $mainHealth, $mainAuras, $type);
-    else return DamagePlayer($player, $damage, $defClassState, $defHealth, $defAuras, $type);
+    if($player == $mainPlayer) return DamagePlayer($player, $damage, $mainClassState, $mainHealth, $mainAuras, $mainItems, $type);
+    else return DamagePlayer($player, $damage, $defClassState, $defHealth, $defAuras, $defItems, $type);
   }
   else
   {
-    if($player == $currentPlayer) return DamagePlayer($player, $damage, $myClassState, $myHealth, $myAuras, $type);
-    else return DamagePlayer($player, $damage, $theirClassState, $theirHealth, $theirAuras, $type);
+    if($player == $currentPlayer) return DamagePlayer($player, $damage, $myClassState, $myHealth, $myAuras, $myItems, $type);
+    else return DamagePlayer($player, $damage, $theirClassState, $theirHealth, $theirAuras, $theirItems, $type);
   }
 }
 
-function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type="DAMAGE")
+function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE")
 {
   global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken;
   $damage = $damage > 0 ? $damage : 0;
@@ -104,6 +99,15 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type
     $classState[$CS_DamagePrevention] = 0;
   }
   $damage -= CurrentEffectDamagePrevention($playerID, $type, $damage);
+  for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
+  {
+    if($Items[$i] == "CRU104")
+    {
+      if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
+      else { $Items[$i+1] -= $damage; $damage = 0; }
+      if($Items[$i+1] <= 0) DestroyItem($Items, $i);
+    }
+  }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($Auras, $damage);
   if($damage > 0)
@@ -232,13 +236,13 @@ function GetComboCards()
   return $combo;
 }
 
-function GetWeaponChoices()
+function GetWeaponChoices($subtype="")
 {
   global $myCharacter;
   $weapons = "";
   for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
   {
-    if(CardType($myCharacter[$i]) == "W")
+    if(CardType($myCharacter[$i]) == "W" && ($subtype == "" || $subtype == CardSubtype($myCharacter[$i])))
     {
       if($weapons != "") $weapons .= ",";
       $weapons .= $i;
@@ -298,6 +302,14 @@ function FindDefCharacter($cardID)
     }
   }
   return -1;
+}
+
+function DestroyItem(&$Items, $index)
+{
+  unset($Items[$index]);
+  unset($Items[$index+1]);
+  unset($Items[$index+2]);
+  $Items = array_values($Items);
 }
 
 function CheckDestroyTemper()
