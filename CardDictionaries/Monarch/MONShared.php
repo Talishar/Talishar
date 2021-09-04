@@ -5,6 +5,7 @@
     switch($cardID)
     {
       case "MON029": case "MON030": case "MON031": return 0;
+      case "MON061": return 1;
       case "MON105": case "MON106": return 1;
       case "MON108": return 1;
       case "MON238": case "MON239": return 0;
@@ -19,6 +20,7 @@
     {
       case "MON029": case "MON030": return "AR";
       case "MON031": return "AA";
+      case "MON061": return "I";
       case "MON105": case "MON106": return "AA";
       case "MON108": return "A";
       case "MON238": return "I";
@@ -32,6 +34,8 @@
     switch($cardID)
     {
       case "MON034": return true;
+      case "MON062": return true;
+      case "MON081": case "MON082": case "MON083": return true;
       case "MON109": return true;
       case "MON110": case "MON111": case "MON112": return true;
       case "MON113": case "MON114": case "MON115": return true;
@@ -61,6 +65,9 @@
     switch($cardID)
     {
       case "MON034": return 1;
+      case "MON081": return 3;
+      case "MON082": return 2;
+      case "MON083": return 1;
       case "MON108": return 1;
       case "MON109": return 2;
       case "MON110": return 3;
@@ -91,6 +98,7 @@
     switch($cardID)
     {
       case "MON034": return CardType($attackID) == "W";
+      case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";
       case "MON108": return CardType($attackID) == "W";
       case "MON109": return CardSubtype($attackID) == "Axe";
       case "MON110": case "MON111": case "MON112": return CardType($attackID) == "W";
@@ -109,7 +117,7 @@
     }
   }
 
-  function CardTalent($cardID)
+  function MONCardTalent($cardID)
   {
     $number = intval(substr($cardID, 3));
     if($number <= 87) return "LIGHT";

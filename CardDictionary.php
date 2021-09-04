@@ -352,6 +352,14 @@
     }
   }
 
+  function CardTalent($cardID)
+  {
+    $set = substr($cardID, 0, 3);
+    if($set == "MON") return MONCardTalent($cardID);
+    return "NONE";
+  }
+
+
   //Minimum cost of the card
   function CardCost($cardID)
   {
@@ -1106,6 +1114,16 @@
     }
   }
 
+  function GoesWhereAfterResolving($cardID)
+  {
+    switch($cardID)
+    {
+      case "MON063": return "SOUL";
+      case "MON064": return "SOUL";
+      default: return "GY";
+    }
+  }
+
   function CanPlayInstant($phase)
   {
     if($phase == "M") return true;
@@ -1175,6 +1193,7 @@
         $type = CardType($combatChain[0]);
         return $type != "AA";
       case "MON029": case "MON030": return count($mySoul) == 0;
+      case "MON062": return count($mySoul) < 3;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
       default: return false;
     }
@@ -1223,6 +1242,7 @@
       case "WTR155": case "WTR156": case "WTR157": case "WTR158": return true;
       case "ARC041": return true;
       case "CRU122": return true;
+      case "MON060": return true;
       default: return false;
     }
   }

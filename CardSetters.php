@@ -97,6 +97,7 @@ function AddSoul($cardID, $player, $from)
 {
   global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
+  global $CS_NumAddedToSoul;
   if($mainPlayerGamestateStillBuilt)
   {
     if($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
@@ -107,6 +108,7 @@ function AddSoul($cardID, $player, $from)
     if($player == $playerID) AddSpecificSoul($cardID, $mySoul, $from);
     else AddSpecificSoul($cardID, $theirSoul, $from);
   }
+  IncrementClassState($player, $CS_NumAddedToSoul);
 }
 
 function AddSpecificSoul($cardID, &$soul, $from)
@@ -159,6 +161,11 @@ function ConsumeDamagePrevention($player)
   return $prevention;
 }
 
+function IncrementClassState($player, $piece)
+{
+  SetClassState($player, $piece, (GetClassState($player, $piece) + 1));
+}
+
 function SetClassState($player, $piece, $value)
 {
   global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
@@ -191,6 +198,26 @@ function AddCharacterEffect($player, $index, $effect)
   }
 }
 
+function AddGraveyard($cardID, $player, $from)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
+    else AddSpecificGraveyard($cardID, $defDiscard, $from);
+  }
+  else
+  {
+    if($player == $playerID) AddSpecificGraveyard($cardID, $myDiscard, $from);
+    else AddSpecificGraveyard($cardID, $theirDiscard, $from);
+  }
+}
+
+function AddSpecificGraveyard($cardID, &$graveyard, $from)
+{
+  array_push($graveyard, $cardID);
+}
 
 ?>
 

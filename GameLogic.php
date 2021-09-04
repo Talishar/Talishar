@@ -690,6 +690,7 @@ function EffectHitEffect($cardID)
     case "ARC170-1": case "ARC171-1": case "ARC172-1": MainDrawCard(); break;
     case "CRU124": PummelHit(); break;
     case "MON034": LuminaAscensionHit(); break;
+    case "MON081": case "MON082": case "MON083": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
     case "MON110": case "MON111": case "MON112": DuskPathPilgrimageHit(); break;
     case "MON299": case "MON300": case "MON301": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK"; break;
     default: break;
@@ -769,7 +770,7 @@ function EffectBlockModifier($cardID)
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $myAuras, $defAuras, $defPlayer;
+  global $myAuras, $defAuras, $defPlayer, $CS_CardsBanished, $mainPlayer;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && $cardType == "AA") $blockModifier += 1;
@@ -786,6 +787,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "WTR051": case "WTR052": case "WTR053": $blockModifier += ($resourcesPaid == 6 ? 3 : 0); break;
     case "ARC150": $blockModifier += (DefHasLessHealth() ? 1 : 0); break;
     case "CRU187": $blockModifier += ($from == "ARS" ? 2 : 0); break;
+    case "MON075": case "MON076": case "MON077": return GetClassState($mainPlayer, $CS_CardsBanished) >= 3 ? 2 : 0;
     case "MON290": case "MON291": case "MON292": return count($defAuras) >= 1 ? 1 : 0;
     default: break;
   }
@@ -1557,7 +1559,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       $myCharacter[$cardIndex+1] = 1;
       ++$myCharacter[$cardIndex+2];
       break;
-    case "MON108": case "MON238": case "MON239": case "MON240":
+    case "MON061": case "MON108": case "MON238": case "MON239": case "MON240":
       $myCharacter[$cardIndex+1] = 0;
       break;
     case "MON029": case "MON030":
@@ -1824,6 +1826,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for($i=0; $i<count($cards); ++$i)
       {
         if(CardSubtype($cards[$i]) != $parameter) return "PASS";
+      }
+      return $lastResult;
+    case "ALLCARDTALENTORPASS":
+WriteLog($lastResult . " " . CardTalent($lastResult) . " " . $parameter);
+      $cards = explode(",", $lastResult);
+      for($i=0; $i<count($cards); ++$i)
+      {
+        if(CardTalent($cards[$i]) != $parameter) return "PASS";
       }
       return $lastResult;
     case "ALLCARDMAXCOSTORPASS":
