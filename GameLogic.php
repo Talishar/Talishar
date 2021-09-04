@@ -1070,7 +1070,7 @@ function AuraAttackAbilities($attackID)
     $remove = 0;
     switch($myAuras[$i])
     {
-      case "WTR225": if($attackType == "AA" || $attackType == "W") 
+      case "WTR225": if($attackType == "AA" || $attackType == "W")
         { WriteLog("Quicken grants Go Again."); $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $remove = 1; } break;
       default: break;
     }
@@ -1470,6 +1470,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MAINDISCARDNAA": $rv = SearchMainDiscard("A"); break;
         case "MON033-1": $rv = GetIndices(count($mySoul), 1); break;
         case "MON033-2": $rv = CombineSearches(SearchMyDeck("A", "", $lastResult), SearchMyDeck("A", "", $lastResult)); break;
+        case "DECKBLOODDEBT": $rv = SearchMyDeck($HasBloodDebt); break;
         case "MON266-1": $rv = SearchMyHand("AA", "", -1, -1, 3); break;
         case "MON266-2": $rv = SearchMyDeckForCard("MON296", "MON297", "MON298"); break;
         case "MON303": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=2); break;
@@ -1746,4 +1747,3 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 }
 
 ?>
-

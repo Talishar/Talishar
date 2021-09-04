@@ -93,7 +93,14 @@
     global $myClassState, $CS_Num6PowBan, $combatChain, $currentPlayer, $myCharacter;
     switch($cardID)
     {
-
+      case "MON125": MainDrawCard():
+      if (AttackValue(DiscardRandom()) >= 6) {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKBLOODDEBT", 1);
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("BANISH", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);// code...
+      }return "";
       default: return "";
     }
   }
@@ -106,7 +113,7 @@
     }
   }
 
-  function Banish3GY()
+  function RandomBanish3GY()
   {
     global $myClassState, $CS_Num6PowBan, $myDiscard, $myBanish;
   }
