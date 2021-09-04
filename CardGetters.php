@@ -1,6 +1,6 @@
 <?php
 
-function GetPlayerCharacter($player)
+function &GetPlayerCharacter($player)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mainCharacter, $defCharacter, $myCharacter, $theirCharacter;
@@ -109,6 +109,22 @@ function &GetItems($player)
   {
     if($player == $playerID) return $myItems;
     else return $theirItems;
+  }
+}
+
+function &GetSoul($player)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mySoul, $theirSoul, $mainSoul, $defSoul;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainSoul;
+    else return $defSoul;
+  }
+  else
+  {
+    if($player == $playerID) return $mySoul;
+    else return $theirSoul;
   }
 }
 
