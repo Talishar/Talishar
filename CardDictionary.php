@@ -359,7 +359,6 @@
     return "NONE";
   }
 
-
   //Minimum cost of the card
   function CardCost($cardID)
   {
@@ -1085,10 +1084,8 @@
     $subtype = CardSubType($cardID);
     if($phase == "B" && $cardType == "E") return true;
     $isStaticType = IsStaticType($cardType, $from);
-    if($isStaticType)
-    {
-      $cardType = GetAbilityType($cardID, $index);
-    }
+    if($isStaticType) $cardType = GetAbilityType($cardID, $index);
+    if($cardType == "") return false;
     if(RequiresDiscard($cardID) || $cardID == "WTR159")
     {
       if($from == "HAND" && count($myHand) < 2) return false;//TODO: Account for where it was from
@@ -1098,8 +1095,8 @@
     if(($cardType == "I" || CanPlayAsInstant($cardID)) && CanPlayInstant($phase)) return true;
     if(($phase == "B" || $phase == "D") && $from == "HAND" && IsDominateActive() && NumBlockedFromHand() >= 1) return false;
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
-    if($phase == "B" && $cardType != "DR") return BlockValue($cardID);
-    if($phase == "P" && PitchValue($cardID) > 0) return true;
+    if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID);
+    if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
     if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
     if($phase == "D" && $subtype == "Trap" && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;

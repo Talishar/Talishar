@@ -10,12 +10,15 @@
       case "MON108": return 1;
       case "MON238": case "MON239": return 0;
       case "MON240": return 3;
+      case "MON245": return 3;
+      case "MON281": case "MON282": case "MON283": return 0;
       default: return 0;
     }
   }
 
   function MONAbilityType($cardID, $index=-1)
   {
+    global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
     {
       case "MON029": case "MON030": return "AR";
@@ -25,6 +28,8 @@
       case "MON108": return "A";
       case "MON238": return "I";
       case "MON239": case "MON240": return "A";
+      case "MON245": return $currentPlayer == $mainPlayer ? "I" : "";
+      case "MON281": case "MON282": case "MON283": return $currentPlayer == $defPlayer ? "I" : "";
       default: return "";
     }
   }
