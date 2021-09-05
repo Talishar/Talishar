@@ -213,6 +213,12 @@
     case 20://YESNO
       if($buttonInput == "YES" || $buttonInput == "NO") ContinueDecisionQueue($buttonInput);
       break;
+    case 21://Combat chain ability
+      $index = $cardID;//Overridden to be index instead
+      $cardID = $combatChain[$index];
+      $myClassState[$CS_PlayIndex] = $index;
+      PlayCard($cardID, "PLAY", -1);
+      break;
     case 99: //Pass
       if($turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD")
       {
@@ -795,47 +801,53 @@ function FinalizeChainLink()
     //Figure out where it goes
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
     else $cardType = CardType($cardID);
-    if(GoesOnCombatChain($turn[0], $cardID, $from))
+    if($from != "PLAY")
     {
-      $index = count($combatChain);
-      array_push($combatChain, $cardID);
-      array_push($combatChain, $currentPlayer);
-      array_push($combatChain, $from);
-      array_push($combatChain, $resourcesPaid);
-      array_push($combatChain, RepriseActive());
-      array_push($combatChain, 0);//Attack modifier
-      array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
-      OnBlockEffects($index);
-      if($index == 0) $combatChainState[$CCS_AttackPlayedFrom] = $from;
-    }
-    else if($from != "PLAY")
-    {
-      $cardSubtype = CardSubType($cardID);
-      if($cardSubtype == "Aura")
+      if(GoesOnCombatChain($turn[0], $cardID, $from))
       {
-        PlayMyAura($cardID);
-      }
-      else if($cardSubtype == "Item")
-      {
-        PutItemIntoPlay($cardID);
+        $index = count($combatChain);
+        array_push($combatChain, $cardID);
+        array_push($combatChain, $currentPlayer);
+        array_push($combatChain, $from);
+        array_push($combatChain, $resourcesPaid);
+        array_push($combatChain, RepriseActive());
+        array_push($combatChain, 0);//Attack modifier
+        array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
+        OnBlockEffects($index);
+        if($index == 0) $combatChainState[$CCS_AttackPlayedFrom] = $from;
       }
       else
       {
-        $goesWhere = GoesWhereAfterResolving($cardID);
-        switch($goesWhere)
+        $cardSubtype = CardSubType($cardID);
+        if($cardSubtype == "Aura")
         {
-          case "GY": array_push($myDiscard, $cardID); break;
-          case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
-          default: break;
+          PlayMyAura($cardID);
+        }
+        else if($cardSubtype == "Item")
+        {
+          PutItemIntoPlay($cardID);
+        }
+        else
+        {
+          $goesWhere = GoesWhereAfterResolving($cardID);
+          switch($goesWhere)
+          {
+            case "GY": array_push($myDiscard, $cardID); break;
+            case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
+            default: break;
+          }
         }
       }
     }
     //Resolve Effects
     if($turn[0] != "B" || $cardType == "I" || CanPlayAsInstant($cardID))
     {
-      ResetCardPlayed($cardID);
-      CurrentEffectPlayAbility($cardID);
-      if(HasBoost($cardID)) Boost();
+      if($from != "PLAY")
+      {
+        ResetCardPlayed($cardID);
+        CurrentEffectPlayAbility($cardID);
+        if(HasBoost($cardID)) Boost();
+      }
       $playText = PlayAbility($cardID, $from, $resourcesPaid);
       if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);
     }

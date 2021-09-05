@@ -1829,7 +1829,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "ALLCARDTALENTORPASS":
-WriteLog($lastResult . " " . CardTalent($lastResult) . " " . $parameter);
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)
       {

@@ -70,7 +70,10 @@
     echo("</tr></table>");
     echo("<div display:inline;'><h3>Combat Chain</h3>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
-      echo(Card($combatChain[$i], "CardImages", 400, 0, 0, 0, $combatChain[$i+1] == $playerID ? 1 : 2));
+      //echo(Card($combatChain[$i], "CardImages", 400, 0, 0, 0, $combatChain[$i+1] == $playerID ? 1 : 2));
+      $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
+      $actionDisabled = 0;
+      echo(Card($combatChain[$i], "CardImages", 400, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
     }
     echo("</div>");
   }
