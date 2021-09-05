@@ -1,6 +1,6 @@
 <?php
 
-  include "HostFiles/Redirector.php";
+  $redirectPath="https://localhost/fabonlinelocal";
   include "CardDictionary.php";
 
   $gameName=$_GET["gameName"];
@@ -99,4 +99,3 @@
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
 ?>
-
