@@ -5,7 +5,7 @@
   {
     switch($cardID)
     {
-      case "MON119": case "MON120": return "C"
+      case "MON119": case "MON120": return "C";
       case "MON121"; return "W";
       case "MON122"; return "E";
       case "MON123": return "AA";
@@ -28,7 +28,7 @@
   {
     switch($cardID)
     {
-      case "MON121": return "Flail"
+      case "MON121": return "Flail";
       default: return "";
     }
   }
@@ -79,7 +79,7 @@
   {
     switch($cardID)
     {
-      case "MON139": return 8
+      case "MON139": return 8;
       case "MON139": case "MON140": case "MON148": return 7;
       case "MON123": case "MON125": case "MON126": case "MON129": case "MON135": case "MON140": case "MON141": case "MON145": case "MON148": return 6;
       case "MON127": case "MON130": case "MON136": case "MON142": case "MON146": case "MON149": return 5;
@@ -93,7 +93,7 @@
     global $myClassState, $CS_Num6PowBan, $combatChain, $currentPlayer, $myCharacter;
     switch($cardID)
     {
-      case "MON125": MainDrawCard():
+      case "MON125": MainDrawCard();
       if (AttackValue(DiscardRandom()) >= 6) {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKBLOODDEBT", 1);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);

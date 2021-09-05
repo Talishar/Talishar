@@ -2,7 +2,7 @@
 <head>
 
 <?php
-  include "HostFiles/Redirector.php";
+  $redirectPath="https://localhost/fabonlinelocal";
 
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
@@ -20,7 +20,7 @@
      }
      else if($lineCount == 2)
      {
-       if($buffer == "1") 
+       if($buffer == "1")
        {
          $gameStarted = 1;
        }
