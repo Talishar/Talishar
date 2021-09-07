@@ -1,6 +1,7 @@
 <?php
 
   include "CardSetters.php";
+  include "CardGetters.php";
 
 function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 {
@@ -57,22 +58,36 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 }
 
-function CombatDamagePlayer($playerID, $damage, &$classState, &$Auras, &$health)
-{
-
-  return DamagePlayer($playerID, $damage, $classState, $health, $Auras, "COMBAT");
-}
-
 function DamageOtherPlayer($amount, $type="DAMAGE")
 {
   global $otherPlayer, $theirClassState, $theirHealth, $theirAuras;
   return DamagePlayer($otherPlayer, $amount, $theirClassState, $theirHealth, $theirAuras, $type);
 }
 
-function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type="DAMAGE")
+function DealDamage($player, $damage, $type)
 {
-  global $CS_DamagePrevention, $CS_DamageTaken;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainClassState, $mainHealth, $mainAuras, $mainItems;
+  global $defClassState, $defHealth, $defAuras, $defItems;
+  global $myClassState, $myHealth, $myAuras, $myItems;
+  global $theirClassState, $theirHealth, $theirAuras, $theirItems;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return DamagePlayer($player, $damage, $mainClassState, $mainHealth, $mainAuras, $mainItems, $type);
+    else return DamagePlayer($player, $damage, $defClassState, $defHealth, $defAuras, $defItems, $type);
+  }
+  else
+  {
+    if($player == $currentPlayer) return DamagePlayer($player, $damage, $myClassState, $myHealth, $myAuras, $myItems, $type);
+    else return DamagePlayer($player, $damage, $theirClassState, $theirHealth, $theirAuras, $theirItems, $type);
+  }
+}
+
+function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE")
+{
+  global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken;
   $damage = $damage > 0 ? $damage : 0;
+  if(ConsumeDamagePrevention($playerID)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
   if($damage <= $classState[$CS_DamagePrevention])
   {
     $classState[$CS_DamagePrevention] -= $damage;
@@ -84,11 +99,30 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, $type
     $classState[$CS_DamagePrevention] = 0;
   }
   $damage -= CurrentEffectDamagePrevention($playerID, $type, $damage);
+  for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
+  {
+    if($Items[$i] == "CRU104")
+    {
+      if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
+      else { $Items[$i+1] -= $damage; $damage = 0; }
+      if($Items[$i+1] <= 0) DestroyItem($Items, $i);
+    }
+  }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($Auras, $damage);
-  if($damage > 0) $classState[$CS_DamageTaken] += $damage;
+  if($damage > 0)
+  {
+    $classState[$CS_DamageTaken] += $damage;
+    if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
+  }
   PlayerLoseHealth($damage, $health);
   return $damage;
+}
+
+function LoseHealth($amount, $player)
+{
+  $health = &GetHealth($player);
+  PlayerLoseHealth($amount, $health);
 }
 
 function PlayerLoseHealth($amount, &$health)
@@ -142,10 +176,16 @@ function UnsetMyCombatChainBanish()
 
 function UnsetTurnBanish()
 {
-  global $mainBanish;
+  global $mainBanish, $defBanish;
   for($i=0; $i<count($mainBanish); $i+=BanishPieces())
   {
     if($mainBanish[$i+1] == "TT") $mainBanish[$i+1] = "DECK";
+    if($mainBanish[$i+1] == "INST") $mainBanish[$i+1] = "DECK";
+  }
+  for($i=0; $i<count($defBanish); $i+=BanishPieces())
+  {
+    if($defBanish[$i+1] == "TT") $defBanish[$i+1] = "DECK";
+    if($defBanish[$i+1] == "INST") $defBanish[$i+1] = "DECK";
   }
   UnsetCombatChainBanish();
 }
@@ -196,13 +236,13 @@ function GetComboCards()
   return $combo;
 }
 
-function GetWeaponChoices()
+function GetWeaponChoices($subtype="")
 {
   global $myCharacter;
   $weapons = "";
   for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
   {
-    if(CardType($myCharacter[$i]) == "W")
+    if(CardType($myCharacter[$i]) == "W" && ($subtype == "" || $subtype == CardSubtype($myCharacter[$i])))
     {
       if($weapons != "") $weapons .= ",";
       $weapons .= $i;
@@ -228,21 +268,14 @@ function GetTheirEquipmentChoices()
 
 function ApplyEffectToEachWeapon($effectID)
 {
-  global $myCharacter;
+  global $myCharacter, $currentPlayer;
   for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
   {
     if(CardType($myCharacter[$i]) == "W")
     {
-      AddCharacterEffect($i, $effectID);
+      AddCharacterEffect($currentPlayer, $i, $effectID);
     }
   }
-}
-
-function AddCharacterEffect($index, $effectID)
-{
-  global $myCharacterEffects;
-  array_push($myCharacterEffects, $index);
-  array_push($myCharacterEffects, $effectID);
 }
 
 function FindMyCharacter($cardID)
@@ -269,6 +302,14 @@ function FindDefCharacter($cardID)
     }
   }
   return -1;
+}
+
+function DestroyItem(&$Items, $index)
+{
+  unset($Items[$index]);
+  unset($Items[$index+1]);
+  unset($Items[$index+2]);
+  $Items = array_values($Items);
 }
 
 function CheckDestroyTemper()
@@ -339,6 +380,22 @@ function DefHasLessHealth()
   return $defHealth < $mainHealth;
 }
 
+function PlayerHasLessHealth($playerID)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainHealth, $defHealth, $myHealth, $theirHealth;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainHealth < $defHealth;
+    else return $defHealth < $mainHealth;
+  }
+  else
+  {
+    if($player == $currentPlayer) return $myHealth < $theirHealth;
+    else return $theirHealth < $myHealth;
+  }
+}
+
 function GetIndices($count, $add=0)
 {
   $indices = "";
@@ -379,6 +436,21 @@ function PlayTheirAura($cardID)
 function RollDie()
 {
   return random_int(1, 6);
+}
+
+function CanPlayAsInstant($cardID)
+{
+  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+  $cardType = CardType($cardID);
+  if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
+  {
+    if(CardClass($cardID) == "WIZARD" && $cardType == "A") return true;
+  }
+  if(GetClassState($currentPlayer, $CS_NextNAAInstant))
+  {
+    if($cardType == "A") return true;
+  }
+  return false;
 }
 
 ?>

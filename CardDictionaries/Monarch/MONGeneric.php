@@ -152,13 +152,19 @@
 
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+    global $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
     switch($cardID)
     {
     //MON Generic
     case "MON238": $myResources[0] += 1; return "Blood Drop Brocade gave you 1 resource.";
     case "MON239": AddCurrentTurnEffect($cardID, $currentPlayer); return "Stubby Hammerers gives your attack action cards with less than 3 power +1 attack this turn.";
     case "MON240": $actionPoints += 2; return "Time Skippers gives you two action points.";
+    case "MON245":
+      if($from == "PLAY")
+      {
+        $combatChain[5] += 2;
+      }
+      return "";
     case "MON251": case "MON252": case "MON253":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
       AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
@@ -191,6 +197,13 @@
       return $ret;
     case "MON278": case "MON279": case "MON280":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Pound for Pound gets Dominate."; }
+      return $rv;
+    case "MON281": case "MON282": case "MON283":
+      if($from == "PLAY")
+      {
+        $combatChain[$myClassState[$CS_PlayIndex] + 6] += 3;
+        $rv = "Rally the Rearguard gained +3 defense.";
+      }
       return $rv;
     case "MON296": case "MON297": case "MON298":
       AddCurrentTurnEffect($cardID, $currentPlayer);
