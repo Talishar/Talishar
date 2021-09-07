@@ -1,5 +1,31 @@
 <?php
 
+function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
+{
+  $deck = &GetDeck($player);
+  return SearchInner($deck, $type, $subtype, $maxCost, $minCost, $class);
+}
+
+function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
+{
+  $hand = &GetHand($player);
+  return SearchInner($hand, $type, $subtype, $maxCost, $minCost, $class);
+}
+
+function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class)
+{
+  $cardList = "";
+  for($i=0; $i<count($array); ++$i)
+  {
+    $cardID = $array[$i];
+    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class))
+    {
+      if($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
 
 function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
 {
@@ -177,6 +203,16 @@ function SearchEquipNegCounter(&$character)
     }
   }
   return $equipList;
+}
+
+function SearchCharacterForCard($player, $cardID)
+{
+  $character = &GetPlayerCharacter($player);
+  for($i=0; $i<count($character); $i += CharacterPieces())
+  {
+    if($character[$i] == $cardID) return true;
+  }
+  return false;
 }
 
 function CombineSearches($search1, $search2)

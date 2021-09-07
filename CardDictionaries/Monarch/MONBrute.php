@@ -38,17 +38,6 @@
   {
     switch($cardID)
     {
-      case "MON123": return 3;
-      case "MON124": return 2;
-      case "MON125": return 2;
-      case "MON126": case "MON127": case "MON128": return 3;
-      case "MON129": case "MON130": case "MON131": return 2;
-      case "MON132": case "MON133": case "MON134": return 2;
-      case "MON135": case "MON136": case "MON137": return 1;
-      case "MON138": case "MON139": case "MON140": return 3;
-      case "MON141": case "MON142": case "MON143": return 2;
-      case "MON144": case "MON145": case "MON146": return 1;
-      case "MON147": case "MON148": case "MON149": return 1;
       default: return 0;
     }
   }
@@ -69,8 +58,6 @@
   {
     switch($cardID)
     {
-      case "MON119": case "MON120": case "MON121": case "MON122": return 0;
-
       default: return 3;
     }
   }

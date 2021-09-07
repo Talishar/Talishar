@@ -16,6 +16,10 @@
       case "ARC113": case "ARC114": return 3;
       case "ARC115": return 1;
       case "ARC116": return 1;
+      case "ARC117": return 0;
+      case "ARC113": case "ARC114": return 3;
+      case "ARC115": return 1;
+      case "ARC116": return 1;
       case "ARC154": return 1;
       default: return 0;
     }
@@ -35,6 +39,8 @@
       case "ARC035": return "I";
       case "ARC037": return "A";
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return "A";
+      case "ARC113": case "ARC114": case "ARC115": case "ARC116": return "I";
+      case "ARC117": return "A";
       case "ARC151": return "I";
       case "ARC153": case "ARC154": return "A";
       default: return "";
@@ -80,7 +86,7 @@
       case "ARC037": return true;
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return true;
       case "ARC153": case "ARC154": return true;
-      default: return "";
+      default: return false;
     }
   }
 

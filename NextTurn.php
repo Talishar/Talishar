@@ -70,7 +70,10 @@
     echo("</tr></table>");
     echo("<div display:inline;'><h3>Combat Chain</h3>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
-      echo(Card($combatChain[$i], "CardImages", 400, 0, 0, 0, $combatChain[$i+1] == $playerID ? 1 : 2));
+      //echo(Card($combatChain[$i], "CardImages", 400, 0, 0, 0, $combatChain[$i+1] == $playerID ? 1 : 2));
+      $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
+      $actionDisabled = 0;
+      echo(Card($combatChain[$i], "CardImages", 400, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
     }
     echo("</div>");
   }
@@ -86,7 +89,7 @@
     echo("</div>");
   }
 
-  if($turn[0] == "BUTTONINPUT" && $turn[1] == $playerID)
+  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);
@@ -323,7 +326,7 @@
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
     if($myBanish[$i+1] == "INT") echo(Card($myBanish[$i], "CardImages", 180, 0, 1, 1));//Display intimidated cards grayed out and unplayable
-    if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC") echo(Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i)));//Display banished cards that are playable this chain link (e.g. Singing Steelblade)
+    if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC" || $myBanish[$i+1] == "INST") echo(Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i)));//Display banished cards that are playable this chain link (e.g. Singing Steelblade)
   }
   echo("</div>");
 
@@ -467,6 +470,7 @@
       case "CHOOSEHANDCANCEL": return 0;
       case "MULTICHOOSEDISCARD": return 0;
       case "CHOOSEDISCARDCANCEL": return 0;
+      case "CHOOSEARCANE": return 0;
       default: return 1;
     }
   }

@@ -41,6 +41,7 @@
       case "MULTICHOOSEDECK": return "cards from deck";
       case "YESNO": return str_replace("_", " ", $turn[2]);
       case "MULTICHOOSETEXT": return " options";
+      case "CHOOSEARCANE": return "an amount to pitch to prevent arcane damage";
     }
   }
 
@@ -66,3 +67,4 @@
   }
 
 ?>
+

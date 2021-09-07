@@ -134,7 +134,7 @@
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ARC041":
-        SetMyArsenalFacing("UP");
+        if($myArsenal != "" && GetMyArsenalFacing() != "UP") SetMyArsenalFacing("UP");
         Opt($cardID, 1);
         return "";
       case "ARC042":
