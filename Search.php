@@ -16,9 +16,10 @@ function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class=""
   return $cardList;
 }
 
-function SearchMyDeck($filterFunction)
+function SearchMyDeckFilter($filterFunction)
 {
-  return array_values(array_filter(global $myDeck, $filterFunction));
+  global $myDeck;
+  return array_values(array_filter($myDeck, $filterFunction));
 }
 
 
