@@ -423,6 +423,7 @@
       if(CardType($combatChain[0]) == "W") ++$combatChainState[$CCS_HitsWithWeapon];
       MainCharacterHitAbilities();
       MainCharacterHitEffects();
+      AttackDamageAbilities();
     }
     else
     {
@@ -501,6 +502,7 @@ function FinalizeChainLink()
       BuildMainPlayerGameState();
     }
     global $mainArsenal, $mainHand;
+    AuraBeginEndStepAbilities();
     if(count($myPitch) > 0)
     {
       $currentPlayer = $playerID;
@@ -561,11 +563,11 @@ function FinalizeChainLink()
     for($i=1; $i<count($mainCharacter); $i+=CharacterPieces())
     {
       if($mainCharacter[$i-1] == "CRU177" && $mainCharacter[$i+1] >= 3) $mainCharacter[$i] = 0;//Destroy Talishar if >= 3 rust counters
-      if($mainCharacter[$i] == 1 || $mainCharacter[$i] == 3) { $mainCharacter[$i] = 2; $mainCharacter[$i + 4] = 1; }
+      if($mainCharacter[$i] != 0) { $mainCharacter[$i] = 2; $mainCharacter[$i + 4] = CharacterNumUsesPerTurn($mainCharacter[$i-1]); }
     }
     for($i=1; $i<count($defCharacter); $i+=CharacterPieces())
     {
-      if($defCharacter[$i] == 1) { $defCharacter[$i] = 2; $defCharacter[$i + 4] = 1; }
+      if($defCharacter[$i] == 1 || $defCharacter[$i] == 2) { $defCharacter[$i] = 2; $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i-1]); }
     }
 
     $mainResources[0] = 0;
@@ -637,7 +639,7 @@ function FinalizeChainLink()
             {
               $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
               if($turn[0] == "B" && $cardType != "I" && !CanPlayAsInstant($cardID)) $myResources[1] = $dynCostResolved;
-              else $myResources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID);
+              else $myResources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier();
               if($myResources[1] < 0) $myResources[1] = 0;
             }
             else
@@ -687,7 +689,9 @@ function FinalizeChainLink()
           $goAgainPrevented = CurrentEffectPreventsGoAgain();
           if($from == "PLAY" || $from == "EQUIP")
           {
-            if(($abilityType == "A" || $abilityType == "AA") && (!AbilityHasGoAgain($cardID) || $goAgainPrevented)) --$actionPoints;
+            $hasGoAgain = AbilityHasGoAgain($cardID);
+            if(CanPlayAsInstant($cardID)) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
+            else if(($abilityType == "A" || $abilityType == "AA") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
             if($abilityType == "A") { ResetCombatChainState(); UnsetMyCombatChainBanish(); }
           }
           else
@@ -797,7 +801,7 @@ function FinalizeChainLink()
   function PlayCardEffect($cardID, $from, $resourcesPaid)
   {
     global $turn, $combatChain, $currentPlayer, $myDiscard, $combatChainState, $CCS_AttackPlayedFrom, $myClassState, $CS_PlayIndex;
-    global $CS_NextWizardNAAInstant;
+    global $CS_NextWizardNAAInstant, $CS_CharacterIndex;
     //Figure out where it goes
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
     else $cardType = CardType($cardID);
@@ -851,8 +855,14 @@ function FinalizeChainLink()
       $playText = PlayAbility($cardID, $from, $resourcesPaid);
       if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);
     }
+
+    if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID))
+    {
+      RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
+    }
     //Now determine what needs to happen next
     $myClassState[$CS_PlayIndex] = -1;
+    $myClassState[$CS_CharacterIndex] = -1;
     ProcessDecisionQueue();
   }
 

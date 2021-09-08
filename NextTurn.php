@@ -7,6 +7,7 @@
   $playerID=$_GET["playerID"];
 
   //First we need to parse the game state from the file
+  include "WriteLog.php";
   include "ParseGamestate.php";
   include "GameTerms.php";
   include "GameLogic.php";
@@ -271,7 +272,7 @@
     echo("<h3>Their Auras:</h3>");
     for($i=0; $i<count($theirAuras); $i+=2)
     {
-      echo(Card($theirAuras[$i], "CardImages", 180, 0, 1, 0));
+      echo(Card($theirAuras[$i], "CardImages", 180, 0, 1, 0, 0, $theirAuras[$i+1]));
     }
     echo("</div>");
   }
@@ -318,9 +319,9 @@
   echo("</div>");
   $actionType = $turn[0] == "ARS" ? 4 : 2;
   for($i=0; $i<count($myHand); ++$i) {
-    $playable = IsPlayable($myHand[$i], $turn[0], "HAND");
+    $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND");
     $border = CardBorderColor($myHand[$i], "HAND", $playable);
-    echo(Card($myHand[$i], "CardImages", 180, $currentPlayer == $playerID && ($playable || $turn[0] == "ARS") ? $actionType : 0, 1 , 0, $border));
+    echo(Card($myHand[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border));
   }
   for($i=0; $i<count($myBanish); $i+=2) {
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
@@ -338,7 +339,7 @@
     echo("<h3>Your Auras:</h3>");
     for($i=0; $i<count($myAuras); $i+=2)
     {
-      echo(Card($myAuras[$i], "CardImages", 180, 0, 1, 0));
+      echo(Card($myAuras[$i], "CardImages", 180, 0, 1, 0, 0, $myAuras[$i+1]));
     }
     echo("</div>");
   }
@@ -348,7 +349,9 @@
     echo("<h3>Your Items:</h3>");
     for($i=0; $i<count($myItems); $i+=ItemPieces())
     {
-      echo(Card($myItems[$i], "CardImages", 180, $currentPlayer == $playerID && $turn[0] != "P" && IsPlayable($myItems[$i], $turn[0], "PLAY", $i) ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, 0, $myItems[$i+1], strval($i)));
+      $playable = IsPlayable($myItems[$i], $turn[0], "PLAY", $i);
+      $border = CardBorderColor($myItems[$i], "PLAY", $playable);
+      echo(Card($myItems[$i], "CardImages", 180, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)));
     }
     echo("</div>");
   }
@@ -360,7 +363,9 @@
   {
     $counters = CardType($myCharacter[$i]) == "W" ? $myCharacter[$i+3] : $myCharacter[$i+4];
     if($myCharacter[$i+2] > 0) $counters = $myCharacter[$i+2];//TODO: Display both kinds of counters
-    echo(Card($myCharacter[$i], "CardImages", 180, $currentPlayer == $playerID && $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR") ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, 0, $counters, strval($i)));
+    $playable = $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR");
+    $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
+    echo(Card($myCharacter[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
   }
   echo("</div>");
 
@@ -368,7 +373,9 @@
   if($myArsenal != "")
   {
     echo("<div style='position: fixed; bottom:10px; left:83%; display:inline;'><h3 style='width:130px; background-color: rgba(255,255,255,0.70);'>Your Arsenal:</h3>");
-    echo(Card($myArsenal, "CardImages", 180, $currentPlayer == $playerID && $turn[0] != "P" && IsPlayable($myArsenal, $turn[0], "ARS") ? 5 : 0, 1));
+    $playable = $turn[0] != "P" && IsPlayable($myArsenal, $turn[0], "ARS");
+    $border = CardBorderColor($myArsenal, "ARS", $playable);
+    echo(Card($myArsenal, "CardImages", 180, $currentPlayer == $playerID && $playable ? 5 : 0, 1, 0, $border));
     echo("</div>");
   }
 
@@ -403,11 +410,12 @@
   {
     switch($code)
     {
-      case 1: return "chartreuse";
+      case 1: return "DeepSkyBlue";
       case 2: return "red";
       case 3: return "yellow";
       case 4: return "Gray";
       case 5: return "Tan";
+      case 6: return "chartreuse";
     }
   }
 
@@ -445,6 +453,8 @@
 
   function CardBorderColor($cardID, $from, $isPlayable)
   {
+    global $playerID, $currentPlayer;
+    if($playerID != $currentPlayer) return 0;
     if($from == "BANISH")
     {
       if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
@@ -453,6 +463,7 @@
     }
     if($isPlayable && ComboActive($cardID)) return 3;
     if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
+    else if($isPlayable) return 6;
     return 0;
   }
 

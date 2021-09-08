@@ -1,6 +1,7 @@
 <?php
 
-  $redirectPath="https://localhost/fabonlinelocal";
+  include "HostFiles/Redirector.php";
+  include "CardDictionary.php";
 
   $gameName=$_GET["gameName"];
 
@@ -28,7 +29,7 @@
   fwrite($handler, "M 1\r\n");//What phase/player is active
   fwrite($handler, "1\r\n");//Action points
   fwrite($handler, "\r\n");//Combat Chain
-  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0 0 0 0\r\n");//Combat Chain State
+  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0 0 0 0 0 0\r\n");//Combat Chain State
   fwrite($handler, "\r\n");//Current Turn Effects
   fwrite($handler, "\r\n");//Current Turn Effects From Combat
   fwrite($handler, "\r\n");//Next Turn Effects
@@ -102,7 +103,7 @@
 
     for($i=0; $i<count($charEquip); ++$i)
     {
-      fwrite($handler, $charEquip[$i] . " 2 0 0 0 1" . ($i < count($charEquip)-1 ? " " : "\r\n"));
+      fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . ($i < count($charEquip)-1 ? " " : "\r\n"));
     }
                //Character and equipment. First is ID. Four numbers each. First is status (0=Destroy/unavailable, 1=Used, 2=Unused, 3=Disabled). Second is num counters
                //Third is attack modifier, fourth is block modifier
@@ -114,7 +115,7 @@
     fwrite($handler, "\r\n");//Discard
     fwrite($handler, "\r\n");//Pitch
     fwrite($handler, "\r\n");//Banish
-    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA\r\n");//Class State
+    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 -\r\n");//Class State
     fwrite($handler, "\r\n");//Character effects
     fwrite($handler, "\r\n");//Soul
   }
