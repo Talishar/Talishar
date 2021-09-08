@@ -1372,6 +1372,27 @@ function MainCharacterEndTurnAbilities()
       default: break;
     }
   }
+  global $myBanish;
+  int $debtDamage
+  foreach ($card in $myBanish)
+  {
+    in(HasBloodDebt($card)
+    {
+        $debtDamage++;
+    }
+  }
+  if($mainCharacter[$i] == "MON119" || "MON120")
+  {
+    if($mainClassState[$DebtSafe])
+    {
+      $rv = "Levia ignores Blood Debt this turn."
+      return;
+    }
+    else
+    {
+      $rv = "Levia lost " + "$debtDamage" + " from Blood Debt."
+    }
+  }
 }
 
 function MainCharacterHitAbilities()
