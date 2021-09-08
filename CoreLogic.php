@@ -85,7 +85,8 @@ function DealDamage($player, $damage, $type)
 
 function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE")
 {
-  global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken;
+  global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken, $combatChainState, $CCS_AttackTotalDamage, $defPlayer;
+  $otherPlayer = $playerID == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   if(ConsumeDamagePrevention($playerID)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
   if($damage <= $classState[$CS_DamagePrevention])
@@ -110,13 +111,31 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($Auras, $damage);
+  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffectsForCycle("ELE059", "ELE060", "ELE061", $otherPlayer)) ++$damage;
   if($damage > 0)
   {
     $classState[$CS_DamageTaken] += $damage;
+    if($playerID == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
   }
+  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
+  { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $playerID); }
   PlayerLoseHealth($damage, $health);
   return $damage;
+}
+
+function AttackDamageAbilities()
+{
+  global $combatChain, $defPlayer, $combatChainState, $CCS_AttackTotalDamage;
+  $attackID = $combatChain[0];
+  switch($attackID)
+  {
+    case "ELE036":
+      if($combatChainState[$CCS_AttackTotalDamage] >= NumEquipment($defPlayer))
+      { AddCurrentTurnEffect("ELE036", $defPlayer); AddNextTurnEffect("ELE036", $defPlayer); }
+      break;
+    default: break;
+  }
 }
 
 function LoseHealth($amount, $player)
@@ -419,6 +438,13 @@ function GetDefHandIndices()
   return GetIndices(count($defHand));
 }
 
+function PlayAura($cardID, $player)
+{
+  $auras = &GetAuras($player);
+  array_push($auras, $cardID);
+  array_push($auras, 0);
+}
+
 function PlayMyAura($cardID)
 {
   global $myAuras;
@@ -440,7 +466,7 @@ function RollDie()
 
 function CanPlayAsInstant($cardID)
 {
-  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex;
   $cardType = CardType($cardID);
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
@@ -449,6 +475,21 @@ function CanPlayAsInstant($cardID)
   if(GetClassState($currentPlayer, $CS_NextNAAInstant))
   {
     if($cardType == "A") return true;
+  }
+  if($cardType == "C" || $cardType == "E" || $cardType == "W")
+  {
+    if(SearchCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT") == 1) return true;
+  }
+  return false;
+}
+
+function TalentContains($cardID, $talent)
+{
+  $cardTalent = CardTalent($cardID);
+  $talents = explode(" ", $cardTalent);
+  for($i=0; $i<count($talents); ++$i)
+  {
+    if($talents[$i] == $talent) return true;
   }
   return false;
 }

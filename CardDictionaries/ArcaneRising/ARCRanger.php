@@ -122,27 +122,30 @@
         AddBottomMyDeck($myArsenal, "ARS");
         $myArsenal = "";
         $newCard = RemoveTopMyDeck();
-        if($newCard != "") AddMyArsenal($newCard, "DECK", "UP");
+        if($newCard != "") AddArsenal($newCard, $currentPlayer, "DECK", "UP");
         if(CardSubType($newCard) == "Arrow") AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ARC040":
-        if($myArsenal != "") return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
+        if(ArsenalFull($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDMYARSENALFACEUP", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ARC041":
-        if($myArsenal != "" && GetMyArsenalFacing() != "UP") SetMyArsenalFacing("UP");
-        Opt($cardID, 1);
+        if(ArsenalHasFaceDownCard($currentPlayer))
+        {
+          SetMyArsenalFacing("UP");
+          Opt($cardID, 1);
+        }
         return "";
       case "ARC042":
-        if($myArsenal != "") return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
+        if(ArsenalFull($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDMYARSENALFACEUP", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC042", 1);
         return "";
       case "ARC044":
@@ -209,7 +212,7 @@
     AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-    AddDecisionQueue("ADDMYARSENAL", $currentPlayer, "HAND", 1);
+    AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "HAND", 1);
   }
 
 ?>

@@ -54,6 +54,29 @@ function AddMainHand($cardID, $from)
   array_push($mainHand, $cardID);
 }
 
+function AddArsenal($cardID, $player, $from, $facing)
+{
+  global $CS_ArsenalFacing;
+  $arsenal = &GetArsenal($player);
+  $arsenal = $cardID;
+  SetClassState($player, $CS_ArsenalFacing, $facing);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if($facing == "UP")
+  {
+    if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+      WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
+      ++$actionPoints;
+    }
+    switch($cardID)
+    {
+      case "ARC057": case "ARC058": case "ARC059": AddCurrentTurnEffect($cardID, $player); break;
+      case "ARC063": case "ARC064": case "ARC065": Opt($cardID, 1); break;
+      case "CRU123": AddCurrentTurnEffect($cardID, $otherPlayer); break;
+      default: break;
+    }
+  }
+}
+
 function AddMyArsenal($cardID, $from, $facing)
 {
   global $myArsenal, $currentPlayer, $myClassState, $CS_ArsenalFacing, $actionPoints, $otherPlayer;
@@ -77,13 +100,16 @@ function AddMyArsenal($cardID, $from, $facing)
 
 function SetMyArsenalFacing($facing)
 {
-  global $myClassState, $CS_ArsenalFacing;
+  global $myClassState, $CS_ArsenalFacing, $myArsenal;
   $myClassState[$CS_ArsenalFacing] = $facing;
+  return $myArsenal;
 }
 
+//Deprecated -- do not use
 function GetMyArsenalFacing()
 {
   global $myClassState, $CS_ArsenalFacing;
+  WriteLog("Deprecated function GetArsenalFacing called. Please submit report.");
   return $myClassState[$CS_ArsenalFacing];
 }
 
@@ -212,6 +238,46 @@ function AddGraveyard($cardID, $player, $from)
     if($player == $playerID) AddSpecificGraveyard($cardID, $myDiscard, $from);
     else AddSpecificGraveyard($cardID, $theirDiscard, $from);
   }
+}
+
+function SearchCharacterAddUses($player, $uses, $type="", $subtype="")
+{
+  $character = &GetPlayerCharacter($player);
+  for($i=0; $i<count($character); $i+=CharacterPieces())
+  {
+    if($character[$i+1] != 0 && ($type == "" || CardType($character[$i]) == $type) && ($subtype == "" || $subtype == CardSubtype($character[$i])))
+    {
+      $character[$i+1] = 2;
+      $character[$i+5] += $uses;
+    }
+  }
+}
+
+function SearchCharacterAddEffect($player, $effect, $type="", $subtype="")
+{
+  $character = &GetPlayerCharacter($player);
+  for($i=0; $i<count($character); $i+=CharacterPieces())
+  {
+    if($character[$i+1] != 0 && ($type == "" || CardType($character[$i]) == $type) && ($subtype == "" || $subtype == CardSubtype($character[$i])))
+    {
+      AddCharacterEffect($player, $i, $effect);
+    }
+  }
+}
+
+function RemoveCharacterEffects($player, $index, $effect)
+{
+  $effects = &GetCharacterEffects($player);
+  for($i=count($effects) - CharacterEffectPieces(); $i>=0; $i-=CharacterEffectPieces())
+  {
+    if($effects[$i] == $index && $effects[$i+1] == $effect)
+    {
+      unset($effects[$i+1]);
+      unset($effects[$i]);
+    }
+  }
+  $effects = array_values($effects);
+  return false;
 }
 
 function AddSpecificGraveyard($cardID, &$graveyard, $from)
