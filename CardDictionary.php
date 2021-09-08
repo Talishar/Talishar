@@ -1411,16 +1411,16 @@
   function HasBloodDebt($cardID){
     switch($cardID)
     {
-      case "MON123";
-      case "MON124";
-      case "MON125";
-      case "MON126": case "MON127": case "MON128";
-      case "MON129": case "MON130": case "MON131";
-      case "MON125": case "MON136": case "MON137";
-      case "MON138": case "MON139": case "MON140";
-      case "MON141": case "MON142": case "MON143";
-      case "MON144": case "MON145": case "MON146";
-      case "MON147": case "MON148": case "MON149";
+      case "MON123"; return true:
+      case "MON124"; return true:
+      case "MON125"; return true:
+      case "MON126": case "MON127": case "MON128"; return true:
+      case "MON129": case "MON130": case "MON131"; return true:
+      case "MON125": case "MON136": case "MON137"; return true:
+      case "MON138": case "MON139": case "MON140"; return true:
+      case "MON141": case "MON142": case "MON143"; return true:
+      case "MON144": case "MON145": case "MON146"; return true:
+      case "MON147": case "MON148": case "MON149"; return true:
     }
   }
 
