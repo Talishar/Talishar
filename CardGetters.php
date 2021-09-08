@@ -16,6 +16,22 @@ function &GetPlayerCharacter($player)
   }
 }
 
+function &GetCharacterEffects($player)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainCharacterEffects, $defCharacterEffects, $myCharacterEffects, $theirCharacterEffects;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainCharacterEffects;
+    else return $defCharacterEffects;
+  }
+  else
+  {
+    if($player == $currentPlayer) return $myCharacterEffects;
+    else return $theirCharacterEffects;
+  }
+}
+
 function GetClassState($player, $piece)
 {
   global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
@@ -80,6 +96,22 @@ function &GetBanish($player)
   }
 }
 
+function &GetPitch($player)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myPitch, $theirPitch, $mainPitch, $defPitch;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainPitch;
+    else return $defPitch;
+  }
+  else
+  {
+    if($player == $playerID) return $myPitch;
+    else return $theirPitch;
+  }
+}
+
 function &GetHealth($player)
 {
   global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
@@ -128,10 +160,67 @@ function &GetSoul($player)
   }
 }
 
+function &GetArsenal($player)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myArsenal, $theirArsenal, $mainArsenal, $defArsenal;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainArsenal;
+    else return $defArsenal;
+  }
+  else
+  {
+    if($player == $playerID) return $myArsenal;
+    else return $theirArsenal;
+  }
+}
+
+function &GetAuras($player)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myAuras, $theirAuras, $mainAuras, $defAuras;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainAuras;
+    else return $defAuras;
+  }
+  else
+  {
+    if($player == $playerID) return $myAuras;
+    else return $theirAuras;
+  }
+}
+
 function HasTakenDamage($player)
 {
   global $CS_DamageTaken;
   return GetClassState($player, $CS_DamageTaken) > 0;
+}
+
+function ArsenalHasFaceDownCard($player)
+{
+  global $CS_ArsenalFacing;
+  $arsenal = &GetArsenal($player);
+  if($arsenal == "") return false;
+  return GetClassState($player, $CS_ArsenalFacing) == "DOWN";
+}
+
+function ArsenalFull($player)
+{
+  $arsenal = &GetArsenal($player);
+  return $arsenal != "";
+}
+
+function NumEquipment($player)
+{
+  $character = &GetPlayerCharacter($player);
+  $numEquip = 0;
+  for($i=0; $i<count($character); $i += CharacterPieces())
+  {
+    if(CardType($character[$i]) == "E" && $character[$i+1] != 0) ++$numEquip;
+  }
+  return $numEquip;
 }
 
 ?>

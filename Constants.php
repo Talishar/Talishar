@@ -37,6 +37,11 @@
     return 2;
   }
 
+  function CharacterEffectPieces()
+  {
+    return 2;
+  }
+
   //Class State (one for each player)
   $CS_Num6PowDisc = 0;
   $CS_NumBoosted = 1;
@@ -61,6 +66,10 @@
   $CS_NextNAAInstant = 20;
   $CS_NextDamagePrevented = 21;
   $CS_LastAttack = 22;
+  $CS_NumFusedEarth = 23;
+  $CS_NumFusedIce = 24;
+  $CS_NumFusedLightning = 25;
+  $CS_PitchedForThisCard = 26;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -76,12 +85,14 @@
   $CCS_ChainLinkHitEffectsPrevented = 10;
   $CCS_NumBoosted = 11;
   $CCS_NextBoostBuff = 12;
+  $CCS_AttackFused = 13;
+  $CCS_AttackTotalDamage = 14;
 
   function ResetCombatChainState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
-    global $CCS_NumBoosted, $CCS_NextBoostBuff;
+    global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_LastAttack] = "NA";
@@ -95,18 +106,22 @@
     $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
     $combatChainState[$CCS_NumBoosted] = 0;
     $combatChainState[$CCS_NextBoostBuff] = 0;
+    $combatChainState[$CCS_AttackFused] = 0;
+    $combatChainState[$CCS_AttackTotalDamage] = 0;
   }
 
   function ResetChainLinkState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
-    global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented;
+    global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_DamageDealt] = 0;
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
     $combatChainState[$CCS_AttackPlayedFrom] = "NA";
     $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 0;
+    $combatChainState[$CCS_AttackFused] = 0;
+    $combatChainState[$CCS_AttackTotalDamage] = 0;
   }
 
   function ResetMainClassState()
@@ -115,6 +130,7 @@
     global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
     global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant;
     global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack;
+    global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -137,6 +153,10 @@
     $mainClassState[$CS_NextNAAInstant] = 0;
     $mainClassState[$CS_NextDamagePrevented] = 0;
     $mainClassState[$CS_LastAttack] = "NA";
+    $mainClassState[$CS_NumFusedEarth] = 0;
+    $mainClassState[$CS_NumFusedIce] = 0;
+    $mainClassState[$CS_NumFusedLightning] = 0;
+    $mainClassState[$CS_PitchedForThisCard] = "-";
   }
 
   function ResetCardPlayed($cardID)

@@ -1,24 +1,36 @@
 <?php
 
-function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
+function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="")
 {
   $deck = &GetDeck($player);
-  return SearchInner($deck, $type, $subtype, $maxCost, $minCost, $class);
+  return SearchInner($deck, $type, $subtype, $maxCost, $minCost, $class, $talent);
 }
 
-function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
+function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="")
 {
   $hand = &GetHand($player);
-  return SearchInner($hand, $type, $subtype, $maxCost, $minCost, $class);
+  return SearchInner($hand, $type, $subtype, $maxCost, $minCost, $class, $talent);
 }
 
-function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class)
+function SearchPitch($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="")
+{
+  $pitch = &GetPitch($player);
+  return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent);
+}
+
+function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class, $talent)
 {
   $cardList = "";
   for($i=0; $i<count($array); ++$i)
   {
     $cardID = $array[$i];
-    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class))
+    if($talent != "")
+    {
+      $talentMatch = 0;
+      $talents = explode(",", CardTalent($cardID));
+      for($j=0; $j<count($talents); ++$j) { if($talents[$j] == $talent) $talentMatch = 1; }
+    }
+    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class) && ($talent == "" || $talentMatch))
     {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
@@ -227,6 +239,19 @@ function SearchCurrentTurnEffects($cardID, $player)
   {
     if($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i+1] == $player) return true;
   }
+  return false;
+}
+
+function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
+{
+  global $currentTurnEffects;
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    if($currentTurnEffects[$i] == $card1 && $currentTurnEffects[$i+1] == $player) return true;
+    if($currentTurnEffects[$i] == $card2 && $currentTurnEffects[$i+1] == $player) return true;
+    if($currentTurnEffects[$i] == $card3 && $currentTurnEffects[$i+1] == $player) return true;
+  }
+  return false;
 }
 
 function SearchMainAuras($cardID)
@@ -267,6 +292,16 @@ function SearchHighestAttackDefended()
     }
   }
   return $highest;
+}
+
+function SearchCharacterEffects($player, $index, $effect)
+{
+  $effects = &GetCharacterEffects($player);
+  for($i=0; $i<count($effects); $i+=CharacterEffectPieces())
+  {
+    if($effects[$i] == $index && $effects[$i+1] == $effect) return true;
+  }
+  return false;
 }
 
 ?>
