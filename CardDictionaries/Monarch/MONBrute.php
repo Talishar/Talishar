@@ -38,6 +38,18 @@
   {
     switch($cardID)
     {
+      case "MON123": return 3;
+      case "MON124": return 2;
+      case "MON125": return 2;
+      case "MON126": case "MON127": case "MON128": return 3;
+      case "MON129": case "MON130": case "MON131": return 2;
+      case "MON132": case "MON133": case "MON134": return 2;
+      case "MON125": case "MON136": case "MON137": return 1;
+      case "MON138": case "MON139": case "MON140": return 3;
+      case "MON141": case "MON142": case "MON143": return 2;
+      case "MON144": case "MON145": case "MON146": return 1;
+      case "MON147": case "MON148": case "MON149": return 2;
+      case "MON150": case "MON151": case "MON152": return 1;
       default: return 0;
     }
   }
@@ -58,6 +70,9 @@
   {
     switch($cardID)
     {
+      case "MON123": return 0;
+      case "MON125": return 0;
+      case "MON138": case "MON139": case "MON140": return 0;
       default: return 3;
     }
   }
@@ -86,8 +101,29 @@
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("BANISH", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);// code...
-      }return "";
+        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+        $rv = "Shadow of Blasmophet discarded a card with 6 or more power then banished a card with Blood Debt from Levia's Deck."
+      }return $rv;
+
+      case "MON126": case "MON127": case "MON128":
+      if(RandomBanish3GY())
+      {
+          return "Levia played Endless Maw, which gained 3 power from banishing a card with 6 or more power.";
+      }
+      else {
+        return "Levia played Endless Maw.";
+      }
+
+      case "MON141": case "MON142": case "MON143":
+      if(RandomBanish3GY())
+      {
+          GiveAttackGoAgain();
+          return "Levia played Dread Screamer, which gained Go Again from banishing a card with 6 or more power.";
+      }
+      else {
+          return "Levia played Dread Screamer.";
+      }
+
       default: return "";
     }
   }
@@ -103,6 +139,38 @@
   function RandomBanish3GY()
   {
     global $myClassState, $CS_Num6PowBan, $myDiscard, $myBanish;
+
+
+    global $playerID,$myDiscard,$myBanish,$myCharacter,$myClassState, $CS_Num6PowBan, $mainPlayer;
+    if(count($myDiscard) <3) return;
+    for(int i = 1; i <= 3; i++)
+    {
+      $BanishedIncludes6=false;
+      unset($myDiscard[$index]);
+      $myDiscard = array_values($myHand);
+      $index = rand() % count($myDiscard);
+      $banished = $myDiscard[$index];
+      array_push($myBanish, $banished);
+      if(AttackValue($banished) >= 6)
+        {
+          if(($myCharacter[0] == "MON119" || $myCharacter[0] == "MON120") && $playerID == $mainPlayer %% DebtSafe($mainPlayer))
+            {
+              WriteLog("Levia will ignore Blood Debt this turn.");
+              $BanishedIncludes6=true;
+            }
+          ++$myClassState[$CS_Num6PowBan];
+          if (($myCharacter[0] == "MON119" || $myCharacter[0] == "MON120") && )
+            {
+                if($banished == "MON123")
+                {
+                    WriteLog("Levia banished Deep-Rooted Evil, which can be played from the banished zone.");  //TODO: put this on DRE itself.
+                }
+            }
+        }
+    }
+    UpdateGameState($playerID);
+    return $BanishedIncludes6;
+
   }
 
   function DebtSafe($player)
