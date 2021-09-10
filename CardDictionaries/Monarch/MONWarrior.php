@@ -117,11 +117,7 @@
     switch($cardID)
     {
       case "MON029": case "MON030":
-        $baseAV = AttackValue($combatChain[0]);
-        $currentAttack = 0;
-        $currentDefense = 0;
-        EvaluateCombatChain($currentAttack, $totalDefense);
-        if($currentAttack > $baseAV) { GiveAttackGoAgain(); $rv = "Boltyn gave the current attack Go Again."; }
+        if(HasIncreasedAttack()) { GiveAttackGoAgain(); $rv = "Boltyn gave the current attack Go Again."; }
         else { $rv = "Boltyn did not give the current attack Go Again."; }
         return $rv;
       case "MON033":

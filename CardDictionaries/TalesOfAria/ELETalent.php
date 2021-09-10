@@ -11,6 +11,13 @@
       case "ELE103": case "ELE104": case "ELE105": return "A";
       case "ELE111": return "T";
       case "ELE112": return "I";
+      case "ELE113": return "A";
+      case "ELE114": return "DR";
+      case "ELE115": return "E";
+      case "ELE117": return "A";
+      case "ELE118": return "A";
+      case "ELE119": case "ELE120": case "ELE121": return "AA";
+      case "ELE122": case "ELE123": case "ELE124": return "A";
       case "ELE128": case "ELE129": case "ELE130": return "AA";
       case "ELE143": return "A";
       case "ELE146": return "A";
@@ -22,6 +29,7 @@
       case "ELE172": return "A";
       case "ELE173": return "E";
       case "ELE175": return "A";
+      case "ELE176": return "I";
       case "ELE180": case "ELE181": case "ELE182": return "A";
       case "ELE195": case "ELE196": case "ELE197": return "AA";
       case "ELE198": case "ELE199": case "ELE200": return "A";
@@ -35,6 +43,8 @@
     switch($cardID)
     {
       case "ELE111": return "Aura";
+      case "ELE115": return "Head";
+      case "ELE117": return "Aura";
       case "ELE143": return "Item";
       case "ELE146": return "Aura";
       case "ELE172": return "Item";
@@ -55,6 +65,12 @@
       case "ELE100": case "ELE101": case "ELE102": return 0;
       case "ELE103": case "ELE104": case "ELE105": return 0;
       case "ELE112": return 0;
+      case "ELE113": return 0;
+      case "ELE114": return 2;
+      case "ELE117": return 3;
+      case "ELE118": return 3;
+      case "ELE119": case "ELE120": case "ELE121": return 3;
+      case "ELE122": case "ELE123": case "ELE124": return 0;
       case "ELE128": case "ELE129": case "ELE130": return 3;
       case "ELE143": return 0;
       case "ELE146": return 2;
@@ -65,6 +81,7 @@
       case "ELE169": case "ELE170": case "ELE171": return 0;
       case "ELE172": return 0;
       case "ELE175": return 1;
+      case "ELE176": return 0;
       case "ELE180": case "ELE181": case "ELE182": return 0;
       case "ELE195": case "ELE196": case "ELE197": return 1;
       case "ELE198": case "ELE199": case "ELE200": return 1;
@@ -82,9 +99,13 @@
       case "ELE098": case "ELE101": case "ELE104": return 2;
       case "ELE099": case "ELE102": case "ELE105": return 3;
       case "ELE112": return 1;
-      case "ELE128": return 1;
-      case "ELE129": return 2;
-      case "ELE130": return 3;
+      case "ELE113": return 2;
+      case "ELE114": return 3;
+      case "ELE117": return 1;
+      case "ELE118": return 3;
+      case "ELE119": case "ELE122": case "ELE128": return 1;
+      case "ELE120": case "ELE123": case "ELE129": return 2;
+      case "ELE121": case "ELE124": case "ELE130": return 3;
       case "ELE143": return 3;
       case "ELE146": return 3;
       case "ELE148": case "ELE154": case "ELE160": case "ELE163": case "ELE169": return 1;
@@ -92,6 +113,7 @@
       case "ELE150": case "ELE156": case "ELE162": case "ELE165": case "ELE171": return 3;
       case "ELE172": return 3;
       case "ELE175": return 2;
+      case "ELE176": return 3;
       case "ELE180": case "ELE195": case "ELE198": return 1;
       case "ELE181": case "ELE196": case "ELE199": return 2;
       case "ELE182": case "ELE197": case "ELE200": return 3;
@@ -104,6 +126,10 @@
   {
     switch($cardID)
     {
+      case "ELE113": return 3;
+      case "ELE114": return 6;
+      case "ELE115": return 0;
+      case "ELE117": return 3;
       case "ELE128": case "ELE129": case "ELE130": return 3;
       case "ELE143": return 0;
       case "ELE146": return 3;
@@ -111,6 +137,7 @@
       case "ELE172": return 0;
       case "ELE173": return 0;
       case "ELE175": return 3;
+      case "ELE176": return 0;
       case "ELE201": return 0;
       default: return 2;
     }
@@ -126,9 +153,9 @@
       case "ELE099": case "ELE101": return 3;
       case "ELE102": return 2;
       //Earth
-      case "ELE128": return 7;
-      case "ELE129": return 6;
-      case "ELE130": return 5;
+      case "ELE119": case "ELE128": return 7;
+      case "ELE120": case "ELE129": return 6;
+      case "ELE121": case "ELE130": return 5;
       //Ice
       case "ELE160": return 6;
       case "ELE148": case "ELE161": return 5;
@@ -144,7 +171,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $otherPlayer, $CS_PlayIndex;
+    global $currentPlayer, $otherPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "ELE097": case "ELE098": case "ELE099":
@@ -159,6 +186,28 @@
       case "ELE112":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Pulse of Volthaven gives your next Lightning, Ice, or Elemental attack this turn +4.";
+      case "ELE113":
+        for($i=0; $i<2; ++$i)
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+          AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
+          AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+        }
+        return "";
+      case "ELE114":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Pulse of Isenloft gives your Ice, Earth, and Elemental action cards +1 defense this turn.";
+      case "ELE119": case "ELE120": case "ELE121":
+        if($from == "ARS")
+        {
+          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+          $rv = "Evergreen goes to the bottom of your deck when the combat chain closes.";
+        }
+        return $rv;
+      case "ELE122": case "ELE123": case "ELE124":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Weave Earth gives your next Earth or Elemental attack action card this turn +" . EffectAttackModifier($cardID) .", and +1 if it's fused.";
       case "ELE143":
         if($from == "PLAY")
         {
@@ -196,6 +245,9 @@
       case "ELE173":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Shock Charmers makes your next attack action card deal 1 damage if it hits.";
+      case "ELE176":
+        if($currentPlayer == $mainPlayer) {++$actionPoints; $rv = "Blink grants an action point."; }
+        return $rv;
       case "ELE180": case "ELE181": case "ELE182":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;

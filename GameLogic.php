@@ -588,6 +588,7 @@ function CombatChainResolutionEffects($cardID, $player)
       if(SearchHighestAttackDefended() < AttackValue($cardID)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; break;
     case "MON293": case "MON294": case "MON295":
       if(SearchPitchHighestAttack($mainPitch) > AttackValue($cardID)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; break;
+    case "ELE216": case "ELE217": case "ELE218": if(HasIncreasedAttack()) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; break;
     default: break;
   }
 }
@@ -715,6 +716,9 @@ function EffectHitEffect($cardID)
     case "MON081": case "MON082": case "MON083": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
     case "MON110": case "MON111": case "MON112": DuskPathPilgrimageHit(); break;
     case "MON299": case "MON300": case "MON301": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK"; break;
+    case "ELE003": PlayAura("ELE111", $defPlayer); break;
+    case "ELE005": RandomHandBottomDeck($defPlayer); RandomHandBottomDeck($defPlayer); break;
+    case "ELE019": case "ELE020": case "ELE021": DefenderArsenalToBottomOfDeck(); break;
     case "ELE035-2": AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer); break;
     case "ELE037-2": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
     case "ELE047": case "ELE048": case "ELE049": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
@@ -734,6 +738,7 @@ function EffectHitEffect($cardID)
       else $damage = 1;
       DealDamage($defPlayer, $damage, "ATTACKHIT");
       break;
+    case "ELE205": PummelHit(); PummelHit(); break;
     default: break;
   }
 }
@@ -819,7 +824,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   global $myAuras, $defAuras, $defPlayer, $CS_CardsBanished, $mainPlayer;
   $blockModifier = 0;
   $cardType = CardType($cardID);
+  $cardTalent = CardTalent($cardID);
   if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && $cardType == "AA") $blockModifier += 1;
+  if(SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && ($cardTalent == "ICE" || $cardTalent == "EARTH" || $cardTalent == "ELEMENTAL")) $blockModifier += 1;
   for($i=0; $i<count($myAuras); $i+=2)
   {
     if($myAuras[$i] == "WTR072" && CardCost($cardID) >= 3) $blockModifier += 4;
@@ -1184,6 +1191,9 @@ function AuraDestroyAbility($cardID)
     case "WTR075": AddCurrentTurnEffect($cardID, $mainPlayer); return "Seismic Surge reduces the cost of the next Guardian attack action card you play this turn by 1.";
     case "CRU029": case "CRU030": case "CRU031": AddCurrentTurnEffect($cardID, $mainPlayer); return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "CRU038": case "CRU039": case "CRU040": AddCurrentTurnEffect($cardID, $mainPlayer); return "Emerging Dominance gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . " and dominate.";
+    case "ELE025": case "ELE026": case "ELE027": AddCurrentTurnEffect($cardID, $mainPlayer); return "Emerging Avalanche gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
+    case "ELE028": case "ELE029": case "ELE030": AddCurrentTurnEffect($cardID, $mainPlayer); return "Strength of Sequoia gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
+    case "ELE206": case "ELE207": case "ELE208": AddCurrentTurnEffect($cardID, $mainPlayer); return "Embolden gives your next Guardian Attack Action card +" . EffectAttackModifier($cardID) . ".";
     default: return "";
   }
 }
@@ -1213,7 +1223,9 @@ function AuraBeginEndStepAbilities()
   {
     switch($mainAuras[$i])
     {
+      case "ELE117": ++$mainAuras[$i+1]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "EARTH")) < $mainAuras[$i+1]) $remove = 1; break;
       case "ELE146": ++$mainAuras[$i+1]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $mainAuras[$i+1]) $remove = 1; break;
+      case "ELE175": ++$mainAuras[$i+1]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $mainAuras[$i+1]) $remove = 1; break;
       default: break;
     }
     if($remove == 1)
@@ -1295,6 +1307,21 @@ function AuraAttackAbilities($attackID)
       $myAuras = array_values($myAuras);
     }
   }
+}
+
+function AuraAttackModifiers()
+{
+  global $mainAuras;
+  $modifier = 0;
+  for($i=0; $i < count($mainAuras); $i += AuraPieces())
+  {
+    switch($mainAuras[$i])
+    {
+      case "ELE117": $modifier += 3; break;
+      default: break;
+    }
+  }
+  return $modifier;
 }
 
 //NOTE: This happens at start of turn, so must use main player game state
@@ -1380,6 +1407,7 @@ function OnBlockEffects($index)
       switch($currentTurnEffects[$i])
       {
         case "WTR092": case "WTR093": case "WTR094": if(HasCombo($index)) { $combatChain[$index+6] += 2; $remove = 1; } break;
+        case "ELE004": PlayAura("ELE111", $currentPlayer); break;
         default: break;
       }
     }
@@ -1415,6 +1443,29 @@ function OnBlockEffects($index)
       break;
     default: break;
   }
+}
+
+function ActivateAbilityEffects()
+{
+  global $currentPlayer, $currentTurnEffects;
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
+  {
+    $remove = 0;
+    if($currentTurnEffects[$i+1] == $currentPlayer)
+    {
+      switch($currentTurnEffects[$i])
+      {
+        case "ELE004-HIT": WriteLog("Endless winter gives a frostbite token."); PlayAura("ELE111", $currentPlayer); break;
+        default: break;
+      }
+    }
+    if($remove == 1)
+    {
+      unset($currentTurnEffects[$i+1]);
+      unset($currentTurnEffects[$i]);
+    }
+  }
+  $currentTurnEffects = array_values($currentTurnEffects);
 }
 
 function DestroyMainItem($index)
@@ -1633,6 +1684,7 @@ function IsDominateActive()
     case "WTR179": case "WTR180": case "WTR181": return true;
     case "MON246": return SearchMyDiscard("AA") == "";
     case "MON275": case "MON276": case "MON277": return true;
+    case "ELE209": case "ELE210": case "ELE211": return HasIncreasedAttack();
     default: break;
   }
   return false;
@@ -1752,6 +1804,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MON304": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=1); break;
         case "MON305": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=0); break;
         case "HANDIFZERO": if($lastResult == 0) { $hand = &GetHand($player); $rv = GetIndices(count($hand)); } break;
+        case "ELE006": $count = CountAura("WTR075", $player); $rv = SearchDeck($player, "AA", "", $count, -1, "GUARDIAN"); break;
+        case "ELE113": $rv = SearchMyDiscard("", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
@@ -1790,20 +1844,27 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       unset($myDiscard[$lastResult]);
       $myDiscard = array_values($myDiscard);
       return $cardID;
+    case "REMOVEDISCARD":
+      $discard = &GetDiscard($player);
+      $cardID = $discard[$lastResult];
+      unset($discard[$lastResult]);
+      $discard = array_values($discard);
+      return $cardID;
     case "REMOVEMYHAND":
       $cardID = $myHand[$lastResult];
       unset($myHand[$lastResult]);
       $myHand = array_values($myHand);
       return $cardID;
     case "MULTIREMOVEDISCARD":
+      $discard = &GetDiscard($player);
       $cards = "";
       for($i=0; $i<count($lastResult); ++$i)
       {
         if($cards != "") $cards .= ",";
-        $cards .= $myDiscard[$lastResult[$i]];
-        unset($myDiscard[$lastResult[$i]]);
+        $cards .= $discard[$lastResult[$i]];
+        unset($discard[$lastResult[$i]]);
       }
-      $myDiscard = array_values($myDiscard);
+      $discard = array_values($discard);
       return $cards;
     case "MULTIREMOVEMYSOUL":
       for($i=0; $i<$lastResult; ++$i) BanishFromSoul($player);
@@ -1880,10 +1941,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "MULTIADDTOPDECK":
+      $deck = &GetDeck($player);
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)
       {
-        array_unshift($myDeck, $cards[$i]);
+        array_unshift($deck, $cards[$i]);
       }
       return $lastResult;
     case "MULTIREMOVEDECK":
@@ -2203,6 +2265,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "Go_again": AddCurrentTurnEffect("ELE034-2", $player); return 1;
       }
       return $lastResult;
+    case "AWAKENINGTOKENS":
+        $num = GetHealth($player == 1 ? 2 : 1) - GetHealth($player);
+        for($i=0; $i<$num; ++$i)
+        {
+          PlayAura("WTR075", $player);
+        }
+      return 1;
     default:
       return "NOTSTATIC";
   }

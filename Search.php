@@ -18,6 +18,12 @@ function SearchPitch($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $
   return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent);
 }
 
+function SearchDiscard($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="")
+{
+  $pitch = &GetDiscard($player);
+  return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent);
+}
+
 function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class, $talent)
 {
   $cardList = "";
@@ -229,6 +235,7 @@ function CombineSearches($search1, $search2)
 
 function SearchCount($search)
 {
+  if($search == "") return 0;
   return count(explode(",", $search));
 }
 

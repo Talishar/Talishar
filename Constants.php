@@ -2,6 +2,11 @@
 
   $characterPieces = 6;
 
+  function HandPieces()
+  {
+    return 1;
+  }
+
   function CharacterPieces()
   {
     return 6;

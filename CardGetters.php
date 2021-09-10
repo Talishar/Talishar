@@ -160,6 +160,22 @@ function &GetSoul($player)
   }
 }
 
+function &GetDiscard($player)
+{
+  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainDiscard;
+    else return $defDiscard;
+  }
+  else
+  {
+    if($player == $playerID) return $myDiscard;
+    else return $theirDiscard;
+  }
+}
+
 function &GetArsenal($player)
 {
   global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
@@ -210,6 +226,12 @@ function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);
   return $arsenal != "";
+}
+
+function ArsenalEmpty($player)
+{
+  $arsenal = &GetArsenal($player);
+  return $arsenal == "";
 }
 
 function NumEquipment($player)

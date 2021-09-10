@@ -54,6 +54,8 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 
     $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    $attack = AuraAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
+    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 }

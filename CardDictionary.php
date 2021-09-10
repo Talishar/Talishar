@@ -377,12 +377,14 @@
         else if($number >= 229 && $number <= 237) return "RUNEBLADE";
         else return "GENERIC";
       case "ELE":
-        if($number == 0) return "TODO";
+        if($number == 0) return "???";
         else if($number >= 1 && $number <= 30) return "GUARDIAN";
         else if($number >= 31 && $number <= 61) return "RANGER";
-        else if($number >= 31 && $number <= 84) return "RUNEBLADE";
-        else if($number >= 203 && $number <= 205) return "RANGER";
-        else if($number >= 213 && $number <= 218) return "RANGER";
+        else if($number >= 31 && $number <= 90) return "RUNEBLADE";
+        else if($number >= 202 && $number <= 212) return "GUARDIAN";
+        else if($number >= 213 && $number <= 221) return "RANGER";
+        else if($number >= 222 && $number <= 232) return "RUNEBLADE";
+        else if($number >= 233) return "???";
         else return "NONE";//TODO
       default: return 0;
     }
@@ -1210,6 +1212,7 @@
     {
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";
+      case "ELE113": return "BANISH";
       default: return "GY";
     }
   }
@@ -1337,6 +1340,8 @@
       case "ARC041": return true;
       case "CRU122": return true;
       case "MON060": return true;
+      case "ELE204": return true;
+      case "ELE213": return true;
       default: return false;
     }
   }
@@ -1445,9 +1450,12 @@
       case "CRU106": case "CRU107": case "CRU108": return true;
       case "MON109": return true;
       case "MON278": case "MON279": case "MON280": return true;
+      case "ELE005": return true;
+      case "ELE016": case "ELE017": case "ELE018": return true;
       case "ELE033-2": return true;
       case "ELE097": case "ELE098": case "ELE099": return true;
       case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
+      case "ELE205": return true;
       default: return false;
     }
   }
