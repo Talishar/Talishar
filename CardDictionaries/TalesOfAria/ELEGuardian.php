@@ -8,7 +8,16 @@
       case "ELE001": case "ELE002": return "C";
       case "ELE003": return "W";
       case "ELE004": return "AA";
+      case "ELE005": return "AA";
+      case "ELE006": return "I";
       case "ELE016": case "ELE017": case "ELE018": return "AA";
+      case "ELE019": case "ELE020": case "ELE021": return "AA";
+      case "ELE025": case "ELE026": case "ELE027": return "A";
+      case "ELE028": case "ELE029": case "ELE030": return "A";
+      case "ELE203": case "ELE204": return "E";
+      case "ELE205": return "A";
+      case "ELE206": case "ELE207": case "ELE208": return "A";
+      case "ELE209": case "ELE210": case "ELE211": return "AA";
       default: return "";
     }
   }
@@ -18,6 +27,10 @@
     switch($cardID)
     {
       case "ELE003": return "Hammer";
+      case "ELE025": case "ELE026": case "ELE027":
+      case "ELE028": case "ELE029": case "ELE030": return "Aura";
+      case "ELE203": case "ELE204": return "Off-Hand";
+      case "ELE206": case "ELE207": case "ELE208": return "Aura";
       default: return "";
     }
   }
@@ -28,7 +41,15 @@
     switch($cardID)
     {
       case "ELE004": return 4;
+      case "ELE005": return 3;
+      case "ELE006": return 2;
       case "ELE016": case "ELE017": case "ELE018": return 6;
+      case "ELE019": case "ELE020": case "ELE021": return 4;
+      case "ELE025": case "ELE026": case "ELE027": return 2;
+      case "ELE028": case "ELE029": case "ELE030": return 2;
+      case "ELE205": Return 3;
+      case "ELE206": case "ELE207": case "ELE208": return 4;
+      case "ELE209": case "ELE210": case "ELE211": return 4;
       default: return 0;
     }
   }
@@ -37,10 +58,16 @@
   {
     switch($cardID)
     {
-      case "ELE004": return 1;
-      case "ELE016": return 1;
-      case "ELE017": return 2;
-      case "ELE018": return 3;
+      case "ELE004": case "ELE005": return 1;
+      case "ELE006": return 3;
+      case "ELE016": case "ELE019": case "ELE025": case "ELE028": return 1;
+      case "ELE017": case "ELE020": case "ELE026": case "ELE029": return 2;
+      case "ELE018": case "ELE021": case "ELE027": case "ELE030": return 3;
+      //Normal Guardian
+      case "ELE205": return 3;
+      case "ELE206": case "ELE209": return 1;
+      case "ELE207": case "ELE210": return 2;
+      case "ELE208": case "ELE211": return 3;
       default: return 0;
     }
   }
@@ -49,7 +76,9 @@
   {
     switch($cardID)
     {
-      case "ELE001": case "ELE002": case "ELE003": return 0;
+      case "ELE001": case "ELE002": case "ELE003": case "ELE006": return 0;
+      case "ELE203": return 0;
+      case "ELE204": return 1;
       default: return 3;
     }
   }
@@ -60,26 +89,114 @@
     {
       case "ELE003": return 4;
       case "ELE004": return 8;
+      case "ELE005": return 7;
       case "ELE016": return 10;
       case "ELE017": return 9;
-      case "ELE018": return 8;
+      case "ELE018": case "ELE019": return 8;
+      case "ELE021": return 7;
+      case "ELE022": return 6;
+      //Normal Guardian
+      case "ELE209": return 6;
+      case "ELE210": return 5;
+      case "ELE211": return 4;
       default: return 0;
     }
   }
 
   function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid)
   {
+    global $currentPlayer, $otherPlayer, $CS_PitchedForThisCard, $CS_DamagePrevention;
     switch($cardID)
     {
-
+      case "ELE001": case "ELE002":
+        $pitch = &GetClassState($currentPlayer, $CS_PitchedForThisCard);
+        $pitchArr = explode("-", $pitch);
+        $earthPitched = 0; $icePitched = 0;
+        for($i=0; $i<count($pitchArr); ++$i)
+        {
+          if(TalentContains($pitchArr[$i], "EARTH")) $earthPitched = 1;
+          if(TalentContains($pitchArr[$i], "ICE")) $icePitched = 1;
+        }
+        $rv = "";
+        if($earthPitched)
+        {
+          IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+          $rv .= "Prevent the next 2 damage that would be dealt to Oldhim this turn. ";
+        }
+        if($icePitched)
+        {
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-");
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $otherPlayer, "-", 1);
+          $rv .= "The opponent must put a card from their hand on top of their deck.";
+        }
+        return $rv;
+      case "ELE003":
+        $pitch = &GetClassState($currentPlayer, $CS_PitchedForThisCard);
+        $pitchArr = explode("-", $pitch);
+        $icePitched = 0;
+        for($i=0; $i<count($pitchArr); ++$i)
+        {
+          if(TalentContains($pitchArr[$i], "ICE")) $icePitched = 1;
+        }
+        if($icePitched)
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv .= "If this hits, your opponent gains a Frostbite token.";
+        }
+        return $rv;
+      case "ELE004":
+        Fuse($cardID, $currentPlayer, "ICE");
+        return "";
+      case "ELE005":
+        Fuse($cardID, $currentPlayer, "EARTH,ICE");
+        return "";
+      case "ELE006":
+        AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-");
+        Fuse($cardID, $currentPlayer, "EARTH");
+        AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        return "";
+      case "ELE016": case "ELE017": case "ELE018":
+        Fuse($cardID, $currentPlayer, "ICE");
+        return "Glacial Footsteps gets Dominate if it is Ice fused.";
+      case "ELE019": case "ELE020": case "ELE021":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        return "";
+      case "ELE025": case "ELE026": case "ELE027":
+        Fuse($cardID, $currentPlayer, "ICE");
+        return "";
+      case "ELE028": case "ELE029": case "ELE030":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        return "";
+      case "ELE205":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Tear Asunder gives your next Guardian attack +1, Dominate, and discards 2 on hit.";
+      case "ELE206": case "ELE207": case "ELE208":
+        if(NumNonTokenAura($currentPlayer) > 1) { $rv = "Embolden drew a card."; MyDrawCard(); }
+        return $rv;
       default: return "";
     }
   }
 
   function ELEGuardianHitEffect($cardID)
   {
+    global $defPlayer;
     switch($cardID)
     {
+      case "ELE004":
+        AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
+        AddNextTurnEffect($cardID . "-HIT", $defPlayer);
+        WriteLog("Endless Winter makes the defending player take a frostbite token when activating an ability until the end of their next turn.");
+        break;
+      case "ELE209": case "ELE210": case "ELE211":
+        if(HasIncreasedAttack()) PummelHit();
+        break;
       default: break;
     }
   }

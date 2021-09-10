@@ -201,18 +201,19 @@
     }
   }
 
-  function Reload()
+  function Reload($player=0)
   {
-    global $myArsenal, $currentPlayer;
-    if($myArsenal != "")
+    global $currentPlayer;
+    if($player == 0) $player = $currentPlayer;
+    if(!ArsenalEmpty($player))
     {
       WriteLog("There is already a card in your arsenal, so you cannot Reload.");
       return;
     }
-    AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
-    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-    AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "HAND", 1);
+    AddDecisionQueue("FINDINDICES", $player, "HAND");
+    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+    AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
   }
 
 ?>

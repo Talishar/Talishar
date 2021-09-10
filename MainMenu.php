@@ -44,9 +44,14 @@ body {
   <div style="text-align:center;"><input type="submit" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">CRU Ranger/MON Warrior Double Update! 9/3/21 Supported cards:</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">UI Polish Update! 9/8/21</h3>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Highlight cards that are playable</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Change combat chain card color</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Fix card highlight from going off the screen</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Add player color coded highlight to played cards in game log</div>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">MON Light/CRU Mech 9/8/21 Supported cards:</h3>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL ARC Mechanologist</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Data Doll and Meganetic Shockwave</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian except Righteous Cleansing</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ranger except Silver the Tip</div>
@@ -55,6 +60,7 @@ body {
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Brute except Kayo, Beast Within, Massacre, and Argh... Smash!</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Generic except Gambler's Gloves</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Generic except Exude Confidence, Rouse the Ancients, Rally the Rearguard</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Light except Glisten, Blinding Beam, Ray of Hope</div>
 
 </div>
 </div>

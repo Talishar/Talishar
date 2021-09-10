@@ -41,6 +41,12 @@ function AddBottomMyDeck($cardID, $from)
   array_push($myDeck, $cardID);
 }
 
+function AddBottomDeck($cardID, $player, $from)
+{
+  $deck = &GetDeck($player);
+  array_push($deck, $cardID);
+}
+
 function RemoveTopMyDeck()
 {
   global $myDeck;
@@ -52,6 +58,23 @@ function AddMainHand($cardID, $from)
 {
   global $mainHand;
   array_push($mainHand, $cardID);
+}
+
+function RemoveHand($cardID, $player)
+{
+  $hand = &GetHand($player);
+  for($i=count($hand)-HandPieces(); $i>=0; $i-=HandPieces())
+  {
+    if($hand[$i] == $cardID)
+    {
+      for($j = $i+HandPieces()-1; $j >= $i; --$j)
+      {
+        unset($hand[$j]);
+      }
+      $hand = array_values($hand);
+      break;
+    }
+  }
 }
 
 function AddArsenal($cardID, $player, $from, $facing)
@@ -187,9 +210,23 @@ function ConsumeDamagePrevention($player)
   return $prevention;
 }
 
-function IncrementClassState($player, $piece)
+function AddThisCardPitch($player, $cardID)
 {
-  SetClassState($player, $piece, (GetClassState($player, $piece) + 1));
+  global $CS_PitchedForThisCard;
+  $pitch = GetClassState($player, $CS_PitchedForThisCard);
+  if($pitch == "-") SetClassState($player, $CS_PitchedForThisCard, $cardID);
+  else SetClassState($player, $CS_PitchedForThisCard, $pitch . "-" . $cardID);
+}
+
+function ResetThisCardPitch($player)
+{
+  global $CS_PitchedForThisCard;
+  SetClassState($player, $CS_PitchedForThisCard, "-");
+}
+
+function IncrementClassState($player, $piece, $amount=1)
+{
+  SetClassState($player, $piece, (GetClassState($player, $piece) + $amount));
 }
 
 function SetClassState($player, $piece, $value)

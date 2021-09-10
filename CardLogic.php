@@ -65,14 +65,15 @@ function LordOfWindIndices()
 
 function NaturesPathPilgrimageHit()
 {
-  global $mainArsenal, $mainDeck;
-  if($mainArsenal == "" && count($mainDeck) > 0)
+  global $mainPlayer, $mainDeck;
+  $deck = &GetDeck($mainPlayer);
+  if(!ArsenalFull($mainPlayer) && count($deck) > 0)
   {
-    $type = CardType($mainDeck[0]);
+    $type = CardType($deck[0]);
     if($type == "A" || $type == "AA")
     {
-      $mainArsenal = $mainDeck[0];
-      array_shift($mainDeck);
+      AddArsenal($deck[0], $mainPlayer, "DECK", "DOWN");
+      array_shift($deck);
     }
   }
 }
@@ -298,18 +299,22 @@ function GiveAttackGoAgain()
 
 function DefenderTopDeckToArsenal()
 {
-  global $defArsenal, $defDeck;
-  if($defArsenal != "" || count($defDeck) == 0) return;//Already something there
-  $defArsenal = array_shift($defDeck);
-  WriteLog("The top card of the defender's deck was put in their arsenal.");
+  global $defPlayer;
+  TopDeckToArsenal($defPlayer);
 }
 
 function MainTopDeckToArsenal()
 {
-  global $mainArsenal, $mainDeck;
-  if($mainArsenal != "" || count($mainDeck) == 0) return;//Already something there
-  $mainArsenal = array_shift($mainDeck);
-  WriteLog("The top card of the main player's deck was put in their arsenal.");
+  global $mainPlayer;
+  TopDeckToArsenal($mainPlayer);
+}
+
+function TopDeckToArsenal($player)
+{
+  $deck = &GetDeck($player);
+  if(ArsenalFull($player) || count($deck) == 0) return;//Already something there
+  AddArsenal(array_shift($deck), $player, "DECK", "DOWN");
+  WriteLog("The top card of player " . $player . "'s deck was put in their arsenal.");
 }
 
 function DefenderArsenalToBottomOfDeck()
@@ -319,10 +324,10 @@ function DefenderArsenalToBottomOfDeck()
   $defArsenal = "";
 }
 
-function DefenderArsenalToDiscard()
+function DestroyArsenal($player)
 {
-  global $defArsenal;
-  $defArsenal = "";
+  $arsenal = &GetArsenal($player);
+  $arsenal = "";
   //TODO: Add to discard
 }
 

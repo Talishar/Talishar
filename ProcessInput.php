@@ -390,6 +390,8 @@
 
     $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    $attack = AuraAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
+    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 
@@ -629,7 +631,7 @@ function FinalizeChainLink()
     global $playerID, $myResources, $turn, $currentPlayer, $otherPlayer, $combatChain, $actionPoints, $myAuras, $myPitch, $CS_NumAddedToSoul;
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain;
     if($turn[0] != "P") MakeGamestateBackup();
-    if($dynCostResolved == -1) WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID));
+    if($dynCostResolved == -1) WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
     //If it's not pitch phase, pay the cost
         if($from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
         else $cardType = CardType($cardID);
@@ -659,6 +661,7 @@ function FinalizeChainLink()
           if(SearchCharacterForCard($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
           { $myResources[0] += 1; }
           array_push($myPitch, $cardID);
+          AddThisCardPitch($currentPlayer, $cardID);
           PitchAbility($cardID);
         }
         if($myResources[0] < $myResources[1])
@@ -693,6 +696,7 @@ function FinalizeChainLink()
             if(CanPlayAsInstant($cardID)) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
             else if(($abilityType == "A" || $abilityType == "AA") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
             if($abilityType == "A") { ResetCombatChainState(); UnsetMyCombatChainBanish(); }
+            ActivateAbilityEffects();
           }
           else
           {
@@ -714,7 +718,7 @@ function FinalizeChainLink()
           }
         }
         //Pay additional costs
-        PayAdditionalCosts($cardID);
+        if($turn[0] != "B") PayAdditionalCosts($cardID);
         if($cardType == "AA" || $cardType == "W") { AuraAttackAbilities($cardID); }
         AddDecisionQueue("RESUMEPLAY", $currentPlayer, "-");
         $turn[2] = $cardID;
@@ -838,6 +842,7 @@ function FinalizeChainLink()
           {
             case "GY": array_push($myDiscard, $cardID); break;
             case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
+            case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, "PLAY", "NA"); break;
             default: break;
           }
         }
@@ -863,14 +868,15 @@ function FinalizeChainLink()
     //Now determine what needs to happen next
     $myClassState[$CS_PlayIndex] = -1;
     $myClassState[$CS_CharacterIndex] = -1;
+    ResetThisCardPitch($currentPlayer);
     ProcessDecisionQueue();
   }
 
   function CardLink($caption, $cardNumber)
   {
-    //$file = "'./" . "PlayerCards" . "/" . ($cardNumber+1) . ".jpg'";//TODO: Replace "PlayerCards" with correct folder parameter
-    //return "<div onclick=\"ShowDetail(this," . $file . ")\">" . $caption . "</div>";
-    return $cardNumber;
+    $file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
+    return "<b><span onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $caption . "</span></b>";
+    //return $cardNumber;
   }
 
 ?>

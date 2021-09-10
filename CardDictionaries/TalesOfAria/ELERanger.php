@@ -14,6 +14,9 @@
       case "ELE047": case "ELE048": case "ELE049": return "AA";
       case "ELE050": case "ELE051": case "ELE052": return "AA";
       case "ELE059": case "ELE060": case "ELE061": return "AA";
+      case "ELE213": return "E";
+      case "ELE215": return "A";
+      case "ELE216": case "ELE217": case "ELE218": return "AA";
       default: return "";
     }
   }
@@ -28,6 +31,8 @@
       case "ELE047": case "ELE048": case "ELE049":
       case "ELE050": case "ELE051": case "ELE052":
       case "ELE059": case "ELE060": case "ELE061": return "Arrow";
+      case "ELE213": return "Head";
+      case "ELE216": case "ELE217": case "ELE218": return "Arrow";
       default: return "";
     }
   }
@@ -44,6 +49,9 @@
       case "ELE047": case "ELE048": case "ELE049": return 1;
       case "ELE050": case "ELE051": case "ELE052": return 1;
       case "ELE059": case "ELE060": case "ELE061": return 1;
+      //Normal Ranger
+      case "ELE215": return 0;
+      case "ELE216": case "ELE217": case "ELE218": return 0;
       default: return 0;
     }
   }
@@ -58,6 +66,11 @@
       case "ELE041": case "ELE047": case "ELE050": case "ELE059": return 1;
       case "ELE042": case "ELE048": case "ELE051": case "ELE060": return 2;
       case "ELE043": case "ELE049": case "ELE052": case "ELE061": return 3;
+      //Normal Ranger
+      case "ELE215": return 1;
+      case "ELE216": return 1;
+      case "ELE217": return 2;
+      case "ELE218": return 3;
       default: return 0;
     }
   }
@@ -68,6 +81,8 @@
     {
       case "ELE031": case "ELE032": case "ELE033": case "ELE034": return 0;
       case "ELE037": return 2;
+      case "ELE213": return 2;
+      case "ELE215": return 2;
       default: return 3;
     }
   }
@@ -82,6 +97,10 @@
       case "ELE041": case "ELE048": case "ELE051": case "ELE060": return 4;
       case "ELE042": case "ELE049": case "ELE052": case "ELE061": return 3;
       case "ELE043": return 2;
+      //Normal Ranger
+      case "ELE216": return 4;
+      case "ELE217": return 3;
+      case "ELE218": return 2;
       default: return 0;
     }
   }
@@ -147,12 +166,13 @@
 
   function ELERangerHitEffect($cardID)
   {
-    global $defPlayer, $combatChainState, $CCS_AttackFused;
+    global $defPlayer, $combatChainState, $CCS_AttackFused, $mainPlayer;
     switch($cardID)
     {
       case "ELE036":
         if($combatChainState[$CCS_AttackFused]) DealDamage($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
         break;
+      case "ELE216": case "ELE217": case "ELE218": if(HasIncreasedAttack()) Reload($mainPlayer); break;
       default: break;
     }
   }
@@ -176,8 +196,15 @@
 
   function FuseAbility($cardID, $player, $element)
   {
+    $otherPlayer = ($player == 2 ? 1 : 2);
     switch($cardID)
     {
+      case "ELE004": AddCurrentTurnEffect($cardID, $otherPlayer); break;
+      case "ELE005": AddCurrentTurnEffect($cardID, $player); break;
+      case "ELE016": case "ELE017": case "ELE018": AddCurrentTurnEffect($cardID, $player); break;
+      case "ELE019": case "ELE020": case "ELE021": AddCurrentTurnEffect($cardID, $player); break;
+      case "ELE025": case "ELE026": case "ELE027": PlayAura("ELE111", $otherPlayer); break;
+      case "ELE028": case "ELE029": case "ELE030": PlayAura("WTR075", $player); break;
       case "ELE035": AddCurrentTurnEffect($cardID . "-2", $player); break;
       case "ELE037": AddCurrentTurnEffect($cardID . "-2", $player); break;
       case "ELE041": case "ELE042": case "ELE043":
