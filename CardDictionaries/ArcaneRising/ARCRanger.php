@@ -118,15 +118,20 @@
     switch($cardID)
     {
       case "ARC038": case "ARC039":
-        if($myArsenal == "") return "There is no card in your arsenal.";
-        AddBottomMyDeck($myArsenal, "ARS");
-        $myArsenal = "";
-        $newCard = RemoveTopMyDeck();
-        if($newCard != "") AddArsenal($newCard, $currentPlayer, "DECK", "UP");
-        if(CardSubType($newCard) == "Arrow") AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ArsenalEmpty($currentPlayer)) return "There is no card in your arsenal.";
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
+        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "-", 1);
+        AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         return "";
       case "ARC040":
-        if(ArsenalFull($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
+        if(!ArsenalEmpty($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
@@ -136,12 +141,12 @@
       case "ARC041":
         if(ArsenalHasFaceDownCard($currentPlayer))
         {
-          SetMyArsenalFacing("UP");
+          SetArsenalFacing("UP", $currentPlayer);
           Opt($cardID, 1);
         }
         return "";
       case "ARC042":
-        if(ArsenalFull($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
+        if(!ArsenalEmpty($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
@@ -207,7 +212,7 @@
     if($player == 0) $player = $currentPlayer;
     if(!ArsenalEmpty($player))
     {
-      WriteLog("There is already a card in your arsenal, so you cannot Reload.");
+      WriteLog("Your arsenal is not empty, so you cannot Reload.");
       return;
     }
     AddDecisionQueue("FINDINDICES", $player, "HAND");

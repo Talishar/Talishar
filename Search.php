@@ -311,5 +311,20 @@ function SearchCharacterEffects($player, $index, $effect)
   return false;
 }
 
+function GetArsenalFaceDownIndices($player)
+{
+  $arsenal = &GetArsenal($player);
+  $indices = "";
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    if($arsenal[$i+1] == "DOWN")
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 ?>
 

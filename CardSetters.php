@@ -2,7 +2,7 @@
 
 function BanishCardForPlayer($cardID, $player, $from, $modifier)
 {
-  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   if($mainPlayerGamestateStillBuilt)
@@ -12,7 +12,7 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier)
   }
   else
   {
-    if($player == $playerID) BanishCard($myBanish, $myClassState, $cardID, $modifier);
+    if($player == $currentPlayer) BanishCard($myBanish, $myClassState, $cardID, $modifier);
     else BanishCard($theirBanish, $theirClassState, $cardID, $modifier);
   }
 }
@@ -60,6 +60,12 @@ function AddMainHand($cardID, $from)
   array_push($mainHand, $cardID);
 }
 
+function AddPlayerHand($cardID, $player, $from)
+{
+  $hand = &GetHand($player);
+  array_push($hand, $cardID);
+}
+
 function RemoveHand($cardID, $player)
 {
   $hand = &GetHand($player);
@@ -79,10 +85,9 @@ function RemoveHand($cardID, $player)
 
 function AddArsenal($cardID, $player, $from, $facing)
 {
-  global $CS_ArsenalFacing;
   $arsenal = &GetArsenal($player);
-  $arsenal = $cardID;
-  SetClassState($player, $CS_ArsenalFacing, $facing);
+  array_push($arsenal, $cardID);
+  array_push($arsenal, $facing);
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP")
   {
@@ -102,30 +107,17 @@ function AddArsenal($cardID, $player, $from, $facing)
 
 function AddMyArsenal($cardID, $from, $facing)
 {
-  global $myArsenal, $currentPlayer, $myClassState, $CS_ArsenalFacing, $actionPoints, $otherPlayer;
-  $myArsenal = $cardID;
-  $myClassState[$CS_ArsenalFacing] = $facing;
-  if($facing == "UP")
-  {
-    if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
-      WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
-      ++$actionPoints;
-    }
-    switch($cardID)
-    {
-      case "ARC057": case "ARC058": case "ARC059": AddCurrentTurnEffect($cardID, $currentPlayer); break;
-      case "ARC063": case "ARC064": case "ARC065": Opt($cardID, 1); break;
-      case "CRU123": AddCurrentTurnEffect($cardID, $otherPlayer); break;
-      default: break;
-    }
-  }
+  global $currentPlayer;
+  AddArsenal($cardID, $currentPlayer, $from, $facing);
 }
 
-function SetMyArsenalFacing($facing)
+function SetArsenalFacing($facing, $player)
 {
-  global $myClassState, $CS_ArsenalFacing, $myArsenal;
-  $myClassState[$CS_ArsenalFacing] = $facing;
-  return $myArsenal;
+  $arsenal = &GetArsenal($player);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    if(facing == "UP" && $arsenal[$i+1] == "DOWN") { $arsenal[$i+1] = "UP"; return $arsenal[$i]; }
+  }
 }
 
 //Deprecated -- do not use
@@ -144,7 +136,7 @@ function SetCCAttackModifier($index, $amount)
 
 function AddSoul($cardID, $player, $from)
 {
-  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $CS_NumAddedToSoul;
   if($mainPlayerGamestateStillBuilt)
@@ -154,7 +146,7 @@ function AddSoul($cardID, $player, $from)
   }
   else
   {
-    if($player == $playerID) AddSpecificSoul($cardID, $mySoul, $from);
+    if($player == $currentPlayer) AddSpecificSoul($cardID, $mySoul, $from);
     else AddSpecificSoul($cardID, $theirSoul, $from);
   }
   IncrementClassState($player, $CS_NumAddedToSoul);
@@ -167,7 +159,7 @@ function AddSpecificSoul($cardID, &$soul, $from)
 
 function BanishFromSoul($player)
 {
-  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   if($mainPlayerGamestateStillBuilt)
   {
@@ -176,7 +168,7 @@ function BanishFromSoul($player)
   }
   else
   {
-    if($player == $playerID) BanishFromSpecificSoul($mySoul, $player);
+    if($player == $currentPlayer) BanishFromSpecificSoul($mySoul, $player);
     else BanishFromSpecificSoul($theirSoul, $player);
   }
 }
@@ -231,7 +223,7 @@ function IncrementClassState($player, $piece, $amount=1)
 
 function SetClassState($player, $piece, $value)
 {
-  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   if($mainPlayerGamestateStillBuilt)
   {
@@ -240,14 +232,14 @@ function SetClassState($player, $piece, $value)
   }
   else
   {
-    if($player == $playerID) $myClassState[$piece] = $value;
+    if($player == $currentPlayer) $myClassState[$piece] = $value;
     else $theirClassState[$piece] = $value;
   }
 }
 
 function AddCharacterEffect($player, $index, $effect)
 {
-  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
   if($mainPlayerGamestateStillBuilt)
   {
@@ -256,14 +248,14 @@ function AddCharacterEffect($player, $index, $effect)
   }
   else
   {
-    if($player == $playerID) { array_push($myCharacterEffects, $index); array_push($myCharacterEffects, $effect); }
+    if($player == $currentPlayer) { array_push($myCharacterEffects, $index); array_push($myCharacterEffects, $effect); }
     else { array_push($theirCharacterEffects, $index); array_push($theirCharacterEffects, $effect); }
   }
 }
 
 function AddGraveyard($cardID, $player, $from)
 {
-  global $playerID, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   if($mainPlayerGamestateStillBuilt)
   {
@@ -272,7 +264,7 @@ function AddGraveyard($cardID, $player, $from)
   }
   else
   {
-    if($player == $playerID) AddSpecificGraveyard($cardID, $myDiscard, $from);
+    if($player == $currentPlayer) AddSpecificGraveyard($cardID, $myDiscard, $from);
     else AddSpecificGraveyard($cardID, $theirDiscard, $from);
   }
 }

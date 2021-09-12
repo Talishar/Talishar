@@ -150,7 +150,18 @@
     echo("</div>");
   }
 
-  if(($turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
+  if(($turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "CHOOSEARSENAL" || $turn[0] == "CHOOSEARSENALCANCEL") && $turn[1] == $playerID)
+  {
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($myArsenal[$options[$i]], "CardImages", 400, 18, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
+  }
+
+  if(($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);
@@ -298,12 +309,14 @@
   }
   echo("</div>");
   //Now display arsenal
-
   if($theirArsenal != "")
   {
     echo("<div style='position: fixed; top:10px; left:83%; display:inline;'><h3 style='width:130px; background-color: rgba(255,255,255,0.70);'>Their Arsenal:</h3>");
-    if($theirClassState[$CS_ArsenalFacing] == "UP") echo(Card($theirArsenal, "CardImages", 180, 0, 0));
-    else echo(Card("cardBack", "CardImages", 180, 0, 0));
+    for($i=0; $i<count($theirArsenal); $i+=ArsenalPieces())
+    {
+      if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "CardImages", 180, 0, 0));
+      else echo(Card("cardBack", "CardImages", 180, 0, 0));
+    }
     echo("</div>");
   }
 
@@ -373,9 +386,12 @@
   if($myArsenal != "")
   {
     echo("<div style='position: fixed; bottom:10px; left:83%; display:inline;'><h3 style='width:130px; background-color: rgba(255,255,255,0.70);'>Your Arsenal:</h3>");
-    $playable = $turn[0] != "P" && IsPlayable($myArsenal, $turn[0], "ARS");
-    $border = CardBorderColor($myArsenal, "ARS", $playable);
-    echo(Card($myArsenal, "CardImages", 180, $currentPlayer == $playerID && $playable ? 5 : 0, 1, 0, $border));
+    for($i=0; $i<count($myArsenal); $i+=ArsenalPieces())
+    {
+      $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS");
+      $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
+      echo(Card($myArsenal[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? 5 : 0, 1, 0, $border, 0, strval($i)));
+    }
     echo("</div>");
   }
 
@@ -485,6 +501,8 @@
       case "MULTICHOOSEDISCARD": return 0;
       case "CHOOSEDISCARDCANCEL": return 0;
       case "CHOOSEARCANE": return 0;
+      case "CHOOSEARSENAL": return 0;
+      case "CHOOSEDISCARD": return 0;
       default: return 1;
     }
   }

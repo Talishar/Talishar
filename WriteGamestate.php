@@ -12,7 +12,7 @@
   fwrite($handler, implode(" ", $p1Deck) . "\r\n");
   fwrite($handler, implode(" ", $p1CharEquip) . "\r\n");
   fwrite($handler, implode(" ", $p1Resources) . "\r\n");
-  fwrite($handler, $p1Arsenal . "\r\n");
+  fwrite($handler, implode(" ", $p1Arsenal) . "\r\n");
   fwrite($handler, implode(" ", $p1Items) . "\r\n");
   fwrite($handler, implode(" ", $p1Auras) . "\r\n");
   fwrite($handler, implode(" ", $p1Discard) . "\r\n");
@@ -27,7 +27,7 @@
   fwrite($handler, implode(" ", $p2Deck) . "\r\n");
   fwrite($handler, implode(" ", $p2CharEquip) . "\r\n");
   fwrite($handler, implode(" ", $p2Resources) . "\r\n");
-  fwrite($handler, $p2Arsenal . "\r\n");
+  fwrite($handler, implode(" ", $p2Arsenal) . "\r\n");
   fwrite($handler, implode(" ", $p2Items) . "\r\n");
   fwrite($handler, implode(" ", $p2Auras) . "\r\n");
   fwrite($handler, implode(" ", $p2Discard) . "\r\n");
