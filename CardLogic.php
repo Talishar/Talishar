@@ -5,7 +5,7 @@ include "CoreLogic.php";
 
 function BlessingOfDeliveranceDestroy($amount)
 {
-  global $playerID, $mainPlayer, $mainDeck, $mainHealth;
+  global $mainPlayer, $mainDeck, $mainHealth;
   $log = "Blessing of Deliverance revealed ";
   $lifegain = 0;
   for($i=0; $i<$amount; ++$i)
@@ -129,10 +129,8 @@ function AddCurrentTurnEffectFromCombat($cardID, $player)
 function CopyCurrentTurnEffectsFromCombat()
 {
   global $currentTurnEffects, $currentTurnEffectsFromCombat;
-WriteLog(count($currentTurnEffectsFromCombat));
   for($i=0; $i<count($currentTurnEffectsFromCombat); $i += 2)
   {
-WriteLog($currentTurnEffectsFromCombat[$i]);
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i], $currentTurnEffectsFromCombat[$i+1]);
   }
   $currentTurnEffectsFromCombat = [];
@@ -200,15 +198,22 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
-    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint;
+    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint, $otherPlayer, $p2ClassState, $myClassState, $theirClassState;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESUMEPAYING")
     {
       if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
+      else if($currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
       array_shift($turn);
       array_shift($turn);
       array_shift($turn);
       if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY")
       {
+        if($currentPlayer != $decisionQueue[1])
+        {
+          $currentPlayer = $decisionQueue[1];
+          $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+          BuildMyGamestate($currentPlayer);
+        }
         $decisionQueue = [];
         PlayCardEffect($turn[2], $turn[3], $turn[4]);
       }
@@ -255,7 +260,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       if(count($combatChain) > 0)//Means we initiated a chain link
       {
         $turn[0] = "B";
-        $currentPlayer = $otherPlayer;
+        $currentPlayer = $defPlayer;
         $turn[2] = "";
       }
       else {
@@ -324,16 +329,33 @@ function DefenderArsenalToBottomOfDeck()
   $defArsenal = "";
 }
 
+function ArsenalToBottomDeck($player)
+{
+  //TODO: Allow to choose arsenal slot
+  $arsenal = &GetArsenal($player);
+  if(count($arsenal) == 0) return;
+  $index = 0;
+  AddBottomDeck($arsenal[$index], $player, "ARS");
+  for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
+  {
+    unset($arsenal[$i]);
+  }
+  $arsenal = array_values($arsenal);
+}
+
 function DestroyArsenal($player)
 {
   $arsenal = &GetArsenal($player);
-  $arsenal = "";
-  //TODO: Add to discard
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    AddGraveyard($arsenal[$i], $player, "ARS");
+  }
+  $arsenal = [];
 }
 
 function Opt($cardID, $amount)
 {
-  global $playerID, $myDeck, $turn, $currentPlayer;
+  global $myDeck, $turn, $currentPlayer;
   if($amount <= 0) return;
   $cards = "";
   for($i=0; $i<$amount; ++$i)
@@ -359,7 +381,7 @@ function OptMain($amount)
 
 function DiscardRandom()
 {
-  global $playerID,$myHand,$myDiscard,$myCharacter, $myClassState, $CS_Num6PowDisc, $mainPlayer;
+  global $playerID,$myHand,$myDiscard,$myCharacter, $myClassState, $CS_Num6PowDisc, $mainPlayer, $currentPlayer;
   if(count($myHand) == 0) return;
   $index = rand() % count($myHand);
   $discarded = $myHand[$index];
@@ -375,7 +397,7 @@ function DiscardRandom()
   }
   unset($myHand[$index]);
   $myHand = array_values($myHand);
-  UpdateGameState($playerID);
+  UpdateGameState($currentPlayer);
   return $discarded;
 };
 
@@ -392,14 +414,14 @@ function DefDiscardRandom()
 
 function Intimidate()
 {
-  global $playerID, $theirBanish, $theirClassState, $defPlayer, $theirHand;//For now we'll assume you can only intimidate the opponent
+  global $theirBanish, $theirClassState, $defPlayer, $theirHand, $currentPlayer;//For now we'll assume you can only intimidate the opponent
   if(count($theirHand) == 0) return;//Nothing to do if they have no hand
   $index = rand() % count($theirHand);
   BanishCard($theirBanish, $theirClassState, $theirHand[$index], "INT");
   unset($theirHand[$index]);
   $theirHand = array_values($theirHand);
   WriteLog("Intimidate triggered " . count($theirHand));
-  UpdateGameState($playerID);
+  UpdateGameState($currentPlayer);
 }
 
 //Deprecated: Use BanishCard in CardSetters instead

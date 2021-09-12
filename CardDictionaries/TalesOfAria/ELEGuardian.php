@@ -10,10 +10,15 @@
       case "ELE004": return "AA";
       case "ELE005": return "AA";
       case "ELE006": return "I";
+      case "ELE007": case "ELE008": case "ELE009": return "DR";
+      case "ELE010": case "ELE011": case "ELE012": return "DR";
+      case "ELE013": case "ELE014": case "ELE015": return "AA";
       case "ELE016": case "ELE017": case "ELE018": return "AA";
       case "ELE019": case "ELE020": case "ELE021": return "AA";
+      case "ELE022": case "ELE023": case "ELE024": return "AA";
       case "ELE025": case "ELE026": case "ELE027": return "A";
       case "ELE028": case "ELE029": case "ELE030": return "A";
+      case "ELE202": return "W";
       case "ELE203": case "ELE204": return "E";
       case "ELE205": return "A";
       case "ELE206": case "ELE207": case "ELE208": return "A";
@@ -29,6 +34,7 @@
       case "ELE003": return "Hammer";
       case "ELE025": case "ELE026": case "ELE027":
       case "ELE028": case "ELE029": case "ELE030": return "Aura";
+      case "ELE202": return "Hammer";
       case "ELE203": case "ELE204": return "Off-Hand";
       case "ELE206": case "ELE207": case "ELE208": return "Aura";
       default: return "";
@@ -43,8 +49,12 @@
       case "ELE004": return 4;
       case "ELE005": return 3;
       case "ELE006": return 2;
+      case "ELE007": case "ELE008": case "ELE009": return 2;
+      case "ELE010": case "ELE011": case "ELE012": return 2;
+      case "ELE013": case "ELE014": case "ELE015": return 3;
       case "ELE016": case "ELE017": case "ELE018": return 6;
       case "ELE019": case "ELE020": case "ELE021": return 4;
+      case "ELE022": case "ELE023": case "ELE024": return 3;
       case "ELE025": case "ELE026": case "ELE027": return 2;
       case "ELE028": case "ELE029": case "ELE030": return 2;
       case "ELE205": Return 3;
@@ -60,9 +70,9 @@
     {
       case "ELE004": case "ELE005": return 1;
       case "ELE006": return 3;
-      case "ELE016": case "ELE019": case "ELE025": case "ELE028": return 1;
-      case "ELE017": case "ELE020": case "ELE026": case "ELE029": return 2;
-      case "ELE018": case "ELE021": case "ELE027": case "ELE030": return 3;
+      case "ELE007": case "ELE010": case "ELE013": case "ELE016": case "ELE019": case "ELE022": case "ELE025": case "ELE028": return 1;
+      case "ELE008": case "ELE011": case "ELE014": case "ELE017": case "ELE020": case "ELE023": case "ELE026": case "ELE029": return 2;
+      case "ELE009": case "ELE012": case "ELE015": case "ELE018": case "ELE021": case "ELE024": case "ELE027": case "ELE030": return 3;
       //Normal Guardian
       case "ELE205": return 3;
       case "ELE206": case "ELE209": return 1;
@@ -77,6 +87,13 @@
     switch($cardID)
     {
       case "ELE001": case "ELE002": case "ELE003": case "ELE006": return 0;
+      case "ELE007": return 4;
+      case "ELE008": return 3;
+      case "ELE009": return 2;
+      case "ELE010": return 6;
+      case "ELE011": return 5;
+      case "ELE012": return 4;
+      case "ELE202": return 0;
       case "ELE203": return 0;
       case "ELE204": return 1;
       default: return 3;
@@ -93,9 +110,11 @@
       case "ELE016": return 10;
       case "ELE017": return 9;
       case "ELE018": case "ELE019": return 8;
-      case "ELE021": return 7;
-      case "ELE022": return 6;
+      case "ELE013": case "ELE020": case "ELE022": return 7;
+      case "ELE014": case "ELE021": case "ELE023": return 6;
+      case "ELE015": case "ELE024": return 5;
       //Normal Guardian
+      case "ELE202": return 3;
       case "ELE209": return 6;
       case "ELE210": return 5;
       case "ELE211": return 4;
@@ -162,11 +181,23 @@
         AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
+      case "ELE007": case "ELE008": case "ELE009":
+        Fuse($cardID, $currentPlayer, "ICE");
+        return "";
+      case "ELE010": case "ELE011": case "ELE012":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        return "";
+      case "ELE013": case "ELE014": case "ELE015":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        return "";
       case "ELE016": case "ELE017": case "ELE018":
         Fuse($cardID, $currentPlayer, "ICE");
         return "Glacial Footsteps gets Dominate if it is Ice fused.";
       case "ELE019": case "ELE020": case "ELE021":
         Fuse($cardID, $currentPlayer, "EARTH");
+        return "";
+      case "ELE022": case "ELE023": case "ELE024":
+        Fuse($cardID, $currentPlayer, "ICE");
         return "";
       case "ELE025": case "ELE026": case "ELE027":
         Fuse($cardID, $currentPlayer, "ICE");
@@ -186,13 +217,20 @@
 
   function ELEGuardianHitEffect($cardID)
   {
-    global $defPlayer;
+    global $defPlayer, $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
       case "ELE004":
         AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
         AddNextTurnEffect($cardID . "-HIT", $defPlayer);
         WriteLog("Endless Winter makes the defending player take a frostbite token when activating an ability until the end of their next turn.");
+        break;
+      case "ELE013": case "ELE014": case "ELE015":
+        if($combatChainState[$CCS_AttackFused])
+        {
+          AddNextTurnEffect($cardID, $defPlayer);
+          WriteLog("Entangle gives the opponent's first attack next turn -2.");
+        }
         break;
       case "ELE209": case "ELE210": case "ELE211":
         if(HasIncreasedAttack()) PummelHit();

@@ -12,7 +12,7 @@
   $p1Deck = GetArray($handler);
   $p1CharEquip = GetArray($handler);
   $p1Resources = GetArray($handler);
-  $p1Arsenal = trim(fgets($handler));
+  $p1Arsenal = GetArray($handler);
   $p1Items = GetArray($handler);
   $p1Auras = GetArray($handler);
   $p1Discard = GetArray($handler);
@@ -27,7 +27,7 @@
   $p2Deck = GetArray($handler);
   $p2CharEquip = GetArray($handler);
   $p2Resources = GetArray($handler);
-  $p2Arsenal = trim(fgets($handler));
+  $p2Arsenal = GetArray($handler);
   $p2Items = GetArray($handler);
   $p2Auras = GetArray($handler);
   $p2Discard = GetArray($handler);
@@ -52,35 +52,48 @@
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   fclose($handler);
 
-  $myHand = $playerID==1 ? $p1Hand : $p2Hand;
-  $myDeck = $playerID==1 ? $p1Deck : $p2Deck;
-  $myResources = $playerID==1 ? $p1Resources : $p2Resources;
-  $myCharacter = $playerID==1 ? $p1CharEquip : $p2CharEquip;
-  $myArsenal = $playerID==1 ? $p1Arsenal : $p2Arsenal;
-  $myHealth = $playerID==1 ? $playerHealths[0] : $playerHealths[1];
-  $myItems = $playerID==1 ? $p1Items : $p2Items;
-  $myAuras = $playerID==1 ? $p1Auras : $p2Auras;
-  $myDiscard = $playerID==1 ? $p1Discard : $p2Discard;
-  $myPitch = $playerID==1 ? $p1Pitch : $p2Pitch;
-  $myBanish = $playerID==1 ? $p1Banish : $p2Banish;
-  $myClassState = $playerID==1 ? $p1ClassState : $p2ClassState;
-  $myCharacterEffects = $playerID==1 ? $p1CharacterEffects : $p2CharacterEffects;
-  $mySoul = $playerID==1 ? $p1Soul : $p2Soul;
-  $theirHand = $playerID==1 ? $p2Hand : $p1Hand;
-  $theirDeck = $playerID==1 ? $p2Deck : $p1Deck;
-  $theirResources = $playerID==1 ? $p2Resources : $p1Resources;
-  $theirCharacter = $playerID==1 ? $p2CharEquip : $p1CharEquip;
-  $theirArsenal = $playerID==1 ? $p2Arsenal : $p1Arsenal;
-  $theirHealth = $playerID==1? $playerHealths[1] : $playerHealths[0];
-  $theirItems = $playerID==1 ? $p2Items : $p1Items;
-  $theirAuras = $playerID==1 ? $p2Auras : $p1Auras;
-  $theirDiscard = $playerID==1 ? $p2Discard : $p1Discard;
-  $theirPitch = $playerID==1 ? $p2Pitch : $p1Pitch;
-  $theirBanish = $playerID==1 ? $p2Banish : $p1Banish;
-  $theirClassState = $playerID==1 ? $p2ClassState : $p1ClassState;
-  $theirCharacterEffects = $playerID==1 ? $p2CharacterEffects : $p1CharacterEffects;
-  $theirSoul = $playerID==1 ? $p2Soul : $p1Soul;
+  BuildMyGamestate($playerID);
 
+  function BuildMyGamestate($playerID)
+  {
+    global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
+    global $p1CharacterEffects, $p1Discard;
+    global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
+    global $p2CharacterEffects, $p2Discard;
+    global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
+    global $myCharacterEffects, $myDiscard;
+    global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
+    global $theirCharacterEffects, $theirDiscard;
+    global $p1Soul, $p2Soul, $mySoul, $theirSoul;
+    $myHand = $playerID==1 ? $p1Hand : $p2Hand;
+    $myDeck = $playerID==1 ? $p1Deck : $p2Deck;
+    $myResources = $playerID==1 ? $p1Resources : $p2Resources;
+    $myCharacter = $playerID==1 ? $p1CharEquip : $p2CharEquip;
+    $myArsenal = $playerID==1 ? $p1Arsenal : $p2Arsenal;
+    $myHealth = $playerID==1 ? $playerHealths[0] : $playerHealths[1];
+    $myItems = $playerID==1 ? $p1Items : $p2Items;
+    $myAuras = $playerID==1 ? $p1Auras : $p2Auras;
+    $myDiscard = $playerID==1 ? $p1Discard : $p2Discard;
+    $myPitch = $playerID==1 ? $p1Pitch : $p2Pitch;
+    $myBanish = $playerID==1 ? $p1Banish : $p2Banish;
+    $myClassState = $playerID==1 ? $p1ClassState : $p2ClassState;
+    $myCharacterEffects = $playerID==1 ? $p1CharacterEffects : $p2CharacterEffects;
+    $mySoul = $playerID==1 ? $p1Soul : $p2Soul;
+    $theirHand = $playerID==1 ? $p2Hand : $p1Hand;
+    $theirDeck = $playerID==1 ? $p2Deck : $p1Deck;
+    $theirResources = $playerID==1 ? $p2Resources : $p1Resources;
+    $theirCharacter = $playerID==1 ? $p2CharEquip : $p1CharEquip;
+    $theirArsenal = $playerID==1 ? $p2Arsenal : $p1Arsenal;
+    $theirHealth = $playerID==1? $playerHealths[1] : $playerHealths[0];
+    $theirItems = $playerID==1 ? $p2Items : $p1Items;
+    $theirAuras = $playerID==1 ? $p2Auras : $p1Auras;
+    $theirDiscard = $playerID==1 ? $p2Discard : $p1Discard;
+    $theirPitch = $playerID==1 ? $p2Pitch : $p1Pitch;
+    $theirBanish = $playerID==1 ? $p2Banish : $p1Banish;
+    $theirClassState = $playerID==1 ? $p2ClassState : $p1ClassState;
+    $theirCharacterEffects = $playerID==1 ? $p2CharacterEffects : $p1CharacterEffects;
+    $theirSoul = $playerID==1 ? $p2Soul : $p1Soul;
+  }
 
   function GetArray($handler)
   {

@@ -11,7 +11,7 @@ body {
 }
 </style>
 <body>
-<div style="width:100%; height:100%; background-image: url('Images/welcome-to-rathe.jpg'); background-size:cover; z-index=0;">
+<div style="width:100%; height:100%; background-image: url('Images/talesofariamainmenu.jpg'); background-size:cover; z-index=0;">
 <div style="position:absolute; left: 35%; width:30%; height:30%; background-image: url('Images/fab_logo.png'); background-size:100% auto; z-index=1; background-repeat:no-repeat;"></div>
 
 <div style='position:absolute; top:10px; right:10px;'>
@@ -44,12 +44,13 @@ body {
   <div style="text-align:center;"><input type="submit" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">UI Polish Update! 9/8/21</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">UI Polish Update! 9/10/21</h3>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Highlight cards that are playable</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Change combat chain card color</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Fix card highlight from going off the screen</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Add player color coded highlight to played cards in game log</div>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">MON Light/CRU Mech 9/8/21 Supported cards:</h3>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Add hover to discover functionality to played cards in game log</div>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">MON Light/CRU Mech 9/10/21 Supported cards:</h3>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Data Doll and Meganetic Shockwave</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
