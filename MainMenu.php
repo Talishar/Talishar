@@ -1,6 +1,6 @@
 
 <?php
-   $redirectPath="https://localhost/fabonlinelocal";
+     include "HostFiles/Redirector.php";
 ?>
 
 <style>
