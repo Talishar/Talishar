@@ -29,7 +29,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
         if(CardType($combatChain[$i-1]) == "E")
         {
           $index = FindDefCharacter($combatChain[$i-1]);
-          $defense += $defCharacter[$index+4];
+          $defense += $defCharacter[$index+4] + DefCharacterBlockModifier($index);
         }
         if($defense > 0) $totalDefense += $defense;
       }
@@ -54,6 +54,8 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 
     $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    $attack = AuraAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
+    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 }
@@ -64,7 +66,7 @@ function DamageOtherPlayer($amount, $type="DAMAGE")
   return DamagePlayer($otherPlayer, $amount, $theirClassState, $theirHealth, $theirAuras, $type);
 }
 
-function DealDamage($player, $damage, $type)
+function DealDamage($player, $damage, $type, $source="NA")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mainClassState, $mainHealth, $mainAuras, $mainItems;
@@ -73,19 +75,20 @@ function DealDamage($player, $damage, $type)
   global $theirClassState, $theirHealth, $theirAuras, $theirItems;
   if($mainPlayerGamestateStillBuilt)
   {
-    if($player == $mainPlayer) return DamagePlayer($player, $damage, $mainClassState, $mainHealth, $mainAuras, $mainItems, $type);
-    else return DamagePlayer($player, $damage, $defClassState, $defHealth, $defAuras, $defItems, $type);
+    if($player == $mainPlayer) return DamagePlayer($player, $damage, $mainClassState, $mainHealth, $mainAuras, $mainItems, $type, $source);
+    else return DamagePlayer($player, $damage, $defClassState, $defHealth, $defAuras, $defItems, $type, $source);
   }
   else
   {
-    if($player == $currentPlayer) return DamagePlayer($player, $damage, $myClassState, $myHealth, $myAuras, $myItems, $type);
-    else return DamagePlayer($player, $damage, $theirClassState, $theirHealth, $theirAuras, $theirItems, $type);
+    if($player == $currentPlayer) return DamagePlayer($player, $damage, $myClassState, $myHealth, $myAuras, $myItems, $type, $source);
+    else return DamagePlayer($player, $damage, $theirClassState, $theirHealth, $theirAuras, $theirItems, $type, $source);
   }
 }
 
-function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE")
+function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE", $source="NA")
 {
-  global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken, $combatChainState, $CCS_AttackTotalDamage, $defPlayer;
+  global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken, $combatChainState, $CCS_AttackTotalDamage, $defPlayer, $combatChain;
+  if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   if(ConsumeDamagePrevention($playerID)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
@@ -111,7 +114,14 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($Auras, $damage);
-  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffectsForCycle("ELE059", "ELE060", "ELE061", $otherPlayer)) ++$damage;
+  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT" || ($source != "NA" && CardType($source) == "AA")))
+  {
+   // if(SearchCurrentTurnEffectsForCycle("ELE059", "ELE060", "ELE061", $otherPlayer)) ++$damage;
+    //if(SearchCurrentTurnEffectsForCycle("ELE186", "ELE187", "ELE188", $otherPlayer) && (TalentContains($source, "LIGHTNING") || TalentContains($source, "ELEMENTAL"))) ++$damage;
+    $damage += CurrentEffectDamageModifiers($source);
+    $otherCharacter = &GetPlayerCharacter($otherPlayer);
+    if($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") PlayAura("ELE109", $otherPlayer);
+  }
   if($damage > 0)
   {
     $classState[$CS_DamageTaken] += $damage;
@@ -122,6 +132,28 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $playerID); }
   PlayerLoseHealth($damage, $health);
   return $damage;
+}
+
+function CurrentEffectDamageModifiers($source)
+{
+  global $currentTurnEffects;
+  $modifier = 0;
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
+  {
+    $remove = 0;
+    switch($currentTurnEffects[$i])
+    {
+      case "ELE186": case "ELE187": case "ELE188": ++$modifier; break;
+      case "ELE186": case "ELE187": case "ELE188": if(TalentContains($source, "LIGHTNING") || TalentContains($source, "ELEMENTAL")) ++$modifier; break;
+      default: break;
+    }
+    if($remove == 1)
+    {
+      unset($currentTurnEffects[$i+1]);
+      unset($currentTurnEffects[$i]);
+    }
+  }
+  return $modifier;
 }
 
 function AttackDamageAbilities()
@@ -142,6 +174,12 @@ function LoseHealth($amount, $player)
 {
   $health = &GetHealth($player);
   PlayerLoseHealth($amount, $health);
+}
+
+function GainHealth($amount, $player)
+{
+  $health = &GetHealth($player);
+  PlayerGainHealth($amount, $health);
 }
 
 function PlayerLoseHealth($amount, &$health)
@@ -415,10 +453,10 @@ function PlayerHasLessHealth($playerID)
   }
 }
 
-function GetIndices($count, $add=0)
+function GetIndices($count, $add=0, $pieces=1)
 {
   $indices = "";
-  for($i=0; $i<$count; ++$i)
+  for($i=0; $i<$count; $i+=$pieces)
   {
     if($indices != "") $indices .= ",";
     $indices .= ($i + $add);
@@ -480,6 +518,7 @@ function CanPlayAsInstant($cardID)
   {
     if(SearchCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT") == 1) return true;
   }
+  if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   return false;
 }
 

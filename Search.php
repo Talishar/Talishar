@@ -18,6 +18,12 @@ function SearchPitch($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $
   return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent);
 }
 
+function SearchDiscard($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="")
+{
+  $pitch = &GetDiscard($player);
+  return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent);
+}
+
 function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class, $talent)
 {
   $cardList = "";
@@ -236,6 +242,7 @@ function CombineSearches($search1, $search2)
 
 function SearchCount($search)
 {
+  if($search == "") return 0;
   return count(explode(",", $search));
 }
 
@@ -309,6 +316,21 @@ function SearchCharacterEffects($player, $index, $effect)
     if($effects[$i] == $index && $effects[$i+1] == $effect) return true;
   }
   return false;
+}
+
+function GetArsenalFaceDownIndices($player)
+{
+  $arsenal = &GetArsenal($player);
+  $indices = "";
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    if($arsenal[$i+1] == "DOWN")
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
 }
 
 ?>

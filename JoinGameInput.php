@@ -58,6 +58,7 @@
           case "Chest": $chest = $id; break;
           case "Arms": $arms = $id; break;
           case "Legs": $legs = $id; break;
+          case "Off-Hand": $offhand = $id; break;
           default: break;
         }
       }
@@ -78,7 +79,7 @@
     //We have the decklist, now write to file
     $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $deckFile = fopen($filename, "a");
-    fwrite($deckFile, $character . " " . $weapon1 . " " . ($weapon2 != "" ? $weapon2 . " " : "") . $head . " " . $chest . " " . $arms . " " . $legs . "\r\n");
+    fwrite($deckFile, $character . " " . $weapon1 . " " . ($weapon2 != "" ? $weapon2 . " " : "") . ($offhand != "" ? $offhand . " " : "") . $head . " " . $chest . " " . $arms . " " . $legs . "\r\n");
     fwrite($deckFile, $deckCards);
     fclose($deckFile);
   }

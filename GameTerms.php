@@ -36,12 +36,16 @@
       case "BUTTONINPUT": return "a button";
       case "MAYCHOOSEDISCARD": return "cards from discard";
       case "CHOOSEDISCARDCANCEL": return "cards from discard";
+      case "CHOOSEDISCARD": return "cards from discard";
       case "MULTICHOOSEDISCARD": return "cards from discard";
       case "MULTICHOOSEHAND": return "cards from hand";
       case "MULTICHOOSEDECK": return "cards from deck";
       case "YESNO": return str_replace("_", " ", $turn[2]);
       case "MULTICHOOSETEXT": return " options";
       case "CHOOSEARCANE": return "an amount to pitch to prevent arcane damage";
+      case "MAYCHOOSEARSENAL": return "a card from arsenal";
+      case "CHOOSEARSENAL": return "a card from arsenal";
+      case "CHOOSEARSENALCANCEL": return "a card from arsenal";
     }
   }
 
