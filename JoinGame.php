@@ -21,7 +21,7 @@ h2 {
 
 <?php
 
-  $redirectPath="https://localhost/fabonlinelocal";
+  include "HostFiles/Redirector.php";
 
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];

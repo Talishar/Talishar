@@ -1,7 +1,7 @@
 <?php
 
-  $redirectPath="https://localhost/fabonlinelocal";
-  $gameName="testing";
+  include "HostFiles/Redirector.php";
+
   $deck=$_GET["deck"];
   $decklink=$_GET["fabdb"];
   $attemptCount = 0;

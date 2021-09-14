@@ -3,7 +3,7 @@
   include "WriteLog.php";
   include "GameLogic.php";
   include "GameTerms.php";
-  $redirectPath="https://localhost/fabonlinelocal";
+    include "HostFiles/Redirector.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
