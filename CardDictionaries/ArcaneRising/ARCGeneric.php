@@ -224,10 +224,10 @@
 
   function ARCGenericHitEffect($cardID)
   {
-    global $mainPlayer, $mainHealth, $CS_NextNAAInstant;
+    global $mainPlayer, $mainHealth, $CS_NextNAAInstant, $defPlayer;
     switch($cardID)
     {
-      case "ARC159": DefenderArsenalToDiscard(); break;
+      case "ARC159": DestroyArsenal($defPlayer); break;
       case "ARC164": case "ARC165": case "ARC166": PlayerGainHealth(1, $mainHealth); break;
       case "ARC161": AddCurrentTurnEffect($cardID, $mainPlayer); break;
       case "ARC179": case "ARC180": case "ARC181":

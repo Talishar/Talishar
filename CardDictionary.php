@@ -57,8 +57,7 @@
         case "GUARDIAN": return ELEGuardianCardType($cardID);
         case "RANGER": return ELERangerCardType($cardID);
         case "RUNEBLADE": return ELERunebladeCardType($cardID);
-        case "NONE": return ELETalentCardType($cardID);
-        default: return "";
+        default: return ELETalentCardType($cardID);
       }
     }
     switch($cardID)
@@ -257,8 +256,7 @@
         case "GUARDIAN": return ELEGuardianCardSubType($cardID);
         case "RANGER": return ELERangerCardSubType($cardID);
         case "RUNEBLADE": return ELERunebladeCardSubType($cardID);
-        case "NONE": return ELETalentCardSubType($cardID);
-        default: return "";
+        default: return ELETalentCardSubType($cardID);
       }
     }
     switch($cardID)
@@ -321,7 +319,7 @@
       case "ARC113": return 30;
       case "ARC114": return 15;
       case "MON001": case "MON029": case "MON119": case "MON153": return 40;
-      case "ELE001": case "ELE031": return 40;
+      case "ELE001": case "ELE031": case "ELE062": return 40;
       default: return 20;
     }
   }
@@ -377,12 +375,14 @@
         else if($number >= 229 && $number <= 237) return "RUNEBLADE";
         else return "GENERIC";
       case "ELE":
-        if($number == 0) return "TODO";
+        if($number == 0) return "???";
         else if($number >= 1 && $number <= 30) return "GUARDIAN";
         else if($number >= 31 && $number <= 61) return "RANGER";
-        else if($number >= 31 && $number <= 84) return "RUNEBLADE";
-        else if($number >= 203 && $number <= 205) return "RANGER";
-        else if($number >= 213 && $number <= 218) return "RANGER";
+        else if($number >= 31 && $number <= 90) return "RUNEBLADE";
+        else if($number >= 202 && $number <= 212) return "GUARDIAN";
+        else if($number >= 213 && $number <= 221) return "RANGER";
+        else if($number >= 222 && $number <= 232) return "RUNEBLADE";
+        else if($number >= 233) return "???";
         else return "NONE";//TODO
       default: return 0;
     }
@@ -432,8 +432,7 @@
         case "GUARDIAN": return ELEGuardianCardCost($cardID);
         case "RANGER": return ELERangerCardCost($cardID);
         case "RUNEBLADE": return ELERunebladeCardCost($cardID);
-        case "NONE": return ELETalentCardCost($cardID);
-        default: return "";
+        default: return ELETalentCardCost($cardID);
       }
     }
     switch($cardID)
@@ -636,6 +635,7 @@
     switch($cardID)
     {
       case "MON241": case "MON242": case "MON243": case "MON244": return "0,1";
+      case "ELE203": return "0,1";
       default:
         return "";
     }
@@ -676,8 +676,7 @@
         case "GUARDIAN": return ELEGuardianPitchValue($cardID);
         case "RANGER": return ELERangerPitchValue($cardID);
         case "RUNEBLADE": return ELERunebladePitchValue($cardID);
-        case "NONE": return ELETalentPitchValue($cardID);
-        default: return "";
+        default: return ELETalentPitchValue($cardID);
       }
     }
     switch($cardID)
@@ -824,8 +823,7 @@
         case "GUARDIAN": return ELEGuardianBlockValue($cardID);
         case "RANGER": return ELERangerBlockValue($cardID);
         case "RUNEBLADE": return ELERunebladeBlockValue($cardID);
-        case "NONE": return ELETalentBlockValue($cardID);
-        default: return "";
+        default: return ELETalentBlockValue($cardID);
       }
     }
     switch($cardID)
@@ -957,8 +955,7 @@
         case "GUARDIAN": return ELEGuardianAttackValue($cardID);
         case "RANGER": return ELERangerAttackValue($cardID);
         case "RUNEBLADE": return ELERunebladeAttackValue($cardID);
-        case "NONE": return ELETalentAttackValue($cardID);
-        default: return "";
+        default: return ELETalentAttackValue($cardID);
       }
     }
     switch($cardID)
@@ -1210,6 +1207,8 @@
     {
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";
+      case "ELE113": return "BANISH";
+      case "ELE140": case "ELE141": case "ELE142": return "BANISH";
       default: return "GY";
     }
   }
@@ -1226,7 +1225,7 @@
   function IsPlayRestricted($cardID, $from="", $index=-1)
   {
     global $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $CCS_HitsWithWeapon, $currentPlayer;
-    global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning;
+    global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
     if(SearchCurrentTurnEffects("CRU032", $currentPlayer) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) return true;
     if(SearchCurrentTurnEffects("ELE036", $currentPlayer) && CardType($cardID) == "E") return true;
     if(SearchCurrentTurnEffects("ELE035-3", $currentPlayer) && CardCost($cardID) == 0 && $from != "PLAY") return true;//TODO: Is this right?
@@ -1288,8 +1287,14 @@
       case "MON062": return count($mySoul) < 3;
       case "MON123": case "MON144": case "MON145":case "MON146": return DebtSafe();
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
+      case "ELE118": return ArsenalEmpty($currentPlayer);
       case "ELE143": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedEarth) == 0;
       case "ELE172": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedIce) == 0;
+      case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
+      case "ELE225": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
+      case "ELE233": return count($myHand) != 1;
+      case "ELE234": return count($myHand) == 0;
+      case "ELE236": return !HasTakenDamage($currentPlayer);
       default: return false;
     }
   }
@@ -1338,6 +1343,9 @@
       case "ARC041": return true;
       case "CRU122": return true;
       case "MON060": return true;
+      case "ELE144": return true;
+      case "ELE204": return true;
+      case "ELE213": return true;
       default: return false;
     }
   }
@@ -1446,9 +1454,14 @@
       case "CRU106": case "CRU107": case "CRU108": return true;
       case "MON109": return true;
       case "MON278": case "MON279": case "MON280": return true;
+      case "ELE005": return true;
+      case "ELE016": case "ELE017": case "ELE018": return true;
       case "ELE033-2": return true;
+      case "ELE056": case "ELE057": case "ELE058": return true;
       case "ELE097": case "ELE098": case "ELE099": return true;
       case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
+      case "ELE166": case "ELE167": case "ELE168": return true;
+      case "ELE205": return true;
       default: return false;
     }
   }
