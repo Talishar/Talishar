@@ -27,7 +27,7 @@ body {
 <h1 style="width:100%; text-align:center; color:rgb(240, 240, 240);">Create a new Game</h1>
 
 <?php
-  echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
+  echo("<form style='width:100%;display:inline-block;' action='" . $redirectorPath . "/CreateGame.php'>");
 ?>
   <input type="radio" id="oot" name="deck" value="oot" checked="checked">
   <label for="oot">Oot's Guardian Deck</label><br>
