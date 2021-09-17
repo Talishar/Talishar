@@ -29,8 +29,11 @@
     mkdir("Games/" . $gameName, 0700, true);
   }
 
-  header("Location: " . $redirectorPath . "JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
+  $gameFile = fopen("./Games/" . $gameName . "/GameFile.txt", "w");
+  fwrite($gameFile, 1);
+  fclose($gameFile);
 
+  header("Location: " . $redirectorPath . "JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
 
   
 ?>
