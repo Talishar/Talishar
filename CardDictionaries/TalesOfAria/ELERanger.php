@@ -202,6 +202,9 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "HAND", 1);
         return "";
+      case "ELE215":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Seek and Destroy gives your next arrow attack +3 and if it hits destroys your opponent's hand an arsenal next turn.";
       case "ELE219": case "ELE220": case "ELE221":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
@@ -271,6 +274,9 @@
       case "ELE053": case "ELE054": case "ELE055": GiveAttackGoAgain(); break;
       case "ELE056": case "ELE057": case "ELE058": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE059": case "ELE060": case "ELE061": AddCurrentTurnEffect($cardID, $player); break;
+      case "ELE064": AddCurrentTurnEffect($cardID, $player); DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
+      case "ELE065": AddCurrentTurnEffect($cardID, $player); break;
+      case "ELE066": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
       case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
       case "ELE076": case "ELE077": case "ELE078": SetClassState($player, $CS_NextNAAInstant, 1); break;
@@ -285,6 +291,18 @@
       case "ELE088": DealArcane(3, 0, "PLAYCARD", $cardID, true); break;//Assumed
       case "ELE089": DealArcane(2, 0, "PLAYCARD", $cardID, true); break;//Assumed
       case "ELE090": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
+      case "ELE091":
+        if($element == "EARTH") AddCurrentTurnEffect($cardID . "-BUFF", $player);
+        else if($element == "LIGHTNING") AddCurrentTurnEffect($cardID . "-GA", $player);
+        break;
+      case "ELE092":
+        if($element == "ICE") AddCurrentTurnEffect($cardID . "-DOM", $player);
+        else if($element == "LIGHTNING") AddCurrentTurnEffect($cardID . "-BUFF", $player);
+        break;
+      case "ELE093":
+        if($element == "EARTH") ExposedToTheElementsEarth($player);
+        else if($element == "ICE") ExposedToTheElementsIce($player);
+        break;
       case "ELE094": case "ELE095": case "ELE096":
         $index = GetClassState($player, $CS_PlayCCIndex);
         $combatChain[$index + 5] += 2;

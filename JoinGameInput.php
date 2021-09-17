@@ -1,19 +1,39 @@
 <?php
 
-    include "HostFiles/Redirector.php";
+  include "HostFiles/Redirector.php";
   include "CardDictionary.php";
 
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
   $deck=$_GET["deck"];
   $decklink=$_GET["fabdb"];
+  if($playerID == 1)
+  {
+    $filename = "./Games/" . $gameName . "/GameFile.txt";
+    $gameFile = fopen($filename, "a");
+    fwrite($gameFile, $playerID);
+    fclose($gameFile);
+  }
+  else
+  {
+    $filename = "./Games/" . $gameName . "/GameFile.txt";
+    $gameFile = fopen($filename, "a");
 
-  $filename = "./Games/" . $gameName . "/GameFile.txt";
-  $gameFile = fopen($filename, "a");
-  if($playerID != 1) { fwrite($gameFile, "\r\n"); }
-  fwrite($gameFile, $playerID);
-  fclose($gameFile);
+    $attemptCount = 0;
+    while(!flock($gameFile, LOCK_EX) && $attemptCount < 5) {  // acquire an exclusive lock
+      sleep(1);
+      ++$attemptCount;
+    }
+    if($attemptCount >= 5)
+    {
+      header("Location: " . $redirectorPath . "MainMenu.php");//We never actually got the lock
+    }
 
+    fwrite($gameFile, "\r\n");
+    fwrite($gameFile, $playerID);
+    flock($gameFile, LOCK_UN);    // release the lock
+    fclose($gameFile);
+  }
 
   if($decklink != "")
   {
@@ -100,3 +120,4 @@
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
 ?>
+

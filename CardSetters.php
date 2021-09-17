@@ -83,6 +83,12 @@ function RemoveHand($cardID, $player)
   }
 }
 
+function GainResources($player, $amount)
+{
+  $resources = &GetResources($player);
+  $resources[0] += $amount;
+}
+
 function AddArsenal($cardID, $player, $from, $facing)
 {
   $arsenal = &GetArsenal($player);
@@ -116,7 +122,7 @@ function SetArsenalFacing($facing, $player)
   $arsenal = &GetArsenal($player);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
   {
-    if(facing == "UP" && $arsenal[$i+1] == "DOWN") { $arsenal[$i+1] = "UP"; return $arsenal[$i]; }
+    if($facing == "UP" && $arsenal[$i+1] == "DOWN") { $arsenal[$i+1] = "UP"; return $arsenal[$i]; }
   }
 }
 

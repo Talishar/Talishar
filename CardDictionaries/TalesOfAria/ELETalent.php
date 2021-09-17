@@ -5,17 +5,22 @@
   {
     switch($cardID)
     {
+      case "ELE091": return "A";
       case "ELE092": return "A";
+      case "ELE093": return "I";
       case "ELE094": case "ELE095": case "ELE096": return "AA";
       case "ELE097": case "ELE098": case "ELE099": return "AA";
       case "ELE100": case "ELE101": case "ELE102": return "AA";
       case "ELE103": case "ELE104": case "ELE105": return "A";
       case "ELE106": case "ELE107": case "ELE108": return "A";
+      case "ELE109": return "T";
+      case "ELE110": return "T";
       case "ELE111": return "T";
       case "ELE112": return "I";
       case "ELE113": return "A";
       case "ELE114": return "DR";
       case "ELE115": return "E";
+      case "ELE116": return "E";
       case "ELE117": return "A";
       case "ELE118": return "A";
       case "ELE119": case "ELE120": case "ELE121": return "AA";
@@ -30,6 +35,7 @@
       case "ELE144": return "E";
       case "ELE145": return "E";
       case "ELE146": return "A";
+      case "ELE147": return "I";
       case "ELE148": case "ELE149": case "ELE150": return "AA";
       case "ELE151": case "ELE152": case "ELE153": return "A";
       case "ELE154": case "ELE155": case "ELE156": return "A";
@@ -61,8 +67,11 @@
   {
     switch($cardID)
     {
+      case "ELE109": return "Aura";
+      case "ELE110": return "Aura";
       case "ELE111": return "Aura";
       case "ELE115": return "Head";
+      case "ELE116": return "Head";
       case "ELE117": return "Aura";
       case "ELE143": return "Item";
       case "ELE144": return "Chest";
@@ -86,7 +95,9 @@
   {
     switch($cardID)
     {
+      case "ELE091": return 2;
       case "ELE092": return 1;
+      case "ELE093": return 2;
       case "ELE094": case "ELE095": case "ELE096": return 2;
       case "ELE097": case "ELE098": case "ELE099": return 1;
       case "ELE100": case "ELE101": case "ELE102": return 0;
@@ -107,6 +118,7 @@
       case "ELE140": case "ELE141": case "ELE142": return 1;
       case "ELE143": return 0;
       case "ELE146": return 2;
+      case "ELE147": return 0;
       case "ELE148": case "ELE149": case "ELE150": return 2;
       case "ELE151": case "ELE152": case "ELE153": return 1;
       case "ELE154": case "ELE155": case "ELE156": return 0;
@@ -135,7 +147,9 @@
   {
     switch($cardID)
     {
+      case "ELE091": return 2;
       case "ELE092": return 1;
+      case "ELE093": return 3;
       case "ELE094": case "ELE097": case "ELE100": case "ELE103": case "ELE106": return 1;
       case "ELE095": case "ELE098": case "ELE101": case "ELE104": case "ELE107": return 2;
       case "ELE096": case "ELE099": case "ELE102": case "ELE105": case "ELE108": return 3;
@@ -150,6 +164,7 @@
       case "ELE121": case "ELE124": case "ELE127": case "ELE130": case "ELE133": case "ELE136": case "ELE139": case "ELE142": return 3;
       case "ELE143": return 3;
       case "ELE146": return 3;
+      case "ELE147": return 3;
       case "ELE148": case "ELE151": case "ELE154": case "ELE157": case "ELE160": case "ELE163": case "ELE166": case "ELE169": return 1;
       case "ELE149": case "ELE152": case "ELE155": case "ELE158": case "ELE161": case "ELE164": case "ELE167": case "ELE170": return 2;
       case "ELE150": case "ELE153": case "ELE156": case "ELE159": case "ELE162": case "ELE165": case "ELE168": case "ELE171": return 3;
@@ -168,9 +183,11 @@
   {
     switch($cardID)
     {
+      case "ELE093": return 0;
       case "ELE113": return 3;
       case "ELE114": return 6;
       case "ELE115": return 0;
+      case "ELE116": return 0;
       case "ELE117": return 3;
       case "ELE125": case "ELE126": case "ELE127": return 0;
       case "ELE128": case "ELE129": case "ELE130": return 3;
@@ -178,6 +195,7 @@
       case "ELE143": return 1;
       case "ELE145": return 0;
       case "ELE146": return 3;
+      case "ELE147": return 0;
       case "ELE160": case "ELE161": case "ELE162": return 3;
       case "ELE172": return 0;
       case "ELE173": return 0;
@@ -228,6 +246,18 @@
     global $combatChain, $CS_DamagePrevention;
     switch($cardID)
     {
+      case "ELE091":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        Fuse($cardID, $currentPlayer, "LIGHTNING");
+        return "";
+      case "ELE092":
+        Fuse($cardID, $currentPlayer, "ICE");
+        Fuse($cardID, $currentPlayer, "LIGHTNING");
+        return "";
+      case "ELE093":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        Fuse($cardID, $currentPlayer, "ICE");
+        return "";
       case "ELE094": case "ELE095": case "ELE096":
         Fuse($cardID, $currentPlayer, "EARTH");
         return "";
@@ -265,6 +295,12 @@
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDCLASSSTATE", $currentPlayer, $CS_DamagePrevention . "-1", 1);
+        return "";
+      case "ELE116":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         return "";
       case "ELE118":
         MyDrawCard();
@@ -321,6 +357,12 @@
       case "ELE145":
         PlayAura("ELE111", $otherPlayer);
         return "Coat of Frost create a frostbite token for the other player.";
+      case "ELE147":
+        AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+        AddDecisionQueue("GREATERTHANPASS", $mainPlayer, "0", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $cardID, 1);
+        return "Blizzard makes the main player pay 2 or be unable for this attack to Go Again.";
       case "ELE151": case "ELE152": case "ELE153":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
@@ -363,9 +405,12 @@
       case "ELE176":
         if($currentPlayer == $mainPlayer) {++$actionPoints; $rv = "Blink grants an action point."; }
         return $rv;
+      case "ELE177": case "ELE178": case "ELE179":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Flash gives your next applicable action card Go Again.";
       case "ELE180": case "ELE181": case "ELE182":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return $rv;
+        return "Weave Lightning gives your next lightning or elemental attack +" . EffectAttackModifier($cardID) . " and go again if it's fused.";
       case "ELE183": $combatChain[5] += 3; return "Lightning Press gives the current attack +3.";//TODO: Target card to not hardcode to the first?
       case "ELE184": $combatChain[5] += 2; return "Lightning Press gives the current attack +2.";//TODO: Target card to not hardcode to the first?
       case "ELE185": $combatChain[5] += 1; return "Lightning Press gives the current attack +1.";//TODO: Target card to not hardcode to the first?
@@ -385,6 +430,18 @@
       case "ELE198": case "ELE199": case "ELE200":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if($from == "ARS") MyDrawCard();
+        return $rv;
+      case "ELE201":
+        if($from == "PLAY")
+        {
+          $index = GetClassState($currentPlayer, $CS_PlayIndex);
+          if($index != -1)
+          {
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+            DestroyMyItem($index);
+          }
+          $rv = "Amulet of Lightning gives your next action Go Again.";
+        }
         return $rv;
       case "ELE233":
         MyDrawCard();
@@ -450,6 +507,32 @@
       }
     }
     return $indices;
+  }
+
+  function PlumeOfEvergrowthIndices($player)
+  {
+    $indices = CombineSearches(SearchDiscard($player, "A", "", -1, -1, "", "EARTH"), SearchDiscard($player, "AA", "", -1, -1, "", "EARTH"));
+    $indices = CombineSearches($indices, SearchDiscard($player, "I", "", -1, -1, "", "EARTH"));
+    return $indices;
+  }
+
+  function ExposedToTheElementsEarth($player)
+  {
+      $otherPlayer = $player == 1 ? 2 : 1;
+      PrependDecisionQueue("ADDTHEIRNEGDEFCOUNTER", $player, "-", 1);
+      PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+  }
+
+  function ExposedToTheElementsIce($player)
+  {
+      $otherPlayer = $player == 1 ? 2 : 1;
+      PrependDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
+      PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
+      PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
+      PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+      PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
   }
 
 ?>

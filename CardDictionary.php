@@ -158,6 +158,8 @@
       case "WTR225": return "T";
       case "ARC203": return "A";
       case "ARC150": return "E";
+      //CRU Fable
+      case "CRU000": return "R";
       //CRU Brute
       case "CRU004": case "CRU005": return "W";
       case "CRU006": return "E";
@@ -206,6 +208,16 @@
       case "CRU129": case "CRU130": case "CRU131": return "AA";
       case "CRU132": case "CRU133": case "CRU134": return "AA";
       case "CRU135": case "CRU136": case "CRU137": return "A";
+      //CRU Runeblade
+      case "CRU140": return "W";
+      case "CRU141": return "E";
+      case "CRU142": return "AA";
+      case "CRU143": return "A";
+      case "CRU144": return "A";
+      case "CRU145": case "CRU146": case "CRU147": return "A";
+      case "CRU148": case "CRU149": case "CRU150": return "AA";
+      case "CRU151": case "CRU152": case "CRU153": return "AA";
+      case "CRU154": case "CRU155": case "CRU156": return "A";
       //CRU Generics
       case "CRU179": return "E";
       case "CRU180": return "AA";
@@ -288,6 +300,7 @@
       case "WTR158": return "Legs";
       case "WTR170": case "WTR171": case "WTR172": return "Item";
       case "WTR225": return "Aura";
+      case "CRU000": return "Gem";
       case "CRU004": case "CRU005": return "Claw";
       case "CRU006": return "Head";
       case "CRU024": return "Hammer";
@@ -305,6 +318,9 @@
       case "CRU126": case "CRU127": case "CRU128": return "Trap";
       case "CRU129": case "CRU130": case "CRU131": return "Arrow";
       case "CRU132": case "CRU133": case "CRU134": return "Arrow";
+      case "CRU140": return "Sword";
+      case "CRU141": return "Chest";
+      case "CRU144": return "Aura";
       case "CRU179": return "Arms";
       default: return "";
     }
@@ -576,6 +592,16 @@
       case "CRU129": case "CRU130": case "CRU131": return 0;
       case "CRU132": case "CRU133": case "CRU134": return 1;
       case "CRU135": case "CRU136": case "CRU137": return 1;
+      //CRU Runeblade
+      case "CRU140": return 1;
+      case "CRU141": return 0;
+      case "CRU142": return 3;
+      case "CRU143": return 2;
+      case "CRU144": return 3;
+      case "CRU145": case "CRU146": case "CRU147": return 0;
+      case "CRU148": case "CRU149": case "CRU150": return 1;
+      case "CRU151": case "CRU152": case "CRU153": return 1;
+      case "CRU154": case "CRU155": case "CRU156": return 1;
       //CRU Generic
       case "CRU180": case "CRU181": case "CRU182": return 0;
       case "CRU183": case "CRU184": case "CRU185": return 0;
@@ -708,6 +734,8 @@
       case "WTR050": case "WTR053": case "WTR056": case "WTR059": case "WTR062": case "WTR065": case "WTR068": case "WTR071": case "WTR074": return 3;
       case "WTR075": return 0;
       //Ninja
+      case "WTR078": return 0;
+      case "WTR080": return 0;
       case "WTR081": return 3;
       case "WTR082": return 1;
       case "WTR083": case "WTR084": return 2;
@@ -775,6 +803,13 @@
       case "CRU126": case "CRU129": case "CRU132": case "CRU135": return 1;
       case "CRU127": case "CRU130": case "CRU133": case "CRU136": return 2;
       case "CRU126": case "CRU131": case "CRU134": case "CRU137": return 3;
+      //CRU Runeblade
+      case "CRU140": case "CRU141": return 0;
+      case "CRU143": return 1;
+      case "CRU144": return 2;
+      case "CRU145": case "CRU148": case "CRU151": case "CRU154": return 1;
+      case "CRU146": case "CRU149": case "CRU152": case "CRU155": return 2;
+      case "CRU147": case "CRU150": case "CRU153": case "CRU156": return 3;
       //CRU Generic
       case "CRU180": return 1;
       case "CRU181": return 0;
@@ -828,7 +863,7 @@
     }
     switch($cardID)
     {
-      case "WTR000": return 0;
+      case "WTR000": return 0; 
       case "WTR038": case "WTR039": case "WTR040": return 0;
       case "CRU177": case "WTR153": return 0;
       //Brute
@@ -908,6 +943,13 @@
       case "CRU127": return 3;
       case "CRU128": return 2;
       case "CRU135": case "CRU136": case "CRU137": return 2;
+      //CRU Runeblade
+      case "CRU000": return 0;
+      case "CRU140": return 0;
+      case "CRU141": return 2;
+      case "CRU144": return 2;
+      case "CRU145": case "CRU146": case "CRU147": return 2;
+      case "CRU154": case "CRU155": case "CRU156": return 2;
       //CRU Generics
       case "CRU179": return 0;
       case "CRU180": return 2;
@@ -1051,6 +1093,11 @@
       case "CRU129": case "CRU133": return 4;
       case "CRU130": case "CRU134": return 3;
       case "CRU131": return 2;
+      //CRU Runeblade
+      case "CRU140": return 3;
+      case "CRU142": case "CRU148": case "CRU151": return 4;
+      case "CRU149": case "CRU152": return 3;
+      case "CRU150": case "CRU153": return 2;
       //CRU Generic
       case "CRU177": return 4;
       case "CRU180": return 4;
@@ -1226,6 +1273,7 @@
   {
     global $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $CCS_HitsWithWeapon, $currentPlayer;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
+    global $CS_NumAttackCards;
     if(SearchCurrentTurnEffects("CRU032", $currentPlayer) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) return true;
     if(SearchCurrentTurnEffects("ELE036", $currentPlayer) && CardType($cardID) == "E") return true;
     if(SearchCurrentTurnEffects("ELE035-3", $currentPlayer) && CardCost($cardID) == 0 && $from != "PLAY") return true;//TODO: Is this right?
@@ -1285,12 +1333,15 @@
         return $type != "AA";
       case "MON029": case "MON030": return count($mySoul) == 0;
       case "MON062": return count($mySoul) < 3;
-      case "MON123": case "MON144": case "MON145":case "MON146": return DebtSafe();
+      case "MON230": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0 || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
       case "ELE118": return ArsenalEmpty($currentPlayer);
       case "ELE143": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedEarth) == 0;
+      case "ELE147": return count($combatChain) == 0;
       case "ELE172": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedIce) == 0;
       case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
+      case "ELE201": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedLightning) == 0;
+      case "ELE224": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0;
       case "ELE225": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "ELE233": return count($myHand) != 1;
       case "ELE234": return count($myHand) == 0;
@@ -1346,6 +1397,7 @@
       case "ELE144": return true;
       case "ELE204": return true;
       case "ELE213": return true;
+      case "ELE224": return true;
       default: return false;
     }
   }
@@ -1359,8 +1411,10 @@
       case "WTR080": return true;
       case "WTR116": return true;
       case "ARC004": return true;
+      case "ARC078": return true;
       case "ARC150": return true;
       case "MON107": case "MON108": return true;
+      case "MON230": return true;
       default: return false;
     }
   }
@@ -1371,6 +1425,7 @@
     {
       case "CRU025": return true;
       case "CRU081": return true;
+      case "CRU141": return true;
       default: return false;
     }
   }
@@ -1458,6 +1513,7 @@
       case "ELE016": case "ELE017": case "ELE018": return true;
       case "ELE033-2": return true;
       case "ELE056": case "ELE057": case "ELE058": return true;
+      case "ELE092-DOMATK": return true;
       case "ELE097": case "ELE098": case "ELE099": return true;
       case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
       case "ELE166": case "ELE167": case "ELE168": return true;
@@ -1535,20 +1591,6 @@
     }
     return false;
   }
-  function HasBloodDebt($cardID){
-    switch($cardID)
-    {
-      case "MON123"; return true:
-      case "MON124"; return true:
-      case "MON125"; return true:
-      case "MON126": case "MON127": case "MON128"; return true:
-      case "MON129": case "MON130": case "MON131"; return true:
-      case "MON125": case "MON136": case "MON137"; return true:
-      case "MON138": case "MON139": case "MON140"; return true:
-      case "MON141": case "MON142": case "MON143"; return true:
-      case "MON144": case "MON145": case "MON146"; return true:
-      case "MON147": case "MON148": case "MON149"; return true:
-    }
-  }
 
 ?>
+

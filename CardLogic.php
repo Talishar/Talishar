@@ -202,7 +202,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESUMEPAYING")
     {
       if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
-      else if($currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
+      else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
       array_shift($turn);
       array_shift($turn);
       array_shift($turn);
@@ -273,7 +273,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         else
         {
           $currentPlayer = $mainPlayer;
-          PassTurn();
+          BeginTurnPass();
         }
       }
     }
@@ -351,6 +351,16 @@ function DestroyArsenal($player)
     AddGraveyard($arsenal[$i], $player, "ARS");
   }
   $arsenal = [];
+}
+
+function DiscardHand($player)
+{
+  $hand = &GetHand($player);
+  for($i=0; $i<count($hand); $i+=HandPieces())
+  {
+    AddGraveyard($hand[$i], $player, "HAND");
+  }
+  $hand = [];
 }
 
 function Opt($cardID, $amount)

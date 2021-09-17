@@ -1,6 +1,6 @@
 
 <?php
-     include "HostFiles/Redirector.php";
+   include "HostFiles/Redirector.php";
 ?>
 
 <style>
@@ -23,6 +23,14 @@ body {
 <div style='position:absolute; top:23px; right:84px;'><a href="https://www.patreon.com/bePatron?u=36985868" data-patreon-widget-type="become-patron-button">Become a Patron!</a></div>
 <script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
 
+
+<div style="position:absolute; top:30px; left:30px; width:20%; height:90%; background-color:rgba(59, 59, 38, 0.7);">
+
+<?php
+   include "ServerChecker.php";
+?>
+</div>
+
 <div style="position:absolute; top:32%; left:35%; width:30%; height:60%; background-color:rgba(59, 59, 38, 0.7);">
 <h1 style="width:100%; text-align:center; color:rgb(240, 240, 240);">Create a new Game</h1>
 
@@ -44,14 +52,9 @@ body {
   <div style="text-align:center;"><input type="submit" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">UI Polish Update! 9/10/21</h3>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Highlight cards that are playable</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Change combat chain card color</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Fix card highlight from going off the screen</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Add player color coded highlight to played cards in game log</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- Add hover to discover functionality to played cards in game log</div>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">MON Light/CRU Mech 9/10/21 Supported cards:</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Tales of Aria/Game Lobby Update! 9/15/21 Supported cards:</h3>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of ELE except Fable</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Data Doll and Meganetic Shockwave</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian except Righteous Cleansing</div>

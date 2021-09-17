@@ -8,6 +8,7 @@
   $playerID=$_GET["playerID"];
 
   $gameFile = fopen("./Games/" . $gameName . "/GameFile.txt", "r");
+
   $lineCount = 0;
   $gameStarted = 0;
   $icon = "notReady.png";
@@ -20,7 +21,7 @@
      }
      else if($lineCount == 2)
      {
-       if($buffer == "1")
+       if($buffer == "1") 
        {
          $gameStarted = 1;
        }
@@ -118,7 +119,6 @@ h2 {
   echo("<li>Copy link and send to your opponent, or open it yourself in another browser tab.</li>");
   echo("<li>The browser tab icon will turn green when your opponent joins.</li>");
   echo("<li>Player 1 starts the game when both players have joined.</li>");
-  echo("<li>Currently sharing the link is the only way to get an opponent. An open game browser is planned for the future.</li>");
   echo("</ul>");
 
 

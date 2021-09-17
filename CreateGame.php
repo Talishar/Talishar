@@ -32,4 +32,5 @@
   header("Location: " . $redirectorPath . "JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
 
 
+  
 ?>

@@ -81,7 +81,7 @@
   $CS_NumFusedLightning = 25;
   $CS_PitchedForThisCard = 26;
   $CS_PlayCCIndex = 27;
-  $CS_NumAttackCards = 28;
+  $CS_NumAttackCards = 28;//Played or blocked
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
