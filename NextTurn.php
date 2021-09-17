@@ -1,4 +1,4 @@
-<body onload='reload()'>
+<head>
 
 <?php
 
@@ -11,6 +11,20 @@
   include "ParseGamestate.php";
   include "GameTerms.php";
   include "GameLogic.php";
+  include "HostFiles/Redirector.php";
+
+  if($currentPlayer == $playerID) $icon = "ready.png";
+  else $icon = "notReady.png";
+  echo '<link rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
+
+?>
+
+</head>
+
+<body onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
+
+<?php
+
 
   //Include js files
   echo("<script src=\"./jsInclude.js\"></script>");
@@ -26,7 +40,7 @@
         echo 'if(this.responseText[1] == "1") { location.reload(); }';
       echo '}';
     echo '};';
-    echo 'xmlhttp.open("GET", "IsReloadNeeded.php?gameName=' . $gameName . '&playerID=' . $playerID . '", true);';
+    echo 'xmlhttp.open("GET", "IsReloadNeeded.php?gameName=' . $gameName . '&playerID=' . ($playerID == 3 ? ($currentPlayer == 1 ? 2 : 1) : $playerID) . '", true);';
     echo 'xmlhttp.send();';
   echo '}';
   echo("</script>");
@@ -396,20 +410,16 @@
   }
 
   //Display the log
-  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.70); position:fixed; display:inline; width:150px; height: 98%; top:10px; right:10px; overflow-y: scroll;'>");
-  $filename = "./Games/" . $gameName . "/gamelog.txt";
-  $filesize = filesize($filename);
-  if($filesize > 0)
-  {
-    $handler = fopen($filename, "r");
-    $line = str_replace("\r\n", "<br>", fread($handler, $filesize));
-    $line = str_replace("<PLAYER1COLOR>", $playerID==1 ? "Blue" : "Red", $line);
-    $line = str_replace("<PLAYER2COLOR>", $playerID==2 ? "Blue" : "Red", $line);
-    echo($line);
-    fclose($handler);
-  }
+  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.70); position:fixed; display:inline; width:200px; height: 92%; top:10px; right:10px; overflow-y: scroll;'>");
+
+  EchoLog($gameName, $playerID);
   echo("</div>");
 
+  echo("<div id='chatbox' style='position:fixed; display:inline; width:200px; height: 50px; bottom:10px; right:10px;'>");
+  echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+  echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
+  echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
+  echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
 
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="")
   {//

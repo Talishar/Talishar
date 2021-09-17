@@ -25,6 +25,7 @@
 
   function CRUHasGoAgain($cardID)
   {
+    global $defPlayer, $CS_ArcaneDamageTaken;
     switch($cardID)
     {
       case "CRU084": return true;
@@ -38,6 +39,9 @@
       case "CRU124": case "CRU135": case "CRU136": case "CRU137": return true;
       //CRU Mechanologist
       case "CRU115": case "CRU116": case "CRU117": return true;
+      //CRU Runeblade
+      case "CRU151": case "CRU152": case "CRU153":
+      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
       //CRU Generic
       case "CRU181": case "CRU188": return true;
       default: return false;

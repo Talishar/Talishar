@@ -60,13 +60,6 @@ function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class=""
   return $cardList;
 }
 
-function SearchMyDeckFilter($filterFunction)
-{
-  global $myDeck;
-  return array_values(array_filter($myDeck, $filterFunction));
-}
-
-
 function SearchMyDeckForCard($card1, $card2="", $card3="")
 {
   global $myDeck;
@@ -333,4 +326,20 @@ function GetArsenalFaceDownIndices($player)
   return $indices;
 }
 
+function GetEquipmentIndices($player, $maxBlock=-1)
+{
+  $character = &GetPlayerCharacter($player);
+  $indices = "";
+  for($i=0; $i<count($character); $i+=CharacterPieces())
+  {
+    if(CardType($character[$i]) == "E" && ($maxBlock == -1 || (BlockValue($character[$i]) + $character[$i+4]) <= $maxBlock))
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 ?>
+

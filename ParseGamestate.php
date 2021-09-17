@@ -65,6 +65,8 @@
     global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
     global $theirCharacterEffects, $theirDiscard;
     global $p1Soul, $p2Soul, $mySoul, $theirSoul;
+    global $myStateBuiltFor;
+    $myStateBuiltFor = $playerID;
     $myHand = $playerID==1 ? $p1Hand : $p2Hand;
     $myDeck = $playerID==1 ? $p1Deck : $p2Deck;
     $myResources = $playerID==1 ? $p1Resources : $p2Resources;
@@ -152,6 +154,7 @@
   {
     global $mainPlayerGamestateBuilt;
     if($mainPlayerGamestateBuilt == 1) return;//We're on main player game state now
+    global $myStateBuiltFor;
     global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
     global $p1CharacterEffects, $p1Discard;
     global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
@@ -161,6 +164,7 @@
     global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
     global $theirCharacterEffects, $theirDiscard;
     global $p1Soul, $p2Soul, $mySoul, $theirSoul;
+    $activePlayer = $myStateBuiltFor;
     if($activePlayer==1) {
       $p1Deck = $myDeck;
       $p1Hand = $myHand;

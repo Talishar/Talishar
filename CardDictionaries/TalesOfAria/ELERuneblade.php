@@ -31,6 +31,7 @@
     {
       case "ELE222": case "ELE223": return "Sword";
       case "ELE224": case "ELE225": return "Legs";
+      case "ELE226": return "Aura";
       default: return "";
     }
   }
@@ -116,8 +117,24 @@
   function ELERunebladePlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $otherPlayer, $CS_ArcaneDamageTaken, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
+    global $CS_NextNAAInstant;
     switch($cardID)
     {
+      case "ELE064":
+        Fuse($cardID, $currentPlayer, "EARTH,LIGHTNING");
+        return "";
+      case "ELE065":
+        Fuse($cardID, $currentPlayer, "LIGHTNING");
+        DealArcane(1, 0, "PLAYCARD", $cardID);
+        return "";
+      case "ELE066":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
+        return "";
+      case "ELE067": case "ELE068": case "ELE069":
+        Fuse($cardID, $currentPlayer, "EARTH");
+        DealArcane(1, 0, "PLAYCARD", $cardID);
+        return "";
       case "ELE070": case "ELE071": case "ELE072":
         Fuse($cardID, $currentPlayer, "LIGHTNING");
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $otherPlayer, $CS_ArcaneDamageTaken . "-1", 1);
@@ -163,6 +180,9 @@
           ++$character[$combatChainState[$CCS_WeaponIndex]+3];
         }
         return $rv;
+      case "ELE224":
+        SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+        return "Spellbound Creepers lets you play your next non-attack action as if it were an instant.";
       case "ELE225":
         GiveAttackGoAgain();
         return "Sutcliffe's Suede Hides gives the current attack Go Again.";
@@ -184,6 +204,14 @@
     }
   }
 
+  function BlossomingSpellbladeDamageEffect($player)
+  {
+    $otherPlayer = $player == 1 ? 2 : 1;
+    AddDecisionQueue("FINDINDICES", $otherPlayer, "GYNAA");
+    AddDecisionQueue("MAYCHOOSEDISCARD", $otherPlayer, "<-", 1);
+    AddDecisionQueue("REMOVEDISCARD", $otherPlayer, "-", 1);
+    AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,INST", 1);
+  }
 
 ?>
 

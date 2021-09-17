@@ -9,6 +9,7 @@
       case "ELE031": case "ELE032": return 0;
       case "ELE033": case "ELE034": return 1;
       case "ELE115": return 1;
+      case "ELE116": return 3;
       case "ELE144": return 1;
       case "ELE145": return 0;
       case "ELE173": return 2;
@@ -28,12 +29,14 @@
       case "ELE031": case "ELE032": return "A";
       case "ELE033": case "ELE034": return "I";
       case "ELE115": return "I";
+      case "ELE116": return "I";
       case "ELE143": return "I";
       case "ELE144": return "A";
       case "ELE145": return "A";
       case "ELE172": return "I";
       case "ELE173": return "I";
       case "ELE195": case "ELE196": case "ELE197": return "I";
+      case "ELE201": return "I";
       case "ELE202": return "AA";
       case "ELE214": return "I";
       case "ELE222": case "ELE223": return "AA";
@@ -54,6 +57,7 @@
       case "ELE037": return true;
       case "ELE065": case "ELE066": return true;
       case "ELE085": case "ELE086": case "ELE087": return true;
+      case "ELE091": case "ELE092": return true;
       case "ELE103": case "ELE104": case "ELE105": return true;
       case "ELE113": return true;
       case "ELE117": return true;
@@ -76,9 +80,12 @@
       case "ELE180": case "ELE181": case "ELE182": return true;
       case "ELE186": case "ELE187": case "ELE188": return true;
       case "ELE198": case "ELE199": case "ELE200": return true;
+      case "ELE201": return true;
       case "ELE205": return true;
       case "ELE206": case "ELE207": case "ELE208": return true;
+      case "ELE215": return true;
       case "ELE219": case "ELE220": case "ELE221": return true;
+      case "ELE226": return true;
       default: return false;
     }
   }
@@ -109,10 +116,13 @@
       case "ELE034-1": return 1;
       case "ELE035-2": return 1;
       case "ELE037-1": return 3;
+      case "ELE066": return 1;
+      case "ELE067": case "ELE068": case "ELE069": return 1;
       case "ELE082": case "ELE083": case "ELE084": return 2;
       case "ELE085-FUSE": return 3;
       case "ELE086-FUSE": return 2;
       case "ELE087-FUSE": return 1;
+      case "ELE091-BUFF": return 3;
       case "ELE103": return 4;
       case "ELE104": return 3;
       case "ELE105": return 2;
@@ -137,6 +147,7 @@
       case "ELE206": return 5;
       case "ELE207": return 4;
       case "ELE208": return 3;
+      case "ELE215": return 3;
       case "ELE219": return 4;
       case "ELE220": return 3;
       case "ELE221": return 2;
@@ -169,8 +180,13 @@
       case "ELE050": case "ELE051": case "ELE052": return true;
       case "ELE056": case "ELE057": case "ELE058": return true;
       case "ELE059": case "ELE060": case "ELE061": return true;
+      case "ELE066": return true;
+      case "ELE066-HIT": return true;
+      case "ELE067": case "ELE068": case "ELE069": return true;
       case "ELE082": case "ELE083": case "ELE084": return true;
       case "ELE085-FUSE": case "ELE086-FUSE": case "ELE087-FUSE": return CardType($attackID) == "AA";
+      case "ELE091-BUFF": case "ELE091-GA": return CardType($attackID) == "AA";
+      case "ELE092-DOM": case "ELE092-DOMATK": case "ELE092-BUFF": return true;
       case "ELE097": case "ELE098": case "ELE099": return true;
       case "ELE103": case "ELE104": case "ELE105": return $combatChainState[$CCS_AttackFused] == 1;
       case "ELE112": $talent = CardTalent($attackID); return $talent == "ICE" || $talent == "LIGHTNING" || $talent == "ELEMENTAL";
@@ -178,6 +194,7 @@
         $talent = CardTalent($attackID); return ($talent == "EARTH" || $talent == "ELEMENTAL") && CardType($attackID) == "AA";
       case "ELE137": case "ELE138": case "ELE139": return CardType($attackID) == "AA";
       case "ELE143": return CardType($attackID) == "AA";
+      case "ELE147": return true;
       case "ELE151": case "ELE152": case "ELE153": return true;
       case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
       case "ELE154": case "ELE155": case "ELE156":
@@ -186,11 +203,16 @@
       case "ELE163": case "ELE164": case "ELE165": $talent = CardTalent($attackID); return $talent == "ICE" || $talent == "ELEMENTAL";
       case "ELE166": case "ELE167": case "ELE168": return true;
       case "ELE173": return CardType($attackID) == "AA";
+      case "ELE177": return CardCost($attackID) >= 0;
+      case "ELE178": return CardCost($attackID) >= 1;
+      case "ELE179": return CardCost($attackID) >= 2;
       case "ELE180": case "ELE181": case "ELE182": $talent = CardTalent($attackID); return $talent == "LIGHTNING" || $talent == "ELEMENTAL";
       case "ELE195": case "ELE196": case "ELE197": return true;
       case "ELE198": case "ELE199": case "ELE200": return CardType($attackID) == "AA";
+      case "ELE201": return CardType($attackID) == "AA";
       case "ELE205": return CardClass($attackID) == "GUARDIAN";
       case "ELE206": case "ELE207": case "ELE208": return CardClass($attackID) == "GUARDIAN" && CardType($attackID) == "AA";
+      case "ELE215": return CardSubtype($attackID) == "Arrow";
       case "ELE219": case "ELE220": case "ELE221": return CardSubtype($attackID) == "Arrow";
       case "ELE235": return CardType($attackID) == "AA";
       default: return false;

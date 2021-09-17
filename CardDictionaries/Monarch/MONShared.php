@@ -8,6 +8,7 @@
       case "MON061": return 1;
       case "MON105": case "MON106": return 1;
       case "MON108": return 1;
+      case "MON229": return 3;
       case "MON238": case "MON239": return 0;
       case "MON240": return 3;
       case "MON245": return 3;
@@ -26,6 +27,8 @@
       case "MON061": return "I";
       case "MON105": case "MON106": return "AA";
       case "MON108": return "A";
+      case "MON229": return "AA";
+      case "MON230": return "A";
       case "MON238": return "I";
       case "MON239": case "MON240": return "A";
       case "MON245": return $currentPlayer == $mainPlayer ? "I" : "";
@@ -60,6 +63,7 @@
     switch($cardID)
     {
       case "MON108": return true;
+      case "MON230": return true;
       case "MON239": return true;
       default: return false;
     }

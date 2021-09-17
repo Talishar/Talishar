@@ -5,6 +5,11 @@
   {
     switch($cardID)
     {
+      case "MON229": return "W";
+      case "MON230": return "E";
+      case "MON231": return "A";
+      case "MON232": case "MON233": case "MON234": return "AA";
+      case "MON235": case "MON236": case "MON237": return "AA";
       default: return "";
     }
   }
@@ -13,6 +18,8 @@
   {
     switch($cardID)
     {
+      case "MON229": return "Scythe";
+      case "MON230": return "Chest";
       default: return "";
     }
   }
@@ -22,6 +29,8 @@
   {
     switch($cardID)
     {
+      case "MON232": case "MON233": case "MON234": return 1;
+      case "MON235": case "MON236": case "MON237": return 0;
       default: return 0;
     }
   }
@@ -30,7 +39,10 @@
   {
     switch($cardID)
     {
-      default: return 3;
+      case "MON231": case "MON232": case "MON235": return 1;
+      case "MON233": case "MON236": return 2;
+      case "MON235": case "MON237": return 3;
+      default: return 0;
     }
   }
 
@@ -38,6 +50,9 @@
   {
     switch($cardID)
     {
+      case "MON229": return 0;
+      case "MON230": return 1;
+      case "MON231": return 2;
       default: return 3;
     }
   }
@@ -46,15 +61,30 @@
   {
     switch($cardID)
     {
+      case "MON229": case "MON232": case "MON235": return 3;
+      case "MON233": case "MON236": return 2;
+      case "MON234": case "MON237": return 1;
       default: return 0;
     }
   }
 
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid)
   {
+    global $currentPlayer;
     switch($cardID)
     {
-
+      case "MON229":
+        DealArcane(1, 0, "PLAYCARD", $cardID);
+        return "Dread Scythe deals 1 arcane damage.";
+      case "MON230":
+        GainResources($currentPlayer, 2);
+        return "Aether Ironweave gaines 2 resources.";
+      case "MON232": case "MON233": case "MON234":
+        DealArcane(2, 0, "PLAYCARD", $cardID);
+        return "Vexing Malice deals 2 arcane damage.";
+      case "MON235": case "MON236": case "MON237":
+        DealArcane(1, 0, "PLAYCARD", $cardID);
+        return "Arcanic Crackle deals 1 arcane damage.";
       default: return "";
     }
   }

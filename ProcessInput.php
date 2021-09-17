@@ -3,7 +3,7 @@
   include "WriteLog.php";
   include "GameLogic.php";
   include "GameTerms.php";
-    include "HostFiles/Redirector.php";
+  include "HostFiles/Redirector.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
@@ -233,7 +233,7 @@
       {
         if(Pass($turn, $playerID, $currentPlayer))
         {
-          PassTurn();
+          BeginTurnPass();
         }
         WriteLog("Player " . $playerID . " passed.");
       }
@@ -321,7 +321,7 @@
       }
     }
     else if($turn[0] == "D")
-    {
+    { 
       if($turn[2] == "A")
       {
         return ResolveChainLink();
@@ -430,6 +430,7 @@
       if(CardType($combatChain[0]) == "W") ++$combatChainState[$CCS_HitsWithWeapon];
       MainCharacterHitAbilities();
       MainCharacterHitEffects();
+      AuraHitEffects($combatChain[0]);
       AttackDamageAbilities();
     }
     else
@@ -451,7 +452,7 @@ function FinalizeChainLink()
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
-    if(!HasGoAgain($combatChain[0]) && ($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain()) && !CurrentEffectPreventsGoAgain()) ++$actionPoints;
+    if((HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain()) && !CurrentEffectPreventsGoAgain()) ++$actionPoints;
 
     //Clean up combat effects that were used and are one-time
     for($i = count($currentTurnEffects) - 2; $i >= 0; --$i)
@@ -500,6 +501,13 @@ function FinalizeChainLink()
     $combatChain = [];
   }
 
+  function BeginTurnPass()
+  {
+     AuraBeginEndStepAbilities();
+     BeginEndStepEffects();
+     PassTurn();
+  }
+
   function PassTurn()
   {
     global $playerID, $currentPlayer, $turn, $myPitch, $theirPitch, $mainPlayer, $mainPlayerGamestateBuilt;
@@ -509,7 +517,6 @@ function FinalizeChainLink()
       BuildMainPlayerGameState();
     }
     global $mainArsenal, $mainHand;
-    AuraBeginEndStepAbilities();
     if(count($myPitch) > 0)
     {
       $currentPlayer = $playerID;
@@ -536,7 +543,6 @@ function FinalizeChainLink()
     global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $currentTurnEffects, $nextTurnEffects;
     global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
     global $mainAuras, $defBanish;
-
     //Undo Intimidate
     for($i=0; $i<count($defBanish); $i+=2)
     {
@@ -654,8 +660,9 @@ function FinalizeChainLink()
             {
               if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
               else $dynCost = DynamicCost($cardID);
-              if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
               AddPrePitchDecisionQueue($cardID, $index);
+              if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
+              else AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
               AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from);
               ProcessDecisionQueue();
               return;
@@ -700,7 +707,8 @@ function FinalizeChainLink()
           {
             $hasGoAgain = AbilityHasGoAgain($cardID);
             if(CanPlayAsInstant($cardID)) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-            else if(($abilityType == "A" || $abilityType == "AA") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+            else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+            else if($abilityType == "AA") --$actionPoints;//Always resolve this after combat chain
             if($abilityType == "A") { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
             ActivateAbilityEffects();
           }
@@ -712,21 +720,22 @@ function FinalizeChainLink()
               $hasGoAgain = true;
               $myClassState[$CS_NextNAACardGoAgain] = 0;
             }
+            if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
             if(CanPlayAsInstant($cardID)) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-            else if(($cardType == "A" || $cardType == "AA") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+            else if(($cardType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+            else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
             if($cardType == "A") { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
             if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
           }
           if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
           {
             if($cardType == "A") ++$myClassState[$CS_NumNonAttackCards];
-            if($cardType == "AA") ++$myClassState[$CS_NumAttackCards];
             ++$myClassState[$CS_NumActionsPlayed];
           }
         }
+        if($cardType == "AA") ++$myClassState[$CS_NumAttackCards];//Played or blocked
         //Pay additional costs
         if($turn[0] != "B") PayAdditionalCosts($cardID);
-        if($cardType == "AA" || $cardType == "W") { AuraAttackAbilities($cardID); OnAttackEffects($cardID); }
         AddDecisionQueue("RESUMEPLAY", $currentPlayer, "-");
         $turn[2] = $cardID;
         $turn[3] = $from;
@@ -772,6 +781,25 @@ function FinalizeChainLink()
         break;
       default:
         break;
+    }
+    $auras = &GetAuras($currentPlayer);
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      switch($auras[$i])
+      {
+        case "ELE175":
+          $type = CardType($cardID);
+          if($type == "A" || $type == "AA")
+          {
+            AddDecisionQueue("YESNO", $currentPlayer, "Do_you_want_to_pay_1_to_give_this_action_go_again", 0, 1);
+            AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, 1, 1);
+            AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
+            AddDecisionQueue("PREPITCHGIVEGOAGAIN", $currentPlayer, $type, 1);
+          }
+          break;
+        default: break;
+      }
     }
   }
 
@@ -827,7 +855,7 @@ function FinalizeChainLink()
   function PlayCardEffect($cardID, $from, $resourcesPaid)
   {
     global $turn, $combatChain, $currentPlayer, $myDiscard, $combatChainState, $CCS_AttackPlayedFrom, $myClassState, $CS_PlayIndex;
-    global $CS_NextWizardNAAInstant, $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex;
+    global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex;
     $character = &GetPlayerCharacter($currentPlayer);
     //Figure out where it goes
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
@@ -844,8 +872,13 @@ function FinalizeChainLink()
         array_push($combatChain, RepriseActive());
         array_push($combatChain, 0);//Attack modifier
         array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
-        if($turn[0] == "B") OnBlockEffects($index);
-        if($index == 0) $combatChainState[$CCS_AttackPlayedFrom] = $from;
+        if($turn[0] == "B") OnBlockEffects($index, $from);
+        if($index == 0)
+        {
+          $combatChainState[$CCS_AttackPlayedFrom] = $from;
+          AuraAttackAbilities($cardID);
+          OnAttackEffects($cardID);
+        }
         $myClassState[$CS_PlayCCIndex] = $index;
       }
       else
@@ -881,6 +914,7 @@ function FinalizeChainLink()
         CurrentEffectPlayAbility($cardID);
         if(HasBoost($cardID)) Boost();
         if(($character[0] == "ELE062" || $character[0] == "ELE063") && CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2) PlayAura("ELE110", $currentPlayer);
+        if($character[0] == "ARC075" || $character[0] == "ARC076") ViseraiPlayCard($cardID);
       }
       $playText = PlayAbility($cardID, $from, $resourcesPaid);
       if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);
@@ -905,3 +939,4 @@ function FinalizeChainLink()
   }
 
 ?>
+

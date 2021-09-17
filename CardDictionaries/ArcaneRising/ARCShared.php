@@ -2,7 +2,7 @@
 
   function ARCAbilityCost($cardID)
   {
-    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex;
+    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer;
     switch($cardID)
     {
       case "ARC003": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? 0 : 1);
@@ -11,7 +11,7 @@
       case "ARC018": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
       case "ARC040": return 1;
       case "ARC077": return 2;
-      case "ARC078": return 2;
+      case "ARC078": return 2 + NumRunechants($currentPlayer);
       case "ARC079": return 1;
       case "ARC113": case "ARC114": return 3;
       case "ARC115": return 1;
@@ -39,6 +39,8 @@
       case "ARC035": return "I";
       case "ARC037": return "A";
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return "A";
+      case "ARC077": return "AA";
+      case "ARC078": return "A";
       case "ARC113": case "ARC114": case "ARC115": case "ARC116": return "I";
       case "ARC117": return "A";
       case "ARC151": return "I";
@@ -59,6 +61,12 @@
       case "ARC051": case "ARC052": case "ARC053":
       case "ARC054": case "ARC055": case "ARC056":
       case "ARC072": case "ARC073": case "ARC074": return true;
+      case "ARC081": return true;
+      case "ARC083": return true;
+      case "ARC084": return true;
+      case "ARC091": case "ARC092": case "ARC093": return true;
+      case "ARC100": case "ARC101": case "ARC102": return true;
+      case "ARC106": case "ARC107": case "ARC108": return true;
       case "ARC162": return true;
       case "ARC167": case "ARC168": case "ARC169": return true;
       case "ARC170": case "ARC171": case "ARC172": return true;
@@ -85,6 +93,7 @@
       case "ARC019": return true;
       case "ARC037": return true;
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return true;
+      case "ARC078": return true;
       case "ARC153": case "ARC154": return true;
       default: return false;
     }
@@ -102,6 +111,9 @@
     case "ARC055": return 2;
     case "ARC056": return 1;
     case "ARC057": case "ARC058": case "ARC059": return 2;
+    case "ARC091": return 3;
+    case "ARC092": return 2;
+    case "ARC093": return 1;
     case "ARC160-1": return 1;
     case "ARC170-2": return 3;
     case "ARC171-2": return 2;
@@ -129,6 +141,7 @@
       case "ARC047": return CardSubType($attackID) == "Arrow";
       case "ARC054": case "ARC055": case "ARC056": return CardClass($attackID) == "RANGER" && CardType($attackID) == "AA";
       case "ARC057": case "ARC058": case "ARC059": return $cardID == $attackID;
+      case "ARC091": case "ARC092": case "ARC093": return CardClass($attackID) == "RUNEBLADE";
       case "ARC160-1": return CardType($attackID) == "AA";
       case "ARC160-3": return CardType($attackID) == "AA";
       case "ARC170-1": case "ARC171-1": case "ARC172-1": return CardType($attackID) == "AA";
