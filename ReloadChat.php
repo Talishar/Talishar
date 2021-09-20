@@ -8,13 +8,23 @@
 
   $filename = "./Games/" . $gameName . "/gamelog.txt";
   $time = filemtime($filename);
-  while($lastUpdate >= $time)
+  $tries = 0;
+  while($lastUpdate >= $time && $tries < 50)
   {
     sleep(1);
     clearstatcache();
     $time = filemtime($filename);
+    ++$tries;
   }
-  echo(filemtime($filename));
-  EchoLog($gameName, $playerID);
+
+  if($tries >= 50)
+  {
+    echo(filemtime($filename));
+  }
+  else
+  {
+    echo(filemtime($filename));
+    EchoLog($gameName, $playerID);
+  }
 
 ?>

@@ -45,8 +45,8 @@
   //Update the game file to show that the game has started and other players can join
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
-  $gameFile = fopen($filename, "a");
-  fwrite($gameFile, "\r\n1");
+  $gameFile = fopen($filename, "w");
+  fwrite($gameFile, "1\r\n2\r\n6");
   fclose($gameFile);
 
   header("Location: " . $redirectPath . "/StartEffects.php?gameName=$gameName&playerID=1");

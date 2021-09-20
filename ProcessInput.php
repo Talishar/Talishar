@@ -1,5 +1,7 @@
 <?php
 
+  error_reporting(E_ALL);
+
   include "WriteLog.php";
   include "GameLogic.php";
   include "GameTerms.php";

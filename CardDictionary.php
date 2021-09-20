@@ -1229,7 +1229,7 @@
       else if(count($myHand) < 1) return false;
     }
     if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $from, $index)) return false;
-    if(($cardType == "I" || CanPlayAsInstant($cardID)) && CanPlayInstant($phase)) return true;
+    if(($cardType == "I" || CanPlayAsInstant($cardID, $index)) && CanPlayInstant($phase)) return true;
     if(($phase == "B" || $phase == "D") && $from == "HAND" && IsDominateActive() && NumBlockedFromHand() >= 1) return false;
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
     if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID);
@@ -1339,7 +1339,7 @@
       case "ELE143": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedEarth) == 0;
       case "ELE147": return count($combatChain) == 0;
       case "ELE172": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedIce) == 0;
-      case "ELE183": case "ELE184": case "ELE185": return CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
+      case "ELE183": case "ELE184": case "ELE185": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
       case "ELE201": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedLightning) == 0;
       case "ELE224": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0;
       case "ELE225": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
