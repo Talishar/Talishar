@@ -7,33 +7,6 @@
   $playerID=$_GET["playerID"];
   $deck=$_GET["deck"];
   $decklink=$_GET["fabdb"];
-  if($playerID == 1)
-  {
-    $filename = "./Games/" . $gameName . "/GameFile.txt";
-    $gameFile = fopen($filename, "a");
-    fwrite($gameFile, $playerID);
-    fclose($gameFile);
-  }
-  else
-  {
-    $filename = "./Games/" . $gameName . "/GameFile.txt";
-    $gameFile = fopen($filename, "a");
-
-    $attemptCount = 0;
-    while(!flock($gameFile, LOCK_EX) && $attemptCount < 5) {  // acquire an exclusive lock
-      sleep(1);
-      ++$attemptCount;
-    }
-    if($attemptCount >= 5)
-    {
-      header("Location: " . $redirectorPath . "MainMenu.php");//We never actually got the lock
-    }
-
-    fwrite($gameFile, "\r\n");
-    fwrite($gameFile, $playerID);
-    flock($gameFile, LOCK_UN);    // release the lock
-    fclose($gameFile);
-  }
 
   if($decklink != "")
   {
@@ -44,12 +17,16 @@
     $deckObj = json_decode($apiDeck);
     $cards = $deckObj->{'cards'};
     $deckCards = "";
+    $sideboardCards = "";
+    $headSideboard = ""; $chestSideboard = ""; $armsSideboard = ""; $legsSideboard = ""; $offhandSideboard = "";
     $unsupportedCards = "";
+    $head = ""; $chest = ""; $arms = ""; $legs = ""; $offhand = "";
     $weapon1 = "";
     $weapon2 = "";
     for($i=0; $i<count($cards); ++$i)
     {
       $count = $cards[$i]->{'total'};
+      $numSideboard = $cards[$i]->{'totalSideboard'};
       $printings = $cards[$i]->{'printings'};
       $printing = $printings[0];
       $sku = $printing->{'sku'};
@@ -72,22 +49,41 @@
       else if($cardType == "E")
       {
         $subtype = CardSubType($id);
-        switch($subtype)
+        if($numSideboard == 0)
         {
-          case "Head": $head = $id; break;
-          case "Chest": $chest = $id; break;
-          case "Arms": $arms = $id; break;
-          case "Legs": $legs = $id; break;
-          case "Off-Hand": $offhand = $id; break;
-          default: break;
+          switch($subtype)
+          {
+            case "Head": $head = $id; break;
+            case "Chest": $chest = $id; break;
+            case "Arms": $arms = $id; break;
+            case "Legs": $legs = $id; break;
+            case "Off-Hand": $offhand = $id; break;
+            default: break;
+          }
+        }
+        else {
+          switch($subtype)
+          {
+            case "Head": if($headSideboard != "") $headSideboard .= " "; $headSideboard .= $id; break;
+            case "Chest": if($chestSideboard != "") $chestSideboard .= " "; $chestSideboard .= $id; break;
+            case "Arms": if($armsSideboard != "") $armsSideboard .= " "; $armsSideboard .= $id; break;
+            case "Legs": if($legsSideboard != "") $legsSideboard .= " "; $legsSideboard .= $id; break;
+            case "Off-Hand": if($offhandSideboard != "") $offhandSideboard .= " "; $offhandSideboard .= $id; break;
+            default: break;
+          }
         }
       }
       else
       {
-        for($j=0; $j<$count; ++$j)
+        for($j=0; $j<($count-$numSideboard); ++$j)
         {
           if($deckCards != "") $deckCards .= " ";
           $deckCards .= $id;
+        }
+        for($j=0; $j<$numSideboard; ++$j)
+        {
+          if($sideboardCards != "") $sideboardCards .= " ";
+          $sideboardCards .= $id;
         }
       }
     }
@@ -100,7 +96,13 @@
     $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $deckFile = fopen($filename, "a");
     fwrite($deckFile, $character . " " . $weapon1 . " " . ($weapon2 != "" ? $weapon2 . " " : "") . ($offhand != "" ? $offhand . " " : "") . $head . " " . $chest . " " . $arms . " " . $legs . "\r\n");
-    fwrite($deckFile, $deckCards);
+    fwrite($deckFile, $deckCards . "\r\n");
+    fwrite($deckFile, $headSideboard . "\r\n");
+    fwrite($deckFile, $chestSideboard . "\r\n");
+    fwrite($deckFile, $armsSideboard . "\r\n");
+    fwrite($deckFile, $legsSideboard . "\r\n");
+    fwrite($deckFile, $offhandSideboard . "\r\n");
+    fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
   }
   else
@@ -115,6 +117,27 @@
       default: $deckFile = "p1Deck.txt"; break;
     }
     copy($deckFile,"./Games/" . $gameName . "/p" . $playerID ."Deck.txt");
+  }
+
+  if($playerID == 2)
+  {
+    $filename = "./Games/" . $gameName . "/GameFile.txt";
+    $gameFile = fopen($filename, "w");
+
+    $attemptCount = 0;
+    while(!flock($gameFile, LOCK_EX) && $attemptCount < 5) {  // acquire an exclusive lock
+      sleep(1);
+      ++$attemptCount;
+    }
+    if($attemptCount >= 5)
+    {
+      header("Location: " . $redirectorPath . "MainMenu.php");//We never actually got the lock
+    }
+
+    //fwrite($gameFile, "\r\n");
+    fwrite($gameFile, "1\r\n2\r\n4");
+    flock($gameFile, LOCK_UN);    // release the lock
+    fclose($gameFile);
   }
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");

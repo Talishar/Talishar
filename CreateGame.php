@@ -30,7 +30,7 @@
   }
 
   $gameFile = fopen("./Games/" . $gameName . "/GameFile.txt", "w");
-  fwrite($gameFile, 1);
+  fwrite($gameFile, "1\r\n2\r\n0");
   fclose($gameFile);
 
   header("Location: " . $redirectorPath . "JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");

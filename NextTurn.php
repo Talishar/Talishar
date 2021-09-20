@@ -12,6 +12,7 @@
   include "GameTerms.php";
   include "GameLogic.php";
   include "HostFiles/Redirector.php";
+  include "Libraries/UILibraries.php";
 
   if($currentPlayer == $playerID) $icon = "ready.png";
   else $icon = "notReady.png";
@@ -390,7 +391,7 @@
   {
     $counters = CardType($myCharacter[$i]) == "W" ? $myCharacter[$i+3] : $myCharacter[$i+4];
     if($myCharacter[$i+2] > 0) $counters = $myCharacter[$i+2];//TODO: Display both kinds of counters
-    $playable = $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR");
+    $playable = $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i);
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     echo(Card($myCharacter[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
   }
@@ -420,59 +421,6 @@
   echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
-
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="")
-  {//
-    global $playerID, $gameName;
-    $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
-    //Enforce 375x523 aspect ratio as exported (.71)
-    $rv = "<a style='position:relative; display:inline-block;'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " href=\"./ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$action&cardID=" . $actionData . "\" " : "") . ">";
-    $border = $borderColor > 0 ? "margin:2px; border-radius:20px; border:4px solid " . BorderColorMap($borderColor) . ";" : "";
-    $rv .= "<img style='" . $border . " height:" . $maxHeight . "; width:" . ($maxHeight * .71) . "px;' src='./" . $folder . "/" . $cardNumber . ".png' />";
-    if($overlay == 1) $rv .= "<div style='width:100%; height:100%; top:0px; left:0px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-    if($counters != 0) $rv .= "<div style='top:45%; left:45%; position:absolute; z-index: 10; background: rgba(255, 255, 255, 0.7); font-size:30px;'>" . $counters . "</div>";
-    $rv .= "</a>";
-    return $rv;
-  }
-
-  function BorderColorMap($code)
-  {
-    switch($code)
-    {
-      case 1: return "DeepSkyBlue";
-      case 2: return "red";
-      case 3: return "yellow";
-      case 4: return "Gray";
-      case 5: return "Tan";
-      case 6: return "chartreuse";
-    }
-  }
-
-  function CreateButton($playerID, $caption, $mode, $input)
-  {
-    global $gameName;
-    $rv = "<button onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
-    return $rv;
-  }
-
-  function CreateForm($playerID, $caption, $mode, $count)
-  {
-    global $gameName;
-    $rv = "<form action='./ProcessInput.php'>";
-    $rv .= "<input type='submit' value='" . $caption . "'>";
-    $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
-    $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
-    $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
-    $rv .= "<input type='hidden' id='chkCount' name='chkCount' value='" . $count . "'>";
-    return $rv;
-  }
-
-  function CreateCheckbox($input, $value)
-  {
-    $rv = "<input type='checkbox' id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "'>";
-    $rv .= "<label for='chk" . $input . "'>Select?</label>";
-    return $rv;
-  }
 
   function PlayableCardBorderColor($cardID)
   {

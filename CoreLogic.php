@@ -533,7 +533,7 @@ function RollDie()
   return random_int(1, 6);
 }
 
-function CanPlayAsInstant($cardID)
+function CanPlayAsInstant($cardID, $index=-1)
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex;
   $cardType = CardType($cardID);
@@ -547,7 +547,8 @@ function CanPlayAsInstant($cardID)
   }
   if($cardType == "C" || $cardType == "E" || $cardType == "W")
   {
-    if(SearchCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT") == 1) return true;
+    if($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+    if(SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   return false;

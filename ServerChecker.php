@@ -37,6 +37,7 @@ if ($handle = opendir($path)) {
 
         $gf = $folder . "GameFile.txt";
         $lineCount = 0;
+        $status = -1;
         if(file_exists($gf))
         {
           $lastRefresh = filemtime($gf);
@@ -45,7 +46,7 @@ if ($handle = opendir($path)) {
             $gameFile = fopen($gf, "r");
             while (($buffer = fgets($gameFile, 4096)) !== false) {
               ++$lineCount;
-              if($lineCount >= 2) break;
+              if($lineCount == 3){ $status = intval($buffer); break; }
             }
           }
           else if(time() - $lastRefresh > 60)
@@ -56,7 +57,7 @@ if ($handle = opendir($path)) {
           }
         }
 
-      if($lineCount == 1)
+      if($status == 0)
       {
        echo("<form action='" . $redirectPath . "/JoinGame.php'>");
          echo("<label for='joinGame'>Open Game </label>");

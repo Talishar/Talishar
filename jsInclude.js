@@ -57,16 +57,17 @@ function SubmitChat()
 
 function ReloadChat(lastUpdate)
 {
-  //var chatBox = document.getElementById("chatText");
-  //if(chatBox.value == "") return;
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       el = document.getElementById('gamelog');
       ReloadChat(this.responseText.substring(0, 11));
       var logText = this.responseText.slice(11);
-      el.innerHTML = logText;
-      el.scrollTop = el.scrollHeight;
+      if(logText != "")
+      {
+        el.innerHTML = logText;
+        el.scrollTop = el.scrollHeight;
+      }
     }
   }
   var ajaxLink = "ReloadChat.php?gameName=" + document.getElementById("gameName").value;
