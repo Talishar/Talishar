@@ -240,9 +240,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $currentPlayer = $player;
     $turn[2] = ($parameter == "<-" ? $lastResult : $parameter);
     $return = "PASS";
-    if($subsequent != 1 || strval($lastResult) != "PASS") $return = DecisionQueueStaticEffect($phase, $player, ($parameter == "<-" ? $lastResult : $parameter), $lastResult);
-    if($parameter == "<-" && $lastResult == "-1") $return = "PASS";//Collapse the rest of the queue if this is a decision point with invalid parameters
-    if(strval($return) != "NOTSTATIC")
+    if($subsequent != 1 || is_array($lastResult) || strval($lastResult) != "PASS") $return = DecisionQueueStaticEffect($phase, $player, ($parameter == "<-" ? $lastResult : $parameter), $lastResult);
+    if($parameter == "<-" && !is_array($lastResult) && $lastResult == "-1") $return = "PASS";//Collapse the rest of the queue if this decision point has invalid parameters
+    if(is_array($return) || strval($return) != "NOTSTATIC")
     {
       ContinueDecisionQueue($return);
     }
@@ -254,7 +254,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 
   function FinalizeAction()
   {
-    global $currentPlayer, $mainPlayer, $otherPlayer, $actionPoints, $turn, $combatChain, $defPlayer;
+    global $currentPlayer, $mainPlayer, $otherPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $mainPlayerGamestateStillBuilt;
+    if(!$mainPlayerGamestateStillBuilt) UpdateGameState(1);
+    BuildMainPlayerGamestate();
     if($turn[0] == "M")
     {
       if(count($combatChain) > 0)//Means we initiated a chain link
@@ -262,6 +264,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         $turn[0] = "B";
         $currentPlayer = $defPlayer;
         $turn[2] = "";
+        $makeBlockBackup = 1;
       }
       else {
         if($actionPoints > 0)

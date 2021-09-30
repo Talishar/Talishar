@@ -21,6 +21,8 @@
   fwrite($handler, implode(" ", $p1ClassState) . "\r\n");
   fwrite($handler, implode(" ", $p1CharacterEffects) . "\r\n");
   fwrite($handler, implode(" ", $p1Soul) . "\r\n");
+  fwrite($handler, implode(" ", $p1CardStats) . "\r\n");
+  fwrite($handler, implode(" ", $p1TurnStats) . "\r\n");
 
   //Player 2
   fwrite($handler, implode(" ", $p2Hand) . "\r\n");
@@ -36,6 +38,8 @@
   fwrite($handler, implode(" ", $p2ClassState) . "\r\n");
   fwrite($handler, implode(" ", $p2CharacterEffects) . "\r\n");
   fwrite($handler, implode(" ", $p2Soul) . "\r\n");
+  fwrite($handler, implode(" ", $p2CardStats) . "\r\n");
+  fwrite($handler, implode(" ", $p2TurnStats) . "\r\n");
 
   fwrite($handler, $winner . "\r\n");
   fwrite($handler, $currentPlayer . "\r\n");

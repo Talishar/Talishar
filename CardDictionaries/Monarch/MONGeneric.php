@@ -153,6 +153,7 @@
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
+    $rv = "";
     switch($cardID)
     {
     //MON Generic
@@ -226,7 +227,7 @@
     global $mainPlayer;
     switch($cardID)
     {
-      case "MON246": if(SearchMyDiscard("AA") == "") { AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); } break;
+      case "MON246": if(SearchDiscard($mainPlayer, "AA") == "") { AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); } break;
       case "MON269": case "MON270": case "MON271": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
       case "MON275": case "MON276": case "MON277": GiveAttackGoAgain(); break;
       default: break;

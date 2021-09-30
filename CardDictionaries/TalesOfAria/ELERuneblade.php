@@ -118,6 +118,7 @@
   {
     global $currentPlayer, $otherPlayer, $CS_ArcaneDamageTaken, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
     global $CS_NextNAAInstant;
+    $rv = "";
     switch($cardID)
     {
       case "ELE064":

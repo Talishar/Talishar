@@ -48,6 +48,7 @@
       case "MON110": case "MON111": case "MON112": return true;
       case "MON113": case "MON114": case "MON115": return true;
       case "MON116": case "MON117": case "MON118": return true;
+      case "MON231": return true;
       case "MON260": case "MON261": case "MON262": return true;
       case "MON266": case "MON267": case "MON268": return true;
       case "MON269": case "MON270": case "MON271": return true;

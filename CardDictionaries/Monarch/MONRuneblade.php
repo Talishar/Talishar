@@ -79,6 +79,18 @@
       case "MON230":
         GainResources($currentPlayer, 2);
         return "Aether Ironweave gaines 2 resources.";
+      case "MON231":
+        $numRevealed = 3 + $resourcesPaid/2;
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("SONATAARCANIX", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("SONATAARCANIXSTEP2", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        return "";
       case "MON232": case "MON233": case "MON234":
         DealArcane(2, 0, "PLAYCARD", $cardID);
         return "Vexing Malice deals 2 arcane damage.";

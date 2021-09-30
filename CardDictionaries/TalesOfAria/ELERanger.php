@@ -126,6 +126,7 @@
   function ELERangerPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $otherPlayer;
+    $rv = "";
     switch($cardID)
     {
       case "ELE031": case "ELE032":

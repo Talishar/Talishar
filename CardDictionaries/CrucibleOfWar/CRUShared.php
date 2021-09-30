@@ -40,8 +40,11 @@
       //CRU Mechanologist
       case "CRU115": case "CRU116": case "CRU117": return true;
       //CRU Runeblade
+      case "CRU143": return true;
+      case "CRU145": case "CRU146": case "CRU147": return true;
       case "CRU151": case "CRU152": case "CRU153":
       return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+      case "CRU154": case "CRU155": case "CRU156": return true;
       //CRU Generic
       case "CRU181": case "CRU188": return true;
       default: return false;
@@ -124,6 +127,8 @@
       case "CRU124": return CardSubtype($combatChain[0]) == "Arrow";
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";
+      //Runeblade
+      case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && CardClass($attackID) == "RUNEBLADE";
       default: return false;
     }
   }

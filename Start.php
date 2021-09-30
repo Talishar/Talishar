@@ -87,6 +87,7 @@
     $hand = "";
     for($i=0; $i<$int; ++$i)
     {
+      if($i >= count($deck)) break;
       $hand .= $deck[$i];
       if($i != $int-1) $hand .= " ";
     }
@@ -118,6 +119,8 @@
     fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0\r\n");//Class State
     fwrite($handler, "\r\n");//Character effects
     fwrite($handler, "\r\n");//Soul
+    fwrite($handler, "\r\n");//Card Stats
+    fwrite($handler, "\r\n");//Turn Stats
   }
 
   function GetArray($handler)

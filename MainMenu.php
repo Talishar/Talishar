@@ -2,7 +2,8 @@
 <?php
    include "HostFiles/Redirector.php";
 ?>
-
+<head>
+  <link rel="shortcut icon" type="image/png" href="./Images/favicon3.png"/>
 <style>
 body {
   font-family: Garamond, serif;
@@ -10,6 +11,7 @@ body {
   color:rgb(240, 240, 240);
 }
 </style>
+</head>
 <body>
 <div style="width:100%; height:100%; background-image: url('Images/talesofariamainmenu.jpg'); background-size:cover; z-index=0;">
 <div style="position:absolute; left: 35%; width:30%; height:30%; background-image: url('Images/fab_logo.png'); background-size:100% auto; z-index=1; background-repeat:no-repeat;"></div>
@@ -49,16 +51,19 @@ body {
   <label for="katsu">Katsu Deck</label><br><br>
   <input type="text" id="fabdb" name="fabdb">
   <label for="fabdb">FaB DB Link</label><br><br>
-  <div style="text-align:center;"><input type="submit" value="Create Game"></div>
+  <input type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+  <label for="deckTestMode">Single player deck test mode</label><br><br>
+  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Tales of Aria/Game Lobby Update! 9/15/21 Supported cards:</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Card Stats update! 9/23/21 Supported cards:</h3>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of ELE except Fable</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Data Doll and Meganetic Shockwave</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian except Righteous Cleansing</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ranger except Silver the Tip</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Runeblade except Crown of Dichotomy and Become the Arknight</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Wizard except Index and Sonic Boom (partial)</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Generic except Chains of Eminence</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Brute except Kayo, Beast Within, Massacre, and Argh... Smash!</div>

@@ -9,6 +9,7 @@
       case "A": return "Attack Reaction";
       case "D": return "Defense Reaction";
       case "P": return "Pitch";
+      case "ARS": return "Arsenal";
     }
   }
 

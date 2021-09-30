@@ -15,11 +15,14 @@
 
   include "MenuFiles/WriteGamefile.php";
 
-  $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-  $deckFile = fopen($filename, "w");
-  fwrite($deckFile, implode(" ", explode(",",$playerCharacter)) . "\r\n");
-  fwrite($deckFile, implode(" ", explode(",",$playerDeck)));
-  fclose($deckFile);
+  if($playerCharacter != "" && $playerDeck != "")//If they submitted before loading even finished, use the deck as it existed before
+  {
+    $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+    $deckFile = fopen($filename, "w");
+    fwrite($deckFile, implode(" ", explode(",",$playerCharacter)) . "\r\n");
+    fwrite($deckFile, implode(" ", explode(",",$playerDeck)));
+    fclose($deckFile);
+  }
 
   if($playerID == 1)
   {

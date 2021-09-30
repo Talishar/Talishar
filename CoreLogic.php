@@ -36,7 +36,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
     }
 
     //Now check current turn effects
-    for($i=0; $i<count($currentTurnEffects); $i+=2)
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
     {
       if(IsCombatEffectActive($currentTurnEffects[$i]))
       {
@@ -95,6 +95,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
+  $damageThreatened = $damage;
   if(ConsumeDamagePrevention($playerID)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
   if($damage <= $classState[$CS_DamagePrevention])
   {
@@ -138,6 +139,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $playerID); }
   PlayerLoseHealth($damage, $health);
+  LogDamageStats($playerID, $damageThreatened, $damage);
   return $damage;
 }
 
@@ -150,7 +152,6 @@ function CurrentEffectDamageModifiers($source)
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
-      case "ELE186": case "ELE187": case "ELE188": ++$modifier; break;
       case "ELE186": case "ELE187": case "ELE188": if(TalentContains($source, "LIGHTNING") || TalentContains($source, "ELEMENTAL")) ++$modifier; break;
       default: break;
     }
@@ -535,7 +536,8 @@ function RollDie()
 
 function CanPlayAsInstant($cardID, $index=-1)
 {
-  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex;
+  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
@@ -551,6 +553,7 @@ function CanPlayAsInstant($cardID, $index=-1)
     if(SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
+  if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   return false;
 }
 
@@ -576,6 +579,28 @@ function RevealCards($cards)
   }
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
+}
+
+function AuraDestroyed($player, $cardID)
+{
+  if(CardType($cardID) == "T") return;//Don't need to add to anywhere if it's a token
+  $goesWhere = GoesWhereAfterResolving($cardID);
+  switch($goesWhere)
+  {
+    case "GY": AddGraveyard($cardID, $player, "PLAY"); break;
+    case "SOUL": AddSoul($cardID, $player, "PLAY"); break;
+    case "BANISH": BanishCardForPlayer($cardID, $player, "PLAY", "NA"); break;
+    default: break;
+  }
+}
+
+function DoesAttackHaveGoAgain()
+{
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+  if(count($combatChain) == 0) return false;//No combat chain, so no
+  if(CurrentEffectPreventsGoAgain()) return false;
+  if(HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain()) return true;
+  return false;
 }
 
 ?>

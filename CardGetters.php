@@ -255,6 +255,40 @@ function &GetAuras($player)
   }
 }
 
+function &GetCardStats($player)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myCardStats, $theirCardStats, $mainCardStats, $defCardStats;
+  global $myStateBuiltFor;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainCardStats;
+    else return $defCardStats;
+  }
+  else
+  {
+    if($player == $myStateBuiltFor) return $myCardStats;
+    else return $theirCardStats;
+  }
+}
+
+function &GetTurnStats($player)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myTurnStats, $theirTurnStats, $mainTurnStats, $defTurnStats;
+  global $myStateBuiltFor;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainTurnStats;
+    else return $defTurnStats;
+  }
+  else
+  {
+    if($player == $myStateBuiltFor) return $myTurnStats;
+    else return $theirTurnStats;
+  }
+}
+
 function HasTakenDamage($player)
 {
   global $CS_DamageTaken;
