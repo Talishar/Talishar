@@ -1,0 +1,108 @@
+<?php
+
+function CardStatPieces()
+{
+  return 4;
+}
+
+function TurnStatPieces()
+{
+  return 11;
+}
+
+$CardStats_TimesPlayed = 1;
+$CardStats_TimesBlocked = 2;
+$CardStats_TimesPitched = 3;
+
+$TurnStats_DamageThreatened = 0;
+$TurnStats_DamageDealt = 1;
+$TurnStats_CardsPlayedOffense = 2;
+$TurnStats_CardsPlayedDefense = 3;
+$TurnStats_CardsPitched = 4;
+$TurnStats_CardsBlocked = 5;
+$TurnStats_ResourcesUsed = 6;
+$TurnStats_ResourcesLeft = 7;
+$TurnStats_CardsLeft = 8;
+$TurnStats_DamageBlocked = 9;
+$TurnStats_Overblock = 10;
+
+function LogPlayCardStats($player, $cardID, $from)
+{
+  global $turn, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense;
+  global $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $mainPlayer;
+  $cardStats = &GetCardStats($player);
+  $turnStats = &GetTurnStats($player);
+  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $found = 0;
+  $i = 0;
+  for($i = 0; $i<count($cardStats) && !$found; $i += CardStatPieces())
+  {
+    if($cardStats[$i] == $cardID) { $found = 1; $i -= CardStatPieces(); }
+  }
+  if(!$found) array_push($cardStats, $cardID, 0, 0, 0);
+  switch($turn[0])
+  {
+    case "P": ++$cardStats[$i + $CardStats_TimesPitched]; ++$turnStats[$baseIndex + $TurnStats_CardsPitched]; break;
+    case "B": ++$cardStats[$i + $CardStats_TimesBlocked]; if($from != "PLAY" && $from != "EQUIP") ++$turnStats[$baseIndex + $TurnStats_CardsBlocked]; break;
+    default:
+      ++$cardStats[$i + $CardStats_TimesPlayed];
+      if($from != "PLAY" && $from != "EQUIP")
+      {
+        if($player == $mainPlayer) ++$turnStats[$baseIndex + $TurnStats_CardsPlayedOffense];
+        else ++$turnStats[$baseIndex + $TurnStats_CardsPlayedDefense];
+      }
+      break;
+  }
+}
+
+function LogResourcesUsedStats($player, $resourcesUsed)
+{
+  global $currentTurn, $TurnStats_ResourcesUsed;
+  $turnStats = &GetTurnStats($player);
+  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $turnStats[$baseIndex + $TurnStats_ResourcesUsed] += $resourcesUsed;
+}
+
+function LogDamageStats($player, $damageThreatened, $damageDealt)
+{
+  global $currentTurn, $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
+  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $damagerStats = &GetTurnStats($player == 1 ? 2 : 1);
+  $damagerStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened;
+  $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
+}
+
+function LogCombatResolutionStats($damageThreatened, $damageBlocked)
+{
+  global $currentTurn, $mainPlayer, $defPlayer, $TurnStats_DamageThreatened, $TurnStats_DamageBlocked, $TurnStats_Overblock;
+  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $mainStats = &GetTurnStats($mainPlayer);
+  $defStats = &GetTurnStats($defPlayer);
+  $mainStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened > $damageBlocked ? $damageBlocked : $damageThreatened;//Excess is logged in the damage function
+  $defStats[$baseIndex + $TurnStats_DamageBlocked] += $damageBlocked;
+  $defStats[$baseIndex + $TurnStats_Overblock] += $damageBlocked > $damageThreatened ? $damageBlocked - $damageThreatened : 0;
+}
+
+function LogEndTurnStats($player)
+{
+  global $currentTurn, $TurnStats_ResourcesLeft, $TurnStats_CardsLeft;
+  $turnStats = &GetTurnStats($player);
+  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $resources = &GetResources($player);
+  $turnStats[$baseIndex + $TurnStats_ResourcesLeft] = $resources[0];
+  $hand = &GetHand($player);
+  $turnStats[$baseIndex + $TurnStats_CardsLeft] = count($hand);
+}
+
+function StatsStartTurn()
+{
+  $p1Stats = &GetTurnStats(1);
+  $p2Stats = &GetTurnStats(2);
+  for($i=0; $i<TurnStatPieces(); ++$i)
+  {
+    array_push($p1Stats, 0);
+    array_push($p2Stats, 0);
+  }
+}
+
+?>

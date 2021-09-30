@@ -6,6 +6,8 @@
   include "GameLogic.php";
   include "GameTerms.php";
   include "HostFiles/Redirector.php";
+  include "Libraries/SHMOPLibraries.php";
+  include "Libraries/StatFunctions.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
@@ -27,6 +29,9 @@
   include "ParseGamestate.php";
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $skipWriteGamestate = false;
+  $mainPlayerGamestateStillBuilt = 0;
+  $makeCheckpoint = 0;
+  $makeBlockBackup = 0;
 
   //Now we can process the command
   switch($mode) {
@@ -50,30 +55,35 @@
       break;
     case 3: //Play equipment ability
       $index = $cardID;
-      $cardID = $myCharacter[$index];
-      $found = HasCard($cardID);
-      $myClassState[$CS_CharacterIndex] = $found;
-      $combatChainState[$CCS_WeaponIndex] = $found;
-      //TODO: validate that the player should actually be able to use this
-      if($turn[0] == "B")
+      $found = -1;
+      if($index != "")
       {
-        if(HasBladeBreak($cardID))
+        $cardID = $myCharacter[$index];
+        $found = HasCard($cardID);
+      }
+      if($found != -1 && IsPlayable($myCharacter[$found], $turn[0], "CHAR", $found))
+      {
+        $myClassState[$CS_CharacterIndex] = $found;
+        $combatChainState[$CCS_WeaponIndex] = $found;
+        if($turn[0] == "B")
         {
-          $myCharacter[$found+1] = 0;//Destroy if blocked and it had blade break;
-          CharacterDestroyEffect($cardID, $currentPlayer);
+          if(HasBladeBreak($cardID))
+          {
+            $myCharacter[$found+1] = 0;//Destroy if blocked and it had blade break;
+            CharacterDestroyEffect($cardID, $currentPlayer);
+          }
+          else $myCharacter[$found+1] = 1;//Else just exhaust it
         }
-        else $myCharacter[$found+1] = 1;//Else just exhaust it
-        //TODO: Temper
+        else
+        {
+          EquipPayAdditionalCosts($index, "EQUIP");
+        }
+        PlayCard($cardID, "EQUIP", -1, $found);
       }
-      else
-      {
-        EquipPayAdditionalCosts($index, "EQUIP");
-      }
-      PlayCard($cardID, "EQUIP", -1, $found);
       break;
     case 4: //Add something to your arsenal
       $found = HasCard($cardID);
-      if($found >= 0) {
+      if($turn[0] == "ARS" && $found >= 0) {
         unset($myHand[$found]);
         $myHand = array_values($myHand);
         AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
@@ -82,13 +92,16 @@
       break;
     case 5:
       $index = $cardID;
-      $cardToPlay = $myArsenal[$index];
-      for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
+      if($index < count($myArsenal))
       {
-        unset($myArsenal[$i]);
+        $cardToPlay = $myArsenal[$index];
+        for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
+        {
+          unset($myArsenal[$i]);
+        }
+        $myArsenal = array_values($myArsenal);
+        PlayCard($cardToPlay, "ARS");
       }
-      $myArsenal = array_values($myArsenal);
-      PlayCard($cardToPlay, "ARS");
       break;
     case 6://Pitch Deck
       $found = PitchHasCard($cardID);
@@ -126,7 +139,9 @@
       break;
     case 10://Item ability
       $index = $cardID;//Overridden to be index instead
+      if($index >= count($myItems)) break;//Item doesn't exist
       $cardID = $myItems[$index];
+      if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break;//Item not playable
       $myClassState[$CS_PlayIndex] = $index;
       $set = CardSet($cardID);
       if($set != "WTR")
@@ -166,8 +181,10 @@
       $index = $cardID;
       $cardID = $myBanish[$index];
       if($myBanish[$index+1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-      unset($myBanish[$index+1]);
-      unset($myBanish[$index]);
+      for($i=$index+BanishPieces()-1; $i>=$index; --$i)
+      {
+        unset($myBanish[$i]);
+      }
       $myBanish = array_values($myBanish);
       PlayCard($cardID, "BANISH", -1, $index);
       break;
@@ -227,44 +244,76 @@
       PlayCard($cardID, "PLAY", -1);
       break;
     case 99: //Pass
-      if($turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD")
-      {
-        ContinueDecisionQueue("PASS");
-      }
-      else
-      {
-        if(Pass($turn, $playerID, $currentPlayer))
-        {
-          BeginTurnPass();
-        }
-        WriteLog("Player " . $playerID . " passed.");
-      }
+      PassInput();
       break;
     case 10000:
       RevertGamestate();
       $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " undid their last action.");
       break;
+    case 10001:
+      RevertGamestate("preBlockBackup.txt");
+      $skipWriteGamestate = true;
+      WriteLog("Player " . $playerID . " undid their blocks.");
+      break;
   }
 
   if($winner != 0) { $turn[0] = "OVER"; }
+  $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
+  if($turn[0] != "OVER" && $currentPlayerIsAI)
+  {
+    for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
+    {
+      if(count($decisionQueue) > 0)
+      {
+        $options = explode(",", $turn[2]);
+        ContinueDecisionQueue($options[0]);//Just pick the first option
+      }
+      else
+      {
+        PassInput();
+      }
+      $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
+    }
+  }
 
   //Now write out the game state
   if(!$skipWriteGamestate)
   {
+    if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
     include "WriteGamestate.php";
   }
 
   if($makeCheckpoint) MakeGamestateBackup();
+  if($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
+
+  WriteCache($gameName, $playerID);
 
   header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=" . $playerID);
 
   exit;
 
+  function PassInput()
+  {
+    global $turn, $currentPlayer;
+    if($turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD")
+    {
+      ContinueDecisionQueue("PASS");
+    }
+    else
+    {
+      if(Pass($turn, $currentPlayer, $currentPlayer))
+      {
+        BeginTurnPass();
+      }
+      WriteLog("Player " . $currentPlayer . " passed.");
+    }
+  }
+
   function PitchHasCard($cardID)
   {
     global $myPitch;
-    for($i=0; $i<$myPitch; ++$i)
+    for($i=0; $i<count($myPitch); ++$i)
     {
       if($myPitch[$i] == $cardID) return $i;
     }
@@ -402,6 +451,8 @@
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 
+    LogCombatResolutionStats($totalAttack, $totalDefense);
+
     $damage = $totalAttack - $totalDefense;
     $damageDone = DealDamage($defPlayer, $damage, "COMBAT");//Include prevention
     $wasHit = $damageDone > 0;
@@ -416,16 +467,22 @@
           if($damage >= 4) ProcessCrushEffect($combatChain[$i-1]);
         }
       }
-      for($i=0; $i<count($currentTurnEffects); $i+=2)
+      for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
       {
         if(IsCombatEffectActive($currentTurnEffects[$i]))
         {
           if($currentTurnEffects[$i+1] == $mainPlayer)
           {
-            EffectHitEffect($currentTurnEffects[$i]);
+            $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
+            if($shouldRemove == 1)
+            {
+              for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
+            }
           }
         }
       }
+      $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
+
       $combatChainState[$CCS_DamageDealt] = $damage;
       ++$combatChainState[$CCS_NumHits];
       ++$combatChainState[$CCS_HitsInRow];
@@ -454,7 +511,7 @@ function FinalizeChainLink()
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
-    if((HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain()) && !CurrentEffectPreventsGoAgain()) ++$actionPoints;
+    if(DoesAttackHaveGoAgain()) ++$actionPoints;
 
     //Clean up combat effects that were used and are one-time
     for($i = count($currentTurnEffects) - 2; $i >= 0; --$i)
@@ -558,6 +615,8 @@ function FinalizeChainLink()
       }
     }
 
+    LogEndTurnStats($mainPlayer);
+
     //Draw Cards
     if($mainPlayer == 1 && $currentTurn == 1) //Defender draws up on turn 1
     {
@@ -600,7 +659,7 @@ function FinalizeChainLink()
     UpdateMainPlayerGameState();
 
     //Update all the player neutral stuff
-    if($mainPlayer == 2) $currentTurn += 1;
+    if($mainPlayer == 2) { $currentTurn += 1; }
     $turn[0] = "M";
     //$turn[1] = $mainPlayer == 2 ? $turn[1] + 1 : $turn[1];
     $turn[2] = "";
@@ -619,6 +678,7 @@ function FinalizeChainLink()
     BuildMainPlayerGameState();
 
     //Start of turn effects
+    if($mainPlayer == 1) StatsStartTurn();
     //Handle Auras for the new main player
     AuraStartTurnAbilities();
     //Handle items for the new main player
@@ -645,7 +705,11 @@ function FinalizeChainLink()
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain;
     global $CS_NumAttackCards;
     if($turn[0] != "P") MakeGamestateBackup();
-    if($dynCostResolved == -1) WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
+    if($dynCostResolved == -1)
+    {
+      WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
+      LogPlayCardStats($currentPlayer, $cardID, $from);
+    }
     //If it's not pitch phase, pay the cost
         if($from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
         else $cardType = CardType($cardID);
@@ -657,6 +721,7 @@ function FinalizeChainLink()
               if($turn[0] == "B" && $cardType != "I" && !CanPlayAsInstant($cardID)) $myResources[1] = $dynCostResolved;
               else $myResources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier();
               if($myResources[1] < 0) $myResources[1] = 0;
+              LogResourcesUsedStats($currentPlayer, $myResources[1]);
             }
             else
             {
@@ -859,9 +924,10 @@ function FinalizeChainLink()
     global $turn, $combatChain, $currentPlayer, $myDiscard, $combatChainState, $CCS_AttackPlayedFrom, $myClassState, $CS_PlayIndex;
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex;
     $character = &GetPlayerCharacter($currentPlayer);
+    $definedCardType = CardType($cardID);
     //Figure out where it goes
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
-    else $cardType = CardType($cardID);
+    else $cardType = $definedCardType;
     if($from != "PLAY")
     {
       if(GoesOnCombatChain($turn[0], $cardID, $from))
@@ -894,7 +960,7 @@ function FinalizeChainLink()
         {
           PutItemIntoPlay($cardID);
         }
-        else
+        else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
         {
           $goesWhere = GoesWhereAfterResolving($cardID);
           switch($goesWhere)

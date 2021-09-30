@@ -2,9 +2,11 @@
 
 <?php
 
+  include 'Libraries/HTTPLibraries.php';
+
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
-  $playerID=$_GET["playerID"];
+  $playerID=TryGet("playerID", 3);
 
   //First we need to parse the game state from the file
   include "WriteLog.php";
@@ -13,12 +15,25 @@
   include "GameLogic.php";
   include "HostFiles/Redirector.php";
   include "Libraries/UILibraries.php";
+  include "Libraries/StatFunctions.php";
 
   if($currentPlayer == $playerID) $icon = "ready.png";
   else $icon = "notReady.png";
   echo '<link rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 
+  if(count($turn) == 0)
+  {
+    echo("The game seems not to have loaded properly. Please try restarting the game.");
+    exit();
+  }
+
 ?>
+
+<style>
+  td {
+    text-align:center;
+  }
+</style>
 
 </head>
 
@@ -31,14 +46,14 @@
   echo("<script src=\"./jsInclude.js\"></script>");
 
   echo("<script>");
-  echo("function reload() { 
-        document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;" . ($playerID != $currentPlayer ? "setInterval(function(){CheckReloadNeeded();}, 500);" : "") . "}");
+  echo("function reload() { document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;" . ($playerID != $currentPlayer ? "CheckReloadNeeded();" : "") . "}");
 
   echo 'function CheckReloadNeeded() {';
     echo 'var xmlhttp = new XMLHttpRequest();';
     echo 'xmlhttp.onreadystatechange = function() {';
       echo 'if (this.readyState == 4 && this.status == 200) {';
-        echo 'if(this.responseText[1] == "1") { location.reload(); }';
+        echo 'if(parseInt(this.responseText) == 1) { location.reload(); }';
+        echo 'else { CheckReloadNeeded(); }';
       echo '}';
     echo '};';
     echo 'xmlhttp.open("GET", "IsReloadNeeded.php?gameName=' . $gameName . '&playerID=' . ($playerID == 3 ? ($currentPlayer == 1 ? 2 : 1) : $playerID) . '", true);';
@@ -47,31 +62,41 @@
   echo("</script>");
 
   //Display hidden elements
-  echo("<div id=\"cardDetail\" style=\"display:none; position:absolute;\"></div>");
+  echo("<div id=\"cardDetail\" style=\"z-index:1000; display:none; position:absolute;\"></div>");
 
   //Display background
   echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./CardImages/findCenterBackground.jpg' /></div>");
 
   //Now display the screen for this turn
-  echo("<h1>Turn #" . $currentTurn . " (Player " . $currentPlayer . " " . PhaseName($turn[0]) . " Phase - $actionPoints Action Points)</h1>");//Turn number
+  echo("<span style='display:inline-block; background-color: rgba(255,255,255,0.70); position:relative; font-size:30px;'><b>Turn #" . $currentTurn . " (" . ($playerID == $currentPlayer ? "Your" : "Their") . " " . PhaseName($turn[0]) . " Phase - $actionPoints Action Points");
+  if(DoesAttackHaveGoAgain()) echo("<img title='This attack has Go Again.' style='height:24px; width:24px; display:inline-block;' src='./Images/goAgain.png' />");
+  echo(")</b></span>");//Turn number
 
   //Tell the player what to pick
+  echo("<div style='z-index:500;'>");
   if($turn[0] == "OVER")
   {
     echo("<h2>Player " . $winner . " Won!</h2>");
+    echo(CardStatsUI($playerID));
   }
   else if($currentPlayer != $playerID)
   {
-    echo("<h2>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</h2>");
+    echo("<span style='display:inline-block; background-color: rgba(255,255,255,0.70); position:relative; font-size:24px;'><b>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</b></span>");
   }
   else
   {
-    echo("<h2>Please choose " . TypeToPlay($turn[0]));
-    if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0) . ")");
-    if(CanPassPhase($turn[0])) echo(" (or " . CreateButton($playerID, "Pass", 99, 0) . ")");
+    echo("<span style='display:inline-block; background-color: rgba(255,255,255,0.70); font-size:24px;'><b>Please choose " . TypeToPlay($turn[0]));
+    if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
+    if(CanPassPhase($turn[0]))
+    {
+      echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px"));
+      if($turn[0] == "B") echo(" or " . CreateButton($playerID, "Undo Block", 10001, 0, "24px"));
+      echo(")");
+    }
     if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
-    echo(":</h2>");
+    echo(":</b></span>");
   }
+  echo("</div>");
   //Display the combat chain
   if($turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D")))
   {
@@ -150,17 +175,6 @@
     for($i=0; $i<count($options); ++$i)
     {
       echo(Card($myDeck[$options[$i]], "CardImages", 400, 11, 0, 0, 0, 0, strval($options[$i])));
-    }
-    echo("</div>");
-  }
-
-  if(($turn[0] == "MAYCHOOSEHAND" || $turn[0] == "CHOOSEHAND" || $turn[0] == "CHOOSEHANDCANCEL") && $turn[1] == $playerID)
-  {
-    echo("<div display:inline;'>");
-    $options = explode(",", $turn[2]);
-    for($i=0; $i<count($options); ++$i)
-    {
-      echo(Card($myHand[$options[$i]], "CardImages", 400, 16, 0, 0, 0, 0, strval($options[$i])));
     }
     echo("</div>");
   }
@@ -256,6 +270,7 @@
     echo("<div display:inline;'>");
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
+    echo("<h3>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "<h3>");
     echo(CreateForm($playerID, "Submit", 19, count($options)));
     echo("<table><tr>");
     for($i=0; $i<count($options); ++$i)
@@ -336,28 +351,41 @@
   }
 
 
+  echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
+  echo(CreatePopup("myBanishPopup", $myBanish, 1, 0, "Your Banish", BanishPieces()));
+  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Revert Gamestate", 10000, 0, "24px")));
+
   //Display the player's hand at the bottom of the screen
-  echo("<div style='position: fixed; bottom:10px; width:40%; display:inline;'>");
-  echo("<h3 style='background-color: rgba(255,255,255,0.70); width:100px;'>Your hand:</h3>");
-  echo("<div style='background-color: rgba(255,255,255,0.70); position: absolute; top:0px; left: 120px; height: 50px; width:500px; border:1px solid green; display:inline;'>");
+  echo("<div style='position: fixed; left:10px; bottom:10px; width:40%; display:inline;'>");
+  //echo("<h3 style='background-color: rgba(255,255,255,0.70); width:100px;'>Your hand:</h3>");
+  echo("<div style='height:60px;'><div style='background-color: rgba(255,255,255,0.70); position: absolute; top:0px; left: 5px; height: 50px; width:700px; border:1px solid green; display:inline;'>");
   echo("<span style='position:relative; display:inline-block;'><img style='padding-left:20px; height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:10px; left:20px; width:50px; font-size:30; color:white; text-align:center;'>" . $myResources[0] . "</div></img></span>");
   echo("<div style='position:relative; display:inline-block; padding-left:20px; height:50px; width:100px;'><div style='position:relative;heigh:100%;width:100%;'><span style='position:absolute; font-size: 24px; top:15px; left:20px;'>$myHealth</span></div><img style='display:inline-block; height:100%; width:100%;' src='./CardImages/healthSymbol.png' /></div>");
-  echo("<div style='position:relative; display:inline-block; top:-20px; height:50px; font-size:20; text-align:center; padding-left:20px;'>Deck: " . count($myDeck) . " cards</div>");
-  echo("<div style='position:relative; display:inline-block; top:-20px; height:50px; font-size:20; text-align:center; padding-left:20px;'>Soul: " . count($mySoul) . " cards</div>");
-  echo("</div>");
+
+  echo("<div title='The number of cards remaining in your deck.' style='cursor:default; position:relative; display:inline-block; height:50px; padding-left:10px;'><img style='display:inline-block; padding-left:10px; height:50px; width:50px;' src='./Images/deckIcon.png'></img> <div style='font-size:20; position:relative; display:inline-block; height:50px;top:-20px;'>" . count($myDeck) . " cards</div></div>");
+
+  echo("<div title='Click to view the cards in your Graveyard.' style='cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center; padding-left:10px;' onclick='(function(){ document.getElementById(\"myDiscardPopup\").style.display = \"inline\";})();'><img style='padding-left:10px; height:50px; width:50px;' src='./Images/graveyardIcon.png'></img> <div style='position:relative; top:-20px; display:inline-block;'>" . count($myDiscard) . " cards</div></div>");
+
+  if(count($myBanish) > 0) echo("<div title='Click to view the cards in your Banish zone.' style='cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center; padding-left:10px;' onclick='(function(){ document.getElementById(\"myBanishPopup\").style.display = \"inline\";})();'><img style='padding-left:10px; height:50px; width:50px;' src='./Images/banishIcon.png'></img> <div style='position:relative; top:-20px; display:inline-block;'>" . (count($myBanish)/BanishPieces()) . " cards</div></div>");
+
+  if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div style='position:relative; display:inline-block; top:-20px; height:50px; font-size:20; text-align:center; padding-left:20px;'>Soul: " . count($mySoul) . " cards</div>");
+
+echo("<div title='Click to view the game stats.' style='cursor:pointer; position:relative; display:inline-block; top:-20px; height:50px; font-size:20; text-align:center; padding-left:20px;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'>Stats</div>");
+  echo("</div></div>");
   $actionType = $turn[0] == "ARS" ? 4 : 2;
+  if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
   for($i=0; $i<count($myHand); ++$i) {
-    $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND");
+    $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND") || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
     $border = CardBorderColor($myHand[$i], "HAND", $playable);
-    echo(Card($myHand[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border));
+    $actionData = $actionType == 16 ? strval($i) : "";
+    echo(Card($myHand[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border, 0, $actionData));
   }
-  for($i=0; $i<count($myBanish); $i+=2) {
+  for($i=0; $i<count($myBanish); $i+=BanishPieces()) {
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
     if($myBanish[$i+1] == "INT") echo(Card($myBanish[$i], "CardImages", 180, 0, 1, 1));//Display intimidated cards grayed out and unplayable
     if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC" || $myBanish[$i+1] == "INST") echo(Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i)));//Display banished cards that are playable this chain link (e.g. Singing Steelblade)
   }
-  echo("</div>");
 
   //Now display Auras and items
   echo("<div style='background-color: rgba(255,255,255,0.70); position: absolute; bottom:200px; left:50%;'>");
@@ -398,25 +426,31 @@
   echo("</div>");
 
   //Now display arsenal
-  if($myArsenal != "")
+  if(count($myArsenal) > 0)
   {
     echo("<div style='position: fixed; bottom:10px; left:83%; display:inline;'><h3 style='width:130px; background-color: rgba(255,255,255,0.70);'>Your Arsenal:</h3>");
     for($i=0; $i<count($myArsenal); $i+=ArsenalPieces())
     {
       $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS");
       $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
+      echo("<div>");
       echo(Card($myArsenal[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? 5 : 0, 1, 0, $border, 0, strval($i)));
+      if($myArsenal[$i+1] == "UP") echo("<img style='position:absolute; left:" . (40 + ($playable ? 5 : 0)) . "px; bottom:3px; height:70px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
+      else echo("<img style='position:absolute; left:" . (40 + ($playable ? 5 : 0)) . "px; bottom:" . (3 + ($playable ? 5 : 0)) . "px; height:70px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
+      echo("</div>");
     }
     echo("</div>");
   }
 
+  echo("</div>");//End play area div
+
   //Display the log
-  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.70); position:fixed; display:inline; width:200px; height: 92%; top:10px; right:10px; overflow-y: scroll;'>");
+  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.70); position:fixed; display:inline; width:200px; height: 40%; top:20%; right:10px; overflow-y: scroll;'>");
 
   EchoLog($gameName, $playerID);
   echo("</div>");
 
-  echo("<div id='chatbox' style='position:fixed; display:inline; width:200px; height: 50px; bottom:10px; right:10px;'>");
+  echo("<div id='chatbox' style='position:fixed; display:inline; width:200px; height: 50px; top:62%; right:10px;'>");
   echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
   echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");

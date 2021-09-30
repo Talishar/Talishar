@@ -20,7 +20,7 @@
     $sideboardCards = "";
     $headSideboard = ""; $chestSideboard = ""; $armsSideboard = ""; $legsSideboard = ""; $offhandSideboard = "";
     $unsupportedCards = "";
-    $head = ""; $chest = ""; $arms = ""; $legs = ""; $offhand = "";
+    $character = ""; $head = ""; $chest = ""; $arms = ""; $legs = ""; $offhand = "";
     $weapon1 = "";
     $weapon2 = "";
     for($i=0; $i<count($cards); ++$i)

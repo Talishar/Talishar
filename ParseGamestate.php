@@ -21,6 +21,8 @@
   $p1ClassState = GetArray($handler);
   $p1CharacterEffects = GetArray($handler);
   $p1Soul = GetArray($handler);
+  $p1CardStats = GetArray($handler);
+  $p1TurnStats = GetArray($handler);
 
   //Player 2
   $p2Hand = GetArray($handler);
@@ -36,6 +38,8 @@
   $p2ClassState = GetArray($handler);
   $p2CharacterEffects = GetArray($handler);
   $p2Soul = GetArray($handler);
+  $p2CardStats = GetArray($handler);
+  $p2TurnStats = GetArray($handler);
 
   $winner = trim(fgets($handler));
   $currentPlayer = trim(fgets($handler));
@@ -57,13 +61,13 @@
   function BuildMyGamestate($playerID)
   {
     global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
-    global $p1CharacterEffects, $p1Discard;
+    global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
     global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
-    global $p2CharacterEffects, $p2Discard;
+    global $p2CharacterEffects, $p2Discard, $p2CardStats, $p2TurnStats;
     global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
-    global $myCharacterEffects, $myDiscard;
+    global $myCharacterEffects, $myDiscard, $myCardStats, $myTurnStats;
     global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
-    global $theirCharacterEffects, $theirDiscard;
+    global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
     global $p1Soul, $p2Soul, $mySoul, $theirSoul;
     global $myStateBuiltFor;
     $myStateBuiltFor = $playerID;
@@ -81,6 +85,8 @@
     $myClassState = $playerID==1 ? $p1ClassState : $p2ClassState;
     $myCharacterEffects = $playerID==1 ? $p1CharacterEffects : $p2CharacterEffects;
     $mySoul = $playerID==1 ? $p1Soul : $p2Soul;
+    $myCardStats = $playerID==1 ? $p1CardStats : $p2CardStats;
+    $myTurnStats = $playerID==1 ? $p1TurnStats : $p2TurnStats;
     $theirHand = $playerID==1 ? $p2Hand : $p1Hand;
     $theirDeck = $playerID==1 ? $p2Deck : $p1Deck;
     $theirResources = $playerID==1 ? $p2Resources : $p1Resources;
@@ -95,6 +101,8 @@
     $theirClassState = $playerID==1 ? $p2ClassState : $p1ClassState;
     $theirCharacterEffects = $playerID==1 ? $p2CharacterEffects : $p1CharacterEffects;
     $theirSoul = $playerID==1 ? $p2Soul : $p1Soul;
+    $theirCardStats = $playerID==1 ? $p2CardStats : $p1CardStats;
+    $theirTurnStats = $playerID==1 ? $p2TurnStats : $p1TurnStats;
   }
 
   function GetArray($handler)
@@ -114,6 +122,8 @@
     global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items, $p1CharacterEffects, $p1Discard;
     global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items, $p2CharacterEffects, $p2Discard;
     global $p1Soul, $p2Soul, $mainSoul, $defSoul;
+    global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
+    global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
 
     if($mainPlayerGamestateStillBuilt) return;
 
@@ -131,6 +141,8 @@
     $mainCharacterEffects = $mainPlayer==1 ? $p1CharacterEffects : $p2CharacterEffects;
     $mainDiscard = $mainPlayer==1 ? $p1Discard : $p2Discard;
     $mainSoul = $mainPlayer==1 ? $p1Soul : $p2Soul;
+    $mainCardStats = $mainPlayer==1 ? $p1CardStats : $p2CardStats;
+    $mainTurnStats = $mainPlayer==1 ? $p1TurnStats : $p2TurnStats;
     $defHand = $mainPlayer==1 ? $p2Hand : $p1Hand;
     $defDeck = $mainPlayer==1 ? $p2Deck : $p1Deck;
     $defResources = $mainPlayer==1 ? $p2Resources : $p1Resources;
@@ -145,6 +157,8 @@
     $defCharacterEffects = $mainPlayer==1 ? $p2CharacterEffects : $p1CharacterEffects;
     $defDiscard = $mainPlayer==1 ? $p2Discard : $p1Discard;
     $defSoul = $mainPlayer==1 ? $p2Soul : $p1Soul;
+    $defCardStats = $mainPlayer==1 ? $p2CardStats : $p1CardStats;
+    $defTurnStats = $mainPlayer==1 ? $p2TurnStats : $p1TurnStats;
 
     $mainPlayerGamestateBuilt = 1;
     $mainPlayerGamestateStillBuilt = 1;
@@ -156,13 +170,13 @@
     if($mainPlayerGamestateBuilt == 1) return;//We're on main player game state now
     global $myStateBuiltFor;
     global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
-    global $p1CharacterEffects, $p1Discard;
+    global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
     global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
-    global $p2CharacterEffects, $p2Discard;
+    global $p2CharacterEffects, $p2Discard, $p2CardStats, $p2TurnStats;
     global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
-    global $myCharacterEffects, $myDiscard;
+    global $myCharacterEffects, $myDiscard, $myCardStats, $myTurnStats;
     global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
-    global $theirCharacterEffects, $theirDiscard;
+    global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
     global $p1Soul, $p2Soul, $mySoul, $theirSoul;
     $activePlayer = $myStateBuiltFor;
     if($activePlayer==1) {
@@ -180,6 +194,8 @@
       $p1CharacterEffects = $myCharacterEffects;
       $p1Discard = $myDiscard;
       $p1Soul = $mySoul;
+      $p1CardStats = $myCardStats;
+      $p1TurnStats = $myTurnStats;
       $p2Deck = $theirDeck;
       $p2Hand = $theirHand;
       $p2Resources = $theirResources;
@@ -194,6 +210,8 @@
       $p2CharacterEffects = $theirCharacterEffects;
       $p2Discard = $theirDiscard;
       $p2Soul = $theirSoul;
+      $p2CardStats = $theirCardStats;
+      $p2TurnStats = $theirTurnStats;
     } else {
       $p2Deck = $myDeck;
       $p2Hand = $myHand;
@@ -209,6 +227,8 @@
       $p2CharacterEffects = $myCharacterEffects;
       $p2Discard = $myDiscard;
       $p2Soul = $mySoul;
+      $p2CardStats = $myCardStats;
+      $p2TurnStats = $myTurnStats;
       $p1Deck = $theirDeck;
       $p1Hand = $theirHand;
       $p1Resources = $theirResources;
@@ -223,6 +243,8 @@
       $p1CharacterEffects = $theirCharacterEffects;
       $p1Discard = $theirDiscard;
       $p1Soul = $theirSoul;
+      $p1CardStats = $theirCardStats;
+      $p1TurnStats = $theirTurnStats;
     }
   }
 
@@ -238,6 +260,8 @@
     global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
     global $p2CharacterEffects, $p2Discard;
     global $p1Soul, $p2Soul, $mainSoul, $defSoul;
+    global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
+    global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
 
     $p1Deck = $mainPlayer==1 ? $mainDeck : $defDeck;
     $p1Hand = $mainPlayer==1 ? $mainHand : $defHand;
@@ -253,6 +277,8 @@
     $p1CharacterEffects = $mainPlayer == 1 ? $mainCharacterEffects : $defCharacterEffects;
     $p1Discard = $mainPlayer == 1 ? $mainDiscard : $defDiscard;
     $p1Soul = $mainPlayer == 1 ? $mainSoul : $defSoul;
+    $p1CardStats = $mainPlayer == 1 ? $mainCardStats : $defCardStats;
+    $p1TurnStats = $mainPlayer == 1 ? $mainTurnStats : $defTurnStats;
     $p2Deck = $mainPlayer==2 ? $mainDeck : $defDeck;
     $p2Hand = $mainPlayer==2 ? $mainHand : $defHand;
     $p2Resources = $mainPlayer==2 ? $mainResources : $defResources;
@@ -267,22 +293,24 @@
     $p2CharacterEffects = $mainPlayer == 2 ? $mainCharacterEffects : $defCharacterEffects;
     $p2Discard = $mainPlayer == 2 ? $mainDiscard : $defDiscard;
     $p2Soul = $mainPlayer == 2 ? $mainSoul : $defSoul;
+    $p2CardStats = $mainPlayer == 2 ? $mainCardStats : $defCardStats;
+    $p2TurnStats = $mainPlayer == 2 ? $mainTurnStats : $defTurnStats;
 
     $mainPlayerGamestateStillBuilt = 0;
   }
 
-  function MakeGamestateBackup()
+  function MakeGamestateBackup($filename="gamestateBackup.txt")
   {
     global $gameName;
     $filepath = "./Games/" . $gameName . "/";
-    copy($filepath . "gamestate.txt", $filepath . "gamestateBackup.txt");
+    copy($filepath . "gamestate.txt", $filepath . $filename);
   }
 
-  function RevertGamestate()
+  function RevertGamestate($filename="gamestateBackup.txt")
   {
     global $gameName;
     $filepath = "./Games/" . $gameName . "/";
-    copy($filepath . "gamestateBackup.txt", $filepath . "gamestate.txt");
+    copy($filepath . $filename, $filepath . "gamestate.txt");
   }
 
 ?>

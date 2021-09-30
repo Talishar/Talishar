@@ -125,6 +125,7 @@
   function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $otherPlayer, $CS_PitchedForThisCard, $CS_DamagePrevention;
+    $rv = "";
     switch($cardID)
     {
       case "ELE001": case "ELE002":
@@ -152,7 +153,7 @@
         }
         return $rv;
       case "ELE003":
-        $pitch = &GetClassState($currentPlayer, $CS_PitchedForThisCard);
+        $pitch = GetClassState($currentPlayer, $CS_PitchedForThisCard);
         $pitchArr = explode("-", $pitch);
         $icePitched = 0;
         for($i=0; $i<count($pitchArr); ++$i)

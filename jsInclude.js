@@ -12,13 +12,14 @@ function ShowCardDetail(e, that)
 
 function ShowDetail(e, imgSource)
 {
+  imgSource = imgSource.replace("SmallCardImages", "CardImages");
+  imgSource = imgSource.replace(".jpg", ".png");
   var el = document.getElementById("cardDetail");
-  el.innerHTML = "<img style='height:523px; width:375px; position:absolute; z-index:1000;' src='" + imgSource + "' />"
+  el.innerHTML = "<img style='height:523px; width:375px;' src='" + imgSource + "' />"
   el.style.left = e.clientX < screen.width / 2 ? e.clientX + 30 : e.clientX - 300;
   el.style.top = e.clientY > screen.height / 2 ? e.clientY - 523 - 20 : e.clientY + 30;
   el.style.zIndex = 100;
   el.style.display = "inline";
-  el.style.position = "fixed";
 }
 
 function HideCardDetail()

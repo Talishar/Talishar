@@ -4,6 +4,7 @@
   include "GameLogic.php";
   include "GameTerms.php";
   include "HostFiles/Redirector.php";
+  include "Libraries/StatFunctions.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
@@ -13,6 +14,7 @@
 
   $myHealth = CharacterHealth($myCharacter[0]);
   $theirHealth = CharacterHealth($theirCharacter[0]);
+  StatsStartTurn();
 
   if($myCharacter[0] == "ARC001" || $myCharacter[0] == "ARC002")
   {

@@ -9,6 +9,11 @@
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
 
+  if(!file_exists("./Games/" . $gameName . "/GameFile.txt"))
+  {
+    header("Location: " . $redirectPath . "/MainMenu.php");//If the game file happened to get deleted from inactivity, redirect back to the main menu instead of erroring out
+  }
+
   include "MenuFiles/ParseGamefile.php";
 
 
@@ -18,9 +23,9 @@
   }
 
   $gameStarted = 0;
-  $icon = "notReady.png";
+  $icon = "ready.png";
 
-  if(count($p2Data) > 0) $icon = "ready.png";
+  if($gameStatus < $MGS_Player2Joined) $icon = "notReady.png";
   if($gameStatus == "") $MGS_GameStarted;
 
   echo '<title>Game Lobby</title> <meta http-equiv="content-type" content="text/html; charset=utf-8" > <meta name="viewport" content="width=device-width, initial-scale=1.0">';
@@ -176,17 +181,8 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <h1>Game Lobby</h1>
 <?php
   echo("<div style='text-align:center;'>");
-/*
-  echo("Player ID: 1");
-  echo("<br>");
-  if(count($p2Data) > 0)
-  {
-    echo("Player ID: 2");
-    echo("<br>");
-  }
-*/
 
-      echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_ReadyToStart ? "none" : "block")) . ";'>");
+      echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus >= $MGS_ReadyToStart ? "none" : "block")) . ";'>");
       echo("<form action='./SubmitSideboard.php'>");
         echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
         echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
@@ -332,7 +328,7 @@ function loadGamestate() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
       if(parseInt(this.responseText[0]) != prevGameState && parseInt(this.responseText[0]) != 5) { location.reload(); }
-      if(parseInt(this.responseText[0]) == 5) document.getElementById("submitForm").style.display = "block";
+      <?php if($playerID == 1) echo 'if(parseInt(this.responseText[0]) == 5) document.getElementById("submitForm").style.display = "block";'; ?>
       prevGameState = parseInt(this.responseText[0]);
     };
     xhttp.open("GET", "GameFileLength.php?gameName=<?php echo($gameName); ?>", true);

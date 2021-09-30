@@ -24,19 +24,24 @@ function SearchDiscard($player, $type="", $subtype="", $maxCost=-1, $minCost=-1,
   return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent);
 }
 
-function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class, $talent)
+function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class, $talents)
 {
   $cardList = "";
+  if(!is_array($talents)) $talents = explode(",", $talents);
   for($i=0; $i<count($array); ++$i)
   {
     $cardID = $array[$i];
-    if($talent != "")
+    if(count($talents) > 0)
     {
       $talentMatch = 0;
-      $talents = explode(",", CardTalent($cardID));
-      for($j=0; $j<count($talents); ++$j) { if($talents[$j] == $talent) $talentMatch = 1; }
+      $cardTalents = explode(",", CardTalent($cardID));
+WriteLog(count($cardTalents) . " " . count($talents));
+      for($j=0; $j<count($talents); ++$j)
+      {
+        for($k=0; $k<count($cardTalents); ++$k) { WriteLog($talents[$j] . " " . $cardTalents[$k]); if($talents[$j] == $cardTalents[$k]) $talentMatch = 1; }
+      }
     }
-    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class) && ($talent == "" || $talentMatch))
+    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class) && (count($talents) == 0 || $talentMatch))
     {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
@@ -339,6 +344,17 @@ function GetEquipmentIndices($player, $maxBlock=-1)
     }
   }
   return $indices;
+}
+
+function CountAura($cardID, $player)
+{
+  $auras = &GetAuras($player);
+  $count = 0;
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if($auras[$i] == $cardID) ++$count;
+  }
+  return $count;
 }
 
 ?>

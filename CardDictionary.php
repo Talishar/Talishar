@@ -330,6 +330,7 @@
   {
     switch($cardID)
     {
+      case "DUMMY": return 1000;
       case "WTR001": case "WTR038": case "WTR076": case "WTR113": return 40;
       case "ARC001": case "ARC038": case "ARC075": return 40;
       case "ARC113": return 30;
@@ -651,6 +652,7 @@
     {
       case "WTR051": case "WTR052": case "WTR053": return "2,6";
       case "ARC009": return "0,2,4,6,8,10,12";
+      case "MON231": return "0,2,4,6,8,10,12,14,16,18,20";
       default:
         return "";
     }
@@ -750,7 +752,7 @@
       case "WTR123": case "WTR126": case "WTR129": case "WTR132": case "WTR135": case "WTR138": case "WTR141": case "WTR144": case "WTR147": return 1;
       case "WTR124": case "WTR127": case "WTR130": case "WTR133": case "WTR136": case "WTR139": case "WTR142": case "WTR145": case "WTR148": return 2;
       case "WTR125": case "WTR128": case "WTR131": case "WTR134": case "WTR137": case "WTR140": case "WTR143": case "WTR146": case "WTR149": return 3;
-      case "WTR150": return 0;
+      case "WTR150": case "WTR151": case "WTR152": case "WTR153": case "WTR154": case "WTR155": case "WTR156": case "WTR157": case "WTR158": return 0;
       case "WTR159": return 1;
       case "WTR160": return 2;
       case "WTR161": return 3;
@@ -1254,6 +1256,7 @@
     {
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";
+      case "MON231": return "BANISH";
       case "ELE113": return "BANISH";
       case "ELE140": case "ELE141": case "ELE142": return "BANISH";
       default: return "GY";

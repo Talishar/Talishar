@@ -203,7 +203,7 @@
       case "ELE176": return 0;
       case "ELE183": case "ELE184": case "ELE185": return 0;
       case "ELE186": case "ELE187": case "ELE188": return 0;
-      case "ELE191": case "ELE192": case "ELE193": return 3;
+      case "ELE192": case "ELE193": case "ELE194": return 3;
       case "ELE201": return 0;
       case "ELE233": case "ELE234": case "ELE235": case "ELE236": return 0;
       default: return 2;
@@ -244,6 +244,7 @@
   {
     global $currentPlayer, $otherPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $myResources;
     global $combatChain, $CS_DamagePrevention;
+    $rv = "";
     switch($cardID)
     {
       case "ELE091":

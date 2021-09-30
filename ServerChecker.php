@@ -1,5 +1,6 @@
 <?php
 
+include "Libraries/SHMOPLibraries.php";
 include "HostFiles/Redirector.php";
 
 define('ROOTPATH', __DIR__);
@@ -20,14 +21,13 @@ if ($handle = opendir($path)) {
         if(file_exists($gs))
         {
           $lastGamestateUpdate = filemtime($gs);
-          if(time() - $lastGamestateUpdate < 60)
+          if(time() - $lastGamestateUpdate < 120)
           {
             $currentlyActiveGames .= "Game in Progress - Last Update " . date("h:i", $lastGamestateUpdate) . "<BR>";
-            //echo($folder . " Watch?<br>");
 
        $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn.php'>";
          $spectateLinks .= "<label for='joinGame'> In progress game - Last Update " . date("h:i", $lastGamestateUpdate) . " </label>";
-         $spectateLinks .= "<input type='submit' id='joinGame' value='Spectate' />";
+         $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
          $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
          $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
        $spectateLinks .= "</form>";
@@ -41,7 +41,7 @@ if ($handle = opendir($path)) {
         if(file_exists($gf))
         {
           $lastRefresh = filemtime($gf);
-          if(time() - $lastRefresh < 3)
+          if(time() - $lastRefresh < 5)
           {
             $gameFile = fopen($gf, "r");
             while (($buffer = fgets($gameFile, 4096)) !== false) {
@@ -51,8 +51,10 @@ if ($handle = opendir($path)) {
           }
           else if(time() - $lastRefresh > 60)
           {
+            //DeleteCache($gameToken);
             unlink($gf);
-            unlink($folder . "p1Deck.txt");
+            if(file_exists($folder . "p1Deck.txt")) unlink($folder . "p1Deck.txt");
+            if(file_exists($folder . "p2Deck.txt")) unlink($folder . "p2Deck.txt");
             rmdir($folder);
           }
         }
@@ -61,7 +63,7 @@ if ($handle = opendir($path)) {
       {
        echo("<form action='" . $redirectPath . "/JoinGame.php'>");
          echo("<label for='joinGame'>Open Game </label>");
-         echo("<input type='submit' id='joinGame' value='Join Game' />");
+         echo("<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />");
          echo("<input type='hidden' name='gameName' value='$gameToken' />");
          echo("<input type='hidden' name='playerID' value='2' />");
        echo ("</form>");

@@ -197,7 +197,7 @@
         $index = $myClassState[$CS_PlayIndex];
         if($index != -1)
         {
-          AddCurrentTurnEffect($cardID, $playerID);
+          AddCurrentTurnEffect($cardID, $currentPlayer);
           --$myItems[$index+1];
           if($myItems[$index+1] <= 0) DestroyMyItem($index);
           $rv = "Convection Amplifier gives your next attack this turn Dominate.";
