@@ -56,13 +56,19 @@ body {
   <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Card Stats update! 9/23/21 Supported cards:</h3>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Chane/Shadow Update! 10/02/21</h3>
+</div>
+</div>
+
+<div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Supported cards:</h3><div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of ELE except Fable</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of Shadow Runeblade</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Data Doll and Meganetic Shockwave</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian except Righteous Cleansing</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ranger except Silver the Tip</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Shadow except Doomsday, Eclipse, Mutated Mass, Guardian of the Shadowrealm, Soul Harvest, Spew Shadow, EclipseExistence</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Runeblade except Crown of Dichotomy and Become the Arknight</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Wizard except Index and Sonic Boom (partial)</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Generic except Chains of Eminence</div>
@@ -70,8 +76,6 @@ body {
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All CRU Generic except Gambler's Gloves</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Generic except Exude Confidence, Rouse the Ancients, Rally the Rearguard</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Light except Glisten, Blinding Beam, Ray of Hope</div>
-
-</div>
 </div>
 
 <div style="height:20px; bottom:30px; left:5%; width: 90%; position:absolute; color:white;">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.</div>

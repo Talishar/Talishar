@@ -54,7 +54,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 
     $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
-    $attack = AuraAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
+    $attack = AuraAttackModifiers(0);//TODO: If there are both negatives and positives here, this might mess up?...
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
@@ -213,6 +213,7 @@ function GainHealth($amount, $player)
 function PlayerLoseHealth($amount, &$health)
 {
   global $mainPlayer;
+  $amount = AuraLoseHealthAbilities($mainPlayer, $amount);
   $health -= $amount;
   if($health <= 0)
   {
@@ -596,10 +597,12 @@ function AuraDestroyed($player, $cardID)
 
 function DoesAttackHaveGoAgain()
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
   if(count($combatChain) == 0) return false;//No combat chain, so no
   if(CurrentEffectPreventsGoAgain()) return false;
   if(HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain()) return true;
+  if(CardClass($combatChain[0]) == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0)
+    return true;
   return false;
 }
 

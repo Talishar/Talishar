@@ -19,6 +19,21 @@
       case "MON081": case "MON082": case "MON083": return "A";
       case "MON084": case "MON085": case "MON086": return "I";
       case "MON087": return "I";
+      case "MON187": case "MON188": return "E";
+      case "MON189": case "MON190": return "I";
+      case "MON191": return "AA";
+      case "MON192": return "DR";
+      case "MON193": case "MON194": return "A";
+      case "MON195": case "MON196": case "MON197": return "AA";
+      case "MON198": case "MON199": return "AA";
+      case "MON200": case "MON201": case "MON202": return "A";
+      case "MON203": case "MON204": case "MON205": return "AA";
+      case "MON206": case "MON207": case "MON208": return "AA";
+      case "MON209": case "MON210": case "MON211": return "AA";
+      case "MON212": case "MON213": case "MON214": return "A";
+      case "MON215": case "MON216": case "MON217": return "I";
+      case "MON218": return "I";
+      case "MON219": case "MON220": return "T";
       default: return "";
     }
   }
@@ -29,6 +44,10 @@
     {
       case "MON060": return "Chest";
       case "MON061": return "Head";
+      case "MON187": return "Chest";
+      case "MON188": return "Head";
+      case "MON219": return "Ally";
+      case "MON220": return "Ally";
       default: return "";
     }
   }
@@ -52,6 +71,19 @@
       case "MON081": case "MON082": case "MON083": return 1;
       case "MON084": case "MON085": case "MON086": return 1;
       case "MON087": return 1;
+      case "MON189": case "MON190": return 0;
+      case "MON191": return 1;
+      case "MON192": return 2;
+      case "MON193": case "MON194": return 0;
+      case "MON195": case "MON196": case "MON197": return 3;
+      case "MON198": case "MON199": return 6;
+      case "MON200": case "MON201": case "MON202": return 2;
+      case "MON203": case "MON204": case "MON205": return 1;
+      case "MON206": case "MON207": case "MON208": return 3;
+      case "MON209": case "MON210": case "MON211": return 2;
+      case "MON212": case "MON213": case "MON214": return 2;
+      case "MON215": case "MON216": case "MON217": return 0;
+      case "MON218": return 0;
       default: return 0;
     }
   }
@@ -66,6 +98,14 @@
       case "MON067": case "MON070": case "MON073": case "MON076": case "MON079": case "MON082": case "MON085": return 2;
       case "MON068": case "MON071": case "MON074": case "MON077": case "MON080": case "MON083": case "MON086": return 3;
       case "MON087": return 2;
+      case "MON189": case "MON190": case "MON191": return 3;
+      case "MON192": case "MON193": case "MON194": return 1;
+      case "MON198": return 3;
+      case "MON199": return 1;
+      case "MON195": case "MON200": case "MON203": case "MON206": case "MON209": case "MON212": case "MON215": return 1;
+      case "MON196": case "MON201": case "MON204": case "MON207": case "MON210": case "MON213": case "MON216": return 2;
+      case "MON197": case "MON202": case "MON205": case "MON208": case "MON211": case "MON214": case "MON217": return 3;
+      case "MON218": return 3;
       default: return 0;
     }
   }
@@ -84,6 +124,18 @@
       case "MON078": case "MON079": case "MON080": return 3;
       case "MON084": case "MON085": case "MON086": return 0;
       case "MON087": return 0;
+      case "MON187": return 6;
+      case "MON188": return 0;
+      case "MON189": case "MON190": return 0;
+      case "MON191": return 0;//TODO
+      case "MON192": return 6;
+      case "MON194": return 0;
+      case "MON198": case "MON199": return 3;
+      case "MON203": case "MON204": case "MON205": return 3;
+      case "MON209": case "MON210": case "MON211": return 3;
+      case "MON209": case "MON210": case "MON211": return 3;
+      case "MON215": case "MON216": case "MON217": return 0;
+      case "MON218": return 0;
       default: return 2;
     }
   }
@@ -98,6 +150,14 @@
       case "MON068": case "MON072": case "MON076": case "MON079": return 4;
       case "MON073": case "MON077": case "MON080": return 3;
       case "MON074": return 2;
+      case "MON191": return 0;//TODO
+      case "MON206": return 7;
+      case "MON195": case "MON198": case "MON199": case "MON207": return 6;
+      case "MON196": case "MON208": case "MON209": return 5;
+      case "MON197": case "MON203": case "MON210": return 4;
+      case "MON204": case "MON211": return 3;
+      case "MON205": return 2;
+      case "MON219": case "MON220": return 6;
       default: return 0;
     }
   }
@@ -139,18 +199,77 @@
       case "MON081": case "MON082": case "MON083":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Seek Enlightenment gives your next attack action card +" . EffectAttackModifier($cardID) . " and go in your soul if it hits.";
+      case "MON188":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
+        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
+        AddDecisionQueue("ALLCARDTALENTORPASS", $currentPlayer, "SHADOW", 1);
+        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+        return "";
+      case "MON193":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Shadow Puppetry gives your next action card +1, Go Again, and if it hits you may banish the top card of your deck.";
+      case "MON194":
+        MyDrawCard();
+        return "Tome of Torment drew a card.";
+      case "MON200": case "MON201": case "MON202":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Howl from Beyond gives your next attack action this turn +" . EffectAttackModifier($cardID) . ".";
+      case "MON215": case "MON216": case "MON217":
+        if($cardID == "MON215") $optAmt = 3;
+        else if($cardID == "MON216") $optAmt = 2;
+        else $optAmt = 1;
+        Opt($cardID, $optAmt);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
+        return "Blood Tribute let you opt $optAmt and banish the top card of your deck.";
       default: return "";
     }
   }
 
   function MONTalentHitEffect($cardID)
   {
-    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer;
     switch($cardID)
     {
       case "MON072": case "MON073": case "MON074": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
       case "MON078": case "MON079": case "MON080": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+      case "MON206": case "MON207": case "MON208": BanishFromSoul($defPlayer); $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BANISH"; break;
       default: break;
+    }
+  }
+
+  function ShadowPuppetryHitEffect()
+  {
+    global $mainPlayer;
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK");
+    AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
+    AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_the_card", 1);
+    AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,-", 1);
+  }
+
+  function EndTurnBloodDebt()
+  {
+    global $mainPlayer;
+    $banish = &GetBanish($mainPlayer);
+    $debtDamage = 0;
+    for($i=0; $i<count($banish); $i+=BanishPieces())
+    {
+      if(HasBloodDebt($banish[$i]))
+      {
+        $debtDamage++;
+      }
+    }
+    if($debtDamage > 0)
+    {
+      LoseHealth($debtDamage, $mainPlayer);
+      WriteLog("Player $mainPlayer lost $debtDamage health from Blood Debt at end of turn.");
     }
   }
 
