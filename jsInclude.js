@@ -17,6 +17,16 @@ function ShowDetail(e, imgSource)
   el.innerHTML = "<img style='height:523px; width:375px;' src='" + imgSource + "' />"
   el.style.left = e.clientX < screen.width / 2 ? e.clientX + 30 : e.clientX - 300;
   el.style.top = e.clientY > screen.height / 2 ? e.clientY - 523 - 20 : e.clientY + 30;
+  if(parseInt(el.style.top) + 530 >= screen.height)
+  {
+    el.style.top = screen.height - 530;
+    el.style.left = e.clientX < screen.width / 2 ? e.clientX + 30 : e.clientX - 400;
+  }
+  else if(parseInt(el.style.top) <= 0)
+  {
+    el.style.top = 5;
+    el.style.left = e.clientX < screen.width / 2 ? e.clientX + 30 : e.clientX - 400;
+  }
   el.style.zIndex = 100;
   el.style.display = "inline";
 }
