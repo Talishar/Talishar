@@ -5,9 +5,11 @@
     global $playerID, $gameName;
     $fileExt = ".png";
     if($folder == "CardImages" && $maxHeight < 200) { $folder = "SmallCardImages"; $fileExt = ".jpg"; }
+    else if($folder == "CardImages") { $folder = "BigCardImages"; $fileExt = ".jpg"; }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
-    $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
+    $margin = "margin:0px;";
+    if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " href=\"./ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$action&cardID=" . $actionData . "\" " : "") . ">";
     $border = $borderColor > 0 ? "border-radius:20px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
     $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $maxHeight . "; width:" . ($maxHeight * .71) . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
@@ -160,6 +162,27 @@
       case 3: return "blue";
       default: return "LightSlateGrey";
     }
+  }
+
+  function BanishUI($from="")
+  {
+    global $myBanish, $turn, $currentPlayer, $playerID;
+    $rv = "";
+    for($i=0; $i<count($myBanish); $i+=BanishPieces()) {
+      $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
+      $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
+      if($myBanish[$i+1] == "INT") $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      else if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC" || $myBanish[$i+1] == "INST")
+        $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+      else if($from != "HAND")
+      {
+        if(PlayableFromBanish($myBanish[$i]))
+          $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));
+        else
+          $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1);
+      }
+    }
+    return $rv;
   }
 
 ?>

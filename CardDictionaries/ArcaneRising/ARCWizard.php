@@ -184,22 +184,23 @@
 
   }
 
-  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false)
+  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0)
   {
     global $currentPlayer;
+    if($player == 0) $player = $currentPlayer;
     if($type == "PLAYCARD")
     {
-      $damage += ConsumeArcaneBonus($currentPlayer);
+      $damage += ConsumeArcaneBonus($player);
     }
     if($fromQueue)
     {
-      PrependDecisionQueue("DEALARCANE", $currentPlayer, $damage . "-" . $source, 1);
-      PrependDecisionQueue("CHOOSEHERO", $currentPlayer, $OpposingOnly);
+      PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source, 1);
+      PrependDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
     }
     else
     {
-      AddDecisionQueue("CHOOSEHERO", $currentPlayer, $OpposingOnly);
-      AddDecisionQueue("DEALARCANE", $currentPlayer, $damage . "-" . $source, 1);
+      AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
+      AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source, 1);
     }
   }
 

@@ -265,7 +265,7 @@
     echo("</div>");
   }
 
-  if(($turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT") && $turn[1] == $playerID)
+  if(($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $params = explode("-", $turn[2]);
@@ -277,6 +277,7 @@
     {
       echo("<td>");
       if($turn[0] == "MULTICHOOSEDISCARD") echo(Card($myDiscard[$options[$i]], "CardImages", 250));
+      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") echo(Card($theirDiscard[$options[$i]], "CardImages", 250));
       else if($turn[0] == "MULTICHOOSEHAND") echo(Card($myHand[$options[$i]], "CardImages", 250));
       else if($turn[0] == "MULTICHOOSEDECK") echo(Card($myDeck[$options[$i]], "CardImages", 250));
       else if($turn[0] == "MULTICHOOSETEXT") echo(str_replace("_", " ", $options[$i]));
@@ -298,7 +299,7 @@
   //Opponent hand
   echo("<div style='position: fixed; top: 0px; left: 50%; height: 50px; width:580px; border:1px solid black; display:inline;'><span style='height:100%; vertical-align:middle; display:inline-block'>Their hand:&nbsp;</span>");
   for($i=0; $i<count($theirHand); ++$i) {
-    echo(Card("cardBack", "CardImages", 50, 0, 0));
+    echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
   echo("<span style='position:relative;'><img style='padding-left:20px; height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:-30px; left:20px; width:50px; font-size:30; color:white; text-align:center;'>" . $theirResources[0] . "</div></img></span>");
   echo("<div style='display:inline-block; padding-left:20px; height:50px; width:100px;'><div style='position:relative;heigh:100%;width:100%;'><span style='position:absolute; font-size: 24px; top:15px; left:20px;'>$theirHealth</span></div><img style='display:inline-block; height:100%; width:100%;' src='./CardImages/healthSymbol.png' /></div>");
@@ -352,7 +353,7 @@
 
 
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
-  echo(CreatePopup("myBanishPopup", $myBanish, 1, 0, "Your Banish", BanishPieces()));
+  echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
   echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Revert Gamestate", 10000, 0, "24px")));
 
   //Display the player's hand at the bottom of the screen
@@ -380,15 +381,10 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
     $actionData = $actionType == 16 ? strval($i) : "";
     echo(Card($myHand[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border, 0, $actionData));
   }
-  for($i=0; $i<count($myBanish); $i+=BanishPieces()) {
-    $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
-    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
-    if($myBanish[$i+1] == "INT") echo(Card($myBanish[$i], "CardImages", 180, 0, 1, 1));//Display intimidated cards grayed out and unplayable
-    if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC" || $myBanish[$i+1] == "INST") echo(Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i)));//Display banished cards that are playable this chain link (e.g. Singing Steelblade)
-  }
+  echo(BanishUI("HAND"));
 
   //Now display Auras and items
-  echo("<div style='background-color: rgba(255,255,255,0.70); position: absolute; bottom:200px; left:50%;'>");
+  echo("<div style='background-color: rgba(255,255,255,0.70); position: fixed; bottom:200px; left:50%;'>");
   if(count($myAuras) > 0)
   {
     echo("<div style='display:inline-block;'>");
@@ -468,6 +464,7 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
     if($playerID != $currentPlayer) return 0;
     if($from == "BANISH")
     {
+      if(HasBloodDebt($cardID)) return 2;
       if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
       if($isPlayable && ComboActive($cardID)) return 5;
       return 4;
@@ -495,6 +492,7 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
       case "CHOOSEARCANE": return 0;
       case "CHOOSEARSENAL": return 0;
       case "CHOOSEDISCARD": return 0;
+      case "MULTICHOOSEHAND": return 0;
       default: return 1;
     }
   }

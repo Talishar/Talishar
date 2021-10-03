@@ -710,11 +710,6 @@
     switch($cardID)
     {
        case "WTR000": return 3;
-       case "WTR002": case "WTR003": case "WTR038": case "WTR039": case "WTR040": case "WTR155": case "WTR156": case "WTR157": case "WTR158": return 0;
-       case "ARC002": case "CRU177": case "WTR153": return 0;
-       case "WTR113": case "WTR114": case "WTR115": case "WTR117": return 0;
-       case "ARC159": case "ARC200": case "WTR206": case "WTR066": case "WTR051": case "WTR069": case "WTR060": case "WTR215": case "WTR072": case "WTR054": return 1;
-       case "WTR030": case "WTR027": case "WTR024": case "WTR018": case "CRU017": case "WTR207": case "WTR067": case "WTR061": case "WTR213": return 2;
       //Now do in order
       //Brute
       case "WTR001": case "WTR002": case "WTR003": case "WTR004": case "WTR005": return 0;
@@ -1278,6 +1273,7 @@
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
     global $CS_NumAttackCards;
     if(SearchCurrentTurnEffects("CRU032", $currentPlayer) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) return true;
+    if(SearchCurrentTurnEffects("MON007", $currentPlayer) && $from == "BANISH") return true;
     if(SearchCurrentTurnEffects("ELE036", $currentPlayer) && CardType($cardID) == "E") return true;
     if(SearchCurrentTurnEffects("ELE035-3", $currentPlayer) && CardCost($cardID) == 0 && $from != "PLAY") return true;//TODO: Is this right?
     switch($cardID)
@@ -1334,6 +1330,7 @@
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
         return $type != "AA";
+      case "MON001": case "MON002": return count($mySoul) == 0;
       case "MON029": case "MON030": return count($mySoul) == 0;
       case "MON062": return count($mySoul) < 3;
       case "MON230": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0 || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
@@ -1511,6 +1508,7 @@
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
       case "CRU106": case "CRU107": case "CRU108": return true;
       case "MON109": return true;
+      case "MON195": case "MON196": case "MON197": return true;
       case "MON278": case "MON279": case "MON280": return true;
       case "ELE005": return true;
       case "ELE016": case "ELE017": case "ELE018": return true;
@@ -1593,6 +1591,62 @@
       case "WTR110": case "WTR111": case "WTR112": return $LA == "WTR107" || $LA == "WTR108" || $LA == "WTR109";
     }
     return false;
+  }
+
+  function HasBloodDebt($cardID)
+  {
+    switch($cardID)
+    {
+      //Shadow Brute
+      case "MON123"; return true;
+      case "MON124"; return true;
+      case "MON125"; return true;
+      case "MON126": case "MON127": case "MON128"; return true;
+      case "MON129": case "MON130": case "MON131"; return true;
+      case "MON125": case "MON136": case "MON137"; return true;
+      case "MON138": case "MON139": case "MON140"; return true;
+      case "MON141": case "MON142": case "MON143"; return true;
+      case "MON144": case "MON145": case "MON146"; return true;
+      case "MON147": case "MON148": case "MON149"; return true;
+      //Shadow Runeblade
+      case "MON156": case "MON158":
+      case "MON159": case "MON160": case "MON161":
+      case "MON165": case "MON166": case "MON167":
+      case "MON168": case "MON169": case "MON170":
+      case "MON171": case "MON172": case "MON173":
+      case "MON174": case "MON175": case "MON176":
+      case "MON177": case "MON178": case "MON179":
+      case "MON180": case "MON181": case "MON182": return true;
+      //Shadow
+      case "MON187": case "MON191": case "MON192": case "MON194":
+      case "MON200": case "MON201": case "MON202":
+      case "MON203": case "MON204": case "MON205":
+      case "MON209": case "MON210": case "MON211": return true;
+      default: return false;
+    }
+  }
+
+  function PlayableFromBanish($cardID)
+  {
+    global $currentPlayer, $CS_NumNonAttackCards;
+    switch($cardID)
+    {
+      //Shadow Runeblade
+      case "MON156": case "MON158": return true;
+      case "MON159": case "MON160": case "MON161": return GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0;
+      case "MON165": case "MON166": case "MON167": return true;
+      case "MON168": case "MON169": case "MON170": return GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0;
+      case "MON171": case "MON172": case "MON173": return true;
+      case "MON174": case "MON175": case "MON176": return true;
+      case "MON177": case "MON178": case "MON179": return true;
+      case "MON180": case "MON181": case "MON182": return true;
+      //Shadow
+      case "MON190": return false;//TODO
+      case "MON191": case "MON194":
+      case "MON200": case "MON201": case "MON202":
+      case "MON203": case "MON204": case "MON205":
+      case "MON209": case "MON210": case "MON211": return true;
+    }
   }
 
 ?>

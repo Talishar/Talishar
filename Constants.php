@@ -82,6 +82,7 @@
   $CS_PitchedForThisCard = 26;
   $CS_PlayCCIndex = 27;
   $CS_NumAttackCards = 28;//Played or blocked
+  $CS_NumPlayedFromBanish = 29;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -142,7 +143,7 @@
     global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
     global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant;
     global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
-    global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards;
+    global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -171,6 +172,7 @@
     $mainClassState[$CS_PitchedForThisCard] = "-";
     $mainClassState[$CS_PlayCCIndex] = -1;
     $mainClassState[$CS_NumAttackCards] = 0;
+    $mainClassState[$CS_NumPlayedFromBanish] = 0;
   }
 
   function ResetCardPlayed($cardID)
