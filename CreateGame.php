@@ -47,5 +47,5 @@
   header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
   //header("Location: " . $redirectPath . "JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
 
-  
+
 ?>

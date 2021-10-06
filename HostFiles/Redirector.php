@@ -11,7 +11,6 @@
   }
 
   $uri .= $_SERVER['HTTP_HOST'];
-  $redirectPath = $uri . "/FaBDev/trunk";
+  $redirectPath = $uri . "/fabonlinelocal/trunk";
 
 ?>
-
