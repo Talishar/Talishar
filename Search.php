@@ -24,6 +24,12 @@ function SearchDiscard($player, $type="", $subtype="", $maxCost=-1, $minCost=-1,
   return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
 }
 
+function SearchBanish($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+{
+  $pitch = &GetBanish($player);
+  return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+}
+
 function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly)
 {
   $cardList = "";

@@ -1825,6 +1825,17 @@ function CountPitch(&$pitch, $min=0, $max=9999)
   return $pitchCount;
 }
 
+function Draw($player)
+{
+  global $myHand, $myDeck, $playerID;
+  $deck = &GetDeck($player);
+  $hand = &GetHand($player);
+  if(count($deck) == 0) return -1;
+  if(CurrentEffectPreventsDraw($player)) return -1;
+  array_push($hand, array_shift($deck));
+  return $hand[count($hand)-1];
+}
+
 function MyDrawCard()
 {
   global $myHand, $myDeck, $playerID;
@@ -2206,7 +2217,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "DRAW":
-      return MyDrawCard();
+      return Draw($player);
+      //return MyDrawCard();
     case "BANISH":
       BanishCard($myBanish, $myClassState, $lastResult, $parameter);
       return $lastResult;
@@ -2304,14 +2316,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MULTIREMOVEHAND":
       $cards = "";
+      $hand = &GetHand($player);
       if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       for($i=0; $i<count($lastResult); ++$i)
       {
         if($cards != "") $cards .= ",";
-        $cards .= $myHand[$lastResult[$i]];
-        unset($myHand[$lastResult[$i]]);
+        $cards .= $hand[$lastResult[$i]];
+        unset($hand[$lastResult[$i]]);
       }
-      $myHand = array_values($myHand);
+      $hand = array_values($hand);
       return $cards;
     case "DESTROYCHARACTER":
       $character = &GetPlayerCharacter($player);

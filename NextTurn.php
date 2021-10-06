@@ -190,6 +190,17 @@
     echo("</div>");
   }
 
+  if(($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID)
+  {
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($theirHand[$options[$i]], "CardImages", 400, 18, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
+  }
+
   if(($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");

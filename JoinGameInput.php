@@ -26,7 +26,8 @@
     for($i=0; $i<count($cards); ++$i)
     {
       $count = $cards[$i]->{'total'};
-      $numSideboard = $cards[$i]->{'totalSideboard'};
+      //$numSideboard = $cards[$i]->{'totalSideboard'};
+      $numSideboard = $cards[$i]->{'sideboardTotal'};
       $printings = $cards[$i]->{'printings'};
       $printing = $printings[0];
       $sku = $printing->{'sku'};
