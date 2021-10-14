@@ -185,5 +185,22 @@
     return $rv;
   }
 
+  function CardBorderColor($cardID, $from, $isPlayable)
+  {
+    global $playerID, $currentPlayer;
+    if($playerID != $currentPlayer) return 0;
+    if($from == "BANISH")
+    {
+      if(HasBloodDebt($cardID)) return 2;
+      if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
+      if($isPlayable && ComboActive($cardID)) return 5;
+      return 4;
+    }
+    if($isPlayable && ComboActive($cardID)) return 3;
+    if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
+    else if($isPlayable) return 6;
+    return 0;
+  }
+
 ?>
 

@@ -253,7 +253,7 @@
 
   function ArtOfWarResolvePlay($userInput)
   {
-    global $currentPlayer;
+    global $currentPlayer, $combatChain;
       for($i=0; $i<count($userInput); ++$i)
       {
         switch($userInput[$i])
@@ -264,7 +264,14 @@
             break;
           case "Go_again":
             WriteLog("Art of War gives the next attack action card this turn Go Again.");
-            AddCurrentTurnEffect("ARC160-3", $currentPlayer);
+            if(count($combatChain) > 0)
+            {
+              AddCurrentTurnEffectFromCombat("ARC160-3", $currentPlayer);
+            }
+            else
+            {
+              AddCurrentTurnEffect("ARC160-3", $currentPlayer);
+            }
             break;
           case "Attack_actions_from_arsenal":
             WriteLog("Art of War makes it possible to block with attack actions from arsenal.");

@@ -83,6 +83,7 @@
   $CS_PlayCCIndex = 27;
   $CS_NumAttackCards = 28;//Played or blocked
   $CS_NumPlayedFromBanish = 29;
+  $CS_NumAttacks = 30;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -100,12 +101,13 @@
   $CCS_NextBoostBuff = 12;
   $CCS_AttackFused = 13;
   $CCS_AttackTotalDamage = 14;
+  $CCS_NumChainLinks = 15;
 
   function ResetCombatChainState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
-    global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage;
+    global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_LastAttack] = "NA";
@@ -121,6 +123,7 @@
     $combatChainState[$CCS_NextBoostBuff] = 0;
     $combatChainState[$CCS_AttackFused] = 0;
     $combatChainState[$CCS_AttackTotalDamage] = 0;
+    $combatChainState[$CCS_NumChainLinks] = 0;
   }
 
   function ResetChainLinkState()
@@ -144,6 +147,7 @@
     global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant;
     global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
+    global $CS_NumAttacks;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -173,6 +177,7 @@
     $mainClassState[$CS_PlayCCIndex] = -1;
     $mainClassState[$CS_NumAttackCards] = 0;
     $mainClassState[$CS_NumPlayedFromBanish] = 0;
+    $mainClassState[$CS_NumAttacks] = 0;
   }
 
   function ResetCardPlayed($cardID)

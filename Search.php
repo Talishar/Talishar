@@ -238,6 +238,16 @@ function SearchCharacterForCard($player, $cardID)
   return false;
 }
 
+function FindCharacterIndex($player, $cardID)
+{
+  $character = &GetPlayerCharacter($player);
+  for($i=0; $i<count($character); $i += CharacterPieces())
+  {
+    if($character[$i] == $cardID) return $i;
+  }
+  return -1;
+}
+
 function CombineSearches($search1, $search2)
 {
   if($search2 == "") return $search1;

@@ -41,6 +41,7 @@
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return "A";
       case "ARC077": return "AA";
       case "ARC078": return "A";
+      case "ARC079": return "A";
       case "ARC113": case "ARC114": case "ARC115": case "ARC116": return "I";
       case "ARC117": return "A";
       case "ARC151": return "I";

@@ -122,9 +122,25 @@
       case "ARC078":
         PlayAura("ARC112", $currentPlayer);
         return "Grasp of the Arknight created a runechant.";
+      case "ARC079":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARC079");
+        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("CROWNOFDICHOTOMY", $currentPlayer, "-", 1);
+        return "Crown of Dichotomy let you put cards from your discard on top of your deck.";
       case "ARC081":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Morded Tide gives you an extra runechant whenever you create one or more.";
+        return "Mordred Tide gives you an extra runechant whenever you create one or more.";
+      case "ARC083":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDACTION");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("BECOMETHEARKNIGHT", $currentPlayer, "-", 1);
+        return "";
       case "ARC084":
         $deck = &GetDeck($currentPlayer);
         if(count($deck) < 2) return "Not enough cards in deck.";

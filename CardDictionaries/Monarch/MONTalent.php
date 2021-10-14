@@ -256,20 +256,18 @@
 
   function EndTurnBloodDebt()
   {
-    global $mainPlayer;
-    $banish = &GetBanish($mainPlayer);
-    $debtDamage = 0;
-    for($i=0; $i<count($banish); $i+=BanishPieces())
+    global $mainPlayer, $CS_Num6PowBan;
+    $character = &GetPlayerCharacter($mainPlayer);
+    if($character[1] == 2 && ($character[0] == "MON119" || $character[0] == "MON120") && GetClassState($mainPlayer, $CS_Num6PowBan) > 0)
     {
-      if(HasBloodDebt($banish[$i]))
-      {
-        $debtDamage++;
-      }
+      WriteLog("Levia took no blood debt because a card with 6 or more power was banished this turn.");
+      return;
     }
-    if($debtDamage > 0)
+    $numBD = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
+    if($numBD > 0)
     {
-      LoseHealth($debtDamage, $mainPlayer);
-      WriteLog("Player $mainPlayer lost $debtDamage health from Blood Debt at end of turn.");
+      LoseHealth($numBD, $mainPlayer);
+      WriteLog("Player $mainPlayer lost $numBD health from Blood Debt at end of turn.");
     }
   }
 

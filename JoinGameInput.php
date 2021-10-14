@@ -26,12 +26,12 @@
     for($i=0; $i<count($cards); ++$i)
     {
       $count = $cards[$i]->{'total'};
-      //$numSideboard = $cards[$i]->{'totalSideboard'};
       $numSideboard = $cards[$i]->{'sideboardTotal'};
       $printings = $cards[$i]->{'printings'};
       $printing = $printings[0];
       $sku = $printing->{'sku'};
-      $id = $sku->{'number'};
+      $id = $sku->{'sku'};
+      $id = explode("-", $id)[0];
       $cardType = CardType($id);
       if($cardType == "") //Card not supported, error
       {
@@ -96,7 +96,15 @@
     //We have the decklist, now write to file
     $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $deckFile = fopen($filename, "a");
-    fwrite($deckFile, $character . " " . $weapon1 . " " . ($weapon2 != "" ? $weapon2 . " " : "") . ($offhand != "" ? $offhand . " " : "") . $head . " " . $chest . " " . $arms . " " . $legs . "\r\n");
+    $charString = $character;
+    if($weapon1 != "") $charString .= " " . $weapon1;
+    if($weapon2 != "") $charString .= " " . $weapon2;
+    if($offhand != "") $charString .= " " . $offhand;
+    if($head != "") $charString .= " " . $head;
+    if($chest != "") $charString .= " " . $chest;
+    if($arms != "") $charString .= " " . $arms;
+    if($legs != "") $charString .= " " . $legs;
+    fwrite($deckFile, $charString . "\r\n");
     fwrite($deckFile, $deckCards . "\r\n");
     fwrite($deckFile, $headSideboard . "\r\n");
     fwrite($deckFile, $chestSideboard . "\r\n");

@@ -8,26 +8,41 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier)
   global $myStateBuiltFor;
   if($mainPlayerGamestateStillBuilt)
   {
-    if($player == $mainPlayer) BanishCard($mainBanish, $mainClassState, $cardID, $modifier);
-    else BanishCard($defBanish, $defClassState, $cardID, $modifier);
+    if($player == $mainPlayer) BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from);
+    else BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from);
   }
   else
   {
-    if($player == $myStateBuiltFor) BanishCard($myBanish, $myClassState, $cardID, $modifier);
-    else BanishCard($theirBanish, $theirClassState, $cardID, $modifier);
+    if($player == $myStateBuiltFor) BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from);
+    else BanishCard($theirBanish, $theirClassState, $cardID, $modifier, $player, $from);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $modifier)
+function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $from="")
 {
-  global $CS_CardsBanished, $actionPoints;
-  if($modifier == "BOOST" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer;
+  if($player == "") $player = $currentPlayer;
+  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was banished from your deck face up by an action card. Gained 1 action point.");
       ++$actionPoints;
     }
   array_push($banish, $cardID);
   array_push($banish, $modifier);
   ++$classState[$CS_CardsBanished];
+  if(AttackValue($cardID) >= 6)
+  {
+    ++$classState[$CS_Num6PowBan];
+    $index = FindCharacterIndex($player, "MON122");
+    if($index >= 0 && IsEquipUsable($player, $index))
+    {
+       AddDecisionQueue("CHARREADYORPASS", $player, $index);
+       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hooves_of_the_Shadowbeast_to_gain_an_action_point", 1);
+       AddDecisionQueue("NOPASS", $player, "-", 1);
+       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);//Operates off last result
+       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+    }
+  }
 }
 
 function AddBottomMainDeck($cardID, $from)
@@ -270,6 +285,11 @@ function AddGraveyard($cardID, $player, $from)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor;
+  if($cardID == "MON124") { BanishCardForPlayer($cardID, $player, $from, "NA"); return; }
+  else if($cardID == "CRU007" && $from != "CC")
+  {
+    AddDecisionQueue("BEASTWITHIN", $player, "-");
+  }
   if($mainPlayerGamestateStillBuilt)
   {
     if($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);

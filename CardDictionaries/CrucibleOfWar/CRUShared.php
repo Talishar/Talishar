@@ -28,6 +28,8 @@
     global $defPlayer, $CS_ArcaneDamageTaken;
     switch($cardID)
     {
+      //CRU Ninja
+      case "CRU060": case "CRU061": case "CRU062": return ComboActive($cardID);
       case "CRU084": return true;
       case "CRU085": case "CRU086": case "CRU087": return true;
       case "CRU091": case "CRU092": case "CRU093": return true;
@@ -35,6 +37,9 @@
       //CRU Brute
       case "CRU009": return true;
       case "CRU019": case "CRU020": case "CRU021": return true;
+      //CRU Ninja
+      case "CRU050": case "CRU051": case "CRU052": return true;
+      case "CRU072": case "CRU074": return true;
       //CRU Ranger
       case "CRU124": case "CRU135": case "CRU136": case "CRU137": return true;
       //CRU Mechanologist
@@ -78,6 +83,8 @@
       case "CRU038": return 3;
       case "CRU039": return 2;
       case "CRU040": return 1;
+      case "CRU055": return 3;
+      case "CRU072": return 1;
       case "CRU084": return 2;
       case "CRU085-1": return 3;
       case "CRU086-1": return 2;
@@ -103,6 +110,7 @@
 
   function CRUCombatEffectActive($cardID, $attackID)
   {
+    global $combatChain;
     switch($cardID)
     {
       //Brute
@@ -111,6 +119,10 @@
       case "CRU025": return HasCrush($attackID);
       case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
       case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
+      //Ninja
+      case "CRU053": return HasCombo($combatChain[0]);
+      case "CRU055": return true;
+      case "CRU072": return true;
       //Warrior
       case "CRU084": return CardType($attackID) == "W";
       case "CRU085-1": case "CRU086-1": case "CRU087-1": return CardType($attackID) == "W";
@@ -131,6 +143,32 @@
       case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && CardClass($attackID) == "RUNEBLADE";
       default: return false;
     }
+  }
+
+  function RushingRiverHitEffect()
+  {
+    global $combatChainState, $CCS_NumHits, $mainPlayer;
+    $num = $combatChainState[$CCS_NumHits];
+    for($i=0; $i<$num; ++$i)
+    {
+      Draw($mainPlayer);
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
+      AddDecisionQueue("CHOOSEHAND", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+    }
+  }
+
+  function FloodOfForcePlayEffect()
+  {
+    global $mainPlayer;
+    AddDecisionQueue("DECKCARDS", $mainPlayer, "0");
+    AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
+    AddDecisionQueue("ALLCARDSCOMBOORPASS", $mainPlayer, "-", 1);
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MULTIADDHAND", $mainPlayer, "-", 1);
+    AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "CRU055", 1);
   }
 
 ?>

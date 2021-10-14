@@ -75,8 +75,8 @@ function HasIncreasedAttack()
 
 function DamageOtherPlayer($amount, $type="DAMAGE")
 {
-  global $otherPlayer, $theirClassState, $theirHealth, $theirAuras;
-  return DamagePlayer($otherPlayer, $amount, $theirClassState, $theirHealth, $theirAuras, $type);
+  global $otherPlayer;
+  return DealDamage($otherPlayer, $amount, $type);
 }
 
 function DealDamage($player, $damage, $type, $source="NA")
@@ -118,7 +118,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
     }
   }
   $damage = $damage > 0 ? $damage : 0;
-  $damage = AuraTakeDamageAbilities($Auras, $damage);
+  $damage = AuraTakeDamageAbilities($playerID, $damage);
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT" || ($source != "NA" && CardType($source) == "AA")))
   {
     $damage += CurrentEffectDamageModifiers($source);
@@ -205,8 +205,14 @@ function LoseHealth($amount, $player)
 
 function GainHealth($amount, $player)
 {
-  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog("Dread Scythe prevented you from gaining health."); return; }
+  $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
+  $otherHealth = &GetHealth($otherPlayer);
+  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog("Dread Scythe prevented you from gaining health."); return; }
+  if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
+  {
+    if($health > $otherHealth) return;
+  }
   PlayerGainHealth($amount, $health);
 }
 
@@ -576,10 +582,11 @@ function RevealCards($cards)
   for($i=0; $i<count($cardArray); ++$i)
   {
     if($string != "") $string .= ", ";
-    $string .= $cardArray[$i];
+    $string .= CardLink($cardArray[$i], $cardArray[$i]);
   }
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
+  WriteLog($string);
 }
 
 function AuraDestroyed($player, $cardID)
@@ -604,6 +611,26 @@ function DoesAttackHaveGoAgain()
   if(CardClass($combatChain[0]) == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0)
     return true;
   return false;
+}
+
+function IsEquipUsable($player, $index)
+{
+  $character = &GetPlayerCharacter($player);
+  if($index >= count($character) || $index < 0) return false;
+  return $character[$index + 1] == 2;
+}
+
+function DestroyCurrentWeapon()
+{
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  $index = $combatChainState[$CCS_WeaponIndex];
+  DestroyCharacter($mainPlayer, $index);
+}
+
+function DestroyCharacter($player, $index)
+{
+  $char = &GetPlayerCharacter($player);
+  $char[$index+1] = 0;
 }
 
 ?>

@@ -149,7 +149,7 @@
     echo("</div>");
   }
 
-  if($turn[0] == "OPT" && $turn[1] == $playerID)
+  if(($turn[0] == "OPT" || $turn[0] == "CHOOSETOP") && $turn[1] == $playerID)
   {
     echo("<table><tr>");
     $options = explode(",", $turn[2]);
@@ -160,7 +160,7 @@
       echo(Card($options[$i], "CardImages", 400));
       echo("</td></tr><tr><td>");
       echo(CreateButton($playerID, "Top", 8, $options[$i]));
-      echo(CreateButton($playerID, "Bottom", 9, $options[$i]));
+      if($turn[0] != "CHOOSETOP") echo(CreateButton($playerID, "Bottom", 9, $options[$i]));
       echo("</td></tr>");
       echo("</table>");
       echo("</td>");
@@ -466,23 +466,6 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
   function PlayableCardBorderColor($cardID)
   {
     if(HasReprise($cardID) && RepriseActive()) return 3;
-    return 0;
-  }
-
-  function CardBorderColor($cardID, $from, $isPlayable)
-  {
-    global $playerID, $currentPlayer;
-    if($playerID != $currentPlayer) return 0;
-    if($from == "BANISH")
-    {
-      if(HasBloodDebt($cardID)) return 2;
-      if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
-      if($isPlayable && ComboActive($cardID)) return 5;
-      return 4;
-    }
-    if($isPlayable && ComboActive($cardID)) return 3;
-    if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
-    else if($isPlayable) return 6;
     return 0;
   }
 
