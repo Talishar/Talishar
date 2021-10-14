@@ -122,6 +122,7 @@
   {
     global $currentPlayer, $myClassState, $CS_NumBoosted, $CS_CharacterIndex, $myCharacter, $actionPoints, $combatChainState, $CS_PlayIndex, $myItems;
     global $CCS_CurrentAttackGainedGoAgain, $combatChain, $myDeck, $myResources, $myBanish;
+    $rv = "";
     switch($cardID)
     {
       case "ARC003":

@@ -4,7 +4,7 @@
   $playerID=$_GET["playerID"];
 
   include "ParseGamestate.php";
-  include "CardDictionary.php";
+  include "GameLogic.php";
 
   echo(implode(" ", $playerHealths) . "<BR>");
 
@@ -72,5 +72,8 @@
   echo(implode(" ", $nextTurnEffects) . "<BR>");
   echo(implode(" ", $decisionQueue) . "<BR>");
   echo($mainPlayer . "<BR>");
+  $totalAttack = 0; $totalBlock = 0;
+  if(count($combatChain) > 0) EvaluateCombatChain($totalAttack, $totalBlock);
+  echo($totalAttack . " " . $totalBlock);
 
 ?>

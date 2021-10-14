@@ -182,6 +182,11 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <?php
   echo("<div style='text-align:center;'>");
 
+  if($playerID == 1)
+  {
+    echo("<div><input type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
+  }
+
       echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus >= $MGS_ReadyToStart ? "none" : "block")) . ";'>");
       echo("<form action='./SubmitSideboard.php'>");
         echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");

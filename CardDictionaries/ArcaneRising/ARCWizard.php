@@ -235,6 +235,7 @@
         case "ARC005": ++$barrierArray[1]; $total += 1; break;
         case "ARC041": ++$barrierArray[1]; $total += 1; break;
         case "ARC042": ++$barrierArray[1]; $total += 1; break;
+        case "ARC079": ++$barrierArray[1]; $total += 1; break;
         case "ARC116": ++$barrierArray[2]; $total += 2; break;
         case "ARC117": ++$barrierArray[1]; $total += 1; break;
         case "ARC150": if(PlayerHasLessHealth($playerID)) { ++$barrierArray[3]; $total += 3; } break;

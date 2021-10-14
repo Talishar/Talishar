@@ -125,7 +125,7 @@
      }
      break;
     case 8: case 9://OPT TOP
-      if($turn[0] == "OPT")
+      if($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM")
       {
         $options = explode(",", $turn[2]);
         $found = -1;
@@ -138,7 +138,7 @@
         else if($mode == 9) array_push($myDeck, $buttonInput);
         unset($options[$found]);
         $options = array_values($options);
-        if(count($options) > 0) PrependDecisionQueue("OPT", $currentPlayer, implode(",", $options));
+        if(count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
         ContinueDecisionQueue($buttonInput);
       }
       break;
@@ -462,8 +462,13 @@
     $damageDone = DealDamage($defPlayer, $damage, "COMBAT");//Include prevention
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
+
     if($wasHit)//Resolve hit effects
     {
+      $combatChainState[$CCS_DamageDealt] = $damage;
+      ++$combatChainState[$CCS_NumHits];
+      ++$combatChainState[$CCS_HitsInRow];
+      if(CardType($combatChain[0]) == "W") ++$combatChainState[$CCS_HitsWithWeapon];
       for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
       {
         if($combatChain[$i] == $mainPlayer)
@@ -487,11 +492,6 @@
         }
       }
       $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
-
-      $combatChainState[$CCS_DamageDealt] = $damage;
-      ++$combatChainState[$CCS_NumHits];
-      ++$combatChainState[$CCS_HitsInRow];
-      if(CardType($combatChain[0]) == "W") ++$combatChainState[$CCS_HitsWithWeapon];
       MainCharacterHitAbilities();
       MainCharacterHitEffects();
       AuraHitEffects($combatChain[0]);
@@ -944,6 +944,12 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("ALLCARDTALENTORPASS", $currentPlayer, "SHADOW", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         break;
+      case "MON247":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHANDAA");
+        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
+        break;
       case "ELE118":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
         AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
@@ -964,7 +970,7 @@ function FinalizeChainLink($chainClosed=false)
   function PlayCardEffect($cardID, $from, $resourcesPaid)
   {
     global $turn, $combatChain, $currentPlayer, $myDiscard, $combatChainState, $CCS_AttackPlayedFrom, $myClassState, $CS_PlayIndex;
-    global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex;
+    global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks;
     $character = &GetPlayerCharacter($currentPlayer);
     $definedCardType = CardType($cardID);
     //Figure out where it goes
@@ -990,6 +996,8 @@ function FinalizeChainLink($chainClosed=false)
           OnAttackEffects($cardID);
         }
         $myClassState[$CS_PlayCCIndex] = $index;
+        ++$myClassState[$CS_NumAttacks];
+        ++$combatChainState[$CCS_NumChainLinks];
       }
       else
       {

@@ -80,12 +80,12 @@ function NaturesPathPilgrimageHit()
 
 function UnifiedDecreePlayEffect()
 {
-  global $myDeck, $mainPlayer, $mainBanish, $mainClassState;
+  global $myDeck, $mainPlayer;
   if(count($myDeck) == 0) return;
   WriteLog("Unified Decree reveals " . $myDeck[0] . ".");
   if(CardType($myDeck[0]) == "AR")
   {
-    BanishCard($mainBanish, $mainClassState, $myDeck[0], "TCC");
+    BanishCardForPlayer($myDeck[0], $mainPlayer, "DECK", "TCC");
     array_shift($myDeck);
   }
 }
@@ -398,9 +398,10 @@ function DiscardRandom()
   if(count($myHand) == 0) return;
   $index = rand() % count($myHand);
   $discarded = $myHand[$index];
-  array_push($myDiscard, $myHand[$index]);
-  //TODO: Intimidate if Rhinar, other discard stuff
-  if(AttackValue($myHand[$index]) >= 6)
+  unset($myHand[$index]);
+  $myHand = array_values($myHand);
+  AddGraveyard($discarded, $currentPlayer, "HAND");
+  if(AttackValue($discarded) >= 6)
   {
     if(($myCharacter[0] == "WTR001" || $myCharacter[0] == "WTR002") && $playerID == $mainPlayer) {//Rhinar
       WriteLog("Rhinar Intimidated.");
@@ -408,8 +409,6 @@ function DiscardRandom()
     }
     ++$myClassState[$CS_Num6PowDisc];
   }
-  unset($myHand[$index]);
-  $myHand = array_values($myHand);
   UpdateGameState($currentPlayer);
   return $discarded;
 };
@@ -427,10 +426,11 @@ function DefDiscardRandom()
 
 function Intimidate()
 {
-  global $theirBanish, $theirClassState, $defPlayer, $theirHand, $currentPlayer;//For now we'll assume you can only intimidate the opponent
+  global $defPlayer, $theirHand, $currentPlayer;//For now we'll assume you can only intimidate the opponent
   if(count($theirHand) == 0) return;//Nothing to do if they have no hand
+  $otherPlayer == ($currentPlayer == 1 ? 2 : 1);
   $index = rand() % count($theirHand);
-  BanishCard($theirBanish, $theirClassState, $theirHand[$index], "INT");
+  BanishCardForPlayer($theirHand[$index], $otherPlayer, "HAND", "INT");
   unset($theirHand[$index]);
   $theirHand = array_values($theirHand);
   WriteLog("Intimidate triggered " . count($theirHand));

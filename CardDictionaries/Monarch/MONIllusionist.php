@@ -121,6 +121,7 @@
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "MON001": case "MON002":
@@ -129,10 +130,20 @@
       case "MON090":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Dream Weavers makes your next Illusionist attack action card you play lose Phantasm.";
+      case "MON091":
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+        AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
+        return "Phantasmaclasm let you put a card from your opponent's hand on the bottom of their deck.";
       case "MON092": PlayAura("MON104", $currentPlayer);
       case "MON093": PlayAura("MON104", $currentPlayer);
       case "MON094": PlayAura("MON104", $currentPlayer);
         return "Prismatic Shield created Spectral Shields.";
+      case "MON095": case "MON096": case "MON097":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Phantasmify makes your next attack be Illusionist, get +" . EffectAttackModifier($cardID) . " and phantasm.";
       default: return "";
     }
   }
@@ -194,8 +205,10 @@
 
   function IsPhantasmActive()
   {
-    global $combatChain;
+    global $combatChain, $mainPlayer;
     if(count($combatChain) == 0) return false;
+    if(SearchCurrentTurnEffects("MON090", $mainPlayer)) return false;
+    if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     return HasPhantasm($combatChain[0]);//TODO: Incorporate things that can gain or lose phantasm
   }
 
