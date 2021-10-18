@@ -898,7 +898,7 @@
     }
     switch($cardID)
     {
-      case "WTR000": return 0; 
+      case "WTR000": return 0;
       case "WTR038": case "WTR039": case "WTR040": return 0;
       case "CRU177": case "WTR153": return 0;
       //Brute
@@ -1481,6 +1481,7 @@
       case "ARC150": return true;
       case "CRU053": return true;
       case "MON107": case "MON108": return true;
+      case "MON122": return true;
       case "MON230": return true;
       default: return false;
     }
@@ -1726,4 +1727,3 @@
   }
 
 ?>
-
