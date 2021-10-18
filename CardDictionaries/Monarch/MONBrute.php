@@ -32,7 +32,7 @@
     switch($cardID)
     {
       case "MON121": return "Flail";
-      case "MON121": return "Legs";
+      case "MON122": return "Legs";
       case "MON221": return "Axe";
       default: return "";
     }

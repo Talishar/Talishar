@@ -2,7 +2,7 @@
 
   include 'CardDictionary.php';
 
-  $set = "ELE";
+  $set = "MON";
   for($number = 0; $number < 238; ++$number)
   {
     $card = strval($number);
@@ -16,4 +16,3 @@
   }
 
 ?>
-
