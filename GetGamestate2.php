@@ -23,7 +23,7 @@
   echo(implode(" ", $nextTurnEffects) . "<BR>");
   echo(implode(" ", $decisionQueue) . "<BR>");
   echo($mainPlayer . "<BR>");
-  $totalAttack = 0; $totalBlock = 0; $activeCombatEffects = "";
+  $totalAttack = 0; $totalBlock = 0; $activeCombatEffects = ""; $otherCurrentEffects = "";
   if(count($combatChain) > 0)
   {
     EvaluateCombatChain($totalAttack, $totalBlock);
@@ -34,10 +34,16 @@
         if($activeCombatEffects != "") $activeCombatEffects .= " ";
         $activeCombatEffects .= $currentTurnEffects[$i] . " " . $currentTurnEffects[$i+1];
       }
+      else
+      {
+        if($otherCurrentEffects != "") $otherCurrentEffects .= " ";
+        $otherCurrentEffects .= $currentTurnEffects[$i] . " " . $currentTurnEffects[$i+1];
+      }
     }
   }
   echo($totalAttack . " " . $totalBlock . "<BR>");
   echo($activeCombatEffects . "<BR>");
+  echo($otherCurrentEffects . "<BR>");
 
   function OutputPlayerData($player)
   {
