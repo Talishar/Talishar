@@ -92,7 +92,18 @@
     }
     echo($charEquipOut . "<BR>");
     echo(implode(" ", $resources) . "<BR>");
-    if($playerID == $player) echo(implode(" ", $arsenal) . "<BR>");
+    $arsenalOut = "";
+    for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+    {
+      if($arsenalOut != "") $arsenalOut .= " ";
+      $playable = $turn[0] != "P" && IsPlayable($arsenal[$i], $turn[0], "ARS", $i);
+      $border = CardBorderColor($arsenal[$i], "ARS", $playable);
+      $facing = $arsenal[$i + 1];
+      $arsenalOut .= ($playerID == $player || $facing == "UP" ? $arsenal[$i] : "-") . " ";
+      $arsenalOut .= $facing . " " . $border;
+    }
+    echo($arsenalOut . "<BR>");
+    //if($playerID == $player) echo(implode(" ", $arsenal) . "<BR>");
     echo(implode(" ", $items) . "<BR>");
     echo(implode(" ", $auras) . "<BR>");
     echo(implode(" ", $discard) . "<BR>");
