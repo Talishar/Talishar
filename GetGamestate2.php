@@ -103,11 +103,35 @@
       $arsenalOut .= $facing . " " . $border;
     }
     echo($arsenalOut . "<BR>");
-    //if($playerID == $player) echo(implode(" ", $arsenal) . "<BR>");
-    echo(implode(" ", $items) . "<BR>");
+    $itemsOut = "";
+    for($i=0; $i<count($items); $i+=ItemPieces())
+    {
+      if($itemsOut != "") $itemsOut .= " ";
+      $playable = $items[$i+1] == 2 && IsPlayable($items[$i], $turn[0], "PLAY", $i);
+      $border = CardBorderColor($items[$i], "PLAY", $playable);
+      for($j=0; $j<ItemPieces(); ++$j)
+      {
+        $itemsOut .= $items[$j+$i] . " ";
+      }
+      $itemsOut .= $border;
+    }
+    echo($itemsOut . "<BR>");
+    //echo(implode(" ", $items) . "<BR>");
     echo(implode(" ", $auras) . "<BR>");
     echo(implode(" ", $discard) . "<BR>");
     echo(implode(" ", $pitch) . "<BR>");
+    $banishOut = "";
+    for($i=0; $i<count($banish); $i+=BanishPieces())
+    {
+      if($banishOut != "") $banishOut .= " ";
+      $playable = IsPlayable($banish[$i], $turn[0], "BANISH", $i);
+      $border = CardBorderColor($banish[$i], "BANISH", $playable);
+      for($j=0; $j<BanishPieces(); ++$j)
+      {
+        $banishOut .= $banish[$j+$i] . " ";
+      }
+      $banishOut .= $border;
+    }
     echo(implode(" ", $banish) . "<BR>");
     echo(implode(" ", $classState) . "<BR>");
     echo(implode(" ", $characterEffects) . "<BR>");
