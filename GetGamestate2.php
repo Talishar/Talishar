@@ -3,9 +3,11 @@
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
 
+  ob_start();
   include "ParseGamestate.php";
   include "GameLogic.php";
   include "Libraries/UILibraries.php";
+  ob_end_clean();
 
   echo(implode(" ", $playerHealths) . "<BR>");
 
