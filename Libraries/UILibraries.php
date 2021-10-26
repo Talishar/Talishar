@@ -176,10 +176,10 @@
         $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
-        if(PlayableFromBanish($myBanish[$i]))
+      //  if(PlayableFromBanish($myBanish[$i]))
           $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));
-        else
-          $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1);
+    //  else
+      //    $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1);
       }
     }
     return $rv;
@@ -191,10 +191,11 @@
     if($playerID != $currentPlayer) return 0;
     if($from == "BANISH")
     {
+      if(PlayableFromBanish($cardID)) return 4;
       if(HasBloodDebt($cardID)) return 2;
       if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
       if($isPlayable && ComboActive($cardID)) return 5;
-      return 4;
+      return 0;
     }
     if($isPlayable && ComboActive($cardID)) return 3;
     if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
@@ -203,4 +204,3 @@
   }
 
 ?>
-

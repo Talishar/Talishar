@@ -3,11 +3,9 @@
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
 
-  ob_start();
   include "ParseGamestate.php";
   include "GameLogic.php";
   include "Libraries/UILibraries.php";
-  ob_end_clean();
 
   echo(implode(" ", $playerHealths) . "<BR>");
 
@@ -134,7 +132,7 @@
       }
       $banishOut .= $border;
     }
-    echo(implode(" ", $banish) . "<BR>");
+    echo($banishOut . "<BR>");
     echo(implode(" ", $classState) . "<BR>");
     echo(implode(" ", $characterEffects) . "<BR>");
     if($currentPlayer == $player && $playerID == $player && count($turn) > 0 && ($turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK"))
@@ -149,5 +147,5 @@
       echo($dispDeck . "<BR>");
     }
   }
-  
+
 ?>
