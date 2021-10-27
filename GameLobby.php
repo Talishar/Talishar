@@ -182,7 +182,7 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <?php
   echo("<div style='text-align:center;'>");
 
-  if($playerID == 1)
+  if($playerID == 1 && $gameStatus < $MGS_Player2Joined)
   {
     echo("<div><input type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
   }

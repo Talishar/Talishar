@@ -245,6 +245,20 @@
     echo("</div>");
   }
 
+  if($turn[0] == "CHOOSEMULTIZONE" && $turn[1] == $playerID)
+  {
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      $option = explode("-", $options[$i]);
+      if($option[0] == "THEIRAURAS") $source = $theirAuras;
+      else if($option[0] == "THEIRCHAR") $source = $theirCharacter;
+      echo(Card($source[intval($option[1])], "CardImages", 400, 15, 0, 0, 0, 0, $options[$i]));
+    }
+    echo("</div>");
+  }
+
   if($turn[0] == "CHOOSECHARACTER" && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
@@ -323,9 +337,9 @@
   {
     echo("<div style='display:inline-block;'>");
     echo("<h3>Their Auras:</h3>");
-    for($i=0; $i<count($theirAuras); $i+=2)
+    for($i=0; $i<count($theirAuras); $i+=AuraPieces())
     {
-      echo(Card($theirAuras[$i], "CardImages", 180, 0, 1, 0, 0, $theirAuras[$i+1]));
+      echo(Card($theirAuras[$i], "CardImages", 180, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0));
     }
     echo("</div>");
   }
@@ -400,9 +414,11 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
   {
     echo("<div style='display:inline-block;'>");
     echo("<h3>Your Auras:</h3>");
-    for($i=0; $i<count($myAuras); $i+=2)
+    for($i=0; $i<count($myAuras); $i+=AuraPieces())
     {
-      echo(Card($myAuras[$i], "CardImages", 180, 0, 1, 0, 0, $myAuras[$i+1]));
+      $playable = $myAuras[$i+1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i);
+      $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
+      echo(Card($myAuras[$i], "CardImages", 180, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, 0, strval($i)));
     }
     echo("</div>");
   }
@@ -487,6 +503,7 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
       case "CHOOSEARSENAL": return 0;
       case "CHOOSEDISCARD": return 0;
       case "MULTICHOOSEHAND": return 0;
+      case "CHOOSEMULTIZONE": return 0;
       default: return 1;
     }
   }

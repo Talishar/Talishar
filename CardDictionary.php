@@ -645,8 +645,15 @@
 
   function AbilityCost($cardID)
   {
+    global $currentPlayer;
     $set = CardSet($cardID);
     $class = CardClass($cardID);
+    $subtype = CardSubtype($cardID);
+    if($class == "ILLUSIONIST" && $subtype == "Aura")
+    {
+      if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
+      if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
+    }
     if($set == "ARC")
     {
       return ARCAbilityCost($cardID);
@@ -898,7 +905,7 @@
     }
     switch($cardID)
     {
-      case "WTR000": return 0;
+      case "WTR000": return 0; 
       case "WTR038": case "WTR039": case "WTR040": return 0;
       case "CRU177": case "WTR153": return 0;
       //Brute
@@ -1002,9 +1009,15 @@
 
   function AttackValue($cardID)
   {
-    global $combatChainState, $CCS_NumBoosted;
+    global $combatChainState, $CCS_NumBoosted, $mainPlayer;
     $set = CardSet($cardID);
     $class = CardClass($cardID);
+    $subtype = CardSubtype($cardID);
+    if($class == "ILLUSIONIST" && $subtype == "Aura")
+    {
+      if(SearchCharacterForCard($mainPlayer, "MON003")) return 1;
+      if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
+    }
     if($set == "ARC")
     {
       switch($class)
@@ -1216,8 +1229,15 @@
 
   function GetAbilityType($cardID, $index=-1)
   {
+    global $currentPlayer;
     $set = CardSet($cardID);
     $class = CardClass($cardID);
+    $subtype = CardSubtype($cardID);
+    if($class == "ILLUSIONIST" && $subtype == "Aura")
+    {
+      if(SearchCharacterForCard($currentPlayer, "MON003")) return "AA";
+      if(SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
+    }
     if($set == "ARC")
     {
       return ARCAbilityType($cardID, $index);
@@ -1280,7 +1300,7 @@
     if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID);
     if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
     $isStaticType = IsStaticType($cardType, $from);
-    if($isStaticType) $cardType = GetAbilityType($cardID, $index);
+    if($isStaticType) { $cardType = GetAbilityType($cardID, $index); }
     if($cardType == "") return false;
     if(RequiresDiscard($cardID) || $cardID == "WTR159")
     {
@@ -1531,8 +1551,14 @@
 
   function AbilityHasGoAgain($cardID)
   {
+    global $currentPlayer;
     $set = CardSet($cardID);
     $class = CardClass($cardID);
+    $subtype = CardSubtype($cardID);
+    if($class == "ILLUSIONIST" && $subtype == "Aura")
+    {
+      if(SearchCharacterForCard($currentPlayer, "MON088")) return true;
+    }
     if($set == "ARC")
     {
       return ARCAbilityHasGoAgain($cardID);
@@ -1727,3 +1753,4 @@
   }
 
 ?>
+

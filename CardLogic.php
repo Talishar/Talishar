@@ -31,12 +31,10 @@ function EmergingPowerDestroy($cardID)
 
 function PummelHit()
 {
-  global $defHand, $defPlayer;
-  if(count($defHand) > 0)
-  {
-    AddDecisionQueue("CHOOSEHAND", $defPlayer, GetDefHandIndices());
-    AddDecisionQueue("DISCARDMYHAND", $defPlayer, "-", 1);
-  }
+  global $defPlayer;
+  AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+  AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+  AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
 }
 
 function KatsuHit($index)

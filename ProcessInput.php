@@ -248,6 +248,15 @@
       $myClassState[$CS_PlayIndex] = $index;
       PlayCard($cardID, "PLAY", -1);
       break;
+    case 22://Aura ability
+      $index = $cardID;//Overridden to be index instead
+      if($index >= count($myAuras)) break;//Item doesn't exist
+      $cardID = $myAuras[$index];
+      if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break;//Aura ability not playable
+      $myAuras[$index+1] = 1;//Set status to used - for now
+      $myClassState[$CS_PlayIndex] = $index;
+      PlayCard($cardID, "PLAY", -1);
+      break;
     case 99: //Pass
       PassInput();
       break;
@@ -659,6 +668,12 @@ function FinalizeChainLink($chainClosed=false)
       if($defCharacter[$i] == 1 || $defCharacter[$i] == 2) { $defCharacter[$i] = 2; $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i-1]); }
     }
 
+    //Reset Auras
+    for($i=0; $i<count($mainAuras); $i+=AuraPieces())
+    {
+      $mainAuras[$i+1] = 2;//If it were destroyed, it wouldn't be in the auras array
+    }
+
     $mainResources[0] = 0;
     $mainResources[1] = 0;
     $defResources[0] = 0;
@@ -713,6 +728,7 @@ function FinalizeChainLink($chainClosed=false)
     }
     ResetMainClassState();
     UpdateMainPlayerGameState();
+    ProcessDecisionQueue();
   }
 
   function PlayCard($cardID, $from, $dynCostResolved=-1, $index=-1)
@@ -820,6 +836,7 @@ function FinalizeChainLink($chainClosed=false)
         if($from == "BANISH") ++$myClassState[$CS_NumPlayedFromBanish];
         //Pay additional costs
         if($turn[0] != "B") PayAdditionalCosts($cardID);
+        if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
         AddDecisionQueue("RESUMEPLAY", $currentPlayer, "-");
         $turn[2] = $cardID;
         $turn[3] = $from;
@@ -891,6 +908,31 @@ function FinalizeChainLink($chainClosed=false)
           break;
         default: break;
       }
+    }
+  }
+
+  function GetTargetOfAttack()
+  {
+    global $mainPlayer;
+    $defPlayer = $mainPlayer == 1 ? 2 : 1;
+    $numTargets = 1;
+    $targets = "THEIRCHAR-0";//Their hero
+    $auras = &GetAuras($defPlayer);
+    $arcLightIndex = -1;
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      if(HasSpectra($auras[$i]))
+      {
+        $targets .= ",THEIRAURAS-" . $i;
+        ++$numTargets;
+        if($auras[$i] == "MON005") $arcLightIndex = $i;
+      }
+    }
+    if($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
+    if($numTargets > 1)
+    {
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
+      AddDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
     }
   }
 
@@ -976,50 +1018,48 @@ function FinalizeChainLink($chainClosed=false)
     //Figure out where it goes
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
     else $cardType = $definedCardType;
-    if($from != "PLAY")
+    if(GoesOnCombatChain($turn[0], $cardID, $from))
     {
-      if(GoesOnCombatChain($turn[0], $cardID, $from))
+      $index = count($combatChain);
+      array_push($combatChain, $cardID);
+      array_push($combatChain, $currentPlayer);
+      array_push($combatChain, $from);
+      array_push($combatChain, $resourcesPaid);
+      array_push($combatChain, RepriseActive());
+      array_push($combatChain, 0);//Attack modifier
+      array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
+      if($turn[0] == "B") OnBlockEffects($index, $from);
+      if($index == 0)
       {
-        $index = count($combatChain);
-        array_push($combatChain, $cardID);
-        array_push($combatChain, $currentPlayer);
-        array_push($combatChain, $from);
-        array_push($combatChain, $resourcesPaid);
-        array_push($combatChain, RepriseActive());
-        array_push($combatChain, 0);//Attack modifier
-        array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
-        if($turn[0] == "B") OnBlockEffects($index, $from);
-        if($index == 0)
-        {
-          $combatChainState[$CCS_AttackPlayedFrom] = $from;
-          AuraAttackAbilities($cardID);
-          OnAttackEffects($cardID);
-        }
-        $myClassState[$CS_PlayCCIndex] = $index;
-        ++$myClassState[$CS_NumAttacks];
-        ++$combatChainState[$CCS_NumChainLinks];
+        $combatChainState[$CCS_AttackPlayedFrom] = $from;
+        AuraAttackAbilities($cardID);
+        OnAttackEffects($cardID);
+        ProcessAttackTarget();
       }
-      else
+      $myClassState[$CS_PlayCCIndex] = $index;
+      ++$myClassState[$CS_NumAttacks];
+      ++$combatChainState[$CCS_NumChainLinks];
+    }
+    else if($from != "PLAY")
+    {
+      $cardSubtype = CardSubType($cardID);
+      if($cardSubtype == "Aura")
       {
-        $cardSubtype = CardSubType($cardID);
-        if($cardSubtype == "Aura")
+        PlayMyAura($cardID);
+      }
+      else if($cardSubtype == "Item")
+      {
+        PutItemIntoPlay($cardID);
+      }
+      else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
+      {
+        $goesWhere = GoesWhereAfterResolving($cardID);
+        switch($goesWhere)
         {
-          PlayMyAura($cardID);
-        }
-        else if($cardSubtype == "Item")
-        {
-          PutItemIntoPlay($cardID);
-        }
-        else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
-        {
-          $goesWhere = GoesWhereAfterResolving($cardID);
-          switch($goesWhere)
-          {
-            case "GY": array_push($myDiscard, $cardID); break;
-            case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
-            case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, "PLAY", "NA"); break;
-            default: break;
-          }
+          case "GY": array_push($myDiscard, $cardID); break;
+          case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
+          case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, "PLAY", "NA"); break;
+          default: break;
         }
       }
     }
@@ -1048,6 +1088,21 @@ function FinalizeChainLink($chainClosed=false)
     $myClassState[$CS_CharacterIndex] = -1;
     ResetThisCardPitch($currentPlayer);
     ProcessDecisionQueue();
+  }
+
+  function ProcessAttackTarget()
+  {
+    global $combatChainState, $CCS_AttackTarget, $defPlayer;
+    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+    if($target[0] == "THEIRAURAS")
+    {
+      $auras = &GetAuras($defPlayer);
+      if(HasSpectra($auras[$target[1]]))
+      {
+        DestroyAura($defPlayer, $target[1]);
+        CloseCombatChain();
+      }
+    }
   }
 
   function CardLink($caption, $cardNumber)

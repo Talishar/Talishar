@@ -39,6 +39,7 @@
       case "MON088": return "Orb";
       case "MON089": return "Legs";
       case "MON090": return "Arms";
+      case "MON104": return "Aura";
       default: return "";
     }
   }
@@ -217,13 +218,38 @@
     global $combatChain;
     if(CardType($combatChain[$index]) != "AA") return;
     if(CardType($combatChain[$index]) == "ILLUSIONIST") return;
+    $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
-    if($combatChain[0] == "MON008" || $combatChain[0] == "MON009" || $combatChain[0] == "MON010") --$av;
+    if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
     if(IsPhantasmActive() && ($av >= 6))
     {
-      FinalizeChainLink(true);//Collapse the combat chain
+      AttackDestroyed($attackID);
+      CloseCombatChain();
     }
+  }
+
+  function HasSpectra($cardID)
+  {
+    switch($cardID)
+    {
+      case "MON005": return true;
+      case "MON006": return true;
+      case "MON011": return true;
+      case "MON012": return true;
+      case "MON013": return true;
+      default: return false;
+    }
+  }
+
+  function GenesisStartTurnAbility()
+  {
+    global $mainPlayer;
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
+    AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
+    AddDecisionQueue("ADDSOUL", $mainPlayer, "HAND", 1);
+    AddDecisionQueue("GENESIS", $mainPlayer, "-", 1);
   }
 
 ?>
