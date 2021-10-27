@@ -407,6 +407,7 @@
     global $defCharacter, $mainDiscard, $defDiscard, $defAuras;
     global $combatChainState,$CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_ChainAttackBuff;
+    global $CCS_LinkTotalAttack;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
     $currentTurnEffectsFromCombat = [];
@@ -465,6 +466,8 @@
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0) $totalAttack += $attack;
 
+    $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
+
     LogCombatResolutionStats($totalAttack, $totalDefense);
 
     $damage = $totalAttack - $totalDefense;
@@ -518,10 +521,10 @@
 
 function FinalizeChainLink($chainClosed=false)
 {
-    global $turn, $actionPoints, $combatChain, $mainPlayer, $playerID, $defHealth, $currentTurnEffects, $defCharacter, $mainDiscard, $defDiscard, $currentPlayer;
+    global $turn, $actionPoints, $combatChain, $mainPlayer, $playerID, $defHealth, $currentTurnEffects, $defCharacter, $mainDiscard, $defDiscard, $currentPlayer, $defPlayer;
     global $combatChainState,$CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_LastAttack;
+    global $CS_LastAttack, $CCS_LinkTotalAttack;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -545,6 +548,7 @@ function FinalizeChainLink($chainClosed=false)
           $index = FindDefCharacter($combatChain[$i-1]);
           if(HasBattleworn($combatChain[$i-1])) --$defCharacter[$index+4];
           if(HasTemper($combatChain[$i-1])) --$defCharacter[$index+4];
+          if($combatChain[$i-1] == "MON089" && $combatChainState[$CCS_LinkTotalAttack] >= 6) DestroyCharacter($defPlayer, $index);
         }
       }
     }
@@ -762,6 +766,7 @@ function FinalizeChainLink($chainClosed=false)
               AddPrePitchDecisionQueue($cardID, $index);
               if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
               else AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
+              AddPostPitchDecisionQueue($cardID, $index);
               AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from);
               ProcessDecisionQueue();
               return;
@@ -881,12 +886,6 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "MON257", 1);
         break;
-      case "MON241": case "MON242": case "MON243": case "MON244":
-        AddDecisionQueue("IRONHIDE", $currentPlayer, $index, 1);
-        break;
-      case "ELE203":
-        AddDecisionQueue("RAMPARTOFTHERAMSHEAD", $currentPlayer, $index, 1);
-        break;
       default:
         break;
     }
@@ -908,6 +907,25 @@ function FinalizeChainLink($chainClosed=false)
           break;
         default: break;
       }
+    }
+  }
+
+  function AddPostPitchDecisionQueue($cardID, $index=-1)
+  {
+    global $currentPlayer;
+    switch($cardID)
+    {
+      case "MON089":
+        AddDecisionQueue("PHANTASMALFOOTSTEPS", $currentPlayer, $index, 1);
+        break;
+      case "MON241": case "MON242": case "MON243": case "MON244":
+        AddDecisionQueue("IRONHIDE", $currentPlayer, $index, 1);
+        break;
+      case "ELE203":
+        AddDecisionQueue("RAMPARTOFTHERAMSHEAD", $currentPlayer, $index, 1);
+        break;
+      default:
+        break;
     }
   }
 

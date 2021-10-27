@@ -619,6 +619,7 @@ function DoesAttackHaveGoAgain()
   {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
+    if(CardSubtype($combatChain[0]) == "Aura" && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   return false;
 }
@@ -640,10 +641,19 @@ function DestroyCurrentWeapon()
 function AttackDestroyed($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  $class = CardClass($attackID);
   if(SearchAuras("MON012", $mainPlayer))
   {
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
+  }
+  if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON089"))
+  {
+    AddDecisionQueue("YESNO", $mainPlayer, "Do_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
+    AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
+    AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+    AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
   }
 }
 
@@ -659,7 +669,8 @@ function DestroyCharacter($player, $index)
 {
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
-  AddSpecificGraveyard($char[$index+1], GetDiscard($currentPlayer), "");
+  AddGraveyard($char[$index], $player, "CHAR");
 }
 
 ?>
+

@@ -56,14 +56,14 @@ body {
   <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">CRU Ninja Update! 10/13/21</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Illusionist Update! 10/27/21</h3>
 </div>
 </div>
 
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Supported cards:</h3><div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL ELE except Fable</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Shadow Runeblade</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Illusionist</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Runeblade</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Data Doll and Meganetic Shockwave</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
