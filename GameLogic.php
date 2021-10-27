@@ -1817,30 +1817,36 @@ function EquipPayAdditionalCosts($cardIndex, $from)
   {
     case "WTR005":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "WTR042":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "WTR080":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "WTR150":
       $myCharacter[$cardIndex+2] -= 3;
       break;
     case "WTR151": case "WTR152": case "WTR153": case "WTR154":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "ARC003":
       $myCharacter[$cardIndex+1] = 2;
       break;
     case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "ARC113": case "ARC114":
       $myCharacter[$cardIndex+1] = 2;
       break;
     case "CRU006": case "CRU025": case "CRU102": case "CRU122": case "CRU141":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "CRU101":
       if($myCharacter[$cardIndex+2] == 0) $myCharacter[$cardIndex+1] = 2;
@@ -1856,12 +1862,14 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "MON029": case "MON030":
       $myCharacter[$cardIndex+1] = 2;//It's not limited to once
       break;
     case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
       $myCharacter[$cardIndex+1] = 0;
+      AddSpecificGraveyard($cardID, GetDiscard($currentPlayer), $from);
       break;
     case "ELE224":
       ++$myCharacter[$cardIndex + 2];
@@ -2634,4 +2642,3 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 }
 
 ?>
-
