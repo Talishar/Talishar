@@ -103,12 +103,14 @@
   $CCS_AttackTotalDamage = 14;
   $CCS_NumChainLinks = 15;
   $CCS_AttackTarget = 16;
+  $CCS_LinkTotalAttack = 17;
 
   function ResetCombatChainState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
     global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
+    global $CCS_LinkTotalAttack;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_LastAttack] = "NA";
@@ -126,12 +128,14 @@
     $combatChainState[$CCS_AttackTotalDamage] = 0;
     $combatChainState[$CCS_NumChainLinks] = 0;
     $combatChainState[$CCS_AttackTarget] = "NA";
+    $combatChainState[$CCS_LinkTotalAttack] = 0;
   }
 
   function ResetChainLinkState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
+    global $CCS_LinkTotalAttack;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_DamageDealt] = 0;
@@ -141,6 +145,7 @@
     $combatChainState[$CCS_AttackFused] = 0;
     $combatChainState[$CCS_AttackTotalDamage] = 0;
     $combatChainState[$CCS_AttackTarget] = "NA";
+    $combatChainState[$CCS_LinkTotalAttack] = 0;
   }
 
   function ResetMainClassState()
