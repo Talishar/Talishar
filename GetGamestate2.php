@@ -3,9 +3,12 @@
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
 
+  ob_start();
   include "ParseGamestate.php";
   include "GameLogic.php";
   include "Libraries/UILibraries.php";
+  include "GameTerms.php";
+  ob_end_clean();
 
   echo(implode(" ", $playerHealths) . "<BR>");
 
@@ -44,6 +47,9 @@
   echo($totalAttack . " " . $totalBlock . "<BR>");
   echo($activeCombatEffects . "<BR>");
   echo($otherCurrentEffects . "<BR>");
+  if($currentPlayer != $playerID) echo("Waiting for other player to choose " . TypeToPlay($turn[0]));
+  else if($currentPlayer == $playerID) echo("Please choose " . TypeToPlay($turn[0]));
+  else echo("Waiting for player " . $currentPlayer . " to choose " . TypeToPlay($turn[0]));
 
   function OutputPlayerData($player)
   {
@@ -147,5 +153,5 @@
       echo($dispDeck . "<BR>");
     }
   }
-
+  
 ?>
