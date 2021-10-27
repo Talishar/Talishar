@@ -698,6 +698,7 @@
   {
     switch($cardID)
     {
+      case "MON089": return "0,1";
       case "MON241": case "MON242": case "MON243": case "MON244": return "0,1";
       case "ELE203": return "0,1";
       default:
