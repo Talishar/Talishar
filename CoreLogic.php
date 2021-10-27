@@ -659,7 +659,7 @@ function DestroyCharacter($player, $index)
 {
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
+  AddSpecificGraveyard($char[$index+1], GetDiscard($currentPlayer), "");
 }
 
 ?>
-
