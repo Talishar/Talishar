@@ -374,6 +374,17 @@ function GetEquipmentIndices($player, $maxBlock=-1)
   return $indices;
 }
 
+function SearchAuras($cardID, $player)
+{
+  $auras = &GetAuras($player);
+  $count = 0;
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if($auras[$i] == $cardID) return true;
+  }
+  return false;
+}
+
 function CountAura($cardID, $player)
 {
   $auras = &GetAuras($player);

@@ -103,7 +103,6 @@
     switch($cardID)
     {
       case "MON121": return 6;
-      case "MON122": return 0;
       case "MON124": return 6;
       case "MON138": return 8;
       case "MON139": case "MON144": case "MON147": return 7;

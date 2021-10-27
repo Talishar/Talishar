@@ -130,6 +130,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   }
   if($damage > 0)
   {
+    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $playerID); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
     if($playerID == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($source == "MON229") AddNextTurnEffect("MON229", $playerID);
@@ -518,7 +519,7 @@ function PlayAura($cardID, $player, $number=1)
   for($i=0; $i<$number; ++$i)
   {
     array_push($auras, $cardID);
-    array_push($auras, 0);
+    array_push($auras, 2);
   }
 }
 
@@ -526,14 +527,14 @@ function PlayMyAura($cardID)
 {
   global $myAuras;
   array_push($myAuras, $cardID);
-  array_push($myAuras, 0);
+  array_push($myAuras, 2);
 }
 
 function PlayTheirAura($cardID)
 {
   global $theirAuras;
   array_push($theirAuras, $cardID);
-  array_push($theirAuras, 0);
+  array_push($theirAuras, 2);
 }
 
 function RollDie()
@@ -593,6 +594,11 @@ function AuraDestroyed($player, $cardID)
 {
   if(CardType($cardID) == "T") return;//Don't need to add to anywhere if it's a token
   $goesWhere = GoesWhereAfterResolving($cardID);
+  if(SearchAuras("MON012", $player))
+  {
+    $goesWhere = "SOUL";
+    DealArcane(1, 0, "STATIC", "MON012", false, $player);
+  }
   switch($goesWhere)
   {
     case "GY": AddGraveyard($cardID, $player, "PLAY"); break;
@@ -606,10 +612,14 @@ function DoesAttackHaveGoAgain()
 {
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
   if(count($combatChain) == 0) return false;//No combat chain, so no
+  $attackType = CardType($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
   if(HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain()) return true;
-  if(CardClass($combatChain[0]) == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0)
-    return true;
+  if(CardClass($combatChain[0]) == "ILLUSIONIST")
+  {
+    if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
+    if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
+  }
   return false;
 }
 
@@ -625,6 +635,24 @@ function DestroyCurrentWeapon()
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $index = $combatChainState[$CCS_WeaponIndex];
   DestroyCharacter($mainPlayer, $index);
+}
+
+function AttackDestroyed($attackID)
+{
+  global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  if(SearchAuras("MON012", $mainPlayer))
+  {
+    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+    DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
+  }
+}
+
+function CloseCombatChain()
+{
+  global $turn, $currentPlayer, $mainPlayer;
+  AddDecisionQueue("FINALIZECHAINLINK", $mainPlayer, "true");
+  $turn[0] = "M";
+  $currentPlayer = $mainPlayer;
 }
 
 function DestroyCharacter($player, $index)
