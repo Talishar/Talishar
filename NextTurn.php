@@ -79,7 +79,9 @@
     echo("<h2>Player " . $winner . " Won!</h2>");
     echo(CardStatsUI($playerID));
   }
-  else if($currentPlayer != $playerID)
+
+  //else if($currentPlayer != $playerID)
+  else if($currentPlayer != $playerID && $playerID != "U")
   {
     echo("<span style='display:inline-block; background-color: rgba(255,255,255,0.70); position:relative; font-size:24px;'><b>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</b></span>");
   }
