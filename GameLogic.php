@@ -2084,7 +2084,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYCHARACTER":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult+1] = 0;
-      CharacterDestroyEffect($character[$lastResult], $player);
+      DestroyCharacter($player, $lastResult);
       return $lastResult;
     case "DESTROYTHEIRCHARACTER":
       $theirCharacter[$lastResult+1] = 0;
@@ -2642,4 +2642,3 @@ WriteLog("test ". $lastResult);
 }
 
 ?>
-
