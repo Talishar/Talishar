@@ -45,7 +45,7 @@ for url, code in urls.items():
                 #filename = image_url.split("/")[-1]
 
                 fileending = image_url.split(".")[-1] #file ending
-                filename = code+"{:03d}".format(counter)+"."+fileending
+                filename = code+"{:03d}".format(counter)+"."+"jpg"
                 
                 counter+=1
 
