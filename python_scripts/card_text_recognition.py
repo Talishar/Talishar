@@ -24,30 +24,48 @@ for filename in onlyfiles:
 ## cost
     print("--------------------------------------------------------")
     img = Image.open(filename)
-    img.show()
+    #img.show()
 
 
 
     width, height = img.size
+
+
+    # Black or White Filter
+    gray = img.convert('L')
+    bw = gray.point(lambda x: 0 if x<128 else 255, '1')
+    basename ,fileend = filename.split(".")
+    #bw.show()
+    bw.save(basename+"_changed."+"png")
+
+
     image_data = img.load()
+
+    """
     for loop1 in range(height):
         for loop2 in range(width):
             try:
                 r,g,b,d = image_data[loop2,loop1]
-                """
-                WHat to filter
-                """
+                
+                #What to filter
+                #
+                #
+
                 if r > 40 or g > 40  or b > 40 :
                     image_data[loop2,loop1] = 255,255,255,255
             except:
                 print(loop1,loop2)
+                
+
+
+
     basename ,fileend = filename.split(".")
     img.show()
     img.save(basename+"_changed."+"png")
+    """
 
 
-
-
+    img = Image.open(basename+"_changed."+"png")
     left    =width -60
     right   =width -45
     top     =45
@@ -55,7 +73,7 @@ for filename in onlyfiles:
     img_res = img.crop((left, top, right, bottom)) 
     file_cost_crop = filename+"cost.png"
     img_res.save(file_cost_crop, "PNG", quality=100, optimize=True, progressive=True)
-
+    #img_res.show()
     img_cost = cv2.imread(file_cost_crop)
     d = pytesseract.image_to_data(img_cost, output_type=Output.DICT, lang = 'eng',config="-c tessedit_char_whitelist=0123456789")
     
@@ -75,11 +93,23 @@ for filename in onlyfiles:
     file_attack_crop = filename+"attack.png"
     img_res.save(file_attack_crop, "PNG", quality=100, optimize=True, progressive=True)
 
-    attack = pytesseract.image_to_string(file_attack_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 11")
-    ##defense
+    attack = pytesseract.image_to_string(file_attack_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
 
     defense = 0
+## defense
+
+    left =  width - 100
+    right = width - 73
+    top = height - 60
+    bottom = height -20
+    img_res = img.crop((left, top, right, bottom))
+    file_defense_crop = filename+"attack.png"
+    img_res.save(file_attack_crop, "PNG", quality=100, optimize=True, progressive=True)
+
+    defense = pytesseract.image_to_string(file_attack_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
+
 
     with open (csvfile,"a") as f:
-        print(f"{filename};{cost};{attack};{defense}".replace(" ", "").replace("\n", "").strip() )
-        print(f"{filename};{cost};{attack};{defense}".replace(" ", "").replace("\n", "").strip() ,file=f)
+        csvline = f"{basename};{cost};{attack};{defense}".replace(" ", "").replace("\n", "").strip() 
+        print(csvline)
+        print(csvline,file=f)
