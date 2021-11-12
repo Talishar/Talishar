@@ -1,0 +1,67 @@
+import requests 
+import shutil 
+
+import requests
+import re
+
+def getFilename_fromCd(cd):
+    """
+    Get filename from content-disposition
+    """
+    if not cd:
+        return None
+    fname = re.findall('filename=(.+)', cd)
+    if len(fname) == 0:
+        return None
+    return fname[0]
+
+
+urls = {
+    "https://fabtcg.com/resources/card-galleries/welcome-rathe-unlimited-booster": "WTR",
+    "https://fabtcg.com/resources/card-galleries/arcane-rising-unlimited-booster": "ACR",
+    "https://fabtcg.com/resources/card-galleries/crucible-war-unlimited": "CRU",
+    "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
+    "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE"
+
+ } # important not to have a '/' at the end of the link
+for url, code in urls.items():
+    #url = 'https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited'
+    r = requests.get(url, allow_redirects=True)
+    filename = url.split("/")[-1]
+    
+    open(filename, 'wb').write(r.content)
+    counter = 0
+    if code == "MON" or code == "ELE": #Tales and Monarch start indexing at 1 instead
+        counter = 1
+    for line in open(filename):
+        if "https://storage.googleapis.com/fabmaster/media/images/" in line:
+            if "450" in line:
+                print("\c",line)
+                index0 = line.index("href=\"") +len("href=\"")
+                index1 = line.index("450.png")+ len("450.png")
+                image_url = line[index0:index1]
+                print(index0, index1, image_url    )
+
+                #filename = image_url.split("/")[-1]
+
+                fileending = image_url.split(".")[-1] #file ending
+                filename = code+"{:03d}".format(counter)+"."+fileending
+                
+                counter+=1
+
+                # Open the url image, set stream to True, this will return the stream content.
+                r = requests.get(image_url, stream = True)
+
+                # Check if the image was retrieved successfully
+                if r.status_code == 200:
+                    # Set decode_content value to True, otherwise the downloaded image file's size will be zero.
+                    r.raw.decode_content = True
+                    
+                    # Open a local file with wb ( write binary ) permission.
+                    with open(filename,'wb') as f:
+                        shutil.copyfileobj(r.raw, f)
+                        
+                    print('Image sucessfully Downloaded: ',filename)
+                else:
+                    print('Image Couldn\'t be retreived')
+                
