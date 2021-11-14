@@ -81,8 +81,8 @@ for filename in onlyfiles:
     top = height - 60
     bottom = height -20
     img_res = img.crop((left, top, right, bottom))
-    file_defense_crop = filename+"attack.png"
-    img_res.save(file_attack_crop, "PNG", quality=100, optimize=True, progressive=True)
+    file_defense_crop = filename+"defense.png"
+    img_res.save(file_defense_crop, "PNG", quality=100, optimize=True, progressive=True)
 
     defense = pytesseract.image_to_string(file_attack_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
 
