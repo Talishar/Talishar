@@ -41,31 +41,9 @@ for filename in onlyfiles:
 
     image_data = img.load()
 
-    """
-    for loop1 in range(height):
-        for loop2 in range(width):
-            try:
-                r,g,b,d = image_data[loop2,loop1]
-                
-                #What to filter
-                #
-                #
-
-                if r > 40 or g > 40  or b > 40 :
-                    image_data[loop2,loop1] = 255,255,255,255
-            except:
-                print(loop1,loop2)
-                
 
 
-
-    basename ,fileend = filename.split(".")
-    img.show()
-    img.save(basename+"_changed."+"png")
-    """
-
-
-    img = Image.open(basename+"_changed."+"png")
+    img = Image.open(filename)
     left    =width -60
     right   =width -45
     top     =45
@@ -79,7 +57,7 @@ for filename in onlyfiles:
     
     #basically done
 
-    cost = pytesseract.image_to_string(file_cost_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 11")
+    cost = pytesseract.image_to_string(file_cost_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
     
     ## pitch
 
