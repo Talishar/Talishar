@@ -30,9 +30,7 @@ for url, code in urls.items():
     filename = url.split("/")[-1]
     
     open(filename, 'wb').write(r.content)
-    counter = 0
-    if code == "MON" or code == "ELE": #Tales and Monarch start indexing at 1 instead
-        counter = 1
+    counter = 1
     for line in open(filename):
         if "https://storage.googleapis.com/fabmaster/media/images/" in line:
             if "450" in line:
