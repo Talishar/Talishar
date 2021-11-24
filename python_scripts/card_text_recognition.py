@@ -73,7 +73,6 @@ for filename in onlyfiles:
 
     attack = pytesseract.image_to_string(file_attack_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
 
-    defense = 0
 ## defense
 
     left =  width - 100
@@ -84,10 +83,23 @@ for filename in onlyfiles:
     file_defense_crop = filename+"defense.png"
     img_res.save(file_defense_crop, "PNG", quality=100, optimize=True, progressive=True)
 
-    defense = pytesseract.image_to_string(file_attack_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
+    defense = pytesseract.image_to_string(file_defense_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
+
+## title
+
+    left = 100
+    right = 350
+    top = 40
+    bottom = 70
+    img_res = img.crop((left, top, right, bottom))
+    file_title_crop = filename+"title.png"
+    img_res.save(file_title_crop, "PNG", quality=100, optimize=True, progressive=True)
+
+    title = pytesseract.image_to_string(file_title_crop, lang = 'eng',config="-c tessedit_char_blacklist=0123456789 --psm 7") #treat crop as a line
+    print(title)
 
 
     with open (csvfile,"a") as f:
-        csvline = f"{basename};{cost};{attack};{defense}".replace(" ", "").replace("\n", "").strip() 
+        csvline = f"{basename};{title};{cost};{attack};{defense}".replace("\n", "").strip() 
         print(csvline)
         print(csvline,file=f)
