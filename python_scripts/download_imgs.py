@@ -18,7 +18,7 @@ def getFilename_fromCd(cd):
 
 urls = {
     "https://fabtcg.com/resources/card-galleries/welcome-rathe-unlimited-booster": "WTR",
-    "https://fabtcg.com/resources/card-galleries/arcane-rising-unlimited-booster": "ACR",
+    "https://fabtcg.com/resources/card-galleries/arcane-rising-unlimited-booster": "ARC",
     "https://fabtcg.com/resources/card-galleries/crucible-war-unlimited": "CRU",
     "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
     "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE"
