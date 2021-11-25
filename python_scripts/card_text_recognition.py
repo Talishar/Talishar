@@ -15,7 +15,7 @@ onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f)) and "jpg" in 
 
 csvfile = "recognized_values.csv"
 with open (csvfile,"a") as f:
-    print("filename;cost;attack;defense;pitch",file=f)
+    print("filename;title;cost;attack;defense;pitch",file=f)
 
 
 for filename in onlyfiles:
@@ -95,7 +95,8 @@ for filename in onlyfiles:
     file_title_crop = filename+"title.png"
     img_res.save(file_title_crop, "PNG", quality=100, optimize=True, progressive=True)
 
-    title = pytesseract.image_to_string(file_title_crop, lang = 'eng',config="-c tessedit_char_blacklist=0123456789 --psm 7") #treat crop as a line
+    title = pytesseract.image_to_string(file_title_crop, lang = 'eng',config="-c tessedit_char_blacklist=0123456789 --psm 7").replace("\n", "") #treat crop as a line
+    title = "\""+title+"\"" # use encoding to include commas and commatas
     print(title)
 
 
