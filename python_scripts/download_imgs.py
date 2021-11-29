@@ -25,12 +25,13 @@ urls = {
 
  } # important not to have a '/' at the end of the link
 for url, code in urls.items():
-    #url = 'https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited'
+
     r = requests.get(url, allow_redirects=True)
     filename = url.split("/")[-1]
     
     open(filename, 'wb').write(r.content)
     counter = 1
+    exceptions = 0
     for line in open(filename):
         if "https://storage.googleapis.com/fabmaster/media/images/" in line:
             if "450" in line:
@@ -43,13 +44,22 @@ for url, code in urls.items():
                 #filename = image_url.split("/")[-1]
 
                 fileending = image_url.split(".")[-1] #file ending
-                filename = code+"{:03d}".format(counter)+"."+"jpg"
+                filename = code+"{:03d}".format(counter - exceptions)+"."+"jpg"
 
-                if code == "MON" and counter == 88: #Exception for the Great library of solana
-                    counter-=1
+                # Exception for Fabled cards
+                if code == "MON" and counter == 88: #Exception 
                     filename = code+"{:03d}".format(0)+"."+"jpg"
-
-                
+                    exceptions += 1
+                if code == "ELE" and counter == 112: #Exception 
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+                    exceptions += 1
+                if code == "WTR" and counter == 226: #Exception 
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+                    exceptions += 1
+                if code == "ARC" and counter == 219: #Exception 
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+                    exceptions += 1
+                    
                 counter+=1
 
                 # Open the url image, set stream to True, this will return the stream content.
