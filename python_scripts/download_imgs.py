@@ -19,7 +19,7 @@ def getFilename_fromCd(cd):
 urls = {
     "https://fabtcg.com/resources/card-galleries/welcome-rathe-unlimited-booster": "WTR",
     "https://fabtcg.com/resources/card-galleries/arcane-rising-unlimited-booster": "ARC",
-    "https://fabtcg.com/resources/card-galleries/crucible-war-unlimited": "CRU",
+    "https://fabtcg.com/resources/card-galleries/crucible-war-booster": "CRU",
     "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
     "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE"
 
@@ -59,6 +59,10 @@ for url, code in urls.items():
                 if code == "ARC" and counter == 219: #Exception 
                     filename = code+"{:03d}".format(0)+"."+"jpg"
                     exceptions += 1
+                if code == "CRU" and counter == 158: #Exception 
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+                    exceptions += 1
+                    
                     
                 counter+=1
 
