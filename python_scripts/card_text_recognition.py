@@ -5,13 +5,13 @@ import cv2
 from PIL import Image 
 
 
-from os import listdir
+from os import listdir, remove
 from os.path import isfile, join
 
 
 
 mypath = "."
-onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f)) and "jpg" in f ]
+onlyfiles = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "jpg" in f ]
 
 csvfile = "recognized_values.csv"
 with open (csvfile,"a") as f:
@@ -104,3 +104,5 @@ for filename in onlyfiles:
         csvline = f"{basename};{title};{cost};{attack};{defense}".replace("\n", "").strip() 
         print(csvline)
         print(csvline,file=f)
+
+#remove('*.png') 

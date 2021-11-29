@@ -44,6 +44,11 @@ for url, code in urls.items():
 
                 fileending = image_url.split(".")[-1] #file ending
                 filename = code+"{:03d}".format(counter)+"."+"jpg"
+
+                if code == "MON" and counter == 88: #Exception for the Great library of solana
+                    counter-=1
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+
                 
                 counter+=1
 
