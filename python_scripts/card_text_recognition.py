@@ -15,7 +15,7 @@ onlyfiles = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "
 
 csvfile = "recognized_values.csv"
 with open (csvfile,"a") as f:
-    print("filename;title;cost;attack;defense;pitch",file=f)
+    print("filename,title,cost,attack,defense,pitch",file=f)
 
 
 for filename in onlyfiles:
@@ -101,7 +101,8 @@ for filename in onlyfiles:
 
 
     with open (csvfile,"a") as f:
-        csvline = f"{basename};{title};{cost};{attack};{defense}".replace("\n", "").strip() 
+        csvline = f"{basename},{title},{cost},{attack},{defense}"
+        csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").strip() 
         print(csvline)
         print(csvline,file=f)
 
