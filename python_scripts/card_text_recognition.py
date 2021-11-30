@@ -8,6 +8,8 @@ from PIL import Image
 from os import listdir, remove
 from os.path import isfile, join
 
+from colormath.color_objects import XYZColor, AdobeRGBColor, CMYColor, CMYKColor, sRGBColor
+from colormath.color_conversions import convert_color
 
 
 mypath = "."
@@ -59,7 +61,7 @@ for filename in onlyfiles:
 
     cost = pytesseract.image_to_string(file_cost_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
     
-    ## pitch
+
 
 ## attack
 
@@ -100,10 +102,41 @@ for filename in onlyfiles:
     print(title)
 
 
+
+
+## pitch
+    image = Image.open(filename)
+    print(image.mode)
+    #if image.mode == 'RGB':
+    #   image = image.convert('CMYK')
+
+    
+    r, g, b, a = image.getpixel((225,30)) #middle of picture, then 30 from the top, measured with gimp
+    print("rgba",r,g,b,a)
+    srgb = sRGBColor(r, g, b,a)
+
+    cmy = convert_color(srgb, CMYColor)
+    c,m,y = cmy.get_value_tuple()
+    print("cmy", c, y, m)
+    cmyk = convert_color(cmy, CMYKColor)
+    c,m,y,k = [x*100 for x in cmyk.get_value_tuple() ]
+    """
+    for yellow and red pitches cyan is usually zero whereas for blue its close to 1
+    red has high yellow and red numbers, both close to 0.9
+    yellow has a low red value (close to 0.1), but yellow value is really close to 100 
+    """
+    print("cmyk",c,m,y,k)
+    pitch = "None"
+    if 100-c<5:
+        pitch = "blue"
+    elif 100-y <5  :
+        pitch = "yellow"
+    elif 100-r<20 and 100-y<20:
+        pitch = "red"
+    print(pitch)
+
     with open (csvfile,"a") as f:
-        csvline = f"{basename},{title},{cost},{attack},{defense}"
+        csvline = f"{basename},{title},{cost},{attack},{defense},{pitch}"
         csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").strip() 
         print(csvline)
         print(csvline,file=f)
-
-#remove('*.png') 

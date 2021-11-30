@@ -1,4 +1,5 @@
-function CardName ($cardID)
+<?php
+function CardName ($cardID, $showPitch=true)
 {
     $arr = str_split($cardID, 3);
     $set = $arr[0];
@@ -8,1216 +9,1421 @@ function CardName ($cardID)
 if ($set == "ARC")
 	{  switch($num)	   {
 
-		case "000": return "Eye of Ophidia";
-		case "001": return "Dash, Inventor Extraordinaire";
-		case "002": return "Dash";
-		case "003": return "‘Teklo Plasma Pistol";
-		case "004": return "Teklo Foundry Heart";
-		case "005": return "Achilles Accelerator";
-		case "006": return "High Octane";
-		case "007": return "Teklo Core";
-		case "008": return "Maximum Velocity";
-		case "009": return "Spark of Genius";
-		case "010": return "Induction Chamber";
-		case "011": return "Pedal to the Metal";
-		case "012": return "Pedal to the Metal";
-		case "013": return "Pedal to the Metal";
-		case "014": return "Pour the Mold";
-		case "015": return "Pour the Mold";
-		case "016": return "Pour the Mold";
-		case "017": return "Aether Sink";
-		case "018": return "Cognition Nodes";
-		case "019": return "Convection Amplifier";
-		case "020": return "Qver Loop";
-		case "021": return "Qver Loop";
-		case "022": return "Qver Loop";
-		case "023": return "Throttle";
-		case "024": return "Throttle";
-		case "025": return "Throttle";
-		case "026": return "Zero to Sixty";
-		case "027": return "Zero to Sixty";
-		case "028": return "Zero to Sixty";
-		case "029": return "Zipper Hit";
-		case "030": return "Zipper Hit";
-		case "031": return "Zipper Hit";
-		case "032": return "Locked and Loaded";
-		case "033": return "Locked and Loaded";
-		case "034": return "Locked and Loaded";
-		case "035": return "Dissipation Shield";
-		case "036": return "Hyper Driver";
-		case "037": return "Optekal Monocle";
-		case "038": return "Azalea, Ace in the Hole";
-		case "039": return "£ Azalea o";
-		case "040": return "Death Dealer";
-		case "041": return "Skullbone Crosswrap";
-		case "042": return "Bull's Eye Bracers";
-		case "043": return "Red in the Ledger";
-		case "044": return "Three of a Kind";
-		case "045": return "Endless Arrow";
-		case "046": return "Nock the Deathwhistle";
-		case "047": return "Rapid Fire";
-		case "048": return "Take Cover";
-		case "049": return "Take Cover";
-		case "050": return "Take Cover";
-		case "051": return "Silver the Tip";
-		case "052": return "Silver the Tip";
-		case "053": return "Silver the Tip";
-		case "054": return "Take Aim";
-		case "055": return "Take Aim";
-		case "056": return "Take Aim";
-		case "057": return "Head Shot";
-		case "058": return "Head Shot";
-		case "059": return "Head Shot";
-		case "060": return "Hamstring Shot";
-		case "061": return "Hamstring Shot";
-		case "062": return "Hamstring Shot";
-		case "063": return "Ridge Rider Shot";
-		case "064": return "Ridge Rider Shot";
-		case "065": return "Ridge Rider Shot";
-		case "066": return "Salvage Shot";
-		case "067": return "Salvage Shot";
-		case "068": return "Salvage Shot";
-		case "069": return "Searing Shot";
-		case "070": return "Searing Shot";
-		case "071": return "Searing Shot";
-		case "072": return "Sic 'Em Shot";
-		case "073": return "Sic 'Em Shot";
-		case "074": return "Sic 'Em Shot";
-		case "075": return "Viserai, Rune Blood";
-		case "076": return "Viserai";
-		case "077": return "Nebula Blade";
-		case "078": return "Grasp of the Arknight";
-		case "079": return "Crown of Dichotomy";
-		case "080": return "Arknight Ascendancy";
-		case "081": return "Mordred Tide";
-		case "082": return "Ninth Blade of the Blood Oatt";
-		case "083": return "Become the Arknight";
-		case "084": return "Tome of the Arknight";
-		case "085": return "Spellblade Assault";
-		case "086": return "Spellblade Assault";
-		case "087": return "Spellblade Assault";
-		case "088": return "Reduce to Runechant";
-		case "089": return "Reduce to Runechant";
-		case "090": return "Reduce to Runechant";
-		case "091": return "Qath of the Arknight";
-		case "092": return "Qath of the Arknight";
-		case "093": return "Qath of the Arknight";
-		case "094": return "Amplify the Arknight";
-		case "095": return "Amplify the Arknight";
-		case "096": return "Amplify the Arknight";
-		case "097": return "Drawn to the Dark Dimension";
-		case "098": return "Drawn to the Dark Dimension";
-		case "099": return "Drawn to the Dark Dimension";
-		case "100": return "Rune Flash";
-		case "101": return "Rune Flash";
-		case "102": return "Rune Flash";
-		case "103": return "Spellblade Strike";
-		case "104": return "Spellblade Strike";
-		case "105": return "Spellblade Strike";
-		case "106": return "Bloodspill Invocation";
-		case "107": return "Bloodspill Invocation";
-		case "108": return "Bloodspill Invocation";
-		case "109": return "Read the Runes";
-		case "110": return "Read the Runes";
-		case "111": return "Read the Runes";
-		case "112": return "Runechant";
-		case "113": return "Cano, Dracai of Aether";
-		case "114": return "Kano";
-		case "115": return "rucible of Aetherweav";
-		case "116": return "Storm Striders";
-		case "117": return "Robe of Rapture";
-		case "118": return "~ Blazing Aether";
-		case "119": return "Sonic Boom";
-		case "120": return "Forked Lightning";
-		case "121": return "Lesson in Lava";
-		case "122": return "Tome of Aetherwind";
-		case "123": return "Absorb in Aether";
-		case "124": return "Absorb in Aether";
-		case "125": return "Absorb in Aether";
-		case "126": return "Aether Spindle";
-		case "127": return "Aether Spindle";
-		case "128": return "Aether Spindle";
-		case "129": return "Stir the Aetherwinds";
-		case "130": return "Stir the Aetherwinds";
-		case "131": return "Stir the Aetherwinds";
-		case "132": return "Aether Flare";
-		case "133": return "Aether Flare";
-		case "134": return "Aether Flare";
-		case "135": return "Index";
-		case "136": return "Index";
-		case "137": return "Index";
-		case "138": return "Reverberate";
-		case "139": return "Reverberate";
-		case "140": return "Reverberate";
-		case "141": return "Scalding Rain";
-		case "142": return "Scalding Rain";
-		case "143": return "Scalding Rain";
-		case "144": return "Zap";
-		case "145": return "Zap";
-		case "146": return "Zap";
-		case "147": return "Voltic Bolt";
-		case "148": return "Voltic Bolt";
-		case "149": return "Voltic Bolt";
-		case "150": return "Arcanite Skullcap";
-		case "151": return "Talismanic Lens";
-		case "152": return "Vest of the First Fist";
-		case "153": return "Bracers of Beliet";
-		case "154": return "Mage Master Boots";
-		case "155": return "Nullrune Hood";
-		case "156": return "Nullrune Robe";
-		case "157": return "Nullrune Gloves";
-		case "158": return "Nullrune Boots";
-		case "159": return "Command and Conquer";
-		case "160": return "Art of War";
-		case "161": return "Pursuit of Knowledge";
-		case "162": return "Chains of Eminence";
-		case "163": return "Rusted Relic";
-		case "164": return "Life for a Life";
-		case "165": return "Life for a Life";
-		case "166": return "Life for a Life";
-		case "167": return "Enchanting Melody";
-		case "168": return "Enchanting Melody";
-		case "169": return "Enchanting Melody";
-		case "170": return "Plunder Run";
-		case "171": return "Plunder Run";
-		case "172": return "Plunder Run";
-		case "173": return "Eirina's Prayer";
-		case "174": return "Eirina's Prayer";
-		case "175": return "Eirina's Prayer";
-		case "176": return "Back Alley Breakline";
-		case "177": return "Back Alley Breakline";
-		case "178": return "Back Alley Breakline";
-		case "179": return "Cadaverous Contraband";
-		case "180": return "Cadaverous Contraband";
-		case "181": return "Cadaverous Contraband";
-		case "182": return "Fervent Forerunner";
-		case "183": return "Fervent Forerunner";
-		case "184": return "Fervent Forerunner";
-		case "185": return "Moon Wish";
-		case "186": return "Moon Wish";
-		case "187": return "Moon Wish";
-		case "188": return "Push the Point";
-		case "189": return "Push the Point";
-		case "190": return "Push the Point";
-		case "191": return "Ravenous Rabble";
-		case "192": return "Ravenous Rabble";
-		case "193": return "Ravenous Rabble";
-		case "194": return "Rifting";
-		case "195": return "Rifting";
-		case "196": return "Rifting";
-		case "197": return "Vigor Rush";
-		case "198": return "Vigor Rush";
-		case "199": return "Vigor Rush";
-		case "200": return "Fate Foreseen";
-		case "201": return "Fate Foreseen";
-		case "202": return "Fate Foreseen";
-		case "203": return "Come to Fight";
-		case "204": return "Come to Fight";
-		case "205": return "Come to Fight";
-		case "206": return "Force Sight";
-		case "207": return "Force Sight";
-		case "208": return "Force Sight";
-		case "209": return "Lead the Charge";
-		case "210": return "Lead the Charge";
-		case "211": return "Lead the Charge";
-		case "212": return "Sun Kiss";
-		case "213": return "Sun Kiss";
-		case "214": return "Sun Kiss";
-		case "215": return "Whisper of the Oracle";
-		case "216": return "Whisper of the Oracle";
-		case "217": return "Whisper of the Oracle";
-		case "218": return "Cracked Bauble";
+		case "000": if ($showPitch == false) return "Eye of Ophidia";
+			else return "Eye of Ophidia (blue)";
+		case "001": if ($showPitch == false) return "Dash, Inventor Extraordinaire";
+			else return "Dash, Inventor Extraordinaire (None)";
+		case "002": if ($showPitch == false) return "Dash";
+			else return "Dash (None)";
+		case "003": if ($showPitch == false) return "‘Teklo Plasma Pistol";
+			else return "‘Teklo Plasma Pistol (None)";
+		case "004": if ($showPitch == false) return "Teklo Foundry Heart";
+			else return "Teklo Foundry Heart (None)";
+		case "005": if ($showPitch == false) return "Achilles Accelerator";
+			else return "Achilles Accelerator (None)";
+		case "006": if ($showPitch == false) return "High Octane";
+			else return "High Octane (red)";
+		case "007": if ($showPitch == false) return "Teklo Core";
+			else return "Teklo Core (blue)";
+		case "008": if ($showPitch == false) return "Maximum Velocity";
+			else return "Maximum Velocity (red)";
+		case "009": if ($showPitch == false) return "Spark of Genius";
+			else return "Spark of Genius (yellow)";
+		case "010": if ($showPitch == false) return "Induction Chamber";
+			else return "Induction Chamber (red)";
+		case "011": if ($showPitch == false) return "Pedal to the Metal";
+			else return "Pedal to the Metal (red)";
+		case "012": if ($showPitch == false) return "Pedal to the Metal";
+			else return "Pedal to the Metal (yellow)";
+		case "013": if ($showPitch == false) return "Pedal to the Metal";
+			else return "Pedal to the Metal (blue)";
+		case "014": if ($showPitch == false) return "Pour the Mold";
+			else return "Pour the Mold (red)";
+		case "015": if ($showPitch == false) return "Pour the Mold";
+			else return "Pour the Mold (yellow)";
+		case "016": if ($showPitch == false) return "Pour the Mold";
+			else return "Pour the Mold (blue)";
+		case "017": if ($showPitch == false) return "Aether Sink";
+			else return "Aether Sink (yellow)";
+		case "018": if ($showPitch == false) return "Cognition Nodes";
+			else return "Cognition Nodes (blue)";
+		case "019": if ($showPitch == false) return "Convection Amplifier";
+			else return "Convection Amplifier (red)";
+		case "020": if ($showPitch == false) return "Qver Loop";
+			else return "Qver Loop (red)";
+		case "021": if ($showPitch == false) return "Qver Loop";
+			else return "Qver Loop (yellow)";
+		case "022": if ($showPitch == false) return "Qver Loop";
+			else return "Qver Loop (blue)";
+		case "023": if ($showPitch == false) return "Throttle";
+			else return "Throttle (red)";
+		case "024": if ($showPitch == false) return "Throttle";
+			else return "Throttle (yellow)";
+		case "025": if ($showPitch == false) return "Throttle";
+			else return "Throttle (blue)";
+		case "026": if ($showPitch == false) return "Zero to Sixty";
+			else return "Zero to Sixty (red)";
+		case "027": if ($showPitch == false) return "Zero to Sixty";
+			else return "Zero to Sixty (yellow)";
+		case "028": if ($showPitch == false) return "Zero to Sixty";
+			else return "Zero to Sixty (blue)";
+		case "029": if ($showPitch == false) return "Zipper Hit";
+			else return "Zipper Hit (red)";
+		case "030": if ($showPitch == false) return "Zipper Hit";
+			else return "Zipper Hit (yellow)";
+		case "031": if ($showPitch == false) return "Zipper Hit";
+			else return "Zipper Hit (blue)";
+		case "032": if ($showPitch == false) return "Locked and Loaded";
+			else return "Locked and Loaded (red)";
+		case "033": if ($showPitch == false) return "Locked and Loaded";
+			else return "Locked and Loaded (yellow)";
+		case "034": if ($showPitch == false) return "Locked and Loaded";
+			else return "Locked and Loaded (blue)";
+		case "035": if ($showPitch == false) return "Dissipation Shield";
+			else return "Dissipation Shield (yellow)";
+		case "036": if ($showPitch == false) return "Hyper Driver";
+			else return "Hyper Driver (red)";
+		case "037": if ($showPitch == false) return "Optekal Monocle";
+			else return "Optekal Monocle (blue)";
+		case "038": if ($showPitch == false) return "Azalea, Ace in the Hole";
+			else return "Azalea, Ace in the Hole (None)";
+		case "039": if ($showPitch == false) return "£ Azalea o";
+			else return "£ Azalea o (None)";
+		case "040": if ($showPitch == false) return "Death Dealer";
+			else return "Death Dealer (None)";
+		case "041": if ($showPitch == false) return "Skullbone Crosswrap";
+			else return "Skullbone Crosswrap (None)";
+		case "042": if ($showPitch == false) return "Bull's Eye Bracers";
+			else return "Bull's Eye Bracers (None)";
+		case "043": if ($showPitch == false) return "Red in the Ledger";
+			else return "Red in the Ledger (red)";
+		case "044": if ($showPitch == false) return "Three of a Kind";
+			else return "Three of a Kind (red)";
+		case "045": if ($showPitch == false) return "Endless Arrow";
+			else return "Endless Arrow (red)";
+		case "046": if ($showPitch == false) return "Nock the Deathwhistle";
+			else return "Nock the Deathwhistle (blue)";
+		case "047": if ($showPitch == false) return "Rapid Fire";
+			else return "Rapid Fire (yellow)";
+		case "048": if ($showPitch == false) return "Take Cover";
+			else return "Take Cover (red)";
+		case "049": if ($showPitch == false) return "Take Cover";
+			else return "Take Cover (yellow)";
+		case "050": if ($showPitch == false) return "Take Cover";
+			else return "Take Cover (blue)";
+		case "051": if ($showPitch == false) return "Silver the Tip";
+			else return "Silver the Tip (red)";
+		case "052": if ($showPitch == false) return "Silver the Tip";
+			else return "Silver the Tip (yellow)";
+		case "053": if ($showPitch == false) return "Silver the Tip";
+			else return "Silver the Tip (blue)";
+		case "054": if ($showPitch == false) return "Take Aim";
+			else return "Take Aim (red)";
+		case "055": if ($showPitch == false) return "Take Aim";
+			else return "Take Aim (yellow)";
+		case "056": if ($showPitch == false) return "Take Aim";
+			else return "Take Aim (blue)";
+		case "057": if ($showPitch == false) return "Head Shot";
+			else return "Head Shot (red)";
+		case "058": if ($showPitch == false) return "Head Shot";
+			else return "Head Shot (yellow)";
+		case "059": if ($showPitch == false) return "Head Shot";
+			else return "Head Shot (blue)";
+		case "060": if ($showPitch == false) return "Hamstring Shot";
+			else return "Hamstring Shot (red)";
+		case "061": if ($showPitch == false) return "Hamstring Shot";
+			else return "Hamstring Shot (yellow)";
+		case "062": if ($showPitch == false) return "Hamstring Shot";
+			else return "Hamstring Shot (blue)";
+		case "063": if ($showPitch == false) return "Ridge Rider Shot";
+			else return "Ridge Rider Shot (red)";
+		case "064": if ($showPitch == false) return "Ridge Rider Shot";
+			else return "Ridge Rider Shot (yellow)";
+		case "065": if ($showPitch == false) return "Ridge Rider Shot";
+			else return "Ridge Rider Shot (blue)";
+		case "066": if ($showPitch == false) return "Salvage Shot";
+			else return "Salvage Shot (red)";
+		case "067": if ($showPitch == false) return "Salvage Shot";
+			else return "Salvage Shot (yellow)";
+		case "068": if ($showPitch == false) return "Salvage Shot";
+			else return "Salvage Shot (blue)";
+		case "069": if ($showPitch == false) return "Searing Shot";
+			else return "Searing Shot (red)";
+		case "070": if ($showPitch == false) return "Searing Shot";
+			else return "Searing Shot (yellow)";
+		case "071": if ($showPitch == false) return "Searing Shot";
+			else return "Searing Shot (blue)";
+		case "072": if ($showPitch == false) return "Sic 'Em Shot";
+			else return "Sic 'Em Shot (red)";
+		case "073": if ($showPitch == false) return "Sic 'Em Shot";
+			else return "Sic 'Em Shot (yellow)";
+		case "074": if ($showPitch == false) return "Sic 'Em Shot";
+			else return "Sic 'Em Shot (blue)";
+		case "075": if ($showPitch == false) return "Viserai, Rune Blood";
+			else return "Viserai, Rune Blood (None)";
+		case "076": if ($showPitch == false) return "Viserai";
+			else return "Viserai (None)";
+		case "077": if ($showPitch == false) return "Nebula Blade";
+			else return "Nebula Blade (None)";
+		case "078": if ($showPitch == false) return "Grasp of the Arknight";
+			else return "Grasp of the Arknight (None)";
+		case "079": if ($showPitch == false) return "Crown of Dichotomy";
+			else return "Crown of Dichotomy (None)";
+		case "080": if ($showPitch == false) return "Arknight Ascendancy";
+			else return "Arknight Ascendancy (red)";
+		case "081": if ($showPitch == false) return "Mordred Tide";
+			else return "Mordred Tide (red)";
+		case "082": if ($showPitch == false) return "Ninth Blade of the Blood Oatt";
+			else return "Ninth Blade of the Blood Oatt (yellow)";
+		case "083": if ($showPitch == false) return "Become the Arknight";
+			else return "Become the Arknight (blue)";
+		case "084": if ($showPitch == false) return "Tome of the Arknight";
+			else return "Tome of the Arknight (blue)";
+		case "085": if ($showPitch == false) return "Spellblade Assault";
+			else return "Spellblade Assault (red)";
+		case "086": if ($showPitch == false) return "Spellblade Assault";
+			else return "Spellblade Assault (yellow)";
+		case "087": if ($showPitch == false) return "Spellblade Assault";
+			else return "Spellblade Assault (blue)";
+		case "088": if ($showPitch == false) return "Reduce to Runechant";
+			else return "Reduce to Runechant (red)";
+		case "089": if ($showPitch == false) return "Reduce to Runechant";
+			else return "Reduce to Runechant (yellow)";
+		case "090": if ($showPitch == false) return "Reduce to Runechant";
+			else return "Reduce to Runechant (blue)";
+		case "091": if ($showPitch == false) return "Qath of the Arknight";
+			else return "Qath of the Arknight (red)";
+		case "092": if ($showPitch == false) return "Qath of the Arknight";
+			else return "Qath of the Arknight (yellow)";
+		case "093": if ($showPitch == false) return "Qath of the Arknight";
+			else return "Qath of the Arknight (blue)";
+		case "094": if ($showPitch == false) return "Amplify the Arknight";
+			else return "Amplify the Arknight (red)";
+		case "095": if ($showPitch == false) return "Amplify the Arknight";
+			else return "Amplify the Arknight (yellow)";
+		case "096": if ($showPitch == false) return "Amplify the Arknight";
+			else return "Amplify the Arknight (blue)";
+		case "097": if ($showPitch == false) return "Drawn to the Dark Dimension";
+			else return "Drawn to the Dark Dimension (red)";
+		case "098": if ($showPitch == false) return "Drawn to the Dark Dimension";
+			else return "Drawn to the Dark Dimension (yellow)";
+		case "099": if ($showPitch == false) return "Drawn to the Dark Dimension";
+			else return "Drawn to the Dark Dimension (blue)";
+		case "100": if ($showPitch == false) return "Rune Flash";
+			else return "Rune Flash (red)";
+		case "101": if ($showPitch == false) return "Rune Flash";
+			else return "Rune Flash (yellow)";
+		case "102": if ($showPitch == false) return "Rune Flash";
+			else return "Rune Flash (blue)";
+		case "103": if ($showPitch == false) return "Spellblade Strike";
+			else return "Spellblade Strike (red)";
+		case "104": if ($showPitch == false) return "Spellblade Strike";
+			else return "Spellblade Strike (yellow)";
+		case "105": if ($showPitch == false) return "Spellblade Strike";
+			else return "Spellblade Strike (blue)";
+		case "106": if ($showPitch == false) return "Bloodspill Invocation";
+			else return "Bloodspill Invocation (red)";
+		case "107": if ($showPitch == false) return "Bloodspill Invocation";
+			else return "Bloodspill Invocation (yellow)";
+		case "108": if ($showPitch == false) return "Bloodspill Invocation";
+			else return "Bloodspill Invocation (blue)";
+		case "109": if ($showPitch == false) return "Read the Runes";
+			else return "Read the Runes (red)";
+		case "110": if ($showPitch == false) return "Read the Runes";
+			else return "Read the Runes (yellow)";
+		case "111": if ($showPitch == false) return "Read the Runes";
+			else return "Read the Runes (blue)";
+		case "112": if ($showPitch == false) return "Runechant";
+			else return "Runechant (None)";
+		case "113": if ($showPitch == false) return "Cano, Dracai of Aether";
+			else return "Cano, Dracai of Aether (None)";
+		case "114": if ($showPitch == false) return "Kano";
+			else return "Kano (None)";
+		case "115": if ($showPitch == false) return "rucible of Aetherweav";
+			else return "rucible of Aetherweav (None)";
+		case "116": if ($showPitch == false) return "Storm Striders";
+			else return "Storm Striders (None)";
+		case "117": if ($showPitch == false) return "Robe of Rapture";
+			else return "Robe of Rapture (None)";
+		case "118": if ($showPitch == false) return "~ Blazing Aether";
+			else return "~ Blazing Aether (red)";
+		case "119": if ($showPitch == false) return "Sonic Boom";
+			else return "Sonic Boom (yellow)";
+		case "120": if ($showPitch == false) return "Forked Lightning";
+			else return "Forked Lightning (red)";
+		case "121": if ($showPitch == false) return "Lesson in Lava";
+			else return "Lesson in Lava (yellow)";
+		case "122": if ($showPitch == false) return "Tome of Aetherwind";
+			else return "Tome of Aetherwind (red)";
+		case "123": if ($showPitch == false) return "Absorb in Aether";
+			else return "Absorb in Aether (red)";
+		case "124": if ($showPitch == false) return "Absorb in Aether";
+			else return "Absorb in Aether (yellow)";
+		case "125": if ($showPitch == false) return "Absorb in Aether";
+			else return "Absorb in Aether (blue)";
+		case "126": if ($showPitch == false) return "Aether Spindle";
+			else return "Aether Spindle (red)";
+		case "127": if ($showPitch == false) return "Aether Spindle";
+			else return "Aether Spindle (yellow)";
+		case "128": if ($showPitch == false) return "Aether Spindle";
+			else return "Aether Spindle (blue)";
+		case "129": if ($showPitch == false) return "Stir the Aetherwinds";
+			else return "Stir the Aetherwinds (red)";
+		case "130": if ($showPitch == false) return "Stir the Aetherwinds";
+			else return "Stir the Aetherwinds (yellow)";
+		case "131": if ($showPitch == false) return "Stir the Aetherwinds";
+			else return "Stir the Aetherwinds (blue)";
+		case "132": if ($showPitch == false) return "Aether Flare";
+			else return "Aether Flare (red)";
+		case "133": if ($showPitch == false) return "Aether Flare";
+			else return "Aether Flare (yellow)";
+		case "134": if ($showPitch == false) return "Aether Flare";
+			else return "Aether Flare (blue)";
+		case "135": if ($showPitch == false) return "Index";
+			else return "Index (red)";
+		case "136": if ($showPitch == false) return "Index";
+			else return "Index (yellow)";
+		case "137": if ($showPitch == false) return "Index";
+			else return "Index (blue)";
+		case "138": if ($showPitch == false) return "Reverberate";
+			else return "Reverberate (red)";
+		case "139": if ($showPitch == false) return "Reverberate";
+			else return "Reverberate (yellow)";
+		case "140": if ($showPitch == false) return "Reverberate";
+			else return "Reverberate (blue)";
+		case "141": if ($showPitch == false) return "Scalding Rain";
+			else return "Scalding Rain (red)";
+		case "142": if ($showPitch == false) return "Scalding Rain";
+			else return "Scalding Rain (yellow)";
+		case "143": if ($showPitch == false) return "Scalding Rain";
+			else return "Scalding Rain (blue)";
+		case "144": if ($showPitch == false) return "Zap";
+			else return "Zap (red)";
+		case "145": if ($showPitch == false) return "Zap";
+			else return "Zap (yellow)";
+		case "146": if ($showPitch == false) return "Zap";
+			else return "Zap (blue)";
+		case "147": if ($showPitch == false) return "Voltic Bolt";
+			else return "Voltic Bolt (red)";
+		case "148": if ($showPitch == false) return "Voltic Bolt";
+			else return "Voltic Bolt (yellow)";
+		case "149": if ($showPitch == false) return "Voltic Bolt";
+			else return "Voltic Bolt (blue)";
+		case "150": if ($showPitch == false) return "Arcanite Skullcap";
+			else return "Arcanite Skullcap (None)";
+		case "151": if ($showPitch == false) return "Talismanic Lens";
+			else return "Talismanic Lens (None)";
+		case "152": if ($showPitch == false) return "Vest of the First Fist";
+			else return "Vest of the First Fist (None)";
+		case "153": if ($showPitch == false) return "Bracers of Beliet";
+			else return "Bracers of Beliet (None)";
+		case "154": if ($showPitch == false) return "Mage Master Boots";
+			else return "Mage Master Boots (None)";
+		case "155": if ($showPitch == false) return "Nullrune Hood";
+			else return "Nullrune Hood (None)";
+		case "156": if ($showPitch == false) return "Nullrune Robe";
+			else return "Nullrune Robe (None)";
+		case "157": if ($showPitch == false) return "Nullrune Gloves";
+			else return "Nullrune Gloves (None)";
+		case "158": if ($showPitch == false) return "Nullrune Boots";
+			else return "Nullrune Boots (None)";
+		case "159": if ($showPitch == false) return "Command and Conquer";
+			else return "Command and Conquer (red)";
+		case "160": if ($showPitch == false) return "Art of War";
+			else return "Art of War (yellow)";
+		case "161": if ($showPitch == false) return "Pursuit of Knowledge";
+			else return "Pursuit of Knowledge (blue)";
+		case "162": if ($showPitch == false) return "Chains of Eminence";
+			else return "Chains of Eminence (red)";
+		case "163": if ($showPitch == false) return "Rusted Relic";
+			else return "Rusted Relic (blue)";
+		case "164": if ($showPitch == false) return "Life for a Life";
+			else return "Life for a Life (red)";
+		case "165": if ($showPitch == false) return "Life for a Life";
+			else return "Life for a Life (yellow)";
+		case "166": if ($showPitch == false) return "Life for a Life";
+			else return "Life for a Life (blue)";
+		case "167": if ($showPitch == false) return "Enchanting Melody";
+			else return "Enchanting Melody (red)";
+		case "168": if ($showPitch == false) return "Enchanting Melody";
+			else return "Enchanting Melody (yellow)";
+		case "169": if ($showPitch == false) return "Enchanting Melody";
+			else return "Enchanting Melody (blue)";
+		case "170": if ($showPitch == false) return "Plunder Run";
+			else return "Plunder Run (red)";
+		case "171": if ($showPitch == false) return "Plunder Run";
+			else return "Plunder Run (yellow)";
+		case "172": if ($showPitch == false) return "Plunder Run";
+			else return "Plunder Run (blue)";
+		case "173": if ($showPitch == false) return "Eirina's Prayer";
+			else return "Eirina's Prayer (red)";
+		case "174": if ($showPitch == false) return "Eirina's Prayer";
+			else return "Eirina's Prayer (yellow)";
+		case "175": if ($showPitch == false) return "Eirina's Prayer";
+			else return "Eirina's Prayer (blue)";
+		case "176": if ($showPitch == false) return "Back Alley Breakline";
+			else return "Back Alley Breakline (red)";
+		case "177": if ($showPitch == false) return "Back Alley Breakline";
+			else return "Back Alley Breakline (yellow)";
+		case "178": if ($showPitch == false) return "Back Alley Breakline";
+			else return "Back Alley Breakline (blue)";
+		case "179": if ($showPitch == false) return "Cadaverous Contraband";
+			else return "Cadaverous Contraband (red)";
+		case "180": if ($showPitch == false) return "Cadaverous Contraband";
+			else return "Cadaverous Contraband (yellow)";
+		case "181": if ($showPitch == false) return "Cadaverous Contraband";
+			else return "Cadaverous Contraband (blue)";
+		case "182": if ($showPitch == false) return "Fervent Forerunner";
+			else return "Fervent Forerunner (red)";
+		case "183": if ($showPitch == false) return "Fervent Forerunner";
+			else return "Fervent Forerunner (yellow)";
+		case "184": if ($showPitch == false) return "Fervent Forerunner";
+			else return "Fervent Forerunner (blue)";
+		case "185": if ($showPitch == false) return "Moon Wish";
+			else return "Moon Wish (red)";
+		case "186": if ($showPitch == false) return "Moon Wish";
+			else return "Moon Wish (yellow)";
+		case "187": if ($showPitch == false) return "Moon Wish";
+			else return "Moon Wish (blue)";
+		case "188": if ($showPitch == false) return "Push the Point";
+			else return "Push the Point (red)";
+		case "189": if ($showPitch == false) return "Push the Point";
+			else return "Push the Point (yellow)";
+		case "190": if ($showPitch == false) return "Push the Point";
+			else return "Push the Point (blue)";
+		case "191": if ($showPitch == false) return "Ravenous Rabble";
+			else return "Ravenous Rabble (red)";
+		case "192": if ($showPitch == false) return "Ravenous Rabble";
+			else return "Ravenous Rabble (yellow)";
+		case "193": if ($showPitch == false) return "Ravenous Rabble";
+			else return "Ravenous Rabble (blue)";
+		case "194": if ($showPitch == false) return "Rifting";
+			else return "Rifting (red)";
+		case "195": if ($showPitch == false) return "Rifting";
+			else return "Rifting (yellow)";
+		case "196": if ($showPitch == false) return "Rifting";
+			else return "Rifting (blue)";
+		case "197": if ($showPitch == false) return "Vigor Rush";
+			else return "Vigor Rush (red)";
+		case "198": if ($showPitch == false) return "Vigor Rush";
+			else return "Vigor Rush (yellow)";
+		case "199": if ($showPitch == false) return "Vigor Rush";
+			else return "Vigor Rush (blue)";
+		case "200": if ($showPitch == false) return "Fate Foreseen";
+			else return "Fate Foreseen (red)";
+		case "201": if ($showPitch == false) return "Fate Foreseen";
+			else return "Fate Foreseen (yellow)";
+		case "202": if ($showPitch == false) return "Fate Foreseen";
+			else return "Fate Foreseen (blue)";
+		case "203": if ($showPitch == false) return "Come to Fight";
+			else return "Come to Fight (red)";
+		case "204": if ($showPitch == false) return "Come to Fight";
+			else return "Come to Fight (yellow)";
+		case "205": if ($showPitch == false) return "Come to Fight";
+			else return "Come to Fight (blue)";
+		case "206": if ($showPitch == false) return "Force Sight";
+			else return "Force Sight (red)";
+		case "207": if ($showPitch == false) return "Force Sight";
+			else return "Force Sight (yellow)";
+		case "208": if ($showPitch == false) return "Force Sight";
+			else return "Force Sight (blue)";
+		case "209": if ($showPitch == false) return "Lead the Charge";
+			else return "Lead the Charge (red)";
+		case "210": if ($showPitch == false) return "Lead the Charge";
+			else return "Lead the Charge (yellow)";
+		case "211": if ($showPitch == false) return "Lead the Charge";
+			else return "Lead the Charge (blue)";
+		case "212": if ($showPitch == false) return "Sun Kiss";
+			else return "Sun Kiss (red)";
+		case "213": if ($showPitch == false) return "Sun Kiss";
+			else return "Sun Kiss (yellow)";
+		case "214": if ($showPitch == false) return "Sun Kiss";
+			else return "Sun Kiss (blue)";
+		case "215": if ($showPitch == false) return "Whisper of the Oracle";
+			else return "Whisper of the Oracle (red)";
+		case "216": if ($showPitch == false) return "Whisper of the Oracle";
+			else return "Whisper of the Oracle (yellow)";
+		case "217": if ($showPitch == false) return "Whisper of the Oracle";
+			else return "Whisper of the Oracle (blue)";
+		case "218": if ($showPitch == false) return "Cracked Bauble";
+			else return "Cracked Bauble (yellow)";
 
 		   }	}
 if ($set == "CRU")
 	{  switch($num)	   {
 
-		case "000": return "Arknight Shard";
-		case "001": return "vinar, Reckless Rampa;";
-		case "002": return "Kayo, Berserker Runt";
-		case "003": return "Romping Club";
-		case "004": return "Mandible Claw";
-		case "005": return "Mandible Claw";
-		case "006": return "Skullhorn";
-		case "007": return "Beast Within";
-		case "008": return "Massacre";
-		case "009": return "Argh... Smash!";
-		case "010": return "Barraging Big Horn";
-		case "011": return "Barraging Big Horn";
-		case "012": return "Barraging Big Horn";
-		case "013": return "Predatory Assault";
-		case "014": return "Predatory Assault";
-		case "015": return "Predatory Assault";
-		case "016": return "Riled Up";
-		case "017": return "Riled Up";
-		case "018": return "Riled Up";
-		case "019": return "Swing Fist, Think Later";
-		case "020": return "Swing Fist, Think Later";
-		case "021": return "Swing Fist, Think Later";
-		case "022": return "Bravo, Showstopper";
-		case "023": return "Anothos";
-		case "024": return "Sledge of Anvilheim";
-		case "025": return "Crater Fist";
-		case "026": return "Mangle";
-		case "027": return "Righteous Cleansing";
-		case "028": return "Stamp Authority";
-		case "029": return "Towering Titan";
-		case "030": return "Towering Titan";
-		case "031": return "Towering Titan";
-		case "032": return "Crush the Weak";
-		case "033": return "Crush the Weak";
-		case "034": return "Crush the Weak";
-		case "035": return "Chokeslam";
-		case "036": return "Chokeslam";
-		case "037": return "Chokeslam";
-		case "038": return "Emerging Dominance";
-		case "039": return "Emerging Dominance";
-		case "040": return "Emerging Dominance";
-		case "041": return "Blessing of Serenity";
-		case "042": return "Blessing of Serenity";
-		case "043": return "Blessing of Serenity";
-		case "044": return "Seismic Surge";
-		case "045": return "Katsu, the Wanderer";
-		case "046": return "Ira, Crimson Haze";
-		case "047": return "enji, the Piercing Win";
-		case "048": return "Harmonized Kodachi";
-		case "049": return "Harmonized Kodachi";
-		case "050": return "Edge of Autumn";
-		case "051": return "Zephyr Needle";
-		case "052": return "Zephyr Needle";
-		case "053": return "Breeze Rider Boots";
-		case "054": return "Find Center";
-		case "055": return "Flood of Force";
-		case "056": return "Heron's Flight";
-		case "057": return "Crane Dance";
-		case "058": return "Crane Dance";
-		case "059": return "Crane Dance";
-		case "060": return "Rushing River";
-		case "061": return "Rushing River";
-		case "062": return "Rushing River";
-		case "063": return "Flying Kick";
-		case "064": return "Flying Kick";
-		case "065": return "Flying Kick";
-		case "066": return "Soulbead Strike";
-		case "067": return "Soulbead Strike";
-		case "068": return "Soulbead Strike";
-		case "069": return "Torrent of Tempo";
-		case "070": return "Torrent of Tempo";
-		case "071": return "Torrent of Tempo";
-		case "072": return "Bittering Thorns";
-		case "073": return "Salt the Wound";
-		case "074": return "Whirling Mist Blossom";
-		case "075": return "Zen State";
-		case "076": return "Dorinthea Ironsong";
-		case "077": return "assai, Cintari Sellswor";
-		case "078": return "Dawnblade";
-		case "079": return "Cintari Saber";
-		case "080": return "Cintari Saber";
-		case "081": return "Courage of Bladehold";
-		case "082": return "Twinning Blade";
-		case "083": return "Unified Decree";
-		case "084": return "Spoils of War";
-		case "085": return "Dauntless";
-		case "086": return "Dauntless";
-		case "087": return "Dauntless";
-		case "088": return "Out for Blood";
-		case "089": return "Out for Blood";
-		case "090": return "Out for Blood";
-		case "091": return "Hit and Run";
-		case "092": return "Hit and Run";
-		case "093": return "Hit and Run";
-		case "094": return "Push Forward";
-		case "095": return "Push Forward";
-		case "096": return "Push Forward";
-		case "097": return "riyana, Diamond Gemi";
-		case "098": return "Dash, Inventor Extraordinaire";
-		case "099": return "Data Doll MKII";
-		case "100": return "Teklo Plasma Pistol";
-		case "101": return "Plasma Barrel Shot";
-		case "102": return "Viziertronic Model i";
-		case "103": return "Meganetic Shockwave";
-		case "104": return "Absorption Dome";
-		case "105": return "Plasma Purifier";
-		case "106": return "High Speed Impact";
-		case "107": return "High Speed Impact";
-		case "108": return "High Speed Impact";
-		case "109": return "Combustible Courier";
-		case "110": return "Combustible Courier";
-		case "111": return "Combustible Courier";
-		case "112": return "Overblast";
-		case "113": return "Overblast";
-		case "114": return "Overblast";
-		case "115": return "Teklovossen's Workshop";
-		case "116": return "Teklovossen's Workshop";
-		case "117": return "Teklovossen's Workshop";
-		case "118": return ";Kavdaen, Trader of Skiy}s/";
-		case "119": return ":Azalea, Ace in the qug";
-		case "120": return "Death Dealer";
-		case "121": return "Red Liner";
-		case "122": return "Perch Grapplers";
-		case "123": return "Remorseless";
-		case "124": return "Poison the Tips";
-		case "125": return "Feign Death";
-		case "126": return "Tripwire Trap";
-		case "127": return "Pitfall Trap";
-		case "128": return "Rockslide Trap";
-		case "129": return "Pathing Helix";
-		case "130": return "Pathing Helix";
-		case "131": return "Pathing Helix";
-		case "132": return "Sleep Dart";
-		case "133": return "Sleep Dart";
-		case "134": return "Sleep Dart";
-		case "135": return "Increase the Tension";
-		case "136": return "Increase the Tension";
-		case "137": return "Increase the Tension";
-		case "138": return "Viserai, Rune Blood";
-		case "139": return "Nebula Blade";
-		case "140": return "Reaping Blade";
-		case "141": return "Bloodsheath Skeleta";
-		case "142": return "Dread Triptych";
-		case "143": return "Rattle Bones";
-		case "144": return "Runeblood Barrier";
-		case "145": return "Mauvrion Skies";
-		case "146": return "Mauvrion Skies";
-		case "147": return "Mauvrion Skies";
-		case "148": return "Consuming Volition";
-		case "149": return "Consuming Volition";
-		case "150": return "Consuming Volition";
-		case "151": return "Meat and Greet";
-		case "152": return "Meat and Greet";
-		case "153": return "Meat and Greet";
-		case "154": return "Sutcliffe's Research Notes";
-		case "155": return "Sutcliffe's Research Notes";
-		case "156": return "Sutcliffe's Research Notes";
-		case "157": return "Runechant";
-		case "158": return "Cano, Dracai of Aether";
-		case "159": return "rucible of Aetherweay";
-		case "160": return "Aether Conduit";
-		case "161": return "Metacarpus Node";
-		case "162": return "Chain Lightning";
-		case "163": return "Gaze the Ages";
-		case "164": return "Aetherize";
-		case "165": return "Cindering Foresight";
-		case "166": return "Cindering Foresight";
-		case "167": return "Cindering Foresight";
-		case "168": return "Foreboding Bolt";
-		case "169": return "Foreboding Bolt";
-		case "170": return "Foreboding Bolt";
-		case "171": return "Rousing Aether";
-		case "172": return "Rousing Aether";
-		case "173": return "Rousing Aether";
-		case "174": return "Snapback";
-		case "175": return "Snapback";
-		case "176": return "Snapback";
-		case "177": return "alishar, the Lost Princ";
-		case "178": return "Fyendal's Spring Tunic";
-		case "179": return "Gambler's Gloves";
-		case "180": return "Coax a Commotion";
-		case "181": return "Gorganian Tome";
-		case "182": return "Shag";
-		case "183": return "Promise of Plenty";
-		case "184": return "Promise of Plenty";
-		case "185": return "Promise of Plenty";
-		case "186": return "Lunging Press";
-		case "187": return "Springboard Somersault";
-		case "188": return "Cash In";
-		case "189": return "Reinforce the Line";
-		case "190": return "Reinforce the Line";
-		case "191": return "Reinforce the Line";
-		case "192": return "Brutal Assault";
-		case "193": return "Brutal Assault";
-		case "194": return "Brutal Assault";
-		case "195": return "Cracked Bauble";
-		case "196": return "Quicken";
-		case "197": return "Copper";
+		case "000": if ($showPitch == false) return "Arknight Shard";
+			else return "Arknight Shard (blue)";
+		case "001": if ($showPitch == false) return "vinar, Reckless Rampa;";
+			else return "vinar, Reckless Rampa; (None)";
+		case "002": if ($showPitch == false) return "Kayo, Berserker Runt";
+			else return "Kayo, Berserker Runt (None)";
+		case "003": if ($showPitch == false) return "Romping Club";
+			else return "Romping Club (None)";
+		case "004": if ($showPitch == false) return "Mandible Claw";
+			else return "Mandible Claw (None)";
+		case "005": if ($showPitch == false) return "Mandible Claw";
+			else return "Mandible Claw (None)";
+		case "006": if ($showPitch == false) return "Skullhorn";
+			else return "Skullhorn (None)";
+		case "007": if ($showPitch == false) return "Beast Within";
+			else return "Beast Within (yellow)";
+		case "008": if ($showPitch == false) return "Massacre";
+			else return "Massacre (red)";
+		case "009": if ($showPitch == false) return "Argh... Smash!";
+			else return "Argh... Smash! (yellow)";
+		case "010": if ($showPitch == false) return "Barraging Big Horn";
+			else return "Barraging Big Horn (red)";
+		case "011": if ($showPitch == false) return "Barraging Big Horn";
+			else return "Barraging Big Horn (yellow)";
+		case "012": if ($showPitch == false) return "Barraging Big Horn";
+			else return "Barraging Big Horn (blue)";
+		case "013": if ($showPitch == false) return "Predatory Assault";
+			else return "Predatory Assault (red)";
+		case "014": if ($showPitch == false) return "Predatory Assault";
+			else return "Predatory Assault (yellow)";
+		case "015": if ($showPitch == false) return "Predatory Assault";
+			else return "Predatory Assault (blue)";
+		case "016": if ($showPitch == false) return "Riled Up";
+			else return "Riled Up (red)";
+		case "017": if ($showPitch == false) return "Riled Up";
+			else return "Riled Up (yellow)";
+		case "018": if ($showPitch == false) return "Riled Up";
+			else return "Riled Up (blue)";
+		case "019": if ($showPitch == false) return "Swing Fist, Think Later";
+			else return "Swing Fist, Think Later (red)";
+		case "020": if ($showPitch == false) return "Swing Fist, Think Later";
+			else return "Swing Fist, Think Later (yellow)";
+		case "021": if ($showPitch == false) return "Swing Fist, Think Later";
+			else return "Swing Fist, Think Later (blue)";
+		case "022": if ($showPitch == false) return "Bravo, Showstopper";
+			else return "Bravo, Showstopper (None)";
+		case "023": if ($showPitch == false) return "Anothos";
+			else return "Anothos (None)";
+		case "024": if ($showPitch == false) return "Sledge of Anvilheim";
+			else return "Sledge of Anvilheim (None)";
+		case "025": if ($showPitch == false) return "Crater Fist";
+			else return "Crater Fist (None)";
+		case "026": if ($showPitch == false) return "Mangle";
+			else return "Mangle (red)";
+		case "027": if ($showPitch == false) return "Righteous Cleansing";
+			else return "Righteous Cleansing (yellow)";
+		case "028": if ($showPitch == false) return "Stamp Authority";
+			else return "Stamp Authority (blue)";
+		case "029": if ($showPitch == false) return "Towering Titan";
+			else return "Towering Titan (red)";
+		case "030": if ($showPitch == false) return "Towering Titan";
+			else return "Towering Titan (yellow)";
+		case "031": if ($showPitch == false) return "Towering Titan";
+			else return "Towering Titan (blue)";
+		case "032": if ($showPitch == false) return "Crush the Weak";
+			else return "Crush the Weak (red)";
+		case "033": if ($showPitch == false) return "Crush the Weak";
+			else return "Crush the Weak (yellow)";
+		case "034": if ($showPitch == false) return "Crush the Weak";
+			else return "Crush the Weak (blue)";
+		case "035": if ($showPitch == false) return "Chokeslam";
+			else return "Chokeslam (red)";
+		case "036": if ($showPitch == false) return "Chokeslam";
+			else return "Chokeslam (yellow)";
+		case "037": if ($showPitch == false) return "Chokeslam";
+			else return "Chokeslam (blue)";
+		case "038": if ($showPitch == false) return "Emerging Dominance";
+			else return "Emerging Dominance (red)";
+		case "039": if ($showPitch == false) return "Emerging Dominance";
+			else return "Emerging Dominance (yellow)";
+		case "040": if ($showPitch == false) return "Emerging Dominance";
+			else return "Emerging Dominance (blue)";
+		case "041": if ($showPitch == false) return "Blessing of Serenity";
+			else return "Blessing of Serenity (red)";
+		case "042": if ($showPitch == false) return "Blessing of Serenity";
+			else return "Blessing of Serenity (yellow)";
+		case "043": if ($showPitch == false) return "Blessing of Serenity";
+			else return "Blessing of Serenity (blue)";
+		case "044": if ($showPitch == false) return "Seismic Surge";
+			else return "Seismic Surge (None)";
+		case "045": if ($showPitch == false) return "Katsu, the Wanderer";
+			else return "Katsu, the Wanderer (None)";
+		case "046": if ($showPitch == false) return "Ira, Crimson Haze";
+			else return "Ira, Crimson Haze (None)";
+		case "047": if ($showPitch == false) return "enji, the Piercing Win";
+			else return "enji, the Piercing Win (None)";
+		case "048": if ($showPitch == false) return "Harmonized Kodachi";
+			else return "Harmonized Kodachi (None)";
+		case "049": if ($showPitch == false) return "Harmonized Kodachi";
+			else return "Harmonized Kodachi (None)";
+		case "050": if ($showPitch == false) return "Edge of Autumn";
+			else return "Edge of Autumn (None)";
+		case "051": if ($showPitch == false) return "Zephyr Needle";
+			else return "Zephyr Needle (None)";
+		case "052": if ($showPitch == false) return "Zephyr Needle";
+			else return "Zephyr Needle (None)";
+		case "053": if ($showPitch == false) return "Breeze Rider Boots";
+			else return "Breeze Rider Boots (None)";
+		case "054": if ($showPitch == false) return "Find Center";
+			else return "Find Center (blue)";
+		case "055": if ($showPitch == false) return "Flood of Force";
+			else return "Flood of Force (yellow)";
+		case "056": if ($showPitch == false) return "Heron's Flight";
+			else return "Heron's Flight (red)";
+		case "057": if ($showPitch == false) return "Crane Dance";
+			else return "Crane Dance (red)";
+		case "058": if ($showPitch == false) return "Crane Dance";
+			else return "Crane Dance (yellow)";
+		case "059": if ($showPitch == false) return "Crane Dance";
+			else return "Crane Dance (blue)";
+		case "060": if ($showPitch == false) return "Rushing River";
+			else return "Rushing River (red)";
+		case "061": if ($showPitch == false) return "Rushing River";
+			else return "Rushing River (yellow)";
+		case "062": if ($showPitch == false) return "Rushing River";
+			else return "Rushing River (blue)";
+		case "063": if ($showPitch == false) return "Flying Kick";
+			else return "Flying Kick (red)";
+		case "064": if ($showPitch == false) return "Flying Kick";
+			else return "Flying Kick (yellow)";
+		case "065": if ($showPitch == false) return "Flying Kick";
+			else return "Flying Kick (blue)";
+		case "066": if ($showPitch == false) return "Soulbead Strike";
+			else return "Soulbead Strike (red)";
+		case "067": if ($showPitch == false) return "Soulbead Strike";
+			else return "Soulbead Strike (yellow)";
+		case "068": if ($showPitch == false) return "Soulbead Strike";
+			else return "Soulbead Strike (blue)";
+		case "069": if ($showPitch == false) return "Torrent of Tempo";
+			else return "Torrent of Tempo (red)";
+		case "070": if ($showPitch == false) return "Torrent of Tempo";
+			else return "Torrent of Tempo (yellow)";
+		case "071": if ($showPitch == false) return "Torrent of Tempo";
+			else return "Torrent of Tempo (blue)";
+		case "072": if ($showPitch == false) return "Bittering Thorns";
+			else return "Bittering Thorns (yellow)";
+		case "073": if ($showPitch == false) return "Salt the Wound";
+			else return "Salt the Wound (yellow)";
+		case "074": if ($showPitch == false) return "Whirling Mist Blossom";
+			else return "Whirling Mist Blossom (yellow)";
+		case "075": if ($showPitch == false) return "Zen State";
+			else return "Zen State (None)";
+		case "076": if ($showPitch == false) return "Dorinthea Ironsong";
+			else return "Dorinthea Ironsong (None)";
+		case "077": if ($showPitch == false) return "assai, Cintari Sellswor";
+			else return "assai, Cintari Sellswor (None)";
+		case "078": if ($showPitch == false) return "Dawnblade";
+			else return "Dawnblade (None)";
+		case "079": if ($showPitch == false) return "Cintari Saber";
+			else return "Cintari Saber (None)";
+		case "080": if ($showPitch == false) return "Cintari Saber";
+			else return "Cintari Saber (None)";
+		case "081": if ($showPitch == false) return "Courage of Bladehold";
+			else return "Courage of Bladehold (None)";
+		case "082": if ($showPitch == false) return "Twinning Blade";
+			else return "Twinning Blade (yellow)";
+		case "083": if ($showPitch == false) return "Unified Decree";
+			else return "Unified Decree (yellow)";
+		case "084": if ($showPitch == false) return "Spoils of War";
+			else return "Spoils of War (red)";
+		case "085": if ($showPitch == false) return "Dauntless";
+			else return "Dauntless (red)";
+		case "086": if ($showPitch == false) return "Dauntless";
+			else return "Dauntless (yellow)";
+		case "087": if ($showPitch == false) return "Dauntless";
+			else return "Dauntless (blue)";
+		case "088": if ($showPitch == false) return "Out for Blood";
+			else return "Out for Blood (red)";
+		case "089": if ($showPitch == false) return "Out for Blood";
+			else return "Out for Blood (yellow)";
+		case "090": if ($showPitch == false) return "Out for Blood";
+			else return "Out for Blood (blue)";
+		case "091": if ($showPitch == false) return "Hit and Run";
+			else return "Hit and Run (red)";
+		case "092": if ($showPitch == false) return "Hit and Run";
+			else return "Hit and Run (yellow)";
+		case "093": if ($showPitch == false) return "Hit and Run";
+			else return "Hit and Run (blue)";
+		case "094": if ($showPitch == false) return "Push Forward";
+			else return "Push Forward (red)";
+		case "095": if ($showPitch == false) return "Push Forward";
+			else return "Push Forward (yellow)";
+		case "096": if ($showPitch == false) return "Push Forward";
+			else return "Push Forward (blue)";
+		case "097": if ($showPitch == false) return "riyana, Diamond Gemi";
+			else return "riyana, Diamond Gemi (None)";
+		case "098": if ($showPitch == false) return "Dash, Inventor Extraordinaire";
+			else return "Dash, Inventor Extraordinaire (None)";
+		case "099": if ($showPitch == false) return "Data Doll MKII";
+			else return "Data Doll MKII (None)";
+		case "100": if ($showPitch == false) return "Teklo Plasma Pistol";
+			else return "Teklo Plasma Pistol (None)";
+		case "101": if ($showPitch == false) return "Plasma Barrel Shot";
+			else return "Plasma Barrel Shot (None)";
+		case "102": if ($showPitch == false) return "Viziertronic Model i";
+			else return "Viziertronic Model i (None)";
+		case "103": if ($showPitch == false) return "Meganetic Shockwave";
+			else return "Meganetic Shockwave (blue)";
+		case "104": if ($showPitch == false) return "Absorption Dome";
+			else return "Absorption Dome (yellow)";
+		case "105": if ($showPitch == false) return "Plasma Purifier";
+			else return "Plasma Purifier (red)";
+		case "106": if ($showPitch == false) return "High Speed Impact";
+			else return "High Speed Impact (red)";
+		case "107": if ($showPitch == false) return "High Speed Impact";
+			else return "High Speed Impact (yellow)";
+		case "108": if ($showPitch == false) return "High Speed Impact";
+			else return "High Speed Impact (blue)";
+		case "109": if ($showPitch == false) return "Combustible Courier";
+			else return "Combustible Courier (red)";
+		case "110": if ($showPitch == false) return "Combustible Courier";
+			else return "Combustible Courier (yellow)";
+		case "111": if ($showPitch == false) return "Combustible Courier";
+			else return "Combustible Courier (blue)";
+		case "112": if ($showPitch == false) return "Overblast";
+			else return "Overblast (red)";
+		case "113": if ($showPitch == false) return "Overblast";
+			else return "Overblast (yellow)";
+		case "114": if ($showPitch == false) return "Overblast";
+			else return "Overblast (blue)";
+		case "115": if ($showPitch == false) return "Teklovossen's Workshop";
+			else return "Teklovossen's Workshop (red)";
+		case "116": if ($showPitch == false) return "Teklovossen's Workshop";
+			else return "Teklovossen's Workshop (yellow)";
+		case "117": if ($showPitch == false) return "Teklovossen's Workshop";
+			else return "Teklovossen's Workshop (blue)";
+		case "118": if ($showPitch == false) return ";Kavdaen, Trader of Skiy}s/";
+			else return ";Kavdaen, Trader of Skiy}s/ (None)";
+		case "119": if ($showPitch == false) return ":Azalea, Ace in the qug";
+			else return ":Azalea, Ace in the qug (None)";
+		case "120": if ($showPitch == false) return "Death Dealer";
+			else return "Death Dealer (None)";
+		case "121": if ($showPitch == false) return "Red Liner";
+			else return "Red Liner (None)";
+		case "122": if ($showPitch == false) return "Perch Grapplers";
+			else return "Perch Grapplers (None)";
+		case "123": if ($showPitch == false) return "Remorseless";
+			else return "Remorseless (red)";
+		case "124": if ($showPitch == false) return "Poison the Tips";
+			else return "Poison the Tips (yellow)";
+		case "125": if ($showPitch == false) return "Feign Death";
+			else return "Feign Death (yellow)";
+		case "126": if ($showPitch == false) return "Tripwire Trap";
+			else return "Tripwire Trap (red)";
+		case "127": if ($showPitch == false) return "Pitfall Trap";
+			else return "Pitfall Trap (yellow)";
+		case "128": if ($showPitch == false) return "Rockslide Trap";
+			else return "Rockslide Trap (blue)";
+		case "129": if ($showPitch == false) return "Pathing Helix";
+			else return "Pathing Helix (red)";
+		case "130": if ($showPitch == false) return "Pathing Helix";
+			else return "Pathing Helix (yellow)";
+		case "131": if ($showPitch == false) return "Pathing Helix";
+			else return "Pathing Helix (blue)";
+		case "132": if ($showPitch == false) return "Sleep Dart";
+			else return "Sleep Dart (red)";
+		case "133": if ($showPitch == false) return "Sleep Dart";
+			else return "Sleep Dart (yellow)";
+		case "134": if ($showPitch == false) return "Sleep Dart";
+			else return "Sleep Dart (blue)";
+		case "135": if ($showPitch == false) return "Increase the Tension";
+			else return "Increase the Tension (red)";
+		case "136": if ($showPitch == false) return "Increase the Tension";
+			else return "Increase the Tension (yellow)";
+		case "137": if ($showPitch == false) return "Increase the Tension";
+			else return "Increase the Tension (blue)";
+		case "138": if ($showPitch == false) return "Viserai, Rune Blood";
+			else return "Viserai, Rune Blood (None)";
+		case "139": if ($showPitch == false) return "Nebula Blade";
+			else return "Nebula Blade (None)";
+		case "140": if ($showPitch == false) return "Reaping Blade";
+			else return "Reaping Blade (None)";
+		case "141": if ($showPitch == false) return "Bloodsheath Skeleta";
+			else return "Bloodsheath Skeleta (None)";
+		case "142": if ($showPitch == false) return "Dread Triptych";
+			else return "Dread Triptych (blue)";
+		case "143": if ($showPitch == false) return "Rattle Bones";
+			else return "Rattle Bones (red)";
+		case "144": if ($showPitch == false) return "Runeblood Barrier";
+			else return "Runeblood Barrier (yellow)";
+		case "145": if ($showPitch == false) return "Mauvrion Skies";
+			else return "Mauvrion Skies (red)";
+		case "146": if ($showPitch == false) return "Mauvrion Skies";
+			else return "Mauvrion Skies (yellow)";
+		case "147": if ($showPitch == false) return "Mauvrion Skies";
+			else return "Mauvrion Skies (blue)";
+		case "148": if ($showPitch == false) return "Consuming Volition";
+			else return "Consuming Volition (red)";
+		case "149": if ($showPitch == false) return "Consuming Volition";
+			else return "Consuming Volition (yellow)";
+		case "150": if ($showPitch == false) return "Consuming Volition";
+			else return "Consuming Volition (blue)";
+		case "151": if ($showPitch == false) return "Meat and Greet";
+			else return "Meat and Greet (red)";
+		case "152": if ($showPitch == false) return "Meat and Greet";
+			else return "Meat and Greet (yellow)";
+		case "153": if ($showPitch == false) return "Meat and Greet";
+			else return "Meat and Greet (blue)";
+		case "154": if ($showPitch == false) return "Sutcliffe's Research Notes";
+			else return "Sutcliffe's Research Notes (red)";
+		case "155": if ($showPitch == false) return "Sutcliffe's Research Notes";
+			else return "Sutcliffe's Research Notes (yellow)";
+		case "156": if ($showPitch == false) return "Sutcliffe's Research Notes";
+			else return "Sutcliffe's Research Notes (blue)";
+		case "157": if ($showPitch == false) return "Runechant";
+			else return "Runechant (None)";
+		case "158": if ($showPitch == false) return "Cano, Dracai of Aether";
+			else return "Cano, Dracai of Aether (None)";
+		case "159": if ($showPitch == false) return "rucible of Aetherweay";
+			else return "rucible of Aetherweay (None)";
+		case "160": if ($showPitch == false) return "Aether Conduit";
+			else return "Aether Conduit (None)";
+		case "161": if ($showPitch == false) return "Metacarpus Node";
+			else return "Metacarpus Node (None)";
+		case "162": if ($showPitch == false) return "Chain Lightning";
+			else return "Chain Lightning (yellow)";
+		case "163": if ($showPitch == false) return "Gaze the Ages";
+			else return "Gaze the Ages (blue)";
+		case "164": if ($showPitch == false) return "Aetherize";
+			else return "Aetherize (blue)";
+		case "165": if ($showPitch == false) return "Cindering Foresight";
+			else return "Cindering Foresight (red)";
+		case "166": if ($showPitch == false) return "Cindering Foresight";
+			else return "Cindering Foresight (yellow)";
+		case "167": if ($showPitch == false) return "Cindering Foresight";
+			else return "Cindering Foresight (blue)";
+		case "168": if ($showPitch == false) return "Foreboding Bolt";
+			else return "Foreboding Bolt (red)";
+		case "169": if ($showPitch == false) return "Foreboding Bolt";
+			else return "Foreboding Bolt (yellow)";
+		case "170": if ($showPitch == false) return "Foreboding Bolt";
+			else return "Foreboding Bolt (blue)";
+		case "171": if ($showPitch == false) return "Rousing Aether";
+			else return "Rousing Aether (red)";
+		case "172": if ($showPitch == false) return "Rousing Aether";
+			else return "Rousing Aether (yellow)";
+		case "173": if ($showPitch == false) return "Rousing Aether";
+			else return "Rousing Aether (blue)";
+		case "174": if ($showPitch == false) return "Snapback";
+			else return "Snapback (red)";
+		case "175": if ($showPitch == false) return "Snapback";
+			else return "Snapback (yellow)";
+		case "176": if ($showPitch == false) return "Snapback";
+			else return "Snapback (blue)";
+		case "177": if ($showPitch == false) return "alishar, the Lost Princ";
+			else return "alishar, the Lost Princ (None)";
+		case "178": if ($showPitch == false) return "Fyendal's Spring Tunic";
+			else return "Fyendal's Spring Tunic (None)";
+		case "179": if ($showPitch == false) return "Gambler's Gloves";
+			else return "Gambler's Gloves (None)";
+		case "180": if ($showPitch == false) return "Coax a Commotion";
+			else return "Coax a Commotion (red)";
+		case "181": if ($showPitch == false) return "Gorganian Tome";
+			else return "Gorganian Tome (None)";
+		case "182": if ($showPitch == false) return "Shag";
+			else return "Shag (blue)";
+		case "183": if ($showPitch == false) return "Promise of Plenty";
+			else return "Promise of Plenty (red)";
+		case "184": if ($showPitch == false) return "Promise of Plenty";
+			else return "Promise of Plenty (yellow)";
+		case "185": if ($showPitch == false) return "Promise of Plenty";
+			else return "Promise of Plenty (blue)";
+		case "186": if ($showPitch == false) return "Lunging Press";
+			else return "Lunging Press (blue)";
+		case "187": if ($showPitch == false) return "Springboard Somersault";
+			else return "Springboard Somersault (yellow)";
+		case "188": if ($showPitch == false) return "Cash In";
+			else return "Cash In (yellow)";
+		case "189": if ($showPitch == false) return "Reinforce the Line";
+			else return "Reinforce the Line (red)";
+		case "190": if ($showPitch == false) return "Reinforce the Line";
+			else return "Reinforce the Line (yellow)";
+		case "191": if ($showPitch == false) return "Reinforce the Line";
+			else return "Reinforce the Line (blue)";
+		case "192": if ($showPitch == false) return "Brutal Assault";
+			else return "Brutal Assault (red)";
+		case "193": if ($showPitch == false) return "Brutal Assault";
+			else return "Brutal Assault (yellow)";
+		case "194": if ($showPitch == false) return "Brutal Assault";
+			else return "Brutal Assault (blue)";
+		case "195": if ($showPitch == false) return "Cracked Bauble";
+			else return "Cracked Bauble (yellow)";
+		case "196": if ($showPitch == false) return "Quicken";
+			else return "Quicken (None)";
+		case "197": if ($showPitch == false) return "Copper";
+			else return "Copper (None)";
 
 		   }	}
 if ($set == "ELE")
 	{  switch($num)	   {
 
-		case "000": return "NWaper? -~ ©"";
-		case "001": return "him, Grandfather of Eter";
-		case "002": return "Oldhim";
-		case "003": return "Winter's Wail";
-		case "004": return "Endless Winter";
-		case "005": return "Qaken Old";
-		case "006": return "Awakening";
-		case "007": return "Biting Gale";
-		case "008": return "Biting Gale";
-		case "009": return "Biting Gale";
-		case "010": return "Turn Timber";
-		case "011": return "Turn Timber";
-		case "012": return "Turn Timber";
-		case "013": return "Entangle";
-		case "014": return "Entangle";
-		case "015": return "Entangle";
-		case "016": return "Glacial Footsteps";
-		case "017": return "Glacial Footsteps";
-		case "018": return "Glacial Footsteps";
-		case "019": return "Mulch";
-		case "020": return "Mulch";
-		case "021": return "Mulch";
-		case "022": return "Snow Under";
-		case "023": return "Snow Under";
-		case "024": return "Snow Under";
-		case "025": return "Emerging Avalanche";
-		case "026": return "Emerging Avalanche";
-		case "027": return "Emerging Avalanche";
-		case "028": return "Strength of Sequoia";
-		case "029": return "Strength of Sequoia";
-		case "030": return "Strength of Sequoia";
-		case "031": return "Lexi, Livewire";
-		case "032": return "Lexi";
-		case "033": return "Shiver";
-		case "034": return "Voltaire, Strike Twice";
-		case "035": return "Frost Lock";
-		case "036": return "Light it Up";
-		case "037": return "lIce Storm";
-		case "038": return "Cold Wave";
-		case "039": return "Cold Wave";
-		case "040": return "Cold Wave";
-		case "041": return "Snap Shot";
-		case "042": return "Snap Shot";
-		case "043": return "Snap Shot";
-		case "044": return "Blizzard Bolt";
-		case "045": return "Blizzard Bolt";
-		case "046": return "Blizzard Bolt";
-		case "047": return "Buzz Bolt";
-		case "048": return "Buzz Bolt";
-		case "049": return "Buzz Bolt";
-		case "050": return "Chilling Icevein";
-		case "051": return "Chilling Icevein";
-		case "052": return "Chilling Icevein";
-		case "053": return "Dazzling Crescendo";
-		case "054": return "Dazzling Crescendo";
-		case "055": return "Dazzling Crescendo";
-		case "056": return "Flake Out";
-		case "057": return "Flake Out";
-		case "058": return "Flake Out";
-		case "059": return "Frazzle";
-		case "060": return "Frazzle";
-		case "061": return "Frazzle";
-		case "062": return "riar, Warden of Thorn";
-		case "063": return "Briar";
-		case "064": return "Blossoming Spellblade";
-		case "065": return "Flicker Wisp";
-		case "066": return "Force of Nature";
-		case "067": return "Explosive Growth";
-		case "068": return "Explosive Growth";
-		case "069": return "Explosive Growth";
-		case "070": return "Rites of Lightning";
-		case "071": return "Rites of Lightning";
-		case "072": return "Rites of Lightning";
-		case "073": return "Arcanic Shockwave";
-		case "074": return "Arcanic Shockwave";
-		case "075": return "Arcanic Shockwave";
-		case "076": return "Vela Flash";
-		case "077": return "Vela Flash";
-		case "078": return "Vela Flash";
-		case "079": return "Rites of Replenishment";
-		case "080": return "Rites of Replenishment";
-		case "081": return "Rites of Replenishment";
-		case "082": return "Stir the Wildwood";
-		case "083": return "Stir the Wildwood";
-		case "084": return "Stir the Wildwood";
-		case "085": return "Bramble Spark";
-		case "086": return "Bramble Spark";
-		case "087": return "Bramble Spark";
-		case "088": return "Inspire Lightning";
-		case "089": return "Inspire Lightning";
-		case "090": return "Inspire Lightning";
-		case "091": return "Fulminate";
-		case "092": return "Flashfreeze";
-		case "093": return "Exposed to the Elements";
-		case "094": return "Entwine Earth";
-		case "095": return "Entwine Earth";
-		case "096": return "Entwine Earth";
-		case "097": return "Entwine lce";
-		case "098": return "Entwine lce";
-		case "099": return "Entwine lce";
-		case "100": return "Entwine Lightning";
-		case "101": return "Entwine Lightning";
-		case "102": return "Entwine Lightning";
-		case "103": return "Invigorate";
-		case "104": return "Invigorate";
-		case "105": return "Invigorate";
-		case "106": return "Rejuvenate";
-		case "107": return "Rejuvenate";
-		case "108": return "Rejuvenate";
-		case "109": return "Embodiment of Earth";
-		case "110": return "mbodiment of Lightnin";
-		case "111": return "Frostbite";
-		case "112": return "Pulse of Volthaven";
-		case "113": return "Pulse of Candlehold";
-		case "114": return "Pulse of Isenloft";
-		case "115": return "Crown of Seeds";
-		case "116": return "Plume of Evergrowth";
-		case "117": return "Channel Mount Heroic";
-		case "118": return "Tome of Harvests";
-		case "119": return "Evergreen";
-		case "120": return "Evergreen";
-		case "121": return "Evergreen";
-		case "122": return "Weave Earth";
-		case "123": return "Weave Earth";
-		case "124": return "Weave Earth";
-		case "125": return "Summerwood Shelter";
-		case "126": return "Summerwood Shelter";
-		case "127": return "Summerwood Shelter";
-		case "128": return "Autumn's Touch";
-		case "129": return "Autumn's Touch";
-		case "130": return "Autumn's Touch";
-		case "131": return "Break Ground";
-		case "132": return "Break Ground";
-		case "133": return "Break Ground";
-		case "134": return "Burgeoning";
-		case "135": return "Burgeoning";
-		case "136": return "Burgeoning";
-		case "137": return "Earthlore Surge";
-		case "138": return "Earthlore Surge";
-		case "139": return "Earthlore Surge";
-		case "140": return "Sow Tomorrow";
-		case "141": return "Sow Tomorrow";
-		case "142": return "Sow Tomorrow";
-		case "143": return "Amulet of Earth";
-		case "144": return "Heart of Ice";
-		case "145": return "Coat of Frost";
-		case "146": return "Channel Lake Frigid";
-		case "147": return "Blizzard";
-		case "148": return "Frost Fang";
-		case "149": return "Frost Fang";
-		case "150": return "Frost Fang";
-		case "151": return "Ice Quake";
-		case "152": return "Ice Quake";
-		case "153": return "Ice Quake";
-		case "154": return "Weave Ice";
-		case "155": return "Weave Ice";
-		case "156": return "Weave Ice";
-		case "157": return "Icy Encounter";
-		case "158": return "Icy Encounter";
-		case "159": return "Icy Encounter";
-		case "160": return "Winter's Grasp";
-		case "161": return "Winter's Grasp";
-		case "162": return "Winter's Grasp";
-		case "163": return "Chill to the Bone";
-		case "164": return "Chill to the Bone";
-		case "165": return "Chill to the Bone";
-		case "166": return "Polar Blast";
-		case "167": return "Polar Blast";
-		case "168": return "Polar Blast";
-		case "169": return "Winter's Bite";
-		case "170": return "Winter's Bite";
-		case "171": return "Winter's Bite";
-		case "172": return "Amulet of Ice";
-		case "173": return "Shock Charmers";
-		case "174": return "Mark of Lightning";
-		case "175": return "Channel Thunder Steppe";
-		case "176": return "Blink";
-		case "177": return "Flash";
-		case "178": return "Flash";
-		case "179": return "Flash";
-		case "180": return "Weave Lightning";
-		case "181": return "Weave Lightning";
-		case "182": return "Weave Lightning";
-		case "183": return "Lightning Press";
-		case "184": return "Lightning Press";
-		case "185": return "Lightning Press";
-		case "186": return "Ball Lightning";
-		case "187": return "Ball Lightning";
-		case "188": return "Ball Lightning";
-		case "189": return "Lightning Surge";
-		case "190": return "Lightning Surge";
-		case "191": return "Lightning Surge";
-		case "192": return "Heaven's Claws";
-		case "193": return "Heaven's Claws";
-		case "194": return "Heaven's Claws";
-		case "195": return "Shock Striker";
-		case "196": return "Shock Striker";
-		case "197": return "Shock Striker";
-		case "198": return "Electrify";
-		case "199": return "Electrify";
-		case "200": return "Electrify";
-		case "201": return "Amulet of Lightning";
-		case "202": return "Titan's Fist";
-		case "203": return "mpart of the Ram's He";
-		case "204": return "Rotten Old Buckler";
-		case "205": return "Tear Asunder";
-		case "206": return "Embolden";
-		case "207": return "Embolden";
-		case "208": return "Embolden";
-		case "209": return "Thump";
-		case "210": return "Thump";
-		case "211": return "Thump";
-		case "212": return "Seismic Surge";
-		case "213": return "New Horizon";
-		case "214": return "Honing Hood";
-		case "215": return "Seek and Destroy";
-		case "216": return "Bolt'n' Shot";
-		case "217": return "Bolt'n' Shot";
-		case "218": return "Bolt'n' Shot";
-		case "219": return "Over Flex";
-		case "220": return "Over Flex";
-		case "221": return "Over Flex";
-		case "222": return "Rosetta Thorn";
-		case "223": return "Duskblade";
-		case "224": return "Spellbound Creepers";
-		case "225": return "Sutcliffe’'s Suede Hides";
-		case "226": return "Sting of Sorcery";
-		case "227": return "Sigil of Suffering";
-		case "228": return "Sigil of Suffering";
-		case "229": return "Sigil of Suffering";
-		case "230": return "Singeing Steelblade";
-		case "231": return "Singeing Steelblade";
-		case "232": return "Singeing Steelblade";
-		case "233": return "Ragamufhin's Hat";
-		case "234": return "Deep Blue";
-		case "235": return "Cracker Jax";
-		case "236": return "Runaways";
-		case "237": return "Cracked Bauble";
+		case "000": if ($showPitch == false) return "NWaper? -~ ©";
+			else return "NWaper? -~ © (None)";
+		case "001": if ($showPitch == false) return "him, Grandfather of Eter";
+			else return "him, Grandfather of Eter (None)";
+		case "002": if ($showPitch == false) return "Oldhim";
+			else return "Oldhim (None)";
+		case "003": if ($showPitch == false) return "Winter's Wail";
+			else return "Winter's Wail (None)";
+		case "004": if ($showPitch == false) return "Endless Winter";
+			else return "Endless Winter (red)";
+		case "005": if ($showPitch == false) return "Qaken Old";
+			else return "Qaken Old (red)";
+		case "006": if ($showPitch == false) return "Awakening";
+			else return "Awakening (blue)";
+		case "007": if ($showPitch == false) return "Biting Gale";
+			else return "Biting Gale (red)";
+		case "008": if ($showPitch == false) return "Biting Gale";
+			else return "Biting Gale (yellow)";
+		case "009": if ($showPitch == false) return "Biting Gale";
+			else return "Biting Gale (blue)";
+		case "010": if ($showPitch == false) return "Turn Timber";
+			else return "Turn Timber (red)";
+		case "011": if ($showPitch == false) return "Turn Timber";
+			else return "Turn Timber (yellow)";
+		case "012": if ($showPitch == false) return "Turn Timber";
+			else return "Turn Timber (blue)";
+		case "013": if ($showPitch == false) return "Entangle";
+			else return "Entangle (red)";
+		case "014": if ($showPitch == false) return "Entangle";
+			else return "Entangle (yellow)";
+		case "015": if ($showPitch == false) return "Entangle";
+			else return "Entangle (blue)";
+		case "016": if ($showPitch == false) return "Glacial Footsteps";
+			else return "Glacial Footsteps (red)";
+		case "017": if ($showPitch == false) return "Glacial Footsteps";
+			else return "Glacial Footsteps (yellow)";
+		case "018": if ($showPitch == false) return "Glacial Footsteps";
+			else return "Glacial Footsteps (blue)";
+		case "019": if ($showPitch == false) return "Mulch";
+			else return "Mulch (red)";
+		case "020": if ($showPitch == false) return "Mulch";
+			else return "Mulch (yellow)";
+		case "021": if ($showPitch == false) return "Mulch";
+			else return "Mulch (blue)";
+		case "022": if ($showPitch == false) return "Snow Under";
+			else return "Snow Under (red)";
+		case "023": if ($showPitch == false) return "Snow Under";
+			else return "Snow Under (yellow)";
+		case "024": if ($showPitch == false) return "Snow Under";
+			else return "Snow Under (blue)";
+		case "025": if ($showPitch == false) return "Emerging Avalanche";
+			else return "Emerging Avalanche (red)";
+		case "026": if ($showPitch == false) return "Emerging Avalanche";
+			else return "Emerging Avalanche (yellow)";
+		case "027": if ($showPitch == false) return "Emerging Avalanche";
+			else return "Emerging Avalanche (blue)";
+		case "028": if ($showPitch == false) return "Strength of Sequoia";
+			else return "Strength of Sequoia (red)";
+		case "029": if ($showPitch == false) return "Strength of Sequoia";
+			else return "Strength of Sequoia (yellow)";
+		case "030": if ($showPitch == false) return "Strength of Sequoia";
+			else return "Strength of Sequoia (blue)";
+		case "031": if ($showPitch == false) return "Lexi, Livewire";
+			else return "Lexi, Livewire (None)";
+		case "032": if ($showPitch == false) return "Lexi";
+			else return "Lexi (None)";
+		case "033": if ($showPitch == false) return "Shiver";
+			else return "Shiver (None)";
+		case "034": if ($showPitch == false) return "Voltaire, Strike Twice";
+			else return "Voltaire, Strike Twice (None)";
+		case "035": if ($showPitch == false) return "Frost Lock";
+			else return "Frost Lock (blue)";
+		case "036": if ($showPitch == false) return "Light it Up";
+			else return "Light it Up (yellow)";
+		case "037": if ($showPitch == false) return "lIce Storm";
+			else return "lIce Storm (red)";
+		case "038": if ($showPitch == false) return "Cold Wave";
+			else return "Cold Wave (red)";
+		case "039": if ($showPitch == false) return "Cold Wave";
+			else return "Cold Wave (yellow)";
+		case "040": if ($showPitch == false) return "Cold Wave";
+			else return "Cold Wave (blue)";
+		case "041": if ($showPitch == false) return "Snap Shot";
+			else return "Snap Shot (red)";
+		case "042": if ($showPitch == false) return "Snap Shot";
+			else return "Snap Shot (yellow)";
+		case "043": if ($showPitch == false) return "Snap Shot";
+			else return "Snap Shot (blue)";
+		case "044": if ($showPitch == false) return "Blizzard Bolt";
+			else return "Blizzard Bolt (red)";
+		case "045": if ($showPitch == false) return "Blizzard Bolt";
+			else return "Blizzard Bolt (yellow)";
+		case "046": if ($showPitch == false) return "Blizzard Bolt";
+			else return "Blizzard Bolt (blue)";
+		case "047": if ($showPitch == false) return "Buzz Bolt";
+			else return "Buzz Bolt (red)";
+		case "048": if ($showPitch == false) return "Buzz Bolt";
+			else return "Buzz Bolt (yellow)";
+		case "049": if ($showPitch == false) return "Buzz Bolt";
+			else return "Buzz Bolt (blue)";
+		case "050": if ($showPitch == false) return "Chilling Icevein";
+			else return "Chilling Icevein (red)";
+		case "051": if ($showPitch == false) return "Chilling Icevein";
+			else return "Chilling Icevein (yellow)";
+		case "052": if ($showPitch == false) return "Chilling Icevein";
+			else return "Chilling Icevein (blue)";
+		case "053": if ($showPitch == false) return "Dazzling Crescendo";
+			else return "Dazzling Crescendo (red)";
+		case "054": if ($showPitch == false) return "Dazzling Crescendo";
+			else return "Dazzling Crescendo (yellow)";
+		case "055": if ($showPitch == false) return "Dazzling Crescendo";
+			else return "Dazzling Crescendo (blue)";
+		case "056": if ($showPitch == false) return "Flake Out";
+			else return "Flake Out (red)";
+		case "057": if ($showPitch == false) return "Flake Out";
+			else return "Flake Out (yellow)";
+		case "058": if ($showPitch == false) return "Flake Out";
+			else return "Flake Out (blue)";
+		case "059": if ($showPitch == false) return "Frazzle";
+			else return "Frazzle (red)";
+		case "060": if ($showPitch == false) return "Frazzle";
+			else return "Frazzle (yellow)";
+		case "061": if ($showPitch == false) return "Frazzle";
+			else return "Frazzle (blue)";
+		case "062": if ($showPitch == false) return "riar, Warden of Thorn";
+			else return "riar, Warden of Thorn (None)";
+		case "063": if ($showPitch == false) return "Briar";
+			else return "Briar (None)";
+		case "064": if ($showPitch == false) return "Blossoming Spellblade";
+			else return "Blossoming Spellblade (red)";
+		case "065": if ($showPitch == false) return "Flicker Wisp";
+			else return "Flicker Wisp (yellow)";
+		case "066": if ($showPitch == false) return "Force of Nature";
+			else return "Force of Nature (blue)";
+		case "067": if ($showPitch == false) return "Explosive Growth";
+			else return "Explosive Growth (red)";
+		case "068": if ($showPitch == false) return "Explosive Growth";
+			else return "Explosive Growth (yellow)";
+		case "069": if ($showPitch == false) return "Explosive Growth";
+			else return "Explosive Growth (blue)";
+		case "070": if ($showPitch == false) return "Rites of Lightning";
+			else return "Rites of Lightning (red)";
+		case "071": if ($showPitch == false) return "Rites of Lightning";
+			else return "Rites of Lightning (yellow)";
+		case "072": if ($showPitch == false) return "Rites of Lightning";
+			else return "Rites of Lightning (blue)";
+		case "073": if ($showPitch == false) return "Arcanic Shockwave";
+			else return "Arcanic Shockwave (red)";
+		case "074": if ($showPitch == false) return "Arcanic Shockwave";
+			else return "Arcanic Shockwave (yellow)";
+		case "075": if ($showPitch == false) return "Arcanic Shockwave";
+			else return "Arcanic Shockwave (blue)";
+		case "076": if ($showPitch == false) return "Vela Flash";
+			else return "Vela Flash (red)";
+		case "077": if ($showPitch == false) return "Vela Flash";
+			else return "Vela Flash (yellow)";
+		case "078": if ($showPitch == false) return "Vela Flash";
+			else return "Vela Flash (blue)";
+		case "079": if ($showPitch == false) return "Rites of Replenishment";
+			else return "Rites of Replenishment (red)";
+		case "080": if ($showPitch == false) return "Rites of Replenishment";
+			else return "Rites of Replenishment (yellow)";
+		case "081": if ($showPitch == false) return "Rites of Replenishment";
+			else return "Rites of Replenishment (blue)";
+		case "082": if ($showPitch == false) return "Stir the Wildwood";
+			else return "Stir the Wildwood (red)";
+		case "083": if ($showPitch == false) return "Stir the Wildwood";
+			else return "Stir the Wildwood (yellow)";
+		case "084": if ($showPitch == false) return "Stir the Wildwood";
+			else return "Stir the Wildwood (blue)";
+		case "085": if ($showPitch == false) return "Bramble Spark";
+			else return "Bramble Spark (red)";
+		case "086": if ($showPitch == false) return "Bramble Spark";
+			else return "Bramble Spark (yellow)";
+		case "087": if ($showPitch == false) return "Bramble Spark";
+			else return "Bramble Spark (blue)";
+		case "088": if ($showPitch == false) return "Inspire Lightning";
+			else return "Inspire Lightning (red)";
+		case "089": if ($showPitch == false) return "Inspire Lightning";
+			else return "Inspire Lightning (yellow)";
+		case "090": if ($showPitch == false) return "Inspire Lightning";
+			else return "Inspire Lightning (blue)";
+		case "091": if ($showPitch == false) return "Fulminate";
+			else return "Fulminate (yellow)";
+		case "092": if ($showPitch == false) return "Flashfreeze";
+			else return "Flashfreeze (red)";
+		case "093": if ($showPitch == false) return "Exposed to the Elements";
+			else return "Exposed to the Elements (blue)";
+		case "094": if ($showPitch == false) return "Entwine Earth";
+			else return "Entwine Earth (red)";
+		case "095": if ($showPitch == false) return "Entwine Earth";
+			else return "Entwine Earth (yellow)";
+		case "096": if ($showPitch == false) return "Entwine Earth";
+			else return "Entwine Earth (blue)";
+		case "097": if ($showPitch == false) return "Entwine lce";
+			else return "Entwine lce (red)";
+		case "098": if ($showPitch == false) return "Entwine lce";
+			else return "Entwine lce (yellow)";
+		case "099": if ($showPitch == false) return "Entwine lce";
+			else return "Entwine lce (blue)";
+		case "100": if ($showPitch == false) return "Entwine Lightning";
+			else return "Entwine Lightning (red)";
+		case "101": if ($showPitch == false) return "Entwine Lightning";
+			else return "Entwine Lightning (yellow)";
+		case "102": if ($showPitch == false) return "Entwine Lightning";
+			else return "Entwine Lightning (blue)";
+		case "103": if ($showPitch == false) return "Invigorate";
+			else return "Invigorate (red)";
+		case "104": if ($showPitch == false) return "Invigorate";
+			else return "Invigorate (yellow)";
+		case "105": if ($showPitch == false) return "Invigorate";
+			else return "Invigorate (blue)";
+		case "106": if ($showPitch == false) return "Rejuvenate";
+			else return "Rejuvenate (red)";
+		case "107": if ($showPitch == false) return "Rejuvenate";
+			else return "Rejuvenate (yellow)";
+		case "108": if ($showPitch == false) return "Rejuvenate";
+			else return "Rejuvenate (blue)";
+		case "109": if ($showPitch == false) return "Embodiment of Earth";
+			else return "Embodiment of Earth (None)";
+		case "110": if ($showPitch == false) return "mbodiment of Lightnin";
+			else return "mbodiment of Lightnin (None)";
+		case "111": if ($showPitch == false) return "Frostbite";
+			else return "Frostbite (None)";
+		case "112": if ($showPitch == false) return "Pulse of Volthaven";
+			else return "Pulse of Volthaven (red)";
+		case "113": if ($showPitch == false) return "Pulse of Candlehold";
+			else return "Pulse of Candlehold (yellow)";
+		case "114": if ($showPitch == false) return "Pulse of Isenloft";
+			else return "Pulse of Isenloft (blue)";
+		case "115": if ($showPitch == false) return "Crown of Seeds";
+			else return "Crown of Seeds (None)";
+		case "116": if ($showPitch == false) return "Plume of Evergrowth";
+			else return "Plume of Evergrowth (None)";
+		case "117": if ($showPitch == false) return "Channel Mount Heroic";
+			else return "Channel Mount Heroic (red)";
+		case "118": if ($showPitch == false) return "Tome of Harvests";
+			else return "Tome of Harvests (blue)";
+		case "119": if ($showPitch == false) return "Evergreen";
+			else return "Evergreen (red)";
+		case "120": if ($showPitch == false) return "Evergreen";
+			else return "Evergreen (yellow)";
+		case "121": if ($showPitch == false) return "Evergreen";
+			else return "Evergreen (blue)";
+		case "122": if ($showPitch == false) return "Weave Earth";
+			else return "Weave Earth (red)";
+		case "123": if ($showPitch == false) return "Weave Earth";
+			else return "Weave Earth (yellow)";
+		case "124": if ($showPitch == false) return "Weave Earth";
+			else return "Weave Earth (blue)";
+		case "125": if ($showPitch == false) return "Summerwood Shelter";
+			else return "Summerwood Shelter (red)";
+		case "126": if ($showPitch == false) return "Summerwood Shelter";
+			else return "Summerwood Shelter (yellow)";
+		case "127": if ($showPitch == false) return "Summerwood Shelter";
+			else return "Summerwood Shelter (blue)";
+		case "128": if ($showPitch == false) return "Autumn's Touch";
+			else return "Autumn's Touch (red)";
+		case "129": if ($showPitch == false) return "Autumn's Touch";
+			else return "Autumn's Touch (yellow)";
+		case "130": if ($showPitch == false) return "Autumn's Touch";
+			else return "Autumn's Touch (blue)";
+		case "131": if ($showPitch == false) return "Break Ground";
+			else return "Break Ground (red)";
+		case "132": if ($showPitch == false) return "Break Ground";
+			else return "Break Ground (yellow)";
+		case "133": if ($showPitch == false) return "Break Ground";
+			else return "Break Ground (blue)";
+		case "134": if ($showPitch == false) return "Burgeoning";
+			else return "Burgeoning (red)";
+		case "135": if ($showPitch == false) return "Burgeoning";
+			else return "Burgeoning (yellow)";
+		case "136": if ($showPitch == false) return "Burgeoning";
+			else return "Burgeoning (blue)";
+		case "137": if ($showPitch == false) return "Earthlore Surge";
+			else return "Earthlore Surge (red)";
+		case "138": if ($showPitch == false) return "Earthlore Surge";
+			else return "Earthlore Surge (yellow)";
+		case "139": if ($showPitch == false) return "Earthlore Surge";
+			else return "Earthlore Surge (blue)";
+		case "140": if ($showPitch == false) return "Sow Tomorrow";
+			else return "Sow Tomorrow (red)";
+		case "141": if ($showPitch == false) return "Sow Tomorrow";
+			else return "Sow Tomorrow (yellow)";
+		case "142": if ($showPitch == false) return "Sow Tomorrow";
+			else return "Sow Tomorrow (blue)";
+		case "143": if ($showPitch == false) return "Amulet of Earth";
+			else return "Amulet of Earth (blue)";
+		case "144": if ($showPitch == false) return "Heart of Ice";
+			else return "Heart of Ice (None)";
+		case "145": if ($showPitch == false) return "Coat of Frost";
+			else return "Coat of Frost (None)";
+		case "146": if ($showPitch == false) return "Channel Lake Frigid";
+			else return "Channel Lake Frigid (blue)";
+		case "147": if ($showPitch == false) return "Blizzard";
+			else return "Blizzard (blue)";
+		case "148": if ($showPitch == false) return "Frost Fang";
+			else return "Frost Fang (red)";
+		case "149": if ($showPitch == false) return "Frost Fang";
+			else return "Frost Fang (yellow)";
+		case "150": if ($showPitch == false) return "Frost Fang";
+			else return "Frost Fang (blue)";
+		case "151": if ($showPitch == false) return "Ice Quake";
+			else return "Ice Quake (red)";
+		case "152": if ($showPitch == false) return "Ice Quake";
+			else return "Ice Quake (yellow)";
+		case "153": if ($showPitch == false) return "Ice Quake";
+			else return "Ice Quake (blue)";
+		case "154": if ($showPitch == false) return "Weave Ice";
+			else return "Weave Ice (red)";
+		case "155": if ($showPitch == false) return "Weave Ice";
+			else return "Weave Ice (yellow)";
+		case "156": if ($showPitch == false) return "Weave Ice";
+			else return "Weave Ice (blue)";
+		case "157": if ($showPitch == false) return "Icy Encounter";
+			else return "Icy Encounter (red)";
+		case "158": if ($showPitch == false) return "Icy Encounter";
+			else return "Icy Encounter (yellow)";
+		case "159": if ($showPitch == false) return "Icy Encounter";
+			else return "Icy Encounter (blue)";
+		case "160": if ($showPitch == false) return "Winter's Grasp";
+			else return "Winter's Grasp (red)";
+		case "161": if ($showPitch == false) return "Winter's Grasp";
+			else return "Winter's Grasp (yellow)";
+		case "162": if ($showPitch == false) return "Winter's Grasp";
+			else return "Winter's Grasp (blue)";
+		case "163": if ($showPitch == false) return "Chill to the Bone";
+			else return "Chill to the Bone (red)";
+		case "164": if ($showPitch == false) return "Chill to the Bone";
+			else return "Chill to the Bone (yellow)";
+		case "165": if ($showPitch == false) return "Chill to the Bone";
+			else return "Chill to the Bone (blue)";
+		case "166": if ($showPitch == false) return "Polar Blast";
+			else return "Polar Blast (red)";
+		case "167": if ($showPitch == false) return "Polar Blast";
+			else return "Polar Blast (yellow)";
+		case "168": if ($showPitch == false) return "Polar Blast";
+			else return "Polar Blast (blue)";
+		case "169": if ($showPitch == false) return "Winter's Bite";
+			else return "Winter's Bite (red)";
+		case "170": if ($showPitch == false) return "Winter's Bite";
+			else return "Winter's Bite (yellow)";
+		case "171": if ($showPitch == false) return "Winter's Bite";
+			else return "Winter's Bite (blue)";
+		case "172": if ($showPitch == false) return "Amulet of Ice";
+			else return "Amulet of Ice (blue)";
+		case "173": if ($showPitch == false) return "Shock Charmers";
+			else return "Shock Charmers (None)";
+		case "174": if ($showPitch == false) return "Mark of Lightning";
+			else return "Mark of Lightning (None)";
+		case "175": if ($showPitch == false) return "Channel Thunder Steppe";
+			else return "Channel Thunder Steppe (yellow)";
+		case "176": if ($showPitch == false) return "Blink";
+			else return "Blink (blue)";
+		case "177": if ($showPitch == false) return "Flash";
+			else return "Flash (red)";
+		case "178": if ($showPitch == false) return "Flash";
+			else return "Flash (yellow)";
+		case "179": if ($showPitch == false) return "Flash";
+			else return "Flash (blue)";
+		case "180": if ($showPitch == false) return "Weave Lightning";
+			else return "Weave Lightning (red)";
+		case "181": if ($showPitch == false) return "Weave Lightning";
+			else return "Weave Lightning (yellow)";
+		case "182": if ($showPitch == false) return "Weave Lightning";
+			else return "Weave Lightning (blue)";
+		case "183": if ($showPitch == false) return "Lightning Press";
+			else return "Lightning Press (red)";
+		case "184": if ($showPitch == false) return "Lightning Press";
+			else return "Lightning Press (yellow)";
+		case "185": if ($showPitch == false) return "Lightning Press";
+			else return "Lightning Press (blue)";
+		case "186": if ($showPitch == false) return "Ball Lightning";
+			else return "Ball Lightning (red)";
+		case "187": if ($showPitch == false) return "Ball Lightning";
+			else return "Ball Lightning (yellow)";
+		case "188": if ($showPitch == false) return "Ball Lightning";
+			else return "Ball Lightning (blue)";
+		case "189": if ($showPitch == false) return "Lightning Surge";
+			else return "Lightning Surge (red)";
+		case "190": if ($showPitch == false) return "Lightning Surge";
+			else return "Lightning Surge (yellow)";
+		case "191": if ($showPitch == false) return "Lightning Surge";
+			else return "Lightning Surge (blue)";
+		case "192": if ($showPitch == false) return "Heaven's Claws";
+			else return "Heaven's Claws (red)";
+		case "193": if ($showPitch == false) return "Heaven's Claws";
+			else return "Heaven's Claws (yellow)";
+		case "194": if ($showPitch == false) return "Heaven's Claws";
+			else return "Heaven's Claws (blue)";
+		case "195": if ($showPitch == false) return "Shock Striker";
+			else return "Shock Striker (red)";
+		case "196": if ($showPitch == false) return "Shock Striker";
+			else return "Shock Striker (yellow)";
+		case "197": if ($showPitch == false) return "Shock Striker";
+			else return "Shock Striker (blue)";
+		case "198": if ($showPitch == false) return "Electrify";
+			else return "Electrify (red)";
+		case "199": if ($showPitch == false) return "Electrify";
+			else return "Electrify (yellow)";
+		case "200": if ($showPitch == false) return "Electrify";
+			else return "Electrify (blue)";
+		case "201": if ($showPitch == false) return "Amulet of Lightning";
+			else return "Amulet of Lightning (blue)";
+		case "202": if ($showPitch == false) return "Titan's Fist";
+			else return "Titan's Fist (None)";
+		case "203": if ($showPitch == false) return "mpart of the Ram's He";
+			else return "mpart of the Ram's He (None)";
+		case "204": if ($showPitch == false) return "Rotten Old Buckler";
+			else return "Rotten Old Buckler (None)";
+		case "205": if ($showPitch == false) return "Tear Asunder";
+			else return "Tear Asunder (blue)";
+		case "206": if ($showPitch == false) return "Embolden";
+			else return "Embolden (red)";
+		case "207": if ($showPitch == false) return "Embolden";
+			else return "Embolden (yellow)";
+		case "208": if ($showPitch == false) return "Embolden";
+			else return "Embolden (blue)";
+		case "209": if ($showPitch == false) return "Thump";
+			else return "Thump (red)";
+		case "210": if ($showPitch == false) return "Thump";
+			else return "Thump (yellow)";
+		case "211": if ($showPitch == false) return "Thump";
+			else return "Thump (blue)";
+		case "212": if ($showPitch == false) return "Seismic Surge";
+			else return "Seismic Surge (None)";
+		case "213": if ($showPitch == false) return "New Horizon";
+			else return "New Horizon (None)";
+		case "214": if ($showPitch == false) return "Honing Hood";
+			else return "Honing Hood (None)";
+		case "215": if ($showPitch == false) return "Seek and Destroy";
+			else return "Seek and Destroy (red)";
+		case "216": if ($showPitch == false) return "Bolt'n' Shot";
+			else return "Bolt'n' Shot (red)";
+		case "217": if ($showPitch == false) return "Bolt'n' Shot";
+			else return "Bolt'n' Shot (yellow)";
+		case "218": if ($showPitch == false) return "Bolt'n' Shot";
+			else return "Bolt'n' Shot (blue)";
+		case "219": if ($showPitch == false) return "Over Flex";
+			else return "Over Flex (red)";
+		case "220": if ($showPitch == false) return "Over Flex";
+			else return "Over Flex (yellow)";
+		case "221": if ($showPitch == false) return "Over Flex";
+			else return "Over Flex (blue)";
+		case "222": if ($showPitch == false) return "Rosetta Thorn";
+			else return "Rosetta Thorn (None)";
+		case "223": if ($showPitch == false) return "Duskblade";
+			else return "Duskblade (None)";
+		case "224": if ($showPitch == false) return "Spellbound Creepers";
+			else return "Spellbound Creepers (None)";
+		case "225": if ($showPitch == false) return "Sutcliffe’'s Suede Hides";
+			else return "Sutcliffe’'s Suede Hides (None)";
+		case "226": if ($showPitch == false) return "Sting of Sorcery";
+			else return "Sting of Sorcery (blue)";
+		case "227": if ($showPitch == false) return "Sigil of Suffering";
+			else return "Sigil of Suffering (red)";
+		case "228": if ($showPitch == false) return "Sigil of Suffering";
+			else return "Sigil of Suffering (yellow)";
+		case "229": if ($showPitch == false) return "Sigil of Suffering";
+			else return "Sigil of Suffering (blue)";
+		case "230": if ($showPitch == false) return "Singeing Steelblade";
+			else return "Singeing Steelblade (red)";
+		case "231": if ($showPitch == false) return "Singeing Steelblade";
+			else return "Singeing Steelblade (yellow)";
+		case "232": if ($showPitch == false) return "Singeing Steelblade";
+			else return "Singeing Steelblade (blue)";
+		case "233": if ($showPitch == false) return "Ragamufhin's Hat";
+			else return "Ragamufhin's Hat (None)";
+		case "234": if ($showPitch == false) return "Deep Blue";
+			else return "Deep Blue (None)";
+		case "235": if ($showPitch == false) return "Cracker Jax";
+			else return "Cracker Jax (None)";
+		case "236": if ($showPitch == false) return "Runaways";
+			else return "Runaways (None)";
+		case "237": if ($showPitch == false) return "Cracked Bauble";
+			else return "Cracked Bauble (yellow)";
 
 		   }	}
 if ($set == "MON")
 	{  switch($num)	   {
 
-		case "000": return "\N| W/";
-		case "001": return "sm, Sculptor of Arc Li";
-		case "002": return "Prism";
-		case "003": return "Luminaris";
-		case "004": return "Herald of Erudition";
-		case "005": return "Arc Light Sentinel";
-		case "006": return "Genesis";
-		case "007": return "Herald of Judgment";
-		case "008": return "Herald of Triumph";
-		case "009": return "Herald of Triumph";
-		case "010": return "Herald of Triumph";
-		case "011": return "Parable of Humility";
-		case "012": return "Merciful Retribution";
-		case "013": return "Qde to Wrath";
-		case "014": return "Herald of Protection";
-		case "015": return "Herald of Protection";
-		case "016": return "Herald of Protection";
-		case "017": return "Herald of Ravages";
-		case "018": return "Herald of Ravages";
-		case "019": return "Herald of Ravages";
-		case "020": return "Herald of Rebirth";
-		case "021": return "Herald of Rebirth";
-		case "022": return "Herald of Rebirth";
-		case "023": return "Herald of Tenacity";
-		case "024": return "Herald of Tenacity";
-		case "025": return "Herald of Tenacity";
-		case "026": return "Wartune Herald";
-		case "027": return "Wartune Herald";
-		case "028": return "Wartune Herald";
-		case "029": return "Boltyn, Breaker of D:";
-		case "030": return "Boltyn";
-		case "031": return "Raydn, Duskbane";
-		case "032": return "Bolting Blade";
-		case "033": return "Beacon of Victory";
-		case "034": return "Lumina Ascension";
-		case "035": return "V of the Vanguard";
-		case "036": return "Battlefield Blitz";
-		case "037": return "Battlefield Blitz";
-		case "038": return "Battlefield Blitz";
-		case "039": return "Valiant Thrust";
-		case "040": return "Valiant Thrust";
-		case "041": return "Valiant Thrust";
-		case "042": return "Bolt of Courage";
-		case "043": return "Bolt of Courage";
-		case "044": return "Bolt of Courage";
-		case "045": return "Cross the Line";
-		case "046": return "Cross the Line";
-		case "047": return "Cross the Line";
-		case "048": return "Engulfing Light";
-		case "049": return "Engulfing Light";
-		case "050": return "Engulfing Light";
-		case "051": return "Express Lightning";
-		case "052": return "Express Lightning";
-		case "053": return "Express Lightning";
-		case "054": return "Take Flight";
-		case "055": return "Take Flight";
-		case "056": return "Take Flight";
-		case "057": return "Courageous Steelhand";
-		case "058": return "Courageous Steelhand";
-		case "059": return "Courageous Steelhand";
-		case "060": return "Vestige of Sol";
-		case "061": return "Halo of lllumination";
-		case "062": return "Celestial Cataclysm";
-		case "063": return "Soul Shield";
-		case "064": return "Soul Food";
-		case "065": return "Tome of Divinity";
-		case "066": return "Invigorating Light";
-		case "067": return "Invigorating Light";
-		case "068": return "Invigorating Light";
-		case "069": return "Glisten";
-		case "070": return "Glisten";
-		case "071": return "Glisten";
-		case "072": return "Illuminate";
-		case "073": return "Illuminate";
-		case "074": return "Illuminate";
-		case "075": return "Impenetrable Belief";
-		case "076": return "Impenetrable Belief";
-		case "077": return "Impenetrable Belief";
-		case "078": return "Rising Solartide";
-		case "079": return "Rising Solartide";
-		case "080": return "Rising Solartide";
-		case "081": return "Seek Enlightenment";
-		case "082": return "Seek Enlightenment";
-		case "083": return "Seek Enlightenment";
-		case "084": return "Blinding Beam";
-		case "085": return "Blinding Beam";
-		case "086": return "Blinding Beam";
-		case "087": return "Ray of Hope";
-		case "088": return "Iris of Reality";
-		case "089": return "Phantasmal Footsteps";
-		case "090": return "Dream Weavers";
-		case "091": return "Phantasmaclasm";
-		case "092": return "Prismatic Shield";
-		case "093": return "Prismatic Shield";
-		case "094": return "Prismatic Shield";
-		case "095": return "Phantasmify";
-		case "096": return "Phantasmify";
-		case "097": return "Phantasmify";
-		case "098": return "Enigma Chimera";
-		case "099": return "Enigma Chimera";
-		case "100": return "Enigma Chimera";
-		case "101": return "Spears of Surreality";
-		case "102": return "Spears of Surreality";
-		case "103": return "Spears of Surreality";
-		case "104": return "Spectral Shield";
-		case "105": return "Hatchet of Body";
-		case "106": return "Hatchet of Mind";
-		case "107": return "Valiant Dynamo";
-		case "108": return "Gallantry Gold";
-		case "109": return "Spill Blood";
-		case "110": return "Dusk Path Pilgrimage";
-		case "111": return "Dusk Path Pilgrimage";
-		case "112": return "Dusk Path Pilgrimage";
-		case "113": return "Plow Through";
-		case "114": return "Plow Through";
-		case "115": return "Plow Through";
-		case "116": return "Second Swing";
-		case "117": return "Second Swing";
-		case "118": return "Second Swing";
-		case "119": return "ia, Shadowborn Abominat";
-		case "120": return "Levia";
-		case "121": return "xagore, the Death Hyx";
-		case "122": return "oves of the Shadowbe";
-		case "123": return "Deep Rooted Evil";
-		case "124": return "Mark of the Beast";
-		case "125": return "Shadow of Blasmophet";
-		case "126": return "Endless Maw";
-		case "127": return "Endless Maw";
-		case "128": return "Endless Maw";
-		case "129": return "Werithing Beast Hulk";
-		case "130": return "Werithing Beast Hulk";
-		case "131": return "Werithing Beast Hulk";
-		case "132": return "onvulsions from the Bellows of He";
-		case "133": return "onvulsions from the Bellows of He";
-		case "134": return "onvulsions from the Bellows of He";
-		case "135": return "Boneyard Marauder";
-		case "136": return "Boneyard Marauder";
-		case "137": return "Boneyard Marauder";
-		case "138": return "Deadwood Rumbler";
-		case "139": return "Deadwood Rumbler";
-		case "140": return "Deadwood Rumbler";
-		case "141": return "Dread Screamer";
-		case "142": return "Dread Screamer";
-		case "143": return "Dread Screamer";
-		case "144": return "Graveling Growl";
-		case "145": return "Graveling Growl";
-		case "146": return "Graveling Growl";
-		case "147": return "Hungering Slaughterbeast";
-		case "148": return "Hungering Slaughterbeast";
-		case "149": return "Hungering Slaughterbeast";
-		case "150": return "Unworldly Bellow";
-		case "151": return "Unworldly Bellow";
-		case "152": return "Unworldly Bellow";
-		case "153": return "hane, Bound by Shado";
-		case "154": return "Chane";
-		case "155": return "Galaxxi Black";
-		case "156": return "Shadow of Ursur";
-		case "157": return "Dimenxxional Crossroads";
-		case "158": return "Invert Existence";
-		case "159": return "Unhallowed Rites";
-		case "160": return "Unhallowed Rites";
-		case "161": return "Unhallowed Rites";
-		case "162": return "Dimenxxional Gateway";
-		case "163": return "Dimenxxional Gateway";
-		case "164": return "Dimenxxional Gateway";
-		case "165": return "Seeping Shadows";
-		case "166": return "Seeping Shadows";
-		case "167": return "Seeping Shadows";
-		case "168": return "Bounding Demigon";
-		case "169": return "Bounding Demigon";
-		case "170": return "Bounding Demigon";
-		case "171": return "Piercing Shadow Vise";
-		case "172": return "Piercing Shadow Vise";
-		case "173": return "Piercing Shadow Vise";
-		case "174": return "Rift Bind";
-		case "175": return "Rift Bind";
-		case "176": return "Rift Bind";
-		case "177": return "Rifted Torment";
-		case "178": return "Rifted Torment";
-		case "179": return "Rifted Torment";
-		case "180": return "Rip Through Reality";
-		case "181": return "Rip Through Reality";
-		case "182": return "Rip Through Reality";
-		case "183": return "Seeds of Agony";
-		case "184": return "Seeds of Agony";
-		case "185": return "Seeds of Agony";
-		case "186": return "Soul Shackle";
-		case "187": return "Carrion Husk";
-		case "188": return "Ebon Fold";
-		case "189": return "Doomsday";
-		case "190": return "Eclipse";
-		case "191": return "Mutated Mass";
-		case "192": return "Guardian of the Shadowrealm";
-		case "193": return "Shadow Puppetry";
-		case "194": return "Tome of Torment";
-		case "195": return "Consuming Aftermath";
-		case "196": return "Consuming Aftermath";
-		case "197": return "Consuming Aftermath";
-		case "198": return "Soul Harvest";
-		case "199": return "Soul Reaping";
-		case "200": return "Howl from Beyond";
-		case "201": return "Howl from Beyond";
-		case "202": return "Howl from Beyond";
-		case "203": return "Ghostly Visit";
-		case "204": return "Ghostly Visit";
-		case "205": return "Ghostly Visit";
-		case "206": return "Lunartide Plunderer";
-		case "207": return "Lunartide Plunderer";
-		case "208": return "Lunartide Plunderer";
-		case "209": return "Void Wraith";
-		case "210": return "Void Wraith";
-		case "211": return "Void Wraith";
-		case "212": return "Spew Shadow";
-		case "213": return "Spew Shadow";
-		case "214": return "Spew Shadow";
-		case "215": return "Blood Tribute";
-		case "216": return "Blood Tribute";
-		case "217": return "Blood Tribute";
-		case "218": return "Eclipse Existence";
-		case "219": return "smophet, the Soul Harves";
-		case "220": return "Ursur, the Soul Reapet";
-		case "221": return "Ravenous Meataxe";
-		case "222": return "Tear Limb from Limb";
-		case "223": return "Pulping";
-		case "224": return "Pulping";
-		case "225": return "Pulping";
-		case "226": return "Smash with Big Tree";
-		case "227": return "Smash with Big Tree";
-		case "228": return "Smash with Big Tree";
-		case "229": return "Dread Scythe";
-		case "230": return "Aether Ironweave";
-		case "231": return "Sonata Arcanix";
-		case "232": return "Vexing Malice";
-		case "233": return "Vexing Malice";
-		case "234": return "Vexing Malice";
-		case "235": return "Arcanic Crackle";
-		case "236": return "Arcanic Crackle";
-		case "237": return "Arcanic Crackle";
-		case "238": return "Blood Drop Brocade";
-		case "239": return "Stubby Hammerers";
-		case "240": return "Time Skippers";
-		case "241": return "Ironhide Helm";
-		case "242": return "Ironhide Plate";
-		case "243": return "Ironhide Gauntlet";
-		case "244": return "Ironhide Legs";
-		case "245": return "Exude Confidence";
-		case "246": return "Nourishing Emptiness";
-		case "247": return "Rouse the Ancients";
-		case "248": return "Qut Muscle";
-		case "249": return "Qut Muscle";
-		case "250": return "Qut Muscle";
-		case "251": return "Seek Horizon";
-		case "252": return "Seek Horizon";
-		case "253": return "Seek Horizon";
-		case "254": return "Tremor of iArathael";
-		case "255": return "Tremor of iArathael";
-		case "256": return "Tremor of iArathael";
-		case "257": return "Rise Above";
-		case "258": return "Rise Above";
-		case "259": return "Rise Above";
-		case "260": return "Captain's Call";
-		case "261": return "Captain's Call";
-		case "262": return "Captain's Call";
-		case "263": return "Adrenaline Rush";
-		case "264": return "Adrenaline Rush";
-		case "265": return "Adrenaline Rush";
-		case "266": return "Belittle";
-		case "267": return "Belittle";
-		case "268": return "Belittle";
-		case "269": return "Brandish";
-		case "270": return "Brandish";
-		case "271": return "Brandish";
-		case "272": return "Frontline Scout";
-		case "273": return "Frontline Scout";
-		case "274": return "Frontline Scout";
-		case "275": return "Overload";
-		case "276": return "Overload";
-		case "277": return "Overload";
-		case "278": return "Pound for Pound";
-		case "279": return "Pound for Pound";
-		case "280": return "Pound for Pound";
-		case "281": return "Rally the Rearguard";
-		case "282": return "Rally the Rearguard";
-		case "283": return "Rally the Rearguard";
-		case "284": return "Stony Woottonhog";
-		case "285": return "Stony Woottonhog";
-		case "286": return "Stony Woottonhog";
-		case "287": return "Surging Militia";
-		case "288": return "Surging Militia";
-		case "289": return "Surging Militia";
-		case "290": return "Yinti Yanti";
-		case "291": return "Yinti Yanti";
-		case "292": return "Yinti Yanti";
-		case "293": return "Zealous Belting";
-		case "294": return "Zealous Belting";
-		case "295": return "Zealous Belting";
-		case "296": return "Minnowism";
-		case "297": return "Minnowism";
-		case "298": return "Minnowism";
-		case "299": return "Warmonger's Recital";
-		case "300": return "Warmonger's Recital";
-		case "301": return "Warmonger's Recital";
-		case "302": return "Talisman of Dousing";
-		case "303": return "Memorial Ground";
-		case "304": return "Memorial Ground";
-		case "305": return "Memorial Ground";
-		case "306": return "Cracked Bauble";
-
-		   }	}
-if ($set == "WTR")
-	{  switch($num)	   {
-
-		case "000": return "Heart of Fyendal";
-		case "001": return "rinar, Reckless Rampa;";
-		case "002": return "Rhinar";
-		case "003": return "Romping Club";
-		case "004": return "Scabskin Leathers";
-		case "005": return "Barkbone Strapping";
-		case "006": return "~ Alpha Rampage";
-		case "007": return "Bloodrush Bellow";
-		case "008": return "Reckless Swing";
-		case "009": return "~ Sand Sketched Plan";
-		case "010": return "Bone Head Barrier";
-		case "011": return "Breakneck Battery";
-		case "012": return "Breakneck Battery";
-		case "013": return "Breakneck Battery";
-		case "014": return "Savage Feast";
-		case "015": return "Savage Feast";
-		case "016": return "Savage Feast";
-		case "017": return "Barraging Beatdown";
-		case "018": return "Barraging Beatdown";
-		case "019": return "Barraging Beatdown";
-		case "020": return "Savage Swing";
-		case "021": return "Savage Swing";
-		case "022": return "Savage Swing";
-		case "023": return "Pack Hunt";
-		case "024": return "Pack Hunt";
-		case "025": return "Pack Hunt";
-		case "026": return "Smash Instinct";
-		case "027": return "Smash Instinct";
-		case "028": return "Smash Instinct";
-		case "029": return "Wrecker Romp";
-		case "030": return "Wrecker Romp";
-		case "031": return "Wrecker Romp";
-		case "032": return "Awakening Bellow";
-		case "033": return "Awakening Bellow";
-		case "034": return "Awakening Bellow";
-		case "035": return "Primeval Bellow";
-		case "036": return "Primeval Bellow";
-		case "037": return "Primeval Bellow";
-		case "038": return "Bravo, Showstopper";
-		case "039": return "Bravo";
-		case "040": return "Anothos";
-		case "041": return "Tectonic Plating";
-		case "042": return "Helm of Isen's Peak";
-		case "043": return "Crippling Crush";
-		case "044": return "Spinal Crush";
-		case "045": return "Cranial Crush";
-		case "046": return "Forged for War";
-		case "047": return "Show Time!";
-		case "048": return "Disable";
-		case "049": return "Disable";
-		case "050": return "Disable";
-		case "051": return "Staunch Response";
-		case "052": return "Staunch Response";
-		case "053": return "Staunch Response";
-		case "054": return "Blessing of Deliverance";
-		case "055": return "Blessing of Deliverance";
-		case "056": return "Blessing of Deliverance";
-		case "057": return "Buckling Blow";
-		case "058": return "Buckling Blow";
-		case "059": return "Buckling Blow";
-		case "060": return "Cartilage Crush";
-		case "061": return "Cartilage Crush";
-		case "062": return "Cartilage Crush";
-		case "063": return "Crush Confidence";
-		case "064": return "Crush Confidence";
-		case "065": return "Crush Confidence";
-		case "066": return "Debilitate";
-		case "067": return "Debilitate";
-		case "068": return "Debilitate";
-		case "069": return "Emerging Power";
-		case "070": return "Emerging Power";
-		case "071": return "Emerging Power";
-		case "072": return "Stonewall Confidence";
-		case "073": return "Stonewall Confidence";
-		case "074": return "Stonewall Confidence";
-		case "075": return "Seismic Surge";
-		case "076": return "Katsu, the Wanderer";
-		case "077": return "Katsu";
-		case "078": return "Harmonized Kodachi";
-		case "079": return "Mask of Momentum";
-		case "080": return "Breaking Scales";
-		case "081": return "Lord of Wind";
-		case "082": return "Ancestral Empowerment";
-		case "083": return "Mugenshi: RELEASE";
-		case "084": return "Hurricane Technique";
-		case "085": return "Pounding Gale";
-		case "086": return "Fluster Fist";
-		case "087": return "Fluster Fist";
-		case "088": return "Fluster Fist";
-		case "089": return "Blackout Kick";
-		case "090": return "Blackout Kick";
-		case "091": return "Blackout Kick";
-		case "092": return "Flic Flak";
-		case "093": return "Flic Flak";
-		case "094": return "Flic Flak";
-		case "095": return "Open the Center";
-		case "096": return "Open the Center";
-		case "097": return "Open the Center";
-		case "098": return "Head Jab";
-		case "099": return "Head Jab";
-		case "100": return "Head Jab";
-		case "101": return "Leg Tap";
-		case "102": return "Leg Tap";
-		case "103": return "Leg Tap";
-		case "104": return "Rising Knee Thrust";
-		case "105": return "Rising Knee Thrust";
-		case "106": return "Rising Knee Thrust";
-		case "107": return "Surging Strike";
-		case "108": return "Surging Strike";
-		case "109": return "Surging Strike";
-		case "110": return "Whelming Gustwave";
-		case "111": return "Whelming Gustwave";
-		case "112": return "Whelming Gustwave";
-		case "113": return "Dorinthea Ironsong";
-		case "114": return "Dorinthea";
-		case "115": return "Dawnblade";
-		case "116": return "Braveforge Bracers";
-		case "117": return "Refraction Bolters";
-		case "118": return "Glint the Quicksilver";
-		case "119": return "Steelblade Supremacy";
-		case "120": return "Rout";
-		case "121": return "Singing Steelblade";
-		case "122": return "Ironsong Determination";
-		case "123": return "QOverpower";
-		case "124": return "QOverpower";
-		case "125": return "QOverpower";
-		case "126": return "Steelblade Shunt";
-		case "127": return "Steelblade Shunt";
-		case "128": return "Steelblade Shunt";
-		case "129": return "Warrior's Valor";
-		case "130": return "Warrior's Valor";
-		case "131": return "Warrior's Valor";
-		case "132": return "Ironsong Response";
-		case "133": return "Ironsong Response";
-		case "134": return "Ironsong Response";
-		case "135": return "Biting Blade";
-		case "136": return "Biting Blade";
-		case "137": return "Biting Blade";
-		case "138": return "Stroke of Foresight";
-		case "139": return "Stroke of Foresight";
-		case "140": return "Stroke of Foresight";
-		case "141": return "Sharpen Steel";
-		case "142": return "Sharpen Steel";
-		case "143": return "Sharpen Steel";
-		case "144": return "Driving Blade";
-		case "145": return "Driving Blade";
-		case "146": return "Driving Blade";
-		case "147": return "Nature's Path Pilgrimage";
-		case "148": return "Nature's Path Pilgrimage";
-		case "149": return "Nature's Path Pilgrimage";
-		case "150": return "Fyendal's Spring Tunic";
-		case "151": return "Hope Merchant's Hooc";
-		case "152": return "Heartened Cross Strap";
-		case "153": return "Goliath Gauntlet";
-		case "154": return "Snapdragon Scalers";
-		case "155": return "Ironrot Helm";
-		case "156": return "Ironrot Plate";
-		case "157": return "Ironrot Gauntlet";
-		case "158": return "Ironrot Legs";
-		case "159": return "Enlightened Strike";
-		case "160": return "Tome of Fyendal";
-		case "161": return "Last Ditch Effort";
-		case "162": return "Crazy Brew";
-		case "163": return "Remembrance";
-		case "164": return "Drone of Brutality";
-		case "165": return "Drone of Brutality";
-		case "166": return "Drone of Brutality";
-		case "167": return "Snatch";
-		case "168": return "Snatch";
-		case "169": return "Snatch";
-		case "170": return "Energy Potion";
-		case "171": return "Potion of Strength";
-		case "172": return "Timesnap Potion";
-		case "173": return "Sigil of Solace";
-		case "174": return "Sigil of Solace";
-		case "175": return "Sigil of Solace";
-		case "176": return "Barraging Brawnhide";
-		case "177": return "Barraging Brawnhide";
-		case "178": return "Barraging Brawnhide";
-		case "179": return "Demolition Crew";
-		case "180": return "Demolition Crew";
-		case "181": return "Demolition Crew";
-		case "182": return "lock of the Feather Walker";
-		case "183": return "lock of the Feather Walker";
-		case "184": return "lock of the Feather Walker";
-		case "185": return "Nimble Strike";
-		case "186": return "Nimble Strike";
-		case "187": return "Nimble Strike";
-		case "188": return "Raging Onslaught";
-		case "189": return "Raging Onslaught";
-		case "190": return "Raging Onslaught";
-		case "191": return "Scar for a Scar";
-		case "192": return "Scar for a Scar";
-		case "193": return "Scar for a Scar";
-		case "194": return "Scour the Battlescape";
-		case "195": return "Scour the Battlescape";
-		case "196": return "Scour the Battlescape";
-		case "197": return "Regurgitating Slog";
-		case "198": return "Regurgitating Slog";
-		case "199": return "Regurgitating Slog";
-		case "200": return "‘Wounded Bull";
-		case "201": return "‘Wounded Bull";
-		case "202": return "‘Wounded Bull";
-		case "203": return "Wounding Blow";
-		case "204": return "Wounding Blow";
-		case "205": return "Wounding Blow";
-		case "206": return "Pummel";
-		case "207": return "Pummel";
-		case "208": return "Pummel";
-		case "209": return "Razor Reflex";
-		case "210": return "Razor Reflex";
-		case "211": return "Razor Reflex";
-		case "212": return "Unmovable";
-		case "213": return "Unmovable";
-		case "214": return "Unmovable";
-		case "215": return "Sink Below";
-		case "216": return "Sink Below";
-		case "217": return "Sink Below";
-		case "218": return "Nimblism";
-		case "219": return "Nimblism";
-		case "220": return "Nimblism";
-		case "221": return "Sloggism";
-		case "222": return "Sloggism";
-		case "223": return "Sloggism";
-		case "224": return "Cracked Bauble";
-		case "225": return "Quicken";
+		case "000": if ($showPitch == false) return "\N| W/";
+			else return "\N| W/ (None)";
+		case "001": if ($showPitch == false) return "sm, Sculptor of Arc Li";
+			else return "sm, Sculptor of Arc Li (None)";
+		case "002": if ($showPitch == false) return "Prism";
+			else return "Prism (None)";
+		case "003": if ($showPitch == false) return "Luminaris";
+			else return "Luminaris (None)";
+		case "004": if ($showPitch == false) return "Herald of Erudition";
+			else return "Herald of Erudition (yellow)";
+		case "005": if ($showPitch == false) return "Arc Light Sentinel";
+			else return "Arc Light Sentinel (yellow)";
+		case "006": if ($showPitch == false) return "Genesis";
+			else return "Genesis (yellow)";
+		case "007": if ($showPitch == false) return "Herald of Judgment";
+			else return "Herald of Judgment (yellow)";
+		case "008": if ($showPitch == false) return "Herald of Triumph";
+			else return "Herald of Triumph (red)";
+		case "009": if ($showPitch == false) return "Herald of Triumph";
+			else return "Herald of Triumph (yellow)";
+		case "010": if ($showPitch == false) return "Herald of Triumph";
+			else return "Herald of Triumph (blue)";
+		case "011": if ($showPitch == false) return "Parable of Humility";
+			else return "Parable of Humility (yellow)";
+		case "012": if ($showPitch == false) return "Merciful Retribution";
+			else return "Merciful Retribution (yellow)";
+		case "013": if ($showPitch == false) return "Qde to Wrath";
+			else return "Qde to Wrath (yellow)";
+		case "014": if ($showPitch == false) return "Herald of Protection";
+			else return "Herald of Protection (red)";
+		case "015": if ($showPitch == false) return "Herald of Protection";
+			else return "Herald of Protection (yellow)";
+		case "016": if ($showPitch == false) return "Herald of Protection";
+			else return "Herald of Protection (blue)";
+		case "017": if ($showPitch == false) return "Herald of Ravages";
+			else return "Herald of Ravages (red)";
+		case "018": if ($showPitch == false) return "Herald of Ravages";
+			else return "Herald of Ravages (yellow)";
+		case "019": if ($showPitch == false) return "Herald of Ravages";
+			else return "Herald of Ravages (blue)";
+		case "020": if ($showPitch == false) return "Herald of Rebirth";
+			else return "Herald of Rebirth (red)";
+		case "021": if ($showPitch == false) return "Herald of Rebirth";
+			else return "Herald of Rebirth (yellow)";
+		case "022": if ($showPitch == false) return "Herald of Rebirth";
+			else return "Herald of Rebirth (blue)";
+		case "023": if ($showPitch == false) return "Herald of Tenacity";
+			else return "Herald of Tenacity (red)";
+		case "024": if ($showPitch == false) return "Herald of Tenacity";
+			else return "Herald of Tenacity (yellow)";
+		case "025": if ($showPitch == false) return "Herald of Tenacity";
+			else return "Herald of Tenacity (blue)";
+		case "026": if ($showPitch == false) return "Wartune Herald";
+			else return "Wartune Herald (red)";
+		case "027": if ($showPitch == false) return "Wartune Herald";
+			else return "Wartune Herald (yellow)";
+		case "028": if ($showPitch == false) return "Wartune Herald";
+			else return "Wartune Herald (blue)";
+		case "029": if ($showPitch == false) return "Boltyn, Breaker of D:";
+			else return "Boltyn, Breaker of D: (None)";
+		case "030": if ($showPitch == false) return "Boltyn";
+			else return "Boltyn (None)";
+		case "031": if ($showPitch == false) return "Raydn, Duskbane";
+			else return "Raydn, Duskbane (None)";
+		case "032": if ($showPitch == false) return "Bolting Blade";
+			else return "Bolting Blade (yellow)";
+		case "033": if ($showPitch == false) return "Beacon of Victory";
+			else return "Beacon of Victory (yellow)";
+		case "034": if ($showPitch == false) return "Lumina Ascension";
+			else return "Lumina Ascension (yellow)";
+		case "035": if ($showPitch == false) return "V of the Vanguard";
+			else return "V of the Vanguard (yellow)";
+		case "036": if ($showPitch == false) return "Battlefield Blitz";
+			else return "Battlefield Blitz (red)";
+		case "037": if ($showPitch == false) return "Battlefield Blitz";
+			else return "Battlefield Blitz (yellow)";
+		case "038": if ($showPitch == false) return "Battlefield Blitz";
+			else return "Battlefield Blitz (blue)";
+		case "039": if ($showPitch == false) return "Valiant Thrust";
+			else return "Valiant Thrust (red)";
+		case "040": if ($showPitch == false) return "Valiant Thrust";
+			else return "Valiant Thrust (yellow)";
+		case "041": if ($showPitch == false) return "Valiant Thrust";
+			else return "Valiant Thrust (blue)";
+		case "042": if ($showPitch == false) return "Bolt of Courage";
+			else return "Bolt of Courage (red)";
+		case "043": if ($showPitch == false) return "Bolt of Courage";
+			else return "Bolt of Courage (yellow)";
 
 		   }	}
 
         return "";    }
-            
+             ?>

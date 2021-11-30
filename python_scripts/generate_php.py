@@ -1,6 +1,7 @@
 
 outfile = open("card_names.php","w")
-function_header ="""function CardName ($cardID)
+function_header ="""<?php
+function CardName ($cardID, $showPitch=true)
 {
     $arr = str_split($cardID, 3);
     $set = $arr[0];
@@ -19,16 +20,17 @@ for row in csvreader:
     print(row)
     basename = row[0]
     title = row[1]
-    
+    pitch = row[5]
     cardset = basename[0:3]
     setnum = basename[3:]
     if cardset not in settonumbertovalues.keys():
         settonumbertovalues[cardset] = {}
     settonumbertovalues[cardset][setnum]= {}
     settonumbertovalues[cardset][setnum]["title"] = title
+    settonumbertovalues[cardset][setnum]["pitch"] = pitch
     rows.append(row)
 
-print(settonumbertovalues)
+#print(settonumbertovalues)
 
 for cardset in settonumbertovalues.keys():
     ifstring = (
@@ -39,7 +41,10 @@ for cardset in settonumbertovalues.keys():
     cases = ""
     for setnum in settonumbertovalues[cardset].keys():
         title = settonumbertovalues[cardset][setnum]["title"]
-        cases += f'\t\tcase "{setnum}": return "{title}";\n'
+        pitch = settonumbertovalues[cardset][setnum]["pitch"]
+        cases += (f'\t\tcase "{setnum}": if ($showPitch == false) return "{title[:-1]}";\n'
+        f'\t\t\telse return "{title[:-1]} ({pitch})";\n'
+        )
     ifstring_end = (
         "\t\t   }"
         "\t}"
@@ -52,5 +57,5 @@ for cardset in settonumbertovalues.keys():
 
 function_tail = """
         return \"\";    }
-            """
+             ?>"""
 print(function_tail, file= outfile)
