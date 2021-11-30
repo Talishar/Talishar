@@ -42,6 +42,9 @@ for cardset in settonumbertovalues.keys():
     for setnum in settonumbertovalues[cardset].keys():
         title = settonumbertovalues[cardset][setnum]["title"]
         pitch = settonumbertovalues[cardset][setnum]["pitch"]
+        if pitch == "None":
+            cases += f'\t\tcase "{setnum}": return "{title[:-1]}";\n'
+            continue
         cases += (f'\t\tcase "{setnum}": if ($showPitch == false) return "{title[:-1]}";\n'
         f'\t\t\telse return "{title[:-1]} ({pitch})";\n'
         )
