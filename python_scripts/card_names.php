@@ -770,7 +770,7 @@ if ($set == "CRU")
 if ($set == "ELE")
 	{  switch($num)	   {
 
-		case "000": return "NWaper? -~ ©";
+		case "000": return "Korshem, Crossroad of Element";
 		case "001": return "him, Grandfather of Eter";
 		case "002": return "Oldhim";
 		case "003": return "Winter's Wail";
@@ -1218,7 +1218,7 @@ if ($set == "ELE")
 if ($set == "MON")
 	{  switch($num)	   {
 
-		case "000": return "\N| W/";
+		case "000": return "The Great Library of Solan";
 		case "001": return "sm, Sculptor of Arc Li";
 		case "002": return "Prism";
 		case "003": return "Luminaris";
