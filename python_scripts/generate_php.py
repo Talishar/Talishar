@@ -30,7 +30,13 @@ for row in csvreader:
     settonumbertovalues[cardset][setnum]["pitch"] = pitch
     rows.append(row)
 
-#print(settonumbertovalues)
+print(settonumbertovalues)
+settonumbertovalues["MON"]['000']["title"] = "The Great Library of Solana"
+settonumbertovalues["MON"]['000']["pitch"] = "None"
+settonumbertovalues["ELE"]['000']["title"] = "Korshem, Crossroad of Elements"
+settonumbertovalues["ELE"]['000']["pitch"] = "None"
+
+
 
 for cardset in settonumbertovalues.keys():
     ifstring = (
