@@ -24,7 +24,7 @@
 
   function AuraPieces()
   {
-    return 2;
+    return 3;
   }
 
   function ItemPieces()
@@ -50,6 +50,16 @@
   function ArsenalPieces()
   {
     return 2;
+  }
+
+  function AllyPieces()
+  {
+    return 3;
+  }
+
+  function LayerPieces()
+  {
+    return 4;
   }
 
   //Class State (one for each player)
@@ -84,6 +94,10 @@
   $CS_NumAttackCards = 28;//Played or blocked
   $CS_NumPlayedFromBanish = 29;
   $CS_NumAttacks = 30;
+  $CS_DieRoll = 31;
+  $CS_NumBloodDebtPlayed = 32;
+  $CS_NumWizardNonAttack = 33;
+  $CS_LayerTarget = 34;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -104,13 +118,17 @@
   $CCS_NumChainLinks = 15;
   $CCS_AttackTarget = 16;
   $CCS_LinkTotalAttack = 17;
+  $CCS_LinkBaseAttack = 18;
+  $CCS_BaseAttackDefenseMax = 19;
+  $CCS_ResourceCostDefenseMin = 20;
+  $CCS_CardTypeDefenseRequirement = 21;
 
   function ResetCombatChainState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
     global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
-    global $CCS_LinkTotalAttack;
+    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_LastAttack] = "NA";
@@ -129,13 +147,17 @@
     $combatChainState[$CCS_NumChainLinks] = 0;
     $combatChainState[$CCS_AttackTarget] = "NA";
     $combatChainState[$CCS_LinkTotalAttack] = 0;
+    $combatChainState[$CCS_LinkBaseAttack] = 0;
+    $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
+    $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
+    $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
   }
 
   function ResetChainLinkState()
   {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
-    global $CCS_LinkTotalAttack;
+    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = 0;
     $combatChainState[$CCS_DamageDealt] = 0;
@@ -146,6 +168,10 @@
     $combatChainState[$CCS_AttackTotalDamage] = 0;
     $combatChainState[$CCS_AttackTarget] = "NA";
     $combatChainState[$CCS_LinkTotalAttack] = 0;
+    $combatChainState[$CCS_LinkBaseAttack] = 0;
+    $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
+    $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
+    $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
   }
 
   function ResetMainClassState()
@@ -155,7 +181,7 @@
     global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant;
     global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
-    global $CS_NumAttacks;
+    global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -186,6 +212,10 @@
     $mainClassState[$CS_NumAttackCards] = 0;
     $mainClassState[$CS_NumPlayedFromBanish] = 0;
     $mainClassState[$CS_NumAttacks] = 0;
+    $mainClassState[$CS_DieRoll] = 0;
+    $mainClassState[$CS_NumBloodDebtPlayed] = 0;
+    $mainClassState[$CS_NumWizardNonAttack] = 0;
+    $mainClassState[$CS_LayerTarget] = "-";
   }
 
   function ResetCardPlayed($cardID)

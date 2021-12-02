@@ -127,8 +127,8 @@
         AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "MON034":

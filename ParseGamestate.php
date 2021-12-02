@@ -23,6 +23,7 @@
   $p1Soul = GetArray($handler);
   $p1CardStats = GetArray($handler);
   $p1TurnStats = GetArray($handler);
+  $p1Allies = GetArray($handler);
 
   //Player 2
   $p2Hand = GetArray($handler);
@@ -40,6 +41,7 @@
   $p2Soul = GetArray($handler);
   $p2CardStats = GetArray($handler);
   $p2TurnStats = GetArray($handler);
+  $p2Allies = GetArray($handler);
 
   $winner = trim(fgets($handler));
   $currentPlayer = trim(fgets($handler));
@@ -52,6 +54,8 @@
   $currentTurnEffectsFromCombat = GetArray($handler);
   $nextTurnEffects = GetArray($handler);
   $decisionQueue = GetArray($handler);
+  $layers = GetArray($handler);
+  $layerPriority = GetArray($handler);
   $mainPlayer = trim(fgets($handler));
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   fclose($handler);

@@ -39,7 +39,7 @@
       case "ARC132": case "ARC133": case "ARC134": return 1;
       case "ARC138": case "ARC139": case "ARC140": return 1;
       case "ARC141": case "ARC142": case "ARC143": return 1;
-      case "ARC147": case "ARC148": case "ARC149": return 1;
+      case "ARC147": case "ARC148": case "ARC149": return 2;
       default: return 0;
     }
   }
@@ -112,7 +112,7 @@
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
         DealArcane($damage);
-        return "Blazing Aether did damage equal to the prior arcane damage this turn ( " . $damage . ").";
+        return "Blazing Aether did damage equal to the prior arcane damage this turn (" . $damage . ").";
       case "ARC119":
         DealArcane(ArcaneDamage($cardID));
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
@@ -124,7 +124,7 @@
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
-        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119", 1);
         return "";
       case "ARC120":
         $damage = ArcaneDamage($cardID) + $myClassState[$CS_NextArcaneBonus] * 2;
@@ -161,6 +161,30 @@
         DealArcane(ArcaneDamage($cardID));
         AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
         return "";
+      case "ARC135": case "ARC136": case "ARC137":
+        if($cardID == "ARC135") $count = 5;
+        else if($cardID == "ARC136") $count = 4;
+        else $count = 3;
+        $deck = &GetDeck($currentPlayer);
+        $cards = "";
+        for($i=0; $i<$count; ++$i)
+        {
+          if(count($deck) > 0)
+          {
+            if($cards != "") $cards .= ",";
+            $card = array_shift($deck);
+            $cards .= $card;
+          }
+        }
+        if($cards != "")
+        {
+          WriteLog("Choose a card to go on the top of your deck.");
+          AddDecisionQueue("CHOOSECARD", $currentPlayer, $cards, 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "DECK");
+          AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
+          AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
+        }
+        return "Index lets you rearrange the cards of your deck.";
       case "ARC138": case "ARC139": case "ARC140":
         DealArcane(ArcaneDamage($cardID));
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
@@ -216,6 +240,11 @@
       case "ARC127": case "ARC132": case "ARC138": case "ARC142": case "ARC144": case "ARC149": return 3;
       case "ARC128": case "ARC133": case "ARC139": case "ARC143": case "ARC145": return 2;
       case "ARC134": case "ARC140": case "ARC146": return 1;
+      //CRU
+      case "CRU171": return 4;
+      case "CRU168": case "CRU172": case "CRU174": return 3;
+      case "CRU169": case "CRU173": case "CRU175": return 2;
+      case "CRU170": case "CRU176": return 1;
     }
   }
 

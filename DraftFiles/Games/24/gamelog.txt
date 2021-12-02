@@ -1,0 +1,3 @@
+Player 1 chose pack 1 Pick 1.
+Player 4 chose pack 1 Pick 1.
+Player 4 chose pack 1 Pick 2.

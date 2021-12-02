@@ -131,6 +131,7 @@
         return "Hexagore, the Death Hydra did $damage damage to you.";
       case "MON125":
         MyDrawCard();
+        $rv = "Shadow of Blasmophet did not discard a power 6 or more card.";
         if(AttackValue(DiscardRandom()) >= 6)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
@@ -199,6 +200,17 @@
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv .= " and got +2 from discarding a card with 6 or more power";
+        }
+        $rv .= ".";
+        return $rv;
+      case "MON222":
+        MyDrawCard();
+        $card = DiscardRandom();
+        $rv = "Tear Limb from Limb discarded " . CardLink($card, $card);
+        if(AttackValue($card) >= 6)
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv .= " and doubled the base attack of your next Brute attack action card";
         }
         $rv .= ".";
         return $rv;
