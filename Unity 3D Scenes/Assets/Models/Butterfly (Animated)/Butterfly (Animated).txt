@@ -1,0 +1,6 @@
+This package offers a high detailed and animated butterfly for free use in any project.
+
+The butterfly has high resolution .tga texture files, a poly-count of over 13.000 and comes with a beautiful animation.
+
+Offered by: INNOWELL GmbH - http://www.innowell.eu/
+
