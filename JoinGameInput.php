@@ -23,6 +23,7 @@
     $character = ""; $head = ""; $chest = ""; $arms = ""; $legs = ""; $offhand = "";
     $weapon1 = "";
     $weapon2 = "";
+    $weaponSideboard = "";
     for($i=0; $i<count($cards); ++$i)
     {
       $count = $cards[$i]->{'total'};
@@ -44,8 +45,16 @@
       }
       else if($cardType == "W")
       {
-        if($weapon1 == "") $weapon1 = $id;
-        else $weapon2 = $id;
+        for($j=0; $j<($count-$numSideboard); ++$j)
+        {
+          if($weapon1 == "") $weapon1 = $id;
+          else $weapon2 = $id;
+        }
+        for($j=0; $j<$numSideboard; ++$j)
+        {
+            if($weaponSideboard != "") $weaponSideboard .= " ";
+            $weaponSideboard .= $id;
+        }
       }
       else if($cardType == "E")
       {
@@ -54,11 +63,11 @@
         {
           switch($subtype)
           {
-            case "Head": $head = $id; break;
-            case "Chest": $chest = $id; break;
-            case "Arms": $arms = $id; break;
-            case "Legs": $legs = $id; break;
-            case "Off-Hand": $offhand = $id; break;
+            case "Head": if($head == "") $head = $id; else { if($headSideboard != "") $headSideboard .= " "; $headSideboard .= $id; } break;
+            case "Chest": if($chest == "") $chest = $id; else { if($chestSideboard != "") $chestSideboard .= " "; $chestSideboard .= $id; } break;
+            case "Arms": if($arms == "") $arms = $id; else { $armsSideboard .= " "; $armsSideboard .= $id; } break;
+            case "Legs": if($legs == "") $legs = $id; else { if($legsSideboard != "") $legsSideboard .= " "; $legsSideboard .= $id; }break;
+            case "Off-Hand": if($offhand == "") $offhand = $id; else { if($offhandSideboard != "") $offhandSideboard .= " "; $offhandSideboard .= $id; } break;
             default: break;
           }
         }
@@ -111,19 +120,28 @@
     fwrite($deckFile, $armsSideboard . "\r\n");
     fwrite($deckFile, $legsSideboard . "\r\n");
     fwrite($deckFile, $offhandSideboard . "\r\n");
+    fwrite($deckFile, $weaponSideboard . "\r\n");
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
   }
   else
   {
-    switch($deck)
+    $deckOptions = explode("-", $deck);
+    if($deckOptions[0] == "DRAFT")
     {
-      case "oot": $deckFile = "p1Deck.txt"; break;
-      case "shane": $deckFile = "shaneDeck.txt"; break;
-      case "shawn": $deckFile = "shawnTAD.txt"; break;
-      case "dori": $deckFile = "Dori.txt"; break;
-      case "katsu": $deckFile = "Katsu.txt"; break;
-      default: $deckFile = "p1Deck.txt"; break;
+      $deckFile = "./DraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
+    }
+    else
+    {
+      switch($deck)
+      {
+        case "oot": $deckFile = "p1Deck.txt"; break;
+        case "shane": $deckFile = "shaneDeck.txt"; break;
+        case "shawn": $deckFile = "shawnTAD.txt"; break;
+        case "dori": $deckFile = "Dori.txt"; break;
+        case "katsu": $deckFile = "Katsu.txt"; break;
+        default: $deckFile = "p1Deck.txt"; break;
+      }
     }
     copy($deckFile,"./Games/" . $gameName . "/p" . $playerID ."Deck.txt");
   }

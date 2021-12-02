@@ -1,0 +1,10 @@
+Player 1 chose pack 1 Pick 1.
+Player 7 chose pack 1 Pick 1.
+Player 7 chose pack 1 Pick 2.
+Player 6 chose pack 1 Pick 1.
+Player 6 chose pack 1 Pick 2.
+Player 6 chose pack 1 Pick 3.
+Player 5 chose pack 1 Pick 1.
+Player 5 chose pack 1 Pick 2.
+Player 5 chose pack 1 Pick 3.
+Player 5 chose pack 1 Pick 4.

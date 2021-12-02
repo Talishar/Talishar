@@ -134,9 +134,9 @@
           if(count($myDeck) == $i) { $rv .= "No cards in deck. Could not banish more."; return $rv; }
           $banished = $myDeck[$i];
           $rv .= "Banished $banished";
-          if(CardClass($banished) == "MECHANOLOGIST") { $myResources[0] += 1; $rv .= " and gained 1 resource."; }
+          if(CardClass($banished) == "MECHANOLOGIST") { $myResources[0] += 1; $rv .= " and gained 1 resource. "; }
           else { $rv .= ". "; }
-          BanishCard($myBanish, $myClassState, $cardID, "BOOST");
+          BanishCardForPlayer($banished, $currentPlayer, "DECK");
           unset($myDeck[$i]);
         }
         $myDeck = array_values($myDeck);
@@ -286,7 +286,7 @@
     ItemBoostEffects();
     if(SearchCurrentTurnEffects("ARC006", $currentPlayer)) ++$actionPoints;//High Octane
     $cardID = $myDeck[0];
-    BanishCard($myBanish, $myClassState, $cardID, "BOOST");
+    BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
     unset($myDeck[0]);
     $myDeck = array_values($myDeck);
     $grantsGA = CardClass($cardID) == "MECHANOLOGIST";

@@ -3,9 +3,9 @@
   include "CardSetters.php";
   include "CardGetters.php";
 
-function EvaluateCombatChain(&$totalAttack, &$totalDefense)
+function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[])
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_ChainAttackBuff;
+  global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_ChainAttackBuff, $CCS_LinkBaseAttack;
     UpdateGameState($playerID);
     BuildMainPlayerGameState();
     $attackType = CardType($combatChain[0]);
@@ -18,10 +18,21 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
 
       if($combatChain[$i] == $mainPlayer)
       {
-        $attack = AttackValue($combatChain[$i-1]);
-        if($CanGainAttack || $i == 1 || $attack < 0) $totalAttack += $attack;
+        if($i == 1) $attack = $combatChainState[$CCS_LinkBaseAttack];
+        else $attack = AttackValue($combatChain[$i-1]);
+        if($CanGainAttack || $i == 1 || $attack < 0)
+        {
+          array_push($attackModifiers, $combatChain[$i-1]);
+          array_push($attackModifiers, $attack);
+          $totalAttack += $attack;
+        }
         $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
-        if(($CanGainAttack && !$SnagActive) || $attack < 0) $totalAttack += $attack;
+        if(($CanGainAttack && !$SnagActive) || $attack < 0)
+        {
+          array_push($attackModifiers, $combatChain[$i-1]);
+          array_push($attackModifiers, $attack);
+          $totalAttack += $attack;
+        }
       }
       else
       {
@@ -43,7 +54,12 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
         if($currentTurnEffects[$i+1] == $mainPlayer)
         {
           $attack = EffectAttackModifier($currentTurnEffects[$i]);
-          if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+          if($CanGainAttack || $attack < 0)
+          {
+            array_push($attackModifiers, $currentTurnEffects[$i]);
+            array_push($attackModifiers, $attack);
+            $totalAttack += $attack;
+          }
         }
         else
         {
@@ -53,11 +69,48 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense)
     }
 
     $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
-    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    if($CanGainAttack || $attack < 0)
+    {
+      array_push($attackModifiers, "Character/Equipment");
+      array_push($attackModifiers, $attack);
+      $totalAttack += $attack;
+    }
     $attack = AuraAttackModifiers(0);//TODO: If there are both negatives and positives here, this might mess up?...
-    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    if($CanGainAttack || $attack < 0)
+    {
+      array_push($attackModifiers, "Aura Ability");
+      array_push($attackModifiers, $attack);
+      $totalAttack += $attack;
+    }
     $attack = $combatChainState[$CCS_ChainAttackBuff];
-    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    if($CanGainAttack || $attack < 0)
+    {
+      array_push($attackModifiers, "Whole combat chain buff");
+      array_push($attackModifiers, $attack);
+      $totalAttack += $attack;
+    }
+}
+
+function StartTurnAbilities()
+{
+  global $mainPlayer, $defPlayer;
+  AuraStartTurnAbilities();
+  $mainItems = &GetItems($mainPlayer);
+  for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
+  {
+    if($mainItems[$i+2] == 1) $mainItems[$i+2] = 2;
+    ItemStartTurnAbility($i);
+  }
+  $defItems = &GetItems($defPlayer);
+  for($i=0; $i<count($defItems); $i+=ItemPieces())
+  {
+    if($defItems[$i+2] == 1) $defItems[$i+2] = 2;
+  }
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  for($i=count($mainCharacter) - CharacterPieces(); $i>=0; $i -= CharacterPieces())
+  {
+    CharacterStartTurnAbility($i);
+  }
 }
 
 function HasIncreasedAttack()
@@ -512,45 +565,64 @@ function GetDefHandIndices()
   return GetIndices(count($defHand));
 }
 
-function PlayAura($cardID, $player, $number=1)
+function CurrentAttack()
 {
-  $auras = &GetAuras($player);
-  if($cardID == "ARC112" && SearchCurrentTurnEffects("ARC081", $player)) ++$number;
-  for($i=0; $i<$number; ++$i)
+  global $combatChain;
+  if(count($combatChain) == 0) return "";
+  return $combatChain[0];
+}
+
+function RollDie($player, $fromDQ=false)
+{
+  global $CS_DieRoll;
+  $roll = random_int(1, 6);
+  SetClassState($player, $CS_DieRoll, $roll);
+  $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
+  if($gamblersGlovesIndex != -1 && IsCharacterAbilityActive($player, $gamblersGlovesIndex))
   {
-    array_push($auras, $cardID);
-    array_push($auras, 2);
+    if($fromDQ)
+    {
+      PrependDecisionQueue("ROLLDIE", $player, "-", 1);
+      PrependDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      PrependDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
+      PrependDecisionQueue("NOPASS", $player, "-");
+      PrependDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result_(" . $roll . ")");
+    }
+    else
+    {
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result_(" . $roll . ")");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("ROLLDIE", $player, "-", 1);
+    }
   }
 }
 
-function PlayMyAura($cardID)
+function IsCharacterAbilityActive($player, $index)
 {
-  global $myAuras;
-  array_push($myAuras, $cardID);
-  array_push($myAuras, 2);
+  $character = &GetPlayerCharacter($player);
+  return $character[$index+1] == 2;
 }
 
-function PlayTheirAura($cardID)
+function GetDieRoll($player)
 {
-  global $theirAuras;
-  array_push($theirAuras, $cardID);
-  array_push($theirAuras, 2);
+  global $CS_DieRoll;
+  return GetClassState($player, $CS_DieRoll);
 }
 
-function RollDie()
+function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
-  return random_int(1, 6);
-}
-
-function CanPlayAsInstant($cardID, $index=-1)
-{
-  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken;
+  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
+  global $mainPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
     if(CardClass($cardID) == "WIZARD" && $cardType == "A") return true;
   }
+  if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
+  if($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
   if(GetClassState($currentPlayer, $CS_NextNAAInstant))
   {
     if($cardType == "A") return true;
@@ -559,6 +631,12 @@ function CanPlayAsInstant($cardID, $index=-1)
   {
     if($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
     if(SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
+  }
+  if($from == "BANISH")
+  {
+    $banish = GetBanish($currentPlayer);
+    $mod = explode("-", $banish[$index+1])[0];
+    if($mod == "INST" || $mod == "ARC119") return true;
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
@@ -657,10 +735,10 @@ function AttackDestroyed($attackID)
   }
 }
 
-function CloseCombatChain()
+function CloseCombatChain($chainClosed="true")
 {
   global $turn, $currentPlayer, $mainPlayer;
-  AddDecisionQueue("FINALIZECHAINLINK", $mainPlayer, "true");
+  AddDecisionQueue("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
 }
@@ -669,7 +747,9 @@ function DestroyCharacter($player, $index)
 {
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
-  AddGraveyard($char[$index], $player, "CHAR");
+  $cardID = $char[$index];
+  AddGraveyard($cardID, $player, "CHAR");
+  CharacterDestroyEffect($cardID, $player);
 }
 
 ?>

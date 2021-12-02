@@ -7,6 +7,7 @@
     {
       case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? 0 : 2);
       case "CRU105": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
+      case "CRU160": return 2;
       default: return 0;
     }
   }
@@ -19,6 +20,7 @@
       case "CRU101": if($index == -1) $index = $myClassState[$CS_CharacterIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
       case "CRU102": return "A";
       case "CRU105": return "A";
+      case "CRU160": return "A";
       default: return "";
     }
   }
@@ -29,6 +31,7 @@
     switch($cardID)
     {
       //CRU Ninja
+      case "CRU057": case "CRU058": case "CRU059": return ComboActive($cardID);
       case "CRU060": case "CRU061": case "CRU062": return ComboActive($cardID);
       case "CRU084": return true;
       case "CRU085": case "CRU086": case "CRU087": return true;
@@ -76,6 +79,7 @@
   {
     switch($cardID)
     {
+      case "CRU008": return 2;
       case "CRU025": return 2;
       case "CRU029": return 10;
       case "CRU030": return 9;
@@ -114,6 +118,7 @@
     switch($cardID)
     {
       //Brute
+      case "CRU008": return true;
       case "CRU013": case "CRU014": case "CRU015": return true;
       //Guardian
       case "CRU025": return HasCrush($attackID);
@@ -169,6 +174,14 @@
     AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIADDHAND", $mainPlayer, "-", 1);
     AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "CRU055", 1);
+  }
+
+  function KayoStaticAbility()
+  {
+    global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
+    $roll = GetDieRoll($mainPlayer);
+    if($roll >= 5) $combatChainState[$CCS_LinkBaseAttack] *= 2;
+    else $combatChainState[$CCS_LinkBaseAttack] = floor($combatChainState[$CCS_LinkBaseAttack]/2);
   }
 
 ?>

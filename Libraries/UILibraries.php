@@ -4,8 +4,12 @@
   {//
     global $playerID, $gameName;
     $fileExt = ".png";
-    if($folder == "CardImages" && $maxHeight < 200) { $folder = "SmallCardImages"; $fileExt = ".jpg"; }
-    else if($folder == "CardImages") { $folder = "BigCardImages"; $fileExt = ".jpg"; }
+    if(mb_strpos($folder, "CardImages") !== false)
+    {
+      if($maxHeight < 210) $folder = str_replace("CardImages", "SmallCardImages", $folder);
+      else $folder = str_replace("CardImages", "BigCardImages", $folder);
+      $fileExt = ".jpg";
+    }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
     $margin = "margin:0px;";
@@ -32,10 +36,14 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="")
+  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="")
   {
     global $gameName;
-    $rv = "<button " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
+    if($image != "")
+    {
+      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">";
+    }
+    else $rv = "<button " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
     return $rv;
   }
 
@@ -58,14 +66,14 @@
     return $rv;
   }
 
-  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="")
+  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./")
   {
     $rv = "<div id='" . $id . "' style='background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:50px; left: 50px; right: 250px; bottom:50px;" . ($defaultState == 0 ? " display:none;" : "") . "'>";
     if($title != "") $rv .= "<h1>" . $title . "</h1>";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
-      $rv .= Card($fromArr[$i], "CardImages", 150, 0, 1);
+      $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
     }
     $rv .= $customInput;
     $rv .= "</div>";
@@ -153,6 +161,20 @@
     return $rv;
   }
 
+  function AttackModifiers($attackModifiers)
+  {
+    $rv = "";
+    for($i=0; $i<count($attackModifiers); $i += 2)
+    {
+      $idArr = explode("-", $attackModifiers[$i]);
+      $cardID = $idArr[0];
+      $bonus = $attackModifiers[$i+1];
+      if($bonus == 0) continue;
+      $rv .= CardLink($cardID, $cardID) . " gives " . ($bonus > 0 ? "+" : "") . $bonus . "<BR>";
+    }
+    return $rv;
+  }
+
   function PitchColor($pitch)
   {
     switch($pitch)
@@ -169,10 +191,11 @@
     global $myBanish, $turn, $currentPlayer, $playerID;
     $rv = "";
     for($i=0; $i<count($myBanish); $i+=BanishPieces()) {
-      $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
+      $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
       $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
-      if($myBanish[$i+1] == "INT") $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 1);//Display intimidated cards grayed out and unplayable
-      else if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC" || $myBanish[$i+1] == "INST")
+      $mod = explode("-", $myBanish[$i+1])[0];
+      if($mod == "INT") $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "INST" || $mod == "MON212"  || $mod == "ARC119")
         $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
@@ -191,7 +214,7 @@
     if($playerID != $currentPlayer) return 0;
     if($from == "BANISH")
     {
-      if(PlayableFromBanish($cardID)) return 4;
+      if($isPlayable || PlayableFromBanish($cardID)) return 4;
       if(HasBloodDebt($cardID)) return 2;
       if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
       if($isPlayable && ComboActive($cardID)) return 5;
@@ -201,6 +224,21 @@
     if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
     else if($isPlayable) return 6;
     return 0;
+  }
+
+  function CardLink($caption, $cardNumber)
+  {
+    //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
+    $pitchValue = PitchValue($cardNumber);
+    switch($pitchValue)
+    {
+      case 3: $color = "Blue"; break;
+      case 2: $color = "GoldenRod"; break;
+      case 1: $color = "Red"; break;
+      default: $color = "DimGray"; break;
+    }
+    $file = "'./" . "BigCardImages" . "/" . $cardNumber . ".jpg'";
+    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . CardName($cardNumber) . "</span></b>";
   }
 
 ?>
