@@ -1,0 +1,283 @@
+fileFormatVersion: 2
+guid: bf1b95fba89fb2e438e098ef4361e389
+timeCreated: 1458051986
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: auge_links
+    100002: auge_links001
+    100004: //RootNode
+    100006: butterfly_fell
+    100008: butterfly_gruppe
+    100010: fuehler_links
+    100012: haar_01
+    100014: haar_02
+    100016: haar_03
+    100018: haar_04
+    100020: haar_05
+    100022: haar_06
+    100024: haar_07
+    100026: haar_08
+    100028: haar_09
+    100030: haar_10
+    100032: hinterbein
+    100034: koerper
+    100036: left_wing
+    100038: left_wing_low
+    100040: left_wing_up
+    100042: mittelbein
+    100044: right_wing
+    100046: right_wing_low
+    100048: right_wing_up
+    100050: ruessel
+    100052: schutzpanzer
+    100054: vorderbein
+    400000: auge_links
+    400002: auge_links001
+    400004: //RootNode
+    400006: butterfly_fell
+    400008: butterfly_gruppe
+    400010: fuehler_links
+    400012: haar_01
+    400014: haar_02
+    400016: haar_03
+    400018: haar_04
+    400020: haar_05
+    400022: haar_06
+    400024: haar_07
+    400026: haar_08
+    400028: haar_09
+    400030: haar_10
+    400032: hinterbein
+    400034: koerper
+    400036: left_wing
+    400038: left_wing_low
+    400040: left_wing_up
+    400042: mittelbein
+    400044: right_wing
+    400046: right_wing_low
+    400048: right_wing_up
+    400050: ruessel
+    400052: schutzpanzer
+    400054: vorderbein
+    2300000: auge_links
+    2300002: auge_links001
+    2300004: fuehler_links
+    2300006: haar_01
+    2300008: haar_02
+    2300010: haar_03
+    2300012: haar_04
+    2300014: haar_05
+    2300016: haar_06
+    2300018: haar_07
+    2300020: haar_08
+    2300022: haar_09
+    2300024: haar_10
+    2300026: hinterbein
+    2300028: koerper
+    2300030: left_wing_low
+    2300032: left_wing_up
+    2300034: mittelbein
+    2300036: right_wing_low
+    2300038: right_wing_up
+    2300040: ruessel
+    2300042: schutzpanzer
+    2300044: vorderbein
+    3300000: auge_links
+    3300002: auge_links001
+    3300004: fuehler_links
+    3300006: haar_01
+    3300008: haar_02
+    3300010: haar_03
+    3300012: haar_04
+    3300014: haar_05
+    3300016: haar_06
+    3300018: haar_07
+    3300020: haar_08
+    3300022: haar_09
+    3300024: haar_10
+    3300026: hinterbein
+    3300028: koerper
+    3300030: left_wing_low
+    3300032: left_wing_up
+    3300034: mittelbein
+    3300036: right_wing_low
+    3300038: right_wing_up
+    3300040: ruessel
+    3300042: schutzpanzer
+    3300044: vorderbein
+    4300000: right_wing_up
+    4300002: right_wing_low
+    4300004: left_wing_up
+    4300006: left_wing_low
+    4300008: schutzpanzer
+    4300010: fuehler_links
+    4300012: koerper
+    4300014: vorderbein
+    4300016: ruessel
+    4300018: hinterbein
+    4300020: auge_links001
+    4300022: auge_links
+    4300024: mittelbein
+    4300026: haar_09
+    4300028: haar_04
+    4300030: haar_08
+    4300032: haar_01
+    4300034: haar_02
+    4300036: haar_06
+    4300038: haar_05
+    4300040: haar_10
+    4300042: haar_07
+    4300044: haar_03
+    7400000: Take 001
+    9500000: //RootNode
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 100
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: butterfly_gruppe
+        weight: 1
+      - path: butterfly_gruppe/auge_links
+        weight: 1
+      - path: butterfly_gruppe/auge_links001
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_01
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_02
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_03
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_04
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_05
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_06
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_07
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_08
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_09
+        weight: 1
+      - path: butterfly_gruppe/butterfly_fell/haar_10
+        weight: 1
+      - path: butterfly_gruppe/fuehler_links
+        weight: 1
+      - path: butterfly_gruppe/hinterbein
+        weight: 1
+      - path: butterfly_gruppe/koerper
+        weight: 1
+      - path: butterfly_gruppe/mittelbein
+        weight: 1
+      - path: butterfly_gruppe/ruessel
+        weight: 1
+      - path: butterfly_gruppe/schutzpanzer
+        weight: 1
+      - path: butterfly_gruppe/vorderbein
+        weight: 1
+      - path: left_wing
+        weight: 1
+      - path: left_wing/left_wing_low
+        weight: 1
+      - path: left_wing/left_wing_up
+        weight: 1
+      - path: right_wing
+        weight: 1
+      - path: right_wing/right_wing_low
+        weight: 1
+      - path: right_wing/right_wing_up
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
