@@ -3,38 +3,44 @@
 function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
 {
   $deck = &GetDeck($player);
-  return SearchInner($deck, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($deck, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
 }
 
 function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
 {
   $hand = &GetHand($player);
-  return SearchInner($hand, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($hand, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
 }
 
 function SearchPitch($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
 {
   $pitch = &GetPitch($player);
-  return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($pitch, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
 }
 
 function SearchDiscard($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
 {
-  $pitch = &GetDiscard($player);
-  return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  $discard = &GetDiscard($player);
+  return SearchInner($discard, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
 }
 
 function SearchBanish($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
 {
-  $pitch = &GetBanish($player);
-  return SearchInner($pitch, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  $banish = &GetBanish($player);
+  return SearchInner($banish, BanishPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
 }
 
-function SearchInner(&$array, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly)
+function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+{
+  global $combatChain;
+  return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+}
+
+function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly)
 {
   $cardList = "";
   if(!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
-  for($i=0; $i<count($array); ++$i)
+  for($i=0; $i<count($array); $i += $count)
   {
     $cardID = $array[$i];
     if(count($talents) > 0)
@@ -228,6 +234,13 @@ function SearchEquipNegCounter(&$character)
   return $equipList;
 }
 
+function SearchCharacterActive($player, $cardID)
+{
+  $index = FindCharacterIndex($player, $cardID);
+  if($index == -1) return false;
+  return IsCharacterAbilityActive($player, $index);
+}
+
 function SearchCharacterForCard($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
@@ -315,6 +328,22 @@ function SearchPitchForColor($player, $color)
   for($i=0; $i<count($pitch); $i += PitchPieces())
   {
     if(PitchValue($pitch[$i]) == $color) ++$count;
+  }
+  return $count;
+}
+
+//For e.g. Mutated Mass
+function SearchPitchForNumCosts($player)
+{
+  $count = 0;
+  $countArr = [];
+  $pitch = &GetPitch($player);
+  for($i=0; $i<count($pitch); $i += PitchPieces())
+  {
+    $cost = CardCost($pitch[$i]);
+    while(count($countArr) <= $cost) array_push($countArr, 0);
+    if($countArr[$cost] == 0) ++$count;
+    ++$countArr[$cost];
   }
   return $count;
 }

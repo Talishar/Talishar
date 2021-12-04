@@ -1,0 +1,74 @@
+Player 1 chose Pack 1 Pick 1.
+
+Player 2 chose Pack 1 Pick 1.
+Player 3 chose Pack 1 Pick 1.
+Player 4 chose Pack 1 Pick 1.
+Player 2 chose Pack 1 Pick 2.
+Player 3 chose Pack 1 Pick 2.
+Player 4 chose Pack 1 Pick 2.
+Player 2 chose Pack 1 Pick 3.
+Player 3 chose Pack 1 Pick 3.
+Player 2 chose Pack 1 Pick 4.
+Player 1 chose Pack 1 Pick 2.
+
+Player 4 chose Pack 1 Pick 3.
+Player 3 chose Pack 1 Pick 4.
+Player 2 chose Pack 1 Pick 5.
+Player 1 chose Pack 1 Pick 3.
+
+Player 4 chose Pack 1 Pick 4.
+Player 3 chose Pack 1 Pick 5.
+Player 2 chose Pack 1 Pick 6.
+Player 1 chose Pack 1 Pick 4.
+
+Player 4 chose Pack 1 Pick 5.
+Player 3 chose Pack 1 Pick 6.
+Player 2 chose Pack 1 Pick 7.
+Player 1 chose Pack 1 Pick 5.
+
+Player 4 chose Pack 1 Pick 6.
+Player 3 chose Pack 1 Pick 7.
+Player 2 chose Pack 1 Pick 8.
+Player 1 chose Pack 1 Pick 6.
+
+Player 4 chose Pack 1 Pick 7.
+Player 3 chose Pack 1 Pick 8.
+Player 2 chose Pack 1 Pick 9.
+Player 1 chose Pack 1 Pick 7.
+
+Player 4 chose Pack 1 Pick 8.
+Player 3 chose Pack 1 Pick 9.
+Player 2 chose Pack 1 Pick 10.
+Player 1 chose Pack 1 Pick 8.
+
+Player 4 chose Pack 1 Pick 9.
+Player 3 chose Pack 1 Pick 10.
+Player 2 chose Pack 1 Pick 11.
+Player 1 chose Pack 1 Pick 9.
+
+Player 4 chose Pack 1 Pick 10.
+Player 3 chose Pack 1 Pick 11.
+Player 2 chose Pack 1 Pick 12.
+Player 1 chose Pack 1 Pick 10.
+
+Player 4 chose Pack 1 Pick 11.
+Player 3 chose Pack 1 Pick 12.
+Player 2 chose Pack 1 Pick 13.
+Player 1 chose Pack 1 Pick 11.
+
+Player 4 chose Pack 1 Pick 12.
+Player 3 chose Pack 1 Pick 13.
+Player 2 chose Pack 1 Pick 14.
+Player 1 chose Pack 1 Pick 12.
+
+Player 4 chose Pack 1 Pick 13.
+Player 3 chose Pack 1 Pick 14.
+Player 2 chose Pack 1 Pick 15.
+Player 1 chose Pack 1 Pick 13.
+
+Player 4 chose Pack 1 Pick 14.
+Player 3 chose Pack 1 Pick 15.
+Player 1 chose Pack 1 Pick 14.
+
+Player 4 chose Pack 1 Pick 15.
+Player 1 chose Pack 1 Pick 15.

@@ -1,0 +1,12 @@
+GL BossHealth
+GL BossStatus
+GL BossDeck
+GL BossDiscard
+GL BossPitch
+GL BossResources
+GL BossCharacter
+GL Barricades
+GL CombatChain
+GL Stance
+GL StanceDeck
+GL Turn

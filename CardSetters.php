@@ -1,6 +1,6 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $modifier)
+function BanishCardForPlayer($cardID, $player, $from, $modifier="-")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
@@ -25,9 +25,17 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was banished from your deck face up by an action card. Gained 1 action point.");
       ++$actionPoints;
-    }
-  array_push($banish, $cardID);
-  array_push($banish, $modifier);
+  }
+  //Do effects that change where it goes, or banish it if not
+  if($from == "DECK" && SearchCharacterActive($player, "CRU099") && CardCost($cardID) <= 2)
+  {
+    PutItemIntoPlay($cardID);
+  }
+  else
+  {
+    array_push($banish, $cardID);
+    array_push($banish, $modifier);
+  }
   ++$classState[$CS_CardsBanished];
   if(AttackValue($cardID) >= 6)
   {
