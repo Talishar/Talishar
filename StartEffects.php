@@ -12,6 +12,9 @@
 
   include "ParseGamestate.php";
 
+  array_push($layerPriority, ShouldHoldPriority(1));
+  array_push($layerPriority, ShouldHoldPriority(2));
+
   $myHealth = CharacterHealth($myCharacter[0]);
   $theirHealth = CharacterHealth($theirCharacter[0]);
   StatsStartTurn();
@@ -28,6 +31,8 @@
       AddDecisionQueue("CHOOSEDECK", 2, $items);
       AddDecisionQueue("PUTPLAY", 2, "-");
   }
+
+  AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-");
 
   ProcessDecisionQueue();
 

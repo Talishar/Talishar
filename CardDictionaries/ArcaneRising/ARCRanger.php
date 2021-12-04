@@ -174,6 +174,39 @@
       case "ARC048": case "ARC049": case "ARC050":
         Reload();
         return "Take cover allows you to reload.";
+      case "ARC051": case "ARC052": case "ARC053":
+        if(!ArsenalEmpty($currentPlayer)) return "Silver the Tip did nothing because your arsenal is not empty.";
+        if($cardID == "ARC051") $count = 4;
+        else if($cardID == "ARC052") $count = 3;
+        else $count = 2;
+        $deck = &GetDeck($currentPlayer);
+        $cards = "";
+        $arrows = "";
+        for($i=0; $i<$count; ++$i)
+        {
+          if(count($deck) > 0)
+          {
+            if($cards != "") $cards .= ",";
+            $card = array_shift($deck);
+            $cards .= $card;
+            if(CardSubtype($card) == "Arrow")
+            {
+              if($arrows != "") $arrows .= ",";
+              $arrows .= $card;
+            }
+          }
+        }
+        if($arrows != "")
+        {
+          AddDecisionQueue("CHOOSECARD", $currentPlayer, $arrows, 1);
+          AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK");
+        }
+        if($cards != "")
+        {
+          AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
+          AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
+        }
+        return "Silver the Tip lets you load an arrow and rearrange the rest of the cards on the bottom of your deck.";
       case "ARC054": case "ARC055": case "ARC056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();

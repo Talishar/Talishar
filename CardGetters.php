@@ -289,6 +289,13 @@ function &GetTurnStats($player)
   }
 }
 
+function &GetAllies($player)
+{
+  global $p1Allies, $p2Allies;
+  if($player == 1) return $p1Allies;
+  else return $p2Allies;
+}
+
 function HasTakenDamage($player)
 {
   global $CS_DamageTaken;

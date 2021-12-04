@@ -56,27 +56,41 @@ body {
   <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Create Game"></div>
 </form>
 <br>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Illusionist Update! 10/27/21</h3>
+<h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Alpha Test</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Layers/Wizard Update! 11/24/21</h3>
+<?php
+  echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
+?>
+  <input type="hidden" id="numPlayers" name="numPlayers" value="8" />
+  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Solo Draft Practice"></div>
+</form>
+<!---
+<?php
+  echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/PVE/PVEMenu.php'>");
+?>
+  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="PVE Menu"></div>
+</form>
+--->
 </div>
 </div>
 
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Supported cards:</h3><div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL ELE except Fable</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Wizard except Aetherize, Metacarpus Node, Sonic Boom (partial)</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Illusionist</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Runeblade</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Data Doll and Meganetic Shockwave</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Meganetic Shockwave</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian except Righteous Cleansing</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ranger except Silver the Tip</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ninja except Benji, Find Center, Heron's Flight, Crane Dance</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Brute except Kayo, Tear Limb from Limb, Massacre, and Argh... Smash!</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Generic except Chains of Eminence, Gambler's Gloves, and Exude Confidence</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Shadow except Doomsday, Eclipse, Mutated Mass, Guardian of the Shadowrealm, Soul Harvest, Spew Shadow, Eclipse Existence</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All ARC Wizard except Index and Sonic Boom (partial)</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Light except Glisten, Blinding Beam, Ray of Hope</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ranger</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ninja except Benji</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Brute except Argh... Smash!</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Generic except Chains of Eminence, and Exude Confidence</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Shadow except Guardian of the Shadowrealm, Soul Harvest</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Light except Glisten</div>
 </div>
 
-<div style="height:20px; bottom:30px; left:5%; width: 90%; position:absolute; color:white;">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.</div>
+<div style="height:20px; bottom:30px; left:5%; width: 90%; position:absolute; color:white;">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.  Card Images © Legend Story Studios</div>
 </div>
 </body>

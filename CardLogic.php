@@ -40,13 +40,26 @@ function PummelHit()
 function KatsuHit($index)
 {
   global $mainPlayer;
-  AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1");
+  AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_use_Katsu's_ability");
+  AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+  AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
   AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
   AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
   AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
   AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
   AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
   AddDecisionQueue("EXHAUSTCHARACTER", $mainPlayer, $index, 1);
+}
+
+function RandomHandBottomDeck($player)
+{
+  $hand = &GetHand($player);
+  $index = rand() % count($hand);
+  $discarded = $hand[$index];
+  unset($hand[$index]);
+  $hand = array_values($hand);
+  $deck = &GetDeck($player);
+  array_push($deck, $discarded);
 }
 
 function LordOfWindIndices()
@@ -164,6 +177,16 @@ function HasEffect($cardID)
   return false;
 }
 
+function AddLayer($cardID, $player, $parameter, $target="-")
+{
+  global $layers;
+  //Layers are on a stack, so you need to push things on in reverse order
+  array_unshift($layers, $target);
+  array_unshift($layers, $parameter);
+  array_unshift($layers, $player);
+  array_unshift($layers, $cardID);
+}
+
 function AddDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
 {
   global $decisionQueue;
@@ -187,9 +210,12 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ProcessDecisionQueue()
   {
     global $turn, $decisionQueue;
-    $count = count($turn);
-    if(count($turn) < 3) $turn[2] = "";
-    array_unshift($turn, "", "", "");
+    if($turn[0] != "INSTANT")//Or anything that can cause a card to be played
+    {
+      $count = count($turn);
+      if(count($turn) < 3) $turn[2] = "";
+      array_unshift($turn, "", "", "");
+    }
     ContinueDecisionQueue("");
   }
 
@@ -197,26 +223,63 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint, $otherPlayer, $p2ClassState, $myClassState, $theirClassState;
-    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESUMEPAYING")
+    global $layers, $layerPriority;
+    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY")
     {
       if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
-      array_shift($turn);
-      array_shift($turn);
-      array_shift($turn);
-      if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY")
+      if(count($decisionQueue) == 0 && count($layers) > 0)
       {
+        $priorityHeld = 0;
+        if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-", 1); $priorityHeld = 1; $layerPriority[0] = 0; }
+        if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-", 1); $priorityHeld = 1; $layerPriority[1] = 0; }
+        if($priorityHeld)
+        {
+          ContinueDecisionQueue("");
+        }
+        else
+        {
+          array_shift($turn);
+          array_shift($turn);
+          array_shift($turn);
+          $decisionQueue = [];
+          $cardID = array_shift($layers);
+          $player = array_shift($layers);
+          $parameter = array_shift($layers);
+          $target = array_shift($layers);
+          $params = explode("-", $parameter);
+          if($currentPlayer != $player)
+          {
+            $currentPlayer = $player;
+            $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+            BuildMyGamestate($currentPlayer);
+          }
+          WriteLog("Resolving layer for " . CardLink($cardID, $cardID));
+          $layerPriority[0] = ShouldHoldPriority(1);
+          $layerPriority[1] = ShouldHoldPriority(2);
+          PlayCardEffect($cardID, $params[0], $params[1], $target);
+        }
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY")
+      {
+        array_shift($turn);
+        array_shift($turn);
+        array_shift($turn);
         if($currentPlayer != $decisionQueue[1])
         {
           $currentPlayer = $decisionQueue[1];
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
         }
+        $params = explode("-", $decisionQueue[2]);
         $decisionQueue = [];
-        PlayCardEffect($turn[2], $turn[3], $turn[4]);
+        PlayCardEffect($params[0], $params[1], $params[2]);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING")
       {
+        array_shift($turn);
+        array_shift($turn);
+        array_shift($turn);
         $params = explode("-", $decisionQueue[2]);//Parameter
         $decisionQueue = [];
         if($lastResult == "") $lastResult = 0;
@@ -224,6 +287,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       }
       else
       {
+        array_shift($turn);
+        array_shift($turn);
+        array_shift($turn);
         FinalizeAction();
       }
       return;
@@ -253,6 +319,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function FinalizeAction()
   {
     global $currentPlayer, $mainPlayer, $otherPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $mainPlayerGamestateStillBuilt;
+    global $layerPriority;
     if(!$mainPlayerGamestateStillBuilt) UpdateGameState(1);
     BuildMainPlayerGamestate();
     if($turn[0] == "M")
@@ -265,7 +332,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         $makeBlockBackup = 1;
       }
       else {
-        if($actionPoints > 0)
+        if($actionPoints > 0 || ShouldHoldPriority($mainPlayer))
         {
           $turn[0] = "M";
           $currentPlayer = $mainPlayer;
@@ -296,6 +363,14 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     }
     return 0;
   }
+
+//Return whether priority should be held for the player by default/settings
+function ShouldHoldPriority($player)
+{
+  $char = GetPlayerCharacter($player);
+  if($char[0] == "ARC113" || $char[0] == "ARC114") return 1;
+  return 0;
+}
 
 function GiveAttackGoAgain()
 {
@@ -390,24 +465,31 @@ function OptMain($amount)
   AddDecisionQueue("OPT", $mainPlayer, $cards);
 }
 
-function DiscardRandom()
+function DiscardRandom($player="", $source="")
 {
-  global $playerID,$myHand,$myDiscard,$myCharacter, $myClassState, $CS_Num6PowDisc, $mainPlayer, $currentPlayer;
-  if(count($myHand) == 0) return;
-  $index = rand() % count($myHand);
-  $discarded = $myHand[$index];
-  unset($myHand[$index]);
-  $myHand = array_values($myHand);
-  AddGraveyard($discarded, $currentPlayer, "HAND");
+  global $CS_Num6PowDisc, $mainPlayer, $currentPlayer;
+  if($player == "") $player = $currentPlayer;
+  $hand = &GetHand($player);
+  if(count($hand) == 0) return;
+  $index = rand() % count($hand);
+  $discarded = $hand[$index];
+  unset($hand[$index]);
+  $hand = array_values($hand);
+  AddGraveyard($discarded, $player, "HAND");
   if(AttackValue($discarded) >= 6)
   {
-    if(($myCharacter[0] == "WTR001" || $myCharacter[0] == "WTR002") && $playerID == $mainPlayer) {//Rhinar
+    $character = &GetPlayerCharacter($player);
+    if(($character[0] == "WTR001" || $character[0] == "WTR002") && $player == $mainPlayer) {//Rhinar
       WriteLog("Rhinar Intimidated.");
       Intimidate();
     }
-    ++$myClassState[$CS_Num6PowDisc];
+    IncrementClassState($player, $CS_Num6PowDisc);
   }
-  UpdateGameState($currentPlayer);
+  if($discarded == "CRU008" && $source != "" && CardClass($source) == "BRUTE" && CardType($source) == "AA")
+  {
+    WriteLog("Massacre Intimidated because it was discarded by a Brute attack action card..");
+    Intimidate();
+  }
   return $discarded;
 };
 
@@ -425,8 +507,8 @@ function DefDiscardRandom()
 function Intimidate()
 {
   global $defPlayer, $theirHand, $currentPlayer;//For now we'll assume you can only intimidate the opponent
-  if(count($theirHand) == 0) return;//Nothing to do if they have no hand
-  $otherPlayer == ($currentPlayer == 1 ? 2 : 1);
+  if(count($theirHand) == 0) { WriteLog("Intimidate did nothing because there are no cards in hand."); return; }//Nothing to do if they have no hand
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $index = rand() % count($theirHand);
   BanishCardForPlayer($theirHand[$index], $otherPlayer, "HAND", "INT");
   unset($theirHand[$index]);

@@ -1,5 +1,42 @@
 <?php
 
+function PlayAura($cardID, $player, $number=1)
+{
+  $auras = &GetAuras($player);
+  if($cardID == "ARC112" && SearchCurrentTurnEffects("ARC081", $player)) ++$number;
+  for($i=0; $i<$number; ++$i)
+  {
+    array_push($auras, $cardID);
+    array_push($auras, 2);
+    array_push($auras, AuraPlayCounters($cardID));
+  }
+}
+
+function PlayMyAura($cardID)
+{
+  global $myAuras;
+  array_push($myAuras, $cardID);
+  array_push($myAuras, 2);
+  array_push($myAuras, AuraPlayCounters($cardID));
+}
+
+function PlayTheirAura($cardID)
+{
+  global $theirAuras;
+  array_push($theirAuras, $cardID);
+  array_push($theirAuras, 2);
+  array_push($theirAuras, AuraPlayCounters($cardID));
+}
+
+function AuraPlayCounters($cardID)
+{
+  switch($cardID)
+  {
+    case "CRU075": return 1;
+    default: return 0;
+  }
+}
+
 function DestroyAura($player, $index)
 {
   $auras = &GetAuras($player);
@@ -83,16 +120,18 @@ function AuraDestroyAbility($cardID)
 
 function AuraStartTurnAbilities()
 {
-  global $mainAuras, $mainPlayer;
+  global $mainPlayer;
+  $mainAuras = &GetAuras($mainPlayer);
   for($i=count($mainAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
+    $dest = AuraDestroyAbility($mainAuras[$i]);
     switch($mainAuras[$i])
     {
       case "MON186": SoulShackleStartTurn($mainPlayer); break;
       case "MON006": GenesisStartTurnAbility(); break;
+      case "CRU075": if($mainAuras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$mainAuras[$i+2]; } break;
       default: break;
     }
-    $dest = AuraDestroyAbility($mainAuras[$i]);
     if($dest != "")
     {
       AuraDestroyed($mainPlayer, $mainAuras[$i]);
@@ -117,12 +156,12 @@ function AuraBeginEndStepAbilities()
     {
       case "ELE117":
         $pitchCount = SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "EARTH"));
-        ++$auras[$i+1];
-        WriteLog("Channel Mount Heroic has " . $auras[$i+1] . " flow counters, and you have " . $pitchCount . " earth cards in your pitch zone.");
-        if($pitchCount < $auras[$i+1]) $remove = 1;
+        ++$auras[$i+2];
+        WriteLog("Channel Mount Heroic has " . $auras[$i+2] . " flow counters, and you have " . $pitchCount . " earth cards in your pitch zone.");
+        if($pitchCount < $auras[$i+2]) $remove = 1;
         break;
-      case "ELE146": ++$auras[$i+1]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+1]) $remove = 1; break;
-      case "ELE175": ++$auras[$i+1]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $auras[$i+1]) $remove = 1; break;
+      case "ELE146": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+2]) $remove = 1; break;
+      case "ELE175": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $auras[$i+2]) $remove = 1; break;
       default: break;
     }
     if($remove == 1)
@@ -176,6 +215,7 @@ function AuraTakeDamageAbilities($player, $damage)
       case "ARC167": $damage -= 4; $remove = 1; break;
       case "ARC168": $damage -= 3; $remove = 1; break;
       case "ARC169": $damage -= 2; $remove = 1; break;
+      case "CRU075": $damage -= 1; break;
       case "MON104": $damage -= 1; $remove = 1; break;
       default: break;
     }
@@ -329,6 +369,17 @@ function AuraHitEffects($attackID)
       }
     }
     return $modifier;
+  }
+
+  function NumNonTokenAura($player)
+  {
+    $count = 0;
+    $auras = &GetAuras($player);
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      if(CardType($auras[$i]) != "T") ++$count;
+    }
+    return $count;
   }
 
 
