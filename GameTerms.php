@@ -24,7 +24,7 @@
       case "D": return "a Defense Reaction";
       case "P": return "a card to pitch";
       case "ARS": return "a card to add to arsenal";
-      case "PDECK": return "a card to add to the deck bottom";
+      case "PDECK": return "a card from your pitch zone to add to the bottom of your deck";
       case "OPT": return "a card to add to the deck top or bottom";
       case "CHOOSEDECK": return "a card from deck";
       case "HANDTOPBOTTOM": return "a card from hand";

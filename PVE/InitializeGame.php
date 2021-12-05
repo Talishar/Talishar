@@ -2,15 +2,20 @@
 
   include '../Libraries/HTTPLibraries.php';
   $gameName=TryGet("gameName");
+  $players=intval($_GET["players"]);
+  $boss=intval($_GET["boss"]);
 
   include 'ParseGamestate.php';
   include 'DecisionQueue.php';
   include "ZoneGetters.php";
+  include "PVEDictionary.php";
 
   $bossCharacter = &GetGlobalZone("BossCharacter");
-  array_push($bossCharacter, "OVRPVE001");
+  $bossCard = GetBossCard($boss, $players);
+
+  array_push($bossCharacter, $bossCard);
   array_push($bossCharacter, "0");
-  array_push($bossCharacter, "OVRPVE002");
+  array_push($bossCharacter, BossWeapon($bossCard));
   array_push($bossCharacter, "0");
 
   $turn = &GetGlobalZone("Turn");
@@ -22,13 +27,22 @@
   array_push($bossStatus, 0);
 
   $bossHealth = &GetGlobalZone("BossHealth");
-  array_push($bossHealth, 90);//TODO: Different health for each boss
+  array_push($bossHealth, BossHealth($bossCard));
 
   $bossDeck = &GetGlobalZone("BossDeck");
   $bossDeck = explode(" ", "CRU194 CRU194 CRU194 CRU194 CRU194 ARC205 ARC205 ARC205 ARC204 ARC204 CRU033 CRU032 CRU032 CRU034 CRU034 CRU034 WTR066 ARC189 ARC189 ARC189 ARC190 ARC190 ARC190 ARC190 WTR190 WTR190 WTR028 WTR028 WTR028 WTR200 WTR202 WTR202 WTR202 WTR201 WTR201 WTR204 WTR204 WTR205 WTR205 WTR205");
 
   $stanceDeck = &GetGlobalZone("StanceDeck");
-  $stanceDeck = explode(" ", "OVRPVE004 OVRPVE005 OVRPVE006 OVRPVE007 OVRPVE008 OVRPVE009 OVRPVE010 OVRPVE011 OVRPVE012 OVRPVE013 OVRPVE014 OVRPVE015 OVRPVE006 OVRPVE008");
+  $stanceDeck = explode(" ", "OVRPVE006 OVRPVE007 OVRPVE008 OVRPVE009 OVRPVE010 OVRPVE011 OVRPVE012 OVRPVE013 OVRPVE014 OVRPVE015 OVRPVE006 OVRPVE008");
+  switch($boss)
+  {
+    case 1:
+      array_push($stanceDeck, "OVRPVE016");
+      array_push($stanceDeck, "OVRPVE017");
+      break;
+    default:
+      break;
+  }
 
   $bossResources = &GetGlobalZone("BossResources");
   array_push($bossResources, 0);
@@ -42,4 +56,16 @@
   include 'WriteGamestate.php';
 
   header("Location: PVETurn.php?gameName=$gameName&playerID=1");
+
+  function GetBossCard($boss, $numPlayers)
+  {
+echo($numPlayers . " " . $boss);
+    if($boss == 1)
+    {
+      if($numPlayers == 2) return "OVRPVE001";
+      else if($numPlayers == 3) return "OVRPVE002";
+      else if($numPlayers == 4) return "OVRPVE003";
+    }
+    return "-";
+  }
 ?>
