@@ -9,18 +9,16 @@
   $playerID=TryGet("playerID", 3);
 
   //First we need to parse the game state from the file
-  include "Constants.php";
+  include "PVEConstants.php";
+  include "../CardDictionary.php";
   include "ZoneGetters.php";
   include "ParseGamestate.php";
   include "../HostFiles/Redirector.php";
   include "../Libraries/UILibraries.php";
   include "../WriteLog.php";
-  include "../CardDictionary.php";
-/*
-  if($currentPlayer == $playerID) $icon = "ready.png";
-  else $icon = "notReady.png";
-  echo '<link rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
-*/
+
+
+  echo '<link rel="shortcut icon" type="image/png" href="PVEImages/OE_icon.png"/>'
 
 ?>
 
@@ -73,7 +71,9 @@
     <div style='flex-grow:1;'></div>
       <?php
         $bossStatus = GetGlobalZone("BossStatus");
-        if($bossStatus[0] == 1) echo("<h1 style='text-align:center; color:white;'>Boss is Recovering! " . CreateButton($playerID, "Clear Status", 12, "-", "20px") . "</h1>");
+
+        //Recovering popup
+        if($bossStatus[0] == 1) echo("<div style='padding-left:10px; font-size:16px; line-height:24px; font-family:sans-serif; color:white; position:absolute; right:10px; bottom:10px; z-index:1000; width:388px; height:223px; background: #191919; border:1px solid #A9A9A9; box-sizing: border-box; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25); border-radius: 16px;'><h2>Recovering</h2>The graveyard was shuffled into the deck.<BR>You <b>must create barricades</b> equal to the amount the boss started with.<BR><b>The boss skips its next turn.</b><BR><div style='position:absolute; bottom:12px; right:12px;'>" . CreateButton($playerID, "Dismiss", 12, "-", "20px") . "</div></div>");
 
         $bossCharacter = GetGlobalZone("BossCharacter");
         $bossHealth = GetGlobalZone("BossHealth");

@@ -68,7 +68,7 @@
 
   function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./")
   {
-    $rv = "<div id='" . $id . "' style='background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:50px; left: 50px; right: 250px; bottom:50px;" . ($defaultState == 0 ? " display:none;" : "") . "'>";
+    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:50px; left: 50px; right: 250px; bottom:50px;" . ($defaultState == 0 ? " display:none;" : "") . "'>";
     if($title != "") $rv .= "<h1>" . $title . "</h1>";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
@@ -111,7 +111,7 @@
       else if($pitch == 1 && $timesPitched > 0) $pitchStyle = "font-weight: bold; color:gold;";
       else if($pitch == 2 && $timesPitched > 4) $pitchStyle = "font-weight: bold; color:red;";
       else if($pitch == 2 && $timesPitched > 2) $pitchStyle = "font-weight: bold; color:gold;";
-      $rv .= "<tr><td style='color:" . PitchColor($pitch) . ";'><b>" . $cardStats[$i] . "</b></td><td style='" . $playStyle . "'>" . $timesPlayed . "</td><td>" . $cardStats[$i+2] . "</td><td style='" . $pitchStyle . "'>" . $timesPitched . "</td></tr>";
+      $rv .= "<tr><td>" . CardLink($cardStats[$i], $cardStats[$i]) . "</td><td style='" . $playStyle . "'>" . $timesPlayed . "</td><td>" . $cardStats[$i+2] . "</td><td style='" . $pitchStyle . "'>" . $timesPitched . "</td></tr>";
     }
     $rv .= "</table>";
     $rv .= "</div>";

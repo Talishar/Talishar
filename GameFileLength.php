@@ -2,7 +2,9 @@
 
   $gameName=$_GET["gameName"];
 
-  $gameFile = fopen("./Games/" . $gameName . "/GameFile.txt", "r+");
+  $filename = "./Games/" . $gameName . "/GameFile.txt";
+  if(!file_exists($filename)) { echo(-1); exit; }
+  $gameFile = fopen($filename, "r+");
 
   $attemptCount = 0;
   while(!flock($gameFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
