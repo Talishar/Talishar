@@ -7,7 +7,8 @@ Download and install webserver
 - XAMPP (https://www.apachefriends.org/download.html)
 - The rest of this guide will assume you used XAMPP
   Every time you start up your computer to do development, you will need to re-start your webserver from the console. It looks like this:
-  ![xampp](.github/xampp-icon.png)
+  
+![xampp](.github/xampp-icon.png)
 
 Click Start for Apache:
 
