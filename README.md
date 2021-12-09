@@ -2,7 +2,7 @@
 
 read original [here](https://docs.google.com/document/d/1qVlTrst58iZ_6xD9PkxIgZUiSKzV-S4eTJmK32qzaP0)
 
-Download and install webserver
+## Download and install webserver
 
 - XAMPP (https://www.apachefriends.org/download.html)
 - The rest of this guide will assume you used XAMPP
@@ -20,6 +20,7 @@ Find where XAMPP got installed. In the install directory, there should be a fold
 
 ![xampp path](.github/xampp-path.png)
 
+## Clone the repo in XAMPP/htdocs
 Now you need to create a local git repository in htdocs. I recommend using GitHub Desktop. Once it’s installed, it looks like this:
 
 ![github desktop](.github/github-desktop.png)
@@ -30,13 +31,14 @@ Make sure you create the repo somewhere inside the XAMPP htdocs folder. It does 
 
 ![trunk](.github/trunk.png)
 
+## Set up hostfiles
 You’re already most of the way done! Inside the HostFiles folder, there are some things to set up.
 
 ![host files](.github/hostFiles.png)
 
 If you don’t have a GameIDCounter.txt, you need to create one. Inside, just add a number. This number determines the ID of the next game, so it doesn’t really matter what the number is. But I recommend 0 so you know how many games have been created.
 
-You will need to create a file called Redirector.php. It is not stored in the repo, because otherwise commits from others will mess up your local copy. You also need to define the path from your webserver root node to where the repo actually is. This is what mine looks like, and what needs to be changed:
+You will need to create a file called Redirector.php in the `HostFiles` directory. It is not stored in the repo, because otherwise commits from others will mess up your local copy. You also need to define the path from your webserver root node to where the repo actually is. This is what mine looks like, and what needs to be changed:
 
 ![redirector](.github/notepad.png)
 
@@ -54,5 +56,8 @@ Here is the text to copy:
   $redirectPath = $uri . "/FaBDev/trunk";
 ?>
 ```
+
+## Go to link
+http://localhost/reponame/MainMenu.php
 
 Note for Linux: The directory with the file must be readable for root or the user that executes the server.
