@@ -30,14 +30,14 @@ for row in csvreader:
     settonumbertovalues[cardset][setnum]["pitch"] = pitch
     rows.append(row)
 
-print(settonumbertovalues)
+#print(settonumbertovalues)
 settonumbertovalues["MON"]['000']["title"] = "The Great Library of Solana"
 settonumbertovalues["MON"]['000']["pitch"] = "None"
 settonumbertovalues["ELE"]['000']["title"] = "Korshem, Crossroad of Elements"
 settonumbertovalues["ELE"]['000']["pitch"] = "None"
 
-
-
+maxtitle=max(len(settonumbertovalues[cardset][setnum]["title"]) for cardset in settonumbertovalues.keys() for setnum in settonumbertovalues[cardset].keys()) 
+print ("Longest Title:",maxtitle)
 for cardset in settonumbertovalues.keys():
     ifstring = (
         f'if ($set == \"{cardset}\")\n'
