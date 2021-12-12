@@ -1174,9 +1174,9 @@ if ($set == "WTR")
 		case "179": return "Demolition Crew";
 		case "180": return "Demolition Crew";
 		case "181": return "Demolition Crew";
-		case "182": return "lock of the Feather Walker";
-		case "183": return "lock of the Feather Walker";
-		case "184": return "lock of the Feather Walker";
+		case "182": return "Flock of the Feather Walker";
+		case "183": return "Flock of the Feather Walker";
+		case "184": return "Flock of the Feather Walker";
 		case "185": return "Nimble Strike";
 		case "186": return "Nimble Strike";
 		case "187": return "Nimble Strike";
