@@ -296,23 +296,6 @@ function &GetAllies($player)
   else return $p2Allies;
 }
 
-function &GetMainCharacterEffects($player)
-{
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
-  global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
-  global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($player == $mainPlayer) return $mainCharacterEffects;
-    else return $defCharacterEffects;
-  }
-  else
-  {
-    if($player == $myStateBuiltFor) return $myCharacterEffects;
-    else return $theirCharacterEffects;
-  }
-}
-
 function HasTakenDamage($player)
 {
   global $CS_DamageTaken;

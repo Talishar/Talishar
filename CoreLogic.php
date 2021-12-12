@@ -172,17 +172,17 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($playerID, $damage);
-  if($damage > 0 && $source != "NA")
+  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT" || ($source != "NA" && CardType($source) == "AA")))
   {
     $damage += CurrentEffectDamageModifiers($source);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
+    if($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $otherPlayer); }
+    AuraDamageTakenAbilities($Auras, $damage);
   }
   if($damage > 0)
   {
-    AuraDamageTakenAbilities($Auras, $damage);
     if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $playerID); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
     if($playerID == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
@@ -532,12 +532,12 @@ function PlayerHasLessHealth($playerID)
   global $mainHealth, $defHealth, $myHealth, $theirHealth;
   if($mainPlayerGamestateStillBuilt)
   {
-    if($playerID == $mainPlayer) return $mainHealth < $defHealth;
+    if($player == $mainPlayer) return $mainHealth < $defHealth;
     else return $defHealth < $mainHealth;
   }
   else
   {
-    if($playerID == $currentPlayer) return $myHealth < $theirHealth;
+    if($player == $currentPlayer) return $myHealth < $theirHealth;
     else return $theirHealth < $myHealth;
   }
 }

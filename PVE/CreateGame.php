@@ -3,9 +3,6 @@
   include '../Libraries/HTTPLibraries.php';
   include '../Libraries/IOLibraries.php';
 
-  $players=$_GET["players"];
-  $boss=$_GET["boss"];
-
   $numPlayers = 1;
 
   //First get your game ID
@@ -69,6 +66,6 @@
   $logFile = fopen("./Games/" . $gameName . "/gamelog.txt", "w");
   fclose($logFile);
 
-  header("Location: InitializeGame.php?gameName=$gameName&players=$players&boss=$boss");
+  header("Location: InitializeGame.php?gameName=$gameName");
 
 ?>

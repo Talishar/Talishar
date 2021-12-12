@@ -64,10 +64,10 @@
     switch($cardID)
     {
       case "OVRPVE001": return "C";
-      case "OVRPVE002": return "C";
-      case "OVRPVE003": return "C";
-      case "OVRPVE004": return "W";
-      case "OVRPVE005": return "B";
+      case "OVRPVE002": return "W";
+      case "OVRPVE003": return "B";
+      case "OVRPVE004": return "S";
+      case "OVRPVE005": return "S";
       case "OVRPVE006": return "S";
       case "OVRPVE007": return "S";
       case "OVRPVE008": return "S";
@@ -78,8 +78,6 @@
       case "OVRPVE013": return "S";
       case "OVRPVE014": return "S";
       case "OVRPVE015": return "S";
-      case "OVRPVE016": return "S";
-      case "OVRPVE017": return "S";
       case "WTR000": return "R";
       case "WTR113": case "WTR114": case "ARC002": return "C";
       case "WTR115": case "CRU177": return "W";
@@ -153,7 +151,6 @@
       case "WTR159": return "AA";
       case "WTR160": return "A";
       case "WTR161": return "AA";
-      case "WTR162": return "A";
       case "WTR163": return "I";
       case "WTR167": case "WTR168": case "WTR169": return "AA";
       case "WTR170": case "WTR171": case "WTR172": return "A";
@@ -252,8 +249,7 @@
       //CRU Wizard
       case "CRU160": return "W";
       case "CRU161": return "E";
-      case "CRU162": case "CRU163": return "A";
-      case "CRU164": return "I";
+      case "CRU162": case "CRU163": case "CRU164": return "A";
       case "CRU165": case "CRU166": case "CRU167": return "A";
       case "CRU168": case "CRU169": case "CRU170": return "A";
       case "CRU171": case "CRU172": case "CRU173": return "A";
@@ -338,7 +334,6 @@
       case "WTR156": return "Chest";
       case "WTR157": return "Arms";
       case "WTR158": return "Legs";
-      case "WTR162": return "Item";
       case "WTR170": case "WTR171": case "WTR172": return "Item";
       case "WTR225": return "Aura";
       case "CRU000": return "Gem";
@@ -586,7 +581,6 @@
       case "WTR159": return 0;
       case "WTR160": return 1;
       case "WTR161": return 3;
-      case "WTR162": return 0;
       case "WTR167": case "WTR168": case "WTR169": return 0;
       case "WTR163": case "WTR170": case "WTR171": case "WTR172": return 0;
       case "WTR173": case "WTR174": case "WTR175": return 0;
@@ -839,7 +833,6 @@
       case "WTR159": return 1;
       case "WTR160": return 2;
       case "WTR161": return 3;
-      case "WTR162": return 3;
       case "WTR163": return 2;
       case "WTR167": return 1;
       case "WTR168": return 2;
@@ -880,7 +873,6 @@
       case "CRU079": case "CRU080": return 0;
       case "CRU081": return 0;
       case "CRU082": case "CRU083": return 2;
-      case "CRU084": return 1;
       case "CRU085": case "CRU088": case "CRU091": case "CRU094": return 1;
       case "CRU086": case "CRU089": case "CRU092": case "CRU095": return 2;
       case "CRU087": case "CRU090": case "CRU093": case "CRU096": return 3;
@@ -983,7 +975,6 @@
       case "WTR053": return 5;
       case "WTR075": return 0;
       //Ninja
-      case "WTR076": case "WTR077": case "WTR078": return 0;
       case "WTR079": return 2;
       case "WTR080": return 1;
       case "WTR092": return 4;
@@ -1003,7 +994,6 @@
       //Generics
       case "WTR151": case "WTR152": case "WTR154": return 0;
       case "WTR160": return 2;
-      case "WTR162": return 0;
       case "WTR163": return 0;
       case "WTR167": case "WTR168": case "WTR169": return 2;
       case "WTR170": case "WTR171": case "WTR172": return 0;
@@ -1337,7 +1327,6 @@
       case "WTR152": return "A";
       case "WTR154": return "AR";
       case "WTR153": return "A";
-      case "WTR162": return "A";
       case "WTR170": return "I";
       case "WTR171": case "WTR172": return "A";
       case "CRU004": case "CRU005": return "AA";
@@ -1438,7 +1427,7 @@
   {
     global $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $CCS_HitsWithWeapon, $currentPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
-    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers;
+    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed;
     if(SearchCurrentTurnEffects("CRU032", $currentPlayer) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) return true;
     if(SearchCurrentTurnEffects("MON007", $currentPlayer) && $from == "BANISH") return true;
     if(SearchCurrentTurnEffects("ELE036", $currentPlayer) && CardType($cardID) == "E") return true;
@@ -1493,7 +1482,6 @@
         $type = CardType($combatChain[0]);
         return $type != "W";
       case "CRU125": return !HasTakenDamage($currentPlayer);
-      case "CRU164": return count($layers) == 0;
       case "CRU186":
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
@@ -1588,7 +1576,7 @@
       case "WTR004": case "WTR005": return true;
       case "WTR041": case "WTR042": return true;
       case "WTR080": return true;
-      case "WTR116": case "WTR117": return true;
+      case "WTR116": return true;
       case "ARC004": return true;
       case "ARC078": return true;
       case "ARC150": return true;
@@ -1675,7 +1663,6 @@
       case "WTR116": return true;
       case "WTR152": return true;
       case "WTR153": return true;
-      case "WTR162": return GetDieRoll($currentPlayer) <= 4;
       case "WTR171": return true;
       default: return false;
     }

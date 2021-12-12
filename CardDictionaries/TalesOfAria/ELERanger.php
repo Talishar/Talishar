@@ -241,7 +241,7 @@
       $elementText .= $element;
     }
     AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
-    WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID) . ".");
+    WriteLog("To get the effect of card " . $cardID . ", you may fuse " . $elementText . ".");
   }
 
   function FuseAbility($cardID, $player, $element)

@@ -139,7 +139,7 @@
     $options = explode(",", $turn[2]);
     for($i=0; $i<count($options); ++$i)
     {
-      echo(CreateButton($playerID, $options[$i], 7, $options[$i], "30px"));
+      echo(CreateButton($playerID, $options[$i], 7, $options[$i]));
     }
     echo("</div>");
   }
@@ -150,7 +150,7 @@
     $options = explode(",", $turn[2]);
     for($i=0; $i<count($options); ++$i)
     {
-      echo(CreateButton($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "30px"));
+      echo(CreateButton($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i])));
     }
     echo("</div>");
   }
@@ -171,7 +171,7 @@
     {
       echo("<td>");
       echo("<table><tr><td>");
-      echo(Card($options[$i], "CardImages", 200));
+      echo(Card($options[$i], "CardImages", 400));
       echo("</td></tr><tr><td>");
       if($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") echo(CreateButton($playerID, "Top", 8, $options[$i]));
       if($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") echo(CreateButton($playerID, "Bottom", 9, $options[$i]));
@@ -185,27 +185,57 @@
 
   if($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID)
   {
-    ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($myDeck[$options[$i]], "CardImages", 400, 11, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if($turn[0] == "CHOOSEBANISH" && $turn[1] == $playerID)
   {
-    ChoosePopup($myBanish, $turn[2], 16, "Choose a card from your banish");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($myBanish[$options[$i]], "CardImages", 400, 11, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if(($turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "CHOOSEARSENAL" || $turn[0] == "CHOOSEARSENALCANCEL") && $turn[1] == $playerID)
   {
-    ChoosePopup($myArsenal, $turn[2], 16, "Choose a card from your arsenal");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($myArsenal[$options[$i]], "CardImages", 400, 18, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if(($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID)
   {
-    ChoosePopup($theirHand, $turn[2], 16, "Choose a card from their hand");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($theirHand[$options[$i]], "CardImages", 400, 18, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if(($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
-    ChoosePopup($myDiscard, $turn[2], 16, "Choose a card from your discard");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($myDiscard[$options[$i]], "CardImages", 400, 18, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID)
@@ -232,7 +262,13 @@
 
   if($turn[0] == "CHOOSECOMBATCHAIN" && $turn[1] == $playerID)
   {
-    ChoosePopup($combatChain, $turn[2], 16, "Choose a card from the combat chain");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($combatChain[$options[$i]], "CardImages", 400, 15, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if($turn[0] == "CHOOSEMULTIZONE" && $turn[1] == $playerID)
@@ -254,12 +290,24 @@
 
   if($turn[0] == "CHOOSECHARACTER" && $turn[1] == $playerID)
   {
-    ChoosePopup($myCharacter, $turn[2], 16, "Choose a card from your character/equipment");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($myCharacter[$options[$i]], "CardImages", 400, 15, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if($turn[0] == "CHOOSETHEIRCHARACTER" && $turn[1] == $playerID)
   {
-    ChoosePopup($theirCharacter, $turn[2], 16, "Choose a card from their character/equipment");
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    for($i=0; $i<count($options); ++$i)
+    {
+      echo(Card($theirCharacter[$options[$i]], "CardImages", 400, 15, 0, 0, 0, 0, strval($options[$i])));
+    }
+    echo("</div>");
   }
 
   if($turn[0] == "PDECK")
@@ -302,23 +350,14 @@
   }
 
   //Display opponent's stuff
-
-  echo(CreatePopup("theirDiscardPopup", $theirDiscard, 1, 0, "Their Discard"));
-  echo(CreatePopup("theirBanishPopup", $theirBanish, 1, 0, "Their Banish"));
-
   //Opponent hand
-  echo("<div style='position: fixed; top: 0px; left: 50%; height: 50px; width:800px; border:1px solid black; display:inline;'><span style='height:100%; vertical-align:middle; display:inline-block'>Their hand:&nbsp;</span>");
+  echo("<div style='position: fixed; top: 0px; left: 50%; height: 50px; width:580px; border:1px solid black; display:inline;'><span style='height:100%; vertical-align:middle; display:inline-block'>Their hand:&nbsp;</span>");
   for($i=0; $i<count($theirHand); ++$i) {
     echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
   echo("<span style='position:relative;'><img style='padding-left:20px; height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:-30px; left:20px; width:50px; font-size:30; color:white; text-align:center;'>" . $theirResources[0] . "</div></img></span>");
   echo("<div style='display:inline-block; padding-left:20px; height:50px; width:100px;'><div style='position:relative;heigh:100%;width:100%;'><span style='position:absolute; font-size: 24px; top:15px; left:20px;'>$theirHealth</span></div><img style='display:inline-block; height:100%; width:100%;' src='./CardImages/healthSymbol.png' /></div>");
-  echo("<div title='The number of cards remaining in their deck.' style='cursor:default; position:relative; display:inline-block; height:50px; padding-left:10px;'><img style='display:inline-block; padding-left:10px; height:50px; width:50px;' src='./Images/deckIcon.png'></img> <div style='font-size:20; position:relative; display:inline-block; height:50px;top:-20px;'>" . count($theirDeck) . " cards</div></div>");
-
-  echo("<div title='Click to view the cards in their Graveyard.' style='cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center; padding-left:10px;' onclick='(function(){ document.getElementById(\"theirDiscardPopup\").style.display = \"inline\";})();'><img style='padding-left:10px; height:50px; width:50px;' src='./Images/graveyardIcon.png'></img> <div style='position:relative; top:-20px; display:inline-block;'>" . count($theirDiscard) . " cards</div></div>");
-
-  if(count($myBanish) > 0) echo("<div title='Click to view the cards in their Banish zone.' style='cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center; padding-left:10px;' onclick='(function(){ document.getElementById(\"theirBanishPopup\").style.display = \"inline\";})();'><img style='padding-left:10px; height:50px; width:50px;' src='./Images/banishIcon.png'></img> <div style='position:relative; top:-20px; display:inline-block;'>" . (count($myBanish)/BanishPieces()) . " cards</div></div>");
-
+  echo("<div style='position:relative; display:inline-block; top:-20px; height:50px; font-size:20; text-align:center; padding-left:20px;'>Deck: " . count($theirDeck) . " cards</div>");
   echo("</div>");
 
   //Now display their Auras and Items
@@ -524,17 +563,5 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
       default: return 1;
     }
   }
-
-  function ChoosePopup($zone, $options, $mode, $caption="")
-  {
-    $content = "";
-    $options = explode(",", $options);
-    for($i=0; $i<count($options); ++$i)
-    {
-      $content .= Card($zone[$options[$i]], "CardImages", 200, $mode, 0, 0, 0, 0, strval($options[$i]));
-    }
-    echo CreatePopup("CHOOSEZONE", [], 0, 1, $caption, 1, $content);
-  }
-
 ?>
 </body>

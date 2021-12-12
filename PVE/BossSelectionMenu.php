@@ -3,7 +3,7 @@
    include "../HostFiles/Redirector.php";
 ?>
 <head>
-  <link rel="shortcut icon" type="image/png" href="./PVEImages/OE_icon.png"/>
+  <link rel="shortcut icon" type="image/png" href="../Images/favicon3.png"/>
 <style>
 body {
   font-family: Garamond, serif;
@@ -15,6 +15,10 @@ body {
 <body>
 <div style="width:100%; height:100%; background-image: url('PVEImages/menuBackground.png'); background-size:cover; z-index=0;">
 
+<!--
+<a href="../MainMenu.php" style="position:absolute; left:30px; top:10px; width:200px; height:40%; background-image: url('../Images/fab_logo.png');  background-size:contain; background-repeat:no-repeat;"></a>
+-->
+
 <div style="position:absolute; top:10%; left:10%; width:90%; height:90%;">
 
 <div style='color:white; font-family:sans-serif; font-size:62px;'>Official Bosses</div>
@@ -24,40 +28,42 @@ body {
 <table>
 <tr><td>
 <div>Red Dragon<br><img src="PVEImages/Bosses/dragonPortrait.png" alt="Red Dragon"></div>
-</td><!--<td>
+</td><td>
 <div>Kima, the Floodbringer<br><img src="PVEImages/Bosses/kimaPortrait.png" alt="Kima, the Floodbringer"></div>
 </td><td>
 <div>Ozvag, the Miser<br><img src="PVEImages/Bosses/ozvagPortrait.png" alt="Ozvag, the Miser"></div>
 </td><td>
 <div>Howling Woodsman<br><img src="PVEImages/Bosses/woodsmanPortrait.png" alt="Howling Woodsman"></div>
 </td><td>
-<div>Rog Kehz, Swarm Lord<br><img src="PVEImages/Bosses/swarmLordPortrait.png" alt="Rog Kehz, Swarm Blue"></div>-->
+<div>Rog Kehz, Swarm Lord<br><img src="PVEImages/Bosses/swarmLordPortrait.png" alt="Rog Kehz, Swarm Blue"></div>
 </td></tr></table>
 
 <BR>
+<a href="./CreateGame.php"><img src="PVEImages/playBeta.png" alt="Play Beta"></a>
 
-<form action="./CreateGame.php">
-  <span style='font-family:sans-serif;'>Number of Players:</span>
-  <input type="hidden" name="boss" value="1" />
-  <label class="">Two
-    <input type="radio" checked="checked" name="players" value="2">
-    <span class=""></span>
-  </label>
-  <label class="">Three
-    <input type="radio" checked="checked" name="players" value="3">
-    <span class=""></span>
-  </label>
-  <label class="">Four
-    <input type="radio" checked="checked" name="players" value="4">
-    <span class=""></span>
-  </label>
-  <br>
-  <input type="image" src="PVEImages/playBeta.png" alt="Play Beta" />
-</form>
+<!--
+<a href="https://www.figma.com/proto/lGbPLjOxbHBBDTU1tCInIE/The-Overlord-Engine?page-id=359%3A512&node-id=359%3A729&viewport=303%2C48%2C0.33&scaling=scale-down&starting-point-node-id=359%3A729&hotspot-hints=0&hide-ui=1"><img src="PVEImages/officialRules.png" alt="Rules"></a>
+<a href="https://www.youtube.com/watch?v=XbCg3vgCjtg"><img src="PVEImages/videoButton.png" alt="Video tutorial"></a>
+<BR>
+<a href="./CreateGame.php"><img src="PVEImages/playBeta.png" alt="Play Beta"></a>
+</div>
 
-<!--<a href="./CreateGame.php"><img src="PVEImages/playBeta.png" alt="Play Beta"></a>-->
+<div style="position:absolute; top:20%; right:0%; width:40%; height:80%;">
+<table>
+<tr><td colspan=2>
+<img src='PVEImages/devices.png' />
+</td></tr>
+<tr><td align=Right style='padding-right:10px;'>
+<img src="PVEImages/powered.png" alt="Powered By">
+</td><td style='padding-left:10px;'>
+<a target="_blank" href='https://discord.gg/7vvKa95jD9'>
+<img src='PVEImages/discord.png' />
+</a>
+</td></tr></table>
+-->
 
 </div>
+
 
 </div>
 

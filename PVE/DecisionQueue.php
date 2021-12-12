@@ -1,7 +1,5 @@
 <?php
 
-  include "PVEGameLogic.php";
-
 function ClearPhase($player)
 {
   $decisionQueue = &GetZone($player, "DecisionQueue");
@@ -85,9 +83,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       case "FLIPSTANCE":
         $stance = &GetGlobalZone("Stance");
         $stanceDeck = &GetGlobalZone("StanceDeck");
-        $newStance = array_shift($stanceDeck);
-        array_unshift($stance, $newStance);
-        StanceFlipEffect($newStance);
+        array_unshift($stance, array_shift($stanceDeck));
         return 1;
       case "RESUMEPROCESSINPUT":
         ProcessCommand($player, $parameter1, $parameter2);
