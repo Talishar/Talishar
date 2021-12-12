@@ -48,7 +48,12 @@
         for($j=0; $j<($count-$numSideboard); ++$j)
         {
           if($weapon1 == "") $weapon1 = $id;
-          else $weapon2 = $id;
+          else if($weapon2 == "") $weapon2 = $id;
+          else
+          {
+            if($weaponSideboard != "") $weaponSideboard .= " ";
+            $weaponSideboard .= $id;
+          }
         }
         for($j=0; $j<$numSideboard; ++$j)
         {
