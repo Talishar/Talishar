@@ -63,20 +63,6 @@ function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $clas
   return $cardList;
 }
 
-//Parses DQ subparams into search format
-function SearchLayerDQ($param)
-{
-  global $layers;
-  $type=""; $subtype=""; $maxCost=-1; $minCost=-1; $class=""; $talent=""; $bloodDebtOnly=false; $phantasmOnly=false;
-  $paramArray = explode(",", $param);
-  for($i=0; $i < count($paramArray); $i+=2)
-  {
-    if($paramArray[$i] == "TYPE") $type = $paramArray[$i+1];
-    else if($paramArray[$i] == "MAXCOST") $maxCost = $paramArray[$i+1];
-  }
-  return SearchInner($layers, LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
-}
-
 function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
 {
   global $myDeck;

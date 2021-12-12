@@ -25,7 +25,6 @@
   include "DecisionQueue.php";
   include "../WriteLog.php";
   include "../CardDictionary.php";
-  include "PVEDictionary.php";
   $makeCheckpoint = 0;
   $skipWriteGamestate = false;
 
@@ -86,10 +85,10 @@
         break;
       case 4: //Clear Pitch
           $pitch = &GetGlobalZone("BossPitch");
-          $bossDeck = &GetGlobalZone("BossDeck");
+          $bossDiscard = &GetGlobalZone("BossDiscard");
           for($i=count($pitch)-1; $i>=0; --$i)
           {
-            array_push($bossDeck, array_shift($pitch));
+            array_push($bossDiscard, array_shift($pitch));
           }
           $resources = &GetGlobalZone("BossResources");
           $resources[0] = 0;
@@ -107,9 +106,8 @@
         ProcessDecisionQueue(1);
         break;
       case 6: //Add Barricade
-          $bossCharacter = &GetGlobalZone("BossCharacter");
           $barricades = &GetGlobalZone("Barricades");
-          array_push($barricades, BossBarricade($bossCharacter[0]));
+          array_push($barricades, "OVRPVE003");
           array_push($barricades, 0);
         break;
       case 7: //Add Barricade to Chain
@@ -186,8 +184,8 @@
         break;
     }
   }
-
   if($mode != 10000) include "WriteGamestate.php";
+
 
   //WriteCache($gameName, $playerID);
 
@@ -200,7 +198,13 @@
     $bossDeck = &GetGlobalZone("BossDeck");
     if(count($bossDeck) == 0)
     {
-      Recover($mode, $cardID);
+      $bossStatus = &GetGlobalZone("BossStatus");
+      $bossStatus[0] = 1;
+      $bossDiscard = &GetGlobalZone("BossDiscard");
+      while(count($bossDiscard) > 0) array_unshift($bossDeck, array_shift($bossDiscard));
+      AddDecisionQueue("SHUFFLEGLOBALZONE", 1, "BossDeck");
+      AddDecisionQueue("RESUMEPROCESSINPUT", 1, $mode, $cardID);
+      ProcessDecisionQueue(1);
       return false;
     }
     return true;

@@ -3,7 +3,7 @@
    include "../HostFiles/Redirector.php";
 ?>
 <head>
-  <link rel="shortcut icon" type="image/png" href="./PVEImages/OE_icon.png"/>
+  <link rel="shortcut icon" type="image/png" href="../Images/favicon3.png"/>
 <style>
 body {
   font-family: Garamond, serif;

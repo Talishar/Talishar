@@ -65,7 +65,7 @@
       if($found != -1 && IsPlayable($myCharacter[$found], $turn[0], "CHAR", $found))
       {
         $myClassState[$CS_CharacterIndex] = $found;
-        if(count($combatChain) == 0) $combatChainState[$CCS_WeaponIndex] = $found;
+        $combatChainState[$CCS_WeaponIndex] = $found;
         if($turn[0] == "B")
         {
           if(HasBladeBreak($cardID))
@@ -106,7 +106,6 @@
           unset($myArsenal[$i]);
         }
         $myArsenal = array_values($myArsenal);
-        WriteLog("Card played from arsenal.");
         PlayCard($cardToPlay, "ARS");
       }
       break;
@@ -151,7 +150,16 @@
       if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break;//Item not playable
       $myClassState[$CS_PlayIndex] = $index;
       $set = CardSet($cardID);
-      PlayCard($cardID, "PLAY", -1);
+      if($set != "WTR")
+      {
+        PlayCard($cardID, "PLAY", -1);
+      }
+      else
+      {
+        if((!AbilityHasGoAgain($cardID) || CurrentEffectPreventsGoAgain()) && GetAbilityType($cardID) != "I") --$actionPoints;
+        ItemActionAbility($index);
+        FinalizeAction();//TODO: Make this work
+      }
       break;
     case 11://CHOOSEDECK
       $index = $cardID;
@@ -187,12 +195,20 @@
       $myBanish = array_values($myBanish);
       PlayCard($cardID, "BANISH", -1, $index);
       break;
-    case 15: case 16: case 18: //CHOOSE (15 and 18 deprecated)
+    case 15://CHOOSECOMBATCHAIN
+      $index = $cardID;
+      ContinueDecisionQueue($index);
+      break;
+    case 16://CHOOSEHAND
       $index = $cardID;
       ContinueDecisionQueue($index);
       break;
     case 17://BUTTONINPUT
       ContinueDecisionQueue($buttonInput);
+      break;
+    case 18://CHOOSEDISCARD, CHOOSEARSENAL
+      $index = $cardID;
+      ContinueDecisionQueue($index);
       break;
     case 19://MULTICHOOSEDISCARD, MULTICHOOSEHAND, MULTICHOOSEDECK
       $params = explode("-", $turn[2]);
@@ -878,13 +894,6 @@ function FinalizeChainLink($chainClosed=false)
     global $currentPlayer;
     switch($cardID)
     {
-      case "CRU164":
-/*
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER-TYPE,I,MAXCOST,1");
-        AddDecisionQueue("CHOOSELAYER", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
-*/
-        break;
       case "MON084": case "MON085": case "MON086":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCAA");
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
