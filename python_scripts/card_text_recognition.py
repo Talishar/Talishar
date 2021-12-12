@@ -5,7 +5,7 @@ import cv2
 from PIL import Image 
 
 
-from os import listdir, remove
+from os import listdir, remove, mkdir
 from os.path import isfile, join
 
 from colormath.color_objects import XYZColor, AdobeRGBColor, CMYColor, CMYKColor, sRGBColor
@@ -14,6 +14,7 @@ from colormath.color_conversions import convert_color
 
 mypath = "."
 onlyfiles = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "jpg" in f ]
+os.mkdir("crops")
 
 csvfile = "recognized_values.csv"
 with open (csvfile,"a") as f:
@@ -135,8 +136,20 @@ for filename in onlyfiles:
         pitch = "red"
     print(pitch)
 
+
+
     with open (csvfile,"a") as f:
         csvline = f"{basename},{title},{cost},{attack},{defense},{pitch}"
         csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").strip() 
         print(csvline)
         print(csvline,file=f)
+    
+
+    crop_title = "crops/"+basename+"_cropped."+"png"
+
+    left = 50
+    right = 400
+    top = 90
+    bottom = 360
+    img_res = img.crop((left, top, right, bottom))
+    img_res.save(crop_title, "PNG", quality=100, optimize=True, progressive=True)
