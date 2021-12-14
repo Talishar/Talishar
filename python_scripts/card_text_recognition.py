@@ -14,7 +14,7 @@ from colormath.color_conversions import convert_color
 
 mypath = "."
 onlyfiles = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "jpg" in f ]
-os.mkdir("crops")
+mkdir("crops")
 
 csvfile = "recognized_values.csv"
 with open (csvfile,"a") as f:
@@ -146,10 +146,18 @@ for filename in onlyfiles:
     
 
     crop_title = "crops/"+basename+"_cropped."+"png"
-
     left = 50
     right = 400
     top = 90
     bottom = 360
+    if basename == "MON000" or basename == "ELE000":
+        left = 160
+        right = 360
+        top = 80
+        bottom = 530
+    
+    
+    
+    
     img_res = img.crop((left, top, right, bottom))
     img_res.save(crop_title, "PNG", quality=100, optimize=True, progressive=True)
