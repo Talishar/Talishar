@@ -5,17 +5,20 @@ import cv2
 from PIL import Image 
 
 
-from os import listdir
+from os import listdir, remove, mkdir
 from os.path import isfile, join
 
+from colormath.color_objects import XYZColor, AdobeRGBColor, CMYColor, CMYKColor, sRGBColor
+from colormath.color_conversions import convert_color
 
 
 mypath = "."
-onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f)) and "jpg" in f ]
+onlyfiles = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "jpg" in f ]
+mkdir("crops")
 
 csvfile = "recognized_values.csv"
 with open (csvfile,"a") as f:
-    print("filename;title;cost;attack;defense;pitch",file=f)
+    print("filename,title,cost,attack,defense,pitch",file=f)
 
 
 for filename in onlyfiles:
@@ -59,7 +62,7 @@ for filename in onlyfiles:
 
     cost = pytesseract.image_to_string(file_cost_crop, lang = 'eng',config="-c tessedit_char_whitelist=0123456789 --psm 8")
     
-    ## pitch
+
 
 ## attack
 
@@ -100,7 +103,61 @@ for filename in onlyfiles:
     print(title)
 
 
+
+
+## pitch
+    image = Image.open(filename)
+    print(image.mode)
+    #if image.mode == 'RGB':
+    #   image = image.convert('CMYK')
+
+    
+    r, g, b, a = image.getpixel((225,30)) #middle of picture, then 30 from the top, measured with gimp
+    print("rgba",r,g,b,a)
+    srgb = sRGBColor(r, g, b,a)
+
+    cmy = convert_color(srgb, CMYColor)
+    c,m,y = cmy.get_value_tuple()
+    print("cmy", c, y, m)
+    cmyk = convert_color(cmy, CMYKColor)
+    c,m,y,k = [x*100 for x in cmyk.get_value_tuple() ]
+    """
+    for yellow and red pitches cyan is usually zero whereas for blue its close to 1
+    red has high yellow and red numbers, both close to 0.9
+    yellow has a low red value (close to 0.1), but yellow value is really close to 100 
+    """
+    print("cmyk",c,m,y,k)
+    pitch = "None"
+    if 100-c<5:
+        pitch = "blue"
+    elif 100-y <5  :
+        pitch = "yellow"
+    elif 100-r<20 and 100-y<20:
+        pitch = "red"
+    print(pitch)
+
+
+
     with open (csvfile,"a") as f:
-        csvline = f"{basename};{title};{cost};{attack};{defense}".replace("\n", "").strip() 
+        csvline = f"{basename},{title},{cost},{attack},{defense},{pitch}"
+        csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").strip() 
         print(csvline)
         print(csvline,file=f)
+    
+
+    crop_title = "crops/"+basename+"_cropped."+"png"
+    left = 50
+    right = 400
+    top = 90
+    bottom = 360
+    if basename == "MON000" or basename == "ELE000":
+        left = 160
+        right = 360
+        top = 80
+        bottom = 530
+    
+    
+    
+    
+    img_res = img.crop((left, top, right, bottom))
+    img_res.save(crop_title, "PNG", quality=100, optimize=True, progressive=True)
