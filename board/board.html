@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.rectangle {
+    position: relative;
+    margin: auto;
+  height: 100vh;
+  width: 85vh;
+  background-color: #555;
+}
+.rectangle .combatline {
+    top: 50%;
+    position: relative;
+    width: 100%;
+    height: 0.5%;
+    background-color: black;
+}
+.cardzone{
+    position: absolute;
+    width: 10.2%;
+    height: 13%;
+    background-color: darkorchid;
+}
+</style>
+</head>
+<body>
+
+<!--<h2>Rectangle CSS</h2>-->
+<div class="rectangle">
+    <div class="combatline">
+        
+    </div>
+    <!--Left Side-->
+    
+    <div class="cardzone" style="top: 1.7vh; left: 2vw;" > </div>
+    <div class="cardzone" style="background-color: cyan; top: 16.48vh; left: 2vw;" > </div><!-- 13vh+1.7vh+1.78 vh-->
+    <div class="cardzone" style="background-color: rgb(41, 67, 67); top: 16.48vh; left: 8vw; " >
+
+    </div><!-- 13vh+1.7vh+1.78 vh--> <!-- ?????-->
+
+    <div class="cardzone" style="background-color: cyan; top: 31.26vh; left: 2vw;" > </div><!-- 2*13vh+1.7vh+2*1.78 vh-->
+    <div class="cardzone" style="background-color: cyan; bottom: 31.26vh; left: 2vw;" > </div><!-- 2*13vh+1.7vh+2*1.78 vh-->
+    <div class="cardzone" style="background-color: cyan; bottom: 16.48vh; left: 2vw;" > </div><!-- 13vh+1.7vh+1.78 vh-->
+    <div class="cardzone" style="background-color: crimson; bottom: 1.7vh; left: 2vw;" > </div>
+
+
+    <!--Right Side-->
+    <div class="cardzone" style="top: 1.7vh; right: 2vw;" >
+    
+        <p>Banish_top</p>
+        <img id="Banish_top" src="" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/> 
+        
+    
+    </div>
+    <div class="cardzone" style="background-color: cyan; top: 16.48vh; right: 2vw;" >
+        <img id="deck_top" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/>
+    </div><!-- 13vh+1.7vh+1.78 vh-->
+    <div class="cardzone" style="background-color: cyan; top: 31.26vh; right: 2vw;" >
+        <p>Graveyard_top</p>
+        <img id="Graveyard_top" src="" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/> 
+        
+    
+    </div><!-- 2*13vh+1.7vh+2*1.78 vh-->
+    
+    <div class="cardzone" style="background-color: cyan; bottom: 31.26vh; right: 2vw;" >
+        <p>Graveyard_bottom</p>
+        <img id="Graveyard_bottom" src="" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/> 
+        
+    
+    </div><!-- 2*13vh+1.7vh+2*1.78 vh-->
+    <div class="cardzone" style="background-color: rgb(41, 67, 67); bottom: 16.48vh; left: 8vw;" >
+    </div><!-- 13vh+1.7vh+1.78 vh--> <!-- ?????-->
+    <div class="cardzone" style="background-color: cyan; bottom: 16.48vh; right: 2vw;" >
+        <img id="deck_bottom" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/> 
+    </div><!-- 13vh+1.7vh+1.78 vh-->
+    <div class="cardzone" style="background-color: crimson; bottom: 1.7vh; right: 2vw;" >
+        <p>Banish_bottom</p>
+        <img id="Banish_bottom" src="" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/> 
+        
+     </div>
+
+
+    <!--Malcom-->
+    <div class="cardzone" style="top: 1.7vh;  left:50%; margin-left: -5.1%;" >
+        <img id="arsenal_top" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/>
+    </div>
+
+    <div class="cardzone" style="background-color: cyan; top: 16.48vh; left: 15.1vw;" >
+        <img id="weapon_top_0" src="./ACR010.jpg" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/> </div><!-- 13vh+1.7vh+1.78 vh--> <!--2vw+2.9vw+10.2vw-->
+    <div class="cardzone" style="background-color: cyan; top: 16.48vh; left:50%; margin-left: -5.1%;" >
+        <img id="hero_top" src="./ACR001.jpg" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/>
+    </div><!-- 13vh+2vh+1.78 vh--> 
+    <div class="cardzone" style="background-color: cyan; top: 16.48vh; right: 15.1vw;" >
+        <img id="weapon_top_0" src="./ACR003.jpg" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/>
+    </div><!-- 13vh+1.7vh+1.78 vh--> <!--2vw+2.9vw+10.2vw-->
+
+    <div class="cardzone" style="background-color: cyan; bottom: 16.48vh; left:50%; margin-left: -5.1%;" > 
+        <img id="hero_bottom" src="./WTR001.jpg" 
+        style="object-fit:contain;
+            width:100%;
+            height:auto;
+            border: solid 1px #CCC"/>
+    </div><!-- 13vh+2vh+1.78 vh-->
+    <div class="cardzone" style="background-color: cyan; bottom: 16.48vh; left: 15.1vw;" >
+        <img id="weapon_bottom_0" src="./WTR003.jpg" 
+        style="object-fit:contain;
+            width:100%;
+            height:auto;
+            border: solid 1px #CCC"/>
+    </div><!-- 13vh+1.7vh+1.78 vh--> <!--2vw+2.9vw+10.2vw-->
+    <div class="cardzone" style="background-color: cyan; bottom: 16.48vh; right: 15.1vw;" >
+        <img id="weapon_bottom_1" src="./CRU003.jpg" 
+        style="object-fit:contain;
+            width:100%;
+            height:auto;
+            border: solid 1px #CCC"/> 
+    </div><!-- 13vh+1.7vh+1.78 vh--> <!--2vw+2.9vw+10.2vw--> 
+    <div class="cardzone" style="bottom: 1.7vh;  left:50%; margin-left: -5.1%;" >
+        <img id="arsenal_bottom" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/>
+    </div>
+    <!-- Put left Edge in the middle, then move it by half the square's width with margin-->
+
+
+    </div>
+
+</body>
+</html>
