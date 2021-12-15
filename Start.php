@@ -118,7 +118,7 @@
     fwrite($handler, "\r\n");//Discard
     fwrite($handler, "\r\n");//Pitch
     fwrite($handler, "\r\n");//Banish
-    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 -\r\n");//Class State
+    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0\r\n");//Class State
     fwrite($handler, "\r\n");//Character effects
     fwrite($handler, "\r\n");//Soul
     fwrite($handler, "\r\n");//Card Stats

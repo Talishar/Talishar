@@ -63,6 +63,20 @@ function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $clas
   return $cardList;
 }
 
+//Parses DQ subparams into search format
+function SearchLayerDQ($param)
+{
+  global $layers;
+  $type=""; $subtype=""; $maxCost=-1; $minCost=-1; $class=""; $talent=""; $bloodDebtOnly=false; $phantasmOnly=false;
+  $paramArray = explode("-", $param);
+  for($i=0; $i < count($paramArray); $i+=2)
+  {
+    if($paramArray[$i] == "TYPE") $type = $paramArray[$i+1];
+    else if($paramArray[$i] == "MAXCOST") $maxCost = $paramArray[$i+1];
+  }
+  return SearchInner($layers, LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+}
+
 function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
 {
   global $myDeck;
@@ -274,6 +288,16 @@ function SearchCount($search)
   return count(explode(",", $search));
 }
 
+function SearchMultizoneFormat($search, $zone)
+{
+  $searchArr = explode(",", $search);
+  for($i=0; $i<count($searchArr); ++$i)
+  {
+    $searchArr[$i] = $zone . "-" . $searchArr[$i];
+  }
+  return implode(",", $searchArr);
+}
+
 function SearchCurrentTurnEffects($cardID, $player)
 {
   global $currentTurnEffects;
@@ -421,6 +445,29 @@ function CountAura($cardID, $player)
   for($i=0; $i<count($auras); $i+=AuraPieces())
   {
     if($auras[$i] == $cardID) ++$count;
+  }
+  return $count;
+}
+
+
+function GetItemIndex($cardID, $player)
+{
+  $items = &GetItems($player);
+  $count = 0;
+  for($i=0; $i<count($items); $i+=ItemPieces())
+  {
+    if($items[$i] == $cardID) return $i;
+  }
+  return -1;
+}
+
+function CountItem($cardID, $player)
+{
+  $items = &GetItems($player);
+  $count = 0;
+  for($i=0; $i<count($items); $i+=ItemPieces())
+  {
+    if($items[$i] == $cardID) ++$count;
   }
   return $count;
 }

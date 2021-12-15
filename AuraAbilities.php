@@ -9,6 +9,7 @@ function PlayAura($cardID, $player, $number=1)
     array_push($auras, $cardID);
     array_push($auras, 2);
     array_push($auras, AuraPlayCounters($cardID));
+    array_push($auras, 0);
   }
 }
 
@@ -18,6 +19,7 @@ function PlayMyAura($cardID)
   array_push($myAuras, $cardID);
   array_push($myAuras, 2);
   array_push($myAuras, AuraPlayCounters($cardID));
+  array_push($myAuras, 0);
 }
 
 function PlayTheirAura($cardID)
@@ -26,6 +28,7 @@ function PlayTheirAura($cardID)
   array_push($theirAuras, $cardID);
   array_push($theirAuras, 2);
   array_push($theirAuras, AuraPlayCounters($cardID));
+  array_push($theirAuras, 0);
 }
 
 function AuraPlayCounters($cardID)
@@ -304,7 +307,7 @@ function AuraAttackAbilities($attackID)
       case "WTR225": if($attackType == "AA" || $attackType == "W") { WriteLog("Quicken grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ARC112": DealArcane(1, 0, "RUNECHANT", "ARC112"); $remove = 1; break;
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
-      case "ELE226": DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
+      case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       default: break;
     }
     if($remove == 1)

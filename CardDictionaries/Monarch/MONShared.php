@@ -110,6 +110,8 @@
   function MONEffectAttackModifier($cardID)
   {
     global $mainPlayer, $CS_NumNonAttackCards, $combatChainState, $CCS_LinkBaseAttack;
+    $arr = explode(",", $cardID);
+    $cardID = $arr[0];
     switch($cardID)
     {
       case "MON034": return 1;
@@ -142,6 +144,7 @@
       case "MON168": case "MON169": case "MON170": return 1;
       case "MON174": case "MON175": case "MON176": return GetClassState($mainPlayer, $CS_NumNonAttackCards);
       case "MON193": return 1;
+      case "MON198": return $arr[1];
       case "MON200": return 3;
       case "MON201": return 2;
       case "MON202": return 1;
@@ -166,13 +169,15 @@
   function MONCombatEffectActive($cardID, $attackID)
   {
     global $defPlayer;
+    $arr = explode(",", $cardID);
+    $cardID = $arr[0];
     switch($cardID)
     {
       case "MON034": return CardType($attackID) == "W";
       case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";
       case "MON087": $theirChar = GetPlayerCharacter($defPlayer); return TalentContains($theirChar[0], "SHADOW");
       case "MON090": return CardClass($attackID) == "ILLUSIONIST" && CardType($attackID) == "AA";
-      case "MON095": case "MON096": case "MON097": return true;
+      case "MON095": case "MON096": case "MON097": return CardType($attackID) == "AA";
       case "MON108": return CardType($attackID) == "W";
       case "MON109": return CardSubtype($attackID) == "Axe";
       case "MON110": case "MON111": case "MON112": return CardType($attackID) == "W";
@@ -190,6 +195,7 @@
       case "MON174": case "MON175": case "MON176": return true;
       case "MON193": return CardType($attackID) == "AA";
       case "MON195": case "MON196": case "MON197": return true;
+      case "MON198": return true;
       case "MON200": case "MON201": case "MON202": return CardType($attackID) == "AA";
       case "MON212": return true;
       case "MON218": return true;

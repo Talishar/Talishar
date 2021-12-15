@@ -8,6 +8,7 @@
       case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? 0 : 2);
       case "CRU105": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
       case "CRU160": return 2;
+      case "CRU197": return 4;
       default: return 0;
     }
   }
@@ -21,6 +22,7 @@
       case "CRU102": return "A";
       case "CRU105": return "A";
       case "CRU160": return "A";
+      case "CRU197": return "A";
       default: return "";
     }
   }
@@ -71,6 +73,7 @@
       case "CRU102": return true;
       case "CRU105": return true;
       case "CRU121": case "CRU122": return true;
+      case "CRU197": return true;
       default: return false;
     }
   }
@@ -130,6 +133,7 @@
       case "CRU072": return true;
       //Warrior
       case "CRU084": return CardType($attackID) == "W";
+      case "CRU084-2": return CardType($attackID) == "W";
       case "CRU085-1": case "CRU086-1": case "CRU087-1": return CardType($attackID) == "W";
       case "CRU088-1": case "CRU089-1": case "CRU090-1": return CardType($attackID) == "W";
       case "CRU088-2": case "CRU089-2": case "CRU090-2": return !HasEffect(substr($cardID, 0, -1) . "1");
@@ -182,6 +186,18 @@
     $roll = GetDieRoll($mainPlayer);
     if($roll >= 5) $combatChainState[$CCS_LinkBaseAttack] *= 2;
     else $combatChainState[$CCS_LinkBaseAttack] = floor($combatChainState[$CCS_LinkBaseAttack]/2);
+  }
+
+  function KassaiEndTurnAbility()
+  {
+    global $mainPlayer, $CS_AtksWWeapon, $CS_HitsWithWeapon;
+    if(GetClassState($mainPlayer, $CS_AtksWWeapon) >= 2)
+    {
+      for($i=0; $i<GetClassState($mainPlayer, $CS_HitsWithWeapon); ++$i)
+      {
+        PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
+      }
+    }
   }
 
 ?>

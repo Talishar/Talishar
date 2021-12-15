@@ -355,5 +355,15 @@ function AddSpecificGraveyard($cardID, &$graveyard, $from)
   array_push($graveyard, $cardID);
 }
 
+function NegateLayer($index)
+{
+  global $layers;
+  for($i=$index+LayerPieces(); $i >= $index; --$i)
+  {
+    unset($layers[$i]);
+  }
+  $layers = array_values($layers);
+}
+
 ?>
 
