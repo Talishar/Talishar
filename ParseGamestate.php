@@ -312,9 +312,10 @@
 
   function RevertGamestate($filename="gamestateBackup.txt")
   {
-    global $gameName;
+    global $gameName, $skipWriteGamestate;
     $filepath = "./Games/" . $gameName . "/";
     copy($filepath . $filename, $filepath . "gamestate.txt");
+    $skipWriteGamestate = true;
   }
 
 ?>

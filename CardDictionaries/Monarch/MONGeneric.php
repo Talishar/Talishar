@@ -27,6 +27,7 @@
       case "MON299": case "MON300": case "MON301": return "A";
       case "MON302": return "A";
       case "MON303": case "MON304": case "MON305": return "I";
+      case "MON400": case "MON401": case "MON402": return "E";
       default: return "";
     }
   }
@@ -43,6 +44,9 @@
       case "MON243": return "Arms";
       case "MON244": return "Legs";
       case "MON302": return "Item";
+      case "MON400": return "Chest";
+      case "MON401": return "Arms";
+      case "MON402": return "Legs";
       default: return "";
     }
   }
@@ -75,6 +79,7 @@
       case "MON299": case "MON300": case "MON301": return 1;
       case "MON302": return 0;
       case "MON303": case "MON304": case "MON305": return 0;
+      case "MON400": case "MON401": case "MON402": return 0;
       default: return 0;
     }
   }
@@ -96,6 +101,7 @@
       case "MON274": case "MON277": case "MON280": case "MON283": case "MON286": case "MON289": case "MON292": case "MON295": return 3;
       case "MON298": case "MON301": case "MON305": return 3;
       case "MON302": return 2;
+      case "MON400": case "MON401": case "MON402": return 0;
       default: return 0;
     }
   }
@@ -126,6 +132,7 @@
       case "MON296": case "MON297": case "MON298": return 2;
       case "MON299": case "MON300": case "MON301": return 2;
       case "MON302": case "MON303": case "MON304": case "MON305": return 0;
+      case "MON400": case "MON401": case "MON402": return 0;
       default: return 3;
     }
   }

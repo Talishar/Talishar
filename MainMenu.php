@@ -77,18 +77,18 @@ body {
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Supported cards:</h3><div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL ELE except Fable</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Wizard except Aetherize, Metacarpus Node, Sonic Boom (partial)</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Wizard except Metacarpus Node, Sonic Boom (partial)</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Illusionist</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Runeblade</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist except Meganetic Shockwave</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior except Kassai</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian except Righteous Cleansing</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ranger</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ninja except Benji</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Brute except Argh... Smash!</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Generic except Chains of Eminence, and Exude Confidence</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Shadow except Guardian of the Shadowrealm, Soul Harvest</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All MON Light except Glisten</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Brute</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL MON Light</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Generic except Chains of Eminence, and Exude Confidence</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Shadow except Guardian of the Shadowrealm</div>
 </div>
 
 <div style="height:20px; bottom:30px; left:5%; width: 90%; position:absolute; color:white;">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.  Card Images © Legend Story Studios</div>

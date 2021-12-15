@@ -6,6 +6,7 @@
 function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[])
 {
   global $combatChain, $mainPlayer, $currentTurnEffects, $defCharacter, $playerID, $combatChainState, $CCS_ChainAttackBuff, $CCS_LinkBaseAttack;
+  global $CCS_WeaponIndex, $mainCharacter, $mainAuras;
     UpdateGameState($playerID);
     BuildMainPlayerGameState();
     $attackType = CardType($combatChain[0]);
@@ -68,6 +69,17 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       }
     }
 
+    if($combatChainState[$CCS_WeaponIndex] != -1)
+    {
+      if($attackType == "W") $attack = $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
+      else if(CardSubtype($combatChain[0]) == "Aura") $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
+      if($CanGainAttack || $attack < 0)
+      {
+        array_push($attackModifiers, "+1 Attack Counters");
+        array_push($attackModifiers, $attack);
+        $totalAttack += $attack;
+      }
+    }
     $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
     if($CanGainAttack || $attack < 0)
     {
@@ -172,17 +184,17 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($playerID, $damage);
-  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT" || ($source != "NA" && CardType($source) == "AA")))
+  if($damage > 0 && $source != "NA")
   {
     $damage += CurrentEffectDamageModifiers($source);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") PlayAura("ELE109", $otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $otherPlayer); }
-    AuraDamageTakenAbilities($Auras, $damage);
   }
   if($damage > 0)
   {
+    AuraDamageTakenAbilities($Auras, $damage);
     if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $playerID); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
     if($playerID == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
@@ -382,21 +394,6 @@ function GetComboCards()
   return $combo;
 }
 
-function GetWeaponChoices($subtype="")
-{
-  global $myCharacter;
-  $weapons = "";
-  for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
-  {
-    if(CardType($myCharacter[$i]) == "W" && ($subtype == "" || $subtype == CardSubtype($myCharacter[$i])))
-    {
-      if($weapons != "") $weapons .= ",";
-      $weapons .= $i;
-    }
-  }
-  return $weapons;
-}
-
 function GetTheirEquipmentChoices()
 {
   global $theirCharacter;
@@ -410,18 +407,6 @@ function GetTheirEquipmentChoices()
     }
   }
   return $equipment;
-}
-
-function ApplyEffectToEachWeapon($effectID)
-{
-  global $myCharacter, $currentPlayer;
-  for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
-  {
-    if(CardType($myCharacter[$i]) == "W")
-    {
-      AddCharacterEffect($currentPlayer, $i, $effectID);
-    }
-  }
 }
 
 function FindMyCharacter($cardID)
@@ -532,12 +517,12 @@ function PlayerHasLessHealth($playerID)
   global $mainHealth, $defHealth, $myHealth, $theirHealth;
   if($mainPlayerGamestateStillBuilt)
   {
-    if($player == $mainPlayer) return $mainHealth < $defHealth;
+    if($playerID == $mainPlayer) return $mainHealth < $defHealth;
     else return $defHealth < $mainHealth;
   }
   else
   {
-    if($player == $currentPlayer) return $myHealth < $theirHealth;
+    if($playerID == $currentPlayer) return $myHealth < $theirHealth;
     else return $theirHealth < $myHealth;
   }
 }
@@ -646,7 +631,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
 function TalentContains($cardID, $talent)
 {
   $cardTalent = CardTalent($cardID);
-  $talents = explode(" ", $cardTalent);
+  $talents = explode(",", $cardTalent);
   for($i=0; $i<count($talents); ++$i)
   {
     if($talents[$i] == $talent) return true;

@@ -199,6 +199,18 @@
           $rv = "Invigorating Light will go into your soul after the chain link closes.";
         }
         return $rv;
+      case "MON069": case "MON070": case "MON071":
+        if($cardID == "MON069") $count = 4;
+        else if($cardID == "MON070") $count = 3;
+        else $count = 2;
+        for($i=0; $i<$count; ++$i)
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDATTACKCOUNTERS", $currentPlayer, "1", 1);
+        }
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "MON081": case "MON082": case "MON083":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Seek Enlightenment gives your next attack action card +" . EffectAttackModifier($cardID) . " and go in your soul if it hits.";
@@ -281,6 +293,11 @@
     {
       case "MON072": case "MON073": case "MON074": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
       case "MON078": case "MON079": case "MON080": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+      case "MON198":
+        $numSoul = count(GetSoul($defPlayer));
+        for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
+        LoseHealth($numSoul, $defPlayer);
+        break;
       case "MON206": case "MON207": case "MON208": BanishFromSoul($defPlayer); $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BANISH"; break;
       default: break;
     }

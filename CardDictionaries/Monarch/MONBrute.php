@@ -108,7 +108,7 @@
       case "MON139": case "MON144": case "MON147": return 7;
       case "MON123": case "MON125": case "MON126": case "MON129": case "MON135": case "MON140": case "MON141": case "MON145": case "MON148": return 6;
       case "MON127": case "MON130": case "MON136": case "MON142": case "MON146": case "MON149": return 5;
-      case "MON128": case "MON131": case "MON137": case "MON147": return 4;
+      case "MON128": case "MON131": case "MON137": return 4;
       case "MON221": return 3;
       case "MON226": return 7;
       case "MON223": case "MON227": return 6;

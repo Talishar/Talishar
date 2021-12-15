@@ -517,6 +517,11 @@
     return $indices;
   }
 
+  function PulseOfCandleholdIndices($player)
+  {
+    return CombineSearches(SearchDiscard($player, "A", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"), SearchDiscard($player, "AA", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"));
+  }
+
   function ExposedToTheElementsEarth($player)
   {
       $otherPlayer = $player == 1 ? 2 : 1;

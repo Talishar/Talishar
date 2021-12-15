@@ -2,6 +2,11 @@
 
   $characterPieces = 6;
 
+  function DeckPieces()
+  {
+    return 1;
+  }
+
   function HandPieces()
   {
     return 1;
@@ -24,7 +29,7 @@
 
   function AuraPieces()
   {
-    return 3;
+    return 4;
   }
 
   function ItemPieces()
@@ -98,6 +103,8 @@
   $CS_NumBloodDebtPlayed = 32;
   $CS_NumWizardNonAttack = 33;
   $CS_LayerTarget = 34;
+  $CS_NumSwordAttacks = 35;
+  $CS_HitsWithWeapon = 36;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -181,7 +188,8 @@
     global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant;
     global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
-    global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget;
+    global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
+    global $CS_HitsWithWeapon;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -216,6 +224,8 @@
     $mainClassState[$CS_NumBloodDebtPlayed] = 0;
     $mainClassState[$CS_NumWizardNonAttack] = 0;
     $mainClassState[$CS_LayerTarget] = "-";
+    $mainClassState[$CS_NumSwordAttacks] = 0;
+    $mainClassState[$CS_HitsWithWeapon] = 0;
   }
 
   function ResetCardPlayed($cardID)

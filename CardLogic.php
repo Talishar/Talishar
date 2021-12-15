@@ -124,7 +124,9 @@ function BottomDeckDraw()
 
 function AddCurrentTurnEffect($cardID, $player)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $combatChain;
+  $card = explode("-", $cardID)[0];
+  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID)) { AddCurrentTurnEffectFromCombat($cardID, $player); return; }
   array_push($currentTurnEffects, $cardID);
   array_push($currentTurnEffects, $player);
 }
@@ -142,7 +144,8 @@ function CopyCurrentTurnEffectsFromCombat()
   global $currentTurnEffects, $currentTurnEffectsFromCombat;
   for($i=0; $i<count($currentTurnEffectsFromCombat); $i += 2)
   {
-    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i], $currentTurnEffectsFromCombat[$i+1]);
+    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i]);
+    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i+1]);
   }
   $currentTurnEffectsFromCombat = [];
 }
@@ -254,7 +257,6 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
             $otherPlayer = $currentPlayer == 1 ? 2 : 1;
             BuildMyGamestate($currentPlayer);
           }
-          WriteLog("Resolving layer for " . CardLink($cardID, $cardID));
           $layerPriority[0] = ShouldHoldPriority(1);
           $layerPriority[1] = ShouldHoldPriority(2);
           PlayCardEffect($cardID, $params[0], $params[1], $target);
