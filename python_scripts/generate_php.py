@@ -36,6 +36,18 @@ settonumbertovalues["MON"]['000']["pitch"] = "None"
 settonumbertovalues["ELE"]['000']["title"] = "Korshem, Crossroad of Elements"
 settonumbertovalues["ELE"]['000']["pitch"] = "None"
 
+
+nametonumber ={}
+for set_name,dict_num in settonumbertovalues.items():
+    for number, dict_val in dict_num.items():
+        title = dict_val["title"][:-1]
+        if title not in nametonumber.keys():
+            nametonumber[title] = []
+        nametonumber[title].append(set_name+number)
+
+
+
+
 maxtitle=max(len(settonumbertovalues[cardset][setnum]["title"]) for cardset in settonumbertovalues.keys() for setnum in settonumbertovalues[cardset].keys()) 
 print ("Longest Title:",maxtitle)
 for cardset in settonumbertovalues.keys():
@@ -66,5 +78,34 @@ for cardset in settonumbertovalues.keys():
 
 function_tail = """
         return \"\";    }
-             ?>"""
+             """
 print(function_tail, file= outfile)
+
+function_header ="""
+function cardID ($cardName)
+{
+\tswitch($cardName){
+  
+"""
+cases = ""
+for name, arr in nametonumber.items():
+    print(arr,name)
+    if len(arr)==0:
+        cases += f'\t\t case "{name}": return array();'
+    cases += f'\t\t case "{name}": return array('
+    for s in arr[:-1]:
+        cases+=f'"{s}"'+","
+    cases+=f'"{arr[-1]}"'
+    cases += ");\n"
+
+function_tail = """
+\t\t}\n
+\t return array(); }
+
+?>
+"""
+print(function_header, file= outfile)
+print(cases, file=outfile)
+
+print(function_tail, file= outfile)
+
