@@ -987,6 +987,9 @@ if ($set == "MON")
 		case "304": return "Memorial Ground";
 		case "305": return "Memorial Ground";
 		case "306": return "Cracked Bauble";
+		case "400": return "Spell Fray Cloak";
+		case "401": return "Spell Fray Gloves";
+		case "402": return "Spell Fray Leggings";
 
 		   }	}
 if ($set == "WTR")

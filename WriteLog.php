@@ -10,6 +10,11 @@
     fclose($handler);
   }
 
+  function WriteError($text)
+  {
+    WriteLog("ERROR: " . $text);
+  }
+
   function EchoLog($gameName, $playerID)
   {
     $filename = "./Games/" . $gameName . "/gamelog.txt";

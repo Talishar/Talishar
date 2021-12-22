@@ -4,6 +4,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return 0;
       case "MON001": case "MON002": return 2;
       case "MON029": case "MON030": case "MON031": return 0;
       case "MON061": return 1;
@@ -31,6 +32,7 @@
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
     {
+      case "MON000": return "A";
       case "MON001": case "MON002": return "I";
       case "MON029": case "MON030": return "AR";
       case "MON031": return "AA";
@@ -98,6 +100,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return true;
       case "MON090": return true;
       case "MON108": return true;
       case "MON153": case "MON154": return true;

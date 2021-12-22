@@ -43,6 +43,7 @@
   fwrite($handler, implode(" ", $p2TurnStats) . "\r\n");
   fwrite($handler, implode(" ", $p2Allies) . "\r\n");
 
+  fwrite($handler, implode(" ", $landmarks) . "\r\n");
   fwrite($handler, $winner . "\r\n");
   fwrite($handler, $currentPlayer . "\r\n");
   fwrite($handler, $currentTurn . "\r\n");

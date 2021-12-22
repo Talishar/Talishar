@@ -78,7 +78,7 @@
             $myCharacter[$index+1] = 0;
             BanishCardForPlayer($cardID, $currentPlayer, "EQUIP", "NA");
           }
-          else $myCharacter[$index+1] = 1;//Else just exhaust it
+          else $myCharacter[$index+6] = 1;//Else just put it on the combat chain
         }
         else
         {
@@ -268,6 +268,14 @@
       $myClassState[$CS_PlayIndex] = $index;
       PlayCard($cardID, "PLAY", -1);
       break;
+    case 25: //Landmark Ability
+      $index = $cardID;
+      if($index >= count($landmarks)) break;//Landmark doesn't exist
+      $cardID = $landmarks[$index];
+      if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break;//Landmark not playable
+      $myClassState[$CS_PlayIndex] = $index;
+      PlayCard($cardID, "PLAY", -1);
+      break;
     case 99: //Pass
       PassInput();
       break;
@@ -328,7 +336,7 @@
   function PassInput()
   {
     global $turn, $currentPlayer;
-    if($turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "INSTANT")
+    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "INSTANT")
     {
       ContinueDecisionQueue("PASS");
     }
@@ -431,63 +439,7 @@
 
     $totalAttack = 0;
     $totalDefense = 0;
-    $attackType = CardType($combatChain[0]);
-    $CanGainAttack = !SearchCurrentTurnEffects("CRU035", $mainPlayer) || $attackType != "AA";
-    $SnagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
-    //First check combat chain
-    for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
-    {
-      $from = $combatChain[$i+1];
-      $resourcesPaid = $combatChain[$i+2];
-      if($combatChain[$i] == $mainPlayer)
-      {
-        if($i == 1) $attack = $combatChainState[$CCS_LinkBaseAttack];
-        else $attack = AttackValue($combatChain[$i-1]);
-        if($CanGainAttack || $i == 1 || $attack < 0) $totalAttack += $attack;
-        $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
-        if(($CanGainAttack && !$SnagActive) || $attack < 0) $totalAttack += $attack;
-      }
-      else
-      {
-        $defense = BlockValue($combatChain[$i-1]) + BlockModifier($combatChain[$i-1], $from, $resourcesPaid) + $combatChain[$i + 5];
-        if($defense > 0) $totalDefense += $defense;
-        if(CardType($combatChain[$i-1]) == "E")
-        {
-          $index = FindDefCharacter($combatChain[$i-1]);
-          $totalDefense += $defCharacter[$index+4] + DefCharacterBlockModifier($index);
-        }
-      }
-      CombatChainResolutionEffects($combatChain[$i-1], $combatChain[$i]);
-    }
-
-    //Now check current turn effects
-    for($i=0; $i<count($currentTurnEffects); $i+=2)
-    {
-      if(IsCombatEffectActive($currentTurnEffects[$i]))
-      {
-        if($currentTurnEffects[$i+1] == $mainPlayer)
-        {
-          $attack = EffectAttackModifier($currentTurnEffects[$i]);
-          if($CanGainAttack || $attack < 0) $totalAttack += $attack;
-        }
-        else
-        {
-          $totalDefense += EffectBlockModifier($currentTurnEffects[$i], "", 0);
-        }
-      }
-    }
-    if($combatChainState[$CCS_WeaponIndex] != -1)
-    {
-      if($attackType == "W") $attack = $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
-      else if(CardSubtype($combatChain[0]) == "Aura") $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
-      if($CanGainAttack || $attack < 0) $totalAttack += $attack;
-    }
-    $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
-    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
-    $attack = AuraAttackModifiers(0);//TODO: If there are both negatives and positives here, this might mess up?...
-    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
-    $attack = $combatChainState[$CCS_ChainAttackBuff];
-    if($CanGainAttack || $attack < 0) $totalAttack += $attack;
+    EvaluateCombatChain($totalAttack, $totalDefense);
 
     $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
 
@@ -623,6 +575,7 @@ function FinalizeChainLink($chainClosed=false)
   function BeginTurnPass()
   {
      AuraBeginEndStepAbilities();
+     LandmarkBeginEndStepAbilities();
      BeginEndStepEffects();
      PassTurn();
   }
@@ -774,8 +727,8 @@ function FinalizeChainLink($chainClosed=false)
       LogPlayCardStats($currentPlayer, $cardID, $from);
     }
     //If it's not pitch phase, pay the cost
-        if($from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
-        else $cardType = CardType($cardID);
+        //if($from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
+        //else $cardType = CardType($cardID);
         if($turn[0] != "P")
         {
             if($dynCostResolved >= 0)
@@ -827,9 +780,9 @@ function FinalizeChainLink($chainClosed=false)
         {
           $turn[0] = $turn[2];
           $cardID = $turn[3];
-          $cardType = CardType($cardID);
           $from = $turn[4];
         }
+        $cardType = CardType($cardID);
         //We've paid resources, now pay action points if applicable
         if($turn[0] != "B")// || $cardType == "I" || CanPlayAsInstant($cardID))
         {
@@ -843,6 +796,7 @@ function FinalizeChainLink($chainClosed=false)
             else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
             else if($abilityType == "AA") --$actionPoints;//Always resolve this after combat chain
             if($abilityType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
+            PayAbilityAdditionalCosts($cardID);
             ActivateAbilityEffects();
           }
           else
@@ -871,7 +825,7 @@ function FinalizeChainLink($chainClosed=false)
           }
           if($from == "BANISH") ++$myClassState[$CS_NumPlayedFromBanish];
           if(HasBloodDebt($cardID)) ++$myClassState[$CS_NumBloodDebtPlayed];
-          PayAdditionalCosts($cardID);
+          PayAdditionalCosts($cardID, $from);
         }
         if($cardType == "AA") ++$myClassState[$CS_NumAttackCards];//Played or blocked
         //Pay additional costs
@@ -1031,6 +985,24 @@ function FinalizeChainLink($chainClosed=false)
     }
   }
 
+  function PayAbilityAdditionalCosts($cardID)
+  {
+    global $currentPlayer;
+    switch($cardID)
+    {
+      case "MON000":
+        for($i=0; $i<2; ++$i)
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDPITCH,2");
+          AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+          AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
+        }
+        break;
+      default: break;
+    }
+  }
+
   function PayAdditionalCosts($cardID)
   {
     global $currentPlayer;
@@ -1149,7 +1121,6 @@ function FinalizeChainLink($chainClosed=false)
         $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
         if($definedCardType == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && $attackValue >= 6) KayoStaticAbility();
         $openedChain = true;
-WriteLog($myClassState[$CS_PlayIndex]);
         if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = $myClassState[$CS_PlayIndex];
       }
     }
@@ -1164,15 +1135,19 @@ WriteLog($myClassState[$CS_PlayIndex]);
       {
         PutItemIntoPlay($cardID);
       }
+      else if($cardSubtype == "Landmark")
+      {
+        PlayLandmark($cardID, $currentPlayer);
+      }
       else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
       {
         $goesWhere = GoesWhereAfterResolving($cardID);
         switch($goesWhere)
         {
-          case "HAND": AddPlayerHand($cardID, $currentPlayer, "PLAY"); break;
-          case "GY": array_push($myDiscard, $cardID); break;
+          case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
+          case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
           case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;
-          case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, "PLAY", "NA"); break;
+          case "BANISH": BanishCardForPlayer($cardID, $currentPlayer, $from, "NA"); break;
           default: break;
         }
       }

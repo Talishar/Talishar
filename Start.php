@@ -23,6 +23,7 @@
   initializePlayerState($handler, $p2DeckHandler);
   fclose($p2DeckHandler);
 
+  fwrite($handler, "\r\n");//Landmarks
   fwrite($handler, "0\r\n");//Game winner (0=none, else player ID)
   fwrite($handler, "1\r\n");//Current Player
   fwrite($handler, "1\r\n");//Current Turn
@@ -106,7 +107,7 @@
 
     for($i=0; $i<count($charEquip); ++$i)
     {
-      fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . ($i < count($charEquip)-1 ? " " : "\r\n"));
+      fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0" . ($i < count($charEquip)-1 ? " " : "\r\n"));
     }
                //Character and equipment. First is ID. Four numbers each. First is status (0=Destroy/unavailable, 1=Used, 2=Unused, 3=Disabled). Second is num counters
                //Third is attack modifier, fourth is block modifier

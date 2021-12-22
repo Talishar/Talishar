@@ -235,7 +235,7 @@
     ChoosePopup($combatChain, $turn[2], 16, "Choose a card from the combat chain", CombatChainPieces());
   }
 
-  if($turn[0] == "CHOOSEMULTIZONE" && $turn[1] == $playerID)
+  if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);
@@ -338,6 +338,21 @@
 
   //Now display their Auras and Items
   echo("<div style='position: fixed; top:250px; left:50%; display:inline;'>");
+  //Put landmarks here for now?...
+  if(count($landmarks) > 0)
+  {
+    echo("<div style='display:inline-block;'>");
+    echo("<h3>Landmark:</h3>");
+    for($i=0; $i<count($landmarks); $i+=LandmarkPieces())
+    {
+      $playable = IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
+      $action = ($playable && $currentPlayer == $playerID ? 25 : 0) ;
+      $border = CardBorderColor($landmarks[$i], "PLAY", $playable);
+      $counters = 0;
+      echo(Card($landmarks[$i], "CardImages", 180, $action, 1, 0, $border, $counters, strval($i), "", true));//TODO: Show sideways
+    }
+    echo("</div>");
+  }
   if(count($theirAuras) > 0)
   {
     echo("<div style='display:inline-block;'>");
@@ -486,6 +501,10 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
     echo(Card($myCharacter[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
     $effects = ActiveCharacterEffects($playerID, $i);
     if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/arsenal.png' />");
+    if($restriction != "") {
+      $restrictionName = CardName($restriction);
+      echo("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/restricted.png' />");
+    }
     echo("</span>");
   }
   echo("</div>");

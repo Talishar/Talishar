@@ -48,6 +48,7 @@
       case "CHOOSEARSENAL": return "a card from arsenal";
       case "CHOOSEARSENALCANCEL": return "a card from arsenal";
       case "CHOOSEMULTIZONE": return "a card";
+      case "MAYCHOOSEMULTIZONE": return "a card";
       case "CHOOSEBANISH": return "a card from banish";
       case "INSTANT": return "an instant";
     }

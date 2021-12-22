@@ -5,6 +5,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return "A";
       case "ELE091": return "A";
       case "ELE092": return "A";
       case "ELE093": return "I";
@@ -67,6 +68,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return "Landmark";
       case "ELE109": return "Aura";
       case "ELE110": return "Aura";
       case "ELE111": return "Aura";
@@ -95,6 +97,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return 1;
       case "ELE091": return 2;
       case "ELE092": return 1;
       case "ELE093": return 2;
@@ -147,6 +150,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return 0;
       case "ELE091": return 2;
       case "ELE092": return 1;
       case "ELE093": return 3;
@@ -183,6 +187,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return 0;
       case "ELE093": return 0;
       case "ELE113": return 3;
       case "ELE114": return 6;
@@ -247,6 +252,14 @@
     $rv = "";
     switch($cardID)
     {
+      case "ELE000":
+        $rv = "Korshem is a partially manual card. Use the instant ability to destroy it when appropriate. Use the Revert Gamestate button under the Stats page if necessary.";
+        if($from == "PLAY")
+        {
+          DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
+          $rv = "Korshem was destroyed";
+        }
+        return $rv;
       case "ELE091":
         Fuse($cardID, $currentPlayer, "EARTH");
         Fuse($cardID, $currentPlayer, "LIGHTNING");
@@ -539,6 +552,13 @@
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
+  }
+
+  function KorshemRevealAbility($player)
+  {
+    WriteLog("Korshem triggered by revealing a card.");
+    AddDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
+    AddDecisionQueue("KORSHEM", $player, "-", 1);
   }
 
 ?>

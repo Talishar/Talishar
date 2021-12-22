@@ -1,6 +1,6 @@
 <?php
 
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="",$id="")
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="",$id="",$rotate=false)
   {//
     global $playerID, $gameName;
     $fileExt = ".png";
@@ -16,7 +16,9 @@
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " href=\"./ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$action&cardID=" . $actionData . "\" " : "") . ">";
     $border = $borderColor > 0 ? "border-radius:20px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
-    $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $maxHeight . "; width:" . ($maxHeight * .71) . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
+    if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
+    else { $height = ($maxHeight * .71); $width = $maxHeight; }
+    $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
     $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
     if($counters != 0) $rv .= "<div style='top:45%; left:45%; position:absolute; z-index: 10; background: rgba(255, 255, 255, 0.7); font-size:30px;'>" . $counters . "</div>";
     $rv .= "</a>";
@@ -170,7 +172,8 @@
       $cardID = $idArr[0];
       $bonus = $attackModifiers[$i+1];
       if($bonus == 0) continue;
-      $rv .= CardLink($cardID, $cardID) . " gives " . ($bonus > 0 ? "+" : "") . $bonus . "<BR>";
+      $cardLink = CardLink($cardID, $cardID);
+      $rv .= ($cardLink != "" ? $cardLink : $cardID) . " gives " . ($bonus > 0 ? "+" : "") . $bonus . "<BR>";
     }
     return $rv;
   }

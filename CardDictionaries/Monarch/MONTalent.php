@@ -5,6 +5,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return "A";
       case "MON060": return "E";
       case "MON061": return "E";
       case "MON062": return "AA";
@@ -42,6 +43,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return "Landmark";
       case "MON060": return "Chest";
       case "MON061": return "Head";
       case "MON187": return "Chest";
@@ -57,6 +59,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return 2;
       case "MON060": return 0;
       case "MON061": return 0;
       case "MON062": return 0;
@@ -92,6 +95,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return 0;
       case "MON060": case "MON061": return 0;
       case "MON062": case "MON063": case "MON064": case "MON065": return 2;
       case "MON066": case "MON069": case "MON072": case "MON075": case "MON078": case "MON081": case "MON084": return 1;
@@ -115,6 +119,7 @@
     global $defPlayer;
     switch($cardID)
     {
+      case "MON000": return 0;
       case "MON060": return 1;
       case "MON061": return 0;
       case "MON062": return 3;
@@ -167,10 +172,13 @@
 
   function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-")
   {
-    global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain;
+    global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch($cardID)
     {
+      case "MON000":
+        DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
+        return "The Great Library of Solana was destroyed.";
       case "MON061":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");

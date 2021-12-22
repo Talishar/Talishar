@@ -33,6 +33,7 @@
       $sku = $printing->{'sku'};
       $id = $sku->{'sku'};
       $id = explode("-", $id)[0];
+      $id = GetAltCardID($id);
       $cardType = CardType($id);
       if($cardType == "") //Card not supported, error
       {
@@ -173,6 +174,17 @@
   }
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+
+function GetAltCardID($cardID)
+{
+  switch($cardID)
+  {
+    case "BOL006": return "MON400";
+    case "CHN006": return "MON401";
+    case "PSM007": return "MON402";
+  }
+  return $cardID;
+}
 
 ?>
 

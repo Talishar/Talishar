@@ -209,6 +209,114 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   return $damage;
 }
 
+
+
+function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
+{
+  global $CS_DamagePrevention, $combatChainState, $combatChain;
+  global $CCS_AttackFused;
+
+  $classState = &GetPlayerClassState($player);
+  $Items = &GetItems($player);
+
+  if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $damage = $damage > 0 ? $damage : 0;
+  $damageThreatened = $damage;
+  if(ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
+  if($damage <= $classState[$CS_DamagePrevention])
+  {
+    $classState[$CS_DamagePrevention] -= $damage;
+    $damage = 0;
+  }
+  else
+  {
+    $damage -= $classState[$CS_DamagePrevention];
+    $classState[$CS_DamagePrevention] = 0;
+  }
+  $damage -= CurrentEffectDamagePrevention($player, $type, $damage);
+  for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
+  {
+    if($Items[$i] == "CRU104")
+    {
+      if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
+      else { $Items[$i+1] -= $damage; $damage = 0; }
+      if($Items[$i+1] <= 0) DestroyItem($Items, $i);
+    }
+  }
+  $damage = $damage > 0 ? $damage : 0;
+  $damage = AuraTakeDamageAbilities($player, $damage);
+  if($damage > 0 && $source != "NA")
+  {
+    $damage += CurrentEffectDamageModifiers($source);
+    $otherCharacter = &GetPlayerCharacter($otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
+    if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
+    { AddCurrentTurnEffect($source, $otherPlayer); }
+  }
+  PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
+  //Now prepend orderable replacement effects
+  if($type == "ARCANE") PrependArcaneDamageReplacement($player, $damage);
+  return $damage;
+}
+
+function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
+{
+  global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer;
+  $classState = &GetPlayerClassState($player);
+  $Auras = &GetAuras($player);
+  $health = &GetHealth($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if($damage > 0)
+  {
+    AuraDamageTakenAbilities($Auras, $damage);
+    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $player); WriteLog("Lost 1 health from Ode to Wrath."); }
+    $classState[$CS_DamageTaken] += $damage;
+    if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
+    if($source == "MON229") AddNextTurnEffect("MON229", $player);
+    if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
+    CurrentEffectDamageEffects($player);
+  }
+  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
+  { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
+  PlayerLoseHealth($damage, $health);
+  LogDamageStats($playerID, $damageThreatened, $damage);
+  return $damage;
+}
+
+function PrependArcaneDamageReplacement($player, $damage)
+{
+  $character = &GetPlayerCharacter($player);
+  $search = SearchArcaneReplacement($player, "MYCHAR");//$character, CharacterPieces(), IsCharacterAbilityActive);
+  $indices = SearchMultizoneFormat($search, "MYCHAR");//TODO: Add items, use FINDINDICES
+  if($indices != "")
+  {
+    PrependDecisionQueue("ONARCANEDAMAGEPREVENTED", $player, $damage);
+    PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, 1);
+  }
+}
+
+function ArcaneDamagePrevented($player, $cardMZIndex)
+{
+  $prevented = 0;
+  $params = explode("-", $cardMZIndex);
+  $zone = $params[0];
+  $index = $params[1];
+  switch($zone)
+  {
+    case "MYCHAR": $source = &GetPlayerCharacter($player); break;
+  }
+  $cardID = $source[$index];
+  $spellVoidAmount = SpellVoidAmount($cardID);
+  if($spellVoidAmount > 0)
+  {
+    DestroyCharacter($player, $index);
+    $prevented += $spellVoidAmount;
+    WriteLog(CardLink($cardID, $cardID) . " was destroyed and prevented " . $spellVoidAmount . " arcane damage.");
+  }
+  return $prevented;
+}
+
 function CurrentEffectDamageModifiers($source)
 {
   global $currentTurnEffects;
@@ -348,13 +456,13 @@ function UnsetTurnBanish()
   UnsetCombatChainBanish();
 }
 
-function GetChainLinkCards($playerID="", $cardType="")
+function GetChainLinkCards($playerID="", $cardType="", $exclCardType="")
 {
   global $combatChain;
   $pieces = "";
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
-    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || CardType($combatChain[$i]) == $cardType))
+    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || CardType($combatChain[$i]) == $cardType) && ($exclCardType == "" || CardType($combatChain[$i]) != $exclCardType))
     {
       if($pieces != "") $pieces .= ",";
       $pieces .= $i;
