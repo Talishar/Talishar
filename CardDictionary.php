@@ -453,7 +453,7 @@
         else if($number >= 229 && $number <= 237) return "RUNEBLADE";
         else return "GENERIC";
       case "ELE":
-        if($number == 0) return "???";
+        if($number == 0) return "NONE";
         else if($number >= 1 && $number <= 30) return "GUARDIAN";
         else if($number >= 31 && $number <= 61) return "RANGER";
         else if($number >= 31 && $number <= 90) return "RUNEBLADE";
@@ -1361,11 +1361,11 @@
   function IsPlayable($cardID, $phase, $from, $index=-1, &$restriction=null)
   {
     global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
-    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints;
+    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter;
     $restriction = "";
     $cardType = CardType($cardID);
     $subtype = CardSubType($cardID);
-    if($phase == "B" && $cardType == "E") return true;
+    if($phase == "B" && $cardType == "E") { $restriction = ($myCharacter[$index+6] == 1 ? "On combat chain" : ""); return $myCharacter[$index+6] == 0; }
     if(($phase == "B" || $phase == "D") && $from == "HAND" && IsDominateActive() && NumBlockedFromHand() >= 1) return false;
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
     if($phase == "B" || $phase == "D")
@@ -1501,6 +1501,7 @@
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
         return $type != "AA";
+      case "MON000": return $from == "PLAY" && SearchCount(SearchHand($currentPlayer, "", "", -1, -1, "", "", false, false, 2)) < 2;
       case "MON001": case "MON002": return count($mySoul) == 0;
       case "MON029": case "MON030": return count($mySoul) == 0;
       case "MON062": return count($mySoul) < 3;
@@ -1888,6 +1889,7 @@
       case "MON401": return 1;
       case "MON402": return 1;
     }
+    return 0;
   }
 
 ?>

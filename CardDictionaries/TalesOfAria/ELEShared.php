@@ -4,6 +4,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return 0;
       case "ELE001": case "ELE002": return 3;
       case "ELE003": return 3;
       case "ELE031": case "ELE032": return 0;
@@ -24,6 +25,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return "I";
       case "ELE001": case "ELE002": return "DR";
       case "ELE003": return "AA";
       case "ELE031": case "ELE032": return "A";
@@ -52,6 +54,7 @@
   {
     switch($cardID)
     {
+      case "ELE000": return true;
       case "ELE025": case "ELE026": case "ELE027": return true;
       case "ELE028": case "ELE029": case "ELE030": return true;
       case "ELE037": return true;
@@ -107,6 +110,7 @@
     global $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
+      case "ELE000-1": return 1;
       case "ELE005": return 2;
       case "ELE013": case "ELE014": case "ELE015": return -2;
       case "ELE025": case "ELE028": return 3;
@@ -161,6 +165,7 @@
     global $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
+      case "ELE000-1": case "ELE000-2": return CardType($attackID) == "AA";
       case "ELE003": return true;
       case "ELE004": return true;
       case "ELE005": return true;

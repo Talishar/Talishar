@@ -1,42 +1,42 @@
 <?php
 
-function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1)
 {
   $deck = &GetDeck($player);
-  return SearchInner($deck, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($deck, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
 }
 
-function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1)
 {
   $hand = &GetHand($player);
-  return SearchInner($hand, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($hand, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
 }
 
-function SearchPitch($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+function SearchPitch($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1)
 {
   $pitch = &GetPitch($player);
-  return SearchInner($pitch, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($pitch, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
 }
 
-function SearchDiscard($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+function SearchDiscard($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1)
 {
   $discard = &GetDiscard($player);
-  return SearchInner($discard, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($discard, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
 }
 
-function SearchBanish($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+function SearchBanish($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1)
 {
   $banish = &GetBanish($player);
-  return SearchInner($banish, BanishPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($banish, BanishPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
 }
 
-function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false)
+function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1)
 {
   global $combatChain;
-  return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
 }
 
-function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly)
+function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch)
 {
   $cardList = "";
   if(!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
@@ -52,7 +52,7 @@ function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $clas
         for($k=0; $k<count($cardTalents); ++$k) { if($talents[$j] == $cardTalents[$k]) $talentMatch = 1; }
       }
     }
-    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class) && (count($talents) == 0 || $talentMatch))
+    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class) && (count($talents) == 0 || $talentMatch) && ($pitch == -1 || PitchValue($cardID) == $pitch))
     {
       if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
       if($phantasmOnly && !HasPhantasm($cardID)) continue;
@@ -290,6 +290,7 @@ function SearchCount($search)
 
 function SearchMultizoneFormat($search, $zone)
 {
+  if($search == "") return "";
   $searchArr = explode(",", $search);
   for($i=0; $i<count($searchArr); ++$i)
   {
@@ -438,6 +439,16 @@ function SearchAuras($cardID, $player)
   return false;
 }
 
+function SearchLandmarks($cardID)
+{
+  global $landmarks;
+  for($i=0; $i<count($landmarks); $i+=LandmarkPieces())
+  {
+    if($landmarks[$i] == $cardID) return true;
+  }
+  return false;
+}
+
 function CountAura($cardID, $player)
 {
   $auras = &GetAuras($player);
@@ -470,6 +481,28 @@ function CountItem($cardID, $player)
     if($items[$i] == $cardID) ++$count;
   }
   return $count;
+}
+
+//function SearchArcaneReplacement(&$array, $count, $activeFunction)
+function SearchArcaneReplacement($player, $zone)
+{
+  $cardList = "";
+  switch($zone)
+  {
+    case "MYCHAR": $array = &GetPlayerCharacter($player); $count = CharacterPieces(); break;
+  }
+  for($i=0; $i<count($array); $i += $count)
+  {
+    if($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
+    $cardID = $array[$i];
+    if(SpellVoidAmount($cardID) > 0)
+    {
+      
+      if($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
 }
 
 ?>

@@ -102,6 +102,7 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer;
   switch($cardID)
   {
+    case "WTR046": return "Forged for War was destroyed at the beginning of your action phase.";
     case "WTR047": MainDrawCard(); return "Show Time! drew a card.";
     case "WTR054": return BlessingOfDeliveranceDestroy(3);
     case "WTR055": return BlessingOfDeliveranceDestroy(2);
@@ -109,6 +110,7 @@ function AuraDestroyAbility($cardID)
     case "WTR069": case "WTR070": case "WTR071": return EmergingPowerDestroy($cardID);
     case "WTR072": case "WTR073": case "WTR074": return "Stonewall Confidence was destroyed at the beginning of your action phase.";
     case "WTR075": AddCurrentTurnEffect($cardID, $mainPlayer); return "Seismic Surge reduces the cost of the next Guardian attack action card you play this turn by 1.";
+    case "ARC162": return "Chains of Eminence was destroyed at the beginning of your action phase.";
     case "CRU028": return "Stamp Authority is destroyed at the beginning of your action phase.";
     case "CRU029": case "CRU030": case "CRU031": AddCurrentTurnEffect($cardID, $mainPlayer); return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "CRU038": case "CRU039": case "CRU040": AddCurrentTurnEffect($cardID, $mainPlayer); return "Emerging Dominance gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . " and dominate.";

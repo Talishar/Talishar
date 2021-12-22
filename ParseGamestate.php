@@ -43,6 +43,7 @@
   $p2TurnStats = GetArray($handler);
   $p2Allies = GetArray($handler);
 
+  $landmarks = GetArray($handler);
   $winner = trim(fgets($handler));
   $currentPlayer = trim(fgets($handler));
   $currentTurn = trim(fgets($handler));

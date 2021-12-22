@@ -163,6 +163,8 @@
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_attack_actions,Go_again,Attack_actions_from_arsenal,Banish_and_draw");
         AddDecisionQueue("ARTOFWAR", $currentPlayer, "-", 1);
         return "";
+      case "ARC162":
+        return "Chains of Eminence is currently a manual resolve card. Name the card in chat, and enforce not playing it manually.";
       case "ARC164": case "ARC165": case "ARC166":
         if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Life for a Life gained Go Again."; }
         return $ret;
