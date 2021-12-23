@@ -1854,6 +1854,7 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("VESTOFTHEFIRSTFIST", $mainPlayer, $i, 1);
         }
         break;
+      case "CRU047": if(CardType($attackID) == "AA") { AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer); $mainCharacter[$i+1] = 1; } break;
       case "CRU053":
         if(HasCombo($attackID))
         {
@@ -2291,13 +2292,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $hand = array_values($hand);
       return $cards;
     case "DESTROYCHARACTER":
-      $character = &GetPlayerCharacter($player);
-      $character[$lastResult+1] = 0;
       DestroyCharacter($player, $lastResult);
       return $lastResult;
     case "DESTROYTHEIRCHARACTER":
-      $theirCharacter[$lastResult+1] = 0;
       DestroyCharacter($player == 1 ? 2 : 1, $lastResult);
+      return $lastResult;
+    case "CHARFLAGDESTROY":
+      $character = &GetPlayerCharacter($player);
+      $character[$parameter + 7] = 1;
       return $lastResult;
     case "ADDCHARACTEREFFECT":
       array_push($myCharacterEffects, $lastResult);
@@ -2685,6 +2687,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
+      $type = $parameters[2];
+      if($type == "PLAYCARD")
+      {
+        $damage += ConsumeArcaneBonus($player);
+      }
       $sourceType = CardType($source);
       if(SearchCurrentTurnEffects("ELE065", $player) && ($sourceType == "A" || $sourceType == "AA")) ++$damage;
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);

@@ -249,6 +249,7 @@
       else if($option[0] == "THEIRALLY") $source = $theirAllies;
       else if($option[0] == "MYCHAR") $source = $myCharacter;
       else if($option[0] == "THEIRCHAR") $source = $theirCharacter;
+      else if($option[0] == "MYITEMS") $source = $myItems;
       else if($option[0] == "LAYER") $source = $layers;
       echo(Card($source[intval($option[1])], "CardImages", 400, 16, 0, 0, 0, 0, $options[$i]));
     }

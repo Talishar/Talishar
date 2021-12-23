@@ -1361,12 +1361,17 @@
   function IsPlayable($cardID, $phase, $from, $index=-1, &$restriction=null)
   {
     global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
-    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter;
+    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter, $mainPlayer;
     $restriction = "";
     $cardType = CardType($cardID);
     $subtype = CardSubType($cardID);
     if($phase == "B" && $cardType == "E") { $restriction = ($myCharacter[$index+6] == 1 ? "On combat chain" : ""); return $myCharacter[$index+6] == 0; }
-    if(($phase == "B" || $phase == "D") && $from == "HAND" && IsDominateActive() && NumBlockedFromHand() >= 1) return false;
+    if(($phase == "B" || $phase == "D") && $from == "HAND")
+    {
+      if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;
+echo(CachedTotalAttack());
+      if(SearchCharacterForCard($mainPlayer, "CRU047") && CachedTotalAttack() <= 2) return false;
+    }
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
     if($phase == "B" || $phase == "D")
     {

@@ -1,6 +1,6 @@
 <?php
 
-  $characterPieces = 7;
+  $characterPieces = 8;
 
   function DeckPieces()
   {
@@ -19,9 +19,10 @@
   //4 = Num defense counters
   //5 = Num uses
   //6 = On chain (1 = yes, 0 = no)
+  //7 = Flagged for destruction (1 = yes, 0 = no)
   function CharacterPieces()
   {
-    return 7;
+    return 8;
   }
 
   function BanishPieces()
@@ -117,6 +118,7 @@
   $CS_LayerTarget = 34;
   $CS_NumSwordAttacks = 35;
   $CS_HitsWithWeapon = 36;
+  $CS_ArcaneDamagePrevention = 37;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -141,6 +143,8 @@
   $CCS_BaseAttackDefenseMax = 19;
   $CCS_ResourceCostDefenseMin = 20;
   $CCS_CardTypeDefenseRequirement = 21;
+  $CCS_CachedTotalAttack = 22;
+  $CCS_CachedTotalBlock = 23;
 
   function ResetCombatChainState()
   {
@@ -148,6 +152,7 @@
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
     global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
     global $defPlayer;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
@@ -171,6 +176,8 @@
     $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
     $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
     $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
+    $combatChainState[$CCS_CachedTotalAttack] = 0;
+    $combatChainState[$CCS_CachedTotalBlock] = 0;
     $defCharacter = &GetPlayerCharacter($defPlayer);
     for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
     {
@@ -183,6 +190,7 @@
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
     $combatChainState[$CCS_DamageDealt] = 0;
@@ -197,6 +205,8 @@
     $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
     $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
     $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
+    $combatChainState[$CCS_CachedTotalAttack] = 0;
+    $combatChainState[$CCS_CachedTotalBlock] = 0;
   }
 
   function ResetMainClassState()
@@ -207,7 +217,7 @@
     global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
     global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
-    global $CS_HitsWithWeapon;
+    global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -244,6 +254,7 @@
     $mainClassState[$CS_LayerTarget] = "-";
     $mainClassState[$CS_NumSwordAttacks] = 0;
     $mainClassState[$CS_HitsWithWeapon] = 0;
+    $mainClassState[$CS_ArcaneDamagePrevention] = 0;
   }
 
   function ResetCardPlayed($cardID)

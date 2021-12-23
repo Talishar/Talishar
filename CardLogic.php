@@ -227,6 +227,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint, $otherPlayer, $p2ClassState, $myClassState, $theirClassState;
     global $layers, $layerPriority;
+global $myStateBuiltFor, $p1ClassState, $p2ClassState;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY")
     {
       if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
@@ -253,6 +254,8 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $params = explode("-", $parameter);
           if($currentPlayer != $player)
           {
+            if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
+            else UpdateGameState($currentPlayer);
             $currentPlayer = $player;
             $otherPlayer = $currentPlayer == 1 ? 2 : 1;
             BuildMyGamestate($currentPlayer);
@@ -371,6 +374,8 @@ function ShouldHoldPriority($player)
 {
   $char = GetPlayerCharacter($player);
   if($char[0] == "ARC113" || $char[0] == "ARC114") return 1;
+  if(CountItem("ARC017", $player) > 0) return 1;
+  if(SearchHand($player, "I") != "" || SearchArsenal($player, "I") != "") return 1;
   return 0;
 }
 

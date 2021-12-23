@@ -212,19 +212,23 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if($type == "PLAYCARD")
-    {
-      $damage += ConsumeArcaneBonus($player);
-    }
     if($fromQueue)
     {
-      PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source, 1);
+      PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       PrependDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
     }
     else
     {
+      if(SearchCharacterActive($player, "CRU161"))
+      {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
+        AddDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
+        AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
+        AddDecisionQueue("BUFFARCANE", $player, "1", 1);
+        AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
+      }
       AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
-      AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source, 1);
+      AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
     }
   }
 
@@ -250,6 +254,7 @@
 
   function ArcaneBarrierChoices($playerID, $max)
   {
+    global $currentTurnEffects;
     $barrierArray = [];
     for($i=0; $i<4; ++$i)//4 is the current max arcane barrier + 1
     {
@@ -271,7 +276,25 @@
         case "ARC155": case "ARC156": case "ARC157": case "ARC158": ++$barrierArray[1]; $total += 1; break;
         case "CRU006": ++$barrierArray[2]; $total += 2; break;
         case "CRU102": ++$barrierArray[2]; $total += 2; break;
+        case "CRU161": ++$barrierArray[1]; $total += 1; break;
         case "ELE144": ++$barrierArray[1]; $total += 1; break;
+        default: break;
+      }
+    }
+    $items = GetItems($playerID);
+    for($i=0; $i<count($items); $i+=ItemPieces())
+    {
+      switch($items[$i])
+      {
+        case "ARC163": ++$barrierArray[1]; $total += 1; break;
+        default: break;
+      }
+    }
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+    {
+      switch($currentTurnEffects[$i])
+      {
+        case "ARC017": ++$barrierArray[2]; $total += 2; break;
         default: break;
       }
     }
