@@ -103,6 +103,27 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     }
 }
 
+function CacheCombatResult()
+{
+  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
+  if(count($combatChain) == 0) return;
+  $combatChainState[$CCS_CachedTotalAttack] = 0;
+  $combatChainState[$CCS_CachedTotalBlock] = 0;
+  EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
+}
+
+function CachedTotalAttack()
+{
+  global $combatChainState, $CCS_CachedTotalAttack;
+  return $combatChainState[$CCS_CachedTotalAttack];
+}
+
+function CachedTotalBlock()
+{
+  global $combatChainState, $CCS_CachedTotalBlock;
+  return $combatChainState[$CCS_CachedTotalBlock];
+}
+
 function StartTurnAbilities()
 {
   global $mainPlayer, $defPlayer;
@@ -156,12 +177,25 @@ function DealDamage($player, $damage, $type, $source="NA")
 function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken, $combatChainState, $CCS_AttackTotalDamage, $defPlayer, $combatChain;
-  global $CCS_AttackFused;
+  global $CCS_AttackFused, $CS_ArcaneDamagePrevention;
   if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   $damageThreatened = $damage;
   if(ConsumeDamagePrevention($playerID)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
+  if($type == "ARCANE")
+  {
+    if($damage <= $classState[$CS_ArcaneDamagePrevention])
+    {
+      $classState[$CS_ArcaneDamagePrevention] -= $damage;
+      $damage = 0;
+    }
+    else
+    {
+      $damage -= $classState[$CS_ArcaneDamagePrevention];
+      $classState[$CS_ArcaneDamagePrevention] = 0;
+    }
+  }
   if($damage <= $classState[$CS_DamagePrevention])
   {
     $classState[$CS_DamagePrevention] -= $damage;
@@ -214,7 +248,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
 function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $combatChainState, $combatChain;
-  global $CCS_AttackFused;
+  global $CCS_AttackFused, $CS_ArcaneDamagePrevention;
 
   $classState = &GetPlayerClassState($player);
   $Items = &GetItems($player);
@@ -224,6 +258,19 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = $damage > 0 ? $damage : 0;
   $damageThreatened = $damage;
   if(ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
+  if($type == "ARCANE")
+  {
+    if($damage <= $classState[$CS_ArcaneDamagePrevention])
+    {
+      $classState[$CS_ArcaneDamagePrevention] -= $damage;
+      $damage = 0;
+    }
+    else
+    {
+      $damage -= $classState[$CS_ArcaneDamagePrevention];
+      $classState[$CS_ArcaneDamagePrevention] = 0;
+    }
+  }
   if($damage <= $classState[$CS_DamagePrevention])
   {
     $classState[$CS_DamagePrevention] -= $damage;
@@ -287,8 +334,11 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 function PrependArcaneDamageReplacement($player, $damage)
 {
   $character = &GetPlayerCharacter($player);
-  $search = SearchArcaneReplacement($player, "MYCHAR");//$character, CharacterPieces(), IsCharacterAbilityActive);
+  $search = SearchArcaneReplacement($player, "MYCHAR");
   $indices = SearchMultizoneFormat($search, "MYCHAR");//TODO: Add items, use FINDINDICES
+  $search = SearchArcaneReplacement($player, "MYITEMS");
+  $indices2 = SearchMultizoneFormat($search, "MYITEMS");//TODO: Add items, use FINDINDICES
+  $indices = CombineSearches($indices, $indices2);
   if($indices != "")
   {
     PrependDecisionQueue("ONARCANEDAMAGEPREVENTED", $player, $damage);
@@ -305,12 +355,14 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   switch($zone)
   {
     case "MYCHAR": $source = &GetPlayerCharacter($player); break;
+    case "MYITEMS": $source = &GetItems($player); break;
   }
   $cardID = $source[$index];
   $spellVoidAmount = SpellVoidAmount($cardID);
   if($spellVoidAmount > 0)
   {
-    DestroyCharacter($player, $index);
+    if($zone == "MYCHAR") DestroyCharacter($player, $index);
+    else if($zone == "MYITEMS") DestroyItemForPlayer($player, $index);
     $prevented += $spellVoidAmount;
     WriteLog(CardLink($cardID, $cardID) . " was destroyed and prevented " . $spellVoidAmount . " arcane damage.");
   }

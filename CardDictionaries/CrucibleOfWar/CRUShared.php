@@ -90,6 +90,7 @@
       case "CRU038": return 3;
       case "CRU039": return 2;
       case "CRU040": return 1;
+      case "CRU047": return 1;
       case "CRU055": return 3;
       case "CRU072": return 1;
       case "CRU084": return 2;
@@ -128,6 +129,7 @@
       case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
       case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
       //Ninja
+      case "CRU047": return true;
       case "CRU053": return HasCombo($combatChain[0]);
       case "CRU055": return true;
       case "CRU072": return true;

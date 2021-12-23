@@ -8,6 +8,7 @@
       case "ARC003": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? 0 : 1);
       case "ARC004": return 1;
       case "ARC010": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
+      case "ARC017": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
       case "ARC018": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
       case "ARC040": return 1;
       case "ARC077": return 2;
@@ -34,6 +35,7 @@
       case "ARC004": return "A";
       case "ARC005": return "I";
       case "ARC010": if($index == -1) $index = $myClassState[$CS_PlayIndex]; return ($myItems[$index + 1] > 0 ? "AR" : "A");
+      case "ARC017": if($index == -1) $index = $myClassState[$CS_PlayIndex]; return ($myItems[$index + 1] > 0 ? "I" : "A");
       case "ARC018": if($index == -1) $index = $myClassState[$CS_PlayIndex]; return ($myItems[$index + 1] > 0 ? "AR" : "A");
       case "ARC019": return "A";
       case "ARC035": return "I";

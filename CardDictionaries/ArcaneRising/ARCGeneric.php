@@ -139,7 +139,7 @@
   function ARCGenericPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumMoonWishPlayed, $myHealth, $myDeck;
-    global $CS_NextNAACardGoAgain;
+    global $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
     switch($cardID)
     {
       case "ARC151":
@@ -178,6 +178,18 @@
         }
         else { $rv .= "."; }
         return  $rv;
+      case "ARC173": case "ARC174": case "ARC175":
+        if($cardID == "ARC173") $prevent = 6;
+        else if($cardID == "ARC174") $prevent = 5;
+        else $prevent = 4;
+        $deck = GetDeck($currentPlayer);
+        if(count($deck) > 0)
+        {
+          $revealed = $deck[0];
+          $prevent -= PitchValue($revealed);
+        }
+        IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
+        return "Eirina's Prayer reveals " . CardLink($revealed, $revealed) . " and prevents the next " . $prevent . " arcane damage.";
       case "ARC182": case "ARC183": case "ARC184":
         if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Fervent Forerunner gained Go Again."; }
         return $ret;

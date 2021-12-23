@@ -74,7 +74,8 @@
     global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
     global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
     global $p1Soul, $p2Soul, $mySoul, $theirSoul;
-    global $myStateBuiltFor;
+    global $myStateBuiltFor, $mainPlayerGamestateStillBuilt;
+    $mainPlayerGamestateStillBuilt = 0;
     $myStateBuiltFor = $playerID;
     $myHand = $playerID==1 ? $p1Hand : $p2Hand;
     $myDeck = $playerID==1 ? $p1Deck : $p2Deck;

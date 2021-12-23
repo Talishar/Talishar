@@ -178,6 +178,22 @@
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, ($myClassState[$CS_NumBoosted] > 0 ? 1 : 0), 1);
         return "";
+      case "ARC017":
+        $index = $myClassState[$CS_PlayIndex];
+        if($index != -1)
+        {
+          $myItems[$index + 1] = ($myItems[$index + 1] == 0 ? 1 : 0);
+          if($myItems[$index + 1] == 0)
+          {
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+            $rv = "Aether Sink gains +2 arcane barrier this turn.";
+          }
+          else
+          {
+            $rv = "Aether Sink gained a steam counter.";
+          }
+        }
+        return $rv;
       case "ARC018":
         $index = $myClassState[$CS_PlayIndex];
         if($index != -1)

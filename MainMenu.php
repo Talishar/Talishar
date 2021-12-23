@@ -77,17 +77,17 @@ body {
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Supported cards:</h3><div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL of WTR</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL ELE</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Wizard except Metacarpus Node, Sonic Boom (partial)</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Wizard except Sonic Boom (partial)</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Illusionist</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Runeblade</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Mechanologist</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Warrior</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Guardian</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ranger</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ninja except Benji</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Ninja</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL Brute</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- ALL MON Light</div>
-<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Generic except Exude Confidence</div>
+<div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Generic</div>
 <div style="width:100%; text-align:left; color:rgb(220, 220, 220);">- All Shadow except Guardian of the Shadowrealm</div>
 </div>
 

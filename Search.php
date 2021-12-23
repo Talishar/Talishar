@@ -36,6 +36,12 @@ function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $cla
   return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
 }
 
+function SearchArsenal($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1)
+{
+  $arsenal = &GetArsenal($player);
+  return SearchInner($arsenal, ArsenalPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch);
+}
+
 function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch)
 {
   $cardList = "";
@@ -483,13 +489,13 @@ function CountItem($cardID, $player)
   return $count;
 }
 
-//function SearchArcaneReplacement(&$array, $count, $activeFunction)
 function SearchArcaneReplacement($player, $zone)
 {
   $cardList = "";
   switch($zone)
   {
     case "MYCHAR": $array = &GetPlayerCharacter($player); $count = CharacterPieces(); break;
+    case "MYITEMS": $array = &GetItems($player); $count = ItemPieces(); break;
   }
   for($i=0; $i<count($array); $i += $count)
   {
@@ -497,7 +503,6 @@ function SearchArcaneReplacement($player, $zone)
     $cardID = $array[$i];
     if(SpellVoidAmount($cardID) > 0)
     {
-      
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
