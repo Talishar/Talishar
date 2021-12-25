@@ -92,7 +92,7 @@
 
   function CardStats($player)
   {
-    global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
+    global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
     global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
     $cardStats = &GetCardStats($player);
     $rv = "<div style='float:left;'>";
@@ -120,7 +120,7 @@
     $turnStats = &GetTurnStats($player);
     $rv .= "<div style='float:left;'>";
     $rv .= "<h2>Turn Stats</h2>";
-    if($player == 1) $rv .= "<i>First turn omitted for first player.</i><br>";
+    if($player == $firstPlayer) $rv .= "<i>First turn omitted for first player.</i><br>";
     //Damage stats
     $totalDamageThreatened = 0;
     $totalDamageDealt = 0;
@@ -129,7 +129,7 @@
     $totalDefensiveCards = 0;
     $totalBlocked = 0;
     $numTurns = 0;
-    $start = ($player == 1 ? TurnStatPieces() : 0);//Skip first turn for first player
+    $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
     for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
     {
       $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];

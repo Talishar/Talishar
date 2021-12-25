@@ -2970,6 +2970,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "1_Defense": AddCurrentTurnEffect("ELE000-2", $player); return 4;
       }
       return $lastResult;
+    case "SETFIRSTPLAYER":
+      $first = ($lastResult == "Go_first" ? $player : ($player == 1 ? 2 : 1));
+      SetFirstPlayer($first);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

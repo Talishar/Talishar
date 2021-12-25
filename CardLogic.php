@@ -235,8 +235,8 @@ global $myStateBuiltFor, $p1ClassState, $p2ClassState;
       if(count($decisionQueue) == 0 && count($layers) > 0)
       {
         $priorityHeld = 0;
-        if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-", 1); $priorityHeld = 1; $layerPriority[0] = 0; }
-        if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-", 1); $priorityHeld = 1; $layerPriority[1] = 0; }
+        if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
+        if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
         if($priorityHeld)
         {
           ContinueDecisionQueue("");
@@ -372,6 +372,7 @@ global $myStateBuiltFor, $p1ClassState, $p2ClassState;
 //Return whether priority should be held for the player by default/settings
 function ShouldHoldPriority($player)
 {
+  if(AlwaysHoldPriority($player)) return true;
   $char = GetPlayerCharacter($player);
   if($char[0] == "ARC113" || $char[0] == "ARC114") return 1;
   if(CountItem("ARC017", $player) > 0) return 1;

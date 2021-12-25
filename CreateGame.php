@@ -6,6 +6,8 @@
   $deck=TryGET("deck");
   $decklink=TryGET("fabdb");
   $deckTestMode=TryGET("deckTestMode");
+  $format=TryGET("format");
+  $visibility=TryGET("visibility");
 
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
   $attemptCount = 0;
@@ -32,20 +34,20 @@
     mkdir("Games/" . $gameName, 0700, true);
   }
 
-  $gameFile = fopen("./Games/" . $gameName . "/GameFile.txt", "w");
+  $p1Data = "1";
+  $p2Data = "2";
   if($deckTestMode == "deckTestMode")
   {
-    fwrite($gameFile, "1\r\n2\r\n5");
+    $gameStatus = 5;
     copy("Dummy.txt","./Games/" . $gameName . "/p2Deck.txt");
   }
   else
   {
-    fwrite($gameFile, "1\r\n2\r\n0");
+    $gameStatus = 0;
   }
-  fclose($gameFile);
+  include "MenuFiles/WriteGamefile.php";
+echo($format . " " . $visibility)
 
-  header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
-  //header("Location: " . $redirectPath . "JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
+  //header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
 
-  
 ?>

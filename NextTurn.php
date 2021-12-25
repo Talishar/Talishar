@@ -16,6 +16,7 @@
   include "HostFiles/Redirector.php";
   include "Libraries/UILibraries.php";
   include "Libraries/StatFunctions.php";
+  include "Libraries/PlayerSettings.php";
 
   if($currentPlayer == $playerID) $icon = "ready.png";
   else $icon = "notReady.png";
@@ -144,7 +145,7 @@
     echo("</div>");
   }
 
-  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE") && $turn[1] == $playerID)
+  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);
@@ -220,14 +221,14 @@
     echo("</tr><tr>");
     for($i=0; $i<count($myHand); ++$i)
     {
-      echo("<td>");
+      echo("<td><span>");
       echo(CreateButton($playerID, "Top", 12, $i));
       echo("</span><span>");
       echo(CreateButton($playerID, "Bottom", 13, $i));
-      echo("</span></div>");
+      echo("</span>");
       echo("</td>");
     }
-    echo("</tr><table>");
+    echo("</tr></table>");
   }
 
   if($turn[0] == "CHOOSECOMBATCHAIN" && $turn[1] == $playerID)
@@ -414,7 +415,7 @@
   echo(CreatePopup("myPitchPopup", $myPitch, 1, 0, "Your Pitch"));
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
   echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
-  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Revert Gamestate", 10000, 0, "24px")));
+  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Revert Gamestate", 10000, 0, "24px") . "<BR><BR>" . GetSettingsUI($playerID)));
 
   //Display the player's hand at the bottom of the screen
   echo("<div style='position: fixed; left:10px; bottom:10px; width:40%; display:inline;'>");
@@ -567,6 +568,7 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
       case "MULTICHOOSEHAND": return 0;
       case "CHOOSEMULTIZONE": return 0;
       case "CHOOSEBANISH": return 0;
+      case "BUTTONINPUTNOPASS": return 0;
       default: return 1;
     }
   }

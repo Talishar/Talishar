@@ -897,5 +897,17 @@ function DestroyCharacter($player, $index)
   CharacterDestroyEffect($cardID, $player);
 }
 
+function SetFirstPlayer($player)
+{
+  global $firstPlayer, $currentPlayer, $otherPlayer, $mainPlayerGamestateBuilt, $mainPlayer;
+  $firstPlayer = $player;
+  if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
+  else UpdateGameState($currentPlayer);
+  $mainPlayer = $player;
+  $currentPlayer = $player;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  StatsStartTurn();
+}
+
 ?>
 

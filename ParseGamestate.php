@@ -24,6 +24,7 @@
   $p1CardStats = GetArray($handler);
   $p1TurnStats = GetArray($handler);
   $p1Allies = GetArray($handler);
+  $p1Settings = GetArray($handler);
 
   //Player 2
   $p2Hand = GetArray($handler);
@@ -42,9 +43,11 @@
   $p2CardStats = GetArray($handler);
   $p2TurnStats = GetArray($handler);
   $p2Allies = GetArray($handler);
+  $p2Settings = GetArray($handler);
 
   $landmarks = GetArray($handler);
   $winner = trim(fgets($handler));
+  $firstPlayer = trim(fgets($handler));
   $currentPlayer = trim(fgets($handler));
   $currentTurn = trim(fgets($handler));
   $turn = GetArray($handler);
