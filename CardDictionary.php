@@ -916,6 +916,8 @@
       case "CRU166": case "CRU169": case "CRU172": case "CRU175": return 2;
       case "CRU167": case "CRU170": case "CRU173": case "CRU176": return 3;
       //CRU Generic
+      case "CRU177": return 0;
+      case "CRU179": return 0;
       case "CRU180": return 1;
       case "CRU181": return 0;
       case "CRU182": return 3;
@@ -1369,7 +1371,6 @@
     if(($phase == "B" || $phase == "D") && $from == "HAND")
     {
       if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;
-echo(CachedTotalAttack());
       if(SearchCharacterForCard($mainPlayer, "CRU047") && CachedTotalAttack() <= 2) return false;
     }
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
