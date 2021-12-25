@@ -1388,7 +1388,7 @@
     }
     if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID);
     if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
-    $isStaticType = IsStaticType($cardType, $from);
+    $isStaticType = IsStaticType($cardType, $from, $cardID);
     if($isStaticType) { $cardType = GetAbilityType($cardID, $index); }
     if($cardType == "") return false;
     if(RequiresDiscard($cardID) || $cardID == "WTR159")
@@ -1403,7 +1403,6 @@
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && $myClassState[$CS_NumActionsPlayed] >= 1) return false;
     if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
-    if($cardID=="MON192" && $actionPoints>0) return true;
     switch($cardType)
     {
       case "A": return $phase == "M";
@@ -1575,10 +1574,11 @@
     return false;
   }
 
-  function IsStaticType($cardType, $from="")
+  function IsStaticType($cardType, $from="", $cardID="")
   {
     if($cardType == "C" || $cardType == "E" || $cardType == "W") return true;
     if($from == "PLAY") return true;
+    if($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
     return false;
   }
 
@@ -1865,11 +1865,19 @@
       case "MON180": case "MON181": case "MON182": return true;
       //Shadow
       case "MON190": return true;//Eclipse - Since play is restricted by num played, it's fine to not restrict this
-      case "MON191": case "MON194";
-      case "MON192": return true;
+      case "MON191": case "MON194": return true;
       case "MON200": case "MON201": case "MON202":
       case "MON203": case "MON204": case "MON205":
       case "MON209": case "MON210": case "MON211": return true;
+    }
+  }
+
+  function AbilityPlayableFromBanish($cardID)
+  {
+    switch($cardID)
+    {
+      case "MON192": return true;
+      default: return false;
     }
   }
 

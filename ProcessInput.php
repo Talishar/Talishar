@@ -785,7 +785,8 @@ function FinalizeChainLink($chainClosed=false)
         {
           $abilityType = GetAbilityType($cardID);
           $goAgainPrevented = CurrentEffectPreventsGoAgain();
-          if($from == "PLAY" || $from == "EQUIP")
+          //if($from == "PLAY" || $from == "EQUIP")
+          if(IsStaticType($cardType, $from, $cardID))
           {
             $canPlayAsInstant = CanPlayAsInstant($cardID);
             $hasGoAgain = AbilityHasGoAgain($cardID);
