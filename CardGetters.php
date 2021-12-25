@@ -313,6 +313,13 @@ function &GetAllies($player)
   else return $p2Allies;
 }
 
+function &GetSettings($player)
+{
+  global $p1Settings, $p2Settings;
+  if($player == 1) return $p1Settings;
+  else return $p2Settings;
+}
+
 function &GetMainCharacterEffects($player)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;

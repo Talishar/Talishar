@@ -6,6 +6,8 @@
   $p1Data = GetArray($handler);
   $p2Data = GetArray($handler);
   $gameStatus = trim(fgets($handler));
+  $format = trim(fgets($handler));
+  $visibility = trim(fgets($handler));
 
   fclose($handler);
 

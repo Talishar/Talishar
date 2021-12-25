@@ -25,6 +25,7 @@
 
   fwrite($handler, "\r\n");//Landmarks
   fwrite($handler, "0\r\n");//Game winner (0=none, else player ID)
+  fwrite($handler, "1\r\n");//First Player
   fwrite($handler, "1\r\n");//Current Player
   fwrite($handler, "1\r\n");//Current Turn
   fwrite($handler, "M 1\r\n");//What phase/player is active
@@ -125,6 +126,7 @@
     fwrite($handler, "\r\n");//Card Stats
     fwrite($handler, "\r\n");//Turn Stats
     fwrite($handler, "\r\n");//Allies
+    fwrite($handler, "0\r\n");//Settings
   }
 
   function GetArray($handler)

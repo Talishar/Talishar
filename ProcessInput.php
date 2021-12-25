@@ -9,6 +9,7 @@
   include "Libraries/SHMOPLibraries.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/UILibraries.php";
+  include "Libraries/PlayerSettings.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
@@ -276,6 +277,10 @@
       $myClassState[$CS_PlayIndex] = $index;
       PlayCard($cardID, "PLAY", -1);
       break;
+    case 26: //Change setting
+      $params = explode("-", $buttonInput);
+      ChangeSetting($playerID, $params[0], $params[1]);
+      break;
     case 99: //Pass
       PassInput();
       break;
@@ -414,7 +419,7 @@
       }
     }
     else if($turn[0] == "D")
-    {
+    { 
       if($turn[2] == "A")
       {
         return ResolveChainLink();
@@ -442,6 +447,10 @@
     $totalAttack = 0;
     $totalDefense = 0;
     EvaluateCombatChain($totalAttack, $totalDefense);
+    for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+    {
+      CombatChainResolutionEffects($combatChain[$i-1], $combatChain[$i]);
+    }
 
     $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
 
@@ -616,7 +625,7 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $currentTurnEffects, $nextTurnEffects;
     global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
-    global $mainAuras, $defBanish;
+    global $mainAuras, $defBanish, $firstPlayer;
     //Undo Intimidate
     for($i=0; $i<count($defBanish); $i+=2)
     {
@@ -633,7 +642,7 @@ function FinalizeChainLink($chainClosed=false)
     LogEndTurnStats($mainPlayer);
 
     //Draw Cards
-    if($mainPlayer == 1 && $currentTurn == 1) //Defender draws up on turn 1
+    if($mainPlayer == $firstPlayer && $currentTurn == 1) //Defender draws up on turn 1
     {
       $toDraw = 4 - count($defHand);
       for($i=0; $i < $toDraw; ++$i)//TODO: 4 -> Intellect
@@ -1144,7 +1153,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
       {
-        $goesWhere = GoesWhereAfterResolving($cardID, $from);
+        $goesWhere = GoesWhereAfterResolving($cardID);
         switch($goesWhere)
         {
           case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
@@ -1217,3 +1226,4 @@ function FinalizeChainLink($chainClosed=false)
   }
 
 ?>
+
