@@ -49,6 +49,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
        AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
        AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);//Operates off last result
        AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+       WriteLog("Hooves of the Shadowbeast were destroyed to gain 1 action point.");
     }
   }
 }
@@ -80,7 +81,7 @@ function RemoveTopMyDeck()
 
 function AddMainHand($cardID, $from)
 {
-  global $mainHand;
+  $mainHand = &GetHand($mainPlayer);
   array_push($mainHand, $cardID);
 }
 
@@ -366,4 +367,3 @@ function NegateLayer($index)
 }
 
 ?>
-
