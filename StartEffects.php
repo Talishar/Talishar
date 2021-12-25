@@ -6,6 +6,7 @@
   include "HostFiles/Redirector.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
+  include "AI/CombatDummy.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
@@ -20,20 +21,22 @@
   $theirHealth = CharacterHealth($theirCharacter[0]);
 
   $chooser = 1;
-  $p1roll = 0; $p2roll = 0;
-  $tries = 10;
-  while($p1roll == $p2roll && $tries > 0)
+  if($p2CharEquip[0] != "DUMMY")
   {
-    $p1roll = rand(1,6) + rand(1, 6);
-    $p2roll = rand(1,6) + rand(1, 6);
-    WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.");
-    --$tries;
+    $p1roll = 0; $p2roll = 0;
+    $tries = 10;
+    while($p1roll == $p2roll && $tries > 0)
+    {
+      $p1roll = rand(1,6) + rand(1, 6);
+      $p2roll = rand(1,6) + rand(1, 6);
+      WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.");
+      --$tries;
+    }
+    $chooser = ($p1roll > $p2roll ? 1 : 2);
   }
-  $chooser = ($p1roll > $p2roll ? 1 : 2);
   WriteLog("Player $chooser chooses who goes first.");
   AddDecisionQueue("BUTTONINPUTNOPASS", $chooser, "Go_first,Go_second");
   AddDecisionQueue("SETFIRSTPLAYER", $chooser, "-");
-  //StatsStartTurn();
 
   if($myCharacter[0] == "ARC001" || $myCharacter[0] == "ARC002")
   {
