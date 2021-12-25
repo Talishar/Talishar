@@ -16,7 +16,6 @@
 
   include "MenuFiles/ParseGamefile.php";
 
-
   if($gameStatus == 6)
   {
     header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=$playerID");
@@ -352,9 +351,9 @@ function GetDeckCards()
 function loadGamestate() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-      if(parseInt(this.responseText[0]) != prevGameState && parseInt(this.responseText[0]) != 5) { location.reload(); }
+      if(parseInt(this.responseText[2]) != prevGameState && parseInt(this.responseText[0]) != 5) { location.reload(); }
       <?php if($playerID == 1) echo 'if(parseInt(this.responseText[0]) == 5) {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
-      prevGameState = parseInt(this.responseText[0]);
+      prevGameState = parseInt(this.responseText[2]);
     };
     xhttp.open("GET", "GameFileLength.php?gameName=<?php echo($gameName); ?>", true);
     xhttp.send();

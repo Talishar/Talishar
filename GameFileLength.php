@@ -15,22 +15,14 @@
   {
     header("Location: " . $redirectorPath . "MainMenu.php");//We never actually got the lock
   }
-
-  $lineCount = 0;
-  $status = -1;
-  while (($buffer = fgets($gameFile, 4096)) !== false) {
-     ++$lineCount;
-     if($lineCount == 3) $status = $buffer;
-  }
-
-  ftruncate($gameFile, 0);
-  rewind($gameFile);
-  fwrite($gameFile, "1\r\n2\r\n" . $status);//If there's still only one player, rewrite the value so it will have a more recent timestamp
-
   flock($gameFile, LOCK_UN);    // release the lock
   fclose($gameFile);
 
-  echo $status;
+  include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";//If there's still only one player, rewrite the value so it will have a more recent timestamp
+
+
+  echo $gameStatus;
 
 ?>
 

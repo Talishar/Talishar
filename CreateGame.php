@@ -34,8 +34,8 @@
     mkdir("Games/" . $gameName, 0700, true);
   }
 
-  $p1Data = "1";
-  $p2Data = "2";
+  $p1Data = [1];
+  $p2Data = [2];
   if($deckTestMode == "deckTestMode")
   {
     $gameStatus = 5;
@@ -46,8 +46,7 @@
     $gameStatus = 0;
   }
   include "MenuFiles/WriteGamefile.php";
-echo($format . " " . $visibility)
 
-  //header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
+  header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink");
 
 ?>

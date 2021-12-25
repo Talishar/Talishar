@@ -2,6 +2,7 @@
 
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
+  include "MenuFiles/ParseGamefile.php";
 
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
@@ -166,11 +167,13 @@
     {
       header("Location: " . $redirectorPath . "MainMenu.php");//We never actually got the lock
     }
-
-    //fwrite($gameFile, "\r\n");
-    fwrite($gameFile, "1\r\n2\r\n4");
     flock($gameFile, LOCK_UN);    // release the lock
     fclose($gameFile);
+    $gameStatus = 4;
+    include "MenuFiles/WriteGamefile.php";
+
+    //fwrite($gameFile, "\r\n");
+    //fwrite($gameFile, "1\r\n2\r\n4");
   }
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
