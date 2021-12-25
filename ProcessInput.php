@@ -10,6 +10,7 @@
   include "Libraries/StatFunctions.php";
   include "Libraries/UILibraries.php";
   include "Libraries/PlayerSettings.php";
+  include "AI/CombatDummy.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
@@ -306,23 +307,7 @@
   CacheCombatResult();
 
   if($winner != 0) { $turn[0] = "OVER"; $currentPlayer = 1; }
-  $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
-  if($turn[0] != "OVER" && $currentPlayerIsAI)
-  {
-    for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
-    {
-      if(count($decisionQueue) > 0)
-      {
-        $options = explode(",", $turn[2]);
-        ContinueDecisionQueue($options[0]);//Just pick the first option
-      }
-      else
-      {
-        PassInput();
-      }
-      $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
-    }
-  }
+  CombatDummyAI();//Only does anything if applicable
 
   //Now write out the game state
   if(!$skipWriteGamestate)
@@ -339,23 +324,6 @@
   header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=" . $playerID);
 
   exit;
-
-  function PassInput()
-  {
-    global $turn, $currentPlayer;
-    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "INSTANT")
-    {
-      ContinueDecisionQueue("PASS");
-    }
-    else
-    {
-      if(Pass($turn, $currentPlayer, $currentPlayer))
-      {
-        BeginTurnPass();
-      }
-      WriteLog("Player " . $currentPlayer . " passed.");
-    }
-  }
 
   function PitchHasCard($cardID)
   {
@@ -393,6 +361,23 @@
 
   function Passed(&$turn, $playerID) {
     return $turn[1+$playerID];
+  }
+
+  function PassInput()
+  {
+    global $turn, $currentPlayer;
+    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "INSTANT")
+    {
+      ContinueDecisionQueue("PASS");
+    }
+    else
+    {
+      if(Pass($turn, $currentPlayer, $currentPlayer))
+      {
+        BeginTurnPass();
+      }
+      WriteLog("Player " . $currentPlayer . " passed.");
+    }
   }
 
   function Pass(&$turn, $playerID, &$currentPlayer) {
