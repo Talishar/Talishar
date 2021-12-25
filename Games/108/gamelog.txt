@@ -1,5 +1,0 @@
-<span style='color:<PLAYER1COLOR>;'>Player 1 played <b><span onmouseover="ShowDetail(event,'./CardImages/ARC170.png')" onmouseout='HideCardDetail()'>ARC170</span></b></span>
-Resolving play ability of ARC170: Plunder makes your next attack action that hits draw a card.
-<span style='color:<PLAYER1COLOR>;'>Player 1 played <b><span onmouseover="ShowDetail(event,'./CardImages/MON268.png')" onmouseout='HideCardDetail()'>MON268</span></b></span>
-Player 1 pitched <b><span onmouseover="ShowDetail(event,'./CardImages/WTR209.png')" onmouseout='HideCardDetail()'>WTR209</span></b>
-Player 1 passed.

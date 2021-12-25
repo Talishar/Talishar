@@ -242,6 +242,12 @@
       case "MON190":
         PlayAlly("MON220", $currentPlayer);
         return "Eclipse created an Ursur token.";
+      case "MON192":
+        if($from=="BANISH")
+        {
+          return "Guardian of the Shadowrealm was returned to hand.";
+        }
+        return;
       case "MON193":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Shadow Puppetry gives your next action card +1, Go Again, and if it hits you may banish the top card of your deck.";
@@ -342,4 +348,3 @@
   }
 
 ?>
-

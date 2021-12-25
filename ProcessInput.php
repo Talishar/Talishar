@@ -414,7 +414,7 @@
       }
     }
     else if($turn[0] == "D")
-    { 
+    {
       if($turn[2] == "A")
       {
         return ResolveChainLink();
@@ -1144,7 +1144,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
       {
-        $goesWhere = GoesWhereAfterResolving($cardID);
+        $goesWhere = GoesWhereAfterResolving($cardID, $from);
         switch($goesWhere)
         {
           case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
@@ -1217,4 +1217,3 @@ function FinalizeChainLink($chainClosed=false)
   }
 
 ?>
-

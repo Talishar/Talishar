@@ -15,6 +15,7 @@
       case "MON153": case "MON154": return 0;
       case "MON155": return 1;
       case "MON188": return 1;
+      case "MON192": return 2;
       case "MON219": return 0;
       case "MON220": return 0;
       case "MON221": return 2;
@@ -44,6 +45,7 @@
       case "MON153": case "MON154": return "A";
       case "MON155": return "AA";
       case "MON188": return "I";
+      case "MON192": return "A";
       case "MON219": return "AA";
       case "MON220": return "AA";
       case "MON221": return "AA";
@@ -228,4 +230,3 @@
   }
 
 ?>
-
