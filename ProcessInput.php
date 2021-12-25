@@ -1153,7 +1153,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
       {
-        $goesWhere = GoesWhereAfterResolving($cardID, $from);
+        $goesWhere = GoesWhereAfterResolving($cardID);
         switch($goesWhere)
         {
           case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
