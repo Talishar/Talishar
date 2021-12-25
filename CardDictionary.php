@@ -916,8 +916,6 @@
       case "CRU166": case "CRU169": case "CRU172": case "CRU175": return 2;
       case "CRU167": case "CRU170": case "CRU173": case "CRU176": return 3;
       //CRU Generic
-      case "CRU177": return 0;
-      case "CRU179": return 0;
       case "CRU180": return 1;
       case "CRU181": return 0;
       case "CRU182": return 3;
@@ -970,7 +968,7 @@
     }
     switch($cardID)
     {
-      case "WTR000": return 0; 
+      case "WTR000": return 0;
       case "WTR038": case "WTR039": case "WTR040": return 0;
       case "CRU177": case "WTR153": return 0;
       //Brute
@@ -1371,6 +1369,7 @@
     if(($phase == "B" || $phase == "D") && $from == "HAND")
     {
       if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;
+echo(CachedTotalAttack());
       if(SearchCharacterForCard($mainPlayer, "CRU047") && CachedTotalAttack() <= 2) return false;
     }
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
@@ -1403,6 +1402,7 @@
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && $myClassState[$CS_NumActionsPlayed] >= 1) return false;
     if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
+    if($cardID=="MON192" && $actionPoints>0) return true;
     switch($cardType)
     {
       case "A": return $phase == "M";
@@ -1413,7 +1413,7 @@
     }
   }
 
-  function GoesWhereAfterResolving($cardID)
+  function GoesWhereAfterResolving($cardID, $from = null)
   {
     global $currentPlayer, $CS_NumWizardNonAttack;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
@@ -1422,6 +1422,7 @@
       case "CRU163": return GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";
+
       case "MON231": return "BANISH";
       case "ELE113": return "BANISH";
       case "ELE140": case "ELE141": case "ELE142": return "BANISH";
@@ -1429,6 +1430,7 @@
         $theirChar = GetPlayerCharacter($otherPlayer);
         if(TalentContains($theirChar[0], "SHADOW") && PlayerHasLessHealth($currentPlayer)) return "SOUL";
         else return "GY";
+      case "MON192": if($from=="BANISH") return "HAND";
       default: return "GY";
     }
   }
@@ -1522,6 +1524,7 @@
       case "MON150": case "MON151": case "MON152": return count($myDiscard) < 3;
       case "MON189": return SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true)) < 6;
       case "MON190": return $myClassState[$CS_NumBloodDebtPlayed] < 6;
+
       case "MON198": $discard = GetDiscard($currentPlayer); return count($discard) < 6;
       case "MON230": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0 || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
@@ -1560,6 +1563,7 @@
   function GoesOnCombatChain($phase, $cardID, $from)
   {
     if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
+    elseif($phase=="M" && $cardID == "MON192" && $from== "BANISH") $cardType = GetAbilityType($cardID);
     else $cardType = CardType($cardID);
     if($cardType == "I") return false;//Instants as yet never go on the combat chain
     if($phase == "B") return true;//Anything you play during these combat phases would go on the chain
@@ -1860,7 +1864,8 @@
       case "MON180": case "MON181": case "MON182": return true;
       //Shadow
       case "MON190": return true;//Eclipse - Since play is restricted by num played, it's fine to not restrict this
-      case "MON191": case "MON194":
+      case "MON191": case "MON194";
+      case "MON192": return true;
       case "MON200": case "MON201": case "MON202":
       case "MON203": case "MON204": case "MON205":
       case "MON209": case "MON210": case "MON211": return true;
@@ -1899,4 +1904,3 @@
   }
 
 ?>
-
