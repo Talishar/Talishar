@@ -81,6 +81,7 @@ function RemoveTopMyDeck()
 
 function AddMainHand($cardID, $from)
 {
+  global $mainPlayer;
   $mainHand = &GetHand($mainPlayer);
   array_push($mainHand, $cardID);
 }
