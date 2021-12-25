@@ -968,7 +968,7 @@
     }
     switch($cardID)
     {
-      case "WTR000": return 0; 
+      case "WTR000": return 0;
       case "WTR038": case "WTR039": case "WTR040": return 0;
       case "CRU177": case "WTR153": return 0;
       //Brute
@@ -1402,6 +1402,7 @@ echo(CachedTotalAttack());
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && $myClassState[$CS_NumActionsPlayed] >= 1) return false;
     if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
+    if($cardID=="MON192" && $actionPoints>0) return true;
     switch($cardType)
     {
       case "A": return $phase == "M";
@@ -1412,7 +1413,7 @@ echo(CachedTotalAttack());
     }
   }
 
-  function GoesWhereAfterResolving($cardID)
+  function GoesWhereAfterResolving($cardID, $from = null)
   {
     global $currentPlayer, $CS_NumWizardNonAttack;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
@@ -1421,6 +1422,7 @@ echo(CachedTotalAttack());
       case "CRU163": return GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";
+
       case "MON231": return "BANISH";
       case "ELE113": return "BANISH";
       case "ELE140": case "ELE141": case "ELE142": return "BANISH";
@@ -1428,6 +1430,7 @@ echo(CachedTotalAttack());
         $theirChar = GetPlayerCharacter($otherPlayer);
         if(TalentContains($theirChar[0], "SHADOW") && PlayerHasLessHealth($currentPlayer)) return "SOUL";
         else return "GY";
+      case "MON192": if($from=="BANISH") return "HAND";
       default: return "GY";
     }
   }
@@ -1521,6 +1524,7 @@ echo(CachedTotalAttack());
       case "MON150": case "MON151": case "MON152": return count($myDiscard) < 3;
       case "MON189": return SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true)) < 6;
       case "MON190": return $myClassState[$CS_NumBloodDebtPlayed] < 6;
+
       case "MON198": $discard = GetDiscard($currentPlayer); return count($discard) < 6;
       case "MON230": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0 || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
@@ -1559,6 +1563,7 @@ echo(CachedTotalAttack());
   function GoesOnCombatChain($phase, $cardID, $from)
   {
     if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
+    elseif($phase=="M" && $cardID == "MON192" && $from== "BANISH") $cardType = GetAbilityType($cardID);
     else $cardType = CardType($cardID);
     if($cardType == "I") return false;//Instants as yet never go on the combat chain
     if($phase == "B") return true;//Anything you play during these combat phases would go on the chain
@@ -1859,7 +1864,8 @@ echo(CachedTotalAttack());
       case "MON180": case "MON181": case "MON182": return true;
       //Shadow
       case "MON190": return true;//Eclipse - Since play is restricted by num played, it's fine to not restrict this
-      case "MON191": case "MON194":
+      case "MON191": case "MON194";
+      case "MON192": return true;
       case "MON200": case "MON201": case "MON202":
       case "MON203": case "MON204": case "MON205":
       case "MON209": case "MON210": case "MON211": return true;
@@ -1898,4 +1904,3 @@ echo(CachedTotalAttack());
   }
 
 ?>
-

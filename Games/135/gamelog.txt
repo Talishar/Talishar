@@ -1,4 +1,0 @@
-<span style='color:<PLAYER1COLOR>;'>Player 1 played <b><span onmouseover="ShowDetail(event,'./CardImages/WTR152.png')" onmouseout='HideCardDetail()'>WTR152</span></b></span>
-Resolving play ability of WTR152: Heartened Cross Strap reduces the resource cost of your next attack action card by 2.
-<span style='color:<PLAYER1COLOR>;'>Player 1 played <b><span onmouseover="ShowDetail(event,'./CardImages/WTR153.png')" onmouseout='HideCardDetail()'>WTR153</span></b></span>
-Resolving play ability of WTR153: Goliath Gauntlet gives your next attack action card with cost 2 or greater +2.
