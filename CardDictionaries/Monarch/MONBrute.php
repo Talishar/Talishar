@@ -23,6 +23,7 @@
       case "MON222": return "A";
       case "MON223": case "MON224": case "MON225": return "AA";
       case "MON226": case "MON227": case "MON228": return "AA";
+      case "MON406": return "M";
       default: return "";
     }
   }
@@ -78,6 +79,7 @@
       case "MON223": case "MON226": return 1;
       case "MON224": case "MON227": return 2;
       case "MON225": case "MON228": return 3;
+      case "MON406": return 0;
       default: return 3;
     }
   }

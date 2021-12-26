@@ -451,6 +451,10 @@
         else if($number >= 187 && $number <= 220) return "NONE";//Shadow
         else if($number >= 221 && $number <= 228) return "BRUTE";
         else if($number >= 229 && $number <= 237) return "RUNEBLADE";
+        else if($number == 404) return "ILLUSIONIST";
+        else if($number == 405) return "WARRIOR";
+        else if($number == 406) return "BRUTE";
+        else if($number == 407) return "RUNEBLADE";
         else return "GENERIC";
       case "ELE":
         if($number == 0) return "NONE";
@@ -461,7 +465,7 @@
         else if($number >= 213 && $number <= 221) return "RANGER";
         else if($number >= 222 && $number <= 232) return "RUNEBLADE";
         else if($number >= 233) return "GENERIC";
-        else return "NONE";//TODO
+        else return "NONE";
       default: return 0;
     }
   }

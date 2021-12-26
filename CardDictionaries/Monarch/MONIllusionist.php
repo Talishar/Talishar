@@ -25,6 +25,7 @@
       case "MON095": case "MON096": case "MON097": return "A";
       case "MON098": case "MON099": case "MON100": return "AA";
       case "MON101": case "MON102": case "MON103": return "AA";
+      case "MON404": return "M";
       default: return "";
     }
   }
@@ -81,6 +82,7 @@
       case "MON092": case "MON095": case "MON098": case "MON101": return 1;
       case "MON093": case "MON096": case "MON099": case "MON102": return 2;
       case "MON094": case "MON097": case "MON100": case "MON103": return 3;
+      case "MON404": return 0;
       default: return 0;
     }
   }
@@ -95,6 +97,7 @@
       case "MON089": return 0;
       case "MON092": case "MON093": case "MON094": return 0;
       case "MON095": case "MON096": case "MON097": return 2;
+      case "MON404": return 2;
       default: return 3;
     }
   }
