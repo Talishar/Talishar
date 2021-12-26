@@ -608,7 +608,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function FinalizeTurn()
   {
-    global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $currentTurnEffects, $nextTurnEffects;
+    global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
     global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
     global $mainAuras, $defBanish, $firstPlayer;
     //Undo Intimidate
@@ -670,6 +670,8 @@ function FinalizeChainLink($chainClosed=false)
     $defResources[0] = 0;
     $defResources[1] = 0;
 
+    ArsenalEndTurn($mainPlayer);
+    ArsenalEndTurn($defPlayer);
     EndTurnBloodDebt();
     CurrentEffectEndTurnAbilities();
     AuraEndTurnAbilities();

@@ -256,5 +256,24 @@
     AddDecisionQueue("GENESIS", $mainPlayer, "-", 1);
   }
 
+  function TheLibrarianEffect($player, $index)
+  {
+    $arsenal = &GetArsenal($player);
+    --$arsenal[$index+2];
+    ++$arsenal[$index+3];
+    Draw($player);
+    $log = "The Librarian drew a card";
+    if($arsenal[$index+3] == 3)
+    {
+      $log .= " and searched for a specialization card";
+      RemoveArsenal($player, $index);
+      BanishCardForPlayer("MON404", $player, "ARS", "-");
+      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+    }
+    WriteLog($log . ".");
+  }
+
 ?>
 

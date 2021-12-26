@@ -62,7 +62,7 @@
 
   function ArsenalPieces()
   {
-    return 2;
+    return 4;
   }
 
   function AllyPieces()
