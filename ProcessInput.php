@@ -182,12 +182,12 @@
       $cardID = $myBanish[$index];
       if($myBanish[$index+1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       if($myBanish[$index+1] == "MON212" && CardTalent($theirCharacter[0]) == "LIGHT") AddCurrentTurnEffect("MON212", $currentPlayer);
+      PlayCard($cardID, "BANISH", -1, $index);
       for($i=$index+BanishPieces()-1; $i>=$index; --$i)
       {
         unset($myBanish[$i]);
       }
       $myBanish = array_values($myBanish);
-      PlayCard($cardID, "BANISH", -1, $index);
       break;
     case 15: case 16: case 18: //CHOOSE (15 and 18 deprecated)
       $index = $cardID;
@@ -732,7 +732,7 @@ function FinalizeChainLink($chainClosed=false)
             {
               $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
               if($turn[0] == "B" && CardType($cardID) != "I") $myResources[1] = $dynCostResolved;
-              else $myResources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier() + CharacterCostModifier($cardID, $from);
+              else $myResources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
               if($myResources[1] < 0) $myResources[1] = 0;
               LogResourcesUsedStats($currentPlayer, $myResources[1]);
             }
@@ -745,7 +745,7 @@ function FinalizeChainLink($chainClosed=false)
               if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
               AddPostPitchDecisionQueue($cardID, $from, $index);
               if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
-              AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from);
+              AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
               ProcessDecisionQueue();
               return;
             }

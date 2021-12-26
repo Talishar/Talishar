@@ -226,7 +226,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint, $otherPlayer, $p2ClassState, $myClassState, $theirClassState;
-    global $layers, $layerPriority;
+    global $layers, $layerPriority, $dqVars;
 global $myStateBuiltFor, $p1ClassState, $p2ClassState;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY")
     {
@@ -288,7 +288,7 @@ global $myStateBuiltFor, $p1ClassState, $p2ClassState;
         $params = explode("-", $decisionQueue[2]);//Parameter
         $decisionQueue = [];
         if($lastResult == "") $lastResult = 0;
-        PlayCard($params[0], $params[1], $lastResult);
+        PlayCard($params[0], $params[1], $lastResult, $params[2]);
       }
       else
       {
@@ -302,6 +302,7 @@ global $myStateBuiltFor, $p1ClassState, $p2ClassState;
     $phase = array_shift($decisionQueue);
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
+    $parameter = str_replace("{0}", $dqVars[0], $parameter);
     $subsequent = array_shift($decisionQueue);
     $makeCheckpoint = array_shift($decisionQueue);
     $turn[0] = $phase;

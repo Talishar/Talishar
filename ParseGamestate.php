@@ -58,6 +58,7 @@
   $currentTurnEffectsFromCombat = GetArray($handler);
   $nextTurnEffects = GetArray($handler);
   $decisionQueue = GetArray($handler);
+  $dqVars = GetArray($handler);
   $layers = GetArray($handler);
   $layerPriority = GetArray($handler);
   $mainPlayer = trim(fgets($handler));
