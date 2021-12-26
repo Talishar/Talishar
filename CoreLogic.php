@@ -144,6 +144,29 @@ function StartTurnAbilities()
   {
     CharacterStartTurnAbility($i);
   }
+  ArsenalStartTurnAbilities();
+}
+
+function ArsenalStartTurnAbilities()
+{
+  global $mainPlayer;
+  $arsenal = &GetArsenal($mainPlayer);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    switch($arsenal[$i])
+    {
+      case "MON404": case "MON405": case "MON406": case "MON407":
+        if($arsenal[$i+1] == "DOWN")
+        {
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_flip_over_your_mentor_card");
+          AddDecisionQueue("NOPASS", $mainPlayer, "-");
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
+          AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, $i, 1);
+        }
+        break;
+      default: break;
+    }
+  }
 }
 
 function HasIncreasedAttack()

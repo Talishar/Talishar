@@ -120,6 +120,8 @@ function AddArsenal($cardID, $player, $from, $facing)
   $arsenal = &GetArsenal($player);
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
+  array_push($arsenal, ArsenalNumUsesPerTurn($cardID));//Num uses
+  array_push($arsenal, "0");//Counters
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP")
   {
@@ -143,6 +145,15 @@ function AddMyArsenal($cardID, $from, $facing)
   AddArsenal($cardID, $currentPlayer, $from, $facing);
 }
 
+function ArsenalEndTurn($player)
+{
+  $arsenal = &GetArsenal($player);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    $arsenal[$i+2] = ArsenalNumUsesPerTurn($cardID);
+  }
+}
+
 function SetArsenalFacing($facing, $player)
 {
   $arsenal = &GetArsenal($player);
@@ -150,6 +161,16 @@ function SetArsenalFacing($facing, $player)
   {
     if($facing == "UP" && $arsenal[$i+1] == "DOWN") { $arsenal[$i+1] = "UP"; return $arsenal[$i]; }
   }
+}
+
+function RemoveArsenal($player, $index)
+{
+  $arsenal = &GetArsenal($player);
+  for($i=$index+ArsenalPieces()-1; $i >= $index; --$i)
+  {
+    unset($arsenal[$i]);
+  }
+  $arsenal = array_values($arsenal);
 }
 
 //Deprecated -- do not use

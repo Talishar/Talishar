@@ -1746,6 +1746,14 @@
     }
   }
 
+  function ArsenalNumUsesPerTurn($cardID)
+  {
+    switch($cardID)
+    {
+      default: return 1;
+    }
+  }
+
   function HasReprise($cardID)
   {
     switch($cardID)
@@ -1914,6 +1922,19 @@
       case "MON402": return 1;
     }
     return 0;
+  }
+
+  function IsSpecialization($cardID)
+  {
+    switch($cardID)
+    {
+      case "WTR006": case "WTR009": case "WTR043": case "WTR047": case "WTR081": case "WTR083": case "WTR119": case "WTR121": return true;
+      case "ARC007": case "ARC009": case "ARC043": case "ARC046": case "ARC080": case "ARC083": case "ARC118": case "ARC121": return true;
+      case "CRU000": case "CRU074": return true;
+      case "MON005": case "MON007": case "MON035": case "MON036": case "MON189": case "MON190": case "MON198": case "MON199": return true;
+      case "ELE004": case "ELE036": case "ELE066": return true;
+      default: return false;
+    }
   }
 
 ?>

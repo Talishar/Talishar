@@ -2136,6 +2136,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKTOPX": $rv = ""; $deck = &GetDeck($player); for($i=0; $i<$subparam; ++$i) if($i < count($deck)) { if($rv != "") $rv .= ","; $rv .= $i; } break;
         case "DECKCLASSAA": $rv = SearchDeck($player, "AA", "", -1, -1, $subparam); break;
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
+        case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
         case "HAND": $hand = &GetHand($player); $rv = GetIndices(count($hand)); break;
         case "HANDTALENT":  $rv = SearchHand($player, "", "", -1, -1, "", $subparam); break;
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
@@ -2273,6 +2274,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDARSENALFACEDOWN":
       AddArsenal($lastResult, $player, $parameter, "DOWN");
+      return $lastResult;
+    case "TURNARSENALFACEUP":
+      $arsenal = &GetArsenal($player);
+      $arsenal[$lastResult+1] = "UP";
       return $lastResult;
     case "REMOVEARSENAL":
       $index = $lastResult;

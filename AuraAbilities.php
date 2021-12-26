@@ -4,6 +4,11 @@ function PlayAura($cardID, $player, $number=1)
 {
   $auras = &GetAuras($player);
   if($cardID == "ARC112" && SearchCurrentTurnEffects("ARC081", $player)) ++$number;
+  if($cardID == "MON104")
+  {
+    $index = SearchArsenalReadyCard($player, "MON404");
+    if($index > -1) TheLibrarianEffect($player, $index);
+  }
   for($i=0; $i<$number; ++$i)
   {
     array_push($auras, $cardID);
