@@ -1164,6 +1164,19 @@ function CurrentEffectCostModifiers($cardID)
   return $costModifier;
 }
 
+function BanishCostModifier($from, $index)
+{
+  global $currentPlayer;
+  if($from != "BANISH") return 0;
+  $banish = GetBanish($currentPlayer);
+  $mod = explode("-", $banish[$index+1]);
+  switch($mod[0])
+  {
+    case "ARC119": return -1 * $mod[1];
+    default: return 0;
+  }
+}
+
 function CurrentEffectDamagePrevention($player, $type, $damage)
 {
   global $currentTurnEffects;
@@ -2080,7 +2093,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $myResources, $myHealth, $theirHealth, $myArsenal, $CCS_ChainAttackBuff;
   global $defCharacter, $myClassState, $CS_NumCharged, $theirCharacter, $theirHand, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget;
+  global $CS_LayerTarget, $dqVars;
   $rv = "";
   switch($phase)
   {
@@ -2973,6 +2986,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETFIRSTPLAYER":
       $first = ($lastResult == "Go_first" ? $player : ($player == 1 ? 2 : 1));
       SetFirstPlayer($first);
+      return $lastResult;
+    case "SETDQVAR":
+      $dqVars[$parameter] = $lastResult;
       return $lastResult;
     default:
       return "NOTSTATIC";

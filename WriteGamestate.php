@@ -58,6 +58,7 @@
   fwrite($handler, implode(" ", $currentTurnEffectsFromCombat) . "\r\n");
   fwrite($handler, implode(" ", $nextTurnEffects) . "\r\n");
   fwrite($handler, implode(" ", $decisionQueue) . "\r\n");
+  fwrite($handler, implode(" ", $dqVars) . "\r\n");
   fwrite($handler, implode(" ", $layers) . "\r\n");
   fwrite($handler, implode(" ", $layerPriority) . "\r\n");
   fwrite($handler, $mainPlayer . "\r\n");
