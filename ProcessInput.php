@@ -1112,6 +1112,7 @@ function FinalizeChainLink($chainClosed=false)
         $currentTurnEffectsFromCombat = [];
         $combatChainState[$CCS_AttackPlayedFrom] = $from;
         AuraAttackAbilities($cardID);
+        ArsenalAttackAbilities();
         OnAttackEffects($cardID);
         ProcessAttackTarget();
         $myClassState[$CS_PlayCCIndex] = $index;
