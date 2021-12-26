@@ -169,6 +169,22 @@ function ArsenalStartTurnAbilities()
   }
 }
 
+function ArsenalAttackAbilities()
+{
+  global $combatChain, $mainPlayer;
+  $attackID = $combatChain[0];
+  $attackType = CardType($attackID);
+  $arsenal = GetArsenal($mainPlayer);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    switch($arsenal[$i])
+    {
+      case "MON406": if($attackType == "AA" && $arsenal[$i+1] == "UP") LadyBarthimontAbility($mainPlayer, $i); break;
+      default: break;
+    }
+  }
+}
+
 function HasIncreasedAttack()
 {
   global $combatChain;

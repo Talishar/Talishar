@@ -1724,6 +1724,7 @@
       case "MON195": case "MON196": case "MON197": return true;
       case "MON223": case "MON224": case "MON225": return true;
       case "MON278": case "MON279": case "MON280": return true;
+      case "MON406": return true;
       case "ELE005": return true;
       case "ELE016": case "ELE017": case "ELE018": return true;
       case "ELE033-2": return true;

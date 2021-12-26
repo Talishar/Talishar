@@ -255,4 +255,30 @@
     return $BanishedIncludes6;
   }
 
+  function LadyBarthimontAbility($player, $index)
+  {
+    $deck = &GetDeck($player);
+    if(count($deck) == 0) return;
+    $topDeck = array_shift($deck);
+    BanishCardForPlayer($topDeck, $player, "DECK", "-");
+    $log = "Lady Barthimont banished " . CardLink($topDeck, $topDeck);
+    if(AttackValue($topDeck) >= 6)
+    {
+      $arsenal = &GetArsenal($player);
+      ++$arsenal[$index+3];
+      AddCurrentTurnEffect("MON406", $player);
+      if($arsenal[$index+3] == 2)
+      {
+        $log .= ", gave Dominate, and searched for a specialization card";
+        RemoveArsenal($player, $index);
+        BanishCardForPlayer("MON406", $player, "ARS", "-");
+        AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+        AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+      }
+      else $log .= " and gave Dominate";
+      WriteLog($log . ".");
+    }
+  }
+
 ?>

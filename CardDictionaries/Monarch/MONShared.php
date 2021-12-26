@@ -217,6 +217,7 @@
       case "MON278": case "MON279": case "MON280": return true;
       case "MON296": case "MON297": case "MON298": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
       case "MON299": case "MON300": case "MON301": return CardType($attackID) == "AA";
+      case "MON406": return true;
       default: return false;
     }
   }
