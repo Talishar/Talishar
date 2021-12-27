@@ -1,5 +1,7 @@
 <?php
 
+require('WriteReplay.php');
+
 function BanishCardForPlayer($cardID, $player, $from, $modifier="-")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
@@ -22,6 +24,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer;
   if($player == "") $player = $currentPlayer;
+  WriteReplay($player, $cardID, $from, "BANISH");
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was banished from your deck face up by an action card. Gained 1 action point.");
       ++$actionPoints;
@@ -49,26 +52,30 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
        AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
        AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);//Operates off last result
        AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
-       WriteLog("Hooves of the Shadowbeast were destroyed to gain 1 action point.");
+       return "Hooves of the Shadowbeast were destroyed to gain an action point.";
     }
   }
 }
 
 function AddBottomMainDeck($cardID, $from)
 {
-  global $mainDeck;
+  global $mainDeck, $mainPlayer;
+
+  WriteReplay($mainPlayer, $cardID, $from, "BOTTOM");
   array_push($mainDeck, $cardID);
 }
 
 function AddBottomMyDeck($cardID, $from)
 {
   global $myDeck;
+  WriteReplay($playerID, $cardID, $from, "BOTTOM");
   array_push($myDeck, $cardID);
 }
 
 function AddBottomDeck($cardID, $player, $from)
 {
   $deck = &GetDeck($player);
+  WriteReplay($player, $cardID, $from, "BOTTOM");
   array_push($deck, $cardID);
 }
 
@@ -82,6 +89,7 @@ function RemoveTopMyDeck()
 function AddMainHand($cardID, $from)
 {
   global $mainPlayer;
+  WriteReplay($mainPlayer, $cardID, $from, "HAND");
   $mainHand = &GetHand($mainPlayer);
   array_push($mainHand, $cardID);
 }
@@ -118,6 +126,7 @@ function GainResources($player, $amount)
 function AddArsenal($cardID, $player, $from, $facing)
 {
   $arsenal = &GetArsenal($player);
+  WriteReplay($mainPlayer, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
   array_push($arsenal, ArsenalNumUsesPerTurn($cardID));//Num uses
@@ -191,6 +200,7 @@ function AddSoul($cardID, $player, $from)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
+  WriteReplay($player, $cardID, $from, "SOUL");
   global $CS_NumAddedToSoul;
   global $myStateBuiltFor;
   if($mainPlayerGamestateStillBuilt)
@@ -216,6 +226,8 @@ function BanishFromSoul($player)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
+
+  WriteReplay($player, $cardID, $from, "BANISH");
   if($mainPlayerGamestateStillBuilt)
   {
     if($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player);
@@ -261,6 +273,7 @@ function ConsumeDamagePrevention($player)
 function AddThisCardPitch($player, $cardID)
 {
   global $CS_PitchedForThisCard;
+  WriteReplay($player, $cardID, "HAND", "PITCH");
   $pitch = GetClassState($player, $CS_PitchedForThisCard);
   if($pitch == "-") SetClassState($player, $CS_PitchedForThisCard, $cardID);
   else SetClassState($player, $CS_PitchedForThisCard, $pitch . "-" . $cardID);
@@ -316,6 +329,7 @@ function AddGraveyard($cardID, $player, $from)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor;
+  WriteReplay($player, $cardID, $from, "GRAVEYARD");
   if($cardID == "MON124") { BanishCardForPlayer($cardID, $player, $from, "NA"); return; }
   else if($cardID == "CRU007" && $from != "CC")
   {

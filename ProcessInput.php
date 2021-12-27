@@ -3,6 +3,7 @@
   error_reporting(E_ALL);
 
   include "WriteLog.php";
+  include "WriteReplay.php";
   include "GameLogic.php";
   include "GameTerms.php";
   include "HostFiles/Redirector.php";
@@ -404,7 +405,7 @@
       }
     }
     else if($turn[0] == "D")
-    { 
+    {
       if($turn[2] == "A")
       {
         return ResolveChainLink();
@@ -1217,4 +1218,3 @@ function FinalizeChainLink($chainClosed=false)
   }
 
 ?>
-
