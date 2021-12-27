@@ -351,9 +351,11 @@ function GetDeckCards()
 function loadGamestate() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-      if(parseInt(this.responseText[2]) != prevGameState && parseInt(this.responseText[0]) != 5) { location.reload(); }
-      <?php if($playerID == 1) echo 'if(parseInt(this.responseText[0]) == 5) {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
-      prevGameState = parseInt(this.responseText[2]);
+      var resp = "";
+      for(var i=0; i<this.responseText.length; ++i) resp += this.responseText[i];
+      if(parseInt(resp) != prevGameState && parseInt(resp) != 5) { location.reload(); }
+      <?php if($playerID == 1) echo 'if(parseInt(resp) == 5) {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
+      prevGameState = parseInt(resp);
     };
     xhttp.open("GET", "GameFileLength.php?gameName=<?php echo($gameName); ?>", true);
     xhttp.send();
