@@ -1,7 +1,5 @@
 <?php
 
-require('WriteReplay.php');
-
 function BanishCardForPlayer($cardID, $player, $from, $modifier="-")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;

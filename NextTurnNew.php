@@ -421,7 +421,7 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     $type = CardType($myCharacter[$i]);
     $sType = CardSubType($myCharacter[$i]);
-    echo("<div style='position:absolute; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
+    echo("<div style='position:fixed; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
     echo(Card($myCharacter[$i], "CardImages", 180, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
     echo("</div>");
   }
@@ -481,22 +481,6 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
     return 0;
   }
 
-  function CardBorderColor($cardID, $from, $isPlayable)
-  {
-    global $playerID, $currentPlayer;
-    if($playerID != $currentPlayer) return 0;
-    if($from == "BANISH")
-    {
-      if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
-      if($isPlayable && ComboActive($cardID)) return 5;
-      return 4;
-    }
-    if($isPlayable && ComboActive($cardID)) return 3;
-    if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
-    else if($isPlayable) return 6;
-    return 0;
-  }
-
   function CanPassPhase($phase)
   {
     switch($phase)
@@ -528,10 +512,10 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
     }
     switch($cardSubType)
     {
-      case "Head": return "210px";
-      case "Chest": return "210px";
-      case "Arms": return "345px";
-      case "Legs": return "210px";
+      case "Head": return "10px";
+      case "Chest": return "10px";
+      case "Arms": return "145px";
+      case "Legs": return "10px";
     }
   }
 
@@ -545,10 +529,10 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; position
     }
     switch($cardSubType)
     {
-      case "Head": return "585px";
-      case "Chest": return "400px";
-      case "Arms": return "400px";
-      case "Legs": return "215px";
+      case "Head": return "385px";
+      case "Chest": return "195px";
+      case "Arms": return "195px";
+      case "Legs": return "10px";
     }
   }
 
