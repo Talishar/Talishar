@@ -271,15 +271,15 @@ function DealDamage($player, $damage, $type, $source="NA")
   return DamagePlayer($player, $damage, $classState, $health, $auras, $items, $type, $source);
 }
 
-function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE", $source="NA")
+function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken, $combatChainState, $CCS_AttackTotalDamage, $defPlayer, $combatChain;
   global $CCS_AttackFused, $CS_ArcaneDamagePrevention;
   if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   $damageThreatened = $damage;
-  if(ConsumeDamagePrevention($playerID)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
+  if(ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
   if($type == "ARCANE")
   {
     if($damage <= $classState[$CS_ArcaneDamagePrevention])
@@ -303,7 +303,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
     $damage -= $classState[$CS_DamagePrevention];
     $classState[$CS_DamagePrevention] = 0;
   }
-  $damage -= CurrentEffectDamagePrevention($playerID, $type, $damage);
+  $damage -= CurrentEffectDamagePrevention($player, $type, $damage);
   for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
   {
     if($Items[$i] == "CRU104")
@@ -314,7 +314,7 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
     }
   }
   $damage = $damage > 0 ? $damage : 0;
-  $damage = AuraTakeDamageAbilities($playerID, $damage);
+  $damage = AuraTakeDamageAbilities($player, $damage);
   if($damage > 0 && $source != "NA")
   {
     $damage += CurrentEffectDamageModifiers($source);
@@ -326,17 +326,17 @@ function DamagePlayer($playerID, $damage, &$classState, &$health, &$Auras, &$Ite
   if($damage > 0)
   {
     AuraDamageTakenAbilities($Auras, $damage);
-    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $playerID); WriteLog("Lost 1 health from Ode to Wrath."); }
+    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
-    if($playerID == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
-    if($source == "MON229") AddNextTurnEffect("MON229", $playerID);
+    if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
+    if($source == "MON229") AddNextTurnEffect("MON229", $player);
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
-    CurrentEffectDamageEffects($playerID);
+    CurrentEffectDamageEffects($player);
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
-  { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $playerID); }
+  { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
   PlayerLoseHealth($damage, $health);
-  LogDamageStats($playerID, $damageThreatened, $damage);
+  LogDamageStats($player, $damageThreatened, $damage);
   return $damage;
 }
 
@@ -424,7 +424,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
   PlayerLoseHealth($damage, $health);
-  LogDamageStats($playerID, $damageThreatened, $damage);
+  LogDamageStats($player, $damageThreatened, $damage);
   return $damage;
 }
 

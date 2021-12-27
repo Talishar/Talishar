@@ -150,7 +150,7 @@ function ArsenalEndTurn($player)
   $arsenal = &GetArsenal($player);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
   {
-    $arsenal[$i+2] = ArsenalNumUsesPerTurn($cardID);
+    $arsenal[$i+2] = ArsenalNumUsesPerTurn($arsenal[$i]);
   }
 }
 
