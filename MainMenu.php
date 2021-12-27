@@ -85,10 +85,11 @@ body {
 </div>
 
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
-<h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Alpha Test</h3>
+<h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h3>
 <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Game Menu Update! 12/26/21</h2>
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported!</h3>
 
+<?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
 ?>
   <input type="hidden" id="numPlayers" name="numPlayers" value="8" />

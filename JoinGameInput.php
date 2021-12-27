@@ -1,13 +1,13 @@
 <?php
 
-  include "HostFiles/Redirector.php";
-  include "CardDictionary.php";
-  include "MenuFiles/ParseGamefile.php";
-
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
   $deck=$_GET["deck"];
   $decklink=$_GET["fabdb"];
+
+  include "HostFiles/Redirector.php";
+  include "CardDictionary.php";
+  include "MenuFiles/ParseGamefile.php";
 
   if($decklink != "")
   {
