@@ -481,6 +481,7 @@
       $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
       MainCharacterHitAbilities();
       MainCharacterHitEffects();
+      ArsenalHitEffects();
       AuraHitEffects($combatChain[0]);
       AttackDamageAbilities();
     }
@@ -1161,6 +1162,7 @@ function FinalizeChainLink($chainClosed=false)
         ResetCardPlayed($cardID);
         CurrentEffectPlayAbility($cardID);
         AuraPlayAbilities($cardID, $from);
+        ArsenalPlayCardAbilities($cardID);
         if(HasBoost($cardID)) Boost();
         if(($character[0] == "ELE062" || $character[0] == "ELE063") && CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2) PlayAura("ELE110", $currentPlayer);
         if($character[0] == "ARC075" || $character[0] == "ARC076") ViseraiPlayCard($cardID);

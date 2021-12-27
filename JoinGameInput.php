@@ -182,8 +182,12 @@ function GetAltCardID($cardID)
 {
   switch($cardID)
   {
+    case "BOL002": return "MON405";
     case "BOL006": return "MON400";
+    case "CHN002": return "MON407";
     case "CHN006": return "MON401";
+    case "LEV002": return "MON406";
+    case "PSM002": return "MON404";
     case "PSM007": return "MON402";
   }
   return $cardID;

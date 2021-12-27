@@ -1938,4 +1938,18 @@
     }
   }
 
+  function Is1H($cardID)
+  {
+    switch($cardID)
+    {
+      case "WTR078": return true;
+      case "CRU004": case "CRU005": return true;
+      case "CRU051": case "CRU052": return true;
+      case "CRU079": case "CRU080": return true;
+      case "MON105": case "MON106": return true;
+      case "ELE003": case "ELE202": return true;
+      default: return false;
+    }
+  }
+
 ?>

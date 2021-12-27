@@ -239,5 +239,38 @@
     }
   }
 
+  function LordSutcliffeAbility($player, $index)
+  {
+    global $currentPlayer;
+    WriteLog("Lord Sutcliffe deals 1 arcane damage to each player.");
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+    DealArcane(1, 0, "ABILITY", "MON407", false, 1);
+    AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
+    AddDecisionQueue("INCDQVAR", $currentPlayer, "0", 1);
+    DealArcane(1, 0, "ABILITY", "MON407", false, 2);
+    AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
+    AddDecisionQueue("INCDQVAR", $currentPlayer, "0", 1);
+    AddDecisionQueue("LORDSUTCLIFFE", $currentPlayer, $index . "-{0}");
+  }
+
+  function LordSutcliffeAfterDQ($player, $parameter)
+  {
+    $params = explode("-", $parameter);
+    $index = $params[0];
+    $amount = $params[1];
+    $arsenal = &GetArsenal($player);
+    $arsenal[$index+3] += $amount;
+    if($arsenal[$index+3] >= 3)
+    {
+      WriteLog("Lord Sutcliffe searched for a specialization card.");
+      RemoveArsenal($player, $index);
+      BanishCardForPlayer("MON407", $player, "ARS", "-");
+      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+    }
+  }
+
 ?>
 

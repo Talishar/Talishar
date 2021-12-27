@@ -94,6 +94,13 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
+    $attack = ArsenalAttackModifier();
+    if($CanGainAttack || $attack < 0)
+    {
+      array_push($attackModifiers, "Arsenal Ability");
+      array_push($attackModifiers, $attack);
+      $totalAttack += $attack;
+    }
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0)
     {
@@ -180,6 +187,57 @@ function ArsenalAttackAbilities()
     switch($arsenal[$i])
     {
       case "MON406": if($attackType == "AA" && $arsenal[$i+1] == "UP") LadyBarthimontAbility($mainPlayer, $i); break;
+      default: break;
+    }
+  }
+}
+
+function ArsenalAttackModifier()
+{
+  global $combatChain, $mainPlayer;
+  $attackID = $combatChain[0];
+  $attackType = CardType($attackID);
+  $arsenal = GetArsenal($mainPlayer);
+  $modifier = 0;
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    switch($arsenal[$i])
+    {
+      case "MON405": $modifier += ($arsenal[$i+1] == "UP" && $attackType == "W" && Is1H($attackID) ? 1 : 0); break;
+      default: break;
+    }
+  }
+  return $modifier;
+}
+
+function ArsenalHitEffects()
+{
+  global $combatChain, $mainPlayer;
+  $attackID = $combatChain[0];
+  $attackType = CardType($attackID);
+  $arsenal = GetArsenal($mainPlayer);
+  $modifier = 0;
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    switch($arsenal[$i])
+    {
+      case "MON405": if($arsenal[$i+1] == "UP" && $attackType == "W") MinervaThemisAbility($mainPlayer, $i); break;
+      default: break;
+    }
+  }
+  return $modifier;
+}
+
+function ArsenalPlayCardAbilities($cardID)
+{
+  global $currentPlayer;
+  $cardType = CardType($cardID);
+  $arsenal = GetArsenal($currentPlayer);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    switch($arsenal[$i])
+    {
+      case "MON407": if($arsenal[$i+1] == "UP" && $cardType == "A") LordSutcliffeAbility($currentPlayer, $i); break;
       default: break;
     }
   }

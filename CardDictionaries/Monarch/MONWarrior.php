@@ -249,5 +249,20 @@
     else return $myClassState[$CS_NumCharged] > 0;
   }
 
+  function MinervaThemisAbility($player, $index)
+  {
+    $arsenal = &GetArsenal($player);
+    ++$arsenal[$index+3];
+    if($arsenal[$index+3] == 3)
+    {
+      WriteLog("Minerva Themis searched for a specialization card.");
+      RemoveArsenal($player, $index);
+      BanishCardForPlayer("MON405", $player, "ARS", "-");
+      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+    }
+  }
+
 ?>
 
