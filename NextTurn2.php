@@ -329,12 +329,10 @@
   echo(CreatePopup("theirBanishPopup", $theirBanish, 1, 0, "Their Banish"));
 
   //Opponent hand
-  echo("<div style='position: fixed; top: 0px; left: 200px; height: 50px; width:800px; border:1px solid black; display:inline;'><span style='height:100%; vertical-align:middle; display:inline-block'>Their hand:&nbsp;</span>");
+  echo("<div style='position: fixed; top: 0px; left: 200px; height: 50px; border:1px solid black; display:inline;'><span style='height:100%; vertical-align:middle; display:inline-block'>Their hand:&nbsp;</span>");
   for($i=0; $i<count($theirHand); ++$i) {
     echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
-
-
   echo("</div>");
 
 
