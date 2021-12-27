@@ -2995,6 +2995,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETDQVAR":
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
+    case "INCDQVAR":
+      $dqVars[$parameter] += $lastResult;
+      return $lastResult;
+    case "LORDSUTCLIFFE":
+      LordSutcliffeAfterDQ($player, $parameter);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
