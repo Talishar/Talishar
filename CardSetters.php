@@ -59,17 +59,14 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
 
 function AddBottomMainDeck($cardID, $from)
 {
-  global $mainDeck, $mainPlayer;
-
-  WriteReplay($mainPlayer, $cardID, $from, "BOTTOM");
-  array_push($mainDeck, $cardID);
+  global $mainPlayer;
+  AddBottomDeck($cardID, $mainPlayer, $from);
 }
 
 function AddBottomMyDeck($cardID, $from)
 {
-  global $myDeck;
-  WriteReplay($playerID, $cardID, $from, "BOTTOM");
-  array_push($myDeck, $cardID);
+  global $currentPlayer;
+  AddBottomDeck($cardID, $currentPlayer, $from);
 }
 
 function AddBottomDeck($cardID, $player, $from)
@@ -89,14 +86,13 @@ function RemoveTopMyDeck()
 function AddMainHand($cardID, $from)
 {
   global $mainPlayer;
-  WriteReplay($mainPlayer, $cardID, $from, "HAND");
-  $mainHand = &GetHand($mainPlayer);
-  array_push($mainHand, $cardID);
+  AddPlayerHand($cardID, $mainPlayer, $from);
 }
 
 function AddPlayerHand($cardID, $player, $from)
 {
   $hand = &GetHand($player);
+  WriteReplay($player, $cardID, $from, "HAND");
   array_push($hand, $cardID);
 }
 
@@ -126,7 +122,7 @@ function GainResources($player, $amount)
 function AddArsenal($cardID, $player, $from, $facing)
 {
   $arsenal = &GetArsenal($player);
-  WriteReplay($mainPlayer, $cardID, $from, "ARSENAL");
+  WriteReplay($player, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
   array_push($arsenal, ArsenalNumUsesPerTurn($cardID));//Num uses
