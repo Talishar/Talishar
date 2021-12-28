@@ -17,8 +17,41 @@
     height: 0.5%;
     background-color: black;
 }
+.rectangle .combatzone {
+    top: 35%;
+    position: relative;
+    width: 100%;
+    height: 30%;
+    background-color: white;
+}
+.rectangle .combatzone_top {
+    top: 35%;
+    position: relative;
+    left: 16%;
+    width: 68%;
+    height: 15%;
+    background-color: white;
+    vertical-align:top;
+    display:inline-block
+}
+.rectangle .combatzone_bottom {
+    top: 35%;
+    position: relative;
+    left: 16%;
+    width: 68%;
+    height: 15%;
+    background-color: white;
+
+    display:inline-block
+}
 .cardzone{
     position: absolute;
+    width: 10.2%;
+    height: 13%;
+    background-color: darkorchid;
+}
+.cardzone_relative{
+    position: relative;
     width: 10.2%;
     height: 13%;
     background-color: darkorchid;
@@ -29,8 +62,42 @@
 
 <!--<h2>Rectangle CSS</h2>-->
 <div class="rectangle">
-    <div class="combatline">
-        
+    <div class="combatzone_top">
+        <!--<div class="cardzone_relative" style=" background-color:rgb(76, 10, 92);">
+            <img id="combatlink_1" src="./cardback_3mm_63x88.width-300.png" 
+            style="object-fit:contain;
+                   width:100%;
+                   height:auto;
+                   border: solid 1px #CCC"/>
+        </div>-->
+
+        <img id="combat_link_0_top" src="./WTR003.jpg" 
+        style="object-fit:contain;
+            height:100%;"/>
+        <img id="combat_link_1_top" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+            height:100%;"/>
+        <img id="combat_link__top" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+            height:100%;"/>
+        <!--
+        <img id="arsenal_bottom" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/>
+        <div class="combatline"></div>
+        <img id="arsenal_bottom" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+               width:100%;
+               height:auto;
+               border: solid 1px #CCC"/>-->
+    </div>
+
+    <div class="combatzone_bottom">
+        <img id="combat_link_1_top" src="./cardback_3mm_63x88.width-300.png" 
+        style="object-fit:contain;
+            height:100%;"/>
     </div>
     <!--Left Side-->
     
