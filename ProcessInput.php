@@ -322,7 +322,14 @@
 
   WriteCache($gameName, $playerID);
 
-  header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=" . $playerID);
+  if(UseNewUI($playerID))
+  {
+    header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=" . $playerID);
+  }
+  else
+  {
+    header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=" . $playerID);
+  }
 
   exit;
 

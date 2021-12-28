@@ -127,7 +127,7 @@
     fwrite($handler, "\r\n");//Card Stats
     fwrite($handler, "\r\n");//Turn Stats
     fwrite($handler, "\r\n");//Allies
-    fwrite($handler, "0\r\n");//Settings
+    fwrite($handler, "0 0\r\n");//Settings
   }
 
   function GetArray($handler)
