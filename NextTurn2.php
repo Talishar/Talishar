@@ -106,10 +106,11 @@
   }
   echo("</span>");
 
-  echo("<div style='position:fixed; left:210px; top:60px; background-color: rgba(255,255,255,0.70);'>");
-  //Display the combat chain
-  if($turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D")))
+  $shouldShowCombatChain = $turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D"));
+
+  if(count($combatChain) > 0)
   {
+    echo("<div style='position:fixed; left:210px; top:60px;'>");
     $totalAttack = 0;
     $totalDefense = 0;
     $chainAttackModifiers = [];
@@ -121,7 +122,13 @@
     echo("<td><img style='height:64px; width:64px; display:inline-block;' src='./Images/Defense.png' /></td>");
     echo("<td><span style='font-size:64;'>$totalDefense</span></td>");
     echo("</tr></table>");
-    echo("<div display:inline;'><h3>Combat Chain</h3>");
+    echo("</div>");
+  }
+  echo("<div style='position:fixed; left:230px; top:150px;'>");
+  //Display the combat chain
+  if($shouldShowCombatChain)
+  {
+    echo("<div display:inline;'><div style='font-size:24px;'><b>Combat Chain</b></div>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
@@ -132,7 +139,7 @@
 
   if($turn[0] == "INSTANT")
   {
-    echo("<h2>Layers</h2>");
+    echo("<div style='font-size:24px;'><b>Layers</b></div>");
     echo("<div display:inline;'>");
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {

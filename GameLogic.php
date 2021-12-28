@@ -2424,7 +2424,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $cards;
     case "WRITECARDLOG":
-      $message = implode(" ", explode("_", $parameter)) . $lastResult;
+      $message = implode(" ", explode("_", $parameter)) . CardLink($lastResult, $lastResult);
       WriteLog($message);
       return $lastResult;
     case "ADDTHEIRNEGDEFCOUNTER":
