@@ -33,6 +33,7 @@
   $cardIconSize = 50;
   $cardIconLeft = intval($cardWidth/2) - intval($cardIconSize/2) + 5;
   $cardIconTop = intval($cardSize/2) - intval($cardIconSize/2) + 5;
+  $bigCardSize = 200;
 
 ?>
 
@@ -105,6 +106,7 @@
   }
   echo("</span>");
 
+  echo("<div style='position:fixed; left:210px; top:60px; background-color: rgba(255,255,255,0.70);'>");
   //Display the combat chain
   if($turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D")))
   {
@@ -121,10 +123,9 @@
     echo("</tr></table>");
     echo("<div display:inline;'><h3>Combat Chain</h3>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
-      //echo(Card($combatChain[$i], "CardImages", 400, 0, 0, 0, $combatChain[$i+1] == $playerID ? 1 : 2));
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
-      echo(Card($combatChain[$i], "CardImages", 400, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
+      echo(Card($combatChain[$i], "CardImages", $bigCardSize, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
     }
     echo("</div>");
   }
@@ -135,7 +136,7 @@
     echo("<div display:inline;'>");
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {
-      echo(Card($layers[$i], "CardImages", 400, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2));
+      echo(Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2));
     }
     echo("</div>");
   }
@@ -178,7 +179,7 @@
     {
       echo("<td>");
       echo("<table><tr><td>");
-      echo(Card($options[$i], "CardImages", 200));
+      echo(Card($options[$i], "CardImages", $bigCardSize));
       echo("</td></tr><tr><td>");
       if($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") echo(CreateButton($playerID, "Top", 8, $options[$i]));
       if($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") echo(CreateButton($playerID, "Bottom", 9, $options[$i]));
@@ -189,6 +190,50 @@
     }
     echo("</tr></table>");
   }
+
+  if($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID)
+  {
+    echo("<table><tr>");
+    for($i=0; $i<count($myHand); ++$i)
+    {
+      echo("<td>");
+      echo(Card($myHand[$i], "CardImages", $bigCardSize));
+      echo("</td>");
+    }
+    echo("</tr><tr>");
+    for($i=0; $i<count($myHand); ++$i)
+    {
+      echo("<td><span>");
+      echo(CreateButton($playerID, "Top", 12, $i));
+      echo("</span><span>");
+      echo(CreateButton($playerID, "Bottom", 13, $i));
+      echo("</span>");
+      echo("</td>");
+    }
+    echo("</tr></table>");
+  }
+
+  if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID)
+  {
+    echo("<div display:inline;'>");
+    $options = explode(",", $turn[2]);
+    $otherPlayer = $playerID == 2 ? 1 : 2;
+    $theirAllies = &GetAllies($otherPlayer);
+    for($i=0; $i<count($options); ++$i)
+    {
+      $option = explode("-", $options[$i]);
+      if($option[0] == "MYAURAS") $source = $myAuras;
+      else if($option[0] == "THEIRAURAS") $source = $theirAuras;
+      else if($option[0] == "THEIRALLY") $source = $theirAllies;
+      else if($option[0] == "MYCHAR") $source = $myCharacter;
+      else if($option[0] == "THEIRCHAR") $source = $theirCharacter;
+      else if($option[0] == "MYITEMS") $source = $myItems;
+      else if($option[0] == "LAYER") $source = $layers;
+      echo(Card($source[intval($option[1])], "CardImages", $bigCardSize, 16, 0, 0, 0, 0, $options[$i]));
+    }
+    echo("</div>");
+  }
+  echo("</div>");
 
   if($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID)
   {
@@ -215,52 +260,9 @@
     ChoosePopup($myDiscard, $turn[2], 16, "Choose a card from your discard");
   }
 
-  if($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID)
-  {
-    echo("<table><tr>");
-    for($i=0; $i<count($myHand); ++$i)
-    {
-      echo("<td>");
-      echo(Card($myHand[$i], "CardImages", 300));
-      echo("</td>");
-    }
-    echo("</tr><tr>");
-    for($i=0; $i<count($myHand); ++$i)
-    {
-      echo("<td><span>");
-      echo(CreateButton($playerID, "Top", 12, $i));
-      echo("</span><span>");
-      echo(CreateButton($playerID, "Bottom", 13, $i));
-      echo("</span>");
-      echo("</td>");
-    }
-    echo("</tr></table>");
-  }
-
   if($turn[0] == "CHOOSECOMBATCHAIN" && $turn[1] == $playerID)
   {
     ChoosePopup($combatChain, $turn[2], 16, "Choose a card from the combat chain", CombatChainPieces());
-  }
-
-  if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID)
-  {
-    echo("<div display:inline;'>");
-    $options = explode(",", $turn[2]);
-    $otherPlayer = $playerID == 2 ? 1 : 2;
-    $theirAllies = &GetAllies($otherPlayer);
-    for($i=0; $i<count($options); ++$i)
-    {
-      $option = explode("-", $options[$i]);
-      if($option[0] == "MYAURAS") $source = $myAuras;
-      else if($option[0] == "THEIRAURAS") $source = $theirAuras;
-      else if($option[0] == "THEIRALLY") $source = $theirAllies;
-      else if($option[0] == "MYCHAR") $source = $myCharacter;
-      else if($option[0] == "THEIRCHAR") $source = $theirCharacter;
-      else if($option[0] == "MYITEMS") $source = $myItems;
-      else if($option[0] == "LAYER") $source = $layers;
-      echo(Card($source[intval($option[1])], "CardImages", 400, 16, 0, 0, 0, 0, $options[$i]));
-    }
-    echo("</div>");
   }
 
   if($turn[0] == "CHOOSECHARACTER" && $turn[1] == $playerID)
@@ -281,11 +283,9 @@
   if($turn[0] == "PDECK" && $currentPlayer == $playerID)
   {
     $content = "";
-    //echo("<div display:inline;'>");
     for($i=0; $i<count($myPitch); $i+=1) {
       $content .= Card($myPitch[$i], "CardImages", 400, 6, 0);
     }
-    //echo("</div>");
     echo CreatePopup("PITCH", [], 0, 1, "Choose a card from your pitch zone to add to the bottom of your deck", 1, $content);
   }
 
@@ -301,11 +301,11 @@
     for($i=0; $i<count($options); ++$i)
     {
       $content .= "<td>";
-      if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "CardImages", 250);
-      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "CardImages", 250);
-      else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "CardImages", 250);
-      else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "CardImages", 250);
-      else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "CardImages", 250);
+      if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "CardImages", $bigCardSize);
+      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "CardImages", $bigCardSize);
+      else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "CardImages", $bigCardSize);
+      else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "CardImages", $bigCardSize);
+      else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "CardImages", $bigCardSize);
       else if($turn[0] == "MULTICHOOSETEXT") $content .= str_replace("_", " ", $options[$i]);
       $content .= "</td>";
     }
