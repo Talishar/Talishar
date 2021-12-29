@@ -38,14 +38,14 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="")
+  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="")
   {
     global $gameName;
     if($image != "")
     {
       $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">";
     }
-    else $rv = "<button " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
+    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
     return $rv;
   }
 
@@ -191,21 +191,22 @@
 
   function BanishUI($from="")
   {
-    global $myBanish, $turn, $currentPlayer, $playerID;
+    global $myBanish, $turn, $currentPlayer, $playerID, $cardSize;
     $rv = "";
+    $size = ($from == "HAND" ? $cardSize : 180);
     for($i=0; $i<count($myBanish); $i+=BanishPieces()) {
       $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
       $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
       $mod = explode("-", $myBanish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      if($mod == "INT") $rv .= Card($myBanish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "INST" || $mod == "MON212"  || $mod == "ARC119")
-        $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+        $rv .= Card($myBanish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
         if(PlayableFromBanish($myBanish[$i]) || AbilityPlayableFromBanish($myBanish[$i]))
-          $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));
+          $rv .= Card($myBanish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));
         else
-          $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 0, $border);
+          $rv .= Card($myBanish[$i], "CardImages", $size, 0, 1, 0, $border);
       }
     }
     return $rv;

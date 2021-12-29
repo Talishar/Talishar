@@ -63,6 +63,7 @@
     }
     switch($cardID)
     {
+      case "DUMMY": return "C";
       case "OVRPVE001": return "C";
       case "OVRPVE002": return "C";
       case "OVRPVE003": return "C";
