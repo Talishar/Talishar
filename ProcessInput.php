@@ -587,24 +587,26 @@ function FinalizeChainLink($chainClosed=false)
 
   function PassTurn()
   {
-    global $playerID, $currentPlayer, $turn, $myPitch, $theirPitch, $mainPlayer, $mainPlayerGamestateBuilt;
+    global $playerID, $currentPlayer, $turn, $mainPlayer, $mainPlayerGamestateBuilt;
     if(!$mainPlayerGamestateBuilt)
     {
       UpdateGameState($currentPlayer);
       BuildMainPlayerGameState();
     }
-    global $mainArsenal, $mainHand;
-    if(count($myPitch) > 0)
+    $MyPitch = GetPitch($playerID);
+    $TheirPitch = GetPitch(($playerID == 1 ? 2 : 1));
+    $MainHand = GetHand($mainPlayer);
+    if(count($MyPitch) > 0)
     {
       $currentPlayer = $playerID;
       $turn[0] = "PDECK";
     }
-    else if(count($theirPitch) > 0)
+    else if(count($TheirPitch) > 0)
     {
       $currentPlayer = $playerID == 1 ? 2 : 1;
       $turn[0] = "PDECK";
     }
-    else if(count($mainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS")//Arsenal
+    else if(count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS")//Arsenal
     {
       $currentPlayer = $mainPlayer;
       $turn[0] = "ARS";

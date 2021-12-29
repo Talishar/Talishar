@@ -103,22 +103,25 @@ function UnifiedDecreePlayEffect()
 
 function BottomDeck()
 {
-  global $myHand, $playerID;
-  if(count($myHand) > 0)
+  global $currentPlayer;
+  $hand = GetHand($currentPlayer);
+  if(count($hand) > 0)
   {
-    AddDecisionQueue("MAYCHOOSEHAND", $playerID, GetMyHandIndices());
-    AddDecisionQueue("DISCARDMYHAND", $playerID, "-", 1);
-    AddDecisionQueue("ADDBOTTOMMYDECK", $playerID, "-", 1);
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("DISCARDMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
   }
 }
 
 function BottomDeckDraw()
 {
-  global $myHand, $playerID;
-  if(count($myHand) > 0)
+  global $currentPlayer;
+  $hand = GetHand($currentPlayer);
+  if(count($hand) > 0)
   {
     BottomDeck();
-    AddDecisionQueue("DRAW", $playerID, "-", 1);
+    AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
   }
 }
 

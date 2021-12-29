@@ -133,7 +133,7 @@
         if(ArsenalHasFaceDownCard($currentPlayer))
         {
           $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
-          $rv = "Lexi turned " . $cardFlipped . " face up.";
+          $rv = "Lexi turned " . CardLink($cardFlipped, $cardFlipped) . " face up.";
           if(TalentContains($cardFlipped, "LIGHTNING")) AddCurrentTurnEffect("ELE031-1", $currentPlayer);
           else if(TalentContains($cardFlipped, "ICE")) PlayAura("ELE111", $otherPlayer);
         }
