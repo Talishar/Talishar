@@ -34,6 +34,9 @@
   $cardIconLeft = intval($cardWidth/2) - intval($cardIconSize/2) + 5;
   $cardIconTop = intval($cardSize/2) - intval($cardIconSize/2) + 5;
   $bigCardSize = 200;
+  $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 30;
+  $permWidth = "calc(50% - " . ($cardWidth/2 + $cardWidth + 20 + $permLeft) . "px)";
+  $permHeight = $cardSize * 2 + 20;
 
 ?>
 
@@ -76,7 +79,7 @@
   echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./CardImages/findCenterBackground.jpg' /></div>");
 
   //Now display the screen for this turn
-  echo("<span style='position:fixed; bottom:10px; left:10px; display:inline-block; background-color: rgba(255,255,255,0.70); font-size:30px;'><b>Turn #" . $currentTurn . " (" . ($playerID == $currentPlayer ? "Your" : "Their") . " " . PhaseName($turn[0]) . " Phase - $actionPoints Action Points");
+  echo("<span style='position:fixed; bottom:0px; left:0px; display:inline-block; background-color: rgba(255,255,255,0.70); font-size:30px;'><b>Turn #" . $currentTurn . " (" . ($playerID == $currentPlayer ? "Your" : "Their") . " " . PhaseName($turn[0]) . " Phase - $actionPoints Action Points");
   if(DoesAttackHaveGoAgain()) echo("<img title='This attack has Go Again.' style='height:24px; width:24px; display:inline-block;' src='./Images/goAgain.png' />");
   echo(")</b>");//Turn number
 
@@ -106,29 +109,22 @@
   }
   echo("</span>");
 
-  $shouldShowCombatChain = $turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D"));
-
-  if(count($combatChain) > 0)
+  //Display the combat chain
+  if($turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D")))
   {
-    echo("<div style='position:fixed; left:210px; top:60px;'>");
     $totalAttack = 0;
     $totalDefense = 0;
     $chainAttackModifiers = [];
     EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
     echo(CreatePopup("attackModifierPopup", [], 1, 0, "AttackModifiers", 1, AttackModifiers($chainAttackModifiers)));
+    echo("<div style='position:fixed; left:230px; top:150px;'>");
     echo("<table><tr>");
-    echo("<td><span style='font-size:64;'>$totalAttack</span></td>");
-    echo("<td><img onclick='(function(){ document.getElementById(\"attackModifierPopup\").style.display = \"inline\";})();' style='cursor:pointer; height:64px; width:64px; display:inline-block;' src='./Images/Attack.png' /></td>");
-    echo("<td><img style='height:64px; width:64px; display:inline-block;' src='./Images/Defense.png' /></td>");
-    echo("<td><span style='font-size:64;'>$totalDefense</span></td>");
+    echo("<td style='font-size:30px; font-weight:bold;'>Combat Chain&nbsp;</td>");
+    echo("<td style='font-size:30px; font-weight:bold;'>$totalAttack</td>");
+    echo("<td><img onclick='(function(){ document.getElementById(\"attackModifierPopup\").style.display = \"inline\";})();' style='cursor:pointer; height:30px; width:30px; display:inline-block;' src='./Images/Attack.png' /></td>");
+    echo("<td><img style='height:30px; width:30px; display:inline-block;' src='./Images/Defense.png' /></td>");
+    echo("<td style='font-size:30px; font-weight:bold;'>$totalDefense</td>");
     echo("</tr></table>");
-    echo("</div>");
-  }
-  echo("<div style='position:fixed; left:230px; top:150px;'>");
-  //Display the combat chain
-  if($shouldShowCombatChain)
-  {
-    echo("<div display:inline;'><div style='font-size:24px;'><b>Combat Chain</b></div>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
@@ -336,7 +332,7 @@
   echo(CreatePopup("theirBanishPopup", $theirBanish, 1, 0, "Their Banish"));
 
   //Opponent hand
-  echo("<div style='position: fixed; top: 0px; left: 200px; height: 50px; border:1px solid black; display:inline;'><span style='height:100%; vertical-align:middle; display:inline-block'>Their hand:&nbsp;</span>");
+  echo("<div style='position: fixed; top: 0px; left: calc(50% + 200px); height: 50px; border:1px solid black; display:inline;'><span style='height:100%; vertical-align:middle; display:inline-block'>Their hand:&nbsp;</span>");
   for($i=0; $i<count($theirHand); ++$i) {
     echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
@@ -374,11 +370,9 @@
 
 
   //Now display their Auras and Items
-  echo("<div style='position: fixed; top:250px; left:50%; display:inline;'>");
-  //Put landmarks here for now?...
   if(count($landmarks) > 0)
   {
-    echo("<div style='display:inline-block;'>");
+    echo("<div style='position: fixed; top:250px; left: calc(50% + 200px); display:inline;'>");
     echo("<h3>Landmark:</h3>");
     for($i=0; $i<count($landmarks); $i+=LandmarkPieces())
     {
@@ -390,10 +384,13 @@
     }
     echo("</div>");
   }
+
+  $permTop = 10;
+  $theirPermHeight = $cardSize + 10;
+  echo("<div style='scroll-y:auto; background-color: rgba(255,255,255,0.70); position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; height:200px; width:" . $permWidth . "; height:" . $theirPermHeight . "px;'>");
   if(count($theirAuras) > 0)
   {
     echo("<div style='display:inline-block;'>");
-    echo("<h3>Their Auras:</h3>");
     for($i=0; $i<count($theirAuras); $i+=AuraPieces())
     {
       $counters = $theirAuras[$i+2] > 0 ? $theirAuras[$i+2] : $theirAuras[$i+3];//TODO: Show both
@@ -404,7 +401,6 @@
   if(count($theirItems) > 0)
   {
     echo("<div style='display:inline-block;'>");
-    echo("<h3>Their Items:</h3>");
     for($i=0; $i<count($theirItems); $i+=ItemPieces())
     {
       echo(Card($theirItems[$i], "CardImages", $cardSize, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]));
@@ -416,7 +412,6 @@
   if(count($theirAllies) > 0)
   {
     echo("<div style='display:inline-block;'>");
-    echo("<h3>Their Allies:</h3>");
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
       echo(Card($theirAllies[$i], "CardImages", $cardSize, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2]));
@@ -464,7 +459,7 @@
   if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
   $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 10) - 10)/2) . "px)";
 //echo($handLeft);
-  echo("<div style='position:fixed; left:" . $handLeft . "; bottom:50px;'>");
+  echo("<div style='position:fixed; left:" . $handLeft . "; bottom:32px;'>");//Hand div
   for($i=0; $i<count($myHand); ++$i) {
     $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
     $border = CardBorderColor($myHand[$i], "HAND", $playable);
@@ -475,10 +470,13 @@
     echo("</span>");
   }
   echo(BanishUI("HAND"));
+  echo("</div>");//End hand div
 
   //Now display arsenal
   if(count($myArsenal) > 0)
   {
+    $arsenalLeft = (count($myArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth/2)+10) . "px)" : "calc(50% - " . (intval($cardWidth)+10) . "px)");
+    echo("<div style='position:fixed; left:" . $arsenalLeft . "; bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize - 10) . "px;'>");//arsenal div
     for($i=0; $i<count($myArsenal); $i+=ArsenalPieces())
     {
       $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction);
@@ -490,18 +488,16 @@
       else echo("<img style='position:absolute; left:" . (45 + ($playable ? 5 : 0)) . "px; bottom:" . (3 + ($playable ? 5 : 0)) . "px; height:70px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
       echo("</div>");
     }
+    echo("</div>");//End arsenal div
   }
 
-
-
-  echo("</div>");
-
   //Now display Auras and items
-  echo("<div style='background-color: rgba(255,255,255,0.70); position: fixed; bottom:200px; left:50%;'>");
+  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize;
+  $permHeight = $cardSize * 2 + 20;
+  echo("<div style='scroll-y:auto; background-color: rgba(255,255,255,0.70); position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; height:200px; width:" . $permWidth . "; height:" . $permHeight . "px;'>");
   if(count($myAuras) > 0)
   {
     echo("<div style='display:inline-block;'>");
-    echo("<h3>Your Auras:</h3>");
     for($i=0; $i<count($myAuras); $i+=AuraPieces())
     {
       $playable = $myAuras[$i+1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction);
@@ -514,7 +510,6 @@
   if(count($myItems) > 0)
   {
     echo("<div style='display:inline-block;'>");
-    echo("<h3>Your Items:</h3>");
     for($i=0; $i<count($myItems); $i+=ItemPieces())
     {
       $playable = IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction);
@@ -527,7 +522,6 @@
   if(count($myAllies) > 0)
   {
     echo("<div style='display:inline-block;'>");
-    echo("<h3>Your Allies:</h3>");
     for($i=0; $i<count($myAllies); $i+=AllyPieces())
     {
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
@@ -599,7 +593,7 @@
   //Display the log
   echo("<div style='position:fixed; width:200px; top:10px; bottom:10px; right:10px;'>");
 
-echo("<div title='Click to view the game stats.' style='cursor:pointer; width:200px; height:50px; font-size:30; text-align:center;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'>Menu</div>");
+echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; height:50px; font-size:30; text-align:center;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'>Menu</div>");
   //echo("</div>");
 
   echo("<div id='gamelog' style='position:relative; background-color: rgba(255,255,255,0.70); width:200px; height: calc(100% - 100px); overflow-y: auto;'>");
@@ -663,6 +657,7 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; width:20
     switch($cardType)
     {
       case "C": return "calc(50% - " . ($cardWidth/2) . "px)";
+      //case "W": return "calc(50% " . ($cardSubType == "" ? "- " : "+ ") . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
       case "W": return "calc(50% - " . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
       default: break;
     }
@@ -699,6 +694,7 @@ echo("<div title='Click to view the game stats.' style='cursor:pointer; width:20
     switch($cardType)
     {
       case "C": return "calc(50% - " . ($cardWidth/2) . "px)";
+      //case "W": return "calc(50% " . ($cardSubType == "" ? "- " : "+ ") . ($cardWidth/2 - $cardWidth - 10) . "px)";//TODO: Second weapon
       case "W": return "calc(50% - " . ($cardWidth/2 - $cardWidth - 10) . "px)";//TODO: Second weapon
       default: break;
     }

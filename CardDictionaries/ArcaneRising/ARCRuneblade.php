@@ -171,7 +171,7 @@
         PlayAura("ARC112", $currentPlayer);
         return "Spellblade Strike created a runechant.";
       case "ARC109": PlayAura("ARC112", $currentPlayer, 3); return "Read the Runes created 3 runechants.";
-      case "ARC110": PlayAura("ARC112", $currentPlayer, 2); return "Read the Runes created 2runechants.";
+      case "ARC110": PlayAura("ARC112", $currentPlayer, 2); return "Read the Runes created 2 runechants.";
       case "ARC111": PlayAura("ARC112", $currentPlayer); return "Read the Runes created a runechant.";
       default: return "";
     }

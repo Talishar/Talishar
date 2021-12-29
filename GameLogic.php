@@ -2976,6 +2976,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult != "PASS")
       {
         $damage -= ArcaneDamagePrevented($player, $lastResult);
+        if($damage < 0) $damage = 0;
         PrependArcaneDamageReplacement($player, $damage);
       }
       return $damage;
