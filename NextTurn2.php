@@ -40,6 +40,13 @@
 
 ?>
 
+<script>
+  function Hotkeys(event)
+  {
+    if(event.keyCode === 32) document.location.href = './ProcessInput.php?gameName=<?php echo($gameName); ?>&playerID=<?php echo($playerID); ?>&mode=99';
+  }
+</script>
+
 <style>
   td {
     text-align:center;
@@ -48,7 +55,7 @@
 
 </head>
 
-<body onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
+<body onkeypress='Hotkeys(event)' onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 
 <?php
 
@@ -100,7 +107,7 @@
     if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
     if(CanPassPhase($turn[0]))
     {
-      echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px"));
+      echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
       if($turn[0] == "B") echo(" or " . CreateButton($playerID, "Undo Block", 10001, 0, "24px"));
       echo(")");
     }
@@ -495,8 +502,10 @@
       $counters = $myArsenal[$i+3];
       echo("<div style='display:inline-block; position:relative; left:10px;'>");
       echo(Card($myArsenal[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 5 : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
-      if($myArsenal[$i+1] == "UP") echo("<img style='position:absolute; left:" . (40 + ($playable ? 5 : 0)) . "px; bottom:3px; height:70px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
-      else echo("<img style='position:absolute; left:" . (45 + ($playable ? 5 : 0)) . "px; bottom:" . (3 + ($playable ? 5 : 0)) . "px; height:70px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
+      $iconHeight = $cardSize / 2 - 5;
+      $iconLeft = $cardWidth/2 - intval($iconHeight*.71/2) + 5;
+      if($myArsenal[$i+1] == "UP") echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
+      else echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
       echo("</div>");
     }
     echo("</div>");//End arsenal div
@@ -610,9 +619,14 @@
   echo("<div style='position:fixed; width:200px; top:10px; bottom:10px; right:10px;'>");
 
 echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; height:50px; font-size:30; text-align:center;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'>Menu</div>");
-  //echo("</div>");
 
-  echo("<div id='gamelog' style='position:relative; background-color: rgba(255,255,255,0.70); width:200px; height: calc(100% - 100px); overflow-y: auto;'>");
+  echo("<div style='text-align:center; width:200px; font-size:16;'>Last Played</div>");
+  echo("<div>");
+    if($lastPlayed == "") echo Card("cardBack", "CardImages", 271);
+    else echo Card($lastPlayed, "CardImages", 271);
+  echo("</div>");
+
+  echo("<div id='gamelog' style='position:relative; background-color: rgba(255,255,255,0.70); width:200px; height: calc(100% - 387px); overflow-y: auto;'>");
 
   EchoLog($gameName, $playerID);
   echo("</div>");

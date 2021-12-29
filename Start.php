@@ -40,6 +40,7 @@
   fwrite($handler, "\r\n");//Layers
   fwrite($handler, "\r\n");//Layer Priority
   fwrite($handler, "1\r\n");//What player's turn it is
+  fwrite($handler, "\r\n");//Last Played Card
   fclose($handler);
 
   //Set up log file

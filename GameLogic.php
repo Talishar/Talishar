@@ -99,7 +99,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR011": case "WTR012": case "WTR013":
       $discarded = DiscardRandom($currentPlayer, $cardID);
       if(AttackValue($discarded) >= 6) { $drew = 1; $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; }
-      return "Savage Feast discarded a random card from your hand" . ($drew ? " and gained Go Again." : ".");
+      return "Breakneck Battery discarded a random card from your hand" . ($drew ? " and gained Go Again." : ".");
     case "WTR014": case "WTR015": case "WTR016":
       $discarded = DiscardRandom($currentPlayer, $cardID);
       if(AttackValue($discarded) >= 6) { $drew = 1; MyDrawCard(); }
@@ -2117,7 +2117,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(count($parameters) > 1) $subparam = $parameters[1];
       switch($parameter)
       {
-        case "WTR083": $rv = SearchMainDeckForCard("WTR081"); $rv = count(explode(",", $rv)) . "-" . $rv; break;
+        case "WTR083": $rv = SearchMainDeckForCard("WTR081"); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
         case "WTR076-1": $rv = SearchMainHand("", "", 0); break;
         case "WTR076-2": $rv = GetComboCards(); break;
         case "WTR081": $rv = LordOfWindIndices(); $rv = count(explode(",", $rv)) . "-" . $rv; break;
