@@ -75,7 +75,8 @@
       $handOut = "";
       for($i=0; $i<count($hand); ++$i)
       {
-        $playable = $turn[0] == "ARS" || IsPlayable($hand[$i], $turn[0], "HAND") || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+        if($player != $currentPlayer) $playable = 0;
+        else $playable = $turn[0] == "ARS" || IsPlayable($hand[$i], $turn[0], "HAND") || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         $border = CardBorderColor($hand[$i], "HAND", $playable);
         if($handOut != "") $handOut .= " ";
         $handOut .= $hand[$i] . " " . $border;
@@ -88,7 +89,8 @@
     for($i=0; $i<count($charEquip); $i+=CharacterPieces())
     {
       if($charEquipOut != "") $charEquipOut .= " ";
-      $playable = $charEquip[$i+1] == 2 && IsPlayable($charEquip[$i], $turn[0], "CHAR", $i);
+      if($player != $currentPlayer) $playable = 0;
+      else $playable = $charEquip[$i+1] == 2 && IsPlayable($charEquip[$i], $turn[0], "CHAR", $i);
       $border = CardBorderColor($charEquip[$i], "CHAR", $playable);
       for($j=0; $j<CharacterPieces(); ++$j)
       {
@@ -102,7 +104,8 @@
     for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
     {
       if($arsenalOut != "") $arsenalOut .= " ";
-      $playable = $turn[0] != "P" && IsPlayable($arsenal[$i], $turn[0], "ARS", $i);
+      if($player != $currentPlayer) $playable = 0;
+      else $playable = $turn[0] != "P" && IsPlayable($arsenal[$i], $turn[0], "ARS", $i);
       $border = CardBorderColor($arsenal[$i], "ARS", $playable);
       $facing = $arsenal[$i + 1];
       $arsenalOut .= ($playerID == $player || $facing == "UP" ? $arsenal[$i] : "-") . " ";
@@ -113,7 +116,8 @@
     for($i=0; $i<count($items); $i+=ItemPieces())
     {
       if($itemsOut != "") $itemsOut .= " ";
-      $playable = $items[$i+1] == 2 && IsPlayable($items[$i], $turn[0], "PLAY", $i);
+      if($player != $currentPlayer) $playable = 0;
+      else $playable = $items[$i+1] == 2 && IsPlayable($items[$i], $turn[0], "PLAY", $i);
       $border = CardBorderColor($items[$i], "PLAY", $playable);
       for($j=0; $j<ItemPieces(); ++$j)
       {
@@ -130,7 +134,8 @@
     for($i=0; $i<count($banish); $i+=BanishPieces())
     {
       if($banishOut != "") $banishOut .= " ";
-      $playable = IsPlayable($banish[$i], $turn[0], "BANISH", $i);
+      if($player != $currentPlayer) $playable = 0;
+      else $playable = IsPlayable($banish[$i], $turn[0], "BANISH", $i);
       $border = CardBorderColor($banish[$i], "BANISH", $playable);
       for($j=0; $j<BanishPieces(); ++$j)
       {
