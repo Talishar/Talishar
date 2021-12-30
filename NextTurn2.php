@@ -832,7 +832,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
 
     $items = GetItems($player);
     $copperCount = 0;
-    for($i = 0; $i < count($items); $i += ItemCount())
+    for($i = 0; $i < count($items); $i += ItemPieces())
     {
       if($items[$i] == "CRU197") ++$copperCount;
     }

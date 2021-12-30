@@ -9,8 +9,8 @@ include "WeaponLogic.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
 {
-  global $myCharacter, $mainPlayer, $otherPlayer, $myClassState, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $theirHealth, $currentPlayer, $defPlayer, $theirHand, $actionPoints;
-  global $myClassState, $theirClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex, $myItems;
+  global $mainPlayer, $myClassState, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $theirHealth, $currentPlayer, $defPlayer, $actionPoints;
+  global $myClassState, $theirClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
   global $actionPoints, $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   $set = CardSet($cardID);
@@ -183,7 +183,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR120":
       if(RepriseActive())
       {
-        $options = GetChainLinkCards($otherPlayer, "", "E");
+        $options = GetChainLinkCards(($mainPlayer == 1 ? 2 : 1), "", "E");
         AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
         AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-");
         AddDecisionQueue("ADDTHEIRHAND", $mainPlayer, "-");
@@ -457,7 +457,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       AddCurrentTurnEffect($cardID, $mainPlayer);
       return "Courage of Bladehold reduces the cost of your weapon attacks by 1 this turn.";
     case "CRU082":
-      if($myCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $myCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
+      $character = &GetPlayerCharacter($currentPlayer);
+      if($character[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $character[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
       return "Twinning Blade allows you to attack with target sword an additional time.";
     case "CRU083":
       if(RepriseActive()) UnifiedDecreePlayEffect();
@@ -468,7 +469,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "Spoils of War gives your next weapon attack +2 and go again.";
     case "CRU085": case "CRU086": case "CRU087":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      AddCurrentTurnEffect($cardID . "-2", $otherPlayer);
+      AddCurrentTurnEffect($cardID . "-2", ($mainPlayer == 1 ? 2 : 1));
       return "Dauntless gives your next weapon attack  +" . EffectAttackModifier($cardID . "-1") . " and makes the next Defense Reaction cost +1 to play.";
     case "CRU088": case "CRU089": case "CRU090":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
@@ -486,7 +487,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "Push Forward gives your next weapon attack +" . EffectAttackModifier($cardID . "-1") . ($atkWWpn ? " and gives your next attack Dominate." : ".");
     //CRU Mechanologist
     case "CRU101":
-      $myCharacter[$myClassState[$CS_CharacterIndex] + 2] = ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] == 0 ? 1 : 0);
+      $character = &GetPlayerCharacter($currentPlayer);
+      $character[$myClassState[$CS_CharacterIndex] + 2] = ($character[$myClassState[$CS_CharacterIndex] + 2] == 0 ? 1 : 0);
       return "";
     case "CRU102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -497,13 +499,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       $index = $myClassState[$CS_PlayIndex];
       if($index != -1)
       {
-        $myItems[$index + 1] = ($myItems[$index + 1] == 0 ? 1 : 0);
-        if($myItems[$index + 1] == 0)
+        $items = &GetItems($currentPlayer);
+        $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
+        if($items[$index + 1] == 0)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
           AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
-          $myItems[$index + 2] = 1;
+          $items[$index + 2] = 1;
           $rv = "Plasma Purifier gave target pistol +1.";
         }
         else
@@ -544,18 +547,21 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
       return "Feign Death prevents the next damage you would take.";
     case "CRU126":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU127":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU128":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -563,7 +569,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "";
     case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
+      AddCurrentTurnEffect($cardID . "-1", ($currentPlayer == 1 ? 2 : 1));
       return "Increase the tension gives the next arrow attack this turn +" . EffectAttackModifier($cardID) . " and prevents defense reactions on that chain link.";
     //CRU Runeblade
     case "CRU141":
@@ -572,7 +578,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "Bloodsheath Skeleta reduces the cost of your next attack action card and non-attack action card this turn.";
     case "CRU142":
       if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $currentPlayer);
-      if(GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0) PlayAura("ARC112", $currentPlayer);
+      if(GetClassState(($currentPlayer == 1 ? 2 : 1), $CS_ArcaneDamageTaken) > 0) PlayAura("ARC112", $currentPlayer);
       return "";
     case "CRU143":
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
@@ -651,7 +657,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       for($i=0; $i<$count; ++$i) { MyDrawCard(); }
       return "Gorganian Tome drew " . $count . " cards.";
     case "CRU182":
-      AddCurrentTurnEffect("CRU182", $otherPlayer);
+      AddCurrentTurnEffect("CRU182", ($currentPlayer == 1 ? 2 : 1));
       return "Snag made attack actions unable to gain attack.";
     case "CRU183": case "CRU184": case "CRU185":
       if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Promise of Plenty gained Go Again."; }
