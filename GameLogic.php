@@ -9,9 +9,9 @@ include "WeaponLogic.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
 {
-  global $mainPlayer, $myClassState, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $theirHealth, $currentPlayer, $defPlayer, $actionPoints;
-  global $myClassState, $theirClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
-  global $actionPoints, $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
+  global $mainPlayer, $myClassState, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
+  global $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
+  global $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -1109,7 +1109,7 @@ function PlayBlockModifier($cardID)
 
 function SelfCostModifier($cardID)
 {
-  global $myClassState, $CS_NumCharged, $currentPlayer, $combatChain, $CS_LayerTarget;
+  global $CS_NumCharged, $currentPlayer, $combatChain, $CS_LayerTarget;
   switch($cardID)
   {
     case "ARC080": return (-1 * NumRunechants($currentPlayer));
@@ -1118,7 +1118,7 @@ function SelfCostModifier($cardID)
     case "ARC094": case "ARC095": case "ARC096": return (-1 * NumRunechants($currentPlayer));
     case "ARC097": case "ARC098": case "ARC099": return (-1 * NumRunechants($currentPlayer));
     case "ARC100": case "ARC101": case "ARC102": return (-1 * NumRunechants($currentPlayer));
-    case "MON032": return (-1 * (2 * $myClassState[$CS_NumCharged]));
+    case "MON032": return (-1 * (2 * GetClassState($currentPlayer, $CS_NumCharged)));
     case "MON084": case "MON085": case "MON086": return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
     default: return 0;
   }
@@ -2022,8 +2022,9 @@ function IsDominateActive()
 
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
-  global $myCharacter, $currentPlayer;
-  $cardID = $myCharacter[$cardIndex];
+  global $currentPlayer;
+  $character = &GetPlayerCharacter($currentPlayer);
+  $cardID = $character[$cardIndex];
   switch($cardID)
   {
     case "WTR005":
@@ -2036,52 +2037,52 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "WTR150":
-      $myCharacter[$cardIndex+2] -= 3;
+      $character[$cardIndex+2] -= 3;
       break;
     case "WTR151": case "WTR152": case "WTR153": case "WTR154":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "ARC003":
-      $myCharacter[$cardIndex+1] = 2;
+      $character[$cardIndex+1] = 2;
       break;
     case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "ARC113": case "ARC114":
-      $myCharacter[$cardIndex+1] = 2;
+      $character[$cardIndex+1] = 2;
       break;
     case "CRU006": case "CRU025": case "CRU081": case "CRU102": case "CRU122": case "CRU141":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "CRU101":
-      if($myCharacter[$cardIndex+2] == 0) $myCharacter[$cardIndex+1] = 2;
+      if($character[$cardIndex+2] == 0) $character[$cardIndex+1] = 2;
       else
       {
-        --$myCharacter[$cardIndex+5];
-        if($myCharacter[$cardIndex+5] == 0) $myCharacter[$cardIndex+1] = 1;//By default, if it's used, set it to used
+        --$character[$cardIndex+5];
+        if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       }
       break;
     case "CRU177":
-      $myCharacter[$cardIndex+1] = 1;
-      ++$myCharacter[$cardIndex+2];
+      $character[$cardIndex+1] = 1;
+      ++$character[$cardIndex+2];
       break;
     case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "MON029": case "MON030":
-      $myCharacter[$cardIndex+1] = 2;//It's not limited to once
+      $character[$cardIndex+1] = 2;//It's not limited to once
       break;
     case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "ELE224":
-      ++$myCharacter[$cardIndex + 2];
-      --$myCharacter[$cardIndex+5];
-      if($myCharacter[$cardIndex+5] == 0) $myCharacter[$cardIndex+1] = 1;
+      ++$character[$cardIndex + 2];
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;
       break;
     default:
-      --$myCharacter[$cardIndex+5];
-      if($myCharacter[$cardIndex+5] == 0) $myCharacter[$cardIndex+1] = 1;//By default, if it's used, set it to used
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       break;
   }
 }
@@ -2089,7 +2090,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
   global $currentPlayer, $myCharacter, $myHand, $myDeck, $myDiscard, $myBanish, $mySoul, $mainHand, $combatChain, $myCharacterEffects, $myPitch;
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $myResources, $theirHealth, $myArsenal, $CCS_ChainAttackBuff;
+  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $myResources, $myArsenal, $CCS_ChainAttackBuff;
   global $defCharacter, $myClassState, $CS_NumCharged, $theirCharacter, $theirHand, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars;
