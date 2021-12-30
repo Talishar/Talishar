@@ -131,25 +131,26 @@ function AuraDestroyAbility($cardID)
 function AuraStartTurnAbilities()
 {
   global $mainPlayer;
-  $mainAuras = &GetAuras($mainPlayer);
-  for($i=count($mainAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+  $auras = &GetAuras($mainPlayer);
+  for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
-    $dest = AuraDestroyAbility($mainAuras[$i]);
-    switch($mainAuras[$i])
+    $dest = AuraDestroyAbility($auras[$i]);
+    switch($auras[$i])
     {
       case "MON186": SoulShackleStartTurn($mainPlayer); break;
       case "MON006": GenesisStartTurnAbility(); break;
-      case "CRU075": if($mainAuras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$mainAuras[$i+2]; } break;
+      case "CRU075": if($auras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$auras[$i+2]; } break;
       default: break;
     }
     if($dest != "")
     {
-      AuraDestroyed($mainPlayer, $mainAuras[$i]);
+      WriteLog($dest);
+      AuraDestroyed($mainPlayer, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
-        unset($mainAuras[$j]);
+        unset($auras[$j]);
       }
-      $mainAuras = array_values($mainAuras);
+      $auras = array_values($auras);
     }
   }
 }
@@ -157,7 +158,7 @@ function AuraStartTurnAbilities()
 
 function AuraBeginEndStepAbilities()
 {
-  global $mainAuras, $mainPlayer;
+  global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
   for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
@@ -188,25 +189,26 @@ function AuraBeginEndStepAbilities()
 
 function AuraEndTurnAbilities()
 {
-  global $mainAuras, $mainClassState, $CS_NumNonAttackCards, $mainPlayer;
-  for($i=count($mainAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+  global $mainClassState, $CS_NumNonAttackCards, $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
+  for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
     $remove = 0;
-    switch($mainAuras[$i])
+    switch($auras[$i])
     {
-      case "ARC167": case "ARC168": case "ARC169": if($mainClassState[$CS_NumNonAttackCards] == 0) { $remove = 1; } break;
+      case "ARC167": case "ARC168": case "ARC169": if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0) { $remove = 1; } break;
       case "ELE111": $remove = 1; break;
       case "ELE226": $remove = 1; break;
       default: break;
     }
     if($remove == 1)
     {
-      AuraDestroyed($mainPlayer, $mainAuras[$i]);
+      AuraDestroyed($mainPlayer, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
-        unset($mainAuras[$j]);
+        unset($auras[$j]);
       }
-      $mainAuras = array_values($mainAuras);
+      $auras = array_values($auras);
     }
   }
 }
