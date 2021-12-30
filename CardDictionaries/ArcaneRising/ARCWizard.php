@@ -86,11 +86,11 @@
 
   function ARCWizardPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $myResources, $currentPlayer, $myClassState, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken, $otherPlayer, $myDeck;
+    global $currentPlayer, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "ARC113": case "ARC114":
-        if(count($myDeck) == 0) return "No card for Kano to banish.";
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
@@ -107,7 +107,7 @@
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
         return "Storm Striders lets you play your next Wizard non-attack action as though it were an instant.";
       case "ARC117":
-        $myResources[0] += 3;
+        GainResources($currentPlayer, 3);
         return "Robe of Rapture gives 3 resources.";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
@@ -128,8 +128,8 @@
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + $myClassState[$CS_NextArcaneBonus] * 2;
-        DealArcane(ArcaneDamage($cardID) + $myClassState[$CS_NextArcaneBonus]);//Basically this just applies the bonus twice
+        $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2;
+        DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus));//Basically this just applies the bonus twice
         return "Forked Lightning deals " . $damage . " arcane damage.";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID));
