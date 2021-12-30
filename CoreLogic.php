@@ -563,46 +563,39 @@ function PlayerWon($playerID)
   WriteLog("Player " . $playerID . " wins!");
 }
 
+function UnsetBanishModifier($player, $modifier)
+{
+  $banish = &GetBanish($mainPlayer);
+  for($i=0; $i<count($banish); $i+=BanishPieces())
+  {
+    if($banish[$i+1] == "TCL") $banish[$i+1] = "DECK";
+  }
+}
+
 function UnsetChainLinkBanish()
 {
-  global $mainBanish;
-  for($i=0; $i<count($mainBanish); $i+=BanishPieces())
-  {
-    if($mainBanish[$i+1] == "TCL") $mainBanish[$i+1] = "DECK";
-  }
+  global $mainPlayer;
+  UnsetBanishModifier($mainPlayer, "TCL");
 }
 
 function UnsetCombatChainBanish()
 {
-  global $mainBanish;
-  for($i=0; $i<count($mainBanish); $i+=BanishPieces())
-  {
-    if($mainBanish[$i+1] == "TCC") $mainBanish[$i+1] = "DECK";
-  }
+  global $mainPlayer;
+  UnsetBanishModifier($mainPlayer, "TCC");
 }
 
 function UnsetMyCombatChainBanish()
 {
-  global $myBanish;
-  for($i=0; $i<count($myBanish); $i+=BanishPieces())
-  {
-    if($myBanish[$i+1] == "TCC") $myBanish[$i+1] = "DECK";
-  }
+  global $currentPlayer;
+  UnsetBanishModifier($currentPlayer, "TCC");
 }
 
 function UnsetTurnBanish()
 {
-  global $mainBanish, $defBanish;
-  for($i=0; $i<count($mainBanish); $i+=BanishPieces())
-  {
-    if($mainBanish[$i+1] == "TT") $mainBanish[$i+1] = "DECK";
-    if($mainBanish[$i+1] == "INST") $mainBanish[$i+1] = "DECK";
-  }
-  for($i=0; $i<count($defBanish); $i+=BanishPieces())
-  {
-    if($defBanish[$i+1] == "TT") $defBanish[$i+1] = "DECK";
-    if($defBanish[$i+1] == "INST") $defBanish[$i+1] = "DECK";
-  }
+  UnsetBanishModifier(1, "TT");
+  UnsetBanishModifier(1, "INST");
+  UnsetBanishModifier(2, "TT");
+  UnsetBanishModifier(2, "INST");
   UnsetCombatChainBanish();
 }
 
@@ -669,28 +662,14 @@ function GetTheirEquipmentChoices()
 
 function FindMyCharacter($cardID)
 {
-  global $myCharacter;
-  for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
-  {
-    if($myCharacter[$i] == $cardID)
-    {
-      return $i;
-    }
-  }
-  return -1;
+  global $currentPlayer;
+  return FindCharacterIndex($currentPlayer, $cardID);
 }
 
 function FindDefCharacter($cardID)
 {
-  global $defCharacter;
-  for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
-  {
-    if($defCharacter[$i] == $cardID)
-    {
-      return $i;
-    }
-  }
-  return -1;
+  global $defPlayer;
+  return FindCharacterIndex($defPlayer, $cardID);
 }
 
 function DestroyItem(&$Items, $index)
@@ -703,12 +682,14 @@ function DestroyItem(&$Items, $index)
 
 function CheckDestroyTemper()
 {
+  global $defPlayer;
   global $defCharacter;
-  for($i = count($defCharacter)-CharacterPieces(); $i >= 0; $i -= CharacterPieces())
+  $character = &GetPlayerCharacter($defPlayer);
+  for($i = count($character)-CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
-    if(HasTemper($defCharacter[$i]) && ((BlockValue($defCharacter[$i]) + $defCharacter[$i + 4]) <= 0))
+    if(HasTemper($character[$i]) && ((BlockValue($character[$i]) + $character[$i + 4]) <= 0))
     {
-      $defCharacter[$i+1] = 0;
+      $character[$i+1] = 0;
     }
   }
 }
