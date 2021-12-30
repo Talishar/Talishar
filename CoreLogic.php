@@ -616,17 +616,7 @@ function GetChainLinkCards($playerID="", $cardType="", $exclCardType="")
 
 function GetMainPlayerComboCards()
 {
-  global $mainDeck;
-  $combo = "";
-  for($i=0; $i<count($mainDeck); ++$i)
-  {
-    if(HasCombo($mainDeck[$i]))
-    {
-      if($combo != "") $combo .= ",";
-      $combo .= $i;
-    }
-  }
-  return $combo;
+  return GetComboCards();
 }
 
 function GetComboCards()
@@ -647,11 +637,13 @@ function GetComboCards()
 
 function GetTheirEquipmentChoices()
 {
-  global $theirCharacter;
+  global $currentPlayer;
+  $other = ($currentPlayer == 1 ? 2 : 1);
+  $character = GetPlayerCharacter($other);
   $equipment = "";
-  for($i=0; $i<count($theirCharacter); $i+=CharacterPieces())
+  for($i=0; $i<count($character); $i+=CharacterPieces())
   {
-    if(CardType($theirCharacter[$i]) == "E" && $theirCharacter[$i+1] != 0)
+    if(CardType($character[$i]) == "E" && $character[$i+1] != 0)
     {
       if($equipment != "") $equipment .= ",";
       $equipment .= $i;
@@ -683,7 +675,6 @@ function DestroyItem(&$Items, $index)
 function CheckDestroyTemper()
 {
   global $defPlayer;
-  global $defCharacter;
   $character = &GetPlayerCharacter($defPlayer);
   for($i = count($character)-CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
@@ -740,30 +731,20 @@ function NumAttacksBlocking()
 
 function IHaveLessHealth()
 {
-  global $myHealth, $theirHealth;
-  return $myHealth < $theirHealth;
+  global $currentPlayer;
+  return PlayerHasLessHealth($currentPlayer);
 }
 
 function DefHasLessHealth()
 {
-  global $mainHealth, $defHealth;
-  return $defHealth < $mainHealth;
+  global $defPlayer;
+  return PlayerHasLessHealth($defPlayer);
 }
 
-function PlayerHasLessHealth($playerID)
+function PlayerHasLessHealth($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
-  global $mainHealth, $defHealth, $myHealth, $theirHealth;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($playerID == $mainPlayer) return $mainHealth < $defHealth;
-    else return $defHealth < $mainHealth;
-  }
-  else
-  {
-    if($playerID == $currentPlayer) return $myHealth < $theirHealth;
-    else return $theirHealth < $myHealth;
-  }
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  return GetHealth($player) < GetHealth($otherPlayer);
 }
 
 function GetIndices($count, $add=0, $pieces=1)
@@ -779,14 +760,14 @@ function GetIndices($count, $add=0, $pieces=1)
 
 function GetMyHandIndices()
 {
-  global $myHand;
-  return GetIndices(count($myHand));
+  global $currentPlayer;
+  return GetIndices(count(GetHand($currentPlayer)));
 }
 
 function GetDefHandIndices()
 {
-  global $defHand;
-  return GetIndices(count($defHand));
+  global $defPlayer;
+  return GetIndices(count(GetHand($currentPlayer)));
 }
 
 function CurrentAttack()

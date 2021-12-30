@@ -2394,12 +2394,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DECKCARDS":
       $indices = explode(",", $parameter);
       $deck = &GetDeck($player);
+      $rv = "";
       for($i=0; $i<count($indices); ++$i)
       {
         if($rv != "") $rv .= ",";
         $rv .= $deck[$i];
       }
-      return $rv;
+      return $rv == "" ? "PASS" : $rv;;
     case "REVEALCARD":
       if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       WriteLog(CardLink($lastResult, $lastResult) . " was revealed.");
