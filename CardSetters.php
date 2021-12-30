@@ -117,6 +117,12 @@ function GainResources($player, $amount)
   $resources[0] += $amount;
 }
 
+function AddResourceCost($player, $amount)
+{
+  $resources = &GetResources($player);
+  $resources[1] += $amount;
+}
+
 function AddArsenal($cardID, $player, $from, $facing)
 {
   $arsenal = &GetArsenal($player);
