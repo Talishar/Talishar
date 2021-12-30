@@ -50,12 +50,13 @@
   if($currentPlayer != $playerID) echo("Waiting for other player to choose " . TypeToPlay($turn[0]));
   else if($currentPlayer == $playerID) echo("Please choose " . TypeToPlay($turn[0]));
   else echo("Waiting for player " . $currentPlayer . " to choose " . TypeToPlay($turn[0]));
+  echo(implode(" ", $landmarks) . "<BR>");
 
   function OutputPlayerData($player)
   {
     global $turn, $currentPlayer, $playerID, $p1Hand, $p2Hand, $p1Deck, $p2Deck, $p1CharEquip, $p2CharEquip, $p1Resources, $p2Resources, $p1Arsenal, $p2Arsenal;
     global $p1Items, $p2Items, $p1Auras, $p2Auras, $p1Discard, $p2Discard, $p1Pitch, $p2Pitch, $p1Banish, $p2Banish, $p1ClassState, $p2ClassState;
-    global $p1CharacterEffects, $p2CharacterEffects;
+    global $p1CharacterEffects, $p2CharacterEffects, $p1Allies, $p2Allies;
     $hand = ($player == 1 ? $p1Hand : $p2Hand);
     $deck = ($player == 1 ? $p1Deck : $p2Deck);
     $charEquip = ($player == 1 ? $p1CharEquip : $p2CharEquip);
@@ -68,6 +69,7 @@
     $banish = ($player == 1 ? $p1Banish : $p2Banish);
     $classState = ($player == 1 ? $p1ClassState : $p2ClassState);
     $characterEffects = ($player == 1 ? $p1CharacterEffects : $p2CharacterEffects);
+    $allies = ($player == 1 ? $p1Allies : $p2Allies);
     if($playerID == $player)
     {
       $actionType = $turn[0] == "ARS" ? 4 : 2;
@@ -157,6 +159,7 @@
       }
       echo($dispDeck . "<BR>");
     }
+    echo(implode(" ", $allies) . "<BR>");
   }
   
 ?>
