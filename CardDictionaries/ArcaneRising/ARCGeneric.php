@@ -197,10 +197,11 @@
         ++$myClassState[$CS_NumMoonWishPlayed];
         return "";
       case "ARC191": case "ARC192": case "ARC193":
-        if(count($myDeck) == 0) return "Your deck is empty. Ravenous Rabble does not get negative attack.";
-        $pitchVal = PitchValue($myDeck[0]);
+        $deck = GetDeck($currentPlayer);
+        if(count($deck) == 0) return "Your deck is empty. Ravenous Rabble does not get negative attack.";
+        $pitchVal = PitchValue($deck[0]);
         SetCCAttackModifier(0, -$pitchVal);
-        return "Ravenous Rabble reveals " . $myDeck[0] . " and gets -" . $pitchVal . " attack.";
+        return "Ravenous Rabble reveals " . CardLink($deck[0], $deck[0]) . " and gets -" . $pitchVal . " attack.";
       case "ARC200": case "ARC201": case "ARC202": Opt($cardID, 1); return "Fate Foreseen allows you to Opt 1.";
       case "ARC203": case "ARC204": case "ARC205":
         AddCurrentTurnEffect($cardID, $currentPlayer);

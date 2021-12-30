@@ -534,9 +534,10 @@ function GainHealth($amount, $player)
   if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog("Dread Scythe prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {
-    if($health > $otherHealth) return;
+    if($health > $otherHealth) return false;
   }
   PlayerGainHealth($amount, $health);
+  return true;
 }
 
 function PlayerLoseHealth($amount, &$health)

@@ -436,6 +436,7 @@ function DestroyArsenal($player)
   $arsenal = &GetArsenal($player);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
   {
+    WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal.");
     AddGraveyard($arsenal[$i], $player, "ARS");
   }
   $arsenal = [];
@@ -488,6 +489,7 @@ function DiscardRandom($player="", $source="")
   unset($hand[$index]);
   $hand = array_values($hand);
   AddGraveyard($discarded, $player, "HAND");
+  WriteLog(CardLink($discarded, $discarded) . " was randomly discarded.");
   if(AttackValue($discarded) >= 6)
   {
     $character = &GetPlayerCharacter($player);
@@ -525,7 +527,7 @@ function Intimidate()
   BanishCardForPlayer($theirHand[$index], $otherPlayer, "HAND", "INT");
   unset($theirHand[$index]);
   $theirHand = array_values($theirHand);
-  WriteLog("Intimidate triggered " . count($theirHand));
+  WriteLog("Intimidate banished a card.");
   UpdateGameState($currentPlayer);
 }
 
