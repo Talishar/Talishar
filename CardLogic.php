@@ -378,11 +378,8 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 function ShouldHoldPriority($player)
 {
   if(AlwaysHoldPriority($player)) return true;
-  $char = GetPlayerCharacter($player);
-  if($char[0] == "ARC113" || $char[0] == "ARC114") return 1;
-  if(CountItem("ARC017", $player) > 0) return 1;
-  if(SearchHand($player, "I") != "" || SearchArsenal($player, "I") != "") return 1;
-  return 0;
+  if(CountItem("ARC017", $player) > 0) return true;
+  return false;
 }
 
 function GiveAttackGoAgain()

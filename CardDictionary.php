@@ -1424,6 +1424,7 @@
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
     switch($cardID)
     {
+      case "WTR163": return "BANISH";
       case "CRU163": return GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";

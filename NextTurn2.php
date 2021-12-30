@@ -136,6 +136,7 @@
     echo("<td><img onclick='(function(){ document.getElementById(\"attackModifierPopup\").style.display = \"inline\";})();' style='cursor:pointer; height:30px; width:30px; display:inline-block;' src='./Images/Attack.png' /></td>");
     echo("<td><img style='height:30px; width:30px; display:inline-block;' src='./Images/Defense.png' /></td>");
     echo("<td style='font-size:30px; font-weight:bold;'>$totalDefense</td>");
+    if(IsDominateActive()) echo("<td style='font-size:24px; font-weight:bold;'>[Dominate is active]</td>");
     echo("</tr></table>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
@@ -369,7 +370,7 @@
   echo("<div title='Click to view the cards in their Banish zone.' style='cursor:pointer; position:fixed; left:" . GetZoneLeft("THEIRBANISH") . "; top:" . GetZoneTop("THEIRBANISH") .";' onclick='(function(){ document.getElementById(\"theirBanishPopup\").style.display = \"inline\";})();'>");
   $card = (count($theirBanish) > 0 ? $theirBanish[count($theirBanish)-BanishPieces()] : "blankZone");
   $folder = (count($theirBanish) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($theirBanish)));
+  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($theirBanish)/BanishPieces()));
   echo("</div>");
 
   //Display Their Pitch
@@ -602,7 +603,7 @@
   echo("<div title='Click to view the cards in your Banish zone.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("MYBANISH") . "; bottom:" . GetZoneBottom("MYBANISH") .";' onclick='(function(){ document.getElementById(\"myBanishPopup\").style.display = \"inline\";})();'>");
   $card = (count($myBanish) > 0 ? $myBanish[count($myBanish)-BanishPieces()] : "blankZone");
   $folder = (count($myBanish) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($myBanish)));
+  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($myBanish)/BanishPieces()));
   echo("</div>");
 
   //Display My Pitch
