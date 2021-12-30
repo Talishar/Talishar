@@ -183,6 +183,7 @@
       $cardID = $myBanish[$index];
       if($myBanish[$index+1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       if($myBanish[$index+1] == "MON212" && CardTalent($theirCharacter[0]) == "LIGHT") AddCurrentTurnEffect("MON212", $currentPlayer);
+      SetClassState($currentPlayer, $CS_PlayIndex, $index);
       PlayCard($cardID, "BANISH", -1, $index);
       break;
     case 15: case 16: case 18: //CHOOSE (15 and 18 deprecated)
@@ -722,7 +723,7 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $playerID, $myResources, $turn, $currentPlayer, $otherPlayer, $combatChain, $actionPoints, $myAuras, $myPitch, $CS_NumAddedToSoul;
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish;
-    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed;
+    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
     $dynCostResolved = intval($dynCostResolved);
     if($turn[0] != "P") MakeGamestateBackup();
     $layerPriority[0] = ShouldHoldPriority(1);
@@ -836,8 +837,10 @@ function FinalizeChainLink($chainClosed=false)
           PayAdditionalCosts($cardID, $from);
         }
         if($cardType == "AA") ++$myClassState[$CS_NumAttackCards];//Played or blocked
+
         if($from == "BANISH")
         {
+          $index = GetClassState($currentPlayer, $CS_PlayIndex);
           $banish = &GetBanish($currentPlayer);
           for($i=$index+BanishPieces()-1; $i>=$index; --$i)
           {
@@ -845,6 +848,7 @@ function FinalizeChainLink($chainClosed=false)
           }
           $banish = array_values($banish);
         }
+
         //Pay additional costs
         if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
         if($turn[0] == "B")//If a layer is not created
