@@ -6,6 +6,7 @@
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
+  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=TryGet("playerID", 3);
 
   //First we need to parse the game state from the file

@@ -2,8 +2,10 @@
   
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
+  include "Libraries/HTTPLibraries.php";
 
   $gameName=$_GET["gameName"];
+  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
 
   //Setup the random number generator
   srand(make_seed());

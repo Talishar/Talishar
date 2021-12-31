@@ -1,8 +1,11 @@
 <?php
 
+  include "Libraries/HTTPLibraries.php";
+
   $gameName=$_GET["gameName"];
+  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
-  $chatText=$_GET["chatText"];
+  $chatText=htmlspecialchars($_GET["chatText"]);
 
 
   $filename = "./Games/" . $gameName . "/gamelog.txt";
