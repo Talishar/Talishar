@@ -783,24 +783,31 @@ function RollDie($player, $fromDQ=false)
   global $CS_DieRoll;
   $roll = random_int(1, 6);
   SetClassState($player, $CS_DieRoll, $roll);
+  WriteLog($roll . " was rolled.");
+  GamblersGloves($player, $player);
+  GamblersGloves(($player == 1 ? 2 : 1), $player);
+}
+
+function GamblersGloves($player, $origPlayer)
+{
   $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
   if($gamblersGlovesIndex != -1 && IsCharacterAbilityActive($player, $gamblersGlovesIndex))
   {
     if($fromDQ)
     {
-      PrependDecisionQueue("ROLLDIE", $player, "-", 1);
+      PrependDecisionQueue("ROLLDIE", $origPlayer, "-", 1);
       PrependDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       PrependDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
       PrependDecisionQueue("NOPASS", $player, "-");
-      PrependDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result_(" . $roll . ")");
+      PrependDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
     }
     else
     {
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result_(" . $roll . ")");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("ROLLDIE", $player, "-", 1);
+      AddDecisionQueue("ROLLDIE", $origPlayer, "-", 1);
     }
   }
 }

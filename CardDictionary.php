@@ -181,6 +181,7 @@
       //CRU Fable
       case "CRU000": return "R";
       //CRU Brute
+      case "CRU002": return "C";
       case "CRU004": case "CRU005": return "W";
       case "CRU006": return "E";
       case "CRU007": case "CRU008": return "AA";

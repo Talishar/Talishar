@@ -516,14 +516,14 @@ function DefDiscardRandom()
 
 function Intimidate()
 {
-  global $currentPlayer;//For now we'll assume you can only intimidate the opponent
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  $hand = &GetHand($otherPlayer);
+  global $defPlayer;//For now we'll assume you can only intimidate the opponent
+  //$otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $hand = &GetHand($defPlayer);
   if(count($hand) == 0) { WriteLog("Intimidate did nothing because there are no cards in hand."); return; }//Nothing to do if they have no hand
   $index = rand() % count($hand);
-  BanishCardForPlayer($hand[$index], $otherPlayer, "HAND", "INT");
+  BanishCardForPlayer($hand[$index], $defPlayer, "HAND", "INT");
   unset($hand[$index]);
-  $theirHand = array_values($hand);
+  $hand = array_values($hand);
   WriteLog("Intimidate banished a card.");
 }
 

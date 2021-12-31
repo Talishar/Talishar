@@ -194,7 +194,7 @@
     global $turn, $currentPlayer, $playerID, $cardSize;
     $rv = "";
     $size = ($from == "HAND" ? $cardSize : 180);
-    $banish = GetBanish($currentPlayer);
+    $banish = GetBanish($playerID);
     for($i=0; $i<count($banish); $i+=BanishPieces()) {
       $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
       $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
