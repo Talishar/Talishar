@@ -343,7 +343,7 @@
 
   echo(CreatePopup("theirPitchPopup", $theirPitch, 1, 0, "Their Pitch"));
   echo(CreatePopup("theirDiscardPopup", $theirDiscard, 1, 0, "Their Discard"));
-  echo(CreatePopup("theirBanishPopup", $theirBanish, 1, 0, "Their Banish"));
+  echo(CreatePopup("theirBanishPopup", $theirBanish, 1, 0, "Their Banish", BanishPieces()));
   if(count($theirSoul) > 0) echo(CreatePopup("theirSoulPopup", $theirSoul, 1, 0, "Their Soul"));
 
   //Opponent hand
