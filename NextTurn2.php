@@ -85,6 +85,8 @@
   //Display background
   echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./CardImages/findCenterBackground.jpg' /></div>");
 
+  echo("<div style='position:fixed; left:115px; top:calc(50% - 125px); height:200px;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span><span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span><img style='height:100%; width:100%;' src='./Images/DuoLife.png' /></div>");
+
   //Now display the screen for this turn
   echo("<span style='position:fixed; bottom:0px; left:0px; display:inline-block; background-color: rgba(255,255,255,0.70); font-size:30px;'><b>Turn #" . $currentTurn . " (" . ($playerID == $currentPlayer ? "Your" : "Their") . " " . PhaseName($turn[0]) . " Phase - $actionPoints Action Points");
   if(DoesAttackHaveGoAgain()) echo("<img title='This attack has Go Again.' style='height:24px; width:24px; display:inline-block;' src='./Images/goAgain.png' />");
@@ -448,10 +450,6 @@
     if($theirCharacter[$i+2] > 0) $counters = $theirCharacter[$i+2];//TODO: display both kinds of counters?
     echo("<div style='z-index:5; position:fixed; right:" . GetCharacterRight($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
     echo(Card($theirCharacter[$i], "CardImages", $cardSize, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
-    if($type == "C")
-    {
-      echo("<div style='z-index:10;position:absolute; left:0px; bottom:0px; height:50px; width:100px;'><div style='position:relative; width:100%;'><span style='position:absolute; font-size: 24px; top:15px; left:20px;'>$theirHealth</span></div><img style='display:inline-block; height:100%; width:100%;'         src='./CardImages/healthSymbol.png' /></div>");
-    }
     echo("</div>");
   }
   echo("</div>");
@@ -578,7 +576,6 @@
     }
     if($type == "C")
     {
-      echo("<div style='z-index:10;position:absolute; left:0px; bottom:0px; height:50px; width:100px;'><div style='position:relative; width:100%;'><span style='position:absolute; font-size: 24px; top:15px; left:20px;'>$myHealth</span></div><img style='display:inline-block; height:100%; width:100%;'         src='./CardImages/healthSymbol.png' /></div>");
       if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div style='position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
     }
     echo("</span>");
