@@ -32,7 +32,7 @@
       case "ARC119": return 2;
       case "ARC120": return 3;
       case "ARC121": return 1;
-      case "ARC122": return 1;
+      case "ARC122": return 0;
       case "ARC123": case "ARC124": case "ARC125": return 1;
       case "ARC126": case "ARC127": case "ARC128": return 2;
       case "ARC129": case "ARC130": case "ARC131": return 2;

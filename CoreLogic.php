@@ -565,6 +565,7 @@ function PlayerWon($playerID)
 
 function UnsetBanishModifier($player, $modifier)
 {
+  global $mainPlayer;
   $banish = &GetBanish($mainPlayer);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {

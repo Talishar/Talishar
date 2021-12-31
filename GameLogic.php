@@ -1737,13 +1737,13 @@ function ActivateAbilityEffects()
 function DestroyMainItem($index)
 {
   global $mainPlayer;
-  DestroyItemForPlayer($mainPlayer);
+  DestroyItemForPlayer($mainPlayer, $index);
 }
 
 function DestroyMyItem($index)
 {
   global $currentPlayer;
-  DestroyItemForPlayer($currentPlayer);
+  DestroyItemForPlayer($currentPlayer, $index);
 }
 
 function DestroyItemForPlayer($player, $index)
