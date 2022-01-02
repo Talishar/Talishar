@@ -2719,6 +2719,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source, 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
+      PrependDecisionQueue("SETDQVAR", $target, "0", 1);
+      PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
       return $parameter;
     case "TAKEARCANE":
       $parameters = explode("-", $parameter);

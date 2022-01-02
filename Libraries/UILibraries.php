@@ -68,9 +68,12 @@
     return $rv;
   }
 
-  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./")
+  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false)
   {
-    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:50px; left: 50px; right: 250px; bottom:50px;" . ($defaultState == 0 ? " display:none;" : "") . "'>";
+    global $combatChain;
+    $top = "50%"; $left = "20%"; $width = "60%"; $height = "40%";
+    if($big) { $top = "5%"; $left = "5%";  $width = "90%"; $height = "90%"; }
+    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";" . ($defaultState == 0 ? " display:none;" : "") . "'>";
     if($title != "") $rv .= "<h1>" . $title . "</h1>";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
