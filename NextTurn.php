@@ -146,7 +146,7 @@
     echo("</div>");
   }
 
-  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID)
+  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);

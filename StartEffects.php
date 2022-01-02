@@ -37,7 +37,7 @@
     $chooser = ($p1roll > $p2roll ? 1 : 2);
   }
   WriteLog("Player $chooser chooses who goes first.");
-  AddDecisionQueue("BUTTONINPUTNOPASS", $chooser, "Go_first,Go_second");
+  AddDecisionQueue("CHOOSEFIRSTPLAYER", $chooser, "Go_first,Go_second");
   AddDecisionQueue("SETFIRSTPLAYER", $chooser, "-");
 
   if($myCharacter[0] == "ARC001" || $myCharacter[0] == "ARC002")
