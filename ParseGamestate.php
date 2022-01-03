@@ -63,7 +63,6 @@
   $layerPriority = GetArray($handler);
   $mainPlayer = trim(fgets($handler));
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
-  $lastPlayed = trim(fgets($handler));
   fclose($handler);
 
   BuildMyGamestate($playerID);

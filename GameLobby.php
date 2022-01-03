@@ -18,7 +18,7 @@
 
   if($gameStatus == 6)
   {
-    header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=$playerID");
+    header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=$playerID");
   }
 
   $gameStarted = 0;

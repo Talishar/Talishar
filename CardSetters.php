@@ -125,12 +125,6 @@ function GainResources($player, $amount)
   $resources[0] += $amount;
 }
 
-function AddResourceCost($player, $amount)
-{
-  $resources = &GetResources($player);
-  $resources[1] += $amount;
-}
-
 function AddArsenal($cardID, $player, $from, $facing)
 {
   $arsenal = &GetArsenal($player);
@@ -235,6 +229,7 @@ function BanishFromSoul($player)
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
 
+  WriteReplay($player, $cardID, $from, "BANISH");
   if($mainPlayerGamestateStillBuilt)
   {
     if($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player);
@@ -251,7 +246,6 @@ function BanishFromSpecificSoul(&$soul, $player)
 {
   if(count($soul) == 0) return;
   $cardID = array_shift($soul);
-  WriteReplay($player, $cardID, "SOUL", "BANISH");
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 

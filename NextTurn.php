@@ -6,7 +6,6 @@
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
-  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=TryGet("playerID", 3);
 
   //First we need to parse the game state from the file
@@ -146,7 +145,7 @@
     echo("</div>");
   }
 
-  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER") && $turn[1] == $playerID)
+  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID)
   {
     echo("<div display:inline;'>");
     $options = explode(",", $turn[2]);

@@ -38,14 +38,14 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="")
+  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="")
   {
     global $gameName;
     if($image != "")
     {
       $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">";
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
+    else $rv = "<button " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
     return $rv;
   }
 
@@ -68,12 +68,9 @@
     return $rv;
   }
 
-  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false)
+  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./")
   {
-    global $combatChain;
-    $top = "50%"; $left = "20%"; $width = "60%"; $height = "40%";
-    if($big) { $top = "5%"; $left = "5%";  $width = "90%"; $height = "90%"; }
-    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";" . ($defaultState == 0 ? " display:none;" : "") . "'>";
+    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:50px; left: 50px; right: 250px; bottom:50px;" . ($defaultState == 0 ? " display:none;" : "") . "'>";
     if($title != "") $rv .= "<h1>" . $title . "</h1>";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
@@ -194,23 +191,21 @@
 
   function BanishUI($from="")
   {
-    global $turn, $currentPlayer, $playerID, $cardSize;
+    global $myBanish, $turn, $currentPlayer, $playerID;
     $rv = "";
-    $size = ($from == "HAND" ? $cardSize : 180);
-    $banish = GetBanish($playerID);
-    for($i=0; $i<count($banish); $i+=BanishPieces()) {
-      $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-      $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
-      $mod = explode("-", $banish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+    for($i=0; $i<count($myBanish); $i+=BanishPieces()) {
+      $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+      $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
+      $mod = explode("-", $myBanish[$i+1])[0];
+      if($mod == "INT") $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 1);//Display intimidated cards grayed out and unplayable
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "INST" || $mod == "MON212"  || $mod == "ARC119")
-        $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+        $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
-        if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
-          $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));
+        if(PlayableFromBanish($myBanish[$i]) || AbilityPlayableFromBanish($myBanish[$i]))
+          $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));
         else
-          $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 0, $border);
+          $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 0, $border);
       }
     }
     return $rv;
