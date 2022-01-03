@@ -44,7 +44,6 @@ function ChatKey(event)
     event.preventDefault();
     SubmitChat();
   }
-  event.stopPropagation();
 }
 
 function SubmitChat()

@@ -22,10 +22,8 @@ h2 {
 <?php
 
   include "HostFiles/Redirector.php";
-  include "Libraries/HTTPLibraries.php";
 
   $gameName=$_GET["gameName"];
-  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
 
 ?>
