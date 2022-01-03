@@ -52,6 +52,7 @@
       case "MAYCHOOSEMULTIZONE": return "a card";
       case "CHOOSEBANISH": return "a card from banish";
       case "INSTANT": return "an instant";
+      case "CHOOSEFIRSTPLAYER": return "who will be the first player";
     }
   }
 
