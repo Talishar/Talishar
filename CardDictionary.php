@@ -1369,7 +1369,8 @@
   function IsPlayable($cardID, $phase, $from, $index=-1, &$restriction=null)
   {
     global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
-    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter, $mainPlayer;
+    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter, $mainPlayer, $playerID;
+    if($currentPlayer != $playerID) return false;
     $restriction = "";
     $cardType = CardType($cardID);
     $subtype = CardSubType($cardID);
