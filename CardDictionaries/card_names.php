@@ -13,7 +13,7 @@ if ($set == "ARC")
 		case "000": return "Eye of Ophidia";
 		case "001": return "Dash, Inventor Extraordinaire";
 		case "002": return "Dash";
-		case "003": return "Teklo Plasma Pistol";
+		case "003": return "‘Teklo Plasma Pistol";
 		case "004": return "Teklo Foundry Heart";
 		case "005": return "Achilles Accelerator";
 		case "006": return "High Octane";

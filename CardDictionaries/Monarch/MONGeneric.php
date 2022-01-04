@@ -159,7 +159,7 @@
 
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $actionPoints, $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
+    global $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
     $rv = "";
     switch($cardID)
     {
