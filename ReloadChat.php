@@ -1,10 +1,8 @@
 <?php
 
   include "WriteLog.php";
-  include "Libraries/HTTPLibraries.php";
 
   $gameName=$_GET["gameName"];
-  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
   $lastUpdate=$_GET["lastUpdate"];
 

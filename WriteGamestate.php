@@ -62,7 +62,6 @@
   fwrite($handler, implode(" ", $layers) . "\r\n");
   fwrite($handler, implode(" ", $layerPriority) . "\r\n");
   fwrite($handler, $mainPlayer . "\r\n");
-  fwrite($handler, $lastPlayed . "\r\n");
   fclose($handler);
 
 ?>
