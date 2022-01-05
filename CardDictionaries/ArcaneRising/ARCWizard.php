@@ -303,7 +303,8 @@
     array_push($choiceArray, 0);
     if($barrierArray[1] > 0) array_push($choiceArray, 1);
     if($barrierArray[2] > 0 || $barrierArray[1] >= 2) array_push($choiceArray, 2);
-    for($i=3; $i<=$max; ++$i)
+    if($barrierArray[3] > 0 || $total >= 3) array_push($choiceArray, 3);
+    for($i=4; $i<=$max; ++$i)
     {
       if($i <= $total) array_push($choiceArray, $i);
     }
