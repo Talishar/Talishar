@@ -257,7 +257,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR159":
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_card,2_Attack,Go_again");
       AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
-      return "";
+      return "Enlightened Strike put a card from your hand to the bottom of your deck and had an additional effect.";
     case "WTR160":
       $hand = GetHand($currentPlayer);
       MyDrawCard();
