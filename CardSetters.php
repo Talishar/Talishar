@@ -6,10 +6,6 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier="-")
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
-  if($cardID == "MON187")
-  {
-    WriteReplay($player, "MON187", "CHAR", "BANISH");
-  }
   if($mainPlayerGamestateStillBuilt)
   {
     if($player == $mainPlayer) BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from);
@@ -26,11 +22,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer;
   if($player == "") $player = $currentPlayer;
-
-  if($cardID != "MON187")
-  {
-    +WriteReplay($player, $cardID, $from, "BANISH");
-  }
+  WriteReplay($player, $cardID, $from, "BANISH");
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was banished from your deck face up by an action card. Gained 1 action point.");
       ++$actionPoints;
@@ -123,6 +115,12 @@ function GainResources($player, $amount)
 {
   $resources = &GetResources($player);
   $resources[0] += $amount;
+}
+
+function AddResourceCost($player, $amount)
+{
+  $resources = &GetResources($player);
+  $resources[1] += $amount;
 }
 
 function AddArsenal($cardID, $player, $from, $facing)
@@ -229,7 +227,6 @@ function BanishFromSoul($player)
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
 
-  WriteReplay($player, $cardID, $from, "BANISH");
   if($mainPlayerGamestateStillBuilt)
   {
     if($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player);
@@ -246,6 +243,7 @@ function BanishFromSpecificSoul(&$soul, $player)
 {
   if(count($soul) == 0) return;
   $cardID = array_shift($soul);
+  WriteReplay($player, $cardID, "SOUL", "BANISH");
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 

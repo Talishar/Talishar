@@ -5,20 +5,21 @@ include "CoreLogic.php";
 
 function BlessingOfDeliveranceDestroy($amount)
 {
-  global $mainPlayer, $mainDeck, $mainHealth;
-  $log = "Blessing of Deliverance revealed ";
+  global $mainPlayer;
+  $deck = GetDeck($mainPlayer);
   $lifegain = 0;
+  $cards = "";
   for($i=0; $i<$amount; ++$i)
   {
-    if(count($mainDeck) > $i)
+    if(count($deck) > $i)
     {
-      $log .= $mainDeck[$i] . ($i < 2 ? "," : "") . " ";
-      if(CardCost($mainDeck[$i]) >= 3) ++$lifegain;
+      $cards .= $deck[$i] . ($i < 2 ? "," : "");
+      if(CardCost($deck[$i]) >= 3) ++$lifegain;
     }
   }
-  $log .= "and gained " . $lifegain . " life.";
-  $mainHealth += $lifegain;
-  return $log;
+  RevealCards($cards);
+  GainHealth($lifegain, $mainPlayer);
+  return "Blessing of Deliverance gained " . $lifegain . " life.";
 }
 
 function EmergingPowerDestroy($cardID)
@@ -76,7 +77,7 @@ function LordOfWindIndices()
 
 function NaturesPathPilgrimageHit()
 {
-  global $mainPlayer, $mainDeck;
+  global $mainPlayer;
   $deck = &GetDeck($mainPlayer);
   if(!ArsenalFull($mainPlayer) && count($deck) > 0)
   {
@@ -91,13 +92,14 @@ function NaturesPathPilgrimageHit()
 
 function UnifiedDecreePlayEffect()
 {
-  global $myDeck, $mainPlayer;
-  if(count($myDeck) == 0) return;
-  WriteLog("Unified Decree reveals " . $myDeck[0] . ".");
-  if(CardType($myDeck[0]) == "AR")
+  global $mainPlayer;
+  $deck = &GetDeck($mainPlayer);
+  if(count($deck) == 0) return;
+  RevealCards($deck[0]);
+  if(CardType($deck[0]) == "AR")
   {
-    BanishCardForPlayer($myDeck[0], $mainPlayer, "DECK", "TCC");
-    array_shift($myDeck);
+    BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "TCC");
+    array_shift($deck);
   }
 }
 
@@ -228,9 +230,8 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
-    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint, $otherPlayer, $p2ClassState, $myClassState, $theirClassState;
+    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint, $otherPlayer;
     global $layers, $layerPriority, $dqVars;
-global $myStateBuiltFor, $p1ClassState, $p2ClassState;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY")
     {
       if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
@@ -377,11 +378,8 @@ global $myStateBuiltFor, $p1ClassState, $p2ClassState;
 function ShouldHoldPriority($player)
 {
   if(AlwaysHoldPriority($player)) return true;
-  $char = GetPlayerCharacter($player);
-  if($char[0] == "ARC113" || $char[0] == "ARC114") return 1;
-  if(CountItem("ARC017", $player) > 0) return 1;
-  if(SearchHand($player, "I") != "" || SearchArsenal($player, "I") != "") return 1;
-  return 0;
+  if(CountItem("ARC017", $player) > 0) return true;
+  return false;
 }
 
 function GiveAttackGoAgain()
@@ -405,16 +403,15 @@ function MainTopDeckToArsenal()
 function TopDeckToArsenal($player)
 {
   $deck = &GetDeck($player);
-  if(ArsenalFull($player) || count($deck) == 0) return;//Already something there
+  if(!ArsenalEmpty($player) || count($deck) == 0) return;//Already something there
   AddArsenal(array_shift($deck), $player, "DECK", "DOWN");
   WriteLog("The top card of player " . $player . "'s deck was put in their arsenal.");
 }
 
 function DefenderArsenalToBottomOfDeck()
 {
-  global $defArsenal, $defDeck;
-  array_push($defDeck, $defArsenal);
-  $defArsenal = "";
+  global $defPlayer;
+  ArsenalToBottomDeck($defPlayer);
 }
 
 function ArsenalToBottomDeck($player)
@@ -436,6 +433,7 @@ function DestroyArsenal($player)
   $arsenal = &GetArsenal($player);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
   {
+    WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal.");
     AddGraveyard($arsenal[$i], $player, "ARS");
   }
   $arsenal = [];
@@ -453,28 +451,27 @@ function DiscardHand($player)
 
 function Opt($cardID, $amount)
 {
-  global $myDeck, $turn, $currentPlayer;
-  if($amount <= 0) return;
-  $cards = "";
-  for($i=0; $i<$amount; ++$i)
-  {
-    $cards .= array_shift($myDeck);
-    if($i < $amount-1) $cards .= ",";
-  }
-  AddDecisionQueue("OPT", $currentPlayer, $cards);
+  global $currentPlayer;
+  PlayerOpt($currentPlayer, $amount);
 }
 
 function OptMain($amount)
 {
-  global $mainDeck, $turn, $mainPlayer;
+  global $mainPlayer;
+  PlayerOpt($mainPlayer, $amount);
+}
+
+function PlayerOpt($player, $amount)
+{
   if($amount <= 0) return;
+  $deck = &GetDeck($player);
   $cards = "";
   for($i=0; $i<$amount; ++$i)
   {
-    $cards .= array_shift($mainDeck);
+    $cards .= array_shift($deck);
     if($i < $amount-1) $cards .= ",";
   }
-  AddDecisionQueue("OPT", $mainPlayer, $cards);
+  AddDecisionQueue("OPT", $player, $cards);
 }
 
 function DiscardRandom($player="", $source="")
@@ -488,6 +485,7 @@ function DiscardRandom($player="", $source="")
   unset($hand[$index]);
   $hand = array_values($hand);
   AddGraveyard($discarded, $player, "HAND");
+  WriteLog(CardLink($discarded, $discarded) . " was randomly discarded.");
   if(AttackValue($discarded) >= 6)
   {
     $character = &GetPlayerCharacter($player);
@@ -507,43 +505,32 @@ function DiscardRandom($player="", $source="")
 
 function DefDiscardRandom()
 {
-  global $defHand,$defDiscard;
-  if(count($defHand) == 0) return;
-  $index = rand() % count($defHand);
-  array_push($defDiscard, $defHand[$index]);
-  //TODO: other discard stuff
-  unset($defHand[$index]);
-  $defHand = array_values($defHand);
+  global $defPlayer;
+  $hand = &GetHand($defPlayer);
+  if(count($hand) == 0) return;
+  $index = rand() % count($hand);
+  AddGraveyard($hand[$index], $defPlayer, "HAND");
+  unset($hand[$index]);
+  $hand = array_values($hand);
 };
 
 function Intimidate()
 {
-  global $defPlayer, $theirHand, $currentPlayer;//For now we'll assume you can only intimidate the opponent
-  if(count($theirHand) == 0) { WriteLog("Intimidate did nothing because there are no cards in hand."); return; }//Nothing to do if they have no hand
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  $index = rand() % count($theirHand);
-  BanishCardForPlayer($theirHand[$index], $otherPlayer, "HAND", "INT");
-  unset($theirHand[$index]);
-  $theirHand = array_values($theirHand);
-  WriteLog("Intimidate triggered " . count($theirHand));
-  UpdateGameState($currentPlayer);
+  global $defPlayer;//For now we'll assume you can only intimidate the opponent
+  //$otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $hand = &GetHand($defPlayer);
+  if(count($hand) == 0) { WriteLog("Intimidate did nothing because there are no cards in hand."); return; }//Nothing to do if they have no hand
+  $index = rand() % count($hand);
+  BanishCardForPlayer($hand[$index], $defPlayer, "HAND", "INT");
+  unset($hand[$index]);
+  $hand = array_values($hand);
+  WriteLog("Intimidate banished a card.");
 }
 
 //Deprecated: Use BanishCard in CardSetters instead
 function Banish($player, $cardID, $from)
 {
-  global $playerID, $myBanish, $theirBanish;
-  if($playerID == $player)
-  {
-    array_push($myBanish, $cardID);
-    array_push($myBanish, $from);
-  }
-  else
-  {
-    array_push($theirBanish, $cardID);
-    array_push($theirBanish, $from);
-  }
-  //TODO: Banish stuff, e.g. Levia
+  BanishCardForPlayer($cardID, $player, $from);
 }
 
 ?>

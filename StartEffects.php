@@ -7,9 +7,11 @@
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
   include "AI/CombatDummy.php";
+  include "Libraries/HTTPLibraries.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
+  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
 
   include "ParseGamestate.php";
@@ -35,7 +37,7 @@
     $chooser = ($p1roll > $p2roll ? 1 : 2);
   }
   WriteLog("Player $chooser chooses who goes first.");
-  AddDecisionQueue("BUTTONINPUTNOPASS", $chooser, "Go_first,Go_second");
+  AddDecisionQueue("CHOOSEFIRSTPLAYER", $chooser, "Go_first,Go_second");
   AddDecisionQueue("SETFIRSTPLAYER", $chooser, "-");
 
   if($myCharacter[0] == "ARC001" || $myCharacter[0] == "ARC002")
@@ -57,7 +59,7 @@
 
   include "WriteGamestate.php";
 
-  header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=1");
+  header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=1");
 
 ?>
 
