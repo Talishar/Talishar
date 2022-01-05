@@ -534,9 +534,10 @@ function GainHealth($amount, $player)
   if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog("Dread Scythe prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {
-    if($health > $otherHealth) return;
+    if($health > $otherHealth) return false;
   }
   PlayerGainHealth($amount, $health);
+  return true;
 }
 
 function PlayerLoseHealth($amount, &$health)
@@ -562,46 +563,40 @@ function PlayerWon($playerID)
   WriteLog("Player " . $playerID . " wins!");
 }
 
+function UnsetBanishModifier($player, $modifier)
+{
+  global $mainPlayer;
+  $banish = &GetBanish($mainPlayer);
+  for($i=0; $i<count($banish); $i+=BanishPieces())
+  {
+    if($banish[$i+1] == "TCL") $banish[$i+1] = "DECK";
+  }
+}
+
 function UnsetChainLinkBanish()
 {
-  global $mainBanish;
-  for($i=0; $i<count($mainBanish); $i+=BanishPieces())
-  {
-    if($mainBanish[$i+1] == "TCL") $mainBanish[$i+1] = "DECK";
-  }
+  global $mainPlayer;
+  UnsetBanishModifier($mainPlayer, "TCL");
 }
 
 function UnsetCombatChainBanish()
 {
-  global $mainBanish;
-  for($i=0; $i<count($mainBanish); $i+=BanishPieces())
-  {
-    if($mainBanish[$i+1] == "TCC") $mainBanish[$i+1] = "DECK";
-  }
+  global $mainPlayer;
+  UnsetBanishModifier($mainPlayer, "TCC");
 }
 
 function UnsetMyCombatChainBanish()
 {
-  global $myBanish;
-  for($i=0; $i<count($myBanish); $i+=BanishPieces())
-  {
-    if($myBanish[$i+1] == "TCC") $myBanish[$i+1] = "DECK";
-  }
+  global $currentPlayer;
+  UnsetBanishModifier($currentPlayer, "TCC");
 }
 
 function UnsetTurnBanish()
 {
-  global $mainBanish, $defBanish;
-  for($i=0; $i<count($mainBanish); $i+=BanishPieces())
-  {
-    if($mainBanish[$i+1] == "TT") $mainBanish[$i+1] = "DECK";
-    if($mainBanish[$i+1] == "INST") $mainBanish[$i+1] = "DECK";
-  }
-  for($i=0; $i<count($defBanish); $i+=BanishPieces())
-  {
-    if($defBanish[$i+1] == "TT") $defBanish[$i+1] = "DECK";
-    if($defBanish[$i+1] == "INST") $defBanish[$i+1] = "DECK";
-  }
+  UnsetBanishModifier(1, "TT");
+  UnsetBanishModifier(1, "INST");
+  UnsetBanishModifier(2, "TT");
+  UnsetBanishModifier(2, "INST");
   UnsetCombatChainBanish();
 }
 
@@ -622,17 +617,7 @@ function GetChainLinkCards($playerID="", $cardType="", $exclCardType="")
 
 function GetMainPlayerComboCards()
 {
-  global $mainDeck;
-  $combo = "";
-  for($i=0; $i<count($mainDeck); ++$i)
-  {
-    if(HasCombo($mainDeck[$i]))
-    {
-      if($combo != "") $combo .= ",";
-      $combo .= $i;
-    }
-  }
-  return $combo;
+  return GetComboCards();
 }
 
 function GetComboCards()
@@ -653,11 +638,13 @@ function GetComboCards()
 
 function GetTheirEquipmentChoices()
 {
-  global $theirCharacter;
+  global $currentPlayer;
+  $other = ($currentPlayer == 1 ? 2 : 1);
+  $character = GetPlayerCharacter($other);
   $equipment = "";
-  for($i=0; $i<count($theirCharacter); $i+=CharacterPieces())
+  for($i=0; $i<count($character); $i+=CharacterPieces())
   {
-    if(CardType($theirCharacter[$i]) == "E" && $theirCharacter[$i+1] != 0)
+    if(CardType($character[$i]) == "E" && $character[$i+1] != 0)
     {
       if($equipment != "") $equipment .= ",";
       $equipment .= $i;
@@ -668,28 +655,14 @@ function GetTheirEquipmentChoices()
 
 function FindMyCharacter($cardID)
 {
-  global $myCharacter;
-  for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
-  {
-    if($myCharacter[$i] == $cardID)
-    {
-      return $i;
-    }
-  }
-  return -1;
+  global $currentPlayer;
+  return FindCharacterIndex($currentPlayer, $cardID);
 }
 
 function FindDefCharacter($cardID)
 {
-  global $defCharacter;
-  for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
-  {
-    if($defCharacter[$i] == $cardID)
-    {
-      return $i;
-    }
-  }
-  return -1;
+  global $defPlayer;
+  return FindCharacterIndex($defPlayer, $cardID);
 }
 
 function DestroyItem(&$Items, $index)
@@ -702,12 +675,13 @@ function DestroyItem(&$Items, $index)
 
 function CheckDestroyTemper()
 {
-  global $defCharacter;
-  for($i = count($defCharacter)-CharacterPieces(); $i >= 0; $i -= CharacterPieces())
+  global $defPlayer;
+  $character = &GetPlayerCharacter($defPlayer);
+  for($i = count($character)-CharacterPieces(); $i >= 0; $i -= CharacterPieces())
   {
-    if(HasTemper($defCharacter[$i]) && ((BlockValue($defCharacter[$i]) + $defCharacter[$i + 4]) <= 0))
+    if(HasTemper($character[$i]) && ((BlockValue($character[$i]) + $character[$i + 4]) <= 0))
     {
-      $defCharacter[$i+1] = 0;
+      $character[$i+1] = 0;
     }
   }
 }
@@ -758,30 +732,20 @@ function NumAttacksBlocking()
 
 function IHaveLessHealth()
 {
-  global $myHealth, $theirHealth;
-  return $myHealth < $theirHealth;
+  global $currentPlayer;
+  return PlayerHasLessHealth($currentPlayer);
 }
 
 function DefHasLessHealth()
 {
-  global $mainHealth, $defHealth;
-  return $defHealth < $mainHealth;
+  global $defPlayer;
+  return PlayerHasLessHealth($defPlayer);
 }
 
-function PlayerHasLessHealth($playerID)
+function PlayerHasLessHealth($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
-  global $mainHealth, $defHealth, $myHealth, $theirHealth;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($playerID == $mainPlayer) return $mainHealth < $defHealth;
-    else return $defHealth < $mainHealth;
-  }
-  else
-  {
-    if($playerID == $currentPlayer) return $myHealth < $theirHealth;
-    else return $theirHealth < $myHealth;
-  }
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  return GetHealth($player) < GetHealth($otherPlayer);
 }
 
 function GetIndices($count, $add=0, $pieces=1)
@@ -797,14 +761,14 @@ function GetIndices($count, $add=0, $pieces=1)
 
 function GetMyHandIndices()
 {
-  global $myHand;
-  return GetIndices(count($myHand));
+  global $currentPlayer;
+  return GetIndices(count(GetHand($currentPlayer)));
 }
 
 function GetDefHandIndices()
 {
-  global $defHand;
-  return GetIndices(count($defHand));
+  global $defPlayer;
+  return GetIndices(count(GetHand($currentPlayer)));
 }
 
 function CurrentAttack()
@@ -819,24 +783,31 @@ function RollDie($player, $fromDQ=false)
   global $CS_DieRoll;
   $roll = random_int(1, 6);
   SetClassState($player, $CS_DieRoll, $roll);
+  WriteLog($roll . " was rolled.");
+  GamblersGloves($player, $player);
+  GamblersGloves(($player == 1 ? 2 : 1), $player);
+}
+
+function GamblersGloves($player, $origPlayer)
+{
   $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
   if($gamblersGlovesIndex != -1 && IsCharacterAbilityActive($player, $gamblersGlovesIndex))
   {
     if($fromDQ)
     {
-      PrependDecisionQueue("ROLLDIE", $player, "-", 1);
+      PrependDecisionQueue("ROLLDIE", $origPlayer, "-", 1);
       PrependDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       PrependDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
       PrependDecisionQueue("NOPASS", $player, "-");
-      PrependDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result_(" . $roll . ")");
+      PrependDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
     }
     else
     {
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result_(" . $roll . ")");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Gambler's_Gloves_to_reroll_the_result");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("ROLLDIE", $player, "-", 1);
+      AddDecisionQueue("ROLLDIE", $origPlayer, "-", 1);
     }
   }
 }

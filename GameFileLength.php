@@ -1,6 +1,9 @@
 <?php
 
+  include "Libraries/HTTPLibraries.php";
+
   $gameName=$_GET["gameName"];
+  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
   if(!file_exists($filename)) { echo(-1); exit; }
