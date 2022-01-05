@@ -6,7 +6,7 @@
   {
     global $gameName, $stepCounter;
     $filename = "./Games/" . $gameName . "/Replay.txt";
-    $handler = fopen($filename, "a+")
+    $handler = fopen($filename, "a+");
     if(file_get_contents($filename, true, null, 0, 10)[0]==1)
     {
         $stepCounter = 0;
