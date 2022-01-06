@@ -2066,6 +2066,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "ELE173": break;//Unlimited uses, explicitly don't use default
     case "ELE224":
       ++$character[$cardIndex + 2];
       --$character[$cardIndex+5];
