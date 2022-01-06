@@ -1404,12 +1404,12 @@
       else if(count($myHand) < 1) return false;
     }
     if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $from, $index, $restriction)) return false;
-    if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
     if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
     if($phase == "D" && $subtype == "Trap" && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && $myClassState[$CS_NumActionsPlayed] >= 1) return false;
     if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
+    if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
     switch($cardType)
     {
       case "A": return $phase == "M";

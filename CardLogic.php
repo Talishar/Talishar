@@ -239,8 +239,16 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       if(count($decisionQueue) == 0 && count($layers) > 0)
       {
         $priorityHeld = 0;
-        if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
-        if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
+        if($currentPlayer == 1)
+        {
+          if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
+          if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
+        }
+        else
+        {
+          if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
+          if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
+        }
         if($priorityHeld)
         {
           ContinueDecisionQueue("");

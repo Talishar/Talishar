@@ -29,7 +29,7 @@
     $rv = "";
     $settings = GetSettings($player);
     if($settings[$SET_AlwaysHoldPriority] == 0) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "24px");
-    else $rv .= CreateButton($player, "Auto-Pass Priority", 26, $SET_AlwaysHoldPriority . "-0", "24px");
+    else $rv .= CreateButton($player, "Auto-Pass Layers", 26, $SET_AlwaysHoldPriority . "-0", "24px");
     if($settings[$SET_TryUI2] == 0) $rv .= CreateButton($player, "Try New UI", 26, $SET_TryUI2 . "-1", "24px");
     else $rv .= CreateButton($player, "Use Default UI", 26, $SET_TryUI2 . "-0", "24px");
     return $rv;
