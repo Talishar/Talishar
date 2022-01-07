@@ -881,24 +881,6 @@ function RevealCards($cards)
   WriteLog($string);
 }
 
-function AuraDestroyed($player, $cardID)
-{
-  if(CardType($cardID) == "T") return;//Don't need to add to anywhere if it's a token
-  $goesWhere = GoesWhereAfterResolving($cardID);
-  if(SearchAuras("MON012", $player))
-  {
-    $goesWhere = "SOUL";
-    DealArcane(1, 0, "STATIC", "MON012", false, $player);
-  }
-  switch($goesWhere)
-  {
-    case "GY": AddGraveyard($cardID, $player, "PLAY"); break;
-    case "SOUL": AddSoul($cardID, $player, "PLAY"); break;
-    case "BANISH": BanishCardForPlayer($cardID, $player, "PLAY", "NA"); break;
-    default: break;
-  }
-}
-
 function DoesAttackHaveGoAgain()
 {
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
