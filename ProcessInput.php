@@ -39,6 +39,8 @@
   $makeCheckpoint = 0;
   $makeBlockBackup = 0;
 
+  if(!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
+
   //Now we can process the command
   switch($mode) {
     case 0: //Subtract health
@@ -324,16 +326,29 @@
 
   WriteCache($gameName, $playerID);
 
-  if(UseNewUI($playerID))
+  ExitProcessInput();
+
+  function IsModeAsync($mode)
   {
-    header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=" . $playerID);
-  }
-  else
-  {
-    header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=" . $playerID);
+    switch($mode)
+    {
+      case 26: return true;
+    }
   }
 
-  exit;
+  function ExitProcessInput()
+  {
+    global $playerID, $redirectPath, $gameName;
+    if(UseNewUI($playerID))
+    {
+      header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=" . $playerID);
+    }
+    else
+    {
+      header("Location: " . $redirectPath . "/NextTurn.php?gameName=$gameName&playerID=" . $playerID);
+    }
+    exit;
+  }
 
   function PitchHasCard($cardID)
   {
