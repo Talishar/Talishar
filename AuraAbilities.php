@@ -27,6 +27,24 @@ function PlayMyAura($cardID)
   array_push($myAuras, 0);
 }
 
+function AuraDestroyed($player, $cardID)
+{
+  $goesWhere = GoesWhereAfterResolving($cardID);
+  if(SearchAuras("MON012", $player))
+  {
+    $goesWhere = "SOUL";
+    DealArcane(1, 0, "STATIC", "MON012", false, $player);
+  }
+  if(CardType($cardID) == "T") return;//Don't need to add to anywhere if it's a token
+  switch($goesWhere)
+  {
+    case "GY": AddGraveyard($cardID, $player, "PLAY"); break;
+    case "SOUL": AddSoul($cardID, $player, "PLAY"); break;
+    case "BANISH": BanishCardForPlayer($cardID, $player, "PLAY", "NA"); break;
+    default: break;
+  }
+}
+
 function PlayTheirAura($cardID)
 {
   global $theirAuras;
@@ -47,12 +65,15 @@ function AuraPlayCounters($cardID)
 
 function DestroyAura($player, $index)
 {
+WriteLog($player . " " . $index);
   $auras = &GetAuras($player);
+  $cardID = $auras[$index];
   for($j = $index+AuraPieces()-1; $j >= $index; --$j)
   {
     unset($auras[$j]);
   }
   $auras = array_values($auras);
+  AuraDestroyed($player, $cardID);
 }
 
 function AuraCostModifier()

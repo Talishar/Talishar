@@ -134,8 +134,8 @@
         {
           $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
           $rv = "Lexi turned " . CardLink($cardFlipped, $cardFlipped) . " face up.";
-          if(TalentContains($cardFlipped, "LIGHTNING")) AddCurrentTurnEffect("ELE031-1", $currentPlayer);
-          else if(TalentContains($cardFlipped, "ICE")) PlayAura("ELE111", $otherPlayer);
+          if(TalentContains($cardFlipped, "LIGHTNING")) { $rv .= " The next attacks gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
+          if(TalentContains($cardFlipped, "ICE")) { $rv .= " The opponent got a Frostbite token."; PlayAura("ELE111", $otherPlayer); }
         }
         return $rv;
       case "ELE033":
