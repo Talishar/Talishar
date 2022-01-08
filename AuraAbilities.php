@@ -65,7 +65,6 @@ function AuraPlayCounters($cardID)
 
 function DestroyAura($player, $index)
 {
-WriteLog($player . " " . $index);
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   for($j = $index+AuraPieces()-1; $j >= $index; --$j)

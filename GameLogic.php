@@ -3008,6 +3008,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "LORDSUTCLIFFE":
       LordSutcliffeAfterDQ($player, $parameter);
       return $lastResult;
+    case "APPROVEMANUALMODE":
+      ApproveManualMode($player);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

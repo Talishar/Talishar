@@ -110,28 +110,25 @@
   echo(")</b>");//Turn number
 
   //Tell the player what to pick
-  if($turn[0] == "OVER")
+  if($turn[0] != "OVER")
   {
-    echo("<h2>Player " . $winner . " Won! " . ($playerID == 1 ? CreateButton($playerID, "Rematch", 100000, 0, "24px") : ""));
-    echo("&nbsp;" . CreateButton($playerID, "Main Menu", 100001, 0, "24px") . "</h2>");
-    echo(CardStatsUI($playerID));
-  }
-  else if($currentPlayer != $playerID)
-  {
-    echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; position:relative; font-size:30px;'><b>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</b></span>");
-  }
-  else
-  {
-    echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><b>Please choose " . TypeToPlay($turn[0]));
-    if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
-    if(CanPassPhase($turn[0]))
+    if($currentPlayer != $playerID)
     {
-      echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
-      if($turn[0] == "B") echo(" or " . CreateButton($playerID, "Undo Block", 10001, 0, "24px"));
-      echo(")");
+      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; position:relative; font-size:30px;'><b>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</b></span>");
     }
-    if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
-    echo("</b></span>");
+    else
+    {
+      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><b>Please choose " . TypeToPlay($turn[0]));
+      if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
+      if(CanPassPhase($turn[0]))
+      {
+        echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
+        if($turn[0] == "B") echo(" or " . CreateButton($playerID, "Undo Block", 10001, 0, "24px"));
+        echo(")");
+      }
+      if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
+      echo("</b></span>");
+    }
   }
   echo("</span>");
 
@@ -166,6 +163,14 @@
     }
   }
   echo("</div>");//Combat chain div
+
+  if($turn[0] == "OVER")
+  {
+    $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px");
+    if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100000, 0, "24px");
+    $content .= CardStats($playerID);
+    echo CreatePopup("OVER", [], 0, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
+  }
 
   if($turn[0] == "INSTANT")
   {
@@ -504,7 +509,7 @@
   echo(CreatePopup("myPitchPopup", $myPitch, 1, 0, "Your Pitch"));
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
   echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
-  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Revert Gamestate", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
+  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
 
   if($turn[0] != "CHOOSEFIRSTPLAYER")
   {
