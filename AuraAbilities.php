@@ -20,11 +20,8 @@ function PlayAura($cardID, $player, $number=1)
 
 function PlayMyAura($cardID)
 {
-  global $myAuras;
-  array_push($myAuras, $cardID);
-  array_push($myAuras, 2);
-  array_push($myAuras, AuraPlayCounters($cardID));
-  array_push($myAuras, 0);
+  global $currentPlayer;
+  PlayAura($cardID, $currentPlayer, 1);
 }
 
 function AuraDestroyed($player, $cardID)
