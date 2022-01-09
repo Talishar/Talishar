@@ -1208,7 +1208,7 @@ function FinalizeChainLink($chainClosed=false)
         ArsenalPlayCardAbilities($cardID);
         if(HasBoost($cardID)) Boost();
         if(($character[0] == "ELE062" || $character[0] == "ELE063") && CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2) PlayAura("ELE110", $currentPlayer);
-        if(IsStaticType($definedCardType, $from, $cardID) && ($character[0] == "ARC075" || $character[0] == "ARC076")) ViseraiPlayCard($cardID);
+        if(!IsStaticType($definedCardType, $from, $cardID) && ($character[0] == "ARC075" || $character[0] == "ARC076")) ViseraiPlayCard($cardID);
       }
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target);
       if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);
