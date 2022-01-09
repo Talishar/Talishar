@@ -333,7 +333,9 @@
     switch($mode)
     {
       case 26: return true;
+      case 10000: return true;
     }
+    return false;
   }
 
   function ExitProcessInput()

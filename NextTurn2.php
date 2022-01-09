@@ -490,7 +490,8 @@
     if($theirCharacter[$i+2] > 0) $counters = $theirCharacter[$i+2];//TODO: display both kinds of counters?
     echo("<div style='z-index:5; position:fixed; right:" . GetCharacterRight($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
     echo(Card($theirCharacter[$i], "CardImages", $cardSize, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
-    if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; bottom:10px; left:10px;' src='./Images/onChain.png' />");
+    if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
+    if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
     echo("</div>");
   }
   echo("</div>");
@@ -616,8 +617,9 @@
     if($restriction != "") {
       $restrictionName = CardName($restriction);
       echo("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/restricted.png' />");
-      if($myCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; bottom:10px; left:10px;' src='./Images/onChain.png' />");
     }
+    if($myCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/onChain.png' />");
+    if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
     if($type == "C")
     {
       if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div style='position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
