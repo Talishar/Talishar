@@ -138,7 +138,7 @@
 
   function ARCGenericPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumMoonWishPlayed, $myHealth, $myDeck;
+    global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;
     global $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
     switch($cardID)
     {
@@ -147,17 +147,18 @@
         return "Talismanic Lens lets you Opt 2.";
       case "ARC153":
         $pitchValue = 0;
-        if(count($myDeck) > 0)
+        $deck = GetDeck($currentPlayer);
+        if(count($deck) > 0)
         {
-          $pitchValue = PitchValue($myDeck[0]);
-          $rv = "Bracers of Belief revealed " . $myDeck[0] . " and gives the next attack action card +" . (3 - $pitchValue) . ".";
+          $pitchValue = PitchValue($deck[0]);
+          $rv = "Bracers of Belief revealed " . $deck[0] . " and gives the next attack action card +" . (3 - $pitchValue) . ".";
         }
         else { $rv = "There are no cards in deck for Bracers of Belief to reveal, so the next attack gets +3."; }
         $bonus = 3 - $pitchValue;
         if($bonus > 0) AddCurrentTurnEffect("AAPLUS" . $bonus, $currentPlayer);
         return $rv;
       case "ARC154":
-        $myClassState[$CS_NextNAACardGoAgain] = 1;
+        SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
         return "Mage Master Boots gives your next non-attack action card this turn Go Again.";
       case "ARC160":
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_attack_actions,Go_again,Attack_actions_from_arsenal,Banish_and_draw");
@@ -194,7 +195,7 @@
         if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Fervent Forerunner gained Go Again."; }
         return $ret;
       case "ARC185": case "ARC186": case "ARC187":
-        ++$myClassState[$CS_NumMoonWishPlayed];
+        IncrementClassState($currentPlayer, $CS_NumMoonWishPlayed);
         return "";
       case "ARC191": case "ARC192": case "ARC193":
         $deck = GetDeck($currentPlayer);
@@ -222,9 +223,9 @@
         if($cardID == "ARC212") $health = 3;
         else if($cardID == "ARC213") $health = 2;
         else $health = 1;
-        PlayerGainHealth($health, $myHealth);
+        GainHealth($health, $currentPlayer);
         $rv = "Sun Kiss gained $health health";
-        if($myClassState[$CS_NumMoonWishPlayed] > 0) { MyDrawCard(); $rv .= " and drew a card."; }
+        if(GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) { MyDrawCard(); $rv .= " and drew a card."; }
         else $rv .= ".";
         return $rv;
       case "ARC215": case "ARC216": case "ARC217":

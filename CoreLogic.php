@@ -639,18 +639,7 @@ function GetComboCards()
 function GetTheirEquipmentChoices()
 {
   global $currentPlayer;
-  $other = ($currentPlayer == 1 ? 2 : 1);
-  $character = GetPlayerCharacter($other);
-  $equipment = "";
-  for($i=0; $i<count($character); $i+=CharacterPieces())
-  {
-    if(CardType($character[$i]) == "E" && $character[$i+1] != 0)
-    {
-      if($equipment != "") $equipment .= ",";
-      $equipment .= $i;
-    }
-  }
-  return $equipment;
+  return GetEquipmentIndices(($currentPlayer == 1 ? 2 : 1));
 }
 
 function FindMyCharacter($cardID)

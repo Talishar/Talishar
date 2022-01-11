@@ -380,6 +380,16 @@ function SearchPitchForNumCosts($player)
   return $count;
 }
 
+function SearchPitchForCard($playerID, $cardID)
+{
+  $pitch = GetPitch($playerID);
+  for($i=0; $i<count($pitch); ++$i)
+  {
+    if($pitch[$i] == $cardID) return $i;
+  }
+  return -1;
+}
+
 function SearchHighestAttackDefended()
 {
   global $combatChain, $defPlayer;

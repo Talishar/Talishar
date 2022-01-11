@@ -538,7 +538,7 @@
   function ExposedToTheElementsEarth($player)
   {
       $otherPlayer = $player == 1 ? 2 : 1;
-      PrependDecisionQueue("ADDTHEIRNEGDEFCOUNTER", $player, "-", 1);
+      PrependDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
   }
@@ -552,6 +552,7 @@
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
+      WriteLog("Player " . $otherPlayer . " may choose to pay 2 to prevent their equipment from being destroyed.");
   }
 
   function KorshemRevealAbility($player)

@@ -9,7 +9,7 @@ include "WeaponLogic.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
 {
-  global $mainPlayer, $myClassState, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
+  global $mainPlayer, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
   global $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
   global $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
@@ -93,7 +93,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "";
     case "WTR010":
       $roll = GetDieRoll($currentPlayer);
-      $myClassState[$CS_DamagePrevention] += $roll;
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
       return "Bone Head Barrier prevents the next $roll damage that will be dealt to you this turn.";
     case "WTR011": case "WTR012": case "WTR013":
       $discarded = DiscardRandom($currentPlayer, $cardID);
@@ -831,10 +831,9 @@ function ProcessCrushEffect($cardID)
     case "WTR044": AddNextTurnEffect($cardID, $defPlayer); break;
     case "WTR045": AddNextTurnEffect($cardID, $defPlayer); break;
     case "WTR057": case "WTR058": case "WTR059":
-      $equipment = GetTheirEquipmentChoices();
-      if($equipment == "") break;
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, $equipment);
-      AddDecisionQueue("ADDTHEIRNEGDEFCOUNTER", $mainPlayer, "-", 1);
+      AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-");
+      AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
       break;
     case "WTR060": case "WTR061": case "WTR062": AddNextTurnEffect($cardID, $defPlayer); break;
     case "WTR063": case "WTR064": case "WTR065": $defCharacter[1] = 3; break;
@@ -1950,7 +1949,7 @@ function MainCharacterHitEffects()
 
 function PutItemIntoPlay($item, $steamCounterModifier = 0)
 {
-  global $myItems, $currentPlayer;
+  global $currentPlayer;
   PutItemIntoPlayForPlayer($item, $currentPlayer, $steamCounterModifier);
 }
 
@@ -2081,9 +2080,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
-  global $currentPlayer, $myCharacter, $combatChain, $myCharacterEffects;
+  global $currentPlayer, $combatChain;
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
-  global $defCharacter, $myClassState, $CS_NumCharged, $theirCharacter, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
+  global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer;
   $rv = "";
@@ -2316,13 +2315,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$parameter + 7] = 1;
       return $lastResult;
     case "ADDCHARACTEREFFECT":
-      array_push($myCharacterEffects, $lastResult);
-      array_push($myCharacterEffects, $parameter);
+      $characterEffects = &GetCharacterEffects($player);
+      array_push($characterEffects, $lastResult);
+      array_push($characterEffects, $parameter);
       return $lastResult;
     case "ADDMZBUFF":
       $lrArr = explode("-", $lastResult);
-      array_push($myCharacterEffects, $lrArr[1]);
-      array_push($myCharacterEffects, $parameter);
+      $characterEffects = &GetCharacterEffects($player);
+      array_push($characterEffects, $lrArr[1]);
+      array_push($characterEffects, $parameter);
       return $lastResult;
     case "PASSPARAMETER":
       return $parameter;
@@ -2383,7 +2384,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
       return $lastResult;
     case "EXHAUSTCHARACTER":
-      $myCharacter[$parameter+1] = 1;
+      $character = &GetPlayerCharacter($player);
+      $character[$parameter+1] = 1;
       return $parameter;
     case "REVEALMYCARD":
       if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
@@ -2428,8 +2430,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $message = implode(" ", explode("_", $parameter)) . CardLink($lastResult, $lastResult);
       WriteLog($message);
       return $lastResult;
-    case "ADDTHEIRNEGDEFCOUNTER":
-      $theirCharacter[$lastResult+4] -= 1;
+    case "ADDNEGDEFCOUNTER":
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult+4] -= 1;
       return "Added a negative defense counter.";
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
@@ -2559,7 +2562,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REFRACTIONBOLTERS":
       if($lastResult == "YES")
       {
-        $myCharacter[$parameter+1] = 0;
+        $character = &GetPlayerCharacter($player);
+        $character[$parameter+1] = 0;
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         WriteLog("Refraction Bolters was destroyed and gave the current attack Go Again.");
       }
@@ -2590,14 +2594,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CAPTAINSCALL":
       switch($lastResult)
       {
-        case "2_Attack": AddCurrentTurnEffect($parameter . "-1", $player); return 1;
-        case "Go_again": AddCurrentTurnEffect($parameter . "-2", $player); return 2;
+        case "2_Attack": WriteLog("Captain's Call gives +2 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
+        case "Go_again": WriteLog("Captain's Call gives Go Again."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
       }
       return $lastResult;
     case "IRONHIDE":
       if($lastResult == 1)
       {
-        $myCharacter[$parameter+1] = 0;
+        $character = &GetPlayerCharacter($player);
+        $character[$parameter+1] = 0;
       }
       return $lastResult;
     case "RAMPARTOFTHERAMSHEAD":
@@ -2619,7 +2624,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "VESTOFTHEFIRSTFIST":
       if($lastResult == "YES")
       {
-        $myCharacter[$parameter+1] = 0;
+        $character = &GetPlayerCharacter($player);
+        $character[$parameter+1] = 0;
         GainResources($player, 2);
         WriteLog("Vest of the First Fist was destroyed and gave 2 resources.");
       }
@@ -2691,7 +2697,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DQCharge();
       return "1";
     case "FINISHCHARGE":
-      ++$myClassState[$CS_NumCharged];
+      IncrementClassState($player, $CS_NumCharged);
       return $lastResult;
     case "CHOOSEHERO":
       return $player == 1 ? 2 : 1;
