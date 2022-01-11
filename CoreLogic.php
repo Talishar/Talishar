@@ -938,9 +938,9 @@ function DestroyCharacter($player, $index)
 
 function SetFirstPlayer($player)
 {
-  global $firstPlayer, $currentPlayer, $otherPlayer, $mainPlayerGamestateStillBuilt, $mainPlayer;
+  global $firstPlayer, $currentPlayer, $otherPlayer, $mainPlayerGamestateBuilt, $mainPlayer;
   $firstPlayer = $player;
-  if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+  if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
   else UpdateGameState($currentPlayer);
   $mainPlayer = $player;
   $currentPlayer = $player;
