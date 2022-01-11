@@ -354,12 +354,8 @@
 
   function PitchHasCard($cardID)
   {
-    global $myPitch;
-    for($i=0; $i<count($myPitch); ++$i)
-    {
-      if($myPitch[$i] == $cardID) return $i;
-    }
-    return -1;
+    global $currentPlayer;
+    return SearchPitchForCard($currentPlayer, $cardID);
   }
 
   function HasCard($cardID)
@@ -744,9 +740,11 @@ function FinalizeChainLink($chainClosed=false)
 
   function PlayCard($cardID, $from, $dynCostResolved=-1, $index=-1)
   {
-    global $playerID, $myResources, $turn, $currentPlayer, $otherPlayer, $combatChain, $actionPoints, $myAuras, $myPitch, $CS_NumAddedToSoul;
-    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish;
+    global $playerID, $turn, $currentPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul;
+    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
+    $resources = &GetResources($currentPlayer);
+    $pitch = &GetPitch($currentPlayer);
     $dynCostResolved = intval($dynCostResolved);
     if($turn[0] != "P") MakeGamestateBackup();
     $layerPriority[0] = ShouldHoldPriority(1);
@@ -765,10 +763,10 @@ function FinalizeChainLink($chainClosed=false)
             if($dynCostResolved >= 0)
             {
               $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
-              if($turn[0] == "B" && CardType($cardID) != "I") $myResources[1] = $dynCostResolved;
-              else $myResources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
-              if($myResources[1] < 0) $myResources[1] = 0;
-              LogResourcesUsedStats($currentPlayer, $myResources[1]);
+              if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] = $dynCostResolved;
+              else $resources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
+              if($resources[1] < 0) $resources[1] = 0;
+              LogResourcesUsedStats($currentPlayer, $resources[1]);
             }
             else
             {
@@ -786,14 +784,14 @@ function FinalizeChainLink($chainClosed=false)
         }
         else if($turn[0] == "P")
         {
-          $myResources[0] += PitchValue($cardID);
+          $resources[0] += PitchValue($cardID);
           if(SearchCharacterForCard($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
-          { $myResources[0] += 1; }
-          array_push($myPitch, $cardID);
+          { $resources[0] += 1; }
+          array_push($pitch, $cardID);
           AddThisCardPitch($currentPlayer, $cardID);
           PitchAbility($cardID);
         }
-        if($myResources[0] < $myResources[1])
+        if($resources[0] < $resources[1])
         {
           if($turn[0] != "P")
           {
@@ -804,9 +802,9 @@ function FinalizeChainLink($chainClosed=false)
           $turn[0] = "P";
           return;//We know we need to pitch more, short circuit here
         }
-        $myResources[0] -= $myResources[1];
-        $resourcesPaid = $myResources[1];
-        $myResources[1] = 0;
+        $resources[0] -= $resources[1];
+        $resourcesPaid = $resources[1];
+        $resources[1] = 0;
         if($turn[0] == "P")
         {
           $turn[0] = $turn[2];
@@ -834,10 +832,10 @@ function FinalizeChainLink($chainClosed=false)
           else
           {
             $hasGoAgain = HasGoAgain($cardID);
-            if($myClassState[$CS_NextNAACardGoAgain] && $cardType == "A")
+            if(GetClassState($CS_NextNAACardGoAgain, $currentPlayer) && $cardType == "A")
             {
               $hasGoAgain = true;
-              $myClassState[$CS_NextNAACardGoAgain] = 0;
+              SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
             }
             if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
             if(CanPlayAsInstant($cardID)) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
@@ -850,16 +848,16 @@ function FinalizeChainLink($chainClosed=false)
           {
             if($cardType == "A")
             {
-              ++$myClassState[$CS_NumNonAttackCards];
-              if(CardClass($cardID) == "WIZARD") { ++$myClassState[$CS_NumWizardNonAttack]; }
+              IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
+              if(CardClass($cardID) == "WIZARD") { IncrementClassState($currentPlayer, $CS_NumWizardNonAttack); }
             }
-            ++$myClassState[$CS_NumActionsPlayed];
+            IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
           }
-          if($from == "BANISH") ++$myClassState[$CS_NumPlayedFromBanish];
-          if(HasBloodDebt($cardID)) ++$myClassState[$CS_NumBloodDebtPlayed];
+          if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
+          if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
           PayAdditionalCosts($cardID, $from);
         }
-        if($cardType == "AA") ++$myClassState[$CS_NumAttackCards];//Played or blocked
+        if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards);//Played or blocked
 
         if($from == "BANISH")
         {
@@ -1131,7 +1129,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function PlayCardEffect($cardID, $from, $resourcesPaid, $target="-")
   {
-    global $turn, $combatChain, $currentPlayer, $myDiscard, $combatChainState, $CCS_AttackPlayedFrom, $myClassState, $CS_PlayIndex;
+    global $turn, $combatChain, $currentPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
     global $currentTurnEffectsFromCombat, $CCS_WeaponIndex;
     $character = &GetPlayerCharacter($currentPlayer);
@@ -1159,14 +1157,14 @@ function FinalizeChainLink($chainClosed=false)
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
         ProcessAttackTarget();
-        $myClassState[$CS_PlayCCIndex] = $index;
+        SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
         ++$combatChainState[$CCS_NumChainLinks];
-        ++$myClassState[$CS_NumAttacks];
+        IncrementClassState($currentPlayer, $CS_NumAttacks);
         $attackValue = AttackValue($cardID);
         $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
         if($definedCardType == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && $attackValue >= 6) KayoStaticAbility();
         $openedChain = true;
-        if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = $myClassState[$CS_PlayIndex];
+        if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       }
     }
     else if($from != "PLAY")
@@ -1220,8 +1218,8 @@ function FinalizeChainLink($chainClosed=false)
       RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
     }
     //Now determine what needs to happen next
-    $myClassState[$CS_PlayIndex] = -1;
-    $myClassState[$CS_CharacterIndex] = -1;
+    SetClassState($currentPlayer, $CS_PlayIndex, -1);
+    SetClassState($currentPlayer, $CS_CharacterIndex, -1);
     ResetThisCardPitch($currentPlayer);
     ProcessDecisionQueue();
   }

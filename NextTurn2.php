@@ -556,8 +556,8 @@
 
   //Now display Auras and items
   $permTop = intval(GetCharacterBottom("C", "")) + $cardSize;
-  $permHeight = $cardSize * 2 + 20;
-  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; height:200px; width:" . $permWidth . "; height:" . $permHeight . "px;'>");
+  $permHeight = $cardSize * 2 + 30;
+  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if(count($myAuras) > 0)
   {
@@ -719,7 +719,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
   {
     $content = "";
     $options = explode(",", $options);
-    for($i=0; $i<count($options); $i += $zoneSize)
+    for($i=0; $i<count($options); ++$i)
     {
       $content .= Card($zone[$options[$i]], "CardImages", 200, $mode, 0, 0, 0, 0, strval($options[$i]));
     }
