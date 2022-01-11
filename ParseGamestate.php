@@ -1,6 +1,6 @@
 <?php
 
-  $mainPlayerGamestateBuilt = 0;
+  $mainPlayerGamestateStillBuilt = 0;
 
   $filename = "./Games/" . $gameName . "/gamestate.txt";
 
@@ -125,7 +125,7 @@
 
   function BuildMainPlayerGameState()
   {
-    global $mainPlayer, $mainPlayerGamestateBuilt, $mainPlayerGamestateStillBuilt, $playerHealths;
+    global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerHealths;
     global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
     global $mainCharacterEffects, $mainDiscard;
     global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
@@ -135,8 +135,6 @@
     global $p1Soul, $p2Soul, $mainSoul, $defSoul;
     global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
     global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
-
-    if($mainPlayerGamestateStillBuilt) return;
 
     $mainHand = $mainPlayer==1 ? $p1Hand : $p2Hand;
     $mainDeck = $mainPlayer==1 ? $p1Deck : $p2Deck;
@@ -171,14 +169,13 @@
     $defCardStats = $mainPlayer==1 ? $p2CardStats : $p1CardStats;
     $defTurnStats = $mainPlayer==1 ? $p2TurnStats : $p1TurnStats;
 
-    $mainPlayerGamestateBuilt = 1;
     $mainPlayerGamestateStillBuilt = 1;
   }
 
   function UpdateGameState($activePlayer)
   {
-    global $mainPlayerGamestateBuilt;
-    if($mainPlayerGamestateBuilt == 1) return;//We're on main player game state now
+    global $mainPlayerGamestateStillBuilt;
+    if($mainPlayerGamestateStillBuilt == 1) return;//We're on main player game state now
     global $myStateBuiltFor;
     global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
     global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
@@ -307,7 +304,7 @@
     $p2CardStats = $mainPlayer == 2 ? $mainCardStats : $defCardStats;
     $p2TurnStats = $mainPlayer == 2 ? $mainTurnStats : $defTurnStats;
 
-    $mainPlayerGamestateStillBuilt = 0;
+    //$mainPlayerGamestateStillBuilt = 0;
   }
 
   function MakeGamestateBackup($filename="gamestateBackup.txt")
