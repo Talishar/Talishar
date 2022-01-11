@@ -317,8 +317,9 @@
   //Now write out the game state
   if(!$skipWriteGamestate)
   {
-    if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
-    else UpdateGameState(1);
+    //if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
+    //else UpdateGameState(1);
+    DoGamestateUpdate();
     include "WriteGamestate.php";
   }
 
@@ -709,7 +710,7 @@ function FinalizeChainLink($chainClosed=false)
     ResetCombatChainState();
     UnsetTurnBanish();
 
-    UpdateMainPlayerGameState();
+    DoGamestateUpdate();
 
     //Update all the player neutral stuff
     if($mainPlayer == 2) { $currentTurn += 1; }
@@ -735,7 +736,7 @@ function FinalizeChainLink($chainClosed=false)
     StartTurnAbilities();
 
     ResetMainClassState();
-    UpdateMainPlayerGameState();
+    DoGamestateUpdate();
     ProcessDecisionQueue();
   }
 
