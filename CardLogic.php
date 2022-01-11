@@ -230,11 +230,11 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
-    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
+    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateBuilt, $makeCheckpoint, $otherPlayer;
     global $layers, $layerPriority, $dqVars;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY")
     {
-      if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+      if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
       if(count($decisionQueue) == 0 && count($layers) > 0)
       {
@@ -266,7 +266,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $params = explode("-", $parameter);
           if($currentPlayer != $player)
           {
-            if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+            if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
             else UpdateGameState($currentPlayer);
             $currentPlayer = $player;
             $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -330,7 +330,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     }
     else
     {
-      if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+      if($mainPlayerGamestateBuilt) UpdateMainPlayerGameState();
     }
   }
 

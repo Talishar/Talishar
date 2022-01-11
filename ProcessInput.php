@@ -318,7 +318,6 @@
   if(!$skipWriteGamestate)
   {
     if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();
-    else UpdateGameState(1);
     include "WriteGamestate.php";
   }
 
@@ -603,8 +602,8 @@ function FinalizeChainLink($chainClosed=false)
 
   function PassTurn()
   {
-    global $playerID, $currentPlayer, $turn, $mainPlayer, $mainPlayerGamestateStillBuilt;
-    if(!$mainPlayerGamestateStillBuilt)
+    global $playerID, $currentPlayer, $turn, $mainPlayer, $mainPlayerGamestateBuilt;
+    if(!$mainPlayerGamestateBuilt)
     {
       UpdateGameState($currentPlayer);
       BuildMainPlayerGameState();
