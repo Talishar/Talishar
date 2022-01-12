@@ -616,14 +616,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "";
     //CRU Wizard
     case "CRU160":
-      DealArcane(2);
+      DealArcane(2, 1, "PLAYCARD", $cardID);
       return "Aether Conduit deals 2 arcane damage.";
     case "CRU162":
       $rv = "Chain lightning let you play your next Wizard non-attack as an instant";
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant,1);
       if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2)
       {
-        DealArcane(3);//TODO: All opponents
+        DealArcane(3, 1, "PLAYCARD", $cardID);//TODO: All opponents
         $rv .= " and deal 3 arcane damage to each opposing hero";
       }
       return $rv . ".";
@@ -641,15 +641,15 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       Opt($cardID, $optAmt);
       return "";
     case "CRU168": case "CRU169": case "CRU170":
-      DealArcane(ArcaneDamage($cardID));
+      DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
       Opt($cardID, 1);
       return "";
     case "CRU171": case "CRU172": case "CRU173":
-      DealArcane(ArcaneDamage($cardID));
+      DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
       AddArcaneBonus(1, $currentPlayer);
       return "";
     case "CRU174": case "CRU175": case "CRU176":
-      DealArcane(ArcaneDamage($cardID));
+      DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
       return "";
     //CRU Generics
     case "CRU181":

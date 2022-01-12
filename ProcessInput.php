@@ -336,6 +336,7 @@
     {
       case 26: return true;
       case 10000: return true;
+      case 100001: return true;
     }
     return false;
   }

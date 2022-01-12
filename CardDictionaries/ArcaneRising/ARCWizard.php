@@ -111,10 +111,10 @@
         return "Robe of Rapture gives 3 resources.";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
-        DealArcane($damage);
+        DealArcane($damage, 1, "PLAYCARD", $cardID);
         return "Blazing Aether did damage equal to the prior arcane damage this turn (" . $damage . ").";
       case "ARC119":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
@@ -129,10 +129,10 @@
         return "";
       case "ARC120":
         $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2;
-        DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus));//Basically this just applies the bonus twice
+        DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus), 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
         return "Forked Lightning deals " . $damage . " arcane damage.";
       case "ARC121":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
@@ -148,7 +148,7 @@
         AddArcaneBonus(2, $currentPlayer);
         return "Absorb in Aether gives the next card that deals arcane damage +2.";
       case "ARC126": case "ARC127": case "ARC128":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
         return "";
       case "ARC129": case "ARC130": case "ARC131":
@@ -159,7 +159,7 @@
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
         return "Stir the Aetherwinds gives your next arcane +$buff and lets you play your next Wizard non-attack action as though it were an instant.";
       case "ARC132": case "ARC133": case "ARC134":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
         return "";
       case "ARC135": case "ARC136": case "ARC137":
@@ -187,7 +187,7 @@
         }
         return "Index lets you rearrange the cards of your deck.";
       case "ARC138": case "ARC139": case "ARC140":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
@@ -197,7 +197,7 @@
       case "ARC141": case "ARC142": case "ARC143":
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         return "";
       default: return "";
     }
