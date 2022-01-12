@@ -221,6 +221,7 @@
       case "CRU088": case "CRU089": case "CRU090": return "AR";
       case "CRU091": case "CRU092": case "CRU093": return "A";
       case "CRU094": case "CRU095": case "CRU096": return "A";
+      case "CRU097": return "C";
       //CRU MECH:
       case "CRU099": return "C";
       case "CRU101": return "W";
@@ -386,6 +387,7 @@
       case "ARC001": case "ARC038": case "ARC075": return 40;
       case "ARC113": return 30;
       case "ARC114": return 15;
+      case "CRU002": return 19;
       case "CRU046": return 20;
       case "CRU047": return 17;
       case "MON001": case "MON029": case "MON119": case "MON153": return 40;
