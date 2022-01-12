@@ -57,6 +57,7 @@
 
   ProcessDecisionQueue();
 
+  DoGamestateUpdate();
   include "WriteGamestate.php";
 
   header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=1");

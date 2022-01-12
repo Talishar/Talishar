@@ -162,6 +162,7 @@
       echo(Card($combatChain[$i], "CardImages", $bigCardSize, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
     }
   }
+
   echo("</div>");//Combat chain div
 
   if($turn[0] == "OVER")
@@ -170,19 +171,6 @@
     if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100000, 0, "24px");
     $content .= CardStats($playerID);
     echo CreatePopup("OVER", [], 0, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
-  }
-
-  if($turn[0] == "INSTANT")
-  {
-    $content = "";
-    $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
-    $content .= "<div display:inline;'>";
-    for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
-    {
-      $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
-    }
-    $content .= "</div>";
-    echo CreatePopup("INSTANT", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
   if($turn[0] == "DYNPITCH" && $turn[1] == $playerID)
@@ -288,6 +276,19 @@
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+  }
+
+  if($turn[0] == "INSTANT")
+  {
+    $content = "";
+    $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
+    $content .= "<div display:inline;'>";
+    for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
+    {
+      $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
+    }
+    $content .= "</div>";
+    echo CreatePopup("INSTANT", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
   if($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID)
