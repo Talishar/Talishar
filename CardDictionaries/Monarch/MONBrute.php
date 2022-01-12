@@ -122,7 +122,7 @@
 
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $myClassState, $CS_Num6PowBan, $combatChain, $currentPlayer, $myCharacter;
+    global $CS_Num6PowBan, $combatChain, $currentPlayer;
     $rv = "";
     switch($cardID)
     {
@@ -141,7 +141,7 @@
           AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-          $rv = "Shadow of Blasmophet discarded a card with 6 or more power then banished a card with Blood Debt from Levia's Deck.";
+          $rv = "Shadow of Blasmophet discarded a card with 6 or more power then banished a card with Blood Debt your Deck.";
         }
         return $rv;
       case "MON126": case "MON127": case "MON128":

@@ -2848,6 +2848,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = &GetDeck($player);
       if(count($deck) == 0) { LoseHealth(9999, $player); WriteLog("Your deck has no cards, so Beast Within continues damaging you until you die."); return 1; }
       $card = array_shift($deck);
+      LoseHealth(1, $player);
       if(AttackValue($card) >= 6)
       {
         AddPlayerHand($card, $player, "DECK");

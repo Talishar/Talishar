@@ -317,7 +317,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
   $damage = AuraTakeDamageAbilities($player, $damage);
   if($damage > 0 && $source != "NA")
   {
-    $damage += CurrentEffectDamageModifiers($source);
+    $damage += CurrentEffectDamageModifiers($source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
@@ -392,7 +392,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = AuraTakeDamageAbilities($player, $damage);
   if($damage > 0 && $source != "NA")
   {
-    $damage += CurrentEffectDamageModifiers($source);
+    $damage += CurrentEffectDamageModifiers($source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
@@ -466,7 +466,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   return $prevented;
 }
 
-function CurrentEffectDamageModifiers($source)
+function CurrentEffectDamageModifiers($source, $type)
 {
   global $currentTurnEffects;
   $modifier = 0;
@@ -475,6 +475,7 @@ function CurrentEffectDamageModifiers($source)
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
+      case "ELE059": case "ELE060": case "ELE061": if($type == "COMBAT" || $type == "ATTACKHIT") ++$modifier; break;
       case "ELE186": case "ELE187": case "ELE188": if(TalentContains($source, "LIGHTNING") || TalentContains($source, "ELEMENTAL")) ++$modifier; break;
       default: break;
     }
