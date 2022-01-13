@@ -578,7 +578,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "Bloodsheath Skeleta reduces the cost of your next attack action card and non-attack action card this turn.";
     case "CRU142":
       if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $currentPlayer);
-      if(GetClassState(($currentPlayer == 1 ? 2 : 1), $CS_ArcaneDamageTaken) > 0) PlayAura("ARC112", $currentPlayer);
+      AddDecisionQueue("CLASSSTATEGREATERORPASS", $defPlayer, $CS_ArcaneDamageTaken . "-1", 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       return "";
     case "CRU143":
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
@@ -2372,13 +2373,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $deck = array_values($deck);
       return $cards;
+    case "PLAYAURA":
+      PlayAura($parameter, $player);
+      break;
     case "PARAMDELIMTOARRAY":
       return explode(",", $parameter);
     case "ADDSOUL":
       AddSoul($lastResult, $player, $parameter);
       return $lastResult;
     case "SHUFFLEDECK":
-      //TODO: Implement
+      $zone = &GetDeck($player);
+      $destArr = [];
+      while(count($zone) > 0)
+      {
+        $index = rand(0, count($zone)-1);
+        array_push($destArr, $zone[$index]);
+        unset($zone[$index]);
+        $zone = array_values($zone);
+      }
+      $zone = $destArr;
       return $lastResult;
     case "GIVEATTACKGOAGAIN":
       $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;

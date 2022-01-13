@@ -116,7 +116,7 @@
 
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer;
+    global $currentPlayer, $CS_DynCostResolved;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -179,7 +179,7 @@
         GainResources($currentPlayer, 2);
         return "Aether Ironweave gaines 2 resources.";
       case "MON231":
-        $numRevealed = 3 + $resourcesPaid/2;
+        $numRevealed = 3 + GetClassState($currentPlayer, $CS_DynCostResolved)/2;
         AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);

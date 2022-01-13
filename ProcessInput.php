@@ -744,7 +744,7 @@ function FinalizeChainLink($chainClosed=false)
   function PlayCard($cardID, $from, $dynCostResolved=-1, $index=-1)
   {
     global $playerID, $turn, $currentPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul;
-    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish;
+    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
     $resources = &GetResources($currentPlayer);
     $pitch = &GetPitch($currentPlayer);
@@ -765,6 +765,7 @@ function FinalizeChainLink($chainClosed=false)
         {
             if($dynCostResolved >= 0)
             {
+              SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
               $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
               if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] = $dynCostResolved;
               else $resources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
