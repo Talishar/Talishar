@@ -319,7 +319,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
   {
     $damage += CurrentEffectDamageModifiers($source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $otherPlayer); }
   }
