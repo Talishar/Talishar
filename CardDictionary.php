@@ -20,6 +20,7 @@
   include "CardDictionaries/TalesOfAria/ELERanger.php";
   include "CardDictionaries/TalesOfAria/ELERuneblade.php";
   include "CardDictionaries/TalesOfAria/ELETalent.php";
+  include "CardDictionaries/Everfest/EVRShared.php";
   include "CardDictionaries/card_names.php";
 
   function CardType($cardID)
@@ -731,6 +732,10 @@
     {
       return ELEAbilityCost($cardID);
     }
+    else if($set == "EVR")
+    {
+      return EVRAbilityCost($cardID);
+    }
     return CardCost($cardID);
   }
 
@@ -1274,6 +1279,10 @@
     {
       return ELEHasGoAgain($cardID);
     }
+    else if($set == "EVR")
+    {
+      return EVRHasGoAgain($cardID);
+    }
     switch($cardID)
     {
       //Brute
@@ -1331,6 +1340,10 @@
     else if($set == "ELE")
     {
       return ELEAbilityType($cardID, $index);
+    }
+    else if($set == "EVR")
+    {
+      return EVRAbilityType($cardID, $index);
     }
     switch($cardID)
     {
@@ -1696,6 +1709,10 @@
     else if($set == "ELE")
     {
       return ELEAbilityHasGoAgain($cardID);
+    }
+    else if($set == "EVR")
+    {
+      return EVRAbilityHasGoAgain($cardID);
     }
     switch($cardID)
     {

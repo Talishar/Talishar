@@ -313,7 +313,7 @@
     unset($myDeck[0]);
     $myDeck = array_values($myDeck);
     $grantsGA = CardClass($cardID) == "MECHANOLOGIST";
-    WriteLog("Boost banished $cardID and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
+    WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
     if($grantsGA) { GiveAttackGoAgain(); }
     ++$myClassState[$CS_NumBoosted];
     ++$combatChainState[$CCS_NumBoosted];
