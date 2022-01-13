@@ -1004,6 +1004,10 @@ function EffectAttackModifier($cardID)
   {
     return ELEEffectAttackModifier($cardID);
   }
+  else if($set == "EVR")
+  {
+    return EVREffectAttackModifier($cardID);
+  }
   switch($cardID)
   {
     case "AAPLUS1": return 1;
@@ -1433,6 +1437,10 @@ function IsCombatEffectActive($cardID)
   else if($set == "ELE")
   {
     return ELECombatEffectActive($cardID, $attackID);
+  }
+  else if($set == "EVR")
+  {
+    return EVRCombatEffectActive($cardID, $attackID);
   }
   switch($cardID)
   {
