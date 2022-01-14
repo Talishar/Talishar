@@ -19,8 +19,8 @@
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
 
-  if($currentPlayer == $playerID) $icon = "ready.png";
-  else $icon = "notReady.png";
+  if($currentPlayer == $playerID) { $icon = "ready.png"; $readyText = "You are the player with priority."; }
+  else { $icon = "notReady.png"; $readyText = "The other player has priority."; }
   echo '<link rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 
   if(count($turn) == 0)
@@ -101,24 +101,23 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./CardImages/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:fixed; left:115px; top:calc(50% - 125px); height:200px;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span><span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
+  echo("<div style='position:fixed; right:315px; top:calc(50% - 125px); height:200px;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span><span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
   if(IsDarkMode($playerID)) echo("<img style='height:200px;' src='./Images/DuoLifeDark.png' /></div>");
   else echo("<img style='height:200px;' src='./Images/DuoLife.png' /></div>");
 
   //Now display the screen for this turn
-  echo("<span style='position:fixed; bottom:0px; left:0px; display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><b>Turn #" . $currentTurn . " (" . ($playerID == $currentPlayer ? "Your" : "Their") . " " . PhaseName($turn[0]) . " Phase - $actionPoints Action Points");
-  echo(")</b>");//Turn number
+  echo("<span style='position:fixed; width:100%; bottom:0px; left:0px; display:inline-block; font-size:30px; text-align:center;'>");
 
   //Tell the player what to pick
   if($turn[0] != "OVER")
   {
     if($currentPlayer != $playerID)
     {
-      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; position:relative; font-size:30px;'><b>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</b></span>");
+      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; position:relative; font-size:30px;'><img height='25px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</b></span>");
     }
     else
     {
-      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><b>Please choose " . TypeToPlay($turn[0]));
+      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><img height='25px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>Please choose " . TypeToPlay($turn[0]));
       if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
       if(CanPassPhase($turn[0]))
       {
@@ -396,19 +395,19 @@
 
   //Show deck, discard, pitch, banish
   //Display Their Discard
-  echo("<div title='Click to view the cards in their Graveyard.' style='cursor:pointer; position:fixed; left:" . GetZoneLeft("THEIRDISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") .";' onclick='(function(){ document.getElementById(\"theirDiscardPopup\").style.display = \"inline\";})();'>");
+  echo("<div title='Click to view the cards in their Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") .";' onclick='(function(){ document.getElementById(\"theirDiscardPopup\").style.display = \"inline\";})();'>");
   $card = (count($theirDiscard) > 0 ? $theirDiscard[count($theirDiscard)-1] : $blankZone);
   $folder = (count($theirDiscard) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($theirDiscard)));
   echo("</div>");
 
   //Display Their Deck
-  echo("<div style='position:fixed; left:" . GetZoneLeft("THEIRDECK") . "; top:" . GetZoneTop("THEIRDECK") .";'>");
+  echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; top:" . GetZoneTop("THEIRDECK") .";'>");
   echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, 0, count($theirDeck)));
   echo("</div>");
 
   //Display Their Banish
-  echo("<div style='position:fixed; left:" . GetZoneLeft("THEIRBANISH") . "; top:" . GetZoneTop("THEIRBANISH") .";'>");
+  echo("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") .";'>");
   $card = (count($theirBanish) > 0 ? $theirBanish[count($theirBanish)-BanishPieces()] : $blankZone);
   $folder = (count($theirBanish) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
@@ -417,7 +416,7 @@
   echo("</div>");
 
   //Display Their Pitch
-  echo("<div style='position:fixed; left:" . GetZoneLeft("THEIRPITCH") . "; top:" . GetZoneTop("THEIRPITCH") .";'>");
+  echo("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") .";'>");
   $card = (count($theirPitch) > 0 ? $theirPitch[count($theirPitch)-PitchPieces()] : $blankZone);
   $folder = (count($theirPitch) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0));
@@ -489,17 +488,22 @@
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
     $counters = CardType($theirCharacter[$i]) == "W" ? $theirCharacter[$i+3] : $theirCharacter[$i+4];
     if($theirCharacter[$i+2] > 0) $counters = $theirCharacter[$i+2];//TODO: display both kinds of counters?
-    echo("<div style='z-index:5; position:fixed; right:" . GetCharacterRight($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
+    echo("<div style='z-index:5; position:fixed; left:" . GetCharacterLeft($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
     echo(Card($theirCharacter[$i], "CardImages", $cardSize, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
     if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
     if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
+    if($i == 0)
+    {
+      if($playerID != $mainPlayer)   echo("<span title='This is the turn player.' style='cursor:default; z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/APIcon.png'><div style='position:absolute; top:10px; width:50px; font-size:24px; color:black; text-align:center;'>" . $actionPoints . "AP</div></img></span>");
+      else echo("<span title='This is the defending player.' style='z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Defense.png'></img></span>");
+    }
     echo("</div>");
   }
   echo("</div>");
   //Now display arsenal
   if($theirArsenal != "")
   {
-    echo("<div title='Their Arsenal' style='position: fixed; top:0px; right:" . GetCharacterRight("C", "") . "; display:inline;'>");
+    echo("<div title='Their Arsenal' style='position: fixed; top:0px; left:" . GetCharacterLeft("C", "") . "; display:inline;'>");
     for($i=0; $i<count($theirArsenal); $i+=ArsenalPieces())
     {
       if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "CardImages", $cardSize, 0, 0, $theirArsenal[$i+2] == 0 ? 1 : 0, 0, $theirArsenal[$i+3]));
@@ -611,7 +615,6 @@
     $sType = CardSubType($myCharacter[$i]);
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
     echo("<div style='position:fixed; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
-    echo("<span style='position:relative;'>");
     echo(Card($myCharacter[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
     $effects = ActiveCharacterEffects($playerID, $i);
     if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/arsenal.png' />");
@@ -623,28 +626,30 @@
     if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
     if($type == "C")
     {
+      if($playerID == $mainPlayer)   echo("<span title='This is the turn player.' style='cursor:default; z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/APIcon.png'><div style='position:absolute; top:10px; width:50px; font-size:24px; color:black; text-align:center;'>" . $actionPoints . "AP</div></img></span>");
+      else echo("<span title='This is the defending player.' style='z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Defense.png'></img></span>");
+
       if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div style='position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
     }
-    echo("</span>");
     echo("</div>");
   }
   echo("</div>");
 
   //Show deck, discard, pitch, banish
   //Display My Discard
-  echo("<div title='Click to view the cards in your Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("MYDISCARD") . "; bottom:" . GetZoneBottom("MYDISCARD") .";' onclick='(function(){ document.getElementById(\"myDiscardPopup\").style.display = \"inline\";})();'>");
+  echo("<div title='Click to view the cards in your Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; bottom:" . GetZoneBottom("MYDISCARD") .";' onclick='(function(){ document.getElementById(\"myDiscardPopup\").style.display = \"inline\";})();'>");
   $card = (count($myDiscard) > 0 ? $myDiscard[count($myDiscard)-1] : $blankZone);
   $folder = (count($myDiscard) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($myDiscard)));
   echo("</div>");
 
   //Display My Deck
-  echo("<div style='position:fixed; right:" . GetZoneRight("MYDECK") . "; bottom:" . GetZoneBottom("MYDECK") .";'>");
+  echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") .";'>");
   echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, 0, count($myDeck)));
   echo("</div>");
 
   //Display My Banish
-  echo("<div style='position:fixed; right:" . GetZoneRight("MYBANISH") . "; bottom:" . GetZoneBottom("MYBANISH") .";'>");
+  echo("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; bottom:" . GetZoneBottom("MYBANISH") .";'>");
   $card = (count($myBanish) > 0 ? $myBanish[count($myBanish)-BanishPieces()] : $blankZone);
   $folder = (count($myBanish) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
@@ -652,7 +657,7 @@
   echo("</div>");
 
   //Display My Pitch
-  echo("<div style='position:fixed; right:" . GetZoneRight("MYPITCH") . "; bottom:" . GetZoneBottom("MYPITCH") .";'>");
+  echo("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") .";'>");
   $card = (count($myPitch) > 0 ? $myPitch[count($myPitch)-PitchPieces()] : $blankZone);
   $folder = (count($myPitch) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0));
@@ -666,13 +671,14 @@
 
 echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; height:50px; font-size:30; text-align:center;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'>Menu</div>");
 
+  echo("<div style='text-align:center; width:200px; font-size:24;'>Turn #" . $currentTurn . "</div>");
   echo("<div style='text-align:center; width:200px; font-size:16;'>Last Played</div>");
   echo("<div>");
     if($lastPlayed == "") echo Card("cardBack", "CardImages", 271);
     else echo Card($lastPlayed, "CardImages", 271);
   echo("</div>");
 
-  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 387px); overflow-y: auto;'>");
+  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 425px); overflow-y: auto;'>");
 
   EchoLog($gameName, $playerID);
   echo("</div>");
@@ -766,7 +772,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
       case "Off-Hand": return ($cardSize * 2 + 50) . "px";
     }
   }
-
+/*
   function GetCharacterRight($cardType, $cardSubType)
   {
     global $cardWidth;
@@ -786,7 +792,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
       case "Off-Hand": return "calc(50% - " . ($cardWidth/2 + $cardWidth + 10) . "px)";
     }
   }
-
+*/
   function GetCharacterTop($cardType, $cardSubType)
   {
     global $cardSize;
@@ -813,10 +819,10 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
     global $cardWidth;
     switch($zone)
     {
-      case "MYDISCARD": return "210px";
-      case "MYDECK": return "210px";
-      case "MYBANISH": return "210px";
-      case "MYPITCH": return (220 + $cardWidth) . "px";
+      case "DISCARD": return "210px";
+      case "DECK": return "210px";
+      case "BANISH": return "210px";
+      case "PITCH": return (220 + $cardWidth) . "px";
     }
   }
 
@@ -831,7 +837,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
       case "MYPITCH": return ($cardSize + 60) . "px";
     }
   }
-
+/*
   function GetZoneLeft($zone)
   {
     global $cardWidth;
@@ -843,7 +849,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
       case "THEIRPITCH": return (20 + $cardWidth) . "px";
     }
   }
-
+*/
   function GetZoneTop($zone)
   {
     global $cardSize;
