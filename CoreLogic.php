@@ -950,4 +950,3 @@ function SetFirstPlayer($player)
 }
 
 ?>
-
