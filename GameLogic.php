@@ -1782,6 +1782,7 @@ function Draw($player)
   if(count($deck) == 0) return -1;
   if(CurrentEffectPreventsDraw($player)) return -1;
   array_push($hand, array_shift($deck));
+  WriteReplay($playerID, "Hide", "DECK", "HAND");
   return $hand[count($hand)-1];
 }
 
@@ -3045,4 +3046,3 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 }
 
 ?>
-
