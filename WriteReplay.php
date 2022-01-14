@@ -1,5 +1,6 @@
 <?php
 
+function WriteReplay($playerID, $cardID, $from, $destination)
 {
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
