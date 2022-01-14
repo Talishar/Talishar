@@ -45,7 +45,8 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
       $character = &GetPlayerCharacter($player);
       if(($character[0] == "MON119" || $character[0] == "MON120") && $player == $mainPlayer) {// Levia
       WriteLog("Levia Banished a card with 6 or more power, and will not lose life from Blood Debt this turn");
-      GainHealth($mainPlayer, 1);}
+    //  GainHealth($mainPlayer, 1); experimental balance change;
+  }
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
