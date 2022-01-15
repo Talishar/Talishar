@@ -1439,6 +1439,7 @@
   {
     global $currentPlayer, $CS_NumWizardNonAttack;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
+    if($from == "COMBATCHAIN" && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
     {
       case "WTR163": return "BANISH";
@@ -1470,9 +1471,9 @@
 
   function IsPlayRestricted($cardID, $from="", $index=-1, &$restriction)
   {
-    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $CCS_HitsWithWeapon, $currentPlayer, $CS_Num6PowBan, $myDiscard;
+    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
-    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers;
+    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon;
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
@@ -1493,7 +1494,7 @@
         if(count($combatChain) == 0) return true;
         return !HasCombo($combatChain[0]);
       case "WTR116":
-        return $combatChainState[$CCS_HitsWithWeapon] == 0;
+        return GetClassState($playerID, $CS_HitsWithWeapon) == 0;
       case "WTR120": case "WTR121":
       case "WTR123": case "WTR124": case "WTR125":
       case "WTR135": case "WTR136": case "WTR137":

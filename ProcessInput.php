@@ -566,9 +566,9 @@ function FinalizeChainLink($chainClosed=false)
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
     {
       $cardType = CardType($combatChain[$i-1]);
-      if($cardType == "W" || $cardType == "E") continue;
+      if($cardType == "W" || $cardType == "E" || $cardType == "C") continue;
 
-      $goesWhere = GoesWhereAfterResolving($combatChain[$i-1]);
+      $goesWhere = GoesWhereAfterResolving($combatChain[$i-1], "COMBATCHAIN");
       if($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") { $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves]; }
       switch($goesWhere) {
         case "BOTDECK": AddBottomMainDeck($combatChain[$i-1], "CC"); break;
