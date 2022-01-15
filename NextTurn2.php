@@ -673,9 +673,13 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
 
   echo("<div style='text-align:center; width:200px; font-size:24;'>Turn #" . $currentTurn . "</div>");
   echo("<div style='text-align:center; width:200px; font-size:16;'>Last Played</div>");
-  echo("<div>");
-    if($lastPlayed == "") echo Card("cardBack", "CardImages", 271);
-    else echo Card($lastPlayed, "CardImages", 271);
+  echo("<div style='position:relative; top:0px;'>");
+    if(count($lastPlayed) == 0) echo Card("cardBack", "CardImages", 271);
+    else
+    {
+      echo Card($lastPlayed[0], "CardImages", 271);
+      if(count($lastPlayed) > 2 && $lastPlayed[2] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse.png' />");
+    }
   echo("</div>");
 
   echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 425px); overflow-y: auto;'>");

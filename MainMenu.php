@@ -86,15 +86,24 @@ body {
 
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h3>
-<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Dark Mode Update! 1/6/21</h2>
+<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Farewell to Rathe Update! 1/15/21</h2>
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported!</h3>
 
 <?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
 ?>
   <input type="hidden" id="numPlayers" name="numPlayers" value="8" />
-  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Solo Draft Practice"></div>
+  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Tales of Aria Solo Draft Practice"></div>
 </form>
+
+
+<?php
+  echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/WTRDraftFiles/CreateGame.php'>");
+?>
+  <input type="hidden" id="numPlayers" name="numPlayers" value="8" />
+  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Welcome to Rathe Solo Draft Practice"></div>
+</form>
+
 </div>
 
 <div style="height:20px; bottom:30px; left:5%; width: 90%; position:absolute; color:white;">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.  Card Images © Legend Story Studios</div>

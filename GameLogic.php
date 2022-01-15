@@ -1853,7 +1853,7 @@ function MainCharacterHitAbilities()
     switch($mainCharacter[$i])
     {
       case "WTR076": case "WTR077": if(CardType($attackID) == "AA") { KatsuHit($i); $mainCharacter[$i+1] = 1; } break;
-      case "WTR079": if(CardType($attackID) == "AA" && $combatChainState[$CCS_HitsInRow] == 3) { MainDrawCard(); $mainCharacter[$i+1] = 1; } break;
+      case "WTR079": if(CardType($attackID) == "AA" && $combatChainState[$CCS_HitsInRow] >= 3) { MainDrawCard(); $mainCharacter[$i+1] = 1; } break;
       case "WTR113": case "WTR114": if($mainCharacter[$i+1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $mainCharacter[$i+1] = 1; $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2; ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5]; } break;
       case "WTR117":
         if(CardType($attackID) == "W")
@@ -2094,7 +2094,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget, $dqVars, $mainPlayer;
+  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed;
   $rv = "";
   switch($phase)
   {
@@ -2799,6 +2799,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default: break;
         }
       }
+      $lastPlayed[2] = "FUSED";
       FuseAbility($card, $player, $elements);
       if(CardType($card) == "AA") $combatChainState[$CCS_AttackFused] = 1;
       return $lastResult;
