@@ -7,6 +7,7 @@
   $playerID=$_GET["playerID"];
   $deck=$_GET["deck"];
   $decklink=$_GET["fabdb"];
+  $set=TryGet("set");
 
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
@@ -139,7 +140,8 @@
     $deckOptions = explode("-", $deck);
     if($deckOptions[0] == "DRAFT")
     {
-      $deckFile = "./DraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
+      if($set == "WTR") $deckFile = "./WTRDraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
+      else $deckFile = "./DraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
     }
     else
     {

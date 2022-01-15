@@ -698,7 +698,7 @@ function FinalizeChainLink($chainClosed=false)
     $mainResources[1] = 0;
     $defResources[0] = 0;
     $defResources[1] = 0;
-    $lastPlayed = "";
+    $lastPlayed = [];
 
     ArsenalEndTurn($mainPlayer);
     ArsenalEndTurn($defPlayer);
@@ -756,7 +756,7 @@ function FinalizeChainLink($chainClosed=false)
     {
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);
-      if($turn[0] != "P" && $turn[0] != "B") $lastPlayed = $cardID;
+      if($turn[0] != "P" && $turn[0] != "B") { $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; }
     }
     //If it's not pitch phase, pay the cost
         //if($from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
@@ -1161,7 +1161,6 @@ function FinalizeChainLink($chainClosed=false)
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
         ProcessAttackTarget();
-        SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         $attackValue = AttackValue($cardID);
@@ -1170,6 +1169,7 @@ function FinalizeChainLink($chainClosed=false)
         $openedChain = true;
         if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       }
+      SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
     }
     else if($from != "PLAY")
     {
