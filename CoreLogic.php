@@ -601,14 +601,22 @@ function UnsetTurnBanish()
   UnsetCombatChainBanish();
 }
 
-function GetChainLinkCards($playerID="", $cardType="", $exclCardType="")
+function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="")
 {
   global $combatChain;
   $pieces = "";
+  $exclArray=explode(",", $exclCardTypes);
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
-    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || CardType($combatChain[$i]) == $cardType) && ($exclCardType == "" || CardType($combatChain[$i]) != $exclCardType))
+    $thisType = CardType($combatChain[$i]);
+    if(($playerID == "" || $combatChain[$i+1] == $playerID) && ($cardType == "" || $thisType == $cardType))
     {
+      $excluded = false;
+      for($j=0; $j<count($exclArray); ++$j)
+      {
+        if($thisType == $exclArray[$j]) $excluded = true;
+      }
+      if($excluded) continue;
       if($pieces != "") $pieces .= ",";
       $pieces .= $i;
     }

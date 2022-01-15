@@ -535,4 +535,3 @@ function SearchArcaneReplacement($player, $zone)
 }
 
 ?>
-

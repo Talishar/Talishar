@@ -183,7 +183,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR120":
       if(RepriseActive())
       {
-        $options = GetChainLinkCards(($mainPlayer == 1 ? 2 : 1), "", "E");
+        $options = GetChainLinkCards(($mainPlayer == 1 ? 2 : 1), "", "E,C");
         AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
         AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-");
         AddDecisionQueue("ADDHAND", $defPlayer, "-");
@@ -2012,7 +2012,7 @@ function IsDominateActive()
     case "ARC080": return true;
     case "MON004": return true;
     case "MON023": case "MON024": case "MON025": return true;
-    case "MON246": return SearchMyDiscard("AA") == "";
+    case "MON246": return SearchDiscard($mainPlayer, "AA") == "";
     case "MON275": case "MON276": case "MON277": return true;
     case "ELE209": case "ELE210": case "ELE211": return HasIncreasedAttack();
     default: break;
