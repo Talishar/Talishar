@@ -74,7 +74,8 @@ function DestroyAura($player, $index)
 
 function AuraCostModifier()
 {
-  global $currentPlayer, $otherPlayer;
+  global $currentPlayer;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $myAuras = &GetAuras($currentPlayer);
   $theirAuras = &GetAuras($otherPlayer);
   $modifier = 0;
@@ -88,31 +89,16 @@ function AuraCostModifier()
     }
     if($remove == 1)
     {
-      AuraDestroyed($currentPlayer, $myAuras[$i]);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($myAuras[$j]);
-      }
-      $myAuras = array_values($myAuras);
+      DestroyAura($currentPlayer, $i);
     }
   }
 
   for($i=count($theirAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
-    $remove = 0;
     switch($theirAuras[$i])
     {
       case "ELE146": $modifier += 1; break;
       default: break;
-    }
-    if($remove == 1)
-    {
-      AuraDestroyed($otherPlayer, $theirAuras[$i]);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($theirAuras[$j]);
-      }
-      $theirAuras = array_values($theirAuras);
     }
   }
   return $modifier;
@@ -250,11 +236,7 @@ function AuraTakeDamageAbilities($player, $damage)
     }
     if($remove == 1)
     {
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($Auras[$j]);
-      }
-      $Auras = array_values($Auras);
+      DestroyAura($player, $i);
     }
   }
   return $damage;
@@ -297,6 +279,7 @@ function AuraLoseHealthAbilities($player, $amount)
     }
     if($remove == 1)
     {
+      AuraDestroyed(player, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
         unset($auras[$j]);
@@ -323,12 +306,13 @@ function AuraPlayAbilities($cardID, $from)
 
 function AuraAttackAbilities($attackID)
 {
-  global $myAuras, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
-  for($i=count($myAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+  for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
     $remove = 0;
-    switch($myAuras[$i])
+    switch($auras[$i])
     {
       case "WTR225": if($attackType == "AA" || $attackType == "W") { WriteLog("Quicken grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ARC112": DealArcane(1, 0, "RUNECHANT", "ARC112"); $remove = 1; break;
@@ -338,11 +322,12 @@ function AuraAttackAbilities($attackID)
     }
     if($remove == 1)
     {
+      AuraDestroyed($mainPlayer, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
-        unset($myAuras[$j]);
+        unset($auras[$j]);
       }
-      $myAuras = array_values($myAuras);
+      $auras = array_values($auras);
     }
   }
 }
@@ -413,4 +398,3 @@ function AuraHitEffects($attackID)
 
 
 ?>
-

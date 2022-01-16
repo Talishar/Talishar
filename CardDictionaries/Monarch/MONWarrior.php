@@ -232,8 +232,9 @@
 
   function DQCharge()
   {
-    global $myHand, $currentPlayer;
-    if(count($myHand) == 0) { WriteLog("No cards in hand to Charge."); return; }
+    global $currentPlayer;
+    $hand = &GetHand($currentPlayer);
+    if(count($hand) == 0) { WriteLog("No cards in hand to Charge."); return; }
     PrependDecisionQueue("FINISHCHARGE", $currentPlayer, "This_card_was_charged:_", 1);
     PrependDecisionQueue("WRITECARDLOG", $currentPlayer, "This_card_was_charged:_", 1);
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
@@ -265,4 +266,3 @@
   }
 
 ?>
-
