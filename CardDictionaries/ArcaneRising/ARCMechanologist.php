@@ -333,9 +333,9 @@
           if($items[$i+2] == 2)
           {
             --$items[$i+1];
-            if($items[$i+1] <= 0) DestroyMyItem($i);
             $items[$i+2] = 1;
             GainResources($currentPlayer, 1);
+            if($items[$i+1] <= 0) DestroyMyItem($i);
           }
           break;
         default: break;
@@ -344,4 +344,3 @@
   }
 
 ?>
-
