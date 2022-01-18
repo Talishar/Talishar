@@ -114,7 +114,7 @@
 
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $myClassState, $CS_NumCharged, $combatChain, $currentPlayer, $mySoul, $myCharacter, $CS_AtksWWeapon, $CS_LastAttack;
+    global $CS_NumCharged, $combatChain, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
     switch($cardID)
     {
@@ -135,23 +135,24 @@
         return "";
       case "MON034":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        if($myClassState[$CS_NumCharged] > 0)
+        $character = &GetPlayerCharacter($currentPlayer);
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
         {
-          for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
+          for($i=0; $i<count($character); $i+=CharacterPieces())
           {
-            if(CardType($myCharacter[$i]) == "W")
+            if(CardType($character[$i]) == "W")
             {
-              if($myCharacter[$i+1] != 0) { $myCharacter[$i+1] = 2; ++$myCharacter[$i+5]; }
+              if($character[$i+1] != 0) { $character[$i+1] = 2; ++$character[$i+5]; }
             }
           }
           $rv = "Lumina Ascension gave each weapon another use this turn.";
         }
         return $rv;
       case "MON036": case "MON037": case "MON038":
-        if($myClassState[$CS_NumCharged] > 0) { GiveAttackGoAgain(); $rv = "Battlefield Blitz gained Go Again."; }
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Battlefield Blitz gained Go Again."; }
         return $rv;
       case "MON054": case "MON055": case "MON056":
-        if($myClassState[$CS_NumCharged] > 0) { GiveAttackGoAgain(); $rv = "Take Flight gained Go Again."; }
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Take Flight gained Go Again."; }
         return $rv;
       case "MON105":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
@@ -198,15 +199,21 @@
 
   function LuminaAscensionHit()
   {
-    global $mainDeck, $mainPlayer, $mainHealth;
-    if(count($mainDeck) == 0) return;
-    WriteLog("Lumina Ascension's hit effect revealed " . $mainDeck[0] . ".");
-    if(CardTalent($mainDeck[0]) == "LIGHT")
+    global $mainPlayer;
+    $deck = &GetDeck($mainPlayer);
+    if(count($deck) == 0) return;
+    $cardID = array_shift($deck);
+    WriteLog("Processing Lumina Ascension's hit effect:");
+    RevealCards($cardID);
+    if(CardTalent($cardID) == "LIGHT")
     {
-      $cardID = array_shift($mainDeck);
       AddSoul($cardID, $mainPlayer, "DECK");
-      PlayerGainHealth(1, $mainHealth);
+      GainHealth(1, $mainPlayer);
       WriteLog("The revealed card is Light, so it is added to soul and the main player gains 1 life.");
+    }
+    else
+    {
+      array_push($deck, $cardID);
     }
   }
 
@@ -220,8 +227,9 @@
 
   function Charge()
   {
-    global $myHand, $currentPlayer;
-    if(count($myHand) == 0) { WriteLog("No cards in hand to Charge."); return; }
+    global $currentPlayer;
+    $hand = &GetHand($currentPlayer);
+    if(count($hand) == 0) { WriteLog("No cards in hand to Charge."); return; }
     AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
@@ -245,9 +253,8 @@
 
   function HaveCharged($player)
   {
-    global $myClassState, $mainClassState, $CS_NumCharged, $mainPlayerGamestateStillBuilt;
-    if($mainPlayerGamestateStillBuilt) return $mainClassState[$CS_NumCharged] > 0;
-    else return $myClassState[$CS_NumCharged] > 0;
+    global $CS_NumCharged;
+    return GetClassState($player, $CS_NumCharged) > 0;
   }
 
   function MinervaThemisAbility($player, $index)

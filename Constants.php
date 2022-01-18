@@ -155,6 +155,7 @@
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
     global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
     global $defPlayer;
+    WriteLog("The combat chain was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
     $combatChainState[$CCS_LastAttack] = "NA";

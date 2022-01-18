@@ -1,6 +1,7 @@
 
 function OnLoadCallback(lastUpdate)
 {
+  document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;
   reload();
   ReloadChat(lastUpdate);
 }
@@ -39,7 +40,7 @@ function HideCardDetail()
 
 function ChatKey(event)
 {
-  if(event.keyCode === 13) 
+  if(event.keyCode === 13)
   {
     event.preventDefault();
     SubmitChat();

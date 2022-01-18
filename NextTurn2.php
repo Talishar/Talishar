@@ -77,7 +77,8 @@
   echo("<script src=\"./jsInclude.js\"></script>");
 
   echo("<script>");
-  echo("function reload() { document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;" . ($playerID != $currentPlayer ? "CheckReloadNeeded();" : "") . "}");
+  //document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;
+  echo("function reload() { " . ($playerID != $currentPlayer ? "CheckReloadNeeded();" : "") . "}");
 
   echo 'function CheckReloadNeeded() {';
     echo 'var xmlhttp = new XMLHttpRequest();';
@@ -277,7 +278,7 @@
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
-  if($turn[0] == "INSTANT")
+  if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
   {
     $content = "";
     $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
