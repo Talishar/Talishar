@@ -597,10 +597,26 @@ function FinalizeChainLink($chainClosed=false)
 
   function BeginTurnPass()
   {
-     AuraBeginEndStepAbilities();
-     LandmarkBeginEndStepAbilities();
-     BeginEndStepEffects();
-     PassTurn();
+    global $defPlayer;
+    WriteLog("Main player has passed on the turn. Beginning end of turn step.");
+    if(ShouldHoldPriority($defPlayer))
+    {
+      AddDecisionQueue("INSTANT", $defPlayer, "-");
+      AddDecisionQueue("FINISHTURNPASS", $defPlayer, "-");
+      ProcessDecisionQueue("");
+    }
+    else
+    {
+      FinishTurnPass();
+    }
+  }
+
+  function FinishTurnPass()
+  {
+    AuraBeginEndStepAbilities();
+    LandmarkBeginEndStepAbilities();
+    BeginEndStepEffects();
+    PassTurn();
   }
 
   function PassTurn()
@@ -789,7 +805,7 @@ function FinalizeChainLink($chainClosed=false)
         else if($turn[0] == "P")
         {
           $resources[0] += PitchValue($cardID);
-          if(SearchCharacterForCard($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
+          if(SearchCharacterActive($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
           { $resources[0] += 1; }
           array_push($pitch, $cardID);
           AddThisCardPitch($currentPlayer, $cardID);
@@ -1152,7 +1168,7 @@ function FinalizeChainLink($chainClosed=false)
       array_push($combatChain, RepriseActive());
       array_push($combatChain, 0);//Attack modifier
       array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
-      if($turn[0] == "B") OnBlockEffects($index, $from);
+      if($turn[0] == "B" || $definedCardType == "DR") OnBlockEffects($index, $from);
       if($index == 0)
       {
         $currentTurnEffectsFromCombat = [];

@@ -1570,7 +1570,7 @@
   function IsDefenseReactionPlayable($cardID, $from)
   {
     global $combatChain;
-    if($combatChain[0] == "ARC159") return false;
+    if($combatChain[0] == "ARC159" && CardType($cardID) == "DR") return false;
     if(CurrentEffectPreventsDefenseReaction($from)) return false;
     return true;
   }

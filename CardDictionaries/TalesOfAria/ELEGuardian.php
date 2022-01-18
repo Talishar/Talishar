@@ -124,7 +124,7 @@
 
   function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $otherPlayer, $CS_PitchedForThisCard, $CS_DamagePrevention;
+    global $currentPlayer, $CS_PitchedForThisCard, $CS_DamagePrevention;
     $rv = "";
     switch($cardID)
     {
@@ -145,6 +145,7 @@
         }
         if($icePitched)
         {
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-");
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
@@ -242,4 +243,3 @@
 
 
 ?>
-

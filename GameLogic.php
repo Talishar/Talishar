@@ -2656,7 +2656,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DoBoost();
       return "1";
     case "VOFTHEVANGUARD":
-      if($parameter == "1" && CardTalent($lastResult) == "LIGHT") ++$combatChainState[$CCS_ChainAttackBuff];
+      if($parameter == "1" && CardTalent($lastResult) == "LIGHT")
+      {
+        WriteLog("V of the Vanguard gives all attacks on this combat chain +1.");
+        ++$combatChainState[$CCS_ChainAttackBuff];
+      }
       $hand = &GetHand($player);
       if(count($hand) > 1) PrependDecisionQueue("VOFTHEVANGUARD", $player, "1", 1);
       PrependDecisionQueue("CHARGE", $player, "-", 1);

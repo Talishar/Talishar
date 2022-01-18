@@ -27,7 +27,7 @@ if ($handle = opendir($path)) {
           {
             $currentlyActiveGames .= "Game in Progress - Last Update " . date("h:i", $lastGamestateUpdate) . "<BR>";
 
-       $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn.php'>";
+       $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn2.php'>";
          $spectateLinks .= "<label for='joinGame'> In progress game - Last Update " . date("h:i", $lastGamestateUpdate) . " </label>";
          $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
          $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
@@ -80,7 +80,7 @@ if ($handle = opendir($path)) {
           $ccLinks .= "</form>";
          }
       }
-       
+
     }
     closedir($handle);
 }
