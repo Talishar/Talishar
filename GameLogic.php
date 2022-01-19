@@ -1811,7 +1811,8 @@ function NumNonEquipmentDefended()
   $number = 0;
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
-    if($combatChain[$i+1] == $defPlayer && CardType($combatChain[$i]) != "E") ++$number;
+    $cardType = CardType($combatChain[$i]);
+    if($combatChain[$i+1] == $defPlayer && $cardType != "E" && $cardType != "C") ++$number;
   }
   return $number;
 }

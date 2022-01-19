@@ -217,7 +217,7 @@
 
   function ARCRangerHitEffect($cardID)
   {
-    global $defPlayer, $defHealth, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "ARC043":
@@ -233,7 +233,7 @@
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "ARC069": case "ARC070": case "ARC071":
-        PlayerLoseHealth(1, $defHealth);
+        PlayerLoseHealth($defPlayer, 1);
         break;
       default: break;
     }
@@ -255,4 +255,3 @@
   }
 
 ?>
-
