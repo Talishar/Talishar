@@ -263,7 +263,9 @@ function CardClick(id)
     var overlay = document.getElementById(idArr[0] + "-" + count + "-ovr");
     while(!!overlay)
     {
-      overlay.style.visibility = (count != idArr[1] ? "visible" : "hidden");
+      if(count != idArr[1]) overlay.style.visibility = "visible";
+      else overlay.style.visibility = (overlay.style.visibility == "visible" ? "hidden" : "visible");
+      //overlay.style.visibility = (count != idArr[1] ? "visible" : "hidden");
       ++count;
       var overlay = document.getElementById(idArr[0] + "-" + count + "-ovr");
     }

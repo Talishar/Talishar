@@ -335,7 +335,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
-  PlayerLoseHealth($damage, $health);
+  PlayerLoseHealth($player, $damage);
   LogDamageStats($player, $damageThreatened, $damage);
   return $damage;
 }
@@ -409,7 +409,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer;
   $classState = &GetPlayerClassState($player);
   $Auras = &GetAuras($player);
-  $health = &GetHealth($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if($damage > 0)
   {
@@ -423,7 +422,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
-  PlayerLoseHealth($damage, $health);
+  PlayerLoseHealth($player, $damage);
   LogDamageStats($player, $damageThreatened, $damage);
   return $damage;
 }
@@ -523,8 +522,7 @@ function AttackDamageAbilities()
 
 function LoseHealth($amount, $player)
 {
-  $health = &GetHealth($player);
-  PlayerLoseHealth($amount, $health);
+  PlayerLoseHealth($player, $amount);
 }
 
 function GainHealth($amount, $player)
@@ -541,14 +539,14 @@ function GainHealth($amount, $player)
   return true;
 }
 
-function PlayerLoseHealth($amount, &$health)
+function PlayerLoseHealth($player, $amount)
 {
-  global $mainPlayer;
-  $amount = AuraLoseHealthAbilities($mainPlayer, $amount);
+  $health = &GetHealth($player);
+  $amount = AuraLoseHealthAbilities($player, $amount);
   $health -= $amount;
   if($health <= 0)
   {
-    PlayerWon($mainPlayer);
+    PlayerWon($player);
   }
 }
 
