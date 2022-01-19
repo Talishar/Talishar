@@ -39,6 +39,7 @@
   $makeCheckpoint = 0;
   $makeBlockBackup = 0;
 
+  if($playerID == 3) ExitProcessInput();
   if(!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
 
   //Now we can process the command
