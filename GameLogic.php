@@ -1477,6 +1477,7 @@ function IsCombatEffectPersistent($cardID)
   switch($cardID)
   {
     case "WTR007": return true;
+    case "WTR038": case "WTR039": return true;
     case "ARC047": return true;
     case "ARC160-1": return true;
     case "ARC170-1": case "ARC171-1": case "ARC172-1": return true;
@@ -2656,14 +2657,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DoBoost();
       return "1";
     case "VOFTHEVANGUARD":
-      if($parameter == "1" && CardTalent($lastResult) == "LIGHT")
+      if($parameter == "1" && TalentContains($lastResult, "LIGHT"))
       {
         WriteLog("V of the Vanguard gives all attacks on this combat chain +1.");
         ++$combatChainState[$CCS_ChainAttackBuff];
       }
       $hand = &GetHand($player);
-      if(count($hand) > 1) PrependDecisionQueue("VOFTHEVANGUARD", $player, "1", 1);
-      PrependDecisionQueue("CHARGE", $player, "-", 1);
+      if(count($hand) > 0)
+      {
+        PrependDecisionQueue("VOFTHEVANGUARD", $player, "1", 1);
+        PrependDecisionQueue("CHARGE", $player, "-", 1);
+      }
       return "1";
     case "BEACONOFVICTORY":
       $combatChain[5] += $lastResult;

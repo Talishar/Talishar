@@ -1921,11 +1921,12 @@
   function RequiresDieRoll($cardID, $from)
   {
     global $currentPlayer, $turn;
+    if($turn[0] == "B") return false;
     $type = CardType($cardID);
     if($type == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && AttackValue($cardID) >= 6) return true;
     switch($cardID)
     {
-      case "WTR004": case "WTR005": return $turn[0] != "B";
+      case "WTR004": case "WTR005": return true;
       case "WTR010": return true;
       case "WTR162": return $from == "PLAY";
       case "CRU009": return true;

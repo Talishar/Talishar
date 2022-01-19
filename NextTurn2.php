@@ -518,6 +518,7 @@
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
   echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
   echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
+  if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
   if($turn[0] != "CHOOSEFIRSTPLAYER")
   {
@@ -630,8 +631,9 @@
       if($playerID == $mainPlayer)   echo("<span title='This is the turn player.' style='cursor:default; z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/APIcon.png'><div style='position:absolute; top:10px; width:50px; font-size:24px; color:black; text-align:center;'>" . $actionPoints . "AP</div></img></span>");
       else echo("<span title='This is the defending player.' style='z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Defense.png'></img></span>");
 
-      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div style='position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
+      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='(function(){ document.getElementById(\"mySoulPopup\").style.display = \"inline\";})();' style='cursor:pointer; position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
     }
+    echo("</div>");
     echo("</div>");
   }
   echo("</div>");
