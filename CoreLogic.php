@@ -256,12 +256,6 @@ function HasIncreasedAttack()
   return false;
 }
 
-function DamageOtherPlayer($amount, $type="DAMAGE")
-{
-  global $otherPlayer;
-  return DealDamage($otherPlayer, $amount, $type);
-}
-
 function DealDamage($player, $damage, $type, $source="NA")
 {
   $classState = &GetPlayerClassState($player);
@@ -325,6 +319,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
   }
   if($damage > 0)
   {
+    if($source == "WTR085" && ComboActive("WTR085")) $damage *= 2;
     AuraDamageTakenAbilities($Auras, $damage);
     if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
