@@ -41,8 +41,6 @@ h2 {
 ?>
   <input type="radio" id="oot" name="deck" value="oot">
   <label for="oot">Oot's Guardian Deck</label><br>
-  <input type="radio" id="shane" name="deck" value="shane">
-  <label for="shane">Shane's Brute Deck</label><br>
   <input type="radio" id="shawn" name="deck" value="shawn">
   <label for="shawn">Shawn's TAD Dash Deck</label><br>
   <input type="radio" id="dori" name="deck" value="dori">
