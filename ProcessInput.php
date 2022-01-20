@@ -469,7 +469,7 @@
     LogCombatResolutionStats($totalAttack, $totalDefense);
 
     $damage = $totalAttack - $totalDefense;
-    $damageDone = DealDamage($defPlayer, $damage, "COMBAT");//Include prevention
+    $damageDone = DealDamage($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
 
