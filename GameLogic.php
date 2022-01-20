@@ -256,9 +256,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
       return "Enlightened Strike put a card from your hand to the bottom of your deck and had an additional effect.";
     case "WTR160":
-      $hand = GetHand($currentPlayer);
       MyDrawCard();
       MyDrawCard();
+      $hand = GetHand($currentPlayer); //Get hand size after draw for correct health gain
       if($from == "ARS") GainHealth(count($hand), $currentPlayer);
       return "Tome of Fyendal drew two cards" . ($from == "ARS" ? " and gained " . count($hand) . " life" : "") . ".";
     case "WTR161":
@@ -740,7 +740,9 @@ function ProcessHitEffect($cardID)
       break;
     case "WTR084":
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
-      AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-");
+      if(ComboActive()){
+        AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-"); //Only back to hand if combo is active
+      }
       break;
     case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) MainDrawCard(); break;
     case "WTR115":
