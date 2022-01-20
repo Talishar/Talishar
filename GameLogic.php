@@ -83,7 +83,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR008":
       $damaged = false;
       $discarded = DiscardRandom($currentPlayer, $cardID);
-      if(AttackValue($discarded) >= 6) { $damaged = true; DamageOtherPlayer(2); }
+      if(AttackValue($discarded) >= 6) { $damaged = true; DealDamage($mainPlayer, 2, "DAMAGE", $cardID); }
       return "Reckless Swing discarded a random card from your hand" . ($damaged ? " and did 2 damage." : ".");
     case "WTR009":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
@@ -150,9 +150,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR082":
       MyDrawCard();
       return "Ancestral Empowerment drew a card.";
-    case "WTR085":
-     DamageOtherPlayer($combatChainState[$CCS_DamageDealt]);
-     return "Pounding Gail dealt an extra " . $combatChainState[$CCS_DamageDealt] . " damage.";
     case "WTR092": case "WTR093": case "WTR094":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Flic Flak gives the next Combo card you block with this turn +2.";
@@ -204,7 +201,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       $text = "Steelblade Shunt ";
       if(CardType($combatChain[0]) == "W")
       {
-        DamageOtherPlayer(1);
+        DealDamage($mainPlayer, 1, "DAMAGE", $cardID);
         $text .= "DID";
       } else { $text .= "did NOT"; }
       $text .= " deal 1 damage to the attacking hero.";
@@ -2889,6 +2886,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       else
       {
+        WriteLog("Beast Within banished " . CardLink($card, $card) . ".");
         BanishCardForPlayer($card, $player, "DECK", "-");
         PrependDecisionQueue("BEASTWITHIN", $player, "-");
       }
