@@ -148,7 +148,6 @@
       switch($deck)
       {
         case "oot": $deckFile = "p1Deck.txt"; break;
-        case "shane": $deckFile = "shaneDeck.txt"; break;
         case "shawn": $deckFile = "shawnTAD.txt"; break;
         case "dori": $deckFile = "Dori.txt"; break;
         case "katsu": $deckFile = "Katsu.txt"; break;
