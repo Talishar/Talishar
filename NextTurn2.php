@@ -409,7 +409,7 @@
 
   //Display Their Banish
   echo("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") .";'>");
-  $card = (count($theirBanish) > 0 ? $theirBanish[count($theirBanish)-BanishPieces()] : $blankZone);
+  $card = (count($theirBanish) > 0 ? ($theirBanish[count($theirBanish)-BanishPieces()+1] == "INT" ? "cardBack": $theirBanish[count($theirBanish)-BanishPieces()]) : $blankZone);
   $folder = (count($theirBanish) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
 
