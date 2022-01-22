@@ -39,17 +39,17 @@ body {
 <?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
 ?>
-  <input type="radio" id="oot" name="deck" value="oot" checked="checked">
-  <label for="oot">Oot's Guardian Deck</label><br>
-  <input type="radio" id="shawn" name="deck" value="shawn">
-  <label for="shawn">Shawn's TAD Dash Deck</label><br>
-  <input type="radio" id="dori" name="deck" value="dori">
-  <label for="dori">Dorinthea Deck - Skirmish 19.06.21<a target="_blank" rel="noopener noreferrer" href="https://fabtcg.com/decklists/dan-groseclose-dorinthea-deck---sapphire-city-skirmish-190621/">(Link)</a></label><br>
-  <input type="radio" id="katsu" name="deck" value="katsu">
-  <label for="katsu">Katsu Deck</label><br><br>
+  Decks to Try:
+  <select name="decksToTry" id="decksToTry">
+    <option value="1">Arsenal Pass Rhinar CC</option>
+    <option value="2">Boltyn #1 Road to Nationals CC</option>
+    <option value="3">Ice Lexi Canadian Nationals CC</option>
+  </select>
+  <br>
+  <br>
+  <label for="fabdb">FaB DB Deck Link</label>
   <input type="text" id="fabdb" name="fabdb">
-  <label for="fabdb">FaB DB Link</label><br><br>
-
+  <br><br>
   <span style='display:inline-block;'>
   <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
   <label for="blitz">Blitz</label>
@@ -70,7 +70,6 @@ body {
   <label for="deckTestMode">Single player deck test mode</label><br><br>
   <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Create Game"></div>
 </form>
-<br>
 
 <!---
 <?php

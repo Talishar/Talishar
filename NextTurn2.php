@@ -517,7 +517,7 @@
   echo(CreatePopup("myPitchPopup", $myPitch, 1, 0, "Your Pitch"));
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
   echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
-  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
+  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
   if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
   if($turn[0] != "CHOOSEFIRSTPLAYER")

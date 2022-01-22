@@ -775,11 +775,11 @@ function RollDie($player, $fromDQ=false)
   $roll = random_int(1, 6);
   SetClassState($player, $CS_DieRoll, $roll);
   WriteLog($roll . " was rolled.");
-  GamblersGloves($player, $player);
-  GamblersGloves(($player == 1 ? 2 : 1), $player);
+  GamblersGloves($player, $player, $fromDQ);
+  GamblersGloves(($player == 1 ? 2 : 1), $player, $fromDQ);
 }
 
-function GamblersGloves($player, $origPlayer)
+function GamblersGloves($player, $origPlayer, $fromDQ)
 {
   $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
   if($gamblersGlovesIndex != -1 && IsCharacterAbilityActive($player, $gamblersGlovesIndex))
