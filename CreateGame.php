@@ -9,6 +9,7 @@
   $format=TryGET("format");
   $visibility=TryGET("visibility");
   $set=TryGET("set");
+  $decksToTry = TryGet("decksToTry");
 
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
   $attemptCount = 0;
@@ -48,6 +49,6 @@
   }
   include "MenuFiles/WriteGamefile.php";
 
-  header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set");
+  header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry");
 
 ?>
