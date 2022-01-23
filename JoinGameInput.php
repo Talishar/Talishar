@@ -20,6 +20,11 @@
     }
   }
 
+  if(!IsDeckLinkValid($decklink)) {
+      echo '<b>' . "Deck link is not valid: " . $decklink . '</b>';
+      exit;
+  }
+
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
   include "MenuFiles/ParseGamefile.php";
@@ -29,7 +34,8 @@
     $decklink = explode("/", $decklink);
     $slug = $decklink[count($decklink)-1];
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
-    $apiDeck = file_get_contents($apiLink);
+    $apiDeck = @file_get_contents($apiLink);
+    if($apiDeck === FALSE) { echo  '<b>' . "Deck link is not valid: " . implode("/", $decklink) . '</b>'; exit; }
     $deckObj = json_decode($apiDeck);
     $cards = $deckObj->{'cards'};
     $deckCards = "";
