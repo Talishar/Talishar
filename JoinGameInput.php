@@ -7,7 +7,18 @@
   $playerID=$_GET["playerID"];
   $deck=$_GET["deck"];
   $decklink=$_GET["fabdb"];
+  $decksToTry = TryGet("decksToTry");
   $set=TryGet("set");
+
+  if($decklink == "")
+  {
+    switch ($decksToTry) {
+      case '1': $decklink = "https://fabdb.net/decks/pExqQzqV"; break;
+      case '2': $decklink = "https://fabdb.net/decks/dLAwdlEX"; break;
+      case '3': $decklink = "https://fabdb.net/decks/zLNlGaOr"; break;
+      default: $decklink = "https://fabdb.net/decks/pExqQzqV"; break;
+    }
+  }
 
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
@@ -198,4 +209,3 @@ function GetAltCardID($cardID)
 }
 
 ?>
-

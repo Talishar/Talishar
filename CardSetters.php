@@ -20,7 +20,7 @@ function BanishCardForPlayer($cardID, $player, $from, $modifier="-")
 
 function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $from="")
 {
-  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer;
+  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   if($player == "") $player = $currentPlayer;
   WriteReplay($player, $cardID, $from, "BANISH");
   if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
@@ -61,6 +61,16 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
        return "Hooves of the Shadowbeast were destroyed to gain an action point.";
     }
   }
+}
+
+function RemoveBanish($player, $index)
+{
+  $banish = &GetBanish($player);
+  for($i = $index+BanishPieces()-1; $i >= $index; --$i)
+  {
+    unset($banish[$i]);
+  }
+  $banish = array_values($banish);
 }
 
 function AddBottomMainDeck($cardID, $from)
