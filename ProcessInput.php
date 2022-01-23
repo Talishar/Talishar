@@ -307,6 +307,8 @@
     case 100001: //Main Menu
       header("Location: " . $redirectPath . "/MainMenu.php");
       exit;
+    case 100002: //Concede
+      DealDamage($playerID, 9999, "MANUAL");
     default:break;
   }
 

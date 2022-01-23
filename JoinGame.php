@@ -39,17 +39,18 @@ h2 {
   echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
   echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
 ?>
-  <input type="radio" id="oot" name="deck" value="oot">
-  <label for="oot">Oot's Guardian Deck</label><br>
-  <input type="radio" id="shawn" name="deck" value="shawn">
-  <label for="shawn">Shawn's TAD Dash Deck</label><br>
-  <input type="radio" id="dori" name="deck" value="dori">
-  <label for="dori"><a target="_blank" rel="noopener noreferrer" href="https://fabtcg.com/decklists/dan-groseclose-dorinthea-deck---sapphire-city-skirmish-190621/">Dorinthea Deck - Sapphire City Skirmish 19.06.21</a></label><br>
-  <input type="radio" id="katsu" name="deck" value="katsu">
-  <label for="katsu">Katsu Deck</label><br>
+
+  Decks to Try:
+  <select name="decksToTry" id="decksToTry">
+    <option value="1">Arsenal Pass Rhinar CC</option>
+    <option value="2">Boltyn #1 Road to Nationals CC</option>
+    <option value="3">Ice Lexi Canadian Nationals CC</option>
+  </select>
+  <br><br>
+  <label for="fabdb">FaB DB Link</label>
   <input type="text" id="fabdb" name="fabdb">
-  <label for="fabdb">FaB DB Link</label><br><br>
-  <input type="submit" value="Submit">
+  <br><br>
+  <div style='width:100%; text-align:center;'><input type="submit" value="Submit"></div>
 </form>
 
   <h2>Instructions</h2>

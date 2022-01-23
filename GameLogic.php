@@ -97,10 +97,12 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "Bone Head Barrier prevents the next $roll damage that will be dealt to you this turn.";
     case "WTR011": case "WTR012": case "WTR013":
       $discarded = DiscardRandom($currentPlayer, $cardID);
+      $drew = 0;
       if(AttackValue($discarded) >= 6) { $drew = 1; $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; }
       return "Breakneck Battery discarded a random card from your hand" . ($drew ? " and gained Go Again." : ".");
     case "WTR014": case "WTR015": case "WTR016":
       $discarded = DiscardRandom($currentPlayer, $cardID);
+      $drew = 0;
       if(AttackValue($discarded) >= 6) { $drew = 1; MyDrawCard(); }
       return "Savage Feast discarded a random card from your hand" . ($drew ? " and drew a card." : ".");
     case "WTR017": case "WTR018": case "WTR019":
@@ -1782,7 +1784,7 @@ function Draw($player)
   if(count($deck) == 0) return -1;
   if(CurrentEffectPreventsDraw($player)) return -1;
   array_push($hand, array_shift($deck));
-  WriteReplay($playerID, "Hide", "DECK", "HAND");
+  WriteReplay($player, "Hide", "DECK", "HAND");
   return $hand[count($hand)-1];
 }
 
@@ -2882,7 +2884,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       LoseHealth(1, $player);
       if(AttackValue($card) >= 6)
       {
-        AddPlayerHand($card, $player, "DECK");
+        BanishCardForPlayer($card, $player, "DECK", "-");
+        $banish = &GetBanish($player);
+        RemoveBanish($player, count($banish)-BanishPieces());
+        AddPlayerHand($card, $player, "BANISH");
       }
       else
       {
