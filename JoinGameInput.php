@@ -10,7 +10,7 @@
   $decksToTry = TryGet("decksToTry");
   $set=TryGet("set");
 
-  if($decklink == "")
+  if($decklink == "" && $deck == "")
   {
     switch ($decksToTry) {
       case '1': $decklink = "https://fabdb.net/decks/pExqQzqV"; break;
