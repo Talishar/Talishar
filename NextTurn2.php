@@ -64,6 +64,26 @@
   td {
     text-align:center;
   }
+
+  .passButton {
+    background: url("./Images/passActive.png") no-repeat;
+    background-size:contain;
+  }
+
+  .passButton:hover {
+    background: url("./Images/passHover.png") no-repeat;
+    background-size:contain;
+  }
+
+  .passButton:active {
+    background: url("./Images/passPress.png") no-repeat;
+    background-size:contain;
+  }
+
+  .passInactive {
+    background: url("./Images/passInactive.png") no-repeat;
+    background-size:contain;
+  }
 </style>
 
 </head>
@@ -103,8 +123,12 @@
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./CardImages/findCenterBackground.jpg' /></div>");
 
   echo("<div style='position:fixed; right:315px; top:calc(50% - 125px); height:200px;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span><span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
-  if(IsDarkMode($playerID)) echo("<img style='height:200px;' src='./Images/DuoLifeDark.png' /></div>");
-  else echo("<img style='height:200px;' src='./Images/DuoLife.png' /></div>");
+  if(IsDarkMode($playerID)) echo("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
+  else echo("<img style='height:200px;' src='./Images/DuoLife.png' />");
+  echo("<div style='position:absolute; top:37px; left:-130px; z-index:-5;'><img style='height:125px; width:150px;' src='./Images/passBG.png' /></div>");
+  if(CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:white; font-family:serif; font-size:36px; user-select: none;'>Pass</span></div>");
+  else echo("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:gray; font-family:serif; font-size:36px; user-select: none;'>Pass</span></div>");
+  echo("</div>");
 
   //Now display the screen for this turn
   echo("<span style='position:fixed; width:100%; bottom:0px; left:0px; display:inline-block; font-size:30px; text-align:center;'>");
@@ -122,11 +146,11 @@
       if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
       if(CanPassPhase($turn[0]))
       {
-        echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
-        if($turn[0] == "B") echo(" or " . CreateButton($playerID, "Undo Block", 10001, 0, "24px"));
-        echo(")");
+        //echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
+        if($turn[0] == "B") echo("(or " . CreateButton($playerID, "Undo Block", 10001, 0, "24px") . ")");
+        //echo(")");
       }
-      if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
+      //if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
       echo("</b></span>");
     }
   }

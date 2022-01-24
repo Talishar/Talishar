@@ -56,6 +56,12 @@
     return $rv;
   }
 
+  function ProcessInputLink($player, $mode, $input)
+  {
+    global $gameName;
+    return "onmousedown=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$player&mode=$mode&buttonInput=$input'\"";
+  }
+
   function CreateForm($playerID, $caption, $mode, $count)
   {
     global $gameName;
