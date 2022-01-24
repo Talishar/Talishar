@@ -2304,9 +2304,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal[$lastResult+1] = "UP";
       return $lastResult;
     case "REMOVEARSENAL":
+      SearchCurrentTurnEffects("ARC042", $player, true); //If Bull's Eye Bracers was played before, its effect on the removed Arsenal card should be removed
       $index = $lastResult;
       $arsenal = &GetArsenal($player);
       $cardToReturn = $arsenal[$index];
+      if($cardToReturn == "ARC057" ){SearchCurrentTurnEffects("ARC057", $player, true);} //If the card removed from arsenal is 'Head Shot', remove its current turn effect.
+      if($cardToReturn == "ARC058" ){SearchCurrentTurnEffects("ARC058", $player, true);} //Else, another 'Head Shot' played this turn would get dubble buff.
+      if($cardToReturn == "ARC059" ){SearchCurrentTurnEffects("ARC059", $player, true);}
       for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
       {
         unset($arsenal[$i]);
