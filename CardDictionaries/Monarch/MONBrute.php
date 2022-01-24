@@ -222,7 +222,9 @@
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Pulping got Dominate from discarding a card with 6 or more power.";
+          $rv = "Pulping got Dominate from discarding " . CardLink($card, $card) . " with 6 or more power.";
+        } else {
+          $rv = "Pulping did not gain dominate from discarding " . CardLink($card, $card);
         }
         return $rv;
       default: return "";
