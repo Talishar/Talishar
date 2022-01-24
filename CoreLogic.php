@@ -134,6 +134,11 @@ function CachedTotalBlock()
 function StartTurnAbilities()
 {
   global $mainPlayer, $defPlayer;
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  for($i=count($mainCharacter) - CharacterPieces(); $i>=0; $i -= CharacterPieces())
+  {
+    CharacterStartTurnAbility($i);
+  }
   AuraStartTurnAbilities();
   $mainItems = &GetItems($mainPlayer);
   for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
@@ -145,11 +150,6 @@ function StartTurnAbilities()
   for($i=0; $i<count($defItems); $i+=ItemPieces())
   {
     if($defItems[$i+2] == 1) $defItems[$i+2] = 2;
-  }
-  $mainCharacter = &GetPlayerCharacter($mainPlayer);
-  for($i=count($mainCharacter) - CharacterPieces(); $i>=0; $i -= CharacterPieces())
-  {
-    CharacterStartTurnAbility($i);
   }
   ArsenalStartTurnAbilities();
 }
