@@ -854,7 +854,7 @@ function FinalizeChainLink($chainClosed=false)
           else
           {
             $hasGoAgain = HasGoAgain($cardID);
-            if(GetClassState($CS_NextNAACardGoAgain, $currentPlayer) && $cardType == "A")
+            if(GetClassState($currentPlayer, $CS_NextNAACardGoAgain) && $cardType == "A")
             {
               $hasGoAgain = true;
               SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);

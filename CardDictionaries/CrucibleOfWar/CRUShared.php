@@ -145,7 +145,7 @@
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
       case "CRU106": case "CRU107": case "CRU108": return HasBoost($attackID);
       //Ranger
-      case "CRU122": $combatChain[2] == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow";
+      case "CRU122": return $combatChain[2] == "ARS" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "CRU123": return $attackID == "CRU123";
       case "CRU124": return CardSubtype($combatChain[0]) == "Arrow";
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
