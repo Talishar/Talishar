@@ -49,6 +49,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid);
     }
   }
+  else if($set == "EVR")
+  {
+    return EVRPlayAbility($cardID, $from, $resourcesPaid);
+  }
   $rv = "";
   switch($cardID)
   {
@@ -1503,6 +1507,8 @@ function IsCombatEffectPersistent($cardID)
     case "ELE092-DOM": case "ELE092-BUFF": return true;
     case "ELE143": return true;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
+    case "EVR019": return true;
+    case "EVR160": return true;
     default: return false;
   }
 }
@@ -1563,6 +1569,13 @@ function CharacterStartTurnAbility($index)
           BanishCardForPlayer($mainCharacter[$index], $mainPlayer, "EQUIP", "NA");
           WriteLog("Carrion Husk got banished for having 13 or less health.");
       } break;
+    case "EVR019":
+      if(CountAura("WTR075", $mainPlayer) >= 3)
+      {
+        WriteLog("Valda gives your Crush attacks Dominate this turn.");
+        AddCurrentTurnEffect("EVR019", $mainPlayer);
+      }
+      break;
     default: break;
   }
 }
@@ -1777,14 +1790,16 @@ function CountPitch(&$pitch, $min=0, $max=9999)
   return $pitchCount;
 }
 
-function Draw($player)
+function Draw($player, $mainPhase=true)
 {
+  $otherPlayer = ($player == 1 ? 2 : 1);
   $deck = &GetDeck($player);
   $hand = &GetHand($player);
   if(count($deck) == 0) return -1;
   if(CurrentEffectPreventsDraw($player)) return -1;
   array_push($hand, array_shift($deck));
   WriteReplay($player, "Hide", "DECK", "HAND");
+  if($mainPhase && SearchCharacterActive($otherPlayer, "EVR019")) PlayAura("WTR075", $otherPlayer);
   return $hand[count($hand)-1];
 }
 
@@ -2018,6 +2033,7 @@ function IsDominateActive()
     case "MON246": return SearchDiscard($mainPlayer, "AA") == "";
     case "MON275": case "MON276": case "MON277": return true;
     case "ELE209": case "ELE210": case "ELE211": return HasIncreasedAttack();
+    case "EVR027": case "EVR028": case "EVR029": return true;
     default: break;
   }
   return false;

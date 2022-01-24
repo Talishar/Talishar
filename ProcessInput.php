@@ -679,15 +679,15 @@ function FinalizeChainLink($chainClosed=false)
       $toDraw = 4 - count($defHand);
       for($i=0; $i < $toDraw; ++$i)//TODO: 4 -> Intellect
       {
-        array_push($defHand, array_shift($defDeck));
+        Draw($defPlayer, false);
       }
     }
     $toDraw = 4 - count($mainHand) + CurrentEffectIntellectModifier();
     for($i=0; $i < $toDraw; ++$i)//TODO: 4 -> Intellect
     {
-      array_push($mainHand, array_shift($mainDeck));
+      Draw($mainPlayer, false);
     }
-    WriteLog("Main player drew " . $toDraw . " cards and now has " . count($mainHand) . " cards.");
+    if($toDraw > 0) WriteLog("Main player drew " . $toDraw . " cards and now has " . count($mainHand) . " cards.");
 
     //Reset characters/equipment
     for($i=1; $i<count($mainCharacter); $i+=CharacterPieces())

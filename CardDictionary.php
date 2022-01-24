@@ -62,6 +62,10 @@
         default: return ELETalentCardType($cardID);
       }
     }
+    else if($set == "EVR")
+    {
+      return EVRCardType($cardID);
+    }
     switch($cardID)
     {
       case "DUMMY": return "C";
@@ -316,6 +320,10 @@
         default: return ELETalentCardSubType($cardID);
       }
     }
+    else if($set == "EVR")
+    {
+      return EVRCardSubtype($cardID);
+    }
     switch($cardID)
     {
       case "WTR003": return "Club";
@@ -393,6 +401,8 @@
       case "CRU047": return 17;
       case "MON001": case "MON029": case "MON119": case "MON153": return 40;
       case "ELE001": case "ELE031": case "ELE062": return 40;
+      case "EVR019": return 21;
+      case "EVR120": return 18;
       default: return 20;
     }
   }
@@ -471,6 +481,7 @@
         else if($number >= 222 && $number <= 232) return "RUNEBLADE";
         else if($number >= 233) return "GENERIC";
         else return "NONE";
+      case "EVR": return "NONE";//TODO
       default: return 0;
     }
   }
@@ -521,6 +532,10 @@
         case "RUNEBLADE": return ELERunebladeCardCost($cardID);
         default: return ELETalentCardCost($cardID);
       }
+    }
+    else if($set == "EVR")
+    {
+      return EVRCardCost($cardID);
     }
     switch($cardID)
     {
@@ -810,6 +825,10 @@
         default: return ELETalentPitchValue($cardID);
       }
     }
+    else if($set == "EVR")
+    {
+      return EVRPitchValue($cardID);
+    }
     switch($cardID)
     {
        case "WTR000": return 3;
@@ -981,6 +1000,10 @@
         default: return ELETalentBlockValue($cardID);
       }
     }
+    else if($set == "EVR")
+    {
+      return EVRBlockValue($cardID);
+    }
     switch($cardID)
     {
       case "WTR000": return 0;
@@ -1134,6 +1157,10 @@
         case "RUNEBLADE": return ELERunebladeAttackValue($cardID);
         default: return ELETalentAttackValue($cardID);
       }
+    }
+    else if($set == "EVR")
+    {
+      return EVRAttackValue($cardID);
     }
     switch($cardID)
     {
@@ -1758,6 +1785,7 @@
       case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
       case "ELE166": case "ELE167": case "ELE168": return true;
       case "ELE205": return true;
+      case "EVR019": return true;
       default: return false;
     }
   }
