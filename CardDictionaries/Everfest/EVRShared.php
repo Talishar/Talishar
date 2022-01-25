@@ -75,6 +75,7 @@
       case "EVR017": return "C";
       case "EVR019": return "C";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
+      case "EVR088": return "AA";
       case "EVR120": return "C";
       case "EVR155": return "E";
       case "EVR156": case "EVR157": return "AA";
@@ -95,6 +96,7 @@
   {
     switch($cardID)
     {
+      case "EVR088": return "Arrow";
       case "EVR155": return "Off-Hand";
       case "EVR178": case "EVR187": case "EVR190": return "Item";
       default: return "";
@@ -109,6 +111,7 @@
       case "EVR017": return 0;
       case "EVR019": return 0;
       case "EVR027": case "EVR028": case "EVR029": return 7;
+      case "EVR088": return 2;
       case "EVR120": return 0;
       case "EVR155": return 0;
       case "EVR156": return 1;
@@ -139,6 +142,7 @@
       case "EVR027": return 1;
       case "EVR028": return 2;
       case "EVR029": return 3;
+      case "EVR088": return 1;
       case "EVR120": return 0;
       case "EVR155": return 0;
       case "EVR156": case "EVR157": return 1;
@@ -190,6 +194,7 @@
       case "EVR027": return 10;
       case "EVR028": return 9;
       case "EVR029": return 8;
+      case "EVR088": return 6;
       case "EVR156": return 5;
       case "EVR157": return 3;
       case "EVR161": return 4;
@@ -263,6 +268,28 @@
     global $mainPlayer, $defPlayer;
     switch($cardID)
     {
+      case "EVR088":
+        $hand = &GetHand($defPlayer);
+        $cards = "";
+        $numDiscarded = 0;
+        for($i=count($hand)-HandPieces(); $i>=0; $i-=HandPieces())
+        {
+          $id = $hand[$i];
+          $cardType = CardType($id);
+          if($cardType != "A" && $cardType != "AA")
+          {
+            AddGraveyard($id, $defPlayer, "HAND");
+            unset($hand[$i]);
+            ++$numDiscarded;
+          }
+          if($cards != "") $cards .= ",";
+          $cards .= $id;
+        }
+        LoseHealth($numDiscarded, $defPlayer);
+        RevealCards($cards);
+        WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
+        $hand = array_values($hand);
+        break;
       case "EVR156":
         AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
         AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
