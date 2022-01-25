@@ -732,6 +732,10 @@ function ProcessHitEffect($cardID)
       default: return ELETalentHitEffect($cardID);
     }
   }
+  else if($set == "EVR")
+  {
+    return EVRHitEffect($cardID);
+  }
   switch($cardID)
   {
     case "WTR083":
@@ -985,6 +989,9 @@ function EffectHitEffect($cardID)
       break;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
+    case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
+    case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 5); break;//TODO: is this right?
+    case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;//TODO: is this right?
     default: break;
   }
   return 0;
@@ -2197,7 +2204,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MON159": case "MON160": case "MON161": $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true); break;
         case "MON212": $rv = SearchBanish($player, "AA", "", $subparam); break;
         case "MON266-1": $rv = SearchMyHand("AA", "", -1, -1, 3); break;
-        case "MON266-2": $rv = SearchMyDeckForCard("MON296", "MON297", "MON298"); break;
+        case "MON266-2": $rv = SearchDeckForCard($player, "MON296", "MON297", "MON298"); break;
         case "MON303": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=2); break;
         case "MON304": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=1); break;
         case "MON305": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=0); break;
@@ -2207,6 +2214,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ELE116": $rv = PlumeOfEvergrowthIndices($player); break;
         case "ELE125": case "ELE126": case "ELE127": $rv = SummerwoodShelterIndices($player); break;
         case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
+        case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
@@ -2257,6 +2265,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $hand[$lastResult];
       unset($hand[$lastResult]);
       $hand = array_values($hand);
+      return $cardID;
+    case "HANDCARD":
+      $hand = &GetHand($player);
+      $cardID = $hand[$lastResult];
       return $cardID;
     case "MULTIREMOVEDISCARD":
       $discard = &GetDiscard($player);
@@ -2904,6 +2916,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       LoseHealth(1, $player);
       if(AttackValue($card) >= 6)
       {
+        WriteLog("Beast Within banished " . CardLink($card, $card) . " and was added to hand.");
         BanishCardForPlayer($card, $player, "DECK", "-");
         $banish = &GetBanish($player);
         RemoveBanish($player, count($banish)-BanishPieces());
@@ -3074,6 +3087,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "APPROVEMANUALMODE":
       ApproveManualMode($player);
+      return $lastResult;
+    case "BINGO":
+      if($lastResult == "") WriteLog("No card was revealed for Bingo.");
+      $cardType = CardType($lastResult);
+      if($cardType == "AA") { WriteLog("Bingo gained Go Again."); GiveAttackGoAgain(); }
+      else if($cardType == "A") {WriteLog("Bingo drew a card."); Draw($player); }
+      else WriteLog("Bingo... did not hit the mark.");
+      return $lastResult;
+    case "ADDDEFENDINGCARD":
+
       return $lastResult;
     default:
       return "NOTSTATIC";

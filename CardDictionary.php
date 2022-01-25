@@ -401,6 +401,7 @@
       case "CRU047": return 17;
       case "MON001": case "MON029": case "MON119": case "MON153": return 40;
       case "ELE001": case "ELE031": case "ELE062": return 40;
+      case "EVR017": return 40;
       case "EVR019": return 21;
       case "EVR120": return 18;
       default: return 20;
