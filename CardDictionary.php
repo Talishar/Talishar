@@ -1591,6 +1591,7 @@
       case "ELE233": return count($myHand) != 1;
       case "ELE234": return count($myHand) == 0;
       case "ELE236": return !HasTakenDamage($currentPlayer);
+      case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
       default: return false;
     }
   }
