@@ -20,10 +20,11 @@
     }
   }
 
-  if(!IsDeckLinkValid($decklink)) {
+  if($deck == "" && !IsDeckLinkValid($decklink)) {
       echo '<b>' . "Deck link is not valid: " . $decklink . '</b>';
       exit;
   }
+  //TODO: Validate $deck
 
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
