@@ -112,15 +112,17 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
 
 function AddCombatChain($cardID, $player, $from, $resourcesPaid)
 {
+  global $combatChain;
   $index = count($combatChain);
   array_push($combatChain, $cardID);
-  array_push($combatChain, $currentPlayer);
+  array_push($combatChain, $player);
   array_push($combatChain, $from);
   array_push($combatChain, $resourcesPaid);
   array_push($combatChain, RepriseActive());
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
   if($turn[0] == "B" || CardType($cardID) == "DR") OnBlockEffects($index, $from);
+  return $index;
 }
 
 function CacheCombatResult()

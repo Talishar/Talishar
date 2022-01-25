@@ -3095,8 +3095,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else if($cardType == "A") {WriteLog("Bingo drew a card."); Draw($player); }
       else WriteLog("Bingo... did not hit the mark.");
       return $lastResult;
-    case "ADDDEFENDINGCARD":
-
+    case "ADDCARDTOCHAIN":
+      AddCombatChain($lastResult, $player, $parameter, 0);
       return $lastResult;
     default:
       return "NOTSTATIC";

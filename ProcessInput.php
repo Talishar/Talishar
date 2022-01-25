@@ -1162,15 +1162,7 @@ function FinalizeChainLink($chainClosed=false)
     else $cardType = $definedCardType;
     if(GoesOnCombatChain($turn[0], $cardID, $from))
     {
-      $index = count($combatChain);
-      array_push($combatChain, $cardID);
-      array_push($combatChain, $currentPlayer);
-      array_push($combatChain, $from);
-      array_push($combatChain, $resourcesPaid);
-      array_push($combatChain, RepriseActive());
-      array_push($combatChain, 0);//Attack modifier
-      array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
-      if($turn[0] == "B" || $definedCardType == "DR") OnBlockEffects($index, $from);
+      $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
       if($index == 0)
       {
         $currentTurnEffectsFromCombat = [];
