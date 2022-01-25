@@ -5,6 +5,7 @@
     switch($cardID)
     {
       case "EVR157": return 1;
+      case "EVR173": case "EVR174": case "EVR175": return 0;
       case "EVR178": return 0;
       case "EVR187": return 0;
       default: return 0;
@@ -16,6 +17,7 @@
     switch($cardID)
     {
       case "EVR157": return "I";
+      case "EVR173": case "EVR174": case "EVR175": return "I";
       case "EVR178": return "DR";
       case "EVR187": return "I";
       default: return "";
@@ -81,7 +83,7 @@
       case "EVR164": case "EVR165": case "EVR166": return "A";
       case "EVR167": case "EVR168": case "EVR169": return "A";
       case "EVR170": case "EVR171": case "EVR172": return "A";
-      case "EVR173": return "I";
+      case "EVR173": case "EVR174": case "EVR175": return "I";
       case "EVR178": return "A";
       case "EVR187": return "A";
       case "EVR190": return "A";
@@ -117,7 +119,7 @@
       case "EVR164": case "EVR165": case "EVR166": return 0;
       case "EVR167": case "EVR168": case "EVR169": return 0;
       case "EVR170": case "EVR171": case "EVR172": return 0;
-      case "EVR173": return 0;
+      case "EVR173": case "EVR174": case "EVR175": return 0;
       case "EVR178": return 0;
       case "EVR187": return 0;
       case "EVR190": return 0;
@@ -146,6 +148,8 @@
       case "EVR162": case "EVR165": case "EVR168": case "EVR171": return 2;
       case "EVR163": case "EVR166": case "EVR169": case "EVR172": return 3;
       case "EVR173": return 1;
+      case "EVR174": return 2;
+      case "EVR175": return 3;
       case "EVR178": return 3;
       case "EVR187": return 3;
       case "EVR190": return 2;
@@ -168,7 +172,7 @@
       case "EVR164": case "EVR165": case "EVR166": return 2;
       case "EVR167": case "EVR168": case "EVR169": return 2;
       case "EVR170": case "EVR171": case "EVR172": return 2;
-      case "EVR173": return -1;
+      case "EVR173": case "EVR174": case "EVR175": return -1;
       case "EVR178": return -1;
       case "EVR187": return -1;
       case "EVR190": return -1;
@@ -191,6 +195,7 @@
       case "EVR161": return 4;
       case "EVR162": return 3;
       case "EVR163": return 2;
+      case "EVR173": case "EVR174": case "EVR175": return 0;
       default: return 0;
     }
   }
@@ -233,6 +238,12 @@
         else if($cardID == "EVR174") $opt = 2;
         else if($cardID == "EVR175") $opt = 1;
         Opt($cardID, $opt);
+        RevealCards($deck[0]);
+        if(AttackValue($deck[0]) > $theirClassState[$CS_DamageTaken] == 0)
+        {
+            Draw(1);
+            PlayMyAura("WTR225");
+        }
         return "";
       case "EVR178":
         if($from == "PLAY")

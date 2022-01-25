@@ -133,7 +133,8 @@
         return "Hexagore, the Death Hydra did $damage damage to you.";
       case "MON125":
         MyDrawCard();
-        $rv = "Shadow of Blasmophet did not discard a power 6 or more card.";
+        $card = DiscardRandom();
+        $rv = "Shadow of Blasmophet discarded " . CardLink($card, $card);
         if(AttackValue(DiscardRandom()) >= 6)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
@@ -141,7 +142,7 @@
           AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-          $rv = "Shadow of Blasmophet discarded a card with 6 or more power then banished a card with Blood Debt your Deck.";
+          $rv .= "and banished a card with Blood Debt your Deck.";
         }
         return $rv;
       case "MON126": case "MON127": case "MON128":
