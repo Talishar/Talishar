@@ -99,13 +99,13 @@ function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class=""
   return $cardList;
 }
 
-function SearchMyDeckForCard($card1, $card2="", $card3="")
+function SearchDeckForCard($player, $card1, $card2="", $card3="")
 {
-  global $myDeck;
+  $deck = &GetDeck($player);
   $cardList = "";
-  for($i=0; $i<count($myDeck); ++$i)
+  for($i=0; $i<count($deck); ++$i)
   {
-    $id = $myDeck[$i];
+    $id = $deck[$i];
     if($id == $card1 || $id == $card2 || $id == $card3)
     {
       if($cardList != "") $cardList = $cardList . ",";
