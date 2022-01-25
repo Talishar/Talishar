@@ -197,7 +197,7 @@
 
   function EVRPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $combatChain;
+    global $currentPlayer, $combatChain, $CS_PlayIndex;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -237,9 +237,10 @@
       case "EVR178":
         if($from == "PLAY")
         {
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           AddDecisionQueue("FINDINDICES", $currentPlayer, "EVR178");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDDEFENDINGCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
         }
         return "";
       default: return "";
