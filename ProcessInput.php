@@ -842,7 +842,7 @@ function FinalizeChainLink($chainClosed=false)
           //if($from == "PLAY" || $from == "EQUIP")
           if(IsStaticType($cardType, $from, $cardID))
           {
-            $canPlayAsInstant = CanPlayAsInstant($cardID);
+            $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
             $hasGoAgain = AbilityHasGoAgain($cardID);
             if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
             else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
@@ -853,6 +853,7 @@ function FinalizeChainLink($chainClosed=false)
           }
           else
           {
+            $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
             $hasGoAgain = HasGoAgain($cardID);
             if(GetClassState($currentPlayer, $CS_NextNAACardGoAgain) && $cardType == "A")
             {
@@ -860,10 +861,10 @@ function FinalizeChainLink($chainClosed=false)
               SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
             }
             if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
-            if(CanPlayAsInstant($cardID)) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
+            if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
             else if(($cardType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
             else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
-            if($cardType == "A" && !CanPlayAsInstant($cardID)) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
+            if($cardType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
             if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
           }
           if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
@@ -1219,8 +1220,7 @@ function FinalizeChainLink($chainClosed=false)
         AuraPlayAbilities($cardID, $from);
         ArsenalPlayCardAbilities($cardID);
         if(HasBoost($cardID)) Boost();
-        if(($character[0] == "ELE062" || $character[0] == "ELE063") && CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2) PlayAura("ELE110", $currentPlayer);
-        if(!IsStaticType($definedCardType, $from, $cardID) && ($character[0] == "ARC075" || $character[0] == "ARC076")) ViseraiPlayCard($cardID);
+        CharacterPlayCardAbilities($cardID, $from);
       }
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target);
       if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);

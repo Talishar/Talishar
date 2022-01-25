@@ -243,6 +243,38 @@ function ArsenalHitEffects()
   return $modifier;
 }
 
+function CharacterPlayCardAbilities($cardID, $from)
+{
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards;
+  $character = &GetPlayerCharacter($currentPlayer);
+  for($i=0; $i<count($character); $i+=CharacterPieces())
+  {
+    if($character[$i+1] != 2) continue;
+    switch($character[$i])
+    {
+      case "EVR120":
+        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE"))
+        {
+          PlayAura("ELE111", $mainPlayer);
+          WriteLog("Iyslander created a Frostbite token for playing an ice card.");
+        }
+        break;
+      case "ARC075": case "ARC076":
+        if(!IsStaticType(CardType($cardID), $from, $cardID)) ViseraiPlayCard($cardID);
+        break;
+      case "ELE062": case "ELE063":
+        if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2)
+        {
+          PlayAura("ELE110", $currentPlayer);
+          WriteLog("Briar created an Embodiment of Lightning aura.");
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 function ArsenalPlayCardAbilities($cardID)
 {
   global $currentPlayer;
@@ -859,6 +891,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
+  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && SearchCharacterActive($currentPlayer, "EVR120")) return true;
   return false;
 }
 
