@@ -36,6 +36,7 @@ function PummelHit()
   AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
   AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
   AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+  AddDecisionQueue("ADDDISCARD", $defPlayer, "HAND", 1);
 }
 
 function KatsuHit($index)

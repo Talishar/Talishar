@@ -1919,15 +1919,16 @@ function MainCharacterHitAbilities()
   }
 }
 
-function MainCharacterAttackModifiers()
+function MainCharacterAttackModifiers($index=-1, $onlyBuffs=false)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumAttacks;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  if($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
   for($i=0; $i<count($mainCharacterEffects); $i+=CharacterEffectPieces())
   {
-    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
+    if($mainCharacterEffects[$i] == $index)
     {
       switch($mainCharacterEffects[$i+1])
       {
@@ -1942,6 +1943,7 @@ function MainCharacterAttackModifiers()
       }
     }
   }
+  if($onlyBuffs) return $modifier;
   for($i=0; $i<count($mainCharacter); $i+=CharacterPieces())
   {
     switch($mainCharacter[$i])
@@ -2115,6 +2117,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       ++$character[$cardIndex + 2];
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;
+      break;
+    case "EVR053":
+      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
       --$character[$cardIndex+5];

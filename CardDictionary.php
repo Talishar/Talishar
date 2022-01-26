@@ -1593,6 +1593,7 @@
       case "ELE236": return !HasTakenDamage($currentPlayer);
       case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) < 1;
       case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
+      case "EVR053": return !HelmOfSharpEyePlayable();
       default: return false;
     }
   }
@@ -1669,6 +1670,8 @@
       case "MON107": case "MON108": return true;
       case "MON122": return true;
       case "MON230": return true;
+      case "EVR001": return true;
+      case "EVR053": return true;
       default: return false;
     }
   }
