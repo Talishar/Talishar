@@ -32,6 +32,7 @@
   {
     switch($cardID)
     {
+      case "EVR056": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR167": case "EVR168": case "EVR169": return true;
@@ -88,6 +89,7 @@
       case "EVR021": return "AA";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
       case "EVR053": return "E";
+      case "EVR056": return "A";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR088": return "AA";
       case "EVR120": return "C";
@@ -130,6 +132,7 @@
       case "EVR021": return 10;
       case "EVR027": case "EVR028": case "EVR029": return 7;
       case "EVR053": return 0;
+      case "EVR056": return 0;
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR088": return 2;
       case "EVR120": return 0;
@@ -165,6 +168,7 @@
       case "EVR028": return 2;
       case "EVR029": return 3;
       case "EVR053": return 0;
+      case "EVR056": return 1;
       case "EVR063": return 1;
       case "EVR064": return 2;
       case "EVR065": return 3;
@@ -257,6 +261,9 @@
         $card = array_shift($deck);
         BanishCardForPlayer($deck[0], $currentPlayer, "DECK", "TCC");
         return "Helm of the Sharp Eye banished a card. It is playable to this combat chain.";
+      case "EVR056":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Oath of Steel gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
