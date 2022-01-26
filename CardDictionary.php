@@ -770,7 +770,7 @@
     {
       case "WTR051": case "WTR052": case "WTR053": return "2,6";
       case "ARC009": return "0,2,4,6,8,10,12";
-      case "MON231": return "0,2,4,6,8,10,12,14,16,18,20";
+      case "MON231": return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
       default:
         return "";
     }
@@ -1501,7 +1501,7 @@
   {
     global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
-    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon;
+    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon;
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
@@ -1591,6 +1591,7 @@
       case "ELE233": return count($myHand) != 1;
       case "ELE234": return count($myHand) == 0;
       case "ELE236": return !HasTakenDamage($currentPlayer);
+      case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) < 1;
       case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
       default: return false;
     }
