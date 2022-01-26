@@ -309,6 +309,7 @@
           AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);         
         } 
         return "";
+      default: return "";
     }
   }
 
