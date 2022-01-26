@@ -52,7 +52,11 @@
   {
     switch($cardID)
     {
+      case "EVR021": return -4;
       case "EVR160": return -1;
+      case "EVR170-2": return 3;
+      case "EVR171-2": return 2;
+      case "EVR172-2": return 1;
       default: return 0;
     }
   }
@@ -63,8 +67,11 @@
     switch($cardID)
     {
       case "EVR019": return HasCrush($attackID);
+      case "EVR021": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
+      case "EVR170-1": case "EVR171-1": case "EVR172-1": return CardType($attackID) == "AA";
+      case "EVR170-2": case "EVR171-2": case "EVR172-2": return CardType($attackID) == "AA";
       default: return false;
     }
   }
@@ -76,6 +83,7 @@
       case "EVR011": case "EVR012": case "EVR013": return "AA";
       case "EVR017": return "C";
       case "EVR019": return "C";
+      case "EVR021": return "AA";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR088": return "AA";
@@ -115,6 +123,7 @@
       case "EVR011": case "EVR012": case "EVR013": return 2;
       case "EVR017": return 0;
       case "EVR019": return 0;
+      case "EVR021": return 10;
       case "EVR027": case "EVR028": case "EVR029": return 7;
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR088": return 2;
@@ -146,6 +155,7 @@
       case "EVR013": return 3;
       case "EVR017": return 0;
       case "EVR019": return 0;
+      case "EVR021": return 1;
       case "EVR027": return 1;
       case "EVR028": return 2;
       case "EVR029": return 3;
@@ -203,6 +213,7 @@
       case "EVR011": return 6;
       case "EVR012": return 5;
       case "EVR013": return 4;
+      case "EVR021": return 14;
       case "EVR027": return 10;
       case "EVR028": return 9;
       case "EVR029": return 8;
@@ -254,6 +265,16 @@
       case "EVR164": case "EVR165": case "EVR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
+      case "EVR170": case "EVR171": case "EVR172":
+        $rv = "Smashing Good Time makes your next attack action that hits destroy an item";
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+        if($from == "ARS")
+        {
+          AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
+          $rv .= " and gives your next attack action card +" . EffectAttackModifier($cardID . "-2") . ".";
+        }
+        else { $rv .= "."; }
+        return $rv;
       case "EVR173": case "EVR174": case "EVR175":
         if($cardID == "EVR173") $opt = 3;
         else if($cardID == "EVR174") $opt = 2;
@@ -279,6 +300,9 @@
     global $mainPlayer, $defPlayer;
     switch($cardID)
     {
+      case "EVR021":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
       case "EVR088":
         $hand = &GetHand($defPlayer);
         $cards = "";
@@ -310,6 +334,42 @@
         break;
       default: break;
     }
+  }
+
+  function HeaveValue($cardID)
+  {
+    switch($cardID)
+    {
+      case "EVR021": return 3;
+      default: return 0;
+    }
+  }
+
+  function HeaveIndices()
+  {
+    global $mainPlayer;
+    if(ArsenalFull($mainPlayer)) return "";//Heave does nothing if arsenal is full
+    $hand = &GetHand($mainPlayer);
+    $heaveIndices = "";
+    for($i=0; $i<count($hand); $i+=HandPieces())
+    {
+      if(HeaveValue($hand[$i]) > 0)
+      {
+        if($heaveIndices != "") $heaveIndices .= ",";
+        $heaveIndices .= $i;
+      }
+    }
+    return $heaveIndices;
+  }
+
+  function Heave()
+  {
+    global $mainPlayer;
+    WriteLog("You may choose to Heave a card or pass.");
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "HEAVE");
+    AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1, 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
+    AddDecisionQueue("HEAVE", $mainPlayer, "-", 1);
   }
 
 

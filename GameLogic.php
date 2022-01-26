@@ -995,6 +995,11 @@ function EffectHitEffect($cardID)
     case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
     case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
     case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
+    case "EVR170-1": case "EVR171-1": case "EVR172-1":
+      AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
+      AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
+      AddDecisionQueue("DESTROYITEM", $defPlayer, "<-", 1);
+      break;
     default: break;
   }
   return 0;
@@ -1519,6 +1524,7 @@ function IsCombatEffectPersistent($cardID)
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
     case "EVR019": return true;
     case "EVR160": return true;
+    case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
     default: return false;
   }
 }
@@ -2178,6 +2184,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
         case "MYHAND": $rv = GetIndices(count(GetHand($player))); break;
         case "ITEMS": $rv = GetIndices(count(GetItems($player))); break;
+        case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
         case "CCAA": $rv = SearchCombatChain("AA"); break;
@@ -2218,6 +2225,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ELE125": case "ELE126": case "ELE127": $rv = SummerwoodShelterIndices($player); break;
         case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
         case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
+        case "HEAVE": $rv = HeaveIndices(); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
@@ -3117,6 +3125,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for($i=0; $i<$lastResult; ++$i) Draw($player);
       }
       return $lastResult;
+    case "HEAVE":
+      PrependDecisionQueue("PAYRESOURCES", $player, "<-");
+      AddArsenal($lastResult, $player, "HAND", "UP");
+      $heaveValue = HeaveValue($lastResult);
+      for($i=0; $i<$heaveValue; ++$i)
+      {
+        PlayAura("WTR075", $player);
+      }
+      WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this.");
+      return HeaveValue($lastResult);
     default:
       return "NOTSTATIC";
   }
