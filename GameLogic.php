@@ -936,6 +936,9 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "ELE082": case "ELE083": case "ELE084": return GetClassState($defPlayer,  $CS_ArcaneDamageTaken) >= 1 ? 2 : 0;
     case "ELE134": case "ELE135": case "ELE136": return $from == "ARS" ? 1 : 0;
     case "ELE202": return CountPitch($mainPitch, 3) >= 1 ? 1 : 0;
+    case "EVR063": return 3;
+    case "EVR064": return 2;
+    case "EVR065": return 1;
     default: return 0;
   }
 }
@@ -990,8 +993,8 @@ function EffectHitEffect($cardID)
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
     case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
-    case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 5); break;//TODO: is this right?
-    case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;//TODO: is this right?
+    case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
+    case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
     default: break;
   }
   return 0;
@@ -2120,7 +2123,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed;
+  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken;
   $rv = "";
   switch($phase)
   {
@@ -3097,6 +3100,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDCARDTOCHAIN":
       AddCombatChain($lastResult, $player, $parameter, 0);
+      return $lastResult;
+    case "EVENBIGGERTHANTHAT":
+      $deck = &GetDeck($player);
+      RevealCards($deck[0]);
+      if(AttackValue($deck[0]) > GetClassState($player, $CS_DamageTaken))
+      {
+        WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
+        Draw($player);
+        PlayAura("WTR225", $player);
+      }
+      return $lastResult;
+    case "KRAKENAETHERVEIN":
+      if($lastResult > 0)
+      {
+        for($i=0; $i<$lastResult; ++$i) Draw($player);
+      }
       return $lastResult;
     default:
       return "NOTSTATIC";

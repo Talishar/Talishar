@@ -312,7 +312,8 @@
       $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
     }
     $content .= "</div>";
-    echo CreatePopup("INSTANT", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+    $popupCaption = ($playerID == $turn[1] ? "Please choose " . TypeToPlay($turn[0]) : "Waiting for other player to choose " . TypeToPlay($turn[0]));
+    echo CreatePopup("INSTANT", [], 0, 1, $popupCaption, 1, $content);
   }
 
   if($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID)
