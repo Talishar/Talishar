@@ -122,6 +122,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
   if($turn[0] == "B" || CardType($cardID) == "DR") OnBlockEffects($index, $from);
+  CurrentEffectAttackAbility();
   return $index;
 }
 

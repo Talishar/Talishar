@@ -1238,6 +1238,32 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
   return $prevention;
 }
 
+function CurrentEffectAttackAbility()
+{
+  global $currentTurnEffects, $combatChain, $mainPlayer;
+  global $CS_PlayIndex;
+  if(count($combatChain) == 0) return;
+  $attackID = $combatChain[0];
+  $attackType = CardType($attackID);
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+  {
+    if($currentTurnEffects[$i+1] == $mainPlayer)
+    {
+      switch($currentTurnEffects[$i])
+      {
+        case "EVR056":
+          if($attackType == "W")
+          {
+            $character = &GetPlayerCharacter($mainPlayer);
+            ++$character[GetClassState($mainPlayer, $CS_PlayIndex)+3];
+          }
+          break;
+        default: break;
+      }
+    }
+  }
+}
+
 function CurrentEffectPlayAbility($cardID)
 {
   global $currentTurnEffects, $currentPlayer, $actionPoints;
@@ -1419,6 +1445,7 @@ function CurrentEffectEndTurnAbilities()
     switch($currentTurnEffects[$i])
     {
       case "MON069": case "MON070": case "MON071":
+      case "EVR056"://Oath of Steel does the same thing
         $char = &GetPlayerCharacter($currentTurnEffects[$i+1]);
         for($j=0; $j<count($char); $j+=CharacterPieces())
         {
