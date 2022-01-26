@@ -4,6 +4,7 @@
   {
     switch($cardID)
     {
+      case "EVR053": return 1;
       case "EVR121": return 3;
       case "EVR157": return 1;
       case "EVR173": case "EVR174": case "EVR175": return 0;
@@ -17,6 +18,7 @@
   {
     switch($cardID)
     {
+      case "EVR053": return "AR";
       case "EVR121": return "I";
       case "EVR157": return "I";
       case "EVR173": case "EVR174": case "EVR175": return "I";
@@ -85,6 +87,7 @@
       case "EVR019": return "C";
       case "EVR021": return "AA";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
+      case "EVR053": return "E";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR088": return "AA";
       case "EVR120": return "C";
@@ -108,6 +111,7 @@
   {
     switch($cardID)
     {
+      case "EVR053": return "Head";
       case "EVR088": return "Arrow";
       case "EVR121": return "Staff";
       case "EVR155": return "Off-Hand";
@@ -125,6 +129,7 @@
       case "EVR019": return 0;
       case "EVR021": return 10;
       case "EVR027": case "EVR028": case "EVR029": return 7;
+      case "EVR053": return 0;
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR088": return 2;
       case "EVR120": return 0;
@@ -159,6 +164,7 @@
       case "EVR027": return 1;
       case "EVR028": return 2;
       case "EVR029": return 3;
+      case "EVR053": return 0;
       case "EVR063": return 1;
       case "EVR064": return 2;
       case "EVR065": return 3;
@@ -189,6 +195,7 @@
       case "EVR011": case "EVR012": case "EVR013": return -1;
       case "EVR017": return 0;
       case "EVR019": return 0;
+      case "EVR053": return 1;
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR155": return -1;
@@ -245,6 +252,11 @@
         }
         $rv .= ".";
         return $rv;
+      case "EVR053":
+        $deck = &GetDeck($currentPlayer);
+        $card = array_shift($deck);
+        BanishCardForPlayer($deck[0], $currentPlayer, "DECK", "TCC");
+        return "Helm of the Sharp Eye banished a card. It is playable to this combat chain.";
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
@@ -372,5 +384,18 @@
     AddDecisionQueue("HEAVE", $mainPlayer, "-", 1);
   }
 
+  function HelmOfSharpEyePlayable()
+  {
+    global $currentPlayer;
+    $character = &GetPlayerCharacter($currentPlayer);
+    for($i=0; $i<count($character); $i+=CharacterPieces())
+    {
+      if(cardType($character[$i]) != "W") continue;
+      $baseAttack = AttackValue($character[$i]);
+      $buffedAttack = $baseAttack + $character[$i+3] + MainCharacterAttackModifiers($i, true);
+      if($buffedAttack > $baseAttack*2) return true;
+    }
+    return false;
+  }
 
 ?>
