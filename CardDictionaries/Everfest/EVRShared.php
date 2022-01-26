@@ -310,6 +310,12 @@
           AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
         }
         return "";
+      case "EVR187":
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);         
+        } 
+        return "";
       default: return "";
     }
   }
