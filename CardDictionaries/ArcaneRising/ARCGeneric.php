@@ -170,7 +170,7 @@
         if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Life for a Life gained Go Again."; }
         return $ret;
       case "ARC170": case "ARC171": case "ARC172":
-        $rv = "Plunder makes your next attack action that hits draw a card";
+        $rv = "Plunder Run makes your next attack action that hits draw a card";
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         if($from == "ARS")
         {
@@ -178,7 +178,7 @@
           $rv .= " and gives your next attack action card +" . EffectAttackModifier($cardID . "-2") . ".";
         }
         else { $rv .= "."; }
-        return  $rv;
+        return $rv;
       case "ARC173": case "ARC174": case "ARC175":
         if($cardID == "ARC173") $prevent = 6;
         else if($cardID == "ARC174") $prevent = 5;
@@ -308,4 +308,3 @@
   }
 
 ?>
-

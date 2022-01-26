@@ -600,9 +600,10 @@ function FinalizeChainLink($chainClosed=false)
 
   function BeginTurnPass()
   {
-    global $mainPlayer, $defPlayer;
+    global $mainPlayer, $defPlayer, $decisionQueue;
     WriteLog("Main player has passed on the turn. Beginning end of turn step.");
-    if(ShouldHoldPriority($defPlayer))
+    Heave();
+    if(ShouldHoldPriority($defPlayer) || count($decisionQueue) > 0)
     {
       AddLayer("ENDTURN", $mainPlayer, "-");
       ProcessDecisionQueue("");
