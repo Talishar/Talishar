@@ -2393,6 +2393,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $hand[$lastResult];
       unset($hand[$lastResult]);
       $hand = array_values($hand);
+      AddGraveyard($cardID, $player, $hand);
       return $cardID;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);

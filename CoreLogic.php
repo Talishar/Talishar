@@ -610,20 +610,22 @@ function UnsetBanishModifier($player, $modifier)
   $banish = &GetBanish($mainPlayer);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
-    if($banish[$i+1] == "TCL") $banish[$i+1] = "DECK";
+    if($banish[$i+1] == $modifier) $banish[$i+1] = "DECK";
   }
 }
 
 function UnsetChainLinkBanish()
 {
-  global $mainPlayer;
-  UnsetBanishModifier($mainPlayer, "TCL");
+  UnsetBanishModifier(1, "TCL");
+  UnsetBanishModifier(2, "TCL");
 }
 
 function UnsetCombatChainBanish()
 {
-  global $mainPlayer;
-  UnsetBanishModifier($mainPlayer, "TCC");
+  UnsetBanishModifier(1, "TCC");
+  UnsetBanishModifier(2, "TCC");
+  UnsetBanishModifier(1, "TCL");
+  UnsetBanishModifier(2, "TCL");
 }
 
 function UnsetMyCombatChainBanish()
