@@ -10,6 +10,7 @@
       case "EVR121": return 3;
       case "EVR157": return 1;
       case "EVR173": case "EVR174": case "EVR175": return 0;
+      case "EVR177": return 0;
       case "EVR178": return 0;
       case "EVR187": return 0;
       default: return 0;
@@ -26,6 +27,7 @@
       case "EVR121": return "I";
       case "EVR157": return "I";
       case "EVR173": case "EVR174": case "EVR175": return "I";
+      case "EVR177": return "I";
       case "EVR178": return "DR";
       case "EVR187": return "I";
       default: return "";
@@ -41,7 +43,8 @@
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR167": case "EVR168": case "EVR169": return true;
       case "EVR170": case "EVR171": case "EVR172": return true;
-      case "EVR178": return true;
+      case "EVR177": case "EVR178": return true;
+      case "EVR188": return true;
       case "EVR190": return true;
       default: return false;
     }
@@ -111,8 +114,10 @@
       case "EVR167": case "EVR168": case "EVR169": return "A";
       case "EVR170": case "EVR171": case "EVR172": return "A";
       case "EVR173": case "EVR174": case "EVR175": return "I";
+      case "EVR177": return "A";
       case "EVR178": return "A";
       case "EVR187": return "A";
+      case "EVR188": return "A";
       case "EVR190": return "A";
       default: return "";
     }
@@ -128,7 +133,7 @@
       case "EVR121": return "Staff";
       case "EVR137": return "Head";
       case "EVR155": return "Off-Hand";
-      case "EVR178": case "EVR187": case "EVR190": return "Item";
+      case "EVR177": case "EVR178": case "EVR187": case "EVR188": case "EVR190": return "Item";
       default: return "";
     }
   }
@@ -160,8 +165,9 @@
       case "EVR167": case "EVR168": case "EVR169": return 0;
       case "EVR170": case "EVR171": case "EVR172": return 0;
       case "EVR173": case "EVR174": case "EVR175": return 0;
-      case "EVR178": return 0;
+      case "EVR177": case "EVR178": return 0;
       case "EVR187": return 0;
+      case "EVR188": return 0;
       case "EVR190": return 0;
       default: return 0;
     }
@@ -200,8 +206,9 @@
       case "EVR173": return 1;
       case "EVR174": return 2;
       case "EVR175": return 3;
-      case "EVR178": return 3;
+      case "EVR177": case "EVR178": return 3;
       case "EVR187": return 3;
+      case "EVR188": return 3;
       case "EVR190": return 2;
       default: return 3;
     }
@@ -227,8 +234,9 @@
       case "EVR167": case "EVR168": case "EVR169": return 2;
       case "EVR170": case "EVR171": case "EVR172": return 2;
       case "EVR173": case "EVR174": case "EVR175": return -1;
-      case "EVR178": return -1;
+      case "EVR177": case "EVR178": return -1;
       case "EVR187": return -1;
+      case "EVR188": return -1;
       case "EVR190": return -1;
       default: return 3;
     }
@@ -331,6 +339,20 @@
         else if($cardID == "EVR175") $opt = 1;
         Opt($cardID, $opt);
         AddDecisionQueue("EVENBIGGERTHANTHAT", $currentPlayer, "-");
+        return "";
+      case "EVR177":
+        $rv = "";
+        if($from == "PLAY")
+        {
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          PummelHit($otherPlayer);
+          PummelHit($otherPlayer);
+        }
+        else
+        {
+          $rv = "Amulet of Echoes is a partially manually card. Only activate the ability when the target player has played two or more cards with the same name this turn.";
+        }
         return "";
       case "EVR178":
         if($from == "PLAY")
@@ -457,6 +479,24 @@
       return $count . "-" . SearchRemoveDuplicates($indices);
     }
     return "";
+  }
+
+  //Returns true if it should be destroyed
+  function TalismanOfBalanceEndTurn()
+  {
+    global $mainPlayer, $defPlayer;
+    if(ArsenalFull($mainPlayer)) return false;
+    $mainArs = &GetArsenal($mainPlayer);
+    $defArs = &GetArsenal($defPlayer);
+    if(count($mainArs) < count($defArs))
+    {
+      $deck = &GetDeck($mainPlayer);
+      $card = array_shift($deck);
+      AddArsenal($card, $mainPlayer, "DECK", "DOWN");
+      WriteLog("Talisman of Balance destroyed itself and put a card in your arsenal.");
+      return true;
+    }
+    return false;
   }
 
 ?>
