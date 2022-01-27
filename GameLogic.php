@@ -178,7 +178,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       }
       return "Glint the Quicksilver" . $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
     case "WTR119": case "WTR122":
-
       AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDMZBUFF", $mainPlayer, $cardID);
@@ -2152,7 +2151,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;
       break;
-    case "EVR053":
+    case "EVR053": case "EVR103": case "EVR137":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
@@ -2266,13 +2265,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
         case "HEAVE": $rv = HeaveIndices(); break;
         case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
+        case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
+        case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
     case "PUTPLAY":
-      if(CardSubtype($lastResult) == "Item")
+      $subtype = CardSubType($lastResult);
+      if($subtype == "Item")
       {
         PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
+      }
+      else if($subtype == "Aura")
+      {
+        PlayAura($parameter, $player);
       }
       return $lastResult;
     case "DRAW":
@@ -3055,6 +3061,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
+    case "MULTIZONEDESTROY":
+      $params = explode("-", $lastResult);
+      $source = $params[0];
+      $index = $params[1];
+      switch($source)
+      {
+        case "MYAURAS": DestroyAura($player, $index); break;
+        default: break;
+      }
+      return $lastResult;
     case "COUNTITEM":
       return CountItem($parameter, $player);
     case "FINDANDDESTROYITEM":

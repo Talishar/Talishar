@@ -42,6 +42,12 @@ function SearchArsenal($player, $type="", $subtype="", $maxCost=-1, $minCost=-1,
   return SearchInner($arsenal, ArsenalPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
+function SearchAura($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+{
+  $auras = &GetAuras($player);
+  return SearchInner($auras, AuraPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+}
+
 function SearchItems($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
 {
   $items = &GetItems($player);
