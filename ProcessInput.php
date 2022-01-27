@@ -616,6 +616,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function FinishTurnPass()
   {
+    ItemEndTurnAbilities();
     AuraBeginEndStepAbilities();
     LandmarkBeginEndStepAbilities();
     BeginEndStepEffects();

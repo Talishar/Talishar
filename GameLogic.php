@@ -1597,6 +1597,25 @@ function ItemStartTurnAbility($index)
   }
 }
 
+function ItemEndTurnAbilities()
+{
+  global $mainPlayer;
+  $items = &GetItems($mainPlayer);
+  for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+  {
+    $remove = false;
+    switch($items[$i])
+    {
+      case "EVR188": $remove = TalismanOfBalanceEndTurn(); break;
+      default: break;
+    }
+    if($remove)
+    {
+      DestroyItemForPlayer($mainPlayer, $i);
+    }
+  }
+}
+
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer;
