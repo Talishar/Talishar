@@ -1354,6 +1354,7 @@ function CurrentEffectGrantsGoAgain()
         case "ELE177": case "ELE178": case "ELE179": return true;
         case "ELE180": case "ELE181": case "ELE182": return $combatChainState[$CCS_AttackFused] == 1;
         case "ELE201": return true;
+        case "EVR017": return true;
         default: break;
       }
     }
@@ -1612,6 +1613,12 @@ function CharacterStartTurnAbility($index)
           BanishCardForPlayer($mainCharacter[$index], $mainPlayer, "EQUIP", "NA");
           WriteLog("Carrion Husk got banished for having 13 or less health.");
       } break;
+    case "EVR017":
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card from your hand for Bravo, Star of the Show.");
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
+      AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
+      AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
+      break;
     case "EVR019":
       if(CountAura("WTR075", $mainPlayer) >= 3)
       {
@@ -2258,6 +2265,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
         case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
         case "HEAVE": $rv = HeaveIndices(); break;
+        case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
@@ -3179,23 +3187,39 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this.");
       return HeaveValue($lastResult);
-    case "POTIONOFLUCK": 
+    case "POTIONOFLUCK":
       $arsenal = &GetArsenal($player);
       $hand = &GetHand($player);
       $deck = &GetDeck($player);
       $sizeToDraw = count($hand) + count($arsenal)/4;
       $i = 0;
-      while (count($hand)>0) { 
+      while (count($hand)>0) {
         array_push($deck, $hand[$i]);
         unset($hand[$i]);
         ++$i;
       }
       PrependDecisionQueue("FULLARSENALTODECK", $currentPlayer, "-", 1);
       PrependDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      for ($i=0; $i < $sizeToDraw; $i++) { 
+      for ($i=0; $i < $sizeToDraw; $i++) {
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
       }
       WriteLog("Potion of Luck shuffled your hand and arsenal into your deck and drew " . $sizeToDraw . " cards.");
+      return $lastResult;
+    case "BRAVOSTARSHOW":
+      //TODO: VALIDATE
+      $hand = &GetHand($player);
+      $cards = "";
+      for($i=0; $i<count($lastResult); ++$i)
+      {
+        if($cards != "") $cards .= ",";
+        $cards .= $hand[$lastResult[$i]];
+      }
+      RevealCards($cards);
+      WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and Go Again.");
+      AddCurrentTurnEffect("EVR017", $player);
+      return $lastResult;
+    case "SETDQCONTEXT":
+
       return $lastResult;
     default:
       return "NOTSTATIC";

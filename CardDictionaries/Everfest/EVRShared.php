@@ -55,6 +55,7 @@
   {
     switch($cardID)
     {
+      case "EVR017": return 2;
       case "EVR021": return -4;
       case "EVR160": return -1;
       case "EVR170-2": return 3;
@@ -69,6 +70,7 @@
     global $combatChain;
     switch($cardID)
     {
+      case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
       case "EVR160": return true;
@@ -313,8 +315,8 @@
       case "EVR187":
         if($from == "PLAY"){
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-          AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);         
-        } 
+          AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);
+        }
         return "";
       default: return "";
     }
@@ -409,6 +411,23 @@
       if($buffedAttack > $baseAttack*2) return true;
     }
     return false;
+  }
+
+  function BravoStarOfTheShowIndices()
+  {
+    global $mainPlayer;
+    $earth = SearchHand($mainPlayer, "", "", -1, -1, "", "EARTH");
+    $ice = SearchHand($mainPlayer, "", "", -1, -1, "", "ICE");
+    $lightning = SearchHand($mainPlayer, "", "", -1, -1, "", "LIGHTNING");
+    if($earth != "" && $ice != "" && $lightning != "")
+    {
+      $indices = CombineSearches($earth, $ice);
+      $indices = CombineSearches($indices, $lightning);
+      $count = SearchCount($indices);
+      if($count > 3) $count = 3;
+      return $count . "-" . SearchRemoveDuplicates($indices);
+    }
+    return "";
   }
 
 ?>

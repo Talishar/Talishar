@@ -199,6 +199,7 @@ function AddLayer($cardID, $player, $parameter, $target="-")
 function AddDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
 {
   global $decisionQueue;
+  $parameter = str_replace(" ", "_", $parameter);
   array_push($decisionQueue, $phase);
   array_push($decisionQueue, $player);
   array_push($decisionQueue, $parameter);
