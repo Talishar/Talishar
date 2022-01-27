@@ -135,7 +135,7 @@
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Shadow of Blasmophet discarded " . CardLink($card, $card);
-        if(AttackValue(DiscardRandom()) >= 6)
+        if(AttackValue($card) >= 6)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
