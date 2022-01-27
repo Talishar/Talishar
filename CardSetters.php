@@ -345,13 +345,14 @@ function AddGraveyard($cardID, $player, $from)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
-  global $myStateBuiltFor;
+  global $myStateBuiltFor, $CS_CardsEnteredGY;
   WriteReplay($player, $cardID, $from, "GRAVEYARD");
   if($cardID == "MON124") { BanishCardForPlayer($cardID, $player, $from, "NA"); return; }
   else if($cardID == "CRU007" && $from != "CC")
   {
     AddDecisionQueue("BEASTWITHIN", $player, "-");
   }
+  IncrementClassState($player, $CS_CardsEnteredGY);
   if($mainPlayerGamestateStillBuilt)
   {
     if($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);

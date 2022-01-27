@@ -358,6 +358,22 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
   return false;
 }
 
+function CountCurrentTurnEffects($cardID, $player, $remove=false)
+{
+  global $currentTurnEffects;
+  $count = 0;
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    if($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i+1] == $player){
+      if($remove){
+        for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
+      }
+      ++$count;
+    }
+  }
+  return $count;
+}
+
 function SearchMainAuras($cardID)
 {
   global $mainAuras, $defAuras;
