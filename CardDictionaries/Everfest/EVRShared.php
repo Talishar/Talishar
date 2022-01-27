@@ -5,6 +5,8 @@
     switch($cardID)
     {
       case "EVR053": return 1;
+      case "EVR103": return 0;
+      case "EVR137": return 0;
       case "EVR121": return 3;
       case "EVR157": return 1;
       case "EVR173": case "EVR174": case "EVR175": return 0;
@@ -19,6 +21,8 @@
     switch($cardID)
     {
       case "EVR053": return "AR";
+      case "EVR103": return "A";
+      case "EVR137": return "I";
       case "EVR121": return "I";
       case "EVR157": return "I";
       case "EVR173": case "EVR174": case "EVR175": return "I";
@@ -47,6 +51,7 @@
   {
     switch($cardID)
     {
+      case "EVR103": return true;
       default: return false;
     }
   }
@@ -94,6 +99,8 @@
       case "EVR056": return "A";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR088": return "AA";
+      case "EVR103": return "E";
+      case "EVR137": return "E";
       case "EVR120": return "C";
       case "EVR121": return "W";
       case "EVR155": return "E";
@@ -117,7 +124,9 @@
     {
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
+      case "EVR103": return "Arms";
       case "EVR121": return "Staff";
+      case "EVR137": return "Head";
       case "EVR155": return "Off-Hand";
       case "EVR178": case "EVR187": case "EVR190": return "Item";
       default: return "";
@@ -137,8 +146,10 @@
       case "EVR056": return 0;
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR088": return 2;
+      case "EVR103": return 0;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR137": return 0;
       case "EVR155": return 0;
       case "EVR156": return 1;
       case "EVR157": return 2;
@@ -175,8 +186,10 @@
       case "EVR064": return 2;
       case "EVR065": return 3;
       case "EVR088": return 1;
+      case "EVR103": return 0;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR137": return 0;
       case "EVR155": return 0;
       case "EVR156": case "EVR157": return 1;
       case "EVR159": return 1;
@@ -202,8 +215,10 @@
       case "EVR017": return 0;
       case "EVR019": return 0;
       case "EVR053": return 1;
+      case "EVR103": return 0;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR137": return 0;
       case "EVR155": return -1;
       case "EVR156": case "EVR157": return 3;
       case "EVR159": return 2;
@@ -266,10 +281,24 @@
       case "EVR056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Oath of Steel gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
+      case "EVR103":
+        PlayAura("ARC112", $currentPlayer, 2);
+        return "Vexing Quillhand created two Runechant tokens.";
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
         return "";
+      case "EVR137":
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose an Illusionist Aura to destroy and replace.");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "AURACLASS,ILLUSIONIST");
+        AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "MYAURAS", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
+        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("PUTPLAY", $currentPlayer, "<-", 1);
+        return "Crown of Reflection let you destroy an aura and play a new one.";
       case "EVR157":
         $rv = "";
         if($from == "PLAY")
@@ -392,7 +421,7 @@
   function Heave()
   {
     global $mainPlayer;
-    WriteLog("You may choose to Heave a card or pass.");
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may choose to Heave a card or pass.");
     AddDecisionQueue("FINDINDICES", $mainPlayer, "HEAVE");
     AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1, 1);
     AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
