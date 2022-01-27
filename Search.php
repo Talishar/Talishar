@@ -295,6 +295,19 @@ function CombineSearches($search1, $search2)
   return $search1 . "," . $search2;
 }
 
+function SearchRemoveDuplicates($search)
+{
+  $indices = explode(",", $search);
+  for($i=count($indices)-1; $i>=0; --$i)
+  {
+    for($j=$i-1; $j>=0; --$j)
+    {
+      if($indices[$j] == $indices[$i]) unset($indices[$i]);
+    }
+  }
+  return implode(",", array_values($indices));
+}
+
 function SearchCount($search)
 {
   if($search == "") return 0;
