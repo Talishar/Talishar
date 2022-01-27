@@ -53,6 +53,7 @@
       case "EVR181": return true;
       case "EVR188": return true;
       case "EVR190": return true;
+      case "EVR191": return true;
       default: return false;
     }
   }
@@ -134,6 +135,7 @@
       case "EVR187": return "A";
       case "EVR188": return "A";
       case "EVR190": return "A";
+      case "EVR191": return "A";
       default: return "";
     }
   }
@@ -149,7 +151,7 @@
       case "EVR121": return "Staff";
       case "EVR137": return "Head";
       case "EVR155": return "Off-Hand";
-      case "EVR177": case "EVR178": case "EVR181": case "EVR183": case "EVR187": case "EVR188": case "EVR190": return "Item";
+      case "EVR177": case "EVR178": case "EVR181": case "EVR183": case "EVR187": case "EVR188": case "EVR190": case "EVR191": return "Item";
       default: return "";
     }
   }
@@ -189,7 +191,7 @@
       case "EVR183": return 0;
       case "EVR187": return 0;
       case "EVR188": return 0;
-      case "EVR190": return 0;
+      case "EVR190": case "EVR191": return 0;
       default: return 0;
     }
   }
@@ -237,7 +239,7 @@
       case "EVR183": return 3;
       case "EVR187": return 3;
       case "EVR188": return 3;
-      case "EVR190": return 2;
+      case "EVR190": case "EVR191": return 2;
       default: return 3;
     }
   }
@@ -268,7 +270,7 @@
       case "EVR183": return -1;
       case "EVR187": return -1;
       case "EVR188": return -1;
-      case "EVR190": return -1;
+      case "EVR190": case "EVR191": return -1;
       default: return 3;
     }
   }
