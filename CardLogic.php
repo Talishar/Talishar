@@ -30,13 +30,14 @@ function EmergingPowerDestroy($cardID)
   return $log;
 }
 
-function PummelHit()
+function PummelHit($player=-1)
 {
   global $defPlayer;
-  AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-  AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-  AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-  AddDecisionQueue("ADDDISCARD", $defPlayer, "HAND", 1);
+  if($player == -1) $player = $defPlayer;
+  AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+  AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+  AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
 }
 
 function KatsuHit($index)
@@ -199,6 +200,7 @@ function AddLayer($cardID, $player, $parameter, $target="-")
 function AddDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
 {
   global $decisionQueue;
+  $parameter = str_replace(" ", "_", $parameter);
   array_push($decisionQueue, $phase);
   array_push($decisionQueue, $player);
   array_push($decisionQueue, $parameter);

@@ -42,6 +42,12 @@ function SearchArsenal($player, $type="", $subtype="", $maxCost=-1, $minCost=-1,
   return SearchInner($arsenal, ArsenalPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
+function SearchAura($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+{
+  $auras = &GetAuras($player);
+  return SearchInner($auras, AuraPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+}
+
 function SearchItems($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
 {
   $items = &GetItems($player);
@@ -293,6 +299,19 @@ function CombineSearches($search1, $search2)
   if($search2 == "") return $search1;
   else if($search1 == "") return $search2;
   return $search1 . "," . $search2;
+}
+
+function SearchRemoveDuplicates($search)
+{
+  $indices = explode(",", $search);
+  for($i=count($indices)-1; $i>=0; --$i)
+  {
+    for($j=$i-1; $j>=0; --$j)
+    {
+      if($indices[$j] == $indices[$i]) unset($indices[$i]);
+    }
+  }
+  return implode(",", array_values($indices));
 }
 
 function SearchCount($search)
