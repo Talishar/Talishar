@@ -12,6 +12,8 @@
       case "EVR173": case "EVR174": case "EVR175": return 0;
       case "EVR177": return 0;
       case "EVR178": return 0;
+      case "EVR181": return 0;
+      case "EVR183": return 0;
       case "EVR187": return 0;
       default: return 0;
     }
@@ -29,6 +31,8 @@
       case "EVR173": case "EVR174": case "EVR175": return "I";
       case "EVR177": return "I";
       case "EVR178": return "DR";
+      case "EVR181": return "I";
+      case "EVR183": return "A";
       case "EVR187": return "I";
       default: return "";
     }
@@ -38,12 +42,15 @@
   {
     switch($cardID)
     {
+      case "EVR003": return true;
+      case "EVR005": case "EVR006": case "EVR007": return true;
       case "EVR056": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR167": case "EVR168": case "EVR169": return true;
       case "EVR170": case "EVR171": case "EVR172": return true;
       case "EVR177": case "EVR178": return true;
+      case "EVR181": return true;
       case "EVR188": return true;
       case "EVR190": return true;
       default: return false;
@@ -55,6 +62,7 @@
     switch($cardID)
     {
       case "EVR103": return true;
+      case "EVR183": return true;
       default: return false;
     }
   }
@@ -93,6 +101,9 @@
   {
     switch($cardID)
     {
+      case "EVR001": return "E";
+      case "EVR003": return "A";
+      case "EVR005": case "EVR006": case "EVR007": return "A";
       case "EVR011": case "EVR012": case "EVR013": return "AA";
       case "EVR017": return "C";
       case "EVR019": return "C";
@@ -116,6 +127,8 @@
       case "EVR173": case "EVR174": case "EVR175": return "I";
       case "EVR177": return "A";
       case "EVR178": return "A";
+      case "EVR181": return "A";
+      case "EVR183": return "A";
       case "EVR187": return "A";
       case "EVR188": return "A";
       case "EVR190": return "A";
@@ -127,13 +140,14 @@
   {
     switch($cardID)
     {
+      case "EVR003": return "Arms";
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
       case "EVR103": return "Arms";
       case "EVR121": return "Staff";
       case "EVR137": return "Head";
       case "EVR155": return "Off-Hand";
-      case "EVR177": case "EVR178": case "EVR187": case "EVR188": case "EVR190": return "Item";
+      case "EVR177": case "EVR178": case "EVR181": case "EVR183": case "EVR187": case "EVR188": case "EVR190": return "Item";
       default: return "";
     }
   }
@@ -142,6 +156,9 @@
   {
     switch($cardID)
     {
+      case "EVR001": return 0;
+      case "EVR003": return 0;
+      case "EVR005": case "EVR006": case "EVR007": return 0;
       case "EVR011": case "EVR012": case "EVR013": return 2;
       case "EVR017": return 0;
       case "EVR019": return 0;
@@ -166,6 +183,8 @@
       case "EVR170": case "EVR171": case "EVR172": return 0;
       case "EVR173": case "EVR174": case "EVR175": return 0;
       case "EVR177": case "EVR178": return 0;
+      case "EVR181": return 0;
+      case "EVR183": return 0;
       case "EVR187": return 0;
       case "EVR188": return 0;
       case "EVR190": return 0;
@@ -177,6 +196,11 @@
   {
     switch($cardID)
     {
+      case "EVR001": return 0;
+      case "EVR003": return 3;
+      case "EVR005": return 1;
+      case "EVR006": return 2;
+      case "EVR007": return 3;
       case "EVR011": return 1;
       case "EVR012": return 2;
       case "EVR013": return 3;
@@ -207,6 +231,8 @@
       case "EVR174": return 2;
       case "EVR175": return 3;
       case "EVR177": case "EVR178": return 3;
+      case "EVR181": return 3;
+      case "EVR183": return 3;
       case "EVR187": return 3;
       case "EVR188": return 3;
       case "EVR190": return 2;
@@ -218,6 +244,7 @@
   {
     switch($cardID)
     {
+      case "EVR001": return 1;
       case "EVR011": case "EVR012": case "EVR013": return -1;
       case "EVR017": return 0;
       case "EVR019": return 0;
@@ -235,6 +262,8 @@
       case "EVR170": case "EVR171": case "EVR172": return 2;
       case "EVR173": case "EVR174": case "EVR175": return -1;
       case "EVR177": case "EVR178": return -1;
+      case "EVR181": return -1;
+      case "EVR183": return -1;
       case "EVR187": return -1;
       case "EVR188": return -1;
       case "EVR190": return -1;
@@ -266,10 +295,13 @@
 
   function EVRPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $combatChain, $CS_PlayIndex;
+    global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
+      case "EVR003":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Ready to Roll lets you roll an extra die this turn.";
       case "EVR011": case "EVR012": case "EVR013":
         MyDrawCard();
         $card = DiscardRandom();
@@ -363,6 +395,18 @@
           AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
         }
         return "";
+      case "EVR181":
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        }
+        return "Healing Potion gained 2 health.";
+      case "EVR183":
+        if($from == "PLAY"){
+          GainHealth(2, $currentPlayer);
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        }
+        return "Healing Potion gained 2 health.";
       case "EVR187":
         if($from == "PLAY"){
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));

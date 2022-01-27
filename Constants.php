@@ -120,6 +120,7 @@
   $CS_HitsWithWeapon = 36;
   $CS_ArcaneDamagePrevention = 37;
   $CS_DynCostResolved = 38;
+  $CS_CardsEnteredGY = 39;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -219,7 +220,7 @@
     global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
     global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
-    global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved;
+    global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -258,6 +259,7 @@
     $mainClassState[$CS_HitsWithWeapon] = 0;
     $mainClassState[$CS_ArcaneDamagePrevention] = 0;
     $mainClassState[$CS_DynCostResolved] = 0;
+    $mainClassState[$CS_CardsEnteredGY] = 0;
   }
 
   function ResetCardPlayed($cardID)

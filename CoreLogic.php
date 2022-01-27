@@ -819,24 +819,51 @@ function CurrentAttack()
   return $combatChain[0];
 }
 
-function RollDie($player, $fromDQ=false)
+function RollDie($player, $fromDQ=false, $subsequent=false)
 {
   global $CS_DieRoll;
-  $roll = random_int(1, 6);
-  SetClassState($player, $CS_DieRoll, $roll);
-  WriteLog($roll . " was rolled.");
-  GamblersGloves($player, $player, $fromDQ);
-  GamblersGloves(($player == 1 ? 2 : 1), $player, $fromDQ);
+  $numRolls = 1 + CountCurrentTurnEffects("EVR003", $player);
+  $highRoll = 0;
+  for($i=0; $i<$numRolls; ++$i)
+  {
+    $roll = random_int(1, 6);
+    WriteLog($roll . " was rolled.");
+    if($roll > $highRoll) $highRoll = $roll;
+  }
+  SetClassState($player, $CS_DieRoll, $highRoll);
+  $GGActive = HasGamblersGloves(1) || HasGamblersGloves(2);
+  if($GGActive)
+  {
+    if($fromDQ && !$subsequent) PrependDecisionQueue("AFTERDIEROLL", $player, "-");
+    GamblersGloves($player, $player, $fromDQ);
+    GamblersGloves(($player == 1 ? 2 : 1), $player, $fromDQ);
+    if(!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
+  }
+  else
+  {
+    if(!$subsequent) AfterDieRoll($player);
+  }
+}
+
+function AfterDieRoll($player)
+{
+  
+}
+
+function HasGamblersGloves($player)
+{
+  $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
+  return $gamblersGlovesIndex != -1 && IsCharacterAbilityActive($player, $gamblersGlovesIndex);
 }
 
 function GamblersGloves($player, $origPlayer, $fromDQ)
 {
   $gamblersGlovesIndex = FindCharacterIndex($player, "CRU179");
-  if($gamblersGlovesIndex != -1 && IsCharacterAbilityActive($player, $gamblersGlovesIndex))
+  if(HasGamblersGloves($player))
   {
     if($fromDQ)
     {
-      PrependDecisionQueue("ROLLDIE", $origPlayer, "-", 1);
+      PrependDecisionQueue("ROLLDIE", $origPlayer, "1", 1);
       PrependDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       PrependDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
       PrependDecisionQueue("NOPASS", $player, "-");
@@ -848,7 +875,7 @@ function GamblersGloves($player, $origPlayer, $fromDQ)
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("ROLLDIE", $origPlayer, "-", 1);
+      AddDecisionQueue("ROLLDIE", $origPlayer, "1", 1);
     }
   }
 }

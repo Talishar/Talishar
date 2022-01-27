@@ -3066,7 +3066,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return implode(",", $cards);
     case "ROLLDIE":
-      $roll = RollDie($player, true);
+      $roll = RollDie($player, true, $parameter=="1");
       return $roll;
     case "SETCOMBATCHAINSTATE":
       $combatChainState[$parameter] = $lastResult;
@@ -3255,6 +3255,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SETDQCONTEXT":
 
+      return $lastResult;
+    case "AFTERDIEROLL":
+      AfterDieRoll($player);
       return $lastResult;
     default:
       return "NOTSTATIC";
