@@ -1549,6 +1549,7 @@ function IsCombatEffectPersistent($cardID)
     case "ELE092-DOM": case "ELE092-BUFF": return true;
     case "ELE143": return true;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
+    case "EVR001": return true;
     case "EVR019": return true;
     case "EVR160": return true;
     case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
