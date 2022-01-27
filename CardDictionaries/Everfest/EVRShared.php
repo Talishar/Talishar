@@ -71,6 +71,7 @@
   {
     switch($cardID)
     {
+      case "EVR001": return 1;
       case "EVR017": return 2;
       case "EVR021": return -4;
       case "EVR160": return -1;
@@ -86,6 +87,7 @@
     global $combatChain;
     switch($cardID)
     {
+      case "EVR001": return CardClass($attackID) == "BRUTE";
       case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
@@ -140,7 +142,7 @@
   {
     switch($cardID)
     {
-      case "EVR003": return "Arms";
+      case "EVR001": return "Arms";
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
       case "EVR103": return "Arms";
