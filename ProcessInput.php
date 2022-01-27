@@ -616,6 +616,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function FinishTurnPass()
   {
+    ItemEndTurnAbilities();
     AuraBeginEndStepAbilities();
     LandmarkBeginEndStepAbilities();
     BeginEndStepEffects();
@@ -671,6 +672,7 @@ function FinalizeChainLink($chainClosed=false)
         $i -= 2;
       }
     }
+    EndTurnBloodDebt();//This has to be before resetting character, because of sleep dart effects
 
     LogEndTurnStats($mainPlayer);
 
@@ -721,7 +723,6 @@ function FinalizeChainLink($chainClosed=false)
 
     ArsenalEndTurn($mainPlayer);
     ArsenalEndTurn($defPlayer);
-    EndTurnBloodDebt();
     CurrentEffectEndTurnAbilities();
     AuraEndTurnAbilities();
     MainCharacterEndTurnAbilities();

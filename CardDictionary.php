@@ -1791,6 +1791,7 @@
       case "ELE154": case "ELE155": case "ELE156": return $combatChainState[$CCS_AttackFused] == 1;
       case "ELE166": case "ELE167": case "ELE168": return true;
       case "ELE205": return true;
+      case "EVR017": return true;
       case "EVR019": return true;
       default: return false;
     }

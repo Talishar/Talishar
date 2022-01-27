@@ -122,6 +122,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   array_push($combatChain, 0);//Attack modifier
   array_push($combatChain, ResourcesPaidBlockModifier($cardID, $resourcesPaid));//Defense modifier
   if($turn[0] == "B" || CardType($cardID) == "DR") OnBlockEffects($index, $from);
+  CurrentEffectAttackAbility();
   return $index;
 }
 
@@ -610,20 +611,22 @@ function UnsetBanishModifier($player, $modifier)
   $banish = &GetBanish($mainPlayer);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
-    if($banish[$i+1] == "TCL") $banish[$i+1] = "DECK";
+    if($banish[$i+1] == $modifier) $banish[$i+1] = "DECK";
   }
 }
 
 function UnsetChainLinkBanish()
 {
-  global $mainPlayer;
-  UnsetBanishModifier($mainPlayer, "TCL");
+  UnsetBanishModifier(1, "TCL");
+  UnsetBanishModifier(2, "TCL");
 }
 
 function UnsetCombatChainBanish()
 {
-  global $mainPlayer;
-  UnsetBanishModifier($mainPlayer, "TCC");
+  UnsetBanishModifier(1, "TCC");
+  UnsetBanishModifier(2, "TCC");
+  UnsetBanishModifier(1, "TCL");
+  UnsetBanishModifier(2, "TCL");
 }
 
 function UnsetMyCombatChainBanish()
@@ -996,6 +999,13 @@ function SetFirstPlayer($player)
   $currentPlayer = $player;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   StatsStartTurn();
+}
+
+function RemoveArsenalEffects($player, $cardToReturn){
+  SearchCurrentTurnEffects("ARC042", $player, true); //If Bull's Eye Bracers was played before, its effect on the removed Arsenal card should be removed
+  if($cardToReturn == "ARC057" ){SearchCurrentTurnEffects("ARC057", $player, true);} //If the card removed from arsenal is 'Head Shot', remove its current turn effect.
+  if($cardToReturn == "ARC058" ){SearchCurrentTurnEffects("ARC058", $player, true);} //Else, another 'Head Shot' played this turn would get dubble buff.
+  if($cardToReturn == "ARC059" ){SearchCurrentTurnEffects("ARC059", $player, true);}
 }
 
 ?>

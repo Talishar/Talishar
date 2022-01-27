@@ -279,6 +279,8 @@
         case "CRU102": ++$barrierArray[2]; $total += 2; break;
         case "CRU161": ++$barrierArray[1]; $total += 1; break;
         case "ELE144": ++$barrierArray[1]; $total += 1; break;
+        case "EVR103": ++$barrierArray[1]; $total += 1; break;
+        case "EVR137": ++$barrierArray[1]; $total += 1; break;
         case "EVR155": ++$barrierArray[1]; $total += 1; break;
         default: break;
       }

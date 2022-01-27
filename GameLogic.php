@@ -178,7 +178,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       }
       return "Glint the Quicksilver" . $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
     case "WTR119": case "WTR122":
-
       AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDMZBUFF", $mainPlayer, $cardID);
@@ -1238,6 +1237,32 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
   return $prevention;
 }
 
+function CurrentEffectAttackAbility()
+{
+  global $currentTurnEffects, $combatChain, $mainPlayer;
+  global $CS_PlayIndex;
+  if(count($combatChain) == 0) return;
+  $attackID = $combatChain[0];
+  $attackType = CardType($attackID);
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+  {
+    if($currentTurnEffects[$i+1] == $mainPlayer)
+    {
+      switch($currentTurnEffects[$i])
+      {
+        case "EVR056":
+          if($attackType == "W")
+          {
+            $character = &GetPlayerCharacter($mainPlayer);
+            ++$character[GetClassState($mainPlayer, $CS_PlayIndex)+3];
+          }
+          break;
+        default: break;
+      }
+    }
+  }
+}
+
 function CurrentEffectPlayAbility($cardID)
 {
   global $currentTurnEffects, $currentPlayer, $actionPoints;
@@ -1328,6 +1353,7 @@ function CurrentEffectGrantsGoAgain()
         case "ELE177": case "ELE178": case "ELE179": return true;
         case "ELE180": case "ELE181": case "ELE182": return $combatChainState[$CCS_AttackFused] == 1;
         case "ELE201": return true;
+        case "EVR017": return true;
         default: break;
       }
     }
@@ -1419,6 +1445,7 @@ function CurrentEffectEndTurnAbilities()
     switch($currentTurnEffects[$i])
     {
       case "MON069": case "MON070": case "MON071":
+      case "EVR056"://Oath of Steel does the same thing
         $char = &GetPlayerCharacter($currentTurnEffects[$i+1]);
         for($j=0; $j<count($char); $j+=CharacterPieces())
         {
@@ -1570,6 +1597,25 @@ function ItemStartTurnAbility($index)
   }
 }
 
+function ItemEndTurnAbilities()
+{
+  global $mainPlayer;
+  $items = &GetItems($mainPlayer);
+  for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+  {
+    $remove = false;
+    switch($items[$i])
+    {
+      case "EVR188": $remove = TalismanOfBalanceEndTurn(); break;
+      default: break;
+    }
+    if($remove)
+    {
+      DestroyItemForPlayer($mainPlayer, $i);
+    }
+  }
+}
+
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer;
@@ -1585,6 +1631,12 @@ function CharacterStartTurnAbility($index)
           BanishCardForPlayer($mainCharacter[$index], $mainPlayer, "EQUIP", "NA");
           WriteLog("Carrion Husk got banished for having 13 or less health.");
       } break;
+    case "EVR017":
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card from your hand for Bravo, Star of the Show.");
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
+      AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
+      AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
+      break;
     case "EVR019":
       if(CountAura("WTR075", $mainPlayer) >= 3)
       {
@@ -2118,7 +2170,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;
       break;
-    case "EVR053":
+    case "EVR053": case "EVR103": case "EVR137":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
@@ -2231,13 +2283,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
         case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
         case "HEAVE": $rv = HeaveIndices(); break;
+        case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
+        case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
+        case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
     case "PUTPLAY":
-      if(CardSubtype($lastResult) == "Item")
+      $subtype = CardSubType($lastResult);
+      if($subtype == "Item")
       {
         PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
+      }
+      else if($subtype == "Aura")
+      {
+        PlayAura($parameter, $player);
       }
       return $lastResult;
     case "DRAW":
@@ -2332,19 +2392,30 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal[$lastResult+1] = "UP";
       return $lastResult;
     case "REMOVEARSENAL":
-      SearchCurrentTurnEffects("ARC042", $player, true); //If Bull's Eye Bracers was played before, its effect on the removed Arsenal card should be removed
       $index = $lastResult;
       $arsenal = &GetArsenal($player);
       $cardToReturn = $arsenal[$index];
-      if($cardToReturn == "ARC057" ){SearchCurrentTurnEffects("ARC057", $player, true);} //If the card removed from arsenal is 'Head Shot', remove its current turn effect.
-      if($cardToReturn == "ARC058" ){SearchCurrentTurnEffects("ARC058", $player, true);} //Else, another 'Head Shot' played this turn would get dubble buff.
-      if($cardToReturn == "ARC059" ){SearchCurrentTurnEffects("ARC059", $player, true);}
+      RemoveArsenalEffects($player, $cardToReturn);
       for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
       {
         unset($arsenal[$i]);
       }
       $arsenal = array_values($arsenal);
      return $cardToReturn;
+     case "FULLARSENALTODECK":
+      $arsenal = &GetArsenal($player);
+      $deck = &GetDeck($player);
+      $i=0;
+      while(count($arsenal)>0)
+      {
+        if($i%4 == 0){
+          array_push($deck, $arsenal[$i]);
+          RemoveArsenalEffects($player, $arsenal[$i]);
+        }
+        unset($arsenal[$i]);
+        ++$i;
+      }
+     return $lastResult;
     case "MULTIADDHAND":
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
@@ -2393,6 +2464,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $hand[$lastResult];
       unset($hand[$lastResult]);
       $hand = array_values($hand);
+      AddGraveyard($cardID, $player, $hand);
       return $cardID;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
@@ -3008,6 +3080,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
+    case "MULTIZONEDESTROY":
+      $params = explode("-", $lastResult);
+      $source = $params[0];
+      $index = $params[1];
+      switch($source)
+      {
+        case "MYAURAS": DestroyAura($player, $index); break;
+        default: break;
+      }
+      return $lastResult;
     case "COUNTITEM":
       return CountItem($parameter, $player);
     case "FINDANDDESTROYITEM":
@@ -3140,6 +3222,40 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this.");
       return HeaveValue($lastResult);
+    case "POTIONOFLUCK":
+      $arsenal = &GetArsenal($player);
+      $hand = &GetHand($player);
+      $deck = &GetDeck($player);
+      $sizeToDraw = count($hand) + count($arsenal)/4;
+      $i = 0;
+      while (count($hand)>0) {
+        array_push($deck, $hand[$i]);
+        unset($hand[$i]);
+        ++$i;
+      }
+      PrependDecisionQueue("FULLARSENALTODECK", $currentPlayer, "-", 1);
+      PrependDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      for ($i=0; $i < $sizeToDraw; $i++) {
+        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+      }
+      WriteLog("Potion of Luck shuffled your hand and arsenal into your deck and drew " . $sizeToDraw . " cards.");
+      return $lastResult;
+    case "BRAVOSTARSHOW":
+      //TODO: VALIDATE
+      $hand = &GetHand($player);
+      $cards = "";
+      for($i=0; $i<count($lastResult); ++$i)
+      {
+        if($cards != "") $cards .= ",";
+        $cards .= $hand[$lastResult[$i]];
+      }
+      RevealCards($cards);
+      WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and Go Again.");
+      AddCurrentTurnEffect("EVR017", $player);
+      return $lastResult;
+    case "SETDQCONTEXT":
+
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

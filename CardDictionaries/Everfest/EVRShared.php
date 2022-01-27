@@ -5,9 +5,12 @@
     switch($cardID)
     {
       case "EVR053": return 1;
+      case "EVR103": return 0;
+      case "EVR137": return 0;
       case "EVR121": return 3;
       case "EVR157": return 1;
       case "EVR173": case "EVR174": case "EVR175": return 0;
+      case "EVR177": return 0;
       case "EVR178": return 0;
       case "EVR187": return 0;
       default: return 0;
@@ -19,9 +22,12 @@
     switch($cardID)
     {
       case "EVR053": return "AR";
+      case "EVR103": return "A";
+      case "EVR137": return "I";
       case "EVR121": return "I";
       case "EVR157": return "I";
       case "EVR173": case "EVR174": case "EVR175": return "I";
+      case "EVR177": return "I";
       case "EVR178": return "DR";
       case "EVR187": return "I";
       default: return "";
@@ -32,11 +38,13 @@
   {
     switch($cardID)
     {
+      case "EVR056": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR167": case "EVR168": case "EVR169": return true;
       case "EVR170": case "EVR171": case "EVR172": return true;
-      case "EVR178": return true;
+      case "EVR177": case "EVR178": return true;
+      case "EVR188": return true;
       case "EVR190": return true;
       default: return false;
     }
@@ -46,6 +54,7 @@
   {
     switch($cardID)
     {
+      case "EVR103": return true;
       default: return false;
     }
   }
@@ -54,6 +63,7 @@
   {
     switch($cardID)
     {
+      case "EVR017": return 2;
       case "EVR021": return -4;
       case "EVR160": return -1;
       case "EVR170-2": return 3;
@@ -68,6 +78,7 @@
     global $combatChain;
     switch($cardID)
     {
+      case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
       case "EVR160": return true;
@@ -88,8 +99,11 @@
       case "EVR021": return "AA";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
       case "EVR053": return "E";
+      case "EVR056": return "A";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR088": return "AA";
+      case "EVR103": return "E";
+      case "EVR137": return "E";
       case "EVR120": return "C";
       case "EVR121": return "W";
       case "EVR155": return "E";
@@ -100,8 +114,10 @@
       case "EVR167": case "EVR168": case "EVR169": return "A";
       case "EVR170": case "EVR171": case "EVR172": return "A";
       case "EVR173": case "EVR174": case "EVR175": return "I";
+      case "EVR177": return "A";
       case "EVR178": return "A";
       case "EVR187": return "A";
+      case "EVR188": return "A";
       case "EVR190": return "A";
       default: return "";
     }
@@ -113,9 +129,11 @@
     {
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
+      case "EVR103": return "Arms";
       case "EVR121": return "Staff";
+      case "EVR137": return "Head";
       case "EVR155": return "Off-Hand";
-      case "EVR178": case "EVR187": case "EVR190": return "Item";
+      case "EVR177": case "EVR178": case "EVR187": case "EVR188": case "EVR190": return "Item";
       default: return "";
     }
   }
@@ -130,10 +148,13 @@
       case "EVR021": return 10;
       case "EVR027": case "EVR028": case "EVR029": return 7;
       case "EVR053": return 0;
+      case "EVR056": return 0;
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR088": return 2;
+      case "EVR103": return 0;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR137": return 0;
       case "EVR155": return 0;
       case "EVR156": return 1;
       case "EVR157": return 2;
@@ -144,8 +165,9 @@
       case "EVR167": case "EVR168": case "EVR169": return 0;
       case "EVR170": case "EVR171": case "EVR172": return 0;
       case "EVR173": case "EVR174": case "EVR175": return 0;
-      case "EVR178": return 0;
+      case "EVR177": case "EVR178": return 0;
       case "EVR187": return 0;
+      case "EVR188": return 0;
       case "EVR190": return 0;
       default: return 0;
     }
@@ -165,12 +187,15 @@
       case "EVR028": return 2;
       case "EVR029": return 3;
       case "EVR053": return 0;
+      case "EVR056": return 1;
       case "EVR063": return 1;
       case "EVR064": return 2;
       case "EVR065": return 3;
       case "EVR088": return 1;
+      case "EVR103": return 0;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR137": return 0;
       case "EVR155": return 0;
       case "EVR156": case "EVR157": return 1;
       case "EVR159": return 1;
@@ -181,8 +206,9 @@
       case "EVR173": return 1;
       case "EVR174": return 2;
       case "EVR175": return 3;
-      case "EVR178": return 3;
+      case "EVR177": case "EVR178": return 3;
       case "EVR187": return 3;
+      case "EVR188": return 3;
       case "EVR190": return 2;
       default: return 3;
     }
@@ -196,8 +222,10 @@
       case "EVR017": return 0;
       case "EVR019": return 0;
       case "EVR053": return 1;
+      case "EVR103": return 0;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR137": return 0;
       case "EVR155": return -1;
       case "EVR156": case "EVR157": return 3;
       case "EVR159": return 2;
@@ -206,8 +234,9 @@
       case "EVR167": case "EVR168": case "EVR169": return 2;
       case "EVR170": case "EVR171": case "EVR172": return 2;
       case "EVR173": case "EVR174": case "EVR175": return -1;
-      case "EVR178": return -1;
+      case "EVR177": case "EVR178": return -1;
       case "EVR187": return -1;
+      case "EVR188": return -1;
       case "EVR190": return -1;
       default: return 3;
     }
@@ -257,10 +286,27 @@
         $card = array_shift($deck);
         BanishCardForPlayer($deck[0], $currentPlayer, "DECK", "TCC");
         return "Helm of the Sharp Eye banished a card. It is playable to this combat chain.";
+      case "EVR056":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Oath of Steel gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
+      case "EVR103":
+        PlayAura("ARC112", $currentPlayer, 2);
+        return "Vexing Quillhand created two Runechant tokens.";
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
         return "";
+      case "EVR137":
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose an Illusionist Aura to destroy and replace.");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "AURACLASS,ILLUSIONIST");
+        AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "MYAURAS", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
+        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("PUTPLAY", $currentPlayer, "<-", 1);
+        return "Crown of Reflection let you destroy an aura and play a new one.";
       case "EVR157":
         $rv = "";
         if($from == "PLAY")
@@ -294,6 +340,20 @@
         Opt($cardID, $opt);
         AddDecisionQueue("EVENBIGGERTHANTHAT", $currentPlayer, "-");
         return "";
+      case "EVR177":
+        $rv = "";
+        if($from == "PLAY")
+        {
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          PummelHit($otherPlayer);
+          PummelHit($otherPlayer);
+        }
+        else
+        {
+          $rv = "Amulet of Echoes is a partially manually card. Only activate the ability when the target player has played two or more cards with the same name this turn.";
+        }
+        return "";
       case "EVR178":
         if($from == "PLAY")
         {
@@ -301,6 +361,12 @@
           AddDecisionQueue("FINDINDICES", $currentPlayer, "EVR178");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
+        }
+        return "";
+      case "EVR187":
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);
         }
         return "";
       default: return "";
@@ -377,7 +443,7 @@
   function Heave()
   {
     global $mainPlayer;
-    WriteLog("You may choose to Heave a card or pass.");
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may choose to Heave a card or pass.");
     AddDecisionQueue("FINDINDICES", $mainPlayer, "HEAVE");
     AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1, 1);
     AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
@@ -394,6 +460,41 @@
       $baseAttack = AttackValue($character[$i]);
       $buffedAttack = $baseAttack + $character[$i+3] + MainCharacterAttackModifiers($i, true);
       if($buffedAttack > $baseAttack*2) return true;
+    }
+    return false;
+  }
+
+  function BravoStarOfTheShowIndices()
+  {
+    global $mainPlayer;
+    $earth = SearchHand($mainPlayer, "", "", -1, -1, "", "EARTH");
+    $ice = SearchHand($mainPlayer, "", "", -1, -1, "", "ICE");
+    $lightning = SearchHand($mainPlayer, "", "", -1, -1, "", "LIGHTNING");
+    if($earth != "" && $ice != "" && $lightning != "")
+    {
+      $indices = CombineSearches($earth, $ice);
+      $indices = CombineSearches($indices, $lightning);
+      $count = SearchCount($indices);
+      if($count > 3) $count = 3;
+      return $count . "-" . SearchRemoveDuplicates($indices);
+    }
+    return "";
+  }
+
+  //Returns true if it should be destroyed
+  function TalismanOfBalanceEndTurn()
+  {
+    global $mainPlayer, $defPlayer;
+    if(ArsenalFull($mainPlayer)) return false;
+    $mainArs = &GetArsenal($mainPlayer);
+    $defArs = &GetArsenal($defPlayer);
+    if(count($mainArs) < count($defArs))
+    {
+      $deck = &GetDeck($mainPlayer);
+      $card = array_shift($deck);
+      AddArsenal($card, $mainPlayer, "DECK", "DOWN");
+      WriteLog("Talisman of Balance destroyed itself and put a card in your arsenal.");
+      return true;
     }
     return false;
   }
