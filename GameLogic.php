@@ -1568,6 +1568,7 @@ function BeginEndStepEffects()
       switch($currentTurnEffects[$i])
       {
         case "ELE215": WriteLog("Seek and Destroy discarded your hand and arsenal."); DestroyArsenal($mainPlayer); DiscardHand($mainPlayer); break;
+        case "EVR106": WriteLog("Revel in Runeblood destroyed your Runechants."); DestroyAllThisAura($mainPlayer, "ARC112"); break;
         default: break;
       }
     }

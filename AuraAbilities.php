@@ -396,5 +396,14 @@ function AuraHitEffects($attackID)
     return $count;
   }
 
+  function DestroyAllThisAura($player, $cardID)
+  {
+    $auras = &GetAuras($player);
+    for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+    {
+      if($auras[$i] == $cardID) DestroyAura($player, $i);
+    }
+  }
+
 
 ?>
