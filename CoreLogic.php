@@ -847,7 +847,7 @@ function RollDie($player, $fromDQ=false, $subsequent=false)
 
 function AfterDieRoll($player)
 {
-  global $CS_DieRoll;
+  global $CS_DieRoll, $CS_HighestRoll;
   $roll = GetClassState($player, $CS_DieRoll);
   $skullCrusherIndex = FindCharacterIndex($player, "EVR001");
   if($skullCrusherIndex > -1)
@@ -855,6 +855,7 @@ function AfterDieRoll($player)
     if($roll == 1) { WriteLog("Skull Crushers was destroyed."); DestroyCharacter($player, $skullCrusherIndex); }
     if($roll == 5 || $roll == 6) { WriteLog("Skull Crushers gives +1 this turn."); AddCurrentTurnEffect("EVR001", $player); }
   }
+  if($roll > GetClassState($player, $CS_HighestRoll)) SetClassState($player, $CS_HighestRoll, $roll);
 }
 
 function HasGamblersGloves($player)

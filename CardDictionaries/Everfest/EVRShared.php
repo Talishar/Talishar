@@ -13,8 +13,9 @@
       case "EVR177": return 0;
       case "EVR178": return 0;
       case "EVR181": return 0;
-      case "EVR183": return 0;
+      case "EVR183": case "EVR184": case "EVR185": return 0;
       case "EVR187": return 0;
+      case "EVR195": return 3;
       default: return 0;
     }
   }
@@ -33,7 +34,9 @@
       case "EVR178": return "DR";
       case "EVR181": return "I";
       case "EVR183": return "A";
+      case "EVR184": case "EVR185": return "I";
       case "EVR187": return "I";
+      case "EVR195": return "A";
       default: return "";
     }
   }
@@ -45,6 +48,7 @@
       case "EVR003": return true;
       case "EVR005": case "EVR006": case "EVR007": return true;
       case "EVR056": return true;
+      case "EVR106": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR167": case "EVR168": case "EVR169": return true;
@@ -64,6 +68,7 @@
     {
       case "EVR103": return true;
       case "EVR183": return true;
+      case "EVR195": return true;
       default: return false;
     }
   }
@@ -117,6 +122,7 @@
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR088": return "AA";
       case "EVR103": return "E";
+      case "EVR106": return "A";
       case "EVR137": return "E";
       case "EVR120": return "C";
       case "EVR121": return "W";
@@ -131,11 +137,12 @@
       case "EVR177": return "A";
       case "EVR178": return "A";
       case "EVR181": return "A";
-      case "EVR183": return "A";
+      case "EVR183": case "EVR184": case "EVR185": return "A";
       case "EVR187": return "A";
       case "EVR188": return "A";
       case "EVR190": return "A";
       case "EVR191": return "A";
+      case "EVR195": return "T";
       default: return "";
     }
   }
@@ -151,7 +158,8 @@
       case "EVR121": return "Staff";
       case "EVR137": return "Head";
       case "EVR155": return "Off-Hand";
-      case "EVR177": case "EVR178": case "EVR181": case "EVR183": case "EVR187": case "EVR188": case "EVR190": case "EVR191": return "Item";
+      case "EVR177": case "EVR178": case "EVR181": case "EVR183": case "EVR184": case "EVR185": case "EVR187": case "EVR188": case "EVR190": case "EVR191": return "Item";
+      case "EVR195": return "Item";
       default: return "";
     }
   }
@@ -173,6 +181,7 @@
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR088": return 2;
       case "EVR103": return 0;
+      case "EVR106": return 0;
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
@@ -188,10 +197,11 @@
       case "EVR173": case "EVR174": case "EVR175": return 0;
       case "EVR177": case "EVR178": return 0;
       case "EVR181": return 0;
-      case "EVR183": return 0;
+      case "EVR183": case "EVR184": case "EVR185": return 0;
       case "EVR187": return 0;
       case "EVR188": return 0;
       case "EVR190": case "EVR191": return 0;
+      case "EVR195": return 0;
       default: return 0;
     }
   }
@@ -221,6 +231,7 @@
       case "EVR065": return 3;
       case "EVR088": return 1;
       case "EVR103": return 0;
+      case "EVR106": return 1;
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
@@ -236,10 +247,11 @@
       case "EVR175": return 3;
       case "EVR177": case "EVR178": return 3;
       case "EVR181": return 3;
-      case "EVR183": return 3;
+      case "EVR183": case "EVR184": case "EVR185": return 3;
       case "EVR187": return 3;
       case "EVR188": return 3;
       case "EVR190": case "EVR191": return 2;
+      case "EVR195": return 0;
       default: return 3;
     }
   }
@@ -254,6 +266,7 @@
       case "EVR019": return 0;
       case "EVR053": return 1;
       case "EVR103": return 0;
+      case "EVR106": return 2;
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
@@ -267,10 +280,11 @@
       case "EVR173": case "EVR174": case "EVR175": return -1;
       case "EVR177": case "EVR178": return -1;
       case "EVR181": return -1;
-      case "EVR183": return -1;
+      case "EVR183": case "EVR184": case "EVR185": return -1;
       case "EVR187": return -1;
       case "EVR188": return -1;
       case "EVR190": case "EVR191": return -1;
+      case "EVR195": return -1;
       default: return 3;
     }
   }
@@ -300,12 +314,24 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "EVR003":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Ready to Roll lets you roll an extra die this turn.";
+      case "EVR005": case "EVR006": case "EVR007":
+        $rv = "High Roller Intimidated";
+        if($cardID == "EVR005") $targetHigh = 4;
+        else if($cardID == "EVR006") $targetHigh = 5;
+        else if($cardID == "EVR007") $targetHigh = 6;
+        if(GetClassState($currentPlayer, $CS_HighestRoll) >= $targetHigh)
+        {
+          Intimidate();
+          $rv .= " twice";
+        }
+        return $rv . ".";
       case "EVR011": case "EVR012": case "EVR013":
         MyDrawCard();
         $card = DiscardRandom();
@@ -328,6 +354,15 @@
       case "EVR103":
         PlayAura("ARC112", $currentPlayer, 2);
         return "Vexing Quillhand created two Runechant tokens.";
+      case "EVR106":
+        $rv = "";
+        if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 1 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
+        {
+          PlayAura("ARC112", $currentPlayer, 4);
+          $rv = "Revel in Runeblood created 4 Runechants.";
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        return $rv;
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
@@ -411,12 +446,51 @@
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         }
         return "Healing Potion gained 2 health.";
+      case "EVR184":
+        $rv = "";
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $hand = &GetHand($otherPlayer);
+          $cards = "";
+          for($i=0; $i<count($hand); $i+=HandPieces())
+          {
+            if($cards != "") $cards .= ",";
+            $cards .= $hand[$i];
+          }
+          RevealCards($cards);
+          $rv = "Potion of Seeing revealed the opponent's hand.";
+        }
+        return $rv;
+      case "EVR185":
+        $rv = "";
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $cards = "";
+          $pitch = &GetPitch($currentPlayer);
+          while(count($pitch) > 0)
+          {
+            if($cards != "") $cards .= ",";
+            $cards .= array_shift($pitch);
+            for($i=1; $i<PitchPieces(); ++$i) array_shift($pitch);
+          }
+          AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
+          $rv = "Potion of Deja Vu put your pitch cards on top of your deck.";
+        }
+        return $rv;
       case "EVR187":
         if($from == "PLAY"){
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVR195":
+        $rv = "";
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $rv = "Silver drew a card.";
+          Draw($currentPlayer);
+        }
+        return $rv;
       default: return "";
     }
   }
