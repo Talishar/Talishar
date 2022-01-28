@@ -111,6 +111,7 @@
   {
     switch($cardID)
     {
+      case "EVR000": return "R";
       case "EVR001": return "E";
       case "EVR003": return "A";
       case "EVR005": case "EVR006": case "EVR007": return "A";
@@ -153,6 +154,7 @@
   {
     switch($cardID)
     {
+      case "EVR000": return "Gem";
       case "EVR001": return "Arms";
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
@@ -170,6 +172,7 @@
   {
     switch($cardID)
     {
+      case "EVR000": return -1;
       case "EVR001": return 0;
       case "EVR003": return 0;
       case "EVR005": case "EVR006": case "EVR007": return 0;
@@ -212,6 +215,7 @@
   {
     switch($cardID)
     {
+      case "EVR000": return 3;
       case "EVR001": return 0;
       case "EVR003": return 3;
       case "EVR005": return 1;
@@ -262,6 +266,7 @@
   {
     switch($cardID)
     {
+      case "EVR000": return -1;
       case "EVR001": return 1;
       case "EVR011": case "EVR012": case "EVR013": return -1;
       case "EVR017": return 0;

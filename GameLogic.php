@@ -1662,10 +1662,14 @@ function PitchAbility($cardID)
         if(IHaveLessHealth()) { if(GainHealth(1, $currentPlayer)) WriteLog("Heart of Fyendal gained 1 life."); }
       break;
     case "ARC000":
-        Opt($cardID, 2);
+      Opt($cardID, 2);
       break;
     case "CRU000":
       PlayAura("ARC112", $currentPlayer);
+      break;
+    case "EVR000":
+      WriteLog("Grandeur of Valahai created a Seismic Surge when it was pitched.");
+      PlayAura("WTR075", $currentPlayer);
       break;
     default:
       break;
