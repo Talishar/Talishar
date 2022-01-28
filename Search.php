@@ -111,6 +111,21 @@ function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class=""
   return $cardList;
 }
 
+function SearchHandForCard($player, $card)
+{
+  $hand = &GetHand($player);
+  $indices = "";
+  for($i=0; $i<count($hand); $i+=HandPieces())
+  {
+    if($hand[$i] == $card)
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchDeckForCard($player, $card1, $card2="", $card3="")
 {
   $deck = &GetDeck($player);
@@ -500,6 +515,36 @@ function SearchAuras($cardID, $player)
     if($auras[$i] == $cardID) return true;
   }
   return false;
+}
+
+function SearchAurasForCard($cardID, $player)
+{
+  $auras = &GetAuras($player);
+  $indices = "";
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if($auras[$i] == $cardID)
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
+function SearchItemsForCard($cardID, $player)
+{
+  $items = &GetItems($player);
+  $indices = "";
+  for($i=0; $i<count($items); $i+=ItemPieces())
+  {
+    if($items[$i] == $cardID)
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
 }
 
 function SearchLandmarks($cardID)

@@ -1043,4 +1043,16 @@ function RemoveArsenalEffects($player, $cardToReturn){
   if($cardToReturn == "ARC059" ){SearchCurrentTurnEffects("ARC059", $player, true);}
 }
 
+function LookAtHand($player)
+{
+  $hand = &GetHand($player);
+  $cards = "";
+  for($i=0; $i<count($hand); $i+=HandPieces())
+  {
+    if($cards != "") $cards .= ",";
+    $cards .= $hand[$i];
+  }
+  RevealCards($cards);
+}
+
 ?>

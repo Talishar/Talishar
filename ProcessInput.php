@@ -963,26 +963,37 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC185", 1);
         break;
       case "CRU188":
-        AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197");//TODO: Gold and Silver
+        AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197");
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "4");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_copper", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
+        AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195");//TODO: Gold
+        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_silver", 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "EVR195-2", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
         break;
       case "MON199":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");
-        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-");
+        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
         AddDecisionQueue("SOULREAPING", $currentPlayer, "-", 1);
         break;
       case "MON257": case "MON258": case "MON259":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "MON257", 1);
+        break;
+      case "EVR161": case "EVR162": case "EVR163":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "EVR161", 1);
         break;
       default:
         break;
