@@ -461,6 +461,14 @@ function DiscardHand($player)
   $hand = [];
 }
 
+function DiscardIndex($player, $index)
+{
+  $hand = &GetHand($player);
+  AddGraveyard($hand[$index], $player, "HAND");
+  unset($hand[$index]);
+  $hand = array_values($hand);
+}
+
 function Opt($cardID, $amount)
 {
   global $currentPlayer;

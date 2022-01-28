@@ -81,6 +81,7 @@
       case "EVR017": return 2;
       case "EVR021": return -4;
       case "EVR160": return -1;
+      case "EVR161-2": return 2;
       case "EVR170-2": return 3;
       case "EVR171-2": return 2;
       case "EVR172-2": return 1;
@@ -98,6 +99,7 @@
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
       case "EVR160": return true;
+      case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR170-1": case "EVR171-1": case "EVR172-1": return CardType($attackID) == "AA";
       case "EVR170-2": case "EVR171-2": case "EVR172-2": return CardType($attackID) == "AA";
@@ -391,8 +393,27 @@
         Draw(2);
         AddNextTurnEffect($cardID, $otherPlayer);
         return "This Round's on Me drew a card for each player and gave attacks targeting you -1.";
+      case "EVR161": case "EVR162": case "EVR163":
+        $rand = rand(1, 3);
+        if($resourcesPaid == 0 || $rand == 1) { WriteLog("Gain +2 life on hit."); AddCurrentTurnEffect("EVR161-1", $currentPlayer); }
+        if($resourcesPaid == 0 || $rand == 2) { WriteLog("Gained +2 attack."); AddCurrentTurnEffect("EVR161-2", $currentPlayer); }
+        if($resourcesPaid == 0 || $rand == 3) { WriteLog("Gained Go Again."); AddCurrentTurnEffect("EVR161-3", $currentPlayer); }
+        return ($resourcesPaid == 0 ? "Party time!" : "");
       case "EVR164": case "EVR165": case "EVR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "EVR167": case "EVR168": case "EVR169":
+        if($cardID == "EVR167") $times = 4;
+        else if($cardID == "EVR168") $times = 3;
+        else if($cardID == "EVR169") $times = 2;
+        LookAtHand($otherPlayer);
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        for($i=0; $i<$times; ++$i)
+        {
+          AddDecisionQueue("PICKACARD", $currentPlayer, "-", 1);
+        }
         return "";
       case "EVR170": case "EVR171": case "EVR172":
         $rv = "Smashing Good Time makes your next attack action that hits destroy an item";
@@ -450,14 +471,7 @@
         $rv = "";
         if($from == "PLAY"){
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-          $hand = &GetHand($otherPlayer);
-          $cards = "";
-          for($i=0; $i<count($hand); $i+=HandPieces())
-          {
-            if($cards != "") $cards .= ",";
-            $cards .= $hand[$i];
-          }
-          RevealCards($cards);
+          LookAtHand($otherPlayer);
           $rv = "Potion of Seeing revealed the opponent's hand.";
         }
         return $rv;
@@ -473,7 +487,7 @@
             $cards .= array_shift($pitch);
             for($i=1; $i<PitchPieces(); ++$i) array_shift($pitch);
           }
-          AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
+          if($cards != "") AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
           $rv = "Potion of Deja Vu put your pitch cards on top of your deck.";
         }
         return $rv;
@@ -619,6 +633,14 @@
       return true;
     }
     return false;
+  }
+
+  function LifeOfThePartyIndices()
+  {
+    global $currentPlayer;
+    $auras = SearchMultizoneFormat(SearchItemsForCard("WTR162", $currentPlayer), "MYITEMS");
+    $handCards = SearchMultizoneFormat(SearchHandForCard($currentPlayer, "WTR162"), "MYHAND");
+    return CombineSearches($auras, $handCards);
   }
 
 ?>

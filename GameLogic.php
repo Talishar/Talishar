@@ -991,6 +991,7 @@ function EffectHitEffect($cardID)
       break;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
+    case "EVR161-1": GainHealth(2, $mainPlayer);
     case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
     case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
     case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
@@ -1180,6 +1181,7 @@ function CurrentEffectCostModifiers($cardID)
         case "MON257": $costModifier -= 999; $remove = 1; break;
         case "MON199": $costModifier -= 999; $remove = 1; break;
         case "ARC185": $costModifier -= 999; $remove = 1; break;
+        case "EVR161": $costModifier -= 999; $remove = 1; break;
         case "ARC060": case "ARC061": case "ARC062": if(CardType($cardID) == "AA" || GetAbilityType($cardID) == "AA") {$costModifier += 1; $remove = 1; } break;
         case "ELE035-1": $costModifier += 1; break;
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
@@ -1354,6 +1356,7 @@ function CurrentEffectGrantsGoAgain()
         case "ELE180": case "ELE181": case "ELE182": return $combatChainState[$CCS_AttackFused] == 1;
         case "ELE201": return true;
         case "EVR017": return true;
+        case "EVR161-3": return true;
         default: break;
       }
     }
@@ -2288,6 +2291,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
         case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
         case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
+        case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
@@ -3089,6 +3093,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch($source)
       {
         case "MYAURAS": DestroyAura($player, $index); break;
+        case "MYHAND": DiscardIndex($player, $index); break;
+        case "MYITEMS": DestroyItemForPlayer($player, $index); break;
         default: break;
       }
       return $lastResult;
@@ -3260,6 +3266,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "AFTERDIEROLL":
       AfterDieRoll($player);
+      return $lastResult;
+    case "PICKACARD":
+      $hand = &GetHand(($player == 1 ? 2 : 1));
+      $rand = rand(1, count($hand)-1);
+      RevealCards($hand[$rand]);
+      if($dqVars[0] == $rand) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
       return $lastResult;
     default:
       return "NOTSTATIC";
