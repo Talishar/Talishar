@@ -22,7 +22,7 @@ urls = {
     "https://fabtcg.com/resources/card-galleries/crucible-war-booster": "CRU",
     "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
     "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE",
-    "https://fabtcg.com/resources/card-galleries/everfest-booster/": "EVR"
+    "https://fabtcg.com/resources/card-galleries/everfest-booster": "EVR"
 
  } # important not to have a '/' at the end of the link
 for url, code in urls.items():

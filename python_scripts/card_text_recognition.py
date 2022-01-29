@@ -5,15 +5,17 @@ import cv2
 from PIL import Image 
 
 
-from os import listdir, remove, mkdir
-from os.path import isfile, join
+from os import listdir, remove, mkdir, rmdir, system
+from os.path import isfile, join, isdir
 
 from colormath.color_objects import XYZColor, AdobeRGBColor, CMYColor, CMYKColor, sRGBColor
 from colormath.color_conversions import convert_color
 
-
 mypath = "."
-onlyfiles = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "jpg" in f ]
+onlyfiles = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and ".jpg" in f and ".png" not in f ]
+
+if isdir('crops'):
+    system("rm -rf crops/")
 mkdir("crops")
 
 csvfile = "recognized_values.csv"
@@ -108,8 +110,8 @@ for filename in onlyfiles:
 ## pitch
     image = Image.open(filename)
     print(image.mode)
-    #if image.mode == 'RGB':
-    #   image = image.convert('CMYK')
+    if image.mode == 'RGB':
+       image = image.convert('RGBA')
 
     
     r, g, b, a = image.getpixel((225,30)) #middle of picture, then 30 from the top, measured with gimp
@@ -140,7 +142,7 @@ for filename in onlyfiles:
 
     with open (csvfile,"a") as f:
         csvline = f"{basename},{title},{cost},{attack},{defense},{pitch}"
-        csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").strip() 
+        csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").replace(chr(32), "").strip() 
         print(csvline)
         print(csvline,file=f)
     
