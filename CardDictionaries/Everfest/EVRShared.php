@@ -47,6 +47,7 @@
     {
       case "EVR003": return true;
       case "EVR005": case "EVR006": case "EVR007": return true;
+      case "EVR014": case "EVR015": case "EVR016": return true;
       case "EVR056": return true;
       case "EVR057": case "EVR058": case "EVR059": return true;
       case "EVR089": return true;
@@ -80,6 +81,7 @@
     switch($cardID)
     {
       case "EVR001": return 1;
+      case "EVR014": case "EVR015": case "EVR016": return 5;
       case "EVR017": return 2;
       case "EVR021": return -4;
       case "EVR057-1": case "EVR058-1": case "EVR059-1": return 1;
@@ -101,6 +103,7 @@
     switch($cardID)
     {
       case "EVR001": return CardClass($attackID) == "BRUTE";
+      case "EVR014": case "EVR015": case "EVR016": CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
       case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
@@ -127,13 +130,17 @@
     {
       case "EVR000": return "R";
       case "EVR001": return "E";
+      case "EVR002": return "AA";
       case "EVR003": return "A";
       case "EVR005": case "EVR006": case "EVR007": return "A";
       case "EVR011": case "EVR012": case "EVR013": return "AA";
+      case "EVR014": case "EVR015": case "EVR016": return "A";
       case "EVR017": return "C";
+      case "EVR018": return "E";
       case "EVR019": return "C";
       case "EVR020": return "E";
       case "EVR021": return "AA";
+      case "EVR024": case "EVR025": case "EVR026": return "A";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
       case "EVR037": return "E";
       case "EVR053": return "E";
@@ -174,6 +181,7 @@
     {
       case "EVR000": return "Gem";
       case "EVR001": return "Arms";
+      case "EVR018": return "Off-Hand";
       case "EVR020": return "Chest";
       case "EVR037": return "Head";
       case "EVR053": return "Head";
@@ -194,13 +202,16 @@
     {
       case "EVR000": return -1;
       case "EVR001": return 0;
+      case "EVR002": return 2;
       case "EVR003": return 0;
       case "EVR005": case "EVR006": case "EVR007": return 0;
       case "EVR011": case "EVR012": case "EVR013": return 2;
+      case "EVR014": case "EVR015": case "EVR016": return 0;
       case "EVR017": return 0;
       case "EVR019": return 0;
       case "EVR020": return 0;
       case "EVR021": return 10;
+      case "EVR024": case "EVR025": case "EVR026": return 6;
       case "EVR027": case "EVR028": case "EVR029": return 7;
       case "EVR037": return 0;
       case "EVR053": return 0;
@@ -241,20 +252,22 @@
     {
       case "EVR000": return 3;
       case "EVR001": return 0;
+      case "EVR002": return 1;
       case "EVR003": return 3;
       case "EVR005": return 1;
       case "EVR006": return 2;
       case "EVR007": return 3;
-      case "EVR011": return 1;
-      case "EVR012": return 2;
-      case "EVR013": return 3;
+      case "EVR011": case "EVR014": return 1;
+      case "EVR012": case "EVR015": return 2;
+      case "EVR013": case "EVR016": return 3;
       case "EVR017": return 0;
+      case "EVR018": return 0;
       case "EVR019": return 0;
       case "EVR020": return 0;
       case "EVR021": return 1;
-      case "EVR027": return 1;
-      case "EVR028": return 2;
-      case "EVR029": return 3;
+      case "EVR024": case "EVR027": return 1;
+      case "EVR025": case "EVR028": return 2;
+      case "EVR026": case "EVR029": return 3;
       case "EVR037": return 0;
       case "EVR053": return 0;
       case "EVR056": return 1;
@@ -297,6 +310,7 @@
       case "EVR001": return 1;
       case "EVR011": case "EVR012": case "EVR013": return -1;
       case "EVR017": return 0;
+      case "EVR018": return 2;
       case "EVR019": return 0;
       case "EVR020": return 2;
       case "EVR037": return 2;
@@ -329,13 +343,14 @@
   {
     switch($cardID)
     {
+      case "EVR002": return 8;
       case "EVR011": return 6;
       case "EVR012": return 5;
       case "EVR013": return 4;
       case "EVR021": return 14;
-      case "EVR027": return 10;
-      case "EVR028": return 9;
-      case "EVR029": return 8;
+      case "EVR024": case "EVR027": return 10;
+      case "EVR025": case "EVR028": return 9;
+      case "EVR026": case "EVR029": return 8;
       case "EVR088": return 6;
       case "EVR156": return 5;
       case "EVR157": return 3;
@@ -378,6 +393,18 @@
           $rv .= " and got Go Again from discarding a card with 6 or more power";
         }
         $rv .= ".";
+        return $rv;
+      case "EVR014": case "EVR015": case "EVR016":
+        $rv = "Bad Beats - Did nothing.";
+        if($cardID == "EVR014") $target = 4;
+        else if($cardID == "EVR015") $target = 5;
+        else $target = 6;
+        $roll = GetDieRoll($currentPlayer);
+        if($roll >= $target)
+        {
+          $rv = "Bad Beats gives the next Brute attack action card +5.";
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
         return $rv;
       case "EVR053":
         $deck = &GetDeck($currentPlayer);
@@ -598,6 +625,7 @@
     switch($cardID)
     {
       case "EVR021": return 3;
+      case "EVR024": case "EVR025": case "EVR026": return 3;
       default: return 0;
     }
   }

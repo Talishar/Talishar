@@ -112,7 +112,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
 
 function AddCombatChain($cardID, $player, $from, $resourcesPaid)
 {
-  global $combatChain;
+  global $combatChain, $turn;
   $index = count($combatChain);
   array_push($combatChain, $cardID);
   array_push($combatChain, $player);

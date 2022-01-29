@@ -795,6 +795,16 @@ function ProcessHitEffect($cardID)
   }
 }
 
+function ProcessMissEffect($cardID)
+{
+  global $defPlayer;
+  switch($cardID)
+  {
+    case "EVR002": PlayAura("WTR225", $defPlayer);
+    default: break;
+  }
+}
+
 function CombatChainResolutionEffects($cardID, $player)
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $mainPitch;
@@ -1727,8 +1737,9 @@ function OnAttackEffects($attack)
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $otherPlayer, $mainPlayer, $defPlayer;
+  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer;
   $cardType = CardType($combatChain[$index]);
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
     $remove = 0;
@@ -1784,6 +1795,11 @@ function OnBlockEffects($index, $from)
         EvaluateCombatChain($totalAttack, $totalDefense);
         if(BlockValue($combatChain[$index]) > $totalAttack) DestroyCurrentWeapon();
       break;
+    default: break;
+  }
+  switch($combatChain[$index])
+  {
+    case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $otherPlayer); break;
     default: break;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
