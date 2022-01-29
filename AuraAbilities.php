@@ -251,6 +251,7 @@ function AuraDamageTakenAbilities(&$Auras, $damage)
     switch($Auras[$i])
     {
       case "ARC106": case "ARC107": case "ARC108": $remove = 1; break;
+      case "EVR023": $remove = 1; break;
       default: break;
     }
     if($remove == 1)
