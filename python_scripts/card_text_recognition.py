@@ -142,7 +142,8 @@ for filename in onlyfiles:
 
     with open (csvfile,"a") as f:
         csvline = f"{basename},{title},{cost},{attack},{defense},{pitch}"
-        csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").replace(chr(32), "").strip() 
+        #assert(chr(32) in csvline)
+        csvline = csvline.replace("\n", "").replace("\v", "").replace("\x0b", "").strip() 
         print(csvline)
         print(csvline,file=f)
     
