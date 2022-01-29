@@ -53,6 +53,7 @@
       case "EVR057": case "EVR058": case "EVR059": return true;
       case "EVR082": case "EVR083": case "EVR084": return true;
       case "EVR089": return true;
+      case "EVR100": case "EVR101": case "EVR102": return true;
       case "EVR106": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
@@ -93,6 +94,9 @@
       case "EVR082": return 3;
       case "EVR083": return 2;
       case "EVR084": return 1;
+      case "EVR100": return 3;
+      case "EVR101": return 2;
+      case "EVR102": return 1;
       case "EVR160": return -1;
       case "EVR161-2": return 2;
       case "EVR170-2": return 3;
@@ -121,6 +125,7 @@
         if($subtype != "Sword" && $subtype != "Dagger") return false;
         return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
+      case "EVR100": case "EVR101": case "EVR102": return CardSubType($attackID) == "Arrow";
       case "EVR160": return true;
       case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
@@ -158,6 +163,8 @@
       case "EVR082": case "EVR083": case "EVR084": return "A";
       case "EVR088": return "AA";
       case "EVR089": return "A";
+      case "EVR097": case "EVR098": case "EVR099": return "AA";
+      case "EVR100": case "EVR101": case "EVR102": return "A";
       case "EVR103": return "E";
       case "EVR106": return "A";
       case "EVR137": return "E";
@@ -195,6 +202,7 @@
       case "EVR037": return "Head";
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
+      case "EVR097": case "EVR098": case "EVR099": return "Arrow";
       case "EVR103": return "Arms";
       case "EVR121": return "Staff";
       case "EVR137": return "Head";
@@ -232,6 +240,8 @@
       case "EVR082": case "EVR083": case "EVR084": return 0;
       case "EVR088": return 2;
       case "EVR089": return 0;
+      case "EVR097": case "EVR098": case "EVR099": return 1;
+      case "EVR100": case "EVR101": case "EVR102": return 0;
       case "EVR103": return 0;
       case "EVR106": return 0;
       case "EVR120": return 0;
@@ -291,6 +301,9 @@
       case "EVR075": case "EVR084": return 3;
       case "EVR088": return 1;
       case "EVR089": return 3;
+      case "EVR097": case "EVR100": return 1;
+      case "EVR098": case "EVR101": return 2;
+      case "EVR099": case "EVR102": return 3;
       case "EVR103": return 0;
       case "EVR106": return 1;
       case "EVR120": return 0;
@@ -330,6 +343,7 @@
       case "EVR020": return 2;
       case "EVR037": return 2;
       case "EVR053": return 1;
+      case "EVR100": case "EVR101": case "EVR102": return 2;
       case "EVR103": return 0;
       case "EVR106": return 2;
       case "EVR120": return 0;
@@ -370,6 +384,9 @@
       case "EVR074": return 2;
       case "EVR075": return 1;
       case "EVR088": return 6;
+      case "EVR097": return 5;
+      case "EVR098": return 4;
+      case "EVR099": return 3;
       case "EVR156": return 5;
       case "EVR157": return 3;
       case "EVR161": return 4;
@@ -452,6 +469,10 @@
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
         return "Tri-shot gives your bow 2 additional uses.";
+      case "EVR100": case "EVR101": case "EVR102":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        Opt($cardID, 1);
+        return "";
       case "EVR103":
         PlayAura("ARC112", $currentPlayer, 2);
         return "Vexing Quillhand created two Runechant tokens.";
@@ -637,6 +658,9 @@
         RevealCards($cards);
         WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
         $hand = array_values($hand);
+        break;
+      case "EVR097": case "EVR098": case "EVR099":
+        AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "EVR156":
         AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
