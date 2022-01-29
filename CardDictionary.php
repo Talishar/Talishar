@@ -1685,6 +1685,7 @@
       case "CRU025": return true;
       case "CRU081": return true;
       case "CRU141": return true;
+      case "EVR018": return true;
       case "EVR020": return true;
       default: return false;
     }
@@ -1968,6 +1969,7 @@
       case "WTR010": return true;
       case "WTR162": return $from == "PLAY";
       case "CRU009": return true;
+      case "EVR014": case "EVR015": case "EVR016": return true;
     }
     return false;
   }

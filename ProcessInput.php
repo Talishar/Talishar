@@ -518,7 +518,16 @@
     }
     else
     {
-        $combatChainState[$CCS_HitsInRow] = 0;
+      for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+      {
+        if($combatChain[$i] == $mainPlayer)
+        {
+          SetClassState($currentPlayer, $CS_EffectContext, $combatChain[$i-1]);
+          ProcessMissEffect($combatChain[$i-1]);
+          SetClassState($currentPlayer, $CS_EffectContext, "-");
+        }
+      }
+      $combatChainState[$CCS_HitsInRow] = 0;
     }
     $combatChainState[$CCS_WeaponIndex] = "-1";
     AddDecisionQueue("FINALIZECHAINLINK", $mainPlayer, "-");
