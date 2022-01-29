@@ -1,5 +1,22 @@
 <?php
 
+//Player == currentplayer
+function &GetMZZone($player, $zone)
+{
+  $rv = "";
+  if($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
+  else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
+  return $rv;
+}
+
+/*
+function GetMZPieces($zone)
+{
+  if($zone == "MYCHAR" || $zone == "THEIRCHAR") return CharacterPieces();
+  else if($zone == "MYAURAS" || $zone == "THEIRAURAS") return AuraPieces();
+}
+*/
+
 function &GetPlayerCharacter($player)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
@@ -289,6 +306,37 @@ function &GetTurnStats($player)
   }
 }
 
+function &GetAllies($player)
+{
+  global $p1Allies, $p2Allies;
+  if($player == 1) return $p1Allies;
+  else return $p2Allies;
+}
+
+function &GetSettings($player)
+{
+  global $p1Settings, $p2Settings;
+  if($player == 1) return $p1Settings;
+  else return $p2Settings;
+}
+
+function &GetMainCharacterEffects($player)
+{
+  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
+  global $myStateBuiltFor;
+  if($mainPlayerGamestateStillBuilt)
+  {
+    if($player == $mainPlayer) return $mainCharacterEffects;
+    else return $defCharacterEffects;
+  }
+  else
+  {
+    if($player == $myStateBuiltFor) return $myCharacterEffects;
+    else return $theirCharacterEffects;
+  }
+}
+
 function HasTakenDamage($player)
 {
   global $CS_DamageTaken;
@@ -320,7 +368,7 @@ function ArsenalHasFaceUpCard($player)
 function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);
-  $fullCount = SearchCharacterForCard($player, "ELE213") && ArsenalHasFaceUpCard($player) ? 4 : 2;
+  $fullCount = SearchCharacterForCard($player, "ELE213") && ArsenalHasFaceUpCard($player) ? ArsenalPieces() * 2 : ArsenalPieces();
   return count($arsenal) >= $fullCount;
 }
 
@@ -339,6 +387,21 @@ function NumEquipment($player)
     if(CardType($character[$i]) == "E" && $character[$i+1] != 0) ++$numEquip;
   }
   return $numEquip;
+}
+
+function ActiveCharacterEffects($player, $index)
+{
+  $effects = "";
+  $characterEffects = GetCharacterEffects($player);
+  for($i=0; $i<count($characterEffects); $i+=CharacterEffectPieces())
+  {
+    if($characterEffects[$i] == $index)
+    {
+      if($effects != "") $effects .= ", ";
+      $effects .= CardName($characterEffects[$i+1]);
+    }
+  }
+  return $effects;
 }
 
 ?>

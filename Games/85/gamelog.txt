@@ -1,4 +1,0 @@
-<span style='color:<PLAYER1COLOR>;'>Player 1 played <b><span onmouseover="ShowDetail(event,'./CardImages/ARC019.png')" onmouseout='HideCardDetail()'>ARC019</span></b></span>
-Resolving play ability of ARC019: Convection Amplifier gives your next attack this turn Dominate.
-<span style='color:<PLAYER1COLOR>;'>Player 1 played <b><span onmouseover="ShowDetail(event,'./CardImages/ARC025.png')" onmouseout='HideCardDetail()'>ARC025</span></b></span>
-Player 1 pitched <b><span onmouseover="ShowDetail(event,'./CardImages/CRU103.png')" onmouseout='HideCardDetail()'>CRU103</span></b>

@@ -32,14 +32,14 @@
       case "ARC119": return 2;
       case "ARC120": return 3;
       case "ARC121": return 1;
-      case "ARC122": return 1;
+      case "ARC122": return 0;
       case "ARC123": case "ARC124": case "ARC125": return 1;
       case "ARC126": case "ARC127": case "ARC128": return 2;
       case "ARC129": case "ARC130": case "ARC131": return 2;
       case "ARC132": case "ARC133": case "ARC134": return 1;
       case "ARC138": case "ARC139": case "ARC140": return 1;
       case "ARC141": case "ARC142": case "ARC143": return 1;
-      case "ARC147": case "ARC148": case "ARC149": return 1;
+      case "ARC147": case "ARC148": case "ARC149": return 2;
       default: return 0;
     }
   }
@@ -86,11 +86,11 @@
 
   function ARCWizardPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $myResources, $currentPlayer, $myClassState, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken, $otherPlayer, $myDeck;
+    global $currentPlayer, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "ARC113": case "ARC114":
-        if(count($myDeck) == 0) return "No card for Kano to banish.";
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
@@ -107,15 +107,16 @@
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
         return "Storm Striders lets you play your next Wizard non-attack action as though it were an instant.";
       case "ARC117":
-        $myResources[0] += 3;
+        GainResources($currentPlayer, 3);
         return "Robe of Rapture gives 3 resources.";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
-        DealArcane($damage);
-        return "Blazing Aether did damage equal to the prior arcane damage this turn ( " . $damage . ").";
+        DealArcane($damage, 1, "PLAYCARD", $cardID);
+        return "Blazing Aether did damage equal to the prior arcane damage this turn (" . $damage . ").";
       case "ARC119":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
@@ -124,20 +125,20 @@
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
-        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + $myClassState[$CS_NextArcaneBonus] * 2;
-        DealArcane(ArcaneDamage($cardID) + $myClassState[$CS_NextArcaneBonus]);//Basically this just applies the bonus twice
+        $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2;
+        DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus), 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
         return "Forked Lightning deals " . $damage . " arcane damage.";
       case "ARC121":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "ARC122":
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
@@ -147,7 +148,7 @@
         AddArcaneBonus(2, $currentPlayer);
         return "Absorb in Aether gives the next card that deals arcane damage +2.";
       case "ARC126": case "ARC127": case "ARC128":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
         return "";
       case "ARC129": case "ARC130": case "ARC131":
@@ -158,11 +159,35 @@
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
         return "Stir the Aetherwinds gives your next arcane +$buff and lets you play your next Wizard non-attack action as though it were an instant.";
       case "ARC132": case "ARC133": case "ARC134":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
         return "";
+      case "ARC135": case "ARC136": case "ARC137":
+        if($cardID == "ARC135") $count = 5;
+        else if($cardID == "ARC136") $count = 4;
+        else $count = 3;
+        $deck = &GetDeck($currentPlayer);
+        $cards = "";
+        for($i=0; $i<$count; ++$i)
+        {
+          if(count($deck) > 0)
+          {
+            if($cards != "") $cards .= ",";
+            $card = array_shift($deck);
+            $cards .= $card;
+          }
+        }
+        if($cards != "")
+        {
+          WriteLog("Choose a card to go on the top of your deck.");
+          AddDecisionQueue("CHOOSECARD", $currentPlayer, $cards, 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "DECK");
+          AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
+          AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
+        }
+        return "Index lets you rearrange the cards of your deck.";
       case "ARC138": case "ARC139": case "ARC140":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
@@ -172,7 +197,7 @@
       case "ARC141": case "ARC142": case "ARC143":
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
-        DealArcane(ArcaneDamage($cardID));
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         return "";
       default: return "";
     }
@@ -188,19 +213,23 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if($type == "PLAYCARD")
-    {
-      $damage += ConsumeArcaneBonus($player);
-    }
     if($fromQueue)
     {
-      PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source, 1);
+      PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       PrependDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
     }
     else
     {
+      if(SearchCharacterActive($player, "CRU161"))
+      {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
+        AddDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
+        AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
+        AddDecisionQueue("BUFFARCANE", $player, "1", 1);
+        AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
+      }
       AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
-      AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source, 1);
+      AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
     }
   }
 
@@ -216,11 +245,17 @@
       case "ARC127": case "ARC132": case "ARC138": case "ARC142": case "ARC144": case "ARC149": return 3;
       case "ARC128": case "ARC133": case "ARC139": case "ARC143": case "ARC145": return 2;
       case "ARC134": case "ARC140": case "ARC146": return 1;
+      //CRU
+      case "CRU171": return 4;
+      case "CRU168": case "CRU172": case "CRU174": return 3;
+      case "CRU169": case "CRU173": case "CRU175": return 2;
+      case "CRU170": case "CRU176": return 1;
     }
   }
 
   function ArcaneBarrierChoices($playerID, $max)
   {
+    global $currentTurnEffects;
     $barrierArray = [];
     for($i=0; $i<4; ++$i)//4 is the current max arcane barrier + 1
     {
@@ -242,7 +277,28 @@
         case "ARC155": case "ARC156": case "ARC157": case "ARC158": ++$barrierArray[1]; $total += 1; break;
         case "CRU006": ++$barrierArray[2]; $total += 2; break;
         case "CRU102": ++$barrierArray[2]; $total += 2; break;
+        case "CRU161": ++$barrierArray[1]; $total += 1; break;
         case "ELE144": ++$barrierArray[1]; $total += 1; break;
+        case "EVR103": ++$barrierArray[1]; $total += 1; break;
+        case "EVR137": ++$barrierArray[1]; $total += 1; break;
+        case "EVR155": ++$barrierArray[1]; $total += 1; break;
+        default: break;
+      }
+    }
+    $items = GetItems($playerID);
+    for($i=0; $i<count($items); $i+=ItemPieces())
+    {
+      switch($items[$i])
+      {
+        case "ARC163": ++$barrierArray[1]; $total += 1; break;
+        default: break;
+      }
+    }
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+    {
+      switch($currentTurnEffects[$i])
+      {
+        case "ARC017": ++$barrierArray[2]; $total += 2; break;
         default: break;
       }
     }
@@ -250,7 +306,8 @@
     array_push($choiceArray, 0);
     if($barrierArray[1] > 0) array_push($choiceArray, 1);
     if($barrierArray[2] > 0 || $barrierArray[1] >= 2) array_push($choiceArray, 2);
-    for($i=3; $i<=$max; ++$i)
+    if($barrierArray[3] > 0 || $total >= 3) array_push($choiceArray, 3);
+    for($i=4; $i<=$max; ++$i)
     {
       if($i <= $total) array_push($choiceArray, $i);
     }
@@ -258,4 +315,3 @@
   }
 
 ?>
-

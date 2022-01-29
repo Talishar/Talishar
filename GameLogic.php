@@ -3,12 +3,16 @@
 include "Search.php";
 include "CardLogic.php";
 include "AuraAbilities.php";
+include "AllyAbilities.php";
+include "LandmarkAbilities.php";
+include "WeaponLogic.php";
 
-function PlayAbility($cardID, $from, $resourcesPaid)
+function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
 {
-  global $myPitch, $myHand, $myCharacter, $myDeck, $mainPlayer, $myHealth, $otherPlayer, $myClassState, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $theirHealth, $currentPlayer, $defPlayer, $theirHand, $actionPoints;
-  global $myClassState, $theirClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $playerID, $myResources, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex, $myItems;
-  global $actionPoints, $CS_NumNonAttackCards, $CS_ArcaneDamageTaken;
+  global $mainPlayer, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
+  global $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
+  global $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
+  global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if($set == "ARC")
@@ -31,7 +35,7 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       case "RUNEBLADE": return MONRunebladePlayAbility($cardID, $from, $resourcesPaid);
       case "WARRIOR": return MONWarriorPlayAbility($cardID, $from, $resourcesPaid);
       case "GENERIC": return MONGenericPlayAbility($cardID, $from, $resourcesPaid);
-      case "NONE": return MONTalentPlayAbility($cardID, $from, $resourcesPaid);
+      case "NONE": return MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target);
       default: return "";
     }
   }
@@ -45,26 +49,31 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid);
     }
   }
+  else if($set == "EVR")
+  {
+    return EVRPlayAbility($cardID, $from, $resourcesPaid);
+  }
   $rv = "";
   switch($cardID)
   {
     case "WTR054": case "WTR055": case "WTR056":
-      if(CountPitch($myPitch, 3) >= 1) MyDrawCard();
-      return CountPitch($myPitch, 3) . " cards in pitch.";
+      if(CountPitch(GetPitch($currentPlayer), 3) >= 1) MyDrawCard();
+      return CountPitch(GetPitch($currentPlayer), 3) . " cards in pitch.";
     case "WTR004":
-      $roll = RollDie();
+      $roll = GetDieRoll($currentPlayer);
       $actionPoints += intval($roll/2);
       return "Scabskin Leathers rolled $roll and gained " . intval($roll/2) . " action points.";
     case "WTR005":
-      $roll = RollDie();
-      $myResources[0] += intval($roll/2);
+      $resources = &GetResources($currentPlayer);
+      $roll = GetDieRoll($currentPlayer);
+      $resources[0] += intval($roll/2);
       return "Barkbone Strapping rolled $roll and gained " . intval($roll/2) . " resources.";
     case "WTR006":
-      DiscardRandom();
+      DiscardRandom($currentPlayer, $cardID);
       Intimidate();
-      return "Alpha Rampage discarded a random card from your hand and intimidated.";
+      return "Alpha Rampage intimidated.";
     case "WTR007":
-      $discarded = DiscardRandom();
+      $discarded = DiscardRandom($currentPlayer, $cardID);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $drew = 0;
       if(AttackValue($discarded) >= 6)
@@ -76,27 +85,28 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       }
       return "Bloodrush Bellow discarded " . $discarded . ($drew == 1 ? ", " : ", and ") . "gave your Brute attacks this turn +2" . ($drew == 1 ? ", drew two cards, and gained Go Again." : ".");
     case "WTR008":
-      $discarded = DiscardRandom();
-      if(AttackValue($discarded) >= 6) { $damaged = DamageOtherPlayer(2) > 0; }
+      $damaged = false;
+      $discarded = DiscardRandom($currentPlayer, $cardID);
+      if(AttackValue($discarded) >= 6) { $damaged = true; DealDamage($mainPlayer, 2, "DAMAGE", $cardID); }
       return "Reckless Swing discarded a random card from your hand" . ($damaged ? " and did 2 damage." : ".");
     case "WTR009":
-      $indices = GetIndices(count($myDeck));
-      if($indices != "")
-      {
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, $indices);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-      }
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
+      AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("SANDSKETCH", $currentPlayer, "-");
+      return "";
     case "WTR010":
-      $roll = RollDie();
-      $myClassState[$CS_DamagePrevention] += $roll;
+      $roll = GetDieRoll($currentPlayer);
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
       return "Bone Head Barrier prevents the next $roll damage that will be dealt to you this turn.";
     case "WTR011": case "WTR012": case "WTR013":
-      $discarded = DiscardRandom();
+      $discarded = DiscardRandom($currentPlayer, $cardID);
+      $drew = 0;
       if(AttackValue($discarded) >= 6) { $drew = 1; $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; }
-      return "Savage Feast discarded a random card from your hand" . ($drew ? " and gained Go Again." : ".");
+      return "Breakneck Battery discarded a random card from your hand" . ($drew ? " and gained Go Again." : ".");
     case "WTR014": case "WTR015": case "WTR016":
-      $discarded = DiscardRandom();
+      $discarded = DiscardRandom($currentPlayer, $cardID);
+      $drew = 0;
       if(AttackValue($discarded) >= 6) { $drew = 1; MyDrawCard(); }
       return "Savage Feast discarded a random card from your hand" . ($drew ? " and drew a card." : ".");
     case "WTR017": case "WTR018": case "WTR019":
@@ -104,8 +114,8 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       Intimidate();
       return "Barraging Beatdown intimidates and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
     case "WTR020": case "WTR021": case "WTR022":
-      DiscardRandom();
-      return "Savage Swing discarded a random card from your hand.";
+      DiscardRandom($currentPlayer, $cardID);
+      return "";
     case "WTR023": case "WTR024": case "WTR025":
       Intimidate();
       return "Pack Hunt intimidated.";
@@ -113,14 +123,14 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       Intimidate();
       return "Smash Instinct intimidated.";
     case "WTR029": case "WTR030": case "WTR031":
-      DiscardRandom();
-      return "Wrecker Romp discarded a random card from your hand.";
+      DiscardRandom($currentPlayer, $cardID);
+      return "";
     case "WTR032": case "WTR033": case "WTR034":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       Intimidate();
       return "Awakening Bellow intimidated.";
     case "WTR035": case "WTR036": case "WTR037":
-      DiscardRandom();
+      DiscardRandom($currentPlayer, $cardID);
       AddCurrentTurnEffect($cardID, $mainPlayer);
       return "Primeval Bellow discarded a random card from your hand and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
     //Guardian
@@ -141,20 +151,17 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       return "Show Time! searched for a Guardian attack action card.";
     //Ninja
     case "WTR078":
-      if(CountPitch($myPitch, 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+      if(CountPitch(GetPitch($currentPlayer), 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
       return "";
     case "WTR082":
       MyDrawCard();
-      return "Ancentral Empowerment drew a card.";
-    case "WTR085":
-     $damage = DamageOtherPlayer($combatChainState[$CCS_DamageDealt]);
-     return "Pounding Gail dealt an extra " . $damage . " damage.";
+      return "Ancestral Empowerment drew a card.";
     case "WTR092": case "WTR093": case "WTR094":
-      AddCurrentTurnEffect($cardID, $playerID);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Flic Flak gives the next Combo card you block with this turn +2.";
     //Warrior
     case "WTR116":
-      AddCurrentTurnEffect($cardID, $playerID);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Braveforge Bracers gives your next weapon attack this turn +1.";
     case "WTR118":
       $s1 = "";
@@ -171,17 +178,17 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       }
       return "Glint the Quicksilver" . $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
     case "WTR119": case "WTR122":
-      $weapons = GetWeaponChoices();
-      AddDecisionQueue("CHOOSECHARACTER", $mainPlayer, $weapons);
-      AddDecisionQueue("ADDCHARACTEREFFECT", $mainPlayer, $cardID);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDMZBUFF", $mainPlayer, $cardID, 1);
       return "";
     case "WTR120":
       if(RepriseActive())
       {
-        $options = GetChainLinkCards($otherPlayer);
+        $options = GetChainLinkCards(($mainPlayer == 1 ? 2 : 1), "", "E,C");
         AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
         AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-");
-        AddDecisionQueue("ADDTHEIRHAND", $mainPlayer, "-");
+        AddDecisionQueue("ADDHAND", $defPlayer, "-");
       }
       return "";
     case "WTR121":
@@ -199,7 +206,7 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       $text = "Steelblade Shunt ";
       if(CardType($combatChain[0]) == "W")
       {
-        DamageOtherPlayer(1);
+        DealDamage($mainPlayer, 1, "DAMAGE", $cardID);
         $text .= "DID";
       } else { $text .= "did NOT"; }
       $text .= " deal 1 damage to the attacking hero.";
@@ -231,15 +238,16 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       AddCurrentTurnEffect($cardID, $mainPlayer);
       return "Nature's Path Pilgrimage gives your next weapon attack +" . EffectAttackModifier($cardID) . " and a hit effect.";
     case "WTR150":
-      $myResources[0] += 1;
+      $resources = &GetResources($currentPlayer);
+      $resources[0] += 1;
       return "Fyendal's Spring Tunic added 1 resource.";
     case "WTR151":
       $indices = GetMyHandIndices();
       if($indices == "") return "";
-      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, count($myHand) . "-" . $indices);
+      AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, count(GetHand($currentPlayer)) . "-" . $indices);
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEMYDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
       AddDecisionQueue("HELMHOPEMERCHANT", $currentPlayer, "-", 1);
       return "";
     case "WTR152":
@@ -251,17 +259,44 @@ function PlayAbility($cardID, $from, $resourcesPaid)
     case "WTR159":
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_card,2_Attack,Go_again");
       AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
-      return "";
+      return "Enlightened Strike put a card from your hand to the bottom of your deck and had an additional effect.";
     case "WTR160":
       MyDrawCard();
       MyDrawCard();
-      if($from == "ARS") $myHealth += count($myHand);
-      return "Tome of Fyendal drew two cards" . ($from == "ARS" ? " and gained " . count($myHand) . " life" : "") . ".";
+      $hand = GetHand($currentPlayer); //Get hand size after draw for correct health gain
+      if($from == "ARS") GainHealth(count($hand), $currentPlayer);
+      return "Tome of Fyendal drew two cards" . ($from == "ARS" ? " and gained " . count($hand) . " life" : "") . ".";
     case "WTR161":
-      if(count($myDeck) == 0) {
+      if(count(GetDeck($currentPlayer)) == 0) {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        AddCurrentTurnEffect($cardID, $mainPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         $rv = "Last Ditch Effort gains Go Again and +4.";
+      }
+      return $rv;
+    case "WTR162":
+      if($from == "PLAY")
+      {
+        $roll = GetDieRoll($currentPlayer);
+        $rv = "Crazy Brew rolled " . $roll;
+        if($roll <= 2)
+        {
+          LoseHealth(2, $currentPlayer);
+          $rv .= " and lost you 2 health.";
+        }
+        else if($roll <= 4)
+        {
+          GainHealth(2, $currentPlayer);
+          $rv .= " and gained you 2 health.";
+        }
+        else if($roll <= 6)
+        {
+          $resources = &GetResources($currentPlayer);
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $resources[0] += 2;
+          $actionPoints += 2;
+          $rv .= " and gained 2 action points, resources, and damage.";
+        }
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       }
       return $rv;
     case "WTR163":
@@ -272,6 +307,28 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       if($actions == "") return "";
       AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "3-" . $actions);
       AddDecisionQueue("REMEMBRANCE", $currentPlayer, "-", 1);
+      return "";
+    case "WTR170":
+      if($from == "PLAY")
+      {
+        $resources = &GetResources($currentPlayer);
+        $resources[0] += 2;
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      }
+      return "";
+    case "WTR171":
+      if($from == "PLAY")
+      {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      }
+      return "";
+    case "WTR172":
+      if($from == "PLAY")
+      {
+        $actionPoints += 2;
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      }
       return "";
     case "WTR173": GainHealth(3, $currentPlayer); return "Sigil of Solace gained 3 health.";
     case "WTR174": GainHealth(2, $currentPlayer); return "Sigil of Solace gained 2 health.";
@@ -318,7 +375,7 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       return "Goliath Gauntlet gives your next attack action card with cost 2 or greater +" . EffectAttackModifier($cardID) . ".";
     //CRU Brute
     case "CRU004": case "CRU005":
-      if($myClassState[$CS_Num6PowDisc] > 0)
+      if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0)
       {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         $rv = "Mandible Claw gained Go Again.";
@@ -326,32 +383,56 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       return $rv;
     case "CRU006":
       MyDrawCard();
-      $discarded = DiscardRandom();
+      $discarded = DiscardRandom($currentPlayer, $cardID);
       return "Skullhorn discarded " . $discarded . ".";
+    case "CRU008":
+      if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0)
+      {
+        Intimidate();
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      return "";
+    case "CRU009":
+      $roll = GetDieRoll($currentPlayer);
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      for($i=1; $i<$roll; $i+=2)//half rounded down
+      {
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "ITEMS", 1);
+        AddDecisionQueue("CHOOSETHEIRITEM", $currentPlayer, "<-", 1);
+        AddDecisionQueue("DESTROYITEM", $otherPlayer, "<-", 1);
+      }
+      return "Argh... Smash! rolled " . $roll . ".";
     case "CRU010": case "CRU011": case "CRU012":
-      $discarded = DiscardRandom();
+      $discarded = DiscardRandom($currentPlayer, $cardID);
       return "Barraging Bighorn discarded " . $discarded . ".";
     case "CRU013": case "CRU014": case "CRU015":
-      if($myClassState[$CS_Num6PowDisc] > 0)
+      if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0)
       {
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $rv = "Predatory Assault gained Dominate.";
       }
       return $rv;
     case "CRU019": case "CRU020": case "CRU021":
-      $discarded = DiscardRandom();
+      $discarded = DiscardRandom($currentPlayer, $cardID);
       return "Swing Fist, Think Later discarded " . $discarded . ".";
     //CRU Guardian
     case "CRU025":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Crater Fist gives your Crush attacks +2 this turn.";
     case "CRU028":
-      if(CountPitch($myPitch, 3) >= 2) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Stamp Authority gives you +1 intellect until end of turn."; }
+      if(CountPitch(GetPitch($currentPlayer), 3) >= 2) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Stamp Authority gives you +1 intellect until end of turn."; }
       return $rv;
     case "CRU041": case "CRU042": case "CRU043":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Blessing of Serenity will prevent some of the next combat damage you take this turn.";
     //Ninja
+    case "CRU054":
+      if(ComboActive())
+      {
+        $combatChainState[$CCS_ResourceCostDefenseMin] = $combatChainState[$CCS_NumChainLinks];
+        $rv = "Crane Dance cannot be defended by cards with resource cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
+      }
+      return $rv;
     case "CRU055":
       if(ComboActive())
       {
@@ -359,22 +440,38 @@ function PlayAbility($cardID, $from, $resourcesPaid)
         $rv = "Flood of Force reveals your deck and puts it in your hand if it has combo.";
       }
       return $rv;
+    case "CRU056":
+      if(ComboActive())
+      {
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Attack_Action,Non-attack_Action");
+        AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_CardTypeDefenseRequirement, 1);
+      }
+      return $rv;
+    case "CRU057": case "CRU058": case "CRU059":
+      if(ComboActive())
+      {
+        $combatChainState[$CCS_BaseAttackDefenseMax] = $combatChainState[$CCS_NumChainLinks];
+        $rv = "Crane Dance cannot be defended by attacks with greater than " . $combatChainState[$CCS_NumChainLinks] . " base attack.";
+      }
+      return $rv;
     //CRU Warrior
     case "CRU081":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       return "Courage of Bladehold reduces the cost of your weapon attacks by 1 this turn.";
     case "CRU082":
-      if($myCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $myCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
+      $character = &GetPlayerCharacter($currentPlayer);
+      if($character[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $character[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
       return "Twinning Blade allows you to attack with target sword an additional time.";
     case "CRU083":
       if(RepriseActive()) UnifiedDecreePlayEffect();
       return "Unified Decree gave your weapon attack +" . AttackModifier($cardID) . " and looks for an attack reaction.";
     case "CRU084":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-2", $currentPlayer);//Hit effect
       return "Spoils of War gives your next weapon attack +2 and go again.";
     case "CRU085": case "CRU086": case "CRU087":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      AddCurrentTurnEffect($cardID . "-2", $otherPlayer);
+      AddCurrentTurnEffect($cardID . "-2", ($mainPlayer == 1 ? 2 : 1));
       return "Dauntless gives your next weapon attack  +" . EffectAttackModifier($cardID . "-1") . " and makes the next Defense Reaction cost +1 to play.";
     case "CRU088": case "CRU089": case "CRU090":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
@@ -382,32 +479,36 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       return "Out for Blood gave your weapon attack +" . EffectAttackModifier($cardID . "-1") . RepriseActive() ? " and gives your next attack +1." : ".";
     case "CRU091": case "CRU092": case "CRU093":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      $atkWWpn = $myClassState[$CS_AtksWWeapon] > 0;
+      $atkWWpn = GetClassState($currentPlayer, $CS_AtksWWeapon) > 0;
       if($atkWWpn) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
       return "Hit and Run gives your next weapon attack Go Again" . ($atkWWpn ? " and +" . EffectAttackModifier($cardID . "-2") : "") . ".";
     case "CRU094": case "CRU095": case "CRU096":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      $atkWWpn = $myClassState[$CS_AtksWWeapon] > 0;
+      $atkWWpn = GetClassState($currentPlayer, $CS_AtksWWeapon) > 0;
       if($atkWWpn) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
       return "Push Forward gives your next weapon attack +" . EffectAttackModifier($cardID . "-1") . ($atkWWpn ? " and gives your next attack Dominate." : ".");
     //CRU Mechanologist
     case "CRU101":
-      $myCharacter[$myClassState[$CS_CharacterIndex] + 2] = ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] == 0 ? 1 : 0);
+      $character = &GetPlayerCharacter($currentPlayer);
+      $character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] = ($character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] == 0 ? 1 : 0);
       return "";
     case "CRU102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "CRU103":
+      return "Meganetic Shockwave is a manual card. The opponent must block with " . GetClassState($currentPlayer, $CS_NumBoosted) . " equipment if able.";
     case "CRU105":
-      $index = $myClassState[$CS_PlayIndex];
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
       if($index != -1)
       {
-        $myItems[$index + 1] = ($myItems[$index + 1] == 0 ? 1 : 0);
-        if($myItems[$index + 1] == 0)
+        $items = &GetItems($currentPlayer);
+        $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
+        if($items[$index + 1] == 0)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
           AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
-          $myItems[$index + 2] = 1;
+          $items[$index + 2] = 1;
           $rv = "Plasma Purifier gave target pistol +1.";
         }
         else
@@ -420,7 +521,7 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       if($cardID == "CRU115") $maxCost = 2;
       else if($cardID == "CRU116") $maxCost = 1;
       else if($cardID == "CRU117") $maxCost = 0;
-      Opt($cardID, $myClassState[$CS_NumBoosted]);
+      Opt($cardID, GetClassState($currentPlayer, $CS_NumBoosted));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Item", 1);
@@ -448,18 +549,21 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
       return "Feign Death prevents the next damage you would take.";
     case "CRU126":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU127":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU128":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -467,7 +571,7 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       return "";
     case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
+      AddCurrentTurnEffect($cardID . "-1", ($currentPlayer == 1 ? 2 : 1));
       return "Increase the tension gives the next arrow attack this turn +" . EffectAttackModifier($cardID) . " and prevents defense reactions on that chain link.";
     //CRU Runeblade
     case "CRU141":
@@ -476,13 +580,14 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       return "Bloodsheath Skeleta reduces the cost of your next attack action card and non-attack action card this turn.";
     case "CRU142":
       if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $currentPlayer);
-      if(GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0) PlayAura("ARC112", $currentPlayer);
+      AddDecisionQueue("CLASSSTATEGREATERORPASS", $defPlayer, $CS_ArcaneDamageTaken . "-1", 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
       return "";
     case "CRU143":
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
       AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
       AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "TT");
+      AddDecisionQueue("BANISH", $currentPlayer, "TT", 1);
       return "Rattle Bones banishes a Runeblade attack action card, which can be played this turn.";
     case "CRU144":
       PlayAura("ARC112", $currentPlayer);
@@ -512,13 +617,50 @@ function PlayAbility($cardID, $from, $resourcesPaid)
       RevealCards($cards);
       AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
       return "";
+    //CRU Wizard
+    case "CRU160":
+      DealArcane(2, 1, "PLAYCARD", $cardID);
+      return "Aether Conduit deals 2 arcane damage.";
+    case "CRU162":
+      $rv = "Chain lightning let you play your next Wizard non-attack as an instant";
+      SetClassState($currentPlayer, $CS_NextWizardNAAInstant,1);
+      if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2)
+      {
+        DealArcane(3, 1, "PLAYCARD", $cardID);//TODO: All opponents
+        $rv .= " and deal 3 arcane damage to each opposing hero";
+      }
+      return $rv . ".";
+    case "CRU163":
+      Opt($cardID, 2);
+      return "";
+    case "CRU164":
+      NegateLayer($target);
+      return "Aetherize negated an instant.";
+    case "CRU165": case "CRU166": case "CRU167":
+      if($cardID == "CRU165") $optAmt = 3;
+      else if($cardID == "CRU166") $optAmt = 2;
+      else $optAmt = 1;
+      AddArcaneBonus(1, $currentPlayer);
+      Opt($cardID, $optAmt);
+      return "";
+    case "CRU168": case "CRU169": case "CRU170":
+      DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+      Opt($cardID, 1);
+      return "";
+    case "CRU171": case "CRU172": case "CRU173":
+      DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+      AddArcaneBonus(1, $currentPlayer);
+      return "";
+    case "CRU174": case "CRU175": case "CRU176":
+      DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+      return "";
     //CRU Generics
     case "CRU181":
       $count = SearchCount(CombineSearches(SearchMyDiscardForCard("CRU181"), SearchTheirDiscardForCard("CRU181")));
       for($i=0; $i<$count; ++$i) { MyDrawCard(); }
       return "Gorganian Tome drew " . $count . " cards.";
     case "CRU182":
-      AddCurrentTurnEffect("CRU182", $otherPlayer);
+      AddCurrentTurnEffect("CRU182", ($currentPlayer == 1 ? 2 : 1));
       return "Snag made attack actions unable to gain attack.";
     case "CRU183": case "CRU184": case "CRU185":
       if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Promise of Plenty gained Go Again."; }
@@ -533,6 +675,13 @@ function PlayAbility($cardID, $from, $resourcesPaid)
        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
        AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $currentPlayer, PlayBlockModifier($cardID), 1);
        return "";
+    case "CRU197":
+      if($from == "PLAY")
+      {
+        MyDrawCard();
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      }
+      return "";
     default:
       break;
   }
@@ -540,7 +689,7 @@ function PlayAbility($cardID, $from, $resourcesPaid)
 
 function ProcessHitEffect($cardID)
 {
-  WriteLog("Processing hit effect for " . $cardID);
+  WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
   global $combatChain,$defArsenal, $mainClassState, $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $mainCharacter, $defCharacter, $mainArsenal, $CCS_ChainLinkHitEffectsPrevented, $CCS_NextBoostBuff, $CS_ArcaneDamageTaken, $defPlayer, $CCS_HitsInRow;
   global $defPlayer;
   $attackID = $combatChain[0];
@@ -582,6 +731,10 @@ function ProcessHitEffect($cardID)
       default: return ELETalentHitEffect($cardID);
     }
   }
+  else if($set == "EVR")
+  {
+    return EVRHitEffect($cardID);
+  }
   switch($cardID)
   {
     case "WTR083":
@@ -596,7 +749,9 @@ function ProcessHitEffect($cardID)
       break;
     case "WTR084":
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
-      AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-");
+      if(ComboActive()){
+        AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-"); //Only back to hand if combo is active
+      }
       break;
     case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) MainDrawCard(); break;
     case "WTR115":
@@ -606,7 +761,8 @@ function ProcessHitEffect($cardID)
     case "WTR167": case "WTR168": case "WTR169": MainDrawCard(); break;
     case "WTR206": case "WTR207": case "WTR208": if(CardType($attackID) == "AA") PummelHit(); break;
     case "WTR209": case "WTR210": case "WTR211": if(CardType($attackID) == "AA") GiveAttackGoAgain(); break;
-    case "CRU060": case "CRU061": case "CRU062": RushingRiverHitEffect(); break;
+    case "CRU054": PlayAura("CRU075", $mainPlayer); break;
+    case "CRU060": case "CRU061": case "CRU062": if(ComboActive()) RushingRiverHitEffect(); break;
     case "CRU066": case "CRU067": case "CRU068": GiveAttackGoAgain(); break;
     case "CRU069": case "CRU070": case "CRU071": GiveAttackGoAgain(); break;
     case "CRU072": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
@@ -635,6 +791,16 @@ function ProcessHitEffect($cardID)
       DefenderTopDeckToArsenal();
       MainTopDeckToArsenal();
       break;
+    default: break;
+  }
+}
+
+function ProcessMissEffect($cardID)
+{
+  global $defPlayer;
+  switch($cardID)
+  {
+    case "EVR002": PlayAura("WTR225", $defPlayer);
     default: break;
   }
 }
@@ -684,10 +850,9 @@ function ProcessCrushEffect($cardID)
     case "WTR044": AddNextTurnEffect($cardID, $defPlayer); break;
     case "WTR045": AddNextTurnEffect($cardID, $defPlayer); break;
     case "WTR057": case "WTR058": case "WTR059":
-      $equipment = GetTheirEquipmentChoices();
-      if($equipment == "") break;
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, $equipment);
-      AddDecisionQueue("ADDTHEIRNEGDEFCOUNTER", $mainPlayer, "-", 1);
+      AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-");
+      AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
       break;
     case "WTR060": case "WTR061": case "WTR062": AddNextTurnEffect($cardID, $defPlayer); break;
     case "WTR063": case "WTR064": case "WTR065": $defCharacter[1] = 3; break;
@@ -698,7 +863,14 @@ function ProcessCrushEffect($cardID)
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
       break;
-    case "CRU027": break;
+    case "CRU027":
+      AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPX,5");
+      AddDecisionQueue("COUNTPARAM", $defPlayer, "<-", 1);
+      AddDecisionQueue("MULTICHOOSETHEIRDECK", $mainPlayer, "<-", 1, 1);
+      AddDecisionQueue("VALIDATEALLSAMENAME", $defPlayer, "DECK", 1);
+      AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
+      AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
+      break;
     case "CRU032": case "CRU033": case "CRU034": AddNextTurnEffect("CRU032", $defPlayer); break;
     case "CRU035": case "CRU036": case "CRU037": AddNextTurnEffect("CRU035", $defPlayer); break;
     default: return;
@@ -708,24 +880,23 @@ function ProcessCrushEffect($cardID)
 //NOTE: This happens at combat resolution, so can't use the my/their directly
 function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
 {
-  global $mainPlayer, $mainPitch, $mainClassState, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainCharacter, $mainAuras, $CCS_WeaponIndex, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow, $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
+  global $mainPlayer, $mainPitch, $mainClassState, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainCharacter, $mainAuras, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow, $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CCS_NumChainLinks;
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID)
   {
     case "WTR003": return $mainClassState[$CS_Num6PowDisc];
     case "WTR040": return CountPitch($mainPitch, 3) >= 2 ? 2 : 0;
+    case "WTR080": return 1;
     case "WTR081": return $resourcesPaid;
     case "WTR082": return 1;
-    case "WTR083": if(ComboActive()) return 1;
-    case "WTR084": if(ComboActive()) return 1;
-    case "WTR086": case "WTR087": case "WTR088": if(ComboActive()) return $combatChainState[$CCS_NumHits];
-    case "WTR089": case "WTR090": case "WTR091": if(ComboActive()) return 3;
-    case "WTR095": case "WTR096": case "WTR097": if(ComboActive()) return 1;
-    case "WTR104": case "WTR105": case "WTR106": if(ComboActive()) return 2;
-    case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) return 1;
-    case "WTR115": return $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
-    case "ELE223": return $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
+    case "WTR083": return (ComboActive() ? 1 : 0);
+    case "WTR084": return (ComboActive() ? 1 : 0);
+    case "WTR086": case "WTR087": case "WTR088": return (ComboActive() ? $combatChainState[$CCS_NumHits] : 0);
+    case "WTR089": case "WTR090": case "WTR091": return (ComboActive() ? 3 : 0);
+    case "WTR095": case "WTR096": case "WTR097": return (ComboActive() ? 1 : 0);
+    case "WTR104": case "WTR105": case "WTR106": return (ComboActive() ? 2 : 0);
+    case "WTR110": case "WTR111": case "WTR112": return (ComboActive() ? 1 : 0);
     case "WTR120": return 3;
     case "WTR121": return 1;
     case "WTR123": return $repriseActive ? 6 : 4;
@@ -750,6 +921,8 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "ARC077": return $mainClassState[$CS_NumNonAttackCards] > 0 ? 3 : 0;
     case "ARC188": case "ARC189": case "ARC190": return $combatChainState[$CCS_HitsInRow] > 0 ? 2 : 0;
     case "CRU016": case "CRU017": case "CRU018": return $mainClassState[$CS_Num6PowDisc] > 0 ? 1 : 0;
+    case "CRU056": return ComboActive() ? 2 : 0;
+    case "CRU057": case "CRU058": case "CRU059": return ComboActive() ? 1 : 0;
     case "CRU060": case "CRU061": case "CRU062": return ComboActive() ? 1 : 0;
     case "CRU063": case "CRU064": case "CRU065": return $combatChainState[$CCS_NumChainLinks] >= 3 ? 2 : 0;
     case "CRU073": return $combatChainState[$CCS_NumHits];
@@ -772,6 +945,9 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "ELE082": case "ELE083": case "ELE084": return GetClassState($defPlayer,  $CS_ArcaneDamageTaken) >= 1 ? 2 : 0;
     case "ELE134": case "ELE135": case "ELE136": return $from == "ARS" ? 1 : 0;
     case "ELE202": return CountPitch($mainPitch, 3) >= 1 ? 1 : 0;
+    case "EVR063": return 3;
+    case "EVR064": return 2;
+    case "EVR065": return 1;
     default: return 0;
   }
 }
@@ -789,10 +965,12 @@ function EffectHitEffect($cardID)
     case "CRU145": PlayAura("ARC112", $mainPlayer);
     case "CRU146": PlayAura("ARC112", $mainPlayer);
     case "CRU147": PlayAura("ARC112", $mainPlayer); break;
+    case "CRU084-2": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
     case "MON034": LuminaAscensionHit(); break;
     case "MON081": case "MON082": case "MON083": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
     case "MON110": case "MON111": case "MON112": DuskPathPilgrimageHit(); break;
     case "MON193": ShadowPuppetryHitEffect(); break;
+    case "MON218": if(count(GetSoul($defPlayer)) > 0) { BanishFromSoul($defPlayer); LoseHealth(1, $defPlayer); } break;
     case "MON299": case "MON300": case "MON301": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK"; break;
     case "ELE003": PlayAura("ELE111", $defPlayer); break;
     case "ELE005": RandomHandBottomDeck($defPlayer); RandomHandBottomDeck($defPlayer); break;
@@ -823,6 +1001,15 @@ function EffectHitEffect($cardID)
       break;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
+    case "EVR161-1": GainHealth(2, $mainPlayer);
+    case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
+    case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
+    case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
+    case "EVR170-1": case "EVR171-1": case "EVR172-1":
+      AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
+      AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
+      AddDecisionQueue("DESTROYITEM", $defPlayer, "<-", 1);
+      break;
     default: break;
   }
   return 0;
@@ -846,6 +1033,10 @@ function EffectAttackModifier($cardID)
   else if($set == "ELE")
   {
     return ELEEffectAttackModifier($cardID);
+  }
+  else if($set == "EVR")
+  {
+    return EVREffectAttackModifier($cardID);
   }
   switch($cardID)
   {
@@ -882,6 +1073,7 @@ function EffectAttackModifier($cardID)
     case "WTR153": return 2;
     case "WTR159": return 2;
     case "WTR161": return 4;
+    case "WTR162": return 2;
     case "WTR171": return 2;
     case "WTR185": return 1;
     case "WTR200": case "WTR201": case "WTR202": return 1;
@@ -899,6 +1091,7 @@ function EffectBlockModifier($cardID)
 {
   switch($cardID)
   {
+    case "ELE000-2": return 1;
     case "ELE143": return 1;
     default: return 0;
   }
@@ -950,7 +1143,7 @@ function PlayBlockModifier($cardID)
 
 function SelfCostModifier($cardID)
 {
-  global $myClassState, $CS_NumCharged, $currentPlayer;
+  global $CS_NumCharged, $currentPlayer, $combatChain, $CS_LayerTarget;
   switch($cardID)
   {
     case "ARC080": return (-1 * NumRunechants($currentPlayer));
@@ -959,9 +1152,21 @@ function SelfCostModifier($cardID)
     case "ARC094": case "ARC095": case "ARC096": return (-1 * NumRunechants($currentPlayer));
     case "ARC097": case "ARC098": case "ARC099": return (-1 * NumRunechants($currentPlayer));
     case "ARC100": case "ARC101": case "ARC102": return (-1 * NumRunechants($currentPlayer));
-    case "MON032": return (-1 * (2 * $myClassState[$CS_NumCharged]));
+    case "MON032": return (-1 * (2 * GetClassState($currentPlayer, $CS_NumCharged)));
+    case "MON084": case "MON085": case "MON086": return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
     default: return 0;
   }
+}
+
+function CharacterCostModifier($cardID, $from)
+{
+  global $currentPlayer, $CS_NumSwordAttacks;
+  $modifier = 0;
+  if(CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1 && SearchCharacterActive($currentPlayer, "CRU077"))
+  {
+    --$modifier;
+  }
+  return $modifier;
 }
 
 function CurrentEffectCostModifiers($cardID)
@@ -982,9 +1187,11 @@ function CurrentEffectCostModifiers($cardID)
         case "CRU085-2": case "CRU086-2": case "CRU087-2": if(CardType($cardID) == "DR") {$costModifier += 1; $remove = 1; } break;
         case "CRU141-AA": if(CardType($cardID) == "AA") { $costModifier -= CountAura("ARC112", $currentPlayer); $remove = 1; } break;
         case "CRU141-NAA": if(CardType($cardID) == "A") { $costModifier -= CountAura("ARC112", $currentPlayer); $remove = 1; } break;
+        case "CRU188": $costModifier -= 999; $remove = 1; break;
         case "MON257": $costModifier -= 999; $remove = 1; break;
         case "MON199": $costModifier -= 999; $remove = 1; break;
         case "ARC185": $costModifier -= 999; $remove = 1; break;
+        case "EVR161": $costModifier -= 999; $remove = 1; break;
         case "ARC060": case "ARC061": case "ARC062": if(CardType($cardID) == "AA" || GetAbilityType($cardID) == "AA") {$costModifier += 1; $remove = 1; } break;
         case "ELE035-1": $costModifier += 1; break;
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
@@ -999,6 +1206,19 @@ function CurrentEffectCostModifiers($cardID)
     }
   }
   return $costModifier;
+}
+
+function BanishCostModifier($from, $index)
+{
+  global $currentPlayer;
+  if($from != "BANISH") return 0;
+  $banish = GetBanish($currentPlayer);
+  $mod = explode("-", $banish[$index+1]);
+  switch($mod[0])
+  {
+    case "ARC119": return -1 * $mod[1];
+    default: return 0;
+  }
 }
 
 function CurrentEffectDamagePrevention($player, $type, $damage)
@@ -1027,6 +1247,32 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
     }
   }
   return $prevention;
+}
+
+function CurrentEffectAttackAbility()
+{
+  global $currentTurnEffects, $combatChain, $mainPlayer;
+  global $CS_PlayIndex;
+  if(count($combatChain) == 0) return;
+  $attackID = $combatChain[0];
+  $attackType = CardType($attackID);
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+  {
+    if($currentTurnEffects[$i+1] == $mainPlayer)
+    {
+      switch($currentTurnEffects[$i])
+      {
+        case "EVR056":
+          if($attackType == "W")
+          {
+            $character = &GetPlayerCharacter($mainPlayer);
+            ++$character[GetClassState($mainPlayer, $CS_PlayIndex)+3];
+          }
+          break;
+        default: break;
+      }
+    }
+  }
 }
 
 function CurrentEffectPlayAbility($cardID)
@@ -1119,6 +1365,8 @@ function CurrentEffectGrantsGoAgain()
         case "ELE177": case "ELE178": case "ELE179": return true;
         case "ELE180": case "ELE181": case "ELE182": return $combatChainState[$CCS_AttackFused] == 1;
         case "ELE201": return true;
+        case "EVR017": return true;
+        case "EVR161-3": return true;
         default: break;
       }
     }
@@ -1192,12 +1440,40 @@ function CurrentEffectIntellectModifier()
         case "WTR042": $intellectModifier += 1; break;
         case "ARC161": $intellectModifier += 1; break;
         case "CRU028": $intellectModifier += 1; break;
+        case "MON000": $intellectModifier += 1; break;
         case "MON246": $intellectModifier += 1; break;
         default: break;
       }
     }
   }
   return $intellectModifier;
+}
+
+function CurrentEffectEndTurnAbilities()
+{
+  global $currentTurnEffects;
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+  {
+    $remove = 0;
+    switch($currentTurnEffects[$i])
+    {
+      case "MON069": case "MON070": case "MON071":
+      case "EVR056"://Oath of Steel does the same thing
+        $char = &GetPlayerCharacter($currentTurnEffects[$i+1]);
+        for($j=0; $j<count($char); $j+=CharacterPieces())
+        {
+          if(CardType($char[$j]) == "W") $char[$j+3] = 0;//Glisten clears out all +1 attack counters
+        }
+        $remove = 1;
+        break;
+      default: break;
+    }
+    if($remove == 1)
+    {
+      unset($currentTurnEffects[$i+1]);
+      unset($currentTurnEffects[$i]);
+    }
+  }
 }
 
 function IsCombatEffectActive($cardID)
@@ -1222,6 +1498,10 @@ function IsCombatEffectActive($cardID)
   {
     return ELECombatEffectActive($cardID, $attackID);
   }
+  else if($set == "EVR")
+  {
+    return EVRCombatEffectActive($cardID, $attackID);
+  }
   switch($cardID)
   {
     case "AAPLUS1": case "AAPLUS2": case "AAPLUS3": return CardType($attackID) == "AA";
@@ -1241,6 +1521,7 @@ function IsCombatEffectActive($cardID)
     case "WTR153": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
     case "WTR159": return true;
     case "WTR161": return true;
+    case "WTR162": return true;
     case "WTR171": return true;
     case "WTR185": return true;
     case "WTR197": return true;
@@ -1256,16 +1537,20 @@ function IsCombatEffectPersistent($cardID)
   switch($cardID)
   {
     case "WTR007": return true;
+    case "WTR038": case "WTR039": return true;
     case "ARC047": return true;
     case "ARC160-1": return true;
     case "ARC170-1": case "ARC171-1": case "ARC172-1": return true;
     case "CRU025": return true;
     case "CRU053": return true;
+    case "CRU084-2": return true;
     case "CRU122": return true;
     case "CRU124": return true;
     case "MON034": return true;
+    case "MON087": return true;
     case "MON108": return true;
     case "MON109": return true;
+    case "MON218": return true;
     case "MON239": return true;
     case "ELE044": case "ELE045": case "ELE046": return true;
     case "ELE047": case "ELE048": case "ELE049": return true;
@@ -1277,6 +1562,10 @@ function IsCombatEffectPersistent($cardID)
     case "ELE092-DOM": case "ELE092-BUFF": return true;
     case "ELE143": return true;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
+    case "EVR001": return true;
+    case "EVR019": return true;
+    case "EVR160": return true;
+    case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
     default: return false;
   }
 }
@@ -1292,6 +1581,7 @@ function BeginEndStepEffects()
       switch($currentTurnEffects[$i])
       {
         case "ELE215": WriteLog("Seek and Destroy discarded your hand and arsenal."); DestroyArsenal($mainPlayer); DiscardHand($mainPlayer); break;
+        case "EVR106": WriteLog("Revel in Runeblood destroyed your Runechants."); DestroyAllThisAura($mainPlayer, "ARC112"); break;
         default: break;
       }
     }
@@ -1301,7 +1591,9 @@ function BeginEndStepEffects()
 //NOTE: This happens at start of turn, so must use main player game state
 function ItemStartTurnAbility($index)
 {
-  global $mainItems, $mainResources;
+  global $mainPlayer;
+  $mainItems = &GetItems($mainPlayer);
+  $mainResources = &GetResources($mainPlayer);
   switch($mainItems[$index])
   {
     case "ARC007":
@@ -1320,9 +1612,29 @@ function ItemStartTurnAbility($index)
   }
 }
 
+function ItemEndTurnAbilities()
+{
+  global $mainPlayer;
+  $items = &GetItems($mainPlayer);
+  for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+  {
+    $remove = false;
+    switch($items[$i])
+    {
+      case "EVR188": $remove = TalismanOfBalanceEndTurn(); break;
+      default: break;
+    }
+    if($remove)
+    {
+      DestroyItemForPlayer($mainPlayer, $i);
+    }
+  }
+}
+
 function CharacterStartTurnAbility($index)
 {
-  global $mainCharacter, $mainPlayer;
+  global $mainPlayer;
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
   if($mainCharacter[$index+1] == 0) return;//Do not process ability if it is destroyed
   switch($mainCharacter[$index])
   {
@@ -1334,46 +1646,40 @@ function CharacterStartTurnAbility($index)
           BanishCardForPlayer($mainCharacter[$index], $mainPlayer, "EQUIP", "NA");
           WriteLog("Carrion Husk got banished for having 13 or less health.");
       } break;
+    case "EVR017":
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card from your hand for Bravo, Star of the Show.");
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
+      AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
+      AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
+      break;
+    case "EVR019":
+      if(CountAura("WTR075", $mainPlayer) >= 3)
+      {
+        WriteLog("Valda gives your Crush attacks Dominate this turn.");
+        AddCurrentTurnEffect("EVR019", $mainPlayer);
+      }
+      break;
     default: break;
-  }
-}
-
-function ItemActionAbility($index)
-{
-  global $playerID, $myItems, $myResources, $actionPoints;
-  $cardID = $myItems[$index];
-  switch($cardID)
-  {
-    case "WTR170":
-      $myResources[0] += 2;
-      DestroyMyItem($index);
-      break;
-    case "WTR171":
-      AddCurrentTurnEffect($cardID, $playerID);
-      DestroyMyItem($index);
-      break;
-    case "WTR172":
-      $actionPoints += 2;
-      DestroyMyItem($index);
-      break;
-    default:
-      break;
   }
 }
 
 function PitchAbility($cardID)
 {
-  global $myHealth, $currentPlayer;
+  global $currentPlayer;
   switch($cardID)
   {
     case "WTR000":
-        if(IHaveLessHealth()) ++$myHealth;
+        if(IHaveLessHealth()) { if(GainHealth(1, $currentPlayer)) WriteLog("Heart of Fyendal gained 1 life."); }
       break;
     case "ARC000":
-        Opt($cardID, 2);
+      Opt($cardID, 2);
       break;
     case "CRU000":
       PlayAura("ARC112", $currentPlayer);
+      break;
+    case "EVR000":
+      WriteLog("Grandeur of Valahai created a Seismic Surge when it was pitched.");
+      PlayAura("WTR075", $currentPlayer);
       break;
     default:
       break;
@@ -1431,8 +1737,9 @@ function OnAttackEffects($attack)
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $otherPlayer, $mainPlayer, $defPlayer;
+  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer;
   $cardType = CardType($combatChain[$index]);
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
     $remove = 0;
@@ -1440,7 +1747,7 @@ function OnBlockEffects($index, $from)
     {
       switch($currentTurnEffects[$i])
       {
-        case "WTR092": case "WTR093": case "WTR094": if(HasCombo($index)) { $combatChain[$index+6] += 2; $remove = 1; } break;
+        case "WTR092": case "WTR093": case "WTR094": if(HasCombo($combatChain[$index])) { $combatChain[$index+6] += 2; } $remove = 1; break;
         case "ELE004": PlayAura("ELE111", $currentPlayer); break;
         default: break;
       }
@@ -1471,8 +1778,16 @@ function OnBlockEffects($index, $from)
     case "CRU079": case "CRU080":
       if($cardType == "AA")
       {
-        AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], "CRU079");
-        WriteLog("Cintari Saber got +1 for the rest of the turn.");
+        $first = true;
+        for($i=0; $i<$index; $i+=CombatChainPieces())
+        {
+          if($combatChain[$i+1] == $currentPlayer && CardType($combatChain[$i]) == "AA") $first = false;
+        }
+        if($first)
+        {
+          AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], "CRU079");
+          WriteLog("Cintari Saber got +1 for the rest of the turn.");
+        }
       }
       break;
     case "CRU051": case "CRU052":
@@ -1480,6 +1795,11 @@ function OnBlockEffects($index, $from)
         EvaluateCombatChain($totalAttack, $totalDefense);
         if(BlockValue($combatChain[$index]) > $totalAttack) DestroyCurrentWeapon();
       break;
+    default: break;
+  }
+  switch($combatChain[$index])
+  {
+    case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $otherPlayer); break;
     default: break;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -1532,20 +1852,24 @@ function ActivateAbilityEffects()
 
 function DestroyMainItem($index)
 {
-  global $mainItems;
-  unset($mainItems[$index]);
-  unset($mainItems[$index+1]);
-  unset($mainItems[$index+2]);
-  $mainItems = array_values($mainItems);
+  global $mainPlayer;
+  DestroyItemForPlayer($mainPlayer, $index);
 }
 
 function DestroyMyItem($index)
 {
-  global $myItems;
-  unset($myItems[$index]);
-  unset($myItems[$index+1]);
-  unset($myItems[$index+2]);
-  $myItems = array_values($myItems);
+  global $currentPlayer;
+  DestroyItemForPlayer($currentPlayer, $index);
+}
+
+function DestroyItemForPlayer($player, $index)
+{
+  $items = &GetItems($player);
+  for($i=$index+ItemPieces()-1; $i>=$index; --$i)
+  {
+    unset($items[$i]);
+  }
+  $items = array_values($items);
 }
 
 function CountPitch(&$pitch, $min=0, $max=9999)
@@ -1559,42 +1883,45 @@ function CountPitch(&$pitch, $min=0, $max=9999)
   return $pitchCount;
 }
 
-function Draw($player)
+function Draw($player, $mainPhase=true)
 {
-  global $myHand, $myDeck, $playerID;
+  global $CS_EffectContext;
+  $otherPlayer = ($player == 1 ? 2 : 1);
   $deck = &GetDeck($player);
   $hand = &GetHand($player);
   if(count($deck) == 0) return -1;
   if(CurrentEffectPreventsDraw($player)) return -1;
   array_push($hand, array_shift($deck));
+  WriteReplay($player, "Hide", "DECK", "HAND");
+  if($mainPhase && SearchCharacterActive($otherPlayer, "EVR019")) PlayAura("WTR075", $otherPlayer);
+  if(SearchCharacterActive($player, "EVR020"))
+  {
+    $context = GetClassState($player, $CS_EffectContext);
+    if($context != "-")
+    {
+      $cardType = CardType($context);
+      if($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
+    }
+  }
   return $hand[count($hand)-1];
 }
 
 function MyDrawCard()
 {
-  global $myHand, $myDeck, $playerID;
-  if(count($myDeck) == 0) return -1;
-  if(CurrentEffectPreventsDraw($playerID)) return -1;
-  array_push($myHand, array_shift($myDeck));
-  return $myHand[count($myHand)-1];
+  global $currentPlayer;
+  Draw($currentPlayer);
 }
 
 function TheirDrawCard()
 {
-  global $theirHand, $theirDeck, $otherPlayer;
-  if(count($theirDeck) == 0) return -1;
-  if(CurrentEffectPreventsDraw($otherPlayer)) return -1;
-  array_push($theirHand, array_shift($theirDeck));
-  return $theirHand[count($theirHand)-1];
+  global $currentPlayer;
+  Draw(($currentPlayer == 1 ? 2 : 1));
 }
 
 function MainDrawCard()
 {
-  global $mainHand, $mainDeck, $mainPlayer;
-  if(count($mainDeck) == 0) return -1;
-  if(CurrentEffectPreventsDraw($mainPlayer)) return -1;
-  array_push($mainHand, array_shift($mainDeck));
-  return $mainHand[count($mainHand)-1];
+  global $mainPlayer;
+  Draw($mainPlayer);
 }
 
 function NumNonEquipmentDefended()
@@ -1603,7 +1930,8 @@ function NumNonEquipmentDefended()
   $number = 0;
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
-    if($combatChain[$i+1] == $defPlayer && CardType($combatChain[$i]) != "E") ++$number;
+    $cardType = CardType($combatChain[$i]);
+    if($combatChain[$i+1] == $defPlayer && $cardType != "E" && $cardType != "C") ++$number;
   }
   return $number;
 }
@@ -1626,6 +1954,7 @@ function MainCharacterEndTurnAbilities()
     switch($mainCharacter[$i])
     {
       case "WTR115": if($mainClassState[$CS_HitsWDawnblade] == 0) $mainCharacter[$i+3] = 0; break;
+      case "CRU077": KassaiEndTurnAbility(); break;
       case "ELE223":
         if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i+3] = 0; break;
       case "MON107": if($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i+4] < 0) ++$mainCharacter[$i+4]; break;
@@ -1645,8 +1974,8 @@ function MainCharacterHitAbilities()
     switch($mainCharacter[$i])
     {
       case "WTR076": case "WTR077": if(CardType($attackID) == "AA") { KatsuHit($i); $mainCharacter[$i+1] = 1; } break;
-      case "WTR079": if(CardType($attackID) == "AA" && $combatChainState[$CCS_HitsInRow] == 3) { MainDrawCard(); $mainCharacter[$i+1] = 1; } break;
-      case "WTR113": case "WTR114": if(CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $mainCharacter[$i+1] = 1; $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2; } break;
+      case "WTR079": if(CardType($attackID) == "AA" && $combatChainState[$CCS_HitsInRow] >= 3) { MainDrawCard(); $mainCharacter[$i+1] = 1; } break;
+      case "WTR113": case "WTR114": if($mainCharacter[$i+1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $mainCharacter[$i+1] = 1; $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2; ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5]; } break;
       case "WTR117":
         if(CardType($attackID) == "W")
         {
@@ -1661,6 +1990,7 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("VESTOFTHEFIRSTFIST", $mainPlayer, $i, 1);
         }
         break;
+      case "CRU047": if(CardType($attackID) == "AA") { AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer); $mainCharacter[$i+1] = 1; } break;
       case "CRU053":
         if(HasCombo($attackID))
         {
@@ -1676,13 +2006,16 @@ function MainCharacterHitAbilities()
   }
 }
 
-function MainCharacterAttackModifiers()
+function MainCharacterAttackModifiers($index=-1, $onlyBuffs=false)
 {
-  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumAttacks;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumAttacks;
   $modifier = 0;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  if($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
   for($i=0; $i<count($mainCharacterEffects); $i+=CharacterEffectPieces())
   {
-    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
+    if($mainCharacterEffects[$i] == $index)
     {
       switch($mainCharacterEffects[$i+1])
       {
@@ -1697,6 +2030,7 @@ function MainCharacterAttackModifiers()
       }
     }
   }
+  if($onlyBuffs) return $modifier;
   for($i=0; $i<count($mainCharacter); $i+=CharacterPieces())
   {
     switch($mainCharacter[$i])
@@ -1730,11 +2064,11 @@ function DefCharacterBlockModifier($index)
 
 function MainCharacterHitEffects()
 {
-  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex, $characterPieces;
+  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex;
   $modifier = 0;
   for($i=0; $i<count($mainCharacterEffects); $i+=2)
   {
-    if($mainCharacterEffects[$i] == $CCS_WeaponIndex * $characterPieces)
+    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
     {
       switch($mainCharacterEffects[$i+1])
       {
@@ -1748,21 +2082,21 @@ function MainCharacterHitEffects()
 
 function PutItemIntoPlay($item, $steamCounterModifier = 0)
 {
-  global $myItems, $currentPlayer;
-  if(CardSubType($item) != "Item") return;
-  array_push($myItems, $item);//Card ID
-  array_push($myItems, ETASteamCounters($item) + SteamCounterLogic($item, $currentPlayer) + $steamCounterModifier);//Counters
-  array_push($myItems, 2);//Status
+  global $currentPlayer;
+  PutItemIntoPlayForPlayer($item, $currentPlayer, $steamCounterModifier);
 }
 
 
-function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0)
+function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number=1)
 {
   if(CardSubType($item) != "Item") return;
   $items = &GetItems($player);
-  array_push($items, $item);//Card ID
-  array_push($items, ETASteamCounters($item) + SteamCounterLogic($item, $player) + $steamCounterModifier);//Counters
-  array_push($items, 2);//Status
+  for($i=0; $i<$number; ++$i)
+  {
+    array_push($items, $item);//Card ID
+    array_push($items, ETASteamCounters($item) + SteamCounterLogic($item, $player) + $steamCounterModifier);//Counters
+    array_push($items, 2);//Status
+  }
 }
 
 function SteamCounterLogic($item, $playerID)
@@ -1777,15 +2111,16 @@ function SteamCounterLogic($item, $playerID)
 
 function IsDominateActive()
 {
-  global $currentTurnEffects, $playerID, $mainPlayer, $myCharacterEffects, $theirCharacterEffects, $CCS_WeaponIndex, $characterPieces, $combatChain;
-  $characterEffects = $playerID == $mainPlayer ? $myCharacterEffects : $theirCharacterEffects;
+  global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $characterPieces, $combatChain;
+  if(SearchCurrentTurnEffectsForCycle("EVR097", "EVR098", "EVR099", $mainPlayer)) return false;
+  $characterEffects = GetCharacterEffects($mainPlayer);
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if(IsCombatEffectActive($currentTurnEffects[$i]) && DoesEffectGrantDominate($currentTurnEffects[$i])) return true;
   }
-  for($i=0; $i<count($characterEffects); $i+=2)
+  for($i=0; $i<count($characterEffects); $i+=CharacterEffectPieces())
   {
-    if($characterEffects[$i] == $CCS_WeaponIndex * $characterPieces)
+    if($characterEffects[$i] == $CCS_WeaponIndex * CharacterPieces())
     {
       switch($characterEffects[$i+1])
       {
@@ -1796,14 +2131,15 @@ function IsDominateActive()
   }
   switch($combatChain[0])
   {
-    case "WTR095": case "WTR096": case "WTR097": if(ComboActive()) return true;
+    case "WTR095": case "WTR096": case "WTR097": return (ComboActive() ? true : false);
     case "WTR179": case "WTR180": case "WTR181": return true;
     case "ARC080": return true;
     case "MON004": return true;
     case "MON023": case "MON024": case "MON025": return true;
-    case "MON246": return SearchMyDiscard("AA") == "";
+    case "MON246": return SearchDiscard($mainPlayer, "AA") == "";
     case "MON275": case "MON276": case "MON277": return true;
     case "ELE209": case "ELE210": case "ELE211": return HasIncreasedAttack();
+    case "EVR027": case "EVR028": case "EVR029": return true;
     default: break;
   }
   return false;
@@ -1811,8 +2147,9 @@ function IsDominateActive()
 
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
-  global $myCharacter, $currentPlayer;
-  $cardID = $myCharacter[$cardIndex];
+  global $currentPlayer;
+  $character = &GetPlayerCharacter($currentPlayer);
+  $cardID = $character[$cardIndex];
   switch($cardID)
   {
     case "WTR005":
@@ -1825,62 +2162,67 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "WTR150":
-      $myCharacter[$cardIndex+2] -= 3;
+      $character[$cardIndex+2] -= 3;
       break;
     case "WTR151": case "WTR152": case "WTR153": case "WTR154":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "ARC003":
-      $myCharacter[$cardIndex+1] = 2;
+      $character[$cardIndex+1] = 2;
       break;
     case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "ARC113": case "ARC114":
-      $myCharacter[$cardIndex+1] = 2;
+      $character[$cardIndex+1] = 2;
       break;
-    case "CRU006": case "CRU025": case "CRU102": case "CRU122": case "CRU141":
+    case "CRU006": case "CRU025": case "CRU081": case "CRU102": case "CRU122": case "CRU141":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "CRU101":
-      if($myCharacter[$cardIndex+2] == 0) $myCharacter[$cardIndex+1] = 2;
+      if($character[$cardIndex+2] == 0) $character[$cardIndex+1] = 2;
       else
       {
-        --$myCharacter[$cardIndex+5];
-        if($myCharacter[$cardIndex+5] == 0) $myCharacter[$cardIndex+1] = 1;//By default, if it's used, set it to used
+        --$character[$cardIndex+5];
+        if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       }
       break;
     case "CRU177":
-      $myCharacter[$cardIndex+1] = 1;
-      ++$myCharacter[$cardIndex+2];
+      $character[$cardIndex+1] = 1;
+      ++$character[$cardIndex+2];
       break;
     case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "MON029": case "MON030":
-      $myCharacter[$cardIndex+1] = 2;//It's not limited to once
+      $character[$cardIndex+1] = 2;//It's not limited to once
       break;
     case "ELE116": case "ELE145": case "ELE214": case "ELE225": case "ELE233": case "ELE234": case "ELE235": case "ELE236":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "ELE173": break;//Unlimited uses, explicitly don't use default
     case "ELE224":
-      ++$myCharacter[$cardIndex + 2];
-      --$myCharacter[$cardIndex+5];
-      if($myCharacter[$cardIndex+5] == 0) $myCharacter[$cardIndex+1] = 1;
+      ++$character[$cardIndex + 2];
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;
+      break;
+    case "EVR053": case "EVR103": case "EVR137":
+      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
-      --$myCharacter[$cardIndex+5];
-      if($myCharacter[$cardIndex+5] == 0) $myCharacter[$cardIndex+1] = 1;//By default, if it's used, set it to used
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       break;
   }
 }
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
-  global $currentPlayer, $playerID, $myCharacter, $myHand, $myDeck, $myDiscard, $myBanish, $mySoul, $mainHand, $combatChain, $myCharacterEffects, $myPitch;
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $myResources, $myHealth, $theirHealth, $myArsenal, $CCS_ChainAttackBuff;
-  global $defCharacter, $myClassState, $CS_NumCharged, $theirCharacter, $theirHand, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
+  global $currentPlayer, $combatChain;
+  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
+  global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
+  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken;
   $rv = "";
   switch($phase)
   {
@@ -1904,10 +2246,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(count($parameters) > 1) $subparam = $parameters[1];
       switch($parameter)
       {
-        case "WTR083": $rv = SearchMainDeckForCard("WTR081"); $rv = count(explode(",", $rv)) . "-" . $rv; break;
+        case "WTR083": $rv = SearchMainDeckForCard("WTR081"); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
         case "WTR076-1": $rv = SearchMainHand("", "", 0); break;
         case "WTR076-2": $rv = GetComboCards(); break;
-        case "WTR081": $rv = LordOfWindIndices(); $rv = count(explode(",", $rv)) . "-" . $rv; break;
+        case "WTR081": $rv = LordOfWindIndices(); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
         case "ARC014": $rv = SearchMyHand("", "Item", 2, -1, "MECHANOLOGIST"); break;
         case "ARC015": $rv = SearchMyHand("", "Item", 1, -1, "MECHANOLOGIST"); break;
         case "ARC016": $rv = SearchMyHand("", "Item", 0, -1, "MECHANOLOGIST"); break;
@@ -1918,57 +2260,81 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CRU026": $rv = SearchEquipNegCounter($defCharacter); break;
         case "CRU105": $rv = GetWeaponChoices("Pistol"); break;
         case "CRU143": $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"); break;
+        case "LAYER": $rv = SearchLayerDQ($subparam); break;
+        case "DECK": $deck = GetDeck($player); $rv = GetIndices(count($deck)); break;
         case "TOPDECK": $deck = &GetDeck($player); if(count($deck) > 0) $rv = "0"; break;
+        case "DECKTOPX": $rv = ""; $deck = &GetDeck($player); for($i=0; $i<$subparam; ++$i) if($i < count($deck)) { if($rv != "") $rv .= ","; $rv .= $i; } break;
         case "DECKCLASSAA": $rv = SearchDeck($player, "AA", "", -1, -1, $subparam); break;
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
+        case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
         case "HAND": $hand = &GetHand($player); $rv = GetIndices(count($hand)); break;
+        case "HANDTALENT":  $rv = SearchHand($player, "", "", -1, -1, "", $subparam); break;
+        case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
         case "HANDACTION": $rv = CombineSearches(SearchHand($player, "A"), SearchHand($player, "AA")); break;
         case "MULTIHAND": $hand = &GetHand($player); $rv = count($hand) . "-" . GetIndices(count($hand)); break;
         case "MULTIHANDAA": $search = SearchHand($player, "AA"); $rv = SearchCount($search) . "-" . $search; break;
         case "ARSENAL": $arsenal = &GetArsenal($player); $rv = GetIndices(count($arsenal), 0, 2); break;
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
-        case "MYHAND": $rv = GetIndices(count($myHand)); break;
+        case "MYHAND": $rv = GetIndices(count(GetHand($player))); break;
+        case "ITEMS": $rv = GetIndices(count(GetItems($player))); break;
+        case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
+        case "CCAA": $rv = SearchCombatChain("AA"); break;
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
         case "MYHANDAA": $rv = SearchMyHand("AA"); break;
         case "MYHANDARROW": $rv = SearchMyHand("", "Arrow"); break;
         case "MYDECKARROW": $rv = SearchMyDeck("", "Arrow"); break;
-        case "MAINHAND": $rv = GetIndices(count($mainHand)); break;
+        case "MAINHAND": $rv = GetIndices(count(GetHand($mainPlayer))); break;
         case "MAINDISCARDNAA": $rv = SearchMainDiscard("A"); break;
         case "FIRSTXDECK": $deck = &GetDeck($player); if($subparam > count($deck)) $subparam = count($deck); $rv = GetIndices($subparam); break;
+        case "BANISHTYPE": $rv = SearchBanish($player, $subparam); break;
         case "GY": $discard = &GetDiscard($player); $rv = GetIndices(count($discard)); break;
+        case "GYTYPE": $rv = SearchDiscard($player, $subparam); break;
         case "GYAA": $rv = SearchDiscard($player, "AA"); break;
         case "GYNAA": $rv = SearchDiscard($player, "A"); break;
         case "GYCLASSAA": $rv = SearchDiscard($player, "AA", "", -1, -1, $subparam); break;
         case "GYCLASSNAA": $rv = SearchDiscard($player, "A", "", -1, -1, $subparam); break;
+        case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
         case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
-        case "MON033-1": $rv = GetIndices(count($mySoul), 1); break;
+        case "MON033-1": $rv = GetIndices(count(GetSoul($player)), 1); break;
         case "MON033-2": $rv = CombineSearches(SearchMyDeck("A", "", $lastResult), SearchMyDeck("AA", "", $lastResult)); break;
         case "MON125": $rv = SearchDeck($player, "", "", -1, -1, "", "", true); break;
         case "MON156": $rv = SearchHand($player, "", "", -1, -1, "", "", true); break;
         case "MON158": $rv = InvertExistenceIndices($player); break;
         case "MON159": case "MON160": case "MON161": $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true); break;
+        case "MON212": $rv = SearchBanish($player, "AA", "", $subparam); break;
         case "MON266-1": $rv = SearchMyHand("AA", "", -1, -1, 3); break;
-        case "MON266-2": $rv = SearchMyDeckForCard("MON296", "MON297", "MON298"); break;
+        case "MON266-2": $rv = SearchDeckForCard($player, "MON296", "MON297", "MON298"); break;
         case "MON303": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=2); break;
         case "MON304": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=1); break;
         case "MON305": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=0); break;
         case "HANDIFZERO": if($lastResult == 0) { $hand = &GetHand($player); $rv = GetIndices(count($hand)); } break;
         case "ELE006": $count = CountAura("WTR075", $player); $rv = SearchDeck($player, "AA", "", $count, -1, "GUARDIAN"); break;
-        case "ELE113": $rv = SearchDiscard($player, "", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"); break;
+        case "ELE113": $rv = PulseOfCandleholdIndices($player); break;
         case "ELE116": $rv = PlumeOfEvergrowthIndices($player); break;
         case "ELE125": case "ELE126": case "ELE127": $rv = SummerwoodShelterIndices($player); break;
         case "ELE140": case "ELE141": case "ELE142": $rv = SowTomorrowIndices($player, $parameter); break;
+        case "EVR178": $rv = SearchDeckForCard($player, "MON281", "MON282", "MON283"); break;
+        case "HEAVE": $rv = HeaveIndices(); break;
+        case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
+        case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
+        case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
+        case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
     case "PUTPLAY":
-      if(CardSubtype($lastResult) == "Item")
+      $subtype = CardSubType($lastResult);
+      if($subtype == "Item")
       {
         PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
+      }
+      else if($subtype == "Aura")
+      {
+        PlayAura($parameter, $player);
       }
       return $lastResult;
     case "DRAW":
@@ -1996,9 +2362,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChain[$lastResult+6] += $parameter;
       return $lastResult;
     case "REMOVEMYDISCARD":
-      $cardID = $myDiscard[$lastResult];
-      unset($myDiscard[$lastResult]);
-      $myDiscard = array_values($myDiscard);
+      $discard = &GetDiscard($player);
+      $cardID = $discard[$lastResult];
+      unset($discard[$lastResult]);
+      $discard = array_values($discard);
       return $cardID;
     case "REMOVEDISCARD":
       $discard = &GetDiscard($player);
@@ -2007,9 +2374,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $discard = array_values($discard);
       return $cardID;
     case "REMOVEMYHAND":
-      $cardID = $myHand[$lastResult];
-      unset($myHand[$lastResult]);
-      $myHand = array_values($myHand);
+      $hand = &GetHand($player);
+      $cardID = $hand[$lastResult];
+      unset($hand[$lastResult]);
+      $hand = array_values($hand);
+      return $cardID;
+    case "HANDCARD":
+      $hand = &GetHand($player);
+      $cardID = $hand[$lastResult];
       return $cardID;
     case "MULTIREMOVEDISCARD":
       $discard = &GetDiscard($player);
@@ -2027,20 +2399,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for($i=0; $i<$lastResult; ++$i) BanishFromSoul($player);
       return $lastResult;
     case "ADDTHEIRHAND":
-      array_push($theirHand, $lastResult);
+      $oPlayer = ($player == 1 ? 2 : 1);
+      AddPlayerHand($lastResult, $oPlayer, "-");
       return $lastResult;
     case "ADDMAINHAND":
-      array_push($mainHand, $lastResult);
+      AddPlayerHand($lastResult, $mainPlayer, "-");
       return $lastResult;
     case "ADDMYHAND":
-      array_push($myHand, $lastResult);
+      AddPlayerHand($lastResult, $currentPlayer, "-");
       return $lastResult;
     case "ADDHAND":
-      $hand = &GetHand($player);
-      array_push($hand, $lastResult);
+      AddPlayerHand($lastResult, $player, "-");
       return $lastResult;
     case "ADDMYPITCH":
-      array_push($myPitch, $lastResult);
+      $pitch = &GetPitch($player);
+      array_push($pitch, $lastResult);
       return $lastResult;
     case "PITCHABILITY":
       PitchAbility($lastResult);
@@ -2051,16 +2424,35 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDARSENALFACEDOWN":
       AddArsenal($lastResult, $player, $parameter, "DOWN");
       return $lastResult;
+    case "TURNARSENALFACEUP":
+      $arsenal = &GetArsenal($player);
+      $arsenal[$lastResult+1] = "UP";
+      return $lastResult;
     case "REMOVEARSENAL":
       $index = $lastResult;
       $arsenal = &GetArsenal($player);
       $cardToReturn = $arsenal[$index];
+      RemoveArsenalEffects($player, $cardToReturn);
       for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
       {
         unset($arsenal[$i]);
       }
       $arsenal = array_values($arsenal);
      return $cardToReturn;
+     case "FULLARSENALTODECK":
+      $arsenal = &GetArsenal($player);
+      $deck = &GetDeck($player);
+      $i=0;
+      while(count($arsenal)>0)
+      {
+        if($i%4 == 0){
+          array_push($deck, $arsenal[$i]);
+          RemoveArsenalEffects($player, $arsenal[$i]);
+        }
+        unset($arsenal[$i]);
+        ++$i;
+      }
+     return $lastResult;
     case "MULTIADDHAND":
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
@@ -2082,40 +2474,60 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $hand = array_values($hand);
       return $cards;
     case "DESTROYCHARACTER":
-      $character = &GetPlayerCharacter($player);
-      $character[$lastResult+1] = 0;
       DestroyCharacter($player, $lastResult);
       return $lastResult;
     case "DESTROYTHEIRCHARACTER":
-      $theirCharacter[$lastResult+1] = 0;
-      CharacterDestroyEffect($theirCharacter[$lastResult], $player == 1 ? 2 : 1);
+      DestroyCharacter($player == 1 ? 2 : 1, $lastResult);
+      return $lastResult;
+    case "CHARFLAGDESTROY":
+      $character = &GetPlayerCharacter($player);
+      $character[$parameter + 7] = 1;
       return $lastResult;
     case "ADDCHARACTEREFFECT":
-      array_push($myCharacterEffects, $lastResult);
-      array_push($myCharacterEffects, $parameter);
+      $characterEffects = &GetCharacterEffects($player);
+      array_push($characterEffects, $lastResult);
+      array_push($characterEffects, $parameter);
+      return $lastResult;
+    case "ADDMZBUFF":
+      $lrArr = explode("-", $lastResult);
+      $characterEffects = &GetCharacterEffects($player);
+      array_push($characterEffects, $lrArr[1]);
+      array_push($characterEffects, $parameter);
+      return $lastResult;
+    case "ADDMZUSES":
+      $lrArr = explode("-", $lastResult);
+      switch($lrArr[0])
+      {
+        case "MYCHAR": case "THEIRCHAR": AddCharacterUses($player, $lrArr[1], $parameter); break;
+        default: break;
+      }
       return $lastResult;
     case "PASSPARAMETER":
       return $parameter;
     case "DISCARDMYHAND":
-      $cardID = $myHand[$lastResult];
-      unset($myHand[$lastResult]);
-      $myHand = array_values($myHand);
+      $hand = &GetHand($player);
+      $cardID = $hand[$lastResult];
+      unset($hand[$lastResult]);
+      $hand = array_values($hand);
+      AddGraveyard($cardID, $player, $hand);
       return $cardID;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
       return $lastResult;
     case "ADDBOTTOMMYDECK":
-      array_push($myDeck, $lastResult);
+      $deck = &GetDeck($player);
+      array_push($deck, $lastResult);
       return $lastResult;
     case "ADDBOTDECK":
       $deck = &GetDeck($player);
       array_push($deck, $lastResult);
       return $lastResult;
     case "MULTIADDDECK":
+      $deck = &GetDeck($player);
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)
       {
-        array_push($myDeck, $cards[$i]);
+        array_push($deck, $cards[$i]);
       }
       return $lastResult;
     case "MULTIADDTOPDECK":
@@ -2138,36 +2550,54 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $deck = array_values($deck);
       return $cards;
+    case "PLAYAURA":
+      PlayAura($parameter, $player);
+      break;
     case "PARAMDELIMTOARRAY":
       return explode(",", $parameter);
     case "ADDSOUL":
       AddSoul($lastResult, $player, $parameter);
       return $lastResult;
     case "SHUFFLEDECK":
-      //TODO: Implement
+      $zone = &GetDeck($player);
+      $destArr = [];
+      while(count($zone) > 0)
+      {
+        $index = rand(0, count($zone)-1);
+        array_push($destArr, $zone[$index]);
+        unset($zone[$index]);
+        $zone = array_values($zone);
+      }
+      $zone = $destArr;
       return $lastResult;
     case "GIVEATTACKGOAGAIN":
       $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
       return $lastResult;
     case "EXHAUSTCHARACTER":
-      $myCharacter[$parameter+1] = 1;
+      $character = &GetPlayerCharacter($player);
+      $character[$parameter+1] = 1;
       return $parameter;
     case "REVEALMYCARD":
-      WriteLog($myHand[$lastResult] . " was revealed.");
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
+      $hand = GetHand($player);
+      WriteLog(CardLink($hand[$lastResult], $hand[$lastResult]) . " was revealed.");
       return $lastResult;
     case "DECKCARDS":
       $indices = explode(",", $parameter);
       $deck = &GetDeck($player);
+      $rv = "";
       for($i=0; $i<count($indices); ++$i)
       {
         if($rv != "") $rv .= ",";
         $rv .= $deck[$i];
       }
-      return $rv;
+      return $rv == "" ? "PASS" : $rv;;
     case "REVEALCARD":
-      WriteLog($lastResult . " was revealed.");
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
+      WriteLog(CardLink($lastResult, $lastResult) . " was revealed.");
       return $lastResult;
     case "REVEALCARDS":
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       for($i=0; $i<count($cards); ++$i)
       {
@@ -2175,6 +2605,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "REVEALHANDCARDS":
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
       $cards = "";
@@ -2186,11 +2617,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $cards;
     case "WRITECARDLOG":
-      $message = implode(" ", explode("_", $parameter)) . $lastResult;
+      $message = implode(" ", explode("_", $parameter)) . CardLink($lastResult, $lastResult);
       WriteLog($message);
       return $lastResult;
-    case "ADDTHEIRNEGDEFCOUNTER":
-      $theirCharacter[$lastResult+4] -= 1;
+    case "ADDNEGDEFCOUNTER":
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult+4] -= 1;
       return "Added a negative defense counter.";
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
@@ -2281,8 +2713,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect("WTR197", $player);
       return "1";
     case "SANDSKETCH":
-      if(count($myHand) == 0) { WriteLog("No card for Sand Sketched Plan to discard."); return "1"; }
-      $discarded = DiscardRandom();
+      if(count(GetHand($player)) == 0) { WriteLog("No card for Sand Sketched Plan to discard."); return "1"; }
+      $discarded = DiscardRandom($player, $cardID);
       if(AttackValue($discarded) >= 6)
       {
         $ap = 1;
@@ -2292,16 +2724,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "1";
     case "REMEMBRANCE":
       $cards = "";
+      $deck = &GetDeck($player);
+      $discard = &GetDiscard($player);
       for($i=0; $i<count($lastResult); ++$i)
       {
-        array_push($myDeck, $myDiscard[$lastResult[$i]]);
+        array_push($deck, $discard[$lastResult[$i]]);
         if($cards != "") $cards .= ", ";
         if($i == count($lastResult) - 1) $cards .= "and ";
-        $cards .= $myDiscard[$lastResult[$i]];
-        unset($myDiscard[$lastResult[$i]]);
+        $cards .= CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]);
+        unset($discard[$lastResult[$i]]);
       }
       WriteLog("Remembrance shuffled back " . $cards . ".");
-      $myDiscard = array_values($myDiscard);
+      $discard = array_values($discard);
       return "1";
     case "HELMHOPEMERCHANT":
       $cards = explode(",", $lastResult);
@@ -2313,12 +2747,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "1";
     case "LORDOFWIND":
       $number = count(explode(",", $lastResult));
-      $myResources[1] += $number;
+      AddResourceCost($player, $number);
       return $number;
     case "REFRACTIONBOLTERS":
       if($lastResult == "YES")
       {
-        $myCharacter[$parameter+1] = 0;
+        $character = &GetPlayerCharacter($player);
+        $character[$parameter+1] = 0;
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         WriteLog("Refraction Bolters was destroyed and gave the current attack Go Again.");
       }
@@ -2349,14 +2784,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CAPTAINSCALL":
       switch($lastResult)
       {
-        case "2_Attack": AddCurrentTurnEffect($parameter . "-1", $player); return 1;
-        case "Go_again": AddCurrentTurnEffect($parameter . "-2", $player); return 2;
+        case "2_Attack": WriteLog("Captain's Call gives +2 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
+        case "Go_again": WriteLog("Captain's Call gives Go Again."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
       }
       return $lastResult;
     case "IRONHIDE":
       if($lastResult == 1)
       {
-        $myCharacter[$parameter+1] = 0;
+        $character = &GetPlayerCharacter($player);
+        $character[$parameter+1] = 0;
       }
       return $lastResult;
     case "RAMPARTOFTHERAMSHEAD":
@@ -2366,7 +2802,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "PHANTASMALFOOTSTEPS":
-WriteLog("test ". $lastResult);
       if($lastResult == 1)
       {
         $character = &GetPlayerCharacter($player);
@@ -2379,8 +2814,9 @@ WriteLog("test ". $lastResult);
     case "VESTOFTHEFIRSTFIST":
       if($lastResult == "YES")
       {
-        $myCharacter[$parameter+1] = 0;
-        $myResources[0] += 2;
+        $character = &GetPlayerCharacter($player);
+        $character[$parameter+1] = 0;
+        GainResources($player, 2);
         WriteLog("Vest of the First Fist was destroyed and gave 2 resources.");
       }
       return $lastResult;
@@ -2388,10 +2824,17 @@ WriteLog("test ". $lastResult);
       DoBoost();
       return "1";
     case "VOFTHEVANGUARD":
-      if($parameter == "1" && CardTalent($lastResult) == "LIGHT") ++$combatChainState[$CCS_ChainAttackBuff];
+      if($parameter == "1" && TalentContains($lastResult, "LIGHT"))
+      {
+        WriteLog("V of the Vanguard gives all attacks on this combat chain +1.");
+        ++$combatChainState[$CCS_ChainAttackBuff];
+      }
       $hand = &GetHand($player);
-      if(count($hand) > 1) PrependDecisionQueue("VOFTHEVANGUARD", $player, "1", 1);
-      PrependDecisionQueue("CHARGE", $player, "-", 1);
+      if(count($hand) > 0)
+      {
+        PrependDecisionQueue("VOFTHEVANGUARD", $player, "1", 1);
+        PrependDecisionQueue("CHARGE", $player, "-", 1);
+      }
       return "1";
     case "BEACONOFVICTORY":
       $combatChain[5] += $lastResult;
@@ -2451,7 +2894,7 @@ WriteLog("test ". $lastResult);
       DQCharge();
       return "1";
     case "FINISHCHARGE":
-      ++$myClassState[$CS_NumCharged];
+      IncrementClassState($player, $CS_NumCharged);
       return $lastResult;
     case "CHOOSEHERO":
       return $player == 1 ? 2 : 1;
@@ -2468,6 +2911,11 @@ WriteLog("test ". $lastResult);
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
+      $type = $parameters[2];
+      if($type == "PLAYCARD")
+      {
+        $damage += ConsumeArcaneBonus($player);
+      }
       $sourceType = CardType($source);
       if(SearchCurrentTurnEffects("ELE065", $player) && ($sourceType == "A" || $sourceType == "AA")) ++$damage;
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
@@ -2475,22 +2923,25 @@ WriteLog("test ". $lastResult);
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source, 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
+      PrependDecisionQueue("SETDQVAR", $target, "0", 1);
+      PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
       return $parameter;
     case "TAKEARCANE":
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
-      $damage = DealDamage($player, $damage - $lastResult, "ARCANE", $source);
-      if($damage == 0) $damage = -1;
+      $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
+      if($damage < 0) $damage = 0;
       return $damage;
     case "PAYRESOURCES":
-      if($lastResult < 0) $myResources[0] += (-1 * $lastResult);
-      else if($myResources[0] > 0)
+      $resources = &GetResources($player);
+      if($lastResult < 0) $resources[0] += (-1 * $lastResult);
+      else if($resources[0] > 0)
       {
-        $resources = $myResources[0];
-        $myResources[0] -= $lastResult;
-        $lastResult -= $resources;
-        if($myResources[0] < 0) $myResources[0] = 0;
+        $res = $resources[0];
+        $resources[0] -= $lastResult;
+        $lastResult -= $res;
+        if($resources[0] < 0) $resources[0] = 0;
       }
       if($lastResult > 0)
       {
@@ -2523,6 +2974,7 @@ WriteLog("test ". $lastResult);
           default: break;
         }
       }
+      $lastPlayed[2] = "FUSED";
       FuseAbility($card, $player, $elements);
       if(CardType($card) == "AA") $combatChainState[$CCS_AttackFused] = 1;
       return $lastResult;
@@ -2534,15 +2986,15 @@ WriteLog("test ". $lastResult);
     case "SHIVER":
       switch($lastResult)
       {
-        case "1_Attack": AddCurrentTurnEffect("ELE033-1", $player); return 1;
-        case "Dominate": AddCurrentTurnEffect("ELE033-2", $player); return 1;
+        case "1_Attack": WriteLog("Shiver gives the arrow +1."); AddCurrentTurnEffect("ELE033-1", $player); return 1;
+        case "Dominate": WriteLog("Shiver gives the arrow Dominate."); AddCurrentTurnEffect("ELE033-2", $player); return 1;
       }
       return $lastResult;
     case "VOLTAIRE":
       switch($lastResult)
       {
-        case "1_Attack": AddCurrentTurnEffect("ELE034-1", $player); return 1;
-        case "Go_again": AddCurrentTurnEffect("ELE034-2", $player); return 1;
+        case "1_Attack": WriteLog("Voltaire gives the arrow +1."); AddCurrentTurnEffect("ELE034-1", $player); return 1;
+        case "Go_again": WriteLog("Voltaire gives the arrow Go Again."); AddCurrentTurnEffect("ELE034-2", $player); return 1;
       }
       return $lastResult;
     case "AWAKENINGTOKENS":
@@ -2594,12 +3046,18 @@ WriteLog("test ". $lastResult);
       $deck = &GetDeck($player);
       if(count($deck) == 0) { LoseHealth(9999, $player); WriteLog("Your deck has no cards, so Beast Within continues damaging you until you die."); return 1; }
       $card = array_shift($deck);
+      LoseHealth(1, $player);
       if(AttackValue($card) >= 6)
       {
-        AddPlayerHand($card, $player, "DECK");
+        WriteLog("Beast Within banished " . CardLink($card, $card) . " and was added to hand.");
+        BanishCardForPlayer($card, $player, "DECK", "-");
+        $banish = &GetBanish($player);
+        RemoveBanish($player, count($banish)-BanishPieces());
+        AddPlayerHand($card, $player, "BANISH");
       }
       else
       {
+        WriteLog("Beast Within banished " . CardLink($card, $card) . ".");
         BanishCardForPlayer($card, $player, "DECK", "-");
         PrependDecisionQueue("BEASTWITHIN", $player, "-");
       }
@@ -2631,11 +3089,229 @@ WriteLog("test ". $lastResult);
       else if($parameter == "AA") GiveAttackGoAgain();
       return 1;
     case "ADDMYRESOURCES":
-      $myResources[1] += $parameter;
+      AddResourceCost($player, $parameter);
       return $parameter;
     case "PROCESSATTACKTARGET":
       $combatChainState[$CCS_AttackTarget] = $lastResult;
       return 1;
+    case "STARTTURNABILITIES":
+      StartTurnAbilities();
+      return 1;
+    case "REMOVELAST":
+      if($lastResult == "") return $parameter;
+      $cards = explode(",", $parameter);
+      for($i=0; $i<count($cards); ++$i)
+      {
+        if($cards[$i] == $lastResult)
+        {
+          unset($cards[$i]);
+          $cards = array_values($cards);
+          break;
+        }
+      }
+      return implode(",", $cards);
+    case "ROLLDIE":
+      $roll = RollDie($player, true, $parameter=="1");
+      return $roll;
+    case "SETCOMBATCHAINSTATE":
+      $combatChainState[$parameter] = $lastResult;
+      return $lastResult;
+    case "BANISHADDMODIFIER":
+      $banish = &GetBanish($player);
+      $banish[$lastResult + 1] = $parameter;
+      return $lastResult;
+    case "SETLAYERTARGET":
+      SetClassState($player, $CS_LayerTarget, $lastResult);
+      return $lastResult;
+    case "MULTIZONEFORMAT":
+      return SearchMultizoneFormat($lastResult, $parameter);
+    case "MULTIZONEDESTROY":
+      $params = explode("-", $lastResult);
+      $source = $params[0];
+      $index = $params[1];
+      switch($source)
+      {
+        case "MYAURAS": DestroyAura($player, $index); break;
+        case "MYHAND": DiscardIndex($player, $index); break;
+        case "MYITEMS": DestroyItemForPlayer($player, $index); break;
+        default: break;
+      }
+      return $lastResult;
+    case "COUNTITEM":
+      return CountItem($parameter, $player);
+    case "FINDANDDESTROYITEM":
+      $params = explode("-", $parameter);
+      $cardID = $params[0];
+      $number = $params[1];
+      for($i=0; $i<$number; ++$i)
+      {
+        $index = GetItemIndex($cardID, $player);
+        if($index != -1) DestroyItemForPlayer($player, $index);
+      }
+      return $lastResult;
+    case "DESTROYITEM":
+      DestroyItemForPlayer($player, $parameter);
+      return $lastResult;
+    case "COUNTPARAM":
+      $array = explode(",", $parameter);
+      return count($array) . "-" . $parameter;
+    case "VALIDATEALLSAMENAME":
+      if($parameter == "DECK") { $zone = &GetDeck($player); }
+      if(count($lastResult) == 0) return "PASS";
+      $name = CardName($zone[$lastResult[0]]);
+      for($i=1; $i<count($lastResult); ++$i)
+      {
+        if(CardName($zone[$lastResult[$i]]) != $name)
+        {
+          WriteLog("You selected cards that do not have the same name. Reverting gamestate prior to that effect.");
+          RevertGamestate();
+          return "PASS";
+        }
+      }
+      return $lastResult;
+    case "PREPENDLASTRESULT":
+      return $parameter . $lastResult;
+    case "VALIDATECOUNT":
+      if(count($lastResult) != $parameter)
+      {
+        WriteLog("The count from the last step is incorrect. Reverting gamestate prior to that effect.");
+        RevertGamestate();
+        return "PASS";
+      }
+      return $lastResult;
+    case "SOULHARVEST":
+      $numBD = 0;
+      $discard = GetDiscard($player);
+      for($i=0; $i<count($lastResult); ++$i)
+      {
+        if(HasBloodDebt($discard[$lastResult[$i]])) ++$numBD;
+      }
+      if($numBD > 0) AddCurrentTurnEffect("MON198," . $numBD, $player);
+      return $lastResult;
+    case "ADDATTACKCOUNTERS":
+      $lastResults = explode("-", $lastResult);
+      $zone = $lastResults[0];
+      $zoneDS = &GetMZZone($player, $zone);
+      $index = $lastResults[1];
+      if($zone == "MYCHAR" || $zone == "THEIRCHAR") $zoneDS[$index+3] += $parameter;
+      else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index+3] += $parameter;
+      return $lastResult;
+    case "FINALIZEDAMAGE":
+      $params = explode(",", $parameter);
+      return FinalizeDamage($player, $lastResult, $params[0], $params[1], $params[2]);
+    case "ONARCANEDAMAGEPREVENTED":
+      $damage = $parameter;
+      if($lastResult != "PASS")
+      {
+        $damage -= ArcaneDamagePrevented($player, $lastResult);
+        if($damage < 0) $damage = 0;
+        PrependArcaneDamageReplacement($player, $damage);
+      }
+      return $damage;
+    case "KORSHEM":
+      switch($lastResult)
+      {
+        case "Gain_a_resource": GainResources($player, 1); return 1;
+        case "Gain_a_life": GainHealth(1, $player); return 2;
+        case "1_Attack": AddCurrentTurnEffect("ELE000-1", $player); return 3;
+        case "1_Defense": AddCurrentTurnEffect("ELE000-2", $player); return 4;
+      }
+      return $lastResult;
+    case "SETFIRSTPLAYER":
+      $first = ($lastResult == "Go_first" ? $player : ($player == 1 ? 2 : 1));
+      SetFirstPlayer($first);
+      return $lastResult;
+    case "SETDQVAR":
+      $dqVars[$parameter] = $lastResult;
+      return $lastResult;
+    case "INCDQVAR":
+      $dqVars[$parameter] += $lastResult;
+      return $lastResult;
+    case "LORDSUTCLIFFE":
+      LordSutcliffeAfterDQ($player, $parameter);
+      return $lastResult;
+    case "APPROVEMANUALMODE":
+      ApproveManualMode($player);
+      return $lastResult;
+    case "BINGO":
+      if($lastResult == "") WriteLog("No card was revealed for Bingo.");
+      $cardType = CardType($lastResult);
+      if($cardType == "AA") { WriteLog("Bingo gained Go Again."); GiveAttackGoAgain(); }
+      else if($cardType == "A") {WriteLog("Bingo drew a card."); Draw($player); }
+      else WriteLog("Bingo... did not hit the mark.");
+      return $lastResult;
+    case "ADDCARDTOCHAIN":
+      AddCombatChain($lastResult, $player, $parameter, 0);
+      return $lastResult;
+    case "EVENBIGGERTHANTHAT":
+      $deck = &GetDeck($player);
+      RevealCards($deck[0]);
+      if(AttackValue($deck[0]) > GetClassState($player, $CS_DamageTaken))
+      {
+        WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
+        Draw($player);
+        PlayAura("WTR225", $player);
+      }
+      return $lastResult;
+    case "KRAKENAETHERVEIN":
+      if($lastResult > 0)
+      {
+        for($i=0; $i<$lastResult; ++$i) Draw($player);
+      }
+      return $lastResult;
+    case "HEAVE":
+      PrependDecisionQueue("PAYRESOURCES", $player, "<-");
+      AddArsenal($lastResult, $player, "HAND", "UP");
+      $heaveValue = HeaveValue($lastResult);
+      for($i=0; $i<$heaveValue; ++$i)
+      {
+        PlayAura("WTR075", $player);
+      }
+      WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this.");
+      return HeaveValue($lastResult);
+    case "POTIONOFLUCK":
+      $arsenal = &GetArsenal($player);
+      $hand = &GetHand($player);
+      $deck = &GetDeck($player);
+      $sizeToDraw = count($hand) + count($arsenal)/4;
+      $i = 0;
+      while (count($hand)>0) {
+        array_push($deck, $hand[$i]);
+        unset($hand[$i]);
+        ++$i;
+      }
+      PrependDecisionQueue("FULLARSENALTODECK", $currentPlayer, "-", 1);
+      PrependDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      for ($i=0; $i < $sizeToDraw; $i++) {
+        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+      }
+      WriteLog("Potion of Luck shuffled your hand and arsenal into your deck and drew " . $sizeToDraw . " cards.");
+      return $lastResult;
+    case "BRAVOSTARSHOW":
+      //TODO: VALIDATE
+      $hand = &GetHand($player);
+      $cards = "";
+      for($i=0; $i<count($lastResult); ++$i)
+      {
+        if($cards != "") $cards .= ",";
+        $cards .= $hand[$lastResult[$i]];
+      }
+      RevealCards($cards);
+      WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and Go Again.");
+      AddCurrentTurnEffect("EVR017", $player);
+      return $lastResult;
+    case "SETDQCONTEXT":
+
+      return $lastResult;
+    case "AFTERDIEROLL":
+      AfterDieRoll($player);
+      return $lastResult;
+    case "PICKACARD":
+      $hand = &GetHand(($player == 1 ? 2 : 1));
+      $rand = rand(1, count($hand)-1);
+      RevealCards($hand[$rand]);
+      if($dqVars[0] == $rand) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

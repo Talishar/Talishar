@@ -1,4 +1,0 @@
-Player 1 passed.
-
-Main player drew 1 cards and now has 4 cards.
-

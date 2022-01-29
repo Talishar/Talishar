@@ -1,20 +1,33 @@
 <?php
 
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="",$id="")
+  function BackgroundColor($darkMode)
+  {
+    if($darkMode) return "rgba(20, 20, 20, 0.7)";
+    else return "rgba(255, 255, 255, 0.7)";
+  }
+
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="",$id="",$rotate=false)
   {//
-    global $playerID, $gameName;
+    global $playerID, $gameName, $darkMode;
+    if($darkMode == null) $darkMode = false;
     $fileExt = ".png";
-    if($folder == "CardImages" && $maxHeight < 200) { $folder = "SmallCardImages"; $fileExt = ".jpg"; }
-    else if($folder == "CardImages") { $folder = "BigCardImages"; $fileExt = ".jpg"; }
+    if(mb_strpos($folder, "CardImages") !== false)
+    {
+      if($maxHeight < 210) $folder = str_replace("CardImages", "SmallCardImages", $folder);
+      else $folder = str_replace("CardImages", "BigCardImages", $folder);
+      $fileExt = ".jpg";
+    }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
     $margin = "margin:0px;";
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " href=\"./ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$action&cardID=" . $actionData . "\" " : "") . ">";
     $border = $borderColor > 0 ? "border-radius:20px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
-    $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $maxHeight . "; width:" . ($maxHeight * .71) . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
+    if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
+    else { $height = ($maxHeight * .71); $width = $maxHeight; }
+    $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
     $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-    if($counters != 0) $rv .= "<div style='top:45%; left:45%; position:absolute; z-index: 10; background: rgba(255, 255, 255, 0.7); font-size:30px;'>" . $counters . "</div>";
+    if($counters != 0) $rv .= "<div style='top:45%; left:45%; position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . "; font-size:30px;'>" . $counters . "</div>";
     $rv .= "</a>";
     return $rv;
   }
@@ -32,11 +45,21 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="")
+  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="")
   {
     global $gameName;
-    $rv = "<button " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
+    if($image != "")
+    {
+      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">";
+    }
+    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
     return $rv;
+  }
+
+  function ProcessInputLink($player, $mode, $input)
+  {
+    global $gameName;
+    return "onmousedown=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$player&mode=$mode&buttonInput=$input'\"";
   }
 
   function CreateForm($playerID, $caption, $mode, $count)
@@ -58,14 +81,18 @@
     return $rv;
   }
 
-  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="")
+  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false)
   {
-    $rv = "<div id='" . $id . "' style='background-color: rgba(255,253,233,0.80); z-index:10; position: absolute; top:50px; left: 50px; right: 250px; bottom:50px;" . ($defaultState == 0 ? " display:none;" : "") . "'>";
+    global $combatChain, $darkMode;
+    if($darkMode == null) $darkMode = false;
+    $top = "50%"; $left = "20%"; $width = "60%"; $height = "40%";
+    if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
+    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; z-index:10; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";" . ($defaultState == 0 ? " display:none;" : "") . "'>";
     if($title != "") $rv .= "<h1>" . $title . "</h1>";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
-      $rv .= Card($fromArr[$i], "CardImages", 150, 0, 1);
+      $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
     }
     $rv .= $customInput;
     $rv .= "</div>";
@@ -82,7 +109,7 @@
 
   function CardStats($player)
   {
-    global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
+    global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
     global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
     $cardStats = &GetCardStats($player);
     $rv = "<div style='float:left;'>";
@@ -103,14 +130,14 @@
       else if($pitch == 1 && $timesPitched > 0) $pitchStyle = "font-weight: bold; color:gold;";
       else if($pitch == 2 && $timesPitched > 4) $pitchStyle = "font-weight: bold; color:red;";
       else if($pitch == 2 && $timesPitched > 2) $pitchStyle = "font-weight: bold; color:gold;";
-      $rv .= "<tr><td style='color:" . PitchColor($pitch) . ";'><b>" . $cardStats[$i] . "</b></td><td style='" . $playStyle . "'>" . $timesPlayed . "</td><td>" . $cardStats[$i+2] . "</td><td style='" . $pitchStyle . "'>" . $timesPitched . "</td></tr>";
+      $rv .= "<tr><td>" . CardLink($cardStats[$i], $cardStats[$i]) . "</td><td style='" . $playStyle . "'>" . $timesPlayed . "</td><td>" . $cardStats[$i+2] . "</td><td style='" . $pitchStyle . "'>" . $timesPitched . "</td></tr>";
     }
     $rv .= "</table>";
     $rv .= "</div>";
     $turnStats = &GetTurnStats($player);
     $rv .= "<div style='float:left;'>";
     $rv .= "<h2>Turn Stats</h2>";
-    if($player == 1) $rv .= "<i>First turn omitted for first player.</i><br>";
+    if($player == $firstPlayer) $rv .= "<i>First turn omitted for first player.</i><br>";
     //Damage stats
     $totalDamageThreatened = 0;
     $totalDamageDealt = 0;
@@ -119,7 +146,7 @@
     $totalDefensiveCards = 0;
     $totalBlocked = 0;
     $numTurns = 0;
-    $start = ($player == 1 ? TurnStatPieces() : 0);//Skip first turn for first player
+    $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
     for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
     {
       $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
@@ -153,6 +180,21 @@
     return $rv;
   }
 
+  function AttackModifiers($attackModifiers)
+  {
+    $rv = "";
+    for($i=0; $i<count($attackModifiers); $i += 2)
+    {
+      $idArr = explode("-", $attackModifiers[$i]);
+      $cardID = $idArr[0];
+      $bonus = $attackModifiers[$i+1];
+      if($bonus == 0) continue;
+      $cardLink = CardLink($cardID, $cardID);
+      $rv .= ($cardLink != "" ? $cardLink : $cardID) . " gives " . ($bonus > 0 ? "+" : "") . $bonus . "<BR>";
+    }
+    return $rv;
+  }
+
   function PitchColor($pitch)
   {
     switch($pitch)
@@ -166,20 +208,23 @@
 
   function BanishUI($from="")
   {
-    global $myBanish, $turn, $currentPlayer, $playerID;
+    global $turn, $currentPlayer, $playerID, $cardSize;
     $rv = "";
-    for($i=0; $i<count($myBanish); $i+=BanishPieces()) {
-      $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH") ? 14 : 0;
-      $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0);
-      if($myBanish[$i+1] == "INT") $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 1);//Display intimidated cards grayed out and unplayable
-      else if($myBanish[$i+1] == "TCL" || $myBanish[$i+1] == "TT" || $myBanish[$i+1] == "TCC" || $myBanish[$i+1] == "INST")
-        $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+    $size = ($from == "HAND" ? $cardSize : 180);
+    $banish = GetBanish($playerID);
+    for($i=0; $i<count($banish); $i+=BanishPieces()) {
+      $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+      $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
+      $mod = explode("-", $banish[$i+1])[0];
+      if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "INST" || $mod == "MON212"  || $mod == "ARC119")
+        $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
-        if(PlayableFromBanish($myBanish[$i]))
-          $rv .= Card($myBanish[$i], "CardImages", 180, $action, 1, 0, $border, 0, strval($i));
+        if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
+          $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));
         else
-          $rv .= Card($myBanish[$i], "CardImages", 180, 0, 1, 0, $border);
+          $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 0, $border);
       }
     }
     return $rv;
@@ -191,7 +236,7 @@
     if($playerID != $currentPlayer) return 0;
     if($from == "BANISH")
     {
-      if(PlayableFromBanish($cardID)) return 4;
+      if($isPlayable || PlayableFromBanish($cardID)) return 4;
       if(HasBloodDebt($cardID)) return 2;
       if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
       if($isPlayable && ComboActive($cardID)) return 5;
@@ -203,5 +248,19 @@
     return 0;
   }
 
-?>
+  function CardLink($caption, $cardNumber)
+  {
+    //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
+    $pitchValue = PitchValue($cardNumber);
+    switch($pitchValue)
+    {
+      case 3: $color = "Blue"; break;
+      case 2: $color = "GoldenRod"; break;
+      case 1: $color = "Red"; break;
+      default: $color = "DimGray"; break;
+    }
+    $file = "'./" . "BigCardImages" . "/" . $cardNumber . ".jpg'";
+    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . CardName($cardNumber) . "</span></b>";
+  }
 
+?>

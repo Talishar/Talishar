@@ -24,6 +24,7 @@
       case "MON231": return "A";
       case "MON232": case "MON233": case "MON234": return "AA";
       case "MON235": case "MON236": case "MON237": return "AA";
+      case "MON406": return "M";
       default: return "";
     }
   }
@@ -75,6 +76,7 @@
       case "MON231": case "MON232": case "MON235": return 1;
       case "MON233": case "MON236": return 2;
       case "MON234": case "MON237": return 3;
+      case "MON406": return 0;
       default: return 0;
     }
   }
@@ -114,7 +116,7 @@
 
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer;
+    global $currentPlayer, $CS_DynCostResolved;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -177,7 +179,9 @@
         GainResources($currentPlayer, 2);
         return "Aether Ironweave gaines 2 resources.";
       case "MON231":
-        $numRevealed = 3 + $resourcesPaid/2;
+        $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
+        $numRevealed = 3 + $xVal;
+        WriteLog("Sonata Arcanix was played with X of " . $xVal . " and reveals " . $numRevealed . " cards.");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -234,6 +238,39 @@
     {
       DealArcane(1, 0, "PLAYCARD", "MON157");
       WriteLog("Dimenxxional Crossroads deals 1 arcane damage.");
+    }
+  }
+
+  function LordSutcliffeAbility($player, $index)
+  {
+    global $currentPlayer;
+    WriteLog("Lord Sutcliffe deals 1 arcane damage to each player.");
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+    DealArcane(1, 0, "ABILITY", "MON407", false, 1);
+    AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
+    AddDecisionQueue("INCDQVAR", $currentPlayer, "0", 1);
+    DealArcane(1, 0, "ABILITY", "MON407", false, 2);
+    AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
+    AddDecisionQueue("INCDQVAR", $currentPlayer, "0", 1);
+    AddDecisionQueue("LORDSUTCLIFFE", $currentPlayer, $index . "-{0}");
+  }
+
+  function LordSutcliffeAfterDQ($player, $parameter)
+  {
+    $params = explode("-", $parameter);
+    $index = $params[0];
+    $amount = $params[1];
+    $arsenal = &GetArsenal($player);
+    $arsenal[$index+3] += $amount;
+    if($arsenal[$index+3] >= 3)
+    {
+      WriteLog("Lord Sutcliffe searched for a specialization card.");
+      RemoveArsenal($player, $index);
+      BanishCardForPlayer("MON407", $player, "ARS", "-");
+      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
     }
   }
 

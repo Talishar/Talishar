@@ -9,8 +9,10 @@ $path = ROOTPATH . "/Games";
 
 $currentlyActiveGames = "";
 $spectateLinks = "";
+$blitzLinks = "";
+$ccLinks = "";
 
-echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Open Games</h1>");
+echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
     while (false !== ($folder = readdir($handle))) {
         if ('.' === $folder) continue;
@@ -25,7 +27,7 @@ if ($handle = opendir($path)) {
           {
             $currentlyActiveGames .= "Game in Progress - Last Update " . date("h:i", $lastGamestateUpdate) . "<BR>";
 
-       $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn.php'>";
+       $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn2.php'>";
          $spectateLinks .= "<label for='joinGame'> In progress game - Last Update " . date("h:i", $lastGamestateUpdate) . " </label>";
          $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
          $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
@@ -36,6 +38,7 @@ if ($handle = opendir($path)) {
         }
 
         $gf = $folder . "GameFile.txt";
+        $gameName = $gameToken;
         $lineCount = 0;
         $status = -1;
         if(file_exists($gf))
@@ -43,11 +46,8 @@ if ($handle = opendir($path)) {
           $lastRefresh = filemtime($gf);
           if(time() - $lastRefresh < 5)
           {
-            $gameFile = fopen($gf, "r");
-            while (($buffer = fgets($gameFile, 4096)) !== false) {
-              ++$lineCount;
-              if($lineCount == 3){ $status = intval($buffer); break; }
-            }
+            include 'MenuFiles/ParseGamefile.php';
+            $status = $gameStatus;
           }
           else if(time() - $lastRefresh > 60)
           {
@@ -59,19 +59,35 @@ if ($handle = opendir($path)) {
           }
         }
 
-      if($status == 0)
+      if($status == 0 && $visibility == "public")
       {
-       echo("<form action='" . $redirectPath . "/JoinGame.php'>");
-         echo("<label for='joinGame'>Open Game </label>");
-         echo("<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />");
-         echo("<input type='hidden' name='gameName' value='$gameToken' />");
-         echo("<input type='hidden' name='playerID' value='2' />");
-       echo ("</form>");
+        if($format == "blitz")
+        {
+          $blitzLinks .= "<form action='" . $redirectPath . "/JoinGame.php'>";
+          $blitzLinks .= "<label for='joinGame'>Open Game </label>";
+          $blitzLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
+          $blitzLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
+          $blitzLinks .= "<input type='hidden' name='playerID' value='2' />";
+          $blitzLinks .= "</form>";
+        }
+        else if($format == "cc")
+        {
+          $ccLinks .= "<form action='" . $redirectPath . "/JoinGame.php'>";
+          $ccLinks .= "<label for='joinGame'>Open Game </label>";
+          $ccLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
+          $ccLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
+          $ccLinks .= "<input type='hidden' name='playerID' value='2' />";
+          $ccLinks .= "</form>";
+         }
       }
-       
+
     }
     closedir($handle);
 }
+  echo("<h2 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Blitz</h2>");
+  echo($blitzLinks);
+  echo("<h2 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Classic Constructed</h2>");
+  echo($ccLinks);
   echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>In Progress Games</h1>");
   echo($spectateLinks);
 

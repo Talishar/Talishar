@@ -1,5 +1,0 @@
-Player 1 passed.
-Main player drew 0 cards and now has 4 cards.
-Teklo Core produced 2 resources.
-Player 2 passed.
-<span style='color:<PLAYER2COLOR>;'>Player 2 played <b><span onmouseover="ShowDetail(event,'./CardImages/ARC026.png')" onmouseout='HideCardDetail()'>ARC026</span></b></span>

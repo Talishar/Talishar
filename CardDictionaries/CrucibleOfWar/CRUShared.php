@@ -7,6 +7,8 @@
     {
       case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? 0 : 2);
       case "CRU105": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
+      case "CRU160": return 2;
+      case "CRU197": return 4;
       default: return 0;
     }
   }
@@ -19,6 +21,8 @@
       case "CRU101": if($index == -1) $index = $myClassState[$CS_CharacterIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
       case "CRU102": return "A";
       case "CRU105": return "A";
+      case "CRU160": return "A";
+      case "CRU197": return "A";
       default: return "";
     }
   }
@@ -29,6 +33,7 @@
     switch($cardID)
     {
       //CRU Ninja
+      case "CRU057": case "CRU058": case "CRU059": return ComboActive($cardID);
       case "CRU060": case "CRU061": case "CRU062": return ComboActive($cardID);
       case "CRU084": return true;
       case "CRU085": case "CRU086": case "CRU087": return true;
@@ -68,6 +73,7 @@
       case "CRU102": return true;
       case "CRU105": return true;
       case "CRU121": case "CRU122": return true;
+      case "CRU197": return true;
       default: return false;
     }
   }
@@ -76,6 +82,7 @@
   {
     switch($cardID)
     {
+      case "CRU008": return 2;
       case "CRU025": return 2;
       case "CRU029": return 10;
       case "CRU030": return 9;
@@ -83,6 +90,7 @@
       case "CRU038": return 3;
       case "CRU039": return 2;
       case "CRU040": return 1;
+      case "CRU047": return 1;
       case "CRU055": return 3;
       case "CRU072": return 1;
       case "CRU084": return 2;
@@ -114,17 +122,20 @@
     switch($cardID)
     {
       //Brute
+      case "CRU008": return true;
       case "CRU013": case "CRU014": case "CRU015": return true;
       //Guardian
       case "CRU025": return HasCrush($attackID);
       case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
       case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
       //Ninja
+      case "CRU047": return true;
       case "CRU053": return HasCombo($combatChain[0]);
       case "CRU055": return true;
       case "CRU072": return true;
       //Warrior
       case "CRU084": return CardType($attackID) == "W";
+      case "CRU084-2": return CardType($attackID) == "W";
       case "CRU085-1": case "CRU086-1": case "CRU087-1": return CardType($attackID) == "W";
       case "CRU088-1": case "CRU089-1": case "CRU090-1": return CardType($attackID) == "W";
       case "CRU088-2": case "CRU089-2": case "CRU090-2": return !HasEffect(substr($cardID, 0, -1) . "1");
@@ -134,7 +145,7 @@
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
       case "CRU106": case "CRU107": case "CRU108": return HasBoost($attackID);
       //Ranger
-      case "CRU122": $combatChain[2] == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow";
+      case "CRU122": return $combatChain[2] == "ARS" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "CRU123": return $attackID == "CRU123";
       case "CRU124": return CardSubtype($combatChain[0]) == "Arrow";
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
@@ -169,6 +180,26 @@
     AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIADDHAND", $mainPlayer, "-", 1);
     AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "CRU055", 1);
+  }
+
+  function KayoStaticAbility()
+  {
+    global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
+    $roll = GetDieRoll($mainPlayer);
+    if($roll >= 5) $combatChainState[$CCS_LinkBaseAttack] *= 2;
+    else $combatChainState[$CCS_LinkBaseAttack] = floor($combatChainState[$CCS_LinkBaseAttack]/2);
+  }
+
+  function KassaiEndTurnAbility()
+  {
+    global $mainPlayer, $CS_AtksWWeapon, $CS_HitsWithWeapon;
+    if(GetClassState($mainPlayer, $CS_AtksWWeapon) >= 2)
+    {
+      for($i=0; $i<GetClassState($mainPlayer, $CS_HitsWithWeapon); ++$i)
+      {
+        PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
+      }
+    }
   }
 
 ?>

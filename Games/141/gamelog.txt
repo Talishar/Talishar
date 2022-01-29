@@ -1,3 +1,0 @@
-<span style='color:<PLAYER1COLOR>;'>Player 1 played <b><span onmouseover="ShowDetail(event,'./CardImages/MON188.png')" onmouseout='HideCardDetail()'>MON188</span></b></span>
-Player 1 pitched <b><span onmouseover="ShowDetail(event,'./CardImages/MON140.png')" onmouseout='HideCardDetail()'>MON140</span></b>
-HAND

@@ -5,6 +5,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return "A";
       case "MON060": return "E";
       case "MON061": return "E";
       case "MON062": return "AA";
@@ -42,6 +43,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return "Landmark";
       case "MON060": return "Chest";
       case "MON061": return "Head";
       case "MON187": return "Chest";
@@ -57,6 +59,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return 2;
       case "MON060": return 0;
       case "MON061": return 0;
       case "MON062": return 0;
@@ -92,6 +95,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return 0;
       case "MON060": case "MON061": return 0;
       case "MON062": case "MON063": case "MON064": case "MON065": return 2;
       case "MON066": case "MON069": case "MON072": case "MON075": case "MON078": case "MON081": case "MON084": return 1;
@@ -112,8 +116,10 @@
 
   function MONTalentBlockValue($cardID)
   {
+    global $defPlayer;
     switch($cardID)
     {
+      case "MON000": return 0;
       case "MON060": return 1;
       case "MON061": return 0;
       case "MON062": return 3;
@@ -127,7 +133,7 @@
       case "MON187": return 6;
       case "MON188": return 0;
       case "MON189": case "MON190": return 0;
-      case "MON191": return 0;//TODO
+      case "MON191": return SearchPitchForNumCosts($defPlayer) * 2;//Not totally accurate
       case "MON192": return 6;
       case "MON194": return 0;
       case "MON198": case "MON199": return 3;
@@ -142,6 +148,7 @@
 
   function MONTalentAttackValue($cardID)
   {
+    global $mainPlayer;
     switch($cardID)
     {
       case "MON062": return 7;
@@ -150,7 +157,7 @@
       case "MON068": case "MON072": case "MON076": case "MON079": return 4;
       case "MON073": case "MON077": case "MON080": return 3;
       case "MON074": return 2;
-      case "MON191": return 0;//TODO
+      case "MON191": return SearchPitchForNumCosts($mainPlayer) * 2;//Not totally accurate
       case "MON206": return 7;
       case "MON195": case "MON198": case "MON199": case "MON207": return 6;
       case "MON196": case "MON208": case "MON209": return 5;
@@ -163,11 +170,20 @@
   }
 
 
-  function MONTalentPlayAbility($cardID, $from, $resourcesPaid)
+  function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-")
   {
-    global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul;
+    global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
+    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch($cardID)
     {
+      case "MON000":
+        $rv = "";
+        if($from == "PLAY")
+        {
+          DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
+          $rv = "The Great Library of Solana was destroyed.";
+        }
+        return ;
       case "MON061":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
@@ -196,9 +212,27 @@
           $rv = "Invigorating Light will go into your soul after the chain link closes.";
         }
         return $rv;
+      case "MON069": case "MON070": case "MON071":
+        if($cardID == "MON069") $count = 4;
+        else if($cardID == "MON070") $count = 3;
+        else $count = 2;
+        for($i=0; $i<$count; ++$i)
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDATTACKCOUNTERS", $currentPlayer, "1", 1);
+        }
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "MON081": case "MON082": case "MON083":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Seek Enlightenment gives your next attack action card +" . EffectAttackModifier($cardID) . " and go in your soul if it hits.";
+      case "MON084": $combatChain[$target+5] -= 3; return "";
+      case "MON085": $combatChain[$target+5] -= 2; return "";
+      case "MON086": $combatChain[$target+5] -= 1; return "";
+      case "MON087":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Ray of Hope gives attacks against Shadow heroes +1 this turn.";
       case "MON188":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
@@ -207,6 +241,18 @@
         AddDecisionQueue("ALLCARDTALENTORPASS", $currentPlayer, "SHADOW", 1);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
+      case "MON189":
+        PlayAlly("MON219", $currentPlayer);
+        return "Doomsday created a Blasmophet token.";
+      case "MON190":
+        PlayAlly("MON220", $currentPlayer);
+        return "Eclipse created an Ursur token.";
+      case "MON192":
+        if($from=="BANISH")
+        {
+          return "Guardian of the Shadowrealm was returned to hand.";
+        }
+        return;
       case "MON193":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Shadow Puppetry gives your next action card +1, Go Again, and if it hits you may banish the top card of your deck.";
@@ -216,6 +262,14 @@
       case "MON200": case "MON201": case "MON202":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Howl from Beyond gives your next attack action this turn +" . EffectAttackModifier($cardID) . ".";
+      case "MON212": case "MON213": case "MON214":
+        if($cardID == "MON212") $maxCost = 2;
+        else if($cardID == "MON213") $maxCost = 1;
+        else $maxCost = 0;
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON212," . $maxCost);
+        AddDecisionQueue("CHOOSEBANISH", $currentPlayer, "<-", 1);
+        AddDecisionQueue("BANISHADDMODIFIER", $currentPlayer, "MON212", 1);
+        return "Spew Shadow let you play an attack action from your banish zone.";
       case "MON215": case "MON216": case "MON217":
         if($cardID == "MON215") $optAmt = 3;
         else if($cardID == "MON216") $optAmt = 2;
@@ -225,6 +279,29 @@
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
         return "Blood Tribute let you opt $optAmt and banish the top card of your deck.";
+      case "MON218":
+        $theirCharacter = GetPlayerCharacter($otherPlayer);
+        if(CardTalent($theirCharacter[0]) == "LIGHT")
+        {
+          if(GetHealth($currentPlayer) > GetHealth($otherPlayer))
+          {
+            AddDecisionQueue("FINDINDICES", $currentPlayer, "GYTYPE,AA");
+            AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
+            AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,NA", 1);
+          }
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        return "";
+      case "MON219":
+        $otherPlayer = $currentPlayer == 2 ? 1 : 2;
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDTALENT,SHADOW");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
+        AddDecisionQueue("PASSPARAMETER", $otherPlayer, "1", 1);
+        AddDecisionQueue("MULTIREMOVEMYSOUL", $otherPlayer, "-", 1);
+        return "";
       default: return "";
     }
   }
@@ -236,6 +313,11 @@
     {
       case "MON072": case "MON073": case "MON074": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
       case "MON078": case "MON079": case "MON080": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+      case "MON198":
+        $numSoul = count(GetSoul($defPlayer));
+        for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
+        LoseHealth($numSoul, $defPlayer);
+        break;
       case "MON206": case "MON207": case "MON208": BanishFromSoul($defPlayer); $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BANISH"; break;
       default: break;
     }
@@ -272,4 +354,3 @@
   }
 
 ?>
-

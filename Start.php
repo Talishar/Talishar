@@ -1,9 +1,11 @@
 <?php
-  
+
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
+  include "Libraries/HTTPLibraries.php";
 
   $gameName=$_GET["gameName"];
+  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
 
   //Setup the random number generator
   srand(make_seed());
@@ -23,18 +25,24 @@
   initializePlayerState($handler, $p2DeckHandler);
   fclose($p2DeckHandler);
 
+  fwrite($handler, "\r\n");//Landmarks
   fwrite($handler, "0\r\n");//Game winner (0=none, else player ID)
+  fwrite($handler, "1\r\n");//First Player
   fwrite($handler, "1\r\n");//Current Player
   fwrite($handler, "1\r\n");//Current Turn
   fwrite($handler, "M 1\r\n");//What phase/player is active
   fwrite($handler, "1\r\n");//Action points
   fwrite($handler, "\r\n");//Combat Chain
-  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0\r\n");//Combat Chain State
+  fwrite($handler, "0 0 NA 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0\r\n");//Combat Chain State
   fwrite($handler, "\r\n");//Current Turn Effects
   fwrite($handler, "\r\n");//Current Turn Effects From Combat
   fwrite($handler, "\r\n");//Next Turn Effects
   fwrite($handler, "\r\n");//Decision Queue
+  fwrite($handler, "0\r\n");//Decision Queue Variables
+  fwrite($handler, "\r\n");//Layers
+  fwrite($handler, "\r\n");//Layer Priority
   fwrite($handler, "1\r\n");//What player's turn it is
+  fwrite($handler, "\r\n");//Last Played Card
   fclose($handler);
 
   //Set up log file
@@ -104,7 +112,7 @@
 
     for($i=0; $i<count($charEquip); ++$i)
     {
-      fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . ($i < count($charEquip)-1 ? " " : "\r\n"));
+      fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0" . ($i < count($charEquip)-1 ? " " : "\r\n"));
     }
                //Character and equipment. First is ID. Four numbers each. First is status (0=Destroy/unavailable, 1=Used, 2=Unused, 3=Disabled). Second is num counters
                //Third is attack modifier, fourth is block modifier
@@ -116,11 +124,15 @@
     fwrite($handler, "\r\n");//Discard
     fwrite($handler, "\r\n");//Pitch
     fwrite($handler, "\r\n");//Banish
-    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0\r\n");//Class State
+    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 -\r\n");//Class State
     fwrite($handler, "\r\n");//Character effects
     fwrite($handler, "\r\n");//Soul
     fwrite($handler, "\r\n");//Card Stats
     fwrite($handler, "\r\n");//Turn Stats
+    fwrite($handler, "\r\n");//Allies
+    //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
+    $holdPriority = "1";
+    fwrite($handler, $holdPriority . " 1 0 0\r\n");//Settings
   }
 
   function GetArray($handler)

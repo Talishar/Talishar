@@ -120,7 +120,7 @@
 
   function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $myClassState, $CS_NumBoosted, $CS_CharacterIndex, $myCharacter, $actionPoints, $combatChainState, $CS_PlayIndex, $myItems;
+    global $currentPlayer, $myClassState, $CS_NumBoosted, $CS_CharacterIndex, $myCharacter, $actionPoints, $combatChainState, $CS_PlayIndex;
     global $CCS_CurrentAttackGainedGoAgain, $combatChain, $myDeck, $myResources, $myBanish;
     $rv = "";
     switch($cardID)
@@ -134,9 +134,9 @@
           if(count($myDeck) == $i) { $rv .= "No cards in deck. Could not banish more."; return $rv; }
           $banished = $myDeck[$i];
           $rv .= "Banished $banished";
-          if(CardClass($banished) == "MECHANOLOGIST") { $myResources[0] += 1; $rv .= " and gained 1 resource."; }
+          if(CardClass($banished) == "MECHANOLOGIST") { $myResources[0] += 1; $rv .= " and gained 1 resource. "; }
           else { $rv .= ". "; }
-          BanishCard($myBanish, $myClassState, $cardID, "BOOST");
+          BanishCardForPlayer($banished, $currentPlayer, "DECK");
           unset($myDeck[$i]);
         }
         $myDeck = array_values($myDeck);
@@ -156,14 +156,15 @@
         if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
         return "Spark of Genius let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
       case "ARC010":
-        $index = $myClassState[$CS_PlayIndex];
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        $items = &GetItems($currentPlayer);
         if($index != -1)
         {
-          $myItems[$index + 1] = ($myItems[$index + 1] == 0 ? 1 : 0);
-          if($myItems[$index + 1] == 0)
+          $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
+          if($items[$index + 1] == 0)
           {
+            $items[$index + 2] = 1;
             $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-            $myItems[$index + 2] = 1;
             $rv = "Induction Chamber gives your pistol attack go again.";
           }
           else
@@ -178,14 +179,33 @@
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, ($myClassState[$CS_NumBoosted] > 0 ? 1 : 0), 1);
         return "";
+      case "ARC017":
+        $index = $myClassState[$CS_PlayIndex];
+        $items = &GetItems($currentPlayer);
+        if($index != -1)
+        {
+          $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
+          if($items[$index + 1] == 0)
+          {
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+            $items[$index + 2] = 2;
+            $rv = "Aether Sink gains +2 arcane barrier this turn.";
+          }
+          else
+          {
+            $rv = "Aether Sink gained a steam counter.";
+          }
+        }
+        return $rv;
       case "ARC018":
+        $items = &GetItems($currentPlayer);
         $index = $myClassState[$CS_PlayIndex];
         if($index != -1)
         {
-          $myItems[$index + 1] = ($myItems[$index + 1] == 0 ? 1 : 0);
-          if($myItems[$index + 1] == 0)
+          $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
+          if($items[$index + 1] == 0)
           {
-            $myItems[$index + 2] = 1;
+            $items[$index + 2] = 1;
             $rv = "Cognition Nodes makes your attack go on the bottom of your deck if it hits.";
           }
           else
@@ -196,11 +216,12 @@
         return $rv;
       case "ARC019"://Convection Amplifier
         $index = $myClassState[$CS_PlayIndex];
+        $items = &GetItems($currentPlayer);
         if($index != -1)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          --$myItems[$index+1];
-          if($myItems[$index+1] <= 0) DestroyMyItem($index);
+          --$items[$index+1];
+          if($items[$index+1] <= 0) DestroyMyItem($index);
           $rv = "Convection Amplifier gives your next attack this turn Dominate.";
         }
         return $rv;
@@ -211,20 +232,22 @@
         return "Locked and Loaded gives your next Mechanologist attack action card this turn +" . EffectAttackModifier($cardID) . ($boosted ? " and let you opt 1" : "") . ".";
       case "ARC035":
         $index = $myClassState[$CS_PlayIndex];
+        $items = &GetItems($currentPlayer);
         if($index != -1)
         {
-          AddCurrentTurnEffect("PREVENT-" . $myItems[$index+1], $currentPlayer);
+          AddCurrentTurnEffect("PREVENT-" . $items[$index+1], $currentPlayer);
           $rv = "Dissipation Shield will prevent some of the next combat damage you take this turn.";
           DestroyMyItem($index);
         }
         return $rv;
       case "ARC037"://Optekal Monocle
         $index = $myClassState[$CS_PlayIndex];
+        $items = &GetItems($currentPlayer);
         if($index != -1)
         {
           Opt($cardID, 1);
-          --$myItems[$index+1];
-          if($myItems[$index+1] <= 0) DestroyMyItem($index);
+          --$items[$index+1];
+          if($items[$index+1] <= 0) DestroyMyItem($index);
           $rv = "Optekal Monocle lets you Opt 1.";
         }
         return $rv;
@@ -258,6 +281,7 @@
       case "CRU106": case "CRU107": case "CRU108":
       case "CRU109": case "CRU110": case "CRU111":
         return true;
+      case "EVR073": case "EVR074": case "EVR075": return true;
       default:
         return false;
     }
@@ -286,11 +310,11 @@
     ItemBoostEffects();
     if(SearchCurrentTurnEffects("ARC006", $currentPlayer)) ++$actionPoints;//High Octane
     $cardID = $myDeck[0];
-    BanishCard($myBanish, $myClassState, $cardID, "BOOST");
+    BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
     unset($myDeck[0]);
     $myDeck = array_values($myDeck);
     $grantsGA = CardClass($cardID) == "MECHANOLOGIST";
-    WriteLog("Boost banished $cardID and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
+    WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
     if($grantsGA) { GiveAttackGoAgain(); }
     ++$myClassState[$CS_NumBoosted];
     ++$combatChainState[$CCS_NumBoosted];
@@ -300,18 +324,19 @@
 
   function ItemBoostEffects()
   {
-    global $myItems, $myResources;
-    for($i=count($myItems) - ItemPieces(); $i >= 0; $i -= ItemPieces())
+    global $currentPlayer;
+    $items = &GetItems($currentPlayer);
+    for($i=count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces())
     {
-      switch($myItems[$i])
+      switch($items[$i])
       {
         case "ARC036":
-          if($myItems[$i+2] == 2)
+          if($items[$i+2] == 2)
           {
-            --$myItems[$i+1];
-            if($myItems[$i+1] <= 0) DestroyMyItem($i);
-            $myItems[$i+2] = 1;
-            $myResources[0] += 1;
+            --$items[$i+1];
+            $items[$i+2] = 1;
+            GainResources($currentPlayer, 1);
+            if($items[$i+1] <= 0) DestroyMyItem($i);
           }
           break;
         default: break;
@@ -320,4 +345,3 @@
   }
 
 ?>
-

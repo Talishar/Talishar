@@ -23,6 +23,7 @@
       case "MON222": return "A";
       case "MON223": case "MON224": case "MON225": return "AA";
       case "MON226": case "MON227": case "MON228": return "AA";
+      case "MON406": return "M";
       default: return "";
     }
   }
@@ -78,6 +79,7 @@
       case "MON223": case "MON226": return 1;
       case "MON224": case "MON227": return 2;
       case "MON225": case "MON228": return 3;
+      case "MON406": return 0;
       default: return 3;
     }
   }
@@ -108,7 +110,7 @@
       case "MON139": case "MON144": case "MON147": return 7;
       case "MON123": case "MON125": case "MON126": case "MON129": case "MON135": case "MON140": case "MON141": case "MON145": case "MON148": return 6;
       case "MON127": case "MON130": case "MON136": case "MON142": case "MON146": case "MON149": return 5;
-      case "MON128": case "MON131": case "MON137": return 4;
+      case "MON128": case "MON131": case "MON137": case "MON143" :return 4;
       case "MON221": return 3;
       case "MON226": return 7;
       case "MON223": case "MON227": return 6;
@@ -120,7 +122,7 @@
 
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $myClassState, $CS_Num6PowBan, $combatChain, $currentPlayer, $myCharacter;
+    global $CS_Num6PowBan, $combatChain, $currentPlayer;
     $rv = "";
     switch($cardID)
     {
@@ -131,14 +133,16 @@
         return "Hexagore, the Death Hydra did $damage damage to you.";
       case "MON125":
         MyDrawCard();
-        if(AttackValue(DiscardRandom()) >= 6)
+        $card = DiscardRandom();
+        $rv = "Shadow of Blasmophet discarded " . CardLink($card, $card);
+        if(AttackValue($card) >= 6)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-          $rv = "Shadow of Blasmophet discarded a card with 6 or more power then banished a card with Blood Debt from Levia's Deck.";
+          $rv .= "and banished a card with Blood Debt your Deck.";
         }
         return $rv;
       case "MON126": case "MON127": case "MON128":
@@ -202,13 +206,26 @@
         }
         $rv .= ".";
         return $rv;
+      case "MON222":
+        MyDrawCard();
+        $card = DiscardRandom();
+        $rv = "Tear Limb from Limb discarded " . CardLink($card, $card);
+        if(AttackValue($card) >= 6)
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv .= " and doubled the base attack of your next Brute attack action card";
+        }
+        $rv .= ".";
+        return $rv;
       case "MON223": case "MON224": case "MON225":
         MyDrawCard();
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Pulping got Dominate from discarding a card with 6 or more power.";
+          $rv = "Pulping got Dominate from discarding " . CardLink($card, $card) . " with 6 or more power.";
+        } else {
+          $rv = "Pulping did not gain dominate from discarding " . CardLink($card, $card);
         }
         return $rv;
       default: return "";
@@ -239,6 +256,32 @@
       $discard = array_values($discard);
     }
     return $BanishedIncludes6;
+  }
+
+  function LadyBarthimontAbility($player, $index)
+  {
+    $deck = &GetDeck($player);
+    if(count($deck) == 0) return;
+    $topDeck = array_shift($deck);
+    BanishCardForPlayer($topDeck, $player, "DECK", "-");
+    $log = "Lady Barthimont banished " . CardLink($topDeck, $topDeck);
+    if(AttackValue($topDeck) >= 6)
+    {
+      $arsenal = &GetArsenal($player);
+      ++$arsenal[$index+3];
+      AddCurrentTurnEffect("MON406", $player);
+      if($arsenal[$index+3] == 2)
+      {
+        $log .= ", gave Dominate, and searched for a specialization card";
+        RemoveArsenal($player, $index);
+        BanishCardForPlayer("MON406", $player, "ARS", "-");
+        AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+        AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+      }
+      else $log .= " and gave Dominate";
+      WriteLog($log . ".");
+    }
   }
 
 ?>

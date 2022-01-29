@@ -4,6 +4,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return 0;
       case "MON001": case "MON002": return 2;
       case "MON029": case "MON030": case "MON031": return 0;
       case "MON061": return 1;
@@ -14,6 +15,9 @@
       case "MON153": case "MON154": return 0;
       case "MON155": return 1;
       case "MON188": return 1;
+      case "MON192": return 2;
+      case "MON219": return 0;
+      case "MON220": return 0;
       case "MON221": return 2;
       case "MON229": return 3;
       case "MON238": case "MON239": return 0;
@@ -29,6 +33,7 @@
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
     {
+      case "MON000": return "A";
       case "MON001": case "MON002": return "I";
       case "MON029": case "MON030": return "AR";
       case "MON031": return "AA";
@@ -40,6 +45,9 @@
       case "MON153": case "MON154": return "A";
       case "MON155": return "AA";
       case "MON188": return "I";
+      case "MON192": return "A";
+      case "MON219": return "AA";
+      case "MON220": return "AA";
       case "MON221": return "AA";
       case "MON229": return "AA";
       case "MON230": return "A";
@@ -76,6 +84,7 @@
       case "MON199": return count(GetSoul($defPlayer)) > 0;
       case "MON200": case "MON201": case "MON202": return true;
       case "MON212": case "MON213": case "MON214": return true;
+      case "MON220": return count(GetSoul($defPlayer)) > 0;
       case "MON222": return true;
       case "MON223": case "MON224": case "MON225": return NumCardsBlocking() < 2;
       case "MON231": return true;
@@ -93,6 +102,7 @@
   {
     switch($cardID)
     {
+      case "MON000": return true;
       case "MON090": return true;
       case "MON108": return true;
       case "MON153": case "MON154": return true;
@@ -104,13 +114,16 @@
 
   function MONEffectAttackModifier($cardID)
   {
-    global $mainPlayer, $CS_NumNonAttackCards;
+    global $mainPlayer, $CS_NumNonAttackCards, $combatChainState, $CCS_LinkBaseAttack;
+    $arr = explode(",", $cardID);
+    $cardID = $arr[0];
     switch($cardID)
     {
       case "MON034": return 1;
       case "MON081": return 3;
       case "MON082": return 2;
       case "MON083": return 1;
+      case "MON087": return 1;
       case "MON095": return 5;
       case "MON096": return 4;
       case "MON097": return 3;
@@ -136,10 +149,13 @@
       case "MON168": case "MON169": case "MON170": return 1;
       case "MON174": case "MON175": case "MON176": return GetClassState($mainPlayer, $CS_NumNonAttackCards);
       case "MON193": return 1;
+      case "MON198": return $arr[1];
       case "MON200": return 3;
       case "MON201": return 2;
       case "MON202": return 1;
+      case "MON212": return 2;
       case "MON221": return 2;
+      case "MON222": return $combatChainState[$CCS_LinkBaseAttack];
       case "MON239": return 1;
       case "MON247": return 7;
       case "MON260-1": case "MON261-1": case "MON262-1": return 2;
@@ -157,12 +173,16 @@
 
   function MONCombatEffectActive($cardID, $attackID)
   {
+    global $defPlayer;
+    $arr = explode(",", $cardID);
+    $cardID = $arr[0];
     switch($cardID)
     {
       case "MON034": return CardType($attackID) == "W";
       case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";
+      case "MON087": $theirChar = GetPlayerCharacter($defPlayer); return TalentContains($theirChar[0], "SHADOW");
       case "MON090": return CardClass($attackID) == "ILLUSIONIST" && CardType($attackID) == "AA";
-      case "MON095": case "MON096": case "MON097": return true;
+      case "MON095": case "MON096": case "MON097": return CardType($attackID) == "AA";
       case "MON108": return CardType($attackID) == "W";
       case "MON109": return CardSubtype($attackID) == "Axe";
       case "MON110": case "MON111": case "MON112": return CardType($attackID) == "W";
@@ -180,8 +200,12 @@
       case "MON174": case "MON175": case "MON176": return true;
       case "MON193": return CardType($attackID) == "AA";
       case "MON195": case "MON196": case "MON197": return true;
+      case "MON198": return true;
       case "MON200": case "MON201": case "MON202": return CardType($attackID) == "AA";
+      case "MON212": return true;
+      case "MON218": return true;
       case "MON221": return true;
+      case "MON222": return true;
       case "MON223": case "MON224": case "MON225": return true;
       case "MON239": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
       case "MON247": return true;
@@ -193,6 +217,7 @@
       case "MON278": case "MON279": case "MON280": return true;
       case "MON296": case "MON297": case "MON298": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
       case "MON299": case "MON300": case "MON301": return CardType($attackID) == "AA";
+      case "MON406": return true;
       default: return false;
     }
   }
@@ -206,4 +231,3 @@
   }
 
 ?>
-

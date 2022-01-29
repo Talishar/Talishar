@@ -1,18 +1,81 @@
 <?php
 
+function PlayAura($cardID, $player, $number=1)
+{
+  $auras = &GetAuras($player);
+  if($cardID == "ARC112" && SearchCurrentTurnEffects("ARC081", $player)) ++$number;
+  if($cardID == "MON104")
+  {
+    $index = SearchArsenalReadyCard($player, "MON404");
+    if($index > -1) TheLibrarianEffect($player, $index);
+  }
+  for($i=0; $i<$number; ++$i)
+  {
+    array_push($auras, $cardID);
+    array_push($auras, 2);
+    array_push($auras, AuraPlayCounters($cardID));
+    array_push($auras, 0);
+  }
+}
+
+function PlayMyAura($cardID)
+{
+  global $currentPlayer;
+  PlayAura($cardID, $currentPlayer, 1);
+}
+
+function AuraDestroyed($player, $cardID)
+{
+  $goesWhere = GoesWhereAfterResolving($cardID);
+  if(SearchAuras("MON012", $player))
+  {
+    $goesWhere = "SOUL";
+    DealArcane(1, 0, "STATIC", "MON012", false, $player);
+  }
+  if(CardType($cardID) == "T") return;//Don't need to add to anywhere if it's a token
+  switch($goesWhere)
+  {
+    case "GY": AddGraveyard($cardID, $player, "PLAY"); break;
+    case "SOUL": AddSoul($cardID, $player, "PLAY"); break;
+    case "BANISH": BanishCardForPlayer($cardID, $player, "PLAY", "NA"); break;
+    default: break;
+  }
+}
+
+function PlayTheirAura($cardID)
+{
+  global $theirAuras;
+  array_push($theirAuras, $cardID);
+  array_push($theirAuras, 2);
+  array_push($theirAuras, AuraPlayCounters($cardID));
+  array_push($theirAuras, 0);
+}
+
+function AuraPlayCounters($cardID)
+{
+  switch($cardID)
+  {
+    case "CRU075": return 1;
+    default: return 0;
+  }
+}
+
 function DestroyAura($player, $index)
 {
   $auras = &GetAuras($player);
+  $cardID = $auras[$index];
   for($j = $index+AuraPieces()-1; $j >= $index; --$j)
   {
     unset($auras[$j]);
   }
   $auras = array_values($auras);
+  AuraDestroyed($player, $cardID);
 }
 
 function AuraCostModifier()
 {
-  global $currentPlayer, $otherPlayer;
+  global $currentPlayer;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $myAuras = &GetAuras($currentPlayer);
   $theirAuras = &GetAuras($otherPlayer);
   $modifier = 0;
@@ -26,31 +89,16 @@ function AuraCostModifier()
     }
     if($remove == 1)
     {
-      AuraDestroyed($currentPlayer, $myAuras[$i]);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($myAuras[$j]);
-      }
-      $myAuras = array_values($myAuras);
+      DestroyAura($currentPlayer, $i);
     }
   }
 
   for($i=count($theirAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
-    $remove = 0;
     switch($theirAuras[$i])
     {
       case "ELE146": $modifier += 1; break;
       default: break;
-    }
-    if($remove == 1)
-    {
-      AuraDestroyed($otherPlayer, $theirAuras[$i]);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($theirAuras[$j]);
-      }
-      $theirAuras = array_values($theirAuras);
     }
   }
   return $modifier;
@@ -62,6 +110,7 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer;
   switch($cardID)
   {
+    case "WTR046": return "Forged for War was destroyed at the beginning of your action phase.";
     case "WTR047": MainDrawCard(); return "Show Time! drew a card.";
     case "WTR054": return BlessingOfDeliveranceDestroy(3);
     case "WTR055": return BlessingOfDeliveranceDestroy(2);
@@ -69,6 +118,7 @@ function AuraDestroyAbility($cardID)
     case "WTR069": case "WTR070": case "WTR071": return EmergingPowerDestroy($cardID);
     case "WTR072": case "WTR073": case "WTR074": return "Stonewall Confidence was destroyed at the beginning of your action phase.";
     case "WTR075": AddCurrentTurnEffect($cardID, $mainPlayer); return "Seismic Surge reduces the cost of the next Guardian attack action card you play this turn by 1.";
+    case "ARC162": return "Chains of Eminence was destroyed at the beginning of your action phase.";
     case "CRU028": return "Stamp Authority is destroyed at the beginning of your action phase.";
     case "CRU029": case "CRU030": case "CRU031": AddCurrentTurnEffect($cardID, $mainPlayer); return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "CRU038": case "CRU039": case "CRU040": AddCurrentTurnEffect($cardID, $mainPlayer); return "Emerging Dominance gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . " and dominate.";
@@ -83,24 +133,27 @@ function AuraDestroyAbility($cardID)
 
 function AuraStartTurnAbilities()
 {
-  global $mainAuras, $mainPlayer;
-  for($i=count($mainAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+  global $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
+  for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
-    switch($mainAuras[$i])
+    $dest = AuraDestroyAbility($auras[$i]);
+    switch($auras[$i])
     {
       case "MON186": SoulShackleStartTurn($mainPlayer); break;
       case "MON006": GenesisStartTurnAbility(); break;
+      case "CRU075": if($auras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$auras[$i+2]; } break;
       default: break;
     }
-    $dest = AuraDestroyAbility($mainAuras[$i]);
     if($dest != "")
     {
-      AuraDestroyed($mainPlayer, $mainAuras[$i]);
+      WriteLog($dest);
+      AuraDestroyed($mainPlayer, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
-        unset($mainAuras[$j]);
+        unset($auras[$j]);
       }
-      $mainAuras = array_values($mainAuras);
+      $auras = array_values($auras);
     }
   }
 }
@@ -108,7 +161,7 @@ function AuraStartTurnAbilities()
 
 function AuraBeginEndStepAbilities()
 {
-  global $mainAuras, $mainPlayer;
+  global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
   for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
@@ -117,12 +170,12 @@ function AuraBeginEndStepAbilities()
     {
       case "ELE117":
         $pitchCount = SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "EARTH"));
-        ++$auras[$i+1];
-        WriteLog("Channel Mount Heroic has " . $auras[$i+1] . " flow counters, and you have " . $pitchCount . " earth cards in your pitch zone.");
-        if($pitchCount < $auras[$i+1]) $remove = 1;
+        ++$auras[$i+2];
+        WriteLog("Channel Mount Heroic has " . $auras[$i+2] . " flow counters, and you have " . $pitchCount . " earth cards in your pitch zone.");
+        if($pitchCount < $auras[$i+2]) $remove = 1;
         break;
-      case "ELE146": ++$auras[$i+1]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+1]) $remove = 1; break;
-      case "ELE175": ++$auras[$i+1]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $auras[$i+1]) $remove = 1; break;
+      case "ELE146": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+2]) $remove = 1; break;
+      case "ELE175": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $auras[$i+2]) $remove = 1; break;
       default: break;
     }
     if($remove == 1)
@@ -139,25 +192,26 @@ function AuraBeginEndStepAbilities()
 
 function AuraEndTurnAbilities()
 {
-  global $mainAuras, $mainClassState, $CS_NumNonAttackCards, $mainPlayer;
-  for($i=count($mainAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+  global $mainClassState, $CS_NumNonAttackCards, $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
+  for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
     $remove = 0;
-    switch($mainAuras[$i])
+    switch($auras[$i])
     {
-      case "ARC167": case "ARC168": case "ARC169": if($mainClassState[$CS_NumNonAttackCards] == 0) { $remove = 1; } break;
+      case "ARC167": case "ARC168": case "ARC169": if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0) { $remove = 1; } break;
       case "ELE111": $remove = 1; break;
       case "ELE226": $remove = 1; break;
       default: break;
     }
     if($remove == 1)
     {
-      AuraDestroyed($mainPlayer, $mainAuras[$i]);
+      AuraDestroyed($mainPlayer, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
-        unset($mainAuras[$j]);
+        unset($auras[$j]);
       }
-      $mainAuras = array_values($mainAuras);
+      $auras = array_values($auras);
     }
   }
 }
@@ -176,16 +230,13 @@ function AuraTakeDamageAbilities($player, $damage)
       case "ARC167": $damage -= 4; $remove = 1; break;
       case "ARC168": $damage -= 3; $remove = 1; break;
       case "ARC169": $damage -= 2; $remove = 1; break;
+      case "CRU075": $damage -= 1; break;
       case "MON104": $damage -= 1; $remove = 1; break;
       default: break;
     }
     if($remove == 1)
     {
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($Auras[$j]);
-      }
-      $Auras = array_values($Auras);
+      DestroyAura($player, $i);
     }
   }
   return $damage;
@@ -228,6 +279,7 @@ function AuraLoseHealthAbilities($player, $amount)
     }
     if($remove == 1)
     {
+      AuraDestroyed(player, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
         unset($auras[$j]);
@@ -254,26 +306,28 @@ function AuraPlayAbilities($cardID, $from)
 
 function AuraAttackAbilities($attackID)
 {
-  global $myAuras, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
-  for($i=count($myAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+  for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
     $remove = 0;
-    switch($myAuras[$i])
+    switch($auras[$i])
     {
       case "WTR225": if($attackType == "AA" || $attackType == "W") { WriteLog("Quicken grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ARC112": DealArcane(1, 0, "RUNECHANT", "ARC112"); $remove = 1; break;
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
-      case "ELE226": DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
+      case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       default: break;
     }
     if($remove == 1)
     {
+      AuraDestroyed($mainPlayer, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
-        unset($myAuras[$j]);
+        unset($auras[$j]);
       }
-      $myAuras = array_values($myAuras);
+      $auras = array_values($auras);
     }
   }
 }
@@ -331,6 +385,25 @@ function AuraHitEffects($attackID)
     return $modifier;
   }
 
+  function NumNonTokenAura($player)
+  {
+    $count = 0;
+    $auras = &GetAuras($player);
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      if(CardType($auras[$i]) != "T") ++$count;
+    }
+    return $count;
+  }
+
+  function DestroyAllThisAura($player, $cardID)
+  {
+    $auras = &GetAuras($player);
+    for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+    {
+      if($auras[$i] == $cardID) DestroyAura($player, $i);
+    }
+  }
+
 
 ?>
-

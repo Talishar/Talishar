@@ -2,13 +2,22 @@
 
   function ARCAbilityCost($cardID)
   {
-    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer;
+    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer;
     switch($cardID)
     {
-      case "ARC003": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? 0 : 1);
+      case "ARC003":
+        $character = &GetPlayerCharacter($currentPlayer);
+        return ($character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? 0 : 1);
       case "ARC004": return 1;
-      case "ARC010": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
-      case "ARC018": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
+      case "ARC010":
+        $items = &GetItems($currentPlayer);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
+      case "ARC017":
+        $items = &GetItems($currentPlayer);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
+      case "ARC018":
+        $items = &GetItems($currentPlayer);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "ARC040": return 1;
       case "ARC077": return 2;
       case "ARC078": return 2 + NumRunechants($currentPlayer);
@@ -27,14 +36,27 @@
 
   function ARCAbilityType($cardID, $index=-1)
   {
-    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex;
+    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex;
     switch($cardID)
     {
-      case "ARC003": if($index == -1) $index = $myClassState[$CS_CharacterIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
+      case "ARC003":
+        $character = &GetPlayerCharacter($currentPlayer);
+        if($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        return ($character[$index + 2] > 0 ? "AA" : "A");
       case "ARC004": return "A";
       case "ARC005": return "I";
-      case "ARC010": if($index == -1) $index = $myClassState[$CS_PlayIndex]; return ($myItems[$index + 1] > 0 ? "AR" : "A");
-      case "ARC018": if($index == -1) $index = $myClassState[$CS_PlayIndex]; return ($myItems[$index + 1] > 0 ? "AR" : "A");
+      case "ARC010":
+        $items = &GetItems($currentPlayer);
+        if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        return ($items[$index + 1] > 0 ? "AR" : "A");
+      case "ARC017":
+        $items = &GetItems($currentPlayer);
+        if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        return ($items[$index + 1] > 0 ? "I" : "A");
+      case "ARC018":
+        $items = &GetItems($currentPlayer);
+        if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        return ($items[$index + 1] > 0 ? "AR" : "A");
       case "ARC019": return "A";
       case "ARC035": return "I";
       case "ARC037": return "A";
@@ -52,7 +74,7 @@
 
   function ARCHasGoAgain($cardID)
   {
-    global $myClassState, $CS_NumMoonWishPlayed, $CS_NumNonAttackCards;
+    global $currentPlayer, $CS_NumMoonWishPlayed, $CS_NumNonAttackCards;
     switch($cardID)
     {
       case "ARC006": return true;
@@ -72,11 +94,11 @@
       case "ARC167": case "ARC168": case "ARC169": return true;
       case "ARC170": case "ARC171": case "ARC172": return true;
       case "ARC191": case "ARC192": case "ARC193": return true;
-      case "ARC197": case "ARC198": case "ARC199": return $myClassState[$CS_NumNonAttackCards] > 0;
+      case "ARC197": case "ARC198": case "ARC199": return GetClassState($currentPlayer, CS_NumNonAttackCards) > 0;
       case "ARC203": case "ARC204": case "ARC205": return true;
       case "ARC206": case "ARC207": case "ARC208": return true;
       case "ARC209": case "ARC210": case "ARC211": return true;
-      case "ARC212": case "ARC213": case "ARC214": return $myClassState[$CS_NumMoonWishPlayed] > 0;
+      case "ARC212": case "ARC213": case "ARC214": return GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0;
       case "ARC215": case "ARC216": case "ARC217": return true;
       default: return false;
     }
@@ -84,13 +106,19 @@
 
   function ARCAbilityHasGoAgain($cardID)
   {
-    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex;
+    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex;
     switch($cardID)
     {
-      case "ARC003": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? false : true);
+      case "ARC003":
+       $character = &GetPlayerCharacter($currentPlayer);
+       return ($character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? false : true);
       case "ARC004": return true;
-      case "ARC010": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? false : true);
-      case "ARC018": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? false : true);
+      case "ARC010":
+        $items = &GetItems($currentPlayer);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? false : true);
+      case "ARC018":
+        $items = &GetItems($currentPlayer);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? false : true);
       case "ARC019": return true;
       case "ARC037": return true;
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return true;

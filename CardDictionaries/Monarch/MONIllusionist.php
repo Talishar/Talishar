@@ -25,6 +25,7 @@
       case "MON095": case "MON096": case "MON097": return "A";
       case "MON098": case "MON099": case "MON100": return "AA";
       case "MON101": case "MON102": case "MON103": return "AA";
+      case "MON404": return "M";
       default: return "";
     }
   }
@@ -81,6 +82,7 @@
       case "MON092": case "MON095": case "MON098": case "MON101": return 1;
       case "MON093": case "MON096": case "MON099": case "MON102": return 2;
       case "MON094": case "MON097": case "MON100": case "MON103": return 3;
+      case "MON404": return 0;
       default: return 0;
     }
   }
@@ -95,6 +97,7 @@
       case "MON089": return 0;
       case "MON092": case "MON093": case "MON094": return 0;
       case "MON095": case "MON096": case "MON097": return 2;
+      case "MON404": return 2;
       default: return 3;
     }
   }
@@ -251,6 +254,25 @@
     AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $mainPlayer, "HAND", 1);
     AddDecisionQueue("GENESIS", $mainPlayer, "-", 1);
+  }
+
+  function TheLibrarianEffect($player, $index)
+  {
+    $arsenal = &GetArsenal($player);
+    --$arsenal[$index+2];
+    ++$arsenal[$index+3];
+    Draw($player);
+    $log = "The Librarian drew a card";
+    if($arsenal[$index+3] == 3)
+    {
+      $log .= " and searched for a specialization card";
+      RemoveArsenal($player, $index);
+      BanishCardForPlayer("MON404", $player, "ARS", "-");
+      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+    }
+    WriteLog($log . ".");
   }
 
 ?>

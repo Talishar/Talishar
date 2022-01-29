@@ -23,6 +23,8 @@
   fwrite($handler, implode(" ", $p1Soul) . "\r\n");
   fwrite($handler, implode(" ", $p1CardStats) . "\r\n");
   fwrite($handler, implode(" ", $p1TurnStats) . "\r\n");
+  fwrite($handler, implode(" ", $p1Allies) . "\r\n");
+  fwrite($handler, implode(" ", $p1Settings) . "\r\n");
 
   //Player 2
   fwrite($handler, implode(" ", $p2Hand) . "\r\n");
@@ -40,8 +42,12 @@
   fwrite($handler, implode(" ", $p2Soul) . "\r\n");
   fwrite($handler, implode(" ", $p2CardStats) . "\r\n");
   fwrite($handler, implode(" ", $p2TurnStats) . "\r\n");
+  fwrite($handler, implode(" ", $p2Allies) . "\r\n");
+  fwrite($handler, implode(" ", $p2Settings) . "\r\n");
 
+  fwrite($handler, implode(" ", $landmarks) . "\r\n");
   fwrite($handler, $winner . "\r\n");
+  fwrite($handler, $firstPlayer . "\r\n");
   fwrite($handler, $currentPlayer . "\r\n");
   fwrite($handler, $currentTurn . "\r\n");
   fwrite($handler, implode(" ", $turn) . "\r\n");
@@ -52,8 +58,11 @@
   fwrite($handler, implode(" ", $currentTurnEffectsFromCombat) . "\r\n");
   fwrite($handler, implode(" ", $nextTurnEffects) . "\r\n");
   fwrite($handler, implode(" ", $decisionQueue) . "\r\n");
+  fwrite($handler, implode(" ", $dqVars) . "\r\n");
+  fwrite($handler, implode(" ", $layers) . "\r\n");
+  fwrite($handler, implode(" ", $layerPriority) . "\r\n");
   fwrite($handler, $mainPlayer . "\r\n");
+  fwrite($handler, implode(" ", $lastPlayed) . "\r\n");
   fclose($handler);
 
 ?>
-

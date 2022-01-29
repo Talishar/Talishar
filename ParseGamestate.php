@@ -1,6 +1,8 @@
 <?php
 
-  $mainPlayerGamestateBuilt = 0;
+  $mainPlayerGamestateStillBuilt = 0;
+  $mpgBuiltFor = -1;
+  $myStateBuiltFor = -1;
 
   $filename = "./Games/" . $gameName . "/gamestate.txt";
 
@@ -23,6 +25,8 @@
   $p1Soul = GetArray($handler);
   $p1CardStats = GetArray($handler);
   $p1TurnStats = GetArray($handler);
+  $p1Allies = GetArray($handler);
+  $p1Settings = GetArray($handler);
 
   //Player 2
   $p2Hand = GetArray($handler);
@@ -40,8 +44,12 @@
   $p2Soul = GetArray($handler);
   $p2CardStats = GetArray($handler);
   $p2TurnStats = GetArray($handler);
+  $p2Allies = GetArray($handler);
+  $p2Settings = GetArray($handler);
 
+  $landmarks = GetArray($handler);
   $winner = trim(fgets($handler));
+  $firstPlayer = trim(fgets($handler));
   $currentPlayer = trim(fgets($handler));
   $currentTurn = trim(fgets($handler));
   $turn = GetArray($handler);
@@ -52,11 +60,22 @@
   $currentTurnEffectsFromCombat = GetArray($handler);
   $nextTurnEffects = GetArray($handler);
   $decisionQueue = GetArray($handler);
+  $dqVars = GetArray($handler);
+  $layers = GetArray($handler);
+  $layerPriority = GetArray($handler);
   $mainPlayer = trim(fgets($handler));
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $lastPlayed = GetArray($handler);
   fclose($handler);
 
   BuildMyGamestate($playerID);
+
+  function DoGamestateUpdate()
+  {
+    global $mainPlayerGamestateStillBuilt, $myStateBuiltFor;
+    if($mainPlayerGamestateStillBuilt == 1) UpdateMainPlayerGameStateInner();
+    else if($myStateBuiltFor != -1) UpdateGameStateInner();
+  }
 
   function BuildMyGamestate($playerID)
   {
@@ -69,7 +88,9 @@
     global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
     global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
     global $p1Soul, $p2Soul, $mySoul, $theirSoul;
-    global $myStateBuiltFor;
+    global $myStateBuiltFor, $mainPlayerGamestateStillBuilt;
+    DoGamestateUpdate();
+    $mainPlayerGamestateStillBuilt = 0;
     $myStateBuiltFor = $playerID;
     $myHand = $playerID==1 ? $p1Hand : $p2Hand;
     $myDeck = $playerID==1 ? $p1Deck : $p2Deck;
@@ -114,7 +135,7 @@
 
   function BuildMainPlayerGameState()
   {
-    global $mainPlayer, $mainPlayerGamestateBuilt, $mainPlayerGamestateStillBuilt, $playerHealths;
+    global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerHealths, $mpgBuiltFor;
     global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
     global $mainCharacterEffects, $mainDiscard;
     global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
@@ -125,8 +146,8 @@
     global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
     global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
 
-    if($mainPlayerGamestateStillBuilt) return;
-
+    DoGamestateUpdate();
+    $mpgBuiltFor = $mainPlayer;
     $mainHand = $mainPlayer==1 ? $p1Hand : $p2Hand;
     $mainDeck = $mainPlayer==1 ? $p1Deck : $p2Deck;
     $mainResources = $mainPlayer==1 ? $p1Resources : $p2Resources;
@@ -160,14 +181,13 @@
     $defCardStats = $mainPlayer==1 ? $p2CardStats : $p1CardStats;
     $defTurnStats = $mainPlayer==1 ? $p2TurnStats : $p1TurnStats;
 
-    $mainPlayerGamestateBuilt = 1;
     $mainPlayerGamestateStillBuilt = 1;
   }
 
-  function UpdateGameState($activePlayer)
+  function UpdateGameState($activePlayer) {}
+
+  function UpdateGameStateInner()
   {
-    global $mainPlayerGamestateBuilt;
-    if($mainPlayerGamestateBuilt == 1) return;//We're on main player game state now
     global $myStateBuiltFor;
     global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
     global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
@@ -248,9 +268,11 @@
     }
   }
 
-  function UpdateMainPlayerGameState()
+  function UpdateMainPlayerGameState() {}
+
+  function UpdateMainPlayerGameStateInner()
   {
-    global $mainPlayer, $mainPlayerGamestateStillBuilt;
+    global $mainPlayerGamestateStillBuilt, $mpgBuiltFor;
     global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
     global $mainCharacterEffects, $mainDiscard;
     global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
@@ -263,6 +285,7 @@
     global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
     global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
 
+    $mainPlayer = $mpgBuiltFor;
     $p1Deck = $mainPlayer==1 ? $mainDeck : $defDeck;
     $p1Hand = $mainPlayer==1 ? $mainHand : $defHand;
     $p1Resources = $mainPlayer==1 ? $mainResources : $defResources;
@@ -296,7 +319,6 @@
     $p2CardStats = $mainPlayer == 2 ? $mainCardStats : $defCardStats;
     $p2TurnStats = $mainPlayer == 2 ? $mainTurnStats : $defTurnStats;
 
-    $mainPlayerGamestateStillBuilt = 0;
   }
 
   function MakeGamestateBackup($filename="gamestateBackup.txt")
@@ -308,10 +330,10 @@
 
   function RevertGamestate($filename="gamestateBackup.txt")
   {
-    global $gameName;
+    global $gameName, $skipWriteGamestate;
     $filepath = "./Games/" . $gameName . "/";
     copy($filepath . $filename, $filepath . "gamestate.txt");
+    $skipWriteGamestate = true;
   }
 
 ?>
-

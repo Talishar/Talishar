@@ -1,12 +1,16 @@
 <?php
 
+  include "Libraries/HTTPLibraries.php";
+
   $gameName=$_GET["gameName"];
+  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
   $playerCharacter =$_GET["playerCharacter"];
   $playerDeck=$_GET["playerDeck"];
 
   include "HostFiles/Redirector.php";
   include "MenuFiles/ParseGamefile.php";
+  include "CardDictionary.php";
 
   if($playerID == 2)
   {
@@ -20,7 +24,14 @@
     $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $deckFile = fopen($filename, "w");
     fwrite($deckFile, implode(" ", explode(",",$playerCharacter)) . "\r\n");
-    fwrite($deckFile, implode(" ", explode(",",$playerDeck)));
+    $playerDeck = explode(",",$playerDeck);
+    for($i=count($playerDeck)-1; $i>=0; --$i)
+    {
+      $cardType = CardType($playerDeck[$i]);
+      if($cardType == "" || $cardType == "C" || $cardType == "E" || $cardType == "W") unset($playerDeck[$i]);
+    }
+    $playerDeck = array_values($playerDeck);
+    fwrite($deckFile, implode(" ", $playerDeck));
     fclose($deckFile);
   }
 
