@@ -419,6 +419,19 @@
         else if($number >= 222 && $number <= 232) return "RUNEBLADE";
         else if($number >= 233) return "???";
         else return "NONE";//TODO
+      case "EVR":
+          if($number == 0) return "NONE";
+          else if($number >= 1 && $number <= 16) return "BRUTE";
+          else if($number >= 17 && $number <= 36) return "GUARDIAN";
+          else if($number >= 37 && $number <= 52) return "NINJA";
+          else if($number >= 53 && $number <= 68) return "WARRIOR";
+          else if($number >= 69 && $number <= 84) return "MECHANOLOGIST"; 
+          else if($number >= 85 && $number <= 86) return "???"; 
+          else if($number >= 87 && $number <= 102) return "RANGER"; 
+          else if($number >= 103 && $number <= 119) return "RUNEBLADE"; 
+          else if($number >= 120 && $number <= 136) return "WIZARD"; 
+          else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
+          else return "GENERIC";
       default: return 0;
     }
   }
