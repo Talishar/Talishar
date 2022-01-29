@@ -417,7 +417,7 @@
         else if($number >= 202 && $number <= 212) return "GUARDIAN";
         else if($number >= 213 && $number <= 221) return "RANGER";
         else if($number >= 222 && $number <= 232) return "RUNEBLADE";
-        else if($number >= 233) return "???";
+        else if($number >= 233) return "GENERIC";
         else return "NONE";//TODO
       case "EVR":
           if($number == 0) return "NONE";
