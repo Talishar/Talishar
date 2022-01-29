@@ -556,6 +556,7 @@ function FinalizeChainLink($chainClosed=false)
       }
     }
 
+    $nervesOfSteelActive = $combatChainState[$CCS_LinkTotalAttack] <= 2 && SearchAuras("EVR023", $defPlayer);
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
     {
       if($combatChain[$i] != $mainPlayer)
@@ -563,8 +564,11 @@ function FinalizeChainLink($chainClosed=false)
         if(CardType($combatChain[$i-1]) == "E")
         {
           $index = FindDefCharacter($combatChain[$i-1]);
-          if(HasBattleworn($combatChain[$i-1])) --$defCharacter[$index+4];
-          if(HasTemper($combatChain[$i-1])) --$defCharacter[$index+4];
+          if(!$nervesOfSteelActive)
+          {
+            if(HasBattleworn($combatChain[$i-1])) --$defCharacter[$index+4];
+            if(HasTemper($combatChain[$i-1])) --$defCharacter[$index+4];
+          }
           if($combatChain[$i-1] == "MON089" && $combatChainState[$CCS_LinkTotalAttack] >= 6) DestroyCharacter($defPlayer, $index);
         }
       }
