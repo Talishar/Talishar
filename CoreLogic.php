@@ -1055,4 +1055,12 @@ function LookAtHand($player)
   RevealCards($cards);
 }
 
+function AddCharacterUses($player, $index, $numToAdd)
+{
+  $character = &GetPlayerCharacter($player);
+  if($character[$index+1] == 0) return;
+  $character[$index+1] = 2;
+  $character[$index+5] += $numToAdd;
+}
+
 ?>

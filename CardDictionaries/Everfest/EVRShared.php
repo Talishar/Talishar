@@ -48,6 +48,8 @@
       case "EVR003": return true;
       case "EVR005": case "EVR006": case "EVR007": return true;
       case "EVR056": return true;
+      case "EVR057": case "EVR058": case "EVR059": return true;
+      case "EVR089": return true;
       case "EVR106": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
@@ -80,6 +82,10 @@
       case "EVR001": return 1;
       case "EVR017": return 2;
       case "EVR021": return -4;
+      case "EVR057-1": case "EVR058-1": case "EVR059-1": return 1;
+      case "EVR057-2": return 3;
+      case "EVR058-2": return 2;
+      case "EVR059-2": return 1;
       case "EVR160": return -1;
       case "EVR161-2": return 2;
       case "EVR170-2": return 3;
@@ -91,13 +97,21 @@
 
   function EVRCombatEffectActive($cardID, $attackID)
   {
-    global $combatChain;
+    global $combatChain, $CS_AtksWWeapon, $mainPlayer;
     switch($cardID)
     {
       case "EVR001": return CardClass($attackID) == "BRUTE";
       case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
+      case "EVR057-1": case "EVR058-1": case "EVR059-1":
+        $subtype = CardSubType($attackID);
+        if($subtype != "Sword" && $subtype != "Dagger") return false;
+        return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 0;
+      case "EVR057-2": case "EVR058-2": case "EVR059-2":
+        $subtype = CardSubType($attackID);
+        if($subtype != "Sword" && $subtype != "Dagger") return false;
+        return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
       case "EVR160": return true;
       case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
@@ -118,12 +132,16 @@
       case "EVR011": case "EVR012": case "EVR013": return "AA";
       case "EVR017": return "C";
       case "EVR019": return "C";
+      case "EVR020": return "E";
       case "EVR021": return "AA";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
+      case "EVR037": return "E";
       case "EVR053": return "E";
       case "EVR056": return "A";
+      case "EVR057": return "A";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR088": return "AA";
+      case "EVR089": return "A";
       case "EVR103": return "E";
       case "EVR106": return "A";
       case "EVR137": return "E";
@@ -156,6 +174,8 @@
     {
       case "EVR000": return "Gem";
       case "EVR001": return "Arms";
+      case "EVR020": return "Chest";
+      case "EVR037": return "Head";
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
       case "EVR103": return "Arms";
@@ -179,12 +199,16 @@
       case "EVR011": case "EVR012": case "EVR013": return 2;
       case "EVR017": return 0;
       case "EVR019": return 0;
+      case "EVR020": return 0;
       case "EVR021": return 10;
       case "EVR027": case "EVR028": case "EVR029": return 7;
+      case "EVR037": return 0;
       case "EVR053": return 0;
       case "EVR056": return 0;
+      case "EVR057": return 0;
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR088": return 2;
+      case "EVR089": return 0;
       case "EVR103": return 0;
       case "EVR106": return 0;
       case "EVR120": return 0;
@@ -226,16 +250,19 @@
       case "EVR013": return 3;
       case "EVR017": return 0;
       case "EVR019": return 0;
+      case "EVR020": return 0;
       case "EVR021": return 1;
       case "EVR027": return 1;
       case "EVR028": return 2;
       case "EVR029": return 3;
+      case "EVR037": return 0;
       case "EVR053": return 0;
       case "EVR056": return 1;
-      case "EVR063": return 1;
-      case "EVR064": return 2;
-      case "EVR065": return 3;
+      case "EVR057": case "EVR063": return 1;
+      case "EVR058": case "EVR064": return 2;
+      case "EVR059": case "EVR065": return 3;
       case "EVR088": return 1;
+      case "EVR089": return 3;
       case "EVR103": return 0;
       case "EVR106": return 1;
       case "EVR120": return 0;
@@ -271,6 +298,8 @@
       case "EVR011": case "EVR012": case "EVR013": return -1;
       case "EVR017": return 0;
       case "EVR019": return 0;
+      case "EVR020": return 2;
+      case "EVR037": return 2;
       case "EVR053": return 1;
       case "EVR103": return 0;
       case "EVR106": return 2;
@@ -358,6 +387,15 @@
       case "EVR056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Oath of Steel gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
+      case "EVR057": case "EVR058": case "EVR059":
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
+        return "";
+      case "EVR089":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
+        return "Tri-shot gives your bow 2 additional uses.";
       case "EVR103":
         PlayAura("ARC112", $currentPlayer, 2);
         return "Vexing Quillhand created two Runechant tokens.";

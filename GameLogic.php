@@ -180,7 +180,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR119": case "WTR122":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDMZBUFF", $mainPlayer, $cardID);
+      AddDecisionQueue("ADDMZBUFF", $mainPlayer, $cardID, 1);
       return "";
     case "WTR120":
       if(RepriseActive())
@@ -1869,6 +1869,7 @@ function CountPitch(&$pitch, $min=0, $max=9999)
 
 function Draw($player, $mainPhase=true)
 {
+  global $CS_EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $deck = &GetDeck($player);
   $hand = &GetHand($player);
@@ -1877,6 +1878,15 @@ function Draw($player, $mainPhase=true)
   array_push($hand, array_shift($deck));
   WriteReplay($player, "Hide", "DECK", "HAND");
   if($mainPhase && SearchCharacterActive($otherPlayer, "EVR019")) PlayAura("WTR075", $otherPlayer);
+  if(SearchCharacterActive($player, "EVR020"))
+  {
+    $context = GetClassState($player, $CS_EffectContext);
+    if($context != "-")
+    {
+      $cardType = CardType($context);
+      if($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
+    }
+  }
   return $hand[count($hand)-1];
 }
 
@@ -2270,7 +2280,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "GYNAA": $rv = SearchDiscard($player, "A"); break;
         case "GYCLASSAA": $rv = SearchDiscard($player, "AA", "", -1, -1, $subparam); break;
         case "GYCLASSNAA": $rv = SearchDiscard($player, "A", "", -1, -1, $subparam); break;
-        case "WEAPON": $rv = WeaponIndices($player, $player); break;
+        case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
         case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
         case "MON033-1": $rv = GetIndices(count(GetSoul($player)), 1); break;
         case "MON033-2": $rv = CombineSearches(SearchMyDeck("A", "", $lastResult), SearchMyDeck("AA", "", $lastResult)); break;
@@ -2466,6 +2476,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $characterEffects = &GetCharacterEffects($player);
       array_push($characterEffects, $lrArr[1]);
       array_push($characterEffects, $parameter);
+      return $lastResult;
+    case "ADDMZUSES":
+      $lrArr = explode("-", $lastResult);
+      switch($lrArr[0])
+      {
+        case "MYCHAR": case "THEIRCHAR": AddCharacterUses($player, $lrArr[1], $parameter); break;
+        default: break;
+      }
       return $lastResult;
     case "PASSPARAMETER":
       return $parameter;
