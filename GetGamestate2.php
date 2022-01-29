@@ -55,6 +55,7 @@
   else if($currentPlayer == $playerID) echo("Please choose " . TypeToPlay($turn[0]));
   else echo("Waiting for player " . $currentPlayer . " to choose " . TypeToPlay($turn[0]));
   echo(implode(" ", $landmarks) . "<BR>");
+  echo(implode(" ", $layers) . "<BR>");
 
   function OutputPlayerData($player)
   {
@@ -165,5 +166,5 @@
     }
     echo(implode(" ", $allies) . "<BR>");
   }
-  
+
 ?>

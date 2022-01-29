@@ -489,7 +489,9 @@
       {
         if($combatChain[$i] == $mainPlayer)
         {
+          SetClassState($currentPlayer, $CS_EffectContext, $combatChain[$i-1]);
           ProcessHitEffect($combatChain[$i-1]);
+          SetClassState($currentPlayer, $CS_EffectContext, "-");
           if($damage >= 4) ProcessCrushEffect($combatChain[$i-1]);
         }
       }
@@ -1178,7 +1180,7 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $turn, $combatChain, $currentPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
-    global $currentTurnEffectsFromCombat, $CCS_WeaponIndex;
+    global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext;
     $character = &GetPlayerCharacter($currentPlayer);
     $definedCardType = CardType($cardID);
     //Figure out where it goes
@@ -1246,7 +1248,9 @@ function FinalizeChainLink($chainClosed=false)
         if(HasBoost($cardID)) Boost();
         CharacterPlayCardAbilities($cardID, $from);
       }
+      SetClassState($currentPlayer, $CS_EffectContext, $cardID);
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target);
+      SetClassState($currentPlayer, $CS_EffectContext, "-");
       if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);
       if($openedChain) ProcessAttackTargetAfterResolve();
     }

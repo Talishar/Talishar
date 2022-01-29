@@ -1,6 +1,6 @@
 <?php
 
-function WeaponIndices($chooser, $player)
+function WeaponIndices($chooser, $player, $subtype="")
 {
   global $mainPlayer;
   $whoPrefix = ($player == $chooser ? "MY" : "THEIR");
@@ -8,7 +8,7 @@ function WeaponIndices($chooser, $player)
   $weapons = "";
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
-    if(CardType($character[$i]) == "W")
+    if(CardType($character[$i]) == "W" && ($subtype == "" || CardSubType($character[$i]) == $subtype))
     {
       if($weapons != "") $weapons .= ",";
       $weapons .= $whoPrefix . "CHAR-" . $i;
@@ -59,4 +59,3 @@ function ApplyEffectToEachWeapon($effectID)
 }
 
 ?>
-

@@ -1652,6 +1652,7 @@
       case "ELE204": return true;
       case "ELE213": return true;
       case "ELE224": return true;
+      case "EVR037": return true;
       default: return false;
     }
   }
@@ -1684,6 +1685,7 @@
       case "CRU025": return true;
       case "CRU081": return true;
       case "CRU141": return true;
+      case "EVR020": return true;
       default: return false;
     }
   }
