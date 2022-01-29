@@ -250,6 +250,11 @@
       case "CRU168": case "CRU172": case "CRU174": return 3;
       case "CRU169": case "CRU173": case "CRU175": return 2;
       case "CRU170": case "CRU176": return 1;
+      //Everfest
+      case "EVR134": return 5;
+      case "EVR135": return 4;
+      case "EVR136": return 3;
+      default: return 0;
     }
   }
 
