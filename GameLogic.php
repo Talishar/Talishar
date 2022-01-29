@@ -948,6 +948,7 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "EVR063": return 3;
     case "EVR064": return 2;
     case "EVR065": return 1;
+    case "EVR105": return (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     default: return 0;
   }
@@ -1002,6 +1003,7 @@ function EffectHitEffect($cardID)
       break;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
+    case "EVR066": case "EVR067": case "EVR068": PutItemIntoPlayForPlayer("CRU197", $mainPlayer); break;
     case "EVR161-1": GainHealth(2, $mainPlayer);
     case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
     case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
