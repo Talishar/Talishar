@@ -48,8 +48,10 @@
       case "EVR003": return true;
       case "EVR005": case "EVR006": case "EVR007": return true;
       case "EVR014": case "EVR015": case "EVR016": return true;
+      case "EVR030": case "EVR031": case "EVR032": return true;
       case "EVR056": return true;
       case "EVR057": case "EVR058": case "EVR059": return true;
+      case "EVR082": case "EVR083": case "EVR084": return true;
       case "EVR089": return true;
       case "EVR106": return true;
       case "EVR160": return true;
@@ -88,6 +90,9 @@
       case "EVR057-2": return 3;
       case "EVR058-2": return 2;
       case "EVR059-2": return 1;
+      case "EVR082": return 3;
+      case "EVR083": return 2;
+      case "EVR084": return 1;
       case "EVR160": return -1;
       case "EVR161-2": return 2;
       case "EVR170-2": return 3;
@@ -103,7 +108,7 @@
     switch($cardID)
     {
       case "EVR001": return CardClass($attackID) == "BRUTE";
-      case "EVR014": case "EVR015": case "EVR016": CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
+      case "EVR014": case "EVR015": case "EVR016": return CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
       case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
@@ -115,6 +120,7 @@
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
         return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
+      case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
       case "EVR160": return true;
       case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
@@ -142,11 +148,14 @@
       case "EVR021": return "AA";
       case "EVR024": case "EVR025": case "EVR026": return "A";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
+      case "EVR030": case "EVR031": case "EVR032": return "A";
       case "EVR037": return "E";
       case "EVR053": return "E";
       case "EVR056": return "A";
       case "EVR057": return "A";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
+      case "EVR073": case "EVR074": case "EVR075": return "AA";
+      case "EVR082": case "EVR083": case "EVR084": return "A";
       case "EVR088": return "AA";
       case "EVR089": return "A";
       case "EVR103": return "E";
@@ -213,11 +222,14 @@
       case "EVR021": return 10;
       case "EVR024": case "EVR025": case "EVR026": return 6;
       case "EVR027": case "EVR028": case "EVR029": return 7;
+      case "EVR030": case "EVR031": case "EVR032": return 2;
       case "EVR037": return 0;
       case "EVR053": return 0;
       case "EVR056": return 0;
       case "EVR057": return 0;
       case "EVR063": case "EVR064": case "EVR065": return 0;
+      case "EVR073": case "EVR074": case "EVR075": return 0;
+      case "EVR082": case "EVR083": case "EVR084": return 0;
       case "EVR088": return 2;
       case "EVR089": return 0;
       case "EVR103": return 0;
@@ -265,15 +277,18 @@
       case "EVR019": return 0;
       case "EVR020": return 0;
       case "EVR021": return 1;
-      case "EVR024": case "EVR027": return 1;
-      case "EVR025": case "EVR028": return 2;
-      case "EVR026": case "EVR029": return 3;
+      case "EVR024": case "EVR027": case "EVR030": return 1;
+      case "EVR025": case "EVR028": case "EVR031": return 2;
+      case "EVR026": case "EVR029": case "EVR032": return 3;
       case "EVR037": return 0;
       case "EVR053": return 0;
       case "EVR056": return 1;
       case "EVR057": case "EVR063": return 1;
       case "EVR058": case "EVR064": return 2;
       case "EVR059": case "EVR065": return 3;
+      case "EVR073": case "EVR082": return 1;
+      case "EVR074": case "EVR083": return 2;
+      case "EVR075": case "EVR084": return 3;
       case "EVR088": return 1;
       case "EVR089": return 3;
       case "EVR103": return 0;
@@ -351,6 +366,9 @@
       case "EVR024": case "EVR027": return 10;
       case "EVR025": case "EVR028": return 9;
       case "EVR026": case "EVR029": return 8;
+      case "EVR073": return 3;
+      case "EVR074": return 2;
+      case "EVR075": return 1;
       case "EVR088": return 6;
       case "EVR156": return 5;
       case "EVR157": return 3;
@@ -406,6 +424,12 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return $rv;
+      case "EVR030": case "EVR031": case "EVR032":
+        if($cardID == "EVR030") $amount = 3;
+        else if($cardID == "EVR031") $amount = 2;
+        else $amount = 1;
+        PlayAura("WTR075", $currentPlayer, $amount);
+        return "Seismic Stir created " . $amount . " Seismic Surge tokens.";
       case "EVR053":
         $deck = &GetDeck($currentPlayer);
         $card = array_shift($deck);
@@ -417,6 +441,11 @@
       case "EVR057": case "EVR058": case "EVR059":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
+        return "";
+      case "EVR073": case "EVR074": case "EVR075":
+        return "T-Bone is a partially manual card. If you have a boosted card on the combat chain, the opponent must block with an equipment if possible.";
+      case "EVR082": case "EVR083": case "EVR084":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "EVR089":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");

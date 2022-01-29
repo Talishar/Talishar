@@ -1237,6 +1237,7 @@ function FinalizeChainLink($chainClosed=false)
         $goesWhere = GoesWhereAfterResolving($cardID, $from);
         switch($goesWhere)
         {
+          case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
           case "HAND": AddPlayerHand($cardID, $currentPlayer, $from); break;
           case "GY": AddGraveyard($cardID, $currentPlayer, $from); break;
           case "SOUL": AddSoul($cardID, $currentPlayer, $from); break;

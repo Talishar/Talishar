@@ -1465,7 +1465,7 @@
 
   function GoesWhereAfterResolving($cardID, $from = null)
   {
-    global $currentPlayer, $CS_NumWizardNonAttack;
+    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
     if($from == "COMBATCHAIN" && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
@@ -1474,7 +1474,6 @@
       case "CRU163": return GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";
-
       case "MON231": return "BANISH";
       case "ELE113": return "BANISH";
       case "ELE140": case "ELE141": case "ELE142": return "BANISH";
@@ -1483,6 +1482,7 @@
         if(TalentContains($theirChar[0], "SHADOW") && PlayerHasLessHealth($currentPlayer)) return "SOUL";
         else return "GY";
       case "MON192": if($from=="BANISH") return "HAND";
+      case "EVR082": case "EVR083": case "EVR084": return (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
       default: return "GY";
     }
   }
