@@ -2,6 +2,7 @@
 
 function PlayAura($cardID, $player, $number=1)
 {
+  global $CS_NumAuras;
   $auras = &GetAuras($player);
   if($cardID == "ARC112" && SearchCurrentTurnEffects("ARC081", $player)) ++$number;
   if($cardID == "MON104")
@@ -16,6 +17,7 @@ function PlayAura($cardID, $player, $number=1)
     array_push($auras, AuraPlayCounters($cardID));
     array_push($auras, 0);
   }
+  IncrementClassState($player, $CS_NumAuras, $number);
 }
 
 function PlayMyAura($cardID)

@@ -881,7 +881,7 @@ function ProcessCrushEffect($cardID)
 function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
 {
   global $mainPlayer, $mainPitch, $mainClassState, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainCharacter, $mainAuras, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow, $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
-  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CCS_NumChainLinks;
+  global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CCS_NumChainLinks, $CS_NumAuras;
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID)
   {
@@ -948,6 +948,7 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "EVR063": return 3;
     case "EVR064": return 2;
     case "EVR065": return 1;
+    case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     default: return 0;
   }
 }
@@ -1099,7 +1100,7 @@ function EffectBlockModifier($cardID)
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $defAuras, $defAuras, $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken;
+  global $defAuras, $defAuras, $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $combatChain;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   $cardTalent = CardTalent($cardID);
@@ -1122,6 +1123,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "MON075": case "MON076": case "MON077": return GetClassState($mainPlayer, $CS_CardsBanished) >= 3 ? 2 : 0;
     case "MON290": case "MON291": case "MON292": return count($defAuras) >= 1 ? 1 : 0;
     case "ELE227": case "ELE228": case "ELE229": return GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0 ? 1 : 0;
+    case "EVR050": case "EVR051": case "EVR052": return (CardCost($combatChain[0]) == 0 && CardType($combatChain[0]) == "AA" ? 2 : 0);
     default: break;
   }
   return $blockModifier;
@@ -1237,6 +1239,9 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
         case "CRU041": if($type == "COMBAT") { $prevention += 3; $remove = 1; } break;
         case "CRU042": if($type == "COMBAT") { $prevention += 2; $remove = 1; } break;
         case "CRU043": if($type == "COMBAT") { $prevention += 1; $remove = 1; } break;
+        case "EVR033": $prevention += 6; $remove = 1; break;
+        case "EVR034": $prevention += 5; $remove = 1; break;
+        case "EVR035": $prevention += 4; $remove = 1; break;
         default: break;
       }
       if($remove == 1)
@@ -1367,6 +1372,7 @@ function CurrentEffectGrantsGoAgain()
         case "ELE201": return true;
         case "EVR017": return true;
         case "EVR161-3": return true;
+        case "EVR044": case "EVR045": case "EVR046": return true;
         default: break;
       }
     }
@@ -2112,6 +2118,7 @@ function SteamCounterLogic($item, $playerID)
 function IsDominateActive()
 {
   global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $characterPieces, $combatChain;
+  global $CS_NumAuras;
   if(SearchCurrentTurnEffectsForCycle("EVR097", "EVR098", "EVR099", $mainPlayer)) return false;
   $characterEffects = GetCharacterEffects($mainPlayer);
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
@@ -2140,6 +2147,7 @@ function IsDominateActive()
     case "MON275": case "MON276": case "MON277": return true;
     case "ELE209": case "ELE210": case "ELE211": return HasIncreasedAttack();
     case "EVR027": case "EVR028": case "EVR029": return true;
+    case "EVR110": case "EVR111": case "EVR112": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     default: break;
   }
   return false;

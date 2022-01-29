@@ -49,6 +49,8 @@
       case "EVR005": case "EVR006": case "EVR007": return true;
       case "EVR014": case "EVR015": case "EVR016": return true;
       case "EVR030": case "EVR031": case "EVR032": return true;
+      case "EVR044": case "EVR045": case "EVR046": return true;
+      case "EVR047": case "EVR048": case "EVR049": return true;
       case "EVR056": return true;
       case "EVR057": case "EVR058": case "EVR059": return true;
       case "EVR082": case "EVR083": case "EVR084": return true;
@@ -84,6 +86,7 @@
     switch($cardID)
     {
       case "EVR001": return 1;
+      case "EVR008": case "EVR009": case "EVR010": return 2;
       case "EVR014": case "EVR015": case "EVR016": return 5;
       case "EVR017": return 2;
       case "EVR021": return -4;
@@ -112,10 +115,12 @@
     switch($cardID)
     {
       case "EVR001": return CardClass($attackID) == "BRUTE";
+      case "EVR008": case "EVR009": case "EVR010": return true;
       case "EVR014": case "EVR015": case "EVR016": return CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
       case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
+      case "EVR044": case "EVR045": case "EVR046": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;
       case "EVR057-1": case "EVR058-1": case "EVR059-1":
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
@@ -144,6 +149,7 @@
       case "EVR002": return "AA";
       case "EVR003": return "A";
       case "EVR005": case "EVR006": case "EVR007": return "A";
+      case "EVR008": case "EVR009": case "EVR010": return "AA";
       case "EVR011": case "EVR012": case "EVR013": return "AA";
       case "EVR014": case "EVR015": case "EVR016": return "A";
       case "EVR017": return "C";
@@ -155,7 +161,11 @@
       case "EVR024": case "EVR025": case "EVR026": return "A";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
       case "EVR030": case "EVR031": case "EVR032": return "A";
+      case "EVR033": case "EVR034": case "EVR035": return "I";
       case "EVR037": return "E";
+      case "EVR044": case "EVR045": case "EVR046": return "AA";
+      case "EVR047": case "EVR048": case "EVR049": return "AA";
+      case "EVR050": case "EVR051": case "EVR052": return "DR";
       case "EVR053": return "E";
       case "EVR056": return "A";
       case "EVR057": return "A";
@@ -168,6 +178,9 @@
       case "EVR100": case "EVR101": case "EVR102": return "A";
       case "EVR103": return "E";
       case "EVR106": return "A";
+      case "EVR110": case "EVR111": case "EVR112": return "AA";
+      case "EVR113": case "EVR114": case "EVR115": return "AA";
+      case "EVR116": case "EVR117": case "EVR118": return "AA";
       case "EVR137": return "E";
       case "EVR120": return "C";
       case "EVR121": return "W";
@@ -224,6 +237,7 @@
       case "EVR002": return 2;
       case "EVR003": return 0;
       case "EVR005": case "EVR006": case "EVR007": return 0;
+      case "EVR008": case "EVR009": case "EVR010": return 2;
       case "EVR011": case "EVR012": case "EVR013": return 2;
       case "EVR014": case "EVR015": case "EVR016": return 0;
       case "EVR017": return 0;
@@ -234,7 +248,11 @@
       case "EVR024": case "EVR025": case "EVR026": return 6;
       case "EVR027": case "EVR028": case "EVR029": return 7;
       case "EVR030": case "EVR031": case "EVR032": return 2;
+      case "EVR033": case "EVR034": case "EVR035": return 3;
       case "EVR037": return 0;
+      case "EVR044": case "EVR045": case "EVR046": return 0;
+      case "EVR047": case "EVR048": case "EVR049": return 1;
+      case "EVR050": case "EVR051": case "EVR052": return 0;
       case "EVR053": return 0;
       case "EVR056": return 0;
       case "EVR057": return 0;
@@ -247,6 +265,9 @@
       case "EVR100": case "EVR101": case "EVR102": return 0;
       case "EVR103": return 0;
       case "EVR106": return 0;
+      case "EVR110": case "EVR111": case "EVR112": return 2;
+      case "EVR113": case "EVR114": case "EVR115": return 2;
+      case "EVR116": case "EVR117": case "EVR118": return 2;
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
@@ -282,19 +303,22 @@
       case "EVR005": return 1;
       case "EVR006": return 2;
       case "EVR007": return 3;
-      case "EVR011": case "EVR014": return 1;
-      case "EVR012": case "EVR015": return 2;
-      case "EVR013": case "EVR016": return 3;
+      case "EVR008": case "EVR011": case "EVR014": return 1;
+      case "EVR009": case "EVR012": case "EVR015": return 2;
+      case "EVR010": case "EVR013": case "EVR016": return 3;
       case "EVR017": return 0;
       case "EVR018": return 0;
       case "EVR019": return 0;
       case "EVR020": return 0;
       case "EVR021": return 1;
       case "EVR023": return 3;
-      case "EVR024": case "EVR027": case "EVR030": return 1;
-      case "EVR025": case "EVR028": case "EVR031": return 2;
-      case "EVR026": case "EVR029": case "EVR032": return 3;
+      case "EVR024": case "EVR027": case "EVR030": case "EVR033": return 1;
+      case "EVR025": case "EVR028": case "EVR031": case "EVR034": return 2;
+      case "EVR026": case "EVR029": case "EVR032": case "EVR035": return 3;
       case "EVR037": return 0;
+      case "EVR044": case "EVR047": case "EVR050": return 1;
+      case "EVR045": case "EVR048": case "EVR051": return 2;
+      case "EVR046": case "EVR049": case "EVR052": return 3;
       case "EVR053": return 0;
       case "EVR056": return 1;
       case "EVR057": case "EVR063": return 1;
@@ -310,6 +334,9 @@
       case "EVR099": case "EVR102": return 3;
       case "EVR103": return 0;
       case "EVR106": return 1;
+      case "EVR110": case "EVR113": case "EVR116": return 1;
+      case "EVR111": case "EVR114": case "EVR117": return 2;
+      case "EVR112": case "EVR115": case "EVR118": return 3;
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
@@ -340,12 +367,19 @@
     {
       case "EVR000": return -1;
       case "EVR001": return 1;
+      case "EVR008": case "EVR009": case "EVR010": return -1;
       case "EVR011": case "EVR012": case "EVR013": return -1;
       case "EVR017": return 0;
       case "EVR018": return 2;
       case "EVR019": return 0;
       case "EVR020": return 2;
+      case "EVR033": case "EVR034": case "EVR035": return -1;
       case "EVR037": return 2;
+      case "EVR044": case "EVR045": case "EVR046": return 2;
+      case "EVR047": case "EVR048": case "EVR049": return 2;
+      case "EVR050": return 3;
+      case "EVR051": return 2;
+      case "EVR052": return 1;
       case "EVR053": return 1;
       case "EVR100": case "EVR101": case "EVR102": return 2;
       case "EVR103": return 0;
@@ -377,6 +411,9 @@
     switch($cardID)
     {
       case "EVR002": return 8;
+      case "EVR008": return 6;
+      case "EVR009": return 5;
+      case "EVR010": return 4;
       case "EVR011": return 6;
       case "EVR012": return 5;
       case "EVR013": return 4;
@@ -384,6 +421,9 @@
       case "EVR024": case "EVR027": return 10;
       case "EVR025": case "EVR028": return 9;
       case "EVR026": case "EVR029": return 8;
+      case "EVR044": case "EVR047": return 3;
+      case "EVR045": case "EVR048": return 2;
+      case "EVR046": case "EVR049": return 1;
       case "EVR073": return 3;
       case "EVR074": return 2;
       case "EVR075": return 1;
@@ -391,6 +431,12 @@
       case "EVR097": return 5;
       case "EVR098": return 4;
       case "EVR099": return 3;
+      case "EVR110": return 5;
+      case "EVR111": return 4;
+      case "EVR112": return 3;
+      case "EVR113": case "EVR116": return 4;
+      case "EVR114": case "EVR117": return 3;
+      case "EVR115": case "EVR118": return 2;
       case "EVR156": return 5;
       case "EVR157": return 3;
       case "EVR161": return 4;
@@ -422,6 +468,17 @@
           $rv .= " twice";
         }
         return $rv . ".";
+      case "EVR008": case "EVR009": case "EVR010":
+        MyDrawCard();
+        $card = DiscardRandom();
+        $rv = "Bare Fangs discarded " . CardLink($card, $card);
+        if(AttackValue($card) >= 6)
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv .= " and got +2 from discarding a card with 6 or more power";
+        }
+        $rv .= ".";
+        return $rv;
       case "EVR011": case "EVR012": case "EVR013":
         MyDrawCard();
         $card = DiscardRandom();
@@ -451,6 +508,9 @@
         else $amount = 1;
         PlayAura("WTR075", $currentPlayer, $amount);
         return "Seismic Stir created " . $amount . " Seismic Surge tokens.";
+      case "EVR033": case "EVR034": case "EVR035":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Steadfast prevents damage this turn.";
       case "EVR053":
         $deck = &GetDeck($currentPlayer);
         $card = array_shift($deck);
@@ -635,11 +695,14 @@
 
   function EVRHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer;
+    global $mainPlayer, $defPlayer, $CS_NumAuras;
     switch($cardID)
     {
       case "EVR021":
         AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "EVR044": case "EVR045": case "EVR046":
+        AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
       case "EVR088":
         $hand = &GetHand($defPlayer);
@@ -665,6 +728,15 @@
         break;
       case "EVR097": case "EVR098": case "EVR099":
         AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "EVR110": case "EVR111": case "EVR112":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
+        AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $mainPlayer, "-", 1);
+        break;
+      case "EVR113": case "EVR114": case "EVR115":
+        if(GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
         break;
       case "EVR156":
         AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
