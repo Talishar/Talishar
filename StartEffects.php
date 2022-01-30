@@ -1,6 +1,7 @@
 <?php
-  
+
   include "WriteLog.php";
+  include "WriteReplay.php";
   include "GameLogic.php";
   include "GameTerms.php";
   include "HostFiles/Redirector.php";
@@ -36,6 +37,9 @@
     }
     $chooser = ($p1roll > $p2roll ? 1 : 2);
   }
+
+  StartReplay();
+
   WriteLog("Player $chooser chooses who goes first.");
   AddDecisionQueue("CHOOSEFIRSTPLAYER", $chooser, "Go_first,Go_second");
   AddDecisionQueue("SETFIRSTPLAYER", $chooser, "-");
