@@ -5,20 +5,34 @@
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
   $stepCounter;
+
   function WriteReplay($playerID, $cardID, $from, $destination)
   {
     global $gameName, $stepCounter;
     $filename = "./Games/" . $gameName . "/Replay.txt";
     $handler = fopen($filename, "a+");
 
-  $output = ($stepCounter . " ID" . $playerID . " " . $cardID . " ". $from . " ". $destination);
+    $output = ($stepCounter . " ID" . $playerID . " " . $cardID . " ". $from . " ". $destination);
 
 
-    fwrite($handler, $output . "\r\n");
+    fwrite($handler, $output );
     fclose($handler);
   }
-  //echo(file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt"));
-  //file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt");
+
+  function StartReplay()
+  {
+        global $gameName;
+        $filename = "./Games/" . $gameName . "/Replay.txt";
+
+        $handler = fopen($filename, "a+");
+
+
+            fwrite($handler, "game start" );
+            fclose($handler);
+
+  }
+  echo(file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt"));
+
 }
 
 ?>
