@@ -31,7 +31,7 @@
             fclose($handler);
 
   }
-  echo(file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt"));
+  //echo(file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt"));
 
 }
 
