@@ -2009,6 +2009,18 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $mainCharacter[$i], 1);
         }
         break;
+
+        //Unofficial Levia Changes, don't tell!
+
+
+  /*    case "MON119": case "MON120": if(AttackValue($combatChain[0]>=6))
+      {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_from_your_Graveyard");
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "GY");
+        AddDecisionQueue("CHOOSEDISCARD", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEDISCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $mainPlayer, "DISCARD,NA", 1);
+      }*/
       default: break;
     }
   }
