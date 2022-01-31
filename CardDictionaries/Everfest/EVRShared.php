@@ -43,6 +43,7 @@
 
   function EVRHasGoAgain($cardID)
   {
+    global $mainPlayer, $CS_NumAuras;
     switch($cardID)
     {
       case "EVR003": return true;
@@ -53,9 +54,11 @@
       case "EVR047": case "EVR048": case "EVR049": return true;
       case "EVR056": return true;
       case "EVR057": case "EVR058": case "EVR059": return true;
+      case "EVR066": case "EVR067": case "EVR068": return true;
       case "EVR082": case "EVR083": case "EVR084": return true;
       case "EVR089": return true;
       case "EVR100": case "EVR101": case "EVR102": return true;
+      case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
       case "EVR106": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
@@ -94,6 +97,9 @@
       case "EVR057-2": return 3;
       case "EVR058-2": return 2;
       case "EVR059-2": return 1;
+      case "EVR066": return 3;
+      case "EVR067": return 2;
+      case "EVR068": return 1;
       case "EVR082": return 3;
       case "EVR083": return 2;
       case "EVR084": return 1;
@@ -129,6 +135,8 @@
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
         return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
+      case "EVR066": case "EVR067": case "EVR068": return CardType($attackID) == "W" && Is1H($attackID);
+      case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
       case "EVR100": case "EVR101": case "EVR102": return CardSubType($attackID) == "Arrow";
       case "EVR160": return true;
@@ -170,6 +178,7 @@
       case "EVR056": return "A";
       case "EVR057": return "A";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
+      case "EVR066": case "EVR067": case "EVR068": return "A";
       case "EVR073": case "EVR074": case "EVR075": return "AA";
       case "EVR082": case "EVR083": case "EVR084": return "A";
       case "EVR088": return "AA";
@@ -177,6 +186,7 @@
       case "EVR097": case "EVR098": case "EVR099": return "AA";
       case "EVR100": case "EVR101": case "EVR102": return "A";
       case "EVR103": return "E";
+      case "EVR105": return "AA";
       case "EVR106": return "A";
       case "EVR110": case "EVR111": case "EVR112": return "AA";
       case "EVR113": case "EVR114": case "EVR115": return "AA";
@@ -184,6 +194,7 @@
       case "EVR137": return "E";
       case "EVR120": return "C";
       case "EVR121": return "W";
+      case "EVR134": case "EVR135": case "EVR136": return "A";
       case "EVR155": return "E";
       case "EVR156": case "EVR157": return "AA";
       case "EVR159": case "EVR160": return "A";
@@ -257,6 +268,7 @@
       case "EVR056": return 0;
       case "EVR057": return 0;
       case "EVR063": case "EVR064": case "EVR065": return 0;
+      case "EVR066": case "EVR067": case "EVR068": return 0;
       case "EVR073": case "EVR074": case "EVR075": return 0;
       case "EVR082": case "EVR083": case "EVR084": return 0;
       case "EVR088": return 2;
@@ -264,12 +276,14 @@
       case "EVR097": case "EVR098": case "EVR099": return 1;
       case "EVR100": case "EVR101": case "EVR102": return 0;
       case "EVR103": return 0;
+      case "EVR105": return 0;
       case "EVR106": return 0;
       case "EVR110": case "EVR111": case "EVR112": return 2;
       case "EVR113": case "EVR114": case "EVR115": return 2;
       case "EVR116": case "EVR117": case "EVR118": return 2;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR134": case "EVR135": case "EVR136": return 3;
       case "EVR137": return 0;
       case "EVR155": return 0;
       case "EVR156": return 1;
@@ -321,9 +335,9 @@
       case "EVR046": case "EVR049": case "EVR052": return 3;
       case "EVR053": return 0;
       case "EVR056": return 1;
-      case "EVR057": case "EVR063": return 1;
-      case "EVR058": case "EVR064": return 2;
-      case "EVR059": case "EVR065": return 3;
+      case "EVR057": case "EVR063": case "EVR066": return 1;
+      case "EVR058": case "EVR064": case "EVR067": return 2;
+      case "EVR059": case "EVR065": case "EVR068": return 3;
       case "EVR073": case "EVR082": return 1;
       case "EVR074": case "EVR083": return 2;
       case "EVR075": case "EVR084": return 3;
@@ -333,6 +347,7 @@
       case "EVR098": case "EVR101": return 2;
       case "EVR099": case "EVR102": return 3;
       case "EVR103": return 0;
+      case "EVR105": return 1;
       case "EVR106": return 1;
       case "EVR110": case "EVR113": case "EVR116": return 1;
       case "EVR111": case "EVR114": case "EVR117": return 2;
@@ -340,6 +355,9 @@
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
+      case "EVR134": return 1;
+      case "EVR135": return 2;
+      case "EVR136": return 3;
       case "EVR155": return 0;
       case "EVR156": case "EVR157": return 1;
       case "EVR159": return 1;
@@ -431,6 +449,7 @@
       case "EVR097": return 5;
       case "EVR098": return 4;
       case "EVR099": return 3;
+      case "EVR105": return 3;
       case "EVR110": return 5;
       case "EVR111": return 4;
       case "EVR112": return 3;
@@ -523,6 +542,10 @@
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
         return "";
+      case "EVR066": case "EVR067": case "EVR068":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+        return "";
       case "EVR073": case "EVR074": case "EVR075":
         return "T-Bone is a partially manual card. If you have a boosted card on the combat chain, the opponent must block with an equipment if possible.";
       case "EVR082": case "EVR083": case "EVR084":
@@ -552,6 +575,9 @@
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
+        return "";
+      case "EVR134": case "EVR135": case "EVR136":
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         return "";
       case "EVR137":
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose an Illusionist Aura to destroy and replace.");
@@ -728,6 +754,9 @@
         break;
       case "EVR097": case "EVR098": case "EVR099":
         AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "EVR105":
+        if(GetClassState($mainPlayer, $CS_NumAuras) >= 3) AddCurrentTurnEffect("EVR105", $defPlayer);
         break;
       case "EVR110": case "EVR111": case "EVR112":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
