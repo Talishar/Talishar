@@ -1477,7 +1477,7 @@
 
   function GoesWhereAfterResolving($cardID, $from = null)
   {
-    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted;
+    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
     if($from == "COMBATCHAIN" && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
@@ -1495,6 +1495,7 @@
         else return "GY";
       case "MON192": if($from=="BANISH") return "HAND";
       case "EVR082": case "EVR083": case "EVR084": return (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
+      case "EVR134": case "EVR135": case "EVR136": return ($currentPlayer != $mainPlayer ? "BOTDECK" : "GY");
       default: return "GY";
     }
   }
