@@ -282,6 +282,7 @@
       case "CRU109": case "CRU110": case "CRU111":
         return true;
       case "EVR073": case "EVR074": case "EVR075": return true;
+      case "EVR079": case "EVR080": case "EVR081": return true;
       default:
         return false;
     }
