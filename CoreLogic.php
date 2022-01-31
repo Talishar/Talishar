@@ -999,6 +999,13 @@ function AttackDestroyed($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $class = CardClass($attackID);
+  switch($attackID)
+  {
+    case "EVR144": case "EVR145": case "EVR146": CoalescentMirageDestroyed(); break;
+    case "EVR147": case "EVR148": case "EVR149": PlayAura("MON104", $mainPlayer); break;
+    default: break;
+  }
+  AttackDestroyedEffects($attackID);
   if(SearchAuras("MON012", $mainPlayer))
   {
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
@@ -1011,6 +1018,19 @@ function AttackDestroyed($attackID)
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
     AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+  }
+}
+
+function AttackDestroyedEffects($attackID)
+{
+  global $currentTurnEffects, $mainPlayer;
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    switch($currentTurnEffects[$i])
+    {
+      case "EVR150": case "EVR151": case "EVR152": Draw($mainPlayer); break;
+      default: break;
+    }
   }
 }
 

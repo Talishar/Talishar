@@ -147,18 +147,18 @@
     $totalBlocked = 0;
     $numTurns = 0;
     $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
-    for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
-    {
-      $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
-      $totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
-      $totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
-      $totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
-      $totalDefensiveCards += ($turnStats[$i+$TurnStats_CardsPlayedDefense] + $turnStats[$i+$TurnStats_CardsBlocked]);//TODO: Separate out pitch for offense and defense
-      $totalBlocked += $turnStats[$i+$TurnStats_DamageBlocked];
-      ++$numTurns;
-    }
     if($numTurns > 0)
     {
+      for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
+      {
+        $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
+        $totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
+        $totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
+        $totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
+        $totalDefensiveCards += ($turnStats[$i+$TurnStats_CardsPlayedDefense] + $turnStats[$i+$TurnStats_CardsBlocked]);//TODO: Separate out pitch for offense and defense
+        $totalBlocked += $turnStats[$i+$TurnStats_DamageBlocked];
+        ++$numTurns;
+      }
       $rv .= "Total Damage Threatened: " . $totalDamageThreatened . "<br>";
       $rv .= "Total Damage Dealt: " . $totalDamageDealt . "<br>";
       $rv .= "Average Damage Threatened per turn: " . round($totalDamageThreatened/$numTurns, 2) . "<br>";

@@ -61,6 +61,7 @@
       case "EVR100": case "EVR101": case "EVR102": return true;
       case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
       case "EVR106": return true;
+      case "EVR150": case "EVR151": case "EVR152": return true;
       case "EVR160": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR167": case "EVR168": case "EVR169": return true;
@@ -87,6 +88,7 @@
 
   function EVREffectAttackModifier($cardID)
   {
+    global $combatChainState, $CCS_LinkBaseAttack;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     if(count($params) > 1) $parameter = $params[1];
@@ -111,9 +113,13 @@
       case "EVR082": return 3;
       case "EVR083": return 2;
       case "EVR084": return 1;
+      case "EVR094": case "EVR095": case "EVR096": return ceil($combatChainState[$CCS_LinkBaseAttack]/2) * -1;
       case "EVR100": return 3;
       case "EVR101": return 2;
       case "EVR102": return 1;
+      case "EVR150": return 4;
+      case "EVR151": return 3;
+      case "EVR152": return 2;
       case "EVR160": return -1;
       case "EVR161-2": return 2;
       case "EVR170-2": return 3;
@@ -151,7 +157,9 @@
       case "EVR066": case "EVR067": case "EVR068": return CardType($attackID) == "W" && Is1H($attackID);
       case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
+      case "EVR094": case "EVR095": case "EVR096": return true;
       case "EVR100": case "EVR101": case "EVR102": return CardSubType($attackID) == "Arrow";
+      case "EVR150": case "EVR151": case "EVR152": return CardType($attackID) == "AA";
       case "EVR160": return true;
       case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
@@ -184,6 +192,7 @@
       case "EVR027": case "EVR028": case "EVR029": return "AA";
       case "EVR030": case "EVR031": case "EVR032": return "A";
       case "EVR033": case "EVR034": case "EVR035": return "I";
+      case "EVR036": return "T";
       case "EVR037": return "E";
       case "EVR044": case "EVR045": case "EVR046": return "AA";
       case "EVR047": case "EVR048": case "EVR049": return "AA";
@@ -209,10 +218,16 @@
       case "EVR110": case "EVR111": case "EVR112": return "AA";
       case "EVR113": case "EVR114": case "EVR115": return "AA";
       case "EVR116": case "EVR117": case "EVR118": return "AA";
-      case "EVR137": return "E";
+      case "EVR119": return "T";
       case "EVR120": return "C";
       case "EVR121": return "W";
       case "EVR134": case "EVR135": case "EVR136": return "A";
+      case "EVR137": return "E";
+      case "EVR141": case "EVR142": case "EVR143": return "A";
+      case "EVR144": case "EVR145": case "EVR146": return "AA";
+      case "EVR147": case "EVR148": case "EVR149": return "AA";
+      case "EVR150": case "EVR151": case "EVR152": return "A";
+      case "EVR153": return "T";
       case "EVR155": return "E";
       case "EVR156": case "EVR157": return "AA";
       case "EVR159": case "EVR160": return "A";
@@ -251,6 +266,7 @@
       case "EVR103": return "Arms";
       case "EVR121": return "Staff";
       case "EVR137": return "Head";
+      case "EVR141": case "EVR142": case "EVR143": return "Aura";
       case "EVR155": return "Off-Hand";
       case "EVR177": case "EVR178": case "EVR181": case "EVR183": case "EVR184": case "EVR185": case "EVR187": case "EVR188": case "EVR190": case "EVR191": return "Item";
       case "EVR195": return "Item";
@@ -309,6 +325,10 @@
       case "EVR121": return 0;
       case "EVR134": case "EVR135": case "EVR136": return 3;
       case "EVR137": return 0;
+      case "EVR141": case "EVR142": case "EVR143": return 0;
+      case "EVR144": case "EVR145": case "EVR146": return 2;
+      case "EVR147": case "EVR148": case "EVR149": return 3;
+      case "EVR150": case "EVR151": case "EVR152": return 1;
       case "EVR155": return 0;
       case "EVR156": return 1;
       case "EVR157": return 2;
@@ -363,9 +383,9 @@
       case "EVR057": case "EVR060": case "EVR063": case "EVR066": return 1;
       case "EVR058": case "EVR061": case "EVR064": case "EVR067": return 2;
       case "EVR059": case "EVR062": case "EVR065": case "EVR068": return 3;
-      case "EVR073": case "EVR076": case "EVR081": case "EVR082": return 1;
-      case "EVR074": case "EVR077": case "EVR082": case "EVR083": return 2;
-      case "EVR075": case "EVR078": case "EVR083": case "EVR084": return 3;
+      case "EVR073": case "EVR076": case "EVR079": case "EVR082": return 1;
+      case "EVR074": case "EVR077": case "EVR080": case "EVR083": return 2;
+      case "EVR075": case "EVR078": case "EVR081": case "EVR084": return 3;
       case "EVR088": return 1;
       case "EVR089": return 3;
       case "EVR094": case "EVR097": case "EVR100": return 1;
@@ -383,6 +403,10 @@
       case "EVR134": return 1;
       case "EVR135": return 2;
       case "EVR136": return 3;
+      case "EVR141": case "EVR142": case "EVR143": return 3;
+      case "EVR144": case "EVR147": case "EVR150": return 1;
+      case "EVR145": case "EVR148": case "EVR151": return 2;
+      case "EVR146": case "EVR149": case "EVR152": return 3;
       case "EVR155": return 0;
       case "EVR156": case "EVR157": return 1;
       case "EVR159": return 1;
@@ -430,6 +454,8 @@
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
+      case "EVR141": case "EVR142": case "EVR143": return 2;
+      case "EVR150": case "EVR151": case "EVR152": return 2;
       case "EVR155": return -1;
       case "EVR156": case "EVR157": return 3;
       case "EVR159": return 2;
@@ -487,6 +513,10 @@
       case "EVR113": case "EVR116": return 4;
       case "EVR114": case "EVR117": return 3;
       case "EVR115": case "EVR118": return 2;
+      case "EVR147": return 8;
+      case "EVR144": case "EVR148": return 7;
+      case "EVR145": case "EVR149": return 6;
+      case "EVR146": return 5;
       case "EVR156": return 5;
       case "EVR157": return 3;
       case "EVR161": return 4;
@@ -633,6 +663,9 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "<-", 1);
         return "Crown of Reflection let you destroy an aura and play a new one.";
+      case "EVR150": case "EVR151": case "EVR152":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Veiled Intentions buffed your next attack action card and makes it draw if it is destroyed.";
       case "EVR157":
         $rv = "";
         if($from == "PLAY")
@@ -916,6 +949,15 @@
     $auras = SearchMultizoneFormat(SearchItemsForCard("WTR162", $currentPlayer), "MYITEMS");
     $handCards = SearchMultizoneFormat(SearchHandForCard($currentPlayer, "WTR162"), "MYHAND");
     return CombineSearches($auras, $handCards);
+  }
+
+  function CoalescentMirageDestroyed()
+  {
+    global $mainPlayer;
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "COALESCENTMIRAGE");
+    AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
+    AddDecisionQueue("PLAYAURA", $mainPlayer, "<-", 1);
   }
 
 ?>

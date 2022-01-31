@@ -1418,7 +1418,7 @@ function CurrentEffectPreventsDefenseReaction($from)
   return false;
 }
 
-function CurrentEffectPreventsDraw($player)
+function CurrentEffectPreventsDraw($player, $isMainPhase)
 {
   global $currentTurnEffects;
   for($i=0; $i<count($currentTurnEffects); $i+=2)
@@ -1427,7 +1427,7 @@ function CurrentEffectPreventsDraw($player)
     {
       switch($currentTurnEffects[$i])
       {
-        case "WTR045": return true;
+        case "WTR045": return $isMainPhase;
         default: break;
       }
     }
@@ -1898,7 +1898,7 @@ function Draw($player, $mainPhase=true)
   $deck = &GetDeck($player);
   $hand = &GetHand($player);
   if(count($deck) == 0) return -1;
-  if(CurrentEffectPreventsDraw($player)) return -1;
+  if(CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   array_push($hand, array_shift($deck));
   WriteReplay($player, "Hide", "DECK", "HAND");
   if($mainPhase && SearchCharacterActive($otherPlayer, "EVR019")) PlayAura("WTR075", $otherPlayer);
@@ -2334,6 +2334,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
         case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
         case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
+        case "COALESCENTMIRAGE": $rv = SearchHand($player, "", "Aura", -1, 0, "ILLUSIONIST"); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "-1" : $rv);
