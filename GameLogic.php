@@ -2337,7 +2337,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "COALESCENTMIRAGE": $rv = SearchHand($player, "", "Aura", -1, 0, "ILLUSIONIST"); break;
         default: $rv = ""; break;
       }
-      return ($rv == "" ? "-1" : $rv);
+      //return ($rv == "" ? "-1" : $rv);
+      return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
       if($subtype == "Item")
@@ -2346,7 +2347,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       else if($subtype == "Aura")
       {
-        PlayAura($parameter, $player);
+        PlayAura($lastResult, $player);
       }
       return $lastResult;
     case "DRAW":
@@ -3141,9 +3142,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("-", $lastResult);
       $source = $params[0];
       $index = $params[1];
+      $otherP = ($player == 1 ? 2 : 1);
       switch($source)
       {
         case "MYAURAS": DestroyAura($player, $index); break;
+        case "THEIRAURAS": DestroyAura($otherP, $index); break;
         case "MYHAND": DiscardIndex($player, $index); break;
         case "MYITEMS": DestroyItemForPlayer($player, $index); break;
         default: break;
@@ -3258,7 +3261,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
       RevealCards($deck[0]);
-      if(AttackValue($deck[0]) > GetClassState($player, $CS_DamageTaken))
+      if(AttackValue($deck[0]) > GetClassState(($player == 1 ? 2 :1), $CS_DamageTaken))
       {
         WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
         Draw($player);
