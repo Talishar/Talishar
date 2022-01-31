@@ -47,6 +47,7 @@
     switch($cardID)
     {
       case "EVR003": return true;
+      case "EVR004": return true;
       case "EVR005": case "EVR006": case "EVR007": return true;
       case "EVR014": case "EVR015": case "EVR016": return true;
       case "EVR030": case "EVR031": case "EVR032": return true;
@@ -86,9 +87,13 @@
 
   function EVREffectAttackModifier($cardID)
   {
+    $params = explode(",", $cardID);
+    $cardID = $params[0];
+    if(count($params) > 1) $parameter = $params[1];
     switch($cardID)
     {
       case "EVR001": return 1;
+      case "EVR004": return $parameter;
       case "EVR008": case "EVR009": case "EVR010": return 2;
       case "EVR014": case "EVR015": case "EVR016": return 5;
       case "EVR017": return 2;
@@ -97,6 +102,9 @@
       case "EVR057-2": return 3;
       case "EVR058-2": return 2;
       case "EVR059-2": return 1;
+      case "EVR060": return 3;
+      case "EVR061": return 2;
+      case "EVR062": return 1;
       case "EVR066": return 3;
       case "EVR067": return 2;
       case "EVR068": return 1;
@@ -118,9 +126,13 @@
   function EVRCombatEffectActive($cardID, $attackID)
   {
     global $combatChain, $CS_AtksWWeapon, $mainPlayer;
+    $params = explode(",", $cardID);
+    $cardID = $params[0];
+    if(count($params) > 1) $parameter = $params[1];
     switch($cardID)
     {
       case "EVR001": return CardClass($attackID) == "BRUTE";
+      case "EVR004": return CardClass($attackID) == "BRUTE";
       case "EVR008": case "EVR009": case "EVR010": return true;
       case "EVR014": case "EVR015": case "EVR016": return CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
       case "EVR017": return CardCost($attackID) >= 3;
@@ -135,6 +147,7 @@
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
         return CardType($attackID) == "W" && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
+      case "EVR060": case "EVR061": case "EVR062": return CardType($attackID) == "W";
       case "EVR066": case "EVR067": case "EVR068": return CardType($attackID) == "W" && Is1H($attackID);
       case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
@@ -156,6 +169,7 @@
       case "EVR001": return "E";
       case "EVR002": return "AA";
       case "EVR003": return "A";
+      case "EVR004": return "A";
       case "EVR005": case "EVR006": case "EVR007": return "A";
       case "EVR008": case "EVR009": case "EVR010": return "AA";
       case "EVR011": case "EVR012": case "EVR013": return "AA";
@@ -177,12 +191,16 @@
       case "EVR053": return "E";
       case "EVR056": return "A";
       case "EVR057": return "A";
+      case "EVR060": case "EVR061": case "EVR062": return "AR";
       case "EVR063": case "EVR064": case "EVR065": return "AR";
       case "EVR066": case "EVR067": case "EVR068": return "A";
       case "EVR073": case "EVR074": case "EVR075": return "AA";
+      case "EVR076": case "EVR077": case "EVR078": return "AA";
+      case "EVR079": case "EVR080": case "EVR081": return "AA";
       case "EVR082": case "EVR083": case "EVR084": return "A";
       case "EVR088": return "AA";
       case "EVR089": return "A";
+      case "EVR094": case "EVR095": case "EVR096": return "AA";
       case "EVR097": case "EVR098": case "EVR099": return "AA";
       case "EVR100": case "EVR101": case "EVR102": return "A";
       case "EVR103": return "E";
@@ -228,6 +246,7 @@
       case "EVR037": return "Head";
       case "EVR053": return "Head";
       case "EVR088": return "Arrow";
+      case "EVR094": case "EVR095": case "EVR096": return "Arrow";
       case "EVR097": case "EVR098": case "EVR099": return "Arrow";
       case "EVR103": return "Arms";
       case "EVR121": return "Staff";
@@ -247,6 +266,7 @@
       case "EVR001": return 0;
       case "EVR002": return 2;
       case "EVR003": return 0;
+      case "EVR004": return 1;
       case "EVR005": case "EVR006": case "EVR007": return 0;
       case "EVR008": case "EVR009": case "EVR010": return 2;
       case "EVR011": case "EVR012": case "EVR013": return 2;
@@ -267,12 +287,16 @@
       case "EVR053": return 0;
       case "EVR056": return 0;
       case "EVR057": return 0;
+      case "EVR060": case "EVR061": case "EVR062": return 1;
       case "EVR063": case "EVR064": case "EVR065": return 0;
       case "EVR066": case "EVR067": case "EVR068": return 0;
       case "EVR073": case "EVR074": case "EVR075": return 0;
+      case "EVR076": case "EVR077": case "EVR078": return 2;
+      case "EVR079": case "EVR080": case "EVR081": return 2;
       case "EVR082": case "EVR083": case "EVR084": return 0;
       case "EVR088": return 2;
       case "EVR089": return 0;
+      case "EVR094": case "EVR095": case "EVR096": return 1;
       case "EVR097": case "EVR098": case "EVR099": return 1;
       case "EVR100": case "EVR101": case "EVR102": return 0;
       case "EVR103": return 0;
@@ -314,6 +338,7 @@
       case "EVR001": return 0;
       case "EVR002": return 1;
       case "EVR003": return 3;
+      case "EVR004": return 1;
       case "EVR005": return 1;
       case "EVR006": return 2;
       case "EVR007": return 3;
@@ -335,17 +360,17 @@
       case "EVR046": case "EVR049": case "EVR052": return 3;
       case "EVR053": return 0;
       case "EVR056": return 1;
-      case "EVR057": case "EVR063": case "EVR066": return 1;
-      case "EVR058": case "EVR064": case "EVR067": return 2;
-      case "EVR059": case "EVR065": case "EVR068": return 3;
-      case "EVR073": case "EVR082": return 1;
-      case "EVR074": case "EVR083": return 2;
-      case "EVR075": case "EVR084": return 3;
+      case "EVR057": case "EVR060": case "EVR063": case "EVR066": return 1;
+      case "EVR058": case "EVR061": case "EVR064": case "EVR067": return 2;
+      case "EVR059": case "EVR062": case "EVR065": case "EVR068": return 3;
+      case "EVR073": case "EVR076": case "EVR081": case "EVR082": return 1;
+      case "EVR074": case "EVR077": case "EVR082": case "EVR083": return 2;
+      case "EVR075": case "EVR078": case "EVR083": case "EVR084": return 3;
       case "EVR088": return 1;
       case "EVR089": return 3;
-      case "EVR097": case "EVR100": return 1;
-      case "EVR098": case "EVR101": return 2;
-      case "EVR099": case "EVR102": return 3;
+      case "EVR094": case "EVR097": case "EVR100": return 1;
+      case "EVR095": case "EVR098": case "EVR101": return 2;
+      case "EVR096": case "EVR099": case "EVR102": return 3;
       case "EVR103": return 0;
       case "EVR105": return 1;
       case "EVR106": return 1;
@@ -445,10 +470,16 @@
       case "EVR073": return 3;
       case "EVR074": return 2;
       case "EVR075": return 1;
+      case "EVR076": return 6;
+      case "EVR077": return 5;
+      case "EVR078": return 4;
+      case "EVR079": return 5;
+      case "EVR080": return 4;
+      case "EVR081": return 3;
       case "EVR088": return 6;
-      case "EVR097": return 5;
-      case "EVR098": return 4;
-      case "EVR099": return 3;
+      case "EVR094": case "EVR097": return 5;
+      case "EVR095": case "EVR098": return 4;
+      case "EVR096": case "EVR099": return 3;
       case "EVR105": return 3;
       case "EVR110": return 5;
       case "EVR111": return 4;
@@ -469,13 +500,17 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "EVR003":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Ready to Roll lets you roll an extra die this turn.";
+      case "EVR004":
+        $roll = GetDieRoll($currentPlayer);
+        AddCurrentTurnEffect($cardID . "," . $roll, $currentPlayer);
+        return "Rolling Thunder gives your next Brute attack +" . $roll . ".";
       case "EVR005": case "EVR006": case "EVR007":
         $rv = "High Roller Intimidated";
         if($cardID == "EVR005") $targetHigh = 4;
@@ -542,12 +577,20 @@
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
         return "";
+      case "EVR060": case "EVR061": case "EVR062":
+        GiveAttackGoAgain();
+        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        return "Blade Runner gives Go Again and buffs your next weapon attack.";
       case "EVR066": case "EVR067": case "EVR068":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
       case "EVR073": case "EVR074": case "EVR075":
         return "T-Bone is a partially manual card. If you have a boosted card on the combat chain, the opponent must block with an equipment if possible.";
+      case "EVR079": case "EVR080": case "EVR081":
+        $numBoosts = GetClassState($currentPlayer, $CS_NumBoosted);
+        Opt($cardID, $numBoosts);
+        return "Zoom In let you opt " . $numBoosts . ".";
       case "EVR082": case "EVR083": case "EVR084":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -751,6 +794,9 @@
         RevealCards($cards);
         WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
         $hand = array_values($hand);
+        break;
+      case "EVR094": case "EVR095": case "EVR096":
+        AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "EVR097": case "EVR098": case "EVR099":
         AddNextTurnEffect($cardID, $defPlayer);

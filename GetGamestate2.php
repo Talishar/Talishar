@@ -56,6 +56,7 @@
   else echo("Waiting for player " . $currentPlayer . " to choose " . TypeToPlay($turn[0]));
   echo(implode(" ", $landmarks) . "<BR>");
   echo(implode(" ", $layers) . "<BR>");
+  echo(file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt"));
 
   function OutputPlayerData($player)
   {
