@@ -17,8 +17,21 @@
     fwrite($handler, $output . "\r\n");
     fclose($handler);
   }
+
+  function StartReplay()
+  {
+        global $gameName;
+        $filename = "./Games/" . $gameName . "/Replay.txt";
+
+        $handler = fopen($filename, "a+");
+
+
+            fwrite($handler, "game start" );
+            fclose($handler);
+
+  }
   //echo(file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt"));
-  //file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt");
+
 }
 
 ?>
