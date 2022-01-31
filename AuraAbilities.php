@@ -58,6 +58,9 @@ function AuraPlayCounters($cardID)
   switch($cardID)
   {
     case "CRU075": return 1;
+    case "EVR107": return 3;
+    case "EVR108": return 2;
+    case "EVR109": return 1;
     default: return 0;
   }
 }
@@ -145,11 +148,15 @@ function AuraStartTurnAbilities()
       case "MON186": SoulShackleStartTurn($mainPlayer); break;
       case "MON006": GenesisStartTurnAbility(); break;
       case "CRU075": if($auras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$auras[$i+2]; } break;
+      case "EVR107": case "EVR108": case "EVR109":
+        if($auras[$i+2] == 0)
+        { $dest = "Runeblood Invocation is destroyed."; }
+        else { --$auras[$i+2]; PlayAura("ARC112", $mainPlayer); } break;
+      case "EVR131": case "EVR132": case "EVR133": $dest = "Pyroglyphic Protection is destroyed."; break;
       default: break;
     }
     if($dest != "")
     {
-      WriteLog($dest);
       AuraDestroyed($mainPlayer, $auras[$i]);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
@@ -218,7 +225,7 @@ function AuraEndTurnAbilities()
   }
 }
 
-function AuraTakeDamageAbilities($player, $damage)
+function AuraTakeDamageAbilities($player, $damage, $type)
 {
   $Auras = &GetAuras($player);
   $hasRunebloodBarrier = CountAura("CRU144", $player) > 0;
@@ -234,6 +241,9 @@ function AuraTakeDamageAbilities($player, $damage)
       case "ARC169": $damage -= 2; $remove = 1; break;
       case "CRU075": $damage -= 1; break;
       case "MON104": $damage -= 1; $remove = 1; break;
+      case "EVR131": if($type == "ARCANE") $damage -= 3; break;
+      case "EVR132": if($type == "ARCANE") $damage -= 2; break;
+      case "EVR133": if($type == "ARCANE") $damage -= 1; break;
       default: break;
     }
     if($remove == 1)

@@ -357,7 +357,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
         if($Items[$i+1] <= 0) DestroyItem($Items, $i);
       }
     }
-    $damage = AuraTakeDamageAbilities($player, $damage);
+    $damage = AuraTakeDamageAbilities($player, $damage, $type);
   }
   $damage = $damage > 0 ? $damage : 0;
   if($damage > 0 && $source != "NA")
@@ -439,7 +439,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
     }
   }
   $damage = $damage > 0 ? $damage : 0;
-  $damage = AuraTakeDamageAbilities($player, $damage);
+  $damage = AuraTakeDamageAbilities($player, $damage, $type);
   if($damage > 0 && $source != "NA")
   {
     $damage += CurrentEffectDamageModifiers($source, $type);
