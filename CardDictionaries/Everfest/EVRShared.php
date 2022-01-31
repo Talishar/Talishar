@@ -224,6 +224,7 @@
       case "EVR119": return "T";
       case "EVR120": return "C";
       case "EVR121": return "W";
+      case "EVR125": case "EVR126": case "EVR127": return "A";
       case "EVR131": case "EVR132": case "EVR133": return "A";
       case "EVR134": case "EVR135": case "EVR136": return "A";
       case "EVR137": return "E";
@@ -331,6 +332,7 @@
       case "EVR116": case "EVR117": case "EVR118": return 2;
       case "EVR120": return 0;
       case "EVR121": return 0;
+      case "EVR125": case "EVR126": case "EVR127": return 2;
       case "EVR131": case "EVR132": case "EVR133": return 2;
       case "EVR134": case "EVR135": case "EVR136": return 3;
       case "EVR137": return 0;
@@ -410,9 +412,9 @@
       case "EVR120": return 0;
       case "EVR121": return 0;
       case "EVR137": return 0;
-      case "EVR131": case "EVR134": return 1;
-      case "EVR132": case "EVR135": return 2;
-      case "EVR133": case "EVR136": return 3;
+      case "EVR125": case "EVR128": case "EVR131": case "EVR134": return 1;
+      case "EVR126": case "EVR129": case "EVR132": case "EVR135": return 2;
+      case "EVR127": case "EVR130": case "EVR133": case "EVR136": return 3;
       case "EVR141": case "EVR142": case "EVR143": return 3;
       case "EVR144": case "EVR147": case "EVR150": return 1;
       case "EVR145": case "EVR148": case "EVR151": return 2;
@@ -543,7 +545,7 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -661,6 +663,13 @@
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
+        return "";
+      case "EVR125": case "EVR126": case "EVR127":
+        $oppTurn = $currentPlayer != $mainPlayer;
+        if($cardID == "EVR125") $damage = ($oppTurn ? 6 : 4);
+        if($cardID == "EVR126") $damage = ($oppTurn ? 5 : 3);
+        if($cardID == "EVR127") $damage = ($oppTurn ? 4 : 2);
+        DealArcane($damage, 1, "PLAYCARD", $cardID);
         return "";
       case "EVR134": case "EVR135": case "EVR136":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
