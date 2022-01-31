@@ -136,9 +136,9 @@
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "ARC122":
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
