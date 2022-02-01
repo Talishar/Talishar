@@ -1622,12 +1622,12 @@ function ItemStartTurnAbility($index)
     case "EVR069":
       WriteLog("Dissolution Sphere lost a steam counter to remain in play.");
       --$mainItems[$index+1];
-      if($mainItems[$index+1] <= 0) DestroyMainItem($index);
+      if($mainItems[$index+1] < 0) DestroyMainItem($index);
       break;
     case "EVR071":
       WriteLog("Signal Jammer lost a steam counter to remain in play.");
       --$mainItems[$index+1];
-      if($mainItems[$index+1] <= 0) DestroyMainItem($index);
+      if($mainItems[$index+1] < 0) DestroyMainItem($index);
       break;
     default:
       break;

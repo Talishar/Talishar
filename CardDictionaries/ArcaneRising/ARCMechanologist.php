@@ -340,6 +340,16 @@
             if($items[$i+1] <= 0) DestroyMyItem($i);
           }
           break;
+        case "EVR072":
+          if($items[$i+2] == 2)
+          {
+            WriteLog("Teklo Pounder gives the attack +2.");
+            --$items[$i+1];
+            $items[$i+2] = 1;
+            AddCurrentTurnEffect("EVR072", $currentPlayer, "PLAY");
+            if($items[$i+1] <= 0) DestroyMyItem($i);
+          }
+          break;
         default: break;
       }
     }

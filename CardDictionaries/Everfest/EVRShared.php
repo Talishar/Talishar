@@ -119,6 +119,7 @@
       case "EVR066": return 3;
       case "EVR067": return 2;
       case "EVR068": return 1;
+      case "EVR072": return 2;
       case "EVR082": return 3;
       case "EVR083": return 2;
       case "EVR084": return 1;
@@ -169,6 +170,7 @@
       case "EVR060": case "EVR061": case "EVR062": return CardType($attackID) == "W";
       case "EVR066": case "EVR067": case "EVR068": return CardType($attackID) == "W" && Is1H($attackID);
       case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
+      case "EVR072": return true;
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
       case "EVR090": return CardSubType($attackID) == "Arrow";
       case "EVR091": case "EVR092": case "EVR093": return CardSubType($attackID) == "Arrow";

@@ -129,11 +129,11 @@ function BottomDeckDraw()
   }
 }
 
-function AddCurrentTurnEffect($cardID, $player)
+function AddCurrentTurnEffect($cardID, $player, $from="")
 {
   global $currentTurnEffects, $combatChain;
   $card = explode("-", $cardID)[0];
-  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID)) { AddCurrentTurnEffectFromCombat($cardID, $player); return; }
+  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") { AddCurrentTurnEffectFromCombat($cardID, $player); return; }
   array_push($currentTurnEffects, $cardID);
   array_push($currentTurnEffects, $player);
 }
