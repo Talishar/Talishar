@@ -1,5 +1,5 @@
 <?php
-  
+
   include "WriteLog.php";
   include "GameLogic.php";
   include "GameTerms.php";
@@ -21,7 +21,7 @@
 
   $myHealth = CharacterHealth($myCharacter[0]);
   $theirHealth = CharacterHealth($theirCharacter[0]);
-
+  StartReplay();
   $chooser = 1;
   if($p2CharEquip[0] != "DUMMY")
   {

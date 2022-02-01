@@ -26,7 +26,7 @@
         $handler = fopen($filename, "a+");
 
 
-            fwrite($handler, "game start" );
+            fwrite($handler, "replay start" );
             fclose($handler);
 
   }
