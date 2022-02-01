@@ -1107,6 +1107,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $cardType = CardType($cardID);
   $cardTalent = CardTalent($cardID);
   if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && $cardType == "AA") $blockModifier += 1;
+  if(SearchCurrentTurnEffects("EVR186", $defPlayer) && $cardType == "AA") $blockModifier += 1;
   if(SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && ($cardTalent == "ICE" || $cardTalent == "EARTH" || $cardTalent == "ELEMENTAL")) $blockModifier += 1;
   for($i=0; $i<count($defAuras); $i+=AuraPieces())
   {
@@ -1411,6 +1412,7 @@ function CurrentEffectPreventsDefenseReaction($from)
       {
         case "CRU123": return $from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i]);
         case "CRU135-1": case "CRU136-1": case "CRU137-1": return $from == "HAND" && IsCombatEffectActive($currentTurnEffects[$i]);
+        case "EVR091-1": case "EVR092-1": case "EVR093-1": return $from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i]);
         default: break;
       }
     }
@@ -1572,8 +1574,10 @@ function IsCombatEffectPersistent($cardID)
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
     case "EVR001": return true;
     case "EVR019": return true;
+    case "EVR090": return true;
     case "EVR160": return true;
     case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
+    case "EVR186": return true;
     default: return false;
   }
 }
