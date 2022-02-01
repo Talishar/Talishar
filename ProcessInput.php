@@ -894,6 +894,7 @@ function FinalizeChainLink($chainClosed=false)
             else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
             if($cardType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
             if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
+            CombatChainPlayAbility($cardID);
           }
           if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
           {

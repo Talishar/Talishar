@@ -1619,6 +1619,16 @@ function ItemStartTurnAbility($index)
       --$mainItems[$index+1];
       if($mainItems[$index+1] <= 0) DestroyMainItem($index);
       break;
+    case "EVR069":
+      WriteLog("Dissolution Sphere lost a steam counter to remain in play.");
+      --$mainItems[$index+1];
+      if($mainItems[$index+1] <= 0) DestroyMainItem($index);
+      break;
+    case "EVR071":
+      WriteLog("Signal Jammer lost a steam counter to remain in play.");
+      --$mainItems[$index+1];
+      if($mainItems[$index+1] <= 0) DestroyMainItem($index);
+      break;
     default:
       break;
   }
@@ -2092,6 +2102,19 @@ function MainCharacterHitEffects()
   return $modifier;
 }
 
+function CombatChainPlayAbility($cardID)
+{
+  global $combatChain;
+  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    switch($combatChain[$i])
+    {
+      case "EVR122": if(CardClass($cardID) == "WIZARD") { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets got +2 block."); } break;
+      default: break;
+    }
+  }
+}
+
 function PutItemIntoPlay($item, $steamCounterModifier = 0)
 {
   global $currentPlayer;
@@ -2336,12 +2359,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HEAVE": $rv = HeaveIndices(); break;
         case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
         case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
+        case "DECKAURAMAXCOST": $rv = SearchDeck($player, "", "Aura", $subparam); break;
         case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
         case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
         case "COALESCENTMIRAGE": $rv = SearchHand($player, "", "Aura", -1, 0, "ILLUSIONIST"); break;
         default: $rv = ""; break;
       }
-      //return ($rv == "" ? "-1" : $rv);
       return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
@@ -3246,6 +3269,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "INCDQVAR":
       $dqVars[$parameter] += $lastResult;
       return $lastResult;
+    case "DQVARPASSIFSET":
+      if($dqVars[$parameter] == "1") return "PASS";
+      return "PROCEED";
     case "LORDSUTCLIFFE":
       LordSutcliffeAfterDQ($player, $parameter);
       return $lastResult;
