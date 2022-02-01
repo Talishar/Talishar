@@ -13,7 +13,7 @@
       case "EVR177": return 0;
       case "EVR178": return 0;
       case "EVR181": return 0;
-      case "EVR183": case "EVR184": case "EVR185": return 0;
+      case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": return 0;
       case "EVR187": return 0;
       case "EVR195": return 3;
       default: return 0;
@@ -33,8 +33,9 @@
       case "EVR177": return "I";
       case "EVR178": return "DR";
       case "EVR181": return "I";
+      case "EVR182": return "I";
       case "EVR183": return "A";
-      case "EVR184": case "EVR185": return "I";
+      case "EVR184": case "EVR185": case "EVR186": return "I";
       case "EVR187": return "I";
       case "EVR195": return "A";
       default: return "";
@@ -58,6 +59,7 @@
       case "EVR066": case "EVR067": case "EVR068": return true;
       case "EVR082": case "EVR083": case "EVR084": return true;
       case "EVR089": return true;
+      case "EVR091": case "EVR092": case "EVR093": return true;
       case "EVR100": case "EVR101": case "EVR102": return true;
       case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
       case "EVR106": return true;
@@ -114,6 +116,10 @@
       case "EVR082": return 3;
       case "EVR083": return 2;
       case "EVR084": return 1;
+      case "EVR090": return 2;
+      case "EVR091": return 3;
+      case "EVR092": return 2;
+      case "EVR093": return 1;
       case "EVR094": case "EVR095": case "EVR096": return ceil($combatChainState[$CCS_LinkBaseAttack]/2) * -1;
       case "EVR100": return 3;
       case "EVR101": return 2;
@@ -158,6 +164,9 @@
       case "EVR066": case "EVR067": case "EVR068": return CardType($attackID) == "W" && Is1H($attackID);
       case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
+      case "EVR090": return CardSubType($attackID) == "Arrow";
+      case "EVR091": case "EVR092": case "EVR093": return CardSubType($attackID) == "Arrow";
+      case "EVR091-1": case "EVR092-1": case "EVR093-1": return CardSubType($attackID) == "Arrow";
       case "EVR094": case "EVR095": case "EVR096": return true;
       case "EVR100": case "EVR101": case "EVR102": return CardSubType($attackID) == "Arrow";
       case "EVR150": case "EVR151": case "EVR152": return CardType($attackID) == "AA";
@@ -166,6 +175,7 @@
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR170-1": case "EVR171-1": case "EVR172-1": return CardType($attackID) == "AA";
       case "EVR170-2": case "EVR171-2": case "EVR172-2": return CardType($attackID) == "AA";
+      case "EVR186": return true;
       default: return false;
     }
   }
@@ -210,6 +220,8 @@
       case "EVR082": case "EVR083": case "EVR084": return "A";
       case "EVR088": return "AA";
       case "EVR089": return "A";
+      case "EVR090": return "I";
+      case "EVR091": case "EVR092": case "EVR093": return "A";
       case "EVR094": case "EVR095": case "EVR096": return "AA";
       case "EVR097": case "EVR098": case "EVR099": return "AA";
       case "EVR100": case "EVR101": case "EVR102": return "A";
@@ -244,7 +256,9 @@
       case "EVR177": return "A";
       case "EVR178": return "A";
       case "EVR181": return "A";
+      case "EVR182": return "A";
       case "EVR183": case "EVR184": case "EVR185": return "A";
+      case "EVR186": return "A";
       case "EVR187": return "A";
       case "EVR188": return "A";
       case "EVR190": return "A";
@@ -275,7 +289,7 @@
       case "EVR137": return "Head";
       case "EVR141": case "EVR142": case "EVR143": return "Aura";
       case "EVR155": return "Off-Hand";
-      case "EVR177": case "EVR178": case "EVR181": case "EVR183": case "EVR184": case "EVR185": case "EVR187": case "EVR188": case "EVR190": case "EVR191": return "Item";
+      case "EVR177": case "EVR178": case "EVR181": case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": case "EVR187": case "EVR188": case "EVR190": case "EVR191": return "Item";
       case "EVR195": return "Item";
       default: return "";
     }
@@ -319,6 +333,8 @@
       case "EVR082": case "EVR083": case "EVR084": return 0;
       case "EVR088": return 2;
       case "EVR089": return 0;
+      case "EVR090": return 0;
+      case "EVR091": case "EVR092": case "EVR093": return 0;
       case "EVR094": case "EVR095": case "EVR096": return 1;
       case "EVR097": case "EVR098": case "EVR099": return 1;
       case "EVR100": case "EVR101": case "EVR102": return 0;
@@ -352,7 +368,7 @@
       case "EVR173": case "EVR174": case "EVR175": return 0;
       case "EVR177": case "EVR178": return 0;
       case "EVR181": return 0;
-      case "EVR183": case "EVR184": case "EVR185": return 0;
+      case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": return 0;
       case "EVR187": return 0;
       case "EVR188": return 0;
       case "EVR190": case "EVR191": return 0;
@@ -399,9 +415,10 @@
       case "EVR075": case "EVR078": case "EVR081": case "EVR084": return 3;
       case "EVR088": return 1;
       case "EVR089": return 3;
-      case "EVR094": case "EVR097": case "EVR100": return 1;
-      case "EVR095": case "EVR098": case "EVR101": return 2;
-      case "EVR096": case "EVR099": case "EVR102": return 3;
+      case "EVR090": return 2;
+      case "EVR191": case "EVR094": case "EVR097": case "EVR100": return 1;
+      case "EVR192": case "EVR095": case "EVR098": case "EVR101": return 2;
+      case "EVR193": case "EVR096": case "EVR099": case "EVR102": return 3;
       case "EVR103": return 0;
       case "EVR104": return 1;
       case "EVR105": return 1;
@@ -431,7 +448,7 @@
       case "EVR175": return 3;
       case "EVR177": case "EVR178": return 3;
       case "EVR181": return 3;
-      case "EVR183": case "EVR184": case "EVR185": return 3;
+      case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": return 3;
       case "EVR187": return 3;
       case "EVR188": return 3;
       case "EVR190": case "EVR191": return 2;
@@ -460,6 +477,8 @@
       case "EVR051": return 2;
       case "EVR052": return 1;
       case "EVR053": return 1;
+      case "EVR090": return -1;
+      case "EVR091": case "EVR092": case "EVR093": return 2;
       case "EVR100": case "EVR101": case "EVR102": return 2;
       case "EVR103": return 0;
       case "EVR106": return 2;
@@ -480,7 +499,7 @@
       case "EVR173": case "EVR174": case "EVR175": return -1;
       case "EVR177": case "EVR178": return -1;
       case "EVR181": return -1;
-      case "EVR183": case "EVR184": case "EVR185": return -1;
+      case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": return -1;
       case "EVR187": return -1;
       case "EVR188": return -1;
       case "EVR190": case "EVR191": return -1;
@@ -644,6 +663,13 @@
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
         return "Tri-shot gives your bow 2 additional uses.";
+      case "EVR090":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Rain Razors gives your Arrow attacks +2 this turn.";
+      case "EVR091": case "EVR092": case "EVR093":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
+        return "Release the Tension buffs your next arrow and prevents Defense reactions on the chain link.";
       case "EVR100": case "EVR101": case "EVR102":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Opt($cardID, 1);
@@ -769,6 +795,15 @@
           $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         }
         return "Healing Potion gained 2 health.";
+      case "EVR182":
+        $rv = "";
+        if($from == "PLAY")
+        {
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          Opt($cardID, 2);
+          $rv = "Clarity Potion let you opt 2.";
+        }
+        return $rv;
       case "EVR183":
         if($from == "PLAY"){
           GainHealth(2, $currentPlayer);
@@ -797,6 +832,15 @@
           }
           if($cards != "") AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
           $rv = "Potion of Deja Vu put your pitch cards on top of your deck.";
+        }
+        return $rv;
+      case "EVR186":
+        $rv = "";
+        if($from == "PLAY")
+        {
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv = "Potion of Ironhide gives your attack action cards +1 Block this turn.";
         }
         return $rv;
       case "EVR187":
