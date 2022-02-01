@@ -783,6 +783,7 @@
       case "WTR051": case "WTR052": case "WTR053": return "2,6";
       case "ARC009": return "0,2,4,6,8,10,12";
       case "MON231": return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
+      case "EVR022": return "3,4,5,6,7,8,9,10,11,12";
       default:
         return "";
     }
@@ -1732,6 +1733,9 @@
       case "ARC037": return 5;
       case "CRU104": return 0;
       case "CRU105": return 0;
+      case "EVR069": return 1;
+      case "EVR071": return 1;
+      case "EVR072": return 3;
       default: return 0;
     }
   }
