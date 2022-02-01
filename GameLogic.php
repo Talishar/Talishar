@@ -2023,6 +2023,19 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $mainCharacter[$i], 1);
         }
         break;
+      case "EVR037":
+        if(CardType($attackID) == "AA")
+        {
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Mask_of_the_Pouncing_Lynx_to_tutor_a_card");
+          AddDecisionQueue("NOPASS", $mainPlayer, "-");
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
+          AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
+          AddDecisionQueue("FINDINDICES", $mainPlayer, "MASKPOUNCINGLYNX", 1);
+          AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
+          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, $mainCharacter[$i], 1);
+        }
+        break;
       default: break;
     }
   }
@@ -2363,6 +2376,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
         case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
         case "COALESCENTMIRAGE": $rv = SearchHand($player, "", "Aura", -1, 0, "ILLUSIONIST"); break;
+        case "MASKPOUNCINGLYNX": $rv = SearchDeck($player, "AA", "", -1, -1, "", "", false, false, -1, false, 2); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
