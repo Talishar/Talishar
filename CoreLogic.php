@@ -48,8 +48,10 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     }
 
     //Now check current turn effects
+    echo(count($currentTurnEffects));
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
     {
+      echo(IsCombatEffectActive($currentTurnEffects[$i]) . " " . $currentTurnEffects[$i]);
       if(IsCombatEffectActive($currentTurnEffects[$i]))
       {
         if($currentTurnEffects[$i+1] == $mainPlayer)
@@ -358,6 +360,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
       }
     }
     $damage = AuraTakeDamageAbilities($player, $damage, $type);
+    if($damage == 1 && SearchItemsForCard("EVR069", $player)) $damage = 0;//Must be last
   }
   $damage = $damage > 0 ? $damage : 0;
   if($damage > 0 && $source != "NA")
