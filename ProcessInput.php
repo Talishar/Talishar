@@ -983,7 +983,6 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_copper", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
         AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195");//TODO: Gold
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_silver", 1);
