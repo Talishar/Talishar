@@ -205,6 +205,7 @@
       case "MON091":
       case "MON098": case "MON099": case "MON100":
       case "MON101": case "MON102": case "MON103": return true;
+      case "EVR139": return true;
       case "EVR144": case "EVR145": case "EVR146": return true;
       case "EVR147": case "EVR148": case "EVR149": return true;
     }
@@ -245,6 +246,8 @@
       case "MON011": return true;
       case "MON012": return true;
       case "MON013": return true;
+      case "EVR140": return true;
+      case "EVR141": case "EVR142": case "EVR143": return true;
       default: return false;
     }
   }

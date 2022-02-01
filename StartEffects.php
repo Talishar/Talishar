@@ -8,6 +8,7 @@
   include "Libraries/PlayerSettings.php";
   include "AI/CombatDummy.php";
   include "Libraries/HTTPLibraries.php";
+  include "WriteReplay.php";
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];

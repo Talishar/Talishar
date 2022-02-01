@@ -13,7 +13,7 @@ body {
 </style>
 </head>
 <body>
-<div style="width:100%; height:100%; background-image: url('Images/talesofariamainmenu.jpg'); background-size:cover; z-index=0;">
+<div style="width:100%; height:100%; background-image: url('Images/everfestMenu.jpg'); background-size:cover; z-index=0;">
 <div style="position:absolute; left: 35%; width:30%; height:30%; background-image: url('Images/fab_logo.png'); background-size:100% auto; z-index=1; background-repeat:no-repeat;"></div>
 
 <div style='position:absolute; top:10px; right:10px;'>
@@ -83,9 +83,25 @@ body {
 
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h3>
-<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Farewell to Rathe Update! 1/15/21</h2>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported!</h3>
-
+<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Everfest Update! 2/1/21</h2>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported EXCEPT:</h3>
+Ninja: Break Tide, Spring Tidings, Winds of Eternity, Hundred Winds
+<br>
+Warrior: Shatter, Blood on Her Hands
+<br>
+Mechanologist: Micro-Processor
+<br>
+Merchant: Silver Palms
+<br>
+Ranger: Dreadbore
+<br>
+Wizard: Scour, Pry
+<br>
+Illusionist: Fractal Replication, Shimmers of Silver, Haze Bending, Passing Mirage, Pierce Reality
+<br>
+Generic: Cash Out, Knick Knack Bric-a-brac
+<br>
+Potions/Amulets: Amulet of Assertiveness, Amulet of Ignition, Amulet of Intervention, Talisman of Cremation, Talisman of Featherfoot, Talisman of Tithes, Talisman of Warfare
 <?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
 ?>

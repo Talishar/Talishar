@@ -454,7 +454,7 @@
     global $mainCharacter, $defCharacter, $mainDiscard, $defDiscard, $defAuras, $mainAuras;
     global $combatChainState, $actionPoints, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_ChainAttackBuff;
-    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CS_HitsWithWeapon, $CCS_WeaponIndex;
+    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CS_HitsWithWeapon, $CCS_WeaponIndex, $CS_EffectContext;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 

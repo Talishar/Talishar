@@ -1003,6 +1003,7 @@ function EffectHitEffect($cardID)
       break;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
+    case "EVR047-1": case "EVR048-1": case "EVR049-1": $idArr = explode("-", $cardID); AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer); break;
     case "EVR066": case "EVR067": case "EVR068": PutItemIntoPlayForPlayer("CRU197", $mainPlayer); break;
     case "EVR161-1": GainHealth(2, $mainPlayer);
     case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
@@ -3193,6 +3194,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       return $lastResult;
+    case "MULTIZONETOKENCOPY":
+      $params = explode("-", $lastResult);
+      $source = $params[0];
+      $index = $params[1];
+      switch($source)
+      {
+        case "MYAURAS": TokenCopyAura($player, $index); break;
+        default: break;
+      }
+      return $lastResult;
     case "COUNTITEM":
       return CountItem($parameter, $player);
     case "FINDANDDESTROYITEM":
@@ -3370,6 +3381,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $rand = rand(1, count($hand)-1);
       RevealCards($hand[$rand]);
       if($dqVars[0] == $rand) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
+      return $lastResult;
+    case "TWINTWISTERS":
+      switch($lastResult)
+      {
+        case "Hit_effect": WriteLog("If Twin Twisters hits, the next attack gets +1 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
+        case "1_Attack": WriteLog("Twin Twisters gets +1 attack."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
+        default: return 3;
+      }
+      return $lastResult;
+    case "AETHERWILDFIRE":
+      AddCurrentTurnEffect("EVR123," . $lastResult, $player);
       return $lastResult;
     default:
       return "NOTSTATIC";

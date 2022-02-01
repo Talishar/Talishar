@@ -37,7 +37,7 @@
 
   function AuraPieces()
   {
-    return 4;
+    return 5;
   }
 
   function ItemPieces()

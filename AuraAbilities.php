@@ -1,6 +1,6 @@
 <?php
 
-function PlayAura($cardID, $player, $number=1)
+function PlayAura($cardID, $player, $number=1, $isToken=false)
 {
   global $CS_NumAuras;
   $auras = &GetAuras($player);
@@ -16,8 +16,15 @@ function PlayAura($cardID, $player, $number=1)
     array_push($auras, 2);
     array_push($auras, AuraPlayCounters($cardID));
     array_push($auras, 0);
+    array_push($auras, ($isToken ? 1 : 0));//Is token 0=No, 1=Yes
   }
   IncrementClassState($player, $CS_NumAuras, $number);
+}
+
+function TokenCopyAura($player, $index)
+{
+  $auras = &GetAuras($player);
+  PlayAura($auras[$index], $player, 1, true);
 }
 
 function PlayMyAura($cardID)
@@ -26,7 +33,7 @@ function PlayMyAura($cardID)
   PlayAura($cardID, $currentPlayer, 1);
 }
 
-function AuraDestroyed($player, $cardID)
+function AuraDestroyed($player, $cardID, $isToken=false)
 {
   $goesWhere = GoesWhereAfterResolving($cardID);
   if(SearchAuras("MON012", $player))
@@ -34,7 +41,7 @@ function AuraDestroyed($player, $cardID)
     $goesWhere = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $player);
   }
-  if(CardType($cardID) == "T") return;//Don't need to add to anywhere if it's a token
+  if(CardType($cardID) == "T" || $istoken) return;//Don't need to add to anywhere if it's a token
   switch($goesWhere)
   {
     case "GY": AddGraveyard($cardID, $player, "PLAY"); break;
@@ -69,12 +76,13 @@ function DestroyAura($player, $index)
 {
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
+  $isToken = $auras[$index+4] == 1;
   for($j = $index+AuraPieces()-1; $j >= $index; --$j)
   {
     unset($auras[$j]);
   }
   $auras = array_values($auras);
-  AuraDestroyed($player, $cardID);
+  AuraDestroyed($player, $cardID, $isToken);
 }
 
 function AuraCostModifier()
@@ -157,7 +165,7 @@ function AuraStartTurnAbilities()
     }
     if($dest != "")
     {
-      AuraDestroyed($mainPlayer, $auras[$i]);
+      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
         unset($auras[$j]);
@@ -189,7 +197,7 @@ function AuraBeginEndStepAbilities()
     }
     if($remove == 1)
     {
-      AuraDestroyed($mainPlayer, $auras[$i]);
+      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
         unset($auras[$j]);
@@ -215,7 +223,7 @@ function AuraEndTurnAbilities()
     }
     if($remove == 1)
     {
-      AuraDestroyed($mainPlayer, $auras[$i]);
+      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
         unset($auras[$j]);
@@ -292,7 +300,7 @@ function AuraLoseHealthAbilities($player, $amount)
     }
     if($remove == 1)
     {
-      AuraDestroyed(player, $auras[$i]);
+      AuraDestroyed(player, $auras[$i], $auras[$i+4] == 1);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
         unset($auras[$j]);
@@ -335,7 +343,7 @@ function AuraAttackAbilities($attackID)
     }
     if($remove == 1)
     {
-      AuraDestroyed($mainPlayer, $auras[$i]);
+      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
       for($j = $i+AuraPieces()-1; $j >= $i; --$j)
       {
         unset($auras[$j]);
