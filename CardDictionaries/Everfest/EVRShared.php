@@ -109,6 +109,7 @@
       case "EVR014": case "EVR015": case "EVR016": return 5;
       case "EVR017": return 2;
       case "EVR021": return -4;
+      case "EVR047-2": case "EVR048-2": case "EVR049-2": return 1;
       case "EVR057-1": case "EVR058-1": case "EVR059-1": return 1;
       case "EVR057-2": return 3;
       case "EVR058-2": return 2;
@@ -159,6 +160,8 @@
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
       case "EVR044": case "EVR045": case "EVR046": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;
+      case "EVR047-1": case "EVR048-1": case "EVR049-1": return true;
+      case "EVR047-2": case "EVR048-2": case "EVR049-2": return true;
       case "EVR057-1": case "EVR058-1": case "EVR059-1":
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
@@ -714,6 +717,10 @@
       case "EVR033": case "EVR034": case "EVR035":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Steadfast prevents damage this turn.";
+      case "EVR047": case "EVR048": case "EVR049":
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_effect,1_Attack");
+        AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
+        return "";
       case "EVR053":
         $deck = &GetDeck($currentPlayer);
         $card = array_shift($deck);
@@ -789,6 +796,13 @@
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
+        return "";
+      case "EVR123":
+        DealArcane(4, 1, "PLAYCARD", $cardID);
+        if($currentPlayer != $mainPlayer)
+        {
+          AddDecisionQueue("AETHERWILDFIRE", $currentPlayer, "-");
+        }
         return "";
       case "EVR125": case "EVR126": case "EVR127":
         $oppTurn = $currentPlayer != $mainPlayer;
@@ -1132,6 +1146,15 @@
     AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
     AddDecisionQueue("PLAYAURA", $mainPlayer, "<-", 1);
+  }
+
+  function MirragingMetamorphDestroyed()
+  {
+    global $mainPlayer;
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "AURACLASS,");
+    AddDecisionQueue("MULTIZONEFORMAT", $mainPlayer, "MYAURAS", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MULTIZONETOKENCOPY", $mainPlayer, "-", 1);
   }
 
 ?>

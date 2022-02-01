@@ -48,10 +48,8 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     }
 
     //Now check current turn effects
-    echo(count($currentTurnEffects));
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
     {
-      echo(IsCombatEffectActive($currentTurnEffects[$i]) . " " . $currentTurnEffects[$i]);
       if(IsCombatEffectActive($currentTurnEffects[$i]))
       {
         if($currentTurnEffects[$i+1] == $mainPlayer)
@@ -1004,6 +1002,7 @@ function AttackDestroyed($attackID)
   $class = CardClass($attackID);
   switch($attackID)
   {
+    case "EVR139": MirragingMetamorphDestroyed(); break;
     case "EVR144": case "EVR145": case "EVR146": CoalescentMirageDestroyed(); break;
     case "EVR147": case "EVR148": case "EVR149": PlayAura("MON104", $mainPlayer); break;
     default: break;

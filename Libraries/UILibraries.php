@@ -147,7 +147,7 @@
     $totalBlocked = 0;
     $numTurns = 0;
     $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
-    if($numTurns > 0)
+    if(count($turnStats) > 0)
     {
       for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
       {
@@ -159,6 +159,9 @@
         $totalBlocked += $turnStats[$i+$TurnStats_DamageBlocked];
         ++$numTurns;
       }
+    }
+    if($numTurns > 0)
+    {
       $rv .= "Total Damage Threatened: " . $totalDamageThreatened . "<br>";
       $rv .= "Total Damage Dealt: " . $totalDamageDealt . "<br>";
       $rv .= "Average Damage Threatened per turn: " . round($totalDamageThreatened/$numTurns, 2) . "<br>";

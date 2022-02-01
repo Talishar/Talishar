@@ -389,9 +389,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 //Return whether priority should be held for the player by default/settings
 function ShouldHoldPriority($player)
 {
-  if(AlwaysHoldPriority($player)) return true;
-  if(CountItem("ARC017", $player) > 0) return true;
-  return false;
+  if(AlwaysHoldPriority($player)) return 1;
+  if(CountItem("ARC017", $player) > 0) return 1;
+  return 0;
 }
 
 function GiveAttackGoAgain()
