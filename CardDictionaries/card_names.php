@@ -5,7 +5,7 @@ function CardName ($cardID)
     $arr = str_split($cardID, 3);
     $set = $arr[0];
     $num = $arr[1];
-    
+
 
 if ($set == "ARC")
 	{  switch($num)	   {
@@ -311,7 +311,7 @@ if ($set == "CRU")
 		case "074": return "Whirling Mist Blossom";
 		case "075": return "Zen State";
 		case "076": return "Dorinthea Ironsong";
-		case "077": return "assai, Cintari Sellswor";
+		case "077": return "Kassai, Cintari Sellsword";
 		case "078": return "Dawnblade";
 		case "079": return "Cintari Saber";
 		case "080": return "Cintari Saber";
@@ -1225,5 +1225,5 @@ if ($set == "WTR")
 		   }	}
 
         return "";    }
-            
+
 ?>

@@ -924,6 +924,7 @@
       case "CRU059": case "CRU062": case "CRU065": case "CRU068": case "CRU071": return 3;
       case "CRU072": case "CRU073": case "CRU074": return 2;
       //CRU Warrior
+      case "CRU077": return 0;
       case "CRU079": case "CRU080": return 0;
       case "CRU081": return 0;
       case "CRU082": case "CRU083": return 2;
