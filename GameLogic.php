@@ -2289,7 +2289,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken;
+  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext;
   $rv = "";
   switch($phase)
   {
