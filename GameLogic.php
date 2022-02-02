@@ -1261,6 +1261,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
         case "EVR033": $prevention += 6; $remove = 1; break;
         case "EVR034": $prevention += 5; $remove = 1; break;
         case "EVR035": $prevention += 4; $remove = 1; break;
+        case "EVR180": $prevention += 1; $remove = 1; break;
         default: break;
       }
       if($remove == 1)
@@ -1665,6 +1666,25 @@ function ItemEndTurnAbilities()
     if($remove)
     {
       DestroyItemForPlayer($mainPlayer, $i);
+    }
+  }
+}
+
+function ItemDamageTakenAbilities($player, $damage)
+{
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $items = &GetItems($otherPlayer);
+  for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+  {
+    $remove = false;
+    switch($items[$i])
+    {
+      case "EVR193": if($damage == 2) { WriteLog("Talisman of Warfare destroyed both arsenals."); DestroyArsenal(1); DestroyArsenal(2); $remove = true; } break;
+      default: break;
+    }
+    if($remove)
+    {
+      DestroyItemForPlayer($otherPlayer, $i);
     }
   }
 }

@@ -1617,8 +1617,9 @@
 
   function IsDefenseReactionPlayable($cardID, $from)
   {
-    global $combatChain;
+    global $combatChain, $mainPlayer;
     if($combatChain[0] == "ARC159" && CardType($cardID) == "DR") return false;
+    if($from == "HAND" && CardSubType($combatChain[0]) == "Arrow" && SearchCharacterForCard($mainPlayer, "EVR087")) return false;
     if(CurrentEffectPreventsDefenseReaction($from)) return false;
     return true;
   }
