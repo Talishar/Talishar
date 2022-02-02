@@ -491,8 +491,8 @@
         {
           SetClassState($currentPlayer, $CS_EffectContext, $combatChain[$i-1]);
           ProcessHitEffect($combatChain[$i-1]);
-          SetClassState($currentPlayer, $CS_EffectContext, "-");
           if($damage >= 4) ProcessCrushEffect($combatChain[$i-1]);
+          AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
         }
       }
       for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
@@ -745,6 +745,7 @@ function FinalizeChainLink($chainClosed=false)
     ResetCharacterEffects();
     ResetCombatChainState();
     UnsetTurnBanish();
+    AuraEndTurnCleanup();
 
     DoGamestateUpdate();
 
@@ -1265,7 +1266,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       SetClassState($currentPlayer, $CS_EffectContext, $cardID);
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target);
-      SetClassState($currentPlayer, $CS_EffectContext, "-");
+      AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);
       if($openedChain) ProcessAttackTargetAfterResolve();
     }

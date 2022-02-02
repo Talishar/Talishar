@@ -1175,6 +1175,21 @@ function CharacterCostModifier($cardID, $from)
   return $modifier;
 }
 
+function RemoveCurrentEffect($player, $effectID)
+{
+  global $currentTurnEffects;
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+  {
+    if($currentTurnEffects[$i+1] == $player && $currentTurnEffects[$i] == $effectID)
+    {
+      $remove = 0;
+      unset($currentTurnEffects[$i+1]);
+      unset($currentTurnEffects[$i]);
+    }
+  }
+  $currentTurnEffects = array_values($currentTurnEffects);
+}
+
 function CurrentEffectCostModifiers($cardID)
 {
   global $currentTurnEffects, $currentPlayer;
@@ -2829,7 +2844,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         switch($lastResult[$i])
         {
-          case "Quicken_token": PlayMyAura("WTR225"); PlayTheirAura("WTR225"); break;
+          case "Quicken_token": PlayAura("WTR225", 1); PlayAura("WTR225", 2); break;
           case "Draw_card": MyDrawCard(); TheirDrawCard(); break;
           case "Gain_life": GainHealth(1, $player); GainHealth(1, ($player == 1 ? 2 : 1)); break;
           default: break;
@@ -3392,6 +3407,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "AETHERWILDFIRE":
       AddCurrentTurnEffect("EVR123," . $lastResult, $player);
+      return $lastResult;
+    case "CLEAREFFECTCONTEXT":
+      SetClassState($currentPlayer, $CS_EffectContext, "-");
       return $lastResult;
     default:
       return "NOTSTATIC";

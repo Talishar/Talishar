@@ -132,6 +132,7 @@
       case "EVR100": return 3;
       case "EVR101": return 2;
       case "EVR102": return 1;
+      case "EVR143": return 2;
       case "EVR150": return 4;
       case "EVR151": return 3;
       case "EVR152": return 2;
@@ -180,6 +181,8 @@
       case "EVR091-1": case "EVR092-1": case "EVR093-1": return CardSubType($attackID) == "Arrow";
       case "EVR094": case "EVR095": case "EVR096": return true;
       case "EVR100": case "EVR101": case "EVR102": return CardSubType($attackID) == "Arrow";
+      case "EVR142": return CardClass($attackID) == "ILLUSIONIST";
+      case "EVR143": return CardClass($attackID) == "ILLUSIONIST" && CardType($attackID) == "AA";
       case "EVR150": case "EVR151": case "EVR152": return CardType($attackID) == "AA";
       case "EVR160": return true;
       case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
@@ -211,7 +214,7 @@
       case "EVR021": return "AA";
       case "EVR022": return "A";
       case "EVR023": return "A";
-      case "EVR024": case "EVR025": case "EVR026": return "A";
+      case "EVR024": case "EVR025": case "EVR026": return "AA";
       case "EVR027": case "EVR028": case "EVR029": return "AA";
       case "EVR030": case "EVR031": case "EVR032": return "A";
       case "EVR033": case "EVR034": case "EVR035": return "I";
