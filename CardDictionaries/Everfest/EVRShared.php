@@ -6,6 +6,7 @@
     {
       case "EVR053": return 1;
       case "EVR085": return 2;
+      case "EVR087": return 1;
       case "EVR103": return 0;
       case "EVR137": return 0;
       case "EVR121": return 3;
@@ -13,6 +14,7 @@
       case "EVR173": case "EVR174": case "EVR175": return 0;
       case "EVR177": return 0;
       case "EVR178": return 0;
+      case "EVR180": return 0;
       case "EVR181": return 0;
       case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": return 0;
       case "EVR187": return 0;
@@ -27,6 +29,7 @@
     {
       case "EVR053": return "AR";
       case "EVR085": return "A";
+      case "EVR087": return "A";
       case "EVR103": return "A";
       case "EVR137": return "I";
       case "EVR121": return "I";
@@ -34,6 +37,7 @@
       case "EVR173": case "EVR174": case "EVR175": return "I";
       case "EVR177": return "I";
       case "EVR178": return "DR";
+      case "EVR180": return "I";
       case "EVR181": return "I";
       case "EVR182": return "I";
       case "EVR183": return "A";
@@ -88,6 +92,7 @@
     switch($cardID)
     {
       case "EVR085": return true;
+      case "EVR087": return true;
       case "EVR103": return true;
       case "EVR183": return true;
       case "EVR195": return true;
@@ -124,6 +129,7 @@
       case "EVR082": return 3;
       case "EVR083": return 2;
       case "EVR084": return 1;
+      case "EVR087": return 1;
       case "EVR090": return 2;
       case "EVR091": return 3;
       case "EVR092": return 2;
@@ -176,6 +182,7 @@
       case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
       case "EVR072": return true;
       case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
+      case "EVR087": return CardSubType($attackID) == "Arrow";
       case "EVR090": return CardSubType($attackID) == "Arrow";
       case "EVR091": case "EVR092": case "EVR093": return CardSubType($attackID) == "Arrow";
       case "EVR091-1": case "EVR092-1": case "EVR093-1": return CardSubType($attackID) == "Arrow";
@@ -768,6 +775,14 @@
         AddDecisionQueue("DQVARPASSIFSET", $currentPlayer, "0");
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "Genis Wotchuneed let the opponent choose if they want to sink a card for a silver.";
+      case "EVR087":
+        if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
       case "EVR089":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -912,6 +927,15 @@
           $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         }
         return "Healing Potion gained 2 health.";
+      case "EVR180":
+        $rv = "Amulet of Intervention is a partially manual card. Only use the abiliy when you are the target of lethal damage.";
+        if($from == "PLAY")
+        {
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+          $rv = "Amulet of Intervention prevents 1 damage.";
+        }
+        return $rv;
       case "EVR182":
         $rv = "";
         if($from == "PLAY")

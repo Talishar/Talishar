@@ -373,6 +373,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
   {
     if($source == "WTR085" && ComboActive("WTR085")) $damage *= 2;
     AuraDamageTakenAbilities($Auras, $damage);
+    ItemDamageTakenAbilities($player, $damage);
     if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
@@ -464,6 +465,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   if($damage > 0)
   {
     AuraDamageTakenAbilities($Auras, $damage);
+    ItemDamageTakenAbilities($player, $damage);
     if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(1, $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
