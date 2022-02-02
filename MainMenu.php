@@ -97,7 +97,7 @@ Ranger: Dreadbore
 <br>
 Wizard: Scour, Pry
 <br>
-Illusionist: Fractal Replication, Shimmers of Silver, Haze Bending, Passing Mirage, Pierce Reality
+Illusionist: Fractal Replication
 <br>
 Generic: Cash Out, Knick Knack Bric-a-brac
 <br>
