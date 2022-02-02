@@ -63,7 +63,9 @@ for url, code in urls.items():
                 if code == "CRU" and counter == 158: #Exception 
                     filename = code+"{:03d}".format(0)+"."+"jpg"
                     exceptions += 1
-                    
+                if code == "EVR" and counter == 17: #Exception 
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+                    exceptions += 1
                     
                 counter+=1
 
