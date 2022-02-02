@@ -481,21 +481,22 @@
         else if($number >= 213 && $number <= 221) return "RANGER";
         else if($number >= 222 && $number <= 232) return "RUNEBLADE";
         else if($number >= 233) return "GENERIC";
-
-        else return "NONE";//TODO
+        else return "NONE";
       case "EVR":
-          if($number == 0) return "NONE";
-          else if($number >= 1 && $number <= 16) return "BRUTE";
-          else if($number >= 17 && $number <= 36) return "GUARDIAN";
-          else if($number >= 37 && $number <= 52) return "NINJA";
-          else if($number >= 53 && $number <= 68) return "WARRIOR";
-          else if($number >= 69 && $number <= 84) return "MECHANOLOGIST"; 
-          else if($number >= 85 && $number <= 86) return "???"; 
-          else if($number >= 87 && $number <= 102) return "RANGER"; 
-          else if($number >= 103 && $number <= 119) return "RUNEBLADE"; 
-          else if($number >= 120 && $number <= 136) return "WIZARD"; 
-          else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
-          else return "GENERIC";
+        if($number == 0) return "GUARDIAN";
+        else if($number >= 1 && $number <= 16) return "BRUTE";
+        else if($number >= 17 && $number <= 36) return "GUARDIAN";
+        else if($number >= 37 && $number <= 52) return "NINJA";
+        else if($number >= 53 && $number <= 68) return "WARRIOR";
+        else if($number >= 69 && $number <= 84) return "MECHANOLOGIST";
+        else if($number >= 85 && $number <= 86) return "MERCHANT";
+        else if($number >= 87 && $number <= 102) return "RANGER";
+        else if($number >= 103 && $number <= 119) return "RUNEBLADE";
+        else if($number >= 120 && $number <= 136) return "WIZARD";
+        else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
+        else return "GENERIC";
+      default: return 0;
+    }
   }
 
   function CardTalent($cardID)
@@ -782,6 +783,7 @@
       case "WTR051": case "WTR052": case "WTR053": return "2,6";
       case "ARC009": return "0,2,4,6,8,10,12";
       case "MON231": return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40";
+      case "EVR022": return "3,4,5,6,7,8,9,10,11,12";
       default:
         return "";
     }
@@ -1476,7 +1478,7 @@
 
   function GoesWhereAfterResolving($cardID, $from = null)
   {
-    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted;
+    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
     if($from == "COMBATCHAIN" && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
@@ -1494,6 +1496,7 @@
         else return "GY";
       case "MON192": if($from=="BANISH") return "HAND";
       case "EVR082": case "EVR083": case "EVR084": return (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
+      case "EVR134": case "EVR135": case "EVR136": return ($currentPlayer != $mainPlayer ? "BOTDECK" : "GY");
       default: return "GY";
     }
   }
@@ -1517,6 +1520,7 @@
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
     if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && $from != "PLAY")  {$restriction = "ELE035"; return true; }//TODO: Is this right?
+    if(CardType($cardID) == "A" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) || SearchItemsForCard("EVR071", 2))) return true;
     switch($cardID)
     {
       case "ARC005": return $myClassState[$CS_NumBoosted] < 1;
@@ -1602,6 +1606,7 @@
       case "ELE233": return count($myHand) != 1;
       case "ELE234": return count($myHand) == 0;
       case "ELE236": return !HasTakenDamage($currentPlayer);
+      case "EVR060": case "EVR061": case "EVR062": return count($combatChain) == 0 || CardType($combatChain[0]) != "W" || !Is1H($combatChain[0]);
       case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) < 1;
       case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
       case "EVR053": return !HelmOfSharpEyePlayable();
@@ -1729,6 +1734,9 @@
       case "ARC037": return 5;
       case "CRU104": return 0;
       case "CRU105": return 0;
+      case "EVR069": return 1;
+      case "EVR071": return 1;
+      case "EVR072": return 3;
       default: return 0;
     }
   }
@@ -1980,6 +1988,7 @@
       case "WTR010": return true;
       case "WTR162": return $from == "PLAY";
       case "CRU009": return true;
+      case "EVR004": return true;
       case "EVR014": case "EVR015": case "EVR016": return true;
     }
     return false;
@@ -2029,4 +2038,3 @@
   }
 
 ?>
-
