@@ -215,7 +215,7 @@
   {
     global $combatChain, $mainPlayer;
     if(count($combatChain) == 0) return false;
-    if(SearchCurrentTurnEffects("MON090", $mainPlayer)) return false;
+    if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer)) { return false; }
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     return HasPhantasm($combatChain[0]);//TODO: Incorporate things that can gain or lose phantasm

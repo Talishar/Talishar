@@ -13,12 +13,22 @@ function PlayAura($cardID, $player, $number=1, $isToken=false)
   for($i=0; $i<$number; ++$i)
   {
     array_push($auras, $cardID);
-    array_push($auras, 2);
-    array_push($auras, AuraPlayCounters($cardID));
-    array_push($auras, 0);
+    array_push($auras, 2);//Status
+    array_push($auras, AuraPlayCounters($cardID));//Miscellaneous Counters
+    array_push($auras, 0);//Attack counters
     array_push($auras, ($isToken ? 1 : 0));//Is token 0=No, 1=Yes
+    array_push($auras, AuraNumUses($cardID));
   }
   IncrementClassState($player, $CS_NumAuras, $number);
+}
+
+function AuraNumUses($cardID)
+{
+  switch($cardID)
+  {
+    case "EVR140": case "EVR141": case "EVR142": case "EVR143": return 1;
+    default: return 0;
+  }
 }
 
 function TokenCopyAura($player, $index)
@@ -35,6 +45,15 @@ function PlayMyAura($cardID)
 
 function AuraDestroyed($player, $cardID, $isToken=false)
 {
+  $auras = &GetAuras($player);
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    switch($auras[$i])
+    {
+      case "EVR141": if(!$isToken && $auras[$i+5]>0 && CardClass($cardID) == "ILLUSIONIST") { --$auras[$i+5]; PlayAura("MON104", $player); } break;
+      default: break;
+    }
+  }
   $goesWhere = GoesWhereAfterResolving($cardID);
   if(SearchAuras("MON012", $player))
   {
@@ -77,12 +96,12 @@ function DestroyAura($player, $index)
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   $isToken = $auras[$index+4] == 1;
+  AuraDestroyed($player, $cardID, $isToken);
   for($j = $index+AuraPieces()-1; $j >= $index; --$j)
   {
     unset($auras[$j]);
   }
   $auras = array_values($auras);
-  AuraDestroyed($player, $cardID, $isToken);
 }
 
 function AuraCostModifier()
@@ -233,6 +252,20 @@ function AuraEndTurnAbilities()
   }
 }
 
+function AuraEndTurnCleanup()
+{
+  $auras = &GetAuras(1);
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    $auras[$i+5] = AuraNumUses($auras[$i]);
+  }
+    $auras = &GetAuras(2);
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      $auras[$i+5] = AuraNumUses($auras[$i]);
+    }
+}
+
 function AuraTakeDamageAbilities($player, $damage, $type)
 {
   $Auras = &GetAuras($player);
@@ -320,6 +353,8 @@ function AuraPlayAbilities($cardID, $from)
     switch($auras[$i])
     {
       case "MON157": DimenxxionalCrossroadsPassive($cardID, $from); break;
+      case "EVR142": if($auras[$i+5]>0 && CardType($cardID) == "AA" && CardClass($cardID) == "ILLUSIONIST") { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $currentPlayer, true); } break;
+      case "EVR143": if($auras[$i+5]>0 && CardType($cardID) == "AA" && CardClass($cardID) == "ILLUSIONIST") { WriteLog("Pierce Reality gives the attack +2."); --$auras[$i+5]; AddCurrentTurnEffect("EVR143", $currentPlayer, true); } break;
       default: break;
     }
   }
@@ -327,7 +362,7 @@ function AuraPlayAbilities($cardID, $from)
 
 function AuraAttackAbilities($attackID)
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_PlayIndex;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
@@ -339,6 +374,7 @@ function AuraAttackAbilities($attackID)
       case "ARC112": DealArcane(1, 0, "RUNECHANT", "ARC112"); $remove = 1; break;
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
+      case "EVR140": if($auras[$i+5]>0 && CardSubtype($attackID) == "Aura" && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
       default: break;
     }
     if($remove == 1)
