@@ -254,6 +254,8 @@
   function CardLink($caption, $cardNumber)
   {
     //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
+    $name = CardName($cardNumber);
+    if($name == "") return "";
     $pitchValue = PitchValue($cardNumber);
     switch($pitchValue)
     {
@@ -263,7 +265,7 @@
       default: $color = "DimGray"; break;
     }
     $file = "'./" . "BigCardImages" . "/" . $cardNumber . ".jpg'";
-    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . CardName($cardNumber) . "</span></b>";
+    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . "</span></b>";
   }
 
 ?>

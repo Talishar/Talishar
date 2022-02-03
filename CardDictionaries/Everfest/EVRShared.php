@@ -1133,7 +1133,10 @@
 
   function HelmOfSharpEyePlayable()
   {
-    global $currentPlayer;
+    global $currentPlayer, $combatChainState, $CCS_CachedTotalAttack, $combatChain;
+    if(count($combatChain) == 0 || CardType($combatChain[0]) != "W") return false;
+    return $combatChainState[$CCS_CachedTotalAttack] > (AttackValue($combatChain[0]) * 2);
+    /*
     $character = &GetPlayerCharacter($currentPlayer);
     for($i=0; $i<count($character); $i+=CharacterPieces())
     {
@@ -1142,7 +1145,8 @@
       $buffedAttack = $baseAttack + $character[$i+3] + MainCharacterAttackModifiers($i, true);
       if($buffedAttack > $baseAttack*2) return true;
     }
-    return false;
+    */
+    //return false;
   }
 
   function BravoStarOfTheShowIndices()
