@@ -1691,7 +1691,7 @@ function ItemDamageTakenAbilities($player, $damage)
 
 function CharacterStartTurnAbility($index)
 {
-  global $mainPlayer;
+  global $mainPlayer, $defPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   if($mainCharacter[$index+1] == 0) return;//Do not process ability if it is destroyed
   switch($mainCharacter[$index])
@@ -1718,6 +1718,31 @@ function CharacterStartTurnAbility($index)
       }
       break;
     default: break;
+  }
+}
+
+function DefCharacterStartTurnAbilities()
+{
+  global $defPlayer, $mainPlayer;
+  $character = &GetPlayerCharacter($defPlayer);
+  for($i=0; $i<count($character); $i+=CharacterPieces())
+  {
+    if($character[$i+1] == 0) continue;//Do not process ability if it is destroyed
+    switch($character[$i])
+    {
+      case "EVR086":
+        if(PlayerHasLessHealth($mainPlayer))
+        {
+          AddDecisionQueue("CHARREADYORPASS", $defPlayer, $index);
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_silver", 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, "EVR195", 1);
+          AddDecisionQueue("PUTPLAY", $defPlayer, "0", 1);
+        }
+        break;
+      default: break;
+    }
   }
 }
 

@@ -763,7 +763,8 @@ function FinalizeChainLink($chainClosed=false)
     {
       WriteLog("Start of turn effect for $currentTurnEffects[$i] is now active.");
     }
-    $mainPlayer = $mainPlayer == 1 ? 2 : 1;
+    $defPlayer = $mainPlayer;
+    $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
     $currentPlayer = $mainPlayer;
 
     BuildMainPlayerGameState();
@@ -1185,6 +1186,15 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        break;
+      case "EVR055":
+      /*
+          AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197");
+          AddDecisionQueue("LESSTHANPASS", $currentPlayer, "4");
+          AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_copper", 1);
+          AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
+          */
         break;
       default:
         break;

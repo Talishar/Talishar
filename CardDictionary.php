@@ -1670,6 +1670,7 @@
       case "ELE213": return true;
       case "ELE224": return true;
       case "EVR037": return true;
+      case "EVR086": return true;
       default: return false;
     }
   }

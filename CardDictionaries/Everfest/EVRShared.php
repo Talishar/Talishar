@@ -251,6 +251,7 @@
       case "EVR079": case "EVR080": case "EVR081": return "AA";
       case "EVR082": case "EVR083": case "EVR084": return "A";
       case "EVR085": return "C";
+      case "EVR086": return "E";
       case "EVR087": return "W";
       case "EVR088": return "AA";
       case "EVR089": return "A";
@@ -327,6 +328,7 @@
       case "EVR037": return "Head";
       case "EVR053": return "Head";
       case "EVR069": case "EVR070": case "EVR071": case "EVR072": return "Item";
+      case "EVR086": return "Arms";
       case "EVR087": return "Bow";
       case "EVR088": return "Arrow";
       case "EVR094": case "EVR095": case "EVR096": return "Arrow";
@@ -488,6 +490,7 @@
       case "EVR074": case "EVR077": case "EVR080": case "EVR083": return 2;
       case "EVR075": case "EVR078": case "EVR081": case "EVR084": return 3;
       case "EVR085": return 0;
+      case "EVR086": return 0;
       case "EVR087": return 0;
       case "EVR088": return 1;
       case "EVR089": return 3;
@@ -566,6 +569,7 @@
       case "EVR052": return 1;
       case "EVR053": return 1;
       case "EVR069": case "EVR070": case "EVR071": case "EVR072": return -1;
+      case "EVR086": return 2;
       case "EVR090": return -1;
       case "EVR091": case "EVR092": case "EVR093": return 2;
       case "EVR100": case "EVR101": case "EVR102": return 2;
