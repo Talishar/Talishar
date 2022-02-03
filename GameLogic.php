@@ -1943,8 +1943,19 @@ function CountPitch(&$pitch, $min=0, $max=9999)
 
 function Draw($player, $mainPhase=true)
 {
-  global $CS_EffectContext;
+  global $CS_EffectContext, $mainPlayer;
   $otherPlayer = ($player == 1 ? 2 : 1);
+  if($mainPhase && $player != $mainPlayer)
+  {
+    $talismanOfTithes = SearchItemsForCard("EVR192", $otherPlayer);
+    if($talismanOfTithes != "")
+    {
+      $indices = explode(",", $talismanOfTithes);
+      DestroyItemForPlayer($otherPlayer, $indices[0]);
+      WriteLog("Talisman of Tithes prevented a draw and was destroyed.");
+      return "";
+    }
+  }
   $deck = &GetDeck($player);
   $hand = &GetHand($player);
   if(count($deck) == 0) return -1;
