@@ -135,7 +135,7 @@
 
   function BuildMainPlayerGameState()
   {
-    global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerHealths, $mpgBuiltFor;
+    global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerHealths, $mpgBuiltFor, $defPlayer;
     global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
     global $mainCharacterEffects, $mainDiscard;
     global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
@@ -285,39 +285,38 @@
     global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
     global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
 
-    $mainPlayer = $mpgBuiltFor;
-    $p1Deck = $mainPlayer==1 ? $mainDeck : $defDeck;
-    $p1Hand = $mainPlayer==1 ? $mainHand : $defHand;
-    $p1Resources = $mainPlayer==1 ? $mainResources : $defResources;
-    $p1CharEquip = $mainPlayer==1 ? $mainCharacter : $defCharacter;
-    $p1Arsenal = $mainPlayer == 1 ? $mainArsenal : $defArsenal;
-    $playerHealths[0] = $mainPlayer == 1 ? $mainHealth : $defHealth;
-    $p1Items = $mainPlayer == 1 ? $mainItems : $defItems;
-    $p1Auras = $mainPlayer == 1 ? $mainAuras : $defAuras;
-    $p1Pitch = $mainPlayer == 1 ? $mainPitch : $defPitch;
-    $p1Banish = $mainPlayer == 1 ? $mainBanish : $defBanish;
-    $p1ClassState = $mainPlayer == 1 ? $mainClassState : $defClassState;
-    $p1CharacterEffects = $mainPlayer == 1 ? $mainCharacterEffects : $defCharacterEffects;
-    $p1Discard = $mainPlayer == 1 ? $mainDiscard : $defDiscard;
-    $p1Soul = $mainPlayer == 1 ? $mainSoul : $defSoul;
-    $p1CardStats = $mainPlayer == 1 ? $mainCardStats : $defCardStats;
-    $p1TurnStats = $mainPlayer == 1 ? $mainTurnStats : $defTurnStats;
-    $p2Deck = $mainPlayer==2 ? $mainDeck : $defDeck;
-    $p2Hand = $mainPlayer==2 ? $mainHand : $defHand;
-    $p2Resources = $mainPlayer==2 ? $mainResources : $defResources;
-    $p2CharEquip = $mainPlayer==2 ? $mainCharacter : $defCharacter;
-    $p2Arsenal = $mainPlayer == 2 ? $mainArsenal : $defArsenal;
-    $playerHealths[1] = $mainPlayer == 2 ? $mainHealth : $defHealth;
-    $p2Items = $mainPlayer == 2 ? $mainItems : $defItems;
-    $p2Auras = $mainPlayer == 2 ? $mainAuras : $defAuras;
-    $p2Pitch = $mainPlayer == 2 ? $mainPitch : $defPitch;
-    $p2Banish = $mainPlayer == 2 ? $mainBanish : $defBanish;
-    $p2ClassState = $mainPlayer == 2 ? $mainClassState : $defClassState;
-    $p2CharacterEffects = $mainPlayer == 2 ? $mainCharacterEffects : $defCharacterEffects;
-    $p2Discard = $mainPlayer == 2 ? $mainDiscard : $defDiscard;
-    $p2Soul = $mainPlayer == 2 ? $mainSoul : $defSoul;
-    $p2CardStats = $mainPlayer == 2 ? $mainCardStats : $defCardStats;
-    $p2TurnStats = $mainPlayer == 2 ? $mainTurnStats : $defTurnStats;
+    $p1Deck = $mpgBuiltFor==1 ? $mainDeck : $defDeck;
+    $p1Hand = $mpgBuiltFor==1 ? $mainHand : $defHand;
+    $p1Resources = $mpgBuiltFor==1 ? $mainResources : $defResources;
+    $p1CharEquip = $mpgBuiltFor==1 ? $mainCharacter : $defCharacter;
+    $p1Arsenal = $mpgBuiltFor == 1 ? $mainArsenal : $defArsenal;
+    $playerHealths[0] = $mpgBuiltFor == 1 ? $mainHealth : $defHealth;
+    $p1Items = $mpgBuiltFor == 1 ? $mainItems : $defItems;
+    $p1Auras = $mpgBuiltFor == 1 ? $mainAuras : $defAuras;
+    $p1Pitch = $mpgBuiltFor == 1 ? $mainPitch : $defPitch;
+    $p1Banish = $mpgBuiltFor == 1 ? $mainBanish : $defBanish;
+    $p1ClassState = $mpgBuiltFor == 1 ? $mainClassState : $defClassState;
+    $p1CharacterEffects = $mpgBuiltFor == 1 ? $mainCharacterEffects : $defCharacterEffects;
+    $p1Discard = $mpgBuiltFor == 1 ? $mainDiscard : $defDiscard;
+    $p1Soul = $mpgBuiltFor == 1 ? $mainSoul : $defSoul;
+    $p1CardStats = $mpgBuiltFor == 1 ? $mainCardStats : $defCardStats;
+    $p1TurnStats = $mpgBuiltFor == 1 ? $mainTurnStats : $defTurnStats;
+    $p2Deck = $mpgBuiltFor==2 ? $mainDeck : $defDeck;
+    $p2Hand = $mpgBuiltFor==2 ? $mainHand : $defHand;
+    $p2Resources = $mpgBuiltFor==2 ? $mainResources : $defResources;
+    $p2CharEquip = $mpgBuiltFor==2 ? $mainCharacter : $defCharacter;
+    $p2Arsenal = $mpgBuiltFor == 2 ? $mainArsenal : $defArsenal;
+    $playerHealths[1] = $mpgBuiltFor == 2 ? $mainHealth : $defHealth;
+    $p2Items = $mpgBuiltFor == 2 ? $mainItems : $defItems;
+    $p2Auras = $mpgBuiltFor == 2 ? $mainAuras : $defAuras;
+    $p2Pitch = $mpgBuiltFor == 2 ? $mainPitch : $defPitch;
+    $p2Banish = $mpgBuiltFor == 2 ? $mainBanish : $defBanish;
+    $p2ClassState = $mpgBuiltFor == 2 ? $mainClassState : $defClassState;
+    $p2CharacterEffects = $mpgBuiltFor == 2 ? $mainCharacterEffects : $defCharacterEffects;
+    $p2Discard = $mpgBuiltFor == 2 ? $mainDiscard : $defDiscard;
+    $p2Soul = $mpgBuiltFor == 2 ? $mainSoul : $defSoul;
+    $p2CardStats = $mpgBuiltFor == 2 ? $mainCardStats : $defCardStats;
+    $p2TurnStats = $mpgBuiltFor == 2 ? $mainTurnStats : $defTurnStats;
 
   }
 

@@ -155,6 +155,7 @@ function StartTurnAbilities()
   {
     CharacterStartTurnAbility($i);
   }
+  DefCharacterStartTurnAbilities();
   AuraStartTurnAbilities();
   $mainItems = &GetItems($mainPlayer);
   for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
