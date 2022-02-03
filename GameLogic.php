@@ -3385,11 +3385,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         unset($hand[$i]);
         ++$i;
       }
+      for ($i=0; $i < $sizeToDraw; $i++) {
+        PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
+      }
       PrependDecisionQueue("FULLARSENALTODECK", $currentPlayer, "-", 1);
       PrependDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      for ($i=0; $i < $sizeToDraw; $i++) {
-        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-      }
       WriteLog("Potion of Luck shuffled your hand and arsenal into your deck and drew " . $sizeToDraw . " cards.");
       return $lastResult;
     case "BRAVOSTARSHOW":

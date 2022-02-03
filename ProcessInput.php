@@ -489,10 +489,10 @@
       {
         if($combatChain[$i] == $mainPlayer)
         {
-          SetClassState($currentPlayer, $CS_EffectContext, $combatChain[$i-1]);
+          SetClassState($mainPlayer, $CS_EffectContext, $combatChain[$i-1]);
           ProcessHitEffect($combatChain[$i-1]);
           if($damage >= 4) ProcessCrushEffect($combatChain[$i-1]);
-          AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
+          AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
         }
       }
       for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
@@ -522,9 +522,9 @@
       {
         if($combatChain[$i] == $mainPlayer)
         {
-          SetClassState($currentPlayer, $CS_EffectContext, $combatChain[$i-1]);
+          SetClassState($mainPlayer, $CS_EffectContext, $combatChain[$i-1]);
           ProcessMissEffect($combatChain[$i-1]);
-          SetClassState($currentPlayer, $CS_EffectContext, "-");
+          AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
         }
       }
       $combatChainState[$CCS_HitsInRow] = 0;
