@@ -2133,6 +2133,7 @@ function MainCharacterAttackModifiers($index=-1, $onlyBuffs=false)
         case "CRU105": $modifier += 1; break;
         case "MON105": case "MON106": $modifier += 1; break;
         case "MON113": case "MON114": case "MON115": $modifier += 1; break;
+        case "EVR055-1": $modifier += 1; break;
         default: break;
       }
     }
@@ -2185,6 +2186,25 @@ function MainCharacterHitEffects()
     }
   }
   return $modifier;
+}
+
+function MainCharacterGrantsGoAgain()
+{
+  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex, $combatChain;
+  if($combatChainState[$CCS_WeaponIndex] == -1) return false;
+  $modifier = 0;
+  for($i=0; $i<count($mainCharacterEffects); $i+=2)
+  {
+    if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
+    {
+      switch($mainCharacterEffects[$i+1])
+      {
+        case "EVR055-2": return true;
+        default: break;
+      }
+    }
+  }
+  return false;
 }
 
 function CombatChainPlayAbility($cardID)
@@ -2937,6 +2957,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ARTOFWAR":
       ArtOfWarResolvePlay($lastResult);
       return $lastResult;
+    case "BLOODONHERHANDS":
+      BloodOnHerHandsResolvePlay($lastResult);
+      return $lastResult;
     case "VESTOFTHEFIRSTFIST":
       if($lastResult == "YES")
       {
@@ -3309,6 +3332,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PREPENDLASTRESULT":
       return $parameter . $lastResult;
+    case "APPENDLASTRESULT":
+      return $lastResult . $parameter;
+    case "LASTRESULTPIECE":
+      $pieces = explode("-", $lastResult);
+      return $pieces[$parameter];
     case "VALIDATECOUNT":
       if(count($lastResult) != $parameter)
       {

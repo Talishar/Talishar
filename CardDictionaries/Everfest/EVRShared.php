@@ -740,6 +740,24 @@
         $card = array_shift($deck);
         BanishCardForPlayer($deck[0], $currentPlayer, "DECK", "TCC");
         return "Helm of the Sharp Eye banished a card. It is playable to this combat chain.";
+      case "EVR055":
+        $numCopper = CountItem("CRU197", $currentPlayer);
+        if($numCopper == 0) return "No copper.";
+        if($numCopper > 6) $numCopper = 6;
+        $buttons = "";
+        for($i=0; $i<=$numCopper; ++$i)
+        {
+          if($buttons != "") $buttons .= ",";
+          $buttons .= $i;
+        }
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $buttons);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+        AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Another_Swing,Another_Swing", 1);
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
+        AddDecisionQueue("BLOODONHERHANDS", $currentPlayer, "-", 1);
+        return "";
       case "EVR056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Oath of Steel gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
@@ -1186,6 +1204,36 @@
     AddDecisionQueue("MULTIZONEFORMAT", $mainPlayer, "MYAURAS", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIZONETOKENCOPY", $mainPlayer, "-", 1);
+  }
+
+  function BloodOnHerHandsResolvePlay($userInput)
+  {
+    global $currentPlayer;
+    for($i=0; $i<count($userInput); ++$i)
+    {
+      switch($userInput[$i])
+      {
+        case "Buff_Weapon":
+          WriteLog("Blood on Her Hands gives a weapon +1 this turn.");
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-1", 1);
+          break;
+        case "Go_Again":
+          WriteLog("Blood on Her Hands gives a weapon Go Again this turn.");
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-2", 1);
+          break;
+        case "Another_Swing":
+          WriteLog("Blood on Her Hands gives a weapon a second attack this turn.");
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDMZUSES", $currentPlayer, "1", 1);
+          break;
+        default: break;
+      }
+    }
   }
 
 ?>

@@ -529,7 +529,6 @@
       }
       $combatChainState[$CCS_HitsInRow] = 0;
     }
-    $combatChainState[$CCS_WeaponIndex] = "-1";
     AddDecisionQueue("FINALIZECHAINLINK", $mainPlayer, "-");
     $turn[0] = "M";
     $currentPlayer = $mainPlayer;
@@ -545,7 +544,7 @@ function FinalizeChainLink($chainClosed=false)
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
-    if(DoesAttackHaveGoAgain() && !$chainClosed) ++$actionPoints;
+    if(DoesAttackHaveGoAgain() && !$chainClosed) { ++$actionPoints; }
 
     //Clean up combat effects that were used and are one-time
     for($i = count($currentTurnEffects) - 2; $i >= 0; --$i)
@@ -986,6 +985,7 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_copper", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
         AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195");//TODO: Gold
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_silver", 1);
@@ -1186,15 +1186,6 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        break;
-      case "EVR055":
-      /*
-          AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197");
-          AddDecisionQueue("LESSTHANPASS", $currentPlayer, "4");
-          AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_copper", 1);
-          AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
-          */
         break;
       default:
         break;

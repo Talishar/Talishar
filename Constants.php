@@ -197,6 +197,7 @@
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
     global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
+    WriteLog("The chain link was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
     $combatChainState[$CCS_DamageDealt] = 0;

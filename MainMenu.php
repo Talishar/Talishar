@@ -87,7 +87,7 @@ body {
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported EXCEPT:</h3>
 Ninja: Break Tide, Spring Tidings, Winds of Eternity, Hundred Winds
 <br>
-Warrior: Shatter, Blood on Her Hands
+Warrior: Shatter
 <br>
 Mechanologist: Micro-Processor
 <br>
