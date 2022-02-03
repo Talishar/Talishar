@@ -99,7 +99,7 @@ Illusionist: Fractal Replication
 <br>
 Generic: Cash Out, Knick Knack Bric-a-brac
 <br>
-Potions/Amulets: Amulet of Assertiveness, Amulet of Ignition, Talisman of Cremation, Talisman of Featherfoot, Talisman of Tithes, Talisman of Warfare
+Potions/Amulets: Amulet of Assertiveness, Amulet of Ignition, Talisman of Cremation, Talisman of Featherfoot
 <?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
 ?>
