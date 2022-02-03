@@ -645,7 +645,7 @@
     echo("<div style='position:fixed; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
     echo(Card($myCharacter[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
     $effects = ActiveCharacterEffects($playerID, $i);
-    if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/arsenal.png' />");
+    if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:40px; left:23px;' src='./Images/arsenal.png' />");
     if($restriction != "") {
       $restrictionName = CardName($restriction);
       echo("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:40px; left:23px;' src='./Images/restricted.png' />");
