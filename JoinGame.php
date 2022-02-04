@@ -43,7 +43,6 @@ h2 {
   Decks to Try:
   <select name="decksToTry" id="decksToTry">
     <option value="1">Arsenal Pass Rhinar CC</option>
-    <option value="2">Boltyn #1 Road to Nationals CC</option>
     <option value="3">Ice Lexi Canadian Nationals CC</option>
   </select>
   <br><br>
