@@ -12,8 +12,10 @@
       case "EVR121": return 3;
       case "EVR157": return 1;
       case "EVR173": case "EVR174": case "EVR175": return 0;
+      case "EVR176": return 0;
       case "EVR177": return 0;
       case "EVR178": return 0;
+      case "EVR179": return 0;
       case "EVR180": return 0;
       case "EVR181": return 0;
       case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": return 0;
@@ -35,8 +37,10 @@
       case "EVR121": return "I";
       case "EVR157": return "I";
       case "EVR173": case "EVR174": case "EVR175": return "I";
+      case "EVR176": return "AR";
       case "EVR177": return "I";
       case "EVR178": return "DR";
+      case "EVR179": return "I";
       case "EVR180": return "I";
       case "EVR181": return "I";
       case "EVR182": return "I";
@@ -851,6 +855,19 @@
         if($cardID == "EVR127") $damage = ($oppTurn ? 4 : 2);
         DealArcane($damage, 1, "PLAYCARD", $cardID);
         return "";
+      case "EVR128": case "EVR129": case "EVR130":
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        if($currentPlayer == $mainPlayer)
+        {
+          AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "3-", 1);
+          AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
+          AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
+        }
+        AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+        AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
+        return "Pry removes a card. Make sure you choose the right number of options.";
       case "EVR134": case "EVR135": case "EVR136":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         return "";
@@ -920,6 +937,19 @@
         Opt($cardID, $opt);
         AddDecisionQueue("EVENBIGGERTHANTHAT", $currentPlayer, "-");
         return "";
+      case "EVR176":
+        $rv = "";
+        if($from == "PLAY")
+        {
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $deck = &GetDeck($currentPlayer);
+          if(count($deck) == 0) return "Deck is empty.";
+          $mod = "DECK";
+          if(CardType($deck[0]) == "AA") $mod = "TT";
+          BanishCardForPlayer($deck[0], $mainPlayer, "DECK", $mod);
+          array_shift($deck);
+        }
+        return "";
       case "EVR177":
         $rv = "";
         if($from == "PLAY")
@@ -943,12 +973,15 @@
           AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
         }
         return "";
-      case "EVR181":
-        if($from == "PLAY"){
+      case "EVR179":
+        $rv = "Amulet of Ignition is a partially manual card. Only use the abiliy when you have not played anything.";
+        if($from == "PLAY")
+        {
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+          $rv = "Amulet of Intervention reduces your next ability cost by 1.";
         }
-        return "Healing Potion gained 2 health.";
+        return $rv;
       case "EVR180":
         $rv = "Amulet of Intervention is a partially manual card. Only use the abiliy when you are the target of lethal damage.";
         if($from == "PLAY")
@@ -958,6 +991,12 @@
           $rv = "Amulet of Intervention prevents 1 damage.";
         }
         return $rv;
+      case "EVR181":
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        }
+        return "Healing Potion gained 2 health.";
       case "EVR182":
         $rv = "";
         if($from == "PLAY")
@@ -1026,11 +1065,35 @@
 
   function EVRHitEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $CS_NumAuras;
+    global $mainPlayer, $defPlayer, $CS_NumAuras, $chainLinks;
     switch($cardID)
     {
       case "EVR021":
         AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "EVR038":
+        $deck = &GetDeck($mainPlayer);
+        BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
+        array_shift($deck);
+        break;
+      case "EVR039":
+        for($i=0; $i<SearchCount(SearchChainLinks(-1, 2)); ++$i) Draw($mainPlayer);
+        break;
+      case "EVR040":
+        if(ComboActive())
+        {
+          $deck = &GetDeck($mainPlayer);
+          for($i=0; $i<count($chainLinks); ++$i)
+          {
+            $attackID = $chainLinks[$i][0];
+            if($chainLinks[$i][2] == "1" && ($attackID == "EVR041" || $attackID == "EVR042" || $attackID == "EVR043"))
+            {
+              $chainLinks[$i][2] = "0";
+              array_push($deck, $attackID);
+            }
+          }
+          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
+        }
         break;
       case "EVR044": case "EVR045": case "EVR046":
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);

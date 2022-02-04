@@ -540,7 +540,7 @@ function FinalizeChainLink($chainClosed=false)
     global $turn, $actionPoints, $combatChain, $mainPlayer, $playerID, $defHealth, $currentTurnEffects, $defCharacter, $mainDiscard, $defDiscard, $currentPlayer, $defPlayer;
     global $combatChainState, $actionPoints, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_LastAttack, $CCS_LinkTotalAttack, $CCS_AttackTarget, $CS_NumSwordAttacks;
+    global $CS_LastAttack, $CCS_LinkTotalAttack, $CCS_AttackTarget, $CS_NumSwordAttacks, $chainLinks;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -580,6 +580,8 @@ function FinalizeChainLink($chainClosed=false)
     }
     $combatChainState[$CCS_LastAttack] = $combatChain[0];
     SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
+    array_push($chainLinks, array());
+    $CLIndex = count($chainLinks) - 1;
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
     {
       $cardType = CardType($combatChain[$i-1]);
@@ -595,6 +597,9 @@ function FinalizeChainLink($chainClosed=false)
         case "BANISH": BanishCardForPlayer($combatChain[$i-1], $mainPlayer, "CC", "NA"); break;
         default: break;
       }
+      array_push($chainLinks[$CLIndex], $combatChain[$i-1]);//Card ID
+      array_push($chainLinks[$CLIndex], $combatChain[$i]);//Player ID
+      array_push($chainLinks[$CLIndex], ($goesWhere == "GY" ? "1" : "0"));//Still on chain? 1 = yes, 0 = no
     }
     CopyCurrentTurnEffectsFromCombat();
     CheckDestroyTemper();
@@ -804,7 +809,7 @@ function FinalizeChainLink($chainClosed=false)
               SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
               $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
               if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] = $dynCostResolved;
-              else $resources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
+              else $resources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
               if($resources[1] < 0) $resources[1] = 0;
               LogResourcesUsedStats($currentPlayer, $resources[1]);
             }

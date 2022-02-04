@@ -626,4 +626,31 @@ function SearchArcaneReplacement($player, $zone)
   return $cardList;
 }
 
+function CountCardOnChain($card1, $card2="", $card3="")
+{
+  global $chainLinks;
+  $count = 0;
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    if($chainLinks[$i][2] == "1" && $chainLinks[$i][0] == $card1 || $chainLinks[$i][0] == $card2 || $chainLinks[$i][0] == $card3) ++$count;
+  }
+  return $count;
+}
+
+function SearchChainLinks($minPower=-1, $maxPower=-1)
+{
+  global $chainLinks;
+  $links = "";
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    $power = AttackValue($chainLinks[$i][0]);
+    if($chainLinks[$i][2] == "1" && ($minPower == -1 || $power >= $minPower) && ($maxPower == -1 || $power <= $maxPower))
+    {
+      if($links != "") $links .= ",";
+      $links .= $i;
+    }
+  }
+  return $links;
+}
+
 ?>

@@ -945,6 +945,9 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "ELE082": case "ELE083": case "ELE084": return GetClassState($defPlayer,  $CS_ArcaneDamageTaken) >= 1 ? 2 : 0;
     case "ELE134": case "ELE135": case "ELE136": return $from == "ARS" ? 1 : 0;
     case "ELE202": return CountPitch($mainPitch, 3) >= 1 ? 1 : 0;
+    case "EVR038": return (ComboActive() ? 3 : 0);
+    case "EVR040": return (ComboActive() ? 2 : 0);
+    case "EVR041": case "EVR042": case "EVR043": return (ComboActive() ? CountCardOnChain("EVR041", "EVR042", "EVR043") : 0);
     case "EVR063": return 3;
     case "EVR064": return 2;
     case "EVR065": return 1;
@@ -1190,7 +1193,7 @@ function RemoveCurrentEffect($player, $effectID)
   $currentTurnEffects = array_values($currentTurnEffects);
 }
 
-function CurrentEffectCostModifiers($cardID)
+function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
   $costModifier = 0;
@@ -1217,6 +1220,7 @@ function CurrentEffectCostModifiers($cardID)
         case "ELE035-1": $costModifier += 1; break;
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
         case "ELE144": $costModifier += 1; break;
+        case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID))$costModifier -= 1; $remove = 1; break;
         default: break;
       }
       if($remove == 1)
@@ -2281,6 +2285,7 @@ function IsDominateActive()
     case "MON275": case "MON276": case "MON277": return true;
     case "ELE209": case "ELE210": case "ELE211": return HasIncreasedAttack();
     case "EVR027": case "EVR028": case "EVR029": return true;
+    case "EVR038": return (ComboActive() ? true : false);
     case "EVR076": case "EVR077": case "EVR078": return GetClassState($mainPlayer, $CS_NumBoosted) > 0;
     case "EVR110": case "EVR111": case "EVR112": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     default: break;
@@ -3337,6 +3342,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "LASTRESULTPIECE":
       $pieces = explode("-", $lastResult);
       return $pieces[$parameter];
+    case "IMPLODELASTRESULT":
+      return implode($parameter, $lastResult);
     case "VALIDATECOUNT":
       if(count($lastResult) != $parameter)
       {

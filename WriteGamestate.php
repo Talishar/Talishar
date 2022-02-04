@@ -63,6 +63,11 @@
   fwrite($handler, implode(" ", $layerPriority) . "\r\n");
   fwrite($handler, $mainPlayer . "\r\n");
   fwrite($handler, implode(" ", $lastPlayed) . "\r\n");
+  fwrite($handler, count($chainLinks) . "\r\n");
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    fwrite($handler, implode(" ", $chainLinks[$i]) . "\r\n");
+  }
   fclose($handler);
 
 ?>
