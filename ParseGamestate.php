@@ -66,6 +66,13 @@
   $mainPlayer = trim(fgets($handler));
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $lastPlayed = GetArray($handler);
+  $numChainLinks = trim(fgets($handler));
+  $chainLinks = array();
+  for($i=0; $i<$numChainLinks; ++$i)
+  {
+    $chainLink = GetArray($handler);
+    array_push($chainLinks, $chainLink);
+  }
   fclose($handler);
 
   BuildMyGamestate($playerID);

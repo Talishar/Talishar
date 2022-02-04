@@ -159,6 +159,7 @@
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
     global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
     global $defPlayer;
+    global $chainLinks;
     WriteLog("The combat chain was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
@@ -189,6 +190,7 @@
     {
       $defCharacter[$i+6] = 0;
     }
+    $chainLinks = [];
   }
 
   function ResetChainLinkState()

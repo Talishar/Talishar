@@ -1609,6 +1609,7 @@
       case "EVR060": case "EVR061": case "EVR062": return count($combatChain) == 0 || CardType($combatChain[0]) != "W" || !Is1H($combatChain[0]);
       case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) < 1;
       case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
+      case "EVR176": $hand = &GetHand($currentPlayer); return count($hand) < 4;
       case "EVR053": return !HelmOfSharpEyePlayable();
       case "EVR181": return ($from == "PLAY" && GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0) || count($combatChain) == 0 || CardType($combatChain[0]) != "AA";
       default: return false;
@@ -1880,6 +1881,8 @@
       case "CRU056":
       case "CRU057": case "CRU058": case "CRU059":
       case "CRU060": case "CRU061": case "CRU062": return true;
+      case "EVR038": case "EVR040":
+      case "EVR041": case "EVR042": case "EVR043": return true;
     }
     return false;
   }
@@ -1907,6 +1910,9 @@
       case "CRU056": return $LA == "CRU057" || $LA == "CRU058" || $LA == "CRU059";
       case "CRU057": case "CRU058": case "CRU059": return $LA == "CRU066" || $LA == "CRU067" || $LA == "CRU068";
       case "CRU060": case "CRU061": case "CRU062": return $LA == "CRU069" || $LA == "CRU070" || $LA == "CRU071";
+      case "EVR038": return $LA == "CRU060" || $LA == "CRU061" || $LA == "CRU062" || $LA == "CRU055";
+      case "EVR040": return $LA == "EVR041" || $LA == "EVR042" || $LA == "EVR043";
+      case "EVR041": case "EVR042": case "EVR043": return $LA == "EVR041" || $LA == "EVR042" || $LA == "EVR043";
     }
     return false;
   }

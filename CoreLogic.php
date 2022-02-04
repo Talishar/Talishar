@@ -616,13 +616,13 @@ function PlayerWon($playerID)
   WriteLog("Player " . $playerID . " wins!");
 }
 
-function UnsetBanishModifier($player, $modifier)
+function UnsetBanishModifier($player, $modifier, $newMod="DECK")
 {
   global $mainPlayer;
   $banish = &GetBanish($mainPlayer);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
-    if($banish[$i+1] == $modifier) $banish[$i+1] = "DECK";
+    if($banish[$i+1] == $modifier) $banish[$i+1] = $newMod;
   }
 }
 
@@ -646,6 +646,11 @@ function UnsetMyCombatChainBanish()
   UnsetBanishModifier($currentPlayer, "TCC");
 }
 
+function ReplaceBanishModifier($player, $oldMod, $newMod)
+{
+  UnsetBanishModifier($player, $oldMod, $newMod);
+}
+
 function UnsetTurnBanish()
 {
   UnsetBanishModifier(1, "TT");
@@ -653,6 +658,8 @@ function UnsetTurnBanish()
   UnsetBanishModifier(2, "TT");
   UnsetBanishModifier(2, "INST");
   UnsetCombatChainBanish();
+  ReplaceBanishModifier(1, "NT", "TT");
+  ReplaceBanishModifier(2, "NT", "TT");
 }
 
 function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="")
