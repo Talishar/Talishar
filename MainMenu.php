@@ -42,7 +42,6 @@ body {
   Decks to Try:
   <select name="decksToTry" id="decksToTry">
     <option value="1">Arsenal Pass Rhinar CC</option>
-    <option value="2">Boltyn #1 Road to Nationals CC</option>
     <option value="3">Ice Lexi Canadian Nationals CC</option>
   </select>
   <br>
@@ -83,7 +82,7 @@ body {
 
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h3>
-<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Everfest Update! 2/1/21</h2>
+<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Everfest Update! 2/4/21</h2>
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported EXCEPT:</h3>
 Warrior: Shatter
 <br>
