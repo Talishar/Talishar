@@ -908,6 +908,7 @@
       case "CRU030": case "CRU033": case "CRU036": case "CRU039": case "CRU042": return 2;
       case "CRU031": case "CRU034": case "CRU037": case "CRU040": case "CRU043": return 3;
       //CRU Brute
+      case "CRU002": return 0;
       case "CRU004": case "CRU005": case "CRU006": return 0;
       case "CRU007": return 2;
       case "CRU008": return 1;
@@ -925,6 +926,7 @@
       case "CRU059": case "CRU062": case "CRU065": case "CRU068": case "CRU071": return 3;
       case "CRU072": case "CRU073": case "CRU074": return 2;
       //CRU Warrior
+      case "CRU077": return 0;
       case "CRU079": case "CRU080": return 0;
       case "CRU081": return 0;
       case "CRU082": case "CRU083": return 2;
@@ -1081,6 +1083,7 @@
       case "WTR218": case "WTR219": case "WTR220": return 2;
       case "WTR221": case "WTR222": case "WTR223": return 2;
       case "ARC150": return 1;
+      case "CRU002": return 0;
       //CRU Guardian
       case "CRU024": return 0;
       case "CRU025": return 2;
@@ -1092,6 +1095,7 @@
       case "CRU053": return 1;
       case "CRU072": case "CRU074": return 2;
       //CRU Warrior
+      case "CRU077": return 0;
       case "CRU079": case "CRU080": return 0;
       case "CRU081": return 2;
       //CRU Mechanologist
@@ -1426,6 +1430,7 @@
   {
     global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
     global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter, $mainPlayer, $playerID;
+    global $combatChain;
     if($currentPlayer != $playerID) return false;
     $restriction = "";
     $cardType = CardType($cardID);
@@ -1434,7 +1439,7 @@
     if(($phase == "B" || $phase == "D") && $from == "HAND")
     {
       if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;
-      if(SearchCharacterForCard($mainPlayer, "CRU047") && CachedTotalAttack() <= 2) return false;
+      if(CachedTotalAttack() <= 2 && SearchCharacterForCard($mainPlayer, "CRU047") && CardType($combatChain[0]) == "AA") return false;
     }
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
     if($phase == "B" || $phase == "D")

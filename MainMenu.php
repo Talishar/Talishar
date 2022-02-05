@@ -90,8 +90,6 @@ Mechanologist: Micro-Processor
 <br>
 Wizard: Scour
 <br>
-Illusionist: Fractal Replication
-<br>
 Generic: Cash Out, Knick Knack Bric-a-brac
 <br>
 Potions/Amulets: Amulet of Assertiveness, Talisman of Cremation, Talisman of Featherfoot

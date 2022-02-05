@@ -4,7 +4,7 @@ function CardName ($cardID, $showPitch=true)
     $arr = str_split($cardID, 3);
     $set = $arr[0];
     $num = $arr[1];
-    
+
 
 if ($set == "ARC")
 	{  switch($num)	   {
@@ -503,7 +503,7 @@ if ($set == "CRU")
 		case "044": return "Seismic Surge";
 		case "045": return "Katsu, the Wanderer";
 		case "046": return "Ira, Crimson Haze";
-		case "047": return "enji, the Piercing Win";
+		case "047": return "Benji, the Piercing Wind";
 		case "048": return "Harmonized Kodachi";
 		case "049": return "Harmonized Kodachi";
 		case "050": return "Edge of Autumn";
@@ -1398,12 +1398,12 @@ if ($set == "fil")
 		   }	}
 
         return "";    }
-             
+
 
 function cardID ($cardName)
 {
 	switch($cardName){
-  
+
 
 		 case "Eye of Ophidia": return array("ARC000");
 		 case "Dash, Inventor Extraordinaire": return array("ARC001","CRU098");
@@ -1548,7 +1548,7 @@ function cardID ($cardName)
 		 case "Seismic Surge": return array("CRU044","ELE212");
 		 case "Katsu, the Wanderer": return array("CRU045");
 		 case "Ira, Crimson Haze": return array("CRU046");
-		 case "enji, the Piercing Win": return array("CRU047");
+		 case "Benji, the Piercing Wind": return array("CRU047");
 		 case "Harmonized Kodachi": return array("CRU048","CRU049");
 		 case "Edge of Autumn": return array("CRU050");
 		 case "Zephyr Needle": return array("CRU051","CRU052");
@@ -1809,4 +1809,3 @@ function cardID ($cardName)
 	 return array(); }
 
 ?>
-
