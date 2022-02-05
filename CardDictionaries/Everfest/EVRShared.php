@@ -5,6 +5,7 @@
     switch($cardID)
     {
       case "EVR053": return 1;
+      case "EVR070": return 0;
       case "EVR085": return 2;
       case "EVR087": return 1;
       case "EVR103": return 0;
@@ -30,6 +31,7 @@
     switch($cardID)
     {
       case "EVR053": return "AR";
+      case "EVR070": return "A";
       case "EVR085": return "A";
       case "EVR087": return "A";
       case "EVR103": return "A";
@@ -779,6 +781,17 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
+      case "EVR070":
+        $rv = "Micro-Processor is a partially manual card. Only choose each option once per turn.";
+        if($from == "PLAY")
+        {
+          $rv = "";
+          $items = &GetItems($currentPlayer);
+          if($items[GetClassState($currentPlayer, $CS_PlayIndex)+3] == 2) { $rv = "Gained an action point from Micro-Processor."; GainActionPoints(1); }
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Opt,Draw_then_top_deck,Banish_top_deck");
+          AddDecisionQueue("MICROPROCESSOR", $currentPlayer, "-", 1);
+        }
+        return $rv;
       case "EVR073": case "EVR074": case "EVR075":
         return "T-Bone is a partially manual card. If you have a boosted card on the combat chain, the opponent must block with an equipment if possible.";
       case "EVR079": case "EVR080": case "EVR081":

@@ -2240,6 +2240,16 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $item);//Card ID
     array_push($items, ETASteamCounters($item) + SteamCounterLogic($item, $player) + $steamCounterModifier);//Counters
     array_push($items, 2);//Status
+    array_push($items, ItemUses($item));
+  }
+}
+
+function ItemUses($cardID)
+{
+  switch($cardID)
+  {
+    case "EVR070": return 3;
+    default: return 1;
   }
 }
 
@@ -2415,7 +2425,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKCLASSAA": $rv = SearchDeck($player, "AA", "", -1, -1, $subparam); break;
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
         case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
-        case "HAND": $hand = &GetHand($player); $rv = GetIndices(count($hand)); break;
+        case "HAND": $rv = GetIndices(count(GetHand($player))); break;
         case "HANDTALENT":  $rv = SearchHand($player, "", "", -1, -1, "", $subparam); break;
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
         case "HANDACTION": $rv = CombineSearches(SearchHand($player, "A"), SearchHand($player, "AA")); break;
@@ -2423,7 +2433,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MULTIHANDAA": $search = SearchHand($player, "AA"); $rv = SearchCount($search) . "-" . $search; break;
         case "ARSENAL": $arsenal = &GetArsenal($player); $rv = GetIndices(count($arsenal), 0, 2); break;
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
-        case "MYHAND": $rv = GetIndices(count(GetHand($player))); break;
         case "ITEMS": $rv = GetIndices(count(GetItems($player))); break;
         case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
@@ -3105,7 +3114,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
         PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
         PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
-        PrependDecisionQueue("FINDINDICES", $player, "MYHAND", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
       }
       return $parameter;
     case "ADDCLASSSTATE":
@@ -3502,6 +3511,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CLEAREFFECTCONTEXT":
       SetClassState($currentPlayer, $CS_EffectContext, "-");
       return $lastResult;
+    case "MICROPROCESSOR":
+      $deck = &GetDeck($player);
+      switch($lastResult)
+      {
+        case "Opt": Opt("EVR070", 1); break;
+        case "Draw_then_top_deck": if(count($deck) > 0) { Draw($player); HandToTopDeck($player); } break;
+        case "Banish_top_deck": if(count($deck) > 0) { $card = array_shift($deck); BanishCardForPlayer($card, $player, "DECK", "-"); } break;
+        default: break;
+      }
+      return "";
     default:
       return "NOTSTATIC";
   }

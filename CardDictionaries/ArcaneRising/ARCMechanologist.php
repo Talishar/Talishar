@@ -296,10 +296,7 @@
     if(SearchCurrentTurnEffects("CRU102", $currentPlayer))
     {
       AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND", 1);
-      AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      HandToTopDeck($currentPlayer);
     }
     AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
   }

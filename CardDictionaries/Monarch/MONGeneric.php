@@ -174,10 +174,7 @@
       }
       return "Exude Confidence is a partially manual card. Restrict play of instants and defense reactions manually. Use the Revert Gamestate button under the Stats menu if necessary.";
     case "MON251": case "MON252": case "MON253":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
-      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      HandToTopDeck($currentPlayer);
       AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
       return "";
     case "MON260": case "MON261": case "MON262":
@@ -242,4 +239,3 @@
   }
 
 ?>
-

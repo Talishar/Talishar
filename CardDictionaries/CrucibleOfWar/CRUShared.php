@@ -2,11 +2,11 @@
 
   function CRUAbilityCost($cardID)
   {
-    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex;
+    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer;
     switch($cardID)
     {
-      case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? 0 : 2);
-      case "CRU105": return ($myItems[$myClassState[$CS_PlayIndex] + 1] > 0 ? 0 : 1);
+      case "CRU101": $char = &GetPlayerCharacter($currentPlayer); return ($char[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? 0 : 2);
+      case "CRU105": $items = &GetItems($currentPlayer); return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "CRU160": return 2;
       case "CRU197": return 4;
       default: return 0;
@@ -15,7 +15,7 @@
 
   function CRUAbilityType($cardID, $index=-1)
   {
-    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex;
+    global $myCharacter, $myClassState, $CS_CharacterIndex, $CS_PlayIndex;
     switch($cardID)
     {
       case "CRU101": if($index == -1) $index = $myClassState[$CS_CharacterIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
@@ -63,7 +63,7 @@
 
   function CRUAbilityHasGoAgain($cardID)
   {
-    global $myCharacter, $myClassState, $myItems, $CS_CharacterIndex, $CS_PlayIndex;
+    global $myCharacter, $myClassState, $CS_CharacterIndex, $CS_PlayIndex;
     switch($cardID)
     {
       case "CRU006": return true;
@@ -203,4 +203,3 @@
   }
 
 ?>
-

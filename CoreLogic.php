@@ -1094,6 +1094,12 @@ function LookAtHand($player)
   RevealCards($cards);
 }
 
+function GainActionPoints($amount=1)
+{
+  global $actionPoints;
+  $actionPoints += $amount;
+}
+
 function AddCharacterUses($player, $index, $numToAdd)
 {
   $character = &GetPlayerCharacter($player);

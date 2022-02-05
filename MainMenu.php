@@ -86,8 +86,6 @@ body {
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported EXCEPT:</h3>
 Warrior: Shatter
 <br>
-Mechanologist: Micro-Processor
-<br>
 Wizard: Scour
 <br>
 Generic: Cash Out, Knick Knack Bric-a-brac
