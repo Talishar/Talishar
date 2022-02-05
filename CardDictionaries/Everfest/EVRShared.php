@@ -138,7 +138,7 @@
       case "EVR091": return 3;
       case "EVR092": return 2;
       case "EVR093": return 1;
-      case "EVR094": case "EVR095": case "EVR096": return ceil($combatChainState[$CCS_LinkBaseAttack]/2) * -1;
+      case "EVR094": case "EVR095": case "EVR096": return floor($combatChainState[$CCS_LinkBaseAttack]/2) * -1;
       case "EVR100": return 3;
       case "EVR101": return 2;
       case "EVR102": return 1;
@@ -190,7 +190,7 @@
       case "EVR090": return CardSubType($attackID) == "Arrow";
       case "EVR091": case "EVR092": case "EVR093": return CardSubType($attackID) == "Arrow";
       case "EVR091-1": case "EVR092-1": case "EVR093-1": return CardSubType($attackID) == "Arrow";
-      case "EVR094": case "EVR095": case "EVR096": return true;
+      case "EVR094": case "EVR095": case "EVR096": return CardType($attackID) == "AA";
       case "EVR100": case "EVR101": case "EVR102": return CardSubType($attackID) == "Arrow";
       case "EVR142": return CardClass($attackID) == "ILLUSIONIST";
       case "EVR143": return CardClass($attackID) == "ILLUSIONIST" && CardType($attackID) == "AA";
@@ -585,6 +585,7 @@
       case "EVR122": return 2;
       case "EVR131": case "EVR132": case "EVR133": return 2;
       case "EVR137": return 0;
+      case "EVR138": return FractalReplicationStats("Block");
       case "EVR140": return 2;
       case "EVR141": case "EVR142": case "EVR143": return 2;
       case "EVR150": case "EVR151": case "EVR152": return 2;
@@ -647,6 +648,7 @@
       case "EVR113": case "EVR116": return 4;
       case "EVR114": case "EVR117": return 3;
       case "EVR115": case "EVR118": return 2;
+      case "EVR138": return FractalReplicationStats("Attack");
       case "EVR139": return 7;
       case "EVR147": return 8;
       case "EVR144": case "EVR148": return 7;
@@ -882,6 +884,8 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         return "Crown of Reflection let you destroy an aura and play a new one.";
+      case "EVR138":
+        return "Fractal Replication will copy effects of other Illusionist cards on the combat chain. Note that according to Everfest release notes, cards that are no longer on the chain (for example, went to Soul) are not counted.";
       case "EVR150": case "EVR151": case "EVR152":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Veiled Intentions buffed your next attack action card and makes it draw if it is destroyed.";
@@ -1146,6 +1150,9 @@
       case "EVR113": case "EVR114": case "EVR115":
         if(GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
         break;
+      case "EVR138":
+        FractalReplicationStats("Hit");
+        break;
       case "EVR156":
         AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
         AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
@@ -1300,6 +1307,60 @@
           break;
         default: break;
       }
+    }
+  }
+
+  function FractalReplicationStats($stat)
+  {
+    global $chainLinks, $combatChain;
+    $highestAttack = 0;
+    $highestBlock = 0;
+    $hasPhantasm = false;
+    for($i=0; $i<count($chainLinks); ++$i)
+    {
+      for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces())
+      {
+        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && CardClass($chainLinks[$i][$j]) == "ILLUSIONIST" && CardType($chainLinks[$i][$j]) == "AA")
+        {
+          if($stat == "Hit")
+          {
+            ProcessHitEffect($chainLinks[$i][$j]);
+          }
+          else
+          {
+            $attack = AttackValue($chainLinks[$i][$j]);
+            if($attack > $highestAttack) $highestAttack = $attack;
+            $block = BlockValue($chainLinks[$i][$j]);
+            if($block > $highestBlock) $highestBlock = $block;
+            if(!$hasPhantasm) $hasPhantasm = HasPhantasm($chainLinks[$i][$j]);
+          }
+        }
+      }
+    }
+    for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+    {
+      if($combatChain[$i] != "EVR138" && CardClass($combatChain[$i]) == "ILLUSIONIST" && CardType($combatChain[$i]) == "AA")
+      {
+        if($stat == "Hit")
+        {
+          ProcessHitEffect($combatChain[$i]);
+        }
+        else
+        {
+          $attack = AttackValue($combatChain[$i]);
+          if($attack > $highestAttack) $highestAttack = $attack;
+          $block = BlockValue($combatChain[$i]);
+          if($block > $highestBlock) $highestBlock = $block;
+          if(!$hasPhantasm) $hasPhantasm = HasPhantasm($combatChain[$i]);
+        }
+      }
+    }
+    switch($stat)
+    {
+      case "Attack": return $highestAttack;
+      case "Block": return $highestBlock;
+      case "Phantasm": return $hasPhantasm;
+      default: return 0;
     }
   }
 

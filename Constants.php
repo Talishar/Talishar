@@ -80,6 +80,14 @@
     return 2;
   }
 
+  //Card ID
+  //Player ID
+  //Still on chain? 1 = yes, 0 = no
+  function ChainLinksPieces()
+  {
+    return 3;
+  }
+
   //Class State (one for each player)
   $CS_Num6PowDisc = 0;
   $CS_NumBoosted = 1;

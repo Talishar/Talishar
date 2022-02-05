@@ -533,7 +533,7 @@
     echo("<div title='Their Arsenal' style='position: fixed; top:0px; left:" . GetCharacterLeft("C", "") . "; display:inline;'>");
     for($i=0; $i<count($theirArsenal); $i+=ArsenalPieces())
     {
-      if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "CardImages", $cardSize, 0, 0, $theirArsenal[$i+2] == 0 ? 1 : 0, 0, $theirArsenal[$i+3]));
+      if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "CardImages", $cardSize, 0, 1, $theirArsenal[$i+2] == 0 ? 1 : 0, 0, $theirArsenal[$i+3]));
       else echo(Card("cardBack", "CardImages", $cardSize, 0, 0));
     }
     echo("</div>");
