@@ -21,6 +21,7 @@
       case "EVR181": return 0;
       case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": return 0;
       case "EVR187": return 0;
+      case "EVR190": return 0;
       case "EVR195": return 3;
       default: return 0;
     }
@@ -49,6 +50,7 @@
       case "EVR183": return "A";
       case "EVR184": case "EVR185": case "EVR186": return "I";
       case "EVR187": return "I";
+      case "EVR190": return "I";
       case "EVR195": return "A";
       default: return "";
     }
@@ -1068,6 +1070,14 @@
           AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);
         }
         return "";
+      case "EVR190":
+        $rv = "Talisman of Featherfoot is a partially manual card. Activate the instant ability if you met the criteria.";
+        if($from == "PLAY"){
+          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+          GiveAttackGoAgain();
+          $rv = "Talisman of Featherfoot gave the current attack Go Again.";
+        }
+        return $rv;
       case "EVR195":
         $rv = "";
         if($from == "PLAY"){

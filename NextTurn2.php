@@ -156,6 +156,20 @@
   }
   echo("</span>");
 
+  //Display Current Turn Effects
+  echo("<div style='position:fixed; left:0px; top:0px;'>");
+  echo("<div>Active Effects</div>");
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+  {
+    $border = ($playerID == $currentTurnEffects[$i+1] ? "2px solid blue" : "2px solid red");
+    $cardID = explode("-", $currentTurnEffects[$i])[0];
+    $cardID = explode(",", $cardID)[0];
+    echo("<div title='" . CardName($cardID) . "'style='width:86px; margin:2px; border:" . $border . ";'>");
+    echo("<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />");
+    echo("</div>");
+  }
+  echo("</div>");
+
   //$displayCombatChain = $turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D"));
   $displayCombatChain = count($combatChain) > 0;
 
@@ -168,7 +182,7 @@
     echo(CreatePopup("attackModifierPopup", [], 1, 0, "AttackModifiers", 1, AttackModifiers($chainAttackModifiers)));
   }
 
-  echo("<div style='position:fixed; left:230px; top:150px;'>");
+  echo("<div style='position:fixed; left:290px; top:150px;'>");
   //Display the combat chain
   if($displayCombatChain)
   {
@@ -779,10 +793,10 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
     }
     switch($cardSubType)
     {
-      case "Head": return "10px";
-      case "Chest": return "10px";
-      case "Arms": return ($cardWidth + 20) . "px";
-      case "Legs": return "10px";
+      case "Head": return "90px";
+      case "Chest": return "90px";
+      case "Arms": return ($cardWidth + 100) . "px";
+      case "Legs": return "90px";
       case "Off-Hand": return "calc(50% + " . ($cardWidth/2 + 10) . "px)";
     }
   }
