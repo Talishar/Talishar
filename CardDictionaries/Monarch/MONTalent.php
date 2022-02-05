@@ -185,7 +185,7 @@
         }
         return ;
       case "MON061":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
@@ -234,7 +234,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Ray of Hope gives attacks against Shadow heroes +1 this turn.";
       case "MON188":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);

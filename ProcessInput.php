@@ -157,6 +157,7 @@
       if($index >= count($myItems)) break;//Item doesn't exist
       $cardID = $myItems[$index];
       if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break;//Item not playable
+      --$myItems[$index+3];
       $myClassState[$CS_PlayIndex] = $index;
       $set = CardSet($cardID);
       PlayCard($cardID, "PLAY", -1);
@@ -978,10 +979,7 @@ function FinalizeChainLink($chainClosed=false)
         }
         break;
       case "ARC185": case "ARC186": case "ARC187":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
-        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+        HandToTopDeck($currentPlayer);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC185", 1);
         break;
       case "CRU188":
@@ -1006,10 +1004,7 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("SOULREAPING", $currentPlayer, "-", 1);
         break;
       case "MON257": case "MON258": case "MON259":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+        HandToTopDeck($currentPlayer);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "MON257", 1);
         break;
       case "EVR161": case "EVR162": case "EVR163":

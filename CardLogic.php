@@ -40,6 +40,14 @@ function PummelHit($player=-1)
   AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
 }
 
+function HandToTopDeck($player)
+{
+  AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+  AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+  AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
+}
+
 function KatsuHit($index)
 {
   global $mainPlayer;

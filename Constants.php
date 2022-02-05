@@ -40,9 +40,13 @@
     return 6;
   }
 
+  //Item ID
+  //Counters/Steam Counters
+  //Status
+  //Num Uses
   function ItemPieces()
   {
-    return 3;
+    return 4;
   }
 
   function PitchPieces()
