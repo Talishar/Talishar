@@ -408,6 +408,15 @@
     }
   }
 
+  function CharacterIntellect($cardID)
+  {
+    switch($cardID)
+    {
+      case "CRU099": return 3;
+      default: return 4;
+    }
+  }
+
   function AllyHealth($cardID)
   {
     switch($cardID)

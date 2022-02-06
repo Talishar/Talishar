@@ -235,8 +235,9 @@
 
   function CardBorderColor($cardID, $from, $isPlayable)
   {
-    global $playerID, $currentPlayer;
+    global $playerID, $currentPlayer, $turn;
     if($playerID != $currentPlayer) return 0;
+    if($turn[0] == "B") return ($isPlayable ? 6 : 0);
     if($from == "BANISH")
     {
       if($isPlayable || PlayableFromBanish($cardID)) return 4;
