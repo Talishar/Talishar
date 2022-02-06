@@ -365,6 +365,8 @@ function AuraAttackAbilities($attackID)
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_PlayIndex;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
+  $numRunechants = CountAura("ARC112", $mainPlayer);
+  if($numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
     $remove = 0;

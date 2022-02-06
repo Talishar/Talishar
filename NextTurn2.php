@@ -164,7 +164,7 @@
     $border = ($playerID == $currentTurnEffects[$i+1] ? "2px solid blue" : "2px solid red");
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    echo("<div title='" . CardName($cardID) . "'style='width:86px; margin:2px; border:" . $border . ";'>");
+    echo("<div title='" . CardName($cardID) . "'style='width:86px; height:66px; margin:2px; border:" . $border . ";'>");
     echo("<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />");
     echo("</div>");
   }
