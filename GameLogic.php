@@ -430,7 +430,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       if(ComboActive())
       {
         $combatChainState[$CCS_ResourceCostDefenseMin] = $combatChainState[$CCS_NumChainLinks];
-        $rv = "Crane Dance cannot be defended by cards with resource cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
+        $rv = "Find Center cannot be defended by cards with resource cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
       }
       return $rv;
     case "CRU055":
@@ -761,7 +761,7 @@ function ProcessHitEffect($cardID)
     case "WTR167": case "WTR168": case "WTR169": MainDrawCard(); break;
     case "WTR206": case "WTR207": case "WTR208": if(CardType($attackID) == "AA") PummelHit(); break;
     case "WTR209": case "WTR210": case "WTR211": if(CardType($attackID) == "AA") GiveAttackGoAgain(); break;
-    case "CRU054": PlayAura("CRU075", $mainPlayer); break;
+    case "CRU054": if(ComboActive()) { PlayAura("CRU075", $mainPlayer); } break;
     case "CRU060": case "CRU061": case "CRU062": if(ComboActive()) RushingRiverHitEffect(); break;
     case "CRU066": case "CRU067": case "CRU068": GiveAttackGoAgain(); break;
     case "CRU069": case "CRU070": case "CRU071": GiveAttackGoAgain(); break;
@@ -1380,7 +1380,6 @@ function CurrentEffectGrantsGoAgain()
         case "CRU055": return true;
         case "CRU084": return true;
         case "CRU091-1": case "CRU092-1": case "CRU093-1": return true;
-        case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
         case "CRU122": return true;
         case "CRU145": case "CRU146": case "CRU147": return true;
         case "MON153": case "MON154": return true;
@@ -2090,7 +2089,7 @@ function MainCharacterHitAbilities()
         break;
       case "CRU047": if(CardType($attackID) == "AA") { AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer); $mainCharacter[$i+1] = 1; } break;
       case "CRU053":
-        if(HasCombo($attackID))
+        if(CardType($attackID) == "AA" && CardClass($attackID) == "NINJA")
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");

@@ -1099,9 +1099,12 @@
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "EVR038":
-        $deck = &GetDeck($mainPlayer);
-        BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
-        array_shift($deck);
+        if(ComboActive())
+        {
+          $deck = &GetDeck($mainPlayer);
+          BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
+          array_shift($deck);
+        }
         break;
       case "EVR039":
         for($i=0; $i<SearchCount(SearchChainLinks(-1, 2)); ++$i) Draw($mainPlayer);

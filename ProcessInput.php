@@ -699,14 +699,14 @@ function FinalizeChainLink($chainClosed=false)
     //Draw Cards
     if($mainPlayer == $firstPlayer && $currentTurn == 1) //Defender draws up on turn 1
     {
-      $toDraw = 4 - count($defHand);
-      for($i=0; $i < $toDraw; ++$i)//TODO: 4 -> Intellect
+      $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);
+      for($i=0; $i < $toDraw; ++$i)
       {
         Draw($defPlayer, false);
       }
     }
-    $toDraw = 4 - count($mainHand) + CurrentEffectIntellectModifier();
-    for($i=0; $i < $toDraw; ++$i)//TODO: 4 -> Intellect
+    $toDraw = CharacterIntellect($mainCharacter[0]) - count($mainHand) + CurrentEffectIntellectModifier();
+    for($i=0; $i < $toDraw; ++$i)
     {
       Draw($mainPlayer, false);
     }

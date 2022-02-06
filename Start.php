@@ -92,7 +92,7 @@
       }
     }
     //Output player 1's hand
-    $int = 4;//TODO: Base on hero
+    $int = CharacterIntellect($charEquip[0]);
     $hand = "";
     for($i=0; $i<$int; ++$i)
     {
