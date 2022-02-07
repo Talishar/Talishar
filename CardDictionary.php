@@ -2059,4 +2059,16 @@
     }
   }
 
+  function AbilityPlayableFromCombatChain($cardID)
+  {
+    switch($cardID)
+    {
+      case "MON245": return true;
+      case "MON281": case "MON282": case "MON283": return true;
+      case "ELE195": case "ELE196": case "ELE197": return true;
+      case "EVR157": return true;
+      default: return false;
+    }
+  }
+
 ?>
