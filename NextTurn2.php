@@ -128,6 +128,7 @@
   echo("<div style='position:absolute; top:37px; left:-130px; z-index:-5;'><img style='height:125px; width:150px;' src='./Images/passBG.png' /></div>");
   if(CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:white; font-family:serif; font-size:36px; user-select: none;'>Pass</span></div>");
   else echo("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:gray; font-family:serif; font-size:36px; user-select: none;'>Pass</span></div>");
+  echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-size:30px;'>" . $actionPoints . "AP</span></div>");
   echo("</div>");
 
   //Now display the screen for this turn
@@ -164,7 +165,7 @@
     $border = ($playerID == $currentTurnEffects[$i+1] ? "2px solid blue" : "2px solid red");
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    echo("<div title='" . CardName($cardID) . "'style='width:86px; height:66px; margin:2px; border:" . $border . ";'>");
+    echo("<div title='" . htmlentities(CardName($cardID), ENT_QUOTES) . "'style='width:86px; height:66px; margin:2px; border:" . $border . ";'>");
     echo("<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />");
     echo("</div>");
   }
@@ -195,7 +196,7 @@
     if(DoesAttackHaveGoAgain()) echo("<td><img title='This attack has Go Again.' style='height:30px; width:30px; display:inline-block;' src='./Images/goAgain.png' /></td>");
     echo("</tr></table>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
-      $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
+      $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
       echo(Card($combatChain[$i], "CardImages", $bigCardSize, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
     }
@@ -533,11 +534,6 @@
     echo(Card($theirCharacter[$i], "CardImages", $cardSize, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
     if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
     if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
-    if($i == 0)
-    {
-      if($playerID != $mainPlayer)   echo("<span title='This is the turn player.' style='cursor:default; z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/APIcon.png'><div style='position:absolute; top:10px; width:50px; font-size:24px; color:black; text-align:center;'>" . $actionPoints . "AP</div></img></span>");
-      else echo("<span title='This is the defending player.' style='z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Defense.png'></img></span>");
-    }
     echo("</div>");
   }
   echo("</div>");
@@ -668,9 +664,6 @@
     if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
     if($type == "C")
     {
-      if($playerID == $mainPlayer)   echo("<span title='This is the turn player.' style='cursor:default; z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/APIcon.png'><div style='position:absolute; top:10px; width:50px; font-size:24px; color:black; text-align:center;'>" . $actionPoints . "AP</div></img></span>");
-      else echo("<span title='This is the defending player.' style='z-index:500; left:" . $cardIconLeft . "px; top:" . ($cardIconTop+20) . "px; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Defense.png'></img></span>");
-
       if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='(function(){ document.getElementById(\"mySoulPopup\").style.display = \"inline\";})();' style='cursor:pointer; position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
     }
     echo("</div>");
@@ -724,8 +717,17 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
       if(count($lastPlayed) > 2 && $lastPlayed[2] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse.png' />");
     }
   echo("</div>");
+  echo("<div style='position:relative; z-index:-1; left:0px; top:0px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
+  $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
+  if($turn[0] == "B") $trackerLeft = "85";
+  else if($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
+  else if($turn[0] == "PDECK" || $turn[0] == "ARS") $trackerLeft = "158";
+  else if(count($chainLinks) > 0) $trackerLeft = "49";
+  else $trackerLeft = "13";
+  echo("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
+  echo("</div>");
 
-  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 425px); overflow-y: auto;'>");
+  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 525px); overflow-y: auto;'>");
 
   EchoLog($gameName, $playerID);
   echo("</div>");

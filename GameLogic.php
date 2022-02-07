@@ -885,7 +885,7 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID)
   {
-    case "WTR003": return $mainClassState[$CS_Num6PowDisc];
+    case "WTR003": return ($mainClassState[$CS_Num6PowDisc] > 0 ? 1 : 0);
     case "WTR040": return CountPitch($mainPitch, 3) >= 2 ? 2 : 0;
     case "WTR080": return 1;
     case "WTR081": return $resourcesPaid;
