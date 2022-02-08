@@ -594,7 +594,7 @@ function FinalizeChainLink($chainClosed=false)
         case "BOTDECK": AddBottomMainDeck($combatChain[$i-1], "CC"); break;
         case "HAND": AddMainHand($combatChain[$i-1], "CC"); break;
         case "SOUL": AddSoul($combatChain[$i-1], $combatChain[$i], "CC"); break;
-        case "GY": AddGraveyard($combatChain[$i-1], $combatChain[$i], "CC"); break;
+        case "GY": /*AddGraveyard($combatChain[$i-1], $combatChain[$i], "CC");*/ break;//Things that would go to the GY stay on till the end of the chain
         case "BANISH": BanishCardForPlayer($combatChain[$i-1], $mainPlayer, "CC", "NA"); break;
         default: break;
       }
@@ -651,6 +651,7 @@ function FinalizeChainLink($chainClosed=false)
       UpdateGameState($currentPlayer);
       BuildMainPlayerGameState();
     }
+    ResetCombatChainState();
     $MyPitch = GetPitch($playerID);
     $TheirPitch = GetPitch(($playerID == 1 ? 2 : 1));
     $MainHand = GetHand($mainPlayer);
@@ -748,7 +749,6 @@ function FinalizeChainLink($chainClosed=false)
     MainCharacterEndTurnAbilities();
     ResetMainClassState();
     ResetCharacterEffects();
-    ResetCombatChainState();
     UnsetTurnBanish();
     AuraEndTurnCleanup();
 
