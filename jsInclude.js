@@ -87,3 +87,18 @@ function ReloadChat(lastUpdate)
   xmlhttp.open("GET", ajaxLink, true);
   xmlhttp.send();
 }
+
+function SubmitInput(mode, params)
+{
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+    }
+  }
+  var ajaxLink = "ProcessInput2.php?gameName=" + document.getElementById("gameName").value;
+  ajaxLink += "&playerID=" + document.getElementById("playerID").value;
+  ajaxLink += "&mode=" + mode;
+  ajaxLink += params;
+  xmlhttp.open("GET", ajaxLink, true);
+  xmlhttp.send();
+}
