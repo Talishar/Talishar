@@ -158,17 +158,27 @@
   echo("</span>");
 
   //Display Current Turn Effects
-  echo("<div style='position:fixed; left:0px; top:0px;'>");
-  echo("<div>Active Effects</div>");
+  $friendlyEffects = "";
+  $opponentEffects = "";
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
   {
+    $effect = "";
     $border = ($playerID == $currentTurnEffects[$i+1] ? "2px solid blue" : "2px solid red");
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    echo("<div title='" . htmlentities(CardName($cardID), ENT_QUOTES) . "'style='width:86px; height:66px; margin:2px; border:" . $border . ";'>");
-    echo("<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />");
-    echo("</div>");
+    $effect .= "<div title='" . htmlentities(CardName($cardID), ENT_QUOTES) . "'style='width:86px; height:66px; margin:2px; border:" . $border . ";'>";
+    $effect .= "<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />";
+    $effect .= "</div>";
+    if($playerID == $currentTurnEffects[$i+1]) $friendlyEffects .= $effect;
+    else $opponentEffects .= $effect;
   }
+  echo("<div style='position:fixed; height:100%; left:0px; top:0px;'>");
+  echo("<div>Their Effects</div>");
+  echo($opponentEffects);
+  echo("<div style='bottom:0px; position:absolute;'>");
+  echo($friendlyEffects);
+  echo("<div>Your Effects</div>");
+  echo("</div>");
   echo("</div>");
 
   //$displayCombatChain = $turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D"));

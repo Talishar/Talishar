@@ -18,10 +18,11 @@ function ReadCache($name)
 
 function DeleteCache($name)
 {
-    $id=shmop_open($name, "a", 7777, 1);
-    //if(!$id) return;
-    shmop_delete($id);
-    //shmop_close($id);
+    $id=shmop_open($name, "w", 0777, 1);
+    if($id)
+    {
+      shmop_delete($id);
+    }
 }
 
 ?>
