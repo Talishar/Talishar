@@ -2401,6 +2401,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameters = explode(",", $parameter);
       $parameter = $parameters[0];
       if(count($parameters) > 1) $subparam = $parameters[1];
+      else $subparam = "";
       switch($parameter)
       {
         case "WTR083": $rv = SearchMainDeckForCard("WTR081"); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;

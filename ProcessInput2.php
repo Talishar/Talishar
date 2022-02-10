@@ -348,7 +348,7 @@
   function ExitProcessInput()
   {
     global $playerID, $redirectPath, $gameName;
-    WriteCache($gameName, time());
+    //WriteCache($gameName, time());
     exit;
   }
 
