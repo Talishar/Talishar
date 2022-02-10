@@ -1,7 +1,8 @@
 
 function OnLoadCallback(lastUpdate)
 {
-  document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;
+  var log = document.getElementById('gamelog');
+  if(log !== null) log.scrollTop = log.scrollHeight;
   reload();
   ReloadChat(lastUpdate);
 }

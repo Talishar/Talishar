@@ -19,6 +19,12 @@
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
 
+
+  $darkMode = IsDarkMode($playerID);
+
+  if($darkMode) $backgroundColor = "rgba(20,20,20,0.70)";
+  else $backgroundColor = "rgba(255,255,255,0.70)";
+
   ?>
 
 <script>
@@ -78,7 +84,12 @@
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        if(parseInt(this.responseText) != 0) { document.getElementById("mainDiv").innerHTML = this.responseText; CheckReloadNeeded(seconds); }
+        if(parseInt(this.responseText) != 0)
+        {
+          HideCardDetail();
+          document.getElementById("mainDiv").innerHTML = this.responseText;
+          CheckReloadNeeded(seconds);
+        }
         else { CheckReloadNeeded(lastUpdate); }
       }
     };
@@ -95,16 +106,17 @@
 
   echo("<div id='mainDiv' style='left:0px; top:0px; width:100%;height:100%;'></div>");
 
-
-  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 525px); overflow-y: auto;'>");
+  echo("<div style='position:fixed; height: calc(100% - 500px); width:200px; bottom:0px; right:5px;'>");
+  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 50px); overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
   echo("</div>");
 
-  echo("<div id='chatbox' style='position:relative; width:200px; height: 50px;'>");
+  echo("<div id='chatbox' style='width:200px; height: 50px;'>");
   echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
   echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+  echo("</div>");
   echo("</div>");
 
   function PlayableCardBorderColor($cardID)

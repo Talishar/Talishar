@@ -688,17 +688,6 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
   echo("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo("</div>");
 
-  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 525px); overflow-y: auto;'>");
-
-  EchoLog($gameName, $playerID);
-  echo("</div>");
-
-  echo("<div id='chatbox' style='position:relative; width:200px; height: 50px;'>");
-  echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
-  echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
-  echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
-  echo("</div>");
   }
 
   function PlayableCardBorderColor($cardID)
