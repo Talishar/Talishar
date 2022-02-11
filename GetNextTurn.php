@@ -40,13 +40,14 @@
 
   if($currentPlayer == $playerID) { $icon = "ready.png"; $readyText = "You are the player with priority."; }
   else { $icon = "notReady.png"; $readyText = "The other player has priority."; }
-  echo '<link rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 
   if(count($turn) == 0)
   {
     echo("The game seems not to have loaded properly. Please try restarting the game.");
     exit();
   }
+
+  echo("<div id='iconHolder' style='display:none;'>" . $icon . "</div>");
 
   $cardSize = 120;
   $cardWidth = intval($cardSize * 0.71);
@@ -65,8 +66,6 @@
 
   $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
   $borderColor = ($darkMode ? "white" : "black");
-
-  echo("<script>alert('test');</script>");
 
   //Display background
   if(IsDarkMode($playerID))

@@ -19,6 +19,9 @@
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
 
+  if($currentPlayer == $playerID) { $icon = "ready.png"; $readyText = "You are the player with priority."; }
+  else { $icon = "notReady.png"; $readyText = "The other player has priority."; }
+  echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 
   $darkMode = IsDarkMode($playerID);
 
@@ -30,7 +33,7 @@
 <script>
   function Hotkeys(event)
   {
-    if(event.keyCode === 32) document.location.href = './ProcessInput.php?gameName=<?php echo($gameName); ?>&playerID=<?php echo($playerID); ?>&mode=99';
+    if(event.keyCode === 32) SubmitInput(99, "");
   }
 </script>
 
@@ -89,6 +92,7 @@
           HideCardDetail();
           document.getElementById("mainDiv").innerHTML = this.responseText;
           CheckReloadNeeded(seconds);
+          document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
         }
         else { CheckReloadNeeded(lastUpdate); }
       }
