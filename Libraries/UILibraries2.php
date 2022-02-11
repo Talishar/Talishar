@@ -55,7 +55,7 @@
     else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'>" . $caption . "</button>";
     return $rv;
   }
-
+  
   function ProcessInputLink($player, $mode, $input)
   {
     global $gameName;
@@ -65,8 +65,8 @@
   function CreateForm($playerID, $caption, $mode, $count)
   {
     global $gameName;
-    $rv = "<form action='./" . ProcessInputName() . "'>";
-    $rv .= "<input type='submit' value='" . $caption . "'>";
+    $rv = "<form>";
+    $rv .= "<input type='button' onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
     $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
     $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
     $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";

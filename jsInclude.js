@@ -103,3 +103,8 @@ function SubmitInput(mode, params)
   xmlhttp.open("GET", ajaxLink, true);
   xmlhttp.send();
 }
+
+function chkSubmit(mode, count)
+{
+
+}

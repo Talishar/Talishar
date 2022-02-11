@@ -66,6 +66,7 @@
   $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
   $borderColor = ($darkMode ? "white" : "black");
 
+  echo("<script>alert('test');</script>");
 
   //Display background
   if(IsDarkMode($playerID))
