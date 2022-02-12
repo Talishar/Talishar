@@ -25,6 +25,7 @@
       case "MON095": case "MON096": case "MON097": return "A";
       case "MON098": case "MON099": case "MON100": return "AA";
       case "MON101": case "MON102": case "MON103": return "AA";
+      case "MON104": return "T";
       case "MON404": return "M";
       default: return "";
     }
