@@ -106,5 +106,13 @@ function SubmitInput(mode, params)
 
 function chkSubmit(mode, count)
 {
-
+  var input = "";
+  input += "&gameName=" + document.getElementById("gameName").value;
+  input += "&playerID=" + document.getElementById("playerID").value;
+  for(var i=0; i<count; ++i)
+  {
+    var el = document.getElementById("chk" + i);
+    if(el.checked) input += "&chk" + i + "=" + el.value;
+  }
+  SubmitInput(mode, input);
 }

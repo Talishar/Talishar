@@ -330,7 +330,7 @@
   if($makeCheckpoint) MakeGamestateBackup();
   if($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
 
-  WriteCache($gameName, strval(time()));
+  WriteCache($gameName, strval(round(microtime(true) * 1000)));
 
   ExitProcessInput();
 
