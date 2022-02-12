@@ -3,6 +3,7 @@
 function PlayAura($cardID, $player, $number=1, $isToken=false)
 {
   global $CS_NumAuras;
+  if(CardType($cardID) == "T") $isToken = true;
   $auras = &GetAuras($player);
   if($cardID == "ARC112" && SearchCurrentTurnEffects("ARC081", $player)) ++$number;
   if($cardID == "MON104")

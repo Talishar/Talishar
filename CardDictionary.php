@@ -1463,7 +1463,7 @@
       if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
       if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
     }
-    if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID);
+    if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > 0;
     if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
     $isStaticType = IsStaticType($cardType, $from, $cardID);
     if($isStaticType) { $cardType = GetAbilityType($cardID, $index); }
@@ -2041,6 +2041,7 @@
       case "CRU000": case "CRU074": return true;
       case "MON005": case "MON007": case "MON035": case "MON036": case "MON189": case "MON190": case "MON198": case "MON199": return true;
       case "ELE004": case "ELE036": case "ELE066": return true;
+      case "EVR003": case "EVR039": case "EVR055": case "EVR070": return true;
       default: return false;
     }
   }

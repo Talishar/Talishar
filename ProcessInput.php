@@ -1201,6 +1201,7 @@ function FinalizeChainLink($chainClosed=false)
     $definedCardType = CardType($cardID);
     //Figure out where it goes
     $openedChain = false;
+    $isBlock = $turn[0] == "B";//This can change over the course of the function; for example if a phantasm gets popped
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
     else $cardType = $definedCardType;
     if(GoesOnCombatChain($turn[0], $cardID, $from))
@@ -1254,7 +1255,7 @@ function FinalizeChainLink($chainClosed=false)
       }
     }
     //Resolve Effects
-    if($turn[0] != "B")// || $cardType == "I" || CanPlayAsInstant($cardID))
+    if(!$isBlock)// || $cardType == "I" || CanPlayAsInstant($cardID))
     {
       if($from != "PLAY")
       {
