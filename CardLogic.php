@@ -517,7 +517,7 @@ function DiscardRandom($player="", $source="")
   if(AttackValue($discarded) >= 6)
   {
     $character = &GetPlayerCharacter($player);
-    if(($character[0] == "WTR001" || $character[0] == "WTR002") && $player == $mainPlayer) {//Rhinar
+    if(($character[0] == "WTR001" || $character[0] == "WTR002") && $character[1] == 2 && $player == $mainPlayer) {//Rhinar
       WriteLog("Rhinar Intimidated.");
       Intimidate();
     }

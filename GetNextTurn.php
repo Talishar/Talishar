@@ -132,7 +132,6 @@
   echo("</div>");
   echo("</div>");
 
-  //$displayCombatChain = $turn[0] == "A" || $turn[0] == "B" || $turn[0] == "D" || ($turn[0] == "P" && ($turn[2] == "A" || $turn[2] == "B" || $turn[2] == "D"));
   $displayCombatChain = count($combatChain) > 0;
 
   if($displayCombatChain)
@@ -347,7 +346,7 @@
     echo CreatePopup("PITCH", [], 0, 1, "Choose a card from your pitch zone to add to the bottom of your deck", 1, $content);
   }
 
-  if(($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK") && $turn[1] == $playerID)
+  if(($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK") && $currentPlayer == $playerID)
   {
     $content = "";
     echo("<div display:inline;'>");
