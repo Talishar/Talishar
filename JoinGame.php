@@ -42,7 +42,7 @@ h2 {
 
   Decks to Try:
   <select name="decksToTry" id="decksToTry">
-    <option value="1">Arsenal Pass Rhinar CC</option>
+    <option value="1">Dori Axes CC</option>
     <option value="3">Ice Lexi Canadian Nationals CC</option>
   </select>
   <br><br>
