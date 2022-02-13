@@ -13,7 +13,7 @@
   if($decklink == "" && $deck == "")
   {
     switch ($decksToTry) {
-      case '1': $decklink = "https://fabdb.net/decks/pExqQzqV"; break;
+      case '1': $decklink = "https://fabdb.net/decks/PydXAQMY"; break;
       case '2': $decklink = "https://fabdb.net/decks/dLAwdlEX"; break;
       case '3': $decklink = "https://fabdb.net/decks/zLNlGaOr"; break;
       default: $decklink = "https://fabdb.net/decks/pExqQzqV"; break;

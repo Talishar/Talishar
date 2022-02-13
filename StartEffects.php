@@ -8,6 +8,7 @@
   include "Libraries/PlayerSettings.php";
   include "AI/CombatDummy.php";
   include "Libraries/HTTPLibraries.php";
+  include "Libraries/SHMOPLibraries.php";
   include "WriteReplay.php";
 
   //We should always have a player ID as a URL parameter
@@ -61,7 +62,9 @@
   DoGamestateUpdate();
   include "WriteGamestate.php";
 
-  header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=1");
+  WriteCache($gameName, strval(round(microtime(true) * 1000)));
+
+  header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=1");
 
 ?>
 
