@@ -12,10 +12,9 @@
     $card = $set . $card;
     $type = CardType($card);
     if($type == "") { echo($card . " not found.<br>"); ++$count; }
-    if($type == "AA" && AttackValue($card) == 0) echo($card . " Attack action has no attack.<br>");
+    if($type == "AA" && $card != "EVR138" && AttackValue($card) == 0) echo($card . " Attack action has no attack.<br>");
     if(($type != "C" && $type != "E" && $type != "W" && $type != "T") && PitchValue($card) == 0) echo($card . " has no pitch value.<br>");
   }
   echo("Total missing: " . $count);
 
 ?>
-

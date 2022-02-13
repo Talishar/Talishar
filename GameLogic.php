@@ -1110,8 +1110,8 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $blockModifier = 0;
   $cardType = CardType($cardID);
   $cardTalent = CardTalent($cardID);
-  if(SearchCurrentTurnEffects("ARC160-1", $defPlayer) && $cardType == "AA") $blockModifier += 1;
-  if(SearchCurrentTurnEffects("EVR186", $defPlayer) && $cardType == "AA") $blockModifier += 1;
+  if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
+  if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if(SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && ($cardTalent == "ICE" || $cardTalent == "EARTH" || $cardTalent == "ELEMENTAL")) $blockModifier += 1;
   for($i=0; $i<count($defAuras); $i+=AuraPieces())
   {
