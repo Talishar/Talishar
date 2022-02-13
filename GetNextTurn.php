@@ -25,6 +25,7 @@
 
   if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo "0"; exit; }
   else {
+  echo(strval(round(microtime(true) * 1000)) . "ENDTIMESTAMP");
   //First we need to parse the game state from the file
   include "WriteLog.php";
   include "ParseGamestate.php";
