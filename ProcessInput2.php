@@ -485,7 +485,7 @@
         {
           SetClassState($mainPlayer, $CS_EffectContext, $combatChain[$i-1]);
           ProcessHitEffect($combatChain[$i-1]);
-          if($damage >= 4) ProcessCrushEffect($combatChain[$i-1]);
+          if($damageDone >= 4) ProcessCrushEffect($combatChain[$i-1]);
           AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
         }
       }
