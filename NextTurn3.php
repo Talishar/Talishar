@@ -82,16 +82,15 @@
   }
 
   function CheckReloadNeeded(lastUpdate) {
-    var d = new Date();
-    var seconds = Math.round(d.getTime());
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         if(parseInt(this.responseText) != 0)
         {
           HideCardDetail();
-          document.getElementById("mainDiv").innerHTML = this.responseText;
-          CheckReloadNeeded(seconds);
+          var responseArr = this.responseText.split("ENDTIMESTAMP");
+          document.getElementById("mainDiv").innerHTML = responseArr[1];
+          CheckReloadNeeded(parseInt(responseArr[0]));
           document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
         }
         else { CheckReloadNeeded(lastUpdate); }
