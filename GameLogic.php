@@ -3,6 +3,7 @@
 include "Search.php";
 include "CardLogic.php";
 include "AuraAbilities.php";
+include "ItemAbilities.php";
 include "AllyAbilities.php";
 include "LandmarkAbilities.php";
 include "WeaponLogic.php";
@@ -1936,28 +1937,6 @@ function ActivateAbilityEffects()
   $currentTurnEffects = array_values($currentTurnEffects);
 }
 
-function DestroyMainItem($index)
-{
-  global $mainPlayer;
-  DestroyItemForPlayer($mainPlayer, $index);
-}
-
-function DestroyMyItem($index)
-{
-  global $currentPlayer;
-  DestroyItemForPlayer($currentPlayer, $index);
-}
-
-function DestroyItemForPlayer($player, $index)
-{
-  $items = &GetItems($player);
-  for($i=$index+ItemPieces()-1; $i>=$index; --$i)
-  {
-    unset($items[$i]);
-  }
-  $items = array_values($items);
-}
-
 function CountPitch(&$pitch, $min=0, $max=9999)
 {
   $pitchCount = 0;
@@ -2478,6 +2457,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HEAVE": $rv = HeaveIndices(); break;
         case "BRAVOSTARSHOW": $rv = BravoStarOfTheShowIndices(); break;
         case "AURACLASS": $rv = SearchAura($player, "", "", -1, -1, $subparam); break;
+        case "AURAMAXCOST": $rv = SearchAura($player, "", "", $subparam); break;
         case "DECKAURAMAXCOST": $rv = SearchDeck($player, "", "Aura", $subparam); break;
         case "CROWNOFREFLECTION": $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST"); break;
         case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
@@ -2712,6 +2692,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cards;
     case "PLAYAURA":
       PlayAura($parameter, $player);
+      break;
+    case "DESTROYAURA":
+      DestroyAura($player, $lastResult);
       break;
     case "PARAMDELIMTOARRAY":
       return explode(",", $parameter);
@@ -3520,6 +3503,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "Banish_top_deck": if(count($deck) > 0) { $card = array_shift($deck); BanishCardForPlayer($card, $player, "DECK", "-"); } break;
         default: break;
       }
+      return "";
+    case "TALISMANOFCREMATION":
+      $discard = &GetDiscard($player);
+      $cardName = CardName($discard[$lastResult]);
+      $count = 0;
+      for($i=count($discard)-DiscardPieces(); $i>=0; $i-=DiscardPieces())
+      {
+        if(CardName($discard[$i]) == $cardName)
+        {
+          BanishCardForPlayer($discard[$i], $player, "GY");
+          RemoveGraveyard($player, $i);
+          ++$count;
+        }
+      }
+      WriteLog("Talisman of Cremation banished " . $count . " cards named " . $cardName . ".");
+      return "";
+    case "SCOUR":
+      WriteLog("Scour deals " . $parameter . " arcane damage.");
+      DealArcane($parameter, 0, "PLAYCARD", "EVR124", true);
       return "";
     default:
       return "NOTSTATIC";

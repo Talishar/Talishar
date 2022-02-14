@@ -89,8 +89,6 @@ Warrior: Shatter
 Wizard: Scour
 <br>
 Generic: Cash Out, Knick Knack Bric-a-brac
-<br>
-Potions/Amulets: Talisman of Cremation
 <?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
 ?>

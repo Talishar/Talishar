@@ -365,6 +365,13 @@ function AddGraveyard($cardID, $player, $from)
   }
 }
 
+function RemoveGraveyard($player, $index)
+{
+  $discard = &GetDiscard($player);
+  unset($discard[$index]);
+  $discard = array_values($discard);
+}
+
 function SearchCharacterAddUses($player, $uses, $type="", $subtype="")
 {
   $character = &GetPlayerCharacter($player);

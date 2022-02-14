@@ -865,6 +865,15 @@
           AddDecisionQueue("AETHERWILDFIRE", $currentPlayer, "-");
         }
         return "";
+      case "EVR124":
+        for($i=0; $i<$resourcesPaid; ++$i)
+        {
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "AURAMAXCOST,0");
+          AddDecisionQueue("CHOOSETHEIRAURA", $currentPlayer, "<-", 1);
+          AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
+        }
+        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
+        return "";
       case "EVR125": case "EVR126": case "EVR127":
         $oppTurn = $currentPlayer != $mainPlayer;
         if($cardID == "EVR125") $damage = ($oppTurn ? 6 : 4);
@@ -1388,6 +1397,16 @@
       case "Phantasm": return $hasPhantasm;
       default: return 0;
     }
+  }
+
+  function TalismanOfCremationBanishPlay()
+  {
+    global $currentPlayer;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose a card to banish with Talisman of Cremation.");
+    AddDecisionQueue("FINDINDICES", $otherPlayer, "GY");
+    AddDecisionQueue("MAYCHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
+    AddDecisionQueue("TALISMANOFCREMATION", $otherPlayer, "-", 1);
   }
 
 ?>

@@ -12,6 +12,11 @@
     return 1;
   }
 
+  function DiscardPieces()
+  {
+    return 1;
+  }
+
   //0 = ID
   //1 = Status (2=ready, 1=unavailable, 0=destroyed)
   //2 = Num counters

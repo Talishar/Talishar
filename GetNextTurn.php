@@ -309,9 +309,19 @@
     ChoosePopup($theirHand, $turn[2], 16, "Choose a card from their hand");
   }
 
+  if(($turn[0] == "CHOOSETHEIRAURA") && $turn[1] == $playerID)
+  {
+    ChoosePopup($theirAuras, $turn[2], 16, "Choose one of their auras");
+  }
+
   if(($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
     ChoosePopup($myDiscard, $turn[2], 16, "Choose a card from your discard");
+  }
+
+  if(($turn[0] == "MAYCHOOSETHEIRDISCARD") && $turn[1] == $playerID)
+  {
+    ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from their discard");
   }
 
   if($turn[0] == "CHOOSECOMBATCHAIN" && $turn[1] == $playerID)
