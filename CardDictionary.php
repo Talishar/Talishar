@@ -1622,6 +1622,7 @@
       case "ELE233": return count($myHand) != 1;
       case "ELE234": return count($myHand) == 0;
       case "ELE236": return !HasTakenDamage($currentPlayer);
+      case "EVR054": return count($combatChain) == 0 || CardType($combatChain[0]) != "W" || Is1H($combatChain[0]);
       case "EVR060": case "EVR061": case "EVR062": return count($combatChain) == 0 || CardType($combatChain[0]) != "W" || !Is1H($combatChain[0]);
       case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) < 1;
       case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
