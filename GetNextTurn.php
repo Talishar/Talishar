@@ -40,7 +40,9 @@
 
   if(count($turn) == 0)
   {
-    echo("The game seems not to have loaded properly. Please try restarting the game.");
+    WriteLog("There was an issue loading the gamestate. Attempting to revert to the last gamestate. If the issue persists, you may need to restart the game.");
+    RevertGamestate();
+    WriteCache($gameName, strval(round(microtime(true) * 1000)));
     exit();
   }
 
@@ -567,7 +569,7 @@
   //Now display Auras and items
   $permTop = intval(GetCharacterBottom("C", "")) + $cardSize;
   $permHeight = $cardSize * 2 + 30;
-  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; height:" . $permHeight . "px;'>");
+  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if(count($myAuras) > 0)
   {

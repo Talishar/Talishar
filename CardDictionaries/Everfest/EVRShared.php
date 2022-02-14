@@ -750,6 +750,11 @@
         $card = array_shift($deck);
         BanishCardForPlayer($deck[0], $currentPlayer, "DECK", "TCC");
         return "Helm of the Sharp Eye banished a card. It is playable to this combat chain.";
+      case "EVR054":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR054", 1);
+        return "";
       case "EVR055":
         $numCopper = CountItem("CRU197", $currentPlayer);
         if($numCopper == 0) return "No copper.";
