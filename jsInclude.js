@@ -89,11 +89,12 @@ function ReloadChat(lastUpdate)
   xmlhttp.send();
 }
 
-function SubmitInput(mode, params)
+function SubmitInput(mode, params, fullRefresh=false)
 {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
+      if(fullRefresh) location.reload();
     }
   }
   var ajaxLink = "ProcessInput2.php?gameName=" + document.getElementById("gameName").value;

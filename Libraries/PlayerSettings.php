@@ -64,8 +64,8 @@
     if($settings[$SET_AlwaysHoldPriority] == 0) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "24px");
     else $rv .= CreateButton($player, "Auto-Pass All Layers", 26, $SET_AlwaysHoldPriority . "-0", "24px");
     $rv .= "<BR>";
-    if($settings[$SET_DarkMode] == 0) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px");
-    else $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px");
+    if($settings[$SET_DarkMode] == 0) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px", "", "", true);
+    else $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);
 /*
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");

@@ -45,17 +45,17 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="")
+  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false)
   {
     global $gameName;
     if($image != "")
     {
-      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'>";
+      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'>";
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'>" . $caption . "</button>";
+    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'>" . $caption . "</button>";
     return $rv;
   }
-  
+
   function ProcessInputLink($player, $mode, $input)
   {
     global $gameName;
