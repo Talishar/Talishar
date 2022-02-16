@@ -2243,7 +2243,7 @@ function SteamCounterLogic($item, $playerID)
 
 function IsDominateActive()
 {
-  global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $characterPieces, $combatChain;
+  global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $characterPieces, $combatChain, $combatChainState;
   global $CS_NumAuras, $CS_NumBoosted;
   if(SearchCurrentTurnEffectsForCycle("EVR097", "EVR098", "EVR099", $mainPlayer)) return false;
   $characterEffects = GetCharacterEffects($mainPlayer);
@@ -2253,7 +2253,7 @@ function IsDominateActive()
   }
   for($i=0; $i<count($characterEffects); $i+=CharacterEffectPieces())
   {
-    if($characterEffects[$i] == $CCS_WeaponIndex * CharacterPieces())
+    if($characterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
     {
       switch($characterEffects[$i+1])
       {
