@@ -1446,6 +1446,7 @@
     $restriction = "";
     $cardType = CardType($cardID);
     $subtype = CardSubType($cardID);
+    if($phase == "B" && $from == "BANISH") return false;
     if($phase == "B" && $cardType == "E") { $restriction = ($myCharacter[$index+6] == 1 ? "On combat chain" : ""); return $myCharacter[$index+6] == 0; }
     if(($phase == "B" || ($phase == "D" && $cardType == "DR")) && $from == "HAND")
     {
@@ -1552,6 +1553,7 @@
       case "WTR080":
         if(count($combatChain) == 0) return true;
         return !HasCombo($combatChain[0]);
+      case "WTR082": return count($combatChain) == 0 || CardClass($combatChain[0]) != "NINJA" || CardType($combatChain[0]) != "AA";
       case "WTR116":
         return GetClassState($playerID, $CS_HitsWithWeapon) == 0;
       case "WTR120": case "WTR121":
