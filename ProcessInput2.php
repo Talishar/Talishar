@@ -802,13 +802,14 @@ function FinalizeChainLink($chainClosed=false)
             {
               SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
               $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
-              if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] = $dynCostResolved;
-              else $resources[1] = ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
+              if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] += $dynCostResolved;
+              else $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
               if($resources[1] < 0) $resources[1] = 0;
               LogResourcesUsedStats($currentPlayer, $resources[1]);
             }
             else
             {
+              $resources[1] = 0;
               if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
               else $dynCost = DynamicCost($cardID);
               //GetLayerTarget($cardID);
