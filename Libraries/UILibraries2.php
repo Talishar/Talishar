@@ -45,14 +45,16 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false)
+  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false, $fullReload=false)
   {
     global $gameName;
+    if($fullReload) $onClick = "\"document.location.href = './ProcessInput2.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\"";
+    else $onClick = "'SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'";
     if($image != "")
     {
-      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'>";
+      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=$onClick>";
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'>" . $caption . "</button>";
+    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
     return $rv;
   }
 

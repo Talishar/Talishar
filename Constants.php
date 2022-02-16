@@ -167,6 +167,7 @@
   $CCS_CardTypeDefenseRequirement = 21;
   $CCS_CachedTotalAttack = 22;
   $CCS_CachedTotalBlock = 23;
+  $CCS_CombatDamageReplaced = 24;//CR 6.5.3, CR 6.5.4 (CR 2.0)
 
   function ResetCombatChainState()
   {
@@ -222,7 +223,7 @@
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced;
     WriteLog("The chain link was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
@@ -240,6 +241,7 @@
     $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
     $combatChainState[$CCS_CachedTotalAttack] = 0;
     $combatChainState[$CCS_CachedTotalBlock] = 0;
+    $combatChainState[$CCS_CombatDamageReplaced] = 0;
   }
 
   function ResetMainClassState()

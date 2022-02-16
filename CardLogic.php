@@ -121,7 +121,7 @@ function BottomDeck()
   {
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-    AddDecisionQueue("DISCARDMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
   }
 }

@@ -3523,6 +3523,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Scour deals " . $parameter . " arcane damage.");
       DealArcane($parameter, 0, "PLAYCARD", "EVR124", true);
       return "";
+    case "RESOLVECHAINLINK":
+      ResolveChainLink();
+      return "";
     default:
       return "NOTSTATIC";
   }
