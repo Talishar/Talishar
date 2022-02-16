@@ -417,7 +417,8 @@
     {
       if($turn[2] == "D")
       {
-        return ResolveChainLink();
+        return BeginChainLinkResolution();
+        return 0;
       }
       else
       {
@@ -430,7 +431,8 @@
     {
       if($turn[2] == "A")
       {
-        return ResolveChainLink();
+        return BeginChainLinkResolution();
+        return 0;
       }
       else
       {
@@ -440,6 +442,14 @@
       }
     }
     return 0;
+  }
+
+  function BeginChainLinkResolution()
+  {
+    global $mainPlayer, $turn;
+    $turn[0] = "M";
+    AddDecisionQueue("RESOLVECHAINLINK", $mainPlayer, "-");
+    ProcessDecisionQueue();
   }
 
   function ResolveChainLink()
@@ -524,7 +534,6 @@
       $combatChainState[$CCS_HitsInRow] = 0;
     }
     AddDecisionQueue("FINALIZECHAINLINK", $mainPlayer, "-");
-    $turn[0] = "M";
     $currentPlayer = $mainPlayer;
     ProcessDecisionQueue();//Any combat related decision queue logic should be main player gamestate
 }
@@ -608,6 +617,8 @@ function FinalizeChainLink($chainClosed=false)
     else
     {
       ResetChainLinkState();
+      //$turn[0] = "M";
+      //FinalizeAction();
     }
   }
 

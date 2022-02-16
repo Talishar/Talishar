@@ -165,7 +165,7 @@
 
   if($turn[0] == "OVER")
   {
-    $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px");
+    $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
     if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100000, 0, "24px");
     $content .= CardStats($playerID);
     echo CreatePopup("OVER", [], 0, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);

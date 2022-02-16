@@ -1537,7 +1537,7 @@
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
     if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && $from != "PLAY")  {$restriction = "ELE035"; return true; }//TODO: Is this right?
-    if(CardType($cardID) == "A" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) || SearchItemsForCard("EVR071", 2))) return true;
+    if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) || SearchItemsForCard("EVR071", 2))) return true;
     switch($cardID)
     {
       case "ARC005": return $myClassState[$CS_NumBoosted] < 1;
