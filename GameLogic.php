@@ -3317,6 +3317,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "THEIRAURAS": DestroyAura($otherP, $index); break;
         case "MYHAND": DiscardIndex($player, $index); break;
         case "MYITEMS": DestroyItemForPlayer($player, $index); break;
+        case "MYCHAR": DestroyCharacter($player, $index); break;
         default: break;
       }
       return $lastResult;
@@ -3570,6 +3571,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("CHOOSEDECK", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
       }
+      return "";
+    case "CASHOUTCONTINUE":
+      PrependDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
+      PrependDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
+      PrependDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
+      PrependDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      PrependDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       return "";
     default:
       return "NOTSTATIC";
