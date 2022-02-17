@@ -806,6 +806,38 @@ function ProcessMissEffect($cardID)
   }
 }
 
+function ChainLinkBeginResolutionEffects()
+{
+  global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex;
+  if(CardType($combatChain[0]) == "W")
+  {
+    $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
+    $index = $combatChainState[$CCS_WeaponIndex];
+    for($i=0; $i<count($mainCharacterEffects); $i+=CharacterEffectPieces())
+    {
+      WriteLog($mainCharacterEffects[$i]);
+      if($mainCharacterEffects[$i] == $index)
+      {
+        switch($mainCharacterEffects[$i+1])
+        {
+          case "EVR054":
+            $pendingDamage = CachedTotalAttack() - CachedTotalBlock();
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Currently $pendingDamage damage would be dealt. Do you want to destroy a defending equipment instead?");
+            AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_a_blocking_equipment_instead_of_dealing_damage");
+            AddDecisionQueue("NOPASS", $mainPlayer, "-");
+            AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
+            AddDecisionQueue("SETCOMBATCHAINSTATE", $mainPlayer, $CCS_CombatDamageReplaced, 1);
+            AddDecisionQueue("FINDINDICES", $defPlayer, "SHATTER,$pendingDamage", 1);
+            AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+            AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
+            break;
+          default: break;
+        }
+      }
+    }
+  }
+}
+
 function CombatChainResolutionEffects($cardID, $player)
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $mainPitch;
@@ -2463,6 +2495,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "LIFEOFPARTY": $rv = LifeOfThePartyIndices(); break;
         case "COALESCENTMIRAGE": $rv = SearchHand($player, "", "Aura", -1, 0, "ILLUSIONIST"); break;
         case "MASKPOUNCINGLYNX": $rv = SearchDeck($player, "AA", "", -1, -1, "", "", false, false, -1, false, 2); break;
+        case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
+        case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
+        case "CASHOUT": $rv = CashOutIndices($player); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
@@ -3392,6 +3427,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "INCDQVAR":
       $dqVars[$parameter] += $lastResult;
       return $lastResult;
+    case "DIVIDE":
+      return floor($lastResult / $parameter);
     case "DQVARPASSIFSET":
       if($dqVars[$parameter] == "1") return "PASS";
       return "PROCEED";
@@ -3525,6 +3562,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "RESOLVECHAINLINK":
       ResolveChainLink();
+      return "";
+    case "KNICKKNACK":
+      for($i=0; $i<($dqVars[0]+1); ++$i)
+      {
+        PrependDecisionQueue("PUTPLAY", $player, "-", 1);
+        PrependDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
+      }
       return "";
     default:
       return "NOTSTATIC";
