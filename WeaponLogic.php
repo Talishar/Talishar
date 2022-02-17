@@ -8,7 +8,7 @@ function WeaponIndices($chooser, $player, $subtype="")
   $weapons = "";
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
-    if(CardType($character[$i]) == "W" && ($subtype == "" || CardSubType($character[$i]) == $subtype))
+    if($character[$i+1] != 0 && CardType($character[$i]) == "W" && ($subtype == "" || CardSubType($character[$i]) == $subtype))
     {
       if($weapons != "") $weapons .= ",";
       $weapons .= $whoPrefix . "CHAR-" . $i;

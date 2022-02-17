@@ -498,7 +498,7 @@ function GetEquipmentIndices($player, $maxBlock=-1)
   $indices = "";
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
-    if(CardType($character[$i]) == "E" && ($maxBlock == -1 || (BlockValue($character[$i]) + $character[$i+4]) <= $maxBlock))
+    if($character[$i+1] != 0 && CardType($character[$i]) == "E" && ($maxBlock == -1 || (BlockValue($character[$i]) + $character[$i+4]) <= $maxBlock))
     {
       if($indices != "") $indices .= ",";
       $indices .= $i;

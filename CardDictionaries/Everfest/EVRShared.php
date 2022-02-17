@@ -1451,7 +1451,7 @@
   function CashOutIndices($player)
   {
     $equipIndices = SearchMultizoneFormat(GetEquipmentIndices($player), "MYCHAR");
-    $weaponIndices = WeaponIndices($chooser, $player);
+    $weaponIndices = WeaponIndices($player, $player);
     $itemIndices = SearchMultizoneFormat(SearchItems($player, "A"), "MYITEMS");
     $rv = CombineSearches($equipIndices, $weaponIndices);
     return CombineSearches($rv, $itemIndices);

@@ -1194,8 +1194,14 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         break;
       case "EVR158":
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
+        AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
+        AddDecisionQueue("CASHOUTCONTINUE", $currentPlayer, "-", 1);
         break;
       case "EVR159":
         $numCopper = CountItem("CRU197", $currentPlayer);
