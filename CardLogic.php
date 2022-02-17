@@ -65,6 +65,7 @@ function KatsuHit($index)
 function RandomHandBottomDeck($player)
 {
   $hand = &GetHand($player);
+  if(count($hand) == 0) return;
   $index = rand() % count($hand);
   $discarded = $hand[$index];
   unset($hand[$index]);
@@ -243,7 +244,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
     global $layers, $layerPriority, $dqVars;
-    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY")
+    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
@@ -313,6 +314,14 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         $decisionQueue = [];
         if($lastResult == "") $lastResult = 0;
         PlayCard($params[0], $params[1], $lastResult, $params[2]);
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK")
+      {
+        array_shift($turn);
+        array_shift($turn);
+        array_shift($turn);
+        $decisionQueue = [];
+        ResolveChainLink();
       }
       else
       {
