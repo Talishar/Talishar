@@ -1414,4 +1414,46 @@
     AddDecisionQueue("TALISMANOFCREMATION", $otherPlayer, "-", 1);
   }
 
+  function ShatterIndices($player, $pendingDamage)
+  {
+    $character = &GetPlayerCharacter($player);
+    $indices = "";
+    for($i=0; $i<count($character); $i+=CharacterPieces())
+    {
+      if($character[$i+6] == 1 && $character[$i+1] != 0 && CardType($character[$i]) == "E" && (BlockValue($character[$i]) - $character[$i+4]) < $pendingDamage)
+      {
+        if($indices != "") $indices .= ",";
+        $indices .= $i;
+      }
+    }
+    return $indices;
+  }
+
+  function KnickKnackIndices($player)
+  {
+    $deck = &GetDeck($player);
+    $indices = "";
+    for($i=0; $i<count($deck); $i+=DeckPieces())
+    {
+      if(CardSubType($deck[$i]) == "Item")
+      {
+        $name = CardName($deck[$i]);
+        if(str_contains($name, "Potion") || str_contains($name, "Talisman") || str_contains($name, "Amulet"))
+        {
+          if($indices != "") $indices .= ",";
+          $indices .= $i;
+        }
+      }
+    }
+    return $indices;
+  }
+
+  function CashOutIndices($player)
+  {
+    $equipIndices = SearchMultizoneFormat(GetEquipmentIndices($player), "MYCHAR");
+    $weaponIndices = WeaponIndices($chooser, $player);
+    $itemIndices = SearchMultizoneFormat(SearchItems($player, "A"), "MYITEMS");
+    $rv = CombineSearches($equipIndices, $weaponIndices);
+    return CombineSearches($rv, $itemIndices);
+  }
 ?>

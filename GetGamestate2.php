@@ -104,7 +104,7 @@
       {
         $charEquipOut .= $charEquip[$j+$i] . " ";
       }
-      $charEquipOut .= $border;
+      $charEquipOut .= $border . " " . CardSubType($charEquip[$i]);
     }
     echo($charEquipOut . "<BR>");
     echo(implode(" ", $resources) . "<BR>");

@@ -84,9 +84,7 @@ body {
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h3>
 <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Everfest Update! 2/4/21</h2>
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported EXCEPT:</h3>
-Warrior: Shatter
-<br>
-Generic: Cash Out, Knick Knack Bric-a-brac
+Generic: Cash Out
 <?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
 ?>

@@ -448,6 +448,7 @@
   {
     global $mainPlayer, $turn;
     $turn[0] = "M";
+    ChainLinkBeginResolutionEffects();
     AddDecisionQueue("RESOLVECHAINLINK", $mainPlayer, "-");
     ProcessDecisionQueue();
   }
@@ -457,7 +458,7 @@
     global $turn, $actionPoints, $combatChain, $currentPlayer, $mainPlayer, $defPlayer, $playerID, $defHealth, $currentTurnEffects, $currentTurnEffectsFromCombat;
     global $mainCharacter, $defCharacter, $mainDiscard, $defDiscard, $defAuras, $mainAuras;
     global $combatChainState, $actionPoints, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
-    global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_ChainAttackBuff;
+    global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_ChainAttackBuff, $CCS_CombatDamageReplaced;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CS_HitsWithWeapon, $CCS_WeaponIndex, $CS_EffectContext;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
@@ -474,7 +475,8 @@
 
     LogCombatResolutionStats($totalAttack, $totalDefense);
 
-    $damage = $totalAttack - $totalDefense;
+    if($combatChainState[$CCS_CombatDamageReplaced] == 1) $damage = 0;
+    else $damage = $totalAttack - $totalDefense;
     $damageDone = DealDamage($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
@@ -617,8 +619,6 @@ function FinalizeChainLink($chainClosed=false)
     else
     {
       ResetChainLinkState();
-      //$turn[0] = "M";
-      //FinalizeAction();
     }
   }
 
@@ -1192,6 +1192,35 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        break;
+      case "EVR158":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        break;
+      case "EVR159":
+        $numCopper = CountItem("CRU197", $currentPlayer);
+        if($numCopper > 0)
+        {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to pay");
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numCopper+1));
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-");
+          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
+          AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+          AddDecisionQueue("DIVIDE", $currentPlayer, "4");
+          AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
+        }
+        $numSilver = CountItem("EVR195", $currentPlayer);
+        if($numSilver > 0)
+        {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Silver to pay");
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numSilver+1));
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "EVR195-");
+          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
+          AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+          AddDecisionQueue("DIVIDE", $currentPlayer, "2");
+          AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
+        }
+        AddDecisionQueue("KNICKKNACK", $currentPlayer, "-");
         break;
       default:
         break;
