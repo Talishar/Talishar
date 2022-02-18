@@ -684,6 +684,7 @@
         return "Rolling Thunder gives your next Brute attack +" . $roll . ".";
       case "EVR005": case "EVR006": case "EVR007":
         $rv = "High Roller Intimidated";
+        Intimidate();
         if($cardID == "EVR005") $targetHigh = 4;
         else if($cardID == "EVR006") $targetHigh = 5;
         else if($cardID == "EVR007") $targetHigh = 6;
