@@ -5,6 +5,7 @@
   $myStateBuiltFor = -1;
 
   $filename = "./Games/" . $gameName . "/gamestate.txt";
+  if(!file_exists($filename)) { echo("This game no longer exists on the server. Please go to the main menu and create a new game."); exit; }
 
   $handler = fopen($filename, "r");
   $playerHealths = GetArray($handler);

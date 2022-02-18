@@ -5,7 +5,7 @@ function PlayAura($cardID, $player, $number=1, $isToken=false)
   global $CS_NumAuras;
   if(CardType($cardID) == "T") $isToken = true;
   $auras = &GetAuras($player);
-  if($cardID == "ARC112" && SearchCurrentTurnEffects("ARC081", $player)) ++$number;
+  if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if($cardID == "MON104")
   {
     $index = SearchArsenalReadyCard($player, "MON404");

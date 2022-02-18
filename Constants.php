@@ -212,7 +212,10 @@
     {
       for($j=0; $j<count($chainLinks[$i]); $j += ChainLinksPieces())
       {
-        if($chainLinks[$i][$j+2] == "1" && GoesWhereAfterResolving($chainLinks[$i][$j], "COMBATCHAIN") == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
+        if($chainLinks[$i][$j+2] != "1") continue;
+        $cardType = CardType($chainLinks[$i][$j]);
+        if($cardType != "AA" && $cardType != "DR" && $cardType != "AR") continue;
+        if(GoesWhereAfterResolving($chainLinks[$i][$j], "COMBATCHAIN") == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
       }
     }
     $chainLinks = [];
