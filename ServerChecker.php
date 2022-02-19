@@ -53,10 +53,9 @@ if ($handle = opendir($path)) {
             include 'MenuFiles/ParseGamefile.php';
             $status = $gameStatus;
           }
-          else if(time() - $lastRefresh > 60)
+          else if(time() - $lastRefresh > 10800)
           {
             deleteDirectory($folder);
-            //DeleteCache($gameToken);
           }
         }
 
