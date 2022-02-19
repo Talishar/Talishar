@@ -5,6 +5,15 @@
   $filename = "./Games/" . $gameName . "/gamestate.txt";
   $handler = fopen($filename, "w");
 
+  $lockTries = 0;
+  while(!flock($handler, LOCK_EX) && $lockTries < 10)
+  {
+    usleep(100000);//50ms
+    ++$lockTries;
+  }
+
+  if($lockTries == 10) exit;
+
   fwrite($handler, implode(" ", $playerHealths) . "\r\n");
 
   //Player 1

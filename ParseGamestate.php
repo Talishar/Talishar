@@ -8,6 +8,16 @@
   if(!file_exists($filename)) { echo("This game no longer exists on the server. Please go to the main menu and create a new game."); exit; }
 
   $handler = fopen($filename, "r");
+
+  $lockTries = 0;
+  while(!flock($handler, LOCK_SH) && $lockTries < 10)
+  {
+    usleep(100000);//100ms
+    ++$lockTries;
+  }
+
+  if($lockTries == 10) exit;
+
   $playerHealths = GetArray($handler);
 
   //Player 1
