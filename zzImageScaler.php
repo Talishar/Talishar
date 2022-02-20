@@ -3,13 +3,17 @@
 define('ROOTPATH', __DIR__);
 
 $path = ROOTPATH . "/NewCards";
-//$path = ROOTPATH . "/CardImages";
+$path = ROOTPATH . "/CardImages";
+
+
+//$destPath = ROOTPATH . "/TestOutput";
+
+$width = 85; $height = 120;
+$destPath = ROOTPATH . "/SmallCardImages";
+
+
+//$width = 213; $height = 300;
 //$destPath = ROOTPATH . "/BigCardImages";
-$destPath = ROOTPATH . "/TestOutput";
-$width = 85; $height = 120;
-
-
-$width = 85; $height = 120;
 
 if ($handle = opendir($path)) {
     while (false !== ($file = readdir($handle))) {
@@ -26,7 +30,7 @@ if ($handle = opendir($path)) {
         $transparent = imagecolorallocatealpha($img, 0, 0, 0, 127);
         imagefill($img, 0, 0, $transparent);
 
-        imagecopyresampled($img,$source,0,0,0,0, $width,$height,350,488);
+        imagecopyresampled($img,$source,0,0,0,0, $width,$height,imagesx($source),imagesy($source));
 
         //imagealphablending($img, false);
 
