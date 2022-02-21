@@ -15,7 +15,7 @@
     {
       if($maxHeight < 210) $folder = str_replace("CardImages", "SmallCardImages", $folder);
       else $folder = str_replace("CardImages", "BigCardImages", $folder);
-      $fileExt = ".jpg";
+      //$fileExt = ".jpg";
     }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
