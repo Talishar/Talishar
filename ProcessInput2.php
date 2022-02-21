@@ -197,7 +197,10 @@
       ContinueDecisionQueue($index);
       break;
     case 17://BUTTONINPUT
-      ContinueDecisionQueue($buttonInput);
+      if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER"))
+      {
+        ContinueDecisionQueue($buttonInput);
+      }
       break;
     case 19://MULTICHOOSEDISCARD, MULTICHOOSEHAND, MULTICHOOSEDECK
       $params = explode("-", $turn[2]);
