@@ -3,6 +3,7 @@
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
   include "Libraries/HTTPLibraries.php";
+  include "Libraries/SHMOPLibraries.php";
 
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
@@ -57,6 +58,8 @@
   $gameFile = fopen($filename, "w");
   fwrite($gameFile, "1\r\n2\r\n6");
   fclose($gameFile);
+
+  WriteCache($gameName, strval(round(microtime(true) * 1000)));//Initialize SHMOP cache for this game
 
   header("Location: " . $redirectPath . "/StartEffects.php?gameName=$gameName&playerID=1");
 
