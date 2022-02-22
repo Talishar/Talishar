@@ -142,6 +142,7 @@
   }
 
   echo("<div style='position:fixed; left:290px; top:150px;'>");
+
   //Display the combat chain
   if($displayCombatChain)
   {
@@ -161,6 +162,20 @@
   }
 
   echo("</div>");//Combat chain div
+
+
+  if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
+  {
+    $content = "";
+    $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
+    $content .= "<div display:inline;'>";
+    for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
+    {
+      $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
+    }
+    $content .= "</div>";
+    echo CreatePopup("INSTANT", [], 0, 1, "", 1, $content, "./", false, true);
+  }
 
   if($turn[0] == "OVER")
   {
@@ -274,20 +289,6 @@
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
-  }
-
-  if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
-  {
-    $content = "";
-    $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
-    $content .= "<div display:inline;'>";
-    for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
-    {
-      $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
-    }
-    $content .= "</div>";
-    $popupCaption = ($playerID == $turn[1] ? "Please choose " . TypeToPlay($turn[0]) : "Waiting for other player to choose " . TypeToPlay($turn[0]));
-    echo CreatePopup("INSTANT", [], 0, 1, $popupCaption, 1, $content);
   }
 
   if($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID)
@@ -727,6 +728,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
       case "CHOOSEBANISH": return 0;
       case "BUTTONINPUTNOPASS": return 0;
       case "CHOOSEFIRSTPLAYER": return 0;
+      case "MULTICHOOSEDECK": return 0;
       default: return 1;
     }
   }
