@@ -821,16 +821,18 @@ function FinalizeChainLink($chainClosed=false)
         }
         else
         {
+          //CR 5.1.3 Declare Costs Begin (CR 2.0)
           $resources[1] = 0;
           if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
-          else $dynCost = DynamicCost($cardID);
-          //GetLayerTarget($cardID);
-          if($turn[0] != "B") AddPrePitchDecisionQueue($cardID, $index);
+          else $dynCost = DynamicCost($cardID);//CR 5.1.3a Declare variable cost (CR 2.0)
+          if($turn[0] != "B") AddPrePitchDecisionQueue($cardID, $index);//CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
           if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
           AddPostPitchDecisionQueue($cardID, $from, $index);
           if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
           AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
           ProcessDecisionQueue();
+          //MISSING CR 5.1.3d Decide if action that can be played as instant will be
+          //MISSING CR 5.1.3e Decide order of costs to be paid
           return;
         }
     }
@@ -938,6 +940,7 @@ function FinalizeChainLink($chainClosed=false)
     }
 
     //Pay additional costs
+    //CR 5.1.4b Declare target of attack
     if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
     if($turn[0] == "B")//If a layer is not created
     {
