@@ -40,7 +40,6 @@
 
   if(count($turn) == 0)
   {
-    WriteLog("There was an issue loading the gamestate. Attempting to revert to the last gamestate. If the issue persists, you may need to restart the game.");
     RevertGamestate();
     WriteCache($gameName, strval(round(microtime(true) * 1000)));
     exit();
@@ -414,7 +413,8 @@
 
   //Display Their Deck
   echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; top:" . GetZoneTop("THEIRDECK") .";'>");
-  echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, 0, count($theirDeck)));
+  $deckImage = (count($theirDeck) > 0 ? "cardBack" : $blankZone);
+  echo(Card($deckImage, "CardImages", $cardSize, 0, 0, 0, 0, count($theirDeck)));
   echo("</div>");
 
   //Display Their Banish
@@ -650,7 +650,8 @@
 
   //Display My Deck
   echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") .";'>");
-  echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, 0, count($myDeck)));
+  $deckImage = (count($myDeck) > 0 ? "cardBack" : $blankZone);
+  echo(Card($deckImage, "CardImages", $cardSize, 0, 0, 0, 0, count($myDeck)));
   echo("</div>");
 
   //Display My Banish

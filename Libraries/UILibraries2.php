@@ -149,7 +149,7 @@
     $totalBlocked = 0;
     $numTurns = 0;
     $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
-    if(count($turnStats) > 0)
+    if(count($turnStats) >= $i+$TurnStats_DamageBlocked)
     {
       for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
       {

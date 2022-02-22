@@ -367,7 +367,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
   {
     $damage += CurrentEffectDamageModifiers($source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $otherPlayer); }
   }
@@ -448,7 +448,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   {
     $damage += CurrentEffectDamageModifiers($source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && $otherCharacter[1] == "2" && CardType($source) == "AA") PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $otherPlayer); }
   }
@@ -601,7 +601,7 @@ function PlayerLoseHealth($player, $amount)
   $health -= $amount;
   if($health <= 0)
   {
-    PlayerWon($player);
+    PlayerWon(($player == 1 ? 2 : 1));
   }
 }
 
@@ -1077,6 +1077,7 @@ function SetFirstPlayer($player)
 }
 
 function RemoveArsenalEffects($player, $cardToReturn){
+  SearchCurrentTurnEffects("EVR087", $player, true); //If Dreadbore was played before, its effect on the removed Arsenal card should be removed
   SearchCurrentTurnEffects("ARC042", $player, true); //If Bull's Eye Bracers was played before, its effect on the removed Arsenal card should be removed
   if($cardToReturn == "ARC057" ){SearchCurrentTurnEffects("ARC057", $player, true);} //If the card removed from arsenal is 'Head Shot', remove its current turn effect.
   if($cardToReturn == "ARC058" ){SearchCurrentTurnEffects("ARC058", $player, true);} //Else, another 'Head Shot' played this turn would get dubble buff.

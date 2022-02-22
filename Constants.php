@@ -214,7 +214,7 @@
       {
         if($chainLinks[$i][$j+2] != "1") continue;
         $cardType = CardType($chainLinks[$i][$j]);
-        if($cardType != "AA" && $cardType != "DR" && $cardType != "AR") continue;
+        if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A") continue;
         if(GoesWhereAfterResolving($chainLinks[$i][$j], "COMBATCHAIN") == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
       }
     }

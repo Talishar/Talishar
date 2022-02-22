@@ -202,7 +202,8 @@
         ContinueDecisionQueue($buttonInput);
       }
       break;
-    case 19://MULTICHOOSEDISCARD, MULTICHOOSEHAND, MULTICHOOSEDECK
+    case 19://MULTICHOOSE X
+      if(substr($turn[0], 0, 11) != "MULTICHOOSE") break;
       $params = explode("-", $turn[2]);
       $maxSelect = intval($params[0]);
       $options = explode(",", $params[1]);
@@ -607,7 +608,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       array_push($chainLinks[$CLIndex], $combatChain[$i-1]);//Card ID
       array_push($chainLinks[$CLIndex], $combatChain[$i]);//Player ID
-      array_push($chainLinks[$CLIndex], ($goesWhere == "GY" ? "1" : "0"));//Still on chain? 1 = yes, 0 = no
+      array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[2] != "PLAY" ? "1" : "0"));//Still on chain? 1 = yes, 0 = no
     }
     CopyCurrentTurnEffectsFromCombat();
     CheckDestroyTemper();
@@ -911,6 +912,7 @@ function FinalizeChainLink($chainClosed=false)
             if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
             CombatChainPlayAbility($cardID);
             ItemPlayAbilities($cardID, $from);
+            ResetCardPlayed($cardID);
           }
           if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
           {
@@ -1303,7 +1305,6 @@ function FinalizeChainLink($chainClosed=false)
     {
       if($from != "PLAY")
       {
-        ResetCardPlayed($cardID);
         CurrentEffectPlayAbility($cardID);
         AuraPlayAbilities($cardID, $from);
         ArsenalPlayCardAbilities($cardID);
