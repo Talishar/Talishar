@@ -803,153 +803,151 @@ function FinalizeChainLink($chainClosed=false)
     $layerPriority[1] = ShouldHoldPriority(2);
     if($dynCostResolved == -1)
     {
+      //CR 5.1.2 Announce (CR 2.0)
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);
       if($turn[0] != "P" && $turn[0] != "B") { MakeGamestateBackup(); $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; }
     }
-    //If it's not pitch phase, pay the cost
-        //if($from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
-        //else $cardType = CardType($cardID);
-        if($turn[0] != "P")
+    if($turn[0] != "P")
+    {
+        if($dynCostResolved >= 0)
         {
-            if($dynCostResolved >= 0)
-            {
-              SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
-              $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
-              if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] += $dynCostResolved;
-              else $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
-              if($resources[1] < 0) $resources[1] = 0;
-              LogResourcesUsedStats($currentPlayer, $resources[1]);
-            }
-            else
-            {
-              $resources[1] = 0;
-              if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
-              else $dynCost = DynamicCost($cardID);
-              //GetLayerTarget($cardID);
-              if($turn[0] != "B") AddPrePitchDecisionQueue($cardID, $index);
-              if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
-              AddPostPitchDecisionQueue($cardID, $from, $index);
-              if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
-              AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
-              ProcessDecisionQueue();
-              return;
-            }
-        }
-        else if($turn[0] == "P")
-        {
-          $pitchValue = PitchValue($cardID);
-          if($pitchValue == 1)
-          {
-            $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
-            if($talismanOfRecompenseIndex > -1)
-            {
-              WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
-              DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
-              $pitchValue = 3;
-            }
-          }
-          $resources[0] += $pitchValue;
-          if(SearchCharacterActive($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
-          { $resources[0] += 1; }
-          array_push($pitch, $cardID);
-          AddThisCardPitch($currentPlayer, $cardID);
-          PitchAbility($cardID);
-        }
-        if($resources[0] < $resources[1])
-        {
-          if($turn[0] != "P")
-          {
-            $turn[2] = $turn[0];
-            $turn[3] = $cardID;
-            $turn[4] = $from;
-          }
-          $turn[0] = "P";
-          return;//We know we need to pitch more, short circuit here
-        }
-        $resources[0] -= $resources[1];
-        $resourcesPaid = $resources[1];
-        $resources[1] = 0;
-        if($turn[0] == "P")
-        {
-          $turn[0] = $turn[2];
-          $cardID = $turn[3];
-          $from = $turn[4];
-        }
-        $cardType = CardType($cardID);
-        //We've paid resources, now pay action points if applicable
-        if($turn[0] != "B")// || $cardType == "I" || CanPlayAsInstant($cardID))
-        {
-          $abilityType = GetAbilityType($cardID);
-          $goAgainPrevented = CurrentEffectPreventsGoAgain();
-          //if($from == "PLAY" || $from == "EQUIP")
-          if(IsStaticType($cardType, $from, $cardID))
-          {
-            $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
-            $hasGoAgain = AbilityHasGoAgain($cardID);
-            if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-            else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
-            else if($abilityType == "AA") --$actionPoints;//Always resolve this after combat chain
-            if($abilityType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
-            PayAbilityAdditionalCosts($cardID);
-            ActivateAbilityEffects();
-          }
-          else
-          {
-            $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
-            $hasGoAgain = HasGoAgain($cardID);
-            if(GetClassState($currentPlayer, $CS_NextNAACardGoAgain) && $cardType == "A")
-            {
-              $hasGoAgain = true;
-              SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
-            }
-            if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
-            if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-            else if(($cardType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
-            else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
-            if($cardType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
-            if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
-            CombatChainPlayAbility($cardID);
-            ItemPlayAbilities($cardID, $from);
-            ResetCardPlayed($cardID);
-          }
-          if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
-          {
-            if($cardType == "A")
-            {
-              IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
-              if(CardClass($cardID) == "WIZARD") { IncrementClassState($currentPlayer, $CS_NumWizardNonAttack); }
-            }
-            IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
-          }
-          if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
-          if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
-          PayAdditionalCosts($cardID, $from);
-        }
-        if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards);//Played or blocked
-
-        if($from == "BANISH")
-        {
-          $index = GetClassState($currentPlayer, $CS_PlayIndex);
-          $banish = &GetBanish($currentPlayer);
-          for($i=$index+BanishPieces()-1; $i>=$index; --$i)
-          {
-            unset($banish[$i]);
-          }
-          $banish = array_values($banish);
-        }
-
-        //Pay additional costs
-        if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
-        if($turn[0] == "B")//If a layer is not created
-        {
-          AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "-" . $from . "-" . $resourcesPaid);
+          SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
+          $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
+          if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] += $dynCostResolved;
+          else $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
+          if($resources[1] < 0) $resources[1] = 0;
+          LogResourcesUsedStats($currentPlayer, $resources[1]);
         }
         else
         {
-          AddLayer($cardID, $currentPlayer, $from . "-" . $resourcesPaid, GetClassState($currentPlayer, $CS_LayerTarget));
+          $resources[1] = 0;
+          if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
+          else $dynCost = DynamicCost($cardID);
+          //GetLayerTarget($cardID);
+          if($turn[0] != "B") AddPrePitchDecisionQueue($cardID, $index);
+          if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
+          AddPostPitchDecisionQueue($cardID, $from, $index);
+          if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
+          AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
+          ProcessDecisionQueue();
+          return;
         }
-        ProcessDecisionQueue();
+    }
+    else if($turn[0] == "P")
+    {
+      $pitchValue = PitchValue($cardID);
+      if($pitchValue == 1)
+      {
+        $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
+        if($talismanOfRecompenseIndex > -1)
+        {
+          WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
+          DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
+          $pitchValue = 3;
+        }
+      }
+      $resources[0] += $pitchValue;
+      if(SearchCharacterActive($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
+      { $resources[0] += 1; }
+      array_push($pitch, $cardID);
+      AddThisCardPitch($currentPlayer, $cardID);
+      PitchAbility($cardID);
+    }
+    if($resources[0] < $resources[1])
+    {
+      if($turn[0] != "P")
+      {
+        $turn[2] = $turn[0];
+        $turn[3] = $cardID;
+        $turn[4] = $from;
+      }
+      $turn[0] = "P";
+      return;//We know we need to pitch more, short circuit here
+    }
+    $resources[0] -= $resources[1];
+    $resourcesPaid = $resources[1];
+    $resources[1] = 0;
+    if($turn[0] == "P")
+    {
+      $turn[0] = $turn[2];
+      $cardID = $turn[3];
+      $from = $turn[4];
+    }
+    $cardType = CardType($cardID);
+    //We've paid resources, now pay action points if applicable
+    if($turn[0] != "B")// || $cardType == "I" || CanPlayAsInstant($cardID))
+    {
+      $abilityType = GetAbilityType($cardID);
+      $goAgainPrevented = CurrentEffectPreventsGoAgain();
+      //if($from == "PLAY" || $from == "EQUIP")
+      if(IsStaticType($cardType, $from, $cardID))
+      {
+        $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
+        $hasGoAgain = AbilityHasGoAgain($cardID);
+        if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
+        else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+        else if($abilityType == "AA") --$actionPoints;//Always resolve this after combat chain
+        if($abilityType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
+        PayAbilityAdditionalCosts($cardID);
+        ActivateAbilityEffects();
+      }
+      else
+      {
+        $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
+        $hasGoAgain = HasGoAgain($cardID);
+        if(GetClassState($currentPlayer, $CS_NextNAACardGoAgain) && $cardType == "A")
+        {
+          $hasGoAgain = true;
+          SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
+        }
+        if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
+        if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
+        else if(($cardType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+        else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
+        if($cardType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
+        if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
+        CombatChainPlayAbility($cardID);
+        ItemPlayAbilities($cardID, $from);
+        ResetCardPlayed($cardID);
+      }
+      if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
+      {
+        if($cardType == "A")
+        {
+          IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
+          if(CardClass($cardID) == "WIZARD") { IncrementClassState($currentPlayer, $CS_NumWizardNonAttack); }
+        }
+        IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
+      }
+      if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
+      if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+      PayAdditionalCosts($cardID, $from);
+    }
+    if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards);//Played or blocked
+
+    if($from == "BANISH")
+    {
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $banish = &GetBanish($currentPlayer);
+      for($i=$index+BanishPieces()-1; $i>=$index; --$i)
+      {
+        unset($banish[$i]);
+      }
+      $banish = array_values($banish);
+    }
+
+    //Pay additional costs
+    if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
+    if($turn[0] == "B")//If a layer is not created
+    {
+      AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "-" . $from . "-" . $resourcesPaid);
+    }
+    else
+    {
+      AddLayer($cardID, $currentPlayer, $from . "-" . $resourcesPaid, GetClassState($currentPlayer, $CS_LayerTarget));
+    }
+    ProcessDecisionQueue();
   }
 
   function GetLayerTarget($cardID)
