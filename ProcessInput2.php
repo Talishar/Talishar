@@ -799,14 +799,13 @@ function FinalizeChainLink($chainClosed=false)
     $resources = &GetResources($currentPlayer);
     $pitch = &GetPitch($currentPlayer);
     $dynCostResolved = intval($dynCostResolved);
-    if($turn[0] != "P") MakeGamestateBackup();
     $layerPriority[0] = ShouldHoldPriority(1);
     $layerPriority[1] = ShouldHoldPriority(2);
     if($dynCostResolved == -1)
     {
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);
-      if($turn[0] != "P" && $turn[0] != "B") { $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; }
+      if($turn[0] != "P" && $turn[0] != "B") { MakeGamestateBackup(); $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; }
     }
     //If it's not pitch phase, pay the cost
         //if($from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
