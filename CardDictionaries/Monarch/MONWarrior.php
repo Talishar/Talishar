@@ -127,11 +127,14 @@
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
         AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
+          AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        }
         return "";
       case "MON034":
         AddCurrentTurnEffect($cardID, $currentPlayer);

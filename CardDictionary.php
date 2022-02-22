@@ -1589,6 +1589,7 @@
         $type = CardType($combatChain[0]);
         return $type != "W";
       case "CRU125": return !HasTakenDamage($currentPlayer);
+      case "CRU143": return SearchCount(SearchDiscard($currentPlayer, "AA", "", -1, -1, "RUNEBLADE")) == 0;
       case "CRU164": return count($layers) == 0;
       case "CRU186":
         if(count($combatChain) == 0) return true;
