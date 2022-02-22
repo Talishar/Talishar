@@ -211,6 +211,7 @@ function GetAltCardID($cardID)
     case "LEV002": return "MON406";
     case "PSM002": return "MON404";
     case "PSM007": return "MON402";
+    case "FAB023": return "MON135";
   }
   return $cardID;
 }
