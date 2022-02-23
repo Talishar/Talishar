@@ -630,7 +630,6 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $mainPlayer, $defPlayer, $decisionQueue;
     WriteLog("Main player has passed on the turn. Beginning end of turn step.");
-    Heave();
     if(ShouldHoldPriority($defPlayer) || count($decisionQueue) > 0)
     {
       AddLayer("ENDTURN", $mainPlayer, "-");
@@ -644,6 +643,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function FinishTurnPass()
   {
+    Heave();
     ItemEndTurnAbilities();
     AuraBeginEndStepAbilities();
     LandmarkBeginEndStepAbilities();
@@ -793,7 +793,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function PlayCard($cardID, $from, $dynCostResolved=-1, $index=-1)
   {
-    global $playerID, $turn, $currentPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul;
+    global $playerID, $turn, $currentPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
     global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
     $resources = &GetResources($currentPlayer);
@@ -807,6 +807,7 @@ function FinalizeChainLink($chainClosed=false)
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);
       if($turn[0] != "P" && $turn[0] != "B") { MakeGamestateBackup(); $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; }
+      if(count($layers) > 0 && $layers[0] == "ENDTURN") $layers[0] = "RESUMETURN";//Means the defending player played something, so the end turn attempt failed
     }
     if($turn[0] != "P")
     {

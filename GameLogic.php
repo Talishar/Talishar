@@ -918,7 +918,7 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
   if($repriseActive == -1) $repriseActive = RepriseActive();
   switch($cardID)
   {
-    case "WTR003": return ($mainClassState[$CS_Num6PowDisc] > 0 ? 1 : 0);
+    case "WTR003": return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
     case "WTR040": return CountPitch($mainPitch, 3) >= 2 ? 2 : 0;
     case "WTR080": return 1;
     case "WTR081": return $resourcesPaid;
@@ -951,9 +951,9 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "WTR209": return 3;
     case "WTR210": return 2;
     case "WTR211": return 1;
-    case "ARC077": return $mainClassState[$CS_NumNonAttackCards] > 0 ? 3 : 0;
+    case "ARC077": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 3 : 0;
     case "ARC188": case "ARC189": case "ARC190": return $combatChainState[$CCS_HitsInRow] > 0 ? 2 : 0;
-    case "CRU016": case "CRU017": case "CRU018": return $mainClassState[$CS_Num6PowDisc] > 0 ? 1 : 0;
+    case "CRU016": case "CRU017": case "CRU018": return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
     case "CRU056": return ComboActive() ? 2 : 0;
     case "CRU057": case "CRU058": case "CRU059": return ComboActive() ? 1 : 0;
     case "CRU060": case "CRU061": case "CRU062": return ComboActive() ? 1 : 0;
@@ -962,16 +962,14 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "CRU083": return 3;
     case "CRU112": case "CRU113": case "CRU114": return $combatChainState[$CCS_NumBoosted];
     case "CRU186": return 1;
-    case "MON031": return $mainClassState[$CS_NumCharged] > 0 ? 3 : 0;
-    case "MON039": return $mainClassState[$CS_NumCharged] > 0 ? 3 : 0;
-    case "MON040": return $mainClassState[$CS_NumCharged] > 0 ? 3 : 0;
-    case "MON041": return $mainClassState[$CS_NumCharged] > 0 ? 3 : 0;
-    case "MON057": return $mainClassState[$CS_NumCharged] > 0 ? 3 : 0;
-    case "MON058": return $mainClassState[$CS_NumCharged] > 0 ? 2 : 0;
-    case "MON059": return $mainClassState[$CS_NumCharged] > 0 ? 1 : 0;
-    case "MON155": return $mainClassState[$CS_NumPlayedFromBanish] > 0 ? 2 : 0;
+    case "MON031": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
+    case "MON039": case "MON040": case "MON041": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
+    case "MON057": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
+    case "MON058": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 2 : 0;
+    case "MON059": return GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 1 : 0;
+    case "MON155": return GetClassState($mainPlayer, $CS_NumPlayedFromBanish) > 0 ? 2 : 0;
     case "MON171": case "MON172": case "MON173": return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0 ? 2 : 0;
-    case "MON254": case "MON255": case "MON256": return $mainClassState[$CS_CardsBanished] > 0 ? 2 : 0;
+    case "MON254": case "MON255": case "MON256": return GetClassState($mainPlayer, $CS_CardsBanished) > 0 ? 2 : 0;
     case "MON284": case "MON285": case "MON286": return NumCardsBlocking() < 2 ? 1 : 0;
     case "MON287": case "MON288": case "MON289": return NumCardsBlocking();
     case "MON290": case "MON291": case "MON292": return count($mainAuras) >= 1 ? 1 : 0;
@@ -3277,6 +3275,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
+      if($player == 2) StatsStartTurn();
       return 1;
     case "REMOVELAST":
       if($lastResult == "") return $parameter;

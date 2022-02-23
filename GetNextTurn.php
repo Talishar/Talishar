@@ -692,7 +692,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
   if($turn[0] == "B") $trackerLeft = "85";
   else if($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
-  else if($turn[0] == "PDECK" || $turn[0] == "ARS") $trackerLeft = "158";
+  else if($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = "158";
   else if(count($chainLinks) > 0) $trackerLeft = "49";
   else $trackerLeft = "13";
   echo("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
