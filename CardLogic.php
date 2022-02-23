@@ -287,6 +287,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $layerPriority[0] = ShouldHoldPriority(1);
           $layerPriority[1] = ShouldHoldPriority(2);
           if($cardID == "ENDTURN") FinishTurnPass();
+          else if($cardID == "RESUMETURN") $turn[0] = "M";
           else PlayCardEffect($cardID, $params[0], $params[1], $target);
         }
       }
