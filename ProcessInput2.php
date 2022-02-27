@@ -688,7 +688,7 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
     global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
-    global $mainAuras, $defBanish, $firstPlayer, $lastPlayed;
+    global $mainAuras, $defBanish, $firstPlayer, $lastPlayed, $layerPriority;
     //Undo Intimidate
     for($i=0; $i<count($defBanish); $i+=2)
     {
@@ -785,6 +785,9 @@ function FinalizeChainLink($chainClosed=false)
     //Start of turn effects
     if($mainPlayer == 1) StatsStartTurn();
     StartTurnAbilities();
+
+    $layerPriority[0] = ShouldHoldPriority(1);
+    $layerPriority[1] = ShouldHoldPriority(2);
 
     ResetMainClassState();
     DoGamestateUpdate();

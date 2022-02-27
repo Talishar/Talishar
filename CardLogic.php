@@ -239,6 +239,16 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     ContinueDecisionQueue("");
   }
 
+  function ShouldHoldPriorityNow($player)
+  {
+    global $layerPriority, $layers;
+    if($layerPriority[$player-1] != "1") return false;
+    $currentLayer = $layers[count($layers) - LayerPieces()];
+    $layerType = CardType($currentLayer);
+    if(HoldPrioritySetting($player) == 3 && $layerType != "AA" && $layerType != "W") return false;
+    return true;
+  }
+
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
@@ -253,13 +263,13 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         $priorityHeld = 0;
         if($currentPlayer == 1)
         {
-          if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
-          if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
+          if(ShouldHoldPriorityNow(1)) { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
+          if(ShouldHoldPriorityNow(2)) { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
         }
         else
         {
-          if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
-          if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
+          if(ShouldHoldPriorityNow(2)) { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
+          if(ShouldHoldPriorityNow(1)) { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
         }
         if($priorityHeld)
         {
@@ -405,10 +415,12 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   }
 
 //Return whether priority should be held for the player by default/settings
-function ShouldHoldPriority($player)
+function ShouldHoldPriority($player, $layerCard="")
 {
-  if(AlwaysHoldPriority($player)) return 1;
-  if(CountItem("ARC017", $player) > 0) return 1;
+  global $mainPlayer;
+  $prioritySetting = HoldPrioritySetting($player);
+  if($prioritySetting == 1) return 1;
+  if(($prioritySetting == 2 || $prioritySetting == 3) && $player != $mainPlayer) return 1;
   return 0;
 }
 

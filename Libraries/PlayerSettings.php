@@ -5,11 +5,11 @@
   $SET_DarkMode = 2;
   $SET_ManualMode = 3;
 
-  function AlwaysHoldPriority($player)
+  function HoldPrioritySetting($player)
   {
     global $SET_AlwaysHoldPriority;
     $settings = GetSettings($player);
-    return $settings[$SET_AlwaysHoldPriority] == 1;
+    return $settings[$SET_AlwaysHoldPriority];
   }
 
   function UseNewUI($player)
@@ -61,8 +61,14 @@
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode;
     $rv = "";
     $settings = GetSettings($player);
-    if($settings[$SET_AlwaysHoldPriority] == 0) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "24px");
-    else $rv .= CreateButton($player, "Auto-Pass All Layers", 26, $SET_AlwaysHoldPriority . "-0", "24px");
+    if($settings[$SET_AlwaysHoldPriority] != 0) $rv .= CreateButton($player, "Auto-pass All Layers", 26, $SET_AlwaysHoldPriority . "-0", "24px");
+    $rv .= "<BR>";
+    if($settings[$SET_AlwaysHoldPriority] != 1) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "24px");
+    $rv .= "<BR>";
+    if($settings[$SET_AlwaysHoldPriority] != 2) $rv .= CreateButton($player, "Hold Priority All Opposing", 26, $SET_AlwaysHoldPriority . "-2", "24px");
+    $rv .= "<BR>";
+    if($settings[$SET_AlwaysHoldPriority] != 3) $rv .= CreateButton($player, "Hold Priority Opposing Attacks", 26, $SET_AlwaysHoldPriority . "-3", "24px");
+    $rv .= "<BR>";
     $rv .= "<BR>";
     if($settings[$SET_DarkMode] == 0) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px", "", "", true);
     else $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);
