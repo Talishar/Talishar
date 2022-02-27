@@ -693,7 +693,11 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
   if($turn[0] == "B") $trackerLeft = "85";
   else if($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
   else if($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = "158";
-  else if(count($chainLinks) > 0) $trackerLeft = "49";
+  else if(count($chainLinks) > 0)
+  {
+    $trackerLeft = "49";
+    if($playerID == $mainPlayer) echo("<div style='position:absolute; left:50px; bottom:10px;'><img title='Click to break the combat chain.' style='cursor:pointer; height:20px; width:30px;' src='./Images/BreakChain.png' " . ProcessInputLink($playerID, 100, 0) . " /></div>");
+  }
   else $trackerLeft = "13";
   echo("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo("</div>");

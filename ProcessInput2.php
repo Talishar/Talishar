@@ -292,6 +292,9 @@
     case 99: //Pass
       PassInput();
       break;
+    case 100: //Break Chain
+      ResetCombatChainState();
+      break;
     case 10000:
       RevertGamestate();
       $skipWriteGamestate = true;
