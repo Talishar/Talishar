@@ -40,6 +40,7 @@
   fwrite($handler, "\r\n");//Next Turn Effects
   fwrite($handler, "\r\n");//Decision Queue
   fwrite($handler, "0\r\n");//Decision Queue Variables
+  fwrite($handler, "0\r\n");//Decision Queue State
   fwrite($handler, "\r\n");//Layers
   fwrite($handler, "\r\n");//Layer Priority
   fwrite($handler, "1\r\n");//What player's turn it is

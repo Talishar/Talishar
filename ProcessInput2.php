@@ -1255,6 +1255,7 @@ function FinalizeChainLink($chainClosed=false)
     $definedCardType = CardType($cardID);
     //Figure out where it goes
     $openedChain = false;
+    $chainClosed = false;
     $isBlock = $turn[0] == "B";//This can change over the course of the function; for example if a phantasm gets popped
     if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
     else $cardType = $definedCardType;
@@ -1265,10 +1266,13 @@ function FinalizeChainLink($chainClosed=false)
       {
         $currentTurnEffectsFromCombat = [];
         $combatChainState[$CCS_AttackPlayedFrom] = $from;
-        AuraAttackAbilities($cardID);
-        ArsenalAttackAbilities();
-        OnAttackEffects($cardID);
-        ProcessAttackTarget();
+        $chainClosed = ProcessAttackTarget();
+        if(!$chainClosed || $definedCardType == "AA")
+        {
+          AuraAttackAbilities($cardID);
+          ArsenalAttackAbilities();
+          OnAttackEffects($cardID);
+        }
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         $attackValue = AttackValue($cardID);
@@ -1348,8 +1352,10 @@ function FinalizeChainLink($chainClosed=false)
       {
         DestroyAura($defPlayer, $target[1]);
         CloseCombatChain();
+        return true;
       }
     }
+    return false;
   }
 
   function ProcessAttackTargetAfterResolve()
