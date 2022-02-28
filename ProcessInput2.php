@@ -466,7 +466,7 @@
     global $mainCharacter, $defCharacter, $mainDiscard, $defDiscard, $defAuras, $mainAuras;
     global $combatChainState, $actionPoints, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_ChainAttackBuff, $CCS_CombatDamageReplaced;
-    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CS_HitsWithWeapon, $CCS_WeaponIndex, $CS_EffectContext;
+    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CS_HitsWithWeapon, $CCS_WeaponIndex, $CS_EffectContext, $chainLinkSummary;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -487,10 +487,11 @@
     $damageDone = DealDamage($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
+    array_push($chainLinkSummary, $damageDone);
 
     if($wasHit)//Resolve hit effects
     {
-      $combatChainState[$CCS_DamageDealt] = $damage;
+      $combatChainState[$CCS_DamageDealt] = $damageDone;
       ++$combatChainState[$CCS_NumHits];
       ++$combatChainState[$CCS_HitsInRow];
       if(CardType($combatChain[0]) == "W")
