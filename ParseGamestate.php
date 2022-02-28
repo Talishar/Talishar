@@ -84,6 +84,7 @@
     $chainLink = GetArray($handler);
     array_push($chainLinks, $chainLink);
   }
+  $chainLinkSummary = GetArray($handler);
   fclose($handler);
 
   BuildMyGamestate($playerID);

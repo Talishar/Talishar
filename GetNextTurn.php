@@ -153,6 +153,17 @@
     echo("<td style='font-size:30px; font-weight:bold;'>$totalDefense</td>");
     if(IsDominateActive()) echo("<td style='font-size:24px; font-weight:bold;'><img style='height:40px; display:inline-block;' src='./Images/dominate.png' /></td>");
     if(DoesAttackHaveGoAgain()) echo("<td><img title='This attack has Go Again.' style='height:30px; width:30px; display:inline-block;' src='./Images/goAgain.png' /></td>");
+    echo("<td>");
+    for($i=0; $i<count($chainLinks); ++$i)
+    {
+      echo("<div style='position:relative; display:inline-block;'><img title='Chain Link $i' style='height:30px; width:70px;' src='./Images/chainLink.png'>");
+      $damage = $chainLinkSummary[$i * ChainLinkSummaryPieces()];
+      $linkImage = ($damage > 0 ? "./Images/hit.png" : "./Images/Defense.png");
+      $linkTitle = ($damage > 0 ? "Hit for $damage damage" : "Fully Blocked");
+      echo("<div title='$linkTitle' style='position:absolute; left:25px; top:4px;'><img style='width:22px; height:22px;' src='$linkImage' /></div>");
+      echo("</img></div>");
+    }
+    echo("</td>");
     echo("</tr></table>");
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;

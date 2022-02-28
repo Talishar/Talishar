@@ -45,6 +45,7 @@
   fwrite($handler, "1\r\n");//What player's turn it is
   fwrite($handler, "\r\n");//Last Played Card
   fwrite($handler, "0\r\n");//Number of prior chain links this turn
+  fwrite($handler, "\r\n");//Chain Link Summaries
   fclose($handler);
 
   //Set up log file
