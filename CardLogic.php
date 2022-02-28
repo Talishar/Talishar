@@ -254,7 +254,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
     global $layers, $layerPriority, $dqVars;
-    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK")
+    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
@@ -337,6 +337,15 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         $dqState[0] = "0";
         $decisionQueue = [];
         ResolveChainLink();
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN")
+      {
+        array_shift($turn);
+        array_shift($turn);
+        array_shift($turn);
+        $dqState[0] = "0";
+        $decisionQueue = [];
+        PassTurn();
       }
       else
       {

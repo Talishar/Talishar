@@ -647,12 +647,14 @@ function FinalizeChainLink($chainClosed=false)
 
   function FinishTurnPass()
   {
+    global $mainPlayer;
     Heave();
     ItemEndTurnAbilities();
     AuraBeginEndStepAbilities();
     LandmarkBeginEndStepAbilities();
     BeginEndStepEffects();
-    PassTurn();
+    AddDecisionQueue("PASSTURN", $mainPlayer, "-");
+    ProcessDecisionQueue("");
   }
 
   function PassTurn()
