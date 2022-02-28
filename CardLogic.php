@@ -229,8 +229,8 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 
   function ProcessDecisionQueue()
   {
-    global $turn, $decisionQueue;
-    if($turn[0] != "INSTANT")//Or anything that can cause a card to be played
+    global $turn, $decisionQueue, $dqState;
+    if($dqState[0] != "1")
     {
       $count = count($turn);
       if(count($turn) < 3) $turn[2] = "";
@@ -280,6 +280,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           array_shift($turn);
           array_shift($turn);
           array_shift($turn);
+          $dqState[0] = "0";
           $decisionQueue = [];
           $cardID = array_shift($layers);
           $player = array_shift($layers);
@@ -306,6 +307,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         array_shift($turn);
         array_shift($turn);
         array_shift($turn);
+        $dqState[0] = "0";
         if($currentPlayer != $decisionQueue[1])
         {
           $currentPlayer = $decisionQueue[1];
@@ -321,6 +323,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         array_shift($turn);
         array_shift($turn);
         array_shift($turn);
+        $dqState[0] = "0";
         $params = explode("-", $decisionQueue[2]);//Parameter
         $decisionQueue = [];
         if($lastResult == "") $lastResult = 0;
@@ -331,6 +334,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         array_shift($turn);
         array_shift($turn);
         array_shift($turn);
+        $dqState[0] = "0";
         $decisionQueue = [];
         ResolveChainLink();
       }
@@ -339,6 +343,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         array_shift($turn);
         array_shift($turn);
         array_shift($turn);
+        $dqState[0] = "0";
         FinalizeAction();
       }
       return;

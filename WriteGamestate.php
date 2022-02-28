@@ -68,6 +68,7 @@
   fwrite($handler, implode(" ", $nextTurnEffects) . "\r\n");
   fwrite($handler, implode(" ", $decisionQueue) . "\r\n");
   fwrite($handler, implode(" ", $dqVars) . "\r\n");
+  fwrite($handler, implode(" ", $dqState) . "\r\n");
   fwrite($handler, implode(" ", $layers) . "\r\n");
   fwrite($handler, implode(" ", $layerPriority) . "\r\n");
   fwrite($handler, $mainPlayer . "\r\n");
@@ -77,7 +78,7 @@
   {
     fwrite($handler, implode(" ", $chainLinks[$i]) . "\r\n");
   }
-  fwrite($handler, implode($chainLinkSummary) . "\r\n");
+  fwrite($handler, implode(" ", $chainLinkSummary) . "\r\n");
   fclose($handler);
 
 ?>

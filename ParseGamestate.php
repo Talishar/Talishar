@@ -72,6 +72,7 @@
   $nextTurnEffects = GetArray($handler);
   $decisionQueue = GetArray($handler);
   $dqVars = GetArray($handler);
+  $dqState = GetArray($handler);
   $layers = GetArray($handler);
   $layerPriority = GetArray($handler);
   $mainPlayer = trim(fgets($handler));
