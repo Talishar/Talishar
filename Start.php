@@ -40,7 +40,7 @@
   fwrite($handler, "\r\n");//Next Turn Effects
   fwrite($handler, "\r\n");//Decision Queue
   fwrite($handler, "0\r\n");//Decision Queue Variables
-  fwrite($handler, "0\r\n");//Decision Queue State
+  fwrite($handler, "0 - - -\r\n");//Decision Queue State
   fwrite($handler, "\r\n");//Layers
   fwrite($handler, "\r\n");//Layer Priority
   fwrite($handler, "1\r\n");//What player's turn it is
@@ -138,7 +138,7 @@
     fwrite($handler, "\r\n");//Allies
     //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
     $holdPriority = "1";
-    fwrite($handler, $holdPriority . " 1 0 0\r\n");//Settings
+    fwrite($handler, $holdPriority . " 1 0 0 0 0\r\n");//Settings
   }
 
   function GetArray($handler)
