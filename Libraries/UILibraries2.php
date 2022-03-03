@@ -115,7 +115,7 @@
     global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
     global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
     $cardStats = &GetCardStats($player);
-    $rv = "<div style='float:left;'>";
+    $rv = "<div style='float:left; height:85%;'>";
     $rv .= "<h2>Card Play Stats</h2>";
     $rv .= "<table><tr><td>Card ID</td><td>Times Played</td><td>Times Blocked</td><td>Times Pitched</td></tr>";
     for($i=0; $i<count($cardStats); $i+=CardStatPieces())
@@ -138,7 +138,7 @@
     $rv .= "</table>";
     $rv .= "</div>";
     $turnStats = &GetTurnStats($player);
-    $rv .= "<div style='float:left;'>";
+    $rv .= "<div style='float:left; height:85%;'>";
     $rv .= "<h2>Turn Stats</h2>";
     if($player == $firstPlayer) $rv .= "<i>First turn omitted for first player.</i><br>";
     //Damage stats

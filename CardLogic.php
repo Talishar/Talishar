@@ -233,10 +233,24 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     if($dqState[0] != "1")
     {
       $count = count($turn);
-      if(count($turn) < 3) $turn[2] = "";
-      array_unshift($turn, "", "", "");
+      if(count($turn) < 3) $turn[2] = "-";
+      $dqState[0] = "1";
+      $dqState[1] = $turn[0];
+      $dqState[2] = $turn[1];
+      $dqState[3] = $turn[2];
+      //array_unshift($turn, "-", "-", "-");
     }
     ContinueDecisionQueue("");
+  }
+
+  function CloseDecisionQueue()
+  {
+    global $turn, $decisionQueue, $dqState;
+    $dqState[0] = "0";
+    $turn[0] = $dqState[1];
+    $turn[1] = $dqState[2];
+    $turn[2] = $dqState[3];
+    $decisionQueue = [];
   }
 
   function ShouldHoldPriorityNow($player)
@@ -253,7 +267,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
-    global $layers, $layerPriority, $dqVars;
+    global $layers, $layerPriority, $dqVars, $dqState;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -277,11 +291,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         }
         else
         {
-          array_shift($turn);
-          array_shift($turn);
-          array_shift($turn);
-          $dqState[0] = "0";
-          $decisionQueue = [];
+          CloseDecisionQueue();
           $cardID = array_shift($layers);
           $player = array_shift($layers);
           $parameter = array_shift($layers);
@@ -304,10 +314,6 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY")
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
-        $dqState[0] = "0";
         if($currentPlayer != $decisionQueue[1])
         {
           $currentPlayer = $decisionQueue[1];
@@ -315,44 +321,29 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           BuildMyGamestate($currentPlayer);
         }
         $params = explode("-", $decisionQueue[2]);
-        $decisionQueue = [];
+        CloseDecisionQueue();
         PlayCardEffect($params[0], $params[1], $params[2]);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING")
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
-        $dqState[0] = "0";
         $params = explode("-", $decisionQueue[2]);//Parameter
-        $decisionQueue = [];
         if($lastResult == "") $lastResult = 0;
+        CloseDecisionQueue();
         PlayCard($params[0], $params[1], $lastResult, $params[2]);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK")
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
-        $dqState[0] = "0";
-        $decisionQueue = [];
+        CloseDecisionQueue();
         ResolveChainLink();
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN")
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
-        $dqState[0] = "0";
-        $decisionQueue = [];
+        CloseDecisionQueue();
         PassTurn();
       }
       else
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
-        $dqState[0] = "0";
+        CloseDecisionQueue();
         FinalizeAction();
       }
       return;
