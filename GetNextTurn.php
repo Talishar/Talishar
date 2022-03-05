@@ -862,6 +862,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
     {
       case "ARC112": return true;
       case "CRU197": return true;
+      case "MON186": return true;
       default: return false;
     }
   }
@@ -876,6 +877,13 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
       if($auras[$i] == "ARC112") ++$runechantCount;
     }
     if($runechantCount > 0) echo(Card("ARC112", "CardImages", $cardSize, 0, 1, 0, 0, ($runechantCount > 1 ? $runechantCount : 0)));
+
+    $soulShackleCount = 0;
+    for($i = 0; $i < count($auras); $i += AuraPieces())
+    {
+      if($auras[$i] == "MON186") ++$soulShackleCount;
+    }
+    if($soulShackleCount > 0) echo(Card("MON186", "CardImages", $cardSize, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)));
 
     $items = GetItems($player);
     $copperCount = 0;

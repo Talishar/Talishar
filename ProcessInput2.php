@@ -12,6 +12,7 @@
   include "Libraries/UILibraries.php";
   include "Libraries/PlayerSettings.php";
   include "AI/CombatDummy.php";
+  include "AI/PlayerMacros.php";
   include "Libraries/HTTPLibraries.php";
 
   //We should always have a player ID as a URL parameter
@@ -321,6 +322,7 @@
   }
 
   CacheCombatResult();
+  ProcessMacros();
 
   if($winner != 0) { $turn[0] = "OVER"; $currentPlayer = 1; }
   CombatDummyAI();//Only does anything if applicable
