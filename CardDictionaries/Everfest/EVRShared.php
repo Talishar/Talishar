@@ -749,7 +749,7 @@
       case "EVR053":
         $deck = &GetDeck($currentPlayer);
         $card = array_shift($deck);
-        BanishCardForPlayer($deck[0], $currentPlayer, "DECK", "TCC");
+        BanishCardForPlayer($card, $currentPlayer, "DECK", "TCC");
         return "Helm of the Sharp Eye banished a card. It is playable to this combat chain.";
       case "EVR054":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
