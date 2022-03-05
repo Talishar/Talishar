@@ -15,7 +15,7 @@
   include "GameTerms.php";
   include "GameLogic.php";
   include "HostFiles/Redirector.php";
-  include "Libraries/UILibraries.php";
+  include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
 
@@ -66,6 +66,17 @@
   .passInactive {
     background: url("./Images/passInactive.png") no-repeat;
     background-size:contain;
+  }
+
+  .breakChain {
+    background: url("./Images/chainLinkRight.png") no-repeat;
+    background-size:contain;
+  }
+
+  .breakChain:hover {
+    background: url("./Images/chainLinkBreak.png") no-repeat;
+    background-size:contain;
+    cursor:pointer;
   }
 </style>
 

@@ -265,7 +265,7 @@
       case 1: $color = "Red"; break;
       default: $color = "DimGray"; break;
     }
-    $file = "'./" . "BigCardImages" . "/" . $cardNumber . ".jpg'";
+    $file = "'./" . "BigCardImages" . "/" . $cardNumber . ".png'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . "</span></b>";
   }
 
