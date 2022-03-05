@@ -476,7 +476,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "Dauntless gives your next weapon attack  +" . EffectAttackModifier($cardID . "-1") . " and makes the next Defense Reaction cost +1 to play.";
     case "CRU088": case "CRU089": case "CRU090":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
+      if(RepriseActive()) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
       return "Out for Blood gave your weapon attack +" . EffectAttackModifier($cardID . "-1") . RepriseActive() ? " and gives your next attack +1." : ".";
     case "CRU091": case "CRU092": case "CRU093":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
@@ -1038,7 +1038,7 @@ function EffectHitEffect($cardID)
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
     case "EVR047-1": case "EVR048-1": case "EVR049-1": $idArr = explode("-", $cardID); AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer); break;
-    case "EVR066": case "EVR067": case "EVR068": PutItemIntoPlayForPlayer("CRU197", $mainPlayer); break;
+    case "EVR066-1": case "EVR067-1": case "EVR068-1": PutItemIntoPlayForPlayer("CRU197", $mainPlayer); return 1;
     case "EVR161-1": GainHealth(2, $mainPlayer);
     case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
     case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
@@ -1625,6 +1625,7 @@ function IsCombatEffectPersistent($cardID)
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
     case "EVR001": return true;
     case "EVR019": return true;
+    case "EVR066-1": case "EVR067-1": case "EVR068-1": return true;
     case "EVR090": return true;
     case "EVR160": return true;
     case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
@@ -2792,6 +2793,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(CardLink($hand[$indices[$i]], $hand[$indices[$i]]) . " was revealed.");
       }
       return $cards;
+    case "WRITELOG":
+      WriteLog(implode(" ", explode("_", $parameter)));
+      return $lastResult;
     case "WRITECARDLOG":
       $message = implode(" ", explode("_", $parameter)) . CardLink($lastResult, $lastResult);
       WriteLog($message);

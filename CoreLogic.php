@@ -444,6 +444,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
+  if($damage == 1 && SearchItemsForCard("EVR069", $player)) $damage = 0;//Must be last
   if($damage > 0 && $source != "NA")
   {
     $damage += CurrentEffectDamageModifiers($source, $type);

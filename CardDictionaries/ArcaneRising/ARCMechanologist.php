@@ -152,6 +152,7 @@
         $items = SearchMyDeck("", "Item", $resourcesPaid/2);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, $items);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         $boosted = $myClassState[$CS_NumBoosted] > 0;
         if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
         return "Spark of Genius let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
