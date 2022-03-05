@@ -144,27 +144,37 @@
   echo("<div style='position:fixed; left:290px; top:150px;'>");
 
   //Display the combat chain
+    echo("<table><tr>");
   if($displayCombatChain)
   {
-    echo("<table><tr>");
     echo("<td style='font-size:30px; font-weight:bold;'>$totalAttack</td>");
     echo("<td><img onclick='(function(){ document.getElementById(\"attackModifierPopup\").style.display = \"inline\";})();' style='cursor:pointer; height:30px; width:30px; display:inline-block;' src='./Images/Attack.png' /></td>");
     echo("<td><img style='height:30px; width:30px; display:inline-block;' src='./Images/Defense.png' /></td>");
     echo("<td style='font-size:30px; font-weight:bold;'>$totalDefense</td>");
     if(IsDominateActive()) echo("<td style='font-size:24px; font-weight:bold;'><img style='height:40px; display:inline-block;' src='./Images/dominate.png' /></td>");
     if(DoesAttackHaveGoAgain()) echo("<td><img title='This attack has Go Again.' style='height:30px; width:30px; display:inline-block;' src='./Images/goAgain.png' /></td>");
+  }
     echo("<td>");
     for($i=0; $i<count($chainLinks); ++$i)
     {
-      echo("<div style='position:relative; display:inline-block;'><img title='Chain Link $i' style='height:30px; width:70px;' src='./Images/chainLink.png'>");
+      if($i==0) { $iconLeft = 10; $linkWidth = 60; $linkImage = "chainLinkLeft.png"; }
+      //else if($i==count($chainLinks)-1) { $iconLeft = 27; $linkWidth = 60; $linkImage = "chainLinkRight.png"; }
+      else { $iconLeft = 25; $linkWidth = 70; $linkImage = "chainLink.png"; }
+      echo("<div style='position:relative; display:inline-block;'><img title='Chain Link $i' style='height:30px; width:" . $linkWidth . "px;' src='./Images/$linkImage'>");
       $damage = $chainLinkSummary[$i * ChainLinkSummaryPieces()];
-      $linkImage = ($damage > 0 ? "./Images/hit.png" : "./Images/Defense.png");
+      $linkOverlay = ($damage > 0 ? "./Images/hit.png" : "./Images/Defense.png");
       $linkTitle = ($damage > 0 ? "Hit for $damage damage" : "Fully Blocked");
-      echo("<div title='$linkTitle' style='position:absolute; left:25px; top:4px;'><img style='width:22px; height:22px;' src='$linkImage' /></div>");
+      echo("<div title='$linkTitle' style='position:absolute; left:" . $iconLeft . "px; top:4px;'><img style='width:22px; height:22px;' src='$linkOverlay' /></div>");
       echo("</img></div>");
+    }
+    if(count($chainLinks) > 0)
+    {
+      echo("<div title='Break the Combat Chain' " . ProcessInputLink($playerID, 100, 0) . " class='breakChain' style='height:30px; width:60px; position:relative; display:inline-block;'></div>");
     }
     echo("</td>");
     echo("</tr></table>");
+  if($displayCombatChain)
+  {
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
@@ -704,11 +714,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
   if($turn[0] == "B") $trackerLeft = "85";
   else if($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
   else if($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = "158";
-  else if(count($chainLinks) > 0)
-  {
-    $trackerLeft = "49";
-    if($playerID == $mainPlayer) echo("<div style='position:absolute; left:50px; bottom:10px;'><img title='Click to break the combat chain.' style='cursor:pointer; height:20px; width:30px;' src='./Images/BreakChain.png' " . ProcessInputLink($playerID, 100, 0) . " /></div>");
-  }
+  else if(count($chainLinks) > 0) $trackerLeft = "49";
   else $trackerLeft = "13";
   echo("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo("</div>");
