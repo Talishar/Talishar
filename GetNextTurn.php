@@ -866,6 +866,7 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
   {
     switch($cardID)
     {
+      case "WTR075": return true;
       case "ARC112": return true;
       case "CRU197": return true;
       case "MON186": return true;
@@ -877,6 +878,14 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
   {
     global $cardSize;
     $auras = GetAuras($player);
+
+    $count = 0;
+    for($i = 0; $i < count($auras); $i += AuraPieces())
+    {
+      if($auras[$i] == "WTR075") ++$count;
+    }
+    if($count > 0) echo(Card("WTR075", "CardImages", $cardSize, 0, 1, 0, 0, ($count > 1 ? $count : 0)));
+
     $runechantCount = 0;
     for($i = 0; $i < count($auras); $i += AuraPieces())
     {
