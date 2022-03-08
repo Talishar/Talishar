@@ -1109,6 +1109,8 @@
       case "CRU077": return 0;
       case "CRU079": case "CRU080": return 0;
       case "CRU081": return 2;
+      //CRU Shapeshifter
+      case "CRU097": return 0;
       //CRU Mechanologist
       case "CRU099": case "CRU101": case "CRU102": return 0;
       case "CRU104": case "CRU105": return 0;
