@@ -3503,7 +3503,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Potion of Luck shuffled your hand and arsenal into your deck and drew " . $sizeToDraw . " cards.");
       return $lastResult;
     case "BRAVOSTARSHOW":
-      //TODO: VALIDATE
       $hand = &GetHand($player);
       $cards = "";
       $hasLightning = false; $hasIce = false; $hasEarth = false;
