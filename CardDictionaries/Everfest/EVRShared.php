@@ -578,6 +578,7 @@
       case "EVR053": return 1;
       case "EVR069": case "EVR070": case "EVR071": case "EVR072": return -1;
       case "EVR086": return 2;
+      case "EVR087": return -1;
       case "EVR090": return -1;
       case "EVR091": case "EVR092": case "EVR093": return 2;
       case "EVR100": case "EVR101": case "EVR102": return 2;
