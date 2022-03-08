@@ -55,7 +55,7 @@
       break;
     case 2: //Play card from hand
       $found = HasCard($cardID);
-      if($found >= 0) {
+      if($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
         //Player actually has the card, now do the effect
         //First remove it from their hand
         unset($myHand[$found]);
@@ -398,7 +398,7 @@
   function PassInput()
   {
     global $turn, $currentPlayer;
-    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "INSTANT")
+    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "INSTANT")
     {
       ContinueDecisionQueue("PASS");
     }
