@@ -3506,14 +3506,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       //TODO: VALIDATE
       $hand = &GetHand($player);
       $cards = "";
+      $hasLightning = false; $hasIce = false; $hasEarth = false;
       for($i=0; $i<count($lastResult); ++$i)
       {
         if($cards != "") $cards .= ",";
-        $cards .= $hand[$lastResult[$i]];
+        $card = $hand[$lastResult[$i]];
+        if(TalentContains($card, "LIGHTNING")) $hasLightning = true;
+        if(TalentContains($card, "ICE")) $hasIce = true;
+        if(TalentContains($card, "EARTH")) $hasEarth = true;
+        $cards .= $card;
       }
       RevealCards($cards);
-      WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and Go Again.");
-      AddCurrentTurnEffect("EVR017", $player);
+      if($hasLightning && $hasIce && $hasEarth)
+      {
+        WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and Go Again.");
+        AddCurrentTurnEffect("EVR017", $player);
+      }
       return $lastResult;
     case "SETDQCONTEXT":
 
