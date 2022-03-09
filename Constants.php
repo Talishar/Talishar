@@ -35,6 +35,13 @@
     return 2;
   }
 
+  //Card ID
+  //Player
+  //From
+  //Resources Paid
+  //Reprise Active? (Or other class effects?)
+  //Attack Modifier
+  //Defense Modifier
   function CombatChainPieces()
   {
     return 7;
@@ -98,9 +105,10 @@
   }
 
   //Damage Dealt
+  //Total Attack
   function ChainLinkSummaryPieces()
   {
-    return 1;
+    return 2;
   }
 
   //Class State (one for each player)
@@ -224,6 +232,7 @@
         if(GoesWhereAfterResolving($chainLinks[$i][$j], "COMBATCHAIN") == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
       }
     }
+    CombatChainClosedCharacterEffects();
     $chainLinks = [];
     $chainLinkSummary = [];
   }

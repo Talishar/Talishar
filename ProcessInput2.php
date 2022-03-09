@@ -77,12 +77,7 @@
         $myClassState[$CS_PlayIndex] = $index;
         if($turn[0] == "B")
         {
-          if(HasBladeBreak($cardID))
-          {
-            $myCharacter[$index+1] = 0;//Destroy if blocked and it had blade break;
-            CharacterDestroyEffect($cardID, $currentPlayer);
-          }
-          else if($cardID == "MON187")
+          if($cardID == "MON187")
           {
             $myCharacter[$index+1] = 0;
             BanishCardForPlayer($cardID, $currentPlayer, "EQUIP", "NA");
@@ -490,6 +485,7 @@
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
     array_push($chainLinkSummary, $damageDone);
+    array_push($chainLinkSummary, $totalAttack);
 
     if($wasHit)//Resolve hit effects
     {
@@ -570,24 +566,6 @@ function FinalizeChainLink($chainClosed=false)
       }
     }
 
-    $nervesOfSteelActive = $combatChainState[$CCS_LinkTotalAttack] <= 2 && SearchAuras("EVR023", $defPlayer);
-    for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
-    {
-      if($combatChain[$i] != $mainPlayer)
-      {
-        if(CardType($combatChain[$i-1]) == "E")
-        {
-          $index = FindDefCharacter($combatChain[$i-1]);
-          if(!$nervesOfSteelActive)
-          {
-            if(HasBattleworn($combatChain[$i-1])) --$defCharacter[$index+4];
-            if(HasTemper($combatChain[$i-1])) --$defCharacter[$index+4];
-          }
-          if($combatChain[$i-1] == "MON089" && $combatChainState[$CCS_LinkTotalAttack] >= 6) DestroyCharacter($defPlayer, $index);
-        }
-      }
-    }
-
     if(CardType($combatChain[0]) == "W")
     {
       ++$mainClassState[$CS_AtksWWeapon];
@@ -600,24 +578,24 @@ function FinalizeChainLink($chainClosed=false)
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
     {
       $cardType = CardType($combatChain[$i-1]);
-      if($cardType == "W" || $cardType == "E" || $cardType == "C") continue;
-
-      $goesWhere = GoesWhereAfterResolving($combatChain[$i-1], "COMBATCHAIN");
-      if($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") { $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves]; }
-      switch($goesWhere) {
-        case "BOTDECK": AddBottomMainDeck($combatChain[$i-1], "CC"); break;
-        case "HAND": AddMainHand($combatChain[$i-1], "CC"); break;
-        case "SOUL": AddSoul($combatChain[$i-1], $combatChain[$i], "CC"); break;
-        case "GY": /*AddGraveyard($combatChain[$i-1], $combatChain[$i], "CC");*/ break;//Things that would go to the GY stay on till the end of the chain
-        case "BANISH": BanishCardForPlayer($combatChain[$i-1], $mainPlayer, "CC", "NA"); break;
-        default: break;
+      if($cardType != "W" || $cardType != "E" || $cardType != "C")
+      {
+        $goesWhere = GoesWhereAfterResolving($combatChain[$i-1], "COMBATCHAIN");
+        if($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") { $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves]; }
+        switch($goesWhere) {
+          case "BOTDECK": AddBottomMainDeck($combatChain[$i-1], "CC"); break;
+          case "HAND": AddMainHand($combatChain[$i-1], "CC"); break;
+          case "SOUL": AddSoul($combatChain[$i-1], $combatChain[$i], "CC"); break;
+          case "GY": /*AddGraveyard($combatChain[$i-1], $combatChain[$i], "CC");*/ break;//Things that would go to the GY stay on till the end of the chain
+          case "BANISH": BanishCardForPlayer($combatChain[$i-1], $mainPlayer, "CC", "NA"); break;
+          default: break;
+        }
       }
       array_push($chainLinks[$CLIndex], $combatChain[$i-1]);//Card ID
       array_push($chainLinks[$CLIndex], $combatChain[$i]);//Player ID
       array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[2] != "PLAY" ? "1" : "0"));//Still on chain? 1 = yes, 0 = no
     }
     CopyCurrentTurnEffectsFromCombat();
-    CheckDestroyTemper();
     UnsetChainLinkBanish();//For things that are banished and playable only to this chain link
     $combatChain = [];
     if($chainClosed)

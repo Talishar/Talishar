@@ -476,6 +476,7 @@
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
     array_push($chainLinkSummary, $damageDone);
+    array_push($chainLinkSummary, $totalAttack);
 
     if($wasHit)//Resolve hit effects
     {
