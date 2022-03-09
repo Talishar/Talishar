@@ -651,7 +651,8 @@
       $restrictionName = CardName($restriction);
       echo("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:40px; left:23px;' src='./Images/restricted.png' />");
     }
-    if($myCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/onChain.png' />");
+    if($myCharacter[$i+6] == 1) echo("<div title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 0px; left:0px;'>" . Card("onChain", "Images", $cardSize, $currentPlayer == $playerID && $playable ? 3 : 0, 0, $myCharacter[$i+1] !=2 ? 1 : 0, 0, 0, strval($i)) . "</div>");
+    //echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/onChain.png' />");
     if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
     if($type == "C")
     {
