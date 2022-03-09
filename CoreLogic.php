@@ -734,15 +734,37 @@ function DestroyItem(&$Items, $index)
   $Items = array_values($Items);
 }
 
-function CheckDestroyTemper()
+function CombatChainClosedCharacterEffects()
 {
-  global $defPlayer;
+  global $chainLinks, $defPlayer, $chainLinkSummary;
   $character = &GetPlayerCharacter($defPlayer);
-  for($i = count($character)-CharacterPieces(); $i >= 0; $i -= CharacterPieces())
+  for($i=0; $i<count($chainLinks); ++$i)
   {
-    if(HasTemper($character[$i]) && ((BlockValue($character[$i]) + $character[$i + 4]) <= 0))
+    $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("EVR023", $defPlayer);
+    for($j=0; $j<count($chainLinks[$i]); $j += ChainLinksPieces())
     {
-      $character[$i+1] = 0;
+      if($chainLinks[$i][$j+1] != $defPlayer) continue;
+      $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
+      if($charIndex == -1) continue;
+      if(!$nervesOfSteelActive)
+      {
+        if(HasTemper($chainLinks[$i][$j]))
+        {
+          $character[$charIndex+4] -= 1;//Add -1 block counter
+          if((BlockValue($character[$charIndex]) + $character[$charIndex + 4]) <= 0)
+          {
+            DestroyCharacter($defPlayer, $charIndex);
+          }
+        }
+        if(HasBattleworn($chainLinks[$i][$j]))
+        {
+          $character[$charIndex+4] -= 1;//Add -1 block counter
+        }
+        else if(HasBladeBreak($chainLinks[$i][$j]))
+        {
+          DestroyCharacter($defPlayer, $charIndex);
+        }
+      }
     }
   }
 }
