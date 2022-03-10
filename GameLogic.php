@@ -1036,7 +1036,7 @@ function EffectHitEffect($cardID)
       DealDamage($defPlayer, $damage, "ATTACKHIT");
       break;
     case "ELE205": PummelHit(); PummelHit(); break;
-    case "ELE215": AddNextTurnEffect($cardID, $defPlayer); break;
+    case "ELE215": AddNextTurnEffect($cardID . "-1", $defPlayer); break;
     case "EVR047-1": case "EVR048-1": case "EVR049-1": $idArr = explode("-", $cardID); AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer); break;
     case "EVR066-1": case "EVR067-1": case "EVR068-1": PutItemIntoPlayForPlayer("CRU197", $mainPlayer); return 1;
     case "EVR161-1": GainHealth(2, $mainPlayer);
@@ -1644,7 +1644,7 @@ function BeginEndStepEffects()
     {
       switch($currentTurnEffects[$i])
       {
-        case "ELE215": WriteLog("Seek and Destroy discarded your hand and arsenal."); DestroyArsenal($mainPlayer); DiscardHand($mainPlayer); break;
+        case "ELE215-1": WriteLog("Seek and Destroy discarded your hand and arsenal."); DestroyArsenal($mainPlayer); DiscardHand($mainPlayer); break;
         case "EVR106": WriteLog("Revel in Runeblood destroyed your Runechants."); DestroyAllThisAura($mainPlayer, "ARC112"); break;
         default: break;
       }
