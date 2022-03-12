@@ -100,11 +100,12 @@
         PassTurn();
       }
       break;
-    case 5:
+    case 5: //Card Played from Arsenal
       $index = $cardID;
       if($index < count($myArsenal))
       {
         $cardToPlay = $myArsenal[$index];
+        if(!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;//Card not playable
         for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
         {
           unset($myArsenal[$i]);
@@ -115,6 +116,7 @@
       }
       break;
     case 6://Pitch Deck
+      if($turn[0] != "PDECK") break;
       $found = PitchHasCard($cardID);
       if($found >= 0)
       {
@@ -159,26 +161,34 @@
       PlayCard($cardID, "PLAY", -1);
       break;
     case 11://CHOOSEDECK
-      $index = $cardID;
-      $cardID = $myDeck[$index];
-      unset($myDeck[$index]);
-      $myDeck = array_values($myDeck);
-      //TODO: Shuffle deck here
-      ContinueDecisionQueue($cardID);
+      if($turn[0] == "CHOOSEDECK")
+      {
+        $index = $cardID;
+        $cardID = $myDeck[$index];
+        unset($myDeck[$index]);
+        $myDeck = array_values($myDeck);
+        ContinueDecisionQueue($cardID);
+      }
       break;
     case 12://HANDTOP
-      $cardID = $myHand[$buttonInput];
-      array_unshift($myDeck, $cardID);
-      unset($myHand[$buttonInput]);
-      $myHand = array_values($myHand);
-      ContinueDecisionQueue($cardID);
+      if($turn[0] == "HANDTOPBOTTOM")
+      {
+        $cardID = $myHand[$buttonInput];
+        array_unshift($myDeck, $cardID);
+        unset($myHand[$buttonInput]);
+        $myHand = array_values($myHand);
+        ContinueDecisionQueue($cardID);
+      }
       break;
     case 13://HANDBOTTOM
-      $cardID = $myHand[$buttonInput];
-      array_push($myDeck, $cardID);
-      unset($myHand[$buttonInput]);
-      $myHand = array_values($myHand);
-      ContinueDecisionQueue($cardID);
+      if($turn[0] == "HANDTOPBOTTOM")
+      {
+        $cardID = $myHand[$buttonInput];
+        array_push($myDeck, $cardID);
+        unset($myHand[$buttonInput]);
+        $myHand = array_values($myHand);
+        ContinueDecisionQueue($cardID);
+      }
       break;
     case 14://Banish
       $index = $cardID;
@@ -189,8 +199,11 @@
       PlayCard($cardID, "BANISH", -1, $index);
       break;
     case 15: case 16: case 18: //CHOOSE (15 and 18 deprecated)
-      $index = $cardID;
-      ContinueDecisionQueue($index);
+      if(count($decisionQueue) > 0)//TODO: Or check all the possibilities?
+      {
+        $index = $cardID;
+        ContinueDecisionQueue($index);
+      }
       break;
     case 17://BUTTONINPUT
       if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER"))
@@ -231,13 +244,16 @@
       }
       break;
     case 20://YESNO
-      if($buttonInput == "YES" || $buttonInput == "NO") ContinueDecisionQueue($buttonInput);
+      if($turn[0] == "YESNO" && ($buttonInput == "YES" || $buttonInput == "NO")) ContinueDecisionQueue($buttonInput);
       break;
     case 21://Combat chain ability
       $index = $cardID;//Overridden to be index instead
       $cardID = $combatChain[$index];
-      $myClassState[$CS_PlayIndex] = $index;
-      PlayCard($cardID, "PLAY", -1);
+      if(AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index))
+      {
+        $myClassState[$CS_PlayIndex] = $index;
+        PlayCard($cardID, "PLAY", -1);
+      }
       break;
     case 22://Aura ability
       $index = $cardID;//Overridden to be index instead
@@ -286,7 +302,10 @@
       ChangeSetting($playerID, $params[0], $params[1]);
       break;
     case 99: //Pass
-      PassInput();
+      if(CanPassPhase($turn[0]))
+      {
+        PassInput();
+      }
       break;
     case 100: //Break Chain
       ResetCombatChainState();
