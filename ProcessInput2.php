@@ -822,7 +822,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function PlayCard($cardID, $from, $dynCostResolved=-1, $index=-1)
   {
-    global $playerID, $turn, $currentPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
+    global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
     global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
     $resources = &GetResources($currentPlayer);
@@ -918,9 +918,12 @@ function FinalizeChainLink($chainClosed=false)
         $abilityType = GetAbilityType($cardID);
         $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
         $hasGoAgain = AbilityHasGoAgain($cardID);
-        if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-        else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
-        else if($abilityType == "AA") --$actionPoints;//Always resolve this after combat chain
+        if($currentPlayer == $mainPlayer)
+        {
+          if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
+          else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+          else if($abilityType == "AA") --$actionPoints;//Always resolve this after combat chain
+        }
         if($abilityType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
         PayAbilityAdditionalCosts($cardID);
         ActivateAbilityEffects();
@@ -935,9 +938,12 @@ function FinalizeChainLink($chainClosed=false)
           SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
         }
         if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
-        if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-        else if(($cardType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
-        else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
+        if($currentPlayer == $mainPlayer)
+        {
+          if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
+          else if(($cardType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
+          else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
+        }
         if($cardType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
         if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
         CombatChainPlayAbility($cardID);
