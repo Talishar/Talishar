@@ -907,14 +907,15 @@ function FinalizeChainLink($chainClosed=false)
       $from = $turn[4];
     }
     $cardType = CardType($cardID);
+    $abilityType = "";
     //We've paid resources, now pay action points if applicable
     if($turn[0] != "B")// || $cardType == "I" || CanPlayAsInstant($cardID))
     {
-      $abilityType = GetAbilityType($cardID);
       $goAgainPrevented = CurrentEffectPreventsGoAgain();
       //if($from == "PLAY" || $from == "EQUIP")
       if(IsStaticType($cardType, $from, $cardID))
       {
+        $abilityType = GetAbilityType($cardID);
         $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
         $hasGoAgain = AbilityHasGoAgain($cardID);
         if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
