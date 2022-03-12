@@ -43,7 +43,9 @@ h2 {
   Decks to Try:
   <select name="decksToTry" id="decksToTry">
     <option value="1">Dori Axes CC</option>
-    <option value="3">Ice Lexi Canadian Nationals CC</option>
+    <option value="2">Bravo CC</option>
+    <option value="3">Mountain Briar CC</option>
+    <option value="4">Stubby Katsu CC</option>
   </select>
   <br><br>
   <label for="fabdb">FaB DB Link</label>
