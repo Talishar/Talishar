@@ -2346,6 +2346,8 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "CRU006": case "CRU025": case "CRU081": case "CRU102": case "CRU122": case "CRU141":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "CRU024":
+      break;//No limits on use, so override default
     case "CRU101":
       if($character[$cardIndex+2] == 0) $character[$cardIndex+1] = 2;
       else
