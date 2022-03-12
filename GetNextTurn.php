@@ -545,7 +545,7 @@
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
   echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
   echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
-  echo(CreatePopup("menuPopup", [], 1, 0, "Menu", 1, CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
+  echo(CreatePopup("menuPopup", [], 1, 0, "Menu", 1, CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>" . CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
   if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
   if($turn[0] != "CHOOSEFIRSTPLAYER")
@@ -738,33 +738,6 @@
   {
     if(HasReprise($cardID) && RepriseActive()) return 3;
     return 0;
-  }
-
-  function CanPassPhase($phase)
-  {
-    switch($phase)
-    {
-      case "P": return 0;
-      case "PDECK": return 0;
-      case "CHOOSEDECK": return 0;
-      case "HANDTOPBOTTOM": return 0;
-      case "CHOOSECOMBATCHAIN": return 0;
-      case "CHOOSECHARACTER": return 0;
-      case "CHOOSEHAND": return 0;
-      case "CHOOSEHANDCANCEL": return 0;
-      case "MULTICHOOSEDISCARD": return 0;
-      case "CHOOSEDISCARDCANCEL": return 0;
-      case "CHOOSEARCANE": return 0;
-      case "CHOOSEARSENAL": return 0;
-      case "CHOOSEDISCARD": return 0;
-      case "MULTICHOOSEHAND": return 0;
-      case "CHOOSEMULTIZONE": return 0;
-      case "CHOOSEBANISH": return 0;
-      case "BUTTONINPUTNOPASS": return 0;
-      case "CHOOSEFIRSTPLAYER": return 0;
-      case "MULTICHOOSEDECK": return 0;
-      default: return 1;
-    }
   }
 
   function ChoosePopup($zone, $options, $mode, $caption="", $zoneSize=1)

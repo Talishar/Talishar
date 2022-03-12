@@ -332,6 +332,25 @@
       exit;
     case 100002: //Concede
       DealDamage($playerID, 9999, "MANUAL");
+      break;
+    case 100003: //Report Bug
+      $bugCount = 0;
+      $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
+      while($bugCount < 5 && file_exists($folderName))
+      {
+        ++$bugCount;
+        $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
+      }
+      if($bugCount == 5)
+      {
+        WriteLog("Bug report file is temporarily full for this game. Please use the discord to report further bugs.");
+      }
+      mkdir($folderName, 0700, true);
+      copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
+      copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
+      copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
+      WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
+      break;
     default:break;
   }
 
@@ -364,6 +383,8 @@
       case 26: return true;
       case 10000: return true;
       case 100001: return true;
+      case 100002: return true;
+      case 100003: return true;
     }
     return false;
   }

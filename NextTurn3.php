@@ -154,32 +154,6 @@
     return 0;
   }
 
-  function CanPassPhase($phase)
-  {
-    switch($phase)
-    {
-      case "P": return 0;
-      case "PDECK": return 0;
-      case "CHOOSEDECK": return 0;
-      case "HANDTOPBOTTOM": return 0;
-      case "CHOOSECOMBATCHAIN": return 0;
-      case "CHOOSECHARACTER": return 0;
-      case "CHOOSEHAND": return 0;
-      case "CHOOSEHANDCANCEL": return 0;
-      case "MULTICHOOSEDISCARD": return 0;
-      case "CHOOSEDISCARDCANCEL": return 0;
-      case "CHOOSEARCANE": return 0;
-      case "CHOOSEARSENAL": return 0;
-      case "CHOOSEDISCARD": return 0;
-      case "MULTICHOOSEHAND": return 0;
-      case "CHOOSEMULTIZONE": return 0;
-      case "CHOOSEBANISH": return 0;
-      case "BUTTONINPUTNOPASS": return 0;
-      case "CHOOSEFIRSTPLAYER": return 0;
-      default: return 1;
-    }
-  }
-
   function ChoosePopup($zone, $options, $mode, $caption="", $zoneSize=1)
   {
     $content = "";
