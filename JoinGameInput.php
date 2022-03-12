@@ -14,8 +14,9 @@
   {
     switch ($decksToTry) {
       case '1': $decklink = "https://fabdb.net/decks/PydXAQMY"; break;
-      case '2': $decklink = "https://fabdb.net/decks/dLAwdlEX"; break;
-      case '3': $decklink = "https://fabdb.net/decks/zLNlGaOr"; break;
+      case '2': $decklink = "https://fabdb.net/decks/xPWERXWZ"; break;
+      case '3': $decklink = "https://fabdb.net/decks/DxzAekMk"; break;
+      case '4': $decklink = "https://fabdb.net/decks/zkVmEYOb"; break;
       default: $decklink = "https://fabdb.net/decks/pExqQzqV"; break;
     }
   }

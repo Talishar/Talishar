@@ -42,8 +42,11 @@ body {
   Decks to Try:
   <select name="decksToTry" id="decksToTry">
     <option value="1">Dori Axes CC</option>
-    <option value="3">Ice Lexi Canadian Nationals CC</option>
+    <option value="2">Bravo CC</option>
+    <option value="3">Mountain Briar CC</option>
+    <option value="4">Stubby Katsu CC</option>
   </select>
+  <a title='FaBDB Deckbuilder' href='https://fabdb.net/decks/build' target='_blank'><img style='height:80px; position:absolute; right:20px; top:60px;' src='./Images/fabdb-symbol.png' /></a>
   <br>
   <br>
   <label for="fabdb">FaB DB Deck Link</label>

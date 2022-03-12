@@ -121,14 +121,14 @@
     if($playerID == $currentTurnEffects[$i+1]) $friendlyEffects .= $effect;
     else $opponentEffects .= $effect;
   }
-  echo("<div style='position:fixed; height:100%; left:0px; top:0px;'>");
+  //echo("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px; background-size:cover; background-image: url(\"./Images/effectSidebar.png\");'>");
   echo("<div>Their Effects</div>");
   echo($opponentEffects);
   echo("<div style='bottom:0px; position:absolute;'>");
   echo($friendlyEffects);
   echo("<div>Your Effects</div>");
   echo("</div>");
-  echo("</div>");
+  //echo("</div>");
 
   $displayCombatChain = count($combatChain) > 0;
 
@@ -544,7 +544,8 @@
   echo(CreatePopup("myPitchPopup", $myPitch, 1, 0, "Your Pitch"));
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
   echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
-  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID) . "<BR>" . CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
+  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
+  echo(CreatePopup("menuPopup", [], 1, 0, "Menu", 1, CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
   if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
   if($turn[0] != "CHOOSEFIRSTPLAYER")
@@ -705,7 +706,11 @@
   //Display the log
   echo("<div style='position:fixed; width:200px; top:10px; bottom:10px; right:10px;'>");
 
-echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; height:50px; font-size:30; text-align:center;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'>Menu</div>");
+  echo("<div style='position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr><td>");
+  echo("<div title='Click to view stats.' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
+  echo("</td><td></td><td>");
+  echo("<div title='Click to view the menu.' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"menuPopup\").style.display = \"inline\";})();'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
+  echo("</td></tr></table></div></div>");
 
   echo("<div style='text-align:center; width:200px; font-size:24;'>Turn #" . $currentTurn . "</div>");
   echo("<div style='text-align:center; width:200px; font-size:16;'>Last Played</div>");
