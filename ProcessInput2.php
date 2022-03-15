@@ -58,8 +58,9 @@
       if($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
         //Player actually has the card, now do the effect
         //First remove it from their hand
-        unset($myHand[$found]);
-        $myHand = array_values($myHand);
+        $hand = &GetHand($playerID);
+        unset($hand[$found]);
+        $hand = array_values($hand);
         PlayCard($cardID, "HAND");
       }
       break;
@@ -73,16 +74,17 @@
       }
       if($index != -1 && IsPlayable($myCharacter[$found], $turn[0], "CHAR", $index))
       {
-        $myClassState[$CS_CharacterIndex] = $index;
-        $myClassState[$CS_PlayIndex] = $index;
+        SetClassState($playerID, $CS_CharacterIndex, $index);
+        SetClassState($playerID, $CS_PlayIndex, $index);
+        $character = &GetPlayerCharacter($playerID);
         if($turn[0] == "B")
         {
           if($cardID == "MON187")
           {
-            $myCharacter[$index+1] = 0;
+            $character[$index+1] = 0;
             BanishCardForPlayer($cardID, $currentPlayer, "EQUIP", "NA");
           }
-          else $myCharacter[$index+6] = 1;//Else just put it on the combat chain
+          else $character[$index+6] = 1;//Else just put it on the combat chain
         }
         else
         {
@@ -94,8 +96,9 @@
     case 4: //Add something to your arsenal
       $found = HasCard($cardID);
       if($turn[0] == "ARS" && $found >= 0) {
-        unset($myHand[$found]);
-        $myHand = array_values($myHand);
+        $hand = &GetHand($playerID);
+        unset($hand[$found]);
+        $hand = array_values($hand);
         AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
         PassTurn();
       }
@@ -106,11 +109,12 @@
       {
         $cardToPlay = $myArsenal[$index];
         if(!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;//Card not playable
+        $arsenal = &GetArsenal($playerID);
         for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
         {
-          unset($myArsenal[$i]);
+          unset($arsenal[$i]);
         }
-        $myArsenal = array_values($myArsenal);
+        $arsenal = array_values($arsenal);
         WriteLog("Card played from arsenal.");
         PlayCard($cardToPlay, "ARS");
       }
@@ -155,8 +159,9 @@
       if($index >= count($myItems)) break;//Item doesn't exist
       $cardID = $myItems[$index];
       if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break;//Item not playable
-      --$myItems[$index+3];
-      $myClassState[$CS_PlayIndex] = $index;
+      $items = &GetItems($playerID);
+      --$items[$index+3];
+      SetClassState($playerID, $CS_PlayIndex, $index);
       $set = CardSet($cardID);
       PlayCard($cardID, "PLAY", -1);
       break;
@@ -251,7 +256,7 @@
       $cardID = $combatChain[$index];
       if(AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index))
       {
-        $myClassState[$CS_PlayIndex] = $index;
+        SetClassState($playerID, $CS_PlayIndex, $index);
         PlayCard($cardID, "PLAY", -1);
       }
       break;
@@ -260,8 +265,9 @@
       if($index >= count($myAuras)) break;//Item doesn't exist
       $cardID = $myAuras[$index];
       if(!IsPlayable($cardID, $turn[0], "PLAY", $index)) break;//Aura ability not playable
-      $myAuras[$index+1] = 1;//Set status to used - for now
-      $myClassState[$CS_PlayIndex] = $index;
+      $auras = &GetAuras($playerID);
+      $auras[$index+1] = 1;//Set status to used - for now
+      SetClassState($playerID, $CS_PlayIndex, $index);
       PlayCard($cardID, "PLAY", -1);
       break;
     case 23://CHOOSECARD

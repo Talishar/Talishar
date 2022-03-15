@@ -87,7 +87,6 @@
   }
   $chainLinkSummary = GetArray($handler);
   fclose($handler);
-
   BuildMyGamestate($playerID);
 
   function DoGamestateUpdate()
@@ -165,7 +164,6 @@
     global $p1Soul, $p2Soul, $mainSoul, $defSoul;
     global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
     global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
-
     DoGamestateUpdate();
     $mpgBuiltFor = $mainPlayer;
     $mainHand = $mainPlayer==1 ? $p1Hand : $p2Hand;
