@@ -1087,18 +1087,6 @@ function DestroyCharacter($player, $index)
   CharacterDestroyEffect($cardID, $player);
 }
 
-function SetFirstPlayer($player)
-{
-  global $firstPlayer, $currentPlayer, $otherPlayer, $mainPlayerGamestateStillBuilt, $mainPlayer;
-  $firstPlayer = $player;
-  if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
-  else UpdateGameState($currentPlayer);
-  $mainPlayer = $player;
-  $currentPlayer = $player;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
-  StatsStartTurn();
-}
-
 function RemoveArsenalEffects($player, $cardToReturn){
   SearchCurrentTurnEffects("EVR087", $player, true); //If Dreadbore was played before, its effect on the removed Arsenal card should be removed
   SearchCurrentTurnEffects("ARC042", $player, true); //If Bull's Eye Bracers was played before, its effect on the removed Arsenal card should be removed

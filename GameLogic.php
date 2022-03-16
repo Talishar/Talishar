@@ -3299,7 +3299,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
-      if($player == 2) StatsStartTurn();
       return 1;
     case "REMOVELAST":
       if($lastResult == "") return $parameter;
@@ -3440,10 +3439,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "1_Attack": AddCurrentTurnEffect("ELE000-1", $player); return 3;
         case "1_Defense": AddCurrentTurnEffect("ELE000-2", $player); return 4;
       }
-      return $lastResult;
-    case "SETFIRSTPLAYER":
-      $first = ($lastResult == "Go_first" ? $player : ($player == 1 ? 2 : 1));
-      SetFirstPlayer($first);
       return $lastResult;
     case "SETDQVAR":
       $dqVars[$parameter] = $lastResult;

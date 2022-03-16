@@ -17,6 +17,7 @@
   $playerID=$_GET["playerID"];
 
   include "ParseGamestate.php";
+  include "MenuFiles/ParseGamefile.php";
 
   array_push($layerPriority, ShouldHoldPriority(1));
   array_push($layerPriority, ShouldHoldPriority(2));
@@ -24,23 +25,11 @@
   $myHealth = CharacterHealth($myCharacter[0]);
   $theirHealth = CharacterHealth($theirCharacter[0]);
   StartReplay();
-  $chooser = 1;
-  if($p2CharEquip[0] != "DUMMY")
-  {
-    $p1roll = 0; $p2roll = 0;
-    $tries = 10;
-    while($p1roll == $p2roll && $tries > 0)
-    {
-      $p1roll = rand(1,6) + rand(1, 6);
-      $p2roll = rand(1,6) + rand(1, 6);
-      WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.");
-      --$tries;
-    }
-    $chooser = ($p1roll > $p2roll ? 1 : 2);
-  }
-  WriteLog("Player $chooser chooses who goes first.");
-  AddDecisionQueue("CHOOSEFIRSTPLAYER", $chooser, "Go_first,Go_second");
-  AddDecisionQueue("SETFIRSTPLAYER", $chooser, "-");
+
+  $mainPlayer = $firstPlayer;
+  $currentPlayer = $firstPlayer;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  StatsStartTurn();
 
   if($myCharacter[0] == "ARC001" || $myCharacter[0] == "ARC002")
   {
