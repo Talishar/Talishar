@@ -16,6 +16,10 @@
   {
     $gameStatus = $MGS_ReadyToStart;
   }
+  else
+  {
+    $gameStatus = $MGS_GameStarted;
+  }
 
   include "MenuFiles/WriteGamefile.php";
 

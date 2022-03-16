@@ -40,13 +40,15 @@
   $p2Data = [2];
   if($deckTestMode == "deckTestMode")
   {
-    $gameStatus = 5;
+    $gameStatus = 4;//ReadyToStart
     copy("Dummy.txt","./Games/" . $gameName . "/p2Deck.txt");
   }
   else
   {
-    $gameStatus = 0;
+    $gameStatus = 0;//Initial
   }
+  $firstPlayerChooser = "";
+  $firstPlayer = 0;
   include "MenuFiles/WriteGamefile.php";
 
   $filename = "./Games/" . $gameName . "/gamelog.txt";

@@ -18,15 +18,18 @@
   $gameStatus = trim(fgets($handler));
   $format = trim(fgets($handler));
   $visibility = trim(fgets($handler));
+  $firstPlayerChooser = trim(fgets($handler));
+  $firstPlayer = trim(fgets($handler));
 
   fclose($handler);
 
   $MGS_Initial = 0;
-  $MGS_Player2Joined = 4;
-  $MGS_ReadyToStart = 5;
-  $MGS_GameStarted = 6;
+  $MGS_Player2Joined = 1;
+  $MGS_ChooseFirstPlayer = 2;
+  $MGS_P2Sideboard = 3;
+  $MGS_ReadyToStart = 4;
+  $MGS_GameStarted = 5;
 
 
 
 ?>
-
