@@ -58,7 +58,7 @@
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
   $gameFile = fopen($filename, "w");
-  fwrite($gameFile, "1\r\n2\r\n6");
+  fwrite($gameFile, "1\r\n2\r\n5");//$gameStatus $MGS_GameStarted
   fclose($gameFile);
 
   WriteCache($gameName, strval(round(microtime(true) * 1000)));//Initialize SHMOP cache for this game

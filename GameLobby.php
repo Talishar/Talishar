@@ -17,12 +17,11 @@
 
   include "MenuFiles/ParseGamefile.php";
 
-  if($gameStatus == 6)
+  if($gameStatus == $MGS_GameStarted)
   {
     header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID");
   }
 
-  $gameStarted = 0;
   $icon = "ready.png";
 
   if($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $icon = "notReady.png";
@@ -194,11 +193,28 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <?php
   echo("<div style='text-align:center;'>");
 
+  if($gameStatus == $MGS_ChooseFirstPlayer)
+  {
+    if($playerID == $firstPlayerChooser)
+    {
+      echo("<form action='./ChooseFirstPlayer.php'>");
+        echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
+        echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
+        echo("<input type='submit' name='action' value='Go First'>");
+        echo("<input type='submit' name='action' value='Go Second'>");
+      echo("</form>");
+    }
+    else
+    {
+      echo("Waiting for other player to choose who will go first.");
+    }
+  }
+
   if($playerID == 1 && $gameStatus < $MGS_Player2Joined)
   {
     echo("<div><input type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
   }
-      echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus >= $MGS_ReadyToStart ? "none" : "block")) . ";'>");
+      echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . ";'>");
       echo("<form action='./SubmitSideboard.php'>");
         echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
         echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
@@ -211,6 +227,7 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 
   echo("</div>");
 
+    echo("<BR>");
     echo("<div>");
     echo("<div id='gamelog' style='position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
     EchoLog($gameName, $playerID);
@@ -372,8 +389,8 @@ function loadGamestate() {
     xhttp.onload = function() {
       var resp = "";
       for(var i=0; i<this.responseText.length; ++i) resp += this.responseText[i];
-      if(parseInt(resp) != prevGameState && parseInt(resp) != 5) { location.reload(); }
-      <?php if($playerID == 1) echo 'if(parseInt(resp) == 5) {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
+      if(parseInt(resp) != prevGameState && parseInt(resp) != <?php echo($MGS_ReadyToStart) ?>) { location.reload(); }
+      <?php if($playerID == 1) echo 'if(parseInt(resp) == ' . $MGS_ReadyToStart . ') {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
       prevGameState = parseInt(resp);
     };
     xhttp.open("GET", "GameFileLength.php?gameName=<?php echo($gameName); ?>", true);
