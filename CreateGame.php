@@ -49,6 +49,10 @@
   }
   include "MenuFiles/WriteGamefile.php";
 
+  $filename = "./Games/" . $gameName . "/gamelog.txt";
+  $handler = fopen($filename, "w");
+  fclose($handler);
+
   header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry");
 
 ?>

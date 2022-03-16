@@ -2,6 +2,7 @@
 <head>
 
 <?php
+  include "WriteLog.php";
   include "CardDictionary.php";
   include "HostFiles/Redirector.php";
   include "Libraries/UILibraries.php";
@@ -67,7 +68,7 @@ h2 {
 <script src="./jsInclude.js"></script>
 </head>
 
-<body onload='OnLoadCallback()'>
+<body onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 <div id="cardDetail" style="display:none; position:absolute;"></div>
 
 <div style="width:100%; height:100%; background-image: url('Images/rout.jpg'); background-size:cover; z-index=0;">
@@ -210,6 +211,19 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 
   echo("</div>");
 
+    echo("<div>");
+    echo("<div id='gamelog' style='position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
+    EchoLog($gameName, $playerID);
+    echo("</div>");
+    echo("<div id='chatbox' style='position:relative; left:2%; height: 50px;'>");
+    echo("<input style='width:88%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+    echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
+    echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
+    echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+    echo("</div>");
+    echo("</div>");
+
+/*
   echo("<h2>Instructions</h2>");
   echo("<ul>");
   echo("<li>Copy link and send to your opponent, or open it yourself in another browser tab.</li>");
@@ -217,7 +231,7 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
   echo("<li>Use the interface at the right to sideboard cards.</li>");
   echo("<li>Player 1 starts the game when both players are ready.</li>");
   echo("</ul>");
-
+*/
 
   echo("<script>");
   echo("var prevGameState = " . $gameStatus . ";");
@@ -230,10 +244,13 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 
 <script>
 
-function OnLoadCallback()
+function OnLoadCallback(lastUpdate)
 {
   UpdateFormInputs();
+  var log = document.getElementById('gamelog');
+  if(log !== null) log.scrollTop = log.scrollHeight;
   reload();
+  ReloadChat(lastUpdate);
 }
 
 function UpdateFormInputs()
