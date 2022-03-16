@@ -2632,9 +2632,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIADDHAND":
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
+      $displayText = "";
       for($i=0; $i<count($cards); ++$i)
       {
+        if($parameter == "1")
+        {
+          if($displayText != "") $displayText .= ", ";
+          if($i != 0 && $i == count($cards) - 1) $displayText .= "and ";
+          $displayText .= CardName($cards[$i]);
+        }
         array_push($hand, $cards[$i]);
+      }
+      if($displayText != "")
+      {
+        $word = (count($hand) == 1 ? "was" : "were");
+        WriteLog($displayText . " $word added to your hand.");
       }
       return $lastResult;
     case "MULTIREMOVEHAND":
