@@ -48,7 +48,7 @@
     $gameStatus = 0;//Initial
   }
   $firstPlayerChooser = "";
-  $firstPlayer = 0;
+  $firstPlayer = 1;
   include "MenuFiles/WriteGamefile.php";
 
   $filename = "./Games/" . $gameName . "/gamelog.txt";

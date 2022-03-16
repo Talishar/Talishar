@@ -8,6 +8,8 @@
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
 
+  include "MenuFiles/ParseGamefile.php";
+
   //Setup the random number generator
   srand(make_seed());
 
@@ -54,19 +56,16 @@
   $handler = fopen($filename, "w");
   fclose($handler);
 
-  //Update the game file to show that the game has started and other players can join
+  //Update the game file to show that the game has started and other players can join to spectate
+  $gameStatus = $MGS_GameStarted;
 
-  $filename = "./Games/" . $gameName . "/GameFile.txt";
-  $gameFile = fopen($filename, "w");
-  fwrite($gameFile, "1\r\n2\r\n5");//$gameStatus $MGS_GameStarted
-  fclose($gameFile);
+  include "MenuFiles/WriteGamefile.php";
 
   WriteCache($gameName, strval(round(microtime(true) * 1000)));//Initialize SHMOP cache for this game
 
   header("Location: " . $redirectPath . "/StartEffects.php?gameName=$gameName&playerID=1");
 
   exit;
-
 
   function make_seed()
   {

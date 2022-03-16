@@ -219,7 +219,7 @@
     echo CreatePopup("DYNPITCH", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
-  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER") && $turn[1] == $playerID)
+  if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID)
   {
     $content = "<div display:inline;'>";
     if($turn[0] == "CHOOSEARCANE")
@@ -548,32 +548,29 @@
   echo(CreatePopup("menuPopup", [], 1, 0, "Menu", 1, CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>" . CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
   if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
-  if($turn[0] != "CHOOSEFIRSTPLAYER")
-  {
-    $restriction = "";
-    $actionType = $turn[0] == "ARS" ? 4 : 2;
-    if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
-    $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 10) - 10)/2) . "px)";
-    echo("<div style='position:fixed; left:" . $handLeft . "; bottom:32px;'>");//Hand div
-    for($i=0; $i<count($myHand); ++$i) {
-      if($playerID == 3)
-      {
-        echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, -1));
-      }
-      else
-      {
-        $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
-        $border = CardBorderColor($myHand[$i], "HAND", $playable);
-        $actionData = $actionType == 16 ? strval($i) : "";
-        echo("<span style='position:relative;'>");
-        echo(Card($myHand[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border, 0, $actionData));
-        if($restriction != "") echo("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/restricted.png' />");
-        echo("</span>");
-      }
+  $restriction = "";
+  $actionType = $turn[0] == "ARS" ? 4 : 2;
+  if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
+  $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 10) - 10)/2) . "px)";
+  echo("<div style='position:fixed; left:" . $handLeft . "; bottom:32px;'>");//Hand div
+  for($i=0; $i<count($myHand); ++$i) {
+    if($playerID == 3)
+    {
+      echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, -1));
     }
-    echo(BanishUI("HAND"));
-    echo("</div>");//End hand div
+    else
+    {
+      $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      $border = CardBorderColor($myHand[$i], "HAND", $playable);
+      $actionData = $actionType == 16 ? strval($i) : "";
+      echo("<span style='position:relative;'>");
+      echo(Card($myHand[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border, 0, $actionData));
+      if($restriction != "") echo("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/restricted.png' />");
+      echo("</span>");
+    }
   }
+  echo(BanishUI("HAND"));
+  echo("</div>");//End hand div
 
   //Now display arsenal
   if(count($myArsenal) > 0)
