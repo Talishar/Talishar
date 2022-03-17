@@ -22,8 +22,12 @@
   array_push($layerPriority, ShouldHoldPriority(1));
   array_push($layerPriority, ShouldHoldPriority(2));
 
-  $myHealth = CharacterHealth($myCharacter[0]);
-  $theirHealth = CharacterHealth($theirCharacter[0]);
+  $p1Char = &GetPlayerCharacter(1);
+  $p2Char = &GetPlayerCharacter(2);
+  $p1H = &GetHealth(1);
+  $p2H = &GetHealth(2);
+  $p1H = CharacterHealth($p1Char[0]);
+  $p2H = CharacterHealth($p2Char[0]);
   StartReplay();
 
   $mainPlayer = $firstPlayer;
@@ -31,13 +35,13 @@
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   StatsStartTurn();
 
-  if($myCharacter[0] == "ARC001" || $myCharacter[0] == "ARC002")
+  if($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002")
   {
       $items = SearchMyDeck("", "Item", 2);
       AddDecisionQueue("CHOOSEDECK", 1, $items);
       AddDecisionQueue("PUTPLAY", 1, "-");
   }
-  if($theirCharacter[0] == "ARC001" || $theirCharacter[0] == "ARC002")
+  if($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002")
   {
       $items = SearchTheirDeck("", "Item", 2);
       AddDecisionQueue("CHOOSEDECK", 2, $items);
