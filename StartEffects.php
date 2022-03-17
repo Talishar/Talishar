@@ -1,23 +1,24 @@
 <?php
 
+/*
   include "WriteLog.php";
   include "GameLogic.php";
   include "GameTerms.php";
-  include "HostFiles/Redirector.php";
+  //include "HostFiles/Redirector.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
   include "AI/CombatDummy.php";
-  include "Libraries/HTTPLibraries.php";
-  include "Libraries/SHMOPLibraries.php";
+  //include "Libraries/HTTPLibraries.php";
+  //include "Libraries/SHMOPLibraries.php";
   include "WriteReplay.php";
-
+*/
   //We should always have a player ID as a URL parameter
-  $gameName=$_GET["gameName"];
-  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
-  $playerID=$_GET["playerID"];
+  //$gameName=$_GET["gameName"];
+  //if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
+  //$playerID=$_GET["playerID"];
 
   include "ParseGamestate.php";
-  include "MenuFiles/ParseGamefile.php";
+  //include "MenuFiles/ParseGamefile.php";
 
   array_push($layerPriority, ShouldHoldPriority(1));
   array_push($layerPriority, ShouldHoldPriority(2));
