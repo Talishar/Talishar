@@ -17,7 +17,7 @@
 
   include "MenuFiles/ParseGamefile.php";
 
-  if($playerID != 1 && $gameStatus == $MGS_GameStarted)
+  if($gameStatus == $MGS_GameStarted)
   {
     header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID");
   }
@@ -389,7 +389,10 @@ function loadGamestate() {
     xhttp.onload = function() {
       var resp = "";
       for(var i=0; i<this.responseText.length; ++i) resp += this.responseText[i];
-      if(parseInt(resp) != prevGameState && parseInt(resp) != <?php echo($MGS_ReadyToStart) ?>) { location.reload(); }
+      if(parseInt(resp) != prevGameState && parseInt(resp) != <?php echo($MGS_ReadyToStart) ?>)
+      {
+        location.reload();
+      }
       <?php if($playerID == 1) echo 'if(parseInt(resp) == ' . $MGS_ReadyToStart . ') {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
       prevGameState = parseInt(resp);
     };

@@ -1,5 +1,15 @@
 <?php
 
+if(!function_exists("GetArray"))
+{
+  function GetArray($handler)
+  {
+    $line = trim(fgets($handler));
+    if($line=="") return [];
+    return explode(" ", $line);
+  }
+}
+
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
   $myStateBuiltFor = -1;
@@ -143,13 +153,6 @@
     $theirSoul = $playerID==1 ? $p2Soul : $p1Soul;
     $theirCardStats = $playerID==1 ? $p2CardStats : $p1CardStats;
     $theirTurnStats = $playerID==1 ? $p2TurnStats : $p1TurnStats;
-  }
-
-  function GetArray($handler)
-  {
-    $line = trim(fgets($handler));
-    if($line=="") return [];
-    return explode(" ", $line);
   }
 
   function BuildMainPlayerGameState()
