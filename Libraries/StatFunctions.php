@@ -60,6 +60,7 @@ function LogResourcesUsedStats($player, $resourcesUsed)
   global $currentTurn, $TurnStats_ResourcesUsed;
   $turnStats = &GetTurnStats($player);
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  if(count($turnStats) <= $baseIndex) StatsStartTurn();
   $turnStats[$baseIndex + $TurnStats_ResourcesUsed] += $resourcesUsed;
 }
 
@@ -68,6 +69,7 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
   global $currentTurn, $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
   $damagerStats = &GetTurnStats($player == 1 ? 2 : 1);
+  if(count($damagerStats) <= $baseIndex) StatsStartTurn();
   $damagerStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened;
   $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
 }
@@ -78,6 +80,8 @@ function LogCombatResolutionStats($damageThreatened, $damageBlocked)
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
   $mainStats = &GetTurnStats($mainPlayer);
   $defStats = &GetTurnStats($defPlayer);
+  if(count($mainStats) <= $baseIndex) StatsStartTurn();
+  if(count($defStats) <= $baseIndex) StatsStartTurn();
   $mainStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened > $damageBlocked ? $damageBlocked : $damageThreatened;//Excess is logged in the damage function
   $defStats[$baseIndex + $TurnStats_DamageBlocked] += $damageBlocked;
   $defStats[$baseIndex + $TurnStats_Overblock] += $damageBlocked > $damageThreatened ? $damageBlocked - $damageThreatened : 0;
@@ -88,6 +92,7 @@ function LogEndTurnStats($player)
   global $currentTurn, $TurnStats_ResourcesLeft, $TurnStats_CardsLeft;
   $turnStats = &GetTurnStats($player);
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  if(count($turnStats) <= $baseIndex) StatsStartTurn();
   $resources = &GetResources($player);
   $turnStats[$baseIndex + $TurnStats_ResourcesLeft] = $resources[0];
   $hand = &GetHand($player);
