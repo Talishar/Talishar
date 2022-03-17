@@ -17,7 +17,7 @@
 
   include "MenuFiles/ParseGamefile.php";
 
-  if($gameStatus == $MGS_GameStarted)
+  if($playerID != 1 && $gameStatus == $MGS_GameStarted)
   {
     header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID");
   }
