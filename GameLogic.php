@@ -1155,7 +1155,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   switch($cardID)
   {
     case "WTR212": case "WTR213": case "WTR214": $blockModifier += $from == "ARS" ? 1 : 0; break;
-    case "WTR051": case "WTR052": case "WTR053": $blockModifier += ($resourcesPaid == 6 ? 3 : 0); break;
+    case "WTR051": case "WTR052": case "WTR053": $blockModifier += ($resourcesPaid >= 6 ? 3 : 0); break;
     case "ARC150": $blockModifier += (DefHasLessHealth() ? 1 : 0); break;
     case "CRU187": $blockModifier += ($from == "ARS" ? 2 : 0); break;
     case "MON075": case "MON076": case "MON077": return GetClassState($mainPlayer, $CS_CardsBanished) >= 3 ? 2 : 0;
@@ -2511,6 +2511,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else if($subtype == "Aura")
       {
         PlayAura($lastResult, $player);
+        PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
     case "DRAW":
