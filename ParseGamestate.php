@@ -1,14 +1,14 @@
 <?php
 
-if(!function_exists("GetArray"))
-{
-  function GetArray($handler)
+  if(!function_exists("GetArray"))
   {
-    $line = trim(fgets($handler));
-    if($line=="") return [];
-    return explode(" ", $line);
+    function GetArray($handler)
+    {
+      $line = trim(fgets($handler));
+      if($line=="") return [];
+      return explode(" ", $line);
+    }
   }
-}
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
