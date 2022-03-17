@@ -579,16 +579,23 @@
     echo("<div style='position:fixed; left:" . $arsenalLeft . "; bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize - 10) . "px;'>");//arsenal div
     for($i=0; $i<count($myArsenal); $i+=ArsenalPieces())
     {
-      $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction);
-      $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
-      $counters = $myArsenal[$i+3];
-      echo("<div style='display:inline-block; position:relative; left:10px;'>");
-      echo(Card($myArsenal[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 5 : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
-      $iconHeight = $cardSize / 2 - 5;
-      $iconLeft = $cardWidth/2 - intval($iconHeight*.71/2) + 5;
-      if($myArsenal[$i+1] == "UP") echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
-      else echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
-      echo("</div>");
+      if($playerID == 3)
+      {
+        echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, -1));
+      }
+      else
+      {
+        $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction);
+        $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
+        $counters = $myArsenal[$i+3];
+        echo("<div style='display:inline-block; position:relative; left:10px;'>");
+        echo(Card($myArsenal[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 5 : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
+        $iconHeight = $cardSize / 2 - 5;
+        $iconLeft = $cardWidth/2 - intval($iconHeight*.71/2) + 5;
+        if($myArsenal[$i+1] == "UP") echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
+        else echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
+        echo("</div>");
+      }
     }
     echo("</div>");//End arsenal div
   }
