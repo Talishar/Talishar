@@ -11,19 +11,26 @@
   }
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
+  $gameFileHandler = fopen($filename, "r+");
 
-  $handler = fopen($filename, "r");
-  $p1Data = GetArray($handler);
-  $p2Data = GetArray($handler);
-  $gameStatus = trim(fgets($handler));
-  $format = trim(fgets($handler));
-  $visibility = trim(fgets($handler));
-  $firstPlayerChooser = trim(fgets($handler));
-  $firstPlayer = trim(fgets($handler));
-  $p1Key = trim(fgets($handler));
-  $p2Key = trim(fgets($handler));
+  $lockTries = 0;
 
-  fclose($handler);
+  while(!flock($gameFileHandler, LOCK_EX) && $lockTries < 10)
+  {
+    usleep(100000);//100ms
+    ++$lockTries;
+  }
+  if($lockTries == 10) exit;
+
+  $p1Data = GetArray($gameFileHandler);
+  $p2Data = GetArray($gameFileHandler);
+  $gameStatus = trim(fgets($gameFileHandler));
+  $format = trim(fgets($gameFileHandler));
+  $visibility = trim(fgets($gameFileHandler));
+  $firstPlayerChooser = trim(fgets($gameFileHandler));
+  $firstPlayer = trim(fgets($gameFileHandler));
+  $p1Key = trim(fgets($gameFileHandler));
+  $p2Key = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

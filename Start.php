@@ -14,6 +14,7 @@
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
 
   include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
 
   //Setup the random number generator
   srand(make_seed());
@@ -66,7 +67,7 @@
   //Update the game file to show that the game has started and other players can join to spectate
   $gameStatus = $MGS_GameStarted;
 
-  include "MenuFiles/WriteGamefile.php";
+  WriteGameFile();
 
   WriteCache($gameName, strval(round(microtime(true) * 1000)));//Initialize SHMOP cache for this game
 

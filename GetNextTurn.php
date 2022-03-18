@@ -37,7 +37,7 @@
   include "Libraries/PlayerSettings.php";
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-  if($authKey != $targetAuth) exit;
+  if($playerID != 3 && $authKey != $targetAuth) exit;
 
   if($currentPlayer == $playerID) { $icon = "ready.png"; $readyText = "You are the player with priority."; }
   else { $icon = "notReady.png"; $readyText = "The other player has priority."; }

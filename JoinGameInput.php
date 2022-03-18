@@ -31,6 +31,7 @@
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
   include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
 
   if($playerID == 2 && $gameStatus >= $MGS_Player2Joined)
   {
@@ -42,6 +43,7 @@
       {
         header("Location: " . $redirectPath . "/MainMenu.php");
       }
+      WriteGameFile();
       exit;
   }
 
@@ -51,7 +53,7 @@
     $slug = $decklink[count($decklink)-1];
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
     $apiDeck = @file_get_contents($apiLink);
-    if($apiDeck === FALSE) { echo  '<b>' . "Deck link is not valid: " . implode("/", $decklink) . '</b>'; exit; }
+    if($apiDeck === FALSE) { echo  '<b>' . "Deck link is not valid: " . implode("/", $decklink) . '</b>'; WriteGameFile(); exit; }
     $deckObj = json_decode($apiDeck);
     $cards = $deckObj->{'cards'};
     $deckCards = "";
@@ -192,20 +194,6 @@
 
   if($playerID == 2)
   {
-    $filename = "./Games/" . $gameName . "/GameFile.txt";
-    $gameFile = fopen($filename, "w");
-
-    $attemptCount = 0;
-    while(!flock($gameFile, LOCK_EX) && $attemptCount < 5) {  // acquire an exclusive lock
-      sleep(1);
-      ++$attemptCount;
-    }
-    if($attemptCount >= 5)
-    {
-      header("Location: " . $redirectorPath . "MainMenu.php");//We never actually got the lock
-    }
-    flock($gameFile, LOCK_UN);    // release the lock
-    fclose($gameFile);
     $gameStatus = $MGS_Player2Joined;
 
     $firstPlayerChooser = 1;
@@ -221,12 +209,9 @@
     $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
     WriteLog("Player $firstPlayerChooser chooses who goes first.");
     $gameStatus = $MGS_ChooseFirstPlayer;
-
-    include "MenuFiles/WriteGamefile.php";
-
-    //fwrite($gameFile, "\r\n");
-    //fwrite($gameFile, "1\r\n2\r\n4");
   }
+
+  WriteGameFile();
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 

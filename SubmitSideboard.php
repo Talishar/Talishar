@@ -10,6 +10,7 @@
 
   include "HostFiles/Redirector.php";
   include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
   include "CardDictionary.php";
 
   if($playerID == 2)
@@ -21,7 +22,7 @@
     $gameStatus = $MGS_GameStarted;
   }
 
-  include "MenuFiles/WriteGamefile.php";
+  WriteGameFile();
 
   if($playerCharacter != "" && $playerDeck != "")//If they submitted before loading even finished, use the deck as it existed before
   {
