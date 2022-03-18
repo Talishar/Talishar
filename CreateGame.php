@@ -51,7 +51,11 @@
   $firstPlayer = 1;
   $p1Key = hash("sha256", rand() . rand());
   $p2Key = hash("sha256", rand() . rand() . rand());
+
+  $filename = "./Games/" . $gameName . "/GameFile.txt";
+  $gameFileHandler = fopen($filename, "w");
   include "MenuFiles/WriteGamefile.php";
+  WriteGameFile();
 
   $filename = "./Games/" . $gameName . "/gamelog.txt";
   $handler = fopen($filename, "w");

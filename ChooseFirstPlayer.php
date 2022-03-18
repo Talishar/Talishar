@@ -10,6 +10,7 @@
 
   include "HostFiles/Redirector.php";
   include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
 
   if($action == "Go First")
   {
@@ -22,7 +23,7 @@
   WriteLog("Player " . $firstPlayer . " will go first.");
   $gameStatus = $MGS_P2Sideboard;
 
-  include "MenuFiles/WriteGamefile.php";
+  WriteGameFile();
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
