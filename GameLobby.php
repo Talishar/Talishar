@@ -19,7 +19,8 @@
 
   if($gameStatus == $MGS_GameStarted)
   {
-    header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID");
+    $authKey = ($playerID == 1 ? $p1Key : $p2Key);
+    header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
   }
 
   $icon = "ready.png";

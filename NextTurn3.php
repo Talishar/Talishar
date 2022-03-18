@@ -8,6 +8,7 @@
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=TryGet("playerID", 3);
+  $authKey=TryGet("authKey", 3);
 
   //First we need to parse the game state from the file
   include "WriteLog.php";
@@ -107,7 +108,7 @@
         else { CheckReloadNeeded(lastUpdate); }
       }
     };
-    xmlhttp.open("GET", "GetNextTurn.php?gameName=<?php echo($gameName);?>&playerID=<?php echo($playerID);?>&lastUpdate=" + lastUpdate, true);
+    xmlhttp.open("GET", "GetNextTurn.php?gameName=<?php echo($gameName);?>&playerID=<?php echo($playerID);?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo($authKey);?>", true);
     xmlhttp.send();
   }
 
@@ -145,6 +146,7 @@
   echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+  echo("<input type='hidden' id='authKey' value='" . $authKey . "'>");
   echo("</div>");
   echo("</div>");
 
@@ -290,11 +292,6 @@
       if($items[$i] == "CRU197") ++$copperCount;
     }
     if($copperCount > 0) echo(Card("CRU197", "CardImages", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
-  }
-
-  function ProcessInputName()
-  {
-    return "ProcessInput2.php";
   }
 
 ?>

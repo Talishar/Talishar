@@ -40,7 +40,7 @@
 
   WriteCache($gameName, strval(round(microtime(true) * 1000)));
 
-  header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=1");
+  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=1");
 
 ?>
 

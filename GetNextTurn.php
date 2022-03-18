@@ -7,6 +7,7 @@
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=TryGet("playerID", 3);
+  $authKey=TryGet("authKey", 3);
   $lastUpdate = TryGet("lastUpdate", 0);
 
 
@@ -34,6 +35,9 @@
   include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
+
+  $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+  if($authKey != $targetAuth) exit;
 
   if($currentPlayer == $playerID) { $icon = "ready.png"; $readyText = "You are the player with priority."; }
   else { $icon = "notReady.png"; $readyText = "The other player has priority."; }
@@ -897,11 +901,6 @@
       if($items[$i] == "CRU197") ++$copperCount;
     }
     if($copperCount > 0) echo(Card("CRU197", "CardImages", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
-  }
-
-  function ProcessInputName()
-  {
-    return "ProcessInput2.php";
   }
 
 ?>

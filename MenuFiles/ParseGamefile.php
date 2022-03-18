@@ -20,6 +20,8 @@
   $visibility = trim(fgets($handler));
   $firstPlayerChooser = trim(fgets($handler));
   $firstPlayer = trim(fgets($handler));
+  $p1Key = trim(fgets($handler));
+  $p2Key = trim(fgets($handler));
 
   fclose($handler);
 
