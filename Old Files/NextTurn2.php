@@ -951,10 +951,5 @@ echo("<div title='Click to view the menu.' style='cursor:pointer; width:200px; h
     if($copperCount > 0) echo(Card("CRU197", "CardImages", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
   }
 
-  function ProcessInputName()
-  {
-    return "ProcessInput.php";
-  }
-
 ?>
 </body>

@@ -19,6 +19,7 @@
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
+  $authKey=$_GET["authKey"];
 
   //We should also have some information on the type of command
   $mode = $_GET["mode"];
@@ -39,6 +40,8 @@
   $mainPlayerGamestateStillBuilt = 0;
   $makeCheckpoint = 0;
   $makeBlockBackup = 0;
+  $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+  if($authKey != $targetAuth) exit;
 
   if($playerID == 3) ExitProcessInput();
   if(!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();

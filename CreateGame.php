@@ -49,6 +49,8 @@
   }
   $firstPlayerChooser = "";
   $firstPlayer = 1;
+  $p1Key = hash("sha256", rand() . rand());
+  $p2Key = hash("sha256", rand() . rand() . rand());
   include "MenuFiles/WriteGamefile.php";
 
   $filename = "./Games/" . $gameName . "/gamelog.txt";

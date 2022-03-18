@@ -79,6 +79,8 @@
     fwrite($handler, implode(" ", $chainLinks[$i]) . "\r\n");
   }
   fwrite($handler, implode(" ", $chainLinkSummary) . "\r\n");
+  fwrite($handler, $p1Key . "\r\n");
+  fwrite($handler, $p2Key . "\r\n");
   fclose($handler);
 
 ?>
