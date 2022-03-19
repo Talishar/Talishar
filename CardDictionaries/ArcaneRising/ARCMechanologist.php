@@ -294,12 +294,12 @@
     global $currentPlayer;
     AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
     AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+    AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
     if(SearchCurrentTurnEffects("CRU102", $currentPlayer))
     {
       AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
       HandToTopDeck($currentPlayer);
     }
-    AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
   }
 
   function DoBoost()
