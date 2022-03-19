@@ -31,6 +31,10 @@
   function DestroyItemForPlayer($player, $index)
   {
     $items = &GetItems($player);
+    if(CardType($items[$index]) != "T")
+    {
+      AddGraveyard($items[$index], $player, "PLAY");
+    }
     for($i=$index+ItemPieces()-1; $i>=$index; --$i)
     {
       unset($items[$i]);
