@@ -931,7 +931,14 @@
       case "EVR160":
         Draw(1);
         Draw(2);
-        AddNextTurnEffect($cardID, $otherPlayer);
+        if($currentPlayer != $mainPlayer)
+        {
+          AddCurrentTurnEffect($cardID, $otherPlayer);//If played as an instant, needs to apply to the current turn
+        }
+        else
+        {
+          AddNextTurnEffect($cardID, $otherPlayer);
+        }
         return "This Round's on Me drew a card for each player and gave attacks targeting you -1.";
       case "EVR161": case "EVR162": case "EVR163":
         $rand = rand(1, 3);
