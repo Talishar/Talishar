@@ -2065,7 +2065,7 @@ function MainCharacterEndTurnAbilities()
       case "ELE223":
         if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i+3] = 0; break;
       case "MON107": if($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i+4] < 0) ++$mainCharacter[$i+4]; break;
-      case "ELE224": if(GetClassState($defPlayer, $CS_ArcaneDamageTaken) < $mainCharacter[$i+2]) $mainCharacter[$i+1] = 0; $mainCharacter[$i+2] = 0; break;
+      case "ELE224": if(GetClassState($defPlayer, $CS_ArcaneDamageTaken) < $mainCharacter[$i+2]) { DestroyCharacter($mainPlayer, $i); $mainCharacter[$i+2] = 0; } break;
       default: break;
     }
   }
