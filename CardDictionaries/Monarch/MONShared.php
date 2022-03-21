@@ -205,7 +205,7 @@
       case "MON212": return true;
       case "MON218": return true;
       case "MON221": return true;
-      case "MON222": return true;
+      case "MON222": return CardType($attackID) == "AA" && (CardClass($attackID) == "BRUTE");
       case "MON223": case "MON224": case "MON225": return true;
       case "MON239": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
       case "MON247": return true;
