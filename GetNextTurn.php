@@ -549,7 +549,7 @@
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
   echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
   echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
-  echo(CreatePopup("menuPopup", [], 1, 0, "Menu", 1, CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>" . CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>" . CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>" . CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>" . GetSettingsUI($playerID), "./", true));
+  echo(CreatePopup("menuPopup", [], 1, 0, "Menu", 1, MainMenuUI(), "./", true));
   if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
   $restriction = "";
