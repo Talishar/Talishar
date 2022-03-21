@@ -358,4 +358,23 @@
     $skipWriteGamestate = true;
   }
 
+  function MakeStartTurnBackup()
+  {
+    global $mainPlayer, $currentTurn, $gameName;
+    $filename = "p" . $mainPlayer . "turn" . $currentTurn . "Gamestate.txt";
+    MakeGamestateBackup($filename);
+    if($currentTurn > 5)
+    {
+      $delTurn = $currentTurn - 5;
+      for($i=1; $i<=2; ++$i)
+      {
+        $fn = "./Games/" . $gameName . "/" . "p" . $i . "turn" . $delTurn . "Gamestate.txt";
+        if(file_exists($fn))
+        {
+          unlink($fn);
+        }
+      }
+    }
+  }
+
 ?>

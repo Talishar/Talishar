@@ -40,6 +40,7 @@
   $mainPlayerGamestateStillBuilt = 0;
   $makeCheckpoint = 0;
   $makeBlockBackup = 0;
+  $MakeStartTurnBackup = false;
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if($authKey != $targetAuth) exit;
 
@@ -333,6 +334,11 @@
       WriteLog("Player " . $playerID . " manually added one action point.");
       ++$actionPoints;
       break;
+    case 10003://Revert to prior turn
+      $params = explode("-", $buttonInput);
+      RevertGamestate("p" . $params[0] . "turn" . $params[1] . "Gamestate.txt");
+      WriteLog("Player " . $playerID . " reverted back to player " . $params[0] . " turn " . $params[1] . ".");
+      break;
     case 100000: //Rematch
       header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=" . $playerID);
       exit;
@@ -380,6 +386,7 @@
 
   if($makeCheckpoint) MakeGamestateBackup();
   if($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
+  if($MakeStartTurnBackup) MakeStartTurnBackup();
 
   WriteCache($gameName, strval(round(microtime(true) * 1000)));
 
@@ -724,6 +731,7 @@ function FinalizeChainLink($chainClosed=false)
     global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
     global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
     global $mainAuras, $defBanish, $firstPlayer, $lastPlayed, $layerPriority;
+    global $MakeStartTurnBackup;
     //Undo Intimidate
     for($i=0; $i<count($defBanish); $i+=2)
     {
@@ -820,12 +828,14 @@ function FinalizeChainLink($chainClosed=false)
     //Start of turn effects
     if($mainPlayer == 1) StatsStartTurn();
     StartTurnAbilities();
+    $MakeStartTurnBackup = true;
 
     $layerPriority[0] = ShouldHoldPriority(1);
     $layerPriority[1] = ShouldHoldPriority(2);
 
     ResetMainClassState();
     DoGamestateUpdate();
+
     ProcessDecisionQueue();
   }
 

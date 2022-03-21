@@ -269,4 +269,36 @@
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . "</span></b>";
   }
 
+  function MainMenuUI()
+  {
+    global $playerID;
+    $rv = "<table><tr><td>";
+    $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>";
+    $rv .= CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>";
+    $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
+    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
+    $rv .= GetSettingsUI($playerID);
+    $rv .= "</td><td>";
+    $rv .= PreviousTurnSelectionUI();
+    $rv .= "</td></tr></table>";
+    return $rv;
+  }
+
+  function PreviousTurnSelectionUI()
+  {
+    global $currentTurn, $mainPlayer, $playerID, $firstPlayer;
+    $rv = "<h2>Revert to Start of Previous Turn</h3>";
+    for($i=1; $i<=$currentTurn; ++$i)
+    {
+      if($i < $currentTurn - 5) continue;
+      for($j=1; $j<=2; ++$j)
+      {
+        if($i == 1 && $firstPlayer == 2 && $j == 1) continue;//Player 1 never got a turn 1
+        if($i == $currentTurn && $j > $mainPlayer) continue;//Player 2 hasn't gotten a turn yet
+        $rv .= CreateButton($playerID, "Player $j Turn $i", 10003, $j . "-" . $i) . "<BR>";
+      }
+    }
+    return $rv;
+  }
+
 ?>
