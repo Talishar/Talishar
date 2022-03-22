@@ -303,7 +303,9 @@
 
   if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID)
   {
-    $content = "<div display:inline;'>";
+    $content = "";
+    if($dqState[4] != "-") $content .= implode(" ", explode("_", $dqState[4]));
+    $content .= "<div display:inline;'>";
     $options = explode(",", $turn[2]);
     $otherPlayer = $playerID == 2 ? 1 : 2;
     $theirAllies = &GetAllies($otherPlayer);
@@ -395,6 +397,7 @@
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
     $caption = "<h3>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "<h3>";
+    if($dqState[4] != "-") $content .= "<h1>" . implode(" ", explode("_", $dqState[4])) . "</h2>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
     $content .= "<table><tr>";
     for($i=0; $i<count($options); ++$i)

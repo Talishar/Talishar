@@ -250,6 +250,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $turn[0] = $dqState[1];
     $turn[1] = $dqState[2];
     $turn[2] = $dqState[3];
+    $dqState[4] = "-";//Clear the context, just in case
     $decisionQueue = [];
   }
 
@@ -363,6 +364,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     if($parameter == "<-" && !is_array($lastResult) && $lastResult == "-1") $return = "PASS";//Collapse the rest of the queue if this decision point has invalid parameters
     if(is_array($return) || strval($return) != "NOTSTATIC")
     {
+      if($phase != "SETDQCONTEXT") $dqState[4] = "-";//Clear out context for static states -- context only persists for one choice
       ContinueDecisionQueue($return);
     }
     else
