@@ -1336,18 +1336,21 @@
         case "Buff_Weapon":
           WriteLog("Blood on Her Hands gives a weapon +1 this turn.");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give +1", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-1", 1);
           break;
         case "Go_Again":
           WriteLog("Blood on Her Hands gives a weapon Go Again this turn.");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give Go Again", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-2", 1);
           break;
         case "Another_Swing":
           WriteLog("Blood on Her Hands gives a weapon a second attack this turn.");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give a second attack", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZUSES", $currentPlayer, "1", 1);
           break;
