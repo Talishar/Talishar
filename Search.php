@@ -653,4 +653,12 @@ function SearchChainLinks($minPower=-1, $maxPower=-1)
   return $links;
 }
 
+function GetMZCardLink($player, $MZ)
+{
+  $params = explode("-", $MZ);
+  $zoneDS = &GetMZZone($player, $params[0]);
+  $index = $params[1];
+  return CardLink($zoneDS[$index], $zoneDS[$index]);
+}
+
 ?>

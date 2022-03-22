@@ -3297,6 +3297,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $parameter;
     case "PROCESSATTACKTARGET":
       $combatChainState[$CCS_AttackTarget] = $lastResult;
+      WriteLog(GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target.");
       return 1;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
