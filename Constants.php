@@ -333,4 +333,11 @@
     $defCharacterEffects = [];
   }
 
+
+  function GetAttackTarget()
+  {
+    global $combatChainState, $CCS_AttackTarget;
+    return $combatChainState[$CCS_AttackTarget];
+  }
+
 ?>

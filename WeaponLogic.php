@@ -1,5 +1,10 @@
 <?php
 
+function IsWeapon($cardID)
+{
+  return CardType($cardID) == "W";
+}
+
 function WeaponIndices($chooser, $player, $subtype="")
 {
   global $mainPlayer;

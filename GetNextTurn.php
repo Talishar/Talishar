@@ -193,6 +193,14 @@
   {
     $content = "";
     $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
+    if(CardType($layers[0]) == "AA" || IsWeapon($layers[0]))
+    {
+      $attackTarget = GetAttackTarget();
+      if($attackTarget != "NA")
+      {
+        $content .= "Attack Target: " . GetMZCardLink($defPlayer, $attackTarget);
+      }
+    }
     $content .= "<div display:inline;'>";
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {
