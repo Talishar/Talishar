@@ -13,7 +13,7 @@
     $fileExt = ".png";
     if(mb_strpos($folder, "CardImages") !== false)
     {
-      if($maxHeight < 210) $folder = str_replace("CardImages", "SmallCardImages", $folder);
+      if($maxHeight < 160) $folder = str_replace("CardImages", "SmallCardImages", $folder);
       else $folder = str_replace("CardImages", "BigCardImages", $folder);
       //$fileExt = ".jpg";
     }
