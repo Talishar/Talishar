@@ -25,14 +25,12 @@ if ($handle = opendir($path)) {
           $lastGamestateUpdate = filemtime($gs);
           if(time() - $lastGamestateUpdate < 120)
           {
-            $currentlyActiveGames .= "Game in Progress - Last Update " . date("h:i", $lastGamestateUpdate) . "<BR>";
-
-       $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn3.php'>";
-         $spectateLinks .= "<label for='joinGame'> In progress game - Last Update " . date("h:i", $lastGamestateUpdate) . " </label>";
-         $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
-         $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-         $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
-       $spectateLinks .= "</form>";
+            $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn3.php'>";
+            $spectateLinks .= "<label for='joinGame'>Last Update " . time() - $lastGamestateUpdate . " seconds ago </label>";
+            $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
+            $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
+            $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
+            $spectateLinks .= "</form>";
           }
           else if(time() - $lastGamestateUpdate > 10800)//3 hours
           {
