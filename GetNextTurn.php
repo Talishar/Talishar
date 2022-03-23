@@ -245,7 +245,7 @@
       $content .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "30px");
     }
     $content .= "</div>";
-    echo CreatePopup("BUTTONINPUT", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+    echo CreatePopup("BUTTONINPUT", [], 0, 1, GetPhaseHelptext(), 1, $content);
   }
 
   if($turn[0] == "YESNO" && $turn[1] == $playerID)
@@ -304,7 +304,6 @@
   if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID)
   {
     $content = "";
-    if($dqState[4] != "-") $content .= implode(" ", explode("_", $dqState[4]));
     $content .= "<div display:inline;'>";
     $options = explode(",", $turn[2]);
     $otherPlayer = $playerID == 2 ? 1 : 2;
@@ -323,7 +322,7 @@
       $content .= Card($source[intval($option[1])], "CardImages", $bigCardSize, 16, 0, 0, 0, 0, $options[$i]);
     }
     $content .= "</div>";
-    echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+    echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
   }
 
   if($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID)
@@ -397,7 +396,7 @@
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
     $caption = "<h3>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "<h3>";
-    if($dqState[4] != "-") $content .= "<h1>" . implode(" ", explode("_", $dqState[4])) . "</h2>";
+    if($dqState[4] != "-") $caption = "<h3>" . implode(" ", explode("_", $dqState[4])) . "</h3>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
     $content .= "<table><tr>";
     for($i=0; $i<count($options); ++$i)
@@ -912,6 +911,14 @@
       if($items[$i] == "CRU197") ++$copperCount;
     }
     if($copperCount > 0) echo(Card("CRU197", "CardImages", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
+  }
+
+  function GetPhaseHelptext()
+  {
+    global $dqState, $turn, $dqState;
+    $defaultText = "Please choose " . TypeToPlay($turn[0]);
+    if(count($dqState) < 5) return $defaultText;
+    return ($dqState[4] != "-" ? implode(" ", explode("_", $dqState[4])) : $defaultText);
   }
 
 ?>
