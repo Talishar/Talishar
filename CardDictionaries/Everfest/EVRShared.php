@@ -767,11 +767,14 @@
           if($buttons != "") $buttons .= ",";
           $buttons .= $i;
         }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to destroy");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $buttons);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
         AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
         AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Another_Swing,Another_Swing", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
         AddDecisionQueue("BLOODONHERHANDS", $currentPlayer, "-", 1);
         return "";
