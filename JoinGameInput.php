@@ -169,6 +169,7 @@
     fwrite($deckFile, $weaponSideboard . "\r\n");
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
+    copy($filename, "./Games/" . $gameName . "/p" . $playerID ."DeckOrig.txt");
   }
   else
   {
@@ -190,6 +191,7 @@
       }
     }
     copy($deckFile,"./Games/" . $gameName . "/p" . $playerID ."Deck.txt");
+    copy($deckFile,"./Games/" . $gameName . "/p" . $playerID ."DeckOrig.txt");
   }
 
   if($playerID == 2)
