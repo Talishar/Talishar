@@ -346,7 +346,7 @@
       header("Location: " . $redirectPath . "/MainMenu.php");
       exit;
     case 100002: //Concede
-      DealDamage($playerID, 9999, "MANUAL");
+      PlayerLoseHealth($playerID, 9999);
       break;
     case 100003: //Report Bug
       $bugCount = 0;
