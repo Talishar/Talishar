@@ -22,4 +22,11 @@ function CombatDummyAI()
   }
 }
 
+function IsPlayerAI($playerID)
+{
+  $char = &GetPlayerCharacter($playerID);
+  if($char[0] == "DUMMY") return true;
+  return false;
+}
+
 ?>
