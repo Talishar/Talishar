@@ -339,7 +339,7 @@
       RevertGamestate("p" . $params[0] . "turn" . $params[1] . "Gamestate.txt");
       WriteLog("Player " . $playerID . " reverted back to player " . $params[0] . " turn " . $params[1] . ".");
       break;
-    case 100000: //Rematch
+    case 100000: //Quick Rematch
       header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=" . $playerID);
       exit;
     case 100001: //Main Menu
@@ -366,6 +366,18 @@
       copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
       WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
       break;
+    case 100004: //Full Rematch
+      include "MenuFiles/ParseGamefile.php";
+      include "MenuFiles/WriteGamefile.php";
+      $turn[0] = "REMATCH";
+      $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+      $firstPlayer = 1;
+      $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+      WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
+      WriteGameFile();
+      WriteCache($gameName, strval(round(microtime(true) * 1000)));
+      include "WriteGamestate.php";
+      exit;
     default:break;
   }
 

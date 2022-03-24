@@ -26,7 +26,6 @@
 
   if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo "0"; exit; }
   else {
-  echo(strval(round(microtime(true) * 1000)) . "ENDTIMESTAMP");
   //First we need to parse the game state from the file
   include "WriteLog.php";
   include "ParseGamestate.php";
@@ -35,6 +34,12 @@
   include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
+
+  if($turn[0] == "REMATCH")
+  {
+    echo("1234REMATCH"); exit;
+  }
+  echo(strval(round(microtime(true) * 1000)) . "ENDTIMESTAMP");
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if($playerID != 3 && $authKey != $targetAuth) exit;
@@ -213,7 +218,8 @@
   if($turn[0] == "OVER")
   {
     $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
-    if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100000, 0, "24px");
+    if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
+    if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
     $content .= CardStats($playerID);
     echo CreatePopup("OVER", [], 0, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
   }
