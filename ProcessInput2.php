@@ -367,6 +367,10 @@
       WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
       break;
     case 100004: //Full Rematch
+      $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
+      if(file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
+      $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
+      if(file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
       include "MenuFiles/ParseGamefile.php";
       include "MenuFiles/WriteGamefile.php";
       $turn[0] = "REMATCH";
