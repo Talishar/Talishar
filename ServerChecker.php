@@ -32,7 +32,7 @@ if ($handle = opendir($path)) {
             $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
             $spectateLinks .= "</form>";
           }
-          else if(time() - $lastGamestateUpdate > 10800)//3 hours
+          else if(time() - $lastGamestateUpdate > 60800)//~18 hours
           {
             if($autoDeleteGames) deleteDirectory($folder);
           }

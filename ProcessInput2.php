@@ -379,8 +379,8 @@
       $firstPlayerChooser = ($winner == 1 ? 2 : 1);
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
       WriteGameFile();
-      WriteCache($gameName, strval(round(microtime(true) * 1000)));
       include "WriteGamestate.php";
+      WriteCache($gameName, strval(round(microtime(true) * 1000)));
       exit;
     default:break;
   }
