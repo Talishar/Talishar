@@ -15,7 +15,14 @@
   $myStateBuiltFor = -1;
 
   $filename = "./Games/" . $gameName . "/gamestate.txt";
-  if(!file_exists($filename)) { echo("This game no longer exists on the server. Please go to the main menu and create a new game."); exit; }
+
+  $fileTries = 0;
+  while(!file_exists($filename) && $fileTries < 10)
+  {
+    usleep(100000);//100ms
+    ++$fileTries;
+  }
+  if($fileTries == 10) { echo("This game no longer exists on the server. Please go to the main menu and create a new game."); exit; }
 
   $handler = fopen($filename, "r");
 
