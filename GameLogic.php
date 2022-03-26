@@ -1768,7 +1768,7 @@ function DefCharacterStartTurnAbilities()
       case "EVR086":
         if(PlayerHasLessHealth($mainPlayer))
         {
-          AddDecisionQueue("CHARREADYORPASS", $defPlayer, $index);
+          AddDecisionQueue("CHARREADYORPASS", $defPlayer, $i);
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_silver", 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
