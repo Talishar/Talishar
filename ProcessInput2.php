@@ -373,12 +373,12 @@
       if(file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
       include "MenuFiles/ParseGamefile.php";
       include "MenuFiles/WriteGamefile.php";
-      $turn[0] = "REMATCH";
       $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
       $firstPlayer = 1;
       $firstPlayerChooser = ($winner == 1 ? 2 : 1);
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
       WriteGameFile();
+      $turn[0] = "REMATCH";
       include "WriteGamestate.php";
       WriteCache($gameName, strval(round(microtime(true) * 1000)));
       exit;

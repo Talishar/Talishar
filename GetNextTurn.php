@@ -37,6 +37,22 @@
 
   if($turn[0] == "REMATCH")
   {
+    include "MenuFiles/ParseGamefile.php";
+    include "MenuFiles/WriteGamefile.php";
+    if($gameStatus == $MGS_GameStarted)
+    {
+      include "AI/CombatDummy.php";
+      $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
+      if(file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
+      $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
+      if(file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
+      $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+      $firstPlayer = 1;
+      $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+      WriteLog("Warning: Rematch logic sequencing error caught by failsafe. Please report the game name on Discord.");
+      WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
+    }
+    WriteGameFile();
     echo("1234REMATCH"); exit;
   }
   echo(strval(round(microtime(true) * 1000)) . "ENDTIMESTAMP");
