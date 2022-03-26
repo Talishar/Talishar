@@ -52,7 +52,7 @@ if ($handle = opendir($path)) {
             $status = $gameStatus;
             UnlockGamefile();
           }
-          else if(time() - $lastRefresh > 10800)
+          else if(time() - $lastRefresh > 60800)
           {
             deleteDirectory($folder);
           }
