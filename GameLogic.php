@@ -2909,7 +2909,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "1";
     case "SANDSKETCH":
       if(count(GetHand($player)) == 0) { WriteLog("No card for Sand Sketched Plan to discard."); return "1"; }
-      $discarded = DiscardRandom($player, $cardID);
+      $discarded = DiscardRandom($player, "WTR009");
       if(AttackValue($discarded) >= 6)
       {
         $ap = 1;
