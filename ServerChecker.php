@@ -50,6 +50,7 @@ if ($handle = opendir($path)) {
           {
             include 'MenuFiles/ParseGamefile.php';
             $status = $gameStatus;
+            UnlockGamefile();
           }
           else if(time() - $lastRefresh > 10800)
           {
