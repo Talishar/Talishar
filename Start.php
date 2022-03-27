@@ -66,10 +66,19 @@
 
   include "StartEffects.php";
 
+  $gameStateTries = 0;
+  while(!file_exists($filename) && $gameStateTries < 10)
+  {
+    usleep(100000);//100ms
+    ++$gameStateTries;
+  }
+
   //Update the game file to show that the game has started and other players can join to spectate
   WriteCache($gameName, strval(round(microtime(true) * 1000)));//Initialize SHMOP cache for this game
   $gameStatus = $MGS_GameStarted;
   WriteGameFile();
+
+  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=1");
 
   exit;
 
