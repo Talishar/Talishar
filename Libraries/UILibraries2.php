@@ -274,10 +274,9 @@
     global $playerID;
     $rv = "<table><tr><td>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>";
-    $rv .= CreateButton($playerID, "+1 Action Point", 10002, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
-    $rv .= GetSettingsUI($playerID);
+    $rv .= GetSettingsUI($playerID) . "<BR>";
     $rv .= "</td><td>";
     $rv .= PreviousTurnSelectionUI();
     $rv .= "</td></tr></table>";

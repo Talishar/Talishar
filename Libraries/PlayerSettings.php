@@ -53,6 +53,7 @@
   function ChangeSetting($player, $setting, $value)
   {
     global $SET_ManualMode;
+    /*
     if($setting == $SET_ManualMode && $value == 1)
     {
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -62,6 +63,7 @@
       PrependDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_allow_the_other_player_to_enter_manual_mode");
       return;
     }
+    */
     $settings = &GetSettings($player);
     $settings[$setting] = $value;
   }
@@ -96,6 +98,10 @@
     $rv .= "<BR>";
     if($settings[$SET_DarkMode] == 0) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px", "", "", true);
     else $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);
+    $rv .= "<BR>";
+    $rv .= "<BR>";
+    if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Manual Mode", 26, $SET_ManualMode . "-1", "24px", "", "", true);
+    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true);
 /*
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");
