@@ -83,6 +83,7 @@
   $permHeight = $cardSize * 2 + 20;
 
   $darkMode = IsDarkMode($playerID);
+  $manualMode = IsManualMode($playerID);
 
   if($darkMode) $backgroundColor = "rgba(20,20,20,0.70)";
   else $backgroundColor = "rgba(255,255,255,0.70)";
@@ -96,13 +97,16 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./Images/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:fixed; right:315px; top:calc(50% - 125px); height:200px;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span><span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
+  echo("<div style='position:fixed; right:315px; top:calc(50% - 125px); height:200px;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span>");
+  echo(($manualMode ? "<span style='position:absolute; top:130px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "24px") . CreateButton($playerID, "+1", 10006, 0, "24px") . "</span>": ""));
+  echo("<span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
+  echo(($manualMode ? "<span style='position:absolute; top:5px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "24px") . CreateButton($playerID, "+1", 10008, 0, "24px") . "</span>": ""));
   if(IsDarkMode($playerID)) echo("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo("<img style='height:200px;' src='./Images/DuoLife.png' />");
   echo("<div style='position:absolute; top:37px; left:-130px; z-index:-5;'><img style='height:125px; width:150px;' src='./Images/passBG.png' /></div>");
   if(CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:white; font-family:serif; font-size:36px; user-select: none;'>Pass</span></div>");
   else echo("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:gray; font-family:serif; font-size:36px; user-select: none;'>Pass</span></div>");
-  echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-size:30px;'>" . $actionPoints . "AP</span></div>");
+  echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-size:30px;'>" . $actionPoints . "AP" . ($manualMode ? CreateButton($playerID, "-1", 10004, 0, "24px") . CreateButton($playerID, "+1", 10002, 0, "24px") : "") . "</span></div>");
   echo("</div>");
 
   //Now display the screen for this turn
@@ -129,6 +133,7 @@
       echo("</b></span>");
     }
   }
+  if(IsManualMode($playerID)) echo("&nbsp;&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true));
   echo("</span>");
 
   //Display Current Turn Effects
@@ -471,6 +476,7 @@
 
   //Display Their Deck
   echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; top:" . GetZoneTop("THEIRDECK") .";'>");
+  echo(($manualMode ? "<span style='position:absolute; left:10px; bottom:5px; z-index:1000;'>" . CreateButton($playerID, "Draw", 10010, 0, "24px") . "</span>": ""));
   $deckImage = (count($theirDeck) > 0 ? "cardBack" : $blankZone);
   echo(Card($deckImage, "CardImages", $cardSize, 0, 0, 0, 0, count($theirDeck)));
   echo("</div>");
@@ -721,6 +727,7 @@
 
   //Display My Deck
   echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") .";'>");
+  echo(($manualMode ? "<span style='position:absolute; left:10px; bottom:5px; z-index:1000;'>" . CreateButton($playerID, "Draw", 10009, 0, "24px") . "</span>": ""));
   $deckImage = (count($myDeck) > 0 ? "cardBack" : $blankZone);
   echo(Card($deckImage, "CardImages", $cardSize, 0, 0, 0, 0, count($myDeck)));
   echo("</div>");

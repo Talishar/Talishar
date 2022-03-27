@@ -339,6 +339,37 @@
       RevertGamestate("p" . $params[0] . "turn" . $params[1] . "Gamestate.txt");
       WriteLog("Player " . $playerID . " reverted back to player " . $params[0] . " turn " . $params[1] . ".");
       break;
+    case 10004:
+      if($actionPoints > 0)
+      {
+        WriteLog("Player " . $playerID . " manually subtracted one action point.");
+        --$actionPoints;
+      }
+      break;
+    case 10005:
+      WriteLog("Player " . $playerID . " manually subtracted one health point from themselves.");
+      LoseHealth(1, $playerID);
+      break;
+    case 10006:
+      WriteLog("Player " . $playerID . " manually added one health point to themselves.");
+      $myHealth += 1;
+      break;
+    case 10007:
+      WriteLog("Player " . $playerID . " manually added one health point to themselves.");
+      LoseHealth(1, ($playerID == 1 ? 2 : 1));
+      break;
+    case 10008:
+      WriteLog("Player " . $playerID . " manually added one health point to themselves.");
+      $theirHealth += 1;
+      break;
+    case 10009:
+      WriteLog("Player " . $playerID . " manually drew a card for themselves.");
+      Draw($playerID);
+      break;
+    case 10010:
+      WriteLog("Player " . $playerID . " manually drew a card for their opponent.");
+      Draw(($playerID == 1 ? 2 : 1));
+      break;
     case 100000: //Quick Rematch
       header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=" . $playerID);
       exit;
