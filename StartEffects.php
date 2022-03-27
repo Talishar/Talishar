@@ -38,10 +38,6 @@
   DoGamestateUpdate();
   include "WriteGamestate.php";
 
-  WriteCache($gameName, strval(round(microtime(true) * 1000)));
-
-  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=1");
-
 ?>
 
 Something is wrong with the XAMPP installation :-(
