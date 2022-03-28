@@ -17,12 +17,27 @@
   $filename = "./Games/" . $gameName . "/gamestate.txt";
 
   $fileTries = 0;
-  while(!file_exists($filename) && $fileTries < 10)
+  $targetTries = ($playerID == 1 ? 5 : 100);
+  $waitTime = ($playerID == 1 ? 100000 : 1000000);
+  while(!file_exists($filename) && $fileTries < $targetTries)
   {
-    usleep(100000);//100ms
+    usleep($waitTime);//100ms
     ++$fileTries;
   }
-  if($fileTries == 10) { echo("This game no longer exists on the server. Please go to the main menu and create a new game."); exit; }
+  if($fileTries == $targetTries)
+  {
+    if($playerID == 1)
+    {
+      include "HostFiles/Redirector.php";
+      WriteLog("Start game failsafe");
+      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
+    }
+    else
+    {
+      echo("This game no longer exists on the server. Please go to the main menu and create a new game.");
+    }
+    exit;
+  }
 
   $handler = fopen($filename, "r");
 
