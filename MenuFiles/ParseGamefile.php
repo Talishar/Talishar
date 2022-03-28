@@ -39,10 +39,13 @@
   $MGS_ReadyToStart = 4;
   $MGS_GameStarted = 5;
 
-  function UnlockGamefile()
+  if(!function_exists("UnlockGamefile"))
   {
-    global $gameFileHandler;
-    fclose($gameFileHandler);
+    function UnlockGamefile()
+    {
+      global $gameFileHandler;
+      fclose($gameFileHandler);
+    }
   }
 
 ?>
