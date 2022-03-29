@@ -15,7 +15,7 @@
     {
       if($maxHeight < 210) $folder = str_replace("CardImages", "SmallCardImages", $folder);
       else $folder = str_replace("CardImages", "BigCardImages", $folder);
-      $fileExt = ".jpg";
+      //$fileExt = ".jpg";
     }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
@@ -147,15 +147,18 @@
     $totalBlocked = 0;
     $numTurns = 0;
     $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
-    for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
+    if(count($turnStats) > 0)
     {
-      $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
-      $totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
-      $totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
-      $totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
-      $totalDefensiveCards += ($turnStats[$i+$TurnStats_CardsPlayedDefense] + $turnStats[$i+$TurnStats_CardsBlocked]);//TODO: Separate out pitch for offense and defense
-      $totalBlocked += $turnStats[$i+$TurnStats_DamageBlocked];
-      ++$numTurns;
+      for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
+      {
+        $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
+        $totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
+        $totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
+        $totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
+        $totalDefensiveCards += ($turnStats[$i+$TurnStats_CardsPlayedDefense] + $turnStats[$i+$TurnStats_CardsBlocked]);//TODO: Separate out pitch for offense and defense
+        $totalBlocked += $turnStats[$i+$TurnStats_DamageBlocked];
+        ++$numTurns;
+      }
     }
     if($numTurns > 0)
     {
@@ -217,7 +220,7 @@
       $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
       $mod = explode("-", $banish[$i+1])[0];
       if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
-      else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "INST" || $mod == "MON212"  || $mod == "ARC119")
+      else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
         $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
@@ -232,8 +235,9 @@
 
   function CardBorderColor($cardID, $from, $isPlayable)
   {
-    global $playerID, $currentPlayer;
+    global $playerID, $currentPlayer, $turn;
     if($playerID != $currentPlayer) return 0;
+    if($turn[0] == "B") return ($isPlayable ? 6 : 0);
     if($from == "BANISH")
     {
       if($isPlayable || PlayableFromBanish($cardID)) return 4;
@@ -251,6 +255,8 @@
   function CardLink($caption, $cardNumber)
   {
     //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
+    $name = CardName($cardNumber);
+    if($name == "") return "";
     $pitchValue = PitchValue($cardNumber);
     switch($pitchValue)
     {
@@ -259,8 +265,8 @@
       case 1: $color = "Red"; break;
       default: $color = "DimGray"; break;
     }
-    $file = "'./" . "BigCardImages" . "/" . $cardNumber . ".jpg'";
-    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . CardName($cardNumber) . "</span></b>";
+    $file = "'./" . "BigCardImages" . "/" . $cardNumber . ".png'";
+    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . "</span></b>";
   }
 
 ?>

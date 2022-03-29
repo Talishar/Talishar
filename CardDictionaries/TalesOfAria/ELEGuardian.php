@@ -147,7 +147,7 @@
         {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-");
+          AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("MULTIADDTOPDECK", $otherPlayer, "-", 1);
           $rv .= "The opponent must put a card from their hand on top of their deck.";

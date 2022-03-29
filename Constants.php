@@ -12,6 +12,11 @@
     return 1;
   }
 
+  function DiscardPieces()
+  {
+    return 1;
+  }
+
   //0 = ID
   //1 = Status (2=ready, 1=unavailable, 0=destroyed)
   //2 = Num counters
@@ -30,6 +35,13 @@
     return 2;
   }
 
+  //Card ID
+  //Player
+  //From
+  //Resources Paid
+  //Reprise Active? (Or other class effects?)
+  //Attack Modifier
+  //Defense Modifier
   function CombatChainPieces()
   {
     return 7;
@@ -37,12 +49,16 @@
 
   function AuraPieces()
   {
-    return 4;
+    return 6;
   }
 
+  //Item ID
+  //Counters/Steam Counters
+  //Status
+  //Num Uses
   function ItemPieces()
   {
-    return 3;
+    return 4;
   }
 
   function PitchPieces()
@@ -76,6 +92,21 @@
   }
 
   function LandmarkPieces()
+  {
+    return 2;
+  }
+
+  //Card ID
+  //Player ID
+  //Still on chain? 1 = yes, 0 = no
+  function ChainLinksPieces()
+  {
+    return 3;
+  }
+
+  //Damage Dealt
+  //Total Attack
+  function ChainLinkSummaryPieces()
   {
     return 2;
   }
@@ -123,6 +154,7 @@
   $CS_CardsEnteredGY = 39;
   $CS_HighestRoll = 40;
   $CS_EffectContext = 41;
+  $CS_NumAuras = 42;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -149,6 +181,7 @@
   $CCS_CardTypeDefenseRequirement = 21;
   $CCS_CachedTotalAttack = 22;
   $CCS_CachedTotalBlock = 23;
+  $CCS_CombatDamageReplaced = 24;//CR 6.5.3, CR 6.5.4 (CR 2.0)
 
   function ResetCombatChainState()
   {
@@ -158,6 +191,7 @@
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
     global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
     global $defPlayer;
+    global $chainLinks, $chainLinkSummary;
     WriteLog("The combat chain was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
@@ -188,6 +222,19 @@
     {
       $defCharacter[$i+6] = 0;
     }
+    for($i=0; $i<count($chainLinks); ++$i)
+    {
+      for($j=0; $j<count($chainLinks[$i]); $j += ChainLinksPieces())
+      {
+        if($chainLinks[$i][$j+2] != "1") continue;
+        $cardType = CardType($chainLinks[$i][$j]);
+        if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A") continue;
+        if(GoesWhereAfterResolving($chainLinks[$i][$j], "COMBATCHAIN") == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
+      }
+    }
+    CombatChainClosedCharacterEffects();
+    $chainLinks = [];
+    $chainLinkSummary = [];
   }
 
   function ResetChainLinkState()
@@ -195,7 +242,8 @@
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced;
+    WriteLog("The chain link was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
     $combatChainState[$CCS_DamageDealt] = 0;
@@ -212,6 +260,7 @@
     $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
     $combatChainState[$CCS_CachedTotalAttack] = 0;
     $combatChainState[$CCS_CachedTotalBlock] = 0;
+    $combatChainState[$CCS_CombatDamageReplaced] = 0;
   }
 
   function ResetMainClassState()
@@ -223,7 +272,7 @@
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
     global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
     global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
-    global $CS_HighestRoll, $CS_EffectContext;
+    global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -265,6 +314,7 @@
     $mainClassState[$CS_CardsEnteredGY] = 0;
     $mainClassState[$CS_HighestRoll] = 0;
     $mainClassState[$CS_EffectContext] = "-";
+    $mainClassState[$CS_NumAuras] = 0;
   }
 
   function ResetCardPlayed($cardID)
@@ -281,6 +331,13 @@
     global $mainCharacterEffects, $defCharacterEffects;
     $mainCharacterEffects = [];
     $defCharacterEffects = [];
+  }
+
+
+  function GetAttackTarget()
+  {
+    global $combatChainState, $CCS_AttackTarget;
+    return $combatChainState[$CCS_AttackTarget];
   }
 
 ?>

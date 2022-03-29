@@ -53,6 +53,8 @@
       case "CHOOSEBANISH": return "a card from banish";
       case "INSTANT": return "an instant";
       case "CHOOSEFIRSTPLAYER": return "who will be the first player";
+      case "MAYCHOOSETHEIRDISCARD": return "a card from their graveyard";
+      case "CHOOSETHEIRAURA": return "one of their auras";
     }
   }
 
@@ -78,4 +80,3 @@
   }
 
 ?>
-

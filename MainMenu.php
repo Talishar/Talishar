@@ -13,7 +13,7 @@ body {
 </style>
 </head>
 <body>
-<div style="width:100%; height:100%; background-image: url('Images/talesofariamainmenu.jpg'); background-size:cover; z-index=0;">
+<div style="width:100%; height:100%; background-image: url('Images/everfestMenu.jpg'); background-size:cover; z-index=0;">
 <div style="position:absolute; left: 35%; width:30%; height:30%; background-image: url('Images/fab_logo.png'); background-size:100% auto; z-index=1; background-repeat:no-repeat;"></div>
 
 <div style='position:absolute; top:10px; right:10px;'>
@@ -41,10 +41,12 @@ body {
 ?>
   Decks to Try:
   <select name="decksToTry" id="decksToTry">
-    <option value="1">Arsenal Pass Rhinar CC</option>
-    <option value="2">Boltyn #1 Road to Nationals CC</option>
-    <option value="3">Ice Lexi Canadian Nationals CC</option>
+    <option value="1">Dori Axes CC</option>
+    <option value="2">Bravo CC</option>
+    <option value="3">Mountain Briar CC</option>
+    <option value="4">Stubby Katsu CC</option>
   </select>
+  <a title='FaBDB Deckbuilder' href='https://fabdb.net/decks/build' target='_blank'><img style='height:80px; position:absolute; right:20px; top:60px;' src='./Images/fabdb-symbol.png' /></a>
   <br>
   <br>
   <label for="fabdb">FaB DB Deck Link</label>
@@ -83,9 +85,8 @@ body {
 
 <div style="position:absolute; top:100px; right:30px; width:30%; height:80%; background-color:rgba(59, 59, 38, 0.7);">
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h3>
-<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Farewell to Rathe Update! 1/15/21</h2>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported!</h3>
-
+<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Everfest Update! 2/16/21</h2>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">ALL cards supported!</h3>
 <?php
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
 ?>

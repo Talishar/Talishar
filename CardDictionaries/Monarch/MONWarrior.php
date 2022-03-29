@@ -127,11 +127,14 @@
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
         AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
+          AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        }
         return "";
       case "MON034":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -230,7 +233,7 @@
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
     if(count($hand) == 0) { WriteLog("No cards in hand to Charge."); return; }
-    AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
@@ -248,7 +251,7 @@
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
     PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
-    PrependDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND");
+    PrependDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
   }
 
   function HaveCharged($player)

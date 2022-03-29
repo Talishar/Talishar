@@ -1,4 +1,0 @@
-Player 2 chose pack  Pick .
-Player 2 chose pack 1 Pick 2.
-Player 2 chose pack 1 Pick 3.
-Player 2 chose pack 1 Pick 4.

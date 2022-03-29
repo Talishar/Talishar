@@ -136,9 +136,9 @@
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "ARC122":
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
@@ -190,7 +190,7 @@
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,INST", 1);
         return "";
@@ -213,6 +213,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
+    $damage += CurrentEffectArcaneModifier();
     if($fromQueue)
     {
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
@@ -220,7 +221,7 @@
     }
     else
     {
-      if(SearchCharacterActive($player, "CRU161"))
+      if($type == "PLAYCARD" && SearchCharacterActive($player, "CRU161"))
       {
         AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
         AddDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
@@ -231,6 +232,22 @@
       AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
     }
+  }
+
+  function CurrentEffectArcaneModifier()
+  {
+    global $currentTurnEffects;
+    $modifier = 0;
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+    {
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      switch($effectArr[0])
+      {
+        case "EVR123": $modifier += $effectArr[1]; break;
+        default: break;
+      }
+    }
+    return $modifier;
   }
 
   function ArcaneDamage($cardID)
@@ -250,6 +267,11 @@
       case "CRU168": case "CRU172": case "CRU174": return 3;
       case "CRU169": case "CRU173": case "CRU175": return 2;
       case "CRU170": case "CRU176": return 1;
+      //Everfest
+      case "EVR134": return 5;
+      case "EVR135": return 4;
+      case "EVR136": return 3;
+      default: return 0;
     }
   }
 
@@ -265,6 +287,7 @@
     $total = 0;
     for($i=0; $i<count($character); $i+=CharacterPieces())
     {
+      if($character[$i+1] == 0) continue;
       switch($character[$i])
       {
         case "ARC005": ++$barrierArray[1]; $total += 1; break;

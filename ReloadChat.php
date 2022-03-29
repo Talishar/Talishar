@@ -19,8 +19,6 @@
       sleep(1);
       clearstatcache();
       $time = filemtime($filename);
-      $gstime = filemtime($gsFile);
-      if($gstime > $time) $time = $gstime;
       ++$tries;
     }
 

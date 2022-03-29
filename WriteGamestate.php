@@ -5,6 +5,15 @@
   $filename = "./Games/" . $gameName . "/gamestate.txt";
   $handler = fopen($filename, "w");
 
+  $lockTries = 0;
+  while(!flock($handler, LOCK_EX) && $lockTries < 10)
+  {
+    usleep(100000);//50ms
+    ++$lockTries;
+  }
+
+  if($lockTries == 10) exit;
+
   fwrite($handler, implode(" ", $playerHealths) . "\r\n");
 
   //Player 1
@@ -59,10 +68,19 @@
   fwrite($handler, implode(" ", $nextTurnEffects) . "\r\n");
   fwrite($handler, implode(" ", $decisionQueue) . "\r\n");
   fwrite($handler, implode(" ", $dqVars) . "\r\n");
+  fwrite($handler, implode(" ", $dqState) . "\r\n");
   fwrite($handler, implode(" ", $layers) . "\r\n");
   fwrite($handler, implode(" ", $layerPriority) . "\r\n");
   fwrite($handler, $mainPlayer . "\r\n");
   fwrite($handler, implode(" ", $lastPlayed) . "\r\n");
+  fwrite($handler, count($chainLinks) . "\r\n");
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    fwrite($handler, implode(" ", $chainLinks[$i]) . "\r\n");
+  }
+  fwrite($handler, implode(" ", $chainLinkSummary) . "\r\n");
+  fwrite($handler, $p1Key . "\r\n");
+  fwrite($handler, $p2Key . "\r\n");
   fclose($handler);
 
 ?>

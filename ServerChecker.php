@@ -25,14 +25,16 @@ if ($handle = opendir($path)) {
           $lastGamestateUpdate = filemtime($gs);
           if(time() - $lastGamestateUpdate < 120)
           {
-            $currentlyActiveGames .= "Game in Progress - Last Update " . date("h:i", $lastGamestateUpdate) . "<BR>";
-
-       $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn2.php'>";
-         $spectateLinks .= "<label for='joinGame'> In progress game - Last Update " . date("h:i", $lastGamestateUpdate) . " </label>";
-         $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
-         $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-         $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
-       $spectateLinks .= "</form>";
+            $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn3.php'>";
+            $spectateLinks .= "<label for='joinGame'>Last Update " . time() - $lastGamestateUpdate . " seconds ago </label>";
+            $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
+            $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
+            $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
+            $spectateLinks .= "</form>";
+          }
+          else if(time() - $lastGamestateUpdate > 60800)//~18 hours
+          {
+            if($autoDeleteGames) deleteDirectory($folder);
           }
           continue;
         }
@@ -48,14 +50,11 @@ if ($handle = opendir($path)) {
           {
             include 'MenuFiles/ParseGamefile.php';
             $status = $gameStatus;
+            UnlockGamefile();
           }
-          else if(time() - $lastRefresh > 60)
+          else if(time() - $lastRefresh > 60800)
           {
-            //DeleteCache($gameToken);
-            unlink($gf);
-            if(file_exists($folder . "p1Deck.txt")) unlink($folder . "p1Deck.txt");
-            if(file_exists($folder . "p2Deck.txt")) unlink($folder . "p2Deck.txt");
-            rmdir($folder);
+            deleteDirectory($folder);
           }
         }
 
@@ -90,5 +89,29 @@ if ($handle = opendir($path)) {
   echo($ccLinks);
   echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>In Progress Games</h1>");
   echo($spectateLinks);
+
+
+function deleteDirectory($dir) {
+    if (!file_exists($dir)) {
+        return true;
+    }
+
+    if (!is_dir($dir)) {
+        return unlink($dir);
+    }
+
+    foreach (scandir($dir) as $item) {
+        if ($item == '.' || $item == '..') {
+            continue;
+        }
+
+        if (!deleteDirectory($dir . "/" . $item)) {
+            return false;
+        }
+
+    }
+
+    return rmdir($dir);
+}
 
 ?>

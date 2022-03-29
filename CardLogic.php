@@ -40,6 +40,14 @@ function PummelHit($player=-1)
   AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
 }
 
+function HandToTopDeck($player)
+{
+  AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+  AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+  AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
+}
+
 function KatsuHit($index)
 {
   global $mainPlayer;
@@ -57,6 +65,7 @@ function KatsuHit($index)
 function RandomHandBottomDeck($player)
 {
   $hand = &GetHand($player);
+  if(count($hand) == 0) return;
   $index = rand() % count($hand);
   $discarded = $hand[$index];
   unset($hand[$index]);
@@ -113,7 +122,7 @@ function BottomDeck()
   {
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-    AddDecisionQueue("DISCARDMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
   }
 }
@@ -129,11 +138,11 @@ function BottomDeckDraw()
   }
 }
 
-function AddCurrentTurnEffect($cardID, $player)
+function AddCurrentTurnEffect($cardID, $player, $from="")
 {
   global $currentTurnEffects, $combatChain;
   $card = explode("-", $cardID)[0];
-  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID)) { AddCurrentTurnEffectFromCombat($cardID, $player); return; }
+  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") { AddCurrentTurnEffectFromCombat($cardID, $player); return; }
   array_push($currentTurnEffects, $cardID);
   array_push($currentTurnEffects, $player);
 }
@@ -220,22 +229,47 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 
   function ProcessDecisionQueue()
   {
-    global $turn, $decisionQueue;
-    if($turn[0] != "INSTANT")//Or anything that can cause a card to be played
+    global $turn, $decisionQueue, $dqState;
+    if($dqState[0] != "1")
     {
       $count = count($turn);
-      if(count($turn) < 3) $turn[2] = "";
-      array_unshift($turn, "", "", "");
+      if(count($turn) < 3) $turn[2] = "-";
+      $dqState[0] = "1";
+      $dqState[1] = $turn[0];
+      $dqState[2] = $turn[1];
+      $dqState[3] = $turn[2];
+      //array_unshift($turn, "-", "-", "-");
     }
     ContinueDecisionQueue("");
+  }
+
+  function CloseDecisionQueue()
+  {
+    global $turn, $decisionQueue, $dqState;
+    $dqState[0] = "0";
+    $turn[0] = $dqState[1];
+    $turn[1] = $dqState[2];
+    $turn[2] = $dqState[3];
+    $dqState[4] = "-";//Clear the context, just in case
+    $decisionQueue = [];
+  }
+
+  function ShouldHoldPriorityNow($player)
+  {
+    global $layerPriority, $layers;
+    if($layerPriority[$player-1] != "1") return false;
+    $currentLayer = $layers[count($layers) - LayerPieces()];
+    $layerType = CardType($currentLayer);
+    if(HoldPrioritySetting($player) == 3 && $layerType != "AA" && $layerType != "W") return false;
+    return true;
   }
 
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
-    global $layers, $layerPriority, $dqVars;
-    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY")
+    global $layers, $layerPriority, $dqVars, $dqState;
+    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
@@ -244,13 +278,13 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         $priorityHeld = 0;
         if($currentPlayer == 1)
         {
-          if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
-          if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
+          if(ShouldHoldPriorityNow(1)) { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
+          if(ShouldHoldPriorityNow(2)) { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
         }
         else
         {
-          if($layerPriority[1] == "1") { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
-          if($layerPriority[0] == "1") { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
+          if(ShouldHoldPriorityNow(2)) { AddDecisionQueue("INSTANT", 2, "-"); $priorityHeld = 1; $layerPriority[1] = 0; }
+          if(ShouldHoldPriorityNow(1)) { AddDecisionQueue("INSTANT", 1, "-"); $priorityHeld = 1; $layerPriority[0] = 0; }
         }
         if($priorityHeld)
         {
@@ -258,10 +292,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         }
         else
         {
-          array_shift($turn);
-          array_shift($turn);
-          array_shift($turn);
-          $decisionQueue = [];
+          CloseDecisionQueue();
           $cardID = array_shift($layers);
           $player = array_shift($layers);
           $parameter = array_shift($layers);
@@ -278,14 +309,12 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $layerPriority[0] = ShouldHoldPriority(1);
           $layerPriority[1] = ShouldHoldPriority(2);
           if($cardID == "ENDTURN") FinishTurnPass();
+          else if($cardID == "RESUMETURN") $turn[0] = "M";
           else PlayCardEffect($cardID, $params[0], $params[1], $target);
         }
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY")
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
         if($currentPlayer != $decisionQueue[1])
         {
           $currentPlayer = $decisionQueue[1];
@@ -293,24 +322,29 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           BuildMyGamestate($currentPlayer);
         }
         $params = explode("-", $decisionQueue[2]);
-        $decisionQueue = [];
+        CloseDecisionQueue();
         PlayCardEffect($params[0], $params[1], $params[2]);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING")
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
         $params = explode("-", $decisionQueue[2]);//Parameter
-        $decisionQueue = [];
         if($lastResult == "") $lastResult = 0;
+        CloseDecisionQueue();
         PlayCard($params[0], $params[1], $lastResult, $params[2]);
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK")
+      {
+        CloseDecisionQueue();
+        ResolveChainLink();
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN")
+      {
+        CloseDecisionQueue();
+        PassTurn();
       }
       else
       {
-        array_shift($turn);
-        array_shift($turn);
-        array_shift($turn);
+        CloseDecisionQueue();
         FinalizeAction();
       }
       return;
@@ -330,6 +364,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     if($parameter == "<-" && !is_array($lastResult) && $lastResult == "-1") $return = "PASS";//Collapse the rest of the queue if this decision point has invalid parameters
     if(is_array($return) || strval($return) != "NOTSTATIC")
     {
+      if($phase != "SETDQCONTEXT") $dqState[4] = "-";//Clear out context for static states -- context only persists for one choice
       ContinueDecisionQueue($return);
     }
     else
@@ -387,11 +422,13 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   }
 
 //Return whether priority should be held for the player by default/settings
-function ShouldHoldPriority($player)
+function ShouldHoldPriority($player, $layerCard="")
 {
-  if(AlwaysHoldPriority($player)) return true;
-  if(CountItem("ARC017", $player) > 0) return true;
-  return false;
+  global $mainPlayer;
+  $prioritySetting = HoldPrioritySetting($player);
+  if($prioritySetting == 1) return 1;
+  if(($prioritySetting == 2 || $prioritySetting == 3) && $player != $mainPlayer) return 1;
+  return 0;
 }
 
 function GiveAttackGoAgain()
@@ -509,7 +546,7 @@ function DiscardRandom($player="", $source="")
   if(AttackValue($discarded) >= 6)
   {
     $character = &GetPlayerCharacter($player);
-    if(($character[0] == "WTR001" || $character[0] == "WTR002") && $player == $mainPlayer) {//Rhinar
+    if(($character[0] == "WTR001" || $character[0] == "WTR002") && $character[1] == 2 && $player == $mainPlayer) {//Rhinar
       WriteLog("Rhinar Intimidated.");
       Intimidate();
     }

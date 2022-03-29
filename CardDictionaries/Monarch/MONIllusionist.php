@@ -25,6 +25,7 @@
       case "MON095": case "MON096": case "MON097": return "A";
       case "MON098": case "MON099": case "MON100": return "AA";
       case "MON101": case "MON102": case "MON103": return "AA";
+      case "MON104": return "T";
       case "MON404": return "M";
       default: return "";
     }
@@ -205,6 +206,10 @@
       case "MON091":
       case "MON098": case "MON099": case "MON100":
       case "MON101": case "MON102": case "MON103": return true;
+      case "EVR138": FractalReplicationStats("HasPhantasm");
+      case "EVR139": return true;
+      case "EVR144": case "EVR145": case "EVR146": return true;
+      case "EVR147": case "EVR148": case "EVR149": return true;
     }
   }
 
@@ -212,7 +217,8 @@
   {
     global $combatChain, $mainPlayer;
     if(count($combatChain) == 0) return false;
-    if(SearchCurrentTurnEffects("MON090", $mainPlayer)) return false;
+    if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer)) { return false; }
+    if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     return HasPhantasm($combatChain[0]);//TODO: Incorporate things that can gain or lose phantasm
   }
@@ -242,6 +248,8 @@
       case "MON011": return true;
       case "MON012": return true;
       case "MON013": return true;
+      case "EVR140": return true;
+      case "EVR141": case "EVR142": case "EVR143": return true;
       default: return false;
     }
   }
@@ -276,4 +284,3 @@
   }
 
 ?>
-

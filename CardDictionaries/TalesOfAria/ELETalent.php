@@ -197,7 +197,7 @@
       case "ELE125": case "ELE126": case "ELE127": return 0;
       case "ELE128": case "ELE129": case "ELE130": return 3;
       case "ELE143": return 0;
-      case "ELE143": return 1;
+      case "ELE144": return 1;
       case "ELE145": return 0;
       case "ELE146": return 3;
       case "ELE147": return 0;
@@ -284,9 +284,9 @@
       case "ELE103": case "ELE104": case "ELE105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Invigorate gives the next attack you Fuse this turn +" . EffectAttackModifier($cardID) . ".";
-      case "ELE106": GainHealth(3, $currentPlayer); return "Rejuvenate gains 3 health."; 
-      case "ELE107": GainHealth(2, $currentPlayer); return "Rejuvenate gains 2 health."; 
-      case "ELE108": GainHealth(1, $currentPlayer); return "Rejuvenate gains 1 health."; 
+      case "ELE106": GainHealth(3, $currentPlayer); return "Rejuvenate gains 3 health.";
+      case "ELE107": GainHealth(2, $currentPlayer); return "Rejuvenate gains 2 health.";
+      case "ELE108": GainHealth(1, $currentPlayer); return "Rejuvenate gains 1 health.";
       case "ELE112":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Pulse of Volthaven gives your next Lightning, Ice, or Elemental attack this turn +4.";
@@ -549,6 +549,7 @@
       PrependDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
+      PrependDecisionQueue("WRITELOG", $player, "Declined_to_pay_for_Exposed_to_the_Elements.", 1);
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
@@ -563,4 +564,3 @@
   }
 
 ?>
-

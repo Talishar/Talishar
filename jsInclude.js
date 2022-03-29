@@ -1,7 +1,8 @@
 
 function OnLoadCallback(lastUpdate)
 {
-  document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;
+  var log = document.getElementById('gamelog');
+  if(log !== null) log.scrollTop = log.scrollHeight;
   reload();
   ReloadChat(lastUpdate);
 }
@@ -84,6 +85,23 @@ function ReloadChat(lastUpdate)
   }
   var ajaxLink = "ReloadChat.php?gameName=" + document.getElementById("gameName").value;
   ajaxLink += "&playerID=" + document.getElementById("playerID").value + "&lastUpdate=" + lastUpdate;
+  xmlhttp.open("GET", ajaxLink, true);
+  xmlhttp.send();
+}
+
+function SubmitInput(mode, params, fullRefresh=false)
+{
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(fullRefresh) location.reload();
+    }
+  }
+  var ajaxLink = "ProcessInput2.php?gameName=" + document.getElementById("gameName").value;
+  ajaxLink += "&playerID=" + document.getElementById("playerID").value;
+  ajaxLink += "&authKey=" + document.getElementById("authKey").value;
+  ajaxLink += "&mode=" + mode;
+  ajaxLink += params;
   xmlhttp.open("GET", ajaxLink, true);
   xmlhttp.send();
 }

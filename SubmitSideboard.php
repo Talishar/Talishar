@@ -8,22 +8,29 @@
   $playerCharacter =$_GET["playerCharacter"];
   $playerDeck=$_GET["playerDeck"];
 
+  include "WriteLog.php";
   include "HostFiles/Redirector.php";
-  include "MenuFiles/ParseGamefile.php";
   include "CardDictionary.php";
-
-  if($playerID == 2)
-  {
-    $gameStatus = $MGS_ReadyToStart;
-  }
-
-  include "MenuFiles/WriteGamefile.php";
 
   if($playerCharacter != "" && $playerDeck != "")//If they submitted before loading even finished, use the deck as it existed before
   {
-    $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-    $deckFile = fopen($filename, "w");
-    fwrite($deckFile, implode(" ", explode(",",$playerCharacter)) . "\r\n");
+    $char = explode(",",$playerCharacter);
+    $numHands = 0;
+    for($i=0; $i<count($char); ++$i)
+    {
+      if(CardSubType($char[$i]) == "Off-Hand") ++$numHands;
+      else if(CardType($char[$i]) == "W")
+      {
+        if(Is1H($char[$i])) ++$numHands;
+        else $numHands += 2;
+      }
+    }
+    if($numHands > 2)
+    {
+      WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands of weapons currently equipped.");
+      header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+      exit;
+    }
     $playerDeck = explode(",",$playerDeck);
     for($i=count($playerDeck)-1; $i>=0; --$i)
     {
@@ -31,9 +38,24 @@
       if($cardType == "" || $cardType == "C" || $cardType == "E" || $cardType == "W") unset($playerDeck[$i]);
     }
     $playerDeck = array_values($playerDeck);
+    $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+    $deckFile = fopen($filename, "w");
+    fwrite($deckFile, implode(" ", $char) . "\r\n");
     fwrite($deckFile, implode(" ", $playerDeck));
     fclose($deckFile);
   }
+
+  include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
+  if($playerID == 2)
+  {
+    $gameStatus = $MGS_ReadyToStart;
+  }
+  else
+  {
+    $gameStatus = $MGS_GameStarted;
+  }
+  WriteGameFile();
 
   if($playerID == 1)
   {

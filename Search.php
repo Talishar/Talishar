@@ -1,9 +1,9 @@
 <?php
 
-function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false, $maxAttack=-1)
 {
   $deck = &GetDeck($player);
-  return SearchInner($deck, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+  return SearchInner($deck, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack);
 }
 
 function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
@@ -54,7 +54,7 @@ function SearchItems($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $
   return SearchInner($items, ItemPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
-function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly)
+function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1)
 {
   $cardList = "";
   if(!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
@@ -70,7 +70,8 @@ function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $clas
         for($k=0; $k<count($cardTalents); ++$k) { if($talents[$j] == $cardTalents[$k]) $talentMatch = 1; }
       }
     }
-    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost) && ($class == "" || CardClass($cardID) == $class) && (count($talents) == 0 || $talentMatch) && ($pitch == -1 || PitchValue($cardID) == $pitch))
+    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost)
+     && ($class == "" || CardClass($cardID) == $class) && (count($talents) == 0 || $talentMatch) && ($pitch == -1 || PitchValue($cardID) == $pitch) && ($maxAttack == -1 || AttackValue($cardID) <= $maxAttack))
     {
       if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
       if($phantasmOnly && !HasPhantasm($cardID)) continue;
@@ -497,7 +498,7 @@ function GetEquipmentIndices($player, $maxBlock=-1)
   $indices = "";
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
-    if(CardType($character[$i]) == "E" && ($maxBlock == -1 || (BlockValue($character[$i]) + $character[$i+4]) <= $maxBlock))
+    if($character[$i+1] != 0 && CardType($character[$i]) == "E" && ($maxBlock == -1 || (BlockValue($character[$i]) + $character[$i+4]) <= $maxBlock))
     {
       if($indices != "") $indices .= ",";
       $indices .= $i;
@@ -623,6 +624,41 @@ function SearchArcaneReplacement($player, $zone)
     }
   }
   return $cardList;
+}
+
+function CountCardOnChain($card1, $card2="", $card3="")
+{
+  global $chainLinks;
+  $count = 0;
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    if($chainLinks[$i][2] == "1" && $chainLinks[$i][0] == $card1 || $chainLinks[$i][0] == $card2 || $chainLinks[$i][0] == $card3) ++$count;
+  }
+  return $count;
+}
+
+function SearchChainLinks($minPower=-1, $maxPower=-1)
+{
+  global $chainLinks;
+  $links = "";
+  for($i=0; $i<count($chainLinks); ++$i)
+  {
+    $power = AttackValue($chainLinks[$i][0]);
+    if($chainLinks[$i][2] == "1" && ($minPower == -1 || $power >= $minPower) && ($maxPower == -1 || $power <= $maxPower))
+    {
+      if($links != "") $links .= ",";
+      $links .= $i;
+    }
+  }
+  return $links;
+}
+
+function GetMZCardLink($player, $MZ)
+{
+  $params = explode("-", $MZ);
+  $zoneDS = &GetMZZone($player, $params[0]);
+  $index = $params[1];
+  return CardLink($zoneDS[$index], $zoneDS[$index]);
 }
 
 ?>

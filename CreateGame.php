@@ -40,14 +40,26 @@
   $p2Data = [2];
   if($deckTestMode == "deckTestMode")
   {
-    $gameStatus = 5;
+    $gameStatus = 4;//ReadyToStart
     copy("Dummy.txt","./Games/" . $gameName . "/p2Deck.txt");
   }
   else
   {
-    $gameStatus = 0;
+    $gameStatus = 0;//Initial
   }
+  $firstPlayerChooser = "";
+  $firstPlayer = 1;
+  $p1Key = hash("sha256", rand() . rand());
+  $p2Key = hash("sha256", rand() . rand() . rand());
+
+  $filename = "./Games/" . $gameName . "/GameFile.txt";
+  $gameFileHandler = fopen($filename, "w");
   include "MenuFiles/WriteGamefile.php";
+  WriteGameFile();
+
+  $filename = "./Games/" . $gameName . "/gamelog.txt";
+  $handler = fopen($filename, "w");
+  fclose($handler);
 
   header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry");
 

@@ -152,6 +152,7 @@
         $items = SearchMyDeck("", "Item", $resourcesPaid/2);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, $items);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         $boosted = $myClassState[$CS_NumBoosted] > 0;
         if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
         return "Spark of Genius let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
@@ -282,6 +283,7 @@
       case "CRU109": case "CRU110": case "CRU111":
         return true;
       case "EVR073": case "EVR074": case "EVR075": return true;
+      case "EVR079": case "EVR080": case "EVR081": return true;
       default:
         return false;
     }
@@ -292,15 +294,12 @@
     global $currentPlayer;
     AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
     AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+    AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
     if(SearchCurrentTurnEffects("CRU102", $currentPlayer))
     {
       AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHAND", 1);
-      AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      HandToTopDeck($currentPlayer);
     }
-    AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
   }
 
   function DoBoost()
@@ -336,6 +335,16 @@
             --$items[$i+1];
             $items[$i+2] = 1;
             GainResources($currentPlayer, 1);
+            if($items[$i+1] <= 0) DestroyMyItem($i);
+          }
+          break;
+        case "EVR072":
+          if($items[$i+2] == 2)
+          {
+            WriteLog("Teklo Pounder gives the attack +2.");
+            --$items[$i+1];
+            $items[$i+2] = 1;
+            AddCurrentTurnEffect("EVR072", $currentPlayer, "PLAY");
             if($items[$i+1] <= 0) DestroyMyItem($i);
           }
           break;

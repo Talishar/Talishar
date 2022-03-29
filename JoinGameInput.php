@@ -1,11 +1,12 @@
 <?php
 
+  include "WriteLog.php";
   include "Libraries/HTTPLibraries.php";
 
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
-  $deck=$_GET["deck"];
+  $deck=TryGet("deck");
   $decklink=$_GET["fabdb"];
   $decksToTry = TryGet("decksToTry");
   $set=TryGet("set");
@@ -13,9 +14,10 @@
   if($decklink == "" && $deck == "")
   {
     switch ($decksToTry) {
-      case '1': $decklink = "https://fabdb.net/decks/pExqQzqV"; break;
-      case '2': $decklink = "https://fabdb.net/decks/dLAwdlEX"; break;
-      case '3': $decklink = "https://fabdb.net/decks/zLNlGaOr"; break;
+      case '1': $decklink = "https://fabdb.net/decks/PydXAQMY"; break;
+      case '2': $decklink = "https://fabdb.net/decks/xPWERXWZ"; break;
+      case '3': $decklink = "https://fabdb.net/decks/DxzAekMk"; break;
+      case '4': $decklink = "https://fabdb.net/decks/zkVmEYOb"; break;
       default: $decklink = "https://fabdb.net/decks/pExqQzqV"; break;
     }
   }
@@ -29,6 +31,21 @@
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
   include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
+
+  if($playerID == 2 && $gameStatus >= $MGS_Player2Joined)
+  {
+      if($gameStatus >= $MGS_GameStarted)
+      {
+        header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=3");
+      }
+      else
+      {
+        header("Location: " . $redirectPath . "/MainMenu.php");
+      }
+      WriteGameFile();
+      exit;
+  }
 
   if($decklink != "")
   {
@@ -36,7 +53,7 @@
     $slug = $decklink[count($decklink)-1];
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
     $apiDeck = @file_get_contents($apiLink);
-    if($apiDeck === FALSE) { echo  '<b>' . "Deck link is not valid: " . implode("/", $decklink) . '</b>'; exit; }
+    if($apiDeck === FALSE) { echo  '<b>' . "Deck link is not valid: " . implode("/", $decklink) . '</b>'; WriteGameFile(); exit; }
     $deckObj = json_decode($apiDeck);
     $cards = $deckObj->{'cards'};
     $deckCards = "";
@@ -152,6 +169,7 @@
     fwrite($deckFile, $weaponSideboard . "\r\n");
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
+    copy($filename, "./Games/" . $gameName . "/p" . $playerID ."DeckOrig.txt");
   }
   else
   {
@@ -173,30 +191,29 @@
       }
     }
     copy($deckFile,"./Games/" . $gameName . "/p" . $playerID ."Deck.txt");
+    copy($deckFile,"./Games/" . $gameName . "/p" . $playerID ."DeckOrig.txt");
   }
 
   if($playerID == 2)
   {
-    $filename = "./Games/" . $gameName . "/GameFile.txt";
-    $gameFile = fopen($filename, "w");
+    $gameStatus = $MGS_Player2Joined;
 
-    $attemptCount = 0;
-    while(!flock($gameFile, LOCK_EX) && $attemptCount < 5) {  // acquire an exclusive lock
-      sleep(1);
-      ++$attemptCount;
-    }
-    if($attemptCount >= 5)
+    $firstPlayerChooser = 1;
+    $p1roll = 0; $p2roll = 0;
+    $tries = 10;
+    while($p1roll == $p2roll && $tries > 0)
     {
-      header("Location: " . $redirectorPath . "MainMenu.php");//We never actually got the lock
+      $p1roll = rand(1,6) + rand(1, 6);
+      $p2roll = rand(1,6) + rand(1, 6);
+      WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.");
+      --$tries;
     }
-    flock($gameFile, LOCK_UN);    // release the lock
-    fclose($gameFile);
-    $gameStatus = 4;
-    include "MenuFiles/WriteGamefile.php";
-
-    //fwrite($gameFile, "\r\n");
-    //fwrite($gameFile, "1\r\n2\r\n4");
+    $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
+    WriteLog("Player $firstPlayerChooser chooses who goes first.");
+    $gameStatus = $MGS_ChooseFirstPlayer;
   }
+
+  WriteGameFile();
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
@@ -211,6 +228,8 @@ function GetAltCardID($cardID)
     case "LEV002": return "MON406";
     case "PSM002": return "MON404";
     case "PSM007": return "MON402";
+    case "FAB015": return "WTR191";
+    case "FAB023": return "MON135";
   }
   return $cardID;
 }

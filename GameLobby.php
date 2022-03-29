@@ -2,6 +2,7 @@
 <head>
 
 <?php
+  include "WriteLog.php";
   include "CardDictionary.php";
   include "HostFiles/Redirector.php";
   include "Libraries/UILibraries.php";
@@ -16,12 +17,12 @@
 
   include "MenuFiles/ParseGamefile.php";
 
-  if($gameStatus == 6)
+  if($gameStatus == $MGS_GameStarted)
   {
-    header("Location: " . $redirectPath . "/NextTurn2.php?gameName=$gameName&playerID=$playerID");
+    $authKey = ($playerID == 1 ? $p1Key : $p2Key);
+    header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
   }
 
-  $gameStarted = 0;
   $icon = "ready.png";
 
   if($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $icon = "notReady.png";
@@ -67,7 +68,7 @@ h2 {
 <script src="./jsInclude.js"></script>
 </head>
 
-<body onload='OnLoadCallback()'>
+<body onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 <div id="cardDetail" style="display:none; position:absolute;"></div>
 
 <div style="width:100%; height:100%; background-image: url('Images/rout.jpg'); background-size:cover; z-index=0;">
@@ -193,11 +194,28 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <?php
   echo("<div style='text-align:center;'>");
 
+  if($gameStatus == $MGS_ChooseFirstPlayer)
+  {
+    if($playerID == $firstPlayerChooser)
+    {
+      echo("<form action='./ChooseFirstPlayer.php'>");
+        echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
+        echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
+        echo("<input type='submit' name='action' value='Go First'>");
+        echo("<input type='submit' name='action' value='Go Second'>");
+      echo("</form>");
+    }
+    else
+    {
+      echo("Waiting for other player to choose who will go first.");
+    }
+  }
+
   if($playerID == 1 && $gameStatus < $MGS_Player2Joined)
   {
     echo("<div><input type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
   }
-      echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus >= $MGS_ReadyToStart ? "none" : "block")) . ";'>");
+      echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . ";'>");
       echo("<form action='./SubmitSideboard.php'>");
         echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
         echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
@@ -210,6 +228,20 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 
   echo("</div>");
 
+    echo("<BR>");
+    echo("<div>");
+    echo("<div id='gamelog' style='position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
+    EchoLog($gameName, $playerID);
+    echo("</div>");
+    echo("<div id='chatbox' style='position:relative; left:2%; height: 50px;'>");
+    echo("<input style='width:88%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+    echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
+    echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
+    echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+    echo("</div>");
+    echo("</div>");
+
+/*
   echo("<h2>Instructions</h2>");
   echo("<ul>");
   echo("<li>Copy link and send to your opponent, or open it yourself in another browser tab.</li>");
@@ -217,7 +249,7 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
   echo("<li>Use the interface at the right to sideboard cards.</li>");
   echo("<li>Player 1 starts the game when both players are ready.</li>");
   echo("</ul>");
-
+*/
 
   echo("<script>");
   echo("var prevGameState = " . $gameStatus . ";");
@@ -230,10 +262,13 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 
 <script>
 
-function OnLoadCallback()
+function OnLoadCallback(lastUpdate)
 {
   UpdateFormInputs();
+  var log = document.getElementById('gamelog');
+  if(log !== null) log.scrollTop = log.scrollHeight;
   reload();
+  ReloadChat(lastUpdate);
 }
 
 function UpdateFormInputs()
@@ -355,8 +390,11 @@ function loadGamestate() {
     xhttp.onload = function() {
       var resp = "";
       for(var i=0; i<this.responseText.length; ++i) resp += this.responseText[i];
-      if(parseInt(resp) != prevGameState && parseInt(resp) != 5) { location.reload(); }
-      <?php if($playerID == 1) echo 'if(parseInt(resp) == 5) {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
+      if(parseInt(resp) != prevGameState && parseInt(resp) != <?php echo($MGS_ReadyToStart) ?>)
+      {
+        location.reload();
+      }
+      <?php if($playerID == 1) echo 'if(parseInt(resp) == ' . $MGS_ReadyToStart . ') {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
       prevGameState = parseInt(resp);
     };
     xhttp.open("GET", "GameFileLength.php?gameName=<?php echo($gameName); ?>", true);
