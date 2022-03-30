@@ -357,7 +357,7 @@ function GetSelectedEquipType(type)
     {
       var imageSrc = document.getElementById(type + "-" + count + "-img").src;
       if(rv != "") rv += ",";
-      rv += imageSrc.substring(imageSrc.length-10).split(".")[0];
+      rv += imageSrc.substring(imageSrc.length-11).split(".")[0];
     }
     ++count;
     var overlay = document.getElementById(type + "-" + count + "-ovr");
@@ -376,7 +376,7 @@ function GetDeckCards()
     {
       var imageSrc = document.getElementById("DECK-" + count + "-img").src;
       if(returnValue != "") returnValue += ",";
-      returnValue += imageSrc.substring(imageSrc.length-10).split(".")[0];
+      returnValue += imageSrc.substring(imageSrc.length-11).split(".")[0];
     }
     ++count;
     var overlay = document.getElementById("DECK-" + count + "-ovr");
