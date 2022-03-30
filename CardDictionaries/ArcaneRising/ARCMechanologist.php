@@ -304,18 +304,19 @@
 
   function DoBoost()
   {
-    global $playerID, $myDeck, $myBanish, $myClassState, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $myClassState, $CS_NumBoosted, $currentPlayer, $actionPoints, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff;
-    if(count($myDeck) == 0) { WriteLog("Could not boost. No cards left in deck."); return; }
+    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumBoosted, $currentPlayer, $actionPoints, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff;
+    $deck = &GetDeck($currentPlayer);
+    if(count($deck) == 0) { WriteLog("Could not boost. No cards left in deck."); return; }
     ItemBoostEffects();
     if(SearchCurrentTurnEffects("ARC006", $currentPlayer)) ++$actionPoints;//High Octane
-    $cardID = $myDeck[0];
+    $cardID = $deck[0];
     BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
-    unset($myDeck[0]);
-    $myDeck = array_values($myDeck);
+    unset($deck[0]);
+    $deck = array_values($deck);
     $grantsGA = CardClass($cardID) == "MECHANOLOGIST";
     WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
     if($grantsGA) { GiveAttackGoAgain(); }
-    ++$myClassState[$CS_NumBoosted];
+    IncrementClassState($currentPlayer, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];
     $combatChain[5] += $combatChainState[$CCS_NextBoostBuff];
     $combatChainState[$CCS_NextBoostBuff] = 0;
