@@ -14,7 +14,7 @@ function ShowCardDetail(e, that)
 
 function ShowDetail(e, imgSource)
 {
-  imgSource = imgSource.replace("SmallCardImages", "BigCardImages");
+  //imgSource = imgSource.replace("SmallCardImages", "BigCardImages");
   var el = document.getElementById("cardDetail");
   el.innerHTML = "<img style='height:523px; width:375px;' src='" + imgSource + "' />"
   el.style.left = e.clientX < window.innerWidth / 2 ? e.clientX + 30 : e.clientX - 400;

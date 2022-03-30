@@ -171,7 +171,7 @@
     echo(CreatePopup("attackModifierPopup", [], 1, 0, "AttackModifiers", 1, AttackModifiers($chainAttackModifiers)));
   }
 
-  echo("<div style='position:fixed; left:290px; top:150px;'>");
+  echo("<div style='position:absolute; left:290px; top:150px; z-index:-10;'>");
 
   //Display the combat chain
     echo("<table><tr>");
