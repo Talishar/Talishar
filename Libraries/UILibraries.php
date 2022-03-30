@@ -11,11 +11,14 @@
     global $playerID, $gameName, $darkMode;
     if($darkMode == null) $darkMode = false;
     $fileExt = ".png";
-    if(mb_strpos($folder, "CardImages") !== false)
+    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
     {
-      if($maxHeight < 210) $folder = str_replace("CardImages", "SmallCardImages", $folder);
-      else $folder = str_replace("CardImages", "BigCardImages", $folder);
-      //$fileExt = ".jpg";
+      $folder = str_replace("CardImages", "Images", $folder);
+    }
+    else if(mb_strpos($folder, "CardImages") !== false)
+    {
+      $folder = str_replace("CardImages", "WebpImages", $folder);
+      $fileExt = ".webp";
     }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
