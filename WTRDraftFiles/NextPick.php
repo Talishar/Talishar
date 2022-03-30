@@ -12,7 +12,7 @@
   include "ZoneGetters.php";
   include "ParseGamestate.php";
   include "../HostFiles/Redirector.php";
-  include "../Libraries/UILibraries.php";
+  include "../Libraries/UILibraries2.php";
   include "../WriteLog.php";
 /*
   if($currentPlayer == $playerID) $icon = "ready.png";

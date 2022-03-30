@@ -11,17 +11,20 @@
     global $playerID, $gameName, $darkMode;
     if($darkMode == null) $darkMode = false;
     $fileExt = ".png";
-    if(mb_strpos($folder, "CardImages") !== false)
+    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
     {
-      if($maxHeight < 160) $folder = str_replace("CardImages", "SmallCardImages", $folder);
-      else $folder = str_replace("CardImages", "BigCardImages", $folder);
-      //$fileExt = ".jpg";
+      $folder = str_replace("CardImages", "Images", $folder);
+    }
+    else if(mb_strpos($folder, "CardImages") !== false)
+    {
+      $folder = str_replace("CardImages", "WebpImages", $folder);
+      $fileExt = ".webp";
     }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
     $margin = "margin:0px;";
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
-    $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
+    $rv = "<a style='" . $margin . " position:relative; display:inline-block; z-index:-10;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
     $border = $borderColor > 0 ? "border-radius:6px; border:2px solid " . BorderColorMap($borderColor) . ";" : "";
     if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
     else { $height = ($maxHeight * .71); $width = $maxHeight; }
