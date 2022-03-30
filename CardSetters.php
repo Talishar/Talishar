@@ -28,7 +28,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
       ++$actionPoints;
   }
   //Do effects that change where it goes, or banish it if not
-  if($from == "DECK" && SearchCharacterActive($player, "CRU099") && CardCost($cardID) <= 2)
+  if($from == "DECK" && SearchCharacterActive($player, "CRU099") && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2)
   {
     PutItemIntoPlay($cardID);
   }
