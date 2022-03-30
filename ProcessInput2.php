@@ -128,9 +128,7 @@
       $found = PitchHasCard($cardID);
       if($found >= 0)
       {
-        unset($myPitch[$found]);
-        $myPitch = array_values($myPitch);
-        array_push($myDeck, $cardID);
+        PitchDeck($currentPlayer, $found);
         PassTurn();//Resume passing the turn
       }
       break;
@@ -752,15 +750,45 @@ function FinalizeChainLink($chainClosed=false)
     $MyPitch = GetPitch($playerID);
     $TheirPitch = GetPitch(($playerID == 1 ? 2 : 1));
     $MainHand = GetHand($mainPlayer);
+
+    if(EndTurnPitchHandling($playerID))
+    {
+      if(EndTurnPitchHandling(($playerID == 1 ? 2 : 1)))
+      {
+        if(count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS")//Arsenal
+        {
+          $currentPlayer = $mainPlayer;
+          $turn[0] = "ARS";
+        }
+        else
+        {
+          FinalizeTurn();
+        }
+      }
+    }
+/*
     if(count($MyPitch) > 0)
     {
-      $currentPlayer = $playerID;
-      $turn[0] = "PDECK";
+      if(count($MyPitch) == 1)
+      {
+        PitchDeck($playerID, 0);
+      }
+      else {
+        $currentPlayer = $playerID;
+        $turn[0] = "PDECK";
+      }
     }
     else if(count($TheirPitch) > 0)
     {
-      $currentPlayer = $playerID == 1 ? 2 : 1;
-      $turn[0] = "PDECK";
+      if(count($TheirPitch) == 1)
+      {
+        PitchDeck(($playerID == 1 ? 2 : 1), 0);
+      }
+      else
+      {
+        $currentPlayer = $playerID == 1 ? 2 : 1;
+        $turn[0] = "PDECK";
+      }
     }
     else if(count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS")//Arsenal
     {
@@ -771,6 +799,7 @@ function FinalizeChainLink($chainClosed=false)
     {
       FinalizeTurn();
     }
+    */
   }
 
   function FinalizeTurn()

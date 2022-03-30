@@ -1148,4 +1148,35 @@ function AddCharacterUses($player, $index, $numToAdd)
     }
   }
 
+  //Returns true if done for that player
+  function EndTurnPitchHandling($player)
+  {
+    global $currentPlayer, $turn;
+    $pitch = &GetPitch($player);
+    if(count($pitch) == 0)
+    {
+      return true;
+    }
+    else if(count($pitch) == 1)
+    {
+      PitchDeck($player, 0);
+      return true;
+    }
+    else
+    {
+      $currentPlayer = $player;
+      $turn[0] = "PDECK";
+      return false;
+    }
+  }
+
+  function PitchDeck($player, $index)
+  {
+    $pitch = &GetPitch($player);
+    $deck = &GetDeck($player);
+    array_push($deck, $pitch[$index]);
+    unset($pitch[$index]);
+    $pitch = array_values($pitch);
+  }
+
 ?>
