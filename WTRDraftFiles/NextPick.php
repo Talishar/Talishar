@@ -12,7 +12,7 @@
   include "ZoneGetters.php";
   include "ParseGamestate.php";
   include "../HostFiles/Redirector.php";
-  include "../Libraries/UILibraries2.php";
+  include "../Libraries/UILibraries.php";
   include "../WriteLog.php";
 /*
   if($currentPlayer == $playerID) $icon = "ready.png";
@@ -42,7 +42,7 @@
   echo("<div id=\"cardDetail\" style=\"z-index:1000; display:none; position:absolute;\"></div>");
 
   //Display background
-  echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='../CardImages/findCenterBackground.jpg' /></div>");
+  echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='../Images/findCenterBackground.jpg' /></div>");
 
 
   echo("<h1 style='width:85%; text-align: center'>Pack Locations</h1>");
