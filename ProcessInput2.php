@@ -766,40 +766,6 @@ function FinalizeChainLink($chainClosed=false)
         }
       }
     }
-/*
-    if(count($MyPitch) > 0)
-    {
-      if(count($MyPitch) == 1)
-      {
-        PitchDeck($playerID, 0);
-      }
-      else {
-        $currentPlayer = $playerID;
-        $turn[0] = "PDECK";
-      }
-    }
-    else if(count($TheirPitch) > 0)
-    {
-      if(count($TheirPitch) == 1)
-      {
-        PitchDeck(($playerID == 1 ? 2 : 1), 0);
-      }
-      else
-      {
-        $currentPlayer = $playerID == 1 ? 2 : 1;
-        $turn[0] = "PDECK";
-      }
-    }
-    else if(count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS")//Arsenal
-    {
-      $currentPlayer = $mainPlayer;
-      $turn[0] = "ARS";
-    }
-    else
-    {
-      FinalizeTurn();
-    }
-    */
   }
 
   function FinalizeTurn()
