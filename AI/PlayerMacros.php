@@ -15,7 +15,7 @@ function ProcessMacros()
   }
   while($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
   {
-    if(!HasPlayableCard($currentPlayer, $turn[0]))
+    if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
     {
       PassInput();
     }
