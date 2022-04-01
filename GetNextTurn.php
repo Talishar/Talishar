@@ -49,6 +49,7 @@
       $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
       $firstPlayer = 1;
       $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+      unlink("./Games/" . $gameName . "/gamestate.txt");
       WriteLog("Warning: Rematch logic sequencing error caught by failsafe. Please report the game name on Discord.");
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
     }
