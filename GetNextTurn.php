@@ -121,7 +121,7 @@
     }
     else
     {
-      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><img height='25px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>Please choose " . TypeToPlay($turn[0]));
+      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><img height='25px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>" . GetPhaseHelptext());
       if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
       if(CanPassPhase($turn[0]))
       {

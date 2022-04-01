@@ -35,6 +35,7 @@ function PummelHit($player=-1)
   global $defPlayer;
   if($player == -1) $player = $defPlayer;
   AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
   AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
   AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
