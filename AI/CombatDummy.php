@@ -17,6 +17,7 @@ function CombatDummyAI()
       {
         PassInput();
       }
+      ProcessMacros();
       $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
     }
   }

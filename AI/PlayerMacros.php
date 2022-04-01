@@ -2,7 +2,7 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer;
   $somethingChanged = true;
   if($turn[0] != "OVER")
   {
@@ -13,7 +13,7 @@ function ProcessMacros()
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
     }
   }
-  while($turn[0] == "INSTANT")
+  while($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
   {
     if(!HasPlayableCard($currentPlayer, $turn[0]))
     {
