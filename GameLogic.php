@@ -297,7 +297,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
           $actionPoints += 2;
           $rv .= " and gained 2 action points, resources, and damage.";
         }
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       }
       return $rv;
     case "WTR163":

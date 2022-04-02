@@ -1046,7 +1046,6 @@
         $rv = "";
         if($from == "PLAY")
         {
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           Opt($cardID, 2);
           $rv = "Clarity Potion let you opt 2.";
         }
@@ -1054,13 +1053,11 @@
       case "EVR183":
         if($from == "PLAY"){
           GainHealth(2, $currentPlayer);
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         }
         return "Healing Potion gained 2 health.";
       case "EVR184":
         $rv = "";
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           LookAtHand($otherPlayer);
           $rv = "Potion of Seeing revealed the opponent's hand.";
         }
@@ -1068,7 +1065,6 @@
       case "EVR185":
         $rv = "";
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           $cards = "";
           $pitch = &GetPitch($currentPlayer);
           while(count($pitch) > 0)
@@ -1085,14 +1081,12 @@
         $rv = "";
         if($from == "PLAY")
         {
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Potion of Ironhide gives your attack action cards +1 Block this turn.";
         }
         return $rv;
       case "EVR187":
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           AddDecisionQueue("POTIONOFLUCK", $currentPlayer, "-", 1);
         }
         return "";
