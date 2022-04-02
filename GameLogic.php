@@ -1220,6 +1220,27 @@ function RemoveCurrentEffect($player, $effectID)
   $currentTurnEffects = array_values($currentTurnEffects);
 }
 
+function CurrentEffectChainClosedEffects()
+{
+  global $currentTurnEffects, $currentPlayer;
+  $costModifier = 0;
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+  {
+    $remove = 0;
+    switch($currentTurnEffects[$i])
+    {
+      case "CRU106": case "CRU107": case "CRU108": $remove = 1; break;
+      default: break;
+    }
+    if($remove == 1)
+    {
+      unset($currentTurnEffects[$i+1]);
+      unset($currentTurnEffects[$i]);
+    }
+  }
+  return $costModifier;
+}
+
 function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
