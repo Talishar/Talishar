@@ -93,7 +93,7 @@
     $top = "50%"; $left = "20%"; $width = "60%"; $height = "40%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
     if($overCombatChain) { $top = "150px"; $left = "290px"; $width = "auto"; $height = "auto"; }
-    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; z-index:10; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";" . ($defaultState == 0 ? " display:none;" : "") . "'>";
+    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";" . ($defaultState == 0 ? " display:none;" : "") . "'>";
     if($title != "") $rv .= "<h" . ($big ? "1" : "3") . ">" . $title . "</h" . ($big ? "1" : "3") . ">";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
