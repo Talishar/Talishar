@@ -427,8 +427,9 @@ function ShouldHoldPriority($player, $layerCard="")
 {
   global $mainPlayer;
   $prioritySetting = HoldPrioritySetting($player);
+  if($prioritySetting == 0 || $prioritySetting == 1) return 1;
   if(($prioritySetting == 2 || $prioritySetting == 3) && $player != $mainPlayer) return 1;
-  return 1;
+  return 0;
 }
 
 function GiveAttackGoAgain()
