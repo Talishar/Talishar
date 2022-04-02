@@ -25,7 +25,8 @@
 
   $icon = "ready.png";
 
-  if($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $icon = "notReady.png";
+  if($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";
+  else if($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $icon = "notReady.png";
   else if($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $icon = "notReady.png";
   //if($gameStatus == "") $MGS_GameStarted;
 
@@ -69,6 +70,11 @@ h2 {
 </head>
 
 <body onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
+
+<audio id="playerJoinedAudio">
+  <source src="./Assets/playerJoinedSound.mp3" type="audio/mpeg">
+</audio>
+
 <div id="cardDetail" style="display:none; position:absolute;"></div>
 
 <div style="width:100%; height:100%; background-image: url('Images/rout.jpg'); background-size:cover; z-index=0;">
@@ -264,6 +270,13 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 
 function OnLoadCallback(lastUpdate)
 {
+  <?php
+  if($playerID == "1" && $gameStatus == $MGS_ChooseFirstPlayer)
+  {
+    echo("var audio = document.getElementById('playerJoinedAudio');");
+    echo("audio.play();");
+  }
+   ?>
   UpdateFormInputs();
   var log = document.getElementById('gamelog');
   if(log !== null) log.scrollTop = log.scrollHeight;
