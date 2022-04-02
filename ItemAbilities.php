@@ -5,7 +5,10 @@
     global $currentPlayer, $CS_PlayIndex;
     switch($cardID)
     {
-      case "WTR170": case "WTR171": case "WTR172":
+      case "WTR162": case "WTR170": case "WTR171": case "WTR172":
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        break;
+      case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": case "EVR187":
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         break;
       default: break;
