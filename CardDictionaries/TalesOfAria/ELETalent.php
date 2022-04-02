@@ -247,9 +247,10 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $otherPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $myResources;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $myResources;
     global $combatChain, $CS_DamagePrevention;
     $rv = "";
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "ELE000":
