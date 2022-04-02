@@ -274,7 +274,7 @@ function SearchEquipNegCounter(&$character)
   $equipList = "";
   for($i=0; $i<count($character); $i += CharacterPieces())
   {
-    if(CardType($character[$i]) == "E" && $character[$i+4] < 0)
+    if(CardType($character[$i]) == "E" && $character[$i+4] < 0 && $character[$i+1] != 0)
     {
       if($equipList != "") $equipList = $equipList . ",";
       $equipList = $equipList . $i;

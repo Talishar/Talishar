@@ -233,6 +233,7 @@
       }
     }
     CombatChainClosedCharacterEffects();
+    CurrentEffectChainClosedEffects();
     $chainLinks = [];
     $chainLinkSummary = [];
   }
