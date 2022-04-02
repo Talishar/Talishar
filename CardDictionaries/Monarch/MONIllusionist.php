@@ -230,8 +230,10 @@
     if(CardType($combatChain[$index]) == "ILLUSIONIST") return;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
+    $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
+    if($av < 6 && $origAV >= 6) WriteLog("Herald of Triumph reduced the attack below 6, so Phantasm does not trigger.");
     if(IsPhantasmActive() && ($av >= 6))
     {
       AttackDestroyed($attackID);
