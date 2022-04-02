@@ -1,5 +1,17 @@
 <?php
 
+  function PayItemAbilityAdditionalCosts($cardID)
+  {
+    global $currentPlayer, $CS_PlayIndex;
+    switch($cardID)
+    {
+      case "WTR170": case "WTR171": case "WTR172":
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        break;
+      default: break;
+    }
+  }
+
   function ItemPlayAbilities($cardID, $from)
   {
     global $currentPlayer;

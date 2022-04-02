@@ -314,21 +314,18 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       {
         $resources = &GetResources($currentPlayer);
         $resources[0] += 2;
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       }
       return "";
     case "WTR171":
       if($from == "PLAY")
       {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       }
       return "";
     case "WTR172":
       if($from == "PLAY")
       {
         $actionPoints += 2;
-        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       }
       return "";
     case "WTR173": GainHealth(3, $currentPlayer); return "Sigil of Solace gained 3 health.";

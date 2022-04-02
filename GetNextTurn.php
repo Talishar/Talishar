@@ -98,7 +98,7 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./Images/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:fixed; right:315px; top:calc(50% - 125px); height:200px;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span>");
+  echo("<div style='position:absolute; right:315px; top:calc(50% - 125px); height:200px; z-index:100;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:130px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "24px") . CreateButton($playerID, "+1", 10006, 0, "24px") . "</span>": ""));
   echo("<span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:5px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "24px") . CreateButton($playerID, "+1", 10008, 0, "24px") . "</span>": ""));
@@ -172,7 +172,7 @@
     echo(CreatePopup("attackModifierPopup", [], 1, 0, "AttackModifiers", 1, AttackModifiers($chainAttackModifiers)));
   }
 
-  echo("<div style='position:absolute; left:290px; top:150px; z-index:-10;'>");
+  echo("<div style='position:absolute; left:290px; top:150px; z-index:0;'>");
 
   //Display the combat chain
     echo("<table><tr>");

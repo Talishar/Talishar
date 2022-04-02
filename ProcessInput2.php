@@ -33,6 +33,9 @@
     if($chk != "") array_push($chkInput, $chk);
   }
 
+  //Testing only
+  //WriteLog('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'] . "&gameName=$gameName&playerID=$playerID&authKey=$authKey&mode=$mode&cardID=$cardID");
+
   //First we need to parse the game state from the file
   include "ParseGamestate.php";
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -1038,6 +1041,12 @@ function FinalizeChainLink($chainClosed=false)
     }
 
     //Pay additional costs
+    $hand = &GetHand($currentPlayer);
+    if(RequiresDiscard($cardID) && count($hand) == 0)
+    {
+      WriteLog("This card requires a discard as an additional cost, but have no cards to discard. Reverting gamestate prior to the card declaration.");
+      RevertGamestate();
+    }
     //CR 5.1.4b Declare target of attack
     if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
     if($turn[0] == "B")//If a layer is not created
@@ -1219,9 +1228,15 @@ function FinalizeChainLink($chainClosed=false)
     }
   }
 
-  function PayAdditionalCosts($cardID)
+  function PayAdditionalCosts($cardID, $from)
   {
     global $currentPlayer;
+    $cardSubtype = CardSubType($cardID);
+    if($from == "PLAY" && $cardSubtype == "Item")
+    {
+      PayItemAbilityAdditionalCosts($cardID);
+      return;
+    }
     switch($cardID)
     {
       case "WTR159":
