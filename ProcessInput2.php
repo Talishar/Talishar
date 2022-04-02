@@ -414,11 +414,11 @@
     default:break;
   }
 
-  CacheCombatResult();
   ProcessMacros();
 
   if($winner != 0) { $turn[0] = "OVER"; $currentPlayer = 1; }
   CombatDummyAI();//Only does anything if applicable
+  CacheCombatResult();
 
   //Now write out the game state
   if(!$skipWriteGamestate)
