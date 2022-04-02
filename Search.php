@@ -637,14 +637,15 @@ function CountCardOnChain($card1, $card2="", $card3="")
   return $count;
 }
 
-function SearchChainLinks($minPower=-1, $maxPower=-1)
+function SearchChainLinks($minPower=-1, $maxPower=-1, $cardType="")
 {
   global $chainLinks;
   $links = "";
   for($i=0; $i<count($chainLinks); ++$i)
   {
     $power = AttackValue($chainLinks[$i][0]);
-    if($chainLinks[$i][2] == "1" && ($minPower == -1 || $power >= $minPower) && ($maxPower == -1 || $power <= $maxPower))
+    $type = CardType($chainLinks[$i][0]);
+    if($chainLinks[$i][2] == "1" && ($minPower == -1 || $power >= $minPower) && ($maxPower == -1 || $power <= $maxPower) && ($cardType == "" || $type == $cardType))
     {
       if($links != "") $links .= ",";
       $links .= $i;

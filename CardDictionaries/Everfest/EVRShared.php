@@ -1133,7 +1133,7 @@
         }
         break;
       case "EVR039":
-        for($i=0; $i<SearchCount(SearchChainLinks(-1, 2)); ++$i) Draw($mainPlayer);
+        for($i=0; $i<SearchCount(SearchChainLinks(-1, 2, "AA")); ++$i) Draw($mainPlayer);
         break;
       case "EVR040":
         if(ComboActive())
