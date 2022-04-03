@@ -869,6 +869,7 @@ function FinalizeChainLink($chainClosed=false)
     $currentPlayer = $mainPlayer;
 
     BuildMainPlayerGameState();
+    ResetMainClassState();
 
     //Start of turn effects
     if($mainPlayer == 1) StatsStartTurn();
@@ -878,9 +879,7 @@ function FinalizeChainLink($chainClosed=false)
     $layerPriority[0] = ShouldHoldPriority(1);
     $layerPriority[1] = ShouldHoldPriority(2);
 
-    ResetMainClassState();
     DoGamestateUpdate();
-
     ProcessDecisionQueue();
   }
 
