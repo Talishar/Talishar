@@ -50,7 +50,15 @@
       $firstPlayer = 1;
       $firstPlayerChooser = ($winner == 1 ? 2 : 1);
       unlink("./Games/" . $gameName . "/gamestate.txt");
-      WriteLog("Warning: Rematch logic sequencing error caught by failsafe. Please report the game name on Discord.");
+
+      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
+      $errorHandler = fopen($errorFileName, "a");
+      date_default_timezone_set('America/Chicago');
+      $errorDate = date('m/d/Y h:i:s a');
+      $errorOutput = "Rematch failsafe hit for game $gameName at $errorDate";
+      fwrite($errorHandler, $errorOutput . "\r\n");
+      fclose($errorHandler);
+
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
     }
     WriteGameFile();
