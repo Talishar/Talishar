@@ -2433,17 +2433,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $subparam = "";
       switch($parameter)
       {
-        case "WTR083": $rv = SearchMainDeckForCard("WTR081"); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
-        case "WTR076-1": $rv = SearchMainHand("", "", 0); break;
+        case "WTR083": $rv = SearchDeckForCard($player, "WTR081"); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
+        case "WTR076-1": $rv = SearchHand($player, "", "", 0); break;
         case "WTR076-2": $rv = GetComboCards(); break;
         case "WTR081": $rv = LordOfWindIndices(); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
-        case "ARC014": $rv = SearchMyHand("", "Item", 2, -1, "MECHANOLOGIST"); break;
-        case "ARC015": $rv = SearchMyHand("", "Item", 1, -1, "MECHANOLOGIST"); break;
-        case "ARC016": $rv = SearchMyHand("", "Item", 0, -1, "MECHANOLOGIST"); break;
+        case "ARC014": $rv = SearchHand($player, "", "Item", 2, -1, "MECHANOLOGIST"); break;
+        case "ARC015": $rv = SearchHand($player, "", "Item", 1, -1, "MECHANOLOGIST"); break;
+        case "ARC016": $rv = SearchHand($player, "", "Item", 0, -1, "MECHANOLOGIST"); break;
         case "ARC079": $rv = CombineSearches(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"), SearchDiscard($player, "A", "", -1, -1, "RUNEBLADE")); break;
         case "ARC121": $rv = SearchDeck($player, "", "", $lastResult, -1, "WIZARD"); break;
         case "ARC138": case "ARC139": case "ARC140": $rv = SearchHand($player, "A", "", $lastResult, -1, "WIZARD"); break;
-        case "ARC185": case "ARC186": case "ARC187": $rv = SearchMainDeckForCard("ARC212", "ARC213", "ARC214"); break;
+        case "ARC185": case "ARC186": case "ARC187": $rv = SearchDeckForCard($player, "ARC212", "ARC213", "ARC214"); break;
         case "CRU026": $rv = SearchEquipNegCounter($defCharacter); break;
         case "CRU105": $rv = GetWeaponChoices("Pistol"); break;
         case "CRU143": $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"); break;
@@ -2470,11 +2470,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
-        case "MYHANDAA": $rv = SearchMyHand("AA"); break;
-        case "MYHANDARROW": $rv = SearchMyHand("", "Arrow"); break;
+        case "MYHANDAA": $rv = SearchHand($player, "AA"); break;
+        case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDECKARROW": $rv = SearchMyDeck("", "Arrow"); break;
         case "MAINHAND": $rv = GetIndices(count(GetHand($mainPlayer))); break;
-        case "MAINDISCARDNAA": $rv = SearchMainDiscard("A"); break;
         case "FIRSTXDECK": $deck = &GetDeck($player); if($subparam > count($deck)) $subparam = count($deck); $rv = GetIndices($subparam); break;
         case "BANISHTYPE": $rv = SearchBanish($player, $subparam); break;
         case "GY": $discard = &GetDiscard($player); $rv = GetIndices(count($discard)); break;
