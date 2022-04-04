@@ -300,8 +300,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       }
       return $rv;
     case "WTR163":
-      $actions = SearchMyDiscard("A");
-      $attackActions = SearchMyDiscard("AA");
+      $actions = SearchDiscard($currentPlayer, "A");
+      $attackActions = SearchDiscard($currentPlayer, "AA");
       if($actions == "") $actions = $attackActions;
       else if($attackActions != "") $actions = $actions . "," . $attackActions;
       if($actions == "") return "";
@@ -1289,7 +1289,7 @@ function BanishCostModifier($from, $index)
   $mod = explode("-", $banish[$index+1]);
   switch($mod[0])
   {
-    case "ARC119": return -1 * $mod[1];
+    case "ARC119": return -1 * intval($mod[1]);
     default: return 0;
   }
 }
@@ -2492,11 +2492,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MON158": $rv = InvertExistenceIndices($player); break;
         case "MON159": case "MON160": case "MON161": $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true); break;
         case "MON212": $rv = SearchBanish($player, "AA", "", $subparam); break;
-        case "MON266-1": $rv = SearchMyHand("AA", "", -1, -1, 3); break;
+        case "MON266-1": $rv = SearchHand($player, "AA", "", -1, -1, "", "", false, false, -1, false, $maxAttack=-1); break;
         case "MON266-2": $rv = SearchDeckForCard($player, "MON296", "MON297", "MON298"); break;
-        case "MON303": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=2); break;
-        case "MON304": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=1); break;
-        case "MON305": $rv = SearchMyDiscard($type="AA", $subtype="", $maxCost=0); break;
+        case "MON303": $rv =  SearchDiscard($player, "AA", "", 2); break;
+        case "MON304": $rv = SearchDiscard($player, "AA", "", 1); break;
+        case "MON305": $rv = SearchDiscard($player, "AA", "", 0); break;
         case "HANDIFZERO": if($lastResult == 0) { $hand = &GetHand($player); $rv = GetIndices(count($hand)); } break;
         case "ELE006": $count = CountAura("WTR075", $player); $rv = SearchDeck($player, "AA", "", $count, -1, "GUARDIAN"); break;
         case "ELE113": $rv = PulseOfCandleholdIndices($player); break;

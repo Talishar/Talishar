@@ -227,9 +227,9 @@
       case "MON081": case "MON082": case "MON083":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Seek Enlightenment gives your next attack action card +" . EffectAttackModifier($cardID) . " and go in your soul if it hits.";
-      case "MON084": $combatChain[$target+5] -= 3; return "";
-      case "MON085": $combatChain[$target+5] -= 2; return "";
-      case "MON086": $combatChain[$target+5] -= 1; return "";
+      case "MON084": $combatChain[intval($target)+5] -= 3; return "";
+      case "MON085": $combatChain[intval($target)+5] -= 2; return "";
+      case "MON086": $combatChain[intval($target)+5] -= 1; return "";
       case "MON087":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Ray of Hope gives attacks against Shadow heroes +1 this turn.";
