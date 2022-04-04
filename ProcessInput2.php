@@ -1242,12 +1242,12 @@ function FinalizeChainLink($chainClosed=false)
         BottomDeck();
         break;
       case "WTR179": case "WTR180": case "WTR181":
-        $indices = SearchMyHand("", "", -1, 2);
+        $indices = SearchHand($currentPlayer, "", "", -1, 2);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
         AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
         break;
       case "WTR182": case "WTR183": case "WTR184":
-        $indices = SearchMyHand("", "", 1);
+        $indices = SearchHand($currentPlayer, "", "", 1);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
         AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
         break;

@@ -247,7 +247,7 @@
       case "ARC164": case "ARC165": case "ARC166": PlayerGainHealth(1, $mainHealth); break;
       case "ARC161": AddCurrentTurnEffect($cardID, $mainPlayer); break;
       case "ARC179": case "ARC180": case "ARC181":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "MAINDISCARDNAA");
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
         AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);

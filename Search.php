@@ -143,22 +143,6 @@ function SearchDeckForCard($player, $card1, $card2="", $card3="")
   return $cardList;
 }
 
-function SearchMainDeckForCard($card1, $card2="", $card3="")
-{
-  global $mainDeck;
-  $cardList = "";
-  for($i=0; $i<count($mainDeck); ++$i)
-  {
-    $id = $mainDeck[$i];
-    if($id == $card1 || $id == $card2 || $id == $card3)
-    {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
 function SearchTheirDeck($type="", $subtype="", $maxCost=-1)
 {
   global $theirDeck;
@@ -166,53 +150,6 @@ function SearchTheirDeck($type="", $subtype="", $maxCost=-1)
   for($i=0; $i<count($theirDeck); ++$i)
   {
     if(($type == "" || CardType($theirDeck[$i]) == $type) && ($subtype == "" || CardSubType($theirDeck[$i]) == $subtype) && ($maxCost == -1 || CardCost($theirDeck[$i]) <= $maxCost))
-    {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
-function SearchMyHand($type="", $subtype="", $maxCost=-1, $minCost=-1, $maxAttack=-1)
-{
-  global $myHand;
-  $cardList = "";
-  for($i=0; $i<count($myHand); ++$i)
-  {
-    if(($type == "" || CardType($myHand[$i]) == $type) && ($subtype == "" || CardSubType($myHand[$i]) == $subtype) && ($maxCost == -1 || CardCost($myHand[$i]) <= $maxCost) && ($minCost == -1 || CardCost($myHand[$i]) >= $minCost) && ($maxAttack == -1 || AttackValue($myHand[$i]) <= $maxAttack))
-    {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
-function SearchMainHand($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
-{
-  global $mainHand, $myHand, $theirHand, $mainPlayerGamestateBuilt, $mainPlayer, $playerID;
-  $hand = $mainPlayerGamestateBuilt ? $mainHand : ($mainPlayer == $playerID ? $myHand : $theirHand);
-  $cardList = "";
-  for($i=0; $i<count($hand); ++$i)
-  {
-    if(($type == "" || CardType($hand[$i]) == $type) && ($subtype == "" || CardSubType($hand[$i]) == $subtype) && ($maxCost == -1 || CardCost($hand[$i]) <= $maxCost) && ($minCost == -1 || CardCost($hand[$i]) >= $minCost) && ($class == "" || CardClass($hand[$i]) == $class))
-    {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
-function SearchMainDiscard($type="", $subtype="", $maxCost=-1, $minCost=-1)
-{
-  global $mainDiscard;
-  $cardList = "";
-  for($i=0; $i<count($mainDiscard); ++$i)
-  {
-    $cID = $mainDiscard[$i];
-    if(($type == "" || CardType($cID) == $type) && ($subtype == "" || CardSubType($cID) == $subtype) && ($maxCost == -1 || CardCost($cID) <= $maxCost) && ($minCost == -1 || CardCost($cID) >= $minCost))
     {
       if($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
