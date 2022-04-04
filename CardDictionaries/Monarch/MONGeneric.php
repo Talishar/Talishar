@@ -193,7 +193,7 @@
       AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      return "";
+      return "Belittle let you choose a card in hand to tutor Minnowism.";
     case "MON272": case "MON273": case "MON274":
       $ret = "Their hand is:";
       for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= $theirHand[$i]; }

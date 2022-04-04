@@ -1477,7 +1477,7 @@
       if($from == "HAND" && count($myHand) < 2) return false;//TODO: Account for where it was from
       else if(count($myHand) < 1) return false;
     }
-    if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $from, $index, $restriction)) return false;
+    if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index)) return false;
     if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
     if($phase == "D" && $subtype == "Trap" && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
@@ -1529,7 +1529,7 @@
     return false;
   }
 
-  function IsPlayRestricted($cardID, $from="", $index=-1, &$restriction)
+  function IsPlayRestricted($cardID, &$restriction, $from="", $index=-1)
   {
     global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
