@@ -145,11 +145,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       AddCurrentTurnEffect($cardID, $mainPlayer);
       return "Helm of Isen's Peak gives you +1 Intellect until end of turn.";
     case "WTR047":
-        $AAs = SearchMyDeck("AA","",-1,-1,"GUARDIAN");
-        if($AAs == "") return "No attack actions to find.";
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, $AAs);
-        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-      return "Show Time! searched for a Guardian attack action card.";
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCLASSAA,GUARDIAN");
+      AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+      return "Show Time! allows you to search for a Guardian attack card.";
     //Ninja
     case "WTR078":
       if(CountPitch(GetPitch($currentPlayer), 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
@@ -195,9 +194,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
     case "WTR121":
       if(RepriseActive())
       {
-        $ARs = SearchMyDeck("AR");
-        AddDecisionQueue("CHOOSEDECK", $mainPlayer, $ARs);
-        AddDecisionQueue("BANISH", $mainPlayer, "TCL");
+        $ARs = SearchDeck($currentPlayer, "AR");
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, $ARs);
+        AddDecisionQueue("BANISH", $currentPlayer, "TCL");
       }
       return "";
     case "WTR123": case "WTR124": case "WTR125":
