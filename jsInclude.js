@@ -29,7 +29,7 @@ function ShowDetail(e, imgSource)
     el.style.top = 5;
     el.style.left = e.clientX < window.innerWidth / 2 ? e.clientX + 30 : e.clientX - 400;
   }
-  el.style.zIndex = 100;
+  el.style.zIndex = 100000;
   el.style.display = "inline";
 }
 

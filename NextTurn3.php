@@ -135,7 +135,7 @@
   <?php
 
   //Display hidden elements
-  echo("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:absolute;\"></div>");
+  echo("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
 
 
   echo("<div id='mainDiv' style='left:0px; top:0px; width:100%;height:100%;'></div>");

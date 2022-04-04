@@ -218,7 +218,7 @@
       return "Warmonger's Recital gives your next attack action card +" . EffectAttackModifier($cardID) . " and if it hits, put it on the bottom of your deck.";
     case "MON303": case "MON304": case "MON305":
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-      AddDecisionQueue("CHOOSEDISCARDCANCEL", $currentPlayer, "<-");
+      AddDecisionQueue("CHOOSEDISCARDCANCEL", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
       return "";
