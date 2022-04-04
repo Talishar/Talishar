@@ -93,33 +93,8 @@
     $charEquip = GetArray($deckHandler);
     $deckCards = GetArray($deckHandler);
     $deckSize = count($deckCards);
-    $cards = array_fill(0, $deckSize, 0);
-    $deck = array();
-    //Randomize the deck
-    for($i=0; $i<$deckSize; ++$i)
-    {
-      $num = rand(1, $deckSize-$i);
-      $found = 0;
-      for($j=0; $j<$deckSize && $found!=$num; ++$j)
-      {
-        if($cards[$j] == 0) ++$found;
-        if($found==$num)
-        {
-          $deck[count($deck)] = $deckCards[$j];
-          $cards[$j] = 1;
-        }
-      }
-    }
     fwrite($handler, "\r\n");//Hand
-    //Output the rest of the deck
-    $deckStr = "";
-    for($i=$int; $i<$deckSize; ++$i)
-    {
-      $deckStr .= $deck[$i];
-      if($i != $deckSize-1) $deckStr .= " ";
-    }
-    $deckStr .= "\r\n";
-    fwrite($handler, $deckStr);
+    fwrite($handler, implode(" ", $deckCards) . "\r\n");
 
     for($i=0; $i<count($charEquip); ++$i)
     {
