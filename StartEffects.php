@@ -31,7 +31,8 @@
       AddDecisionQueue("CHOOSEDECK", 2, $items);
       AddDecisionQueue("PUTPLAY", 2, "0");
   }
-
+  AddDecisionQueue("SHUFFLEDECK", 1, "-");//CR 2.0 4.1.7 Shuffle Deck
+  AddDecisionQueue("SHUFFLEDECK", 2, "-");//CR 2.0 4.1.7 Shuffle Deck
   AddDecisionQueue("DRAWTOINTELLECT", 1, "-");//CR 2.0 4.1.9 Draw to Intellect
   AddDecisionQueue("DRAWTOINTELLECT", 2, "-");//CR 2.0 4.1.9 Draw to Intellect
   AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-");//CR 2.0 4.2 Start Phase
