@@ -3317,6 +3317,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "STARTTURNABILITIES":
       StartTurnAbilities();
       return 1;
+    case "DRAWTOINTELLECT":
+      $deck = &GetDeck($player);
+      $hand = &GetHand($player);
+      $char = &GetPlayerCharacter($player);
+      for($i=0; $i<CharacterIntellect($char[0]); ++$i)
+      {
+        array_push($hand, array_shift($deck));
+      }
+      return 1;
     case "REMOVELAST":
       if($lastResult == "") return $parameter;
       $cards = explode(",", $parameter);

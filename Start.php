@@ -110,16 +110,7 @@
         }
       }
     }
-    //Output player 1's hand
-    $int = CharacterIntellect($charEquip[0]);
-    $hand = "";
-    for($i=0; $i<$int; ++$i)
-    {
-      if($i >= count($deck)) break;
-      $hand .= $deck[$i];
-      if($i != $int-1) $hand .= " ";
-    }
-    fwrite($handler, $hand . "\r\n");
+    fwrite($handler, "\r\n");//Hand
     //Output the rest of the deck
     $deckStr = "";
     for($i=$int; $i<$deckSize; ++$i)

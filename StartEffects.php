@@ -18,20 +18,23 @@
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   StatsStartTurn();
 
+  //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
   if($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002")
   {
       $items = SearchMyDeck("", "Item", 2);
       AddDecisionQueue("CHOOSEDECK", 1, $items);
-      AddDecisionQueue("PUTPLAY", 1, "-");
+      AddDecisionQueue("PUTPLAY", 1, "0");
   }
   if($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002")
   {
       $items = SearchTheirDeck("", "Item", 2);
       AddDecisionQueue("CHOOSEDECK", 2, $items);
-      AddDecisionQueue("PUTPLAY", 2, "-");
+      AddDecisionQueue("PUTPLAY", 2, "0");
   }
 
-  AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-");
+  AddDecisionQueue("DRAWTOINTELLECT", 1, "-");//CR 2.0 4.1.9 Draw to Intellect
+  AddDecisionQueue("DRAWTOINTELLECT", 2, "-");//CR 2.0 4.1.9 Draw to Intellect
+  AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-");//CR 2.0 4.2 Start Phase
 
   ProcessDecisionQueue();
 
