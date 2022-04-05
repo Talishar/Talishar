@@ -54,6 +54,7 @@ body {
   font-family: Garamond, serif;
   margin:0px;
   color:rgb(240, 240, 240);
+  overflow-y:hidden;
 }
 
 h1 {
@@ -147,24 +148,35 @@ h2 {
 <h1>Your Equipment</h1>
 </div>
 <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7);">
+<?php
+  if($gameStatus < $MGS_P2Sideboard)
+  {
+    echo("<div style='position:absolute; width:100%; height:100%; z-index:1000; background-color:rgba(20, 20, 20, 0.5);'>");
+    echo("<h1>Sideboarding is available after first player is chosen.</h1>");
+    echo("</div>");
+  }
+ ?>
+
 <table>
 <?php
 
-  DisplayEquipRow($head, $headSB, "HEAD");
-  DisplayEquipRow($chest, $chestSB, "CHEST");
-  DisplayEquipRow($arms, $armsSB, "ARMS");
-  DisplayEquipRow($legs, $legsSB, "LEGS");
+    DisplayEquipRow($head, $headSB, "HEAD");
+    DisplayEquipRow($chest, $chestSB, "CHEST");
+    DisplayEquipRow($arms, $armsSB, "ARMS");
+    DisplayEquipRow($legs, $legsSB, "LEGS");
 
 ?>
 </table>
   <div id="weaponDisplay" style="position:absolute; z-index:2; top:0px; left:50%; right:20px;">
     <table>
     <?php
-      $weaponArray = explode(",", $weapons);
-      $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
-      $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
-      DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
-      DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+
+        $weaponArray = explode(",", $weapons);
+        $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
+        $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
+        DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
+        DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+
     ?>
     </table>
   </div>
@@ -175,22 +187,31 @@ h2 {
 echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
 ?>
 </div>
-<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7); overflow-y:scroll;">
-
+<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7); overflow-y:<?php echo(($gameStatus < $MGS_P2Sideboard ? "hidden" : "scroll")); ?>;">
+  <?php
+    if($gameStatus < $MGS_P2Sideboard)
+    {
+      echo("<div style='position:absolute; width:100%; height:100%; z-index:1000; background-color:rgba(20, 20, 20, 0.5);'>");
+      echo("<h1>Sideboarding is available after first player is chosen.</h1>");
+      echo("</div>");
+    }
+   ?>
 <?php
-  $count = 0;
-  for($i=0; $i<count($deck); ++$i)
-  {
-    $id = "DECK-" . $count;
-    echo("<span style='cursor:pointer;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "CardImages", 150, 0, 1, 0, 0, 0, "", $id) . "</span>");
-    ++$count;
-  }
-  for($i=0; $i<count($deckSB); ++$i)
-  {
-    $id = "DECK-" . $count;
-    echo("<span style='cursor:pointer;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "CardImages", 150, 0, 1, 1, 0, 0, "", $id) . "</span>");
-    ++$count;
-  }
+
+    $count = 0;
+    for($i=0; $i<count($deck); ++$i)
+    {
+      $id = "DECK-" . $count;
+      echo("<span style='cursor:pointer;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "CardImages", 150, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      ++$count;
+    }
+    for($i=0; $i<count($deckSB); ++$i)
+    {
+      $id = "DECK-" . $count;
+      echo("<span style='cursor:pointer;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "CardImages", 150, 0, 1, 1, 0, 0, "", $id) . "</span>");
+      ++$count;
+    }
+
 ?>
 
 </div>
