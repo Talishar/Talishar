@@ -390,7 +390,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
   return $damage;
 }
 
-function CanDamageBePrevented($player, $damage, $type, $source)
+function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
   return true;
@@ -408,38 +408,41 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   $damageThreatened = $damage;
-  if(ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
-  if($type == "ARCANE")
+  if(CanDamageBePrevented($player, $damage, $type, $source))
   {
-    if($damage <= $classState[$CS_ArcaneDamagePrevention])
+    if(ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
+    if($type == "ARCANE")
     {
-      $classState[$CS_ArcaneDamagePrevention] -= $damage;
+      if($damage <= $classState[$CS_ArcaneDamagePrevention])
+      {
+        $classState[$CS_ArcaneDamagePrevention] -= $damage;
+        $damage = 0;
+      }
+      else
+      {
+        $damage -= $classState[$CS_ArcaneDamagePrevention];
+        $classState[$CS_ArcaneDamagePrevention] = 0;
+      }
+    }
+    if($damage <= $classState[$CS_DamagePrevention])
+    {
+      $classState[$CS_DamagePrevention] -= $damage;
       $damage = 0;
     }
     else
     {
-      $damage -= $classState[$CS_ArcaneDamagePrevention];
-      $classState[$CS_ArcaneDamagePrevention] = 0;
+      $damage -= $classState[$CS_DamagePrevention];
+      $classState[$CS_DamagePrevention] = 0;
     }
-  }
-  if($damage <= $classState[$CS_DamagePrevention])
-  {
-    $classState[$CS_DamagePrevention] -= $damage;
-    $damage = 0;
-  }
-  else
-  {
-    $damage -= $classState[$CS_DamagePrevention];
-    $classState[$CS_DamagePrevention] = 0;
-  }
-  $damage -= CurrentEffectDamagePrevention($player, $type, $damage);
-  for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
-  {
-    if($Items[$i] == "CRU104")
+    $damage -= CurrentEffectDamagePrevention($player, $type, $damage);
+    for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
     {
-      if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
-      else { $Items[$i+1] -= $damage; $damage = 0; }
-      if($Items[$i+1] <= 0) DestroyItem($Items, $i);
+      if($Items[$i] == "CRU104")
+      {
+        if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
+        else { $Items[$i+1] -= $damage; $damage = 0; }
+        if($Items[$i+1] <= 0) DestroyItem($Items, $i);
+      }
     }
   }
   $damage = $damage > 0 ? $damage : 0;
