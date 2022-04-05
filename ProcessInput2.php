@@ -321,7 +321,7 @@
     case 100: //Break Chain
       ResetCombatChainState();
       break;
-    case 10000:
+    case 10000://Undo
       RevertGamestate();
       $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " undid their last action.");

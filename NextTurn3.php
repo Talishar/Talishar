@@ -35,6 +35,7 @@
   function Hotkeys(event)
   {
     if(event.keyCode === 32) SubmitInput(99, "");
+    if(event.keyCode === 117) SubmitInput(10000, ""); //document.location.href = './ProcessInput.php?gameName=<?php echo($gameName); ?>&playerID=<?php echo($playerID); ?>&mode=10000';
   }
 </script>
 
