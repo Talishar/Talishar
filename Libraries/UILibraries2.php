@@ -276,7 +276,7 @@
   {
     global $playerID;
     $rv = "<table><tr><td>";
-    $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px") . "<BR>";
+    $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
