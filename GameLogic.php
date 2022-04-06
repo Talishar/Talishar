@@ -333,7 +333,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       PlayMyAura("WTR225");
       return "Flight of the Feather Walkers created a Quicken token.";
     case "WTR185": case "WTR186": case "WTR187":
-      $indices = SearchMyDiscardForCard("WTR218", "WTR219", "WTR220");
+      $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
       if($indices == "") { return "No Nimblism to banish."; }
       AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
       AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
@@ -348,7 +348,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Scour the Battlescape gained Go Again."; }
       return $rv;
     case "WTR197": case "WTR198": case "WTR199":
-      $indices = SearchMyDiscardForCard("WTR221", "WTR222", "WTR223");
+      $indices = SearchDiscardForCard($currentPlayer, "WTR221", "WTR222", "WTR223");
       if($indices == "") { return "No Sloggism to banish."; }
       AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
       AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
@@ -652,7 +652,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       return "";
     //CRU Generics
     case "CRU181":
-      $count = SearchCount(CombineSearches(SearchMyDiscardForCard("CRU181"), SearchTheirDiscardForCard("CRU181")));
+      $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "CRU181"), SearchDiscardForCard(2, "CRU181")));
       for($i=0; $i<$count; ++$i) { MyDrawCard(); }
       return "Gorganian Tome drew " . $count . " cards.";
     case "CRU182":
@@ -2435,7 +2435,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "WTR083": $rv = SearchDeckForCard($player, "WTR081"); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
         case "WTR076-1": $rv = SearchHand($player, "", "", 0); break;
         case "WTR076-2": $rv = GetComboCards(); break;
-        case "WTR081": $rv = LordOfWindIndices(); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
+        case "WTR081": $rv = LordOfWindIndices($player); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
         case "ARC014": $rv = SearchHand($player, "", "Item", 2, -1, "MECHANOLOGIST"); break;
         case "ARC015": $rv = SearchHand($player, "", "Item", 1, -1, "MECHANOLOGIST"); break;
         case "ARC016": $rv = SearchHand($player, "", "Item", 0, -1, "MECHANOLOGIST"); break;

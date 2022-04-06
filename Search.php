@@ -143,44 +143,13 @@ function SearchDeckForCard($player, $card1, $card2="", $card3="")
   return $cardList;
 }
 
-function SearchTheirDeck($type="", $subtype="", $maxCost=-1)
+function SearchDiscardForCard($player, $card1, $card2="", $card3="")
 {
-  global $theirDeck;
+  $discard = &GetDiscard($player);
   $cardList = "";
-  for($i=0; $i<count($theirDeck); ++$i)
+  for($i=0; $i<count($discard); ++$i)
   {
-    if(($type == "" || CardType($theirDeck[$i]) == $type) && ($subtype == "" || CardSubType($theirDeck[$i]) == $subtype) && ($maxCost == -1 || CardCost($theirDeck[$i]) <= $maxCost))
-    {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
-function SearchMyDiscardForCard($card1, $card2="", $card3="")
-{
-  global $myDiscard;
-  $cardList = "";
-  for($i=0; $i<count($myDiscard); ++$i)
-  {
-    $id = $myDiscard[$i];
-    if($id == $card1 || $id == $card2 || $id == $card3)
-    {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
-function SearchTheirDiscardForCard($card1, $card2="", $card3="")
-{
-  global $theirDiscard;
-  $cardList = "";
-  for($i=0; $i<count($theirDiscard); ++$i)
-  {
-    $id = $theirDiscard[$i];
+    $id = $discard[$i];
     if($id == $card1 || $id == $card2 || $id == $card3)
     {
       if($cardList != "") $cardList = $cardList . ",";
