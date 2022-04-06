@@ -21,13 +21,13 @@
   //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
   if($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002")
   {
-      $items = SearchMyDeck("", "Item", 2);
+      $items = SearchDeck(1, "", "Item", 2);
       AddDecisionQueue("CHOOSEDECK", 1, $items);
       AddDecisionQueue("PUTPLAY", 1, "0");
   }
   if($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002")
   {
-      $items = SearchTheirDeck("", "Item", 2);
+      $items = SearchDeck(2, "", "Item", 2);
       AddDecisionQueue("CHOOSEDECK", 2, $items);
       AddDecisionQueue("PUTPLAY", 2, "0");
   }

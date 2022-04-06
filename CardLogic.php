@@ -75,14 +75,14 @@ function RandomHandBottomDeck($player)
   array_push($deck, $discarded);
 }
 
-function LordOfWindIndices()
+function LordOfWindIndices($player)
 {
   $array = [];
-  $indices = SearchMyDiscardForCard("WTR107", "WTR108", "WTR109");
+  $indices = SearchDiscardForCard($player, "WTR107", "WTR108", "WTR109");
   if($indices != "") array_push($array, $indices);
-  $indices = SearchMyDiscardForCard("WTR110", "WTR111", "WTR112");
+  $indices = SearchDiscardForCard($player, "WTR110", "WTR111", "WTR112");
   if($indices != "") array_push($array, $indices);
-  $indices = SearchMyDiscardForCard("WTR83");
+  $indices = SearchDiscardForCard($player, "WTR83");
   if($indices != "") array_push($array, $indices);
   return implode(",", $array);
 }
