@@ -686,10 +686,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $combatChain,$defArsenal, $mainClassState, $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $mainCharacter, $defCharacter, $mainArsenal, $CCS_ChainLinkHitEffectsPrevented, $CCS_NextBoostBuff, $CS_ArcaneDamageTaken, $defPlayer, $CCS_HitsInRow;
-  global $defPlayer;
+  global $combatChain,$defArsenal, $mainClassState, $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $mainCharacter, $defCharacter, $mainArsenal, $CCS_ChainLinkHitEffectsPrevented, $CCS_NextBoostBuff, $CS_ArcaneDamageTaken, $CCS_HitsInRow;
+  global $mainPlayer, $defPlayer;
   $attackID = $combatChain[0];
-  if(SearchMainAuras("CRU028") && CardType($cardID) == "AA") return;
+  if(CardType($cardID) == "AA" && SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2)) return;
   if($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) return;
   $set = CardSet($cardID);
   $class = CardClass($cardID);

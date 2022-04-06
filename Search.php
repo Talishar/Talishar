@@ -280,20 +280,6 @@ function CountCurrentTurnEffects($cardID, $player, $remove=false)
   return $count;
 }
 
-function SearchMainAuras($cardID)
-{
-  global $mainAuras, $defAuras;
-  for($i=0; $i<count($mainAuras); $i += AuraPieces())
-  {
-    if($mainAuras[$i] == $cardID) return true;
-  }
-  for($i=0; $i<count($defAuras); $i += AuraPieces())
-  {
-    if($defAuras[$i] == $cardID) return true;
-  }
-  return false;
-}
-
 function SearchPitchHighestAttack(&$pitch)
 {
   $highest = 0;
