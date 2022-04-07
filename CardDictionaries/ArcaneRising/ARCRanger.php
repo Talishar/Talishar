@@ -114,7 +114,7 @@
 
   function ARCRangerPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $myArsenal;
+    global $currentPlayer;
     switch($cardID)
     {
       case "ARC038": case "ARC039":

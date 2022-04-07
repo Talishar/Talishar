@@ -18,6 +18,7 @@
     {
       sleep(1);
       clearstatcache();
+      if(!file_exists($filename)) { break; }
       $time = filemtime($filename);
       ++$tries;
     }

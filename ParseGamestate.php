@@ -45,7 +45,7 @@
       $errorHandler = fopen($errorFileName, "a");
       date_default_timezone_set('America/Chicago');
       $errorDate = date('m/d/Y h:i:s a');
-      $errorOutput = "Final create game error for game $gamename at $errorDate (total failure)";
+      $errorOutput = "Final create game error for game $gameName at $errorDate (total failure)";
       fwrite($errorHandler, $errorOutput . "\r\n");
       fclose($errorHandler);
     }
