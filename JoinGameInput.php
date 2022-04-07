@@ -197,6 +197,7 @@
   if($playerID == 2)
   {
     $gameStatus = $MGS_Player2Joined;
+    unlink("./Games/" . $gameName . "/gamestate.txt");
 
     $firstPlayerChooser = 1;
     $p1roll = 0; $p2roll = 0;

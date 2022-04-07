@@ -17,11 +17,10 @@
     usleep(50000);//50 milliseconds
     $cacheVal = ReadCache($gameName);
     ++$count;
-    if($count == 500) break;
+    if($count == 100) break;
   }
 
   if($playerID != $cacheVal) { WriteCache($gameName, $playerID); echo "1"; }
   else echo "0";
 
 ?>
-

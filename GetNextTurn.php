@@ -21,7 +21,7 @@
     usleep(50000);//50 milliseconds
     $cacheVal = ReadCache($gameName);
     ++$count;
-    if($count == 500) break;
+    if($count == 100) break;
   }
 
   if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo "0"; exit; }
