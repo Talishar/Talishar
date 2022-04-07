@@ -14,7 +14,7 @@
   {
     $time = filemtime($filename);
     $tries = 0;
-    while($lastUpdate >= $time && $tries < 50)
+    while($lastUpdate >= $time && $tries < 5)
     {
       sleep(1);
       clearstatcache();
@@ -23,7 +23,7 @@
       ++$tries;
     }
 
-    if($tries >= 50)
+    if($tries >= 5)
     {
       echo(filemtime($filename));
     }
