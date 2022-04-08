@@ -8,6 +8,8 @@
   $SET_SkipARs = 4;
   $SET_SkipDRs = 5;
 
+  $SET_PassDRStep = 6;
+
   function HoldPrioritySetting($player)
   {
     global $SET_AlwaysHoldPriority;
@@ -45,9 +47,11 @@
 
   function ShouldSkipDRs($player)
   {
-    global $SET_SkipDRs;
+    global $SET_SkipDRs, $SET_PassDRStep;
     $settings = GetSettings($player);
-    return $settings[$SET_SkipDRs];
+    $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
+    ChangeSetting($playerID, $SET_PassDRStep, 0);
+    return $skip;
   }
 
   function ChangeSetting($player, $setting, $value)

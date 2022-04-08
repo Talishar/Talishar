@@ -62,4 +62,14 @@ function HasPlayableCard($player, $phase)
   return false;
 }
 
+function PlayerMacrosCardPlayed()
+{
+  global $turn, $currentPlayer, $SET_PassDRStep;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  if($turn[0] == "A")
+  {
+    ChangeSetting($otherPlayer, $SET_PassDRStep, 0);
+  }
+}
+
 ?>
