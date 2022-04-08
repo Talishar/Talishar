@@ -581,10 +581,7 @@
     $totalAttack = 0;
     $totalDefense = 0;
     EvaluateCombatChain($totalAttack, $totalDefense);
-    for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
-    {
-      CombatChainResolutionEffects($combatChain[$i-1], $combatChain[$i]);
-    }
+    CombatChainResolutionEffects();
 
     $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
 
