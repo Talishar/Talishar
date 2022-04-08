@@ -135,7 +135,7 @@
       if(CanPassPhase($turn[0]))
       {
         //echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
-        if($turn[0] == "B") echo("(or " . CreateButton($playerID, "Undo Block", 10001, 0, "24px") . ")");
+        if($turn[0] == "B") echo(" (" . CreateButton($playerID, "Undo Block", 10001, 0, "24px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "24px", "", "Reactions will not be skipped if the opponent reacts") . ")");
         //echo(")");
       }
       //if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
@@ -264,7 +264,7 @@
       $content .= CreateButton($playerID, $options[$i], 7, $options[$i], "30px");
     }
     $content .= "</div>";
-    echo CreatePopup("DYNPITCH", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+    echo CreatePopup("DYNPITCH", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
   if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID)
@@ -290,7 +290,7 @@
     $content .= CreateButton($playerID, "Yes", 20, "YES");
     $content .= CreateButton($playerID, "No", 20, "NO");
     $content .= "</div>";
-    echo CreatePopup("YESNO", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+    echo CreatePopup("YESNO", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
   if(($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID)
@@ -311,7 +311,7 @@
       $content .= "</td>";
     }
     $content .= "</tr></table>";
-    echo CreatePopup("OPT", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+    echo CreatePopup("OPT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
   if($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID)
@@ -334,7 +334,7 @@
       $content .= "</td>";
     }
     $content .= "</tr></table>";
-    echo CreatePopup("HANDTOPBOTTOM", [], 0, 1, "Please choose " . TypeToPlay($turn[0]), 1, $content);
+    echo CreatePopup("HANDTOPBOTTOM", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
   if(($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID)
@@ -954,7 +954,7 @@
   function GetPhaseHelptext()
   {
     global $dqState, $turn, $dqState;
-    $defaultText = "Please choose " . TypeToPlay($turn[0]);
+    $defaultText = "Choose " . TypeToPlay($turn[0]);
     if(count($dqState) < 5) return $defaultText;
     return ($dqState[4] != "-" ? implode(" ", explode("_", $dqState[4])) : $defaultText);
   }

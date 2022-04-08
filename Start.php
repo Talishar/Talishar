@@ -118,7 +118,7 @@
     fwrite($handler, "\r\n");//Allies
     //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
     $holdPriority = "0";//Auto-pass layers
-    fwrite($handler, $holdPriority . " 1 0 0 0 0\r\n");//Settings
+    fwrite($handler, $holdPriority . " 1 0 0 0 0 0\r\n");//Settings
   }
 
   function GetArray($handler)

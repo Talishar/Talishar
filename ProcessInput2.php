@@ -321,6 +321,13 @@
     case 100: //Break Chain
       ResetCombatChainState();
       break;
+    case 101: //Pass block and Reactions
+      ChangeSetting($playerID, $SET_PassDRStep, 1);
+      if(CanPassPhase($turn[0]))
+      {
+        PassInput();
+      }
+      break;
     case 10000://Undo
       RevertGamestate();
       $skipWriteGamestate = true;
@@ -971,6 +978,7 @@ function FinalizeChainLink($chainClosed=false)
     }
     $cardType = CardType($cardID);
     $abilityType = "";
+    PlayerMacrosCardPlayed();
     //We've paid resources, now pay action points if applicable
     if($turn[0] != "B")// || $cardType == "I" || CanPlayAsInstant($cardID))
     {
