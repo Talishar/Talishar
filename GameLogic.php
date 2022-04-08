@@ -833,19 +833,25 @@ function ChainLinkBeginResolutionEffects()
   }
 }
 
-function CombatChainResolutionEffects($cardID, $player)
+function CombatChainResolutionEffects()
 {
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $mainPitch;
-  switch($cardID)
+  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $mainPlayer;
+  for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
   {
-    case "CRU010": case "CRU011": case "CRU012":
-      if($player == $mainPlayer && NumCardsBlocking() < 2) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; break;
-    case "MON248": case "MON249": case "MON250":
-      if(SearchHighestAttackDefended() < AttackValue($cardID)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; break;
-    case "MON293": case "MON294": case "MON295":
-      if(SearchPitchHighestAttack($mainPitch) > AttackValue($cardID)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; break;
-    case "ELE216": case "ELE217": case "ELE218": if(HasIncreasedAttack()) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; break;
-    default: break;
+    $cardID = $combatChain[$i-1];
+    switch($cardID)
+    {
+      case "CRU010": case "CRU011": case "CRU012":
+          if($i == 1 && NumCardsBlocking() < 2) GiveAttackGoAgain(); break;
+        case "MON248": case "MON249": case "MON250":
+          if($i == 1 && SearchHighestAttackDefended() < AttackValue($cardID)) GiveAttackGoAgain(); break;
+        case "MON293": case "MON294": case "MON295":
+          $mainPitch = &GetPitch($mainPlayer);
+          if($i == 1 && SearchPitchHighestAttack($mainPitch) > AttackValue($cardID)) GiveAttackGoAgain(); break;
+        case "ELE216": case "ELE217": case "ELE218":
+          if($i == 1 && HasIncreasedAttack()) GiveAttackGoAgain(); break;
+        default: break;
+      }
   }
 }
 
