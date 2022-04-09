@@ -788,6 +788,13 @@
   echo("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo("</div>");
 
+
+  echo("<div style='position:fixed; height: calc(100% - 500px); width:200px; bottom:0px; right:5px;'>");
+  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 50px); overflow-y: auto;'>");
+  EchoLog($gameName, $playerID);
+  echo("</div>");
+  echo("</div>");
+
   }
 
   function PlayableCardBorderColor($cardID)

@@ -4,7 +4,6 @@ function OnLoadCallback(lastUpdate)
   var log = document.getElementById('gamelog');
   if(log !== null) log.scrollTop = log.scrollHeight;
   reload();
-  ReloadChat(lastUpdate);
 }
 
 function ShowCardDetail(e, that)
@@ -14,7 +13,6 @@ function ShowCardDetail(e, that)
 
 function ShowDetail(e, imgSource)
 {
-  //imgSource = imgSource.replace("SmallCardImages", "BigCardImages");
   var el = document.getElementById("cardDetail");
   el.innerHTML = "<img style='height:523px; width:375px;' src='" + imgSource + "' />"
   el.style.left = e.clientX < window.innerWidth / 2 ? e.clientX + 30 : e.clientX - 400;
@@ -56,8 +54,6 @@ function SubmitChat()
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      //alert(this.responseText);
-      //if(this.responseText[1] == "1") { location.reload(); }
     }
   }
   var ajaxLink = "SubmitChat.php?gameName=" + document.getElementById("gameName").value;
@@ -88,6 +84,7 @@ function ReloadChat(lastUpdate)
   xmlhttp.open("GET", ajaxLink, true);
   xmlhttp.send();
 }
+
 
 function SubmitInput(mode, params, fullRefresh=false)
 {
