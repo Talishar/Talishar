@@ -89,7 +89,7 @@
 
 
   <script>
-  //document.getElementById('gamelog').scrollTop = document.getElementById('gamelog').scrollHeight;
+
   function reload() {
     CheckReloadNeeded(0);
   }
@@ -109,6 +109,8 @@
           document.getElementById("mainDiv").innerHTML = responseArr[1];
           CheckReloadNeeded(parseInt(responseArr[0]));
           document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
+          var log = document.getElementById('gamelog');
+          if(log !== null) log.scrollTop = log.scrollHeight;
         }
         else { CheckReloadNeeded(lastUpdate); }
       }
@@ -141,18 +143,12 @@
 
   echo("<div id='mainDiv' style='left:0px; top:0px; width:100%;height:100%;'></div>");
 
-  echo("<div style='position:fixed; height: calc(100% - 500px); width:200px; bottom:0px; right:5px;'>");
-  echo("<div id='gamelog' style='position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 50px); overflow-y: auto;'>");
-  EchoLog($gameName, $playerID);
-  echo("</div>");
-
-  echo("<div id='chatbox' style='width:200px; height: 50px;'>");
+  echo("<div id='chatbox' style='position:fixed; bottom:0px; right:5px; width:200px; height: 50px;'>");
   echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
   echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("<input type='hidden' id='authKey' value='" . $authKey . "'>");
-  echo("</div>");
   echo("</div>");
 
   function PlayableCardBorderColor($cardID)
@@ -179,8 +175,7 @@
     switch($cardType)
     {
       case "C": return "calc(50% - " . ($cardWidth/2) . "px)";
-      //case "W": return "calc(50% " . ($cardSubType == "" ? "- " : "+ ") . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
-      case "W": return "calc(50% - " . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
+      case "W": return "calc(50% - " . ($cardWidth/2 + $cardWidth + 10) . "px)";
       default: break;
     }
     switch($cardSubType)
@@ -199,7 +194,7 @@
     switch($cardType)
     {
       case "C": return ($cardSize * 2 + 50) . "px";
-      case "W": return ($cardSize * 2 + 50) . "px";//TODO: Second weapon
+      case "W": return ($cardSize * 2 + 50) . "px";
       default: break;
     }
     switch($cardSubType)
@@ -218,9 +213,7 @@
     switch($cardType)
     {
       case "C": return "20px";
-      case "W": return "20px";//TODO: Second weapon
-      //case "C": return ($cardSize + 20) . "px";
-      //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
+      case "W": return "20px";
       default: break;
     }
     switch($cardSubType)

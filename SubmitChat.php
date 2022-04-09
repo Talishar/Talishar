@@ -1,6 +1,7 @@
 <?php
 
   include "Libraries/HTTPLibraries.php";
+  include "Libraries/SHMOPLibraries.php";
 
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
@@ -13,4 +14,7 @@
   $output = "<span style='font-weight:bold; color:<PLAYER" . $playerID . "COLOR>;'>Player " . $playerID . ": </span>" . $chatText;
   fwrite($handler, $output . "\r\n");
   fclose($handler);
+
+  WriteCache($gameName, strval(round(microtime(true) * 1000)));
+
 ?>
