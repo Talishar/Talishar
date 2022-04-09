@@ -787,6 +787,7 @@ function NumBlockedFromHand()
   return $num;
 }
 
+//CR 2.0 7.4.2c Defense Reaction abilities do not count as defending cards
 function NumCardsBlocking()
 {
   global $combatChain, $defPlayer;
