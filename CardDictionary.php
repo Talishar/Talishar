@@ -1541,6 +1541,7 @@
     if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) || SearchItemsForCard("EVR071", 2))) {$restriction = "EVR071"; return true; }
     switch($cardID)
     {
+      case "ARC004": return $myClassState[$CS_NumBoosted] < 1;
       case "ARC005": return $myClassState[$CS_NumBoosted] < 1;
       case "ARC008": return $myClassState[$CS_NumBoosted] < 3;
       case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index+1] > 0 && (CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index+2] != 2));
