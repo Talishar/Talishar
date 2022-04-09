@@ -1435,7 +1435,7 @@ function FinalizeChainLink($chainClosed=false)
       SetClassState($currentPlayer, $CS_EffectContext, $cardID);
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target);
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
-      if($playText != "") WriteLog("Resolving play ability of " . $cardID . ": " . $playText);
+      if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
       if($openedChain) ProcessAttackTargetAfterResolve();
     }
 

@@ -121,7 +121,7 @@
   function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $myClassState, $CS_NumBoosted, $CS_CharacterIndex, $myCharacter, $actionPoints, $combatChainState, $CS_PlayIndex;
-    global $CCS_CurrentAttackGainedGoAgain, $combatChain, $myDeck, $myResources, $myBanish;
+    global $CCS_CurrentAttackGainedGoAgain, $combatChain;
     $rv = "";
     switch($cardID)
     {
@@ -131,15 +131,16 @@
       case "ARC004":
         for($i=0; $i<2; ++$i)
         {
-          if(count($myDeck) == $i) { $rv .= "No cards in deck. Could not banish more."; return $rv; }
-          $banished = $myDeck[$i];
-          $rv .= "Banished $banished";
-          if(CardClass($banished) == "MECHANOLOGIST") { $myResources[0] += 1; $rv .= " and gained 1 resource. "; }
+          $deck = &GetDeck($currentPlayer);
+          if(count($deck) == $i) { $rv .= "No cards in deck. Could not banish more."; return $rv; }
+          $banished = $deck[$i];
+          $rv .= "Banished " . CardLink($banished, $banished);
+          if(CardClass($banished) == "MECHANOLOGIST") { GainResources($currentPlayer, 1); $rv .= " and gained 1 resource. "; }
           else { $rv .= ". "; }
           BanishCardForPlayer($banished, $currentPlayer, "DECK");
-          unset($myDeck[$i]);
+          unset($deck[$i]);
         }
-        $myDeck = array_values($myDeck);
+        $deck = array_values($deck);
         return $rv;
       case "ARC005":
         $actionPoints += 1;
@@ -153,7 +154,7 @@
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, $items);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-        $boosted = $myClassState[$CS_NumBoosted] > 0;
+        $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
         if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
         return "Spark of Genius let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
       case "ARC010":
@@ -178,10 +179,10 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("PUTPLAY", $currentPlayer, ($myClassState[$CS_NumBoosted] > 0 ? 1 : 0), 1);
+        AddDecisionQueue("PUTPLAY", $currentPlayer, (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0), 1);
         return "";
       case "ARC017":
-        $index = $myClassState[$CS_PlayIndex];
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $items = &GetItems($currentPlayer);
         if($index != -1)
         {
@@ -200,7 +201,7 @@
         return $rv;
       case "ARC018":
         $items = &GetItems($currentPlayer);
-        $index = $myClassState[$CS_PlayIndex];
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if($index != -1)
         {
           $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
@@ -216,7 +217,7 @@
         }
         return $rv;
       case "ARC019"://Convection Amplifier
-        $index = $myClassState[$CS_PlayIndex];
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $items = &GetItems($currentPlayer);
         if($index != -1)
         {
@@ -228,11 +229,11 @@
         return $rv;
       case "ARC032": case "ARC033": case "ARC034":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        $boosted = $myClassState[$CS_NumBoosted] > 0;
+        $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
         if($boosted) Opt($cardID, 1);
         return "Locked and Loaded gives your next Mechanologist attack action card this turn +" . EffectAttackModifier($cardID) . ($boosted ? " and let you opt 1" : "") . ".";
       case "ARC035":
-        $index = $myClassState[$CS_PlayIndex];
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $items = &GetItems($currentPlayer);
         if($index != -1)
         {
@@ -242,7 +243,7 @@
         }
         return $rv;
       case "ARC037"://Optekal Monocle
-        $index = $myClassState[$CS_PlayIndex];
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $items = &GetItems($currentPlayer);
         if($index != -1)
         {
