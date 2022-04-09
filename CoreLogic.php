@@ -796,7 +796,7 @@ function NumCardsBlocking()
     if($combatChain[$i+1] == $defPlayer)
     {
       $type = CardType($combatChain[$i]);
-      if($type != "E" && $type != "I") ++$num;
+      if($type != "E" && $type != "I" && $type != "C") ++$num;
     }
   }
   return $num;
