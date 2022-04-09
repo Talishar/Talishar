@@ -235,7 +235,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     {
       $count = count($turn);
       if(count($turn) < 3) $turn[2] = "-";
-      $dqState[0] = "1";
+      $dqState[0] = "1";//If the decision queue is currently active/processing
       $dqState[1] = $turn[0];
       $dqState[2] = $turn[1];
       $dqState[3] = $turn[2];
@@ -420,6 +420,14 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       $turn[0] = "B";
     }
     return 0;
+  }
+
+  function IsReactionPhase()
+  {
+    global $turn, $dqState;
+    if($turn[0] == "A" || $turn[0] == "D") return true;
+    if(count($dqState) >= 2 && ($dqState[1] == "A" || $dqState[1] == "D")) return true;
+    return false;
   }
 
 //Return whether priority should be held for the player by default/settings
