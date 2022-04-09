@@ -949,7 +949,7 @@ function GetDieRoll($player)
 function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer;
+  global $mainPlayer, $dqState;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
@@ -976,6 +976,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && SearchCharacterActive($currentPlayer, "EVR120")) return true;
+  if($cardType == "AR" && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
+  if($cardType == "DR" && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
 }
 
