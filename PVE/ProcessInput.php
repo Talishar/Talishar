@@ -185,9 +185,7 @@
     }
   }
   if($mode != 10000) include "WriteGamestate.php";
-
-
-  //WriteCache($gameName, $playerID);
+  
 
   header("Location: " . $redirectPath . "/PVE/PVETurn.php?gameName=$gameName&playerID=" . $playerID);
 
@@ -225,4 +223,3 @@
   }
 
 ?>
-

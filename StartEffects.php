@@ -18,6 +18,11 @@
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   StatsStartTurn();
 
+  if($p2Char[0] == "DUMMY")
+  {
+    SetCachePiece($gameName, 3, "99999999999999");
+  }
+
   //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
   if($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002")
   {

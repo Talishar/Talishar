@@ -64,6 +64,9 @@
   $handler = fopen($filename, "w");
   fclose($handler);
 
+  $currentTime = strval(round(microtime(true) * 1000));
+  WriteCache($gameName, $currentTime . "!" . $currentTime . "!" . $currentTime . "!0!0");//Initialize SHMOP cache for this game
+
   include "StartEffects.php";
 
   $gameStateTries = 0;
@@ -74,7 +77,6 @@
   }
 
   //Update the game file to show that the game has started and other players can join to spectate
-  WriteCache($gameName, strval(round(microtime(true) * 1000)));//Initialize SHMOP cache for this game
   $gameStatus = $MGS_GameStarted;
   WriteGameFile();
 

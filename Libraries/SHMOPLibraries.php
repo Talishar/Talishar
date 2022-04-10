@@ -27,4 +27,21 @@ function DeleteCache($name)
     }
 }
 
+function SetCachePiece($name, $piece, $value)
+{
+  $piece -= 1;
+  $cacheVal = ReadCache($name);
+  $cacheArray = explode("!", $cacheVal);
+  $cacheArray[$piece] = $value;
+  WriteCache($name, implode("!", $cacheArray));
+}
+
+function GetCachePiece($name, $piece)
+{
+  $piece -= 1;
+  $cacheVal = ReadCache($name);
+  $cacheArray = explode("!", $cacheVal);
+  return $cacheArray[$piece];
+}
+
 ?>
