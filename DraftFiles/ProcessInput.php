@@ -94,8 +94,6 @@
 
   if($makeCheckpoint) MakeGamestateBackup();
 
-  //WriteCache($gameName, $playerID);
-
   header("Location: " . $redirectPath . "/DraftFiles/NextPick.php?gameName=$gameName&playerID=" . $playerID);
 
   exit;

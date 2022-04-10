@@ -419,7 +419,7 @@
       WriteGameFile();
       $turn[0] = "REMATCH";
       include "WriteGamestate.php";
-      WriteCache($gameName, strval(round(microtime(true) * 1000)));
+      SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
       exit;
     default:break;
   }
@@ -443,7 +443,7 @@
   if($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
   if($MakeStartTurnBackup) MakeStartTurnBackup();
 
-  WriteCache($gameName, strval(round(microtime(true) * 1000)));
+  SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
 
   ExitProcessInput();
 
@@ -463,7 +463,6 @@
   function ExitProcessInput()
   {
     global $playerID, $redirectPath, $gameName;
-    //WriteCache($gameName, time());
     exit;
   }
 
