@@ -50,7 +50,7 @@
     global $SET_SkipDRs, $SET_PassDRStep;
     $settings = GetSettings($player);
     $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
-    ChangeSetting($playerID, $SET_PassDRStep, 0);
+    ChangeSetting($player, $SET_PassDRStep, 0);
     return $skip;
   }
 
