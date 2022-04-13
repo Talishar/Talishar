@@ -4,7 +4,7 @@ function WriteCache($name, $data)
 {
   //DeleteCache($name);
   $serData = serialize($data);
-  $id = shmop_open($name, "c", 0644, 64);
+  $id = shmop_open($name, "c", 0644, 100);
   $rv = shmop_write($id, $serData, 0);
 }
 
