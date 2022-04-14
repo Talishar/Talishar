@@ -341,4 +341,10 @@
     return $combatChainState[$CCS_AttackTarget];
   }
 
+  function GetDamagePrevention($player)
+  {
+    global $CS_DamagePrevention;
+    return GetClassState($player, $CS_DamagePrevention);
+  }
+
 ?>
