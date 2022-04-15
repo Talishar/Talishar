@@ -176,6 +176,7 @@
       case "ARC170-1": case "ARC171-1": case "ARC172-1": return CardType($attackID) == "AA";
       case "ARC170-2": case "ARC171-2": case "ARC172-2": return CardType($attackID) == "AA";
       case "ARC203": case "ARC204": case "ARC205": return CardType($attackID) == "AA";
+      case "ARC206": case "ARC207": case "ARC208": return CardType($attackID) == "AA";
       default: return false;
     }
   }
