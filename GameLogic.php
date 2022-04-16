@@ -762,7 +762,7 @@ function ProcessHitEffect($cardID)
     case "CRU066": case "CRU067": case "CRU068": GiveAttackGoAgain(); break;
     case "CRU069": case "CRU070": case "CRU071": GiveAttackGoAgain(); break;
     case "CRU072": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
-    case "CRU074": if($combatChainState[$CCS_HitsInRow] >= 1) { MainDrawCard(); MainDrawCard(); } break;
+    case "CRU074": if($combatChainState[$CCS_HitsInRow] >= 2) { MainDrawCard(); MainDrawCard(); } break;
     case "CRU106": case "CRU107": case "CRU108": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
     case "CRU109": case "CRU110": case "CRU111": $combatChainState[$CCS_NextBoostBuff] += 3; break;
     case "CRU123": AddNextTurnEffect("CRU123-DMG", $defPlayer); break;
