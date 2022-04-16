@@ -126,7 +126,7 @@
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK", 1);
         AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         return "";

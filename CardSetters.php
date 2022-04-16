@@ -142,6 +142,7 @@ function AddResourceCost($player, $amount)
 
 function AddArsenal($cardID, $player, $from, $facing)
 {
+  global $mainPlayer;
   $arsenal = &GetArsenal($player);
   WriteReplay($player, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
@@ -153,7 +154,7 @@ function AddArsenal($cardID, $player, $from, $facing)
   {
     if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
-      ++$actionPoints;
+      if($player == $mainPlayer) GainActionPoints(1);
     }
     switch($cardID)
     {
