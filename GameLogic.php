@@ -2371,12 +2371,14 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "CRU024":
       break;//No limits on use, so override default
     case "CRU101":
+      /*
       if($character[$cardIndex+2] == 0) $character[$cardIndex+1] = 2;
       else
       {
         --$character[$cardIndex+5];
         if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       }
+      */
       break;
     case "CRU177":
       $character[$cardIndex+1] = 1;
