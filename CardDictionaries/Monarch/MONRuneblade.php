@@ -18,6 +18,7 @@
       case "MON174": case "MON175": case "MON176": return "AA";
       case "MON177": case "MON178": case "MON179": return "AA";
       case "MON180": case "MON181": case "MON182": return "AA";
+      case "MON183": case "MON184": case "MON185": return "A";
       case "MON186": return "T";
       case "MON229": return "W";
       case "MON230": return "E";
@@ -57,6 +58,7 @@
       case "MON174": case "MON175": case "MON176": return 1;
       case "MON177": case "MON178": case "MON179": return 2;
       case "MON180": case "MON181": case "MON182": return 2;
+      case "MON183": case "MON184": case "MON185": return 0;
       case "MON232": case "MON233": case "MON234": return 1;
       case "MON235": case "MON236": case "MON237": return 0;
       default: return 0;
@@ -70,9 +72,9 @@
       case "MON156": return 3;
       case "MON157": return 2;
       case "MON158": return 3;
-      case "MON159": case "MON162": case "MON165": case "MON168": case "MON171": case "MON174": case "MON177": case "MON180": return 1;
-      case "MON160": case "MON163": case "MON166": case "MON169": case "MON172": case "MON175": case "MON178": case "MON181": return 2;
-      case "MON161": case "MON164": case "MON167": case "MON170": case "MON173": case "MON176": case "MON179": case "MON182": return 3;
+      case "MON159": case "MON162": case "MON165": case "MON168": case "MON171": case "MON174": case "MON177": case "MON180": case "MON183": return 1;
+      case "MON160": case "MON163": case "MON166": case "MON169": case "MON172": case "MON175": case "MON178": case "MON181": case "MON184": return 2;
+      case "MON161": case "MON164": case "MON167": case "MON170": case "MON173": case "MON176": case "MON179": case "MON182": case "MON185": return 3;
       case "MON231": case "MON232": case "MON235": return 1;
       case "MON233": case "MON236": return 2;
       case "MON234": case "MON237": return 3;
@@ -89,6 +91,7 @@
       case "MON158": return 0;
       case "MON162": case "MON163": case "MON164": return 2;
       case "MON165": case "MON166": case "MON167": return 2;
+      case "MON183": case "MON184": case "MON185": return 2;
       case "MON229": return 0;
       case "MON230": return 1;
       case "MON231": return 2;
@@ -172,6 +175,9 @@
           $rv = "Rifted Torment deals 1 arcane damage.";
         }
         return $rv;
+      case "MON183": case "MON184": case "MON185":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Seeds of Agony deals 1 arcane damage with the next attack action card of certain cost.";
       case "MON229":
         DealArcane(1, 0, "PLAYCARD", $cardID);
         return "Dread Scythe deals 1 arcane damage.";

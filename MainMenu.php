@@ -101,10 +101,10 @@ body {
   <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Welcome to Rathe Solo Draft Practice"></div>
 </form>
   <div style='position:absolute; bottom:10px; left:10px;'>
-    <!--
+
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Upcoming Events</h1>
-    <a title='Team GG' href='https://www.azcardtrading.it/products/flesh-and-blood-armory-ticket-torneo-martedi-12-aprile' target='_blank'><img style='display:block;  margin-left: auto; margin-right:auto; height:40%; width:40%;' src='./Images/events/armory.webp' /></a>
-  -->
+    <a title='Team GG' href='https://www.azcardtrading.it/products/flesh-and-blood-armory-ticket-torneo-martedi-19-aprile' target='_blank'><img style='display:block;  margin-left: auto; margin-right:auto; height:40%; width:40%;' src='./Images/events/19ap2022armory.webp' /></a>
+
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
     <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:40px;' src='./Images/flags/italy.png' /></a>
     <br><br>

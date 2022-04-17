@@ -1340,6 +1340,7 @@ function CurrentEffectAttackAbility()
   $attackType = CardType($attackID);
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
   {
+    $remove = 0;
     if($currentTurnEffects[$i+1] == $mainPlayer)
     {
       switch($currentTurnEffects[$i])
@@ -1351,10 +1352,26 @@ function CurrentEffectAttackAbility()
             ++$character[GetClassState($mainPlayer, $CS_PlayIndex)+3];
           }
           break;
+        case "MON183": case "MON184": case "MON185":
+          if($currentTurnEffects[$i] == "MON183") $maxCost = 2;
+          else if($currentTurnEffects[$i] == "MON184") $maxCost = 1;
+          else $maxCost = 0;
+          if($attackType == "AA" && CardCost($attackID) <= $maxCost)
+          {
+            WriteLog("Seeds of Agony dealt 1 damage.");
+            DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true);
+            $remove = 1;
+          }
+          break;
         default: break;
       }
     }
+    if($remove == 1)
+    {
+      for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
+    }
   }
+  $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
 }
 
 function CurrentEffectPlayAbility($cardID)
