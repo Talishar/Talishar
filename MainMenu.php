@@ -56,8 +56,12 @@ body {
   <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
   <label for="blitz">Blitz</label>
   </span>
+  <span style='display:inline-block;'>
   <input type="radio" id="cc" name="format" value="cc">
   <label for="cc">Classic Constructed</label><br>
+  </span>
+  <input type="radio" id="commoner" name="format" value="commoner">
+  <label for="commoner">Commoner</label><br>
   <BR>
 
   <span style='display:inline-block;'>
