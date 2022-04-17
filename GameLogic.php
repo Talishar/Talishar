@@ -2955,7 +2955,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $ap = 1;
         $actionPoints += 2;
       }
-      WriteLog("Sand Sketched Plan discarded " . $discarded . ($ap == 1 ? " and gained two action points." : "."));
+      if($ap == 1) WriteLog("Sand Sketched Plan gained two action points.");
       return "1";
     case "REMEMBRANCE":
       $cards = "";

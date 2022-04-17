@@ -11,6 +11,7 @@ $currentlyActiveGames = "";
 $spectateLinks = "";
 $blitzLinks = "";
 $ccLinks = "";
+$commonerLinks = "";
 
 echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
@@ -78,6 +79,15 @@ if ($handle = opendir($path)) {
           $ccLinks .= "<input type='hidden' name='playerID' value='2' />";
           $ccLinks .= "</form>";
          }
+         else if($format == "commoner")
+         {
+           $commonerLinks .= "<form action='" . $redirectPath . "/JoinGame.php'>";
+           $commonerLinks .= "<label for='joinGame'>Open Game </label>";
+           $commonerLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
+           $commonerLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
+           $commonerLinks .= "<input type='hidden' name='playerID' value='2' />";
+           $commonerLinks .= "</form>";
+         }
       }
 
     }
@@ -87,6 +97,8 @@ if ($handle = opendir($path)) {
   echo($blitzLinks);
   echo("<h2 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Classic Constructed</h2>");
   echo($ccLinks);
+  echo("<h2 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Commoner</h2>");
+  echo($commonerLinks);
   echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>In Progress Games</h1>");
   echo($spectateLinks);
 
