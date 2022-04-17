@@ -80,6 +80,7 @@
       case "MON165": case "MON166": case "MON167": return true;
       case "MON180": case "MON181": case "MON182":
         return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+      case "MON183": case "MON184": case "MON185": return true;
       case "MON193": return true;
       case "MON199": return count(GetSoul($defPlayer)) > 0;
       case "MON200": case "MON201": case "MON202": return true;

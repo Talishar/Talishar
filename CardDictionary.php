@@ -1962,7 +1962,8 @@
       case "MON171": case "MON172": case "MON173":
       case "MON174": case "MON175": case "MON176":
       case "MON177": case "MON178": case "MON179":
-      case "MON180": case "MON181": case "MON182": return true;
+      case "MON180": case "MON181": case "MON182":
+      case "MON183": case "MON184": case "MON185": return true;
       //Shadow
       case "MON187": case "MON191": case "MON192": case "MON194":
       case "MON200": case "MON201": case "MON202":
@@ -1988,6 +1989,7 @@
       case "MON174": case "MON175": case "MON176": return true;
       case "MON177": case "MON178": case "MON179": return true;
       case "MON180": case "MON181": case "MON182": return true;
+      case "MON183": case "MON184": case "MON185": return true;
       //Shadow
       case "MON190": return true;//Eclipse - Since play is restricted by num played, it's fine to not restrict this
       case "MON191": case "MON194": return true;
