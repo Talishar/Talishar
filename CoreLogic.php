@@ -737,6 +737,19 @@ function DestroyItem(&$Items, $index)
   $Items = array_values($Items);
 }
 
+function ChainLinkResolvedEffects()
+{
+  global $combatChain;
+  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    switch($combatChain[$i])
+    {
+      case "MON245": break;
+      default: break;
+    }
+  }
+}
+
 function CombatChainClosedCharacterEffects()
 {
   global $chainLinks, $defPlayer, $chainLinkSummary;

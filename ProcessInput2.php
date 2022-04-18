@@ -673,6 +673,8 @@ function FinalizeChainLink($chainClosed=false)
       }
     }
 
+    ChainLinkResolvedEffects();
+
     if(CardType($combatChain[0]) == "W")
     {
       ++$mainClassState[$CS_AtksWWeapon];
