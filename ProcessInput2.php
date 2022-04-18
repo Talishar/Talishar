@@ -1018,6 +1018,14 @@ function FinalizeChainLink($chainClosed=false)
         CombatChainPlayAbility($cardID);
         ItemPlayAbilities($cardID, $from);
         ResetCardPlayed($cardID);
+
+        //Pay additional costs
+        $hand = &GetHand($currentPlayer);
+        if(RequiresDiscard($cardID) && count($hand) == 0)
+        {
+          WriteLog("This card requires a discard as an additional cost, but have no cards to discard. Reverting gamestate prior to the card declaration.");
+          RevertGamestate();
+        }
       }
       if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
       {
@@ -1045,13 +1053,6 @@ function FinalizeChainLink($chainClosed=false)
       $banish = array_values($banish);
     }
 
-    //Pay additional costs
-    $hand = &GetHand($currentPlayer);
-    if(RequiresDiscard($cardID) && count($hand) == 0)
-    {
-      WriteLog("This card requires a discard as an additional cost, but have no cards to discard. Reverting gamestate prior to the card declaration.");
-      RevertGamestate();
-    }
     //CR 5.1.4b Declare target of attack
     if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
     if($turn[0] == "B")//If a layer is not created
