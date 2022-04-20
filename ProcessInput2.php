@@ -511,7 +511,8 @@
     {
       if(Pass($turn, $currentPlayer, $currentPlayer))
       {
-        BeginTurnPass();
+        if($turn[0] == "M") BeginTurnPass();
+        else PassTurn();
       }
       WriteLog("Player " . $currentPlayer . " passed.");
     }
