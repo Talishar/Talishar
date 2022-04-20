@@ -172,8 +172,9 @@
     $border = ($playerID == $currentTurnEffects[$i+1] ? "2px solid blue" : "2px solid red");
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    $effect .= "<div title='" . htmlentities(CardName($cardID), ENT_QUOTES) . "'style='width:86px; height:66px; margin:2px; border:" . $border . ";'>";
-    $effect .= "<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />";
+    $effect .= "<div style='width:86px; height:66px; margin:2px; border:" . $border . ";'>";
+    //$effect .= "<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />";
+    $effect .= Card($cardID, "crops", 67, 0, 1);
     $effect .= "</div>";
     if($playerID == $currentTurnEffects[$i+1]) $friendlyEffects .= $effect;
     else $opponentEffects .= $effect;

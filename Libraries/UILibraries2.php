@@ -10,6 +10,10 @@
   {//
     global $playerID, $gameName, $darkMode;
     if($darkMode == null) $darkMode = false;
+    if($folder == "crops")
+    {
+      $cardNumber .= "_cropped";
+    }
     $fileExt = ".png";
     if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
     {
@@ -24,9 +28,11 @@
     //Enforce 375x523 aspect ratio as exported (.71)
     $margin = "margin:0px;";
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
+    if($folder == "crops") $margin = "0px;";
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
     $border = $borderColor > 0 ? "border-radius:6px; border:2px solid " . BorderColorMap($borderColor) . ";" : "";
-    if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
+    if($folder == "crops") { $height = $maxHeight; $width = ($height * 1.29); }
+    else if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
     else { $height = ($maxHeight * .71); $width = $maxHeight; }
     $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
     $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
