@@ -1,6 +1,7 @@
 <?php
 
   include "Libraries/HTTPLibraries.php";
+  include "Libraries/SHMOPLibraries.php";
 
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
@@ -55,6 +56,7 @@
   {
     $gameStatus = $MGS_GameStarted;
   }
+  SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
   WriteGameFile();
 
   if($playerID == 1)

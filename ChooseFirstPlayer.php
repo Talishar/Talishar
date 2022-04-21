@@ -2,6 +2,7 @@
 
   include "WriteLog.php";
   include "Libraries/HTTPLibraries.php";
+  include "Libraries/SHMOPLibraries.php";
 
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
@@ -22,6 +23,7 @@
   }
   WriteLog("Player " . $firstPlayer . " will go first.");
   $gameStatus = $MGS_P2Sideboard;
+  SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
 
   WriteGameFile();
 

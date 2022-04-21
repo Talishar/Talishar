@@ -84,17 +84,8 @@ h2 {
 <h1>Opponent's Hero</h1>
 <?php
 
-  $otherPlayer = $playerID == 1 ? 2 : 1;
-  $deckFile = "./Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
   $otherHero = "cardBack";
-  if(file_exists($deckFile))
-  {
-    $handler = fopen($deckFile, "r");
-    $otherCharacter = GetArray($handler);
-    $otherHero = $otherCharacter[0];
-    fclose($handler);
-  }
-  echo("<div style='padding-left:20px;'>");
+  echo("<div id='oppHero' style='padding-left:20px;'>");
   echo(Card($otherHero, "CardImages", 350, 0, 0));
   echo("</div>");
 
@@ -148,14 +139,6 @@ h2 {
 <h1>Your Equipment</h1>
 </div>
 <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7);">
-<?php
-  if($gameStatus < $MGS_P2Sideboard)
-  {
-    echo("<div style='position:absolute; width:100%; height:100%; z-index:1000; background-color:rgba(20, 20, 20, 0.5);'>");
-    echo("<h1>Sideboarding is available after first player is chosen.</h1>");
-    echo("</div>");
-  }
- ?>
 
 <table>
 <?php
@@ -219,64 +202,19 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:40%; background-color:rgba(59, 59, 38, 0.7);">
 <h1>Game Lobby</h1>
 <?php
-  echo("<div style='text-align:center;'>");
+  echo("<div id='mainPanel' style='text-align:center;'>");
 
-  if($gameStatus == $MGS_ChooseFirstPlayer)
-  {
-    if($playerID == $firstPlayerChooser)
-    {
-      echo("<form action='./ChooseFirstPlayer.php'>");
-        echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
-        echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
-        echo("<input type='submit' name='action' value='Go First'>");
-        echo("<input type='submit' name='action' value='Go Second'>");
-      echo("</form>");
-    }
-    else
-    {
-      echo("Waiting for other player to choose who will go first.");
-    }
-  }
 
-  if($playerID == 1 && $gameStatus < $MGS_Player2Joined)
-  {
-    echo("<div><input type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
-  }
-      echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . ";'>");
-      echo("<form action='./SubmitSideboard.php'>");
-        echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
-        echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
-        echo("<input type='hidden' id='playerCharacter' name='playerCharacter' value=''>");
-        echo("<input type='hidden' id='playerDeck' name='playerDeck' value=''>");
-        echo("<input type='submit' value='" . ($playerID == 1 ? "Start" : "Ready") . "'>");
-      echo("</form>");
-      echo("</div>");
+
 
 
   echo("</div>");
-
-    echo("<BR>");
-    echo("<div>");
-    echo("<div id='gamelog' style='position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
-    EchoLog($gameName, $playerID);
-    echo("</div>");
-    echo("<div id='chatbox' style='position:relative; left:2%; height: 50px;'>");
-    echo("<input style='width:88%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-    echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
-    echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
-    echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
-    echo("</div>");
-    echo("</div>");
-
-/*
-  echo("<h2>Instructions</h2>");
-  echo("<ul>");
-  echo("<li>Copy link and send to your opponent, or open it yourself in another browser tab.</li>");
-  echo("<li>The browser tab icon will turn green when player 2 clicks ready.</li>");
-  echo("<li>Use the interface at the right to sideboard cards.</li>");
-  echo("<li>Player 1 starts the game when both players are ready.</li>");
-  echo("</ul>");
-*/
+  echo("<div id='chatbox' style='position:relative; left:2%; height: 50px;'>");
+  echo("<input style='width:88%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+  echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
+  echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
+  echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+  echo("</div>");
 
   echo("<script>");
   echo("var prevGameState = " . $gameStatus . ";");
@@ -301,14 +239,15 @@ function OnLoadCallback(lastUpdate)
   UpdateFormInputs();
   var log = document.getElementById('gamelog');
   if(log !== null) log.scrollTop = log.scrollHeight;
-  reload();
-  ReloadChat(lastUpdate);
+  CheckReloadNeeded(0);
 }
 
 function UpdateFormInputs()
 {
-  document.getElementById("playerCharacter").value = GetCharacterCards();
-  document.getElementById("playerDeck").value = GetDeckCards();
+  var playerCharacter = document.getElementById("playerCharacter");
+  if(!!playerCharacter) playerCharacter.value = GetCharacterCards();
+  var playerDeck = document.getElementById("playerDeck");
+  if(!!playerDeck) playerDeck.value = GetDeckCards();
 }
 
 function TabClick(tab)
@@ -418,21 +357,33 @@ function GetDeckCards()
   return returnValue;
 }
 
-
-function loadGamestate() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-      var resp = "";
-      for(var i=0; i<this.responseText.length; ++i) resp += this.responseText[i];
-      if(parseInt(resp) != prevGameState && parseInt(resp) != <?php echo($MGS_ReadyToStart) ?>)
-      {
-        location.reload();
+  function CheckReloadNeeded(lastUpdate) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        if(parseInt(this.responseText) != 0)
+        {
+          if(parseInt(this.responseText) == 1) location.reload();
+          else {
+            var responseArr = this.responseText.split("ENDTIMESTAMP");
+            document.getElementById("mainPanel").innerHTML = responseArr[1];
+            CheckReloadNeeded(parseInt(responseArr[0]));
+            if(document.getElementById("playAudio").innerText == 1)
+            {
+              var audio = document.getElementById('playerJoinedAudio');
+              audio.play();
+            }
+            document.getElementById("oppHero").innerHTML = document.getElementById("otherHero").innerHTML;
+            //document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
+            var log = document.getElementById('gamelog');
+            if(log !== null) log.scrollTop = log.scrollHeight;
+          }
+        }
+        else { CheckReloadNeeded(lastUpdate); }
       }
-      <?php if($playerID == 1) echo 'if(parseInt(resp) == ' . $MGS_ReadyToStart . ') {document.getElementById("icon").href = "./HostFiles/ready.png"; document.getElementById("submitForm").style.display = "block";}'; ?>
-      prevGameState = parseInt(resp);
     };
-    xhttp.open("GET", "GameFileLength.php?gameName=<?php echo($gameName); ?>", true);
-    xhttp.send();
+    xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo($gameName);?>&playerID=<?php echo($playerID);?>&lastUpdate=" + lastUpdate, true);
+    xmlhttp.send();
   }
 
 </script>
