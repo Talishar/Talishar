@@ -2,6 +2,7 @@
 
   include "HostFiles/Redirector.php";
   include "Libraries/HTTPLibraries.php";
+  include "Libraries/SHMOPLibraries.php";
 
   $deck=TryGET("deck");
   $decklink=TryGET("fabdb");
@@ -60,6 +61,8 @@
   $filename = "./Games/" . $gameName . "/gamelog.txt";
   $handler = fopen($filename, "w");
   fclose($handler);
+
+  WriteCache($gameName, $currentTime . "!" . $currentTime . "!" . $currentTime . "!0!0");//Initialize SHMOP cache for this game
 
   header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry");
 
