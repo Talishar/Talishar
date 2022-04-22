@@ -368,12 +368,14 @@ function GetDeckCards()
             var responseArr = this.responseText.split("ENDTIMESTAMP");
             document.getElementById("mainPanel").innerHTML = responseArr[1];
             CheckReloadNeeded(parseInt(responseArr[0]));
-            if(document.getElementById("playAudio").innerText == 1)
+            var playAudio = document.getElementById("playAudio");
+            if(!!playAudio && playAudio.innerText == 1)
             {
               var audio = document.getElementById('playerJoinedAudio');
               audio.play();
             }
-            document.getElementById("oppHero").innerHTML = document.getElementById("otherHero").innerHTML;
+            var otherHero = document.getElementById("otherHero");
+            if(!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
             //document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
             var log = document.getElementById('gamelog');
             if(log !== null) log.scrollTop = log.scrollHeight;

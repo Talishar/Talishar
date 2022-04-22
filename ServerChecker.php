@@ -44,16 +44,17 @@ if ($handle = opendir($path)) {
         $gameName = $gameToken;
         $lineCount = 0;
         $status = -1;
+        $currentTime = round(microtime(true) * 1000);
         if(file_exists($gf))
         {
-          $lastRefresh = filemtime($gf);
-          if(time() - $lastRefresh < 5)
+          $lastRefresh = GetCachePiece($gameName, 2);//filemtime($gf);
+          if($lastRefresh != "" && $currentTime - $lastRefresh < 500)
           {
             include 'MenuFiles/ParseGamefile.php';
             $status = $gameStatus;
             UnlockGamefile();
           }
-          else if(time() - $lastRefresh > 10800)//3 hours
+          else if($lastRefresh == "" || $currentTime - $lastRefresh > 1080000)//3 hours
           {
             deleteDirectory($folder);
           }

@@ -17,6 +17,7 @@
 
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
+  $kickPlayerTwo = false;
   while($lastUpdate != 0 && $cacheVal < $lastUpdate)
   {
     usleep(50000);//50 milliseconds
@@ -27,24 +28,29 @@
     if($count == 100) break;
     $otherP = ($playerID == 1 ? 2 : 1);
     $oppLastTime = GetCachePiece($gameName, $otherP+1);
-    $oppStatus = GetCachePiece($gameName, $otherP+3);
-    /*
-    if(($currentTime - $oppLastTime) > 5000 && $oppStatus == "0")
+    $oppStatus = strval(GetCachePiece($gameName, $otherP+3));
+
+    if($oppStatus == "-1" || $oppLastTime == "") {}
+    else if(($currentTime - $oppLastTime) > 3000 && $oppStatus == "0")
     {
-      WriteLog("Opponent has disconnected. Waiting to reconnect.");
+      WriteLog("Opponent has disconnected.");
       SetCachePiece($gameName, 1, $currentTime);
       SetCachePiece($gameName, $otherP+3, "1");
+      $kickPlayerTwo = true;
     }
-    else if(($currentTime - $oppLastTime) > 60000 && $oppStatus == "1")
-    {
-      WriteLog("Opponent has left the game.");
-      SetCachePiece($gameName, 1, $currentTime);
-      SetCachePiece($gameName, $otherP+3, "2");
-    }
-    */
   }
 
   include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
+
+  if($kickPlayerTwo)
+  {
+    unlink("./Games/" . $gameName . "/p2Deck.txt");
+    unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
+    $gameStatus = $MGS_Initial;
+    $p2Data = [];
+    WriteGameFile();
+  }
 
   if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo "0"; exit; }
   else if($gameStatus == $MGS_GameStarted) { echo("1"); exit; }
