@@ -663,7 +663,7 @@ function FinalizeChainLink($chainClosed=false)
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
-    if(DoesAttackHaveGoAgain() && !$chainClosed) { ++$actionPoints; }
+    if(DoesAttackHaveGoAgain() && !$chainClosed) { WriteLog("The attack has go again, gaining an action point."); ++$actionPoints; }
 
     //Clean up combat effects that were used and are one-time
     for($i = count($currentTurnEffects) - 2; $i >= 0; --$i)
