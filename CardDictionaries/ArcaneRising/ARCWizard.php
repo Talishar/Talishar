@@ -116,8 +116,8 @@
       case "ARC119":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
         AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
