@@ -171,14 +171,6 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 ?>
 </div>
 <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7); overflow-y:<?php echo(($gameStatus < $MGS_P2Sideboard ? "hidden" : "scroll")); ?>;">
-  <?php
-    if($gameStatus < $MGS_P2Sideboard)
-    {
-      echo("<div style='position:absolute; width:100%; height:100%; z-index:1000; background-color:rgba(20, 20, 20, 0.5);'>");
-      echo("<h1>Sideboarding is available after first player is chosen.</h1>");
-      echo("</div>");
-    }
-   ?>
 <?php
 
     $count = 0;
