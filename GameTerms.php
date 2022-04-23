@@ -20,8 +20,8 @@
     {
       case "M": return "an Action";
       case "B": return "a card to block";
-      case "A": return "an Attack Reaction";
-      case "D": return "a Defense Reaction";
+      case "A": return "a reaction";
+      case "D": return "a reaction";
       case "P": return "a card to pitch";
       case "ARS": return "a card to add to arsenal";
       case "PDECK": return "a card from your pitch zone to add to the bottom of your deck";

@@ -892,14 +892,17 @@
         DealArcane($damage, 1, "PLAYCARD", $cardID);
         return "";
       case "EVR128": case "EVR129": case "EVR130":
+        if($cardID == "EVR128") $numReveal = 3;
+        else if($cardID == "EVR129") $numReveal = 2;
+        else $numReveal = 1;
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         if($currentPlayer == $mainPlayer)
         {
-          AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "3-", 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, $numReveal . "-", 1);
           AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
           AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
         }
-        AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
         AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
