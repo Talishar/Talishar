@@ -30,13 +30,15 @@
     $oppLastTime = GetCachePiece($gameName, $otherP+1);
     $oppStatus = strval(GetCachePiece($gameName, $otherP+3));
 
-    if($oppStatus == "-1" || $oppLastTime == "") {}
-    else if(($currentTime - $oppLastTime) > 3000 && $oppStatus == "0")
+    if($oppStatus != "-1" && $oppLastTime != "")
     {
-      WriteLog("Opponent has disconnected.");
-      SetCachePiece($gameName, 1, $currentTime);
-      SetCachePiece($gameName, $otherP+3, "1");
-      $kickPlayerTwo = true;
+      if(($currentTime - $oppLastTime) > 3000 && $oppStatus == "0")
+      {
+        WriteLog("Opponent has disconnected.");
+        SetCachePiece($gameName, 1, $currentTime);
+        SetCachePiece($gameName, $otherP+3, "-1");
+        $kickPlayerTwo = true;
+      }
     }
   }
 
@@ -45,8 +47,8 @@
 
   if($kickPlayerTwo)
   {
-    unlink("./Games/" . $gameName . "/p2Deck.txt");
-    unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
+    if(file_exists("./Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
+    if(file_exists("./Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
     $gameStatus = $MGS_Initial;
     $p2Data = [];
     WriteGameFile();
@@ -108,6 +110,12 @@
     }
 
     echo("<div id='otherHero' style='display:none;'>" . Card($otherHero, "CardImages", 350, 0, 0) . "</div>");
+
+    $icon = "ready.png";
+    if($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";
+    else if($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $icon = "notReady.png";
+    else if($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $icon = "notReady.png";
+    echo("<div id='iconHolder' style='display:none;'>" . $icon . "</div>");
 
   }
 

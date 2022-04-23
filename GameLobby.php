@@ -376,7 +376,7 @@ function GetDeckCards()
             }
             var otherHero = document.getElementById("otherHero");
             if(!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
-            //document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
+            document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
             var log = document.getElementById('gamelog');
             if(log !== null) log.scrollTop = log.scrollHeight;
           }

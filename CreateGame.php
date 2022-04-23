@@ -62,6 +62,7 @@
   $handler = fopen($filename, "w");
   fclose($handler);
 
+  $currentTime = round(microtime(true) * 1000);
   WriteCache($gameName, $currentTime . "!" . $currentTime . "!" . $currentTime . "!0!-1");//Initialize SHMOP cache for this game
 
   header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry");
