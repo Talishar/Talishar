@@ -150,8 +150,8 @@
       echo("The following cards are not yet supported: " . $unsupportedCards);
     }
 
-    SetCachePiece($gameName, $playerID+3, "0");
     SetCachePiece($gameName, $playerID+1, strval(round(microtime(true) * 1000)));
+    SetCachePiece($gameName, $playerID+3, "0");
 
     //We have the decklist, now write to file
     $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
