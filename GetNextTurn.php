@@ -80,6 +80,9 @@
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
     }
     WriteGameFile();
+    $currentTime = round(microtime(true) * 1000);
+    SetCachePiece($gameName, 2, $currentTime);
+    SetCachePiece($gameName, 3, $currentTime);
     echo("1234REMATCH"); exit;
   }
   echo(strval(round(microtime(true) * 1000)) . "ENDTIMESTAMP");
