@@ -150,9 +150,6 @@
       echo("The following cards are not yet supported: " . $unsupportedCards);
     }
 
-    SetCachePiece($gameName, $playerID+1, strval(round(microtime(true) * 1000)));
-    SetCachePiece($gameName, $playerID+3, "0");
-
     //We have the decklist, now write to file
     $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $deckFile = fopen($filename, "w");
@@ -203,7 +200,7 @@
   {
 
     $gameStatus = $MGS_Player2Joined;
-    unlink("./Games/" . $gameName . "/gamestate.txt");
+    if(file_exists("./Games/" . $gameName . "/gamestate.txt")) unlink("./Games/" . $gameName . "/gamestate.txt");
 
     $firstPlayerChooser = 1;
     $p1roll = 0; $p2roll = 0;
@@ -221,6 +218,8 @@
   }
 
   WriteGameFile();
+  SetCachePiece($gameName, $playerID+1, strval(round(microtime(true) * 1000)));
+  SetCachePiece($gameName, $playerID+3, "0");
   SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");

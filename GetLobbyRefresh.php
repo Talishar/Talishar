@@ -32,7 +32,7 @@
 
     if($oppStatus != "-1" && $oppLastTime != "")
     {
-      if(($currentTime - $oppLastTime) > 3000 && $oppStatus == "0")
+      if(($currentTime - $oppLastTime) > 5000 && $oppStatus == "0")
       {
         WriteLog("Player $otherP has disconnected.");
         SetCachePiece($gameName, 1, $currentTime);
