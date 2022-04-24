@@ -379,6 +379,9 @@
       Draw(($playerID == 1 ? 2 : 1));
       break;
     case 100000: //Quick Rematch
+      $currentTime = round(microtime(true) * 1000);
+      SetCachePiece($gameName, 2, $currentTime);
+      SetCachePiece($gameName, 3, $currentTime);
       header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=" . $playerID);
       exit;
     case 100001: //Main Menu
@@ -419,6 +422,9 @@
       WriteGameFile();
       $turn[0] = "REMATCH";
       include "WriteGamestate.php";
+      $currentTime = round(microtime(true) * 1000);
+      SetCachePiece($gameName, 2, $currentTime);
+      SetCachePiece($gameName, 3, $currentTime);
       SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
       exit;
     default:break;
