@@ -88,7 +88,6 @@ function ReloadChat(lastUpdate)
   xmlhttp.send();
 }
 
-
 function SubmitInput(mode, params, fullRefresh=false)
 {
   var xmlhttp = new XMLHttpRequest();

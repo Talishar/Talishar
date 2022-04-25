@@ -63,12 +63,8 @@
     {
       if($playerID == $firstPlayerChooser)
       {
-        echo("<form action='./ChooseFirstPlayer.php'>");
-          echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
-          echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
-          echo("<input type='submit' name='action' value='Go First'>");
-          echo("<input type='submit' name='action' value='Go Second'>");
-        echo("</form>");
+          echo("<input type='button' name='action' value='Go First' onclick='SubmitFirstPlayer(1)'>");
+          echo("<input type='button' name='action' value='Go Second' onclick='SubmitFirstPlayer(2)'>");
       }
       else
       {
@@ -80,16 +76,6 @@
     {
       echo("<div><input type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
     }
-    echo("<div id='submitForm' style='display:" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . ";'>");
-    echo("<form action='./SubmitSideboard.php'>");
-      echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
-      echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
-      echo("<input type='hidden' id='playerCharacter' name='playerCharacter' value=''>");
-      echo("<input type='hidden' id='playerDeck' name='playerDeck' value=''>");
-      echo("<input type='submit' value='" . ($playerID == 1 ? "Start" : "Ready") . "'>");
-    echo("</form>");
-    echo("</div>");
-
 
     echo("<BR>");
     echo("<div id='gamelog' style='position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
@@ -110,6 +96,8 @@
     }
 
     echo("<div id='otherHero' style='display:none;'>" . Card($otherHero, "CardImages", 350, 0, 0) . "</div>");
+
+    echo("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
 
     $icon = "ready.png";
     if($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";

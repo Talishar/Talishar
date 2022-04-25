@@ -170,7 +170,7 @@ h2 {
 echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
 ?>
 </div>
-<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7); overflow-y:<?php echo(($gameStatus < $MGS_P2Sideboard ? "hidden" : "scroll")); ?>;">
+<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7); overflow-y:scroll;">
 <?php
 
     $count = 0;
@@ -194,6 +194,17 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:40%; background-color:rgba(59, 59, 38, 0.7);">
 <h1>Game Lobby</h1>
 <?php
+
+  echo("<div id='submitForm' style='display:none; width:100%; text-align: center;'>");
+  echo("<form action='./SubmitSideboard.php'>");
+    echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
+    echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
+    echo("<input type='hidden' id='playerCharacter' name='playerCharacter' value=''>");
+    echo("<input type='hidden' id='playerDeck' name='playerDeck' value=''>");
+    echo("<input type='submit' value='" . ($playerID == 1 ? "Start" : "Ready") . "'>");
+  echo("</form>");
+  echo("</div>");
+
   echo("<div id='mainPanel' style='text-align:center;'>");
 
 
@@ -371,12 +382,29 @@ function GetDeckCards()
             document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
             var log = document.getElementById('gamelog');
             if(log !== null) log.scrollTop = log.scrollHeight;
+            document.getElementById("submitForm").style.display = document.getElementById("submitDisplay").innerHTML;
           }
         }
         else { CheckReloadNeeded(lastUpdate); }
       }
     };
     xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo($gameName);?>&playerID=<?php echo($playerID);?>&lastUpdate=" + lastUpdate, true);
+    xmlhttp.send();
+  }
+
+  function SubmitFirstPlayer(action)
+  {
+    if(action == 1) action = "Go First";
+    else action = "Go Second";
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+      }
+    }
+    var ajaxLink = "ChooseFirstPlayer.php?gameName=" + <?php echo($gameName); ?>;
+    ajaxLink += "&playerID=" + <?php echo($playerID); ?>;
+    ajaxLink += "&action=" + action;
+    xmlhttp.open("GET", ajaxLink, true);
     xmlhttp.send();
   }
 
