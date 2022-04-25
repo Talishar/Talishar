@@ -15,6 +15,9 @@
   include "WriteLog.php";
   include "Libraries/UILibraries.php";
 
+  $currentTime = round(microtime(true) * 1000);
+  SetCachePiece($gameName, $playerID+1, $currentTime);
+
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
   $kickPlayerTwo = false;
