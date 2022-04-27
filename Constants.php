@@ -317,7 +317,7 @@
     $mainClassState[$CS_HighestRoll] = 0;
     $mainClassState[$CS_EffectContext] = "-";
     $mainClassState[$CS_NumAuras] = 0;
-    $mainClassState[$CS_AbilityIndex] = 0;
+    $mainClassState[$CS_AbilityIndex] = "-";
   }
 
   function ResetCardPlayed($cardID)
