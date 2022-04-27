@@ -2432,7 +2432,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState;
+  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
   $rv = "";
   switch($phase)
   {
@@ -3219,7 +3219,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default: break;
         }
       }
-      $lastPlayed[2] = "FUSED";
+      $lastPlayed[3] = "FUSED";
       FuseAbility($card, $player, $elements);
       if(CardType($card) == "AA") $combatChainState[$CCS_AttackFused] = 1;
       return $lastResult;
@@ -3654,6 +3654,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $currentPlayer, "CASHOUT");
       return "";
+    case "SETABILITYTYPE":
+      $lastPlayed[2] = $lastResult;
+      SetClassState($player, $CS_AbilityIndex, GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult));
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
