@@ -121,12 +121,15 @@
   function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $myClassState, $CS_NumBoosted, $CS_CharacterIndex, $myCharacter, $actionPoints, $combatChainState, $CS_PlayIndex;
-    global $CCS_CurrentAttackGainedGoAgain, $combatChain;
+    global $CCS_CurrentAttackGainedGoAgain, $combatChain, $CS_AbilityIndex;
     $rv = "";
     switch($cardID)
     {
       case "ARC003":
-        $myCharacter[$myClassState[$CS_CharacterIndex] + 2] = ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] == 0 ? 1 : 0);
+        $abilityType = GetResolvedAbilityType($cardID);
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        $character[$index+2] = ($abilityType == "A" ? 1 : 0);
         return "";
       case "ARC004":
         for($i=0; $i<2; ++$i)
