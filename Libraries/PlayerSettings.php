@@ -28,7 +28,21 @@
   {
     global $SET_DarkMode;
     $settings = GetSettings($player);
-    return $settings[$SET_DarkMode];
+    return $settings[$SET_DarkMode] == 1 || $settings[$SET_DarkMode] == 3;
+  }
+
+  function IsPlainMode($player)
+  {
+    global $SET_DarkMode;
+    $settings = GetSettings($player);
+    return $settings[$SET_DarkMode] == 2;
+  }
+
+  function IsDarkPlainMode($player)
+  {
+    global $SET_DarkMode;
+    $settings = GetSettings($player);
+    return $settings[$SET_DarkMode] == 3;
   }
 
   function IsManualMode($player)
@@ -102,8 +116,10 @@
     else if($settings[$SET_SkipDRs] == 1) $rv .= CreateButton($player, "Hold Defense Reactions", 26, $SET_SkipDRs . "-0", "24px");
     $rv .= "<BR>";
     $rv .= "<BR>";
-    if($settings[$SET_DarkMode] == 0) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px", "", "", true);
-    else $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);
+    if($settings[$SET_DarkMode] != 0) $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);
+    if($settings[$SET_DarkMode] != 1) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px", "", "", true);
+    if($settings[$SET_DarkMode] != 2) $rv .= CreateButton($player, "Plain Mode", 26, $SET_DarkMode . "-2", "24px", "", "", true);
+    if($settings[$SET_DarkMode] != 3) $rv .= CreateButton($player, "Dark Plain Mode", 26, $SET_DarkMode . "-3", "24px", "", "", true);
     $rv .= "<BR>";
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Manual Mode", 26, $SET_ManualMode . "-1", "24px", "", "", true);
