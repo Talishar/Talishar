@@ -269,7 +269,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
-    global $layers, $layerPriority, $dqVars, $dqState;
+    global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -311,7 +311,11 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $layerPriority[1] = ShouldHoldPriority(2);
           if($cardID == "ENDTURN") FinishTurnPass();
           else if($cardID == "RESUMETURN") $turn[0] = "M";
-          else PlayCardEffect($cardID, $params[0], $params[1], $target);
+          else
+          {
+            SetClassState($player, $CS_AbilityIndex, GetAbilityIndex($cardID, GetClassState($player, $CS_CharacterIndex), $params[2]));//This is like a parameter to PlayCardEffect and other functions
+            PlayCardEffect($cardID, $params[0], $params[1], $target);
+          }
         }
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY")

@@ -1439,6 +1439,53 @@
     }
   }
 
+  function GetAbilityTypes($cardID)
+  {
+    switch($cardID)
+    {
+      case "ARC003": return "A,AA";
+      default: return "";
+    }
+  }
+
+  function GetAbilityNames($cardID, $index=-1)
+  {
+    global $currentPlayer;
+    switch($cardID)
+    {
+      case "ARC003":
+        $character = &GetPlayerCharacter($currentPlayer);
+        if($index == -1) return "";
+        $rv = "Add_a_steam_counter";
+        if($character[$index+2] > 0) $rv .= ",Attack";
+        return $rv;
+      default: return "";
+    }
+  }
+
+  function GetAbilityIndex($cardID, $index, $abilityName)
+  {
+    $names = explode(",", GetAbilityNames($cardID, $index));
+    for($i=0; $i<count($names); ++$i)
+    {
+      if($abilityName == $names[$i]) return $i;
+    }
+    return 0;
+  }
+
+  function GetResolvedAbilityType($cardID)
+  {
+    global $currentPlayer, $CS_AbilityIndex;
+    $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
+    $abilityTypes = GetAbilityTypes($cardID);
+    if($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID);
+    else
+    {
+      $abilityTypes = explode(",", $abilityTypes);
+      return $abilityTypes[$abilityIndex];
+    }
+  }
+
   function IsPlayable($cardID, $phase, $from, $index=-1, &$restriction=null)
   {
     global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
@@ -1659,8 +1706,8 @@
 
   function GoesOnCombatChain($phase, $cardID, $from)
   {
-    if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
-    elseif($phase=="M" && $cardID == "MON192" && $from== "BANISH") $cardType = GetAbilityType($cardID);
+    if($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID);
+    elseif($phase=="M" && $cardID == "MON192" && $from== "BANISH") $cardType = GetResolvedAbilityType($cardID);
     else $cardType = CardType($cardID);
     if($cardType == "I") return false;//Instants as yet never go on the combat chain
     if($phase == "B") return true;//Anything you play during these combat phases would go on the chain

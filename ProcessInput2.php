@@ -910,7 +910,7 @@ function FinalizeChainLink($chainClosed=false)
       //CR 5.1.2 Announce (CR 2.0)
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);
-      if($turn[0] != "P" && $turn[0] != "B") { MakeGamestateBackup(); $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; }
+      if($turn[0] != "P" && $turn[0] != "B") { MakeGamestateBackup(); $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; $lastPlayed[2] = CardType($cardID); }
       if(count($layers) > 0 && $layers[0] == "ENDTURN") $layers[0] = "RESUMETURN";//Means the defending player played something, so the end turn attempt failed
     }
     if($turn[0] != "P")
@@ -930,7 +930,7 @@ function FinalizeChainLink($chainClosed=false)
           $resources[1] = 0;
           if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
           else $dynCost = DynamicCost($cardID);//CR 5.1.3a Declare variable cost (CR 2.0)
-          if($turn[0] != "B") AddPrePitchDecisionQueue($cardID, $index);//CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
+          if($turn[0] != "B") AddPrePitchDecisionQueue($cardID, $from, $index);//CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
           if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
           AddPostPitchDecisionQueue($cardID, $from, $index);
           if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
@@ -991,7 +991,7 @@ function FinalizeChainLink($chainClosed=false)
       //if($from == "PLAY" || $from == "EQUIP")
       if(IsStaticType($cardType, $from, $cardID))
       {
-        $abilityType = GetAbilityType($cardID);
+        $abilityType = GetResolvedAbilityType($cardID);
         $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
         $hasGoAgain = AbilityHasGoAgain($cardID);
         if($currentPlayer == $mainPlayer)
@@ -1068,7 +1068,7 @@ function FinalizeChainLink($chainClosed=false)
     }
     else
     {
-      AddLayer($cardID, $currentPlayer, $from . "-" . $resourcesPaid, GetClassState($currentPlayer, $CS_LayerTarget));
+      AddLayer($cardID, $currentPlayer, $from . "-" . $resourcesPaid . "-" . $lastPlayed[2], GetClassState($currentPlayer, $CS_LayerTarget));
     }
     ProcessDecisionQueue();
   }
@@ -1093,9 +1093,19 @@ function FinalizeChainLink($chainClosed=false)
     }
   }
 
-  function AddPrePitchDecisionQueue($cardID, $index=-1)
+  function AddPrePitchDecisionQueue($cardID, $from, $index=-1)
   {
     global $currentPlayer;
+    if(IsStaticType(CardType($cardID), $from, $cardID))
+    {
+      $names = GetAbilityNames($cardID, $index);
+      if($names != "")
+      {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      }
+    }
     switch($cardID)
     {
       case "WTR081":
@@ -1375,7 +1385,7 @@ function FinalizeChainLink($chainClosed=false)
     $openedChain = false;
     $chainClosed = false;
     $isBlock = $turn[0] == "B";//This can change over the course of the function; for example if a phantasm gets popped
-    if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetAbilityType($cardID);
+    if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID);
     else $cardType = $definedCardType;
     if(GoesOnCombatChain($turn[0], $cardID, $from))
     {
