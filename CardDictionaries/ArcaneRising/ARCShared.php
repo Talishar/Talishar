@@ -6,8 +6,8 @@
     switch($cardID)
     {
       case "ARC003":
-        $character = &GetPlayerCharacter($currentPlayer);
-        return ($character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? 0 : 1);
+        $abilityType = GetResolvedAbilityType($cardID);
+        return ($abilityType == "A" ? 1 : 0);
       case "ARC004": return 1;
       case "ARC010":
         $items = &GetItems($currentPlayer);
@@ -110,8 +110,8 @@
     switch($cardID)
     {
       case "ARC003":
-       $character = &GetPlayerCharacter($currentPlayer);
-       return ($character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? false : true);
+        $abilityType = GetResolvedAbilityType($cardID);
+        return $abilityType == "A";
       case "ARC004": return true;
       case "ARC010":
         $items = &GetItems($currentPlayer);
