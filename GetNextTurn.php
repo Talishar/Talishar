@@ -319,7 +319,9 @@
     $content .= CreateButton($playerID, "Yes", 20, "YES");
     $content .= CreateButton($playerID, "No", 20, "NO");
     $content .= "</div>";
-    echo CreatePopup("YESNO", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
+    if($dqState[4] != "-") $caption = implode(" ", explode("_", $dqState[4]));
+    else $caption = "Choose " . TypeToPlay($turn[0]);
+    echo CreatePopup("YESNO", [], 0, 1, $caption, 1, $content);
   }
 
   if(($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID)

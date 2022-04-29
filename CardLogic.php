@@ -358,6 +358,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
     $parameter = str_replace("{0}", $dqVars[0], $parameter);
+    $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
     $subsequent = array_shift($decisionQueue);
     $makeCheckpoint = array_shift($decisionQueue);
     $turn[0] = $phase;
