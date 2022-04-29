@@ -252,7 +252,8 @@
   echo("</div>");//Combat chain div
 
 
-  if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
+  //if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
+  if(count($layers) > 0)
   {
     $content = "";
     $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
