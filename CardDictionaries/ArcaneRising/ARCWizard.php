@@ -92,9 +92,10 @@
     {
       case "ARC113": case "ARC114":
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
-        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Kano?");
+        AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with Kano", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
