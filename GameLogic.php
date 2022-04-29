@@ -2193,6 +2193,7 @@ function MainCharacterAttackModifiers($index=-1, $onlyBuffs=false)
   if($onlyBuffs) return $modifier;
   for($i=0; $i<count($mainCharacter); $i+=CharacterPieces())
   {
+    if(!IsEquipUsable($mainPlayer, $i)) continue;
     switch($mainCharacter[$i])
     {
       case "MON029": case "MON030": if(HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) { $modifier +=1; } break;
