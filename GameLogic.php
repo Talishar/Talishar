@@ -3172,6 +3172,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(!CanDamageBePrevented($player, $damage, "ARCANE")) $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
       if($damage < 0) $damage = 0;
+      WriteLog(CardLink($source, $source) . " dealt $damage arcane damage.");
       return $damage;
     case "PAYRESOURCES":
       $resources = &GetResources($player);
