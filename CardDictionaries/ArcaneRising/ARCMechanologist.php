@@ -153,8 +153,8 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "High Octane draws you a card and gives you an action point every time you boost a card this turn.";
       case "ARC009":
-        $items = SearchMyDeck("", "Item", $resourcesPaid/2);
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, $items);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMMAXCOST," . ($resourcesPaid/2));
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
