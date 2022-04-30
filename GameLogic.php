@@ -1028,14 +1028,14 @@ function EffectHitEffect($cardID)
     case "ELE165":
       PlayAura("ELE111", $defPlayer);
       break;
-    case "ELE173": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
+    case "ELE173": DealDamage($defPlayer, 1, "ATTACKHIT"); return 1;
     case "ELE195": case "ELE196": case "ELE197": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
     case "ELE198": case "ELE199": case "ELE200":
       if($cardID == "ELE198") $damage = 3;
       else if($cardID == "ELE199") $damage = 2;
       else $damage = 1;
       DealDamage($defPlayer, $damage, "ATTACKHIT");
-      break;
+      return 1;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID . "-1", $defPlayer); break;
     case "EVR047-1": case "EVR048-1": case "EVR049-1": $idArr = explode("-", $cardID); AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer); break;
@@ -1662,6 +1662,8 @@ function IsCombatEffectPersistent($cardID)
     case "ELE092-DOM": case "ELE092-BUFF": return true;
     case "ELE143": return true;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
+    case "ELE173": return true;
+    case "ELE198": case "ELE199": case "ELE200": return true;
     case "EVR001": return true;
     case "EVR019": return true;
     case "EVR066-1": case "EVR067-1": case "EVR068-1": return true;
