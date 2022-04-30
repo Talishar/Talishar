@@ -900,6 +900,7 @@ function FinalizeChainLink($chainClosed=false)
     global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
     global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
+    global $decisionQueue;
     $resources = &GetResources($currentPlayer);
     $pitch = &GetPitch($currentPlayer);
     $dynCostResolved = intval($dynCostResolved);
@@ -926,6 +927,8 @@ function FinalizeChainLink($chainClosed=false)
         }
         else
         {
+          $dqCopy = $decisionQueue;
+          $decisionQueue = [];
           //CR 5.1.3 Declare Costs Begin (CR 2.0)
           $resources[1] = 0;
           if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
@@ -935,6 +938,7 @@ function FinalizeChainLink($chainClosed=false)
           AddPostPitchDecisionQueue($cardID, $from, $index);
           if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
           AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
+          $decisionQueue = array_merge($decisionQueue, $dqCopy);
           ProcessDecisionQueue();
           //MISSING CR 5.1.3d Decide if action that can be played as instant will be
           //MISSING CR 5.1.3e Decide order of costs to be paid
