@@ -2491,6 +2491,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
         case "ITEMS": $rv = GetIndices(count(GetItems($player))); break;
         case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
+        case "DECKITEMMAXCOST": $rv = SearchDeck($player, "", "Item", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
         case "CCAA": $rv = SearchCombatChain("AA"); break;
