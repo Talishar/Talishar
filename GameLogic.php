@@ -2518,7 +2518,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MON158": $rv = InvertExistenceIndices($player); break;
         case "MON159": case "MON160": case "MON161": $rv = SearchDiscard($player, "A", "", -1, -1, "", "", true); break;
         case "MON212": $rv = SearchBanish($player, "AA", "", $subparam); break;
-        case "MON266-1": $rv = SearchHand($player, "AA", "", -1, -1, "", "", false, false, -1, false, $maxAttack=-1); break;
+        case "MON266-1": $rv = SearchHand($player, "AA", "", -1, -1, "", "", false, false, -1, false, 3); break;
         case "MON266-2": $rv = SearchDeckForCard($player, "MON296", "MON297", "MON298"); break;
         case "MON303": $rv =  SearchDiscard($player, "AA", "", 2); break;
         case "MON304": $rv = SearchDiscard($player, "AA", "", 1); break;
