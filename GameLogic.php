@@ -2513,7 +2513,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
         case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
         case "MON033-1": $rv = GetIndices(count(GetSoul($player)), 1); break;
-        case "MON033-2": $rv = CombineSearches(SearchMyDeck("A", "", $lastResult), SearchMyDeck("AA", "", $lastResult)); break;
+        case "MON033-2": $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult)); break;
         case "MON125": $rv = SearchDeck($player, "", "", -1, -1, "", "", true); break;
         case "MON156": $rv = SearchHand($player, "", "", -1, -1, "", "", true); break;
         case "MON158": $rv = InvertExistenceIndices($player); break;

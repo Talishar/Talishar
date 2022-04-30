@@ -97,21 +97,6 @@ function SearchLayerDQ($param)
   return SearchInner($layers, LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
 }
 
-function SearchMyDeck($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="")
-{
-  global $myDeck;
-  $cardList = "";
-  for($i=0; $i<count($myDeck); ++$i)
-  {
-    if(($type == "" || CardType($myDeck[$i]) == $type) && ($subtype == "" || CardSubType($myDeck[$i]) == $subtype) && ($maxCost == -1 || CardCost($myDeck[$i]) <= $maxCost) && ($minCost == -1 || CardCost($myDeck[$i]) >= $minCost) && ($class == "" || CardClass($myDeck[$i]) == $class))
-    {
-      if($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
 function SearchHandForCard($player, $card)
 {
   $hand = &GetHand($player);
