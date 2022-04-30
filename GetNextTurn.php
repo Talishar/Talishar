@@ -419,7 +419,9 @@
 
   if(($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
-    ChoosePopup($myDiscard, $turn[2], 16, "Choose a card from your discard");
+    $caption = "Choose a card from your discard";
+    if($dqState[4] != "-") $caption = implode(" ", explode("_", $dqState[4]));
+    ChoosePopup($myDiscard, $turn[2], 16, $caption);
   }
 
   if(($turn[0] == "MAYCHOOSETHEIRDISCARD") && $turn[1] == $playerID)
