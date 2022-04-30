@@ -176,6 +176,7 @@
         {
           $rv = "Deadwood Rumbler let you banish a card.";
           AddDecisionQueue("FINDINDICES", $currentPlayer, "GY");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DISCARD,NA", 1);
