@@ -2499,7 +2499,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
         case "MYHANDAA": $rv = SearchHand($player, "AA"); break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
-        case "MYDECKARROW": $rv = SearchMyDeck("", "Arrow"); break;
+        case "MYDECKARROW": $rv = SearchDeck($player, "", "Arrow"); break;
         case "MAINHAND": $rv = GetIndices(count(GetHand($mainPlayer))); break;
         case "FIRSTXDECK": $deck = &GetDeck($player); if($subparam > count($deck)) $subparam = count($deck); $rv = GetIndices($subparam); break;
         case "BANISHTYPE": $rv = SearchBanish($player, $subparam); break;
