@@ -381,6 +381,7 @@
       case "CRU144": return "Aura";
       case "CRU160": return "Staff";
       case "CRU161": return "Arms";
+      case "CRU177": return "Sword";
       case "CRU179": return "Arms";
       case "CRU197": return "Item";
       default: return "";
@@ -945,6 +946,8 @@
       case "CRU085": case "CRU088": case "CRU091": case "CRU094": return 1;
       case "CRU086": case "CRU089": case "CRU092": case "CRU095": return 2;
       case "CRU087": case "CRU090": case "CRU093": case "CRU096": return 3;
+      //CRU Shapeshifter
+      case "CRU097": return 0;
       //CRU Mechanologist
       case "CRU099": case "CRU101": case "CRU102": return 0;
       case "CRU103": return 3;
