@@ -655,6 +655,15 @@
       case "WTR215": case "WTR216": case "WTR217": return 0;
       case "WTR218": case "WTR219": case "WTR220": return 0;
       case "WTR221": case "WTR222": case "WTR223": return 3;
+      case "CRU001": return -1;
+      //CRU Brute
+      case "CRU004": case "CRU005": return 2;
+      case "CRU006": return 0;
+      case "CRU007": case "CRU008": case "CRU009": return 3;
+      case "CRU010": case "CRU011": case "CRU012": return 2;
+      case "CRU013": case "CRU014": case "CRU015": return 2;
+      case "CRU016": case "CRU017": case "CRU018": return 3;
+      case "CRU019": case "CRU020": case "CRU021": return 1;
       //CRU Guardian
       case "CRU024": return 4;
       case "CRU025": return 3;
@@ -666,14 +675,6 @@
       case "CRU035": case "CRU036": case "CRU037": return 4;
       case "CRU038": case "CRU039": case "CRU040": return 2;
       case "CRU041": case "CRU042": case "CRU043": return 0;
-      //CRU Brute
-      case "CRU004": case "CRU005": return 2;
-      case "CRU006": return 0;
-      case "CRU007": case "CRU008": case "CRU009": return 3;
-      case "CRU010": case "CRU011": case "CRU012": return 2;
-      case "CRU013": case "CRU014": case "CRU015": return 2;
-      case "CRU016": case "CRU017": case "CRU018": return 3;
-      case "CRU019": case "CRU020": case "CRU021": return 1;
       //CRU Ninja
       case "CRU050": case "CRU051": case "CRU052": return 1;
       case "CRU054": case "CRU055": case "CRU056": return 0;

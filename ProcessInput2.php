@@ -1275,7 +1275,7 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
         break;
       case "WTR182": case "WTR183": case "WTR184":
-        $indices = SearchHand($currentPlayer, "", "", 1);
+        $indices = SearchHand($currentPlayer, "", "", 1, 0);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
         AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
         break;
