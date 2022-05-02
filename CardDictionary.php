@@ -237,6 +237,8 @@
       case "CRU109": case "CRU110": case "CRU111": return "AA";
       case "CRU112": case "CRU113": case "CRU114": return "AA";
       case "CRU115": case "CRU116": case "CRU117": return "A";
+      //CRU Merchant
+      case "CRU118": return "C";
       //CRU Ranger
       case "CRU121": return "W";
       case "CRU122": return "E";
@@ -400,6 +402,7 @@
       case "CRU002": return 19;
       case "CRU046": return 20;
       case "CRU047": return 17;
+      case "CRU118": return 20;
       case "MON001": case "MON029": case "MON119": case "MON153": return 40;
       case "ELE001": case "ELE031": case "ELE062": return 40;
       case "EVR017": return 40;
@@ -759,7 +762,7 @@
     {
       return ARCAbilityCost($cardID);
     }
-    else if($set == "CRU" && ($class == "MECHANOLOGIST" || $class == "WIZARD" || $cardID == "CRU197"))
+    else if($set == "CRU" && ($class == "MECHANOLOGIST" || $class == "WIZARD" || $cardID == "CRU197" || $class == "MERCHANT"))
     {
       return CRUAbilityCost($cardID);
     }
@@ -957,6 +960,8 @@
       case "CRU106": case "CRU109": case "CRU112": case "CRU115": return 1;
       case "CRU107": case "CRU110": case "CRU113": case "CRU116": return 2;
       case "CRU108": case "CRU111": case "CRU114": case "CRU117": return 3;
+      //CRU Merchant
+      case "CRU118": return "0";
       //CRU Ranger
       case "CRU121": case "CRU122": return 0;
       case "CRU123": return 1;
@@ -1391,7 +1396,7 @@
     {
       return ARCAbilityType($cardID, $index);
     }
-    else if($set == "CRU" && ($class == "MECHANOLOGIST" || $class == "WIZARD" || $cardID == "CRU197"))
+    else if($set == "CRU" && ($class == "MECHANOLOGIST" || $class == "WIZARD" || $cardID == "CRU197" || $class == "MERCHANT"))
     {
       return CRUAbilityType($cardID, $index);
     }
