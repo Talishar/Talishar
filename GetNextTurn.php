@@ -144,7 +144,7 @@
   echo("</div>");
 
   //Now display the screen for this turn
-  echo("<span style='position:fixed; width:100%; bottom:0px; left:0px; display:inline-block; font-size:30px; text-align:center;'>");
+  echo("<span style='position:fixed; width:100%; bottom:0px; left:0px; z-index:10; display:inline-block; font-size:30px; text-align:center;'>");
 
   //Tell the player what to pick
   if($turn[0] != "OVER")
@@ -636,7 +636,7 @@
   $actionType = $turn[0] == "ARS" ? 4 : 2;
   if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
   $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 10) - 10)/2) . "px)";
-  echo("<div style='position:fixed; left:" . $handLeft . "; bottom:32px;'>");//Hand div
+  echo("<div style='position:fixed; left:" . $handLeft . "; bottom:0px;'>");//Hand div
   for($i=0; $i<count($myHand); ++$i) {
     if($playerID == 3)
     {
@@ -873,8 +873,8 @@
     global $cardSize;
     switch($cardType)
     {
-      case "C": return ($cardSize * 2 + 50) . "px";
-      case "W": return ($cardSize * 2 + 50) . "px";//TODO: Second weapon
+      case "C": return ($cardSize * 2 + 18) . "px";
+      case "W": return ($cardSize * 2 + 18) . "px";//TODO: Second weapon
       default: break;
     }
     switch($cardSubType)
@@ -883,7 +883,7 @@
       case "Chest": return ($cardSize + 60) . "px";
       case "Arms": return ($cardSize + 60) . "px";
       case "Legs": return "50px";
-      case "Off-Hand": return ($cardSize * 2 + 50) . "px";
+      case "Off-Hand": return ($cardSize * 2 + 18) . "px";
     }
   }
 
@@ -892,8 +892,8 @@
     global $cardSize;
     switch($cardType)
     {
-      case "C": return "20px";
-      case "W": return "20px";//TODO: Second weapon
+      case "C": return "52px";
+      case "W": return "52px";//TODO: Second weapon
       //case "C": return ($cardSize + 20) . "px";
       //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
       default: break;
@@ -904,7 +904,7 @@
       case "Chest": return (20 + $cardSize) . "px";
       case "Arms": return (20 + $cardSize) . "px";
       case "Legs": return (30 + $cardSize*2) . "px";
-      case "Off-Hand": return "20px";
+      case "Off-Hand": return "52px";
     }
   }
 

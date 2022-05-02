@@ -36,7 +36,7 @@
     else { $height = ($maxHeight * .71); $width = $maxHeight; }
     $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
     $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:6px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-    if($counters != 0) $rv .= "<div style='top:45%; left:45%; position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . "; font-size:30px;'>" . $counters . "</div>";
+    if($counters != 0) $rv .= "<div style='top:20%; left:45%; position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . "; font-size:30px;'>" . $counters . "</div>";
     $rv .= "</a>";
     return $rv;
   }
