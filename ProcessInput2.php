@@ -1326,6 +1326,18 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
         break;
+      case "MON281": case "MON282": case "MON283":
+        if($from == "PLAY")
+        {
+          $hand = &GetHand($currentPlayer);
+          if(count($hand) == 0)
+          {
+            WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.");
+            RevertGamestate();
+          }
+          PummelHit($currentPlayer);
+        }
+        break;
       case "ELE118":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
         AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
