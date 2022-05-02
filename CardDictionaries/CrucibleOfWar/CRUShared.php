@@ -7,6 +7,7 @@
     {
       case "CRU101": $char = &GetPlayerCharacter($currentPlayer); return ($char[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? 0 : 2);
       case "CRU105": $items = &GetItems($currentPlayer); return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
+      case "CRU118": return 3;
       case "CRU160": return 2;
       case "CRU197": return 4;
       default: return 0;
@@ -21,6 +22,7 @@
       case "CRU101": if($index == -1) $index = $myClassState[$CS_CharacterIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
       case "CRU102": return "A";
       case "CRU105": return "A";
+      case "CRU118": return "A";
       case "CRU160": return "A";
       case "CRU197": return "A";
       default: return "";
@@ -72,6 +74,7 @@
       case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? false : true);
       case "CRU102": return true;
       case "CRU105": return true;
+      case "CRU118": return true;
       case "CRU121": case "CRU122": return true;
       case "CRU197": return true;
       default: return false;

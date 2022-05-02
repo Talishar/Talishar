@@ -526,6 +526,23 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
       AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
       return "Teklovossen's Workshop lets you opt and put an item from the top of your deck into play.";
+    //CRU Merchant
+    case "CRU118":
+      if(PlayerHasLessHealth(1))
+      {
+        LoseHealth(1, 2);
+        PutItemIntoPlayForPlayer("CRU197", 2);
+        WriteLog("Player 2 lost a health and gained a copper from Kavdaen");
+        if(PlayerHasLessHealth(1)) { GainHealth(1, 1); WriteLog("Player 1 gained a health from Kavdaen"); }
+      }
+      else if(PlayerHasLessHealth(2))
+      {
+        LoseHealth(1, 1);
+        PutItemIntoPlayForPlayer("CRU197", 1);
+        WriteLog("Player 1 lost a health and gained a copper from Kavdaen");
+        if(PlayerHasLessHealth(2)) { GainHealth(1, 2); WriteLog("Player 2 gained a health from Kavdaen"); }
+      }
+      return "";
     //CRU Ranger
     case "CRU121":
       if(ArsenalFull($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
