@@ -6,6 +6,7 @@ function &GetMZZone($player, $zone)
   $rv = "";
   if($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
+  else if($zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
   return $rv;
 }
 
