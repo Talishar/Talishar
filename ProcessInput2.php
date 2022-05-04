@@ -1037,6 +1037,11 @@ function FinalizeChainLink($chainClosed=false)
           WriteLog("This card requires a discard as an additional cost, but have no cards to discard. Reverting gamestate prior to the card declaration.");
           RevertGamestate();
         }
+        if($cardID = "WTR159" && count($hand) == 0)
+        {
+          WriteLog("This card requires a card to put on the bottom of your deck, but you have no cards. Reverting gamestate prior to the card declaration.");
+          RevertGamestate();
+        }
       }
       if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
       {
