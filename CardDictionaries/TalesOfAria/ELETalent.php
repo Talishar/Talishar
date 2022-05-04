@@ -247,7 +247,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $myResources;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     global $combatChain, $CS_DamagePrevention;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -466,7 +466,7 @@
         AddDecisionQueue("OPT", $currentPlayer, "<-");
         return "";
       case "ELE234":
-        $myResources[0] += 3;
+        GainResources($currentPlayer, 3);
         return "Deep Blue gives you 3 resources.";
       case "ELE235":
         AddCurrentTurnEffect($cardID, $currentPlayer);
