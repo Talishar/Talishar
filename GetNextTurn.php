@@ -528,6 +528,13 @@
   $card = (count($theirBanish) > 0 ? ($theirBanish[count($theirBanish)-BanishPieces()+1] == "INT" ? "cardBack": $theirBanish[count($theirBanish)-BanishPieces()]) : $blankZone);
   $folder = (count($theirBanish) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
+  if(TalentContains($theirCharacter[0], "SHADOW"))
+  {
+    $theirBD = SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true));
+    $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune.png" : "bloodDebt.png";
+    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:50px; left:-40px; width:34px; font-size:30; text-align:center;'>" . $theirBD . "</div></img>");
+  }
+
 
   echo("<span title='Click to see their banish zone.' onclick='(function(){ document.getElementById(\"theirBanishPopup\").style.display = \"inline\";})();' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . count($theirBanish)/BanishPieces() . "</div></img></span>");
   echo("</div>");
@@ -780,6 +787,13 @@
   $folder = (count($myBanish) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
   echo("<span title='Click to see your banish zone.' onclick='(function(){ document.getElementById(\"myBanishPopup\").style.display = \"inline\";})();' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . count($myBanish)/BanishPieces() . "</div></img></span>");
+  if(TalentContains($myCharacter[0], "SHADOW"))
+  {
+    $myBD = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
+    $bdImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune.png" : "bloodDebt.png";
+    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:50px; left:-40px; width:34px; font-size:30; text-align:center;'>" . $myBD . "</div></img>");
+  }
+
   echo("</div>");
 
   //Display My Pitch
