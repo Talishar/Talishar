@@ -35,7 +35,11 @@ if ($handle = opendir($path)) {
           }
           else if(time() - $lastGamestateUpdate > 3600)//1 hour
           {
-            if($autoDeleteGames) deleteDirectory($folder);
+            if($autoDeleteGames)
+            {
+              deleteDirectory($folder);
+              DeleteCache($gameToken);
+            }
           }
           continue;
         }
@@ -58,6 +62,7 @@ if ($handle = opendir($path)) {
           else if($lastRefresh == "" || $currentTime - $lastRefresh > 1080000)//3 hours
           {
             deleteDirectory($folder);
+            DeleteCache($gameToken);
           }
         }
 
