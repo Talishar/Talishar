@@ -30,7 +30,7 @@
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
     if($folder == "crops") $margin = "0px;";
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
-    $border = $borderColor > 0 ? "border-radius:6px; border:2px solid " . BorderColorMap($borderColor) . ";" : "";
+    $border = $borderColor > 0 ? "border-radius:6px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
     if($folder == "crops") { $height = $maxHeight; $width = ($height * 1.29); }
     else if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
     else { $height = ($maxHeight * .71); $width = $maxHeight; }
@@ -51,6 +51,7 @@
       case 4: return "Gray";
       case 5: return "Tan";
       case 6: return "chartreuse";
+      case 7: return "Orchid";
     }
   }
 
@@ -249,7 +250,7 @@
     if($turn[0] == "B") return ($isPlayable ? 6 : 0);
     if($from == "BANISH")
     {
-      if($isPlayable || PlayableFromBanish($cardID)) return 4;
+      if($isPlayable || PlayableFromBanish($cardID)) return 7;
       if(HasBloodDebt($cardID)) return 2;
       if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
       if($isPlayable && ComboActive($cardID)) return 5;
