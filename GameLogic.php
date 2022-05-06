@@ -1032,9 +1032,7 @@ function EffectHitEffect($cardID)
     case "ELE022": case "ELE023": case "ELE024": PlayAura("ELE111", $defPlayer); break;
     case "ELE035-2": AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer); break;
     case "ELE037-2": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
-    case "ELE044": case "ELE045": case "ELE046": PlayAura("ELE111", $defPlayer); break;
     case "ELE047": case "ELE048": case "ELE049": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
-    case "ELE050": case "ELE051": case "ELE052": PayOrDiscard($defPlayer, 1); break;
     case "ELE066-HIT": if(HasIncreasedAttack()) MainDrawCard(); break;
     case "ELE092-BUFF": DealDamage($defPlayer, 3, "ATTACKHIT"); break;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": PlayAura("ELE111", $defPlayer); break;
