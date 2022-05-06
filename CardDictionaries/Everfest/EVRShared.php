@@ -842,8 +842,9 @@
         AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
         return "Tri-shot gives your bow 2 additional uses.";
       case "EVR090":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Rain Razors gives your Arrow attacks +2 this turn.";
+        AddCurrentTurnEffect($cardID, 1);
+        AddCurrentTurnEffect($cardID, 2);
+        return "Rain Razors gives Arrow attacks +2 this turn.";
       case "EVR091": case "EVR092": case "EVR093":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
