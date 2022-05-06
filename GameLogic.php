@@ -782,7 +782,7 @@ function ProcessHitEffect($cardID)
     case "CRU074": if($combatChainState[$CCS_HitsInRow] >= 2) { MainDrawCard(); MainDrawCard(); } break;
     case "CRU106": case "CRU107": case "CRU108": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
     case "CRU109": case "CRU110": case "CRU111": $combatChainState[$CCS_NextBoostBuff] += 3; break;
-    case "CRU123": AddNextTurnEffect("CRU123-DMG", $defPlayer); break;
+    case "CRU123": AddCurrentTurnEffect("CRU123-DMG", $defPlayer); AddNextTurnEffect("CRU123-DMG", $defPlayer); break;
     case "CRU129": case "CRU130": case "CRU131":
       if(!ArsenalEmpty($mainPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
       AddDecisionQueue("FINDINDICES", $mainPlayer, "MAINHAND");
