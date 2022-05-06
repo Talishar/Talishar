@@ -381,7 +381,7 @@ function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($source == "MON229") AddNextTurnEffect("MON229", $player);
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
-    CurrentEffectDamageEffects($player);
+    CurrentEffectDamageEffects($player, $source);
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
@@ -477,7 +477,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($source == "MON229") AddNextTurnEffect("MON229", $player);
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
-    CurrentEffectDamageEffects($player);
+    CurrentEffectDamageEffects($player, $source);
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
@@ -546,14 +546,16 @@ function CurrentEffectDamageModifiers($source, $type)
   return $modifier;
 }
 
-function CurrentEffectDamageEffects($player)
+function CurrentEffectDamageEffects($player, $source)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $player;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
+      case "ELE044": case "ELE045": case "ELE046": if(CardType($source) == "AA") PlayAura("ELE111", $defPlayer); break;
+      case "ELE050": case "ELE051": case "ELE052": if(CardType($source) == "AA") PayOrDiscard($defPlayer, 1); break;
       case "ELE064": BlossomingSpellbladeDamageEffect($player); break;
       default: break;
     }
