@@ -1694,6 +1694,7 @@ function IsCombatEffectPersistent($cardID)
 function BeginEndStepEffects()
 {
   global $currentTurnEffects, $mainPlayer;
+  EndTurnBloodDebt();//This has to be before resetting character, because of sleep dart effects
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
   {
     if($currentTurnEffects[$i+1] == $mainPlayer)

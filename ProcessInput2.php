@@ -801,7 +801,6 @@ function FinalizeChainLink($chainClosed=false)
         $i -= 2;
       }
     }
-    EndTurnBloodDebt();//This has to be before resetting character, because of sleep dart effects
 
     LogEndTurnStats($mainPlayer);
 
