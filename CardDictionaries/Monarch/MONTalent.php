@@ -339,7 +339,7 @@
   function EndTurnBloodDebt()
   {
     global $mainPlayer, $CS_Num6PowBan;
-    if(IsImmuneToBloodDebt($player))
+    if(IsImmuneToBloodDebt($mainPlayer))
     {
       WriteLog("No blood debt damage was taken because you are immune.");
       return;
