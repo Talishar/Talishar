@@ -1525,6 +1525,7 @@
       if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
     }
     if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > 0;
+    if($phase == "P" && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
     if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
     $isStaticType = IsStaticType($cardType, $from, $cardID);
     if($isStaticType) { $cardType = GetAbilityType($cardID, $index); }
@@ -1586,6 +1587,13 @@
     return false;
   }
 
+  function IsPitchRestricted($cardID, &$restriction, $from="", $index=-1)
+  {
+    global $playerID;
+    if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0) { $restriction = "ELE035"; return true; }
+    return false;
+  }
+
   function IsPlayRestricted($cardID, &$restriction, $from="", $index=-1)
   {
     global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $CS_Num6PowBan, $myDiscard;
@@ -1594,7 +1602,7 @@
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
-    if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && $from != "PLAY")  {$restriction = "ELE035"; return true; }//TODO: Is this right?
+    if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID))  { $restriction = "ELE035"; return true; }
     if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) {$restriction = "EVR071"; return true; }
     switch($cardID)
     {
