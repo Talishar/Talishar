@@ -183,6 +183,7 @@
   $CCS_CachedTotalAttack = 22;
   $CCS_CachedTotalBlock = 23;
   $CCS_CombatDamageReplaced = 24;//CR 6.5.3, CR 6.5.4 (CR 2.0)
+  $CCS_NumBoosted = 25;
 
   function ResetCombatChainState()
   {
@@ -190,7 +191,7 @@
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
     global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_NumBoosted;
     global $defPlayer;
     global $chainLinks, $chainLinkSummary;
     WriteLog("The combat chain was closed.");
@@ -218,6 +219,7 @@
     $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
     $combatChainState[$CCS_CachedTotalAttack] = 0;
     $combatChainState[$CCS_CachedTotalBlock] = 0;
+    $combatChainState[$CCS_NumBoosted] = 0;
     $defCharacter = &GetPlayerCharacter($defPlayer);
     for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
     {
