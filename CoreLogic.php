@@ -548,14 +548,14 @@ function CurrentEffectDamageModifiers($source, $type)
 
 function CurrentEffectDamageEffects($player, $source)
 {
-  global $currentTurnEffects, $player;
+  global $currentTurnEffects;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
-      case "ELE044": case "ELE045": case "ELE046": if(CardType($source) == "AA") PlayAura("ELE111", $defPlayer); break;
-      case "ELE050": case "ELE051": case "ELE052": if(CardType($source) == "AA") PayOrDiscard($defPlayer, 1); break;
+      case "ELE044": case "ELE045": case "ELE046": if(CardType($source) == "AA") PlayAura("ELE111", $player); break;
+      case "ELE050": case "ELE051": case "ELE052": if(CardType($source) == "AA") PayOrDiscard($player, 1); break;
       case "ELE064": BlossomingSpellbladeDamageEffect($player); break;
       default: break;
     }
