@@ -21,6 +21,7 @@
   include "CardDictionaries/TalesOfAria/ELERuneblade.php";
   include "CardDictionaries/TalesOfAria/ELETalent.php";
   include "CardDictionaries/Everfest/EVRShared.php";
+  include "CardDictionaries/Uprising/UPRShared.php";
   include "CardDictionaries/card_names.php";
 
   function CardType($cardID)
