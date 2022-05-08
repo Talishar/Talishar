@@ -3252,15 +3252,31 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHIVER":
       switch($lastResult)
       {
-        case "1_Attack": WriteLog("Shiver gives the arrow +1."); AddCurrentTurnEffect("ELE033-1", $player); return 1;
-        case "Dominate": WriteLog("Shiver gives the arrow Dominate."); AddCurrentTurnEffect("ELE033-2", $player); return 1;
+        case "1_Attack":
+          WriteLog("Shiver gives the arrow +1.");
+          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE033-1", $player);
+          else AddCurrentTurnEffectFromCombat("ELE033-1", $player);
+          return 1;
+        case "Dominate":
+          WriteLog("Shiver gives the arrow Dominate.");
+          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE033-2", $player);
+          else AddCurrentTurnEffectFromCombat("ELE033-2", $player);
+          return 1;
       }
       return $lastResult;
     case "VOLTAIRE":
       switch($lastResult)
       {
-        case "1_Attack": WriteLog("Voltaire gives the arrow +1."); AddCurrentTurnEffect("ELE034-1", $player); return 1;
-        case "Go_again": WriteLog("Voltaire gives the arrow Go Again."); AddCurrentTurnEffect("ELE034-2", $player); return 1;
+        case "1_Attack":
+          WriteLog("Voltaire gives the arrow +1.");
+          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE034-1", $player);
+          else AddCurrentTurnEffectFromCombat("ELE034-1", $player);
+          return 1;
+        case "Go_again":
+          WriteLog("Voltaire gives the arrow Go Again.");
+          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE034-2", $player);
+          else AddCurrentTurnEffectFromCombat("ELE034-2", $player);
+          return 1;
       }
       return $lastResult;
     case "AWAKENINGTOKENS":
