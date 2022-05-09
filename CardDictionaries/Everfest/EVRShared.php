@@ -1046,7 +1046,7 @@
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         }
-        return "Healing Potion gained 2 health.";
+        return "";
       case "EVR182":
         $rv = "";
         if($from == "PLAY")
