@@ -823,7 +823,7 @@
         AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "EVR195", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("DQVARPASSIFSET", $currentPlayer, "0");
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
