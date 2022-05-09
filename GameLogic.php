@@ -1056,7 +1056,7 @@ function EffectHitEffect($cardID)
     case "ELE215": AddNextTurnEffect($cardID . "-1", $defPlayer); break;
     case "EVR047-1": case "EVR048-1": case "EVR049-1": $idArr = explode("-", $cardID); AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer); break;
     case "EVR066-1": case "EVR067-1": case "EVR068-1": PutItemIntoPlayForPlayer("CRU197", $mainPlayer); return 1;
-    case "EVR161-1": GainHealth(2, $mainPlayer);
+    case "EVR161-1": GainHealth(2, $mainPlayer); break;
     case "EVR164": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6); break;
     case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
     case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
