@@ -56,7 +56,7 @@ function AuraDestroyed($player, $cardID, $isToken=false)
     }
   }
   $goesWhere = GoesWhereAfterResolving($cardID);
-  if(SearchAuras("MON012", $player))
+  for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $player)); ++$i)
   {
     $goesWhere = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $player);
