@@ -1699,7 +1699,7 @@
       case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
       case "EVR176": $hand = &GetHand($currentPlayer); return $from == "PLAY" && count($hand) < 4;
       case "EVR053": return !HelmOfSharpEyePlayable();
-      case "EVR181": return ($from == "PLAY" && GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0) || count($combatChain) == 0 || CardType($combatChain[0]) != "AA";
+      case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
       default: return false;
     }
   }
