@@ -1063,7 +1063,7 @@ function AttackDestroyed($attackID)
     default: break;
   }
   AttackDestroyedEffects($attackID);
-  if(SearchAuras("MON012", $mainPlayer))
+  for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i)
   {
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
