@@ -310,4 +310,16 @@
     return $rv;
   }
 
+  function GetTheirBanishForDisplay()
+  {
+    global $theirBanish;
+    $banish = array();
+    for($i=0; $i<count($theirBanish); $i+=BanishPieces())
+    {
+      if($theirBanish[$i+1] == "INT") array_push($banish, "cardBack");
+      else array_push($banish, $theirBanish[$i]);
+    }
+    return $banish;
+  }
+
 ?>
