@@ -54,6 +54,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
   {
     return EVRPlayAbility($cardID, $from, $resourcesPaid);
   }
+  else if($set == "UPR")
+  {
+    return UPRPlayAbility($cardID, $from, $resourcesPaid);
+  }
   $rv = "";
   switch($cardID)
   {
@@ -747,6 +751,10 @@ function ProcessHitEffect($cardID)
   else if($set == "EVR")
   {
     return EVRHitEffect($cardID);
+  }
+  else if($set == "UPR")
+  {
+    return UPRHitEffect($cardID);
   }
   switch($cardID)
   {

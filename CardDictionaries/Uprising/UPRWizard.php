@@ -5,7 +5,12 @@
   {
     switch($cardID)
     {
-
+      case "UPR102": case "UPR103": return "C";
+      case "UPR104": return "A";
+      case "UPR109": return "A";
+      case "UPR119": case "UPR120": case "UPR121": return "A";
+      case "UPR126": return "A";
+      case "UPR133": case "UPR134": case "UPR135": return "A";
       default: return "";
     }
   }
@@ -14,7 +19,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR126": return "Affliction Aura";
       default: return "";
     }
   }
@@ -24,7 +29,12 @@
   {
     switch($cardID)
     {
-
+      case "UPR102": case "UPR103": return 0;
+      case "UPR104": return 0;
+      case "UPR109": return 0;
+      case "UPR119": case "UPR120": case "UPR121": return 0;
+      case "UPR126": return 3;
+      case "UPR133": case "UPR134": case "UPR135": return 2;
       default: return 0;
     }
   }
@@ -33,7 +43,12 @@
   {
     switch($cardID)
     {
-
+      case "UPR104": return 1;
+      case "UPR109": return 3;
+      case "UPR126": return 3;
+      case "UPR119": case "UPR133": return 1;
+      case "UPR120": case "UPR134": return 2;
+      case "UPR121": case "UPR135": return 3;
       default: return 0;
     }
   }
@@ -42,7 +57,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR102": case "UPR103": return -1;
       default: return 3;
     }
   }
@@ -62,7 +77,12 @@
     $rv = "";
     switch($cardID)
     {
-
+      case "UPR133": case "UPR134": case "UPR135":
+        if($cardID == "UPR133") $damage = 5;
+        else if($cardID == "UPR134") $damage = 4;
+        else $damage = 3;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "Ice Bolt deals x arcane.";
       default: return "";
     }
   }
