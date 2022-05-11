@@ -67,6 +67,10 @@
     {
       return EVRCardType($cardID);
     }
+    else if($set == "UPR")
+    {
+      return UPRCardType($cardID);
+    }
     switch($cardID)
     {
       case "DUMMY": return "C";
@@ -327,6 +331,10 @@
     {
       return EVRCardSubtype($cardID);
     }
+    else if($set == "UPR")
+    {
+      return UPRCardSubtype($cardID);
+    }
     switch($cardID)
     {
       case "WTR003": return "Club";
@@ -409,6 +417,8 @@
       case "EVR017": return 40;
       case "EVR019": return 21;
       case "EVR120": return 18;
+      case "UPR102": return 36;
+      case "UPR103": return 18;
       default: return 20;
     }
   }
@@ -509,6 +519,11 @@
         else if($number >= 120 && $number <= 136) return "WIZARD";
         else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
         else return "GENERIC";
+      case "UPR":
+        if($number == 86) return "NONE";
+        else if($number >= 102 && $number <= 135) return "WIZARD";
+        else if($number >= 138 && $number <= 149) return "NONE";
+        else return "NONE";
       default: return 0;
     }
   }
@@ -518,6 +533,7 @@
     $set = substr($cardID, 0, 3);
     if($set == "MON") return MONCardTalent($cardID);
     else if($set == "ELE") return ELECardTalent($cardID);
+    else if($set == "UPR") return UPRCardTalent($cardID);
     return "NONE";
   }
 
@@ -563,6 +579,10 @@
     else if($set == "EVR")
     {
       return EVRCardCost($cardID);
+    }
+    else if($set == "UPR")
+    {
+      return UPRCardCost($cardID);
     }
     switch($cardID)
     {
@@ -779,6 +799,10 @@
     {
       return EVRAbilityCost($cardID);
     }
+    else if($set == "UPR")
+    {
+      return UPRAbilityCost($cardID);
+    }
     return CardCost($cardID);
   }
 
@@ -859,6 +883,10 @@
     else if($set == "EVR")
     {
       return EVRPitchValue($cardID);
+    }
+    else if($set == "UPR")
+    {
+      return UPRPitchValue($cardID);
     }
     switch($cardID)
     {
@@ -1041,6 +1069,10 @@
     {
       return EVRBlockValue($cardID);
     }
+    else if($set == "UPR")
+    {
+      return UPRBlockValue($cardID);
+    }
     switch($cardID)
     {
       case "WTR000": return 0;
@@ -1203,6 +1235,10 @@
     {
       return EVRAttackValue($cardID);
     }
+    else if($set == "UPR")
+    {
+      return UPRAttackValue($cardID);
+    }
     switch($cardID)
     {
       //Brute
@@ -1351,6 +1387,10 @@
     {
       return EVRHasGoAgain($cardID);
     }
+    else if($set == "UPR")
+    {
+      return UPRHasGoAgain($cardID);
+    }
     switch($cardID)
     {
       //Brute
@@ -1412,6 +1452,10 @@
     else if($set == "EVR")
     {
       return EVRAbilityType($cardID, $index);
+    }
+    else if($set == "UPR")
+    {
+      return UPRAbilityType($cardID, $index);
     }
     switch($cardID)
     {

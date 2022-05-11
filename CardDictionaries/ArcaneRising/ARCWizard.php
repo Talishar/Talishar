@@ -210,6 +210,7 @@
 
   }
 
+  //OpposingOnly -- 0=Opposing hero only, 1=Any Hero, 2=Any Target
   function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0)
   {
     global $currentPlayer;

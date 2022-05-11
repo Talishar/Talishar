@@ -78,18 +78,26 @@
 
   function UPRCardType($cardID)
   {
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
+      case "ILLUSIONIST": return UPRIllusionistCardType($cardID);
+      case "NINJA": return UPRNinjaCardType($cardID);
+      case "WIZARD": return UPRWizardCardType($cardID);
+      case "NONE": return UPRTalentCardType($cardID);
       default: return "";
     }
   }
 
   function UPRCardSubType($cardID)
   {
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
+      case "ILLUSIONIST": return UPRIllusionistCardSubtype($cardID);
+      case "NINJA": return UPRNinjaCardSubtype($cardID);
+      case "WIZARD": return UPRWizardCardSubtype($cardID);
+      case "NONE": return UPRTalentCardSubtype($cardID);
       default: return "";
     }
   }
@@ -97,37 +105,53 @@
   //Minimum cost of the card
   function UPRCardCost($cardID)
   {
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
-      default: return 0;
+      case "ILLUSIONIST": return UPRIllusionistCardCost($cardID);
+      case "NINJA": return UPRNinjaCardCost($cardID);
+      case "WIZARD": return UPRWizardCardCost($cardID);
+      case "NONE": return UPRTalentCardCost($cardID);
+      default: return "";
     }
   }
 
   function UPRPitchValue($cardID)
   {
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
-      default: return 0;
+      case "ILLUSIONIST": return UPRIllusionistPitchValue($cardID);
+      case "NINJA": return UPRNinjaPitchValue($cardID);
+      case "WIZARD": return UPRWizardPitchValue($cardID);
+      case "NONE": return UPRTalentPitchValue($cardID);
+      default: return "";
     }
   }
 
   function UPRBlockValue($cardID)
   {
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
-      default: return 3;
+      case "ILLUSIONIST": return UPRIllusionistBlockValue($cardID);
+      case "NINJA": return UPRNinjaBlockValue($cardID);
+      case "WIZARD": return UPRWizardBlockValue($cardID);
+      case "NONE": return UPRTalentBlockValue($cardID);
+      default: return "";
     }
   }
 
   function UPRAttackValue($cardID)
   {
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
-      default: return 0;
+      case "ILLUSIONIST": return UPRIllusionistAttackValue($cardID);
+      case "NINJA": return UPRNinjaAttackValue($cardID);
+      case "WIZARD": return UPRWizardAttackValue($cardID);
+      case "NONE": return UPRTalentAttackValue($cardID);
+      default: return "";
     }
   }
 
@@ -135,19 +159,27 @@
   {
     global $currentPlayer;
     $rv = "";
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
+      case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid);
+      case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid);
+      case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid);
+      case "NONE": return UPRTalentPlayAbility($cardID, $from, $resourcesPaid);
       default: return "";
     }
   }
 
   function UPRHitEffect($cardID)
   {
-    switch($cardID)
+    $class = CardClass($cardID);
+    switch($class)
     {
-
-      default: break;
+      case "ILLUSIONIST": return UPRIllusionistHitEffect($cardID);
+      case "NINJA": return UPRNinjaHitEffect($cardID);
+      case "WIZARD": return UPRWizardHitEffect($cardID);
+      case "NONE": return UPRTalentHitEffect($cardID);
+      default: return "";
     }
   }
 
