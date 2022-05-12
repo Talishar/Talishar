@@ -231,9 +231,32 @@
         AddDecisionQueue("BUFFARCANE", $player, "1", 1);
         AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
       }
-      AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
+      if($OpposingOnly != 0)
+      {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      }
+      else AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
     }
+  }
+
+  function GetArcaneTargetIndices($player, $opposingOnly)
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    $rv = "THEIRCHAR-0";
+    if($opposingOnly == 2)
+    {
+      $allies = &GetAllies($otherPlayer);
+      for($i=0; $i<count($allies); $i+=AllyPieces())
+      {
+        $rv .= ",THEIRALLY-" . $i;
+      }
+    }
+    return $rv;
   }
 
   function CurrentEffectArcaneModifier()

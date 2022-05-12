@@ -82,7 +82,7 @@
         else if($cardID == "UPR134") $damage = 4;
         else $damage = 3;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        return "Ice Bolt deals x arcane.";
+        return "Ice Bolt deals $damage arcane.";
       default: return "";
     }
   }

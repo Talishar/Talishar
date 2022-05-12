@@ -2485,6 +2485,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $subparam = "";
       switch($parameter)
       {
+        case "ARCANETARGET": $rv = GetArcaneTargetIndices($player, $subparam); break;
         case "WTR083": $rv = SearchDeckForCard($player, "WTR081"); if($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv; break;
         case "WTR076-1": $rv = SearchHand($player, "", "", 0); break;
         case "WTR076-2": $rv = GetComboCards(); break;
@@ -3164,7 +3165,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       IncrementClassState($player, $CS_NumCharged);
       return $lastResult;
     case "CHOOSEHERO":
-      return $player == 1 ? 2 : 1;
+      return "THEIRCHAR-0";
     case "DEALDAMAGE":
       $target = $lastResult;
       $parameters = explode("-", $parameter);
@@ -3174,11 +3175,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = DealDamage($player, $damage, $type, $source);
       return $damage;
     case "DEALARCANE":
-      $target = $lastResult;
+      $targetPlayer = ($player == 1 ? 2 : 1);
+      $target = explode("-", $lastResult);
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
+      if($target[0] == "THEIRALLY")
+      {
+        $allies = &GetAllies($targetPlayer);
+        $allies[$target[1] + 2] -= $damage;
+        if($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1]);
+        return;
+      }
+      $target = $targetPlayer;
       if($type == "PLAYCARD")
       {
         $damage += ConsumeArcaneBonus($player);
