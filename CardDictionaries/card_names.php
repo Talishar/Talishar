@@ -993,6 +993,14 @@ if ($set == "MON")
 		case "402": return "Spell Fray Leggings";
 
 		   }	}
+if($set == "UPR")
+{
+  switch($num)
+  {
+    case "133": case "134": case "135": return "Ice Bolt";
+    default: return "Name not populated - please report bug";
+  }
+}
 if ($set == "WTR")
 	{  switch($num)	   {
 
