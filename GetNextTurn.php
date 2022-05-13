@@ -531,7 +531,7 @@
   if(TalentContains($theirCharacter[0], "SHADOW"))
   {
     $theirBD = SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true));
-    $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune.png" : "bloodDebt.png";
+    $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
     echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:50px; left:-40px; width:34px; font-size:30; text-align:center;'>" . $theirBD . "</div></img>");
   }
 
@@ -790,7 +790,7 @@
   if(TalentContains($myCharacter[0], "SHADOW"))
   {
     $myBD = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
-    $bdImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune.png" : "bloodDebt.png";
+    $bdImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
     echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:50px; left:-40px; width:34px; font-size:30; text-align:center;'>" . $myBD . "</div></img>");
   }
 
