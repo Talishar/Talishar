@@ -744,6 +744,7 @@ function FinalizeChainLink($chainClosed=false)
   function FinishTurnPass()
   {
     global $mainPlayer;
+    ResetCombatChainState();
     Heave();
     ItemEndTurnAbilities();
     AuraBeginEndStepAbilities();
@@ -761,7 +762,6 @@ function FinalizeChainLink($chainClosed=false)
       UpdateGameState($currentPlayer);
       BuildMainPlayerGameState();
     }
-    ResetCombatChainState();
     $MyPitch = GetPitch($playerID);
     $TheirPitch = GetPitch(($playerID == 1 ? 2 : 1));
     $MainHand = GetHand($mainPlayer);
