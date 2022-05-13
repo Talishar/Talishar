@@ -997,6 +997,7 @@ if($set == "UPR")
 {
   switch($num)
   {
+    case "104": return "Encase";
     case "133": case "134": case "135": return "Ice Bolt";
     default: return "Name not populated - please report bug";
   }

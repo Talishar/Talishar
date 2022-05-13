@@ -77,6 +77,10 @@
     $rv = "";
     switch($cardID)
     {
+      case "UPR104":
+        Fuse($cardID, $currentPlayer, "ICE");
+        DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "Encase deals 3 arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
