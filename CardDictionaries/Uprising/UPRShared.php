@@ -183,4 +183,16 @@
     }
   }
 
+  function UPRFuseAbility($cardID, $player, $element)
+  {
+    switch($cardID)
+    {
+      case "UPR104":
+        AddDecisionQueue("LESSTHANPASS", $player, 1);
+        AddDecisionQueue("WRITELOG", $player, "got here", 1);
+        break;
+      default: break;
+    }
+  }
+
 ?>

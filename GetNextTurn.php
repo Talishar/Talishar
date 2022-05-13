@@ -614,6 +614,7 @@
     if($theirCharacter[$i+2] > 0) $counters = $theirCharacter[$i+2];//TODO: display both kinds of counters?
     echo("<div style='z-index:5; position:fixed; left:" . GetCharacterLeft($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
     echo(Card($theirCharacter[$i], "CardImages", $cardSize, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
+    //if(true) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
     if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
     if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
     echo("</div>");
@@ -822,7 +823,8 @@
     else
     {
       echo Card($lastPlayed[0], "CardImages", 271);
-      if(count($lastPlayed) > 3 && $lastPlayed[3] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse.png' />");
+      if(count($lastPlayed) > 3 && $lastPlayed[3] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse2.png' />");
+      else if(count($lastPlayed) > 3 && $lastPlayed[3] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse2.png' />");
     }
   echo("</div>");
   echo("<div style='position:relative; z-index:-1; left:0px; top:0px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
