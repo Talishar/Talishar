@@ -231,7 +231,7 @@
         AddDecisionQueue("BUFFARCANE", $player, "1", 1);
         AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
       }
-      if($OpposingOnly != 0)
+      if($OpposingOnly == 2)
       {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
