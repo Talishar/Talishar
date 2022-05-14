@@ -156,7 +156,7 @@
         }
         else { $rv = "There are no cards in deck for Bracers of Belief to reveal, so the next attack gets +3."; }
         $bonus = 3 - $pitchValue;
-        if($bonus > 0) AddCurrentTurnEffect("AAPLUS" . $bonus, $currentPlayer);
+        if($bonus > 0) AddCurrentTurnEffect($cardID . "-" . $bonus, $currentPlayer);
         return $rv;
       case "ARC154":
         SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);

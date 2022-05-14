@@ -143,6 +143,7 @@
     case "ARC091": return 3;
     case "ARC092": return 2;
     case "ARC093": return 1;
+    case "ARC153-1": return 1; case "ARC153-2": return 2; case "ARC153-3": return 3;
     case "ARC160-1": return 1;
     case "ARC170-2": return 3;
     case "ARC171-2": return 2;
@@ -171,6 +172,7 @@
       case "ARC054": case "ARC055": case "ARC056": return CardClass($attackID) == "RANGER" && CardType($attackID) == "AA";
       case "ARC057": case "ARC058": case "ARC059": return $cardID == $attackID;
       case "ARC091": case "ARC092": case "ARC093": return CardClass($attackID) == "RUNEBLADE";
+      case "ARC153-1": case "ARC153-2": case "ARC153-3": return CardType($attackID) == "AA";
       case "ARC160-1": return CardType($attackID) == "AA";
       case "ARC160-3": return CardType($attackID) == "AA";
       case "ARC170-1": case "ARC171-1": case "ARC172-1": return CardType($attackID) == "AA";
