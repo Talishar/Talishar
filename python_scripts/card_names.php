@@ -1470,10 +1470,10 @@ function cardID ($cardName)
 		 case "Runechant": return array("ARC112","CRU157");
 		 case "Cano, Dracai of Aether": return array("ARC113","CRU158");
 		 case "Kano": return array("ARC114");
-		 case "rucible of Aetherweav": return array("ARC115");
+		 case "Crucible of Aetherweave": return array("ARC115");
 		 case "Storm Striders": return array("ARC116");
 		 case "Robe of Rapture": return array("ARC117");
-		 case "~ Blazing Aether": return array("ARC118");
+		 case "Blazing Aether": return array("ARC118");
 		 case "Sonic Boom": return array("ARC119");
 		 case "Forked Lightning": return array("ARC120");
 		 case "Lesson in Lava": return array("ARC121");
@@ -1490,7 +1490,7 @@ function cardID ($cardName)
 		 case "Arcanite Skullcap": return array("ARC150");
 		 case "Talismanic Lens": return array("ARC151");
 		 case "Vest of the First Fist": return array("ARC152");
-		 case "Bracers of Beliet": return array("ARC153");
+		 case "Bracers of Belief": return array("ARC153");
 		 case "Mage Master Boots": return array("ARC154");
 		 case "Nullrune Hood": return array("ARC155");
 		 case "Nullrune Robe": return array("ARC156");

@@ -1103,9 +1103,6 @@ function EffectAttackModifier($cardID)
   }
   switch($cardID)
   {
-    case "AAPLUS1": return 1;
-    case "AAPLUS2": return 2;
-    case "AAPLUS3": return 3;
     case "WTR007": return 2;
     case "WTR017": return NumNonEquipmentDefended() < 2 ? 4 : 0;
     case "WTR018": return NumNonEquipmentDefended() < 2 ? 3 : 0;
@@ -1628,7 +1625,6 @@ function IsCombatEffectActive($cardID)
   }
   switch($cardID)
   {
-    case "AAPLUS1": case "AAPLUS2": case "AAPLUS3": return CardType($attackID) == "AA";
     case "WTR007": return CardClass($attackID) == "BRUTE";
     case "WTR017": case "WTR018": case "WTR019": return CardClass($attackID) == "BRUTE";
     case "WTR032": case "WTR033": case "WTR034": return CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
