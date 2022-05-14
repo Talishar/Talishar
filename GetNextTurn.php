@@ -203,7 +203,7 @@
     $totalDefense = 0;
     $chainAttackModifiers = [];
     EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
-    echo(CreatePopup("attackModifierPopup", [], 1, 0, "AttackModifiers", 1, AttackModifiers($chainAttackModifiers)));
+    echo(CreatePopup("attackModifierPopup", [], 1, 0, "Attack Modifiers", 1, AttackModifiers($chainAttackModifiers)));
   }
 
   echo("<div style='position:absolute; left:290px; top:150px; z-index:0;'>");
