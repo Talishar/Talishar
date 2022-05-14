@@ -12,10 +12,13 @@ function IsGameNameValid($gameName)
 
 function IsDeckLinkValid($deckLink)
 {
+  return true;
   // Valid format: https://fabdb.net/decks/vyDDnODb
-  if(filter_var($deckLink, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED ) && stristr($deckLink, "fabdb.net/decks/") != false){
+  /*
+  if(filter_var($deckLink, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) && stristr($deckLink, "fabdb.net/decks/") != false){
     return true;
   }
   return false;
+  */
 }
 ?>

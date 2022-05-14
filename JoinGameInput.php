@@ -24,7 +24,7 @@
   }
 
   if($deck == "" && !IsDeckLinkValid($decklink)) {
-      echo '<b>' . "Deck link is not valid: " . $decklink . '</b>';
+      echo '<b>' . "Deck URL is not valid: " . $decklink . '</b>';
       exit;
   }
   //TODO: Validate $deck
@@ -53,8 +53,14 @@
     $decklink = explode("/", $decklink);
     $slug = $decklink[count($decklink)-1];
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
-    $apiDeck = @file_get_contents($apiLink);
-    if($apiDeck === FALSE) { echo  '<b>' . "Deck link is not valid: " . implode("/", $decklink) . '</b>'; WriteGameFile(); exit; }
+
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $apiLink);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    $apiDeck = curl_exec($curl);
+    curl_close($curl);
+
+    if($apiDeck === FALSE) { echo  '<b>' . "FabDB API for this deck returns no data: " . implode("/", $decklink) . '</b>'; WriteGameFile(); exit; }
     $deckObj = json_decode($apiDeck);
     $cards = $deckObj->{'cards'};
     $deckCards = "";
