@@ -1072,7 +1072,7 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
       AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
       AddDecisionQueue("DESTROYITEM", $defPlayer, "<-", 1);
-      break;
+      return 1;
     default: break;
   }
   return 0;
