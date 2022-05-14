@@ -2,10 +2,12 @@
 <head>
 
 <?php
+  ob_start();
   include "WriteLog.php";
   include "CardDictionary.php";
   include "HostFiles/Redirector.php";
   include "Libraries/UILibraries.php";
+  ob_end_clean();
 
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
@@ -13,14 +15,18 @@
   if(!file_exists("./Games/" . $gameName . "/GameFile.txt"))
   {
     header("Location: " . $redirectPath . "/MainMenu.php");//If the game file happened to get deleted from inactivity, redirect back to the main menu instead of erroring out
+    exit;
   }
 
+  ob_start();
   include "MenuFiles/ParseGamefile.php";
+  ob_end_clean();
 
   if($gameStatus == $MGS_GameStarted)
   {
     $authKey = ($playerID == 1 ? $p1Key : $p2Key);
     header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    exit;
   }
 
   $icon = "ready.png";

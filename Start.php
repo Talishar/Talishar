@@ -1,5 +1,6 @@
 <?php
 
+  ob_start();
   include "HostFiles/Redirector.php";
   include "Libraries/HTTPLibraries.php";
   include "Libraries/SHMOPLibraries.php";
@@ -10,12 +11,15 @@
   include "Libraries/UILibraries2.php";
   include "AI/CombatDummy.php";
   include "WriteReplay.php";
+  ob_end_clean();
 
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
 
+  ob_start();
   include "MenuFiles/ParseGamefile.php";
   include "MenuFiles/WriteGamefile.php";
+  ob_end_clean();
 
   //Setup the random number generator
   srand(make_seed());
@@ -68,7 +72,9 @@
   $currentTime = strval(round(microtime(true) * 1000));
   WriteCache($gameName, $currentTime . "!" . $currentTime . "!" . $currentTime . "!0!0");//Initialize SHMOP cache for this game
 
+  ob_start();
   include "StartEffects.php";
+  ob_end_clean();
 
   $gameStateTries = 0;
   while(!file_exists($filename) && $gameStateTries < 10)
