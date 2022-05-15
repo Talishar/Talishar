@@ -523,4 +523,14 @@ function GetMZCardLink($player, $MZ)
   return CardLink($zoneDS[$index], $zoneDS[$index]);
 }
 
+function DelimStringContains($str, $find)
+{
+  $arr = explode(",", $str);
+  for($i=0; $i<count($arr); ++$i)
+  {
+    if($arr[$i] == $find) return true;
+  }
+  return false;
+}
+
 ?>

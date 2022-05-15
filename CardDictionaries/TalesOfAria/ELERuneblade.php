@@ -121,31 +121,18 @@
     $rv = "";
     switch($cardID)
     {
-      case "ELE064":
-        Fuse($cardID, $currentPlayer, "EARTH,LIGHTNING");
-        return "";
       case "ELE065":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
         DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "ELE066":
-        Fuse($cardID, $currentPlayer, "EARTH");
         AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
         return "";
       case "ELE067": case "ELE068": case "ELE069":
-        Fuse($cardID, $currentPlayer, "EARTH");
         DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "ELE070": case "ELE071": case "ELE072":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $otherPlayer, $CS_ArcaneDamageTaken . "-1", 1);
         AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
-        return "";
-      case "ELE073": case "ELE074": case "ELE075":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
-      case "ELE076": case "ELE077": case "ELE078":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
         return "";
       case "ELE079": case "ELE080": case "ELE081":
         if(GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0)
@@ -155,17 +142,9 @@
           AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         }
-        Fuse($cardID, $currentPlayer, "EARTH");
-        return "";
-      case "ELE082": case "ELE083": case "ELE084":
-        Fuse($cardID, $currentPlayer, "EARTH");
         return "";
       case "ELE085": case "ELE086": case "ELE087":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        Fuse($cardID, $currentPlayer, "EARTH");
-        return "";
-      case "ELE088": case "ELE089": case "ELE090":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
         return "";
       case "ELE222":
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)

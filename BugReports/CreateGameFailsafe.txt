@@ -5,3 +5,5 @@ Create game failsafe hit for game 540 at 04/20/2022 06:59:06 pm
 Create game failsafe hit for game 541 at 04/20/2022 06:59:16 pm
 Create game failsafe hit for game 542 at 04/20/2022 07:01:15 pm
 Create game failsafe hit for game 543 at 04/20/2022 07:02:47 pm
+Create game failsafe hit for game 300 at 05/14/2022 06:36:48 pm
+Create game failsafe hit for game 609 at 05/14/2022 06:37:24 pm

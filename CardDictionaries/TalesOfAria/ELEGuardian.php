@@ -167,45 +167,14 @@
           $rv .= "If this hits, your opponent gains a Frostbite token.";
         }
         return $rv;
-      case "ELE004":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE005":
-        Fuse($cardID, $currentPlayer, "EARTH,ICE");
-        return "";
       case "ELE006":
-        AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-");
-        Fuse($cardID, $currentPlayer, "EARTH");
+        if(DelimStringContains($additionalCosts, "EARTH")) AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-");
         AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        return "";
-      case "ELE007": case "ELE008": case "ELE009":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE010": case "ELE011": case "ELE012":
-        Fuse($cardID, $currentPlayer, "EARTH");
-        return "";
-      case "ELE013": case "ELE014": case "ELE015":
-        Fuse($cardID, $currentPlayer, "EARTH");
-        return "";
-      case "ELE016": case "ELE017": case "ELE018":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "Glacial Footsteps gets Dominate if it is Ice fused.";
-      case "ELE019": case "ELE020": case "ELE021":
-        Fuse($cardID, $currentPlayer, "EARTH");
-        return "";
-      case "ELE022": case "ELE023": case "ELE024":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE025": case "ELE026": case "ELE027":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE028": case "ELE029": case "ELE030":
-        Fuse($cardID, $currentPlayer, "EARTH");
         return "";
       case "ELE205":
         AddCurrentTurnEffect($cardID, $currentPlayer);

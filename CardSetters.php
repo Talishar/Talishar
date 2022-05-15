@@ -308,6 +308,14 @@ function IncrementClassState($player, $piece, $amount=1)
   SetClassState($player, $piece, (GetClassState($player, $piece) + $amount));
 }
 
+function AppendClassState($player, $piece, $value)
+{
+  $currentState = GetClassState($player, $piece);
+  if($currentState != "") $currentState .= ",";
+  $currentState .= $value;
+  SetClassState($player, $piece, $value);
+}
+
 function SetClassState($player, $piece, $value)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
