@@ -261,27 +261,6 @@
           $rv = "Korshem was destroyed";
         }
         return $rv;
-      case "ELE091":
-        Fuse($cardID, $currentPlayer, "EARTH");
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
-      case "ELE092":
-        Fuse($cardID, $currentPlayer, "ICE");
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
-      case "ELE093":
-        Fuse($cardID, $currentPlayer, "EARTH");
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE094": case "ELE095": case "ELE096":
-        Fuse($cardID, $currentPlayer, "EARTH");
-        return "";
-      case "ELE097": case "ELE098": case "ELE099":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE100": case "ELE101": case "ELE102":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
       case "ELE103": case "ELE104": case "ELE105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Invigorate gives the next attack you Fuse this turn +" . EffectAttackModifier($cardID) . ".";

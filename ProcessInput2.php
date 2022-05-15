@@ -899,7 +899,7 @@ function FinalizeChainLink($chainClosed=false)
     global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
     global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
-    global $decisionQueue;
+    global $decisionQueue, $CS_AdditionalCosts;
     $resources = &GetResources($currentPlayer);
     $pitch = &GetPitch($currentPlayer);
     $dynCostResolved = intval($dynCostResolved);
@@ -1053,7 +1053,6 @@ function FinalizeChainLink($chainClosed=false)
       }
       if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
       if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
-      PayAdditionalCosts($cardID, $from);
     }
     if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards);//Played or blocked
 
@@ -1072,11 +1071,13 @@ function FinalizeChainLink($chainClosed=false)
     if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
     if($turn[0] == "B")//If a layer is not created
     {
-      AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "-" . $from . "-" . $resourcesPaid);
+      AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "-" . $from . "-" . $resourcesPaid . "--" . GetClassState($currentPlay, $CS_AdditionalCosts));
     }
     else
     {
-      AddLayer($cardID, $currentPlayer, $from . "-" . $resourcesPaid . "-" . $lastPlayed[2], GetClassState($currentPlayer, $CS_LayerTarget));
+      $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
+      if($additionalCosts == "") $additionalCosts = "-";
+      AddLayer($cardID, $currentPlayer, $from . "-" . $resourcesPaid . "-" . $lastPlayed[2], GetClassState($currentPlayer, $CS_LayerTarget), $additionalCosts);
     }
     ProcessDecisionQueue();
   }
@@ -1114,6 +1115,7 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
       }
     }
+    PayAdditionalCosts($cardID, $from);
     switch($cardID)
     {
       case "WTR081":
@@ -1268,6 +1270,11 @@ function FinalizeChainLink($chainClosed=false)
       PayItemAbilityAdditionalCosts($cardID);
       return;
     }
+    $fuseType = HasFusion($cardID);
+    if($fuseType != "")
+    {
+      Fuse($cardID, $currentPlayer, $fuseType);
+    }
     switch($cardID)
     {
       case "WTR159":
@@ -1394,7 +1401,7 @@ function FinalizeChainLink($chainClosed=false)
     }
   }
 
-  function PlayCardEffect($cardID, $from, $resourcesPaid, $target="-")
+  function PlayCardEffect($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="-")
   {
     global $turn, $combatChain, $currentPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
@@ -1473,7 +1480,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       SetClassState($currentPlayer, $CS_EffectContext, $cardID);
       $playText = "";
-      if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target);
+      if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
       if($openedChain) ProcessAttackTargetAfterResolve();

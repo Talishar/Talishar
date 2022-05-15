@@ -197,10 +197,11 @@ function HasEffect($cardID)
   return false;
 }
 
-function AddLayer($cardID, $player, $parameter, $target="-")
+function AddLayer($cardID, $player, $parameter, $target="-", $additionalCosts="-")
 {
   global $layers;
   //Layers are on a stack, so you need to push things on in reverse order
+  array_unshift($layers, $additionalCosts);
   array_unshift($layers, $target);
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
@@ -298,6 +299,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $player = array_shift($layers);
           $parameter = array_shift($layers);
           $target = array_shift($layers);
+          $additionalCosts = array_shift($layers);
           $params = explode("-", $parameter);
           if($currentPlayer != $player)
           {
@@ -314,7 +316,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           else
           {
             SetClassState($player, $CS_AbilityIndex, GetAbilityIndex($cardID, GetClassState($player, $CS_CharacterIndex), $params[2]));//This is like a parameter to PlayCardEffect and other functions
-            PlayCardEffect($cardID, $params[0], $params[1], $target);
+            PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts);
           }
         }
       }
@@ -328,7 +330,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         }
         $params = explode("-", $decisionQueue[2]);
         CloseDecisionQueue();
-        PlayCardEffect($params[0], $params[1], $params[2]);
+        PlayCardEffect($params[0], $params[1], $params[2], "-", $params[4]);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING")
       {

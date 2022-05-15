@@ -157,40 +157,8 @@
         AddDecisionQueue("VOLTAIRE", $currentPlayer, "-", 1);
         return "";
       case "ELE035":
-        Fuse($cardID, $currentPlayer, "ICE");
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
         return "Frost Lock makes cards and activating abilities by the opponent cost 1 more this turn.";
-      case "ELE036":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
-      case "ELE037":
-        Fuse($cardID, $currentPlayer, "ICE,LIGHTNING");
-        AddCurrentTurnEffect("ELE037-1", $currentPlayer);
-        return "";
-      case "ELE038": case "ELE039": case "ELE040":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE041": case "ELE042": case "ELE043":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
-      case "ELE044": case "ELE045": case "ELE046":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE047": case "ELE048": case "ELE049":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
-      case "ELE050": case "ELE051": case "ELE052":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE053": case "ELE054": case "ELE055":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
-      case "ELE056": case "ELE057": case "ELE058":
-        Fuse($cardID, $currentPlayer, "ICE");
-        return "";
-      case "ELE059": case "ELE060": case "ELE061":
-        Fuse($cardID, $currentPlayer, "LIGHTNING");
-        return "";
       case "ELE214":
         $arsenal = &GetArsenal($currentPlayer);
         for($i=0; $i < count($arsenal); $i+=ArsenalPieces())
@@ -295,16 +263,16 @@
       case "ELE089": DealArcane(2, 0, "PLAYCARD", $cardID, true); break;//Assumed
       case "ELE090": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
       case "ELE091":
-        if($element == "EARTH") AddCurrentTurnEffect($cardID . "-BUFF", $player);
-        else if($element == "LIGHTNING") AddCurrentTurnEffect($cardID . "-GA", $player);
+        if(DelimStringContains($element, "LIGHTNING")) AddCurrentTurnEffect($cardID . "-GA", $player);
+        if(DelimStringContains($element, "EARTH")) AddCurrentTurnEffect($cardID . "-BUFF", $player);
         break;
       case "ELE092":
-        if($element == "ICE") AddCurrentTurnEffect($cardID . "-DOM", $player);
-        else if($element == "LIGHTNING") AddCurrentTurnEffect($cardID . "-BUFF", $player);
+        if(DelimStringContains($element, "LIGHTNING")) AddCurrentTurnEffect($cardID . "-BUFF", $player);
+        if(DelimStringContains($element, "ICE")) AddCurrentTurnEffect($cardID . "-DOM", $player);
         break;
       case "ELE093":
-        if($element == "EARTH") ExposedToTheElementsEarth($player);
-        else if($element == "ICE") ExposedToTheElementsIce($player);
+        if(DelimStringContains($element, "ICE")) ExposedToTheElementsIce($player);
+        if(DelimStringContains($element, "EARTH")) ExposedToTheElementsEarth($player);
         break;
       case "ELE094": case "ELE095": case "ELE096":
         $index = GetClassState($player, $CS_PlayCCIndex);
@@ -335,6 +303,55 @@
       AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
       AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
+    }
+  }
+
+  function HasFusion($cardID)
+  {
+    switch($cardID)
+    {
+      //Guardian
+      case "ELE004": return "ICE";
+      case "ELE005": return "EARTH,ICE";
+      case "ELE006": return "EARTH";
+      case "ELE007": case "ELE008": case "ELE009": return "ICE";
+      case "ELE010": case "ELE011": case "ELE012": return "EARTH";
+      case "ELE013": case "ELE014": case "ELE015": return "EARTH";
+      case "ELE016": case "ELE017": case "ELE018": return "ICE";
+      case "ELE019": case "ELE020": case "ELE021": return "EARTH";
+      case "ELE022": case "ELE023": case "ELE024": return "ICE";
+      case "ELE025": case "ELE026": case "ELE027": return "ICE";
+      case "ELE028": case "ELE029": case "ELE030": return "EARTH";
+      case "ELE035": return "ICE";
+      case "ELE036": return "LIGHTNING";
+      case "ELE037": return "ICE,LIGHTNING";
+      case "ELE038": case "ELE039": case "ELE040": return "ICE";
+      case "ELE041": case "ELE042": case "ELE043": return "LIGHTNING";
+      case "ELE044": case "ELE045": case "ELE046": return "ICE";
+      case "ELE047": case "ELE048": case "ELE049": return "LIGHTNING";
+      case "ELE050": case "ELE051": case "ELE052": return "ICE";
+      case "ELE053": case "ELE054": case "ELE055": return "LIGHTNING";
+      case "ELE056": case "ELE057": case "ELE058": return "ICE";
+      case "ELE059": case "ELE060": case "ELE061": return "LIGHTNING";
+      case "ELE064": return "EARTH,LIGHTNING";
+      case "ELE065": return "LIGHTNING";
+      case "ELE066": return "EARTH";
+      case "ELE067": case "ELE068": case "ELE069": return "EARTH";
+      case "ELE070": case "ELE071": case "ELE072": return "LIGHTNING";
+      case "ELE073": case "ELE074": case "ELE075": return "LIGHTNING";
+      case "ELE076": case "ELE077": case "ELE078": return "EARTH";
+      case "ELE079": case "ELE080": case "ELE081": return "EARTH";
+      case "ELE082": case "ELE083": case "ELE084": return "EARTH";
+      case "ELE085": case "ELE086": case "ELE087": return "EARTH";
+      case "ELE088": case "ELE089": case "ELE090": return "LIGHTNING";
+      case "ELE091": return "EARTH,LIGHTNING";
+      case "ELE092": return "ICE,LIGHTNING";
+      case "ELE093": return "EARTH,ICE";
+      case "ELE094": case "ELE095": case "ELE096": return "EARTH";
+      case "ELE097": case "ELE098": case "ELE099": return "ICE";
+      case "ELE100": case "ELE101": case "ELE102": return "LIGHTNING";
+      case "UPR104": return "ICE";
+      default: return "";
     }
   }
 

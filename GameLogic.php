@@ -8,7 +8,7 @@ include "AllyAbilities.php";
 include "LandmarkAbilities.php";
 include "WeaponLogic.php";
 
-function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
+function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="-")
 {
   global $mainPlayer, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
   global $CS_AtksWWeapon, $CS_DamagePrevention, $CS_Num6PowDisc, $CCS_DamageDealt, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
@@ -16,6 +16,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-")
   global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
+  if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID))
+  {
+    FuseAbility($cardID, $currentPlayer, $additionalCosts);
+  }
   if($set == "ARC")
   {
     switch($class)
@@ -2457,6 +2461,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
+  global $CS_AdditionalCosts;
   $rv = "";
   switch($phase)
   {
@@ -3255,9 +3260,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default: break;
         }
       }
-      $lastPlayed[3] = "FUSED";
-      FuseAbility($card, $player, $elements);
-      if(CardType($card) == "AA") $combatChainState[$CCS_AttackFused] = 1;
+      //$lastPlayed[3] = "FUSED";
+      //FuseAbility($card, $player, $elements);
+      AppendClassState($player, $CS_AdditionalCosts, $elements);
+      //if(CardType($card) == "AA") $combatChainState[$CCS_AttackFused] = 1;
       return $lastResult;
     case "SUBPITCHVALUE":
       return $parameter - PitchValue($lastResult);
