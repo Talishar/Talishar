@@ -21,19 +21,20 @@ if ($handle = opendir($path)) {
         $gameToken = $folder;
         $folder = $path . "/" . $folder . "/";
         $gs = $folder . "gamestate.txt";
+        $currentTime = round(microtime(true) * 1000);
         if(file_exists($gs))
         {
-          $lastGamestateUpdate = filemtime($gs);
-          if(time() - $lastGamestateUpdate < 120)
+          $lastGamestateUpdate = intval(GetCachePiece($gameToken, 2));
+          if($currentTime - $lastGamestateUpdate < 12000)
           {
             $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn3.php'>";
-            $spectateLinks .= "<label for='joinGame'>Last Update " . time() - $lastGamestateUpdate . " seconds ago </label>";
+            $spectateLinks .= "<label for='joinGame'>Last Update " . ($currentTime - $lastGamestateUpdate) . " seconds ago </label>";
             $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
             $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
             $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
             $spectateLinks .= "</form>";
           }
-          else if(time() - $lastGamestateUpdate > 3600)//1 hour
+          else if(time() - $lastGamestateUpdate > 360000)//1 hour
           {
             if($autoDeleteGames)
             {
@@ -48,10 +49,9 @@ if ($handle = opendir($path)) {
         $gameName = $gameToken;
         $lineCount = 0;
         $status = -1;
-        $currentTime = round(microtime(true) * 1000);
         if(file_exists($gf))
         {
-          $lastRefresh = GetCachePiece($gameName, 2);//filemtime($gf);
+          $lastRefresh = intval(GetCachePiece($gameName, 2));//filemtime($gf);
           if($lastRefresh != "" && $currentTime - $lastRefresh < 500)
           {
             //$status = (GetCachePiece($gameName, 5) == "-1" ? 0 : 1);
