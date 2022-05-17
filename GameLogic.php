@@ -2459,7 +2459,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $currentPlayer, $combatChain, $defPlayer;
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
-  global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CCS_AttackFused, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
+  global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
   global $CS_AdditionalCosts;
   $rv = "";
@@ -3260,10 +3260,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default: break;
         }
       }
-      //$lastPlayed[3] = "FUSED";
-      //FuseAbility($card, $player, $elements);
       AppendClassState($player, $CS_AdditionalCosts, $elements);
-      //if(CardType($card) == "AA") $combatChainState[$CCS_AttackFused] = 1;
       return $lastResult;
     case "SUBPITCHVALUE":
       return $parameter - PitchValue($lastResult);
