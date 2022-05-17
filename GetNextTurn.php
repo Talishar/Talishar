@@ -823,8 +823,11 @@
     else
     {
       echo Card($lastPlayed[0], "CardImages", 271);
-      if(count($lastPlayed) > 3 && $lastPlayed[3] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse2.png' />");
-      else if(count($lastPlayed) > 3 && $lastPlayed[3] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse2.png' />");
+      if(count($lastPlayed) >= 4)
+      {
+        if($lastPlayed[3] == "FUSED") echo("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse2.png' />");
+        else if($lastPlayed[3] == "UNFUSED") echo("<img title='This card was not fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/Unfused.png' />");
+      }
     }
   echo("</div>");
   echo("<div style='position:relative; z-index:-1; left:0px; top:0px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");

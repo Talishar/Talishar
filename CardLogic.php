@@ -270,7 +270,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
-    global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts;
+    global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -316,6 +316,10 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           else
           {
             SetClassState($player, $CS_AbilityIndex, $params[2]);//This is like a parameter to PlayCardEffect and other functions
+            if(HasFusion($cardID))
+            {
+              $lastPlayed[3] = ($additionalCosts != "-" ? "FUSED" : "UNFUSED");
+            }
             PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts);
           }
         }
