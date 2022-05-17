@@ -899,7 +899,7 @@ function FinalizeChainLink($chainClosed=false)
     global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
     global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
-    global $decisionQueue, $CS_AdditionalCosts;
+    global $decisionQueue, $CS_AdditionalCosts, $CS_AbilityIndex;
     $resources = &GetResources($currentPlayer);
     $pitch = &GetPitch($currentPlayer);
     $dynCostResolved = intval($dynCostResolved);
@@ -1053,6 +1053,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
       if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+      PayAdditionalCosts($cardID, $from);
     }
     if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards);//Played or blocked
 
@@ -1069,16 +1070,7 @@ function FinalizeChainLink($chainClosed=false)
 
     //CR 5.1.4b Declare target of attack
     if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
-    if($turn[0] == "B")//If a layer is not created
-    {
-      AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "-" . $from . "-" . $resourcesPaid . "--" . GetClassState($currentPlay, $CS_AdditionalCosts));
-    }
-    else
-    {
-      $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
-      if($additionalCosts == "") $additionalCosts = "-";
-      AddLayer($cardID, $currentPlayer, $from . "-" . $resourcesPaid . "-" . $lastPlayed[2], GetClassState($currentPlayer, $CS_LayerTarget), $additionalCosts);
-    }
+    AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "-" . $from . "-" . $resourcesPaid . "-" . GetClassState($currentPlayer, $CS_AbilityIndex));
     ProcessDecisionQueue();
   }
 
@@ -1115,7 +1107,6 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
       }
     }
-    PayAdditionalCosts($cardID, $from);
     switch($cardID)
     {
       case "WTR081":

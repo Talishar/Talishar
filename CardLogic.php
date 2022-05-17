@@ -270,7 +270,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
-    global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
+    global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -315,7 +315,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           else if($cardID == "RESUMETURN") $turn[0] = "M";
           else
           {
-            SetClassState($player, $CS_AbilityIndex, GetAbilityIndex($cardID, GetClassState($player, $CS_CharacterIndex), $params[2]));//This is like a parameter to PlayCardEffect and other functions
+            SetClassState($player, $CS_AbilityIndex, $params[2]);//This is like a parameter to PlayCardEffect and other functions
             PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts);
           }
         }
@@ -330,7 +330,24 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         }
         $params = explode("-", $decisionQueue[2]);
         CloseDecisionQueue();
-        PlayCardEffect($params[0], $params[1], $params[2], "-", $params[4]);
+
+        if($turn[0] == "B")//If a layer is not created
+        {
+          PlayCardEffect($params[0], $params[1], $params[2], "-", $params[4]);
+        }
+        else
+        {
+          //params 3 = ability index
+          $layerTarget = GetClassState($currentPlayer, $CS_LayerTarget);
+          $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
+          if($layerTarget == "") $layerTarget = "-";
+          if($additionalCosts == "") $additionalCosts = "-";
+          AddLayer($params[0], $currentPlayer, $params[1] . "-" . $params[2] . "-" . $params[3], $layerTarget, $additionalCosts);
+          ProcessDecisionQueue();
+          return;
+        }
+
+
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING")
       {
