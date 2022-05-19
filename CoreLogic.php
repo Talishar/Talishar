@@ -260,7 +260,7 @@ function CharacterPlayCardAbilities($cardID, $from)
     if($character[$i+1] != 2) continue;
     switch($character[$i])
     {
-      case "EVR120":
+      case "EVR120": case "UPR102": case "UPR103":
         if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE"))
         {
           PlayAura("ELE111", $mainPlayer);
@@ -995,7 +995,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
-  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && SearchCharacterActive($currentPlayer, "EVR120")) return true;
+  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103"))) return true;
   if($cardType == "AR" && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if($cardType == "DR" && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
