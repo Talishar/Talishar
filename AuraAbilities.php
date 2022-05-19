@@ -238,7 +238,7 @@ function AuraEndTurnAbilities()
     switch($auras[$i])
     {
       case "ARC167": case "ARC168": case "ARC169": if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0) { $remove = 1; } break;
-      case "ELE111": $remove = 1; break;
+      case "ELE111": FrostHexEndTurnAbility($mainPlayer); $remove = 1; break;
       case "ELE226": $remove = 1; break;
       default: break;
     }
