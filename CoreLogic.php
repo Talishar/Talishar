@@ -73,7 +73,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     {
       $attack = 0;
       if($attackType == "W") $attack = $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
-      else if(CardSubtype($combatChain[0]) == "Aura") $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
+      else if(DelimStringContains(CardSubtype($combatChain[0]), "Aura")) $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
       if($CanGainAttack || $attack < 0)
       {
         array_push($attackModifiers, "+1 Attack Counters");
@@ -1037,7 +1037,7 @@ function DoesAttackHaveGoAgain()
   {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
-    if(CardSubtype($combatChain[0]) == "Aura" && SearchCharacterForCard($mainPlayer, "MON088")) return true;
+    if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   return false;
 }

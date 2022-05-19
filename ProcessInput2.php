@@ -1433,7 +1433,7 @@ function FinalizeChainLink($chainClosed=false)
     else if($from != "PLAY")
     {
       $cardSubtype = CardSubType($cardID);
-      if($cardSubtype == "Aura")
+      if(DelimStringContains($cardSubtype, "Aura"))
       {
         PlayMyAura($cardID);
       }

@@ -19,7 +19,7 @@
   {
     switch($cardID)
     {
-      case "UPR126": return "Affliction Aura";
+      case "UPR126": return "Affliction,Aura";
       default: return "";
     }
   }

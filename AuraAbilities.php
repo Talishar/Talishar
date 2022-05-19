@@ -4,6 +4,7 @@ function PlayAura($cardID, $player, $number=1, $isToken=false)
 {
   global $CS_NumAuras;
   if(CardType($cardID) == "T") $isToken = true;
+  if(DelimStringContains(CardSubType($cardID), "Affliction")) $player = ($player == 1 ? 2 : 1);
   $auras = &GetAuras($player);
   if($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if($cardID == "MON104")
@@ -377,7 +378,7 @@ function AuraAttackAbilities($attackID)
       case "ARC112": DealArcane(1, 0, "RUNECHANT", "ARC112"); $remove = 1; break;
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
-      case "EVR140": if($auras[$i+5]>0 && CardSubtype($attackID) == "Aura" && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
+      case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
       default: break;
     }
     if($remove == 1)

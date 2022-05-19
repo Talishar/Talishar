@@ -2579,7 +2579,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         PutItemIntoPlayForPlayer($lastResult, $player, ($parameter != "-" ? $parameter : 0));
       }
-      else if($subtype == "Aura")
+      else if(DelimStringContains($subtype, "Aura"))
       {
         PlayAura($lastResult, $player);
         PlayAbility($lastResult, "-", 0);

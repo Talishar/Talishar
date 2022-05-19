@@ -5,7 +5,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR139": return "A";
       default: return "";
     }
   }
@@ -14,7 +14,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR139": return "Affliction,Aura";
       default: return "";
     }
   }
@@ -24,7 +24,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR139": return 0;
       default: return 0;
     }
   }
@@ -33,7 +33,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR139": return 3;
       default: return 0;
     }
   }
@@ -42,7 +42,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR139": return 2;
       default: return 2;
     }
   }
