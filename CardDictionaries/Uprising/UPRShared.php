@@ -155,7 +155,7 @@
     }
   }
 
-  function UPRPlayAbility($cardID, $from, $resourcesPaid)
+  function UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     $rv = "";
@@ -164,7 +164,7 @@
     {
       case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid);
       case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid);
-      case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid);
+      case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "NONE": return UPRTalentPlayAbility($cardID, $from, $resourcesPaid);
       default: return "";
     }

@@ -71,7 +71,7 @@
     }
   }
 
-  function UPRWizardPlayAbility($cardID, $from, $resourcesPaid)
+  function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     $rv = "";
@@ -79,6 +79,11 @@
     {
       case "UPR104":
         DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
+          AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
+        }
         return "Encase deals 3 arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;

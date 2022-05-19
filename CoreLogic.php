@@ -170,6 +170,11 @@ function StartTurnAbilities()
     if($defItems[$i+2] == 1) $defItems[$i+2] = 2;
   }
   ArsenalStartTurnAbilities();
+  $defCharacter = &GetPlayerCharacter(($mainPlayer == 1 ? 2 : 1));
+  for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
+  {
+    $defCharacter[$i+8] = "0";
+  }
 }
 
 function ArsenalStartTurnAbilities()
