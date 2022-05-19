@@ -351,6 +351,8 @@
       case "ELE097": case "ELE098": case "ELE099": return "ICE";
       case "ELE100": case "ELE101": case "ELE102": return "LIGHTNING";
       case "UPR104": return "ICE";
+      case "UPR109": return "ICE";
+      case "UPR119": case "UPR120": case "UPR121": return "ICE";
       default: return "";
     }
   }

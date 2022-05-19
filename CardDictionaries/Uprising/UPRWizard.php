@@ -85,6 +85,19 @@
           AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
         }
         return "Encase deals 3 arcane.";
+      case "UPR109":
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $numFrostBite = $resourcesPaid/2;
+        for($i=0; $i<$numFrostBite; ++$i)
+        {
+          PlayAura("ELE111", $otherPlayer);
+        }
+        $amountArcane = SearchCount(SearchAurasForCard("ELE111", $otherPlayer));
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer);
+        }
+        return "Ice Eternal created $numFrostBite Frostbites and dealt $amountArcane arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
