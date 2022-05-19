@@ -116,5 +116,14 @@
     }
   }
 
+  function FrostHexEndTurnAbility($player)
+  {
+    $numFrostHex = SearchCount(SearchAurasForCard("UPR126", $player));
+    for($i=0; $i<$numFrostHex; ++$i)
+    {
+      DealArcane(1, 0, "TRIGGER", "ELE111", false, ($player == 1 ? 2 : 1));
+    }
+  }
+
 
 ?>
