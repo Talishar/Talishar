@@ -17,10 +17,10 @@ def getFilename_fromCd(cd):
 
 
 urls = {
-    "https://fabtcg.com/resources/card-galleries/welcome-rathe-unlimited-booster": "WTR",
-    "https://fabtcg.com/resources/card-galleries/arcane-rising-unlimited-booster": "ARC",
+    # "https://fabtcg.com/resources/card-galleries/welcome-rathe-unlimited-booster": "WTR",
+    # "https://fabtcg.com/resources/card-galleries/arcane-rising-unlimited-booster": "ARC",
     "https://fabtcg.com/resources/card-galleries/crucible-war-booster": "CRU",
-    "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
+    # "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
     "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE"
 
  } # important not to have a '/' at the end of the link
