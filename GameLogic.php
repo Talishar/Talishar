@@ -60,7 +60,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
   }
   else if($set == "UPR")
   {
-    return UPRPlayAbility($cardID, $from, $resourcesPaid);
+    return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
   $rv = "";
   switch($cardID)
@@ -3712,6 +3712,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
       SetClassState($player, $CS_AbilityIndex, GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult));
+      return $lastResult;
+    case "ENCASEDAMAGE":
+      $character = &GetPlayerCharacter($player);
+      $character[8] = 1;
+      for($i=CharacterPieces(); $i<count($character); $i+=CharacterPieces())
+      {
+        if(CardType($character[$i]) == "E") $character[$i+8] = 1;
+      }
       return $lastResult;
     default:
       return "NOTSTATIC";

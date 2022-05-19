@@ -1551,6 +1551,7 @@
     if($phase == "P" && $from != "HAND") return false;
     if($phase == "B" && $from == "BANISH") return false;
     if($phase == "B" && $cardType == "E") { $restriction = ($myCharacter[$index+6] == 1 ? "On combat chain" : ""); return $myCharacter[$index+6] == 0; }
+    if($from == "CHAR" && $phase != "B" && $myCharacter[$index+8] == "1") { $restriction = "Frozen"; return false; }
     if(($phase == "B" || ($phase == "D" && $cardType == "DR")) && $from == "HAND")
     {
       if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;

@@ -25,9 +25,10 @@
   //5 = Num uses
   //6 = On chain (1 = yes, 0 = no)
   //7 = Flagged for destruction (1 = yes, 0 = no)
+  //8 = Frozen (1 = yes, 0 = no)
   function CharacterPieces()
   {
-    return 8;
+    return 9;
   }
 
   function BanishPieces()
