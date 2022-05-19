@@ -998,7 +998,13 @@ if($set == "UPR")
   switch($num)
   {
     case "104": return "Encase";
+    case "109": return "Ice Eternal";
+    case "119": case "120": case "121": return "Ice Bind";
+    case "UPR126": return "Frost Hex";
     case "133": case "134": case "135": return "Ice Bolt";
+    case "UPR138": return "Channel the Bleak Expanse";
+    case "UPR139": return "Hypothermia";
+    case "UPR147": case "UPR148": case "UPR149": return "Cold Snap";
     default: return "Name not populated - please report bug";
   }
 }
