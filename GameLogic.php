@@ -3711,7 +3711,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
-      SetClassState($player, $CS_AbilityIndex, GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult));
+      $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult);
+      SetClassState($player, $CS_AbilityIndex, $index);
+      $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
+      WriteLog(implode(" ", explode("_", $names[$index])) . " ability was chosen.");
       return $lastResult;
     case "ENCASEDAMAGE":
       $character = &GetPlayerCharacter($player);
