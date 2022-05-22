@@ -27,7 +27,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR147": case "UPR148": case "UPR149": return true;
       default: return false;
     }
   }

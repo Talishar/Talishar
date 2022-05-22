@@ -7,6 +7,7 @@ include "ItemAbilities.php";
 include "AllyAbilities.php";
 include "LandmarkAbilities.php";
 include "WeaponLogic.php";
+include "MZLogic.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="-")
 {
@@ -2508,6 +2509,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKCLASSAA": $rv = SearchDeck($player, "AA", "", -1, -1, $subparam); break;
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
         case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
+        case "SEARCHMZ": $rv = SearchMZ($player, $subparam); break;
         case "HAND": $rv = GetIndices(count(GetHand($player))); break;
         case "HANDTALENT":  $rv = SearchHand($player, "", "", -1, -1, "", $subparam); break;
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
@@ -2759,6 +2761,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch($lrArr[0])
       {
         case "MYCHAR": case "THEIRCHAR": AddCharacterUses($player, $lrArr[1], $parameter); break;
+        default: break;
+      }
+      return $lastResult;
+    case "MZOP":
+      switch($parameter)//Mode
+      {
+        case "FREEZE": MZFreeze($lastResult); break;
         default: break;
       }
       return $lastResult;

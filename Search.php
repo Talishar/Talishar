@@ -54,6 +54,12 @@ function SearchItems($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $
   return SearchInner($items, ItemPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
+function SearchAllies($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+{
+  $allies = &GetAllies($player);
+  return SearchInner($allies, AllyPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+}
+
 function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1)
 {
   $cardList = "";
@@ -531,6 +537,23 @@ function DelimStringContains($str, $find)
     if($arr[$i] == $find) return true;
   }
   return false;
+}
+
+function SearchMZ($player, $subparam)
+{
+  $rv = "";
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $zones = explode("|", $subparam);
+  for($i=0; $i<count($zones); ++$i)
+  {
+    switch($zones[$i])
+    {
+      case "THEIRALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), $zones[$i])); break;
+      case "THEIRARS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), $zones[$i])); break;
+      default: break;
+    }
+  }
+  return $rv;
 }
 
 ?>

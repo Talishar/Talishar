@@ -6,6 +6,7 @@
     switch($cardID)
     {
       case "UPR139": return "A";
+      case "UPR147": case "UPR148": case "UPR149": return "A";
       default: return "";
     }
   }
@@ -25,6 +26,7 @@
     switch($cardID)
     {
       case "UPR139": return 0;
+      case "UPR147": case "UPR148": case "UPR149": return 1;
       default: return 0;
     }
   }
@@ -34,6 +36,9 @@
     switch($cardID)
     {
       case "UPR139": return 3;
+      case "UPR147": return 1;
+      case "UPR148": return 2;
+      case "UPR149": return 3;
       default: return 0;
     }
   }
@@ -43,6 +48,7 @@
     switch($cardID)
     {
       case "UPR139": return 2;
+      case "UPR147": case "UPR148": case "UPR149": return 2;
       default: return 2;
     }
   }
@@ -63,7 +69,20 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
-
+      case "UPR147": case "UPR148": case "UPR149":
+        if($cardID == "UPR147") $cost = 3;
+        else if($cardID == "UPR148") $cost = 2;
+        else $cost = 1;
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
+        AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+        AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY|THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        if($from == "ARS") MyDrawCard();
+        return "";
       default: return "";
     }
   }

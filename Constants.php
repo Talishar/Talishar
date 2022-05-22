@@ -79,12 +79,12 @@
 
   function ArsenalPieces()
   {
-    return 4;
+    return 5;
   }
 
   function AllyPieces()
   {
-    return 3;
+    return 4;
   }
 
   function LayerPieces()
