@@ -98,6 +98,20 @@
           DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer);
         }
         return "Ice Eternal created $numFrostBite Frostbites and dealt $amountArcane arcane.";
+      case "UPR119": case "UPR120": case "UPR121":
+        if($cardID == "UPR119") $damage = 3;
+        else if($cardID == "UPR120") $damage = 2;
+        else $damage = 1;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        }
+        return "Ice Bind deals $damage arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
