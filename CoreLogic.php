@@ -173,18 +173,43 @@ function StartTurnAbilities()
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
   {
-    $defCharacter[$i+8] = "0";
+    $defCharacter[$i+8] = "0";//Reset Frozen
   }
   $defAllies = &GetAllies($defPlayer);
   for($i=0; $i<count($defAllies); $i+=AllyPieces())
   {
-    $defAllies[$i+3] = "0";
+    $defAllies[$i+3] = "0";//Reset Frozen
   }
   $defArsenal = &GetArsenal($defPlayer);
   for($i=0; $i<count($defArsenal); $i+=ArsenalPieces())
   {
-    $defArsenal[$i+4] = "0";
+    $defArsenal[$i+4] = "0";//Reset Frozen
   }
+  MZStartTurnMayAbilities();
+}
+
+function MZStartTurnMayAbilities()
+{
+  global $mainPlayer;
+  AddDecisionQueue("FINDINDICES", $mainPlayer, "MZSTARTTURN");
+  AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a start turn ability to activate (or pass)", 1);
+  AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+}
+
+function MZStartTurnIndices()
+{
+  global $mainPlayer;
+  $mainDiscard = &GetDiscard($mainPlayer);
+  $cards = "";
+  for($i=0; $i<count($mainDiscard); $i+=DiscardPieces())
+  {
+    switch($mainDiscard[$i])
+    {
+      case "UPR086": $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD")); break;
+      default: break;
+    }
+  }
+  return $cards;
 }
 
 function ArsenalStartTurnAbilities()
