@@ -381,12 +381,15 @@
       if($option[0] == "MYAURAS") $source = $myAuras;
       else if($option[0] == "THEIRAURAS") $source = $theirAuras;
       else if($option[0] == "THEIRALLY") $source = $theirAllies;
+      else if($option[0] == "THEIRARS") $source = $theirArsenal;
       else if($option[0] == "MYCHAR") $source = $myCharacter;
       else if($option[0] == "THEIRCHAR") $source = $theirCharacter;
       else if($option[0] == "MYITEMS") $source = $myItems;
       else if($option[0] == "LAYER") $source = $layers;
       else if($option[0] == "MYHAND") $source = $myHand;
-      $content .= Card($source[intval($option[1])], "CardImages", $bigCardSize, 16, 0, 0, 0, 0, $options[$i]);
+      $card = $source[intval($option[1])];
+      if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
+      $content .= Card($card, "CardImages", $bigCardSize, 16, 0, 0, 0, 0, $options[$i]);
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
@@ -597,7 +600,10 @@
     echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
+      echo("<div style='position:relative;'>");
       echo(Card($theirAllies[$i], "CardImages", $cardSize, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2]));
+      if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
+      echo("</div>");
     }
     echo("</div>");
   }
@@ -626,8 +632,11 @@
     echo("<div title='Their Arsenal' style='position: fixed; top:0px; left:" . GetCharacterLeft("C", "") . "; display:inline;'>");
     for($i=0; $i<count($theirArsenal); $i+=ArsenalPieces())
     {
+      echo("<div style='position:relative;'>");
       if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "CardImages", $cardSize, 0, 1, $theirArsenal[$i+2] == 0 ? 1 : 0, 0, $theirArsenal[$i+3]));
       else echo(Card("cardBack", "CardImages", $cardSize, 0, 0));
+      if($theirArsenal[$i+4] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
+      echo("</div>");
     }
     echo("</div>");
   }
@@ -671,13 +680,14 @@
     echo("<div style='position:fixed; left:" . $arsenalLeft . "; bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize - 10) . "px;'>");//arsenal div
     for($i=0; $i<count($myArsenal); $i+=ArsenalPieces())
     {
+      echo("<div style='position:relative;'>");
       if($playerID == 3)
       {
         echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, -1));
       }
       else
       {
-        $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction);
+        $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction);
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $counters = $myArsenal[$i+3];
         echo("<div style='display:inline-block; position:relative; left:10px;'>");
@@ -688,6 +698,8 @@
         else echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
         echo("</div>");
       }
+      if($myArsenal[$i+4] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:6px; left:15px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
+      echo("</div>");
     }
     echo("</div>");//End arsenal div
   }
@@ -728,9 +740,12 @@
     echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($myAllies); $i+=AllyPieces())
     {
+      echo("<div style='position:relative;'>");
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
       echo(Card($myAllies[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+2], strval($i)));
+      if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
+      echo("</div>");
     }
     echo("</div>");
   }

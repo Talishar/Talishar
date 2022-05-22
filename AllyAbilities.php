@@ -6,6 +6,7 @@ function PlayAlly($cardID, $player)
   array_push($allies, $cardID);
   array_push($allies, 2);
   array_push($allies, AllyHealth($cardID));
+  array_push($allies, 0);//Frozen
 }
 
 function DestroyAlly($player, $index)
@@ -20,4 +21,3 @@ function DestroyAlly($player, $index)
 
 
 ?>
-

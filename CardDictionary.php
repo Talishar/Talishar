@@ -1545,7 +1545,7 @@
   {
     global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
     global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter, $mainPlayer, $playerID;
-    global $combatChain;
+    global $combatChain, $myAllies, $myArsenal;
     $restriction = "";
     $cardType = CardType($cardID);
     $subtype = CardSubType($cardID);
@@ -1553,6 +1553,8 @@
     if($phase == "B" && $from == "BANISH") return false;
     if($phase == "B" && $cardType == "E") { $restriction = ($myCharacter[$index+6] == 1 ? "On combat chain" : ""); return $myCharacter[$index+6] == 0; }
     if($from == "CHAR" && $phase != "B" && $myCharacter[$index+8] == "1") { $restriction = "Frozen"; return false; }
+    if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index+3] == "1") { $restriction = "Frozen"; return false; }
+    if($from == "ARS" && $phase != "B" && $myArsenal[$index+4] == "1") { $restriction = "Frozen"; return false; }
     if(($phase == "B" || ($phase == "D" && $cardType == "DR")) && $from == "HAND")
     {
       if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;

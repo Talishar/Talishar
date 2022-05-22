@@ -149,6 +149,7 @@ function AddArsenal($cardID, $player, $from, $facing)
   array_push($arsenal, $facing);
   array_push($arsenal, ArsenalNumUsesPerTurn($cardID));//Num uses
   array_push($arsenal, "0");//Counters
+  array_push($arsenal, "0");//Is Frozen (1 = Frozen)
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP")
   {
@@ -164,12 +165,6 @@ function AddArsenal($cardID, $player, $from, $facing)
       default: break;
     }
   }
-}
-
-function AddMyArsenal($cardID, $from, $facing)
-{
-  global $currentPlayer;
-  AddArsenal($cardID, $currentPlayer, $from, $facing);
 }
 
 function ArsenalEndTurn($player)
@@ -198,14 +193,6 @@ function RemoveArsenal($player, $index)
     unset($arsenal[$i]);
   }
   $arsenal = array_values($arsenal);
-}
-
-//Deprecated -- do not use
-function GetMyArsenalFacing()
-{
-  global $myClassState, $CS_ArsenalFacing;
-  WriteLog("Deprecated function GetArsenalFacing called. Please submit report.");
-  return $myClassState[$CS_ArsenalFacing];
 }
 
 function SetCCAttackModifier($index, $amount)
