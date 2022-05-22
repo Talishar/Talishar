@@ -387,6 +387,7 @@
       else if($option[0] == "MYITEMS") $source = $myItems;
       else if($option[0] == "LAYER") $source = $layers;
       else if($option[0] == "MYHAND") $source = $myHand;
+      else if($option[0] == "MYDISCARD") $source = $myDiscard;
       $card = $source[intval($option[1])];
       if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
       $content .= Card($card, "CardImages", $bigCardSize, 16, 0, 0, 0, 0, $options[$i]);

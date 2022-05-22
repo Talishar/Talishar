@@ -2510,6 +2510,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
         case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
         case "SEARCHMZ": $rv = SearchMZ($player, $subparam); break;
+        case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;
         case "HAND": $rv = GetIndices(count(GetHand($player))); break;
         case "HANDTALENT":  $rv = SearchHand($player, "", "", -1, -1, "", $subparam); break;
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;

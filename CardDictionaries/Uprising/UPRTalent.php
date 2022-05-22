@@ -5,6 +5,7 @@
   {
     switch($cardID)
     {
+      case "UPR086": return "AA";
       case "UPR139": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
       default: return "";
@@ -25,6 +26,7 @@
   {
     switch($cardID)
     {
+      case "UPR086": return 2;
       case "UPR139": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
       default: return 0;
@@ -35,6 +37,7 @@
   {
     switch($cardID)
     {
+      case "UPR086": return 1;
       case "UPR139": return 3;
       case "UPR147": return 1;
       case "UPR148": return 2;
@@ -47,6 +50,7 @@
   {
     switch($cardID)
     {
+      case "UPR086": return 2;
       case "UPR139": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       default: return 2;
@@ -57,7 +61,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR086": return 6;
       default: return 0;
     }
   }
