@@ -1,0 +1,195 @@
+body {
+  background-image:url('../Images/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #111111;
+}
+
+.wrapper {
+  margin: 0 auto;
+}
+
+.section-default {
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.section-default p {
+  padding: 10px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #111;
+}
+
+.login-status {
+  text-align: center;
+  font-size: 26px;
+  color: #111;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  font-family: 'Roboto', sans-serif;
+  color: #111;
+  line-height: 24px;
+  font-weight: bold;
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 32px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+h2 {
+  font-weight: 500;
+  font-size: 24px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+h3 {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+p {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+nav {
+  width: 100%;
+  height: 40px;
+  background-color: #111111;
+  opacity: 0.8;
+}
+
+nav .wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav ul li {
+  list-style: none;
+  float: left;
+}
+
+nav ul li a {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0 16px;
+  text-transform: uppercase;
+}
+
+nav ul li a:hover {
+  color: #31a6ff;
+}
+
+section {
+  margin: auto;
+  margin-top: 15px;
+  background: rgba(240, 240, 240, 0.6);
+  width: 28%;
+  padding-bottom: 5px;
+}
+
+/* sign up */
+.signup-form-form {
+  display: flex;
+  justify-content: center;
+}
+
+.signup-form-form a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.signup-form p {
+  text-align: center;
+  margin-top: 6px;
+  color: #8F0000;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.signup-form form {
+  width: 85%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+}
+
+.signup-form form input {
+  width: calc(100% - 16px);
+  padding: 6px;
+  margin-bottom: 3px;
+  margin-top: 3px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background-color: #F6F6F6;
+  float: left;
+}
+
+.signup-form form button {
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+  margin-top: 3px;
+  margin-right: 3px;
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  font-size: 13px;
+  color: #FFF;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: inherit;
+  cursor: pointer;
+}
+
+/* Reset Password */
+.form-resetpwd {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.form-resetpwd input {
+  width: calc(100% - 16px);
+  padding: 5px;
+  margin: 4px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background-color: #F6F6F6;
+  float: left;
+  font-size: 13px;
+}
+
+.form-resetpwd button {
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+  margin: 3px;
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  font-size: 13px;
+  color: #FFF;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+}
+
+.p-forgetpwd {
+  display: block;
+  padding: 10px 0;
+  width: fit-content;
+  margin: 0 auto;
+  font-size: 14px;
+  color: #111;
+}
