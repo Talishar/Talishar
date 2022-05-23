@@ -112,7 +112,7 @@
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/WTRDraftFiles/CreateGame.php'>");
 ?>
   <input type="hidden" id="numPlayers" name="numPlayers" value="8" />
-  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Welcome to Rathe Solo Draft Practice"></div>
+  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="WTR Solo Draft Practice"></div>
 </form>
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Upcoming Events</h1>

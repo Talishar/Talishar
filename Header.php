@@ -19,8 +19,8 @@
         <a href="MainMenu.php"></a>
         <ul>
           <li><a href="MainMenu.php">Main Menu</a></li>
-          <li><a href="https://discord.gg/JykuRkdd5S">Discord</a></li>
-          <li><a href="https://www.patreon.com/bePatron?u=36985868">Patron</a></li>
+          <li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>
+          <li><a target="_blank" href="https://www.patreon.com/bePatron?u=36985868">Patron</a></li>
           <?php
             if (isset($_SESSION["useruid"])) {
               echo "<li><a href='profile.php'>Profile Page</a></li>";
