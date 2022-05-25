@@ -1008,6 +1008,77 @@ if($set == "UPR")
     default: return "Name not populated - please report bug";
   }
 }
+
+if($set == "DVR")
+{
+  switch($num)
+  {
+    case "001": return "Dorinthea Quicksilver Prodigy";
+    case "002": return "Dawnblade, Resplendent";
+    case "003": return "Ironrot Helm";
+    case "004": return "Blossom of Spring";
+    case "005": return "Gallantry Gold";
+    case "006": return "Ironrot Legs";
+    case "007": return "Hala Goldenhelm";
+    case "008": return "Glisetning Steelblade";
+    case "009": return "En Garde";
+    case "010": return "";
+    case "011": return "";
+    case "012": return "Sharpen Steel";
+    case "013": return "";
+    case "014": return "Thrust";
+    case "015": return "";
+    case "016": return "";
+    case "017": return "";
+    case "018": return "";
+    case "019": return "On a Knife Edge";
+    case "020": return "";
+    case "021": return "";
+    case "022": return "Visit the Blacksmith";
+    case "023": return "Blade Flash";
+    case "024": return "Toughen Up";
+    case "025": return "";
+    case "026": return "";
+    case "027": return "Titanium Bauble";
+
+    default: return "Name not populated - please report bug";
+  }
+}
+if($set == "RVD")
+{
+  switch($num)
+  {
+    case "001": return "Rhinar";
+    case "002": return "Bone Basher";
+    case "003": return "Bone Vizier";
+    case "004": return "Blossom of Spring";
+    case "005": return "Ironhide Gauntlet";
+    case "006": return "Ironhide Legs";
+    case "007": return "Chief Ruk'utan";
+    case "008": return "Alpha Rampage";
+    case "009": return "Beast Mode";
+    case "010": return "";
+    case "011": return "";
+    case "012": return "";
+    case "013": return "";
+    case "014": return "";
+    case "015": return "Pack Call";
+    case "016": return "";
+    case "017": return "";
+    case "018": return "Muscle Mutt";
+    case "019": return "";
+    case "020": return "";
+    case "021": return "";
+    case "022": return "";
+    case "023": return "";
+    case "024": return "";
+    case "025": return "Clearing Bellow";
+    case "026": return "Dodge";
+    case "027": return "Titanium Bauble";
+
+    default: return "Name not populated - please report bug";
+  }
+}
 if ($set == "WTR")
 	{  switch($num)	   {
 

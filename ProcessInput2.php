@@ -1188,7 +1188,7 @@ function FinalizeChainLink($chainClosed=false)
       case "MON089":
         AddDecisionQueue("PHANTASMALFOOTSTEPS", $currentPlayer, $index, 1);
         break;
-      case "MON241": case "MON242": case "MON243": case "MON244":
+      case "MON241": case "MON242": case "MON243": case "MON244": case "RVD006": case "RVD005":
         AddDecisionQueue("IRONHIDE", $currentPlayer, $index, 1);
         break;
       case "ELE203":

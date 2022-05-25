@@ -116,7 +116,7 @@
 </form>
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Upcoming Events</h1>
-    <a title='Team GG' href='https://www.azcardtrading.it/collections/events-tournaments' style='color:rgb(220, 220, 220);' target='_blank'>Online Armory from Team GG every Tuesday!</a>
+    <a title='Team GG' href='https://www.azcardtrading.it/collections/events-tournaments' style='color:rgb(220, 220, 220); display: block; text-align: center;' target='_blank'>Online Armory from Team GG every Tuesday!</a>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
     <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:40px;' src='./Images/flags/italy.png' /></a>
     <br><br>
