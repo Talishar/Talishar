@@ -227,7 +227,7 @@
   {
     global $combatChain;
     if(CardType($combatChain[$index]) != "AA") return;
-    if(CardType($combatChain[$index]) == "ILLUSIONIST") return;
+    if(CardClass($combatChain[$index]) == "ILLUSIONIST") return;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
     $origAV = $av;
