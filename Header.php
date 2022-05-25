@@ -1,6 +1,7 @@
 <?php
-  session_start();
   include_once 'includes/functions.inc.php';
+  include_once 'includes/dbh.inc.php';
+  session_start();
 ?>
 
 <!DOCTYPE html>
@@ -34,5 +35,3 @@
         </ul>
       </div>
     </nav>
-
-<div class="wrapper">
