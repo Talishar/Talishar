@@ -17,6 +17,7 @@ body {
 .section-default p {
   padding: 10px 0;
   text-align: center;
+  margin-bottom: 3px;
   font-size: 14px;
   color: #111;
 }
@@ -103,6 +104,9 @@ section {
 .signup-form-form {
   display: flex;
   justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .signup-form-form a {
@@ -128,7 +132,7 @@ section {
 .signup-form form input {
   width: calc(100% - 16px);
   padding: 6px;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
   margin-top: 3px;
   border: 1px solid #CCC;
   border-radius: 4px;
@@ -142,6 +146,7 @@ section {
   height: 40px;
   margin-top: 3px;
   margin-right: 3px;
+  margin-bottom: 3px;
   border: none;
   border-radius: 4px;
   background-color: #333;
@@ -192,4 +197,15 @@ section {
   margin: 0 auto;
   font-size: 14px;
   color: #111;
+}
+
+.message{
+   margin:10px 0;
+   width: 100%;
+   border-radius: 5px;
+   padding:10px;
+   text-align: center;
+   background-color: var(--red);
+   color:var(--white);
+   font-size: 20px;
 }

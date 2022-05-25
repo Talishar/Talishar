@@ -14,7 +14,6 @@ if (isset($_POST["submit"])) {
   require_once "dbh.inc.php";
   require_once 'functions.inc.php';
 
-  // Left inputs empty
   // We set the functions "!== false" since "=== true" has a risk of giving us the wrong outcome
   if (emptyInputSignup($username, $email, $pwd, $pwdRepeat) !== false) {
     header("location: ../signup.php?error=emptyinput");
