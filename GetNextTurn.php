@@ -186,6 +186,9 @@
     if($playerID == $currentTurnEffects[$i+1]) $friendlyEffects .= $effect;
     else $opponentEffects .= $effect;
   }
+  //TODO: Make this better by refactoring the above to a function
+  if(GetClassState($playerID, $CS_NextArcaneBonus) > 0) $friendlyEffects .= "<div title='Next arcane bonus: " . GetClassState($playerID, $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid blue;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
+  if(GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) > 0) $opponentEffects .= "<div title='Next arcane bonus: " . GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid red;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   //echo("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px; background-size:cover; background-image: url(\"./Images/effectSidebar.png\");'>");
   echo("<div>Their Effects</div>");
   echo($opponentEffects);
