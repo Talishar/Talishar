@@ -810,9 +810,9 @@ if ($set == "MON")
 		case "126": return "Endless Maw";
 		case "127": return "Endless Maw";
 		case "128": return "Endless Maw";
-		case "129": return "Werithing Beast Hulk";
-		case "130": return "Werithing Beast Hulk";
-		case "131": return "Werithing Beast Hulk";
+		case "129": return "Writhing Beast Hulk";
+		case "130": return "Writhing Beast Hulk";
+		case "131": return "Writhing Beast Hulk";
 		case "132": return "Convulsions from the Bellows of Hell";
 		case "133": return "Convulsions from the Bellows of Hell";
 		case "134": return "Convulsions from the Bellows of Hell";
