@@ -70,7 +70,6 @@ function uidExists($conn, $username) {
 		$result = false;
 		return $result;
 	}
-
 	mysqli_stmt_close($stmt);
 }
 
@@ -126,6 +125,8 @@ function loginUser($conn, $username, $pwd) {
 		session_start();
 		$_SESSION["userid"] = $uidExists["usersId"];
 		$_SESSION["useruid"] = $uidExists["usersUid"];
+		$_SESSION["useremail"] = $uidExists["usersEmail"];
+		$_SESSION["userspwd"] = $uidExists["usersPwd"];
 		header("location: ../MainMenu.php?error=none");
 		exit();
 	}
