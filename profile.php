@@ -62,7 +62,7 @@ if(isset($_POST['update_profile'])){
 
       <div class="wrapper">
           <div class="signup-form-form">
-              <form action="profile.php" method="post">
+              <form action="Profile.php" method="post">
 
             <!-- Profile Picture placeholder -->
               <style>

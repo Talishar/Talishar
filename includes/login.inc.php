@@ -14,7 +14,7 @@ if (isset($_POST["submit"])) {
 
   // Left inputs empty
   if (emptyInputLogin($username, $pwd) === true) {
-    header("location: ../login.php?error=emptyinput");
+    header("location: ../Login.php?error=emptyinput");
 		exit();
   }
 
@@ -24,6 +24,6 @@ if (isset($_POST["submit"])) {
   loginUser($conn, $username, $pwd);
 
 } else {
-	header("location: ../login.php");
+	header("location: ../Login.php");
     exit();
 }

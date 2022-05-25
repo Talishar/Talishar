@@ -16,27 +16,27 @@ if (isset($_POST["submit"])) {
 
   // We set the functions "!== false" since "=== true" has a risk of giving us the wrong outcome
   if (emptyInputSignup($username, $email, $pwd, $pwdRepeat) !== false) {
-    header("location: ../signup.php?error=emptyinput");
+    header("location: ../Signup.php?error=emptyinput");
 		exit();
   }
 	// Proper username chosen
   if (invalidUid($uid) !== false) {
-    header("location: ../signup.php?error=invaliduid");
+    header("location: ../Signup.php?error=invaliduid");
 		exit();
   }
   // Proper email chosen
   if (invalidEmail($email) !== false) {
-    header("location: ../signup.php?error=invalidemail");
+    header("location: ../Signup.php?error=invalidemail");
 		exit();
   }
   // Do the two passwords match?
   if (pwdMatch($pwd, $pwdRepeat) !== false) {
-    header("location: ../signup.php?error=passwordsdontmatch");
+    header("location: ../Signup.php?error=passwordsdontmatch");
 		exit();
   }
   // Is the username taken already
   if (uidExists($conn, $username) !== false) {
-    header("location: ../signup.php?error=usernametaken");
+    header("location: ../Signup.php?error=usernametaken");
 		exit();
   }
 
@@ -46,6 +46,6 @@ if (isset($_POST["submit"])) {
   createUser($conn, $username, $email, $pwd);
 
 } else {
-	header("location: ../signup.php");
+	header("location: ../Signup.php");
     exit();
 }

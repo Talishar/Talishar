@@ -53,7 +53,7 @@ function uidExists($conn, $username) {
   $sql = "SELECT * FROM users WHERE usersUid = ? OR usersEmail = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
-	 	header("location: ../signup.php?error=stmtfailed");
+	 	header("location: ../Signup.php?error=stmtfailed");
 		exit();
 	}
 
@@ -79,7 +79,7 @@ function createUser($conn, $username, $email, $pwd) {
 
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
-	 	header("location: ../signup.php?error=stmtfailed");
+	 	header("location: ../Signup.php?error=stmtfailed");
 		exit();
 	}
 
@@ -89,7 +89,7 @@ function createUser($conn, $username, $email, $pwd) {
 	mysqli_stmt_execute($stmt);
 	mysqli_stmt_close($stmt);
 	mysqli_close($conn);
-	header("location: ../signup.php?error=none");
+	header("location: ../Signup.php?error=none");
 	exit();
 }
 
@@ -110,7 +110,7 @@ function loginUser($conn, $username, $pwd) {
 	$uidExists = uidExists($conn, $username);
 
 	if ($uidExists === false) {
-		header("location: ../login.php?error=wronglogin");
+		header("location: ../Login.php?error=wronglogin");
 		exit();
 	}
 
@@ -118,7 +118,7 @@ function loginUser($conn, $username, $pwd) {
 	$checkPwd = password_verify($pwd, $pwdHashed);
 
 	if ($checkPwd === false) {
-		header("location: ../login.php?error=wronglogin");
+		header("location: ../Login.php?error=wronglogin");
 		exit();
 	}
 	elseif ($checkPwd === true) {
