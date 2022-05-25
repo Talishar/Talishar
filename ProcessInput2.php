@@ -873,7 +873,7 @@ function FinalizeChainLink($chainClosed=false)
     $nextTurnEffects = [];
     for($i=0; $i<count($currentTurnEffects); $i+=2)
     {
-      WriteLog("Start of turn effect for $currentTurnEffects[$i] is now active.");
+      WriteLog("Start of turn effect for " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " is now active.");
     }
     $defPlayer = $mainPlayer;
     $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
