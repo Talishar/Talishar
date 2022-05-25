@@ -9,7 +9,7 @@
       <input type="text" name="uid" placeholder="Username...">
       <input type="password" name="pwd" placeholder="Password...">
       <button type="submit" name="submit">Submit</button>
-      <a href="reset-password.php">
+      <a href="ResetPassword.php">
         <button type="submit" name="reset-password">Forgot Password</input>
       </a>
     </form>

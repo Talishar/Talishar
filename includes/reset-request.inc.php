@@ -6,8 +6,8 @@ if (isset($_POST['reset-request-submit'])) {
   $selector = bin2hex(random_bytes(8));
   $token = random_bytes(32);
 
-  $url = "www.fleshandbloodonline.com/FaBOnline/create-new-password.php?selector=" . $selector . "&validator=" . bin2hex($token);
-  // $url = "www.localhost/FaBOnline/create-new-password.php?selector=" . $selector . "&validator=" . bin2hex($token);
+  $url = "www.fleshandbloodonline.com/FaBOnline/CreateNewPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
+  // $url = "www.localhost/FaBOnline/CreateNewPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
 
   $expires = date("U") + 1800;
 
@@ -60,7 +60,7 @@ if (isset($_POST['reset-request-submit'])) {
   mail($to, $subject, $message, $headers);
 
   // Finally we send them back to a page telling them to check their e-mail.
-  header("Location: ../reset-password.php?reset=success");
+  header("Location: ../ResetPassword.php?reset=success");
 } else {
   header("Location: ../MainMenu.php");
   exit();
