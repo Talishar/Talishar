@@ -870,7 +870,7 @@
     switch($cardID)
     {
       case "MON089": return "0,1";
-      case "MON241": case "MON242": case "MON243": case "MON244": case: "RVD005": case "RVD006": return "0,1";
+      case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": return "0,1";
       case "ELE203": return "0,1";
       default:
         return "";
@@ -1885,7 +1885,7 @@
       case "EVR037": return true;
       case "EVR086": return true;
       case "DVR003": case "DVR006": return true;
-      case:"RVD003": return true;
+      case "RVD003": return true;
       default: return false;
     }
   }

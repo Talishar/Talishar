@@ -80,7 +80,7 @@
   {
     switch($cardID)
     {
-      case "DVR001": case "DVR002" case "DVR004": return 0;
+      case "DVR001": case "DVR002": case "DVR004": return 0;
       case "DVR003": case "DVR005": case "DVR006": return 1;
       case "DVR009": return 1;
       case "DVR014": case "DVR019": return 2;
@@ -199,7 +199,6 @@
     if(count($deck) == 0) return;
     $topDeck = array_shift($deck);
 
-    }
   }
 
 ?>

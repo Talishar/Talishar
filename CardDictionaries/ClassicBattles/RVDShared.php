@@ -149,7 +149,6 @@
     if(count($deck) == 0) return;
     $topDeck = array_shift($deck);
 
-    }
   }
 
 ?>
