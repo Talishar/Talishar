@@ -63,6 +63,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
   {
     return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
+  else if($set == "DVR")
+  {
+    return DVRPlayAbility($cardID, $from, $resourcesPaid);
+  }
+  else if($set == "RDV")
+  {
+    return RDVPlayAbility($cardID, $from, $resourcesPaid);
+  }
   $rv = "";
   switch($cardID)
   {
@@ -760,6 +768,14 @@ function ProcessHitEffect($cardID)
   else if($set == "UPR")
   {
     return UPRHitEffect($cardID);
+  }
+  else if($set == "DVR")
+  {
+    return DVRHitEffect($cardID);
+  }
+  else if($set == "RVD")
+  {
+    return RVDHitEffect($cardID);
   }
   switch($cardID)
   {
@@ -1696,10 +1712,10 @@ function IsCombatEffectPersistent($cardID)
     case "EVR160": return true;
     case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
     case "EVR186": return true;
+    case "DVR005": return true;
     default: return false;
   }
 }
-
 
 function BeginEndStepEffects()
 {
@@ -2307,7 +2323,6 @@ function PutItemIntoPlay($item, $steamCounterModifier = 0)
   PutItemIntoPlayForPlayer($item, $currentPlayer, $steamCounterModifier);
 }
 
-
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number=1)
 {
   if(CardSubType($item) != "Item") return;
@@ -2430,7 +2445,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       $character[$cardIndex+1] = 1;
       ++$character[$cardIndex+2];
       break;
-    case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240":
+    case "MON061": case "MON090": case "MON108": case "MON188": case "MON230": case "MON238": case "MON239": case "MON240": case "DVR005":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "MON029": case "MON030":

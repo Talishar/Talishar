@@ -23,6 +23,8 @@
   include "CardDictionaries/Everfest/EVRShared.php";
   include "CardDictionaries/Uprising/UPRShared.php";
   include "CardDictionaries/card_names.php";
+  include "CardDictionaries/ClassicBattles/DVRShared.php";
+  include "CardDictionaries/ClassicBattles/RVDShared.php";
 
   function CardType($cardID)
   {
@@ -70,6 +72,14 @@
     else if($set == "UPR")
     {
       return UPRCardType($cardID);
+    }
+    else if($set == "DVR")
+    {
+      return DVRCardType($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDCardType($cardID);
     }
     switch($cardID)
     {
@@ -335,6 +345,14 @@
     {
       return UPRCardSubtype($cardID);
     }
+    else if($set == "DVR")
+    {
+      return DVRCardSubtype($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDCardSubtype($cardID);
+    }
     switch($cardID)
     {
       case "WTR003": return "Club";
@@ -584,6 +602,14 @@
     {
       return UPRCardCost($cardID);
     }
+    else if($set == "DVR")
+    {
+      return DVRCardCost($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDCardCost($cardID);
+    }
     switch($cardID)
     {
       case "WTR000": return -1;
@@ -803,6 +829,14 @@
     {
       return UPRAbilityCost($cardID);
     }
+    else if($set == "DVR")
+    {
+      return DVRAbilityCost($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDAbilityCost($cardID);
+    }
     return CardCost($cardID);
   }
 
@@ -810,7 +844,7 @@
   {
     switch($cardID)
     {
-      case "MON241": case "MON242": case "MON243": case "MON244": return ($amountPaid >= 1 ? 2 : 0);
+      case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": return ($amountPaid >= 1 ? 2 : 0);
       default: return 0;
     }
   }
@@ -836,7 +870,7 @@
     switch($cardID)
     {
       case "MON089": return "0,1";
-      case "MON241": case "MON242": case "MON243": case "MON244": return "0,1";
+      case "MON241": case "MON242": case "MON243": case "MON244": case: "RVD005": case "RVD006": return "0,1";
       case "ELE203": return "0,1";
       default:
         return "";
@@ -888,6 +922,14 @@
     else if($set == "UPR")
     {
       return UPRPitchValue($cardID);
+    }
+    else if($set == "DVR")
+    {
+      return DVRPitchValue($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDPitchValue($cardID);
     }
     switch($cardID)
     {
@@ -1074,6 +1116,14 @@
     {
       return UPRBlockValue($cardID);
     }
+    else if($set == "DVR")
+    {
+      return DVRBlockValue($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDBlockValue($cardID);
+    }
     switch($cardID)
     {
       case "WTR000": return 0;
@@ -1240,6 +1290,14 @@
     {
       return UPRAttackValue($cardID);
     }
+    else if($set == "DVR")
+    {
+      return DVRAttackValue($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDAttackValue($cardID);
+    }
     switch($cardID)
     {
       //Brute
@@ -1392,6 +1450,14 @@
     {
       return UPRHasGoAgain($cardID);
     }
+    else if($set == "DVR")
+    {
+      return DVRHasGoAgain($cardID);
+    }
+    else if($set == "RVD")
+    {
+      return RVDHasGoAgain($cardID);
+    }
     switch($cardID)
     {
       //Brute
@@ -1457,6 +1523,14 @@
     else if($set == "UPR")
     {
       return UPRAbilityType($cardID, $index);
+    }
+    else if($set == "DVR")
+    {
+      return DVRAbilityType($cardID, $index);
+    }
+    else if($set == "RVD")
+    {
+      return RVDAbilityType($cardID, $index);
     }
     switch($cardID)
     {
@@ -1810,6 +1884,8 @@
       case "ELE224": return true;
       case "EVR037": return true;
       case "EVR086": return true;
+      case "DVR003": case "DVR006": return true;
+      case:"RVD003": return true;
       default: return false;
     }
   }
@@ -1831,6 +1907,7 @@
       case "MON230": return true;
       case "EVR001": return true;
       case "EVR053": return true;
+      case "DVR005": return true;
       default: return false;
     }
   }
@@ -2168,6 +2245,7 @@
       case "MON005": case "MON007": case "MON035": case "MON036": case "MON189": case "MON190": case "MON198": case "MON199": return true;
       case "ELE004": case "ELE036": case "ELE066": return true;
       case "EVR003": case "EVR039": case "EVR055": case "EVR070": return true;
+      case "DVR008": case "RVD008": return true;
       default: return false;
     }
   }
