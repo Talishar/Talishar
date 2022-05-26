@@ -159,6 +159,9 @@
       case "ELE035":
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
         return "Frost Lock makes cards and activating abilities by the opponent cost 1 more this turn.";
+      case "ELE037":
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+        return "";
       case "ELE214":
         $arsenal = &GetArsenal($currentPlayer);
         for($i=0; $i < count($arsenal); $i+=ArsenalPieces())

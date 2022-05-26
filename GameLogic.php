@@ -795,7 +795,7 @@ function ProcessHitEffect($cardID)
         AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-"); //Only back to hand if combo is active
       }
       break;
-    case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) MainDrawCard(); break;
+    case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog("Whelming Gustwave drew a card."); MainDrawCard(); } break;
     case "WTR115":
      if($mainClassState[$CS_HitsWDawnblade] == 1 && $CCS_WeaponIndex < count($combatChainState)) { ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+3]; }
      ++$mainClassState[$CS_HitsWDawnblade];
