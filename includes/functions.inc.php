@@ -73,6 +73,31 @@ function uidExists($conn, $username) {
 	mysqli_stmt_close($stmt);
 }
 
+// Check if username is in database, if so then return data
+function getUInfo($conn, $username) {
+  $sql = "SELECT * FROM users WHERE usersUid = ? OR usersEmail = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	if (!mysqli_stmt_prepare($stmt, $sql)) {
+	 	header("location: ../Signup.php?error=stmtfailed");
+		exit();
+	}
+
+	mysqli_stmt_bind_param($stmt, "ss", $username, $email);
+	mysqli_stmt_execute($stmt);
+
+	// "Get result" returns the results from a prepared statement
+	$resultData = mysqli_stmt_get_result($stmt);
+
+	if ($row = mysqli_fetch_assoc($resultData)) {
+		return $row;
+	}
+	else {
+		$result = false;
+		return $result;
+	}
+	mysqli_stmt_close($stmt);
+}
+
 // Insert new user into database
 function createUser($conn, $username, $email, $pwd) {
   $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
