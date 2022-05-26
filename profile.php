@@ -60,6 +60,12 @@ if(isset($_POST['update_profile'])){
 <section class="signup-form">
   <h2>Welcome <?php echo $_SESSION['useruid']?>!</h2>
 
+      <?php
+        $uidExists = getUInfo($conn, $_SESSION['useruid']);
+        $_SESSION["useremail"] = $uidExists["usersEmail"];
+        $_SESSION["userspwd"] = $uidExists["usersPwd"];
+      ?>
+
       <div class="wrapper">
           <div class="signup-form-form">
               <form action="Profile.php" method="post">
@@ -74,6 +80,7 @@ if(isset($_POST['update_profile'])){
             <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
             <div>Your email :</div>
             <input type="email" name="update_email" value="<?php echo $_SESSION['useremail']; ?>">
+            
             <!-- <div>Update your avatar :</div>
             <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png"> -->
 
