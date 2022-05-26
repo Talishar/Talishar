@@ -22,6 +22,9 @@
   include "MenuFiles/ParseGamefile.php";
   ob_end_clean();
 
+  $yourName = ($playerID == 1 ? $p1uid : $p2uid);
+  $theirName = ($playerID == 1 ? $p2uid : $p1uid);
+
   if($gameStatus == $MGS_GameStarted)
   {
     $authKey = ($playerID == 1 ? $p1Key : $p2Key);
@@ -87,8 +90,9 @@ h2 {
 <div style="width:100%; height:100%; background-image: url('Images/rout.jpg'); background-size:cover; z-index=0;">
 
 <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:46%; background-color:rgba(59, 59, 38, 0.7);">
-<h1>Opponent's Hero</h1>
 <?php
+  $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
+  echo("<h1>$theirDisplayName Hero</h1>");
 
   $otherHero = "cardBack";
   echo("<div id='oppHero' style='padding-left:20px;'>");
@@ -99,8 +103,9 @@ h2 {
 </div>
 
 <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:46%; background-color:rgba(59, 59, 38, 0.7);">
-<h1>Your Hero</h1>
 <?php
+  $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
+  echo("<h1>$displayName Hero</h1>");
 
   $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
   $handler = fopen($deckFile, "r");

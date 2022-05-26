@@ -31,6 +31,8 @@
   $firstPlayer = trim(fgets($gameFileHandler));
   $p1Key = trim(fgets($gameFileHandler));
   $p2Key = trim(fgets($gameFileHandler));
+  $p1uid = trim(fgets($gameFileHandler));
+  $p2uid = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;
