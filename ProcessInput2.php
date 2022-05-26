@@ -315,7 +315,7 @@
     case 99: //Pass
       if(CanPassPhase($turn[0]))
       {
-        PassInput();
+        PassInput(false);
       }
       break;
     case 100: //Break Chain
@@ -325,7 +325,7 @@
       ChangeSetting($playerID, $SET_PassDRStep, 1);
       if(CanPassPhase($turn[0]))
       {
-        PassInput();
+        PassInput(false);
       }
       break;
     case 10000://Undo
@@ -506,7 +506,7 @@
     return $turn[1+$playerID];
   }
 
-  function PassInput()
+  function PassInput($autopass=true)
   {
     global $turn, $currentPlayer;
     if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "INSTANT")
@@ -515,12 +515,13 @@
     }
     else
     {
+      if($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
+      else WriteLog("Player " . $currentPlayer . " passed.");
       if(Pass($turn, $currentPlayer, $currentPlayer))
       {
         if($turn[0] == "M") BeginTurnPass();
         else PassTurn();
       }
-      WriteLog("Player " . $currentPlayer . " passed.");
     }
   }
 

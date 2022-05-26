@@ -40,9 +40,7 @@
     switch($cardID)
     {
       case "ARC003":
-        $character = &GetPlayerCharacter($currentPlayer);
-        if($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
-        return ($character[$index + 2] > 0 ? "AA" : "A");
+        return "A";
       case "ARC004": return "A";
       case "ARC005": return "I";
       case "ARC010":
