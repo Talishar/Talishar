@@ -6,7 +6,7 @@
   include "WriteLog.php";
   include "CardDictionary.php";
   include "HostFiles/Redirector.php";
-  include "Libraries/UILibraries.php";
+  include "Libraries/UILibraries2.php";
   ob_end_clean();
 
   $gameName=$_GET["gameName"];
