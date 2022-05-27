@@ -44,6 +44,7 @@
   {
     switch($cardID)
     {
+      case "RVD002": return 2;
       case "RVD009": return 3;
       case "RVD013": return 3;
       case "RVD015": return 3;
@@ -104,6 +105,7 @@
   {
     switch($cardID)
     {
+      case "RVD002": return "AA";
       case "RVD004": return "A";
       default: return "";
     }
