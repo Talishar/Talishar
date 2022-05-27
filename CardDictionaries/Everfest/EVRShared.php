@@ -961,7 +961,6 @@
         if($cardID == "EVR167") $times = 4;
         else if($cardID == "EVR168") $times = 3;
         else if($cardID == "EVR169") $times = 2;
-        LookAtHand($otherPlayer);
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
