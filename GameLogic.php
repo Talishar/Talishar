@@ -2010,11 +2010,23 @@ function OnBlockEffects($index, $from)
         EvaluateCombatChain($totalAttack, $totalDefense);
         if(BlockValue($combatChain[$index]) > $totalAttack) DestroyCurrentWeapon();
       break;
+
+    case "MON089":
+        $totalAttack = 0;
+        EvaluateCombatChain($totalAttack);
+        if($totalAttack >= 6 && CardClass($combatChain[$index]) != "ILLUSIONIST"){
+          DestroyCharacter($defPlayer, $cardID);
+        }
+      break;
+
     default: break;
   }
   switch($combatChain[$index])
   {
-    case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $otherPlayer); break;
+    case "EVR018":
+    WriteLog("Stalagmite created a Frostbite.");
+    ShouldHoldPriority($otherPlayer);
+    PlayAura("ELE111", $otherPlayer); break;
 
     case "RVD003": case "RVD015":
       $deck = GetDeck($currentPlayer);
