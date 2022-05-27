@@ -3671,9 +3671,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PICKACARD":
       $hand = &GetHand(($player == 1 ? 2 : 1));
-      $rand = rand(1, count($hand)-1);
+      $rand = rand(0, count($hand)-1);
       RevealCards($hand[$rand]);
-      if($dqVars[0] == $rand) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
+      if(CardName($hand[$dqVars[0]]) == CardName($hand[$rand])) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
       return $lastResult;
     case "TWINTWISTERS":
       switch($lastResult)
@@ -3749,6 +3749,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if(CardType($character[$i]) == "E") $character[$i+8] = 1;
       }
       return $lastResult;
+    case "MZSTARTTURNABILITY":
+      $params = explode("-", $lastResult);
+      $zone = &GetMZZone($player, $params[0]);
+      $cardID = $zone[$params[1]];
+      MZStartTurnAbility($cardID);
+      return "";
     default:
       return "NOTSTATIC";
   }
