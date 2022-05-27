@@ -2023,10 +2023,7 @@ function OnBlockEffects($index, $from)
   }
   switch($combatChain[$index])
   {
-    case "EVR018":
-    WriteLog("Stalagmite created a Frostbite.");
-    ShouldHoldPriority($otherPlayer);
-    PlayAura("ELE111", $otherPlayer); break;
+    case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $otherPlayer); break;
 
     case "RVD003": case "RVD015":
       $deck = GetDeck($currentPlayer);
