@@ -1621,7 +1621,7 @@ function cardID ($cardName)
 		 case "Foreboding Bolt": return array("CRU168","CRU169","CRU170");
 		 case "Rousing Aether": return array("CRU171","CRU172","CRU173");
 		 case "Snapback": return array("CRU174","CRU175","CRU176");
-		 case "alishar, the Lost Princ": return array("CRU177");
+		 case "Talishar, the Lost Prince": return array("CRU177");
 		 case "Fyendal's Spring Tunic": return array("CRU178");
 		 case "Gambler's Gloves": return array("CRU179");
 		 case "Coax a Commotion": return array("CRU180");
