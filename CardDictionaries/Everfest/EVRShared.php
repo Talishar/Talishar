@@ -745,7 +745,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Steadfast prevents damage this turn.";
       case "EVR047": case "EVR048": case "EVR049":
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_effect,1_Attack");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_effect,+1_Attack");
         AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
         return "";
       case "EVR053":
@@ -789,7 +789,7 @@
       case "EVR060": case "EVR061": case "EVR062":
         GiveAttackGoAgain();
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-        return "Blade Runner gives Go Again and buffs your next weapon attack.";
+        return "Blade Runner gives Go Again and buffs your next 1H weapon attack.";
       case "EVR066": case "EVR067": case "EVR068":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);

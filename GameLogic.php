@@ -1122,6 +1122,14 @@ function EffectAttackModifier($cardID)
   {
     return EVREffectAttackModifier($cardID);
   }
+  else if($set == "DVR")
+  {
+    return DVREffectAttackModifier($cardID);
+  }
+  else if($set == "EVR")
+  {
+    return RVDEffectAttackModifier($cardID);
+  }
   switch($cardID)
   {
     case "WTR007": return 2;
@@ -1508,6 +1516,8 @@ function CurrentEffectGrantsGoAgain()
         case "EVR017": return true;
         case "EVR161-3": return true;
         case "EVR044": case "EVR045": case "EVR046": return true;
+        case "EVR008": return true;
+        case "DVR019": return true;
         default: break;
       }
     }
@@ -1643,6 +1653,10 @@ function IsCombatEffectActive($cardID)
   else if($set == "EVR")
   {
     return EVRCombatEffectActive($cardID, $attackID);
+  }
+  else if($set == "DVR")
+  {
+    return DVRCombatEffectActive($cardID, $attackID);
   }
   switch($cardID)
   {
@@ -2001,6 +2015,22 @@ function OnBlockEffects($index, $from)
   switch($combatChain[$index])
   {
     case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $otherPlayer); break;
+
+    case "RVD003": case "RVD015":
+      $deck = GetDeck($currentPlayer);
+      $rv = "";
+      if(count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+
+      $AttackVal = AttackValue($deck[0]);
+      $rv .= CardLink($deck[0], $deck[0]) . " gets revealed ";
+
+      if($AttackVal >= 6){
+         $rv .= "and is put on top of the deck.";
+      }else {
+        AddBottomMainDeck($deck[0], "TOPDECK");
+        $rv .= " and is put at the bottom of the deck.";
+      }
+
     default: break;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -2467,6 +2497,8 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       --$character[$cardIndex+5];
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       break;
+    case "DVR004": case "RVD004":
+        DestroyCharacter($currentPlayer, $cardIndex);
   }
 }
 
@@ -2588,6 +2620,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
         case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
         case "CASHOUT": $rv = CashOutIndices($player); break;
+        case "ALPHARAMPAGE": $rv = SearchDeckForCard($player, "WTR006"); break;
+        case "GLISTENINGSTEELBLADE": $rv = SearchDeckForCard($player, "DVR008"); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);

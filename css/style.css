@@ -1,5 +1,13 @@
 body {
-  background-image:url('../Images/background.jpg');
+  /* background-image:url('../Images/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #111111; */
+
+  /*Classic Battles Menu*/
+  background-image:url('../Images/ClassicBattlesBackground.jpg');
+  height: 1000px;
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   background-color: #111111;

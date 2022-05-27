@@ -21,7 +21,7 @@
 </div> -->
 
 <div style="
-  position: absolute; width: 26%; height: 26%; z-index: 15; top: 50px; left: 50%; margin: 0 0 0 -13%; /* -13% = half of width/height */
+  position: absolute; width: 20%; height: 20%; z-index: 15; top: 50px; left: 50%; margin: 0 0 0 -10%; /* -13% = half of width/height */
   background-image: url('Images/fab_logo.png'); background-size: 100% auto; background-repeat: no-repeat;">
 </div>
 
@@ -39,7 +39,7 @@
    ?>
 </div>
 
-<div style="position:absolute; top:30%; left:50%; width:30%; bottom: 50px;
+<div style="position:absolute; top:28%; left:50%; width:30%; bottom: 50px;
   margin: 0 0 0 -15%; /* -13% = half of width/height */
   background-color:rgba(74, 74, 74, 0.6);">
 

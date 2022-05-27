@@ -993,8 +993,7 @@ if ($set == "MON")
 		case "402": return "Spell Fray Leggings";
 
 		   }	}
-if($set == "UPR")
-{
+if($set == "UPR"){
   switch($num)
   {
     case "086": return "Thaw";
@@ -1009,9 +1008,7 @@ if($set == "UPR")
     default: return "Name not populated - please report bug";
   }
 }
-
-if($set == "DVR")
-{
+if($set == "DVR"){
   switch($num)
   {
     case "001": return "Dorinthea Quicksilver Prodigy";
@@ -1021,32 +1018,31 @@ if($set == "DVR")
     case "005": return "Gallantry Gold";
     case "006": return "Ironrot Legs";
     case "007": return "Hala Goldenhelm";
-    case "008": return "Glisetning Steelblade";
+    case "008": return "Glistening Steelblade";
     case "009": return "En Garde";
-    case "010": return "";
-    case "011": return "";
+    case "010": return "Second Swing";
+    case "011": return "Warrior's Valor";
     case "012": return "Sharpen Steel";
-    case "013": return "";
+    case "013": return "Run Through";
     case "014": return "Thrust";
-    case "015": return "";
-    case "016": return "";
-    case "017": return "";
-    case "018": return "";
+    case "015": return "In The Swing";
+    case "016": return "Ironsong Response";
+    case "017": return "Driving Blade";
+    case "018": return "Slice and Dice";
     case "019": return "On a Knife Edge";
-    case "020": return "";
-    case "021": return "";
+    case "020": return "Out for Blood";
+    case "021": return "Hit and Run";
     case "022": return "Visit the Blacksmith";
     case "023": return "Blade Flash";
     case "024": return "Toughen Up";
-    case "025": return "";
-    case "026": return "";
+    case "025": return "Sigil of Solace";
+    case "026": return "Flock of the Feather Walkers";
     case "027": return "Titanium Bauble";
-
+    case "028": return "Quicken";
     default: return "Name not populated - please report bug";
   }
 }
-if($set == "RVD")
-{
+if($set == "RVD"){
   switch($num)
   {
     case "001": return "Rhinar";
@@ -1058,21 +1054,21 @@ if($set == "RVD")
     case "007": return "Chief Ruk'utan";
     case "008": return "Alpha Rampage";
     case "009": return "Beast Mode";
-    case "010": return "";
-    case "011": return "";
-    case "012": return "";
-    case "013": return "";
-    case "014": return "";
+    case "010": return "Pack Hunt";
+    case "011": return "Bare Fangs";
+    case "012": return "Wild Ride";
+    case "013": return "Wrecking Ball";
+    case "014": return "Awakening Bellow";
     case "015": return "Pack Call";
-    case "016": return "";
-    case "017": return "";
+    case "016": return "Smash Instinct";
+    case "017": return "Smash With Big Tree";
     case "018": return "Muscle Mutt";
-    case "019": return "";
-    case "020": return "";
-    case "021": return "";
-    case "022": return "";
-    case "023": return "";
-    case "024": return "";
+    case "019": return "Raging Onslaught";
+    case "020": return "Wounded Bull";
+    case "021": return "Barraging Beatdown";
+    case "022": return "Rally The Rearguard";
+    case "023": return "Wrecker Romp";
+    case "024": return "Come to Fight";
     case "025": return "Clearing Bellow";
     case "026": return "Dodge";
     case "027": return "Titanium Bauble";
@@ -1080,9 +1076,9 @@ if($set == "RVD")
     default: return "Name not populated - please report bug";
   }
 }
-if ($set == "WTR")
-	{  switch($num)	   {
-
+if($set == "WTR"){
+  switch($num)
+  {
 		case "000": return "Heart of Fyendal";
 		case "001": return "Rhinar, Reckless Rampage";
 		case "002": return "Rhinar";
