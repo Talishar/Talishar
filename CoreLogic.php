@@ -230,7 +230,7 @@ function ArsenalStartTurnAbilities()
   {
     switch($arsenal[$i])
     {
-      case "MON404": case "MON405": case "MON406": case "MON407":
+      case "MON404": case "MON405": case "MON406": case "MON407": case "DVR007": case "RVD007":
         if($arsenal[$i+1] == "DOWN")
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_flip_over_your_mentor_card");
@@ -249,12 +249,14 @@ function ArsenalAttackAbilities()
   global $combatChain, $mainPlayer;
   $attackID = $combatChain[0];
   $attackType = CardType($attackID);
+  $attackVal = AttackValue($attackID);
   $arsenal = GetArsenal($mainPlayer);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
   {
     switch($arsenal[$i])
     {
       case "MON406": if($attackType == "AA" && $arsenal[$i+1] == "UP") LadyBarthimontAbility($mainPlayer, $i); break;
+      case "RVD007": if($attackType == "AA" && $attackVal >= 6 && $arsenal[$i+1] == "UP") ChiefRukutanAbility ($mainPlayer, $i); break;
       default: break;
     }
   }
@@ -283,6 +285,7 @@ function ArsenalHitEffects()
   global $combatChain, $mainPlayer;
   $attackID = $combatChain[0];
   $attackType = CardType($attackID);
+  $attackSubType = CardSubType($attackID);
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
@@ -290,6 +293,7 @@ function ArsenalHitEffects()
     switch($arsenal[$i])
     {
       case "MON405": if($arsenal[$i+1] == "UP" && $attackType == "W") MinervaThemisAbility($mainPlayer, $i); break;
+      case "DVR007": if($arsenal[$i+1] == "UP" && $attackType == "W" && $attackSubType == "Sword") HalaGoldenhelmAbility($mainPlayer, $i); break;
       default: break;
     }
   }

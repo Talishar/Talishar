@@ -160,11 +160,11 @@
       case "MON105":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
-        return "Hatchet of Body got +1 attack this turn.";
+        return "Hatchet of Body got +1 attack until end of turn.";
       case "MON106":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON105") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
-        return "Hatchet of Mind got +1 attack this turn.";
+        return "Hatchet of Mind get +1 attack until end of turn.";
       case "MON108":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gallantry Gold gives your weapon attacks this turn +1.";

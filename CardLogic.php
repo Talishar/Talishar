@@ -52,7 +52,7 @@ function HandToTopDeck($player)
 function KatsuHit($index)
 {
   global $mainPlayer;
-  AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_use_Katsu's_ability");
+  AddDecisionQueue("YESNO", $mainPlayer, "to_use_Katsu's_ability");
   AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
   AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
   AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
@@ -583,7 +583,7 @@ function DiscardRandom($player="", $source="")
   if(AttackValue($discarded) >= 6)
   {
     $character = &GetPlayerCharacter($player);
-    if(($character[0] == "WTR001" || $character[0] == "WTR002") && $character[1] == 2 && $player == $mainPlayer) {//Rhinar
+    if(($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001") && $character[1] == 2 && $player == $mainPlayer) {//Rhinar
       WriteLog("Rhinar Intimidated.");
       Intimidate();
     }
