@@ -32,6 +32,7 @@
       case "CHOOSECHARACTER": return "a card";
       case "CHOOSETHEIRCHARACTER": return "a card";
       case "MAYCHOOSEHAND": return "a card from hand";
+      case "MAYCHOOSEHANDGENESIS": return "a card from hand to put in your hero's soul";
       case "CHOOSEHAND": return "a card from hand";
       case "CHOOSEHANDCANCEL": return "a card from hand";
       case "BUTTONINPUT": return "a button";
