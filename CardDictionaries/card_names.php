@@ -997,6 +997,7 @@ if($set == "UPR")
 {
   switch($num)
   {
+    case "086": return "Thaw";
     case "104": return "Encase";
     case "109": return "Ice Eternal";
     case "119": case "120": case "121": return "Ice Bind";

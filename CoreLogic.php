@@ -194,6 +194,7 @@ function MZStartTurnMayAbilities()
   AddDecisionQueue("FINDINDICES", $mainPlayer, "MZSTARTTURN");
   AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a start turn ability to activate (or pass)", 1);
   AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+  AddDecisionQueue("MZSTARTTURNABILITY", $mainPlayer, "-", 1);
 }
 
 function MZStartTurnIndices()
@@ -210,6 +211,15 @@ function MZStartTurnIndices()
     }
   }
   return $cards;
+}
+
+function MZStartTurnAbility($cardID)
+{
+  switch($cardID)
+  {
+    case "UPR086": break;
+    case default: break;
+  }
 }
 
 function ArsenalStartTurnAbilities()

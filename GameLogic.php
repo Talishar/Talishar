@@ -3749,6 +3749,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if(CardType($character[$i]) == "E") $character[$i+8] = 1;
       }
       return $lastResult;
+    case "MZSTARTTURNABILITY":
+      $params = explode("-", $lastResult);
+      $zone = &GetMZZone($player, $params[0]);
+      $cardID = $zone[$params[1]];
+      MZStartTurnAbility($cardID);
+      return "";
     default:
       return "NOTSTATIC";
   }
