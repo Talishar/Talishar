@@ -72,25 +72,25 @@ if(isset($_POST['update_profile'])){
 
             <!-- Profile Picture placeholder -->
               <style>
-                img { border: 3px solid #000; display: block; margin-left: auto; margin-right: auto; width: 50%; border-radius: 50%; }
+                img {border: 2px solid black; display: block; margin-left: auto; margin-right: auto; width: 50%; height: 30%; border-radius: 50%; }
               </style>
             <img src="Images/default-avatar.jpg" alt="Avatar">
 
-            <div>Username :</div>
+            <div>Username:</div>
             <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
-            <div>Your email :</div>
+            <div>Your email:</div>
             <input type="email" name="update_email" value="<?php echo $_SESSION['useremail']; ?>">
-            
+
             <!-- <div>Update your avatar :</div>
             <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png"> -->
 
             <input type="hidden" name="old_pass" value="<?php echo $_SESSION['userspwd']; ?>">
-            <div>Old password :</div>
-            <input type="password" name="update_pass" placeholder="enter previous password">
-            <div>New password :</div>
-            <input type="password" name="new_pass" placeholder="enter new password">
-            <div>Confirm password :</div>
-            <input type="password" name="confirm_pass" placeholder="confirm new password">
+            <div>Old password:</div>
+            <input type="password" name="update_pass" placeholder="Enter Password">
+            <div>New password:</div>
+            <input type="password" name="new_pass" placeholder="Enter New Password">
+            <div>Confirm password:</div>
+            <input type="password" name="confirm_pass" placeholder="Confirm New Password">
             <button type="submit" name="update_profile">Update Profile</button>
 
             <?php
