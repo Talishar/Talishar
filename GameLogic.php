@@ -1032,6 +1032,7 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "EVR065": return 1;
     case "EVR105": return (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
+    case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     default: return 0;
   }
 }
