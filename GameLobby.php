@@ -1,4 +1,3 @@
-
 <head>
 
 <?php
@@ -54,8 +53,6 @@ function copyText() {
   document.execCommand("copy");
 }
 
-
-
 </script>
 
 <style>
@@ -87,9 +84,14 @@ h2 {
 
 <div id="cardDetail" style="display:none; position:absolute;"></div>
 
-<div style="width:100%; height:100%; background-image: url('Images/rout.jpg'); background-size:cover; z-index=0;">
+<div style="height: 1000px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #111111;
+  overflow: hidden;background-image: url('Images/rout.jpg');">
 
-<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:46%; background-color:rgba(59, 59, 38, 0.7);">
+<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:46%; background-color:rgba(74, 74, 74, 0.6);">
 <?php
   $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
   echo("<h1>$theirDisplayName Hero</h1>");
@@ -102,7 +104,7 @@ h2 {
 ?>
 </div>
 
-<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:46%; background-color:rgba(59, 59, 38, 0.7);">
+<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:46%; background-color:rgba(74, 74, 74, 0.6);">
 <?php
   $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
   echo("<h1>$displayName Hero</h1>");
@@ -146,10 +148,10 @@ h2 {
 ?>
 </div>
 
-<div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:290px; height:75px; background-color:rgba(59, 59, 38, 0.7);" onclick="TabClick('EQUIP');">
+<div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:290px; height:75px; background-color:rgba(74, 74, 74, 0.6);" onclick="TabClick('EQUIP');">
 <h1>Your Equipment</h1>
 </div>
-<div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7);">
+<div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:5%; background-color:rgba(74, 74, 74, 0.6);">
 
 <table>
 <?php
@@ -176,12 +178,12 @@ h2 {
   </div>
 </div>
 
-<div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:930px; width:290px; height:75px; background-color:rgba(159, 159, 138, 0.7);" onclick="TabClick('DECK');">
+<div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:930px; width:290px; height:75px; background-color:rgba(196, 196, 196, 0.7);" onclick="TabClick('DECK');">
 <?php
 echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
 ?>
 </div>
-<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(59, 59, 38, 0.7); overflow-y:scroll;">
+<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(74, 74, 74, 0.6); overflow-y:scroll;">
 <?php
 
     $count = 0;
@@ -197,13 +199,11 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
       echo("<span style='cursor:pointer;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "CardImages", 150, 0, 1, 1, 0, 0, "", $id) . "</span>");
       ++$count;
     }
-
 ?>
-
 </div>
 
-<div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:40%; background-color:rgba(59, 59, 38, 0.7);">
-<h1>Game Lobby</h1>
+  <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:45%; background-color:rgba(74, 74, 74, 0.6);">
+  <h1>Game Lobby</h1>
 <?php
 
   echo("<div id='submitForm' style='display:none; width:100%; text-align: center;'>");
@@ -218,14 +218,10 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 
   echo("<div id='mainPanel' style='text-align:center;'>");
 
-
-
-
-
   echo("</div>");
-  echo("<div id='chatbox' style='position:relative; left:2%; height: 50px;'>");
-  echo("<input style='width:88%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
+  echo("<div id='chatbox' style='position:relative; left:2%; height: 50px;'><br>");
+  echo("<input style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+  echo("<button style='display:inline; width:8%; margin-left:5px;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("</div>");
@@ -272,8 +268,8 @@ function TabClick(tab)
   var deckDisplay = document.getElementById("deckDisplay");
   equipDisplay.style.display = tab == "EQUIP" ? "block" : "none";
   deckDisplay.style.display = tab == "DECK" ? "block" : "none";
-  equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(59, 59, 38, 0.7)" : "rgba(159, 159, 138, 0.7)";
-  deckTab.style.backgroundColor = tab == "DECK" ? "rgba(59, 59, 38, 0.7)" : "rgba(159, 159, 138, 0.7)";
+  equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(74, 74, 74, 0.6)" : "rgba(196, 196, 196, 0.7)";
+  deckTab.style.backgroundColor = tab == "DECK" ? "rgba(74, 74, 74, 0.6)" : "rgba(196, 196, 196, 0.7)";
 }
 
 function CardClick(id)
@@ -491,5 +487,6 @@ function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
 
 ?>
 
-<div style="height:20px; bottom:30px; left:5%; width: 90%; position:absolute; color:white;background-color:rgba(59, 59, 38, 0.7); text-align:center;">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios. Card Images © Legend Story Studios</div>
-</body>
+<?php
+  include_once 'Footer.php'
+?>

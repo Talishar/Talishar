@@ -70,7 +70,7 @@ if ($handle = opendir($path)) {
       {
         if($format == "blitz")
         {
-          $blitzLinks .= "<form action='" . $redirectPath . "/JoinGame.php'>";
+          $blitzLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
           $blitzLinks .= "<label for='joinGame'>Open Game </label>";
           $blitzLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
           $blitzLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
@@ -79,7 +79,7 @@ if ($handle = opendir($path)) {
         }
         else if($format == "cc")
         {
-          $ccLinks .= "<form action='" . $redirectPath . "/JoinGame.php'>";
+          $ccLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
           $ccLinks .= "<label for='joinGame'>Open Game </label>";
           $ccLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
           $ccLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
@@ -88,7 +88,7 @@ if ($handle = opendir($path)) {
          }
          else if($format == "commoner")
          {
-           $commonerLinks .= "<form action='" . $redirectPath . "/JoinGame.php'>";
+           $commonerLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
            $commonerLinks .= "<label for='joinGame'>Open Game </label>";
            $commonerLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
            $commonerLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
@@ -96,19 +96,17 @@ if ($handle = opendir($path)) {
            $commonerLinks .= "</form>";
          }
       }
-
     }
     closedir($handle);
 }
-  echo("<h2 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Blitz</h2>");
+  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
   echo($blitzLinks);
-  echo("<h2 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Classic Constructed</h2>");
+  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
   echo($ccLinks);
-  echo("<h2 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Commoner</h2>");
+  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Commoner</h2>");
   echo($commonerLinks);
-  echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>In Progress Games</h1>");
+  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress</h2>");
   echo($spectateLinks);
-
 
 function deleteDirectory($dir) {
     if (!file_exists($dir)) {
@@ -123,14 +121,10 @@ function deleteDirectory($dir) {
         if ($item == '.' || $item == '..') {
             continue;
         }
-
         if (!deleteDirectory($dir . "/" . $item)) {
             return false;
         }
-
     }
-
     return rmdir($dir);
 }
-
 ?>

@@ -1,16 +1,15 @@
 body {
-  /* background-image:url('../Images/background.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-color: #111111; */
-
-  /*Classic Battles Menu*/
-  background-image:url('../Images/ClassicBattlesBackground.jpg');
   height: 1000px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   background-color: #111111;
+  background-image: url('../Images/ClassicBattlesBackground.jpg');
+  overflow: hidden;
+  font-family: 'Roboto' sans-serif;"
+  font-weight: bold;
+  font-size: 17px;
+  color: #FFF;
 }
 
 .wrapper {
@@ -38,7 +37,7 @@ body {
 
 h1, h2, h3, h4, h5, h6, p {
   font-family: 'Roboto', sans-serif;
-  color: #111;
+  color: #FFF;
   line-height: 24px;
   font-weight: bold;
 }
@@ -70,8 +69,7 @@ p {
 nav {
   width: 100%;
   height: 40px;
-  background-color: #111111;
-  opacity: 0.8;
+  background-color: black;
 }
 
 nav .wrapper {
@@ -104,17 +102,24 @@ section {
   margin: auto;
   margin-top: 15px;
   background: rgba(240, 240, 240, 0.6);
-  width: 28%;
-  padding-bottom: 5px;
+  width: 30%;
+  padding-bottom: 10px;
 }
 
-/* sign up */
+/* Sign Up + Profile */
+.signup-form{
+  background-color:rgba(74, 74, 74, 0.6);
+}
+
+
 .signup-form-form {
   display: flex;
   justify-content: center;
   font-family: 'Roboto', sans-serif;
   font-weight: bold;
   font-size: 18px;
+  color: #FFF;
+  margin-bottom: 5px;
 }
 
 .signup-form-form a {
@@ -123,29 +128,43 @@ section {
 }
 
 .signup-form p {
+  width: 100%;
   text-align: center;
-  margin-top: 6px;
-  color: #8F0000;
+  color: #FFFF;
+  border: 1px black;
   font-weight: bold;
   font-size: 20px;
 }
 
+.signup-form div {
+  margin-bottom: 3px;
+}
+
+.signup-form h2 {
+  text-align: center;
+  margin-top: 6px;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 24px;
+}
+
 .signup-form form {
   width: 85%;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   padding-top: 5px;
 }
 
 .signup-form form input {
   width: calc(100% - 16px);
-  padding: 6px;
-  margin-bottom: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
   margin-top: 3px;
-  border: 1px solid #CCC;
-  border-radius: 4px;
+  border: 1px solid black;
+  border-radius: 5px;
   background-color: #F6F6F6;
   float: left;
+  color: black;
 }
 
 .signup-form form button {
@@ -154,8 +173,8 @@ section {
   height: 40px;
   margin-top: 3px;
   margin-right: 3px;
-  margin-bottom: 3px;
-  border: none;
+  margin-bottom: 5px;
+  border: 1px solid black;
   border-radius: 4px;
   background-color: #333;
   font-size: 13px;
@@ -177,7 +196,7 @@ section {
   padding: 5px;
   margin: 4px;
   border: 1px solid #CCC;
-  border-radius: 4px;
+  border-radius: 5px;
   background-color: #F6F6F6;
   float: left;
   font-size: 13px;

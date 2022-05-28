@@ -67,20 +67,20 @@
       if($playerID == $firstPlayerChooser)
       {
           echo("<input type='button' name='action' value='Go First' onclick='SubmitFirstPlayer(1)'>");
-          echo("<input type='button' name='action' value='Go Second' onclick='SubmitFirstPlayer(2)'>");
+          echo("<input type='button' name='action' value='Go Second' onclick='SubmitFirstPlayer(2)'><br>");
       }
       else
       {
-        echo("Waiting for other player to choose who will go first.");
+        echo("Waiting for other player to choose who will go first.<br>");
       }
     }
 
     if($playerID == 1 && $gameStatus < $MGS_Player2Joined)
     {
-      echo("<div><input type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
+      echo("<div><input style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
     }
 
-    echo("<BR>");
+    echo("<br>");
     echo("<div id='gamelog' style='position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
     EchoLog($gameName, $playerID);
     echo("</div>");
