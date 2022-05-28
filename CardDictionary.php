@@ -2014,6 +2014,8 @@
       case "WTR153": return true;
       case "WTR162": return GetDieRoll($currentPlayer) <= 4;
       case "WTR171": return true;
+      case "RVD004": return true;
+      case "DVR004": return true;
       default: return false;
     }
   }
