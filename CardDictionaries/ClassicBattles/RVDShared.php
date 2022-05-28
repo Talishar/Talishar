@@ -86,6 +86,7 @@
       case "RVD002": return 4;
       case "RVD009": return 6;
       case "RVD013": case "RVD015": return 6;
+      case "RVD018": return 6;
       default: return 0;
     }
   }
@@ -160,6 +161,11 @@
     }
   }
 
+  function RVDHitEffect($cardID)
+  {
+
+  }
+
   function RVDCombatEffectActive($cardID, $attackID)
   {
     global $combatChain, $mainPlayer;
@@ -175,18 +181,19 @@
 
   function ChiefRukutanAbility($player, $index)
   {
-    $log = "Chief Ruk'utan Intimidate";
+    $log = "Chief Ruk'utan Intimidates";
     Intimidate();
     $arsenal = &GetArsenal($player);
-    ++$arsenal[$index+2];
-    if($arsenal[$index+2] == 2)
+    ++$arsenal[$index+3];
+    if($arsenal[$index+3] == 2)
     {
       $log .= " and searchs for an Alpha Rampage card";
       RemoveArsenal($player, $index);
       BanishCardForPlayer("RVD007", $player, "ARS", "-");
-      AddDecisionQueue("FINDINDICES", $player, "ALPHARAMPAGE");
+      AddDecisionQueue("FINDINDICES", $player, "DECKCARD,WTR006");
       AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
     }
     WriteLog($log . ".");
   }
