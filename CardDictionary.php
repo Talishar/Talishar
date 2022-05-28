@@ -1838,7 +1838,7 @@
       case "EVR053": return !HelmOfSharpEyePlayable();
       case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
       case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
-      case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0] != "Sword");
+      case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
       default: return false;
     }
   }
