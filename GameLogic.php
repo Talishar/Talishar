@@ -2499,6 +2499,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "DVR004": case "RVD004":
         DestroyCharacter($currentPlayer, $cardIndex);
+        break;
   }
 }
 
