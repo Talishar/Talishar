@@ -1,6 +1,6 @@
 <?php
 
-  function RVDSharedCardType($cardID)
+  function RVDCardType($cardID)
   {
     switch($cardID)
     {
@@ -26,7 +26,7 @@
     }
   }
 
-  function RVDSharedCardSubType($cardID)
+  function RVDCardSubType($cardID)
   {
     switch($cardID)
     {
@@ -40,7 +40,7 @@
   }
 
   //Minimum cost of the card
-  function RVDSharedCardCost($cardID)
+  function RVDCardCost($cardID)
   {
     switch($cardID)
     {
@@ -53,7 +53,7 @@
     }
   }
 
-  function RVDSharedPitchValue($cardID)
+  function RVDPitchValue($cardID)
   {
     switch($cardID)
     {
@@ -66,7 +66,7 @@
     }
   }
 
-  function RVDSharedBlockValue($cardID)
+  function RVDBlockValue($cardID)
   {
     switch($cardID)
     {
@@ -79,7 +79,7 @@
     }
   }
 
-  function RVDSharedAttackValue($cardID)
+  function RVDAttackValue($cardID)
   {
     switch($cardID)
     {
@@ -89,6 +89,16 @@
       default: return 0;
     }
   }
+
+  function RVDEffectAttackModifier($cardID)
+  {
+    switch($cardID)
+    {
+      case "RVD009": return 2;
+      default: return 0;
+    }
+  }
+
 
   function RVDHasGoAgain($cardID)
   {
@@ -111,7 +121,7 @@
     }
   }
 
-  function RVDSharedPlayAbility($cardID, $from, $resourcesPaid)
+  function RVDPlayAbility($cardID, $from, $resourcesPaid)
   {
     global  $combatChain, $currentPlayer;
     $rv = "";
@@ -137,6 +147,19 @@
         $rv = "Clearing Bellow Intimidated";
         Intimidate();
         return $rv;
+    }
+  }
+
+  function RVDCombatEffectActive($cardID, $attackID)
+  {
+    global $combatChain, $mainPlayer;
+    $params = explode(",", $cardID);
+    $cardID = $params[0];
+    if(count($params) > 1) $parameter = $params[1];
+    switch($cardID)
+    {
+      // case "RVD009": return ;  Need to be coded.
+      default: return false;
     }
   }
 

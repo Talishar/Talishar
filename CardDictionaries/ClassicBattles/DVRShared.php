@@ -1,6 +1,6 @@
 <?php
 
-  function DVRSharedCardType($cardID)
+  function DVRCardType($cardID)
   {
     switch($cardID)
     {
@@ -28,7 +28,7 @@
     }
   }
 
-  function DVRSharedCardSubType($cardID)
+  function DVRCardSubType($cardID)
   {
     switch($cardID)
     {
@@ -42,7 +42,7 @@
   }
 
   //Minimum cost of the card
-  function DVRSharedCardCost($cardID)
+  function DVRCardCost($cardID)
   {
     switch($cardID)
     {
@@ -55,7 +55,7 @@
     }
   }
 
-  function DVRSharedPitchValue($cardID)
+  function DVRPitchValue($cardID)
   {
     switch($cardID)
     {
@@ -68,7 +68,7 @@
     }
   }
 
-  function DVRSharedBlockValue($cardID)
+  function DVRBlockValue($cardID)
   {
     switch($cardID)
     {
@@ -83,7 +83,7 @@
     }
   }
 
-  function DVRSharedAttackValue($cardID)
+  function DVRAttackValue($cardID)
   {
     switch($cardID)
     {
@@ -117,7 +117,7 @@
     }
   }
 
-  function DVRSharedPlayAbility($cardID, $from, $resourcesPaid)
+  function DVRPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $combatChain, $currentPlayer, $CS_LastAttack, $combatChainState, $CCS_WeaponIndex, $atkWWpn;
     $rv = "";
@@ -171,11 +171,10 @@
       GiveAttackGoAgain();
       AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       return "Blade Flash gives your sword attack Go Again.";
-
     }
   }
 
-  function DVRSharedHitEffect($cardID)
+  function DVRHitEffect($cardID)
   {
     switch($cardID)
     {
