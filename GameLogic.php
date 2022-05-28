@@ -2010,15 +2010,6 @@ function OnBlockEffects($index, $from)
         EvaluateCombatChain($totalAttack, $totalDefense);
         if(BlockValue($combatChain[$index]) > $totalAttack) DestroyCurrentWeapon();
       break;
-
-    case "MON089":
-        $totalAttack = 0;
-        EvaluateCombatChain($totalAttack);
-        if($totalAttack >= 6 && CardClass($combatChain[$index]) != "ILLUSIONIST"){
-          DestroyCharacter($defPlayer, $cardID);
-        }
-      break;
-
     default: break;
   }
   switch($combatChain[$index])
@@ -3140,6 +3131,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         $character = &GetPlayerCharacter($player);
         $character[$parameter+4] = 1;
+        if(CachedTotalAttack() >= 6) $character[$parameter+1] = 0;
       }
       return $lastResult;
     case "ARTOFWAR":
