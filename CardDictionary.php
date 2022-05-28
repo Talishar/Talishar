@@ -542,6 +542,20 @@
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";
         else return "NONE";
+      case "DVR":
+        if($number >= 2) return "WARRIOR";
+        else if($number = 5) return "WARRIOR";
+        else if($number >= 7 && $number <= 12) return "WARRIOR";
+        else if($number >= 15 && $number <= 18) return "WARRIOR";
+        else if($number >= 20 && $number <= 21) return "WARRIOR";
+        else return "GENERIC";
+      case "RVD":
+        if($number >= 3) return "BRUTE";
+        else if($number >= 7 && $number <= 17) return "BRUTE";
+        else if($number = 21) return "BRUTE";
+        else if($number = 23) return "BRUTE";
+        else if($number = 25) return "BRUTE";
+        else return "GENERIC";
       default: return 0;
     }
   }
