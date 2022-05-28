@@ -112,7 +112,18 @@
   {
     switch($cardID)
     {
+      case "DVR002": return "AA";
       case "DVR004": return "A";
+      default: return "";
+    }
+  }
+
+  function DVRAbilityCost($cardID)
+  {
+    switch($cardID)
+    {
+      case "DVR002": return 1;
+      case "DVR004": return 0;
       default: return "";
     }
   }
@@ -136,8 +147,10 @@
       $resources = &GetResources($currentPlayer);
       $resources[0] += 1;
       return "Blossom of Spring added 1 resource.";
-
-    // case "DVR008": /* Work in Progress */
+    case "DVR008":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+      return "Glistening Steelblade gives your next Dawnblade attack Go Again.";
     //   //Grant Go Again
     //   GiveAttackGoAgain();
     //   AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -146,7 +159,7 @@
     //   return "Glistening Steelblade gives your next weapon attack Go Again";
 
     case "DVR009":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "En Garde gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
 
     case "DVR013";
@@ -155,21 +168,19 @@
       return "Run Through gives Go Again and buffs your next sword weapon attack.";
 
     case "DVR014";
-      AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Thrust gives your next +3 to your sword attack.";
 
     case "DVR019":
-      GiveAttackGoAgain();
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "On a Knife Edge gives your sword attack Go Again.";
 
     case "DVR022":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Visit the Blacksmith gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
 
     case "DVR023":
       GiveAttackGoAgain();
-      AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       return "Blade Flash gives your sword attack Go Again.";
     }
   }
@@ -206,8 +217,9 @@
     if(count($params) > 1) $parameter = $params[1];
     switch($cardID)
     {
+      case "DVR008": case "DVR008-1": return $attackID == "DVR002" || $attackID == "WTR115";
       case "DVR009": return CardType($attackID) == "W";
-      case "DVR013": case "DVR014": case "DVR022": case "DVR023": return CardSubType($attackID) == "Sword";
+      case "DVR013": case "DVR014": case "DVR019": case "DVR022": case "DVR023": return CardSubType($attackID) == "Sword";
       default: return false;
     }
   }
@@ -217,13 +229,13 @@
     GiveAttackGoAgain();
     $log = "Hala Goldenhelm gives the sword attack go again";
     $arsenal = &GetArsenal($player);
-    ++$arsenal[$index+2];
-    if($arsenal[$index+2] == 2)
+    ++$arsenal[$index+3];
+    if($arsenal[$index+3] >= 2)
     {
       $log .= " and searchs for a Glistening Steelblade card.";
       RemoveArsenal($player, $index);
       BanishCardForPlayer("DVR007", $player, "ARS", "-");
-      AddDecisionQueue("FINDINDICES", $player, "GLISTENINGSTEELBLADE");
+      AddDecisionQueue("FINDINDICES", $player, "DECKCARD,DVR008");
       AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
     }

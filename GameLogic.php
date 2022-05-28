@@ -1040,7 +1040,7 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
 //Return 1 if the effect should be removed
 function EffectHitEffect($cardID)
 {
-  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer;
+  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex;
   switch($cardID)
   {
     case "WTR129": case "WTR130": case "WTR131": GiveAttackGoAgain(); break;
@@ -1095,6 +1095,7 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
       AddDecisionQueue("DESTROYITEM", $defPlayer, "<-", 1);
       return 1;
+    case "DVR008-1": $char = &GetPlayerCharacter($mainPlayer); ++$char[$combatChainState[$CCS_WeaponIndex]+3]; break;
     default: break;
   }
   return 0;
@@ -1127,7 +1128,7 @@ function EffectAttackModifier($cardID)
   {
     return DVREffectAttackModifier($cardID);
   }
-  else if($set == "EVR")
+  else if($set == "RVD")
   {
     return RVDEffectAttackModifier($cardID);
   }
@@ -1517,7 +1518,7 @@ function CurrentEffectGrantsGoAgain()
         case "EVR017": return true;
         case "EVR161-3": return true;
         case "EVR044": case "EVR045": case "EVR046": return true;
-        case "EVR008": return true;
+        case "DVR008": return true;
         case "DVR019": return true;
         default: break;
       }
@@ -1727,7 +1728,7 @@ function IsCombatEffectPersistent($cardID)
     case "EVR160": return true;
     case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
     case "EVR186": return true;
-    case "DVR005": return true;
+    case "DVR008-1": return true;
     default: return false;
   }
 }
@@ -2621,7 +2622,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
         case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
         case "CASHOUT": $rv = CashOutIndices($player); break;
-        case "GLISTENINGSTEELBLADE": $rv = SearchDeckForCard($player, "DVR008"); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
