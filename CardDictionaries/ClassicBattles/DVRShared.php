@@ -242,4 +242,13 @@
     WriteLog($log . ".");
   }
 
+  function DoriQuicksilverProdigyEffect()
+  {
+    global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+    $char = &GetPlayerCharacter($mainPlayer);
+    $char[1] = 1;//Exhause Dori
+    $char[$combatChainState[$CCS_WeaponIndex]+1] = 2;
+    ++$char[$combatChainState[$CCS_WeaponIndex]+5];
+  }
+
 ?>

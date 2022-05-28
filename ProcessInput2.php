@@ -670,7 +670,12 @@ function FinalizeChainLink($chainClosed=false)
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
-    if(DoesAttackHaveGoAgain() && !$chainClosed) { WriteLog("The attack has go again, gaining an action point."); ++$actionPoints; }
+    if(DoesAttackHaveGoAgain() && !$chainClosed)
+    {
+      WriteLog("The attack has go again, gaining an action point.");
+      ++$actionPoints;
+      if($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
+    }
 
     //Clean up combat effects that were used and are one-time
     for($i = count($currentTurnEffects) - 2; $i >= 0; --$i)
