@@ -67,9 +67,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
   {
     return DVRPlayAbility($cardID, $from, $resourcesPaid);
   }
-  else if($set == "RDV")
+  else if($set == "RVD")
   {
-    return RDVPlayAbility($cardID, $from, $resourcesPaid);
+    return RVDPlayAbility($cardID, $from, $resourcesPaid);
   }
   $rv = "";
   switch($cardID)

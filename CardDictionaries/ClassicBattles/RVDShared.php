@@ -121,6 +121,16 @@
     }
   }
 
+  function RVDAbilityCost($cardID, $index=-1)
+  {
+    switch($cardID)
+    {
+      case "RVD002": return 2;
+      case "RVD004": return 0;
+      default: return "";
+    }
+  }
+
   function RVDPlayAbility($cardID, $from, $resourcesPaid)
   {
     global  $combatChain, $currentPlayer;
