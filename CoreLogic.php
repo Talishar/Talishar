@@ -1073,6 +1073,7 @@ function RevealCards($cards)
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
   WriteLog($string);
+  return true;
 }
 
 function DoesAttackHaveGoAgain()
