@@ -2555,6 +2555,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKCLASSAA": $rv = SearchDeck($player, "AA", "", -1, -1, $subparam); break;
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
         case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
+        case "DECKCARD": $rv = SearchDeckForCard($player, $subparam); break;
         case "SEARCHMZ": $rv = SearchMZ($player, $subparam); break;
         case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;
         case "HAND": $rv = GetIndices(count(GetHand($player))); break;
@@ -2619,7 +2620,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
         case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
         case "CASHOUT": $rv = CashOutIndices($player); break;
-        case "ALPHARAMPAGE": $rv = SearchDeckForCard($player, "WTR006"); break;
         case "GLISTENINGSTEELBLADE": $rv = SearchDeckForCard($player, "DVR008"); break;
         default: $rv = ""; break;
       }
