@@ -2015,22 +2015,20 @@ function OnBlockEffects($index, $from)
   switch($combatChain[$index])
   {
     case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $otherPlayer); break;
-
     case "RVD003": case "RVD015":
-      $deck = GetDeck($currentPlayer);
+      $deck = &GetDeck($currentPlayer);
       $rv = "";
       if(count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
-
-      $AttackVal = AttackValue($deck[0]);
-      $rv .= CardLink($deck[0], $deck[0]) . " gets revealed ";
-
-      if($AttackVal >= 6){
-         $rv .= "and is put on top of the deck.";
-      }else {
-        AddBottomMainDeck($deck[0], "TOPDECK");
-        $rv .= " and is put at the bottom of the deck.";
+      $wasRevealed = RevealCards($deck[0]);
+      if($wasRevealed)
+      {
+        if(AttackValue($deck[0]) < 6)
+        {
+          WriteLog("The card was put on the bottom of your deck.");
+          array_push($deck, array_shift($deck));
+        }
       }
-
+      break;
     default: break;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
