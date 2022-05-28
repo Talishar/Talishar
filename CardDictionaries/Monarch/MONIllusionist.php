@@ -260,7 +260,7 @@
   {
     global $mainPlayer;
     AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
-    AddDecisionQueue("MAYCHOOSEHANDGENESIS", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $mainPlayer, "HAND", 1);
     AddDecisionQueue("GENESIS", $mainPlayer, "-", 1);
