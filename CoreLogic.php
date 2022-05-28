@@ -218,7 +218,7 @@ function MZStartTurnAbility($cardID)
   switch($cardID)
   {
     case "UPR086": break;
-    case default: break;
+    default: break;
   }
 }
 
