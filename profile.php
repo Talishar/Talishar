@@ -1,5 +1,5 @@
 <?php
-  require "header.php";
+  require "Header.php";
 ?>
 
 <?php
@@ -107,5 +107,5 @@ if(isset($_POST['update_profile'])){
 </section>
 
 <?php
-  require "footer.php";
+  require "Footer.php";
 ?>
