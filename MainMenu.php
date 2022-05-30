@@ -73,7 +73,7 @@
 
 
 <?php
-  echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/PVE/PVEMenu.php'>");
+  //echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/PVE/PVEMenu.php'>");
 ?>
 <!---<div style="text-align:center;"><input type="submit" style="font-size:20px;" value="PVE Menu"></div>
 </form>
