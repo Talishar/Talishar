@@ -19,9 +19,11 @@ def getFilename_fromCd(cd):
 urls = {
     # "https://fabtcg.com/resources/card-galleries/welcome-rathe-unlimited-booster": "WTR",
     # "https://fabtcg.com/resources/card-galleries/arcane-rising-unlimited-booster": "ARC",
-    "https://fabtcg.com/resources/card-galleries/crucible-war-booster": "CRU",
+    # "https://fabtcg.com/resources/card-galleries/crucible-war-booster": "CRU",
     # "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
-    "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE"
+    # "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE",
+    # "https://fabtcg.com/resources/card-galleries/classic-battles-rhinar-vs-dorinthea" : "RVD",
+    "https://fabtcg.com/resources/card-galleries/classic-battles-rhinar-vs-dorinthea" : "DVR"
 
  } # important not to have a '/' at the end of the link
 for url, code in urls.items():
@@ -60,6 +62,12 @@ for url, code in urls.items():
                     filename = code+"{:03d}".format(0)+"."+"jpg"
                     exceptions += 1
                 if code == "CRU" and counter == 158: #Exception 
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+                    exceptions += 1
+                if code == "DVR" and counter == 28: #Exception 
+                    filename = code+"{:03d}".format(0)+"."+"jpg"
+                    exceptions += 1
+                if code == "RVD" and counter == 28: #Exception 
                     filename = code+"{:03d}".format(0)+"."+"jpg"
                     exceptions += 1
                     

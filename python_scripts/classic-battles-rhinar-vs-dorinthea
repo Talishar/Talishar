@@ -1,0 +1,1756 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <title>Classic Battles: Rhinar vs Dorinthea</title>
+        
+        
+        <meta charset="utf-8" />
+        <meta name="description" content="The official Classic Battles: Rhinar vs Dorinthea card gallery" />
+        <meta name="author" content="Legend Story Studios Limited" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link rel="icon" href="https://storage.googleapis.com/fabmaster/website/img/favicon.ico" type="image/x-icon" />
+
+        
+        
+
+        
+        <meta property="og:title" content="
+            
+                Classic Battles: Rhinar vs Dorinthea
+            
+        " />
+        <meta property="og:url" content="https://fabtcg.com/resources/card-galleries/classic-battles-rhinar-vs-dorinthea/" />
+        <meta property="og:image" content="
+            
+                
+                https://storage.googleapis.com/fabmaster/media/images/cb_rvd_fab_article_cover.2e16d0ba.fill-1200x630.jpg
+                
+            
+        " />
+        <meta property="og:image:secure_url" content="
+            
+                
+                https://storage.googleapis.com/fabmaster/media/images/cb_rvd_fab_article_cover.2e16d0ba.fill-1200x630.jpg
+                
+            
+        " />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        
+            <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" rel="stylesheet">
+            <script crossorigin="anonymous" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+            
+            <link rel="stylesheet" href="https://use.typekit.net/qdt0oox.css" />
+            
+            <link rel="stylesheet" href="https://storage.googleapis.com/fabmaster/fabsite/jsp/Slick/slick.css" />
+            <link rel="stylesheet" href="https://storage.googleapis.com/fabmaster/fabsite/jsp/Slick/slick-theme.css" />
+        
+        
+            <link href="https://storage.googleapis.com/fabmaster/fontawesome-4.7/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+            <link href="https://storage.googleapis.com/fabmaster/fabsite/scss/styles.css?1653892267" rel="stylesheet" type="text/css" />
+        
+        
+        
+
+        
+            
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108157814-2"></script>
+            <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-108157814-2');
+            </script>
+        
+
+        
+            <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v5.0"></script>
+        
+
+        
+            
+            
+        
+
+        
+            <meta name="facebook-domain-verification" content="7ufg2esad4li9030pgtzzvkl716eq2" />
+        
+    </head>
+
+    
+    <body class="dark">
+        <div id="fb-root"></div>
+
+        
+            
+<nav id="siteNav" class="navbar navbar-expand-lg navbar-dark py-2 sticky-top border-st border-st-btm-5">
+    <div class="container">
+        <a class="navbar-brand navhide" href="/">FABTCG.COM</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbarz d-flex align-items-center justify-content-center p-2">
+            <a href="/" class="h-100"><img id="navLogo" class="h-100" src="https://storage.googleapis.com/fabmaster/fabsite/img/fab_logo_reg.png" alt="Flesh and Blood TCG"></a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item d-block d-lg-none" style="height:50px;">
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="/resources/learn-to-play/">
+                    Welcome
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/articles/">Articles</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Game
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/products/">Product Releases</a>
+                        <a class="dropdown-item" href="/resources/gameplay-formats/"> Formats</a>
+                        <a class="dropdown-item" href="/resources/rules-and-policy-center/">Rules & Policy</a>
+                        <a class="dropdown-item" href="/resources/card-galleries/">Card Galleries</a>
+                        <a class="dropdown-item" href="/collectors-centre/">Collector's Centre</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Heroes
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/heroes/">Heroes of FAB</a>
+                        <a class="dropdown-item" href="/world-of-rathe/">World of Rathe</a>
+                        <a class="dropdown-item" href="/resources/rules-and-policy-center/living-legend/">Living Legend</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Events
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/organised-play/">Organised Play</a>
+                        <a class="dropdown-item" href="/events/">Events Locator</a>
+                        <a class="dropdown-item" href="/decklists/">Decklists</a>
+                        <a class="dropdown-item" href="/leaderboards/">Leaderboards</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Retailers
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/resources/retailer-quickstart/">Retailer Quickstart</a>
+                        <a class="dropdown-item" href="/locator/">Store Locator</a>
+                        <a class="dropdown-item" href="/retailer-news/">Retailer News</a>
+                        <a class="dropdown-item" href="/resources/digital-assets/">Marketing Assets</a>
+                        <a class="dropdown-item" href="https://gem.fabtcg.com" target="_blank">Tournament Software</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Locators
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/locator/">Find a Store</a>
+                        <a class="dropdown-item" href="/events/">Find an Event</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="form-inline py-4 py-lg-0 text-center">
+                
+                <a class="fab-btn mr-1" href="/accounts/login/">Login</a> &nbsp;
+                <a class="fab-btn ml-1" href="/accounts/register/">Register</a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+
+        
+
+        <style>
+    .alert {
+        border-radius: 0px;
+    }
+
+</style>
+
+        
+        
+<article>
+    
+    
+
+
+    
+    <div class="container py-4 py-lg-5 my-3">
+        
+    
+
+    
+
+<style>
+    ol.breadcrumb {
+        background: none;
+    }
+</style>
+
+
+  <ol class="breadcrumb p-0 mb-1">
+    
+      
+    
+      
+        
+        
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li class="mx-2 d-flex align-items-center justify-content-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8.85 11.34" width=5><g id="Layer_2" data-name="Layer 2"><g id="Layer_2-2" data-name="Layer 2"><path class="cls-1" d="M4.41,0,0,5.67l4.41,5.67L8.85,5.67Z"/></g></g></svg>
+          </li>
+        
+      
+    
+      
+    
+      
+        
+        
+          <li>
+            <a href="/resources/card-galleries/">Card Galleries</a>
+          </li>
+          <li class="mx-2 d-flex align-items-center justify-content-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8.85 11.34" width=5><g id="Layer_2" data-name="Layer 2"><g id="Layer_2-2" data-name="Layer 2"><path class="cls-1" d="M4.41,0,0,5.67l4.41,5.67L8.85,5.67Z"/></g></g></svg>
+          </li>
+        
+      
+    
+    <li>Classic Battles: Rhinar …</li>
+  </ol>
+
+
+    <style>
+    .svg-box {
+        width: 100%;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+        height: 25px;
+    }
+    .svg-box svg {
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .hs-h1 h1 {
+        margin: 0px;
+    }
+</style>
+<div class="d-flex justify-content-center mb-1">
+    <div class="hs-h1 d-flex flex-column justify-content-center w-100">
+        <div class="svg-box pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1628.44 29.7" width="1370" height="25">
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Layer_2-2" data-name="Layer 2">
+      <path d="M813.48 10.48l-10.78 8.09H0v3h802.09l11.39 8.09 11.37-8.08h803.39v-3.02h-804zm0 16L805 20.35l8.48-6.35 7.91 6.23z" class="cls-1"/>
+      <path d="M823.41 7.92L813.39 0l-10.28 7.94H0v3.02h799.2l-.03.02h4.99l9.23-6.78 9.36 6.78H1628.44V7.92H823.41z" class="cls-1"/>
+    </g>
+  </g>
+</svg>
+
+        </div>
+        <h1 class="px-3 px-lg-5 text-center">Classic Battles: Rhinar vs Dorinthea</h1>
+        <div class="svg-box pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1628.44 29.7" width="1370" height="25">
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Layer_2-2" data-name="Layer 2">
+      <path d="M814.05 19.21l10.78-8.09h803.61v-3h-803L814.05 0l-11.37 8.07H.21v3.07h803.07zm0-16l8.48 6.14-8.48 6.37-7.91-6.23z" class="cls-1"/>
+      <path d="M804.12 21.78l10.02 7.92 10.27-7.94h804.03V18.73H828.33l.03-.02h-4.99l-9.23 6.79-9.36-6.79H0V21.78h804.12z" class="cls-1"/>
+    </g>
+  </g>
+</svg>
+
+        </div>
+    </div>
+</div>
+
+    
+    
+
+    
+        <div class="container page-content py-3 px-0">
+            
+                <div class="block-cardList">
+<div class="row no-gutters py-3 contentlist contentlist-blocky">
+    <div class="container p-0">
+        
+            <style>
+    .svg-box {
+        width: 100%;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+        height: 25px;
+    }
+    .svg-box svg {
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .hs-h2 h2 {
+        margin: 0px;
+    }
+</style>
+<div class="d-flex justify-content-center  mb-5">
+    <div class="hs-h2 d-flex flex-column justify-content-center ">
+        <h2 class="px-3 px-lg-5 text-center">Rhinar: Classic Battles</h2>
+        <div class="svg-box pointer-events-none">
+            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" height="13" width='1370'><g id="Layer_2" data-name="Layer 2"><g id="Layer_2-2" data-name="Layer 2-2"><polygon points="1370.03 7.11 691.22 7.11 691.22 7.12 690.77 7.12 690.04 7.12 685.03 10.8 679.94 7.12 679.47 7.12 679.47 7.11 0.03 7.11 0.03 8.81 678.72 8.81 685.03 13.61 691.24 8.81 1370.03 8.81 1370.03 7.11"/><polygon points="684.99 6.49 691.21 1.7 1370 1.7 1370 0 693.4 0 691.2 0 690.74 0 690.01 0 684.99 3.69 679.91 0 679.44 0 676.47 0 0 0 0 1.7 678.69 1.7 684.99 6.49"/></g></g></svg>
+        </div>
+    </div>
+</div>
+        
+        
+
+<div class="pages-cardlist-container">
+    <div id="pagesCardlist1" class="row pages-cardlist ">
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD001.width-450.png" class="standard cold foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD001.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Rhinar </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag cold-foil">
+                                            Cold Foil
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD002.width-450.png" class="cold foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD002.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Bone Basher </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag cold-foil">
+                                            Cold Foil
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD003.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD003.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Bone Vizier </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD004.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD004.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Blossom of Spring </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD005.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD005.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Ironhide Gauntlet </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD006.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD006.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Ironhide Legs </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD007.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD007.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Chief Ruk&#39;utan </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD008.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD008.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Alpha Rampage </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD009.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD009.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Beast Mode (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD010.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD010.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Pack Hunt (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD011.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD011.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Bare Fangs (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD012.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD012.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Wild Ride (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD013.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD013.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Wrecking Ball (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD014.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD014.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Awakening Bellow (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD015.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD015.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Pack Call (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD016.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD016.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Smash Instinct (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD017.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD017.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Smash With Big Tree (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD018.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD018.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Muscle Mutt (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD019.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD019.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Raging Onslaught (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD020.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD020.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Wounded Bull (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD021.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD021.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Barraging Beatdown (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD022.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD022.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Rally the Rearguard (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD023.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD023.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Wrecker Romp (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD024.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD024.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Come to Fight (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD025.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD025.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Clearing Bellow (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD026.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD026.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Dodge (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/RVD027.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/RVD027.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Titanium Bauble (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+    </div>
+</div>
+
+    </div>
+</div>
+</div>
+            
+                <div class="block-cardList">
+<div class="row no-gutters py-3 contentlist contentlist-blocky">
+    <div class="container p-0">
+        
+            <style>
+    .svg-box {
+        width: 100%;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+        height: 25px;
+    }
+    .svg-box svg {
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .hs-h2 h2 {
+        margin: 0px;
+    }
+</style>
+<div class="d-flex justify-content-center  mb-5">
+    <div class="hs-h2 d-flex flex-column justify-content-center ">
+        <h2 class="px-3 px-lg-5 text-center">Dorinthea: Classic Battles</h2>
+        <div class="svg-box pointer-events-none">
+            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" height="13" width='1370'><g id="Layer_2" data-name="Layer 2"><g id="Layer_2-2" data-name="Layer 2-2"><polygon points="1370.03 7.11 691.22 7.11 691.22 7.12 690.77 7.12 690.04 7.12 685.03 10.8 679.94 7.12 679.47 7.12 679.47 7.11 0.03 7.11 0.03 8.81 678.72 8.81 685.03 13.61 691.24 8.81 1370.03 8.81 1370.03 7.11"/><polygon points="684.99 6.49 691.21 1.7 1370 1.7 1370 0 693.4 0 691.2 0 690.74 0 690.01 0 684.99 3.69 679.91 0 679.44 0 676.47 0 0 0 0 1.7 678.69 1.7 684.99 6.49"/></g></g></svg>
+        </div>
+    </div>
+</div>
+        
+        
+
+<div class="pages-cardlist-container">
+    <div id="pagesCardlist2" class="row pages-cardlist ">
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR001.width-450.png" class="cold foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR001.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Dorinthea, Quicksilver Prodigy </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag cold-foil">
+                                            Cold Foil
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR002.width-450.png" class="cold foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR002.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Dawnblade, Resplendent </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag cold-foil">
+                                            Cold Foil
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR003.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR003.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Ironrot Helm </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR004.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR004.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Blossom of Spring </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR005.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR005.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Gallantry Gold </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR006.width-450.png" class="rainbow foil " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR006.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Ironrot Legs </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag rainbow-foil">
+                                            Rainbow
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR007.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR007.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Hala Goldenhelm </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR008.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR008.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Glistening Steelblade </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR009.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR009.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>En Garde (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR010.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR010.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Second Swing (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR011.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR011.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Warrior&#39;s Valor (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR012.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR012.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Sharpen Steel (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR013.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR013.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Run Through (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR014.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR014.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Thrust (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR015.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR015.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>In the Swing (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR016.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR016.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Ironsong Response (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR017.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR017.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Driving Blade (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR018.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR018.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Slice and Dice (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR019.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR019.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>On a Knife Edge (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR020.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR020.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Out for Blood (2)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR021.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR021.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Hit and Run (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR022.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR022.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Visit the Blacksmith (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR023.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR023.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Blade Flash (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR024.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR024.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Toughen Up (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR025.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR025.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Sigil of Solace (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR026.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR026.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Flock of the Feather Walkers (1)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR027.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR027.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Titanium Bauble (3)</h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+            
+            <div class="listblock-item col-12 my-3 my-lg-0 col-lg-3 text-center">
+                
+                    
+                    <a href="https://storage.googleapis.com/fabmaster/media/images/DVR028.width-450.png" class="standard " target="_blank"><img class="mw-100" src="https://storage.googleapis.com/fabmaster/media/images/DVR028.width-450.png"></a>
+                    <div class="card-details text-center py-3">
+                        <h5>Quicken </h5>
+                        
+                            
+                                <div class="printing-type pb-2">
+                                    
+                                        <span class="printing-type-tag standard">
+                                            Standard
+                                        </span>
+                                    
+                                </div>
+                            
+                        
+                    </div>
+                
+            </div>
+            
+        
+    </div>
+</div>
+
+    </div>
+</div>
+</div>
+            
+        </div>
+    
+
+    
+    <div class="page-footer">
+        <div class="fb-share-button" data-href="/resources/card-galleries/classic-battles-rhinar-vs-dorinthea/" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+        <p style="font-style: italic;" class="mt-1">
+        
+        </p>
+    </div>
+    
+
+    
+
+    </div>
+    
+</article>
+
+    </body>
+    
+
+    <footer>
+        
+            
+
+<div id="siteFooter" class="py-5 border-st border-st-top-5">
+    <div class="container pb-3">
+        <div class="row no-gutters text-center text-lg-left">
+            <div class="col-12 col-lg-3 mb-4">
+                <ul class="fab-list p-0 m-0">
+                    <h6>Resources</h6>
+                    <li class="fab-list-item"><a href="/leaderboards/">Leaderboards</a></li>
+                    <li class="fab-list-item"><a href="/locator/">Find a Store</a></li>
+                    <li class="fab-list-item"><a href="/events/">Find an Event</a></li>
+                    <li class="fab-list-item"><a href="/resources/rules-and-policy-center/">Rules & Policies</a></li>
+                    <li class="fab-list-item"><a href="/resources/retailer-quickstart/">Retailer Quickstart</a></li>
+                    <li class="fab-list-item"><a href="https://gem.fabtcg.com/">Tournament Software</a></li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-3 mb-4">
+                <ul class="fab-list p-0 m-0">
+                    <h6>About</h6>
+                    <li class="fab-list-item"><a href="/about-us/">About Us</a></li>
+                    <li class="fab-list-item"><a href="/resources/terms-of-service/">Terms of Service</a></li>
+                    <li class="fab-list-item"><a href="/resources/privacy-policy/">Privacy Policy</a></li>
+                    <li class="fab-list-item"><a href="/resources/terms-use-licensed-assets/">Licensed Asset Usage</a></li>
+                    <li class="fab-list-item"><a href="/resources/card-replacement-policy/">Replacement Policy</a></li>
+                    <li class="fab-list-item"><a href="/contact/">Contact Us</a><li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-3 mb-4">
+                <ul class="fab-list p-0 m-0">
+                    <h6>Connect</h6>
+                    <li class="fab-list-item"><a href="https://facebook.com/fabtcg">Facebook</a></li>
+                    <li class="fab-list-item"><a href="https://twitter.com/fabtcg">Twitter</a></li>
+                    <li class="fab-list-item"><a href="https://www.facebook.com/groups/426675531382222/">FAB Rules</a></li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-3 mb-4">
+                <a href="https://b2b.legendstory.com"><img src="https://storage.googleapis.com/fabmaster/fabsite/img/retailer_icon.png" style="max-width: 150px;"></a>
+            </div>
+        </div>
+    </div>
+    <div class="container text-center copyright">
+        &copy; 2022 <a href="https://legendstory.com" class="default">Legend Story Studios</a>
+        <br>
+        Made with love, by &nbsp;<img src="https://storage.googleapis.com/fabmaster/fabsite/img/icons/kiwiz.png" style="max-width: 15px;">
+    </div>
+</div>
+
+            
+
+                
+                
+                
+                
+                
+
+                <script src="https://storage.googleapis.com/fabmaster/fabsite/jsp/Enquire/enquire.min.js"></script>
+                <script src="https://storage.googleapis.com/fabmaster/fabsite/jsp/Slick/slick.min.js"></script>
+
+                <script>
+                    $(document).ready(function(){
+                        // Trigger all bootstrap 4 tooltips
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip()
+                        });
+                    })
+                </script>
+            
+            
+            
+        
+        
+        <div class="text-center" style="position: fixed; bottom: 0px; left: 0px; right: 0px; z-index: 1000; display: none;" id="cookieAccept">
+    <div class="alert  alert-dismissible fade show " role="alert" style="margin-bottom: 0px;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="accept_cookies()">
+        <span aria-hidden="true" style="font-weight: 400; text-shadow: none; color: white;">X</span>
+        </button>
+        By using this website, you agree to our use of cookies. We use cookies to provide you with a great experience and to help our website run effectively. <a href="https://fabtcg.com/resources/privacy-policy/">Privacy Policy</a> and <a href="https://fabtcg.com/resources/terms-of-service/">Terms of Service</a>.
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script type="text/javascript">
+    if(Cookies.get('accept_cookies') == null){
+        $('#cookieAccept').show();
+    }
+    function accept_cookies(){
+        Cookies.set('accept_cookies', 'accepted', {expires : 150})
+    }
+</script>
+    </footer>
+</html>
