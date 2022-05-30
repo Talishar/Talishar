@@ -527,7 +527,8 @@
   echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; top:" . GetZoneTop("THEIRDECK") .";'>");
   echo(($manualMode ? "<span style='position:absolute; left:10px; bottom:5px; z-index:1000;'>" . CreateButton($playerID, "Draw", 10010, 0, "24px") . "</span>": ""));
   $deckImage = (count($theirDeck) > 0 ? "cardBack" : $blankZone);
-  echo(Card($deckImage, "CardImages", $cardSize, 0, 0, 0, 0, count($theirDeck)));
+  $folder = (count($theirDeck) > 0 ? "CardImages" : "Images");
+  echo(Card($deckImage, $folder, $cardSize, 0, 0, 0, 0, count($theirDeck)));
   echo("</div>");
 
   //Display Their Banish

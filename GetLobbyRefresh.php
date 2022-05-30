@@ -81,7 +81,7 @@
     }
 
     echo("<br>");
-    echo("<div id='gamelog' style='position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
+    echo("<div id='gamelog' style='text-align:left; position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
     EchoLog($gameName, $playerID);
     echo("</div>");
 

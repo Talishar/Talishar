@@ -42,6 +42,14 @@
   echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 ?>
 
+<head>
+  <meta charset="utf-8">
+  <title>Flesh and Blood Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
 
 <script>
 function copyText() {
@@ -57,7 +65,6 @@ function copyText() {
 
 <style>
 body {
-  font-family: Garamond, serif;
   margin:0px;
   color:rgb(240, 240, 240);
   overflow-y:hidden;
@@ -152,6 +159,7 @@ h2 {
 <h1>Your Equipment</h1>
 </div>
 <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:5%; background-color:rgba(74, 74, 74, 0.6);">
+<div style='margin:4px; width:100%; text-align: center; font-size:20px;'><b><i>Click a card to select/unselect it</i></b></div>
 
 <table>
 <?php
@@ -163,7 +171,7 @@ h2 {
 
 ?>
 </table>
-  <div id="weaponDisplay" style="position:absolute; z-index:2; top:0px; left:50%; right:20px;">
+  <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:50%; right:20px;">
     <table>
     <?php
 
