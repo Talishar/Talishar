@@ -80,8 +80,9 @@
       echo("<div><input style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
     }
 
+    // Chat Log
     echo("<br>");
-    echo("<div id='gamelog' style='text-align:left; position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 50%; width:96%; overflow-y: auto;'>");
+    echo("<div id='gamelog' style='text-align:left; position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 60%; width:96%; overflow-y: auto;'>");
     EchoLog($gameName, $playerID);
     echo("</div>");
 

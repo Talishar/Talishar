@@ -3,19 +3,23 @@
   include_once 'Header.php';
 ?>
 
-<?php
-  echo("<form style='position:absolute; top:15%; width:100%;display:inline-block;' action='" . $redirectPath . "/DraftFiles/CreateGame.php'>");
-?>
-  <input type="hidden" id="numPlayers" name="numPlayers" value="8" />
-  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="Tales of Aria Solo Draft Practice"></div>
-</form>
-<?php
-  echo("<form style='position:absolute; top:30%; width:100%;display:inline-block;' action='" . $redirectPath . "/WTRDraftFiles/CreateGame.php'>");
-?>
-  <input type="hidden" id="numPlayers" name="numPlayers" value="8" />
-  <div style="text-align:center;"><input type="submit" style="font-size:20px;" value="WTR Solo Draft Practice"></div>
-</form>
+<section class="draft-form">
+  <h2>Solo Draft Practice</h2>
+  <div class="draft-form-form">
+    <form action="DraftFiles/CreateGame.php" method="post">
+      <input type="hidden" id="numPlayers" name="numPlayers" value="8">
+      <input type="submit" style="font-size:20px;" value="Tales of Aria">
+      </div>
+    </form>
+  </div>
 
+  <div class="draft-form-form">
+    <form action="WTRDraftFiles/CreateGame.php" method="post">
+      <input type="hidden" id="numPlayers" name="numPlayers" value="8">
+      <input type="submit" style="font-size:20px;" value="Welcome To Rathe">
+    </form>
+  </div>
+</section>
 <?php
   include_once 'Footer.php'
 ?>

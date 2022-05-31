@@ -1,4 +1,11 @@
-<head>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Flesh and Blood Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
 
 <?php
   ob_start();
@@ -42,15 +49,6 @@
   echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 ?>
 
-<head>
-  <meta charset="utf-8">
-  <title>Flesh and Blood Online</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-
-
 <script>
 function copyText() {
   gameLink = document.getElementById("gameLink");
@@ -60,7 +58,6 @@ function copyText() {
   // Copy it to clipboard
   document.execCommand("copy");
 }
-
 </script>
 
 <style>
@@ -71,6 +68,7 @@ body {
 }
 
 h1 {
+  margin-top: 6px;
   text-align:center;
   width:100%;
 }
@@ -79,6 +77,7 @@ h2 {
   text-align:center;
   width:100%;
 }
+
 </style>
 <script src="./jsInclude.js"></script>
 </head>
@@ -98,20 +97,25 @@ h2 {
   background-color: #111111;
   overflow: hidden;background-image: url('Images/rout.jpg');">
 
-<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:46%; background-color:rgba(74, 74, 74, 0.6);">
+<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:46%;
+background-color:rgba(74, 74, 74, 0.8);
+border: 2px solid black;
+border-radius: 3px;">
 <?php
   $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
   echo("<h1>$theirDisplayName Hero</h1>");
 
   $otherHero = "cardBack";
-  echo("<div id='oppHero' style='padding-left:20px;'>");
+  echo("<div id='oppHero' style='padding-left:5%;'>");
   echo(Card($otherHero, "CardImages", 350, 0, 0));
   echo("</div>");
 
 ?>
 </div>
 
-<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:46%; background-color:rgba(74, 74, 74, 0.6);">
+<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:46%; background-color:rgba(74, 74, 74, 0.8);
+border: 2px solid black;
+border-radius: 3px;">
 <?php
   $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
   echo("<h1>$displayName Hero</h1>");
@@ -120,7 +124,7 @@ h2 {
   $handler = fopen($deckFile, "r");
   $character = GetArray($handler);
 
-  echo("<div style='padding-left:20px;'>");
+  echo("<div style='padding-left:5%;'>");
   echo(Card($character[0], "CardImages", 350, 0, 0));
   echo("</div>");
 
@@ -155,11 +159,20 @@ h2 {
 ?>
 </div>
 
-<div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:290px; height:75px; background-color:rgba(74, 74, 74, 0.6);" onclick="TabClick('EQUIP');">
+<div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:290px; height:73px;
+background-color:rgba(74, 74, 74, 0.8);
+border: 2px solid black;
+border-radius: 3px;" onclick="TabClick('EQUIP');">
+
 <h1>Your Equipment</h1>
 </div>
-<div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:5%; background-color:rgba(74, 74, 74, 0.6);">
-<div style='margin:4px; width:100%; text-align: center; font-size:20px;'><b><i>Click a card to select/unselect it</i></b></div>
+
+<div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:2.5%;
+background-color:rgba(74, 74, 74, 0.8);
+border: 2px solid black;
+border-radius: 3px;">
+
+<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family:Roboto; font-weight: 500; font-size:20px; font-style: italic;'>Click cards to select/unselect</div>
 
 <table>
 <?php
@@ -186,12 +199,23 @@ h2 {
   </div>
 </div>
 
-<div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:930px; width:290px; height:75px; background-color:rgba(196, 196, 196, 0.7);" onclick="TabClick('DECK');">
+<div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:933px; width:290px; height:73px;
+background-color:rgba(175, 175, 175, 0.8);
+border: 2px solid black;
+border-radius: 3px; overflow-y:scroll;" onclick="TabClick('DECK');">
+
 <?php
 echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
 ?>
 </div>
-<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:10%; background-color:rgba(74, 74, 74, 0.6); overflow-y:scroll;">
+
+<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:2.5%;
+background-color:rgba(74, 74, 74, 0.8);
+border: 2px solid black;
+border-radius: 3px; overflow-y:scroll;">
+
+<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family: Roboto, sans-serif; font-weight: bold; font-style: italic; font-size:18px;'>Click Cards to Select/Unselect</div>
+
 <?php
 
     $count = 0;
@@ -210,7 +234,10 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 ?>
 </div>
 
-  <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:45%; background-color:rgba(74, 74, 74, 0.6);">
+  <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:47%; font-weight:500; font-size:18px;
+  background-color:rgba(74, 74, 74, 0.8);
+border: 2px solid black;
+border-radius: 3px;">
   <h1>Game Lobby</h1>
 <?php
 
@@ -227,9 +254,9 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
   echo("<div id='mainPanel' style='text-align:center;'>");
 
   echo("</div>");
-  echo("<div id='chatbox' style='position:relative; left:2%; height: 50px;'><br>");
+  echo("<div id='chatbox' style='position:relative; left:2%; height: 45px;'><br>");
   echo("<input style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline; width:8%; margin-left:5px;' onclick='SubmitChat()'>Chat</button>");
+  echo("<button style='display:inline; width:10%; margin-left:5px;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("</div>");
@@ -276,8 +303,8 @@ function TabClick(tab)
   var deckDisplay = document.getElementById("deckDisplay");
   equipDisplay.style.display = tab == "EQUIP" ? "block" : "none";
   deckDisplay.style.display = tab == "DECK" ? "block" : "none";
-  equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(74, 74, 74, 0.6)" : "rgba(196, 196, 196, 0.7)";
-  deckTab.style.backgroundColor = tab == "DECK" ? "rgba(74, 74, 74, 0.6)" : "rgba(196, 196, 196, 0.7)";
+  equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(74, 74, 74, 0.8)" : "rgba(196, 196, 196, 0.7)";
+  deckTab.style.backgroundColor = tab == "DECK" ? "rgba(74, 74, 74, 0.8)" : "rgba(196, 196, 196, 0.7)";
 }
 
 function CardClick(id)
