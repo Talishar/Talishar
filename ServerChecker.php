@@ -27,7 +27,7 @@ if ($handle = opendir($path)) {
           $lastGamestateUpdate = intval(GetCachePiece($gameToken, 2));
           if($currentTime - $lastGamestateUpdate < 12000)
           {
-            $spectateLinks .= "<form action='" . $redirectPath . "/NextTurn3.php'>";
+            $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn3.php'>";
             $spectateLinks .= "<label for='joinGame'>Last Update " . ($currentTime - $lastGamestateUpdate) . " seconds ago </label>";
             $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
             $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";

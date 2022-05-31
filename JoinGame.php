@@ -13,7 +13,10 @@
 ?>
 
 <div style="width:100%; height:100%; background-image: url('Images/lord-of-wind.jpg'); background-size:cover; z-index=0;">
-<div style="position:absolute; z-index:1; top:25%; left:2%; width:25%; height:50%; background-color:rgba(74, 74, 74, 0.6);">
+<div style="position:absolute; z-index:1; top:25%; left:2%; width:25%; height:50%;
+background-color:rgba(74, 74, 74, 0.9);
+border: 2px solid black;
+border-radius: 3px;">
 <h2>Game Lobby</h2>
 <?php
   echo("<form action='" . $redirectPath . "/JoinGameInput.php'>");
@@ -21,7 +24,7 @@
   echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
 ?>
 
-<div style="margin-left: 8px; ">Decks to Try:
+<div style="margin-left: 10px;">Decks to Try:
   <select name="decksToTry" id="decksToTry">
     <option value="1">Dori Axes CC</option>
     <option value="2">Bravo CC</option>
@@ -29,7 +32,11 @@
     <option value="4">Stubby Katsu CC</option>
   </select>
 </div><br>
-  <label for="fabdb">FaB DB Link</label>
+
+<a title='FaBDB Deckbuilder' href='https://fabdb.net/decks' target='_blank'><img style='height:75px; position:absolute;
+  right:15px; top:15%;' src='./Images/fabdb-symbol.png'/></a>
+
+  <label for="fabdb" style="margin-right: -10px;">FaB DB Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
 
   <div style='width:100%; text-align:center;'><input type="submit" value="Submit"></div>

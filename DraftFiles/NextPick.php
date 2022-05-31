@@ -106,7 +106,7 @@
   echo("</div>");//End play area div
 
   //Display the log
-  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.70); position:fixed; display:inline; width:12%; height: 40%; top:10px; right:10px; overflow-y: scroll;'>");
+  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.8); position:fixed; display:inline; width:12%; height: 40%; top:10px; right:10px; overflow-y: scroll;'>");
 
   EchoLog($gameName, $playerID);
   echo("</div>");

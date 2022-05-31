@@ -6,10 +6,11 @@ body {
   background-color: #111111;
   background-image: url('../Images/ClassicBattlesBackground.jpg');
   overflow: hidden;
-  font-family: 'Roboto' sans-serif;"
-  font-weight: bold;
-  font-size: 17px;
-  color: #FFF;
+
+  font-family: 'Helvetica' sans-serif;
+  font-weight: bolder;
+  font-size: 18px;
+  color: #DDD;
 }
 
 .wrapper {
@@ -31,38 +32,38 @@ body {
 
 .login-status {
   text-align: center;
-  font-size: 26px;
+  font-size: 24px;
   color: #111;
 }
 
-h1, h2, h3, h4, h5, h6, p {
-  font-family: 'Roboto', sans-serif;
-  color: #FFF;
+h1, h2, h3, h4, h5, h6, p, a, label{
+  font-family: 'Helvetica', sans-serif;
+  color: #DDD;
   line-height: 24px;
-  font-weight: bold;
+  font-weight: bolder;
 }
 
 h1 {
   font-weight: 600;
-  font-size: 32px;
+  font-size: 26px;
   padding: 20px 0;
   text-align: center;
 }
 
 h2 {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 24px;
   padding: 20px 0;
   text-align: center;
 }
 
 h3 {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 16px;
 }
 
 p {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
 }
 
@@ -85,10 +86,10 @@ nav ul li {
 }
 
 nav ul li a {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Helvetica', sans-serif;
   font-weight: bold;
   font-size: 14px;
-  color: #ffffff;
+  color: #EEE;
   text-decoration: none;
   padding: 0 16px;
   text-transform: uppercase;
@@ -101,24 +102,39 @@ nav ul li a:hover {
 section {
   margin: auto;
   margin-top: 15px;
-  background: rgba(240, 240, 240, 0.6);
+  background: rgba(240, 240, 240, 0.8);
   width: 30%;
   padding-bottom: 10px;
 }
 
-/* Sign Up + Profile */
-.signup-form{
-  background-color:rgba(74, 74, 74, 0.6);
+select {
+  border: 2px solid grey;
+  border-radius: 3px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
+input, button {
+  border: 2px solid grey;
+  border-radius: 3px;
+  font-size: 16px;
+  font-weight: 550;
+}
+
+/* Sign Up + Profile */
+.signup-form{
+  background-color:rgba(74, 74, 74, 0.8);
+  border: 1px solid black;
+  border-radius: 5px;
+}
 
 .signup-form-form {
   display: flex;
   justify-content: center;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Helvetica', sans-serif;
   font-weight: bold;
   font-size: 18px;
-  color: #FFF;
+  color: #DDD;
   margin-bottom: 5px;
 }
 
@@ -130,7 +146,7 @@ section {
 .signup-form p {
   width: 100%;
   text-align: center;
-  color: #FFFF;
+  color: #DDD;
   border: 1px black;
   font-weight: bold;
   font-size: 20px;
@@ -143,7 +159,7 @@ section {
 .signup-form h2 {
   text-align: center;
   margin-top: 6px;
-  color: #FFF;
+  color: #DDD;
   font-weight: bold;
   font-size: 24px;
 }
@@ -162,7 +178,8 @@ section {
   margin-top: 3px;
   border: 1px solid black;
   border-radius: 5px;
-  background-color: #F6F6F6;
+  background-color: #EEE;
+  font-size: 17px;
   float: left;
   color: black;
 }
@@ -175,11 +192,11 @@ section {
   margin-right: 3px;
   margin-bottom: 5px;
   border: 1px solid black;
-  border-radius: 4px;
+  border-radius: 5px;
   background-color: #333;
-  font-size: 13px;
-  color: #FFF;
-  text-transform: uppercase;
+  font-size: 20px;
+  font-weight: bolder;
+  color: #DDD;
   text-align: center;
   text-decoration: inherit;
   cursor: pointer;
@@ -199,21 +216,22 @@ section {
   border-radius: 5px;
   background-color: #F6F6F6;
   float: left;
-  font-size: 13px;
+  font-size: 18px;
 }
 
 .form-resetpwd button {
-  display: inline-block;
   width: 100%;
+  margin-bottom: 10px;
+  margin-top: 3px;
+  border: 1px solid black;
+  border-radius: 5px;
+  float: left;
+  color: #DDD;
   height: 40px;
-  margin: 3px;
-  border: none;
-  border-radius: 4px;
   background-color: #333;
-  font-size: 13px;
-  color: #FFF;
-  text-transform: uppercase;
-  text-align: center;
+  font-size: 18px;
+  font-weight: bolder;
+  text-decoration: inherit;
   cursor: pointer;
 }
 
@@ -235,4 +253,59 @@ section {
    background-color: var(--red);
    color:var(--white);
    font-size: 20px;
+}
+
+/* Draft style */
+
+.draft-form {
+  background-color:rgba(74, 74, 74, 0.8);
+  border: 1px solid black;
+  border-radius: 15px;
+  width: 30%;
+}
+
+.draft-form-form {
+  display: flex;
+  justify-content: center;
+  font-family: 'Helvetica', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #DDD;
+  margin-bottom: 5px;
+}
+
+.draft-form div {
+  margin-bottom: 3px;
+}
+
+.draft-form h2 {
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 6px;
+  color: #DDD;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.draft-form form {
+  width: 85%;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+}
+
+.draft-form-form form input {
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 3px;
+  border: 1px solid black;
+  border-radius: 5px;
+  float: left;
+  color: #DDD;
+  height: 40px;
+  background-color: #333;
+  font-size: 18px;
+  font-weight: bolder;
+  text-decoration: inherit;
+  cursor: pointer;
 }
