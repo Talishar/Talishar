@@ -24,7 +24,7 @@
    ?>
 </div>
 
-<div style="position:absolute; top:28%; left:50%; width:30%; bottom: 30px; margin: 0 0 0 -15%; /* -13% = half of width/height */
+<div style="position:absolute; top:28%; left:50%; width:40%; bottom: 30px; margin: 0 0 0 -20%; /* -13% = half of width/height */
   background-color:rgba(74, 74, 74, 0.8);
   border: 2px solid black;
   border-radius: 3px;">

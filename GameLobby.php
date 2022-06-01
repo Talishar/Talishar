@@ -202,7 +202,7 @@ border-radius: 3px;">
 <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:933px; width:290px; height:73px;
 background-color:rgba(175, 175, 175, 0.8);
 border: 2px solid black;
-border-radius: 3px; overflow-y:scroll;" onclick="TabClick('DECK');">
+border-radius: 3px;" onclick="TabClick('DECK');">
 
 <?php
 echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
@@ -212,7 +212,7 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:2.5%;
 background-color:rgba(74, 74, 74, 0.8);
 border: 2px solid black;
-border-radius: 3px; overflow-y:scroll;">
+border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
 
 <div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family: Roboto, sans-serif; font-weight: bold; font-style: italic; font-size:18px;'>Click Cards to Select/Unselect</div>
 
@@ -254,7 +254,7 @@ border-radius: 3px;">
   echo("<div id='mainPanel' style='text-align:center;'>");
 
   echo("</div>");
-  echo("<div id='chatbox' style='position:relative; left:2%; height: 45px;'><br>");
+  echo("<div id='chatbox' style='position:relative; top:2px; left:2%; height: 45px;'>");
   echo("<input style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
   echo("<button style='display:inline; width:10%; margin-left:5px;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
