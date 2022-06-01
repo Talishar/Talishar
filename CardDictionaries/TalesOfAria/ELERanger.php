@@ -205,7 +205,7 @@
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
-      AddDecisionQueue("FINDINDICES", $player, "HAND" . $element, $i > 0 ? 1 : 0);
+      AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REVEALMYCARD", $player, "<-", 1);
       if($i > 0) $elementText .= " and ";
