@@ -13,7 +13,7 @@
 ?>
 
 <div style="width:100%; height:100%; background-image: url('Images/lord-of-wind.jpg'); background-size:cover; z-index=0;">
-<div style="position:absolute; z-index:1; top:25%; left:2%; width:25%; height:50%;
+<div style="position:absolute; z-index:1; top:15%; left:2%; width:25%; height:70%;
 background-color:rgba(74, 74, 74, 0.9);
 border: 2px solid black;
 border-radius: 3px;">
@@ -34,7 +34,7 @@ border-radius: 3px;">
 </div><br>
 
 <a title='FaBDB Deckbuilder' href='https://fabdb.net/decks' target='_blank'><img style='height:75px; position:absolute;
-  right:15px; top:15%;' src='./Images/fabdb-symbol.png'/></a>
+  right:15px; top:10px;' src='./Images/fabdb-symbol.png'/></a>
 
   <label for="fabdb" style="margin-right: -10px;">FaB DB Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
