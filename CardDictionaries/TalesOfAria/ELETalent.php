@@ -489,10 +489,10 @@
     {
       if($combatChain[$i+1] == $player)
       {
-        $cardType = CardType($combatChain[0]);
+        $cardType = CardType($combatChain[$i]);
         if($cardType == "A" || $cardType == "AA")
         {
-          if(TalentContains($combatChain[0], "EARTH") || TalentContains($combatChain[0], "ELEMENTAL"))
+          if(TalentContains($combatChain[$i], "EARTH") || TalentContains($combatChain[$i], "ELEMENTAL"))
           {
             if($indices != "") $indices .= ",";
             $indices .= $i;
