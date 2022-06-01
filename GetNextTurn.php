@@ -634,10 +634,10 @@
   //Now display arsenal
   if($theirArsenal != "")
   {
-    echo("<div title='Their Arsenal' style='position: fixed; top:0px; left:" . GetCharacterLeft("C", "") . "; display:inline;'>");
+    echo("<div title='Their Arsenal' style='position: fixed; top:0px; left:" . GetCharacterLeft("C", "") . "; display:inline-block;'>");
     for($i=0; $i<count($theirArsenal); $i+=ArsenalPieces())
     {
-      echo("<div style='position:relative;'>");
+      echo("<div style='position:relative; display:inline;'>");
       if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "CardImages", $cardSize, 0, 1, $theirArsenal[$i+2] == 0 ? 1 : 0, 0, $theirArsenal[$i+3]));
       else echo(Card("cardBack", "CardImages", $cardSize, 0, 0));
       if($theirArsenal[$i+4] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
@@ -685,7 +685,7 @@
     echo("<div style='position:fixed; left:" . $arsenalLeft . "; bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize - 10) . "px;'>");//arsenal div
     for($i=0; $i<count($myArsenal); $i+=ArsenalPieces())
     {
-      echo("<div style='position:relative;'>");
+      echo("<div style='position:relative; display:inline-block'>");
       if($playerID == 3)
       {
         echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, -1));
@@ -695,7 +695,7 @@
         $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction);
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $counters = $myArsenal[$i+3];
-        echo("<div style='display:inline-block; position:relative; left:10px;'>");
+        echo("<div>");
         echo(Card($myArsenal[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 5 : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
         $iconHeight = $cardSize / 2 - 5;
         $iconLeft = $cardWidth/2 - intval($iconHeight*.71/2) + 5;
