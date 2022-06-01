@@ -215,7 +215,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    $damage += CurrentEffectArcaneModifier();
+    $damage += CurrentEffectArcaneModifier($source);
     if($fromQueue)
     {
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
@@ -259,7 +259,7 @@
     return $rv;
   }
 
-  function CurrentEffectArcaneModifier()
+  function CurrentEffectArcaneModifier($source)
   {
     global $currentTurnEffects;
     $modifier = 0;
@@ -268,7 +268,7 @@
       $effectArr = explode(",", $currentTurnEffects[$i]);
       switch($effectArr[0])
       {
-        case "EVR123": $modifier += $effectArr[1]; break;
+        case "EVR123": $cardType = CardType($source); if($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1]; break;
         default: break;
       }
     }
