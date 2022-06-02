@@ -1,4 +1,6 @@
 
+var _openPopup = null;
+
 function OnLoadCallback(lastUpdate)
 {
   var log = document.getElementById('gamelog');
@@ -103,4 +105,15 @@ function SubmitInput(mode, params, fullRefresh=false)
   ajaxLink += params;
   xmlhttp.open("GET", ajaxLink, true);
   xmlhttp.send();
+}
+
+function ShowPopup(name)
+{
+  if(_openPopup !== null)
+  {
+    document.getElementById(_openPopup).style.display = "none";
+    _openPopup = null;
+  }
+  document.getElementById(name).style.display = "inline";
+  _openPopup = name;
 }

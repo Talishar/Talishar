@@ -216,7 +216,7 @@
   if($displayCombatChain)
   {
     echo("<td style='font-size:30px; font-weight:bold;'>$totalAttack</td>");
-    echo("<td><img onclick='(function(){ document.getElementById(\"attackModifierPopup\").style.display = \"inline\";})();' style='cursor:pointer; height:30px; width:30px; display:inline-block;' src='./Images/Attack.png' /></td>");
+    echo("<td><img onclick='ShowPopup(\"attackModifierPopup\");' style='cursor:pointer; height:30px; width:30px; display:inline-block;' src='./Images/Attack.png' /></td>");
     echo("<td><img style='height:30px; width:30px; display:inline-block;' src='./Images/Defense.png' /></td>");
     echo("<td style='font-size:30px; font-weight:bold;'>$totalDefense</td>");
     $damagePrevention = GetDamagePrevention($defPlayer);
@@ -511,13 +511,13 @@
   for($i=0; $i<count($theirHand); ++$i) {
     echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
-  if(count($theirSoul) > 0) echo("<div title='Click to view the cards in their Soul.' style='padding-left:10px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='(function(){ document.getElementById(\"theirSoulPopup\").style.display = \"inline\";})();'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img> <div style='position:relative; top:-20px; display:inline-block;'>" . count($theirSoul) . " cards</div></div>");
+  if(count($theirSoul) > 0) echo("<div title='Click to view the cards in their Soul.' style='padding-left:10px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='ShowPopup(\"theirSoulPopup\");'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img> <div style='position:relative; top:-20px; display:inline-block;'>" . count($theirSoul) . " cards</div></div>");
   echo("</div>");
 
 
   //Show deck, discard, pitch, banish
   //Display Their Discard
-  echo("<div title='Click to view the cards in their Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") .";' onclick='(function(){ document.getElementById(\"theirDiscardPopup\").style.display = \"inline\";})();'>");
+  echo("<div title='Click to view the cards in their Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") .";' onclick='ShowPopup(\"theirDiscardPopup\");'>");
   $card = (count($theirDiscard) > 0 ? $theirDiscard[count($theirDiscard)-1] : $blankZone);
   $folder = (count($theirDiscard) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($theirDiscard)));
@@ -544,7 +544,7 @@
   }
 
 
-  echo("<span title='Click to see their banish zone.' onclick='(function(){ document.getElementById(\"theirBanishPopup\").style.display = \"inline\";})();' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . count($theirBanish)/BanishPieces() . "</div></img></span>");
+  echo("<span title='Click to see their banish zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . count($theirBanish)/BanishPieces() . "</div></img></span>");
   echo("</div>");
 
   //Display Their Pitch
@@ -552,7 +552,7 @@
   $card = (count($theirPitch) > 0 ? $theirPitch[count($theirPitch)-PitchPieces()] : $blankZone);
   $folder = (count($theirPitch) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0));
-  echo("<span title='Click to see their pitch zone.' onclick='(function(){ document.getElementById(\"theirPitchPopup\").style.display = \"inline\";})();' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . $theirResources[0] . "</div></img></span>");
+  echo("<span title='Click to see their pitch zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . $theirResources[0] . "</div></img></span>");
   echo("</div>");
 
 
@@ -781,7 +781,7 @@
     if($myCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
     if($type == "C")
     {
-      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='(function(){ document.getElementById(\"mySoulPopup\").style.display = \"inline\";})();' style='cursor:pointer; position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
+      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
     }
     echo("</div>");
     echo("</div>");
@@ -790,7 +790,7 @@
 
   //Show deck, discard, pitch, banish
   //Display My Discard
-  echo("<div title='Click to view the cards in your Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; bottom:" . GetZoneBottom("MYDISCARD") .";' onclick='(function(){ document.getElementById(\"myDiscardPopup\").style.display = \"inline\";})();'>");
+  echo("<div title='Click to view the cards in your Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; bottom:" . GetZoneBottom("MYDISCARD") .";' onclick='ShowPopup(\"myDiscardPopup\");'>");
   $card = (count($myDiscard) > 0 ? $myDiscard[count($myDiscard)-1] : $blankZone);
   $folder = (count($myDiscard) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($myDiscard)));
@@ -808,7 +808,7 @@
   $card = (count($myBanish) > 0 ? $myBanish[count($myBanish)-BanishPieces()] : $blankZone);
   $folder = (count($myBanish) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
-  echo("<span title='Click to see your banish zone.' onclick='(function(){ document.getElementById(\"myBanishPopup\").style.display = \"inline\";})();' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . count($myBanish)/BanishPieces() . "</div></img></span>");
+  echo("<span title='Click to see your banish zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . count($myBanish)/BanishPieces() . "</div></img></span>");
   if(TalentContains($myCharacter[0], "SHADOW"))
   {
     $myBD = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
@@ -823,7 +823,7 @@
   $card = (count($myPitch) > 0 ? $myPitch[count($myPitch)-PitchPieces()] : $blankZone);
   $folder = (count($myPitch) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0));
-  echo("<span title='Click to see your pitch zone.' onclick='(function(){ document.getElementById(\"myPitchPopup\").style.display = \"inline\";})();' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . $myResources[0] . "</div></img></span>");
+  echo("<span title='Click to see your pitch zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Resource.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:white; text-align:center;'>" . $myResources[0] . "</div></img></span>");
   echo("</div>");
 
   echo("</div>");//End play area div
@@ -832,9 +832,9 @@
   echo("<div style='position:fixed; width:200px; top:10px; bottom:10px; right:10px;'>");
 
   echo("<div style='position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr><td>");
-  echo("<div title='Click to view stats.' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myStatsPopup\").style.display = \"inline\";})();'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
+  echo("<div title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
   echo("</td><td></td><td>");
-  echo("<div title='Click to view the menu.' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"menuPopup\").style.display = \"inline\";})();'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
+  echo("<div title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo("</td></tr></table></div></div>");
 
   echo("<div style='text-align:center; width:200px; font-size:24;'>Turn #" . $currentTurn . "</div>");
