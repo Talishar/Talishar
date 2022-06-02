@@ -250,7 +250,7 @@
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
-      echo(Card($combatChain[$i], "crops", $cardSizeCombat, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
+      echo(Card($combatChain[$i], "CardImages", $bigCardSize, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
     }
   }
 
@@ -580,7 +580,7 @@
       $border = CardBorderColor($landmarks[$i], "PLAY", $playable);
       $counters = 0;
       echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($landmarks[$i], "crops", $cardSizeAura, $action, 1, 0, $border, $counters, strval($i), "", true));//TODO: Show sideways
+      echo(Card($landmarks[$i], "CardImages", $cardSize, $action, 1, 0, $border, $counters, strval($i), "", true));//TODO: Show sideways
       echo("</div>");
     }
     echo("</div>");
@@ -597,9 +597,9 @@
     {
       if(IsTileable($theirAuras[$i])) continue;
       $counters = $theirAuras[$i+2] > 0 ? $theirAuras[$i+2] : $theirAuras[$i+3];//TODO: Show both
-      echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($theirAuras[$i], "crops", $cardSizeAura, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters));
-      echo("</div>");
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($theirAuras[$i], "CardImages", $cardSize, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters));
+      //echo("</div>");
     }
     echo("</div>");
   }
@@ -609,9 +609,9 @@
     for($i=0; $i<count($theirItems); $i+=ItemPieces())
     {
       if(IsTileable($theirItems[$i])) continue;
-      echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($theirItems[$i], "crops", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]));
-      echo("</div>");
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($theirItems[$i], "CardImages", $cardSize, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]));
+      //echo("</div>");
     }
     echo("</div>");
   }
@@ -622,10 +622,10 @@
     echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
-      echo("<div style='position:relative; border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($theirAllies[$i], "crops", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2]));
+      //echo("<div style='position:relative; border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($theirAllies[$i], "CardImages", $cardSize, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2]));
       if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
-      echo("</div>");
+      //echo("</div>");
     }
     echo("</div>");
   }
@@ -740,9 +740,9 @@
       $playable = ($currentPlayer == $playerID ? $myAuras[$i+1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction): false);
       $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
       $counters = $myAuras[$i+2] > 0 ? $myAuras[$i+2] : $myAuras[$i+3];//TODO: Show both
-      echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($myAuras[$i], "crops", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i)));
-      echo("</div>");
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($myAuras[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i)));
+      //echo("</div>");
     }
     echo("</div>");
   }
@@ -754,9 +754,9 @@
       if(IsTileable($myItems[$i])) continue;
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
-      echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($myItems[$i], "crops", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)));
-      echo("</div>");
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($myItems[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)));
+      //echo("</div>");
     }
     echo("</div>");
   }
@@ -766,12 +766,12 @@
     echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($myAllies); $i+=AllyPieces())
     {
-      echo("<div style='position:relative; border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      //echo("<div style='position:relative; border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
-      echo(Card($myAllies[$i], "crops", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+2], strval($i)));
+      echo(Card($myAllies[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+2], strval($i)));
       if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
-      echo("</div>");
+      //echo("</div>");
     }
     echo("</div>");
   }
@@ -1031,21 +1031,21 @@
     {
       if($auras[$i] == "WTR075") ++$count;
     }
-    if($count > 0) echo(Card("WTR075", "crops", $cardSize, 0, 1, 0, 0, ($count > 1 ? $count : 0)));
+    if($count > 0) echo(Card("WTR075", "CardImages", $cardSize, 0, 1, 0, 0, ($count > 1 ? $count : 0)));
 
     $runechantCount = 0;
     for($i = 0; $i < count($auras); $i += AuraPieces())
     {
       if($auras[$i] == "ARC112") ++$runechantCount;
     }
-    if($runechantCount > 0) echo(Card("ARC112", "crops", $cardSize, 0, 1, 0, 0, ($runechantCount > 1 ? $runechantCount : 0)));
+    if($runechantCount > 0) echo(Card("ARC112", "CardImages", $cardSize, 0, 1, 0, 0, ($runechantCount > 1 ? $runechantCount : 0)));
 
     $soulShackleCount = 0;
     for($i = 0; $i < count($auras); $i += AuraPieces())
     {
       if($auras[$i] == "MON186") ++$soulShackleCount;
     }
-    if($soulShackleCount > 0) echo(Card("MON186", "crops", $cardSize, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)));
+    if($soulShackleCount > 0) echo(Card("MON186", "CardImages", $cardSize, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)));
 
     $items = GetItems($player);
     $copperCount = 0;
@@ -1053,7 +1053,7 @@
     {
       if($items[$i] == "CRU197") ++$copperCount;
     }
-    if($copperCount > 0) echo(Card("CRU197", "crops", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
+    if($copperCount > 0) echo(Card("CRU197", "CardImages", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
   }
 
   function GetPhaseHelptext()
