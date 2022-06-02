@@ -1,6 +1,5 @@
 <?php
 
-
   include 'Libraries/HTTPLibraries.php';
 
   //We should always have a player ID as a URL parameter
@@ -115,8 +114,8 @@
   $darkMode = IsDarkMode($playerID);
   $manualMode = IsManualMode($playerID);
 
-  if($darkMode) $backgroundColor = "rgba(20,20,20,0.70)";
-  else $backgroundColor = "rgba(255,255,255,0.70)";
+  if($darkMode) $backgroundColor = "rgba(74, 74, 74, 0.9)";
+  else $backgroundColor = "rgba(235, 235, 235, 0.9)";
 
   $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
   $borderColor = ($darkMode ? "white" : "black");
@@ -151,11 +150,11 @@
   {
     if($currentPlayer != $playerID)
     {
-      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; position:relative; font-size:30px;'><img height='25px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>Waiting for other player to choose " . TypeToPlay($turn[0]) . ".</b></span>");
+      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid black; border-radius: 3px; font-size:26px;'><img height='25px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b> Waiting for other player to choose " . TypeToPlay($turn[0]) . "&nbsp</b></span>");
     }
     else
     {
-      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; font-size:30px;'><img height='25px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>" . GetPhaseHelptext());
+      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid black; border-radius: 3px; font-size:26px;'><img height='25px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b> " . GetPhaseHelptext() . "&nbsp");
       if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "24px") . ")");
       if(CanPassPhase($turn[0]))
       {
@@ -189,14 +188,15 @@
   //TODO: Make this better by refactoring the above to a function
   if(GetClassState($playerID, $CS_NextArcaneBonus) > 0) $friendlyEffects .= "<div title='Next arcane bonus: " . GetClassState($playerID, $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid blue;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   if(GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) > 0) $opponentEffects .= "<div title='Next arcane bonus: " . GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid red;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
-  //echo("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px; background-size:cover; background-image: url(\"./Images/effectSidebar.png\");'>");
-  echo("<div>Their Effects</div>");
+  echo("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
+  echo("<div style='font-weight: bold; text-align:center; border-bottom: 3px solid;'>Opponent<br>Effects</div>");
   echo($opponentEffects);
   echo("<div style='bottom:0px; position:absolute;'>");
   echo($friendlyEffects);
-  echo("<div>Your Effects</div>");
+  echo("<div style='font-weight: bolder; width:100px; text-align:center; border-top: 3px solid;'>Your<br>Effects</div>");
   echo("</div>");
-  //echo("</div>");
+  echo("</div>");
+
 
   $displayCombatChain = count($combatChain) > 0;
 
@@ -259,16 +259,16 @@
   if(count($layers) > 0)
   {
     $content = "";
-    $content .= "<div style='font-size:24px;'><b>Layers</b>&nbsp;<i style='font-size:16px;'>(You can adjust priority settings in the menu.)</i></div>";
+    $content .= "<div style='font-size:24px; margin-left:5px; margin-bottom:5px;'><b>Layers</b>&nbsp;<i style='font-size:16px; margin-right: 5px;'>(Priority settings can be adjusted in the menu)</i></div>";
     if(CardType($layers[0]) == "AA" || IsWeapon($layers[0]))
     {
       $attackTarget = GetAttackTarget();
       if($attackTarget != "NA")
       {
-        $content .= "Attack Target: " . GetMZCardLink($defPlayer, $attackTarget);
+        $content .= "&nbsp;Attack Target: " . GetMZCardLink($defPlayer, $attackTarget);
       }
     }
-    $content .= "<div display:inline;'>";
+    $content .= "<div style='margin-left:2px; margin-bottom:2px' display:inline;'>";
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {
       $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
