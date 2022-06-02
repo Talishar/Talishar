@@ -8,7 +8,7 @@
 
   function PopupBorderColor($darkMode)
   {
-    if($darkMode) return "white";
+    if($darkMode) return "#DDD";
     else return "black";
   }
 
@@ -36,13 +36,17 @@
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
     if($folder == "crops") $margin = "0px;";
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
-    $border = $borderColor > 0 ? "border-radius:10px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
+    $border = $borderColor > 0 ? "border-radius:7px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
     if($folder == "crops") { $height = $maxHeight; $width = ($height * 1.29); }
     else if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
     else { $height = ($maxHeight * .71); $width = $maxHeight; }
     $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
     $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-    if($counters != 0) $rv .= "<div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; border-radius: 50%; width: 28px; height: 28px; padding: 5px; border: 3px solid black; text-align: center; transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . "; font-size:24px;'>" . $counters . "</div>";
+    // Counters Style
+    if($counters != 0) $rv .= "<div style='margin: 0; top: 50%; left: 50%;
+    margin-right: -50%; border-radius: 50%; width: 22px; height: 22px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
+    transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
+    font-size:20px;'>" . $counters . "</div>";
     $rv .= "</a>";
     return $rv;
   }
@@ -70,7 +74,28 @@
     {
       $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=$onClick>";
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='border: 2px solid grey; border-radius: 3px; font-weight: 550;font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
+    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='
+      display: inline-block;
+      margin: 5px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 6px 12px;
+      border: 1px solid;
+      border-radius: 8px;
+      background: #eeeeee;
+      background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#aaaaaa));
+      background: -moz-linear-gradient(top, #eeeeee, #aaaaaa);
+      background: linear-gradient(to bottom, #eeeeee, #aaaaaa);
+      -webkit-box-shadow: #000000 0px 0px 5px 0px;
+      -moz-box-shadow: #000000 0px 0px 5px 0px;
+      box-shadow: #000000 0px 0px 5px 0px;
+      text-shadow: #ffffff 1px 1px 1px;
+      font: helvetica;
+      font-weight: 550;
+      color: #111111;
+      text-decoration: none;
+      cursor:pointer;
+      font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
     return $rv;
   }
 
@@ -107,18 +132,15 @@
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
     if($overCombatChain) { $top = "150px"; $left = "290px"; $width = "auto"; $height = "auto"; }
 
-    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . ";
-      border: 3px solid " . PopupBorderColor($darkMode) . ";
-      border-radius: 7px; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"
-      . ($defaultState == 0 ? " display:none;" : "") . "'>";
+    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
-    if($title != "") $rv .= "<h" . ($big ? "1" : "3") . " style='margin-left: 10px; margin-top: 5px; text-align: center;'>" . $title . "</h" . ($big ? "1" : "3") . ">";
-    if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:56px;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
+    if($title != "") $rv .= "<h" . ($big ? "2" : "4") . " style='margin-left: 10px; margin-top: 5px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "4") . ">";
+    if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:50px; font-weight:lighter;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
       $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
     }
-    $rv .= $customInput;
+    $rv .= "<div style='margin-left: 10px;'>" . $customInput . "</div>";
     $rv .= "</div>";
     return $rv;
   }
@@ -294,9 +316,9 @@
   {
     global $playerID;
     $rv = "<table><tr><td>";
-    $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
-    $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
-    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
+    $rv .= CreateButton($playerID, "Undo", 10000, 0, "22px", "", "Hotkey: U") . "<BR>";
+    $rv .= CreateButton($playerID, "Concede", 100002, 0, "22px") . "<BR>";
+    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "22px") . "<BR>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
     $rv .= "</td><td>";
     $rv .= PreviousTurnSelectionUI();
@@ -307,7 +329,7 @@
   function PreviousTurnSelectionUI()
   {
     global $currentTurn, $mainPlayer, $playerID, $firstPlayer;
-    $rv = "<h2>Revert to Start of Previous Turn</h3>";
+    $rv = "<h2>Revert to Start of Previous Turn</h2>";
     for($i=1; $i<=$currentTurn; ++$i)
     {
       if($i < $currentTurn - 5) continue;
@@ -315,7 +337,7 @@
       {
         if($i == 1 && $firstPlayer == 2 && $j == 1) continue;//Player 1 never got a turn 1
         if($i == $currentTurn && $j > $mainPlayer) continue;//Player 2 hasn't gotten a turn yet
-        $rv .= CreateButton($playerID, "Player $j Turn $i", 10003, $j . "-" . $i) . "<BR>";
+        $rv .= CreateButton($playerID, "Player $j Turn $i", 10003, $j . "-" . $i, "14px") . "<BR>";
       }
     }
     return $rv;

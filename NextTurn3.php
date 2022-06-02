@@ -29,6 +29,7 @@
   if($darkMode) $backgroundColor = "rgba(20,20,20,0.70)";
   else $backgroundColor = "rgba(255,255,255,0.70)";
 
+  $borderColor = ($darkMode ? "#DDD" : "black");
   ?>
 
 
@@ -155,9 +156,9 @@
 
   echo("<div id='mainDiv' style='left:0px; top:0px; width:100%;height:100%;'></div>");
 
-  echo("<div id='chatbox' style='position:fixed; bottom:0px; right:5px; width:200px; height: 50px;'>");
-  echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
+  echo("<div id='chatbox' style='position:fixed; bottom:-20px; right:5px; width:200px; height: 50px;'>");
+  echo("<input style='width:155px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+  echo("<button style='display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("<input type='hidden' id='authKey' value='" . $authKey . "'>");
