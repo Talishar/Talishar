@@ -295,7 +295,7 @@
     $options = explode(",", $turn[2]);
     for($i=0; $i<count($options); ++$i)
     {
-      $content .= CreateButton($playerID, $options[$i], 7, $options[$i], "30px");
+      $content .= CreateButton($playerID, $options[$i], 7, $options[$i], "20px");
     }
     $content .= "</div>";
     echo CreatePopup("DYNPITCH", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
@@ -312,7 +312,7 @@
     $options = explode(",", $turn[2]);
     for($i=0; $i<count($options); ++$i)
     {
-      $content .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "30px");
+      $content .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "20px");
     }
     $content .= "</div>";
     echo CreatePopup("BUTTONINPUT", [], 0, 1, GetPhaseHelptext(), 1, $content);
