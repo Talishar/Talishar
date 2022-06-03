@@ -152,7 +152,7 @@
         if(count($deck) > 0)
         {
           $pitchValue = PitchValue($deck[0]);
-          $rv = "Bracers of Belief revealed " . $deck[0] . " and gives the next attack action card +" . (3 - $pitchValue) . ".";
+          $rv = "Bracers of Belief revealed " . CardLink($deck[0], $deck[0]) . " and gives the next attack action card +" . (3 - $pitchValue) . ".";
         }
         else { $rv = "There are no cards in deck for Bracers of Belief to reveal, so the next attack gets +3."; }
         $bonus = 3 - $pitchValue;
