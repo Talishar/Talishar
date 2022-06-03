@@ -101,7 +101,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
         MyDrawCard();
         if(!CurrentEffectPreventsGoAgain()) ++$actionPoints;//TODO: This is not strictly accurate, but good enough for now
       }
-      return "Bloodrush Bellow discarded " . $discarded . ($drew == 1 ? ", " : ", and ") . "gave your Brute attacks this turn +2" . ($drew == 1 ? ", drew two cards, and gained Go Again." : ".");
+      return "Bloodrush Bellow discarded " . CardLink($discarded, $discarded) . ($drew == 1 ? ", " : ", and ") . "gave your Brute attacks this turn +2" . ($drew == 1 ? ", drew two cards, and gained Go Again." : ".");
     case "WTR008":
       $damaged = false;
       $discarded = DiscardRandom($currentPlayer, $cardID);
@@ -164,6 +164,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR047":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCLASSAA,GUARDIAN");
       AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
       return "Show Time! allows you to search for a Guardian attack card.";
     //Ninja
