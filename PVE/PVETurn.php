@@ -58,13 +58,13 @@
 <?php
   $stanceDeck = &GetGlobalZone("StanceDeck");
   $stance = &GetGlobalZone("Stance");
-  echo("<div style='top:8px; left:8px;'>" . CreateButton($playerID, "Undo", 10000, 0, "24px", "./PVEImages/undo.png") . "</div>");
+  echo("<div style='top:8px; left:8px;'>" . CreateButton($playerID, "Undo", 10000, 0, "20px", "./PVEImages/undo.png") . "</div>");
   echo("<div style='padding-top:100px;'>");
   echo("<div style='width:171px; text-align:right; position:absolute; color:white;'>Deck - " . count($stanceDeck) . "/" . (count($stanceDeck) + count($stance)) . "</div>");
-  echo("<div style='position:absolute; top:285px; left:40px;'>" . CreateButton($playerID, "Flip Stance", 5, 0, "24px", "./PVEImages/flipStance.png") . "</div>");
+  echo("<div style='position:absolute; top:285px; left:40px;'>" . CreateButton($playerID, "Flip Stance", 5, 0, "20px", "./PVEImages/flipStance.png") . "</div>");
   echo("<img style='height:170px; width:171px;' src='./PVEImages/cardBack.png' /></div>");
   if(count($stance) > 0) echo(Card($stance[0], "../CardImages", 200, 0, 1));
-  echo("<div>" . CreateButton($playerID, "Create Barricade", 6, 0, "24px", "./PVEImages/createBarricade.png") . "</div>");
+  echo("<div>" . CreateButton($playerID, "Create Barricade", 6, 0, "20px", "./PVEImages/createBarricade.png") . "</div>");
 ?>
 </div>
 
@@ -169,23 +169,23 @@
   echo("</td></tr></table>");
 
   echo("<table style='width:100%;'><tr><td>");
-  if($turn[0] == "0") echo("<div style='float:right;'>" . CreateButton($playerID, "Switch Turn", 13, 0, "24px", "./PVEImages/playerToggle.png") . "</div>");
-  if($turn[0] == "1") echo("<div style='float:right;'>" . CreateButton($playerID, "Switch Turn", 13, 0, "24px", "./PVEImages/bossToggle.png") . "</div>");
+  if($turn[0] == "0") echo("<div style='float:right;'>" . CreateButton($playerID, "Switch Turn", 13, 0, "20px", "./PVEImages/playerToggle.png") . "</div>");
+  if($turn[0] == "1") echo("<div style='float:right;'>" . CreateButton($playerID, "Switch Turn", 13, 0, "20px", "./PVEImages/bossToggle.png") . "</div>");
   echo("</td></tr><tr><td>");
-  echo("<div style='float:right;'>" . CreateButton($playerID, "Clear Pitch", 4, 0, "24px", "./PVEImages/clearPitch.png") . "</div>");
+  echo("<div style='float:right;'>" . CreateButton($playerID, "Clear Pitch", 4, 0, "20px", "./PVEImages/clearPitch.png") . "</div>");
   echo("</td></tr><tr><td>");
   if($turn[0] == "1")
   {
-    echo("<div style='float:right;'>" . CreateButton($playerID, "Attack", 0, 0, "24px", "./PVEImages/attackButton.png") . "</div>");
+    echo("<div style='float:right;'>" . CreateButton($playerID, "Attack", 0, 0, "20px", "./PVEImages/attackButton.png") . "</div>");
   }
   else if($turn[0] == "0")
   {
-    echo("<div style='float:right;'>" . CreateButton($playerID, "Defend", 2, 0, "24px", "./PVEImages/defendButton.png"). "</div>");
+    echo("<div style='float:right;'>" . CreateButton($playerID, "Defend", 2, 0, "20px", "./PVEImages/defendButton.png"). "</div>");
   }
   echo("</td></tr><tr><td>");
-  echo("<div style='float:right;'>" . CreateButton($playerID, "Pitch", 1, 0, "24px", "./PVEImages/pitchButton.png"). "</div>");
+  echo("<div style='float:right;'>" . CreateButton($playerID, "Pitch", 1, 0, "20px", "./PVEImages/pitchButton.png"). "</div>");
   echo("</td></tr><tr><td>");
-  echo("<div style='float:right;'>" . CreateButton($playerID, "Close Chain", 3, 0, "24px", "./PVEImages/closeChainButton.png"). "</div>");
+  echo("<div style='float:right;'>" . CreateButton($playerID, "Close Chain", 3, 0, "20px", "./PVEImages/closeChainButton.png"). "</div>");
 echo("</td></tr></table>");
 ?>
 </div>

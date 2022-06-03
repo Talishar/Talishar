@@ -79,7 +79,7 @@
       margin: 5px;
       text-align: center;
       vertical-align: middle;
-      padding: 6px 12px;
+      padding: 3px 6px;
       border: 1px solid;
       border-radius: 8px;
       background: #eeeeee;
@@ -316,9 +316,9 @@
   {
     global $playerID;
     $rv = "<table><tr><td>";
-    $rv .= CreateButton($playerID, "Undo", 10000, 0, "22px", "", "Hotkey: U") . "<BR>";
-    $rv .= CreateButton($playerID, "Concede", 100002, 0, "22px") . "<BR>";
-    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "22px") . "<BR>";
+    $rv .= CreateButton($playerID, "Undo", 10000, 0, "20px", "", "Hotkey: U") . "<BR>";
+    $rv .= CreateButton($playerID, "Concede", 100002, 0, "20px") . "<BR>";
+    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "20px") . "<BR>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
     $rv .= "</td><td>";
     $rv .= PreviousTurnSelectionUI();
