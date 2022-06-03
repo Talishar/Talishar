@@ -277,7 +277,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR159":
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_card,2_Attack,Go_again");
       AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
-      return "Enlightened Strike put a card from your hand to the bottom of your deck and had an additional effect.";
+      return "Enlightened Strike put a card from your hand to the bottom of your deck.";
     case "WTR160":
       MyDrawCard();
       MyDrawCard();
@@ -3027,9 +3027,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ESTRIKE":
       switch($lastResult)
       {
-        case "Draw_a_card": return MyDrawCard();
-        case "2_Attack": AddCurrentTurnEffect("WTR159", $player); return 1;
-        case "Go_again": $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; return 2;
+        case "Draw_a_card": WriteLog("Englightened Strike drew a card."); return MyDrawCard();
+        case "2_Attack": WriteLog("Englightened Strike got +2 attack."); AddCurrentTurnEffect("WTR159", $player); return 1;
+        case "Go_again": WriteLog("Englightened Strike got Go Again."); $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; return 2;
       }
       return $lastResult;
     case "NIMBLESTRIKE":
