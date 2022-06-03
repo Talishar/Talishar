@@ -145,7 +145,7 @@
   echo("</div>");
 
   //Now display the screen for this turn
-  echo("<span style='position:fixed; width:100%; bottom:0px; left:0px; z-index:10; display:inline-block; font-size:30px; text-align:center;'>");
+  echo("<span style='position:fixed;  bottom:0px; left:15%; right:15%; z-index:10; display:inline-block; justity-content: center; font-size:30px; text-align:center;'>");
 
   //Tell the player what to pick
   if($turn[0] != "OVER")
