@@ -140,7 +140,7 @@
     {
       $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
     }
-    $rv .= "<div style='margin-left: 10px;'>" . $customInput . "</div>";
+    $rv .= "<div style='margin-left: 5px;'>" . $customInput . "</div>";
     $rv .= "</div>";
     return $rv;
   }
