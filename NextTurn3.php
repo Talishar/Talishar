@@ -42,8 +42,13 @@
 <script>
   function Hotkeys(event)
   {
-    if(event.keyCode === 32) SubmitInput(99, "");
-    if(event.keyCode === 117) SubmitInput(10000, ""); //document.location.href = './ProcessInput.php?gameName=<?php echo($gameName); ?>&playerID=<?php echo($playerID); ?>&mode=10000';
+    if(event.keyCode === 32) SubmitInput(99, "");//Space = pass
+    if(event.keyCode === 117) SubmitInput(10000, "");//U = undo
+    if(event.keyCode === 104) SubmitInput(3, "&cardID=0");//H = hero ability
+    <?php
+      if(CardType($myCharacter[CharacterPieces()]) == "W") echo("if(event.keyCode === 108) SubmitInput(3, '&cardID=" . CharacterPieces() . "');");//L = left weapon
+      if(CardType($myCharacter[CharacterPieces()*2]) == "W") echo("if(event.keyCode === 114) SubmitInput(3, '&cardID=" . (CharacterPieces() * 2) . "');");//R = right weapon
+    ?>
   }
 </script>
 
