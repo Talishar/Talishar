@@ -67,9 +67,12 @@
     return 1;
   }
 
+  //Effect ID
+  //Player ID
+  //Applies to Unique ID
   function CurrentTurnPieces()
   {
-    return 2;
+    return 3;
   }
 
   function CharacterEffectPieces()
@@ -82,9 +85,15 @@
     return 5;
   }
 
+  //Card ID
+  //Status - 2 = ready
+  //Health
+  //Frozen - 0 = no, 1 = yes
+  //Subcards , delimited
+  //Unique ID
   function AllyPieces()
   {
-    return 5;
+    return 6;
   }
 
   //Card ID

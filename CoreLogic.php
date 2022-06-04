@@ -1181,4 +1181,11 @@ function AddCharacterUses($player, $index, $numToAdd)
     $pitch = array_values($pitch);
   }
 
+  function GetUniqueId()
+  {
+    global $permanentUniqueIDCounter;
+    ++$permanentUniqueIDCounter;
+    return $permanentUniqueIDCounter;
+  }
+
 ?>

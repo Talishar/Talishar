@@ -9,6 +9,7 @@ function &GetMZZone($player, $zone)
   else if($zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
   else if($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
   else if($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
+  else if($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
   return $rv;
 }
 

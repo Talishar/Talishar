@@ -1004,6 +1004,7 @@ if($set == "UPR"){
     case "018": case "019": case "020": return "Billowing Mirage";
     case "033": case "034": case "035": return "Rake the Embers";
     case "036": case "037": case "038": return "Skittering Sands";
+    case "039": case "040": case "041": return "Sand Cover";
     case "042": return "Aether Ashwing";
     case "043": return "Ash";
     case "086": return "Thaw";

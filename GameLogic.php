@@ -2962,6 +2962,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       return "1";
+    case "ADDLIMITEDCURRENTEFFECT":
+
+      return "";
     case "OPTX":
       Opt("NA", $parameter);
       return $lastResult;
@@ -3804,8 +3807,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       MZStartTurnAbility($cardID);
       return "";
     case "TRANSFORM":
-      ResolveTransform($player, $lastResult, $parameter);
-      return "1";
+      return "PERM-" . ResolveTransform($player, $lastResult, $parameter);
+    case "MZGETUNIQUEID":
+      $params = explode("-", $lastResult);
+      $zone = &GetMZZone($player, $params[0]);
+      switch($params[0])
+      {
+        case "PERM": return $zone[$params[1] + 5];
+      }
+      return "-1";
     default:
       return "NOTSTATIC";
   }

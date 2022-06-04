@@ -62,6 +62,7 @@
   fwrite($handler, "\r\n");//Chain Link Summaries
   fwrite($handler, $p1Key . "\r\n");//Player 1 auth key
   fwrite($handler, $p2Key . "\r\n");//Player 2 auth key
+  fwrite(0 . "\r\n");//Permanent unique ID counter
   fclose($handler);
 
   //Set up log file

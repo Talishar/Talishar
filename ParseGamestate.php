@@ -135,6 +135,7 @@
   $chainLinkSummary = GetArray($handler);
   $p1Key = trim(fgets($handler));
   $p2Key = trim(fgets($handler));
+  $permanentUniqueIDCounter = trim(fgets($handler));
   fclose($handler);
   BuildMyGamestate($playerID);
 

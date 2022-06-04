@@ -110,6 +110,10 @@
           Transform($currentPlayer, "Ash", "UPR042", true);
         }
         return "";
+      case "UPR036": case "UPR037": case "UPR038":
+        Transform($currentPlayer, "Ash", "UPR042");
+        AddDecisionQueue("MZGETUNIQUEID", $currentPlayer, "-");
+        return "";
       case "UPR408":
         $deck = &GetDeck($currentPlayer);
         if(count($deck) == 0) return "You have no cards in your deck.";
@@ -149,7 +153,7 @@
   function ResolveTransform($player, $materialIndex, $into)
   {
     $materialType = RemovePermanent($player, $materialIndex);
-    PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
+    return PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
   }
 
 ?>
