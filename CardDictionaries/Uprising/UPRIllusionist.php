@@ -106,6 +106,19 @@
           Transform($currentPlayer, "Ash", "UPR042", true);
         }
         return "";
+      case "UPR408":
+        $deck = &GetDeck($currentPlayer);
+        if(count($deck) == 0) return "You have no cards in your deck.";
+        $wasRevealed = RevealCards($deck[0]);
+        if($wasRevealed && PitchValue($deck[0]) == 1)
+        {
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+        }
+        return "";
       default: return "";
     }
   }

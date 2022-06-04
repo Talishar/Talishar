@@ -1007,6 +1007,7 @@ if($set == "UPR"){
     case "042": return "Aether Ashwing";
     case "043": return "Ash";
     case "086": return "Thaw";
+    case "098": case "099": case "100": return "Lava Burst";
     case "104": return "Encase";
     case "109": return "Ice Eternal";
     case "119": case "120": case "121": return "Ice Bind";
@@ -1015,6 +1016,7 @@ if($set == "UPR"){
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
     case "147": case "148": case "149": return "Cold Snap";
+    case "408": return "Dominia";
     default: return "Name not populated - please report bug";
   }
 }
