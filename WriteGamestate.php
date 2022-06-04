@@ -33,6 +33,7 @@
   fwrite($handler, implode(" ", $p1CardStats) . "\r\n");
   fwrite($handler, implode(" ", $p1TurnStats) . "\r\n");
   fwrite($handler, implode(" ", $p1Allies) . "\r\n");
+  fwrite($handler, implode(" ", $p1Permanents) . "\r\n");
   fwrite($handler, implode(" ", $p1Settings) . "\r\n");
 
   //Player 2
@@ -52,6 +53,7 @@
   fwrite($handler, implode(" ", $p2CardStats) . "\r\n");
   fwrite($handler, implode(" ", $p2TurnStats) . "\r\n");
   fwrite($handler, implode(" ", $p2Allies) . "\r\n");
+  fwrite($handler, implode(" ", $p2Permanents) . "\r\n");
   fwrite($handler, implode(" ", $p2Settings) . "\r\n");
 
   fwrite($handler, implode(" ", $landmarks) . "\r\n");

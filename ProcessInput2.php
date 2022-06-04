@@ -966,6 +966,11 @@ function FinalizeChainLink($chainClosed=false)
           DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
           $pitchValue = 3;
         }
+        if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002"))
+        {
+          WriteLog("Dromai creates an Ash.");
+          PutPermanentIntoPlay($currentPlayer, "UPR043");
+        }
       }
       $resources[0] += $pitchValue;
       if(SearchCharacterActive($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)

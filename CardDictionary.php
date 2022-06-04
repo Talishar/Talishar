@@ -435,6 +435,8 @@
       case "EVR017": return 40;
       case "EVR019": return 21;
       case "EVR120": return 18;
+      case "UPR001": return 40;
+      case "UPR002": return 20;
       case "UPR102": return 36;
       case "UPR103": return 18;
       default: return 20;
@@ -538,7 +540,8 @@
         else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
         else return "GENERIC";
       case "UPR":
-        if($number == 86) return "NONE";
+        if($number >= 1 && $number <= 43) return "ILLUSIONIST";
+        else if($number == 86) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";
         else return "NONE";

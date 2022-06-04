@@ -9,7 +9,6 @@
   $authKey=TryGet("authKey", 3);
   $lastUpdate = TryGet("lastUpdate", 0);
 
-
   include "HostFiles/Redirector.php";
   include "Libraries/SHMOPLibraries.php";
   include "WriteLog.php";
@@ -619,6 +618,21 @@
     echo("</div>");
   }
   $otherPlayer = $playerID == 2 ? 1 : 2;
+  $theirPermanents = &GetPermanents($otherPlayer);
+  if(count($theirPermanents) > 0)
+  {
+    echo("<div style='display:inline-block;'>");
+    for($i=0; $i<count($theirPermanents); $i+=PermanentPieces())
+    {
+      //if(IsTileable($theirPermanents[$i])) continue;
+      //$playable = ($currentPlayer == $playerID ? IsPlayable($theirPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
+      //$border = CardBorderColor($theirPermanents[$i], "PLAY", $playable);
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($theirPermanents[$i], "CardImages", $cardSize, 0, 1));
+      //echo("</div>");
+    }
+    echo("</div>");
+  }
   $theirAllies = GetAllies($otherPlayer);
   if(count($theirAllies) > 0)
   {
@@ -759,6 +773,21 @@
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
       echo(Card($myItems[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)));
+      //echo("</div>");
+    }
+    echo("</div>");
+  }
+  $myPermanents = &GetPermanents($playerID);
+  if(count($myPermanents) > 0)
+  {
+    echo("<div style='display:inline-block;'>");
+    for($i=0; $i<count($myPermanents); $i+=PermanentPieces())
+    {
+      //if(IsTileable($myPermanents[$i])) continue;
+      //$playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
+      //$border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($myPermanents[$i], "CardImages", $cardSize, 0, 1));
       //echo("</div>");
     }
     echo("</div>");
