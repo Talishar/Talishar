@@ -191,7 +191,7 @@
     switch($cardID)
     {
       case "ELE036":
-        if($combatChainState[$CCS_AttackFused]) DealDamage($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
+        if($combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
         break;
       case "ELE216": case "ELE217": case "ELE218": if(HasIncreasedAttack()) Reload($mainPlayer); break;
       default: break;

@@ -581,11 +581,8 @@
 
   function ResolveChainLink()
   {
-    global $turn, $actionPoints, $combatChain, $currentPlayer, $mainPlayer, $defPlayer, $playerID, $defHealth, $currentTurnEffects, $currentTurnEffectsFromCombat;
-    global $mainCharacter, $defCharacter, $mainDiscard, $defDiscard, $defAuras, $mainAuras;
-    global $combatChainState, $actionPoints, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
-    global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_ChainAttackBuff, $CCS_CombatDamageReplaced;
-    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CS_HitsWithWeapon, $CCS_WeaponIndex, $CS_EffectContext, $chainLinkSummary;
+    global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -600,11 +597,19 @@
 
     if($combatChainState[$CCS_CombatDamageReplaced] == 1) $damage = 0;
     else $damage = $totalAttack - $totalDefense;
-    $damageDone = DealDamage($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
+    DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
+    AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+    ProcessDecisionQueue();
+  }
+
+  function ResolveCombatDamage($damageDone)
+  {
+    global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary;
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
     array_push($chainLinkSummary, $damageDone);
-    array_push($chainLinkSummary, $totalAttack);
+    array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
 
     if($wasHit)//Resolve hit effects
     {

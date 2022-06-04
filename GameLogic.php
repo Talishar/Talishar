@@ -106,7 +106,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR008":
       $damaged = false;
       $discarded = DiscardRandom($currentPlayer, $cardID);
-      if(AttackValue($discarded) >= 6) { $damaged = true; DealDamage($mainPlayer, 2, "DAMAGE", $cardID); }
+      if(AttackValue($discarded) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
       return "Reckless Swing discarded a random card from your hand" . ($damaged ? " and did 2 damage." : ".");
     case "WTR009":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
@@ -225,7 +225,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       $text = "Steelblade Shunt ";
       if(CardType($combatChain[0]) == "W")
       {
-        DealDamage($mainPlayer, 1, "DAMAGE", $cardID);
+        DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
         $text .= "DID";
       } else { $text .= "did NOT"; }
       $text .= " deal 1 damage to the attacking hero.";
@@ -589,14 +589,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "";
     case "CRU127":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_two_damage", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU128":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-1", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("ROCKSLIDETRAP", $otherPlayer, "-", 1);
@@ -1068,10 +1068,10 @@ function EffectHitEffect($cardID)
     case "ELE019": case "ELE020": case "ELE021": ArsenalToBottomDeck($defPlayer); break;
     case "ELE022": case "ELE023": case "ELE024": PlayAura("ELE111", $defPlayer); break;
     case "ELE035-2": AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer); break;
-    case "ELE037-2": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
-    case "ELE047": case "ELE048": case "ELE049": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
+    case "ELE037-2": DamageTrigger($defPlayer, 1, "ATTACKHIT"); break;
+    case "ELE047": case "ELE048": case "ELE049": DamageTrigger($defPlayer, 1, "ATTACKHIT"); break;
     case "ELE066-HIT": if(HasIncreasedAttack()) MainDrawCard(); break;
-    case "ELE092-BUFF": DealDamage($defPlayer, 3, "ATTACKHIT"); break;
+    case "ELE092-BUFF": DamageTrigger($defPlayer, 3, "ATTACKHIT"); break;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": PlayAura("ELE111", $defPlayer); break;
     case "ELE163":
       PlayAura("ELE111", $defPlayer);
@@ -1080,13 +1080,13 @@ function EffectHitEffect($cardID)
     case "ELE165":
       PlayAura("ELE111", $defPlayer);
       break;
-    case "ELE173": DealDamage($defPlayer, 1, "ATTACKHIT"); return 1;
-    case "ELE195": case "ELE196": case "ELE197": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
+    case "ELE173": DamageTrigger($defPlayer, 1, "ATTACKHIT"); return 1;
+    case "ELE195": case "ELE196": case "ELE197": DamageTrigger($defPlayer, 1, "ATTACKHIT"); break;
     case "ELE198": case "ELE199": case "ELE200":
       if($cardID == "ELE198") $damage = 3;
       else if($cardID == "ELE199") $damage = 2;
       else $damage = 1;
-      DealDamage($defPlayer, $damage, "ATTACKHIT");
+      DamageTrigger($defPlayer, $damage, "ATTACKHIT");
       return 1;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID . "-1", $defPlayer); break;
@@ -3189,7 +3189,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult == 0)
       {
         WriteLog("Pitfall Trap did two damage to the attacking hero.");
-        DealDamage($player, 2, "DAMAGE");
+        DamageTrigger($player, 2, "DAMAGE");
       }
       return 1;
     case "ROCKSLIDETRAP":
@@ -3237,13 +3237,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CHOOSEHERO":
       return "THEIRCHAR-0";
+    case "RESOLVECOMBATDAMAGE":
+      ResolveCombatDamage($lastResult);
+      return "";
     case "DEALDAMAGE":
       $target = $lastResult;
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
-      $damage = DealDamage($player, $damage, $type, $source);
+      $damage = DealDamageAsync($player, $damage, $type, $source);
       return $damage;
     case "DEALARCANE":
       $targetPlayer = ($player == 1 ? 2 : 1);

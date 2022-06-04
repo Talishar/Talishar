@@ -129,7 +129,7 @@
       case "MON121":
         $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
         $damage = 6 - $numBD;
-        DealDamage($currentPlayer, $damage, "PLAYCARD", $cardID);
+        DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
         return "Hexagore, the Death Hydra did $damage damage to you.";
       case "MON125":
         MyDrawCard();
