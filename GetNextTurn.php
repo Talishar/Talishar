@@ -147,6 +147,9 @@
   //Now display the screen for this turn
   echo("<span style='position:fixed;  bottom:0px; left:15%; right:15%; z-index:10; display:inline-block; justity-content: center; font-size:30px; text-align:center;'>");
 
+
+  echo(($manualMode ? "Add to hand: <input id='manualAddCardToHand' type='text' /><input type='button' value='Add' onclick='AddCardToHand()' />" : ""));
+
   //Tell the player what to pick
   if($turn[0] != "OVER")
   {
