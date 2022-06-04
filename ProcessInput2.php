@@ -378,6 +378,10 @@
       WriteLog("Player " . $playerID . " manually drew a card for their opponent.");
       Draw(($playerID == 1 ? 2 : 1));
       break;
+    case 10011:
+      WriteLog("Player " . $playerID . " manually added a card to their hand.");
+      array_push($myHand, $cardID);
+      break;
     case 100000: //Quick Rematch
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
