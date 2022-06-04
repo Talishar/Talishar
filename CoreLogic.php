@@ -1081,6 +1081,7 @@ function DoesAttackHaveGoAgain()
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
+  $attackSubtype = CardSubType($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if(HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
@@ -1090,6 +1091,7 @@ function DoesAttackHaveGoAgain()
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
     if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
+  if(DelimStringContains($attackSubtype, "Dragon") && SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002")) return true;
   return false;
 }
 
