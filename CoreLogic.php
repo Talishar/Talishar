@@ -1221,6 +1221,7 @@ function AddCharacterUses($player, $index, $numToAdd)
       case "BUTTONINPUTNOPASS": return 0;
       case "CHOOSEFIRSTPLAYER": return 0;
       case "MULTICHOOSEDECK": return 0;
+      case "CHOOSEPERMANENT": return 0;
       default: return 1;
     }
   }

@@ -418,6 +418,12 @@
     ChoosePopup($myArsenal, $turn[2], 16, "Choose a card from your arsenal", ArsenalPieces());
   }
 
+  if(($turn[0] == "CHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEPERMANENT") && $turn[1] == $playerID)
+  {
+    $myPermanents = &GetPermanents($playerID);
+    ChoosePopup($myPermanents, $turn[2], 16, GetPhaseHelptext(), PermanentPieces());
+  }
+
   if(($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID)
   {
     ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent hand");

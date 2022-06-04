@@ -996,6 +996,16 @@ if ($set == "MON")
 if($set == "UPR"){
   switch($num)
   {
+    case "001": return "Dromai, Ash Artist";
+    case "002": return "Dromai";
+    case "003": return "Storm of Sandikai";
+    case "004": return "Silken Form";
+    case "008": return "Invoke Dominia";
+    case "018": case "019": case "020": return "Billowing Mirage";
+    case "033": case "034": case "035": return "Rake the Embers";
+    case "036": case "037": case "038": return "Skittering Sands";
+    case "042": return "Aether Ashwing";
+    case "043": return "Ash";
     case "086": return "Thaw";
     case "104": return "Encase";
     case "109": return "Ice Eternal";
