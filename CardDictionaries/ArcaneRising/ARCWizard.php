@@ -344,6 +344,15 @@
         default: break;
       }
     }
+    $allies = GetAllies($playerID);
+    for($i=0; $i<count($allies); $i+=AllyPieces())
+    {
+      switch($allies[$i])
+      {
+        case "UPR042": ++$barrierArray[1]; $total += 1; break;
+        default: break;
+      }
+    }
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
     {
       switch($currentTurnEffects[$i])
