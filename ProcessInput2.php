@@ -909,7 +909,7 @@ function FinalizeChainLink($chainClosed=false)
     global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
     global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
-    global $decisionQueue, $CS_AdditionalCosts, $CS_AbilityIndex;
+    global $decisionQueue, $CS_AdditionalCosts, $CS_AbilityIndex, $CS_NumRedPlayed;
     $resources = &GetResources($currentPlayer);
     $pitch = &GetPitch($currentPlayer);
     $dynCostResolved = intval($dynCostResolved);
@@ -1068,6 +1068,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
       if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+      if(PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
       PayAdditionalCosts($cardID, $from);
     }
     if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards);//Played or blocked
