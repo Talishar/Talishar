@@ -63,6 +63,7 @@
   {
     switch($cardID)
     {
+      case "UPR004": return 0;
       case "UPR008": return 3;
       case "UPR018": case "UPR019": case "UPR020": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
@@ -90,6 +91,9 @@
     $rv = "";
     switch($cardID)
     {
+      case "UPR004":
+        Transform($currentPlayer, "Ash", "UPR042");
+        return "";
       case "UPR008":
         Transform($currentPlayer, "Ash", "UPR408");
         return "";

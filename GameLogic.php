@@ -2504,8 +2504,11 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       break;
     case "DVR004": case "RVD004":
-        DestroyCharacter($currentPlayer, $cardIndex);
-        break;
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
+    case "UPR004":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
   }
 }
 

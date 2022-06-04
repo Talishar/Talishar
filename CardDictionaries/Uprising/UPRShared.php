@@ -9,7 +9,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR004": return 0;
       default: return 0;
     }
   }
@@ -18,7 +18,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR004": return "I";
       default: return "";
     }
   }
