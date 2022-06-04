@@ -63,7 +63,8 @@
   {
     $number = intval(substr($cardID, 3));
     if($number <= 0) return "??";
-    else if($number >= 1 && $number <= 111) return "ELEMENTAL";//Is this right?
+    else if($number >= 1 && $number < 98) return "DRACONIC";//Is this right?
+    else if($number >= 99 && $number <= 111) return "ELEMENTAL";//Is this right?
     else if($number == 112) return "LIGHTNING,ICE";
     else if($number == 113) return "LIGHTNING,EARTH";
     else if($number == 114) return "ICE,EARTH";

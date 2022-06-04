@@ -316,6 +316,13 @@ function &GetAllies($player)
   else return $p2Allies;
 }
 
+function &GetPermanents($player)
+{
+  global $p1Permanents, $p2Permanents;
+  if($player == 1) return $p1Permanents;
+  else return $p2Permanents;
+}
+
 function &GetSettings($player)
 {
   global $p1Settings, $p2Settings;

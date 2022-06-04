@@ -87,6 +87,12 @@
     return 4;
   }
 
+  //Card ID
+  function PermanentPieces()
+  {
+    return 1;
+  }
+
   function LayerPieces()
   {
     return 5;

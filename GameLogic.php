@@ -5,6 +5,7 @@ include "CardLogic.php";
 include "AuraAbilities.php";
 include "ItemAbilities.php";
 include "AllyAbilities.php";
+include "PermanentAbilities.php";
 include "LandmarkAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";

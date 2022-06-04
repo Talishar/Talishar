@@ -125,6 +125,7 @@
     fwrite($handler, "\r\n");//Card Stats
     fwrite($handler, "\r\n");//Turn Stats
     fwrite($handler, "\r\n");//Allies
+    fwrite($handler, "\r\n");//Permanents
     //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
     $holdPriority = "0";//Auto-pass layers
     fwrite($handler, $holdPriority . " 1 0 0 0 0 0\r\n");//Settings
