@@ -161,7 +161,7 @@ function AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID=-1)
 function CopyCurrentTurnEffectsFromCombat()
 {
   global $currentTurnEffects, $currentTurnEffectsFromCombat;
-  for($i=0; $i<count($currentTurnEffectsFromCombat); $i += 2)
+  for($i=0; $i<count($currentTurnEffectsFromCombat); $i += CurrentTurnEffectPieces())
   {
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i]);
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i+1]);

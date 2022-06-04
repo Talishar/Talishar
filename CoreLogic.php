@@ -513,11 +513,7 @@ function CurrentEffectDamageModifiers($source, $type)
       case "ELE186": case "ELE187": case "ELE188": if(TalentContains($source, "LIGHTNING") || TalentContains($source, "ELEMENTAL")) ++$modifier; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   return $modifier;
 }
@@ -535,11 +531,7 @@ function CurrentEffectDamageEffects($player, $source)
       case "ELE064": BlossomingSpellbladeDamageEffect($player); break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 

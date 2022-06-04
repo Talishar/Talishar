@@ -1276,8 +1276,7 @@ function RemoveCurrentEffect($player, $effectID)
     if($currentTurnEffects[$i+1] == $player && $currentTurnEffects[$i] == $effectID)
     {
       $remove = 0;
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
+      RemoveCurrentTurnEffect($i);
     }
   }
   $currentTurnEffects = array_values($currentTurnEffects);
@@ -1295,11 +1294,7 @@ function CurrentEffectChainClosedEffects()
       case "CRU106": case "CRU107": case "CRU108": $remove = 1; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   return $costModifier;
 }
@@ -1334,11 +1329,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID))$costModifier -= 1; $remove = 1; break;
         default: break;
       }
-      if($remove == 1)
-      {
-        unset($currentTurnEffects[$i+1]);
-        unset($currentTurnEffects[$i]);
-      }
+      if($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
   return $costModifier;
@@ -1361,7 +1352,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
 {
   global $currentTurnEffects;
   $prevention = 0;
-  for($i=count($currentTurnEffects)-2; $i>=0 && $prevention < $damage; $i-=2)
+  for($i=count($currentTurnEffects)-CurrentTurnEffectPieces(); $i>=0 && $prevention < $damage; $i-=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $player)
     {
@@ -1379,11 +1370,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
         case "EVR180": $prevention += 1; $remove = 1; break;
         default: break;
       }
-      if($remove == 1)
-      {
-        unset($currentTurnEffects[$i+1]);
-        unset($currentTurnEffects[$i]);
-      }
+      if($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
   return $prevention;
@@ -1424,10 +1411,7 @@ function CurrentEffectAttackAbility()
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
 }
@@ -1453,10 +1437,7 @@ function CurrentEffectPlayAbility($cardID)
           break;
         default: break;
       }
-      if($remove == 1)
-      {
-        for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-      }
+      if($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
   $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
@@ -1483,11 +1464,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   return $hasGoAgain;
 }
@@ -1495,7 +1472,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
 function CurrentEffectGrantsGoAgain()
 {
   global $currentTurnEffects, $mainPlayer, $combatChain, $combatChainState, $CCS_AttackFused;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]))
     {
@@ -1536,7 +1513,7 @@ function CurrentEffectGrantsGoAgain()
 function CurrentEffectPreventsGoAgain()
 {
   global $currentTurnEffects, $mainPlayer;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $mainPlayer)
     {
@@ -1554,7 +1531,7 @@ function CurrentEffectPreventsGoAgain()
 function CurrentEffectPreventsDefenseReaction($from)
 {
   global $currentTurnEffects, $currentPlayer;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $currentPlayer)
     {
@@ -1573,7 +1550,7 @@ function CurrentEffectPreventsDefenseReaction($from)
 function CurrentEffectPreventsDraw($player, $isMainPhase)
 {
   global $currentTurnEffects;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $player)
     {
@@ -1591,7 +1568,7 @@ function CurrentEffectIntellectModifier()
 {
   global $currentTurnEffects, $currentPlayer;
   $intellectModifier = 0;
-  for($i=count($currentTurnEffects)-2; $i>=0; $i-=2)
+  for($i=count($currentTurnEffects)-CurrentTurnEffectPieces(); $i>=0; $i-=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $currentPlayer)
     {
@@ -1628,11 +1605,7 @@ function CurrentEffectEndTurnAbilities()
         break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1921,11 +1894,7 @@ function RemoveEffectsOnChainClose()
       case "ELE186": case "ELE187": case "ELE188": $remove = 1; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1950,11 +1919,7 @@ function OnAttackEffects($attack)
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1989,11 +1954,7 @@ function OnBlockEffects($index, $from)
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
   switch($combatChain[0])
@@ -2078,11 +2039,7 @@ function ActivateAbilityEffects()
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
 }

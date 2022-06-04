@@ -240,9 +240,7 @@ function SearchCurrentTurnEffects($cardID, $player, $remove=false)
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i+1] == $player){
-      if($remove){
-        for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-      }
+      if($remove) RemoveCurrentTurnEffect($i);
       return true;
     }
   }
@@ -268,9 +266,7 @@ function CountCurrentTurnEffects($cardID, $player, $remove=false)
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i+1] == $player){
-      if($remove){
-        for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-      }
+      if($remove) RemoveCurrentTurnEffect($i);
       ++$count;
     }
   }
