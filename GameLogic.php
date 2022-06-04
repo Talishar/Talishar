@@ -2561,6 +2561,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
         case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
         case "DECKCARD": $rv = SearchDeckForCard($player, $subparam); break;
+        case "PERMSUBTYPE": $rv = SearchPermanents($player, "", $subparam); break;
         case "SEARCHMZ": $rv = SearchMZ($player, $subparam); break;
         case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;
         case "HAND": $rv = GetIndices(count(GetHand($player))); break;
@@ -3793,6 +3794,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $zone[$params[1]];
       MZStartTurnAbility($cardID);
       return "";
+    case "TRANSFORM":
+      ResolveTransform($player, $lastResult, $parameter);
+      return "1";
     default:
       return "NOTSTATIC";
   }

@@ -84,7 +84,7 @@
 
   function AllyPieces()
   {
-    return 4;
+    return 5;
   }
 
   //Card ID

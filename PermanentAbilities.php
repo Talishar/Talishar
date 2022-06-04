@@ -6,6 +6,18 @@ function PutPermanentIntoPlay($player, $cardID)
   array_push($permanents, $cardID);
 }
 
+function RemovePermanent($player, $index)
+{
+  $permanents = &GetPermanents($player);
+  $permID = $permanents[$index];
+  for($j = $index+PermanentPieces()-1; $j >= $index; --$j)
+  {
+    unset($permanents[$j]);
+  }
+  $permanents = array_values($permanents);
+  return $permID;
+}
+
 /*
 function DestroyAlly($player, $index)
 {

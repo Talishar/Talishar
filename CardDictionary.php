@@ -452,16 +452,6 @@
     }
   }
 
-  function AllyHealth($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON219": return 6;
-      case "MON220": return 6;
-      default: return 1;
-    }
-  }
-
   function CardSet($cardID)
   {
     return substr($cardID, 0, 3);
@@ -544,6 +534,7 @@
         else if($number == 86) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";
+        else if($number == 408) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";
@@ -821,6 +812,10 @@
     {
       if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
       if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
+    }
+    if(DelimStringContains($subtype, "Dragon"))
+    {
+      if(SearchCharacterActive($currentPlayer, "UPR003")) return 0;
     }
     if($set == "ARC")
     {
@@ -1516,6 +1511,10 @@
     {
       if(SearchCharacterForCard($currentPlayer, "MON003")) return "AA";
       if(SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
+    }
+    if(DelimStringContains($subtype, "Dragon"))
+    {
+      if(SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
     }
     if($set == "ARC")
     {

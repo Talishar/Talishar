@@ -60,6 +60,12 @@ function SearchAllies($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, 
   return SearchInner($allies, AllyPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
+function SearchPermanents($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+{
+  $permanents = &GetPermanents($player);
+  return SearchInner($permanents, PermanentPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+}
+
 function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1)
 {
   $cardList = "";

@@ -6,12 +6,14 @@
     switch($cardID)
     {
       case "UPR001": case "UPR002": return "C";
+      case "UPR003": return "W";
       case "UPR004": return "E";
       case "UPR008": return "A";
       case "UPR018": case "UPR019": case "UPR020": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
       case "UPR036": case "UPR037": case "UPR038": return "A";
       case "UPR042": case "UPR043": return "T";
+      case "UPR408": return "-";
       default: return "";
     }
   }
@@ -20,9 +22,11 @@
   {
     switch($cardID)
     {
+      case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
       case "UPR042": return "Dragon,Ally";
       case "UPR043": return "Ash";
+      case "UPR408": return "Dragon,Ally";
       default: return "";
     }
   }
@@ -75,6 +79,7 @@
       case "UPR019": return 2;
       case "UPR020": return 1;
       case "UPR042": return 1;
+      case "UPR408": return 4;
       default: return 0;
     }
   }
@@ -85,7 +90,22 @@
     $rv = "";
     switch($cardID)
     {
-
+      case "UPR008":
+        Transform($currentPlayer, "Ash", "UPR408");
+        return "";
+      case "UPR018": case "UPR019": case "UPR020":
+        Transform($currentPlayer, "Ash", "UPR042");
+        return "";
+      case "UPR033": case "UPR034": case "UPR035":
+        PutPermanentIntoPlay($currentPlayer, "UPR043");
+        if($cardID == "UPR033") $maxTransform = 3;
+        else if($cardID == "UPR034") $maxTransform = 2;
+        else $maxTransform = 1;
+        for($i=0; $i<$maxTransform; ++$i)
+        {
+          Transform($currentPlayer, "Ash", "UPR042", true);
+        }
+        return "";
       default: return "";
     }
   }
@@ -100,9 +120,19 @@
     }
   }
 
-  function Transform($player, $materialType, $into)
+  function Transform($player, $materialType, $into, $optional=false)
   {
-    
+    AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform", 1);
+    if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
+    else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
+    AddDecisionQueue("TRANSFORM", $player, $into, 1);
+  }
+
+  function ResolveTransform($player, $materialIndex, $into)
+  {
+    $materialType = RemovePermanent($player, $materialIndex);
+    PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
   }
 
 ?>
