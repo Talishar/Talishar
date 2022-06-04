@@ -638,10 +638,7 @@
           if($currentTurnEffects[$i+1] == $mainPlayer)
           {
             $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
-            if($shouldRemove == 1)
-            {
-              for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-            }
+            if($shouldRemove == 1) RemoveCurrentTurnEffect($i);
           }
         }
       }
@@ -687,7 +684,7 @@ function FinalizeChainLink($chainClosed=false)
     }
 
     //Clean up combat effects that were used and are one-time
-    for($i = count($currentTurnEffects) - 2; $i >= 0; --$i)
+    for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i-=CurrentTurnEffectPieces())
     {
       if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
       {
@@ -886,7 +883,7 @@ function FinalizeChainLink($chainClosed=false)
     $combatChain = [];//TODO: Add cards to the discard pile?...
     $currentTurnEffects = $nextTurnEffects;
     $nextTurnEffects = [];
-    for($i=0; $i<count($currentTurnEffects); $i+=2)
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
     {
       WriteLog("Start of turn effect for " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " is now active.");
     }
