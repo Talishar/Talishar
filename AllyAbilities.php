@@ -8,6 +8,8 @@ function PlayAlly($cardID, $player, $subCards="-")
   array_push($allies, AllyHealth($cardID));
   array_push($allies, 0);//Frozen
   array_push($allies, $subCards);//Subcards
+  array_push($allies, GetUniqueId());
+  return count($allies) - AllyPieces();
 }
 
 function DestroyAlly($player, $index)

@@ -83,6 +83,7 @@
   fwrite($handler, implode(" ", $chainLinkSummary) . "\r\n");
   fwrite($handler, $p1Key . "\r\n");
   fwrite($handler, $p2Key . "\r\n");
+  fwrite($handler, $permanentUniqueIDCounter . "\r\n");
   fclose($handler);
 
 ?>

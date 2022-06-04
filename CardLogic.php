@@ -139,21 +139,23 @@ function BottomDeckDraw()
   }
 }
 
-function AddCurrentTurnEffect($cardID, $player, $from="")
+function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
 {
   global $currentTurnEffects, $combatChain;
   $card = explode("-", $cardID)[0];
   if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") { AddCurrentTurnEffectFromCombat($cardID, $player); return; }
   array_push($currentTurnEffects, $cardID);
   array_push($currentTurnEffects, $player);
+  array_push($currentTurnEffects, $uniqueID);
 }
 
 //This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
-function AddCurrentTurnEffectFromCombat($cardID, $player)
+function AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID=-1)
 {
   global $currentTurnEffectsFromCombat;
   array_push($currentTurnEffectsFromCombat, $cardID);
   array_push($currentTurnEffectsFromCombat, $player);
+  array_push($currentTurnEffectsFromCombat, $uniqueID);
 }
 
 function CopyCurrentTurnEffectsFromCombat()
@@ -163,6 +165,7 @@ function CopyCurrentTurnEffectsFromCombat()
   {
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i]);
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i+1]);
+    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i+2]);
   }
   $currentTurnEffectsFromCombat = [];
 }
@@ -170,6 +173,7 @@ function CopyCurrentTurnEffectsFromCombat()
 function RemoveCurrentTurnEffect($index)
 {
   global $currentTurnEffects;
+  unset($currentTurnEffects[$index+2]);
   unset($currentTurnEffects[$index+1]);
   unset($currentTurnEffects[$index]);
   $currentTurnEffects = array_values($currentTurnEffects);
@@ -177,7 +181,7 @@ function RemoveCurrentTurnEffect($index)
 
 function CurrentTurnEffectPieces()
 {
-  return 2;
+  return 3;
 }
 
 function AddNextTurnEffect($cardID, $player)
