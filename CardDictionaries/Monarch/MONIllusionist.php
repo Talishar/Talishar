@@ -215,17 +215,22 @@
 
   function IsPhantasmActive()
   {
-    global $combatChain, $mainPlayer;
+    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     if(count($combatChain) == 0) return false;
     if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer)) { return false; }
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
+    if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally"))
+    {
+      $allies = &GetAllies($mainPlayer);
+      if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
+    }
     return HasPhantasm($combatChain[0]);//TODO: Incorporate things that can gain or lose phantasm
   }
 
   function ProcessPhantasmOnBlock($index)
   {
-    global $combatChain;
+    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
     if(CardType($combatChain[$index]) != "AA") return;
     if(CardClass($combatChain[$index]) == "ILLUSIONIST") return;
     $attackID = $combatChain[0];
@@ -236,6 +241,7 @@
     if($av < 6 && $origAV >= 6) WriteLog("Herald of Triumph reduced the attack below 6, so Phantasm does not trigger.");
     if(IsPhantasmActive() && ($av >= 6))
     {
+      if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       AttackDestroyed($attackID);
       CloseCombatChain();
     }

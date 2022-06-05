@@ -9,6 +9,7 @@ function &GetMZZone($player, $zone)
   else if($zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
   else if($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
   else if($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
+  else if($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
   return $rv;
 }
 
@@ -314,6 +315,13 @@ function &GetAllies($player)
   global $p1Allies, $p2Allies;
   if($player == 1) return $p1Allies;
   else return $p2Allies;
+}
+
+function &GetPermanents($player)
+{
+  global $p1Permanents, $p2Permanents;
+  if($player == 1) return $p1Permanents;
+  else return $p2Permanents;
 }
 
 function &GetSettings($player)

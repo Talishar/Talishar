@@ -5,6 +5,7 @@ include "CardLogic.php";
 include "AuraAbilities.php";
 include "ItemAbilities.php";
 include "AllyAbilities.php";
+include "PermanentAbilities.php";
 include "LandmarkAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
@@ -105,7 +106,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR008":
       $damaged = false;
       $discarded = DiscardRandom($currentPlayer, $cardID);
-      if(AttackValue($discarded) >= 6) { $damaged = true; DealDamage($mainPlayer, 2, "DAMAGE", $cardID); }
+      if(AttackValue($discarded) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
       return "Reckless Swing discarded a random card from your hand" . ($damaged ? " and did 2 damage." : ".");
     case "WTR009":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
@@ -224,7 +225,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       $text = "Steelblade Shunt ";
       if(CardType($combatChain[0]) == "W")
       {
-        DealDamage($mainPlayer, 1, "DAMAGE", $cardID);
+        DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
         $text .= "DID";
       } else { $text .= "did NOT"; }
       $text .= " deal 1 damage to the attacking hero.";
@@ -588,14 +589,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "";
     case "CRU127":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_two_damage", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
       return "";
     case "CRU128":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-1", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("ROCKSLIDETRAP", $otherPlayer, "-", 1);
@@ -1035,6 +1036,9 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "EVR116": case "EVR117": case "EVR118": return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "DVR002": return GetClassState($mainPlayer, $CS_AtksWWeapon) >= 1 ? 1 : 0;
     case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
+    case "UPR098": return (RuptureActive() ? 3 : 0);
+    case "UPR099": return (RuptureActive() ? 2 : 0);
+    case "UPR100": return (RuptureActive() ? 1 : 0);
     default: return 0;
   }
 }
@@ -1064,10 +1068,10 @@ function EffectHitEffect($cardID)
     case "ELE019": case "ELE020": case "ELE021": ArsenalToBottomDeck($defPlayer); break;
     case "ELE022": case "ELE023": case "ELE024": PlayAura("ELE111", $defPlayer); break;
     case "ELE035-2": AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer); break;
-    case "ELE037-2": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
-    case "ELE047": case "ELE048": case "ELE049": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
+    case "ELE037-2": DamageTrigger($defPlayer, 1, "ATTACKHIT"); break;
+    case "ELE047": case "ELE048": case "ELE049": DamageTrigger($defPlayer, 1, "ATTACKHIT"); break;
     case "ELE066-HIT": if(HasIncreasedAttack()) MainDrawCard(); break;
-    case "ELE092-BUFF": DealDamage($defPlayer, 3, "ATTACKHIT"); break;
+    case "ELE092-BUFF": DamageTrigger($defPlayer, 3, "ATTACKHIT"); break;
     case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": PlayAura("ELE111", $defPlayer); break;
     case "ELE163":
       PlayAura("ELE111", $defPlayer);
@@ -1076,13 +1080,13 @@ function EffectHitEffect($cardID)
     case "ELE165":
       PlayAura("ELE111", $defPlayer);
       break;
-    case "ELE173": DealDamage($defPlayer, 1, "ATTACKHIT"); return 1;
-    case "ELE195": case "ELE196": case "ELE197": DealDamage($defPlayer, 1, "ATTACKHIT"); break;
+    case "ELE173": DamageTrigger($defPlayer, 1, "ATTACKHIT"); return 1;
+    case "ELE195": case "ELE196": case "ELE197": DamageTrigger($defPlayer, 1, "ATTACKHIT"); break;
     case "ELE198": case "ELE199": case "ELE200":
       if($cardID == "ELE198") $damage = 3;
       else if($cardID == "ELE199") $damage = 2;
       else $damage = 1;
-      DealDamage($defPlayer, $damage, "ATTACKHIT");
+      DamageTrigger($defPlayer, $damage, "ATTACKHIT");
       return 1;
     case "ELE205": PummelHit(); PummelHit(); break;
     case "ELE215": AddNextTurnEffect($cardID . "-1", $defPlayer); break;
@@ -1272,8 +1276,7 @@ function RemoveCurrentEffect($player, $effectID)
     if($currentTurnEffects[$i+1] == $player && $currentTurnEffects[$i] == $effectID)
     {
       $remove = 0;
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
+      RemoveCurrentTurnEffect($i);
     }
   }
   $currentTurnEffects = array_values($currentTurnEffects);
@@ -1291,11 +1294,7 @@ function CurrentEffectChainClosedEffects()
       case "CRU106": case "CRU107": case "CRU108": $remove = 1; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   return $costModifier;
 }
@@ -1330,11 +1329,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID))$costModifier -= 1; $remove = 1; break;
         default: break;
       }
-      if($remove == 1)
-      {
-        unset($currentTurnEffects[$i+1]);
-        unset($currentTurnEffects[$i]);
-      }
+      if($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
   return $costModifier;
@@ -1357,7 +1352,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
 {
   global $currentTurnEffects;
   $prevention = 0;
-  for($i=count($currentTurnEffects)-2; $i>=0 && $prevention < $damage; $i-=2)
+  for($i=count($currentTurnEffects)-CurrentTurnEffectPieces(); $i>=0 && $prevention < $damage; $i-=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $player)
     {
@@ -1375,11 +1370,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
         case "EVR180": $prevention += 1; $remove = 1; break;
         default: break;
       }
-      if($remove == 1)
-      {
-        unset($currentTurnEffects[$i+1]);
-        unset($currentTurnEffects[$i]);
-      }
+      if($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
   return $prevention;
@@ -1420,10 +1411,7 @@ function CurrentEffectAttackAbility()
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
 }
@@ -1449,10 +1437,7 @@ function CurrentEffectPlayAbility($cardID)
           break;
         default: break;
       }
-      if($remove == 1)
-      {
-        for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-      }
+      if($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
   $currentTurnEffects = array_values($currentTurnEffects);//In case any were removed
@@ -1479,11 +1464,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   return $hasGoAgain;
 }
@@ -1491,7 +1472,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
 function CurrentEffectGrantsGoAgain()
 {
   global $currentTurnEffects, $mainPlayer, $combatChain, $combatChainState, $CCS_AttackFused;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]))
     {
@@ -1532,7 +1513,7 @@ function CurrentEffectGrantsGoAgain()
 function CurrentEffectPreventsGoAgain()
 {
   global $currentTurnEffects, $mainPlayer;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $mainPlayer)
     {
@@ -1550,7 +1531,7 @@ function CurrentEffectPreventsGoAgain()
 function CurrentEffectPreventsDefenseReaction($from)
 {
   global $currentTurnEffects, $currentPlayer;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $currentPlayer)
     {
@@ -1569,7 +1550,7 @@ function CurrentEffectPreventsDefenseReaction($from)
 function CurrentEffectPreventsDraw($player, $isMainPhase)
 {
   global $currentTurnEffects;
-  for($i=0; $i<count($currentTurnEffects); $i+=2)
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $player)
     {
@@ -1587,7 +1568,7 @@ function CurrentEffectIntellectModifier()
 {
   global $currentTurnEffects, $currentPlayer;
   $intellectModifier = 0;
-  for($i=count($currentTurnEffects)-2; $i>=0; $i-=2)
+  for($i=count($currentTurnEffects)-CurrentTurnEffectPieces(); $i>=0; $i-=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] == $currentPlayer)
     {
@@ -1624,11 +1605,7 @@ function CurrentEffectEndTurnAbilities()
         break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1917,11 +1894,7 @@ function RemoveEffectsOnChainClose()
       case "ELE186": case "ELE187": case "ELE188": $remove = 1; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1946,11 +1919,7 @@ function OnAttackEffects($attack)
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1985,11 +1954,7 @@ function OnBlockEffects($index, $from)
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
   switch($combatChain[0])
@@ -2074,11 +2039,7 @@ function ActivateAbilityEffects()
         default: break;
       }
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
 }
@@ -2500,8 +2461,11 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       break;
     case "DVR004": case "RVD004":
-        DestroyCharacter($currentPlayer, $cardIndex);
-        break;
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
+    case "UPR004":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
   }
 }
 
@@ -2560,6 +2524,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKCLASSNAA": $rv = SearchDeck($player, "A", "", -1, -1, $subparam); break;
         case "DECKSPEC": $rv = SearchDeck($player, "", "", -1, -1, "", "", false, false, -1, true); break;
         case "DECKCARD": $rv = SearchDeckForCard($player, $subparam); break;
+        case "PERMSUBTYPE": $rv = SearchPermanents($player, "", $subparam); break;
         case "SEARCHMZ": $rv = SearchMZ($player, $subparam); break;
         case "MZSTARTTURN": $rv = MZStartTurnIndices(); break;
         case "HAND": $rv = GetIndices(count(GetHand($player))); break;
@@ -2954,6 +2919,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       return "1";
+    case "ADDLIMITEDCURRENTEFFECT":
+
+      return "";
     case "OPTX":
       Opt("NA", $parameter);
       return $lastResult;
@@ -3181,7 +3149,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult == 0)
       {
         WriteLog("Pitfall Trap did two damage to the attacking hero.");
-        DealDamage($player, 2, "DAMAGE");
+        DamageTrigger($player, 2, "DAMAGE");
       }
       return 1;
     case "ROCKSLIDETRAP":
@@ -3229,13 +3197,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CHOOSEHERO":
       return "THEIRCHAR-0";
+    case "RESOLVECOMBATDAMAGE":
+      ResolveCombatDamage($lastResult);
+      return "";
     case "DEALDAMAGE":
       $target = $lastResult;
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
-      $damage = DealDamage($player, $damage, $type, $source);
+      $damage = DealDamageAsync($player, $damage, $type, $source);
       return $damage;
     case "DEALARCANE":
       $targetPlayer = ($player == 1 ? 2 : 1);
@@ -3792,6 +3763,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $zone[$params[1]];
       MZStartTurnAbility($cardID);
       return "";
+    case "TRANSFORM":
+      return "PERM-" . ResolveTransform($player, $lastResult, $parameter);
+    case "MZGETUNIQUEID":
+      $params = explode("-", $lastResult);
+      $zone = &GetMZZone($player, $params[0]);
+      switch($params[0])
+      {
+        case "PERM": return $zone[$params[1] + 5];
+      }
+      return "-1";
     default:
       return "NOTSTATIC";
   }

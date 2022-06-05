@@ -2,9 +2,9 @@
 
   include 'CardDictionary.php';
 
-  $set = "EVR";
+  $set = "UPR";
   $count = 0;
-  for($number = 0; $number < 194; ++$number)
+  for($number = 0; $number < 224; ++$number)
   {
     $card = strval($number);
     if($number < 10) $card = "0" . $card;

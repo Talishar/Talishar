@@ -60,6 +60,12 @@ function SearchAllies($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, 
   return SearchInner($allies, AllyPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
+function SearchPermanents($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+{
+  $permanents = &GetPermanents($player);
+  return SearchInner($permanents, PermanentPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+}
+
 function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1)
 {
   $cardList = "";
@@ -234,9 +240,7 @@ function SearchCurrentTurnEffects($cardID, $player, $remove=false)
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i+1] == $player){
-      if($remove){
-        for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-      }
+      if($remove) RemoveCurrentTurnEffect($i);
       return true;
     }
   }
@@ -262,9 +266,7 @@ function CountCurrentTurnEffects($cardID, $player, $remove=false)
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i+1] == $player){
-      if($remove){
-        for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-      }
+      if($remove) RemoveCurrentTurnEffect($i);
       ++$count;
     }
   }

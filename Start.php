@@ -62,6 +62,7 @@
   fwrite($handler, "\r\n");//Chain Link Summaries
   fwrite($handler, $p1Key . "\r\n");//Player 1 auth key
   fwrite($handler, $p2Key . "\r\n");//Player 2 auth key
+  fwrite(0 . "\r\n");//Permanent unique ID counter
   fclose($handler);
 
   //Set up log file
@@ -119,12 +120,13 @@
     fwrite($handler, "\r\n");//Discard
     fwrite($handler, "\r\n");//Pitch
     fwrite($handler, "\r\n");//Banish
-    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 -\r\n");//Class State
+    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 - - 0\r\n");//Class State
     fwrite($handler, "\r\n");//Character effects
     fwrite($handler, "\r\n");//Soul
     fwrite($handler, "\r\n");//Card Stats
     fwrite($handler, "\r\n");//Turn Stats
     fwrite($handler, "\r\n");//Allies
+    fwrite($handler, "\r\n");//Permanents
     //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
     $holdPriority = "0";//Auto-pass layers
     fwrite($handler, $holdPriority . " 1 0 0 0 0 0\r\n");//Settings

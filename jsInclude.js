@@ -90,6 +90,12 @@ function ReloadChat(lastUpdate)
   xmlhttp.send();
 }
 
+function AddCardToHand()
+{
+  var card = document.getElementById("manualAddCardToHand").value;
+  SubmitInput(10011, "&cardID=" + card);
+}
+
 function SubmitInput(mode, params, fullRefresh=false)
 {
   var xmlhttp = new XMLHttpRequest();

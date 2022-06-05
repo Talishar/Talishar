@@ -82,6 +82,7 @@
   $p1CardStats = GetArray($handler);
   $p1TurnStats = GetArray($handler);
   $p1Allies = GetArray($handler);
+  $p1Permanents = GetArray($handler);
   $p1Settings = GetArray($handler);
 
   //Player 2
@@ -101,6 +102,7 @@
   $p2CardStats = GetArray($handler);
   $p2TurnStats = GetArray($handler);
   $p2Allies = GetArray($handler);
+  $p2Permanents = GetArray($handler);
   $p2Settings = GetArray($handler);
 
   $landmarks = GetArray($handler);
@@ -133,6 +135,7 @@
   $chainLinkSummary = GetArray($handler);
   $p1Key = trim(fgets($handler));
   $p2Key = trim(fgets($handler));
+  $permanentUniqueIDCounter = trim(fgets($handler));
   fclose($handler);
   BuildMyGamestate($playerID);
 

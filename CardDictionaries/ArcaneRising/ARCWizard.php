@@ -122,8 +122,8 @@
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
         AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to banish <0> with Sonic Boom.");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to banish <1> with Sonic Boom.");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -341,6 +341,15 @@
       switch($items[$i])
       {
         case "ARC163": ++$barrierArray[1]; $total += 1; break;
+        default: break;
+      }
+    }
+    $allies = GetAllies($playerID);
+    for($i=0; $i<count($allies); $i+=AllyPieces())
+    {
+      switch($allies[$i])
+      {
+        case "UPR042": ++$barrierArray[1]; $total += 1; break;
         default: break;
       }
     }
