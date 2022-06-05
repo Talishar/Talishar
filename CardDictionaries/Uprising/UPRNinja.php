@@ -6,6 +6,7 @@
     switch($cardID)
     {
       case "UPR044": return "C";
+      case "UPR048": return "AA";
       default: return "";
     }
   }
@@ -24,7 +25,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR048": return 0;
       default: return 0;
     }
   }
@@ -33,7 +34,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR048": return 1;
       default: return 0;
     }
   }
@@ -42,7 +43,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR048": return 3;
       default: return -1;
     }
   }
@@ -51,7 +52,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR048": return 3;
       default: return 0;
     }
   }
@@ -74,8 +75,16 @@
 
   function UPRNinjaHitEffect($cardID)
   {
+    global $mainPlayer;
     switch($cardID)
     {
+      case "UPR048":
+        if(NumPhoenixFlameChainLinks() >= 3)
+        {
+          Draw($mainPlayer);
+          Draw($mainPlayer);
+          Draw($mainPlayer);
+        }
       default: break;
     }
   }
