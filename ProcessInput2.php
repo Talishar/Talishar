@@ -1273,7 +1273,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function PayAdditionalCosts($cardID, $from)
   {
-    global $currentPlayer;
+    global $currentPlayer, $CS_AdditionalCosts;
     $cardSubtype = CardSubType($cardID);
     if($from == "PLAY" && $cardSubtype == "Item")
     {
@@ -1405,6 +1405,13 @@ function FinalizeChainLink($chainClosed=false)
           AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
         }
         AddDecisionQueue("KNICKKNACK", $currentPlayer, "-");
+        break;
+      case "UPR094":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
+        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
+        AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PHOENIXBANISH", 1);
         break;
       default:
         break;
