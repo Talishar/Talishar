@@ -1509,6 +1509,7 @@ function CurrentEffectGrantsGoAgain()
         case "EVR044": case "EVR045": case "EVR046": return true;
         case "DVR008": return true;
         case "DVR019": return true;
+        case "UPR094": return true;
         default: break;
       }
     }
@@ -3303,6 +3304,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCLASSSTATE":
       $parameters = explode("-", $parameter);
       IncrementClassState($player, $parameters[0], $parameters[1]);
+      return 1;
+    case "APPENDCLASSSTATE":
+      $parameters = explode("-", $parameter);
+      AppendClassState($player, $parameters[0], $parameters[1]);
       return 1;
     case "AFTERFUSE":
       $params = explode("-", $parameter);

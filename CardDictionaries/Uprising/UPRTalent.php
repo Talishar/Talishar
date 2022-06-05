@@ -119,7 +119,7 @@
     }
   }
 
-  function UPRTalentPlayAbility($cardID, $from, $resourcesPaid)
+  function UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_PlayIndex, $CS_NumRedPlayed;
     $rv = "";
@@ -150,6 +150,9 @@
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
+        return "";
+      case "UPR094":
+        if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Burn Away got +2 and Go Again from banishing."); }
         return "";
       case "UPR096":
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 0)

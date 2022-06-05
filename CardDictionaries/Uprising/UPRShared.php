@@ -72,6 +72,7 @@
       case "UPR059": return 1;
       case "UPR088": return 1;
       case "UPR091": return NumPhoenixFlameChainLinks()*2;
+      case "UPR094": return 2;
       default: return 0;
     }
   }
@@ -85,6 +86,7 @@
       case "UPR057": case "UPR058": case "UPR059": CardTalent($attackID) == "DRACONIC" || CardClass($attackID) == "NINJA";
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;
+      case "UPR094": return true;
       default: return false;
     }
   }
@@ -196,7 +198,7 @@
       case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid);
       case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid);
       case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "NONE": return UPRTalentPlayAbility($cardID, $from, $resourcesPaid);
+      case "NONE": return UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default: return "";
     }
   }
