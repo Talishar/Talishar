@@ -35,6 +35,7 @@
       case "UPR033": case "UPR034": case "UPR035": return true;
       case "UPR036": case "UPR037": case "UPR038": return true;
       case "UPR048": return (NumPhoenixFlameChainLinks() >= 1 ? true : false);
+      case "UPR088": return true;
       case "UPR097": return true;
       case "UPR101": return true;
       case "UPR147": case "UPR148": case "UPR149": return true;
@@ -58,6 +59,7 @@
       case "UPR036": return 3;
       case "UPR037": return 2;
       case "UPR038": return 1;
+      case "UPR088": return 1;
       default: return 0;
     }
   }
@@ -67,6 +69,7 @@
     switch($cardID)
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
+      case "UPR088": return CardTalent($attackID) == "DRACONIC";
       default: return false;
     }
   }

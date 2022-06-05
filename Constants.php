@@ -72,7 +72,7 @@
   //Applies to Unique ID
   function CurrentTurnPieces()
   {
-    return 3;
+    return 4;
   }
 
   function CharacterEffectPieces()
