@@ -10,10 +10,12 @@
       case "UPR088": return "A";
       case "UPR090": return "AA";
       case "UPR091": return "AA";
+      case "UPR094": return "AA";
       case "UPR095": return "AA";
       case "UPR096": return "AA";
       case "UPR097": return "AA";
-      case "UPR098": case "UPR099": case "UPR100": return "AA";
+      case "UPR098": return "AA";
+      case "UPR100": return "AA";
       case "UPR101": return "AA";
       case "UPR139": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
@@ -40,10 +42,12 @@
       case "UPR088": return 0;
       case "UPR090": return 2;
       case "UPR091": return 1;
+      case "UPR094": return 0;
       case "UPR095": return 1;
       case "UPR096": return 1;
       case "UPR097": return 0;
-      case "UPR098": case "UPR099": case "UPR100": return 0;
+      case "UPR098": return 0;
+      case "UPR100": return 1;
       case "UPR101": return 0;
       case "UPR139": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
@@ -60,12 +64,12 @@
       case "UPR088": return 1;
       case "UPR090": return 1;
       case "UPR091": return 1;
+      case "UPR094": return 1;
       case "UPR095": return 1;
       case "UPR096": return 1;
       case "UPR097": return 1;
       case "UPR098": return 1;
-      case "UPR099": return 2;
-      case "UPR100": return 3;
+      case "UPR100": return 1;
       case "UPR101": return 1;
       case "UPR139": return 3;
       case "UPR147": return 1;
@@ -84,10 +88,12 @@
       case "UPR088": return 3;
       case "UPR090": return 3;
       case "UPR091": return 3;
+      case "UPR094": return 2;
       case "UPR095": return 2;
       case "UPR096": return 2;
       case "UPR097": return 2;
-      case "UPR098": case "UPR099": case "UPR100": return 3;
+      case "UPR098": return 3;
+      case "UPR100": return 3;
       case "UPR101": return -1;
       case "UPR139": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
@@ -102,10 +108,12 @@
       case "UPR086": return 6;
       case "UPR090": return 4;
       case "UPR091": return 3;
+      case "UPR094": return 2;
       case "UPR095": return 3;
       case "UPR096": return 3;
       case "UPR097": return 1;
-      case "UPR098": case "UPR099": case "UPR100": return 2;
+      case "UPR098": return 2;
+      case "UPR100": return 4;
       case "UPR101": return 0;
       default: return 0;
     }
@@ -193,7 +201,14 @@
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
           AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
         }
-        return "";
+        break;
+      case "UPR100":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "GYCARD,UPR101");
+        AddDecisionQueue("CHOOSEDISCARD", $mainPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("ADDHAND", $mainPlayer, "-", 1);
+        AddDecisionQueue("GIVEATTACKGOAGAIN", $mainPlayer, "-", 1);
+        break;
       default: break;
     }
   }
