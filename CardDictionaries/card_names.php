@@ -1007,8 +1007,11 @@ if($set == "UPR"){
     case "039": case "040": case "041": return "Sand Cover";
     case "042": return "Aether Ashwing";
     case "043": return "Ash";
+    case "044": return "Fai, Rising Rebellion";
+    case "045": return "Fai";
     case "086": return "Thaw";
     case "098": case "099": case "100": return "Lava Burst";
+    case "101": return "Phoenix Flame";
     case "104": return "Encase";
     case "109": return "Ice Eternal";
     case "119": case "120": case "121": return "Ice Bind";

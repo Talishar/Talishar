@@ -437,6 +437,8 @@
       case "EVR120": return 18;
       case "UPR001": return 40;
       case "UPR002": return 20;
+      case "UPR044": return 40;
+      case "UPR045": return 20;
       case "UPR102": return 36;
       case "UPR103": return 18;
       default: return 20;
@@ -531,6 +533,7 @@
         else return "GENERIC";
       case "UPR":
         if($number >= 1 && $number <= 43) return "ILLUSIONIST";
+        else if($number >= 44 && $number <= 85) return "NINJA";
         else if($number >= 86 && $number <= 100) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";

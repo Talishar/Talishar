@@ -27,17 +27,31 @@
   }
 
   //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
+  //Dash
   if($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002")
   {
-      $items = SearchDeck(1, "", "Item", 2);
-      AddDecisionQueue("CHOOSEDECK", 1, $items);
-      AddDecisionQueue("PUTPLAY", 1, "0");
+    $items = SearchDeck(1, "", "Item", 2);
+    AddDecisionQueue("CHOOSEDECK", 1, $items);
+    AddDecisionQueue("PUTPLAY", 1, "0");
   }
   if($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002")
   {
-      $items = SearchDeck(2, "", "Item", 2);
-      AddDecisionQueue("CHOOSEDECK", 2, $items);
-      AddDecisionQueue("PUTPLAY", 2, "0");
+    $items = SearchDeck(2, "", "Item", 2);
+    AddDecisionQueue("CHOOSEDECK", 2, $items);
+    AddDecisionQueue("PUTPLAY", 2, "0");
+  }
+  //Fai
+  if($p1Char[0] == "UPR044" || $p1Char[0] == "UPR045")
+  {
+    $cards = SearchDeckForCard(1, "UPR101");
+    AddDecisionQueue("CHOOSEDECK", 1, $cards);
+    AddDecisionQueue("ADDDISCARD", 1, "DECK", 1);
+  }
+  if($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045")
+  {
+    $cards = SearchDeckForCard(2, "UPR101");
+    AddDecisionQueue("CHOOSEDECK", 2, $cards);
+    AddDecisionQueue("ADDDISCARD", 2, "DECK", 1);
   }
   AddDecisionQueue("SHUFFLEDECK", 1, "-");//CR 2.0 4.1.7 Shuffle Deck
   AddDecisionQueue("SHUFFLEDECK", 2, "-");//CR 2.0 4.1.7 Shuffle Deck

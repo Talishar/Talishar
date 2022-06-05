@@ -1039,6 +1039,7 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "UPR098": return (RuptureActive() ? 3 : 0);
     case "UPR099": return (RuptureActive() ? 2 : 0);
     case "UPR100": return (RuptureActive() ? 1 : 0);
+    case "UPR101": return (NumDraconicChainLinks() >= 2 ? 1 : 0);
     default: return 0;
   }
 }
@@ -2564,6 +2565,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "GYNAA": $rv = SearchDiscard($player, "A"); break;
         case "GYCLASSAA": $rv = SearchDiscard($player, "AA", "", -1, -1, $subparam); break;
         case "GYCLASSNAA": $rv = SearchDiscard($player, "A", "", -1, -1, $subparam); break;
+        case "GYCARD": $rv = SearchDiscardForCard($player, $subparam); break;
         case "WEAPON": $rv = WeaponIndices($player, $player, $subparam); break;
         case "MON020": case "MON021": case "MON022": $rv = SearchDiscard($player, "", "", -1, -1, "", "", false, true); break;
         case "MON033-1": $rv = GetIndices(count(GetSoul($player)), 1); break;

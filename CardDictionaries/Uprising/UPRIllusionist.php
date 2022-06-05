@@ -8,6 +8,7 @@
       case "UPR001": case "UPR002": return "C";
       case "UPR003": return "W";
       case "UPR004": return "E";
+      case "UPR005": return "A";
       case "UPR008": return "A";
       case "UPR018": case "UPR019": case "UPR020": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
@@ -24,6 +25,7 @@
     {
       case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
+      case "UPR005": return "Aura";
       case "UPR042": return "Dragon,Ally";
       case "UPR043": return "Ash";
       case "UPR408": return "Dragon,Ally";
@@ -38,6 +40,7 @@
     {
       case "UPR001": case "UPR002": return -1;
       case "UPR004": return -1;
+      case "UPR005": return 0;
       case "UPR008": return 4;
       case "UPR018": case "UPR019": case "UPR020": return 1;
       case "UPR033": case "UPR034": case "UPR035": return 1;
@@ -51,6 +54,7 @@
   {
     switch($cardID)
     {
+      case "UPR005": return 1;
       case "UPR008": return 1;
       case "UPR018": case "UPR033": case "UPR036": return 1;
       case "UPR019": case "UPR034": case "UPR037": return 2;
@@ -64,6 +68,7 @@
     switch($cardID)
     {
       case "UPR004": return 0;
+      case "UPR005": return 3;
       case "UPR008": return 3;
       case "UPR018": case "UPR019": case "UPR020": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;

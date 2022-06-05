@@ -6,7 +6,9 @@
     switch($cardID)
     {
       case "UPR086": return "AA";
+      case "UPR090": return "AA";
       case "UPR098": case "UPR099": case "UPR100": return "AA";
+      case "UPR101": return "AA";
       case "UPR139": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
       default: return "";
@@ -28,7 +30,9 @@
     switch($cardID)
     {
       case "UPR086": return 2;
+      case "UPR090": return 2;
       case "UPR098": case "UPR099": case "UPR100": return 0;
+      case "UPR101": return 0;
       case "UPR139": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
       default: return 0;
@@ -40,9 +44,11 @@
     switch($cardID)
     {
       case "UPR086": return 1;
+      case "UPR090": return 1;
       case "UPR098": return 1;
       case "UPR099": return 2;
       case "UPR100": return 3;
+      case "UPR101": return 1;
       case "UPR139": return 3;
       case "UPR147": return 1;
       case "UPR148": return 2;
@@ -56,7 +62,9 @@
     switch($cardID)
     {
       case "UPR086": return 2;
+      case "UPR090": return 3;
       case "UPR098": case "UPR099": case "UPR100": return 3;
+      case "UPR101": return -1;
       case "UPR139": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       default: return -1;
@@ -68,7 +76,9 @@
     switch($cardID)
     {
       case "UPR086": return 6;
+      case "UPR090": return 4;
       case "UPR098": case "UPR099": case "UPR100": return 2;
+      case "UPR101": return 0;
       default: return 0;
     }
   }
@@ -122,6 +132,18 @@
     $target = ($beforePlay ? 3 : 4);
     if($combatChainState[$CCS_NumChainLinks] >= $target) return true;
     return false;
+  }
+
+  function NumDraconicChainLinks()
+  {
+    global $chainLinks, $combatChain;
+    $numLinks = 0;
+    for($i=0; $i<count($chainLinks); ++$i)
+    {
+      if(CardTalent($chainLinks[$i][0]) == "DRACONIC") ++$numLinks;
+    }
+    if(count($combatChain) > 0 && CardTalent($combatChain[0]) == "DRACONIC") ++$numLinks;
+    return $numLinks;
   }
 
 ?>

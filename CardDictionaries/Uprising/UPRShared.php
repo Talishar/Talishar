@@ -10,6 +10,7 @@
     switch($cardID)
     {
       case "UPR004": return 0;
+      case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
       default: return 0;
     }
   }
@@ -19,6 +20,7 @@
     switch($cardID)
     {
       case "UPR004": return "I";
+      case "UPR044": case "UPR045": return "I";
       default: return "";
     }
   }
@@ -27,10 +29,12 @@
   {
     switch($cardID)
     {
+      case "UPR005": return true;
       case "UPR008": return true;
       case "UPR018": case "UPR019": case "UPR020": return true;
       case "UPR033": case "UPR034": case "UPR035": return true;
       case "UPR036": case "UPR037": case "UPR038": return true;
+      case "UPR101": return true;
       case "UPR147": case "UPR148": case "UPR149": return true;
       default: return false;
     }
@@ -69,8 +73,8 @@
   {
     $number = intval(substr($cardID, 3));
     if($number <= 0) return "??";
-    else if($number >= 1 && $number < 98) return "DRACONIC";//Is this right?
-    else if($number >= 99 && $number <= 111) return "ELEMENTAL";//Is this right?
+    else if($number >= 1 && $number <= 101) return "DRACONIC";//Is this right?
+    else if($number >= 102 && $number <= 111) return "ELEMENTAL";//Is this right?
     else if($number == 112) return "LIGHTNING,ICE";
     else if($number == 113) return "LIGHTNING,EARTH";
     else if($number == 114) return "ICE,EARTH";
