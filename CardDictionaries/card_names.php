@@ -1012,6 +1012,7 @@ if($set == "UPR"){
     case "045": return "Fai";
     case "048": return "Phoenix Form";
     case "086": return "Thaw";
+    case "088": return "Uprising";
     case "090": return "Red Hot";
     case "097": return "Inflame";
     case "098": case "099": case "100": return "Lava Burst";
