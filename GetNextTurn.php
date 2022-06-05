@@ -917,7 +917,7 @@
       }
     }
   echo("</div>");
-  echo("<div style='position:relative; z-index:-1; left:0px; top:-10px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
+  echo("<div style='position:relative; z-index:-1; left:3px; top:-10px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
   if($turn[0] == "B") $trackerLeft = "85";
   else if($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
