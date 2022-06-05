@@ -5,7 +5,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR044": return "C";
       default: return "";
     }
   }
@@ -43,7 +43,7 @@
     switch($cardID)
     {
 
-      default: return 3;
+      default: return -1;
     }
   }
 
@@ -62,7 +62,12 @@
     $rv = "";
     switch($cardID)
     {
-
+      case "UPR044": case "UPR045":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
+        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
+        return "";
       default: return "";
     }
   }
@@ -71,7 +76,6 @@
   {
     switch($cardID)
     {
-
       default: break;
     }
   }
