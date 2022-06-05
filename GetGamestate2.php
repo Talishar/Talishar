@@ -16,7 +16,9 @@
 
   echo(implode(" ", $playerHealths) . "<BR>");
 
+  echo($"P1". "<BR>");
   OutputPlayerData(1);
+  echo("P2" . "<BR>");
   OutputPlayerData(2);
 
   echo($winner . "<BR>");
@@ -87,12 +89,12 @@
         else $playable = $turn[0] == "ARS" || IsPlayable($hand[$i], $turn[0], "HAND") || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         $border = CardBorderColor($hand[$i], "HAND", $playable);
         if($handOut != "") $handOut .= " ";
-        $handOut .= $hand[$i] . " " . $border;
+        $handOut .= $hand[$i] . "HL" . $border;
       }
-      echo($handOut . "<BR>");
+      echo("Hand" . $handOut . "<BR>");
     }
-    else echo(count($hand) . "<BR>");
-    echo(count($deck) . "<BR>");
+    else echo("HandCount" . count($hand) . "<BR>");
+    echo("Deck" . count($deck) . "<BR>");
     $charEquipOut = "";
     for($i=0; $i<count($charEquip); $i+=CharacterPieces())
     {
@@ -119,7 +121,7 @@
       $arsenalOut .= ($playerID == $player || $facing == "UP" ? $arsenal[$i] : "-") . " ";
       $arsenalOut .= $facing . " " . $border;
     }
-    echo($arsenalOut . "<BR>");
+    echo("ARS" . $arsenalOut . "<BR>");
     $itemsOut = "";
     for($i=0; $i<count($items); $i+=ItemPieces())
     {
@@ -136,8 +138,8 @@
     echo($itemsOut . "<BR>");
     //echo(implode(" ", $items) . "<BR>");
     echo(implode(" ", $auras) . "<BR>");
-    echo(implode(" ", $discard) . "<BR>");
-    echo(implode(" ", $pitch) . "<BR>");
+    echo("Discard" . implode(" ", $discard) . "<BR>");
+    echo("Pitch" . implode(" ", $pitch) . "<BR>");
     $banishOut = "";
     for($i=0; $i<count($banish); $i+=BanishPieces())
     {
@@ -151,7 +153,7 @@
       }
       $banishOut .= $border;
     }
-    echo($banishOut . "<BR>");
+    echo("Banish" . $banishOut . "<BR>");
     echo(implode(" ", $classState) . "<BR>");
     echo(implode(" ", $characterEffects) . "<BR>");
     if($currentPlayer == $player && $playerID == $player && count($turn) > 0 && ($turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK"))
