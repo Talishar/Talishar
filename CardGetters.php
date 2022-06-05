@@ -3,10 +3,11 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
+  global $p1Permanents;
   $rv = "";
   if($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
-  else if($zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
+  else if($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
   else if($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
   else if($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
   else if($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);

@@ -49,7 +49,9 @@
   {
     switch($cardID)
     {
-
+      case "UPR036": return 3;
+      case "UPR037": return 2;
+      case "UPR038": return 1;
       default: return 0;
     }
   }
@@ -58,7 +60,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR036": case "UPR037": case "UPR038": return true;
       default: return false;
     }
   }

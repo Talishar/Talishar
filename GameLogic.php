@@ -1138,6 +1138,10 @@ function EffectAttackModifier($cardID)
   {
     return RVDEffectAttackModifier($cardID);
   }
+  else if($set == "UPR")
+  {
+    return UPREffectAttackModifier($cardID);
+  }
   switch($cardID)
   {
     case "WTR007": return 2;
@@ -1638,6 +1642,10 @@ function IsCombatEffectActive($cardID)
   else if($set == "DVR")
   {
     return DVRCombatEffectActive($cardID, $attackID);
+  }
+  else if($set == "UPR")
+  {
+    return UPRCombatEffectActive($cardID, $attackID);
   }
   switch($cardID)
   {
@@ -2920,7 +2928,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect($parameter, $player);
       return "1";
     case "ADDLIMITEDCURRENTEFFECT":
-
+      $params = explode(",", $parameter);
+      AddCurrentTurnEffect($params[0], $player, $params[1], $lastResult);
       return "";
     case "OPTX":
       Opt("NA", $parameter);
@@ -3764,13 +3773,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       MZStartTurnAbility($cardID);
       return "";
     case "TRANSFORM":
-      return "PERM-" . ResolveTransform($player, $lastResult, $parameter);
+      return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "MZGETUNIQUEID":
       $params = explode("-", $lastResult);
       $zone = &GetMZZone($player, $params[0]);
       switch($params[0])
       {
-        case "PERM": return $zone[$params[1] + 5];
+        case "ALLY": return $zone[$params[1] + 5];
       }
       return "-1";
     default:

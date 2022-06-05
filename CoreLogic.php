@@ -50,7 +50,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     //Now check current turn effects
     for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
     {
-      if(IsCombatEffectActive($currentTurnEffects[$i]))
+      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
       {
         if($currentTurnEffects[$i+1] == $mainPlayer)
         {

@@ -191,6 +191,19 @@ function AddNextTurnEffect($cardID, $player)
   array_push($nextTurnEffects, $player);
 }
 
+function IsCombatEffectLimited($index)
+{
+  global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  if(count($combatChain) == 0 || $currentTurnEffects[$index+2] == -1) return false;
+  $attackSubType = CardSubType($combatChain[0]);
+  if(DelimStringContains($attackSubType, "Ally"))
+  {
+    $allies = &GetAllies($mainPlayer);
+    if($allies[$combatChainState[$CCS_WeaponIndex]+5] != $currentTurnEffects[$index+2]) return true;
+  }
+  return false;
+}
+
 function HasEffect($cardID)
 {
   global $currentTurnEffects;
