@@ -3209,9 +3209,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CHOOSEHERO":
       return "THEIRCHAR-0";
-    case "RESOLVECOMBATDAMAGE":
-      ResolveCombatDamage($lastResult);
-      return "";
     case "DEALDAMAGE":
       $target = $lastResult;
       $parameters = explode("-", $parameter);

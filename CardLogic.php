@@ -301,7 +301,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
     global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed;
-    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
+    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "RESOLVECOMBATDAMAGE" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
@@ -394,6 +394,11 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       {
         CloseDecisionQueue();
         ResolveChainLink();
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE")
+      {
+        CloseDecisionQueue();
+        ResolveCombatDamage($lastResult);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN")
       {
