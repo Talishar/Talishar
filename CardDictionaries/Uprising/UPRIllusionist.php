@@ -10,11 +10,15 @@
       case "UPR004": return "E";
       case "UPR005": return "A";
       case "UPR008": return "A";
+      case "UPR009": return "A";
+      case "UPR011": return "A";
       case "UPR018": case "UPR019": case "UPR020": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
       case "UPR036": case "UPR037": case "UPR038": return "A";
       case "UPR042": case "UPR043": return "T";
       case "UPR408": return "-";
+      case "UPR409": return "-";
+      case "UPR411": return "-";
       default: return "";
     }
   }
@@ -23,12 +27,15 @@
   {
     switch($cardID)
     {
+      case "UPR009": case "UPR011": return "Invocation";
       case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
       case "UPR005": return "Aura";
       case "UPR042": return "Dragon,Ally";
       case "UPR043": return "Ash";
       case "UPR408": return "Dragon,Ally";
+      case "UPR409": return "Dragon,Ally";
+      case "UPR411": return "Dragon,Ally";
       default: return "";
     }
   }
@@ -42,6 +49,8 @@
       case "UPR004": return -1;
       case "UPR005": return 0;
       case "UPR008": return 4;
+      case "UPR009": return 0;
+      case "UPR011": return 1;
       case "UPR018": case "UPR019": case "UPR020": return 1;
       case "UPR033": case "UPR034": case "UPR035": return 1;
       case "UPR036": case "UPR037": case "UPR038": return 0;
@@ -56,6 +65,8 @@
     {
       case "UPR005": return 1;
       case "UPR008": return 1;
+      case "UPR009": return 1;
+      case "UPR011": return 1;
       case "UPR018": case "UPR033": case "UPR036": return 1;
       case "UPR019": case "UPR034": case "UPR037": return 2;
       case "UPR020": case "UPR035": case "UPR038": return 3;
@@ -70,6 +81,8 @@
       case "UPR004": return 0;
       case "UPR005": return 3;
       case "UPR008": return 3;
+      case "UPR009": return 3;
+      case "UPR011": return 3;
       case "UPR018": case "UPR019": case "UPR020": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
@@ -86,6 +99,8 @@
       case "UPR020": return 1;
       case "UPR042": return 1;
       case "UPR408": return 4;
+      case "UPR409": return 2;
+      case "UPR411": return 4;
       default: return 0;
     }
   }
@@ -101,6 +116,12 @@
         return "";
       case "UPR008":
         Transform($currentPlayer, "Ash", "UPR408");
+        return "";
+      case "UPR009":
+        Transform($currentPlayer, "Ash", "UPR409");
+        return "";
+      case "UPR011":
+        Transform($currentPlayer, "Ash", "UPR411");
         return "";
       case "UPR018": case "UPR019": case "UPR020":
         Transform($currentPlayer, "Ash", "UPR042");
@@ -132,6 +153,11 @@
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
         }
+        return "";
+      case "UPR409":
+        //TODO: Limit duplicate targets?
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
       default: return "";
     }
