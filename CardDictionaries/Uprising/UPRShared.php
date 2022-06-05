@@ -41,6 +41,7 @@
       case "UPR048": return (NumPhoenixFlameChainLinks() >= 1 ? true : false);
       case "UPR057": case "UPR058": case "UPR059": return true;
       case "UPR088": return true;
+      case "UPR095": return true;
       case "UPR097": return true;
       case "UPR101": return true;
       case "UPR147": case "UPR148": case "UPR149": return true;

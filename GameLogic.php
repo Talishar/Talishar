@@ -1936,7 +1936,7 @@ function OnAttackEffects($attack)
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer;
+  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer, $CS_DamageTaken;
   $cardType = CardType($combatChain[$index]);
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
@@ -2006,6 +2006,23 @@ function OnBlockEffects($index, $from)
         {
           WriteLog("The card was put on the bottom of your deck.");
           array_push($deck, array_shift($deck));
+        }
+      }
+      break;
+    case "UPR095":
+      if(GetClassState($currentPlayer, $CS_DamageTaken) > 0)
+      {
+        $discard = &GetDiscard($currentPlayer);
+        $found = -1;
+        for($i=0; $i<count($discard) && $found == -1; $i+=DiscardPieces())
+        {
+          if($discard[$i] == "UPR101") $found = $i;
+        }
+        if($found == -1) WriteLog("No Phoenix Flames in discard.");
+        else
+        {
+          RemoveGraveyard($currentPlayer, $found);
+          AddPlayerHand("UPR101", $currentPlayer, "GY");
         }
       }
       break;
