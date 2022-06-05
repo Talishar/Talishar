@@ -688,7 +688,8 @@ function FinalizeChainLink($chainClosed=false)
     {
       if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
       {
-        RemoveCurrentTurnEffect($i);
+        --$currentTurnEffects[$i+3];
+        if($currentTurnEffects[$i+3] == 0) RemoveCurrentTurnEffect($i);
       }
     }
 

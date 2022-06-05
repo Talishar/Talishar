@@ -147,6 +147,7 @@ function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
   array_push($currentTurnEffects, $cardID);
   array_push($currentTurnEffects, $player);
   array_push($currentTurnEffects, $uniqueID);
+  array_push($currentTurnEffects, CurrentTurnEffectUses($cardID));
 }
 
 //This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
@@ -156,6 +157,7 @@ function AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID=-1)
   array_push($currentTurnEffectsFromCombat, $cardID);
   array_push($currentTurnEffectsFromCombat, $player);
   array_push($currentTurnEffectsFromCombat, $uniqueID);
+  array_push($currentTurnEffectsFromCombat, CurrentTurnEffectUses($cardID));
 }
 
 function CopyCurrentTurnEffectsFromCombat()
@@ -166,6 +168,7 @@ function CopyCurrentTurnEffectsFromCombat()
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i]);
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i+1]);
     array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i+2]);
+    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i+3]);
   }
   $currentTurnEffectsFromCombat = [];
 }
@@ -173,6 +176,7 @@ function CopyCurrentTurnEffectsFromCombat()
 function RemoveCurrentTurnEffect($index)
 {
   global $currentTurnEffects;
+  unset($currentTurnEffects[$index+3]);
   unset($currentTurnEffects[$index+2]);
   unset($currentTurnEffects[$index+1]);
   unset($currentTurnEffects[$index]);
@@ -181,7 +185,16 @@ function RemoveCurrentTurnEffect($index)
 
 function CurrentTurnEffectPieces()
 {
-  return 3;
+  return 4;
+}
+
+function CurrentTurnEffectUses($cardID)
+{
+  switch($cardID)
+  {
+    case "UPR088": return 4;
+    default: return 1;
+  }
 }
 
 function AddNextTurnEffect($cardID, $player)
@@ -288,7 +301,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
     global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed;
-    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "PASSTURN")
+    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "RESOLVECOMBATDAMAGE" || $decisionQueue[0] == "PASSTURN")
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
@@ -381,6 +394,11 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       {
         CloseDecisionQueue();
         ResolveChainLink();
+      }
+      else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE")
+      {
+        CloseDecisionQueue();
+        ResolveCombatDamage($lastResult);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN")
       {
