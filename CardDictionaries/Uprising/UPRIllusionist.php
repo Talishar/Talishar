@@ -15,6 +15,7 @@
       case "UPR018": case "UPR019": case "UPR020": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
       case "UPR036": case "UPR037": case "UPR038": return "A";
+      case "UPR039": case "UPR040": case "UPR041": return "I";
       case "UPR042": case "UPR043": return "T";
       case "UPR408": return "-";
       case "UPR409": return "-";
@@ -54,6 +55,7 @@
       case "UPR018": case "UPR019": case "UPR020": return 1;
       case "UPR033": case "UPR034": case "UPR035": return 1;
       case "UPR036": case "UPR037": case "UPR038": return 0;
+      case "UPR039": case "UPR040": case "UPR041": return 0;
       case "UPR042": case "UPR043": return -1;
       default: return 0;
     }
@@ -67,9 +69,9 @@
       case "UPR008": return 1;
       case "UPR009": return 1;
       case "UPR011": return 1;
-      case "UPR018": case "UPR033": case "UPR036": return 1;
-      case "UPR019": case "UPR034": case "UPR037": return 2;
-      case "UPR020": case "UPR035": case "UPR038": return 3;
+      case "UPR018": case "UPR033": case "UPR036": case "UPR039": return 1;
+      case "UPR019": case "UPR034": case "UPR037": case "UPR040": return 2;
+      case "UPR020": case "UPR035": case "UPR038": case "UPR041": return 3;
       default: return 0;
     }
   }
@@ -86,6 +88,7 @@
       case "UPR018": case "UPR019": case "UPR020": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
+      case "UPR039": case "UPR040": case "UPR041": return -1;
       default: return -1;
     }
   }
@@ -135,6 +138,9 @@
         {
           Transform($currentPlayer, "Ash", "UPR042", true);
         }
+        return "";
+      case "UPR039": case "UPR040": case "UPR041":
+
         return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042");
