@@ -6,6 +6,7 @@
     switch($cardID)
     {
       case "UPR044": return "C";
+      case "UPR047": return "E";
       case "UPR048": return "AA";
       case "UPR057": case "UPR058": case "UPR059": return "A";
       default: return "";
@@ -16,7 +17,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR047": return "Arms";
       default: return "";
     }
   }
@@ -48,6 +49,7 @@
   {
     switch($cardID)
     {
+      case "UPR047": return 0;
       case "UPR048": return 3;
       case "UPR057": case "UPR058": case "UPR059": return 3;
       default: return -1;
@@ -74,6 +76,9 @@
         AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
+        return "";
+      case "UPR047":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "UPR057": case "UPR058": case "UPR059":
         AddCurrentTurnEffect($cardID, $currentPlayer);

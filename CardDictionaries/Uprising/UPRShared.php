@@ -11,6 +11,7 @@
     {
       case "UPR004": return 0;
       case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
+      case "UPR047": return 0;
       default: return 0;
     }
   }
@@ -21,6 +22,7 @@
     {
       case "UPR004": return "I";
       case "UPR044": case "UPR045": return "I";
+      case "UPR047": return "I";
       default: return "";
     }
   }
@@ -62,6 +64,7 @@
       case "UPR036": return 3;
       case "UPR037": return 2;
       case "UPR038": return 1;
+      case "UPR047": return 1;
       case "UPR057": return 3;
       case "UPR058": return 2;
       case "UPR059": return 1;
@@ -75,6 +78,7 @@
     switch($cardID)
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
+      case "UPR047": return $attackID == "UPR101";
       case "UPR057": case "UPR058": case "UPR059": CardTalent($attackID) == "DRACONIC" || CardClass($attackID) == "NINJA";
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       default: return false;
