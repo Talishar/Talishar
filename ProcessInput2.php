@@ -686,7 +686,7 @@ function FinalizeChainLink($chainClosed=false)
     //Clean up combat effects that were used and are one-time
     for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i-=CurrentTurnEffectPieces())
     {
-      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
+      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
       {
         RemoveCurrentTurnEffect($i);
       }
