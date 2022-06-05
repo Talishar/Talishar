@@ -1718,6 +1718,7 @@ function IsCombatEffectPersistent($cardID)
     case "EVR170-1": case "EVR171-1": case "EVR172-1": return true;
     case "EVR186": return true;
     case "DVR008-1": return true;
+    case "UPR047": return true;
     default: return false;
   }
 }
@@ -2473,7 +2474,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DVR004": case "RVD004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "UPR004":
+    case "UPR004": case "UPR047":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
   }
