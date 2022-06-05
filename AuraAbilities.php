@@ -29,6 +29,7 @@ function AuraNumUses($cardID)
   switch($cardID)
   {
     case "EVR140": case "EVR141": case "EVR142": case "EVR143": return 1;
+    case "UPR005": return 1;
     default: return 0;
   }
 }
@@ -214,6 +215,22 @@ function AuraBeginEndStepAbilities()
         break;
       case "ELE146": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+2]) $remove = 1; break;
       case "ELE175": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $auras[$i+2]) $remove = 1; break;
+      case "UPR005":
+        ++$auras[$i+2];
+        $numBanished = 0;
+        $discard = &GetDiscard($mainPlayer);
+        for($j=count($discard)-DiscardPieces(); $j >= 0 && $numBanished < $auras[$i+2]; $j-=DiscardPieces())
+        {
+          if(PitchValue($discard[$j]) == 1)
+          {
+            BanishCardForPlayer($discard[$j], $mainPlayer, "GY", "NA");
+            RemoveGraveyard($mainPlayer, $j);
+            ++$numBanished;
+            WriteLog("Burn Them All banished a red card.");
+          }
+        }
+        if($numBanished < $auras[$i+2]) { $remove = 1; WriteLog("Burn Them All was unable to banish enough red cards."); }
+        break;
       default: break;
     }
     if($remove == 1)
@@ -380,6 +397,7 @@ function AuraAttackAbilities($attackID)
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
+      case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { WriteLog("Burn Them All deals 1 arcane damage."); --$auras[$i+5]; DealArcane(1, 0, "STATIC", $cardID, false, $currentPlayer); } break;
       default: break;
     }
     if($remove == 1)
