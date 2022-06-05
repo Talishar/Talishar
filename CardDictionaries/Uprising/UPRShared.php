@@ -71,6 +71,7 @@
       case "UPR058": return 2;
       case "UPR059": return 1;
       case "UPR088": return 1;
+      case "UPR091": return NumPhoenixFlameChainLinks()*2;
       default: return 0;
     }
   }
@@ -83,6 +84,7 @@
       case "UPR047": return $attackID == "UPR101";
       case "UPR057": case "UPR058": case "UPR059": CardTalent($attackID) == "DRACONIC" || CardClass($attackID) == "NINJA";
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
+      case "UPR091": return true;
       default: return false;
     }
   }

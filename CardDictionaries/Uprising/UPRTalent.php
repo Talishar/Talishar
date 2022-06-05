@@ -9,6 +9,7 @@
       case "UPR087": return "AR";
       case "UPR088": return "A";
       case "UPR090": return "AA";
+      case "UPR091": return "AA";
       case "UPR095": return "AA";
       case "UPR096": return "AA";
       case "UPR097": return "AA";
@@ -38,6 +39,7 @@
       case "UPR087": return 1;
       case "UPR088": return 0;
       case "UPR090": return 2;
+      case "UPR091": return 1;
       case "UPR095": return 1;
       case "UPR096": return 1;
       case "UPR097": return 0;
@@ -57,6 +59,7 @@
       case "UPR087": return 1;
       case "UPR088": return 1;
       case "UPR090": return 1;
+      case "UPR091": return 1;
       case "UPR095": return 1;
       case "UPR096": return 1;
       case "UPR097": return 1;
@@ -80,6 +83,7 @@
       case "UPR087": return 2;
       case "UPR088": return 3;
       case "UPR090": return 3;
+      case "UPR091": return 3;
       case "UPR095": return 2;
       case "UPR096": return 2;
       case "UPR097": return 2;
@@ -97,6 +101,7 @@
     {
       case "UPR086": return 6;
       case "UPR090": return 4;
+      case "UPR091": return 3;
       case "UPR095": return 3;
       case "UPR096": return 3;
       case "UPR097": return 1;
@@ -130,6 +135,12 @@
           }
           $wasRevealed = RevealCards($cards);
           if($wasRevealed) DealArcane($numRed, 2, "PLAYCARD", $cardID, false, $currentPlayer);//TODO: Not arcane
+        }
+        return "";
+      case "UPR091":
+        if(RuptureActive())
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return "";
       case "UPR096":
@@ -193,6 +204,7 @@
     {
       case "UPR087": return true;
       case "UPR090": return true;
+      case "UPR091": return true;
       case "UPR098": case "UPR099": case "UPR100": return true;
       default: return false;
     }
