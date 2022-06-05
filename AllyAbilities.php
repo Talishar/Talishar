@@ -1,12 +1,15 @@
 <?php
 
-function PlayAlly($cardID, $player)
+function PlayAlly($cardID, $player, $subCards="-")
 {
   $allies = &GetAllies($player);
   array_push($allies, $cardID);
   array_push($allies, 2);
   array_push($allies, AllyHealth($cardID));
   array_push($allies, 0);//Frozen
+  array_push($allies, $subCards);//Subcards
+  array_push($allies, GetUniqueId());
+  return count($allies) - AllyPieces();
 }
 
 function DestroyAlly($player, $index)
@@ -19,5 +22,15 @@ function DestroyAlly($player, $index)
   $allies = array_values($allies);
 }
 
+function AllyHealth($cardID)
+{
+  switch($cardID)
+  {
+    case "MON219": return 6;
+    case "MON220": return 6;
+    case "UPR408": return 4;
+    default: return 1;
+  }
+}
 
 ?>

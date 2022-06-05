@@ -378,6 +378,10 @@
       WriteLog("Player " . $playerID . " manually drew a card for their opponent.");
       Draw(($playerID == 1 ? 2 : 1));
       break;
+    case 10011:
+      WriteLog("Player " . $playerID . " manually added a card to their hand.");
+      array_push($myHand, $cardID);
+      break;
     case 100000: //Quick Rematch
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
@@ -509,7 +513,7 @@
   function PassInput($autopass=true)
   {
     global $turn, $currentPlayer;
-    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "INSTANT")
+    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "INSTANT")
     {
       ContinueDecisionQueue("PASS");
     }
@@ -577,11 +581,8 @@
 
   function ResolveChainLink()
   {
-    global $turn, $actionPoints, $combatChain, $currentPlayer, $mainPlayer, $defPlayer, $playerID, $defHealth, $currentTurnEffects, $currentTurnEffectsFromCombat;
-    global $mainCharacter, $defCharacter, $mainDiscard, $defDiscard, $defAuras, $mainAuras;
-    global $combatChainState, $actionPoints, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
-    global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_ChainAttackBuff, $CCS_CombatDamageReplaced;
-    global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CS_HitsWithWeapon, $CCS_WeaponIndex, $CS_EffectContext, $chainLinkSummary;
+    global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -596,11 +597,19 @@
 
     if($combatChainState[$CCS_CombatDamageReplaced] == 1) $damage = 0;
     else $damage = $totalAttack - $totalDefense;
-    $damageDone = DealDamage($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
+    DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
+    AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+    ProcessDecisionQueue();
+  }
+
+  function ResolveCombatDamage($damageDone)
+  {
+    global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary;
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
     array_push($chainLinkSummary, $damageDone);
-    array_push($chainLinkSummary, $totalAttack);
+    array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
 
     if($wasHit)//Resolve hit effects
     {
@@ -629,10 +638,7 @@
           if($currentTurnEffects[$i+1] == $mainPlayer)
           {
             $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
-            if($shouldRemove == 1)
-            {
-              for($j = $i+CurrentTurnPieces()-1; $j >= $i; --$j) unset($currentTurnEffects[$j]);
-            }
+            if($shouldRemove == 1) RemoveCurrentTurnEffect($i);
           }
         }
       }
@@ -678,7 +684,7 @@ function FinalizeChainLink($chainClosed=false)
     }
 
     //Clean up combat effects that were used and are one-time
-    for($i = count($currentTurnEffects) - 2; $i >= 0; --$i)
+    for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i-=CurrentTurnEffectPieces())
     {
       if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
       {
@@ -877,7 +883,7 @@ function FinalizeChainLink($chainClosed=false)
     $combatChain = [];//TODO: Add cards to the discard pile?...
     $currentTurnEffects = $nextTurnEffects;
     $nextTurnEffects = [];
-    for($i=0; $i<count($currentTurnEffects); $i+=2)
+    for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
     {
       WriteLog("Start of turn effect for " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " is now active.");
     }
@@ -905,7 +911,7 @@ function FinalizeChainLink($chainClosed=false)
     global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
     global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
-    global $decisionQueue, $CS_AdditionalCosts, $CS_AbilityIndex;
+    global $decisionQueue, $CS_AdditionalCosts, $CS_AbilityIndex, $CS_NumRedPlayed;
     $resources = &GetResources($currentPlayer);
     $pitch = &GetPitch($currentPlayer);
     $dynCostResolved = intval($dynCostResolved);
@@ -961,6 +967,11 @@ function FinalizeChainLink($chainClosed=false)
           WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
           DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
           $pitchValue = 3;
+        }
+        if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002"))
+        {
+          WriteLog("Dromai creates an Ash.");
+          PutPermanentIntoPlay($currentPlayer, "UPR043");
         }
       }
       $resources[0] += $pitchValue;
@@ -1059,6 +1070,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       if($from == "BANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
       if(HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+      if(PitchValue($cardID) == 1) IncrementClassState($currentPlayer, $CS_NumRedPlayed);
       PayAdditionalCosts($cardID, $from);
     }
     if($cardType == "AA") IncrementClassState($currentPlayer, $CS_NumAttackCards);//Played or blocked

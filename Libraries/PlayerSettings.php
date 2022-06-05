@@ -98,42 +98,42 @@
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
     $rv = "";
     $settings = GetSettings($player);
-    if($settings[$SET_AlwaysHoldPriority] != 0) $rv .= CreateButton($player, "Auto-pass Priority", 26, $SET_AlwaysHoldPriority . "-0", "24px");
+    if($settings[$SET_AlwaysHoldPriority] != 0) $rv .= CreateButton($player, "Auto-pass Priority", 26, $SET_AlwaysHoldPriority . "-0", "20px");
     $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 4) $rv .= CreateButton($player, "Always Pass Priority", 26, $SET_AlwaysHoldPriority . "-4", "24px");
+    if($settings[$SET_AlwaysHoldPriority] != 4) $rv .= CreateButton($player, "Always Pass Priority", 26, $SET_AlwaysHoldPriority . "-4", "20px");
     $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 1) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "24px");
+    if($settings[$SET_AlwaysHoldPriority] != 1) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "20px");
     $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 2) $rv .= CreateButton($player, "Hold Priority All Opp.", 26, $SET_AlwaysHoldPriority . "-2", "24px");
+    if($settings[$SET_AlwaysHoldPriority] != 2) $rv .= CreateButton($player, "Hold Priority All Opp.", 26, $SET_AlwaysHoldPriority . "-2", "20px");
     $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 3) $rv .= CreateButton($player, "Hold Priority Opp. Attacks", 26, $SET_AlwaysHoldPriority . "-3", "24px");
-    $rv .= "<BR>";
-    $rv .= "<BR>";
-    if($settings[$SET_SkipARs] == 0) $rv .= CreateButton($player, "Skip Attack Reactions", 26, $SET_SkipARs . "-1", "24px");
-    else if($settings[$SET_SkipARs] == 1) $rv .= CreateButton($player, "Hold Attack Reactions", 26, $SET_SkipARs . "-0", "24px");
-    $rv .= "<BR>";
-    if($settings[$SET_SkipDRs] == 0) $rv .= CreateButton($player, "Skip Defense Reactions", 26, $SET_SkipDRs . "-1", "24px");
-    else if($settings[$SET_SkipDRs] == 1) $rv .= CreateButton($player, "Hold Defense Reactions", 26, $SET_SkipDRs . "-0", "24px");
+    if($settings[$SET_AlwaysHoldPriority] != 3) $rv .= CreateButton($player, "Hold Priority Opp. Attacks", 26, $SET_AlwaysHoldPriority . "-3", "20px");
     $rv .= "<BR>";
     $rv .= "<BR>";
-    if($settings[$SET_DarkMode] != 0) $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);
-    if($settings[$SET_DarkMode] != 1) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px", "", "", true);
-    if($settings[$SET_DarkMode] != 2) $rv .= CreateButton($player, "Plain Mode", 26, $SET_DarkMode . "-2", "24px", "", "", true);
-    if($settings[$SET_DarkMode] != 3) $rv .= CreateButton($player, "Dark Plain Mode", 26, $SET_DarkMode . "-3", "24px", "", "", true);
+    if($settings[$SET_SkipARs] == 0) $rv .= CreateButton($player, "Skip Attack Reactions", 26, $SET_SkipARs . "-1", "20px");
+    else if($settings[$SET_SkipARs] == 1) $rv .= CreateButton($player, "Hold Attack Reactions", 26, $SET_SkipARs . "-0", "20px");
+    $rv .= "<BR>";
+    if($settings[$SET_SkipDRs] == 0) $rv .= CreateButton($player, "Skip Defense Reactions", 26, $SET_SkipDRs . "-1", "20px");
+    else if($settings[$SET_SkipDRs] == 1) $rv .= CreateButton($player, "Hold Defense Reactions", 26, $SET_SkipDRs . "-0", "20px");
     $rv .= "<BR>";
     $rv .= "<BR>";
-    if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Manual Mode", 26, $SET_ManualMode . "-1", "24px", "", "", true);
-    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true);
+    if($settings[$SET_DarkMode] != 0) $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "20px", "", "", true);
+    if($settings[$SET_DarkMode] != 1) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "20px", "", "", true);
+    if($settings[$SET_DarkMode] != 2) $rv .= CreateButton($player, "Plain Mode", 26, $SET_DarkMode . "-2", "20px", "", "", true);
+    if($settings[$SET_DarkMode] != 3) $rv .= CreateButton($player, "Dark Plain Mode", 26, $SET_DarkMode . "-3", "20px", "", "", true);
+    $rv .= "<BR>";
+    $rv .= "<BR>";
+    if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Manual Mode", 26, $SET_ManualMode . "-1", "20px", "", "", true);
+    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "20px", "", "", true);
 /*
     $rv .= "<BR>";
-    if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");
-    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px");
+    if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "20px");
+    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "20px");
     if(IsManualMode($player))
     {
       $rv .= "<h3>Manual Mode Options</h3>";
-      $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px");
+      $rv .= CreateButton($playerID, "Undo", 10000, 0, "20px");
       $rv .= "<BR>";
-      $rv .= CreateButton($playerID, "+1 Action Point", 10002, 0, "24px");
+      $rv .= CreateButton($playerID, "+1 Action Point", 10002, 0, "20px");
     }
 */
     return $rv;

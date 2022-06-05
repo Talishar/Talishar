@@ -9,7 +9,6 @@
   $authKey=TryGet("authKey", 3);
   $lastUpdate = TryGet("lastUpdate", 0);
 
-
   include "HostFiles/Redirector.php";
   include "Libraries/SHMOPLibraries.php";
   include "WriteLog.php";
@@ -145,7 +144,10 @@
   echo("</div>");
 
   //Now display the screen for this turn
-  echo("<span style='position:fixed; width:100%; bottom:0px; left:0px; z-index:10; display:inline-block; font-size:30px; text-align:center;'>");
+  echo("<span style='position:fixed;  bottom:0px; left:15%; right:15%; z-index:10; display:inline-block; justity-content: center; font-size:30px; text-align:center;'>");
+
+
+  echo(($manualMode ? "Add to hand: <input id='manualAddCardToHand' type='text' /><input type='button' value='Add' onclick='AddCardToHand()' />" : ""));
 
   //Tell the player what to pick
   if($turn[0] != "OVER")
@@ -295,7 +297,7 @@
     $options = explode(",", $turn[2]);
     for($i=0; $i<count($options); ++$i)
     {
-      $content .= CreateButton($playerID, $options[$i], 7, $options[$i], "30px");
+      $content .= CreateButton($playerID, $options[$i], 7, $options[$i], "20px");
     }
     $content .= "</div>";
     echo CreatePopup("DYNPITCH", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
@@ -312,7 +314,7 @@
     $options = explode(",", $turn[2]);
     for($i=0; $i<count($options); ++$i)
     {
-      $content .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "30px");
+      $content .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "20px");
     }
     $content .= "</div>";
     echo CreatePopup("BUTTONINPUT", [], 0, 1, GetPhaseHelptext(), 1, $content);
@@ -414,6 +416,12 @@
   if(($turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "CHOOSEARSENAL" || $turn[0] == "CHOOSEARSENALCANCEL") && $turn[1] == $playerID)
   {
     ChoosePopup($myArsenal, $turn[2], 16, "Choose a card from your arsenal", ArsenalPieces());
+  }
+
+  if(($turn[0] == "CHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEPERMANENT") && $turn[1] == $playerID)
+  {
+    $myPermanents = &GetPermanents($playerID);
+    ChoosePopup($myPermanents, $turn[2], 16, GetPhaseHelptext(), PermanentPieces());
   }
 
   if(($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID)
@@ -542,7 +550,7 @@
   {
     $theirBD = SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:50px; left:-40px; width:34px; font-size:30; text-align:center;'>" . $theirBD . "</div></img>");
+    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:51px; left:-39px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $theirBD . "</div></img>");
   }
 
 
@@ -616,6 +624,21 @@
     echo("</div>");
   }
   $otherPlayer = $playerID == 2 ? 1 : 2;
+  $theirPermanents = &GetPermanents($otherPlayer);
+  if(count($theirPermanents) > 0)
+  {
+    echo("<div style='display:inline-block;'>");
+    for($i=0; $i<count($theirPermanents); $i+=PermanentPieces())
+    {
+      //if(IsTileable($theirPermanents[$i])) continue;
+      //$playable = ($currentPlayer == $playerID ? IsPlayable($theirPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
+      //$border = CardBorderColor($theirPermanents[$i], "PLAY", $playable);
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($theirPermanents[$i], "CardImages", $cardSize, 0, 1));
+      //echo("</div>");
+    }
+    echo("</div>");
+  }
   $theirAllies = GetAllies($otherPlayer);
   if(count($theirAllies) > 0)
   {
@@ -760,6 +783,21 @@
     }
     echo("</div>");
   }
+  $myPermanents = &GetPermanents($playerID);
+  if(count($myPermanents) > 0)
+  {
+    echo("<div style='display:inline-block;'>");
+    for($i=0; $i<count($myPermanents); $i+=PermanentPieces())
+    {
+      //if(IsTileable($myPermanents[$i])) continue;
+      //$playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
+      //$border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
+      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
+      echo(Card($myPermanents[$i], "CardImages", $cardSize, 0, 1));
+      //echo("</div>");
+    }
+    echo("</div>");
+  }
   $myAllies = GetAllies($playerID);
   if(count($myAllies) > 0)
   {
@@ -829,14 +867,17 @@
   $card = (count($myBanish) > 0 ? $myBanish[count($myBanish)-BanishPieces()] : $blankZone);
   $folder = (count($myBanish) > 0 ? "CardImages" : "Images");
   echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
-  echo("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'><div style='position:absolute; top:10px; width:50px; font-size:30; color:#DDD; text-align:center;'>" . count($myBanish)/BanishPieces() . "</div></img></span>");
+  echo("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;
+  position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'>
+  <div style='margin: 0; top: 47%; left: 50%; font-size:24px; width: 25px; height: 25px; padding: 8px; color: #EEE; text-align: center;
+  transform: translate(-50%, -50%); position:absolute;'>" . count($myBanish)/BanishPieces() . "</div></img></span>");
+
   if(TalentContains($myCharacter[0], "SHADOW"))
   {
     $myBD = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='margin: 0; top: 47%; left: 50%; font-size:24px;
-    width: 25px; height: 25px; padding: 8px; color: #EEE; text-align: center;
-    transform: translate(-50%, -50%); position:absolute;'>" . $myBD . "</div></img>");
+    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'>
+    <div style='position:absolute; top:51px; left:-39px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $myBD . "</div></img>");
   }
 
   echo("</div>");

@@ -360,87 +360,9 @@ function HasIncreasedAttack()
   return false;
 }
 
-function DealDamage($player, $damage, $type, $source="NA")
+function DamageTrigger($player, $damage, $type, $source="NA")
 {
-  $classState = &GetPlayerClassState($player);
-  $health = &GetHealth($player);
-  $auras = &GetAuras($player);
-  $items = &GetItems($player);
-  return DamagePlayer($player, $damage, $classState, $health, $auras, $items, $type, $source);
-}
-
-function DamagePlayer($player, $damage, &$classState, &$health, &$Auras, &$Items, $type="DAMAGE", $source="NA")
-{
-  global $CS_DamagePrevention, $CS_DamageTaken, $CS_ArcaneDamageTaken, $combatChainState, $CCS_AttackTotalDamage, $defPlayer, $combatChain;
-  global $CCS_AttackFused, $CS_ArcaneDamagePrevention;
-  if($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
-  $otherPlayer = $player == 1 ? 2 : 1;
-  $damage = $damage > 0 ? $damage : 0;
-  $damageThreatened = $damage;
-  if(CanDamageBePrevented($player, $damage, $type, $source))
-  {
-    if(ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
-    if($type == "ARCANE")
-    {
-      if($damage <= $classState[$CS_ArcaneDamagePrevention])
-      {
-        $classState[$CS_ArcaneDamagePrevention] -= $damage;
-        $damage = 0;
-      }
-      else
-      {
-        $damage -= $classState[$CS_ArcaneDamagePrevention];
-        $classState[$CS_ArcaneDamagePrevention] = 0;
-      }
-    }
-    if($damage <= $classState[$CS_DamagePrevention])
-    {
-      $classState[$CS_DamagePrevention] -= $damage;
-      $damage = 0;
-    }
-    else
-    {
-      $damage -= $classState[$CS_DamagePrevention];
-      $classState[$CS_DamagePrevention] = 0;
-    }
-    $damage -= CurrentEffectDamagePrevention($player, $type, $damage);
-    for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
-    {
-      if($Items[$i] == "CRU104")
-      {
-        if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
-        else { $Items[$i+1] -= $damage; $damage = 0; }
-        if($Items[$i+1] <= 0) DestroyItem($Items, $i);
-      }
-    }
-    $damage = AuraTakeDamageAbilities($player, $damage, $type);
-    if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
-  }
-  $damage = $damage > 0 ? $damage : 0;
-  if($damage > 0 && $source != "NA")
-  {
-    $damage += CurrentEffectDamageModifiers($source, $type);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
-    if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
-    { AddCurrentTurnEffect($source, $otherPlayer); }
-  }
-  if($damage > 0)
-  {
-    if($source == "WTR085" && ComboActive("WTR085")) $damage *= 2;
-    AuraDamageTakenAbilities($Auras, $damage);
-    ItemDamageTakenAbilities($player, $damage);
-    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost 1 health from Ode to Wrath."); }
-    $classState[$CS_DamageTaken] += $damage;
-    if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
-    if($source == "MON229") AddNextTurnEffect("MON229", $player);
-    if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
-    CurrentEffectDamageEffects($player, $source);
-  }
-  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
-  { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
-  PlayerLoseHealth($player, $damage);
-  LogDamageStats($player, $damageThreatened, $damage);
+  AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type, 1);
   return $damage;
 }
 
@@ -591,11 +513,7 @@ function CurrentEffectDamageModifiers($source, $type)
       case "ELE186": case "ELE187": case "ELE188": if(TalentContains($source, "LIGHTNING") || TalentContains($source, "ELEMENTAL")) ++$modifier; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
   return $modifier;
 }
@@ -613,11 +531,7 @@ function CurrentEffectDamageEffects($player, $source)
       case "ELE064": BlossomingSpellbladeDamageEffect($player); break;
       default: break;
     }
-    if($remove == 1)
-    {
-      unset($currentTurnEffects[$i+1]);
-      unset($currentTurnEffects[$i]);
-    }
+    if($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -1078,9 +992,10 @@ function RevealCards($cards)
 
 function DoesAttackHaveGoAgain()
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_NumRedPlayed;
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
+  $attackSubtype = CardSubType($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if(HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
@@ -1090,6 +1005,7 @@ function DoesAttackHaveGoAgain()
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
     if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
+  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002")) return true;
   return false;
 }
 
@@ -1221,6 +1137,7 @@ function AddCharacterUses($player, $index, $numToAdd)
       case "BUTTONINPUTNOPASS": return 0;
       case "CHOOSEFIRSTPLAYER": return 0;
       case "MULTICHOOSEDECK": return 0;
+      case "CHOOSEPERMANENT": return 0;
       default: return 1;
     }
   }
@@ -1254,6 +1171,13 @@ function AddCharacterUses($player, $index, $numToAdd)
     array_push($deck, $pitch[$index]);
     unset($pitch[$index]);
     $pitch = array_values($pitch);
+  }
+
+  function GetUniqueId()
+  {
+    global $permanentUniqueIDCounter;
+    ++$permanentUniqueIDCounter;
+    return $permanentUniqueIDCounter;
   }
 
 ?>

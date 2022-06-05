@@ -130,7 +130,8 @@ border: 2px solid black;
 border-radius: 3px;">
 
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h1>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">ALL cards supported!</h3>
+<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards prior to UPR supported</h3>
+<a title='UPR Progress' href='https://www.fleshandbloodonline.com/FaBOnline/zzSetChecker.php' style='color:rgb(220, 220, 220); display: block; text-align: center;' target='_blank'>Uprising Progress</a>
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Upcoming Events</h1>
     <a title='Team GG' href='https://www.azcardtrading.it/collections/events-tournaments' style='color:rgb(220, 220, 220); display: block; text-align: center;' target='_blank'>Online Armory from Team GG every Tuesday!</a>

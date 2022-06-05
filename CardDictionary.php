@@ -435,6 +435,8 @@
       case "EVR017": return 40;
       case "EVR019": return 21;
       case "EVR120": return 18;
+      case "UPR001": return 40;
+      case "UPR002": return 20;
       case "UPR102": return 36;
       case "UPR103": return 18;
       default: return 20;
@@ -447,16 +449,6 @@
     {
       case "CRU099": return 3;
       default: return 4;
-    }
-  }
-
-  function AllyHealth($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON219": return 6;
-      case "MON220": return 6;
-      default: return 1;
     }
   }
 
@@ -538,9 +530,11 @@
         else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
         else return "GENERIC";
       case "UPR":
-        if($number == 86) return "NONE";
+        if($number >= 1 && $number <= 43) return "ILLUSIONIST";
+        else if($number >= 86 && $number <= 100) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";
+        else if($number == 408) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";
@@ -818,6 +812,10 @@
     {
       if(SearchCharacterForCard($currentPlayer, "MON003")) return 0;
       if(SearchCharacterForCard($currentPlayer, "MON088")) return 3;
+    }
+    if(DelimStringContains($subtype, "Dragon"))
+    {
+      if(SearchCharacterActive($currentPlayer, "UPR003")) return 0;
     }
     if($set == "ARC")
     {
@@ -1513,6 +1511,10 @@
     {
       if(SearchCharacterForCard($currentPlayer, "MON003")) return "AA";
       if(SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
+    }
+    if(DelimStringContains($subtype, "Dragon"))
+    {
+      if(SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
     }
     if($set == "ARC")
     {

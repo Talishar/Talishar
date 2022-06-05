@@ -79,7 +79,7 @@
       margin: 5px;
       text-align: center;
       vertical-align: middle;
-      padding: 6px 12px;
+      padding: 3px 6px;
       border: 1px solid;
       border-radius: 8px;
       background: #eeeeee;
@@ -140,7 +140,7 @@
     {
       $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
     }
-    $rv .= "<div style='margin-left: 10px;'>" . $customInput . "</div>";
+    $rv .= "<div style='margin-left: 5px;'>" . $customInput . "</div>";
     $rv .= "</div>";
     return $rv;
   }
@@ -287,10 +287,12 @@
       if(HasBloodDebt($cardID)) return 2;
       if($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
       if($isPlayable && ComboActive($cardID)) return 5;
+      if($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 5;
       return 0;
     }
     if($isPlayable && ComboActive($cardID)) return 3;
     if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
+    if($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 3;
     else if($isPlayable) return 6;
     return 0;
   }
@@ -316,9 +318,9 @@
   {
     global $playerID;
     $rv = "<table><tr><td>";
-    $rv .= CreateButton($playerID, "Undo", 10000, 0, "22px", "", "Hotkey: U") . "<BR>";
-    $rv .= CreateButton($playerID, "Concede", 100002, 0, "22px") . "<BR>";
-    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "22px") . "<BR>";
+    $rv .= CreateButton($playerID, "Undo", 10000, 0, "20px", "", "Hotkey: U") . "<BR>";
+    $rv .= CreateButton($playerID, "Concede", 100002, 0, "20px") . "<BR>";
+    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "20px") . "<BR>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
     $rv .= "</td><td>";
     $rv .= PreviousTurnSelectionUI();
