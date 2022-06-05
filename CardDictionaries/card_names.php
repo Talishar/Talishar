@@ -1000,6 +1000,7 @@ if($set == "UPR"){
     case "002": return "Dromai";
     case "003": return "Storm of Sandikai";
     case "004": return "Silken Form";
+    case "005": return "Burn Them All";
     case "008": return "Invoke Dominia";
     case "018": case "019": case "020": return "Billowing Mirage";
     case "033": case "034": case "035": return "Rake the Embers";
@@ -1009,7 +1010,9 @@ if($set == "UPR"){
     case "043": return "Ash";
     case "044": return "Fai, Rising Rebellion";
     case "045": return "Fai";
+    case "048": return "Phoenix Form";
     case "086": return "Thaw";
+    case "090": return "Red Hot";
     case "097": return "Inflame";
     case "098": case "099": case "100": return "Lava Burst";
     case "101": return "Phoenix Flame";
