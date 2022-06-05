@@ -160,4 +160,16 @@
     return $numLinks;
   }
 
+  function NumPhoenixFlameChainLinks()
+  {
+    global $chainLinks, $combatChain;
+    $numLinks = 0;
+    for($i=0; $i<count($chainLinks); ++$i)
+    {
+      if($chainLinks[$i][0] == "UPR101") ++$numLinks;
+    }
+    if(count($combatChain) > 0 && $combatChain[0] == "UPR101") ++$numLinks;
+    return $numLinks;
+  }
+
 ?>
