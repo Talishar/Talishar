@@ -29,6 +29,8 @@ function AllyHealth($cardID)
     case "MON219": return 6;
     case "MON220": return 6;
     case "UPR408": return 4;
+    case "UPR409": return 3;
+    case "UPR411": return 2;
     default: return 1;
   }
 }

@@ -6,6 +6,8 @@
     switch($cardID)
     {
       case "UPR086": return "AA";
+      case "UPR087": return "AR";
+      case "UPR088": return "A";
       case "UPR090": return "AA";
       case "UPR097": return "AA";
       case "UPR098": case "UPR099": case "UPR100": return "AA";
@@ -31,6 +33,8 @@
     switch($cardID)
     {
       case "UPR086": return 2;
+      case "UPR087": return 1;
+      case "UPR088": return 0;
       case "UPR090": return 2;
       case "UPR097": return 0;
       case "UPR098": case "UPR099": case "UPR100": return 0;
@@ -46,6 +50,8 @@
     switch($cardID)
     {
       case "UPR086": return 1;
+      case "UPR087": return 1;
+      case "UPR088": return 1;
       case "UPR090": return 1;
       case "UPR097": return 1;
       case "UPR098": return 1;
@@ -65,6 +71,8 @@
     switch($cardID)
     {
       case "UPR086": return 2;
+      case "UPR087": return 2;
+      case "UPR088": return 3;
       case "UPR090": return 3;
       case "UPR097": return 2;
       case "UPR098": case "UPR099": case "UPR100": return 3;
@@ -95,6 +103,25 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
+      case "UPR088":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Uprising gives your next 4 Draconic attacks +1.";
+      case "UPR090":
+        if(RuptureActive())
+        {
+          $deck = &GetDeck($currentPlayer);
+          $cards = "";
+          $numRed = 0;
+          for($i=0; $i<NumDraconicChainLinks(); $i+=DeckPieces())
+          {
+            if($cards != "") $cards .= ",";
+            $cards .= $deck[$i];
+            if(PitchValue($deck[$i]) == 1) ++$numRed;
+          }
+          $wasRevealed = RevealCards($cards);
+          if($wasRevealed) DealArcane($numRed, 2, "PLAYCARD", $cardID, false, $currentPlayer);//TODO: Not arcane
+        }
+        return "";
       case "UPR097":
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 0)
         {
@@ -124,9 +151,21 @@
 
   function UPRTalentHitEffect($cardID)
   {
+    global $mainPlayer, $defPlayer;
     switch($cardID)
     {
-
+      case "UPR087":
+        if(RuptureActive())
+        {
+          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+          AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP0", 1);
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+          AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+        }
+        return "";
       default: break;
     }
   }
@@ -135,6 +174,8 @@
   {
     switch($cardID)
     {
+      case "UPR087": return true;
+      case "UPR090": return true;
       case "UPR098": case "UPR099": case "UPR100": return true;
       default: return false;
     }

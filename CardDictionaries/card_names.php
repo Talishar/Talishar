@@ -1000,7 +1000,10 @@ if($set == "UPR"){
     case "002": return "Dromai";
     case "003": return "Storm of Sandikai";
     case "004": return "Silken Form";
+    case "005": return "Burn Them All";
     case "008": return "Invoke Dominia";
+    case "009": return "Invoke Azvolai";
+    case "011": return "Invoke Kyloria";
     case "018": case "019": case "020": return "Billowing Mirage";
     case "033": case "034": case "035": return "Rake the Embers";
     case "036": case "037": case "038": return "Skittering Sands";
@@ -1009,7 +1012,12 @@ if($set == "UPR"){
     case "043": return "Ash";
     case "044": return "Fai, Rising Rebellion";
     case "045": return "Fai";
+    case "048": return "Phoenix Form";
+    case "057": case "058": case "059": return "Rise from the Ashes";
     case "086": return "Thaw";
+    case "087": return "Liquefy";
+    case "088": return "Uprising";
+    case "090": return "Red Hot";
     case "097": return "Inflame";
     case "098": case "099": case "100": return "Lava Burst";
     case "101": return "Phoenix Flame";
@@ -1022,6 +1030,8 @@ if($set == "UPR"){
     case "139": return "Hypothermia";
     case "147": case "148": case "149": return "Cold Snap";
     case "408": return "Dominia";
+    case "409": return "Azvolai";
+    case "411": return "Kyloria";
     default: return "Name not populated - please report bug";
   }
 }
