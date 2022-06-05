@@ -9,6 +9,7 @@
       case "UPR087": return "AR";
       case "UPR088": return "A";
       case "UPR090": return "AA";
+      case "UPR095": return "AA";
       case "UPR097": return "AA";
       case "UPR098": case "UPR099": case "UPR100": return "AA";
       case "UPR101": return "AA";
@@ -36,6 +37,7 @@
       case "UPR087": return 1;
       case "UPR088": return 0;
       case "UPR090": return 2;
+      case "UPR095": return 1;
       case "UPR097": return 0;
       case "UPR098": case "UPR099": case "UPR100": return 0;
       case "UPR101": return 0;
@@ -53,6 +55,7 @@
       case "UPR087": return 1;
       case "UPR088": return 1;
       case "UPR090": return 1;
+      case "UPR095": return 1;
       case "UPR097": return 1;
       case "UPR098": return 1;
       case "UPR099": return 2;
@@ -74,6 +77,7 @@
       case "UPR087": return 2;
       case "UPR088": return 3;
       case "UPR090": return 3;
+      case "UPR095": return 2;
       case "UPR097": return 2;
       case "UPR098": case "UPR099": case "UPR100": return 3;
       case "UPR101": return -1;
@@ -89,6 +93,7 @@
     {
       case "UPR086": return 6;
       case "UPR090": return 4;
+      case "UPR095": return 3;
       case "UPR097": return 1;
       case "UPR098": case "UPR099": case "UPR100": return 2;
       case "UPR101": return 0;
