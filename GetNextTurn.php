@@ -695,7 +695,7 @@
   if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
   $restriction = "";
-  $actionType = $turn[0] == "ARS" ? 4 : 2;
+  $actionType = "HAND";
   if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
   $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 10) - 10)/2) . "px)";
   echo("<div style='position:fixed; left:" . $handLeft . "; bottom:0px;'>");//Hand div
@@ -736,7 +736,7 @@
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $counters = $myArsenal[$i+3];
         echo("<div>");
-        echo(Card($myArsenal[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 5 : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
+        echo(Card($myArsenal[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? "ARS" : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
         $iconHeight = $cardSize / 2 - 5;
         $iconLeft = $cardWidth/2 - intval($iconHeight*.71/2) + 5;
         if($myArsenal[$i+1] == "UP") echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
@@ -827,7 +827,7 @@
     $sType = CardSubType($myCharacter[$i]);
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
     echo("<div style='position:absolute; z-index:100; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
-    echo(Card($myCharacter[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
+    echo(Card($myCharacter[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? "EQ" : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
     $effects = ActiveCharacterEffects($playerID, $i);
     if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:40px; left:23px;' src='./Images/arsenal.png' />");
     if($restriction != "") {

@@ -60,7 +60,7 @@
       $playerHealths[$player] += 1;
       WriteLog("Player " . $playerID . " increased player " . ($player+1) . "'s health by 1.");
       break;
-    case 2: //Play card from hand
+    case "HAND": //Play card from hand
       $found = HasCard($cardID);
       if($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
         //Player actually has the card, now do the effect
@@ -68,10 +68,16 @@
         $hand = &GetHand($playerID);
         unset($hand[$found]);
         $hand = array_values($hand);
-        PlayCard($cardID, "HAND");
+        if($turn[0] == "ARS") {
+          AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
+          PassTurn();
+        }
+        else {
+          PlayCard($cardID, "HAND");
+        }
       }
       break;
-    case 3: //Play equipment ability
+    case "EQ": //Play equipment ability
       $index = $cardID;
       $found = -1;
       if($index != "")
@@ -100,17 +106,7 @@
         PlayCard($cardID, "EQUIP", -1, $index);
       }
       break;
-    case 4: //Add something to your arsenal
-      $found = HasCard($cardID);
-      if($turn[0] == "ARS" && $found >= 0) {
-        $hand = &GetHand($playerID);
-        unset($hand[$found]);
-        $hand = array_values($hand);
-        AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
-        PassTurn();
-      }
-      break;
-    case 5: //Card Played from Arsenal
+    case "ARS": //Card Played from Arsenal
       $index = $cardID;
       if($index < count($myArsenal))
       {
@@ -126,7 +122,7 @@
         PlayCard($cardToPlay, "ARS");
       }
       break;
-    case 6://Pitch Deck
+    case "PDECK"://Pitch Deck
       if($turn[0] != "PDECK") break;
       $found = PitchHasCard($cardID);
       if($found >= 0)

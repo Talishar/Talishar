@@ -12,3 +12,6 @@ Nero's Levia Deck.txt
 HostFiles/GameIDCounter.txt
 Images/.DS_Store
 .DS_Store
+includes/dbh.inc.php
+*.txt
+includes/dbh.inc.php
