@@ -9,6 +9,8 @@
       case "UPR047": return "E";
       case "UPR048": return "AA";
       case "UPR057": case "UPR058": case "UPR059": return "A";
+      case "UPR063": case "UPR064": case "UPR065": return "AA";
+      case "UPR069": case "UPR070": case "UPR071": return "AA";
       default: return "";
     }
   }
@@ -29,6 +31,8 @@
     {
       case "UPR048": return 0;
       case "UPR057": case "UPR058": case "UPR059": return 0;
+      case "UPR063": case "UPR064": case "UPR065": return 1;
+      case "UPR069": case "UPR070": case "UPR071": return 0;
       default: return 0;
     }
   }
@@ -38,9 +42,9 @@
     switch($cardID)
     {
       case "UPR048": return 1;
-      case "UPR057": return 1;
-      case "UPR058": return 2;
-      case "UPR059": return 3;
+      case "UPR057": case "UPR063": case "UPR069": return 1;
+      case "UPR058": case "UPR064": case "UPR070": return 2;
+      case "UPR059": case "UPR065": case "UPR071": return 3;
       default: return 0;
     }
   }
@@ -52,6 +56,8 @@
       case "UPR047": return 0;
       case "UPR048": return 3;
       case "UPR057": case "UPR058": case "UPR059": return 3;
+      case "UPR063": case "UPR064": case "UPR065": return 3;
+      case "UPR069": case "UPR070": case "UPR071": return 3;
       default: return -1;
     }
   }
@@ -61,6 +67,12 @@
     switch($cardID)
     {
       case "UPR048": return 3;
+      case "UPR063": return 4;
+      case "UPR064": return 3;
+      case "UPR065": return 2;
+      case "UPR069": return 3;
+      case "UPR070": return 2;
+      case "UPR071": return 1;
       default: return 0;
     }
   }

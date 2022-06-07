@@ -1015,9 +1015,12 @@ if($set == "UPR"){
     case "047": return "Heat Wave";
     case "048": return "Phoenix Form";
     case "057": case "058": case "059": return "Rise from the Ashes";
+    case "063": case "064": case "065": return "Cinderskin Devotion";
+    case "069": case "070": case "071": return "Lava Vein Loyalty";
     case "086": return "Thaw";
     case "087": return "Liquefy";
     case "088": return "Uprising";
+    case "089": return "Tome of Firebrand";
     case "090": return "Red Hot";
     case "091": return "Rise Up";
     case "094": return "Burn Away";
