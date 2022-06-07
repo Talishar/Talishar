@@ -1014,6 +1014,7 @@ if($set == "UPR"){
     case "045": return "Fai";
     case "047": return "Heat Wave";
     case "048": return "Phoenix Form";
+    case "049": return "Spreading Flames";
     case "057": case "058": case "059": return "Rise from the Ashes";
     case "063": case "064": case "065": return "Cinderskin Devotion";
     case "069": case "070": case "071": return "Lava Vein Loyalty";
@@ -1037,6 +1038,7 @@ if($set == "UPR"){
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
     case "147": case "148": case "149": return "Cold Snap";
+    case "160": return "Double Strike";
     case "408": return "Dominia";
     case "409": return "Azvolai";
     case "411": return "Kyloria";
