@@ -8,6 +8,7 @@
       case "UPR086": return "AA";
       case "UPR087": return "AR";
       case "UPR088": return "A";
+      case "UPR089": return "I";
       case "UPR090": return "AA";
       case "UPR091": return "AA";
       case "UPR094": return "AA";
@@ -40,6 +41,7 @@
       case "UPR086": return 2;
       case "UPR087": return 1;
       case "UPR088": return 0;
+      case "UPR089": return 1;
       case "UPR090": return 2;
       case "UPR091": return 1;
       case "UPR094": return 0;
@@ -62,6 +64,7 @@
       case "UPR086": return 1;
       case "UPR087": return 1;
       case "UPR088": return 1;
+      case "UPR089": return 1;
       case "UPR090": return 1;
       case "UPR091": return 1;
       case "UPR094": return 1;
@@ -86,6 +89,7 @@
       case "UPR086": return 2;
       case "UPR087": return 2;
       case "UPR088": return 3;
+      case "UPR089": return -1;
       case "UPR090": return 3;
       case "UPR091": return 3;
       case "UPR094": return 2;
@@ -129,6 +133,10 @@
       case "UPR088":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Uprising gives your next 4 Draconic attacks +1.";
+      case "UPR089":
+        Draw($currentPlayer);
+        Draw($currentPlayer);
+        return "Tome of Firebrand drew two cards.";
       case "UPR090":
         if(RuptureActive())
         {
