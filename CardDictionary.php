@@ -538,7 +538,7 @@
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";
         else if($number >= 158 && $number <= 164) return "NINJA";
-        else if($number >= 408 && $number <= 415) return "ILLUSIONIST";
+        else if($number >= 408 && $number <= 417) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";

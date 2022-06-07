@@ -1003,8 +1003,12 @@ if($set == "UPR"){
     case "005": return "Burn Them All";
     case "008": return "Invoke Dominia";
     case "009": return "Invoke Azvolai";
+    case "010": return "Invoke Cromai";
     case "011": return "Invoke Kyloria";
+    case "013": return "Invoke Nekria";
     case "015": return "Invoke Themai";
+    case "016": return "Invoke Vyskerai";
+    case "017": return "Invoke Yenderai";
     case "018": case "019": case "020": return "Billowing Mirage";
     case "033": case "034": case "035": return "Rake the Embers";
     case "036": case "037": case "038": return "Skittering Sands";
@@ -1043,8 +1047,12 @@ if($set == "UPR"){
     case "161": return "Take the Tempo";
     case "408": return "Dominia";
     case "409": return "Azvolai";
+    case "410": return "Cromai";
     case "411": return "Kyloria";
+    case "413": return "Nekria";
     case "415": return "Themai";
+    case "416": return "Vyskerai";
+    case "417": return "Yenderai";
     default: return "Name not populated - please report bug";
   }
 }
