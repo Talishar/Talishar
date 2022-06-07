@@ -5,7 +5,8 @@
   {
     switch($cardID)
     {
-      case "UPR044": return "C";
+      case "UPR044": case "UPR045": return "C";
+      case "UPR046": return "W";
       case "UPR047": return "E";
       case "UPR048": return "AA";
       case "UPR057": case "UPR058": case "UPR059": return "A";
@@ -19,6 +20,7 @@
   {
     switch($cardID)
     {
+      case "UPR046": return "Sword";
       case "UPR047": return "Arms";
       default: return "";
     }
@@ -66,6 +68,7 @@
   {
     switch($cardID)
     {
+      case "UPR046": return 3;
       case "UPR048": return 3;
       case "UPR063": return 4;
       case "UPR064": return 3;

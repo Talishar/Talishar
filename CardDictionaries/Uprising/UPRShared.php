@@ -11,6 +11,7 @@
     {
       case "UPR004": return 0;
       case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
+      case "UPR046": return 2;
       case "UPR047": return 0;
       default: return 0;
     }
@@ -22,6 +23,7 @@
     {
       case "UPR004": return "I";
       case "UPR044": case "UPR045": return "I";
+      case "UPR046": return "AA";
       case "UPR047": return "I";
       default: return "";
     }
@@ -38,6 +40,7 @@
       case "UPR018": case "UPR019": case "UPR020": return true;
       case "UPR033": case "UPR034": case "UPR035": return true;
       case "UPR036": case "UPR037": case "UPR038": return true;
+      case "UPR046": return (NumDraconicChainLinks() >= 2 ? true : false);
       case "UPR048": return (NumPhoenixFlameChainLinks() >= 1 ? true : false);
       case "UPR057": case "UPR058": case "UPR059": return true;
       case "UPR063": case "UPR064": case "UPR065": return (NumDraconicChainLinks() >= 2 ? true : false);
