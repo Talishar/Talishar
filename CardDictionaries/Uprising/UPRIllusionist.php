@@ -12,6 +12,7 @@
       case "UPR008": return "A";
       case "UPR009": return "A";
       case "UPR011": return "A";
+      case "UPR015": return "A";
       case "UPR018": case "UPR019": case "UPR020": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
       case "UPR036": case "UPR037": case "UPR038": return "A";
@@ -20,6 +21,7 @@
       case "UPR408": return "-";
       case "UPR409": return "-";
       case "UPR411": return "-";
+      case "UPR415": return "-";
       default: return "";
     }
   }
@@ -28,7 +30,7 @@
   {
     switch($cardID)
     {
-      case "UPR009": case "UPR011": return "Invocation";
+      case "UPR009": case "UPR011": case "UPR015": return "Invocation";
       case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
       case "UPR005": return "Aura";
@@ -37,6 +39,7 @@
       case "UPR408": return "Dragon,Ally";
       case "UPR409": return "Dragon,Ally";
       case "UPR411": return "Dragon,Ally";
+      case "UPR415": return "Dragon,Ally";
       default: return "";
     }
   }
@@ -52,6 +55,7 @@
       case "UPR008": return 4;
       case "UPR009": return 0;
       case "UPR011": return 1;
+      case "UPR015": return 2;
       case "UPR018": case "UPR019": case "UPR020": return 1;
       case "UPR033": case "UPR034": case "UPR035": return 1;
       case "UPR036": case "UPR037": case "UPR038": return 0;
@@ -69,6 +73,7 @@
       case "UPR008": return 1;
       case "UPR009": return 1;
       case "UPR011": return 1;
+      case "UPR015": return 1;
       case "UPR018": case "UPR033": case "UPR036": case "UPR039": return 1;
       case "UPR019": case "UPR034": case "UPR037": case "UPR040": return 2;
       case "UPR020": case "UPR035": case "UPR038": case "UPR041": return 3;
@@ -85,6 +90,7 @@
       case "UPR008": return 3;
       case "UPR009": return 3;
       case "UPR011": return 3;
+      case "UPR015": return 3;
       case "UPR018": case "UPR019": case "UPR020": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
@@ -104,6 +110,7 @@
       case "UPR408": return 4;
       case "UPR409": return 2;
       case "UPR411": return 4;
+      case "UPR415": return 3;
       default: return 0;
     }
   }
@@ -125,6 +132,9 @@
         return "";
       case "UPR011":
         Transform($currentPlayer, "Ash", "UPR411");
+        return "";
+      case "UPR015":
+        Transform($currentPlayer, "Ash", "UPR415");
         return "";
       case "UPR018": case "UPR019": case "UPR020":
         Transform($currentPlayer, "Ash", "UPR042");

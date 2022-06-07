@@ -538,7 +538,7 @@
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";
         else if($number >= 158 && $number <= 164) return "NINJA";
-        else if($number >= 408 && $number <= 412) return "ILLUSIONIST";
+        else if($number >= 408 && $number <= 415) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";
@@ -1741,14 +1741,15 @@
 
   function IsPlayRestricted($cardID, &$restriction, $from="", $index=-1)
   {
-    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $CS_Num6PowBan, $myDiscard;
+    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
-    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY;
+    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn;
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
     if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID))  { $restriction = "ELE035"; return true; }
     if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) {$restriction = "EVR071"; return true; }
+    if($turn[0] != "B" && $turn[0] != "P" && $playerID != $mainPlayer && SearchAlliesForCard($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
     switch($cardID)
     {
       case "ARC004": return $myClassState[$CS_NumBoosted] < 1;
