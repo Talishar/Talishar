@@ -1040,6 +1040,7 @@ if($set == "UPR"){
     case "139": return "Hypothermia";
     case "147": case "148": case "149": return "Cold Snap";
     case "160": return "Double Strike";
+    case "161": return "Take the Tempo";
     case "408": return "Dominia";
     case "409": return "Azvolai";
     case "411": return "Kyloria";

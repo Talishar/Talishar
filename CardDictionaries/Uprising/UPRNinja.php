@@ -14,6 +14,7 @@
       case "UPR063": case "UPR064": case "UPR065": return "AA";
       case "UPR069": case "UPR070": case "UPR071": return "AA";
       case "UPR160": return "AA";
+      case "UPR161": return "AA";
       default: return "";
     }
   }
@@ -39,6 +40,7 @@
       case "UPR063": case "UPR064": case "UPR065": return 1;
       case "UPR069": case "UPR070": case "UPR071": return 0;
       case "UPR160": return 0;
+      case "UPR161": return 1;
       default: return 0;
     }
   }
@@ -53,6 +55,7 @@
       case "UPR058": case "UPR064": case "UPR070": return 2;
       case "UPR059": case "UPR065": case "UPR071": return 3;
       case "UPR160": return 1;
+      case "UPR161": return 1;
       default: return 0;
     }
   }
@@ -68,6 +71,7 @@
       case "UPR063": case "UPR064": case "UPR065": return 3;
       case "UPR069": case "UPR070": case "UPR071": return 3;
       case "UPR160": return 2;
+      case "UPR161": return 3;
       default: return -1;
     }
   }
@@ -86,6 +90,7 @@
       case "UPR070": return 2;
       case "UPR071": return 1;
       case "UPR160": return 1;
+      case "UPR161": return 3;
       default: return 0;
     }
   }
@@ -121,7 +126,7 @@
 
   function UPRNinjaHitEffect($cardID)
   {
-    global $mainPlayer;
+    global $mainPlayer, $combatChainState, $CCS_NumHits;
     switch($cardID)
     {
       case "UPR048":
@@ -131,6 +136,19 @@
           Draw($mainPlayer);
           Draw($mainPlayer);
         }
+        break;
+      case "UPR161":
+        WriteLog($combatChainState[$CCS_NumHits]);
+        if($combatChainState[$CCS_NumHits] >= 2)
+        {
+          $deck = &GetDeck($mainPlayer);
+          if(CardType($deck[0]) == "AA")
+          {
+            BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
+            array_shift($deck);
+          }
+        }
+        break;
       default: break;
     }
   }
