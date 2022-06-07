@@ -42,6 +42,7 @@
       case "UPR036": case "UPR037": case "UPR038": return true;
       case "UPR046": return (NumDraconicChainLinks() >= 2 ? true : false);
       case "UPR048": return (NumPhoenixFlameChainLinks() >= 1 ? true : false);
+      case "UPR049": return true;
       case "UPR057": case "UPR058": case "UPR059": return true;
       case "UPR063": case "UPR064": case "UPR065": return (NumDraconicChainLinks() >= 2 ? true : false);
       case "UPR069": case "UPR070": case "UPR071": return (NumDraconicChainLinks() >= 2 ? true : false);
@@ -51,6 +52,7 @@
       case "UPR097": return true;
       case "UPR101": return true;
       case "UPR147": case "UPR148": case "UPR149": return true;
+      case "UPR160": return true;
       default: return false;
     }
   }
@@ -72,6 +74,7 @@
       case "UPR037": return 2;
       case "UPR038": return 1;
       case "UPR047": return 1;
+      case "UPR049": return 1;
       case "UPR057": return 3;
       case "UPR058": return 2;
       case "UPR059": return 1;
@@ -88,6 +91,7 @@
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
       case "UPR047": return $attackID == "UPR101";
+      case "UPR049": return CardTalent($attackID) == "DRACONIC" && AttackValue($attackID) < NumDraconicChainLinks();
       case "UPR057": case "UPR058": case "UPR059": CardTalent($attackID) == "DRACONIC" || CardClass($attackID) == "NINJA";
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;

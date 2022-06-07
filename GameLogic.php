@@ -1720,6 +1720,7 @@ function IsCombatEffectPersistent($cardID)
     case "EVR186": return true;
     case "DVR008-1": return true;
     case "UPR047": return true;
+    case "UPR049": return true;
     default: return false;
   }
 }

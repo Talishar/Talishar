@@ -537,6 +537,7 @@
         else if($number >= 86 && $number <= 100) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
         else if($number >= 138 && $number <= 149) return "NONE";
+        else if($number >= 158 && $number <= 164) return "NINJA";
         else if($number >= 408 && $number <= 412) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
@@ -1694,11 +1695,12 @@
     }
   }
 
-  function GoesWhereAfterResolving($cardID, $from = null)
+  function GoesWhereAfterResolving($cardID, $from = null, $player="")
   {
-    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
+    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $combatChainState, $CCS_AttackPlayedFrom;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
-    if($from == "COMBATCHAIN" && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
+    if($player == "") $player = $currentPlayer;
+    if($from == "COMBATCHAIN" && $player != $mainPlayer && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
     {
       case "WTR163": return "BANISH";
@@ -1715,6 +1717,7 @@
       case "MON192": if($from=="BANISH") return "HAND";
       case "EVR082": case "EVR083": case "EVR084": return (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
       case "EVR134": case "EVR135": case "EVR136": return ($currentPlayer != $mainPlayer ? "BOTDECK" : "GY");
+      case "UPR160": return ($from == "CHAINCLOSING" || $combatChainState[$CCS_AttackPlayedFrom] == "BANISH" ? "GY" : "BANISH,TCC");
       default: return "GY";
     }
   }
