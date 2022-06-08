@@ -11,15 +11,26 @@
       case "UPR005": return "A";
       case "UPR008": return "A";
       case "UPR009": return "A";
+      case "UPR010": return "A";
       case "UPR011": return "A";
+      case "UPR013": return "A";
+      case "UPR015": return "A";
+      case "UPR016": return "A";
+      case "UPR017": return "A";
       case "UPR018": case "UPR019": case "UPR020": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
       case "UPR036": case "UPR037": case "UPR038": return "A";
       case "UPR039": case "UPR040": case "UPR041": return "I";
       case "UPR042": case "UPR043": return "T";
+      case "UPR155": case "UPR156": case "UPR157": return "A";
       case "UPR408": return "-";
       case "UPR409": return "-";
+      case "UPR410": return "-";
       case "UPR411": return "-";
+      case "UPR413": return "-";
+      case "UPR415": return "-";
+      case "UPR416": return "-";
+      case "UPR417": return "-";
       default: return "";
     }
   }
@@ -28,7 +39,7 @@
   {
     switch($cardID)
     {
-      case "UPR009": case "UPR011": return "Invocation";
+      case "UPR009": case "UPR010": case "UPR011": case "UPR013": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
       case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
       case "UPR005": return "Aura";
@@ -36,7 +47,12 @@
       case "UPR043": return "Ash";
       case "UPR408": return "Dragon,Ally";
       case "UPR409": return "Dragon,Ally";
+      case "UPR410": return "Dragon,Ally";
       case "UPR411": return "Dragon,Ally";
+      case "UPR413": return "Dragon,Ally";
+      case "UPR415": return "Dragon,Ally";
+      case "UPR416": return "Dragon,Ally";
+      case "UPR417": return "Dragon,Ally";
       default: return "";
     }
   }
@@ -51,12 +67,18 @@
       case "UPR005": return 0;
       case "UPR008": return 4;
       case "UPR009": return 0;
+      case "UPR010": return 0;
       case "UPR011": return 1;
+      case "UPR013": return 3;
+      case "UPR015": return 2;
+      case "UPR016": return 3;
+      case "UPR017": return 1;
       case "UPR018": case "UPR019": case "UPR020": return 1;
       case "UPR033": case "UPR034": case "UPR035": return 1;
       case "UPR036": case "UPR037": case "UPR038": return 0;
       case "UPR039": case "UPR040": case "UPR041": return 0;
       case "UPR042": case "UPR043": return -1;
+      case "UPR155": case "UPR156": case "UPR157": return 1;
       default: return 0;
     }
   }
@@ -68,10 +90,18 @@
       case "UPR005": return 1;
       case "UPR008": return 1;
       case "UPR009": return 1;
+      case "UPR010": return 1;
       case "UPR011": return 1;
+      case "UPR013": return 1;
+      case "UPR015": return 1;
+      case "UPR016": return 1;
+      case "UPR017": return 1;
       case "UPR018": case "UPR033": case "UPR036": case "UPR039": return 1;
       case "UPR019": case "UPR034": case "UPR037": case "UPR040": return 2;
       case "UPR020": case "UPR035": case "UPR038": case "UPR041": return 3;
+      case "UPR155": return 1;
+      case "UPR156": return 2;
+      case "UPR157": return 3;
       default: return 0;
     }
   }
@@ -84,11 +114,17 @@
       case "UPR005": return 3;
       case "UPR008": return 3;
       case "UPR009": return 3;
+      case "UPR010": return 3;
       case "UPR011": return 3;
+      case "UPR013": return 3;
+      case "UPR015": return 3;
+      case "UPR016": return 3;
+      case "UPR017": return 3;
       case "UPR018": case "UPR019": case "UPR020": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
       case "UPR039": case "UPR040": case "UPR041": return -1;
+      case "UPR155": case "UPR156": case "UPR157": return 2;
       default: return -1;
     }
   }
@@ -103,7 +139,12 @@
       case "UPR042": return 1;
       case "UPR408": return 4;
       case "UPR409": return 2;
+      case "UPR410": return 3;
       case "UPR411": return 4;
+      case "UPR413": return 4;
+      case "UPR415": return 3;
+      case "UPR416": return 6;
+      case "UPR417": return 3;
       default: return 0;
     }
   }
@@ -123,8 +164,23 @@
       case "UPR009":
         Transform($currentPlayer, "Ash", "UPR409");
         return "";
+      case "UPR010":
+        Transform($currentPlayer, "Ash", "UPR410");
+        return "";
       case "UPR011":
         Transform($currentPlayer, "Ash", "UPR411");
+        return "";
+      case "UPR013":
+        Transform($currentPlayer, "Ash", "UPR413");
+        return "";
+      case "UPR015":
+        Transform($currentPlayer, "Ash", "UPR415");
+        return "";
+      case "UPR016":
+        Transform($currentPlayer, "Ash", "UPR416");
+        return "";
+      case "UPR017":
+        Transform($currentPlayer, "Ash", "UPR417");
         return "";
       case "UPR018": case "UPR019": case "UPR020":
         Transform($currentPlayer, "Ash", "UPR042");
@@ -147,6 +203,9 @@
         AddDecisionQueue("MZGETUNIQUEID", $currentPlayer, "-");
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND");
         return "";
+      case "UPR155": case "UPR156": case "UPR157":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Transmogrify modifies the base attack of your next attack action card.";
       case "UPR408":
         $deck = &GetDeck($currentPlayer);
         if(count($deck) == 0) return "You have no cards in your deck.";
@@ -165,16 +224,19 @@
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
+      case "UPR410":
+        GainActionPoints(1);
+        return "Cromai gives you an action point.";
       default: return "";
     }
   }
 
   function UPRIllusionistHitEffect($cardID)
   {
-    global $defPlayer, $combatChainState, $CCS_AttackFused;
+    global $mainPlayer, $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
-
+      case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
       default: break;
     }
   }

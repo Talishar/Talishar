@@ -156,6 +156,22 @@ function SearchDiscardForCard($player, $card1, $card2="", $card3="")
   return $cardList;
 }
 
+function SearchAlliesForCard($player, $card1, $card2="", $card3="")
+{
+  $allies = &GetAllies($player);
+  $cardList = "";
+  for($i=0; $i<count($allies); ++$i)
+  {
+    $id = $allies[$i];
+    if($id == $card1 || $id == $card2 || $id == $card3)
+    {
+      if($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
+    }
+  }
+  return $cardList;
+}
+
 function SearchEquipNegCounter(&$character)
 {
   $equipList = "";

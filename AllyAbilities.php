@@ -15,6 +15,7 @@ function PlayAlly($cardID, $player, $subCards="-")
 function DestroyAlly($player, $index)
 {
   $allies = &GetAllies($player);
+  AllyDestroyAbility($player, $allies[$index]);
   for($j = $index+AllyPieces()-1; $j >= $index; --$j)
   {
     unset($allies[$j]);
@@ -30,8 +31,23 @@ function AllyHealth($cardID)
     case "MON220": return 6;
     case "UPR408": return 4;
     case "UPR409": return 3;
+    case "UPR410": return 2;
     case "UPR411": return 2;
+    case "UPR413": return 7;
+    case "UPR415": return 4;
+    case "UPR416": return 1;
+    case "UPR417": return 3;
     default: return 1;
+  }
+}
+
+function AllyDestroyAbility($player, $cardID)
+{
+  global $mainPlayer;
+  switch($cardID)
+  {
+    case "UPR410": if($player == $mainPlayer) GainActionPoints(1); break;
+    default: break;
   }
 }
 

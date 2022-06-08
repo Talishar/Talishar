@@ -8,6 +8,7 @@
       case "UPR086": return "AA";
       case "UPR087": return "AR";
       case "UPR088": return "A";
+      case "UPR089": return "I";
       case "UPR090": return "AA";
       case "UPR091": return "AA";
       case "UPR094": return "AA";
@@ -19,6 +20,9 @@
       case "UPR101": return "AA";
       case "UPR139": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
+      case "UPR183": case "UPR184": case "UPR185": case "UPR186": return "E";
+      case "UPR189": return "DR";
+      case "UPR221": case "UPR222": case "UPR223": return "I";
       default: return "";
     }
   }
@@ -28,6 +32,10 @@
     switch($cardID)
     {
       case "UPR139": return "Affliction,Aura";
+      case "UPR183": return "Head";
+      case "UPR184": return "Chest";
+      case "UPR185": return "Arms";
+      case "UPR186": return "Legs";
       default: return "";
     }
   }
@@ -40,6 +48,7 @@
       case "UPR086": return 2;
       case "UPR087": return 1;
       case "UPR088": return 0;
+      case "UPR089": return 1;
       case "UPR090": return 2;
       case "UPR091": return 1;
       case "UPR094": return 0;
@@ -51,6 +60,8 @@
       case "UPR101": return 0;
       case "UPR139": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
+      case "UPR189": return 0;
+      case "UPR221": case "UPR222": case "UPR223": return 1;
       default: return 0;
     }
   }
@@ -62,6 +73,7 @@
       case "UPR086": return 1;
       case "UPR087": return 1;
       case "UPR088": return 1;
+      case "UPR089": return 1;
       case "UPR090": return 1;
       case "UPR091": return 1;
       case "UPR094": return 1;
@@ -75,6 +87,10 @@
       case "UPR147": return 1;
       case "UPR148": return 2;
       case "UPR149": return 3;
+      case "UPR189": return 2;
+      case "UPR221": return 1;
+      case "UPR222": return 2;
+      case "UPR223": return 3;
       default: return 0;
     }
   }
@@ -86,6 +102,7 @@
       case "UPR086": return 2;
       case "UPR087": return 2;
       case "UPR088": return 3;
+      case "UPR089": return -1;
       case "UPR090": return 3;
       case "UPR091": return 3;
       case "UPR094": return 2;
@@ -97,6 +114,8 @@
       case "UPR101": return -1;
       case "UPR139": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
+      case "UPR183": case "UPR184": case "UPR185": case "UPR186": return 0;
+      case "UPR189": return 3;
       default: return -1;
     }
   }
@@ -129,6 +148,10 @@
       case "UPR088":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Uprising gives your next 4 Draconic attacks +1.";
+      case "UPR089":
+        Draw($currentPlayer);
+        Draw($currentPlayer);
+        return "Tome of Firebrand drew two cards.";
       case "UPR090":
         if(RuptureActive())
         {
@@ -184,6 +207,19 @@
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
         if($from == "ARS") MyDrawCard();
         return "";
+      case "UPR183":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        $char = &GetPlayerCharacter($currentPlayer);
+        $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
+        return "Helio's Mitre prevents 1 damage.";
+      case "UPR221": case "UPR222": case "UPR223":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(PlayerHasLessHealth($currentPlayer))
+        {
+          GainHealth(1, $currentPlayer);
+          WriteLog("Gained 1 life from Oasis Respite.");
+        }
+        return "Oasis Respite prevents damage this turn.";
       default: return "";
     }
   }

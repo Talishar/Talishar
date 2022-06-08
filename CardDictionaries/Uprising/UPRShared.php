@@ -11,7 +11,10 @@
     {
       case "UPR004": return 0;
       case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
+      case "UPR046": return 2;
       case "UPR047": return 0;
+      case "UPR165": return 2;
+      case "UPR183": return 2;
       default: return 0;
     }
   }
@@ -22,7 +25,10 @@
     {
       case "UPR004": return "I";
       case "UPR044": case "UPR045": return "I";
+      case "UPR046": return "AA";
       case "UPR047": return "I";
+      case "UPR165": return "I";
+      case "UPR183": return "I";
       default: return "";
     }
   }
@@ -34,18 +40,32 @@
       case "UPR005": return true;
       case "UPR008": return true;
       case "UPR009": return true;
+      case "UPR010": return true;
       case "UPR011": return true;
+      case "UPR013": return true;
+      case "UPR015": return true;
+      case "UPR016": return true;
+      case "UPR017": return true;
       case "UPR018": case "UPR019": case "UPR020": return true;
       case "UPR033": case "UPR034": case "UPR035": return true;
       case "UPR036": case "UPR037": case "UPR038": return true;
+      case "UPR046": return (NumDraconicChainLinks() >= 2 ? true : false);
       case "UPR048": return (NumPhoenixFlameChainLinks() >= 1 ? true : false);
+      case "UPR049": return true;
+      case "UPR051": case "UPR052": case "UPR053": return true;
+      case "UPR054": case "UPR055": case "UPR056": return true;
       case "UPR057": case "UPR058": case "UPR059": return true;
+      case "UPR063": case "UPR064": case "UPR065": return (NumDraconicChainLinks() >= 2 ? true : false);
+      case "UPR069": case "UPR070": case "UPR071": return (NumDraconicChainLinks() >= 2 ? true : false);
+      case "UPR075": case "UPR076": case "UPR077": return true;
       case "UPR088": return true;
       case "UPR095": return true;
       case "UPR096": return true;
       case "UPR097": return true;
       case "UPR101": return true;
       case "UPR147": case "UPR148": case "UPR149": return true;
+      case "UPR155": case "UPR156": case "UPR157": return true;
+      case "UPR160": return true;
       default: return false;
     }
   }
@@ -67,6 +87,7 @@
       case "UPR037": return 2;
       case "UPR038": return 1;
       case "UPR047": return 1;
+      case "UPR049": return 1;
       case "UPR057": return 3;
       case "UPR058": return 2;
       case "UPR059": return 1;
@@ -83,10 +104,12 @@
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
       case "UPR047": return $attackID == "UPR101";
+      case "UPR049": return CardTalent($attackID) == "DRACONIC" && AttackValue($attackID) < NumDraconicChainLinks();
       case "UPR057": case "UPR058": case "UPR059": CardTalent($attackID) == "DRACONIC" || CardClass($attackID) == "NINJA";
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;
       case "UPR094": return true;
+      case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
       default: return false;
     }
   }

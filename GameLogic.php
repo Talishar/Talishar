@@ -1305,6 +1305,29 @@ function CurrentEffectChainClosedEffects()
   return $costModifier;
 }
 
+function CurrentEffectBaseAttackSet($cardID)
+{
+  global $currentPlayer, $currentTurnEffects;
+  $currentModifier = -1;
+  for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+  {
+    $mod = -1;
+    if($currentTurnEffects[$i+1] == $currentPlayer)
+    {
+      $remove = 0;
+      switch($currentTurnEffects[$i] && IsCombatEffectActive($currentTurnEffects[$i]))
+      {
+        case "UPR155": $mod = 8; break;
+        case "UPR156": $mod = 7; break;
+        case "UPR157": $mod = 6; break;
+        default: return -1;
+      }
+      if($mod > $currentModifier) $currentModifier = $mod;
+    }
+  }
+  return $currentModifier;
+}
+
 function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
@@ -1374,6 +1397,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
         case "EVR034": $prevention += 5; $remove = 1; break;
         case "EVR035": $prevention += 4; $remove = 1; break;
         case "EVR180": $prevention += 1; $remove = 1; break;
+        case "UPR183": $prevention += 1; $remove = 1; break;
+        case "UPR221": $prevention += 4; $remove = 1; break;
+        case "UPR222": $prevention += 3; $remove = 1; break;
+        case "UPR223": $prevention += 2; $remove = 1; break;
         default: break;
       }
       if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -1720,6 +1747,7 @@ function IsCombatEffectPersistent($cardID)
     case "EVR186": return true;
     case "DVR008-1": return true;
     case "UPR047": return true;
+    case "UPR049": return true;
     default: return false;
   }
 }
@@ -2134,6 +2162,16 @@ function MainDrawCard()
 {
   global $mainPlayer;
   Draw($mainPlayer);
+}
+
+function CombatChainCloseAbilities($player, $cardID, $chainLink)
+{
+  global $chainLinkSummary;
+  switch($cardID)
+  {
+    case "UPR189": if($chainLinkSummary[$chainLink][1] <= 2) { Draw($player); WriteLog("That's All You Got? drew a card."); } break;
+    default: break;
+  }
 }
 
 function NumNonEquipmentDefended()

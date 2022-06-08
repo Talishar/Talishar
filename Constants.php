@@ -246,9 +246,10 @@
       for($j=0; $j<count($chainLinks[$i]); $j += ChainLinksPieces())
       {
         if($chainLinks[$i][$j+2] != "1") continue;
+        CombatChainCloseAbilities($chainLinks[$i][$j+1], $chainLinks[$i][$j], $i);
         $cardType = CardType($chainLinks[$i][$j]);
         if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A") continue;
-        if(GoesWhereAfterResolving($chainLinks[$i][$j], "COMBATCHAIN") == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
+        if(GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j+1]) == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
       }
     }
     CombatChainClosedCharacterEffects();

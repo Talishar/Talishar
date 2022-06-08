@@ -536,8 +536,11 @@
         else if($number >= 44 && $number <= 85) return "NINJA";
         else if($number >= 86 && $number <= 100) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
-        else if($number >= 138 && $number <= 149) return "NONE";
-        else if($number >= 408 && $number <= 412) return "ILLUSIONIST";
+        else if($number >= 138 && $number <= 150) return "NONE";
+        else if($number >= 151 && $number <= 157) return "ILLUSIONIST";
+        else if($number >= 158 && $number <= 164) return "NINJA";
+        else if($number >= 165 && $number <= 182) return "WIZARD";
+        else if($number >= 408 && $number <= 417) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";
@@ -1694,11 +1697,12 @@
     }
   }
 
-  function GoesWhereAfterResolving($cardID, $from = null)
+  function GoesWhereAfterResolving($cardID, $from = null, $player="")
   {
-    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
+    global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $combatChainState, $CCS_AttackPlayedFrom;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
-    if($from == "COMBATCHAIN" && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
+    if($player == "") $player = $currentPlayer;
+    if($from == "COMBATCHAIN" && $player != $mainPlayer && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
     {
       case "WTR163": return "BANISH";
@@ -1715,6 +1719,7 @@
       case "MON192": if($from=="BANISH") return "HAND";
       case "EVR082": case "EVR083": case "EVR084": return (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
       case "EVR134": case "EVR135": case "EVR136": return ($currentPlayer != $mainPlayer ? "BOTDECK" : "GY");
+      case "UPR160": return ($from == "CHAINCLOSING" || $combatChainState[$CCS_AttackPlayedFrom] == "BANISH" ? "GY" : "BANISH,TCC");
       default: return "GY";
     }
   }
@@ -1738,14 +1743,15 @@
 
   function IsPlayRestricted($cardID, &$restriction, $from="", $index=-1)
   {
-    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $CS_Num6PowBan, $myDiscard;
+    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
-    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY;
+    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn;
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
     if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID))  { $restriction = "ELE035"; return true; }
     if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) {$restriction = "EVR071"; return true; }
+    if($turn[0] != "B" && $turn[0] != "P" && $playerID != $mainPlayer && SearchAlliesForCard($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
     switch($cardID)
     {
       case "ARC004": return $myClassState[$CS_NumBoosted] < 1;
@@ -1819,7 +1825,6 @@
       case "MON150": case "MON151": case "MON152": return count($myDiscard) < 3;
       case "MON189": return SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true)) < 6;
       case "MON190": return $myClassState[$CS_NumBloodDebtPlayed] < 6;
-
       case "MON198": $discard = GetDiscard($currentPlayer); return count($discard) < 6;
       case "MON230": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0 || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
@@ -1844,6 +1849,8 @@
       case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
       case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
       case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
+      case "UPR089": $restriction = "UPR089"; return NumDraconicChainLinks() < 4;
+      case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       default: return false;
     }
   }

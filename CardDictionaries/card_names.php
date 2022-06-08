@@ -1003,7 +1003,12 @@ if($set == "UPR"){
     case "005": return "Burn Them All";
     case "008": return "Invoke Dominia";
     case "009": return "Invoke Azvolai";
+    case "010": return "Invoke Cromai";
     case "011": return "Invoke Kyloria";
+    case "013": return "Invoke Nekria";
+    case "015": return "Invoke Themai";
+    case "016": return "Invoke Vyskerai";
+    case "017": return "Invoke Yenderai";
     case "018": case "019": case "020": return "Billowing Mirage";
     case "033": case "034": case "035": return "Rake the Embers";
     case "036": case "037": case "038": return "Skittering Sands";
@@ -1014,10 +1019,14 @@ if($set == "UPR"){
     case "045": return "Fai";
     case "047": return "Heat Wave";
     case "048": return "Phoenix Form";
+    case "049": return "Spreading Flames";
     case "057": case "058": case "059": return "Rise from the Ashes";
+    case "063": case "064": case "065": return "Cinderskin Devotion";
+    case "069": case "070": case "071": return "Lava Vein Loyalty";
     case "086": return "Thaw";
     case "087": return "Liquefy";
     case "088": return "Uprising";
+    case "089": return "Tome of Firebrand";
     case "090": return "Red Hot";
     case "091": return "Rise Up";
     case "094": return "Burn Away";
@@ -1034,9 +1043,23 @@ if($set == "UPR"){
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
     case "147": case "148": case "149": return "Cold Snap";
+    case "160": return "Double Strike";
+    case "161": return "Take the Tempo";
+    case "165": return "Waning Moon";
+    case "183": return "Helio's Mitre";
+    case "184": return "Quelling Robe";
+    case "185": return "Quelling Sleeves";
+    case "186": return "Quelling Slippers";
+    case "189": return "That All You Got?";
+    case "221": case "222": case "223": return "Oasis Respite";
     case "408": return "Dominia";
     case "409": return "Azvolai";
+    case "410": return "Cromai";
     case "411": return "Kyloria";
+    case "413": return "Nekria";
+    case "415": return "Themai";
+    case "416": return "Vyskerai";
+    case "417": return "Yenderai";
     default: return "Name not populated - please report bug";
   }
 }

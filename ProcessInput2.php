@@ -705,14 +705,16 @@ function FinalizeChainLink($chainClosed=false)
       $cardType = CardType($combatChain[$i-1]);
       if($cardType != "W" || $cardType != "E" || $cardType != "C")
       {
-        $goesWhere = GoesWhereAfterResolving($combatChain[$i-1], "COMBATCHAIN");
+        $params = explode(",", GoesWhereAfterResolving($combatChain[$i-1], "COMBATCHAIN"));
+        $goesWhere = $params[0];
+        $modifier = (count($params) > 1 ? $params[1] : "NA");
         if($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") { $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves]; }
         switch($goesWhere) {
           case "BOTDECK": AddBottomMainDeck($combatChain[$i-1], "CC"); break;
           case "HAND": AddMainHand($combatChain[$i-1], "CC"); break;
           case "SOUL": AddSoul($combatChain[$i-1], $combatChain[$i], "CC"); break;
           case "GY": /*AddGraveyard($combatChain[$i-1], $combatChain[$i], "CC");*/ break;//Things that would go to the GY stay on till the end of the chain
-          case "BANISH": BanishCardForPlayer($combatChain[$i-1], $mainPlayer, "CC", "NA"); break;
+          case "BANISH": BanishCardForPlayer($combatChain[$i-1], $mainPlayer, "CC", $modifier); break;
           default: break;
         }
       }
@@ -838,6 +840,7 @@ function FinalizeChainLink($chainClosed=false)
     }
     for($i=1; $i<count($defCharacter); $i+=CharacterPieces())
     {
+      if($defCharacter[$i+6] == 1) $defCharacter[$i] = 0;//Destroy if it was flagged for destruction
       if($defCharacter[$i] == 1 || $defCharacter[$i] == 2) { $defCharacter[$i] = 2; $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i-1]); }
     }
     $mainAllies = &GetAllies($mainPlayer);
@@ -1443,7 +1446,8 @@ function FinalizeChainLink($chainClosed=false)
         }
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
-        $attackValue = AttackValue($cardID);
+        $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
+        $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
         $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
         if($definedCardType == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && $attackValue >= 6) KayoStaticAbility();
         $openedChain = true;
@@ -1469,7 +1473,7 @@ function FinalizeChainLink($chainClosed=false)
       }
       else if($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W")
       {
-        $goesWhere = GoesWhereAfterResolving($cardID, $from);
+        $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer);
         switch($goesWhere)
         {
           case "BOTDECK": AddBottomDeck($cardID, $currentPlayer, $from); break;
