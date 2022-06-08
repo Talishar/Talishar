@@ -22,6 +22,7 @@
       case "UPR036": case "UPR037": case "UPR038": return "A";
       case "UPR039": case "UPR040": case "UPR041": return "I";
       case "UPR042": case "UPR043": return "T";
+      case "UPR155": case "UPR156": case "UPR157": return "A";
       case "UPR408": return "-";
       case "UPR409": return "-";
       case "UPR410": return "-";
@@ -77,6 +78,7 @@
       case "UPR036": case "UPR037": case "UPR038": return 0;
       case "UPR039": case "UPR040": case "UPR041": return 0;
       case "UPR042": case "UPR043": return -1;
+      case "UPR155": case "UPR156": case "UPR157": return 1;
       default: return 0;
     }
   }
@@ -97,6 +99,9 @@
       case "UPR018": case "UPR033": case "UPR036": case "UPR039": return 1;
       case "UPR019": case "UPR034": case "UPR037": case "UPR040": return 2;
       case "UPR020": case "UPR035": case "UPR038": case "UPR041": return 3;
+      case "UPR155": return 1;
+      case "UPR156": return 2;
+      case "UPR157": return 3;
       default: return 0;
     }
   }
@@ -119,6 +124,7 @@
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
       case "UPR039": case "UPR040": case "UPR041": return -1;
+      case "UPR155": case "UPR156": case "UPR157": return 2;
       default: return -1;
     }
   }
@@ -197,6 +203,9 @@
         AddDecisionQueue("MZGETUNIQUEID", $currentPlayer, "-");
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND");
         return "";
+      case "UPR155": case "UPR156": case "UPR157":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Transmogrify modifies the base attack of your next attack action card.";
       case "UPR408":
         $deck = &GetDeck($currentPlayer);
         if(count($deck) == 0) return "You have no cards in your deck.";
