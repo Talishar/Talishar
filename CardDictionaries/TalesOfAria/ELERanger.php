@@ -342,7 +342,7 @@
       case "ELE067": case "ELE068": case "ELE069": return "EARTH";
       case "ELE070": case "ELE071": case "ELE072": return "LIGHTNING";
       case "ELE073": case "ELE074": case "ELE075": return "LIGHTNING";
-      case "ELE076": case "ELE077": case "ELE078": return "EARTH";
+      case "ELE076": case "ELE077": case "ELE078": return "LIGHTNING";
       case "ELE079": case "ELE080": case "ELE081": return "EARTH";
       case "ELE082": case "ELE083": case "ELE084": return "EARTH";
       case "ELE085": case "ELE086": case "ELE087": return "EARTH";
