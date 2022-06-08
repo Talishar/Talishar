@@ -2164,6 +2164,16 @@ function MainDrawCard()
   Draw($mainPlayer);
 }
 
+function CombatChainCloseAbilities($player, $cardID, $chainLink)
+{
+  global $chainLinkSummary;
+  switch($cardID)
+  {
+    case "UPR189": if($chainLinkSummary[$chainLink][1] <= 2) { Draw($player); WriteLog("That's All You Got? drew a card."); } break;
+    default: break;
+  }
+}
+
 function NumNonEquipmentDefended()
 {
   global $combatChain,$defPlayer;
