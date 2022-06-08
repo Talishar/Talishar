@@ -17,6 +17,8 @@ function ShowDetail(e, imgSource)
 {
   imgSource = imgSource.replace("_cropped", "");
   imgSource = imgSource.replace("/crops/", "/WebpImages/");
+  imgSource = imgSource.replace("_concat", "");
+  imgSource = imgSource.replace("/concat/", "/WebpImages/");
   imgSource = imgSource.replace(".png", ".webp");
   var el = document.getElementById("cardDetail");
   el.innerHTML = "<img style='height:523px; width:375px;' src='" + imgSource + "' />"

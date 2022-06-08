@@ -233,11 +233,10 @@ border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
     }
 ?>
 </div>
-
   <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:47%; font-weight:500; font-size:18px;
-  background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
-border-radius: 3px;">
+    background-color:rgba(74, 74, 74, 0.8);
+    border: 2px solid black;
+    border-radius: 3px;">
   <h1>Game Lobby</h1>
 <?php
 
