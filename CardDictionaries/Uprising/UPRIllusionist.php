@@ -215,6 +215,9 @@
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
+      case "UPR410":
+        GainActionPoints(1);
+        return "Cromai gives you an action point.";
       default: return "";
     }
   }
