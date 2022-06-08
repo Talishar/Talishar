@@ -30,12 +30,11 @@
       $folder = str_replace("CardImages", "WebpImages", $folder);
       $fileExt = ".webp";
     }
-    $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
-    if($folder == "concat")
+    else if($folder == "concat")
     {
-      $cardNumber .= "_concat";
-      $fileExt = ".png";
+      $fileExt = ".webp";
     }
+    $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
     $margin = "margin:0px;";
     $border = "";
