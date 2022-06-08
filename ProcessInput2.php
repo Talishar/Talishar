@@ -1450,7 +1450,8 @@ function FinalizeChainLink($chainClosed=false)
         }
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
-        $attackValue = AttackValue($cardID);
+        $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
+        $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
         $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
         if($definedCardType == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && $attackValue >= 6) KayoStaticAbility();
         $openedChain = true;

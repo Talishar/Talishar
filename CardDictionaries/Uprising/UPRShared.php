@@ -59,6 +59,7 @@
       case "UPR097": return true;
       case "UPR101": return true;
       case "UPR147": case "UPR148": case "UPR149": return true;
+      case "UPR155": case "UPR156": case "UPR157": return true;
       case "UPR160": return true;
       default: return false;
     }
@@ -103,6 +104,7 @@
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;
       case "UPR094": return true;
+      case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
       default: return false;
     }
   }
