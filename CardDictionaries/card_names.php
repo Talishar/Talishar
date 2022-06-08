@@ -1045,6 +1045,7 @@ if($set == "UPR"){
     case "147": case "148": case "149": return "Cold Snap";
     case "160": return "Double Strike";
     case "161": return "Take the Tempo";
+    case "165": return "Waning Moon";
     case "183": return "Helio's Mitre";
     case "184": return "Quelling Robe";
     case "185": return "Quelling Sleeves";

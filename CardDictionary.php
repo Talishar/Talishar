@@ -536,9 +536,10 @@
         else if($number >= 44 && $number <= 85) return "NINJA";
         else if($number >= 86 && $number <= 100) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
-        else if($number >= 138 && $number <= 149) return "NONE";
-        else if($number >= 155 && $number <= 157) return "ILLUSIONIST";
+        else if($number >= 138 && $number <= 150) return "NONE";
+        else if($number >= 151 && $number <= 157) return "ILLUSIONIST";
         else if($number >= 158 && $number <= 164) return "NINJA";
+        else if($number >= 165 && $number <= 182) return "WIZARD";
         else if($number >= 408 && $number <= 417) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
@@ -1849,6 +1850,7 @@
       case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
       case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
       case "UPR089": $restriction = "UPR089"; return NumDraconicChainLinks() < 4;
+      case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       default: return false;
     }
   }

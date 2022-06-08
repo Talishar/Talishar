@@ -11,6 +11,7 @@
       case "UPR119": case "UPR120": case "UPR121": return "A";
       case "UPR126": return "A";
       case "UPR133": case "UPR134": case "UPR135": return "A";
+      case "UPR165": return "W";
       default: return "";
     }
   }
@@ -20,6 +21,7 @@
     switch($cardID)
     {
       case "UPR126": return "Affliction,Aura";
+      case "UPR165": return "Staff";
       default: return "";
     }
   }
@@ -73,7 +75,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer;
+    global $currentPlayer, $mainPlayer;
     $rv = "";
     switch($cardID)
     {
@@ -118,6 +120,11 @@
         else $damage = 3;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "Ice Bolt deals $damage arcane.";
+      case "UPR165":
+        if($currentPlayer != $mainPlayer) $damage = 3;
+        else $damage = 2;
+        DealArcane($damage, 1, "ABILITY", $cardID);
+        return "Waning Moon deals arcane damage.";
       default: return "";
     }
   }
