@@ -1374,6 +1374,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
         case "EVR034": $prevention += 5; $remove = 1; break;
         case "EVR035": $prevention += 4; $remove = 1; break;
         case "EVR180": $prevention += 1; $remove = 1; break;
+        case "UPR183": $prevention += 1; $remove = 1; break;
+        case "UPR221": $prevention += 4; $remove = 1; break;
+        case "UPR222": $prevention += 3; $remove = 1; break;
+        case "UPR223": $prevention += 2; $remove = 1; break;
         default: break;
       }
       if($remove == 1) RemoveCurrentTurnEffect($i);

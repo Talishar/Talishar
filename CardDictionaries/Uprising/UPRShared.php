@@ -13,6 +13,7 @@
       case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
       case "UPR046": return 2;
       case "UPR047": return 0;
+      case "UPR183": return 2;
       default: return 0;
     }
   }
@@ -25,6 +26,7 @@
       case "UPR044": case "UPR045": return "I";
       case "UPR046": return "AA";
       case "UPR047": return "I";
+      case "UPR183": return "I";
       default: return "";
     }
   }

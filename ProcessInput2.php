@@ -844,6 +844,7 @@ function FinalizeChainLink($chainClosed=false)
     }
     for($i=1; $i<count($defCharacter); $i+=CharacterPieces())
     {
+      if($defCharacter[$i+6] == 1) $defCharacter[$i] = 0;//Destroy if it was flagged for destruction
       if($defCharacter[$i] == 1 || $defCharacter[$i] == 2) { $defCharacter[$i] = 2; $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i-1]); }
     }
     $mainAllies = &GetAllies($mainPlayer);
