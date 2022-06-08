@@ -277,7 +277,7 @@
     $content .= "<div style='margin-left:2px; margin-bottom:2px' display:inline;'>";
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {
-      $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
+      $content .= Card($layers[$i], "concat", $cardSize, 0, 1, 0, $layers[$i+1] == $playerID ? 1 : 2);
     }
     $content .= "</div>";
     echo CreatePopup("INSTANT", [], 0, 1, "", 1, $content, "./", false, true);
@@ -339,7 +339,7 @@
     {
       $content .= "<td>";
       $content .= "<table><tr><td>";
-      $content .= Card($options[$i], "CardImages", $bigCardSize);
+      $content .= Card($options[$i], "concat", $cardSize, 0, 1);
       $content .= "</td></tr><tr><td>";
       if($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") $content .= CreateButton($playerID, "Top", 8, $options[$i], "14px");
       if($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") $content .= CreateButton($playerID, "Bottom", 9, $options[$i], "14px");
@@ -358,7 +358,7 @@
     for($i=0; $i<count($myHand); ++$i)
     {
       $content .= "<td>";
-      $content .= Card($myHand[$i], "CardImages", $bigCardSize);
+      $content .= Card($myHand[$i], "concat", $CardSize, 0, 1);
       $content .= "</td>";
     }
     $content .= "</tr><tr>";
@@ -397,7 +397,7 @@
       else if($option[0] == "MYDISCARD") $source = $myDiscard;
       $card = $source[intval($option[1])];
       if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
-      $content .= Card($card, "CardImages", $bigCardSize, 16, 0, 0, 0, 0, $options[$i]);
+      $content .= Card($card, "concat", $cardSize, 16, 1, 0, 0, 0, $options[$i]);
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
@@ -470,7 +470,7 @@
   {
     $content = "";
     for($i=0; $i<count($myPitch); $i+=1) {
-      $content .= Card($myPitch[$i], "CardImages", 200, 6, 0);
+      $content .= Card($myPitch[$i], "concat", $cardSize, 6, 1);
     }
     echo CreatePopup("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, $content);
   }

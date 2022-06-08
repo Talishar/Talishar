@@ -136,7 +136,7 @@
     if($darkMode == null) $darkMode = false;
     $top = "50%"; $left = "20%"; $width = "60%"; $height = "45%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
-    if($overCombatChain) { $top = "150px"; $left = "290px"; $width = "auto"; $height = "auto"; }
+    if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; }
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
