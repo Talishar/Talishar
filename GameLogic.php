@@ -1312,15 +1312,15 @@ function CurrentEffectBaseAttackSet($cardID)
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
   {
     $mod = -1;
-    if($currentTurnEffects[$i+1] == $currentPlayer)
+    if($currentTurnEffects[$i+1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i]))
     {
       $remove = 0;
-      switch($currentTurnEffects[$i] && IsCombatEffectActive($currentTurnEffects[$i]))
+      switch($currentTurnEffects[$i])
       {
         case "UPR155": $mod = 8; break;
         case "UPR156": $mod = 7; break;
         case "UPR157": $mod = 6; break;
-        default: return -1;
+        default: break;
       }
       if($mod > $currentModifier) $currentModifier = $mod;
     }
