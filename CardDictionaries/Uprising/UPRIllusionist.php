@@ -224,10 +224,10 @@
 
   function UPRIllusionistHitEffect($cardID)
   {
-    global $defPlayer, $combatChainState, $CCS_AttackFused;
+    global $mainPlayer, $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
-
+      case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
       default: break;
     }
   }
