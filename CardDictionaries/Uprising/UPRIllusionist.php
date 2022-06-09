@@ -18,6 +18,10 @@
       case "UPR016": return "A";
       case "UPR017": return "A";
       case "UPR018": case "UPR019": case "UPR020": return "AA";
+      case "UPR021": case "UPR022": case "UPR023": return "AA";
+      case "UPR024": case "UPR025": case "UPR026": return "AA";
+      case "UPR027": case "UPR028": case "UPR029": return "AA";
+      case "UPR030": case "UPR031": case "UPR032": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
       case "UPR036": case "UPR037": case "UPR038": return "A";
       case "UPR039": case "UPR040": case "UPR041": return "I";
@@ -74,6 +78,10 @@
       case "UPR016": return 3;
       case "UPR017": return 1;
       case "UPR018": case "UPR019": case "UPR020": return 1;
+      case "UPR021": case "UPR022": case "UPR023": return 1;
+      case "UPR024": case "UPR025": case "UPR026": return 0;
+      case "UPR027": case "UPR028": case "UPR029": return 2;
+      case "UPR030": case "UPR031": case "UPR032": return 1;
       case "UPR033": case "UPR034": case "UPR035": return 1;
       case "UPR036": case "UPR037": case "UPR038": return 0;
       case "UPR039": case "UPR040": case "UPR041": return 0;
@@ -96,9 +104,9 @@
       case "UPR015": return 1;
       case "UPR016": return 1;
       case "UPR017": return 1;
-      case "UPR018": case "UPR033": case "UPR036": case "UPR039": return 1;
-      case "UPR019": case "UPR034": case "UPR037": case "UPR040": return 2;
-      case "UPR020": case "UPR035": case "UPR038": case "UPR041": return 3;
+      case "UPR018": case "UPR021": case "UPR024": case "UPR027": case "UPR030": case "UPR033": case "UPR036": case "UPR039": return 1;
+      case "UPR019": case "UPR022": case "UPR025": case "UPR028": case "UPR031": case "UPR034": case "UPR037": case "UPR040": return 2;
+      case "UPR020": case "UPR023": case "UPR026": case "UPR029": case "UPR032": case "UPR035": case "UPR038": case "UPR041": return 3;
       case "UPR155": return 1;
       case "UPR156": return 2;
       case "UPR157": return 3;
@@ -121,6 +129,10 @@
       case "UPR016": return 3;
       case "UPR017": return 3;
       case "UPR018": case "UPR019": case "UPR020": return 3;
+      case "UPR021": case "UPR022": case "UPR023": return 3;
+      case "UPR024": case "UPR025": case "UPR026": return 3;
+      case "UPR027": case "UPR028": case "UPR029": return 3;
+      case "UPR030": case "UPR031": case "UPR032": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
       case "UPR039": case "UPR040": case "UPR041": return -1;
@@ -136,6 +148,18 @@
       case "UPR018": return 3;
       case "UPR019": return 2;
       case "UPR020": return 1;
+      case "UPR021": return 5;
+      case "UPR022": return 4;
+      case "UPR023": return 3;
+      case "UPR024": return 4;
+      case "UPR025": return 3;
+      case "UPR026": return 2;
+      case "UPR027": return 8;
+      case "UPR028": return 7;
+      case "UPR029": return 6;
+      case "UPR030": return 3;
+      case "UPR031": return 2;
+      case "UPR032": return 1;
       case "UPR042": return 1;
       case "UPR408": return 4;
       case "UPR409": return 2;
@@ -185,6 +209,9 @@
       case "UPR018": case "UPR019": case "UPR020":
         Transform($currentPlayer, "Ash", "UPR042");
         return "";
+      case "UPR030": case "UPR031": case "UPR032":
+        PutPermanentIntoPlay($currentPlayer, "UPR043");
+        return "Sweeping Blow created an Ash token.";
       case "UPR033": case "UPR034": case "UPR035":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
         if($cardID == "UPR033") $maxTransform = 3;
@@ -236,6 +263,10 @@
     global $mainPlayer, $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
+      case "UPR024": case "UPR025": case "UPR026":
+        PutPermanentIntoPlay($mainPlayer, "UPR043");
+        Transform($mainPlayer, "Ash", "UPR042");
+        break;
       case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
       default: break;
     }
