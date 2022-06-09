@@ -20,7 +20,7 @@ def convert_to_webp(source):
 
 
 def main():
-    paths = Path(".").glob("./*.jpg")
+    paths = Path(".").glob("./*.png")
     for path in paths:
         webp_path = convert_to_webp(path)
         print(webp_path)
