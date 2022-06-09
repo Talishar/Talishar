@@ -821,7 +821,10 @@ function ProcessHitEffect($cardID)
       AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("ADDARSENALFACEDOWN", $mainPlayer, "HAND", 1);
       break;
-    case "CRU132": case "CRU133": case "CRU134": $defCharacter[1] = 3; break;
+    case "CRU132": case "CRU133": case "CRU134":
+      $defCharacter[1] = 3; 
+      AddCurrentTurnEffect($cardID, $defPlayer);
+      break;
     case "CRU142": PlayAura("ARC112", $mainPlayer); break;
     case "CRU148": case "CRU149": case "CRU150": if(GetClassState($defPlayer, $CS_ArcaneDamageTaken)) { PummelHit(); } break;
     case "CRU151": case "CRU152": case "CRU153":
