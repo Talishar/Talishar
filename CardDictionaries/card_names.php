@@ -1010,6 +1010,10 @@ if($set == "UPR"){
     case "016": return "Invoke Vyskerai";
     case "017": return "Invoke Yenderai";
     case "018": case "019": case "020": return "Billowing Mirage";
+    case "021": case "022": case "023": return "Dunebreaker Cenipai";
+    case "024": case "025": case "026": return "Dustup";
+    case "027": case "028": case "029": return "Embermane Cenipai";
+    case "030": case "031": case "032": return "Sweeping Blow";
     case "033": case "034": case "035": return "Rake the Embers";
     case "036": case "037": case "038": return "Skittering Sands";
     case "039": case "040": case "041": return "Sand Cover";
@@ -1020,9 +1024,17 @@ if($set == "UPR"){
     case "047": return "Heat Wave";
     case "048": return "Phoenix Form";
     case "049": return "Spreading Flames";
+    case "050": return "Combustion Point";
+    case "054": case "055": case "056": return "Mounting Anger";
     case "057": case "058": case "059": return "Rise from the Ashes";
+    case "060": case "061": case "062": return "Brand with Cinderclaw";
     case "063": case "064": case "065": return "Cinderskin Devotion";
+    case "066": case "067": case "068": return "Dust Runner Outlaw";
     case "069": case "070": case "071": return "Lava Vein Loyalty";
+    case "072": case "073": case "074": return "Rebellious Rush";
+    case "075": case "076": case "077": return "Rising Resentment";
+    case "078": case "079": case "080": return "Ronin Renegade";
+    case "081": case "082": case "083": return "Searing Strike";
     case "086": return "Thaw";
     case "087": return "Liquefy";
     case "088": return "Uprising";

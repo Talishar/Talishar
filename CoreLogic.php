@@ -1032,6 +1032,8 @@ function AttackDestroyed($attackID)
     case "EVR139": MirragingMetamorphDestroyed(); break;
     case "EVR144": case "EVR145": case "EVR146": CoalescentMirageDestroyed(); break;
     case "EVR147": case "EVR148": case "EVR149": PlayAura("MON104", $mainPlayer); break;
+    case "UPR021": case "UPR022": case "UPR023": PutPermanentIntoPlay($mainPlayer, "UPR043"); break;
+    case "UPR027": case "UPR028": case "UPR029": PutPermanentIntoPlay($mainPlayer, "UPR043"); break;
     default: break;
   }
   AttackDestroyedEffects($attackID);

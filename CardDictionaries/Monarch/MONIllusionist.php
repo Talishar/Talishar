@@ -210,6 +210,9 @@
       case "EVR139": return true;
       case "EVR144": case "EVR145": case "EVR146": return true;
       case "EVR147": case "EVR148": case "EVR149": return true;
+      case "UPR021": case "UPR022": case "UPR023": return true;
+      case "UPR027": case "UPR028": case "UPR029": return true;
+      default: return false;
     }
   }
 
