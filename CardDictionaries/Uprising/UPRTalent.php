@@ -23,8 +23,20 @@
       case "UPR101": return "AA";
       case "UPR139": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
+      case "UPR182": return "E";
       case "UPR183": case "UPR184": case "UPR185": case "UPR186": return "E";
+      case "UPR187": return "AA";
+      case "UPR188": return "AA";
       case "UPR189": return "DR";
+      case "UPR190": return "A";
+      case "UPR191": case "UPR192": case "UPR193": return "AA";
+      case "UPR194": case "UPR195": case "UPR196": return "AA";
+      case "UPR197": case "UPR198": case "UPR199": return "A";
+      case "UPR200": case "UPR201": case "UPR202": return "A";
+      case "UPR203": case "UPR204": case "UPR205": return "AA";
+      case "UPR206": case "UPR207": case "UPR208": return "AA";
+      case "UPR215": case "UPR216": case "UPR217": return "A";
+      case "UPR218": case "UPR219": case "UPR220": return "A";
       case "UPR221": case "UPR222": case "UPR223": return "I";
       default: return "";
     }
@@ -40,6 +52,8 @@
       case "UPR184": return "Chest";
       case "UPR185": return "Arms";
       case "UPR186": return "Legs";
+      case "UPR190": return "Aura";
+      case "UPR218": case "UPR219": case "UPR220": return "Aura";
       default: return "";
     }
   }
@@ -66,7 +80,17 @@
       case "UPR101": return 0;
       case "UPR139": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
+      case "UPR187": return 2;
+      case "UPR188": return 0;
       case "UPR189": return 0;
+      case "UPR190": return 3;
+      case "UPR191": case "UPR192": case "UPR193": return 0;
+      case "UPR194": case "UPR195": case "UPR196": return 3;
+      case "UPR197": case "UPR198": case "UPR199": return 0;
+      case "UPR200": case "UPR201": case "UPR202": return 1;
+      case "UPR203": case "UPR204": case "UPR205": return 2;
+      case "UPR206": case "UPR207": case "UPR208": return 1;
+      case "UPR215": case "UPR216": case "UPR217": return 0;
       case "UPR221": case "UPR222": case "UPR223": return 1;
       default: return 0;
     }
@@ -95,7 +119,13 @@
       case "UPR147": return 1;
       case "UPR148": return 2;
       case "UPR149": return 3;
+      case "UPR187": return 1;
+      case "UPR188": return 1;
       case "UPR189": return 2;
+      case "UPR190": return 2;
+      case "UPR191": case "UPR194": case "UPR197": case "UPR200": case "UPR203": case "UPR206": case "UPR209": case "UPR212": case "UPR215": case "UPR218": return 1;
+      case "UPR192": case "UPR195": case "UPR198": case "UPR201": case "UPR204": case "UPR207": case "UPR210": case "UPR213": case "UPR216": case "UPR219": return 2;
+      case "UPR193": case "UPR196": case "UPR199": case "UPR202": case "UPR205": case "UPR208": case "UPR211": case "UPR214": case "UPR217": case "UPR220": return 3;
       case "UPR221": return 1;
       case "UPR222": return 2;
       case "UPR223": return 3;
@@ -126,7 +156,18 @@
       case "UPR139": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       case "UPR183": case "UPR184": case "UPR185": case "UPR186": return 0;
+      case "UPR187": return 2;
+      case "UPR188": return 3;
       case "UPR189": return 3;
+      case "UPR190": return 3;
+      case "UPR191": case "UPR192": case "UPR193": return 2;
+      case "UPR194": case "UPR195": case "UPR196": return 2;
+      case "UPR197": case "UPR198": case "UPR199": return 3;
+      case "UPR200": case "UPR201": case "UPR202": return 2;
+      case "UPR203": case "UPR204": case "UPR205": return 2;
+      case "UPR206": case "UPR207": case "UPR208": return 3;
+      case "UPR215": case "UPR216": case "UPR217": return 2;
+      case "UPR221": case "UPR222": case "UPR223": return 2;
       default: return -1;
     }
   }
@@ -147,6 +188,20 @@
       case "UPR099": return 3;
       case "UPR100": return 4;
       case "UPR101": return 0;
+      case "UPR187": return 6;
+      case "UPR188": return 1;
+      case "UPR191": return 4;
+      case "UPR192": return 3;
+      case "UPR193": return 2;
+      case "UPR194": return 7;
+      case "UPR195": return 6;
+      case "UPR196": return 5;
+      case "UPR203": return 6;
+      case "UPR204": return 5;
+      case "UPR205": return 4;
+      case "UPR206": return 5;
+      case "UPR207": return 4;
+      case "UPR208": return 3;
       default: return 0;
     }
   }
