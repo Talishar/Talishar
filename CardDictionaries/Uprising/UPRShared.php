@@ -13,6 +13,7 @@
       case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
       case "UPR046": return 2;
       case "UPR047": return 0;
+      case "UPR085": return 0;
       case "UPR165": return 2;
       case "UPR183": return 2;
       default: return 0;
@@ -27,6 +28,7 @@
       case "UPR044": case "UPR045": return "I";
       case "UPR046": return "AA";
       case "UPR047": return "I";
+      case "UPR085": return "I";
       case "UPR165": return "I";
       case "UPR183": return "I";
       default: return "";
@@ -35,6 +37,7 @@
 
   function UPRHasGoAgain($cardID)
   {
+    global $mainPlayer, $CS_NumRedPlayed;
     switch($cardID)
     {
       case "UPR005": return true;
@@ -47,6 +50,8 @@
       case "UPR016": return true;
       case "UPR017": return true;
       case "UPR018": case "UPR019": case "UPR020": return true;
+      case "UPR021": case "UPR022": case "UPR023": return true;
+      case "UPR030": case "UPR031": case "UPR032": return true;
       case "UPR033": case "UPR034": case "UPR035": return true;
       case "UPR036": case "UPR037": case "UPR038": return true;
       case "UPR046": return (NumDraconicChainLinks() >= 2 ? true : false);
@@ -55,10 +60,16 @@
       case "UPR051": case "UPR052": case "UPR053": return true;
       case "UPR054": case "UPR055": case "UPR056": return true;
       case "UPR057": case "UPR058": case "UPR059": return true;
+      case "UPR060": case "UPR061": case "UPR062": return true;
       case "UPR063": case "UPR064": case "UPR065": return (NumDraconicChainLinks() >= 2 ? true : false);
+      case "UPR066": case "UPR067": case "UPR068": return true;
       case "UPR069": case "UPR070": case "UPR071": return (NumDraconicChainLinks() >= 2 ? true : false);
+      case "UPR072": case "UPR073": case "UPR074": return true;
       case "UPR075": case "UPR076": case "UPR077": return true;
+      case "UPR078": case "UPR079": case "UPR080": return true;
+      case "UPR081": case "UPR082": case "UPR083": return true;
       case "UPR088": return true;
+      case "UPR092": return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
       case "UPR095": return true;
       case "UPR096": return true;
       case "UPR097": return true;
@@ -66,6 +77,8 @@
       case "UPR147": case "UPR148": case "UPR149": return true;
       case "UPR155": case "UPR156": case "UPR157": return true;
       case "UPR160": return true;
+      case "UPR197": case "UPR198": case "UPR199": return true;
+      case "UPR200": case "UPR201": case "UPR202": return true;
       default: return false;
     }
   }
@@ -140,8 +153,7 @@
       case "ILLUSIONIST": return UPRIllusionistCardType($cardID);
       case "NINJA": return UPRNinjaCardType($cardID);
       case "WIZARD": return UPRWizardCardType($cardID);
-      case "NONE": return UPRTalentCardType($cardID);
-      default: return "";
+      default: return UPRTalentCardType($cardID);
     }
   }
 
@@ -153,8 +165,7 @@
       case "ILLUSIONIST": return UPRIllusionistCardSubtype($cardID);
       case "NINJA": return UPRNinjaCardSubtype($cardID);
       case "WIZARD": return UPRWizardCardSubtype($cardID);
-      case "NONE": return UPRTalentCardSubtype($cardID);
-      default: return "";
+      default: return UPRTalentCardSubtype($cardID);
     }
   }
 
@@ -167,8 +178,7 @@
       case "ILLUSIONIST": return UPRIllusionistCardCost($cardID);
       case "NINJA": return UPRNinjaCardCost($cardID);
       case "WIZARD": return UPRWizardCardCost($cardID);
-      case "NONE": return UPRTalentCardCost($cardID);
-      default: return "";
+      default: return UPRTalentCardCost($cardID);
     }
   }
 
@@ -180,8 +190,7 @@
       case "ILLUSIONIST": return UPRIllusionistPitchValue($cardID);
       case "NINJA": return UPRNinjaPitchValue($cardID);
       case "WIZARD": return UPRWizardPitchValue($cardID);
-      case "NONE": return UPRTalentPitchValue($cardID);
-      default: return "";
+      default: return UPRTalentPitchValue($cardID);
     }
   }
 
@@ -193,8 +202,7 @@
       case "ILLUSIONIST": return UPRIllusionistBlockValue($cardID);
       case "NINJA": return UPRNinjaBlockValue($cardID);
       case "WIZARD": return UPRWizardBlockValue($cardID);
-      case "NONE": return UPRTalentBlockValue($cardID);
-      default: return "";
+      default: return UPRTalentBlockValue($cardID);
     }
   }
 
@@ -206,8 +214,7 @@
       case "ILLUSIONIST": return UPRIllusionistAttackValue($cardID);
       case "NINJA": return UPRNinjaAttackValue($cardID);
       case "WIZARD": return UPRWizardAttackValue($cardID);
-      case "NONE": return UPRTalentAttackValue($cardID);
-      default: return "";
+      default: return UPRTalentAttackValue($cardID);
     }
   }
 
@@ -221,8 +228,7 @@
       case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid);
       case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid);
       case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "NONE": return UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      default: return "";
+      default: return UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }
   }
 
@@ -234,8 +240,7 @@
       case "ILLUSIONIST": return UPRIllusionistHitEffect($cardID);
       case "NINJA": return UPRNinjaHitEffect($cardID);
       case "WIZARD": return UPRWizardHitEffect($cardID);
-      case "NONE": return UPRTalentHitEffect($cardID);
-      default: return "";
+      default: return UPRTalentHitEffect($cardID);
     }
   }
 
@@ -245,7 +250,6 @@
     {
       case "UPR104":
         AddDecisionQueue("LESSTHANPASS", $player, 1);
-        AddDecisionQueue("WRITELOG", $player, "got here", 1);
         break;
       default: break;
     }

@@ -1038,8 +1038,6 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     case "UPR048": return (NumPhoenixFlameChainLinks() >= 2 ? 2 : 0);
     case "UPR098": return (RuptureActive() ? 3 : 0);
-    case "UPR099": return (RuptureActive() ? 2 : 0);
-    case "UPR100": return (RuptureActive() ? 1 : 0);
     case "UPR101": return (NumDraconicChainLinks() >= 2 ? 1 : 0);
     default: return 0;
   }
@@ -2055,6 +2053,13 @@ function OnBlockEffects($index, $from)
         }
       }
       break;
+    case "UPR194": case "UPR195": case "UPR196":
+      if(PlayerHasLessHealth($currentPlayer))
+      {
+        GainHealth(1, $currentPlayer);
+        WriteLog("Fyendal's Fighting Spirit gained 1 health.");
+      }
+      break;
     default: break;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -2530,7 +2535,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DVR004": case "RVD004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "UPR004": case "UPR047":
+    case "UPR004": case "UPR047": case "UPR085":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
   }
@@ -3843,6 +3848,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ALLY": return $zone[$params[1] + 5];
       }
       return "-1";
+    case "SIFT":
+      $numCards = SearchCount($lastResult);
+      for($i=0; $i<$numCards; ++$i)
+      {
+        Draw($player);
+      }
+      return "1";
     default:
       return "NOTSTATIC";
   }
