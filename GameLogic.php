@@ -1038,8 +1038,6 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     case "UPR048": return (NumPhoenixFlameChainLinks() >= 2 ? 2 : 0);
     case "UPR098": return (RuptureActive() ? 3 : 0);
-    case "UPR099": return (RuptureActive() ? 2 : 0);
-    case "UPR100": return (RuptureActive() ? 1 : 0);
     case "UPR101": return (NumDraconicChainLinks() >= 2 ? 1 : 0);
     default: return 0;
   }
@@ -2530,7 +2528,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DVR004": case "RVD004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "UPR004": case "UPR047":
+    case "UPR004": case "UPR047": case "UPR085":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
   }

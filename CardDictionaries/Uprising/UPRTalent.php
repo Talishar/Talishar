@@ -5,17 +5,20 @@
   {
     switch($cardID)
     {
+      case "UPR085": return "E";
       case "UPR086": return "AA";
       case "UPR087": return "AR";
       case "UPR088": return "A";
       case "UPR089": return "I";
       case "UPR090": return "AA";
       case "UPR091": return "AA";
+      case "UPR092": return "AA";
       case "UPR094": return "AA";
       case "UPR095": return "AA";
       case "UPR096": return "AA";
       case "UPR097": return "AA";
       case "UPR098": return "AA";
+      case "UPR099": return "AA";
       case "UPR100": return "AA";
       case "UPR101": return "AA";
       case "UPR139": return "A";
@@ -31,6 +34,7 @@
   {
     switch($cardID)
     {
+      case "UPR085": return "Chest";
       case "UPR139": return "Affliction,Aura";
       case "UPR183": return "Head";
       case "UPR184": return "Chest";
@@ -51,11 +55,13 @@
       case "UPR089": return 1;
       case "UPR090": return 2;
       case "UPR091": return 1;
+      case "UPR092": return 0;
       case "UPR094": return 0;
       case "UPR095": return 1;
       case "UPR096": return 1;
       case "UPR097": return 0;
       case "UPR098": return 0;
+      case "UPR099": return 1;
       case "UPR100": return 1;
       case "UPR101": return 0;
       case "UPR139": return 0;
@@ -76,11 +82,13 @@
       case "UPR089": return 1;
       case "UPR090": return 1;
       case "UPR091": return 1;
+      case "UPR092": return 1;
       case "UPR094": return 1;
       case "UPR095": return 1;
       case "UPR096": return 1;
       case "UPR097": return 1;
       case "UPR098": return 1;
+      case "UPR099": return 1;
       case "UPR100": return 1;
       case "UPR101": return 1;
       case "UPR139": return 3;
@@ -99,17 +107,20 @@
   {
     switch($cardID)
     {
+      case "UPR085": return 0;
       case "UPR086": return 2;
       case "UPR087": return 2;
       case "UPR088": return 3;
       case "UPR089": return -1;
       case "UPR090": return 3;
       case "UPR091": return 3;
+      case "UPR092": return 2;
       case "UPR094": return 2;
       case "UPR095": return 2;
       case "UPR096": return 2;
       case "UPR097": return 2;
       case "UPR098": return 3;
+      case "UPR099": return 3;
       case "UPR100": return 3;
       case "UPR101": return -1;
       case "UPR139": return 2;
@@ -127,11 +138,13 @@
       case "UPR086": return 6;
       case "UPR090": return 4;
       case "UPR091": return 3;
+      case "UPR092": return 4;
       case "UPR094": return 2;
       case "UPR095": return 3;
       case "UPR096": return 3;
       case "UPR097": return 1;
       case "UPR098": return 2;
+      case "UPR099": return 3;
       case "UPR100": return 4;
       case "UPR101": return 0;
       default: return 0;
@@ -145,6 +158,9 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
+      case "UPR085":
+        GainResources($currentPlayer, 1);
+        return "Sash of Sandikai gained a resource.";
       case "UPR088":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Uprising gives your next 4 Draconic attacks +1.";
@@ -193,6 +209,14 @@
           AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         }
         return "";
+      case "UPR099":
+        $rv = "";
+        if(RuptureActive())
+        {
+          DealArcane(2, 2, "PLAYCARD", $cardID, false, $currentPlayer);//TODO: Not arcane
+          $rv = "Searing Touch did 2 damage to any target.";
+        }
+        return $rv;
       case "UPR147": case "UPR148": case "UPR149":
         if($cardID == "UPR147") $cost = 3;
         else if($cardID == "UPR148") $cost = 2;

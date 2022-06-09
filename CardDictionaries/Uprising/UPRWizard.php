@@ -7,8 +7,13 @@
     {
       case "UPR102": case "UPR103": return "C";
       case "UPR104": return "A";
+      case "UPR106": case "UPR107": case "UPR108": return "DR";
       case "UPR109": return "A";
+      case "UPR110": case "UPR111": case "UPR112": return "A";
+      case "UPR113": case "UPR114": case "UPR115": return "A";
+      case "UPR116": case "UPR117": case "UPR118": return "A";
       case "UPR119": case "UPR120": case "UPR121": return "A";
+      case "UPR122": case "UPR123": case "UPR124": return "A";
       case "UPR126": return "A";
       case "UPR133": case "UPR134": case "UPR135": return "A";
       case "UPR165": return "W";
@@ -33,8 +38,13 @@
     {
       case "UPR102": case "UPR103": return 0;
       case "UPR104": return 0;
+      case "UPR106": case "UPR107": case "UPR108": return 1;
       case "UPR109": return 0;
+      case "UPR110": case "UPR111": case "UPR112": return 3;
+      case "UPR113": case "UPR114": case "UPR115": return 3;
+      case "UPR116": case "UPR117": case "UPR118": return 0;
       case "UPR119": case "UPR120": case "UPR121": return 0;
+      case "UPR122": case "UPR123": case "UPR124": return 2;
       case "UPR126": return 3;
       case "UPR133": case "UPR134": case "UPR135": return 2;
       default: return 0;
@@ -48,9 +58,9 @@
       case "UPR104": return 1;
       case "UPR109": return 3;
       case "UPR126": return 3;
-      case "UPR119": case "UPR133": return 1;
-      case "UPR120": case "UPR134": return 2;
-      case "UPR121": case "UPR135": return 3;
+      case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": case "UPR133": return 1;
+      case "UPR107": case "UPR111": case "UPR114": case "UPR117": case "UPR120": case "UPR123": case "UPR134": return 2;
+      case "UPR108": case "UPR112": case "UPR115": case "UPR118": case "UPR121": case "UPR124": case "UPR135": return 3;
       default: return 0;
     }
   }
@@ -60,6 +70,9 @@
     switch($cardID)
     {
       case "UPR102": case "UPR103": return -1;
+      case "UPR106": return 4;
+      case "UPR107": return 3;
+      case "UPR108": return 2;
       default: return 3;
     }
   }
@@ -87,6 +100,14 @@
           AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
         }
         return "Encase deals 3 arcane.";
+      case "UPR106": case "UPR107": case "UPR108":
+        $rv = "";
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv = "Sigil of Permafrost makes your next arcane damage give frostbites.";
+        }
+        return $rv;
       case "UPR109":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $numFrostBite = $resourcesPaid/2;
