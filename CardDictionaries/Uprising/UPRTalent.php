@@ -292,8 +292,20 @@
         $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
         return "Helio's Mitre prevents 1 damage.";
       case "UPR194": case "UPR195": case "UPR196":
-        if(PlayerHasLessHealth($currentPlayer)) GainHealth(1, $currentPlayer);
-        return "";
+        $rv = "";
+        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); $rv = "Fyendal's Fighting Spirit gained 1 health."; }
+        return $rv;
+      case "UPR197": case "UPR198": case "UPR199":
+        if($cardID == "UPR197") $numCards = 4;
+        else if($cardID == "UPR198") $numCards = 3;
+        else $numCards = 2;
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, $numCards . "-");
+        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SIFT", $currentPlayer, "-", 1);
+        return "Sift let you cycle $numCards cards.";
       case "UPR215": case "UPR216": case "UPR217":
         if($cardID == "UPR215") $amount = 3;
         else if($cardID == "UPR216") $amount = 2;
@@ -335,6 +347,12 @@
         AddDecisionQueue("REMOVEDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("GIVEATTACKGOAGAIN", $mainPlayer, "-", 1);
+        break;
+      case "UPR188":
+        $hand = &GetHand($defPlayer);
+        $amount = count($hand)/HandPieces();
+        LoseHealth($amount, $defPlayer);
+        WriteLog("Vipox made player $defPlayer lose $amount health.");
         break;
       default: break;
     }

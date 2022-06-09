@@ -77,6 +77,8 @@
       case "UPR147": case "UPR148": case "UPR149": return true;
       case "UPR155": case "UPR156": case "UPR157": return true;
       case "UPR160": return true;
+      case "UPR197": case "UPR198": case "UPR199": return true;
+      case "UPR200": case "UPR201": case "UPR202": return true;
       default: return false;
     }
   }

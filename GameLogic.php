@@ -3848,6 +3848,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ALLY": return $zone[$params[1] + 5];
       }
       return "-1";
+    case "SIFT":
+      $numCards = SearchCount($lastResult);
+      for($i=0; $i<$numCards; ++$i)
+      {
+        Draw($player);
+      }
+      return "1";
     default:
       return "NOTSTATIC";
   }
