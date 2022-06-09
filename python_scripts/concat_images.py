@@ -7,7 +7,7 @@ import cv2
 
 mypath = "."
 path = mypath
-dirs = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "jpg" in f ]
+dirs = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "png" in f ]
 current_prefix = ''
 
 def cropmerge():
