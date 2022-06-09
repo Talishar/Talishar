@@ -2053,6 +2053,13 @@ function OnBlockEffects($index, $from)
         }
       }
       break;
+    case "UPR194": case "UPR195": case "UPR196":
+      if(PlayerHasLessHealth($currentPlayer))
+      {
+        GainHealth(1, $currentPlayer);
+        WriteLog("Fyendal's Fighting Spirit gained 1 health.");
+      }
+      break;
     default: break;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);

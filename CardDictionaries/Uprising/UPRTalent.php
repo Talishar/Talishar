@@ -291,6 +291,15 @@
         $char = &GetPlayerCharacter($currentPlayer);
         $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
         return "Helio's Mitre prevents 1 damage.";
+      case "UPR194": case "UPR195": case "UPR196":
+        if(PlayerHasLessHealth($currentPlayer)) GainHealth(1, $currentPlayer);
+        return "";
+      case "UPR215": case "UPR216": case "UPR217":
+        if($cardID == "UPR215") $amount = 3;
+        else if($cardID == "UPR216") $amount = 2;
+        else $amount = 1;
+        GainHealth($amount, $currentPlayer);
+        return "Healing Balm gained $amount health.";
       case "UPR221": case "UPR222": case "UPR223":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if(PlayerHasLessHealth($currentPlayer))
