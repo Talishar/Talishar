@@ -9,12 +9,8 @@
   {
     switch($cardID)
     {
-      case "UPR004": return 0;
       case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
       case "UPR046": return 2;
-      case "UPR047": return 0;
-      case "UPR085": return 0;
-      case "UPR159": return 0;
       case "UPR165": return 2;
       case "UPR183": return 2;
       default: return 0;
@@ -32,6 +28,7 @@
       case "UPR085": return "I";
       case "UPR159": return "AR";
       case "UPR165": return "I";
+      case "UPR167": return "I";
       case "UPR183": return "I";
       default: return "";
     }
