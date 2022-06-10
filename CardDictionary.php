@@ -864,6 +864,7 @@
     switch($cardID)
     {
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": return ($amountPaid >= 1 ? 2 : 0);
+      case "UPR203": case "UPR204": case "UPR205": return ($amountPaid >= 1 ? 2 : 0);
       default: return 0;
     }
   }
@@ -891,6 +892,7 @@
       case "MON089": return "0,1";
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": return "0,1";
       case "ELE203": return "0,1";
+      case "UPR203": case "UPR204": case "UPR205": return "0,1";
       default:
         return "";
     }
