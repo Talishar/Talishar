@@ -1854,6 +1854,7 @@
       case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
       case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR089": $restriction = "UPR089"; return NumDraconicChainLinks() < 4;
+      case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
       case "UPR162": case "UPR163": case "UPR164": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 0;
       case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       default: return false;
