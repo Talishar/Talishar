@@ -48,6 +48,7 @@
     {
       case "UPR085": return "Chest";
       case "UPR139": return "Affliction,Aura";
+      case "UPR182": return "Head";
       case "UPR183": return "Head";
       case "UPR184": return "Chest";
       case "UPR185": return "Arms";
@@ -155,6 +156,7 @@
       case "UPR101": return -1;
       case "UPR139": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
+      case "UPR182": return 2;
       case "UPR183": case "UPR184": case "UPR185": case "UPR186": return 0;
       case "UPR187": return 2;
       case "UPR188": return 3;
