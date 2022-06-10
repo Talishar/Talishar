@@ -821,10 +821,7 @@ function ProcessHitEffect($cardID)
       AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("ADDARSENALFACEDOWN", $mainPlayer, "HAND", 1);
       break;
-    case "CRU132": case "CRU133": case "CRU134":
-      $defCharacter[1] = 3; 
-      AddCurrentTurnEffect($cardID, $defPlayer);
-      break;
+    case "CRU132": case "CRU133": case "CRU134": $defCharacter[1] = 3; break;
     case "CRU142": PlayAura("ARC112", $mainPlayer); break;
     case "CRU148": case "CRU149": case "CRU150": if(GetClassState($defPlayer, $CS_ArcaneDamageTaken)) { PummelHit(); } break;
     case "CRU151": case "CRU152": case "CRU153":
@@ -1638,6 +1635,7 @@ function CurrentEffectEndTurnAbilities()
         }
         $remove = 1;
         break;
+      case "UPR200": case "UPR201": case "UPR202": Draw($currentTurnEffects[$i+1]); break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -2668,6 +2666,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
         case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
         case "CASHOUT": $rv = CashOutIndices($player); break;
+        case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
+        case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
+        case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);

@@ -92,6 +92,7 @@
       case "UPR203": case "UPR204": case "UPR205": return 2;
       case "UPR206": case "UPR207": case "UPR208": return 1;
       case "UPR215": case "UPR216": case "UPR217": return 0;
+      case "UPR218": case "UPR219": case "UPR220": return 1;
       case "UPR221": case "UPR222": case "UPR223": return 1;
       default: return 0;
     }
@@ -308,6 +309,13 @@
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SIFT", $currentPlayer, "-", 1);
         return "Sift let you cycle $numCards cards.";
+      case "UPR200": case "UPR201": case "UPR202":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Strategic Planning let you return a card and draw a card.";
       case "UPR215": case "UPR216": case "UPR217":
         if($cardID == "UPR215") $amount = 3;
         else if($cardID == "UPR216") $amount = 2;
