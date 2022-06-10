@@ -210,6 +210,9 @@
         else $damage = 2;
         DealArcane($damage, 1, "ABILITY", $cardID);
         return "Waning Moon deals arcane damage.";
+      case "UPR167":
+        GainResources($currentPlayer, 1);
+        return "Spellfire Cloak gained 1 resource.";
       case "UPR173": case "UPR174": case "UPR175":
         if($cardID == "UPR173") $damage = 3;
         else if($cardID == "UPR174") $damage = 2;
