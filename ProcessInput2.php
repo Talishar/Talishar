@@ -151,8 +151,9 @@
           if($options[$i] == $buttonInput) { $found = $i; break; }
         }
         if($found == -1) break;//Invalid input
-        if($mode == 8) array_unshift($myDeck, $buttonInput);
-        else if($mode == 9) array_push($myDeck, $buttonInput);
+        $deck = &GetDeck($playerID);
+        if($mode == 8) array_unshift($deck, $buttonInput);
+        else if($mode == 9) array_push($deck, $buttonInput);
         unset($options[$found]);
         $options = array_values($options);
         if(count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));

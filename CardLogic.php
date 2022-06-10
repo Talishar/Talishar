@@ -593,15 +593,9 @@ function OptMain($amount)
 
 function PlayerOpt($player, $amount)
 {
-  if($amount <= 0) return;
-  $deck = &GetDeck($player);
-  $cards = "";
-  for($i=0; $i<$amount; ++$i)
-  {
-    $cards .= array_shift($deck);
-    if($i < $amount-1) $cards .= ",";
-  }
-  AddDecisionQueue("OPT", $player, $cards);
+  AddDecisionQueue("FINDINDICES", $player, "DECKTOPX," . $amount);
+  AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
+  AddDecisionQueue("OPT", $player, "<-", 1);
 }
 
 function DiscardRandom($player="", $source="")
