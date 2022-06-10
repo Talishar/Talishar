@@ -231,16 +231,17 @@ function AuraBeginEndStepAbilities()
         }
         if($numBanished < $auras[$i+2]) { $remove = 1; WriteLog("Burn Them All was unable to banish enough red cards."); }
         break;
+      case "UPR176": case "UPR177": case "UPR178":
+        if($auras[$i] == "UPR176") $numOpt = 3;
+        else if($auras[$i] == "UPR177") $numOpt = 2;
+        else $numOpt = 1;
+        for($j=0; $j<$numOpt; ++$j) PlayerOpt($mainPlayer, 1);
+        AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+        $remove = 1;
+        break;
       default: break;
     }
-    if($remove == 1)
-    {
-      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($auras[$j]);
-      }
-    }
+    if($remove == 1) DestroyAura($mainPlayer, $i);
   }
   $auras = array_values($auras);
 }
@@ -260,15 +261,7 @@ function AuraEndTurnAbilities()
       case "UPR139": $remove = 1; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($auras[$j]);
-      }
-      $auras = array_values($auras);
-    }
+    if($remove == 1) DestroyAura($mainPlayer, $i);
   }
 }
 

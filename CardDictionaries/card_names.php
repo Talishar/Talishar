@@ -1067,6 +1067,14 @@ if($set == "UPR"){
     case "160": return "Double Strike";
     case "161": return "Take the Tempo";
     case "165": return "Waning Moon";
+    case "166": return "Alluvion Constellas";
+    case "167": return "Spellfire Cloak";
+    case "168": return "Tome of Duplicity";
+    case "169": return "Rewind";
+    case "170": case "171": case "172": return "Dampen";
+    case "173": case "174": case "175": return "Aether Dart";
+    case "176": case "177": case "178": return "Read the Ripples";
+    case "179": case "180": case "181": return "Singe";
     case "182": return "Crown of Providence";
     case "183": return "Helio's Mitre";
     case "184": return "Quelling Robe";

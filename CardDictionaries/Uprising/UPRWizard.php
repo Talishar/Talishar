@@ -18,6 +18,14 @@
       case "UPR127": case "UPR128": case "UPR129": return "A";
       case "UPR133": case "UPR134": case "UPR135": return "A";
       case "UPR165": return "W";
+      case "UPR166": return "E";
+      case "UPR167": return "E";
+      case "UPR168": return "A";
+      case "UPR169": return "I";
+      case "UPR170": case "UPR171": case "UPR172": return "A";
+      case "UPR173": case "UPR174": case "UPR175": return "A";
+      case "UPR176": case "UPR177": case "UPR178": return "A";
+      case "UPR179": case "UPR180": case "UPR181": return "A";
       default: return "";
     }
   }
@@ -28,6 +36,9 @@
     {
       case "UPR126": return "Affliction,Aura";
       case "UPR165": return "Staff";
+      case "UPR166": return "Chest";
+      case "UPR167": return "Chest";
+      case "UPR176": case "UPR177": case "UPR178": return "Aura";
       default: return "";
     }
   }
@@ -49,6 +60,12 @@
       case "UPR126": return 3;
       case "UPR127": case "UPR128": case "UPR129": return 1;
       case "UPR133": case "UPR134": case "UPR135": return 2;
+      case "UPR168": return 3;
+      case "UPR169": return 1;
+      case "UPR170": case "UPR171": case "UPR172": return 2;
+      case "UPR173": case "UPR174": case "UPR175": return 0;
+      case "UPR176": case "UPR177": case "UPR178": return 0;
+      case "UPR179": case "UPR180": case "UPR181": return 1;
       default: return 0;
     }
   }
@@ -66,6 +83,11 @@
       case "UPR127": return 1;
       case "UPR128": return 2;
       case "UPR129": return 3;
+      case "UPR168": return 3;
+      case "UPR169": return 3;
+      case "UPR170": case "UPR173": case "UPR176": case "UPR179": return 1;
+      case "UPR171": case "UPR174": case "UPR177": case "UPR180": return 2;
+      case "UPR172": case "UPR175": case "UPR178": case "UPR181": return 3;
       default: return 0;
     }
   }
@@ -78,6 +100,9 @@
       case "UPR106": return 4;
       case "UPR107": return 3;
       case "UPR108": return 2;
+      case "UPR168": return 2;
+      case "UPR169": return -1;
+      case "UPR176": case "UPR177": case "UPR178": return 2;
       default: return 3;
     }
   }
@@ -185,6 +210,12 @@
         else $damage = 2;
         DealArcane($damage, 1, "ABILITY", $cardID);
         return "Waning Moon deals arcane damage.";
+      case "UPR173": case "UPR174": case "UPR175":
+        if($cardID == "UPR173") $damage = 3;
+        else if($cardID == "UPR174") $damage = 2;
+        else $damage = 1;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "";
       default: return "";
     }
   }
