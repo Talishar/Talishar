@@ -1064,8 +1064,10 @@ if($set == "UPR"){
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
     case "147": case "148": case "149": return "Cold Snap";
+    case "159": return "Tide Flippers";
     case "160": return "Double Strike";
     case "161": return "Take the Tempo";
+    case "162": case "163": case "164": return "Rapid Reflex";
     case "165": return "Waning Moon";
     case "166": return "Alluvion Constellas";
     case "167": return "Spellfire Cloak";
