@@ -22,6 +22,7 @@
       case "UPR100": return "AA";
       case "UPR101": return "AA";
       case "UPR139": return "A";
+      case "UPR144": case "UPR145": case "UPR146": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
       case "UPR182": return "E";
       case "UPR183": case "UPR184": case "UPR185": case "UPR186": return "E";
@@ -80,6 +81,7 @@
       case "UPR100": return 1;
       case "UPR101": return 0;
       case "UPR139": return 0;
+      case "UPR144": case "UPR145": case "UPR146": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
       case "UPR187": return 2;
       case "UPR188": return 0;
@@ -118,9 +120,9 @@
       case "UPR100": return 1;
       case "UPR101": return 1;
       case "UPR139": return 3;
-      case "UPR147": return 1;
-      case "UPR148": return 2;
-      case "UPR149": return 3;
+      case "UPR144": case "UPR147": return 1;
+      case "UPR145": case "UPR148": return 2;
+      case "UPR146": case "UPR149": return 3;
       case "UPR187": return 1;
       case "UPR188": return 1;
       case "UPR189": return 2;
@@ -156,6 +158,7 @@
       case "UPR100": return 3;
       case "UPR101": return -1;
       case "UPR139": return 2;
+      case "UPR144": case "UPR145": case "UPR146": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       case "UPR182": return 2;
       case "UPR183": case "UPR184": case "UPR185": case "UPR186": return 0;
@@ -275,6 +278,12 @@
           $rv = "Searing Touch did 2 damage to any target.";
         }
         return $rv;
+      case "UPR144": case "UPR145": case "UPR146":
+        if($cardID == "UPR144") $numFrostbites = 3;
+        else if($cardID == "UPR145") $numFrostbites = 2;
+        else $numFrostbites = 1;
+        PlayAura("ELE111", ($currentPlayer == 1 ? 2 : 1), $numFrostbites);
+        return "Arctic Incarceration created frostbite tokens.";
       case "UPR147": case "UPR148": case "UPR149":
         if($cardID == "UPR147") $cost = 3;
         else if($cardID == "UPR148") $cost = 2;
