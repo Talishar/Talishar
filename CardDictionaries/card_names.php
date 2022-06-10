@@ -1063,6 +1063,7 @@ if($set == "UPR"){
     case "133": case "134": case "135": return "Ice Bolt";
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
+    case "144": case "145": case "146": return "Arctic Incarceration";
     case "147": case "148": case "149": return "Cold Snap";
     case "159": return "Tide Flippers";
     case "160": return "Double Strike";
