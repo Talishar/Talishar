@@ -24,6 +24,7 @@
       case "UPR081": case "UPR082": case "UPR083": return "AA";
       case "UPR160": return "AA";
       case "UPR161": return "AA";
+      case "UPR162": case "UPR163": case "UPR164": return "AR";
       default: return "";
     }
   }
@@ -59,6 +60,7 @@
       case "UPR081": case "UPR082": case "UPR083": return 1;
       case "UPR160": return 0;
       case "UPR161": return 1;
+      case "UPR162": case "UPR163": case "UPR164": return 1;
       default: return 0;
     }
   }
@@ -75,6 +77,9 @@
       case "UPR053": case "UPR056": case "UPR059": case "UPR062": case "UPR065": case "UPR068": case "UPR071": case "UPR074": case "UPR077": case "UPR080": case "UPR083": return 3;
       case "UPR160": return 1;
       case "UPR161": return 1;
+      case "UPR162": return 1;
+      case "UPR163": return 2;
+      case "UPR164": return 3;
       default: return 0;
     }
   }
@@ -100,6 +105,7 @@
       case "UPR081": case "UPR082": case "UPR083": return 2;
       case "UPR160": return 2;
       case "UPR161": return 3;
+      case "UPR162": case "UPR163": case "UPR164": return 3;
       default: return -1;
     }
   }
@@ -143,6 +149,9 @@
       case "UPR083": return 2;
       case "UPR160": return 1;
       case "UPR161": return 3;
+      case "UPR162": return 3;
+      case "UPR163": return 2;
+      case "UPR164": return 1;
       default: return 0;
     }
   }
