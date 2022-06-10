@@ -2056,6 +2056,9 @@ function OnBlockEffects($index, $from)
         }
       }
       break;
+    case "UPR182":
+      BottomDeckDraw();
+      break;
     case "UPR194": case "UPR195": case "UPR196":
       if(PlayerHasLessHealth($currentPlayer))
       {
