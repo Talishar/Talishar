@@ -2625,6 +2625,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
+        case "HANDAAMAXCOST": $rv = SearchHand($player, "AA","", $subparam); break;
         case "MYHANDAA": $rv = SearchHand($player, "AA"); break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDECKARROW": $rv = SearchDeck($player, "", "Arrow"); break;
@@ -2697,10 +2698,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIBANISH":
       $cards = explode(",", $lastResult);
       $params = explode(",", $parameter);
+      $mzIndices = "";
       for($i=0; $i<count($cards); ++$i)
       {
-        BanishCardForPlayer($cards[$i], $player, $params[0], $params[1]);
+        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1]);
+        if($mzIndices != "") $mzIndices .= ",";
+        $mzIndices .= "BANISH-" . $index;
       }
+      $dqState[5] = $mzIndices;
       return $lastResult;
     case "REMOVECOMBATCHAIN":
       $cardID = $combatChain[$lastResult];
@@ -3863,6 +3868,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch($params[0])
       {
         case "ALLY": return $zone[$params[1] + 5];
+        case "BANISH": return $zone[$params[1] + 2];
       }
       return "-1";
     case "SIFT":

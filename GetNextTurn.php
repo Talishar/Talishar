@@ -327,7 +327,7 @@
   {
     $content = CreateButton($playerID, "Yes", 20, "YES", "14px");
     $content .= CreateButton($playerID, "No", 20, "NO", "14px");
-    if($dqState[4] != "-") $caption = implode(" ", explode("_", $dqState[4]));
+    if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     else $caption = "Choose " . TypeToPlay($turn[0]);
     echo CreatePopup("YESNO", [], 0, 1, $caption, 1, $content);
   }
@@ -438,7 +438,7 @@
   if(($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
     $caption = "Choose a card from your discard";
-    if($dqState[4] != "-") $caption = implode(" ", explode("_", $dqState[4]));
+    if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     ChoosePopup($myDiscard, $turn[2], 16, $caption);
   }
 
@@ -483,7 +483,7 @@
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
     $caption = "<h3>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "<h3>";
-    if($dqState[4] != "-") $caption = "<h3>" . implode(" ", explode("_", $dqState[4])) . "</h3>";
+    if(GetDQHelpText() != "-") $caption = "<h3>" . implode(" ", explode("_", GetDQHelpText())) . "</h3>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
     $content .= "<table><tr>";
     for($i=0; $i<count($options); ++$i)
@@ -1064,10 +1064,9 @@
 
   function GetPhaseHelptext()
   {
-    global $dqState, $turn, $dqState;
+    global $turn;
     $defaultText = "Choose " . TypeToPlay($turn[0]);
-    if(count($dqState) < 5) return $defaultText;
-    return ($dqState[4] != "-" ? implode(" ", explode("_", $dqState[4])) : $defaultText);
+    return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
   }
 
 ?>

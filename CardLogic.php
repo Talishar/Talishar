@@ -207,13 +207,17 @@ function AddNextTurnEffect($cardID, $player)
 
 function IsCombatEffectLimited($index)
 {
-  global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID;
   if(count($combatChain) == 0 || $currentTurnEffects[$index+2] == -1) return false;
   $attackSubType = CardSubType($combatChain[0]);
   if(DelimStringContains($attackSubType, "Ally"))
   {
     $allies = &GetAllies($mainPlayer);
     if($allies[$combatChainState[$CCS_WeaponIndex]+5] != $currentTurnEffects[$index+2]) return true;
+  }
+  else
+  {
+    return $combatChainState[$CCS_AttackUniqueID] != $currentTurnEffects[$index+2];
   }
   return false;
 }
@@ -271,6 +275,8 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       $dqState[1] = $turn[0];
       $dqState[2] = $turn[1];
       $dqState[3] = $turn[2];
+      $dqState[4] = "-";//DQ helptext initial value
+      $dqState[5] = "-";//Decision queue multizone indices
       //array_unshift($turn, "-", "-", "-");
     }
     ContinueDecisionQueue("");
@@ -284,6 +290,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $turn[1] = $dqState[2];
     $turn[2] = $dqState[3];
     $dqState[4] = "-";//Clear the context, just in case
+    $dqState[5] = "-";//Clear Decision queue multizone indices
     $decisionQueue = [];
   }
 
@@ -331,7 +338,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $parameter = array_shift($layers);
           $target = array_shift($layers);
           $additionalCosts = array_shift($layers);
-          $params = explode("-", $parameter);
+          $params = explode("|", $parameter);
           if($currentPlayer != $player)
           {
             if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -351,7 +358,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
             {
               $lastPlayed[3] = ($additionalCosts != "-" ? "FUSED" : "UNFUSED");
             }
-            PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts);
+            PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3]);
           }
         }
       }
@@ -363,21 +370,22 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
         }
-        $params = explode("-", $decisionQueue[2]);
+        $params = explode("|", $decisionQueue[2]);
         CloseDecisionQueue();
 
         if($turn[0] == "B")//If a layer is not created
         {
-          PlayCardEffect($params[0], $params[1], $params[2], "-", $params[4]);
+          PlayCardEffect($params[0], $params[1], $params[2], "-", $params[3], $params[4]);
         }
         else
         {
           //params 3 = ability index
+          //params 4 = Unique ID
           $layerTarget = GetClassState($currentPlayer, $CS_LayerTarget);
           $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
           if($layerTarget == "") $layerTarget = "-";
           if($additionalCosts == "") $additionalCosts = "-";
-          AddLayer($params[0], $currentPlayer, $params[1] . "-" . $params[2] . "-" . $params[3], $layerTarget, $additionalCosts);
+          AddLayer($params[0], $currentPlayer, $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4], $layerTarget, $additionalCosts);
           ProcessDecisionQueue();
           return;
         }
@@ -416,6 +424,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $phase = array_shift($decisionQueue);
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
+    $parameter = str_replace("{I}", $dqState[5], $parameter);
     $parameter = str_replace("{0}", $dqVars[0], $parameter);
     $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
     $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
@@ -437,6 +446,18 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     }
+  }
+
+  function GetDQHelpText()
+  {
+    global $dqState;
+    return $dqState[4];
+  }
+
+  function GetDQMZIndices()
+  {
+    global $dqState;
+    return $dqState[5];
   }
 
   function FinalizeAction()

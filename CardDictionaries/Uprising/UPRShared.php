@@ -102,6 +102,7 @@
       case "UPR038": return 1;
       case "UPR047": return 1;
       case "UPR049": return 1;
+      case "UPR054": case "UPR055": case "UPR056": return 1;
       case "UPR057": return 3;
       case "UPR058": return 2;
       case "UPR059": return 1;
@@ -119,6 +120,7 @@
       case "UPR036": case "UPR037": case "UPR038": return true;
       case "UPR047": return $attackID == "UPR101";
       case "UPR049": return CardTalent($attackID) == "DRACONIC" && AttackValue($attackID) < NumDraconicChainLinks();
+      case "UPR054": case "UPR055": case "UPR056": return true;
       case "UPR057": case "UPR058": case "UPR059": CardTalent($attackID) == "DRACONIC" || CardClass($attackID) == "NINJA";
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;
