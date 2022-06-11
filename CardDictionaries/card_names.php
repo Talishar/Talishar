@@ -1098,6 +1098,7 @@ if($set == "UPR"){
     case "200": case "201": case "202": return "Strategic Planning";
     case "203": case "204": case "205": return "Brothers in Arms";
     case "206": case "207": case "208": return "Critical Strike";
+    case "212": case "213": case "214": return "Trade In";
     case "215": case "216": case "217": return "Healing Balm";
     case "218": case "219": case "220": return "Sigil of Protection";
     case "221": case "222": case "223": return "Oasis Respite";
