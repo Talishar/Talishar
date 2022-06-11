@@ -532,7 +532,8 @@
         else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
         else return "GENERIC";
       case "UPR":
-        if($number >= 1 && $number <= 43) return "ILLUSIONIST";
+        if($number == 0) return "NONE";
+        else if($number >= 1 && $number <= 43) return "ILLUSIONIST";
         else if($number >= 44 && $number <= 83) return "NINJA";
         else if($number >= 84 && $number <= 101) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
