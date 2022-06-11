@@ -168,6 +168,27 @@
           PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2);
         }
         return "";
+      case "UPR116": case "UPR117": case "UPR118":
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $hand = &GetHand($otherPlayer);
+        $cards = "";
+        for($i=0; $i<count($hand); ++$i)
+        {
+          if($cards != "") $cards .= ",";
+          $cards .= $hand[$i];
+        }
+        $cardsRevealed = RevealCards($cards);
+        if($cardsRevealed && DelimStringContains($additionalCosts, "ICE"))
+        {
+          if($cardID == "UPR116") $maxCost = 2;
+          else if($cardID == "UPR117") $maxCost = 1;
+          else $maxCost = 0;
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDACTIONMAXCOST," . $maxCost);
+          AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $otherPlayer, "-", 1);
+        }
+        return "";
       case "UPR119": case "UPR120": case "UPR121":
         if($cardID == "UPR119") $damage = 3;
         else if($cardID == "UPR120") $damage = 2;
