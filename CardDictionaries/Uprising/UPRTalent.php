@@ -14,6 +14,7 @@
       case "UPR090": return "AA";
       case "UPR091": return "AA";
       case "UPR092": return "AA";
+      case "UPR093": return "AA";
       case "UPR094": return "AA";
       case "UPR095": return "AA";
       case "UPR096": return "AA";
@@ -77,6 +78,7 @@
       case "UPR090": return 2;
       case "UPR091": return 1;
       case "UPR092": return 0;
+      case "UPR093": return 1;
       case "UPR094": return 0;
       case "UPR095": return 1;
       case "UPR096": return 1;
@@ -117,6 +119,7 @@
       case "UPR090": return 1;
       case "UPR091": return 1;
       case "UPR092": return 1;
+      case "UPR093": return 1;
       case "UPR094": return 1;
       case "UPR095": return 1;
       case "UPR096": return 1;
@@ -156,6 +159,7 @@
       case "UPR090": return 3;
       case "UPR091": return 3;
       case "UPR092": return 2;
+      case "UPR093": return 3;
       case "UPR094": return 2;
       case "UPR095": return 2;
       case "UPR096": return 2;
@@ -193,6 +197,7 @@
       case "UPR090": return 4;
       case "UPR091": return 3;
       case "UPR092": return 4;
+      case "UPR093": return 5;
       case "UPR094": return 2;
       case "UPR095": return 3;
       case "UPR096": return 3;
@@ -365,6 +370,13 @@
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP0", 1);
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
           AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+        }
+        break;
+      case "UPR093":
+        if(RuptureActive())
+        {
+          WriteLog("Breaking Point destroyed the defending player's arsenal.");
+          DestroyArsenal($defPlayer);
         }
         break;
       case "UPR100":

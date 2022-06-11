@@ -1046,6 +1046,7 @@ if($set == "UPR"){
     case "090": return "Red Hot";
     case "091": return "Rise Up";
     case "092": return "Blaze Headlong";
+    case "093": return "Breaking Point";
     case "094": return "Burn Away";
     case "095": return "Flameborn Retribution";
     case "097": return "Inflame";
