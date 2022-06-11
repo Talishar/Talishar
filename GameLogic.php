@@ -1536,6 +1536,7 @@ function CurrentEffectGrantsGoAgain()
         case "EVR044": case "EVR045": case "EVR046": return true;
         case "DVR008": return true;
         case "DVR019": return true;
+        case "UPR081": case "UPR082": case "UPR083": return true;
         case "UPR094": return true;
         default: break;
       }
