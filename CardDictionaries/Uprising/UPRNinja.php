@@ -218,15 +218,8 @@
         }
         break;
       case "UPR054": case "UPR055": case "UPR056":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . (NumDraconicChainLinks()-1));
-        AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{I}", 1);
-        AddDecisionQueue("MZGETUNIQUEID", $mainPlayer, "-", 1);
-        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
-        break;
       case "UPR075": case "UPR076": case "UPR077":
+      case "UPR081": case "UPR082": case "UPR083":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . (NumDraconicChainLinks()-1));
         AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
