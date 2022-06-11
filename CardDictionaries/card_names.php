@@ -996,6 +996,7 @@ if ($set == "MON")
 if($set == "UPR"){
   switch($num)
   {
+    case "000": return "Blood of the Dracai";
     case "001": return "Dromai, Ash Artist";
     case "002": return "Dromai";
     case "003": return "Storm of Sandikai";

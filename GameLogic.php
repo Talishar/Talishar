@@ -1354,6 +1354,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
         case "ELE144": $costModifier += 1; break;
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID))$costModifier -= 1; $remove = 1; break;
+        case "UPR000": if(DelimStringContains(CardTalent($cardID), "DRACONIC")) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
         default: break;
       }
       if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -1915,6 +1916,10 @@ function PitchAbility($cardID)
     case "EVR000":
       WriteLog("Grandeur of Valahai created a Seismic Surge when it was pitched.");
       PlayAura("WTR075", $currentPlayer);
+      break;
+    case "UPR000":
+      WriteLog("Blood of the Dracai makes each of your next 3 draconic cards this turn cost 1 less.");
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     default:
       break;

@@ -192,6 +192,7 @@ function CurrentTurnEffectUses($cardID)
 {
   switch($cardID)
   {
+    case "UPR000": return 3;
     case "UPR088": return 4;
     default: return 1;
   }
