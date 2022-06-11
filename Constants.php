@@ -175,6 +175,7 @@
   $CS_AdditionalCosts = 44;
   $CS_NumRedPlayed = 45;
   $CS_PlayUniqueID = 46;
+  $CS_NumPhantasmAADestroyed = 47;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -299,6 +300,7 @@
     global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
     global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
     global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID;
+    global $CS_NumPhantasmAADestroyed;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -345,6 +347,7 @@
     $mainClassState[$CS_AdditionalCosts] = "-";
     $mainClassState[$CS_NumRedPlayed] = 0;
     $mainClassState[$CS_PlayUniqueID] = -1;
+    $mainClassState[$CS_NumPhantasmAADestroyed] = 0;
   }
 
   function ResetCardPlayed($cardID)
