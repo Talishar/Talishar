@@ -16,6 +16,7 @@
       case "UPR122": case "UPR123": case "UPR124": return "A";
       case "UPR126": return "A";
       case "UPR127": case "UPR128": case "UPR129": return "A";
+      case "UPR130": case "UPR131": case "UPR132": return "A";
       case "UPR133": case "UPR134": case "UPR135": return "A";
       case "UPR165": return "W";
       case "UPR166": return "E";
@@ -59,6 +60,7 @@
       case "UPR122": case "UPR123": case "UPR124": return 2;
       case "UPR126": return 3;
       case "UPR127": case "UPR128": case "UPR129": return 1;
+      case "UPR130": case "UPR131": case "UPR132": return 0;
       case "UPR133": case "UPR134": case "UPR135": return 2;
       case "UPR168": return 3;
       case "UPR169": return 1;
@@ -77,12 +79,12 @@
       case "UPR104": return 1;
       case "UPR109": return 3;
       case "UPR126": return 3;
-      case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": case "UPR133": return 1;
-      case "UPR107": case "UPR111": case "UPR114": case "UPR117": case "UPR120": case "UPR123": case "UPR134": return 2;
-      case "UPR108": case "UPR112": case "UPR115": case "UPR118": case "UPR121": case "UPR124": case "UPR135": return 3;
-      case "UPR127": return 1;
-      case "UPR128": return 2;
-      case "UPR129": return 3;
+      case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": return 1;
+      case "UPR107": case "UPR111": case "UPR114": case "UPR117": case "UPR120": case "UPR123": return 2;
+      case "UPR108": case "UPR112": case "UPR115": case "UPR118": case "UPR121": case "UPR124": return 3;
+      case "UPR127": case "UPR130": case "UPR133": return 1;
+      case "UPR128": case "UPR131": case "UPR134": return 2;
+      case "UPR129": case "UPR132": case "UPR135": return 3;
       case "UPR168": return 3;
       case "UPR169": return 3;
       case "UPR170": case "UPR173": case "UPR176": case "UPR179": return 1;
@@ -220,6 +222,11 @@
         else $damage = 2;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
+      case "UPR130": case "UPR131": case "UPR132":
+        if($cardID == "UPR130") $damage = 3;
+        else if($cardID == "UPR131") $damage = 2;
+        else $damage = 1;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
