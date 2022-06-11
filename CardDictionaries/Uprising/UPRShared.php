@@ -40,6 +40,8 @@
     switch($cardID)
     {
       case "UPR005": return true;
+      case "UPR006": return true;
+      case "UPR007": return true;
       case "UPR008": return true;
       case "UPR009": return true;
       case "UPR010": return true;
