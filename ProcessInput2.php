@@ -1555,7 +1555,8 @@ function FinalizeChainLink($chainClosed=false)
       if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
       //TODO: Does this need to do all of ResolveChainLink?
       $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
-      ResolveCombatDamage($totalAttack);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $totalAttack);
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
       //CloseCombatChain("-");//This makes it NOT close the chain, so it does resolve go again and other chain effects
     }
   }
