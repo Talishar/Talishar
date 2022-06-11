@@ -3000,7 +3000,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDNEGDEFCOUNTER":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult+4] -= 1;
-      return "Added a negative defense counter.";
+      return $lastResult;
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       return "1";
@@ -3026,6 +3026,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GREATERTHANPASS":
       if($lastResult > $parameter) return "PASS";
       return $lastResult;
+    case "EQUIPDEFENSE":
+      $char = &GetPlayerCharacter($player);
+      $defense = BlockValue($char[$lastResult]) + $char[$lastResult + 4];
+      if($defense < 0) $defense = 0;
+      return $defense;
     case "ALLCARDTYPEORPASS":
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)

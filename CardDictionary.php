@@ -542,7 +542,7 @@
         else if($number >= 158 && $number <= 164) return "NINJA";
         else if($number >= 165 && $number <= 181) return "WIZARD";
         else if($number >= 182 && $number <= 223) return "GENERIC";
-        else if($number >= 408 && $number <= 417) return "ILLUSIONIST";
+        else if($number >= 406 && $number <= 417) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";

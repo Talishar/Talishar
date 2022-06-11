@@ -1002,6 +1002,8 @@ if($set == "UPR"){
     case "003": return "Storm of Sandikai";
     case "004": return "Silken Form";
     case "005": return "Burn Them All";
+    case "006": return "Invoke Dracona Optimai";
+    case "007": return "Invoke Tomeltai";
     case "008": return "Invoke Dominia";
     case "009": return "Invoke Azvolai";
     case "010": return "Invoke Cromai";
@@ -1097,6 +1099,8 @@ if($set == "UPR"){
     case "215": case "216": case "217": return "Healing Balm";
     case "218": case "219": case "220": return "Sigil of Protection";
     case "221": case "222": case "223": return "Oasis Respite";
+    case "406": return "Dracona Optima";
+    case "407": return "Tomeltai";
     case "408": return "Dominia";
     case "409": return "Azvolai";
     case "410": return "Cromai";
