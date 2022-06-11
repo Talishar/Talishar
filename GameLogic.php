@@ -1328,7 +1328,7 @@ function CurrentEffectBaseAttackSet($cardID)
 
 function CurrentEffectCostModifiers($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
   {
@@ -1355,6 +1355,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE144": $costModifier += 1; break;
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID))$costModifier -= 1; $remove = 1; break;
         case "UPR000": if(DelimStringContains(CardTalent($cardID), "DRACONIC")) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
+        case "UPR075": case "UPR076": case "UPR077": if(GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i+2]) { --$costModifier; $remove = 1; } break;
         default: break;
       }
       if($remove == 1) RemoveCurrentTurnEffect($i);
