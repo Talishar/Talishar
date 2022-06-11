@@ -933,7 +933,7 @@ function GetDieRoll($player)
 function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer, $dqState;
+  global $mainPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))

@@ -11,6 +11,7 @@ function &GetMZZone($player, $zone)
   else if($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
   else if($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
   else if($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
+  else if($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
   return $rv;
 }
 
