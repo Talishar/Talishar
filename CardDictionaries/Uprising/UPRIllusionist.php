@@ -28,6 +28,9 @@
       case "UPR036": case "UPR037": case "UPR038": return "A";
       case "UPR039": case "UPR040": case "UPR041": return "I";
       case "UPR042": case "UPR043": return "T";
+      case "UPR151": return "E";
+      case "UPR152": return "E";
+      case "UPR153": return "AA";
       case "UPR155": case "UPR156": case "UPR157": return "A";
       case "UPR406": return "-";
       case "UPR407": return "-";
@@ -53,6 +56,8 @@
       case "UPR005": return "Aura";
       case "UPR042": return "Dragon,Ally";
       case "UPR043": return "Ash";
+      case "UPR151": return "Arms";
+      case "UPR152": return "Legs";
       case "UPR406": return "Dragon,Ally";
       case "UPR407": return "Dragon,Ally";
       case "UPR408": return "Dragon,Ally";
@@ -94,6 +99,7 @@
       case "UPR036": case "UPR037": case "UPR038": return 0;
       case "UPR039": case "UPR040": case "UPR041": return 0;
       case "UPR042": case "UPR043": return -1;
+      case "UPR153": return 3;
       case "UPR155": case "UPR156": case "UPR157": return 1;
       default: return 0;
     }
@@ -117,6 +123,7 @@
       case "UPR018": case "UPR021": case "UPR024": case "UPR027": case "UPR030": case "UPR033": case "UPR036": case "UPR039": return 1;
       case "UPR019": case "UPR022": case "UPR025": case "UPR028": case "UPR031": case "UPR034": case "UPR037": case "UPR040": return 2;
       case "UPR020": case "UPR023": case "UPR026": case "UPR029": case "UPR032": case "UPR035": case "UPR038": case "UPR041": return 3;
+      case "UPR153": return 1;
       case "UPR155": return 1;
       case "UPR156": return 2;
       case "UPR157": return 3;
@@ -148,6 +155,8 @@
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
       case "UPR039": case "UPR040": case "UPR041": return -1;
+      case "UPR151": return 0;
+      case "UPR152": return 0;
       case "UPR155": case "UPR156": case "UPR157": return 2;
       default: return -1;
     }
@@ -173,6 +182,7 @@
       case "UPR031": return 2;
       case "UPR032": return 1;
       case "UPR042": return 1;
+      case "UPR153": return 13;
       case "UPR406": return 6;
       case "UPR407": return 5;
       case "UPR408": return 4;
