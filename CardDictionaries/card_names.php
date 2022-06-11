@@ -1063,6 +1063,7 @@ if($set == "UPR"){
     case "122": case "123": case "124": return "Polar Cap";
     case "126": return "Frost Hex";
     case "127": case "128": case "129": return "Aether Hail";
+    case "130": case "131": case "132": return "Frosting";
     case "133": case "134": case "135": return "Ice Bolt";
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
