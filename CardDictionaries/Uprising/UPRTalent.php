@@ -40,6 +40,7 @@
       case "UPR203": case "UPR204": case "UPR205": return "AA";
       case "UPR206": case "UPR207": case "UPR208": return "AA";
       case "UPR209": case "UPR210": case "UPR211": return "REPRINT";
+      case "UPR212": case "UPR213": case "UPR214": return "AA";
       case "UPR215": case "UPR216": case "UPR217": return "A";
       case "UPR218": case "UPR219": case "UPR220": return "A";
       case "UPR221": case "UPR222": case "UPR223": return "I";
@@ -100,6 +101,7 @@
       case "UPR200": case "UPR201": case "UPR202": return 1;
       case "UPR203": case "UPR204": case "UPR205": return 2;
       case "UPR206": case "UPR207": case "UPR208": return 1;
+      case "UPR212": case "UPR213": case "UPR214": return 0;
       case "UPR215": case "UPR216": case "UPR217": return 0;
       case "UPR218": case "UPR219": case "UPR220": return 1;
       case "UPR221": case "UPR222": case "UPR223": return 1;
@@ -183,6 +185,7 @@
       case "UPR200": case "UPR201": case "UPR202": return 2;
       case "UPR203": case "UPR204": case "UPR205": return 2;
       case "UPR206": case "UPR207": case "UPR208": return 3;
+      case "UPR212": case "UPR213": case "UPR214": return 2;
       case "UPR215": case "UPR216": case "UPR217": return 2;
       case "UPR221": case "UPR222": case "UPR223": return 2;
       default: return -1;
@@ -220,6 +223,9 @@
       case "UPR206": return 5;
       case "UPR207": return 4;
       case "UPR208": return 3;
+      case "UPR212": return 3;
+      case "UPR213": return 2;
+      case "UPR214": return 1;
       default: return 0;
     }
   }
@@ -337,6 +343,14 @@
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Strategic Planning let you return a card and draw a card.";
+      case "UPR212": case "UPR213": case "UPR214":
+        if($from == "ARS") GiveAttackGoAgain();
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+        return "";
       case "UPR215": case "UPR216": case "UPR217":
         if($cardID == "UPR215") $amount = 3;
         else if($cardID == "UPR216") $amount = 2;
