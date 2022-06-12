@@ -26,6 +26,7 @@
       case "UPR046": return "AA";
       case "UPR047": return "I";
       case "UPR085": return "I";
+      case "UPR137": return "A";
       case "UPR159": return "AR";
       case "UPR165": return "I";
       case "UPR167": return "I";
@@ -89,7 +90,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR137": return true;
       default: return false;
     }
   }
