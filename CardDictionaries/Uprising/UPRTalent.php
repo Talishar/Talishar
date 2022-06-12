@@ -27,6 +27,7 @@
       case "UPR136": return "E";
       case "UPR137": return "E";
       case "UPR139": return "A";
+      case "UPR140": return "A";
       case "UPR141": case "UPR142": case "UPR143": return "A";
       case "UPR144": case "UPR145": case "UPR146": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
@@ -62,6 +63,7 @@
       case "UPR136": return "Head";
       case "UPR137": return "Head";
       case "UPR139": return "Affliction,Aura";
+      case "UPR140": return "Aura";
       case "UPR182": return "Head";
       case "UPR183": return "Head";
       case "UPR184": return "Chest";
@@ -96,6 +98,7 @@
       case "UPR100": return 1;
       case "UPR101": return 0;
       case "UPR139": return 0;
+      case "UPR140": return 3;
       case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
@@ -139,6 +142,7 @@
       case "UPR100": return 1;
       case "UPR101": return 1;
       case "UPR139": return 3;
+      case "UPR140": return 3;
       case "UPR141": case "UPR144": case "UPR147": return 1;
       case "UPR142": case "UPR145": case "UPR148": return 2;
       case "UPR143": case "UPR146": case "UPR149": return 3;
@@ -182,6 +186,7 @@
       case "UPR136": return 2;
       case "UPR137": return 0;
       case "UPR139": return 2;
+      case "UPR140": return 2;
       case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;

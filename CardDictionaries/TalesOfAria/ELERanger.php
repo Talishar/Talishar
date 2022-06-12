@@ -395,4 +395,21 @@
     return $costModifier;
   }
 
+  function AuraFuseEffects($player, $element)
+  {
+    $auras = &GetAuras($player);
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      switch($auras[$i])
+      {
+        case "UPR140":
+          PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
+          --$auras[$i+2];
+          if($auras[$i+2] == 0) { DestroyAura($player, $i); WriteLog("Insidious Chill was destroyed."); }
+          break;
+        default: break;
+      }
+    }
+  }
+
 ?>
