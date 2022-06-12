@@ -24,6 +24,7 @@
       case "UPR100": return "AA";
       case "UPR101": return "AA";
       case "UPR139": return "A";
+      case "UPR141": case "UPR142": case "UPR143": return "A";
       case "UPR144": case "UPR145": case "UPR146": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
       case "UPR150": return "T";
@@ -89,6 +90,7 @@
       case "UPR100": return 1;
       case "UPR101": return 0;
       case "UPR139": return 0;
+      case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
       case "UPR187": return 2;
@@ -131,9 +133,9 @@
       case "UPR100": return 1;
       case "UPR101": return 1;
       case "UPR139": return 3;
-      case "UPR144": case "UPR147": return 1;
-      case "UPR145": case "UPR148": return 2;
-      case "UPR146": case "UPR149": return 3;
+      case "UPR141": case "UPR144": case "UPR147": return 1;
+      case "UPR142": case "UPR145": case "UPR148": return 2;
+      case "UPR143": case "UPR146": case "UPR149": return 3;
       case "UPR187": return 1;
       case "UPR188": return 1;
       case "UPR189": return 2;
@@ -171,6 +173,7 @@
       case "UPR100": return 3;
       case "UPR101": return -1;
       case "UPR139": return 2;
+      case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       case "UPR182": return 2;
@@ -296,6 +299,9 @@
           $rv = "Searing Touch did 2 damage to any target.";
         }
         return $rv;
+      case "UPR141": case "UPR142": case "UPR143":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Isenhowl Weathervane creates frostbites the next time you fuse Ice.";
       case "UPR144": case "UPR145": case "UPR146":
         if($cardID == "UPR144") $numFrostbites = 3;
         else if($cardID == "UPR145") $numFrostbites = 2;

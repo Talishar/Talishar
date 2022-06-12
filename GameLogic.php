@@ -3392,6 +3392,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "LIGHTNING": IncrementClassState($player, $CS_NumFusedLightning); break;
           default: break;
         }
+        CurrentTurnFuseEffects($player, $element);
       }
       AppendClassState($player, $CS_AdditionalCosts, $elements);
       return $lastResult;

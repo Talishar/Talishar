@@ -247,6 +247,19 @@
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
+      case "UPR179": case "UPR180": case "UPR181":
+        DealArcane(1, 0, "PLAYCARD", $cardID, false, $currentPlayer);
+        if($cardID == "UPR179") $maxAllies = 3;
+        else if($cardID == "UPR180") $maxAllies = 2;
+        else $maxAllies = 1;
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $allies = &GetAllies($otherPlayer);
+        if(count($allies) < $maxAllies) $maxAllies = count($allies);
+        for($i=0; $i<$maxAllies; ++$i)
+        {
+          DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        }
+        return "Singe is a partially manual card. You have to make sure you damage each target no more than once.";
       default: return "";
     }
   }
