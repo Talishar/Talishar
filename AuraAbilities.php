@@ -90,6 +90,7 @@ function AuraPlayCounters($cardID)
     case "EVR107": return 3;
     case "EVR108": return 2;
     case "EVR109": return 1;
+    case "UPR140": return 3;
     default: return 0;
   }
 }

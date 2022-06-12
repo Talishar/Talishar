@@ -3394,6 +3394,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           default: break;
         }
         CurrentTurnFuseEffects($player, $element);
+        AuraFuseEffects($player, $element);
       }
       AppendClassState($player, $CS_AdditionalCosts, $elements);
       return $lastResult;
