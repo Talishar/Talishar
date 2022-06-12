@@ -23,6 +23,7 @@
       case "UPR099": return "AA";
       case "UPR100": return "AA";
       case "UPR101": return "AA";
+      case "UPR137": return "E";
       case "UPR139": return "A";
       case "UPR141": case "UPR142": case "UPR143": return "A";
       case "UPR144": case "UPR145": case "UPR146": return "A";
@@ -55,6 +56,7 @@
     {
       case "UPR000": return "Gem";
       case "UPR085": return "Chest";
+      case "UPR137": return "Head";
       case "UPR139": return "Affliction,Aura";
       case "UPR182": return "Head";
       case "UPR183": return "Head";
@@ -172,6 +174,7 @@
       case "UPR099": return 3;
       case "UPR100": return 3;
       case "UPR101": return -1;
+      case "UPR137": return 0;
       case "UPR139": return 2;
       case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 2;
@@ -299,6 +302,16 @@
           $rv = "Searing Touch did 2 damage to any target.";
         }
         return $rv;
+      case "UPR137":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        return "Glacial Horns lets you freeze an arsenal card and ally.";
       case "UPR141": case "UPR142": case "UPR143":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Isenhowl Weathervane creates frostbites the next time you fuse Ice.";
