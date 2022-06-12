@@ -117,6 +117,7 @@
       case "UPR088": return 1;
       case "UPR091": return NumPhoenixFlameChainLinks()*2;
       case "UPR094": return 2;
+      case "UPR158": return 1;
       default: return 0;
     }
   }
@@ -135,6 +136,7 @@
       case "UPR091": return true;
       case "UPR094": return true;
       case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
+      case "UPR158": return true;
       default: return false;
     }
   }

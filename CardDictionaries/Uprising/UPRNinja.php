@@ -22,6 +22,7 @@
       case "UPR075": case "UPR076": case "UPR077": return "AA";
       case "UPR078": case "UPR079": case "UPR080": return "AA";
       case "UPR081": case "UPR082": case "UPR083": return "AA";
+      case "UPR158": return "E";
       case "UPR159": return "E";
       case "UPR160": return "AA";
       case "UPR161": return "AA";
@@ -36,6 +37,7 @@
     {
       case "UPR046": return "Sword";
       case "UPR047": return "Arms";
+      case "UPR158": return "Arms";
       case "UPR159": return "Legs";
       default: return "";
     }
@@ -105,6 +107,7 @@
       case "UPR075": case "UPR076": case "UPR077": return 2;
       case "UPR078": case "UPR079": case "UPR080": return 2;
       case "UPR081": case "UPR082": case "UPR083": return 2;
+      case "UPR158": return 2;
       case "UPR159": return 0;
       case "UPR160": return 2;
       case "UPR161": return 3;
