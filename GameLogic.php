@@ -2624,6 +2624,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DECKITEMMAXCOST": $rv = SearchDeck($player, "", "Item", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
+        case "EQUIPCARD": $rv = FindCharacterIndex($player, $subparam); break;
         case "CCAA": $rv = SearchCombatChain("AA"); break;
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
