@@ -15,7 +15,9 @@
       case "UPR009": return "A";
       case "UPR010": return "A";
       case "UPR011": return "A";
+      case "UPR012": return "A";
       case "UPR013": return "A";
+      case "UPR014": return "A";
       case "UPR015": return "A";
       case "UPR016": return "A";
       case "UPR017": return "A";
@@ -50,7 +52,7 @@
   {
     switch($cardID)
     {
-      case "UPR006": case "UPR007": case "UPR009": case "UPR010": case "UPR011": case "UPR013": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
+      case "UPR006": case "UPR007": case "UPR009": case "UPR010": case "UPR011": case "UPR012": case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
       case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
       case "UPR005": return "Aura";
@@ -86,7 +88,9 @@
       case "UPR009": return 0;
       case "UPR010": return 0;
       case "UPR011": return 1;
+      case "UPR012": return 1;
       case "UPR013": return 3;
+      case "UPR014": return 2;
       case "UPR015": return 2;
       case "UPR016": return 3;
       case "UPR017": return 1;
@@ -116,7 +120,9 @@
       case "UPR009": return 1;
       case "UPR010": return 1;
       case "UPR011": return 1;
+      case "UPR012": return 1;
       case "UPR013": return 1;
+      case "UPR014": return 1;
       case "UPR015": return 1;
       case "UPR016": return 1;
       case "UPR017": return 1;
@@ -143,7 +149,9 @@
       case "UPR009": return 3;
       case "UPR010": return 3;
       case "UPR011": return 3;
+      case "UPR012": return 3;
       case "UPR013": return 3;
+      case "UPR014": return 3;
       case "UPR015": return 3;
       case "UPR016": return 3;
       case "UPR017": return 3;
@@ -224,8 +232,14 @@
       case "UPR011":
         Transform($currentPlayer, "Ash", "UPR411");
         return "";
+      case "UPR012":
+        Transform($currentPlayer, "Ash", "UPR412");
+        return "";
       case "UPR013":
         Transform($currentPlayer, "Ash", "UPR413");
+        return "";
+      case "UPR014":
+        Transform($currentPlayer, "Ash", "UPR414");
         return "";
       case "UPR015":
         Transform($currentPlayer, "Ash", "UPR415");
