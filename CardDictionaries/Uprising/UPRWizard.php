@@ -7,6 +7,7 @@
     {
       case "UPR102": case "UPR103": return "C";
       case "UPR104": return "A";
+      case "UPR105": return "A";
       case "UPR106": case "UPR107": case "UPR108": return "DR";
       case "UPR109": return "A";
       case "UPR110": case "UPR111": case "UPR112": return "A";
@@ -51,6 +52,7 @@
     {
       case "UPR102": case "UPR103": return 0;
       case "UPR104": return 0;
+      case "UPR105": return 3;
       case "UPR106": case "UPR107": case "UPR108": return 1;
       case "UPR109": return 0;
       case "UPR110": case "UPR111": case "UPR112": return 3;
@@ -77,6 +79,7 @@
     switch($cardID)
     {
       case "UPR104": return 1;
+      case "UPR105": return 1;
       case "UPR109": return 3;
       case "UPR126": return 3;
       case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": return 1;
@@ -99,6 +102,7 @@
     switch($cardID)
     {
       case "UPR102": case "UPR103": return -1;
+      case "UPR105": return 3;
       case "UPR106": return 4;
       case "UPR107": return 3;
       case "UPR108": return 2;
@@ -132,6 +136,15 @@
           AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
         }
         return "Encase deals 3 arcane.";
+      case "UPR105":
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Ice Affliction")) + FrozenCount($otherPlayer);
+        }
+        else $damage = 5;
+        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "";
       case "UPR106": case "UPR107": case "UPR108":
         $rv = "";
         if(DelimStringContains($additionalCosts, "ICE"))
