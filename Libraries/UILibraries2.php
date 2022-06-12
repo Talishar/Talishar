@@ -30,19 +30,41 @@
       $folder = str_replace("CardImages", "WebpImages", $folder);
       $fileExt = ".webp";
     }
+    else if($folder == "concat")
+    {
+      $fileExt = ".webp";
+    }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;
     //Enforce 375x523 aspect ratio as exported (.71)
     $margin = "margin:0px;";
-    if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
+    $border = "";
+    if($borderColor != -1) $margin = $borderColor > 0 ? "margin:0px;" : "margin:1px;";
     if($folder == "crops") $margin = "0px;";
+
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
-    $border = $borderColor > 0 ? "border-radius:7px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
+
+    if($borderColor > 0){
+      $border = "border-radius:10px; border:2px solid " . BorderColorMap($borderColor) . ";";
+    } elseif($folder == "concat"){
+      $border = "border-radius:5px; border:1px solid black;";
+    } else {
+      $border = "border: 1px solid transparent;";
+    }
     if($folder == "crops") { $height = $maxHeight; $width = ($height * 1.29); }
+    else if($folder == "concat") { $height = $maxHeight; $width = $maxHeight; }
     else if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
-    else { $height = ($maxHeight * .71); $width = $maxHeight; }
-    $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
-    $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-    // Counters Style
+    else {$height = ($maxHeight * .71); $width = $maxHeight; }
+
+    if($rotate == false){
+      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
+      $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
+    } else {
+      // Landmarks Rotation
+      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='transform:rotate(-90deg);" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
+      $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='transform:rotate(-90deg); visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
+    }
+
+  // Counters Style
     if($counters != 0) $rv .= "<div style='margin: 0; top: 50%; left: 50%;
     margin-right: -50%; border-radius: 50%; width: 22px; height: 22px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
@@ -74,28 +96,12 @@
     {
       $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=$onClick>";
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='
-      display: inline-block;
-      margin: 5px;
-      text-align: center;
-      vertical-align: middle;
-      padding: 3px 6px;
-      border: 1px solid;
-      border-radius: 8px;
-      background: #eeeeee;
-      background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#aaaaaa));
-      background: -moz-linear-gradient(top, #eeeeee, #aaaaaa);
-      background: linear-gradient(to bottom, #eeeeee, #aaaaaa);
-      -webkit-box-shadow: #000000 0px 0px 5px 0px;
-      -moz-box-shadow: #000000 0px 0px 5px 0px;
-      box-shadow: #000000 0px 0px 5px 0px;
-      text-shadow: #ffffff 1px 1px 1px;
-      font: helvetica;
-      font-weight: 550;
-      color: #111111;
-      text-decoration: none;
-      cursor:pointer;
-      font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
+    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='display: inline-block;
+      margin: 5px; text-align: center; vertical-align: middle; padding: 3px 6px; border: 1px solid; border-radius: 8px;
+      background: #eeeeee; background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#aaaaaa));
+      background: -moz-linear-gradient(top, #eeeeee, #aaaaaa); background: linear-gradient(to bottom, #eeeeee, #aaaaaa); -webkit-box-shadow: #000000 0px 0px 5px 0px; -moz-box-shadow: #000000 0px 0px 5px 0px;
+      box-shadow: #000000 0px 0px 5px 0px; text-shadow: #ffffff 1px 1px 1px; font: helvetica; font-weight: 550; color: #111111;
+      text-decoration: none; cursor:pointer; font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
     return $rv;
   }
 
@@ -126,11 +132,11 @@
 
   function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false, $overCombatChain=false)
   {
-    global $combatChain, $darkMode;
+    global $combatChain, $darkMode, $cardSize;
     if($darkMode == null) $darkMode = false;
     $top = "50%"; $left = "20%"; $width = "60%"; $height = "45%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
-    if($overCombatChain) { $top = "150px"; $left = "290px"; $width = "auto"; $height = "auto"; }
+    if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; }
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
@@ -138,7 +144,7 @@
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:50px; font-weight:lighter;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
-      $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
+      $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
     }
     $rv .= "<div style='margin-left: 5px;'>" . $customInput . "</div>";
     $rv .= "</div>";
@@ -254,23 +260,23 @@
 
   function BanishUI($from="")
   {
-    global $turn, $currentPlayer, $playerID, $cardSize;
+    global $turn, $currentPlayer, $playerID, $cardSize, $cardSizeAura;
     $rv = "";
-    $size = ($from == "HAND" ? $cardSize : 180);
+    $size = ($from == "HAND" ? $cardSizeAura : 120);
     $banish = GetBanish($playerID);
     for($i=0; $i<count($banish); $i+=BanishPieces()) {
       $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
       $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
       $mod = explode("-", $banish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      if($mod == "INT") $rv .= Card($banish[$i], "concat", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
-        $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+        $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else// if($from != "HAND")
       {
         if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
-          $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));
+          $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));
         else if($from != "HAND")
-          $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 0, $border);
+          $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
       }
     }
     return $rv;
@@ -318,6 +324,7 @@
   {
     global $playerID;
     $rv = "<table><tr><td>";
+    $rv .= CreateButton($playerID, "Main Menu", 100001, 0, "20px", "", "", false, true) . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "20px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "20px") . "<BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "20px") . "<BR>";

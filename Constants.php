@@ -33,7 +33,7 @@
 
   function BanishPieces()
   {
-    return 2;
+    return 3;
   }
 
   //Card ID
@@ -174,6 +174,8 @@
   $CS_AbilityIndex = 43;
   $CS_AdditionalCosts = 44;
   $CS_NumRedPlayed = 45;
+  $CS_PlayUniqueID = 46;
+  $CS_NumPhantasmAADestroyed = 47;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -201,6 +203,7 @@
   $CCS_CachedTotalAttack = 22;
   $CCS_CachedTotalBlock = 23;
   $CCS_CombatDamageReplaced = 24;//CR 6.5.3, CR 6.5.4 (CR 2.0)
+  $CCS_AttackUniqueID = 25;
 
   function ResetCombatChainState()
   {
@@ -208,7 +211,7 @@
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
     global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID;
     global $defPlayer;
     global $chainLinks, $chainLinkSummary;
     WriteLog("The combat chain was closed.");
@@ -236,6 +239,8 @@
     $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
     $combatChainState[$CCS_CachedTotalAttack] = 0;
     $combatChainState[$CCS_CachedTotalBlock] = 0;
+    $combatChainState[$CCS_CombatDamageReplaced] = 0;
+    $combatChainState[$CCS_AttackUniqueID] = -1;
     $defCharacter = &GetPlayerCharacter($defPlayer);
     for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
     {
@@ -263,7 +268,7 @@
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID;
     WriteLog("The chain link was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
@@ -282,6 +287,7 @@
     $combatChainState[$CCS_CachedTotalAttack] = 0;
     $combatChainState[$CCS_CachedTotalBlock] = 0;
     $combatChainState[$CCS_CombatDamageReplaced] = 0;
+    $combatChainState[$CCS_AttackUniqueID] = -1;
   }
 
   function ResetMainClassState()
@@ -293,7 +299,8 @@
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
     global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
     global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
-    global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed;
+    global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID;
+    global $CS_NumPhantasmAADestroyed;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -339,6 +346,8 @@
     $mainClassState[$CS_AbilityIndex] = "-";
     $mainClassState[$CS_AdditionalCosts] = "-";
     $mainClassState[$CS_NumRedPlayed] = 0;
+    $mainClassState[$CS_PlayUniqueID] = -1;
+    $mainClassState[$CS_NumPhantasmAADestroyed] = 0;
   }
 
   function ResetCardPlayed($cardID)

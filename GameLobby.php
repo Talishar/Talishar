@@ -172,7 +172,7 @@ background-color:rgba(74, 74, 74, 0.8);
 border: 2px solid black;
 border-radius: 3px;">
 
-<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family:Roboto; font-weight: 500; font-size:20px; font-style: italic;'>Click cards to select/unselect</div>
+<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family:Roboto; font-weight: bold; font-style: italic; font-size:20px;'>Click Cards to Select/Unselect</div>
 
 <table>
 <?php
@@ -184,7 +184,7 @@ border-radius: 3px;">
 
 ?>
 </table>
-  <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:50%; right:20px;">
+  <div id="weaponDisplay" style="position:absolute; z-index:2; top:40px; left:54%; right:20px;">
     <table>
     <?php
 
@@ -214,7 +214,7 @@ background-color:rgba(74, 74, 74, 0.8);
 border: 2px solid black;
 border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
 
-<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family: Roboto, sans-serif; font-weight: bold; font-style: italic; font-size:18px;'>Click Cards to Select/Unselect</div>
+<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family:Roboto, sans-serif; font-weight: bold; font-style: italic; font-size:20px;'>Click Cards to Select/Unselect</div>
 
 <?php
 
@@ -222,22 +222,21 @@ border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
     for($i=0; $i<count($deck); ++$i)
     {
       $id = "DECK-" . $count;
-      echo("<span style='cursor:pointer;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "CardImages", 150, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", 130, 0, 1, 0, 0, 0, "", $id) . "</span>");
       ++$count;
     }
     for($i=0; $i<count($deckSB); ++$i)
     {
       $id = "DECK-" . $count;
-      echo("<span style='cursor:pointer;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "CardImages", 150, 0, 1, 1, 0, 0, "", $id) . "</span>");
+      echo("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "concat", 130, 0, 1, 1, 0, 0, "", $id) . "</span>");
       ++$count;
     }
 ?>
 </div>
-
   <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:47%; font-weight:500; font-size:18px;
-  background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
-border-radius: 3px;">
+    background-color:rgba(74, 74, 74, 0.8);
+    border: 2px solid black;
+    border-radius: 3px;">
   <h1>Game Lobby</h1>
 <?php
 
@@ -463,7 +462,7 @@ function DisplayEquipRow($equip, $equipSB, $name)
     $id = $name . "-" . $count;
     echo("<td>");
     echo("<div onclick='CardClick(\"" . $id . "\")'>");
-    echo("<span style='cursor:pointer;'>" . Card($equip, "CardImages", 150, 0, 1, 0, 0, 0, "", $id) . "</span>");
+    echo("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", 130, 0, 1, 0, 0, 0, "", $id) . "</span>");
     echo("</div>");
     echo("</td>");
     ++$count;
@@ -473,7 +472,7 @@ function DisplayEquipRow($equip, $equipSB, $name)
     $id = $name . "-" . $count;
     echo("<td>");
     echo("<div onclick='CardClick(\"" . $id . "\")'>");
-    echo("<span style='cursor:pointer;'>" . Card($equipSB[$i], "CardImages", 150, 0, 1, 1, 0, 0, "", $id) . "</span>");
+    echo("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", 130, 0, 1, 1, 0, 0, "", $id) . "</span>");
     echo("</div>");
     echo("</td>");
     ++$count;
@@ -491,7 +490,7 @@ function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
     $id = $name . "-" . $count;
     echo("<td>");
     echo("<div onclick='CardClick(\"" . $id . "\")'>");
-    echo("<span style='cursor:pointer;'>" . Card($weapon1, "CardImages", 150, 0, 1, 0, 0, 0, "", $id) . "</span>");
+    echo("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", 130, 0, 1, 0, 0, 0, "", $id) . "</span>");
     echo("</div>");
     echo("</td>");
     ++$count;
@@ -501,7 +500,7 @@ function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
     $id = $name . "-" . $count;
     echo("<td>");
     echo("<div onclick='CardClick(\"" . $id . "\")'>");
-    echo("<span style='cursor:pointer;'>" . Card($weapon2, "CardImages", 150, 0, 1, 0, 0, 0, "", $id) . "</span>");
+    echo("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", 130, 0, 1, 0, 0, 0, "", $id) . "</span>");
     echo("</div>");
     echo("</td>");
     ++$count;
@@ -511,7 +510,7 @@ function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
     $id = $name . "-" . $count;
     echo("<td>");
     echo("<div onclick='CardClick(\"" . $id . "\")'>");
-    echo("<span style='cursor:pointer;'>" . Card($weaponSB[$i], "CardImages", 150, 0, 1, 1, 0, 0, "", $id) . "</span>");
+    echo("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", 130, 0, 1, 1, 0, 0, "", $id) . "</span>");
     echo("</div>");
     echo("</td>");
     ++$count;

@@ -101,14 +101,16 @@
   echo("<div id='iconHolder' style='display:none;'>" . $icon . "</div>");
 
   $cardSize = 120;
-  $cardSizeCombat = 90;
-  $cardSizeAura = 75;
-  $cardWidth = intval($cardSize * 0.71);
-  $cardIconSize = 50;
-  $cardIconLeft = intval($cardWidth/2) - intval($cardIconSize/2) + 5;
-  $cardIconTop = intval($cardSize/2) - intval($cardIconSize/2) + 5;
+  $cardSizeAura = 95;
+  $cardSizeEquipment = 95;
+  $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
+  $cardWidth = intval($cardSize * 0.72);
+  $cardHeight = intval($cardSize * 0.72);
+  $cardIconSize = 40;
+  $cardIconLeft = 30;
+  $cardIconTop = 30;
   $bigCardSize = 200;
-  $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 30;
+  $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
   $permWidth = "calc(50% - " . ($cardWidth/2 + $cardWidth + 20 + $permLeft) . "px)";
   $permHeight = $cardSize * 2 + 20;
 
@@ -131,7 +133,7 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./Images/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:absolute; right:315px; top:calc(50% - 125px); height:200px; z-index:100;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span>");
+  echo("<div style='position:absolute; right:300px; top:calc(50% - 125px); height:200px; z-index:100;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:130px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "20px") . CreateButton($playerID, "+1", 10006, 0, "20px") . "</span>": ""));
   echo("<span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:5px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "20px") . CreateButton($playerID, "+1", 10008, 0, "20px") . "</span>": ""));
@@ -184,7 +186,7 @@
     $cardID = explode(",", $cardID)[0];
     $effect .= "<div style='width:86px; height:66px; margin:2px; border:" . $border . ";'>";
     //$effect .= "<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />";
-    $effect .= Card($cardID, "crops", 67, 0, 1);
+    $effect .= Card($cardID, "crops", 65, 0, 1);
     $effect .= "</div>";
     if($playerID == $currentTurnEffects[$i+1]) $friendlyEffects .= $effect;
     else $opponentEffects .= $effect;
@@ -213,7 +215,7 @@
     echo(CreatePopup("attackModifierPopup", [], 1, 0, "Attack Modifiers", 1, AttackModifiers($chainAttackModifiers)));
   }
 
-  echo("<div style='position:absolute; left:290px; top:150px; z-index:0;'>");
+  echo("<div style='position:absolute; left:300px; top:230px; z-index:0;'>");
 
   //Display the combat chain
     echo("<table><tr>");
@@ -227,6 +229,7 @@
     if($damagePrevention > 0) echo("<td style='font-size:24px; font-weight:bold;'>&nbsp;<div title='$damagePrevention damage prevention' style='cursor:default; height:36px; width:36px; display:inline-block; font-size:30px; background-image: url(\"./Images/damagePrevention.png\"); background-size:cover;'>" . GetDamagePrevention($defPlayer) . "</div></td>");
     if(IsDominateActive()) echo("<td style='font-size:24px; font-weight:bold;'><img style='height:40px; display:inline-block;' src='./Images/dominate.png' /></td>");
     if(DoesAttackHaveGoAgain()) echo("<td><img title='This attack has Go Again.' style='height:30px; width:30px; display:inline-block;' src='./Images/goAgain.png' /></td>");
+    //if($lastPlayed[3] == "FUSED") echo("<td><img title='This card was fused.' style='height:30px; width:30px; display:inline-block;' src='./Images/fuse2.png' /></td>");
   }
     echo("<td>");
     for($i=0; $i<count($chainLinks); ++$i)
@@ -252,7 +255,7 @@
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i+1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
-      echo(Card($combatChain[$i], "CardImages", $bigCardSize, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
+      echo(Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i+1] == $playerID ? 1 : 2, 0, strval($i)));
     }
   }
 
@@ -275,7 +278,7 @@
     $content .= "<div style='margin-left:2px; margin-bottom:2px' display:inline;'>";
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {
-      $content .= Card($layers[$i], "CardImages", $bigCardSize, 0, 0, 0, $layers[$i+1] == $playerID ? 1 : 2);
+      $content .= Card($layers[$i], "concat", $cardSize, 0, 1, 0, $layers[$i+1] == $playerID ? 1 : 2);
     }
     $content .= "</div>";
     echo CreatePopup("INSTANT", [], 0, 1, "", 1, $content, "./", false, true);
@@ -322,11 +325,9 @@
 
   if($turn[0] == "YESNO" && $turn[1] == $playerID)
   {
-    $content = "<div display:inline;'>";
-    $content .= CreateButton($playerID, "Yes", 20, "YES");
-    $content .= CreateButton($playerID, "No", 20, "NO");
-    $content .= "</div>";
-    if($dqState[4] != "-") $caption = implode(" ", explode("_", $dqState[4]));
+    $content = CreateButton($playerID, "Yes", 20, "YES", "14px");
+    $content .= CreateButton($playerID, "No", 20, "NO", "14px");
+    if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     else $caption = "Choose " . TypeToPlay($turn[0]);
     echo CreatePopup("YESNO", [], 0, 1, $caption, 1, $content);
   }
@@ -339,11 +340,11 @@
     {
       $content .= "<td>";
       $content .= "<table><tr><td>";
-      $content .= Card($options[$i], "CardImages", $bigCardSize);
+      $content .= Card($options[$i], "concat", $cardSize, 0, 1);
       $content .= "</td></tr><tr><td>";
-      if($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") $content .= CreateButton($playerID, "Top", 8, $options[$i]);
-      if($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") $content .= CreateButton($playerID, "Bottom", 9, $options[$i]);
-      if($turn[0] == "CHOOSECARD") $content .= CreateButton($playerID, "Choose", 23, $options[$i]);
+      if($turn[0] == "CHOOSETOP" || $turn[0] == "OPT") $content .= CreateButton($playerID, "Top", 8, $options[$i], "14px");
+      if($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") $content .= CreateButton($playerID, "Bottom", 9, $options[$i], "14px");
+      if($turn[0] == "CHOOSECARD") $content .= CreateButton($playerID, "Choose", 23, $options[$i], "14px");
       $content .= "</td></tr>";
       $content .= "</table>";
       $content .= "</td>";
@@ -358,16 +359,16 @@
     for($i=0; $i<count($myHand); ++$i)
     {
       $content .= "<td>";
-      $content .= Card($myHand[$i], "CardImages", $bigCardSize);
+      $content .= Card($myHand[$i], "concat", $CardSize, 0, 1);
       $content .= "</td>";
     }
     $content .= "</tr><tr>";
     for($i=0; $i<count($myHand); ++$i)
     {
       $content .= "<td><span>";
-      $content .= CreateButton($playerID, "Top", 12, $i);
+      $content .= CreateButton($playerID, "Top", 12, $i, "14px");
       $content .= "</span><span>";
-      $content .= CreateButton($playerID, "Bottom", 13, $i);
+      $content .= CreateButton($playerID, "Bottom", 13, $i, "14px");
       $content .= "</span>";
       $content .= "</td>";
     }
@@ -397,7 +398,7 @@
       else if($option[0] == "MYDISCARD") $source = $myDiscard;
       $card = $source[intval($option[1])];
       if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
-      $content .= Card($card, "CardImages", $bigCardSize, 16, 0, 0, 0, 0, $options[$i]);
+      $content .= Card($card, "concat", $cardSize, 16, 1, 0, 0, 0, $options[$i]);
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
@@ -437,7 +438,7 @@
   if(($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID)
   {
     $caption = "Choose a card from your discard";
-    if($dqState[4] != "-") $caption = implode(" ", explode("_", $dqState[4]));
+    if(GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
     ChoosePopup($myDiscard, $turn[2], 16, $caption);
   }
 
@@ -470,7 +471,7 @@
   {
     $content = "";
     for($i=0; $i<count($myPitch); $i+=1) {
-      $content .= Card($myPitch[$i], "CardImages", 200, 6, 0);
+      $content .= Card($myPitch[$i], "concat", $cardSize, 6, 1);
     }
     echo CreatePopup("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, $content);
   }
@@ -482,7 +483,7 @@
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
     $caption = "<h3>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "<h3>";
-    if($dqState[4] != "-") $caption = "<h3>" . implode(" ", explode("_", $dqState[4])) . "</h3>";
+    if(GetDQHelpText() != "-") $caption = "<h3>" . implode(" ", explode("_", GetDQHelpText())) . "</h3>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
     $content .= "<table><tr>";
     for($i=0; $i<count($options); ++$i)
@@ -517,7 +518,7 @@
   if(count($theirSoul) > 0) echo(CreatePopup("theirSoulPopup", $theirSoul, 1, 0, "Opponent's Soul"));
 
   //Opponent hand
-  echo("<div style='position: fixed; top: 0px; left: calc(50% + 170px); height: 50px; display:inline;'><span style='margin-top: -30px; margin-right: 2px; height:100%; text-align: center; font-size:16px; font-weight: 600;vertical-align:middle; display:inline-block;'>Opponent<br>Hand:</span>");
+  echo("<div style='position: fixed; top: 0px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: -30px; margin-right: 2px; height:100%; text-align: center; font-size:16px; font-weight: 600;vertical-align:middle; display:inline-block;'>Opponent<br>Hand:</span>");
   for($i=0; $i<count($theirHand); ++$i) {
     echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
@@ -529,34 +530,30 @@
   //Display Their Discard
   echo("<div title='Click to view the cards in your opponent's Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") .";' onclick='ShowPopup(\"theirDiscardPopup\");'>");
   $card = (count($theirDiscard) > 0 ? $theirDiscard[count($theirDiscard)-1] : $blankZone);
-  $folder = (count($theirDiscard) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($theirDiscard)));
+  echo(Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, count($theirDiscard)));
   echo("</div>");
 
   //Display Their Deck
   echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; top:" . GetZoneTop("THEIRDECK") .";'>");
   echo(($manualMode ? "<span style='position:absolute; left:10px; bottom:5px; z-index:1000;'>" . CreateButton($playerID, "Draw", 10010, 0, "20px") . "</span>": ""));
   $deckImage = (count($theirDeck) > 0 ? "cardBack" : $blankZone);
-  $folder = (count($theirDeck) > 0 ? "CardImages" : "Images");
-  echo(Card($deckImage, $folder, $cardSize, 0, 0, 0, 0, count($theirDeck)));
+  echo(Card($deckImage, "concat", $cardSizeAura, 0, 0, 0, 0, count($theirDeck)));
   echo("</div>");
 
   //Display Their Banish
   echo("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") .";'>");
   $card = (count($theirBanish) > 0 ? ($theirBanish[count($theirBanish)-BanishPieces()+1] == "INT" ? "cardBack": $theirBanish[count($theirBanish)-BanishPieces()]) : $blankZone);
-  $folder = (count($theirBanish) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
+  echo(Card($card, "concat", $cardSizeAura, 0, 0, 0, 0));
   if(TalentContains($theirCharacter[0], "SHADOW"))
   {
     $theirBD = SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:51px; left:-39px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $theirBD . "</div></img>");
+    echo("<img title='Blood Debt' style='position:absolute; top:20px; left:-45px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:41px; left:-44px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $theirBD . "</div></img>");
   }
 
 
   echo("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'>
-  <img style='height:50px; width:50px; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
-
+  <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
   <div style='margin: 0; top: 47%; left: 50%; font-size:24px;
   width: 25px; height: 25px; padding: 8px; color: #EEE; text-align: center;
   transform: translate(-50%, -50%); position:absolute;'>" . count($theirBanish)/BanishPieces() . "</div></img></span>");
@@ -566,10 +563,9 @@
   //Display Their Pitch
   echo("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") .";'>");
   $card = (count($theirPitch) > 0 ? $theirPitch[count($theirPitch)-PitchPieces()] : $blankZone);
-  $folder = (count($theirPitch) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0));
-  echo("<span title='Click to see your opponent Pitch Zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Resource.png'>
-  <div style='margin: 0; top: 47%; left: 50%; font-size:24px;
+  echo(Card($card, "concat", $cardSizeAura, 0, 0));
+  echo("<span title='Click to see your opponent Pitch Zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/Resource.png'>
+  <div style='margin: 0; top: 50%; left: 50%; font-size:24px;
   width: 25px; height: 25px; padding: 8px; color: #EEE; text-align: center;
   transform: translate(-50%, -50%); position:absolute;'>" . $theirResources[0] . "</div></img></span>");
   echo("</div>");
@@ -579,7 +575,7 @@
   //Now display their Auras and Items
   if(count($landmarks) > 0)
   {
-    echo("<div style='position: fixed; top:250px; left: calc(50% + 200px); display:inline;'>");
+    echo("<div style='position: fixed; top:105px; left: calc(50% + 200px); display:inline;'>");
     echo("<h3>Landmark:</h3>");
     for($i=0; $i<count($landmarks); $i+=LandmarkPieces())
     {
@@ -587,41 +583,31 @@
       $action = ($playable && $currentPlayer == $playerID ? 25 : 0) ;
       $border = CardBorderColor($landmarks[$i], "PLAY", $playable);
       $counters = 0;
-      echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($landmarks[$i], "CardImages", $cardSize, $action, 1, 0, $border, $counters, strval($i), "", true));//TODO: Show sideways
-      echo("</div>");
+      echo(Card($landmarks[$i], "concat", $cardSizeAura, $action, 1, 0, $border, $counters, strval($i), "", true));
     }
     echo("</div>");
   }
 
   $permTop = 10;
-  $theirPermHeight = $cardSize + 10;
+  $theirPermHeight = $cardSize + 80;
   echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; height:200px; width:" . $permWidth . "; height:" . $theirPermHeight . "px;'>");
   DisplayTiles(($playerID == 1 ? 2 : 1));
   if(count($theirAuras) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($theirAuras); $i+=AuraPieces())
     {
       if(IsTileable($theirAuras[$i])) continue;
       $counters = $theirAuras[$i+2] > 0 ? $theirAuras[$i+2] : $theirAuras[$i+3];//TODO: Show both
-      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($theirAuras[$i], "CardImages", $cardSize, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters));
-      //echo("</div>");
+      echo(Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters) . "&nbsp");
     }
-    echo("</div>");
   }
   if(count($theirItems) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($theirItems); $i+=ItemPieces())
     {
       if(IsTileable($theirItems[$i])) continue;
-      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($theirItems[$i], "CardImages", $cardSize, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]));
-      //echo("</div>");
+      echo(Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]) . "&nbsp");
     }
-    echo("</div>");
   }
   $otherPlayer = $playerID == 2 ? 1 : 2;
   $theirPermanents = &GetPermanents($otherPlayer);
@@ -633,9 +619,7 @@
       //if(IsTileable($theirPermanents[$i])) continue;
       //$playable = ($currentPlayer == $playerID ? IsPlayable($theirPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
       //$border = CardBorderColor($theirPermanents[$i], "PLAY", $playable);
-      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($theirPermanents[$i], "CardImages", $cardSize, 0, 1));
-      //echo("</div>");
+      echo(Card($theirPermanents[$i], "concat", $cardSizeAura, 0, 1));
     }
     echo("</div>");
   }
@@ -645,10 +629,8 @@
     echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
-      //echo("<div style='position:relative; border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($theirAllies[$i], "CardImages", $cardSize, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2]));
-      if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
-      //echo("</div>");
+      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2]) . "&nbsp");
+      if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
     echo("</div>");
   }
@@ -664,28 +646,27 @@
     $counters = CardType($theirCharacter[$i]) == "W" ? $theirCharacter[$i+3] : $theirCharacter[$i+4];
     if($theirCharacter[$i+2] > 0) $counters = $theirCharacter[$i+2];//TODO: display both kinds of counters?
     echo("<div style='z-index:5; position:fixed; left:" . GetCharacterLeft($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
-    echo(Card($theirCharacter[$i], "CardImages", $cardSize, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
-    if($theirCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
-    if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
-    if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
+    echo(Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
+    if($theirCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+    if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:-25px; left:5px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
+    if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 8px; left:14px;' src='./Images/brokenEquip.png' />");
     echo("</div>");
   }
   echo("</div>");
-  //Now display arsenal
+  //Now display their arsenal
   if($theirArsenal != "")
   {
     echo("<div title='Your opponent's Arsenal' style='position: fixed; top:0px; left:" . GetCharacterLeft("C", "") . "; display:inline-block;'>");
     for($i=0; $i<count($theirArsenal); $i+=ArsenalPieces())
     {
       echo("<div style='position:relative; display:inline;'>");
-      if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "CardImages", $cardSize, 0, 1, $theirArsenal[$i+2] == 0 ? 1 : 0, 0, $theirArsenal[$i+3]));
-      else echo(Card("cardBack", "CardImages", $cardSize, 0, 0));
-      if($theirArsenal[$i+4] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
+      if($theirArsenal[$i+1] == "UP") echo(Card($theirArsenal[$i], "concat", $cardSizeAura, 0, 1, $theirArsenal[$i+2] == 0 ? 1 : 0, 0, $theirArsenal[$i+3]));
+      else echo(Card("cardBack", "concat", $cardSizeAura, 0, 0));
+      if($theirArsenal[$i+4] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:-77px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo("</div>");
     }
     echo("</div>");
   }
-
 
   echo(CreatePopup("myPitchPopup", $myPitch, 1, 0, "Your Pitch"));
   echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
@@ -697,21 +678,21 @@
   $restriction = "";
   $actionType = "HAND";
   if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
-  $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 10) - 10)/2) . "px)";
-  echo("<div style='position:fixed; left:" . $handLeft . "; bottom:0px;'>");//Hand div
+  $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 15))/2) . "px)";
+  echo("<div style='position:fixed; left:" . $handLeft . "; bottom: 35px;'>");//Hand div
   for($i=0; $i<count($myHand); ++$i) {
     if($playerID == 3)
     {
-      echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, -1));
+      echo(Card("cardBack", "concat", $cardSizeAura, 0, 0, 0, 0));
     }
     else
     {
       $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionData = $actionType == 16 ? strval($i) : "";
-      echo("<span style='position:relative;'>");
-      echo(Card($myHand[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border, 0, $actionData));
-      if($restriction != "") echo("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-100px; left:45px;' src='./Images/restricted.png' />");
+      echo("<span style='position:relative; margin:1px;'>");
+      echo(Card($myHand[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border, 0, $actionData));
+      if($restriction != "") echo("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-80px; left:20px;' src='./Images/restricted.png' />");
       echo("</span>");
     }
   }
@@ -721,67 +702,59 @@
   //Now display arsenal
   if(count($myArsenal) > 0)
   {
-    $arsenalLeft = (count($myArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth/2)) . "px)" : "calc(50% - " . (intval($cardWidth)) . "px)");
-    echo("<div style='position:fixed; left:" . $arsenalLeft . "; bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize - 10) . "px;'>");//arsenal div
+    $arsenalLeft = (count($myArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth/2) + 6) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
+    echo("<div style='position:fixed; left:" . $arsenalLeft . "; bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize + 18) . "px;'>");//arsenal div
     for($i=0; $i<count($myArsenal); $i+=ArsenalPieces())
     {
       echo("<div style='position:relative; display:inline-block'>");
       if($playerID == 3)
       {
-        echo(Card("cardBack", "CardImages", $cardSize, 0, 0, 0, -1));
+        echo(Card("cardBack", "concat", $cardSizeAura, 0, 0, 0, 0));
       }
       else
       {
         $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction);
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $counters = $myArsenal[$i+3];
-        echo("<div>");
-        echo(Card($myArsenal[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? "ARS" : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
-        $iconHeight = $cardSize / 2 - 5;
+        echo("<div style='position:relative; margin:1px;>");
+        echo(Card($myArsenal[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? "ARS" : 0, 1, $myArsenal[$i+2] > 0 ? 0 : 1, $border, $counters, strval($i)));
+        $iconHeight = $cardSize / 2 - 15;
         $iconLeft = $cardWidth/2 - intval($iconHeight*.71/2) + 5;
         if($myArsenal[$i+1] == "UP") echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
         else echo("<img style='position:absolute; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceDown.png' title='This arsenal card is face down.'></img>");
         echo("</div>");
       }
-      if($myArsenal[$i+4] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:6px; left:15px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
+      if($myArsenal[$i+4] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:6px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo("</div>");
     }
     echo("</div>");//End arsenal div
   }
 
   //Now display Auras and items
-  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize + 25;
-  $permHeight = $cardSize * 2 + 30;
-  echo("<div style='overflow-y:auto; position: fixed; Top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; max-height:" . $permHeight . "px;'>");
+  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize - 250;
+  $permHeight = $cardSize + 100;
+  echo("<div style='overflow-y:auto; position: fixed; Bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if(count($myAuras) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($myAuras); $i+=AuraPieces())
     {
       if(IsTileable($myAuras[$i])) continue;
       $playable = ($currentPlayer == $playerID ? $myAuras[$i+1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction): false);
       $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
       $counters = $myAuras[$i+2] > 0 ? $myAuras[$i+2] : $myAuras[$i+3];//TODO: Show both
-      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($myAuras[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i)));
-      //echo("</div>");
+      echo(Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i)) . "&nbsp");
     }
-    echo("</div>");
   }
   if(count($myItems) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($myItems); $i+=ItemPieces())
     {
       if(IsTileable($myItems[$i])) continue;
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
-      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($myItems[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)));
-      //echo("</div>");
+      echo(Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)) . "&nbsp");
     }
-    echo("</div>");
   }
   $myPermanents = &GetPermanents($playerID);
   if(count($myPermanents) > 0)
@@ -792,9 +765,7 @@
       //if(IsTileable($myPermanents[$i])) continue;
       //$playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
       //$border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
-      //echo("<div style='border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
-      echo(Card($myPermanents[$i], "CardImages", $cardSize, 0, 1));
-      //echo("</div>");
+      echo(Card($myPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
     }
     echo("</div>");
   }
@@ -804,18 +775,16 @@
     echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($myAllies); $i+=AllyPieces())
     {
-      //echo("<div style='position:relative; border: 4px solid " . $borderColor . "; border-radius: 6px;'>");
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
-      echo(Card($myAllies[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+2], strval($i)));
-      if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
-      //echo("</div>");
+      echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+2], strval($i)) . "&nbsp");
+      if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
     echo("</div>");
   }
   echo("</div>");
 
-  //Now display your character and equipment
+  //Now display my character and equipment
   $numWeapons = 0;
   for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
   {
@@ -827,20 +796,19 @@
     $sType = CardSubType($myCharacter[$i]);
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
     echo("<div style='position:absolute; z-index:100; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
-    echo(Card($myCharacter[$i], "CardImages", $cardSize, $currentPlayer == $playerID && $playable ? "EQ" : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
+    echo(Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? "EQ" : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
     $effects = ActiveCharacterEffects($playerID, $i);
     if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:40px; left:23px;' src='./Images/arsenal.png' />");
     if($restriction != "") {
       $restrictionName = CardName($restriction);
-      echo("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:40px; left:23px;' src='./Images/restricted.png' />");
+      echo("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:25px; left:25px;' src='./Images/restricted.png' />");
     }
-    if($myCharacter[$i+6] == 1) echo("<div title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 0px; left:0px;'>" . Card("onChain", "Images", $cardSize, $currentPlayer == $playerID && $playable ? 3 : 0, 0, $myCharacter[$i+1] !=2 ? 1 : 0, 0, 0, strval($i)) . "</div>");
-    //echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/onChain.png' />");
-    if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/brokenEquip.png' />");
-    if($myCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:5px; width:" . $cardWidth . "' src='./Images/frozenOverlay.png' />");
+    if($myCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/onChain.png' />");
+    if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 8px; left:14px;' src='./Images/brokenEquip.png' />");
+    if($myCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     if($type == "C")
     {
-      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . " cards</div>");
+      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . "</div>");
     }
     echo("</div>");
     echo("</div>");
@@ -851,24 +819,22 @@
   //Display My Discard
   echo("<div title='Click to view the cards in your Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; bottom:" . GetZoneBottom("MYDISCARD") .";' onclick='ShowPopup(\"myDiscardPopup\");'>");
   $card = (count($myDiscard) > 0 ? $myDiscard[count($myDiscard)-1] : $blankZone);
-  $folder = (count($myDiscard) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0, count($myDiscard)));
+  echo(Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, count($myDiscard)));
   echo("</div>");
 
   //Display My Deck
   echo("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") .";'>");
   echo(($manualMode ? "<span style='position:absolute; left:10px; bottom:5px; z-index:1000;'>" . CreateButton($playerID, "Draw", 10009, 0, "20px") . "</span>": ""));
   $deckImage = (count($myDeck) > 0 ? "cardBack" : $blankZone);
-  echo(Card($deckImage, "CardImages", $cardSize, 0, 0, 0, 0, count($myDeck)));
+  echo(Card($deckImage, "concat", $cardSizeAura, 0, 0, 0, 0, count($myDeck)));
   echo("</div>");
 
   //Display My Banish
   echo("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; bottom:" . GetZoneBottom("MYBANISH") .";'>");
   $card = (count($myBanish) > 0 ? $myBanish[count($myBanish)-BanishPieces()] : $blankZone);
-  $folder = (count($myBanish) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0, 0, 0));
+  echo(Card($card, "concat", $cardSizeAura, 0, 0, 0, 0));
   echo("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;
-  position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/banish.png'>
+  position:absolute; display:inline-block;'><img style='height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/banish.png'>
   <div style='margin: 0; top: 47%; left: 50%; font-size:24px; width: 25px; height: 25px; padding: 8px; color: #EEE; text-align: center;
   transform: translate(-50%, -50%); position:absolute;'>" . count($myBanish)/BanishPieces() . "</div></img></span>");
 
@@ -876,8 +842,8 @@
   {
     $myBD = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-    echo("<img title='Blood Debt' style='position:absolute; top:30px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'>
-    <div style='position:absolute; top:51px; left:-39px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $myBD . "</div></img>");
+    echo("<img title='Blood Debt' style='position:absolute; top:18px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'>
+    <div style='position:absolute; top:38px; left:-39px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $myBD . "</div></img>");
   }
 
   echo("</div>");
@@ -885,9 +851,8 @@
   //Display My Pitch
   echo("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") .";'>");
   $card = (count($myPitch) > 0 ? $myPitch[count($myPitch)-PitchPieces()] : $blankZone);
-  $folder = (count($myPitch) > 0 ? "CardImages" : "Images");
-  echo(Card($card, $folder, $cardSize, 0, 0));
-  echo("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:50px; width:50px;' src='./Images/Resource.png'><div style='margin: 0; top: 47%; left: 50%; font-size:24px;
+  echo(Card($card, "concat", $cardSizeAura, 0, 0));
+  echo("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/Resource.png'><div style='margin: 0; top: 47%; left: 50%; font-size:24px;
   width: 25px; height: 25px; padding: 8px; color: #EEE; text-align: center;
   transform: translate(-50%, -50%); position:absolute;'>" . $myResources[0] . "</div></img></span>");
   echo("</div>");
@@ -905,7 +870,7 @@
 
   echo("<div style='text-align:center; width:200px; font-weight:bold; font-size:24;'>Turn #" . $currentTurn . "</div>");
   echo("<div style='text-align:center; width:200px; font-weight:bold; font-size:16;'>Last Played</div>");
-  echo("<div style='position:relative; top:0px;'>");
+  echo("<div style='position:relative; left: 7px; top:0px;'>");
     if(count($lastPlayed) == 0) echo Card("cardBack", "CardImages", 271);
     else
     {
@@ -917,7 +882,7 @@
       }
     }
   echo("</div>");
-  echo("<div style='position:relative; z-index:-1; left:3px; top:-10px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
+  echo("<div style='position:relative; z-index:-1; left:3px; top:-6px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
   if($turn[0] == "B") $trackerLeft = "85";
   else if($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
@@ -928,7 +893,7 @@
   echo("</div>");
 
 
-  echo("<div style='position:fixed; height: calc(100% - 460px); width:200px; bottom:-13px; right:10px;'>");
+  echo("<div style='position:fixed; height: calc(100% - 460px); width:193px; bottom:-13px; right:15px;'>");
   echo("<div id='gamelog' style=' border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 50px); overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
   echo("</div>");
@@ -944,33 +909,33 @@
 
   function ChoosePopup($zone, $options, $mode, $caption="", $zoneSize=1)
   {
+    global $cardSize;
     $content = "";
     $options = explode(",", $options);
     for($i=0; $i<count($options); ++$i)
     {
-      $content .= Card($zone[$options[$i]], "CardImages", 200, $mode, 0, 0, 0, 0, strval($options[$i]));
+      $content .= Card($zone[$options[$i]], "concat", $cardSize, $mode, 1, 0, 0, 0, strval($options[$i]));
     }
     echo CreatePopup("CHOOSEZONE", [], 0, 1, $caption, 1, $content);
   }
-
 
   function GetCharacterLeft($cardType, $cardSubType)
   {
     global $cardWidth;
     switch($cardType)
     {
-      case "C": return "calc(50% - " . ($cardWidth/2) . "px)";
+      case "C": return "calc(50% - " . ($cardWidth/2 + 5) . "px)";
       //case "W": return "calc(50% " . ($cardSubType == "" ? "- " : "+ ") . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
-      case "W": return "calc(50% - " . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
+      case "W": return "calc(50% - " . ($cardWidth/2 + $cardWidth + 25) . "px)";//TODO: Second weapon
       default: break;
     }
     switch($cardSubType)
     {
-      case "Head": return "90px";
-      case "Chest": return "90px";
-      case "Arms": return ($cardWidth + 100) . "px";
-      case "Legs": return "90px";
-      case "Off-Hand": return "calc(50% + " . ($cardWidth/2 + 10) . "px)";
+      case "Head": return "95px";
+      case "Chest": return "95px";
+      case "Arms": return ($cardWidth + 115) . "px";
+      case "Legs": return "95px";
+      case "Off-Hand": return "calc(50% + " . ($cardWidth/2 + 15) . "px)";
     }
   }
 
@@ -979,17 +944,17 @@
     global $cardSize;
     switch($cardType)
     {
-      case "C": return ($cardSize * 2 + 18) . "px";
-      case "W": return ($cardSize * 2 + 18) . "px";//TODO: Second weapon
+      case "C": return ($cardSize * 2 - 3) . "px";
+      case "W": return ($cardSize * 2 - 3) . "px";//TODO: Second weapon
       default: break;
     }
     switch($cardSubType)
     {
-      case "Head": return ($cardSize * 2 + 70) . "px";
-      case "Chest": return ($cardSize + 60) . "px";
-      case "Arms": return ($cardSize + 60) . "px";
-      case "Legs": return "50px";
-      case "Off-Hand": return ($cardSize * 2 + 18) . "px";
+      case "Head": return ($cardSize * 2 - 25) . "px";
+      case "Chest": return ($cardSize - 10) . "px";
+      case "Arms": return ($cardSize - 10) . "px";
+      case "Legs": return "5px";
+      case "Off-Hand": return ($cardSize * 2 - 3) . "px";
     }
   }
 
@@ -1006,10 +971,10 @@
     }
     switch($cardSubType)
     {
-      case "Head": return "10px";
-      case "Chest": return (20 + $cardSize) . "px";
-      case "Arms": return (20 + $cardSize) . "px";
-      case "Legs": return (30 + $cardSize*2) . "px";
+      case "Head": return "5px";
+      case "Chest": return ($cardSize - 10) . "px";
+      case "Arms": return ($cardSize - 10) . "px";
+      case "Legs": return ($cardSize * 2 - 25) . "px";
       case "Off-Hand": return "52px";
     }
   }
@@ -1022,7 +987,7 @@
       case "DISCARD": return "210px";
       case "DECK": return "210px";
       case "BANISH": return "210px";
-      case "PITCH": return (220 + $cardWidth) . "px";
+      case "PITCH": return (230 + $cardWidth) . "px";
     }
   }
 
@@ -1031,10 +996,10 @@
     global $cardSize;
     switch($zone)
     {
-      case "MYDISCARD": return ($cardSize * 2 + 70) . "px";
-      case "MYDECK": return ($cardSize + 60) . "px";
-      case "MYBANISH": return (50) . "px";
-      case "MYPITCH": return ($cardSize + 60) . "px";
+      case "MYDISCARD": return ($cardSize * 2 - 25) . "px";
+      case "MYDECK": return ($cardSize - 10) . "px";
+      case "MYBANISH": return (5) . "px";
+      case "MYPITCH": return ($cardSize - 10) . "px";
     }
   }
 
@@ -1043,10 +1008,10 @@
     global $cardSize;
     switch($zone)
     {
-      case "THEIRDISCARD": return ($cardSize * 2 + 30) . "px";
-      case "THEIRDECK": return ($cardSize + 20) . "px";
-      case "THEIRBANISH": return (10) . "px";
-      case "THEIRPITCH": return ($cardSize + 20) . "px";
+      case "THEIRDISCARD": return ($cardSize * 2 - 25) . "px";
+      case "THEIRDECK": return ($cardSize - 10) . "px";
+      case "THEIRBANISH": return (5) . "px";
+      case "THEIRPITCH": return ($cardSize - 10) . "px";
     }
   }
 
@@ -1064,7 +1029,7 @@
 
   function DisplayTiles($player)
   {
-    global $cardSize;
+    global $cardSize, $cardSizeAura;
     $auras = GetAuras($player);
 
     $count = 0;
@@ -1072,21 +1037,21 @@
     {
       if($auras[$i] == "WTR075") ++$count;
     }
-    if($count > 0) echo(Card("WTR075", "CardImages", $cardSize, 0, 1, 0, 0, ($count > 1 ? $count : 0)));
+    if($count > 0) echo(Card("WTR075", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
 
     $runechantCount = 0;
     for($i = 0; $i < count($auras); $i += AuraPieces())
     {
       if($auras[$i] == "ARC112") ++$runechantCount;
     }
-    if($runechantCount > 0) echo(Card("ARC112", "CardImages", $cardSize, 0, 1, 0, 0, ($runechantCount > 1 ? $runechantCount : 0)));
+    if($runechantCount > 0) echo(Card("ARC112", "concat", $cardSizeAura, 0, 1, 0, 0, ($runechantCount > 1 ? $runechantCount : 0)) . "&nbsp");
 
     $soulShackleCount = 0;
     for($i = 0; $i < count($auras); $i += AuraPieces())
     {
       if($auras[$i] == "MON186") ++$soulShackleCount;
     }
-    if($soulShackleCount > 0) echo(Card("MON186", "CardImages", $cardSize, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)));
+    if($soulShackleCount > 0) echo(Card("MON186", "concat", $cardSizeAura, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)) . "&nbsp");
 
     $items = GetItems($player);
     $copperCount = 0;
@@ -1094,15 +1059,14 @@
     {
       if($items[$i] == "CRU197") ++$copperCount;
     }
-    if($copperCount > 0) echo(Card("CRU197", "CardImages", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
+    if($copperCount > 0) echo(Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
   }
 
   function GetPhaseHelptext()
   {
-    global $dqState, $turn, $dqState;
+    global $turn;
     $defaultText = "Choose " . TypeToPlay($turn[0]);
-    if(count($dqState) < 5) return $defaultText;
-    return ($dqState[4] != "-" ? implode(" ", explode("_", $dqState[4])) : $defaultText);
+    return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
   }
 
 ?>

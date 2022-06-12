@@ -210,6 +210,10 @@
       case "EVR139": return true;
       case "EVR144": case "EVR145": case "EVR146": return true;
       case "EVR147": case "EVR148": case "EVR149": return true;
+      case "UPR021": case "UPR022": case "UPR023": return true;
+      case "UPR027": case "UPR028": case "UPR029": return true;
+      case "UPR153": return true;
+      default: return false;
     }
   }
 
@@ -231,7 +235,7 @@
 
   function ProcessPhantasmOnBlock($index)
   {
-    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumPhantasmAADestroyed;
     if(CardType($combatChain[$index]) != "AA") return;
     if(CardClass($combatChain[$index]) == "ILLUSIONIST") return;
     $attackID = $combatChain[0];
@@ -244,6 +248,7 @@
     {
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       AttackDestroyed($attackID);
+      if(CardType($attackID) == "AA") IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
       CloseCombatChain();
     }
   }

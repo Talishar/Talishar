@@ -9,6 +9,8 @@
       case "UPR003": return "W";
       case "UPR004": return "E";
       case "UPR005": return "A";
+      case "UPR006": return "A";
+      case "UPR007": return "A";
       case "UPR008": return "A";
       case "UPR009": return "A";
       case "UPR010": return "A";
@@ -18,11 +20,20 @@
       case "UPR016": return "A";
       case "UPR017": return "A";
       case "UPR018": case "UPR019": case "UPR020": return "AA";
+      case "UPR021": case "UPR022": case "UPR023": return "AA";
+      case "UPR024": case "UPR025": case "UPR026": return "AA";
+      case "UPR027": case "UPR028": case "UPR029": return "AA";
+      case "UPR030": case "UPR031": case "UPR032": return "AA";
       case "UPR033": case "UPR034": case "UPR035": return "A";
       case "UPR036": case "UPR037": case "UPR038": return "A";
       case "UPR039": case "UPR040": case "UPR041": return "I";
       case "UPR042": case "UPR043": return "T";
+      case "UPR151": return "E";
+      case "UPR152": return "E";
+      case "UPR153": return "AA";
       case "UPR155": case "UPR156": case "UPR157": return "A";
+      case "UPR406": return "-";
+      case "UPR407": return "-";
       case "UPR408": return "-";
       case "UPR409": return "-";
       case "UPR410": return "-";
@@ -39,12 +50,16 @@
   {
     switch($cardID)
     {
-      case "UPR009": case "UPR010": case "UPR011": case "UPR013": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
+      case "UPR006": case "UPR007": case "UPR009": case "UPR010": case "UPR011": case "UPR013": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
       case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
       case "UPR005": return "Aura";
       case "UPR042": return "Dragon,Ally";
       case "UPR043": return "Ash";
+      case "UPR151": return "Arms";
+      case "UPR152": return "Legs";
+      case "UPR406": return "Dragon,Ally";
+      case "UPR407": return "Dragon,Ally";
       case "UPR408": return "Dragon,Ally";
       case "UPR409": return "Dragon,Ally";
       case "UPR410": return "Dragon,Ally";
@@ -65,6 +80,8 @@
       case "UPR001": case "UPR002": return -1;
       case "UPR004": return -1;
       case "UPR005": return 0;
+      case "UPR006": return 6;
+      case "UPR007": return 5;
       case "UPR008": return 4;
       case "UPR009": return 0;
       case "UPR010": return 0;
@@ -74,10 +91,15 @@
       case "UPR016": return 3;
       case "UPR017": return 1;
       case "UPR018": case "UPR019": case "UPR020": return 1;
+      case "UPR021": case "UPR022": case "UPR023": return 1;
+      case "UPR024": case "UPR025": case "UPR026": return 0;
+      case "UPR027": case "UPR028": case "UPR029": return 2;
+      case "UPR030": case "UPR031": case "UPR032": return 1;
       case "UPR033": case "UPR034": case "UPR035": return 1;
       case "UPR036": case "UPR037": case "UPR038": return 0;
       case "UPR039": case "UPR040": case "UPR041": return 0;
       case "UPR042": case "UPR043": return -1;
+      case "UPR153": return 3;
       case "UPR155": case "UPR156": case "UPR157": return 1;
       default: return 0;
     }
@@ -88,6 +110,8 @@
     switch($cardID)
     {
       case "UPR005": return 1;
+      case "UPR006": return 1;
+      case "UPR007": return 1;
       case "UPR008": return 1;
       case "UPR009": return 1;
       case "UPR010": return 1;
@@ -96,9 +120,10 @@
       case "UPR015": return 1;
       case "UPR016": return 1;
       case "UPR017": return 1;
-      case "UPR018": case "UPR033": case "UPR036": case "UPR039": return 1;
-      case "UPR019": case "UPR034": case "UPR037": case "UPR040": return 2;
-      case "UPR020": case "UPR035": case "UPR038": case "UPR041": return 3;
+      case "UPR018": case "UPR021": case "UPR024": case "UPR027": case "UPR030": case "UPR033": case "UPR036": case "UPR039": return 1;
+      case "UPR019": case "UPR022": case "UPR025": case "UPR028": case "UPR031": case "UPR034": case "UPR037": case "UPR040": return 2;
+      case "UPR020": case "UPR023": case "UPR026": case "UPR029": case "UPR032": case "UPR035": case "UPR038": case "UPR041": return 3;
+      case "UPR153": return 1;
       case "UPR155": return 1;
       case "UPR156": return 2;
       case "UPR157": return 3;
@@ -112,6 +137,8 @@
     {
       case "UPR004": return 0;
       case "UPR005": return 3;
+      case "UPR006": return 3;
+      case "UPR007": return 3;
       case "UPR008": return 3;
       case "UPR009": return 3;
       case "UPR010": return 3;
@@ -121,9 +148,15 @@
       case "UPR016": return 3;
       case "UPR017": return 3;
       case "UPR018": case "UPR019": case "UPR020": return 3;
+      case "UPR021": case "UPR022": case "UPR023": return 3;
+      case "UPR024": case "UPR025": case "UPR026": return 3;
+      case "UPR027": case "UPR028": case "UPR029": return 3;
+      case "UPR030": case "UPR031": case "UPR032": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
       case "UPR039": case "UPR040": case "UPR041": return -1;
+      case "UPR151": return 0;
+      case "UPR152": return 0;
       case "UPR155": case "UPR156": case "UPR157": return 2;
       default: return -1;
     }
@@ -136,7 +169,22 @@
       case "UPR018": return 3;
       case "UPR019": return 2;
       case "UPR020": return 1;
+      case "UPR021": return 5;
+      case "UPR022": return 4;
+      case "UPR023": return 3;
+      case "UPR024": return 4;
+      case "UPR025": return 3;
+      case "UPR026": return 2;
+      case "UPR027": return 8;
+      case "UPR028": return 7;
+      case "UPR029": return 6;
+      case "UPR030": return 3;
+      case "UPR031": return 2;
+      case "UPR032": return 1;
       case "UPR042": return 1;
+      case "UPR153": return 13;
+      case "UPR406": return 6;
+      case "UPR407": return 5;
       case "UPR408": return 4;
       case "UPR409": return 2;
       case "UPR410": return 3;
@@ -157,6 +205,12 @@
     {
       case "UPR004":
         Transform($currentPlayer, "Ash", "UPR042");
+        return "";
+      case "UPR006":
+        Transform($currentPlayer, "Ash", "UPR406");
+        return "";
+      case "UPR007":
+        Transform($currentPlayer, "Ash", "UPR407");
         return "";
       case "UPR008":
         Transform($currentPlayer, "Ash", "UPR408");
@@ -185,6 +239,9 @@
       case "UPR018": case "UPR019": case "UPR020":
         Transform($currentPlayer, "Ash", "UPR042");
         return "";
+      case "UPR030": case "UPR031": case "UPR032":
+        PutPermanentIntoPlay($currentPlayer, "UPR043");
+        return "Sweeping Blow created an Ash token.";
       case "UPR033": case "UPR034": case "UPR035":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
         if($cardID == "UPR033") $maxTransform = 3;
@@ -206,6 +263,53 @@
       case "UPR155": case "UPR156": case "UPR157":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Transmogrify modifies the base attack of your next attack action card.";
+      case "UPR406":
+        $deck = &GetDeck($currentPlayer);
+        $numRed = 0;
+        $cards = "";
+        for($i=0; $i<3 && $i < count($deck); ++$i)
+        {
+          if(PitchValue($deck[$i]) == 1)
+          {
+            ++$numRed;
+            if($cards != "") $cards .= ",";
+            $cards .= $deck[$i];
+          }
+        }
+        $cardsRevealed = RevealCards($cards);
+        if($cardsRevealed)
+        {
+          DealArcane($numRed * 2, 2, "ABILITY", $cardID, false, $currentPlayer);
+        }
+        return "";
+      case "UPR407":
+        $deck = &GetDeck($currentPlayer);
+        $numRed = 0;
+        $cards = "";
+        for($i=0; $i<2 && $i < count($deck); ++$i)
+        {
+          if(PitchValue($deck[$i]) == 1)
+          {
+            ++$numRed;
+            if($cards != "") $cards .= ",";
+            $cards .= $deck[$i];
+          }
+        }
+        $cardsRevealed = RevealCards($cards);
+        if($numRed > 0 && $cardsRevealed)
+        {
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          if($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
+          AddDecisionQueue("EQUIPDEFENSE", $otherPlayer, "-", 1);
+          AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "1", 1);
+          AddDecisionQueue("PASSPARAMETER", $otherPlayer, "{0}", 1);
+          AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
+        }
+        return "";
       case "UPR408":
         $deck = &GetDeck($currentPlayer);
         if(count($deck) == 0) return "You have no cards in your deck.";
@@ -236,6 +340,10 @@
     global $mainPlayer, $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
+      case "UPR024": case "UPR025": case "UPR026":
+        PutPermanentIntoPlay($mainPlayer, "UPR043");
+        Transform($mainPlayer, "Ash", "UPR042");
+        break;
       case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
       default: break;
     }

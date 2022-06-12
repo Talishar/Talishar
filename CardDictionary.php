@@ -532,15 +532,17 @@
         else if($number >= 137 && $number <= 153) return "ILLUSIONIST";
         else return "GENERIC";
       case "UPR":
-        if($number >= 1 && $number <= 43) return "ILLUSIONIST";
-        else if($number >= 44 && $number <= 85) return "NINJA";
-        else if($number >= 86 && $number <= 100) return "NONE";
+        if($number == 0) return "NONE";
+        else if($number >= 1 && $number <= 43) return "ILLUSIONIST";
+        else if($number >= 44 && $number <= 83) return "NINJA";
+        else if($number >= 84 && $number <= 101) return "NONE";
         else if($number >= 102 && $number <= 135) return "WIZARD";
-        else if($number >= 138 && $number <= 150) return "NONE";
+        else if($number >= 136 && $number <= 150) return "NONE";
         else if($number >= 151 && $number <= 157) return "ILLUSIONIST";
         else if($number >= 158 && $number <= 164) return "NINJA";
-        else if($number >= 165 && $number <= 182) return "WIZARD";
-        else if($number >= 408 && $number <= 417) return "ILLUSIONIST";
+        else if($number >= 165 && $number <= 181) return "WIZARD";
+        else if($number >= 182 && $number <= 223) return "GENERIC";
+        else if($number >= 406 && $number <= 417) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";
@@ -863,6 +865,7 @@
     switch($cardID)
     {
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": return ($amountPaid >= 1 ? 2 : 0);
+      case "UPR203": case "UPR204": case "UPR205": return ($amountPaid >= 1 ? 2 : 0);
       default: return 0;
     }
   }
@@ -890,6 +893,7 @@
       case "MON089": return "0,1";
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": return "0,1";
       case "ELE203": return "0,1";
+      case "UPR203": case "UPR204": case "UPR205": return "0,1";
       default:
         return "";
     }
@@ -1745,7 +1749,7 @@
   {
     global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
-    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn;
+    global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
@@ -1849,8 +1853,13 @@
       case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
       case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
       case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
+      case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR089": $restriction = "UPR089"; return NumDraconicChainLinks() < 4;
+      case "UPR153": return GetClassState($currentPlayer, $CS_NumPhantasmAADestroyed) < 1;
+      case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
+      case "UPR162": case "UPR163": case "UPR164": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 0;
       case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
+      case "UPR167": return $currentPlayer == $mainPlayer;
       default: return false;
     }
   }
@@ -1914,6 +1923,7 @@
       case "EVR086": return true;
       case "DVR003": case "DVR006": return true;
       case "RVD003": return true;
+      case "UPR182": return true;
       default: return false;
     }
   }

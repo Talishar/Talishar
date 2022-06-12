@@ -453,7 +453,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($source == "MON229") AddNextTurnEffect("MON229", $player);
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
-    CurrentEffectDamageEffects($player, $source);
+    CurrentEffectDamageEffects($player, $source, $type, $damage);
   }
   if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer))
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
@@ -518,7 +518,7 @@ function CurrentEffectDamageModifiers($source, $type)
   return $modifier;
 }
 
-function CurrentEffectDamageEffects($player, $source)
+function CurrentEffectDamageEffects($player, $source, $type, $damage)
 {
   global $currentTurnEffects;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
@@ -529,6 +529,7 @@ function CurrentEffectDamageEffects($player, $source)
       case "ELE044": case "ELE045": case "ELE046": if(CardType($source) == "AA") PlayAura("ELE111", $player); break;
       case "ELE050": case "ELE051": case "ELE052": if(CardType($source) == "AA") PayOrDiscard($player, 1); break;
       case "ELE064": BlossomingSpellbladeDamageEffect($player); break;
+      case "UPR106": case "UPR107": case "UPR108": if($type == "ARCANE") { PlayAura("ELE111", $player, $damage); $remove = 1; } break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -932,7 +933,7 @@ function GetDieRoll($player)
 function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer, $dqState;
+  global $mainPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
@@ -1032,6 +1033,8 @@ function AttackDestroyed($attackID)
     case "EVR139": MirragingMetamorphDestroyed(); break;
     case "EVR144": case "EVR145": case "EVR146": CoalescentMirageDestroyed(); break;
     case "EVR147": case "EVR148": case "EVR149": PlayAura("MON104", $mainPlayer); break;
+    case "UPR021": case "UPR022": case "UPR023": PutPermanentIntoPlay($mainPlayer, "UPR043"); break;
+    case "UPR027": case "UPR028": case "UPR029": PutPermanentIntoPlay($mainPlayer, "UPR043"); break;
     default: break;
   }
   AttackDestroyedEffects($attackID);

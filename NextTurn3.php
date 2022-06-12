@@ -104,8 +104,6 @@
 
 <body onkeypress='Hotkeys(event)' onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 
-
-
   <script>
 
   function reload() {
@@ -154,161 +152,15 @@
   </script>
 
   <?php
-
   //Display hidden elements
   echo("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
-
-
   echo("<div id='mainDiv' style='left:0px; top:0px; width:100%;height:100%;'></div>");
-
-  echo("<div id='chatbox' style='position:fixed; bottom:0px; right:5px; width:200px; height: 30px;'>");
-  echo("<input style='width:155px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+  echo("<div id='chatbox' style='position:fixed; bottom:0px; right:10px; width:200px; height: 30px;'>");
+  echo("<input style='width:150px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
   echo("<button style='display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("<input type='hidden' id='authKey' value='" . $authKey . "'>");
   echo("</div>");
-
-  function PlayableCardBorderColor($cardID)
-  {
-    if(HasReprise($cardID) && RepriseActive()) return 3;
-    return 0;
-  }
-
-  function ChoosePopup($zone, $options, $mode, $caption="", $zoneSize=1)
-  {
-    $content = "";
-    $options = explode(",", $options);
-    for($i=0; $i<count($options); ++$i)
-    {
-      $content .= Card($zone[$options[$i]], "CardImages", 200, $mode, 0, 0, 0, 0, strval($options[$i]));
-    }
-    echo CreatePopup("CHOOSEZONE", [], 0, 1, $caption, 1, $content);
-  }
-
-
-  function GetCharacterLeft($cardType, $cardSubType)
-  {
-    global $cardWidth;
-    switch($cardType)
-    {
-      case "C": return "calc(50% - " . ($cardWidth/2) . "px)";
-      case "W": return "calc(50% - " . ($cardWidth/2 + $cardWidth + 10) . "px)";
-      default: break;
-    }
-    switch($cardSubType)
-    {
-      case "Head": return "90px";
-      case "Chest": return "90px";
-      case "Arms": return ($cardWidth + 100) . "px";
-      case "Legs": return "90px";
-      case "Off-Hand": return "calc(50% + " . ($cardWidth/2 + 10) . "px)";
-    }
-  }
-
-  function GetCharacterBottom($cardType, $cardSubType)
-  {
-    global $cardSize;
-    switch($cardType)
-    {
-      case "C": return ($cardSize * 2 + 50) . "px";
-      case "W": return ($cardSize * 2 + 50) . "px";
-      default: break;
-    }
-    switch($cardSubType)
-    {
-      case "Head": return ($cardSize * 2 + 70) . "px";
-      case "Chest": return ($cardSize + 60) . "px";
-      case "Arms": return ($cardSize + 60) . "px";
-      case "Legs": return "50px";
-      case "Off-Hand": return ($cardSize * 2 + 50) . "px";
-    }
-  }
-
-  function GetCharacterTop($cardType, $cardSubType)
-  {
-    global $cardSize;
-    switch($cardType)
-    {
-      case "C": return "20px";
-      case "W": return "20px";
-      default: break;
-    }
-    switch($cardSubType)
-    {
-      case "Head": return "10px";
-      case "Chest": return (20 + $cardSize) . "px";
-      case "Arms": return (20 + $cardSize) . "px";
-      case "Legs": return (30 + $cardSize*2) . "px";
-      case "Off-Hand": return "20px";
-    }
-  }
-
-  function GetZoneRight($zone)
-  {
-    global $cardWidth;
-    switch($zone)
-    {
-      case "DISCARD": return "210px";
-      case "DECK": return "210px";
-      case "BANISH": return "210px";
-      case "PITCH": return (220 + $cardWidth) . "px";
-    }
-  }
-
-  function GetZoneBottom($zone)
-  {
-    global $cardSize;
-    switch($zone)
-    {
-      case "MYDISCARD": return ($cardSize * 2 + 70) . "px";
-      case "MYDECK": return ($cardSize + 60) . "px";
-      case "MYBANISH": return (50) . "px";
-      case "MYPITCH": return ($cardSize + 60) . "px";
-    }
-  }
-
-  function GetZoneTop($zone)
-  {
-    global $cardSize;
-    switch($zone)
-    {
-      case "THEIRDISCARD": return ($cardSize * 2 + 30) . "px";
-      case "THEIRDECK": return ($cardSize + 20) . "px";
-      case "THEIRBANISH": return (10) . "px";
-      case "THEIRPITCH": return ($cardSize + 20) . "px";
-    }
-  }
-
-  function IsTileable($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC112": return true;
-      case "CRU197": return true;
-      default: return false;
-    }
-  }
-
-  function DisplayTiles($player)
-  {
-    global $cardSize;
-    $auras = GetAuras($player);
-    $runechantCount = 0;
-    for($i = 0; $i < count($auras); $i += AuraPieces())
-    {
-      if($auras[$i] == "ARC112") ++$runechantCount;
-    }
-    if($runechantCount > 0) echo(Card("ARC112", "CardImages", $cardSize, 0, 1, 0, 0, ($runechantCount > 1 ? $runechantCount : 0)));
-
-    $items = GetItems($player);
-    $copperCount = 0;
-    for($i = 0; $i < count($items); $i += ItemPieces())
-    {
-      if($items[$i] == "CRU197") ++$copperCount;
-    }
-    if($copperCount > 0) echo(Card("CRU197", "CardImages", $cardSize, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)));
-  }
-
 ?>
 </body>

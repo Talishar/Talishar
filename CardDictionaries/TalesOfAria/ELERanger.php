@@ -342,7 +342,7 @@
       case "ELE067": case "ELE068": case "ELE069": return "EARTH";
       case "ELE070": case "ELE071": case "ELE072": return "LIGHTNING";
       case "ELE073": case "ELE074": case "ELE075": return "LIGHTNING";
-      case "ELE076": case "ELE077": case "ELE078": return "EARTH";
+      case "ELE076": case "ELE077": case "ELE078": return "LIGHTNING";
       case "ELE079": case "ELE080": case "ELE081": return "EARTH";
       case "ELE082": case "ELE083": case "ELE084": return "EARTH";
       case "ELE085": case "ELE086": case "ELE087": return "EARTH";
@@ -354,8 +354,13 @@
       case "ELE097": case "ELE098": case "ELE099": return "ICE";
       case "ELE100": case "ELE101": case "ELE102": return "LIGHTNING";
       case "UPR104": return "ICE";
+      case "UPR106": case "UPR107": case "UPR108": return "ICE";
       case "UPR109": return "ICE";
+      case "UPR110": case "UPR111": case "UPR112": return "ICE";
+      case "UPR113": case "UPR114": case "UPR115": return "ICE";
+      case "UPR116": case "UPR117": case "UPR118": return "ICE";
       case "UPR119": case "UPR120": case "UPR121": return "ICE";
+      case "UPR122": case "UPR123": case "UPR124": return "ICE";
       default: return "";
     }
   }

@@ -1038,8 +1038,6 @@ function AttackModifier($cardID, $from="", $resourcesPaid=0, $repriseActive=-1)
     case "RVD009": return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     case "UPR048": return (NumPhoenixFlameChainLinks() >= 2 ? 2 : 0);
     case "UPR098": return (RuptureActive() ? 3 : 0);
-    case "UPR099": return (RuptureActive() ? 2 : 0);
-    case "UPR100": return (RuptureActive() ? 1 : 0);
     case "UPR101": return (NumDraconicChainLinks() >= 2 ? 1 : 0);
     default: return 0;
   }
@@ -1312,15 +1310,15 @@ function CurrentEffectBaseAttackSet($cardID)
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
   {
     $mod = -1;
-    if($currentTurnEffects[$i+1] == $currentPlayer)
+    if($currentTurnEffects[$i+1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i]))
     {
       $remove = 0;
-      switch($currentTurnEffects[$i] && IsCombatEffectActive($currentTurnEffects[$i]))
+      switch($currentTurnEffects[$i])
       {
         case "UPR155": $mod = 8; break;
         case "UPR156": $mod = 7; break;
         case "UPR157": $mod = 6; break;
-        default: return -1;
+        default: break;
       }
       if($mod > $currentModifier) $currentModifier = $mod;
     }
@@ -1330,7 +1328,7 @@ function CurrentEffectBaseAttackSet($cardID)
 
 function CurrentEffectCostModifiers($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
   {
@@ -1356,6 +1354,8 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
         case "ELE144": $costModifier += 1; break;
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID))$costModifier -= 1; $remove = 1; break;
+        case "UPR000": if(DelimStringContains(CardTalent($cardID), "DRACONIC")) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
+        case "UPR075": case "UPR076": case "UPR077": if(GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i+2]) { --$costModifier; $remove = 1; } break;
         default: break;
       }
       if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -1536,6 +1536,7 @@ function CurrentEffectGrantsGoAgain()
         case "EVR044": case "EVR045": case "EVR046": return true;
         case "DVR008": return true;
         case "DVR019": return true;
+        case "UPR081": case "UPR082": case "UPR083": return true;
         case "UPR094": return true;
         default: break;
       }
@@ -1637,6 +1638,7 @@ function CurrentEffectEndTurnAbilities()
         }
         $remove = 1;
         break;
+      case "UPR200": case "UPR201": case "UPR202": Draw($currentTurnEffects[$i+1]); break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -1917,6 +1919,10 @@ function PitchAbility($cardID)
       WriteLog("Grandeur of Valahai created a Seismic Surge when it was pitched.");
       PlayAura("WTR075", $currentPlayer);
       break;
+    case "UPR000":
+      WriteLog("Blood of the Dracai makes each of your next 3 draconic cards this turn cost 1 less.");
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     default:
       break;
   }
@@ -2053,6 +2059,16 @@ function OnBlockEffects($index, $from)
           RemoveGraveyard($currentPlayer, $found);
           AddPlayerHand("UPR101", $currentPlayer, "GY");
         }
+      }
+      break;
+    case "UPR182":
+      BottomDeckDraw();
+      break;
+    case "UPR194": case "UPR195": case "UPR196":
+      if(PlayerHasLessHealth($currentPlayer))
+      {
+        GainHealth(1, $currentPlayer);
+        WriteLog("Fyendal's Fighting Spirit gained 1 health.");
       }
       break;
     default: break;
@@ -2530,7 +2546,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DVR004": case "RVD004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "UPR004": case "UPR047":
+    case "UPR004": case "UPR047": case "UPR085": case "UPR159": case "UPR167":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
   }
@@ -2598,6 +2614,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDTALENT":  $rv = SearchHand($player, "", "", -1, -1, "", $subparam); break;
         case "HANDPITCH": $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam); break;
         case "HANDACTION": $rv = CombineSearches(SearchHand($player, "A"), SearchHand($player, "AA")); break;
+        case "HANDACTIONMAXCOST": $rv = CombineSearches(SearchHand($player, "A", "", $subparam), SearchHand($player, "AA", "", $subparam)); break;
         case "MULTIHAND": $hand = &GetHand($player); $rv = count($hand) . "-" . GetIndices(count($hand)); break;
         case "MULTIHANDAA": $search = SearchHand($player, "AA"); $rv = SearchCount($search) . "-" . $search; break;
         case "ARSENAL": $arsenal = &GetArsenal($player); $rv = GetIndices(count($arsenal), 0, ArsenalPieces()); break;
@@ -2611,6 +2628,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
+        case "HANDAAMAXCOST": $rv = SearchHand($player, "AA","", $subparam); break;
         case "MYHANDAA": $rv = SearchHand($player, "AA"); break;
         case "MYHANDARROW": $rv = SearchHand($player, "", "Arrow"); break;
         case "MYDECKARROW": $rv = SearchDeck($player, "", "Arrow"); break;
@@ -2657,6 +2675,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
         case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
         case "CASHOUT": $rv = CashOutIndices($player); break;
+        case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
+        case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
+        case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
@@ -2680,10 +2701,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIBANISH":
       $cards = explode(",", $lastResult);
       $params = explode(",", $parameter);
+      $mzIndices = "";
       for($i=0; $i<count($cards); ++$i)
       {
-        BanishCardForPlayer($cards[$i], $player, $params[0], $params[1]);
+        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1]);
+        if($mzIndices != "") $mzIndices .= ",";
+        $mzIndices .= "BANISH-" . $index;
       }
+      $dqState[5] = $mzIndices;
       return $lastResult;
     case "REMOVECOMBATCHAIN":
       $cardID = $combatChain[$lastResult];
@@ -2983,7 +3008,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDNEGDEFCOUNTER":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult+4] -= 1;
-      return "Added a negative defense counter.";
+      return $lastResult;
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       return "1";
@@ -3009,6 +3034,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GREATERTHANPASS":
       if($lastResult > $parameter) return "PASS";
       return $lastResult;
+    case "EQUIPDEFENSE":
+      $char = &GetPlayerCharacter($player);
+      $defense = BlockValue($char[$lastResult]) + $char[$lastResult + 4];
+      if($defense < 0) $defense = 0;
+      return $defense;
     case "ALLCARDTYPEORPASS":
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)
@@ -3841,8 +3871,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch($params[0])
       {
         case "ALLY": return $zone[$params[1] + 5];
+        case "BANISH": return $zone[$params[1] + 2];
       }
       return "-1";
+    case "SIFT":
+      $numCards = SearchCount($lastResult);
+      for($i=0; $i<$numCards; ++$i)
+      {
+        Draw($player);
+      }
+      return "1";
     default:
       return "NOTSTATIC";
   }
