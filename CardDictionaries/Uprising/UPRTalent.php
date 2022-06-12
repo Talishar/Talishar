@@ -24,6 +24,7 @@
       case "UPR099": return "AA";
       case "UPR100": return "AA";
       case "UPR101": return "AA";
+      case "UPR136": return "E";
       case "UPR137": return "E";
       case "UPR139": return "A";
       case "UPR141": case "UPR142": case "UPR143": return "A";
@@ -58,6 +59,7 @@
       case "UPR000": return "Gem";
       case "UPR084": return "Chest";
       case "UPR085": return "Chest";
+      case "UPR136": return "Head";
       case "UPR137": return "Head";
       case "UPR139": return "Affliction,Aura";
       case "UPR182": return "Head";
@@ -177,6 +179,7 @@
       case "UPR099": return 3;
       case "UPR100": return 3;
       case "UPR101": return -1;
+      case "UPR136": return 2;
       case "UPR137": return 0;
       case "UPR139": return 2;
       case "UPR141": case "UPR142": case "UPR143": return 1;
@@ -314,6 +317,9 @@
           $rv = "Searing Touch did 2 damage to any target.";
         }
         return $rv;
+      case "UPR136":
+        PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 1);
+        return "Coronet Peak makes the other player pay 1 or discard a card.";
       case "UPR137":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
