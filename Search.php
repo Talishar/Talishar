@@ -586,4 +586,22 @@ function IntimidateCount($player)
   return $count;
 }
 
+function FrozenCount($player)
+{
+  $numFrozen = 0;
+  $char = &GetPlayerCharacter($player);
+  for($i=0; $i<count($char); $i+=CharacterPieces())
+    if($char[$i+8] == "1")
+      ++$numFrozen;
+  $allies = &GetAllies($player);
+  for($i=0; $i<count($allies); $i+=AllyPieces())
+    if($allies[$i+3] == "1")
+      ++$numFrozen;
+  $arsenal = &GetArsenal($player);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+    if($arsenal[$i+4] == "1")
+      ++$numFrozen;
+  return $numFrozen;
+}
+
 ?>

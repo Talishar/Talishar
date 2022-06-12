@@ -354,6 +354,7 @@
       case "ELE097": case "ELE098": case "ELE099": return "ICE";
       case "ELE100": case "ELE101": case "ELE102": return "LIGHTNING";
       case "UPR104": return "ICE";
+      case "UPR105": return "ICE";
       case "UPR106": case "UPR107": case "UPR108": return "ICE";
       case "UPR109": return "ICE";
       case "UPR110": case "UPR111": case "UPR112": return "ICE";
