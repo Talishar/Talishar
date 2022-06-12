@@ -1924,6 +1924,7 @@
       case "DVR003": case "DVR006": return true;
       case "RVD003": return true;
       case "UPR136": return true;
+      case "UPR158": return true;
       case "UPR182": return true;
       default: return false;
     }

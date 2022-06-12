@@ -303,7 +303,7 @@ function ArsenalHitEffects()
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards;
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumLess3PowPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
@@ -325,6 +325,13 @@ function CharacterPlayCardAbilities($cardID, $from)
         {
           PlayAura("ELE110", $currentPlayer);
           WriteLog("Briar created an Embodiment of Lightning aura.");
+        }
+        break;
+      case "UPR158":
+        if(GetClassState($currentPlayer, $CS_NumLess3PowPlayed) == 2 && AttackValue($cardID) <= 2)
+        {
+          AddCurrentTurnEffect($character[$i], $currentPlayer);
+          WriteLog("Tiger Strike Shuko gives the attack +1 and makes the damage unable to be prevented.");
         }
         break;
       default:
@@ -370,6 +377,7 @@ function DamageTrigger($player, $damage, $type, $source="NA")
 function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
+  if(SearchCurrentTurnEffects("UPR158", $player)) return false;
   return true;
 }
 
