@@ -135,6 +135,7 @@
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;
       case "UPR094": return true;
+      case "UPR154": return CardClass($attackID) == "ILLUSIONIST";
       case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
       case "UPR158": return true;
       default: return false;
