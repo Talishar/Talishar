@@ -365,4 +365,34 @@
     }
   }
 
+  function CurrentTurnFuseEffects($player, $element)
+  {
+    global $currentTurnEffects;
+    $costModifier = 0;
+    for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+    {
+      $remove = 0;
+      if($player == $currentTurnEffects[$i+1])
+      {
+        switch($currentTurnEffects[$i])
+        {
+          case "UPR141": case "UPR142": case "UPR143":
+            if($element == "ICE")
+            {
+              $otherPlayer = ($player == 1 ? 2 : 1);
+              if($currentTurnEffects[$i] == "UPR141") $numFrost = 4;
+              else if($currentTurnEffects[$i] == "UPR142") $numFrost = 3;
+              else $numFrost = 2;
+              PlayAura("ELE111", $otherPlayer, $numFrost);
+              $remove = 1;
+            }
+            break;
+          default: break;
+        }
+        if($remove == 1) RemoveCurrentTurnEffect($i);
+      }
+    }
+    return $costModifier;
+  }
+
 ?>
