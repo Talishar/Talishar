@@ -241,6 +241,11 @@
       case "UPR167":
         GainResources($currentPlayer, 1);
         return "Spellfire Cloak gained 1 resource.";
+      case "UPR168":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPX,2");
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        return "Tome of Duplicity lets you look at the top 2 cards of your deck.";
       case "UPR173": case "UPR174": case "UPR175":
         if($cardID == "UPR173") $damage = 3;
         else if($cardID == "UPR174") $damage = 2;
