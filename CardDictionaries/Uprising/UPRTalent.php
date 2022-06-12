@@ -6,6 +6,7 @@
     switch($cardID)
     {
       case "UPR000": return "R";
+      case "UPR084": return "E";
       case "UPR085": return "E";
       case "UPR086": return "AA";
       case "UPR087": return "AR";
@@ -55,6 +56,7 @@
     switch($cardID)
     {
       case "UPR000": return "Gem";
+      case "UPR084": return "Chest";
       case "UPR085": return "Chest";
       case "UPR137": return "Head";
       case "UPR139": return "Affliction,Aura";
@@ -157,6 +159,7 @@
     switch($cardID)
     {
       case "UPR000": return -1;
+      case "UPR084": return 2;
       case "UPR085": return 0;
       case "UPR086": return 2;
       case "UPR087": return 2;
@@ -243,6 +246,15 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
+      case "UPR084":
+        $pitch = &GetPitch($currentPlayer);
+        $numRed = 0;
+        for($i=0; $i<count($pitch); $i+=PitchPieces())
+        {
+          if(PitchValue($pitch[$i]) == 1) ++$numRed;
+        }
+        GainResources($currentPlayer, $numRed);
+        return "Flamescale Furnace gains one resource for each red in your pitch zone.";
       case "UPR085":
         GainResources($currentPlayer, 1);
         return "Sash of Sandikai gained a resource.";
