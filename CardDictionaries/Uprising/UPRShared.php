@@ -47,7 +47,9 @@
       case "UPR009": return true;
       case "UPR010": return true;
       case "UPR011": return true;
+      case "UPR012": return true;
       case "UPR013": return true;
+      case "UPR014": return true;
       case "UPR015": return true;
       case "UPR016": return true;
       case "UPR017": return true;

@@ -1008,7 +1008,9 @@ if($set == "UPR"){
     case "009": return "Invoke Azvolai";
     case "010": return "Invoke Cromai";
     case "011": return "Invoke Kyloria";
+    case "012": return "Invoke Miragai";
     case "013": return "Invoke Nekria";
+    case "014": return "Invoke Ouvia";
     case "015": return "Invoke Themai";
     case "016": return "Invoke Vyskerai";
     case "017": return "Invoke Yenderai";
