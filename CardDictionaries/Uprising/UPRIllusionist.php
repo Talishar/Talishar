@@ -40,7 +40,9 @@
       case "UPR409": return "-";
       case "UPR410": return "-";
       case "UPR411": return "-";
+      case "UPR412": return "-";
       case "UPR413": return "-";
+      case "UPR414": return "-";
       case "UPR415": return "-";
       case "UPR416": return "-";
       case "UPR417": return "-";
@@ -66,7 +68,9 @@
       case "UPR409": return "Dragon,Ally";
       case "UPR410": return "Dragon,Ally";
       case "UPR411": return "Dragon,Ally";
+      case "UPR412": return "Dragon,Ally";
       case "UPR413": return "Dragon,Ally";
+      case "UPR414": return "Dragon,Ally";
       case "UPR415": return "Dragon,Ally";
       case "UPR416": return "Dragon,Ally";
       case "UPR417": return "Dragon,Ally";
@@ -197,7 +201,9 @@
       case "UPR409": return 2;
       case "UPR410": return 3;
       case "UPR411": return 4;
+      case "UPR412": return 2;
       case "UPR413": return 4;
+      case "UPR414": return 1;
       case "UPR415": return 3;
       case "UPR416": return 6;
       case "UPR417": return 3;
