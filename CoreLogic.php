@@ -1051,6 +1051,16 @@ function AttackDestroyed($attackID)
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
     AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
   }
+  if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "UPR152"))
+  {
+    AddDecisionQueue("YESNO", $mainPlayer, "Do_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
+    AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
+    AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+    AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIPCARD,UPR152", 1);
+    AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
+  }
 }
 
 function AttackDestroyedEffects($attackID)
