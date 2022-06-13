@@ -1552,6 +1552,7 @@ function FinalizeChainLink($chainClosed=false)
       $chainAttackModifiers = [];
       EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
       $allies = &GetAllies($defPlayer);
+      $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack);
       $allies[$index+2] -= $totalAttack;
       if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
       //TODO: Does this need to do all of ResolveChainLink?

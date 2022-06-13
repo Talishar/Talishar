@@ -91,9 +91,12 @@
   //Frozen - 0 = no, 1 = yes
   //Subcards , delimited
   //Unique ID
+  //Misc. Counters
+  //Health Counters
+  //Ability/effect Uses
   function AllyPieces()
   {
-    return 6;
+    return 9;
   }
 
   //Card ID
