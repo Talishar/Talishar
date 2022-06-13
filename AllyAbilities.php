@@ -8,7 +8,10 @@ function PlayAlly($cardID, $player, $subCards="-")
   array_push($allies, AllyHealth($cardID));
   array_push($allies, 0);//Frozen
   array_push($allies, $subCards);//Subcards
-  array_push($allies, GetUniqueId());
+  array_push($allies, GetUniqueId());//Unique ID
+  array_push($allies, AllyEntersArenaCounters($cardID));//Misc Counters
+  array_push($allies, 0);//Life Counters
+  array_push($allies, 1);//Ability/effect uses
   if($cardID == "UPR414") { WriteLog("Ouvia lets you transform an ashling."); Transform($player, "Ash", "UPR042"); }
   return count($allies) - AllyPieces();
 }
@@ -66,6 +69,33 @@ function AllyStartTurnAbilities($player)
       case "UPR414": WriteLog("Ouvia lets you transform an ashling."); Transform($player, "Ash", "UPR042"); break;
       default: break;
     }
+  }
+}
+
+function AllyEntersArenaCounters($cardID)
+{
+  switch($cardID)
+  {
+    case "UPR417": return 1;
+    default: return 0;
+  }
+}
+
+function AllyDamagePrevention($player, $index, $damage)
+{
+  $allies = &GetAllies($player);
+  $cardID = $allies[$index];
+  switch($cardID)
+  {
+    case "UPR417":
+      if($allies[$index+6] > 0)
+      {
+        $damage -= 3;
+        if($damage < 0) $damage = 0;
+        --$allies[$index+6];
+      }
+      return $damage;
+    default: return $damage;
   }
 }
 
