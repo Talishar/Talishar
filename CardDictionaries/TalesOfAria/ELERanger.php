@@ -354,6 +354,7 @@
       case "ELE097": case "ELE098": case "ELE099": return "ICE";
       case "ELE100": case "ELE101": case "ELE102": return "LIGHTNING";
       case "UPR104": return "ICE";
+      case "UPR105": return "ICE";
       case "UPR106": case "UPR107": case "UPR108": return "ICE";
       case "UPR109": return "ICE";
       case "UPR110": case "UPR111": case "UPR112": return "ICE";
@@ -362,6 +363,53 @@
       case "UPR119": case "UPR120": case "UPR121": return "ICE";
       case "UPR122": case "UPR123": case "UPR124": return "ICE";
       default: return "";
+    }
+  }
+
+  function CurrentTurnFuseEffects($player, $element)
+  {
+    global $currentTurnEffects;
+    $costModifier = 0;
+    for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
+    {
+      $remove = 0;
+      if($player == $currentTurnEffects[$i+1])
+      {
+        switch($currentTurnEffects[$i])
+        {
+          case "UPR141": case "UPR142": case "UPR143":
+            if($element == "ICE")
+            {
+              $otherPlayer = ($player == 1 ? 2 : 1);
+              if($currentTurnEffects[$i] == "UPR141") $numFrost = 4;
+              else if($currentTurnEffects[$i] == "UPR142") $numFrost = 3;
+              else $numFrost = 2;
+              PlayAura("ELE111", $otherPlayer, $numFrost);
+              $remove = 1;
+            }
+            break;
+          default: break;
+        }
+        if($remove == 1) RemoveCurrentTurnEffect($i);
+      }
+    }
+    return $costModifier;
+  }
+
+  function AuraFuseEffects($player, $element)
+  {
+    $auras = &GetAuras($player);
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      switch($auras[$i])
+      {
+        case "UPR140":
+          PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
+          --$auras[$i+2];
+          if($auras[$i+2] == 0) { DestroyAura($player, $i); WriteLog("Insidious Chill was destroyed."); }
+          break;
+        default: break;
+      }
     }
   }
 

@@ -158,6 +158,7 @@ function StartTurnAbilities()
   }
   DefCharacterStartTurnAbilities();
   AuraStartTurnAbilities();
+  AllyStartTurnAbilities($mainPlayer);
   $mainItems = &GetItems($mainPlayer);
   for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
   {
@@ -302,7 +303,7 @@ function ArsenalHitEffects()
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards;
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumLess3PowPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
@@ -324,6 +325,13 @@ function CharacterPlayCardAbilities($cardID, $from)
         {
           PlayAura("ELE110", $currentPlayer);
           WriteLog("Briar created an Embodiment of Lightning aura.");
+        }
+        break;
+      case "UPR158":
+        if(GetClassState($currentPlayer, $CS_NumLess3PowPlayed) == 2 && AttackValue($cardID) <= 2)
+        {
+          AddCurrentTurnEffect($character[$i], $currentPlayer);
+          WriteLog("Tiger Strike Shuko gives the attack +1 and makes the damage unable to be prevented.");
         }
         break;
       default:
@@ -369,6 +377,7 @@ function DamageTrigger($player, $damage, $type, $source="NA")
 function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
+  if(SearchCurrentTurnEffects("UPR158", $player)) return false;
   return true;
 }
 
@@ -1050,6 +1059,16 @@ function AttackDestroyed($attackID)
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
     AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+  }
+  if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "UPR152"))
+  {
+    AddDecisionQueue("YESNO", $mainPlayer, "Do_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
+    AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
+    AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+    AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+    AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIPCARD,UPR152", 1);
+    AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
   }
 }
 

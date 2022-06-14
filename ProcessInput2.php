@@ -847,7 +847,7 @@ function FinalizeChainLink($chainClosed=false)
     $mainAllies = &GetAllies($mainPlayer);
     for($i=0; $i<count($mainAllies); $i+=AllyPieces())
     {
-      if($mainAllies[$i+1] == 1) { $mainAllies[$i+1] = 2; $mainAllies[$i+2] = AllyHealth($mainAllies[$i]); }
+      if($mainAllies[$i+1] != 0) { $mainAllies[$i+1] = 2; $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7]; }
     }
 
     //Reset Auras
@@ -1036,6 +1036,7 @@ function FinalizeChainLink($chainClosed=false)
           SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
         }
         if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
+        if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
         if($currentPlayer == $mainPlayer)
         {
           if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
@@ -1423,7 +1424,7 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $turn, $combatChain, $currentPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
-    global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID;
+    global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowPlayed;
     $character = &GetPlayerCharacter($currentPlayer);
     $definedCardType = CardType($cardID);
     //Figure out where it goes
@@ -1443,6 +1444,7 @@ function FinalizeChainLink($chainClosed=false)
         if(!$chainClosed || $definedCardType == "AA")
         {
           AuraAttackAbilities($cardID);
+          AllyAttackAbilities($cardID);
           ArsenalAttackAbilities();
           OnAttackEffects($cardID);
         }
@@ -1452,6 +1454,7 @@ function FinalizeChainLink($chainClosed=false)
         $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
         $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
         $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
+        if($attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowPlayed);
         if($definedCardType == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && $attackValue >= 6) KayoStaticAbility();
         $openedChain = true;
         if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -1547,7 +1550,9 @@ function FinalizeChainLink($chainClosed=false)
       $chainAttackModifiers = [];
       EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
       $allies = &GetAllies($defPlayer);
+      $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack);
       $allies[$index+2] -= $totalAttack;
+      if($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
       if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
       //TODO: Does this need to do all of ResolveChainLink?
       $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;

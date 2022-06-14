@@ -20,14 +20,14 @@ counter = 1
 while counter<10:
     
     if counter < 10 :
-        filename = "EVR00"+ str(counter)
+        filename = "UPR00"+ str(counter)
     if counter <100:
         
-        filename = "EVR0"+ str(counter)
+        filename = "UPR0"+ str(counter)
 
     else :
 
-        filename = "EVR"+ str(counter)
+        filename = "UPR"+ str(counter)
     r = urllib.request.urlretrieve(url + filename + ".png")
     output = open(filename, 'wb').write(r.read())
     output.close()                           

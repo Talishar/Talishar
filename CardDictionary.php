@@ -1923,6 +1923,8 @@
       case "EVR086": return true;
       case "DVR003": case "DVR006": return true;
       case "RVD003": return true;
+      case "UPR136": return true;
+      case "UPR158": return true;
       case "UPR182": return true;
       default: return false;
     }
@@ -1959,6 +1961,7 @@
       case "CRU141": return true;
       case "EVR018": return true;
       case "EVR020": return true;
+      case "UPR084": return true;
       default: return false;
     }
   }

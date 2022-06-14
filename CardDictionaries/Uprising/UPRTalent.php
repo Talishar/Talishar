@@ -6,6 +6,7 @@
     switch($cardID)
     {
       case "UPR000": return "R";
+      case "UPR084": return "E";
       case "UPR085": return "E";
       case "UPR086": return "AA";
       case "UPR087": return "AR";
@@ -23,7 +24,11 @@
       case "UPR099": return "AA";
       case "UPR100": return "AA";
       case "UPR101": return "AA";
+      case "UPR136": return "E";
+      case "UPR137": return "E";
       case "UPR139": return "A";
+      case "UPR140": return "A";
+      case "UPR141": case "UPR142": case "UPR143": return "A";
       case "UPR144": case "UPR145": case "UPR146": return "A";
       case "UPR147": case "UPR148": case "UPR149": return "A";
       case "UPR150": return "T";
@@ -53,8 +58,12 @@
     switch($cardID)
     {
       case "UPR000": return "Gem";
+      case "UPR084": return "Chest";
       case "UPR085": return "Chest";
+      case "UPR136": return "Head";
+      case "UPR137": return "Head";
       case "UPR139": return "Affliction,Aura";
+      case "UPR140": return "Aura";
       case "UPR182": return "Head";
       case "UPR183": return "Head";
       case "UPR184": return "Chest";
@@ -89,6 +98,8 @@
       case "UPR100": return 1;
       case "UPR101": return 0;
       case "UPR139": return 0;
+      case "UPR140": return 3;
+      case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 0;
       case "UPR147": case "UPR148": case "UPR149": return 1;
       case "UPR187": return 2;
@@ -131,9 +142,10 @@
       case "UPR100": return 1;
       case "UPR101": return 1;
       case "UPR139": return 3;
-      case "UPR144": case "UPR147": return 1;
-      case "UPR145": case "UPR148": return 2;
-      case "UPR146": case "UPR149": return 3;
+      case "UPR140": return 3;
+      case "UPR141": case "UPR144": case "UPR147": return 1;
+      case "UPR142": case "UPR145": case "UPR148": return 2;
+      case "UPR143": case "UPR146": case "UPR149": return 3;
       case "UPR187": return 1;
       case "UPR188": return 1;
       case "UPR189": return 2;
@@ -153,6 +165,7 @@
     switch($cardID)
     {
       case "UPR000": return -1;
+      case "UPR084": return 2;
       case "UPR085": return 0;
       case "UPR086": return 2;
       case "UPR087": return 2;
@@ -170,7 +183,11 @@
       case "UPR099": return 3;
       case "UPR100": return 3;
       case "UPR101": return -1;
+      case "UPR136": return 2;
+      case "UPR137": return 0;
       case "UPR139": return 2;
+      case "UPR140": return 2;
+      case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       case "UPR182": return 2;
@@ -237,6 +254,15 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
+      case "UPR084":
+        $pitch = &GetPitch($currentPlayer);
+        $numRed = 0;
+        for($i=0; $i<count($pitch); $i+=PitchPieces())
+        {
+          if(PitchValue($pitch[$i]) == 1) ++$numRed;
+        }
+        GainResources($currentPlayer, $numRed);
+        return "Flamescale Furnace gains one resource for each red in your pitch zone.";
       case "UPR085":
         GainResources($currentPlayer, 1);
         return "Sash of Sandikai gained a resource.";
@@ -296,6 +322,22 @@
           $rv = "Searing Touch did 2 damage to any target.";
         }
         return $rv;
+      case "UPR136":
+        PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 1);
+        return "Coronet Peak makes the other player pay 1 or discard a card.";
+      case "UPR137":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        return "Glacial Horns lets you freeze an arsenal card and ally.";
+      case "UPR141": case "UPR142": case "UPR143":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Isenhowl Weathervane creates frostbites the next time you fuse Ice.";
       case "UPR144": case "UPR145": case "UPR146":
         if($cardID == "UPR144") $numFrostbites = 3;
         else if($cardID == "UPR145") $numFrostbites = 2;

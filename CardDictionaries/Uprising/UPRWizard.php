@@ -7,6 +7,7 @@
     {
       case "UPR102": case "UPR103": return "C";
       case "UPR104": return "A";
+      case "UPR105": return "A";
       case "UPR106": case "UPR107": case "UPR108": return "DR";
       case "UPR109": return "A";
       case "UPR110": case "UPR111": case "UPR112": return "A";
@@ -51,6 +52,7 @@
     {
       case "UPR102": case "UPR103": return 0;
       case "UPR104": return 0;
+      case "UPR105": return 3;
       case "UPR106": case "UPR107": case "UPR108": return 1;
       case "UPR109": return 0;
       case "UPR110": case "UPR111": case "UPR112": return 3;
@@ -77,6 +79,7 @@
     switch($cardID)
     {
       case "UPR104": return 1;
+      case "UPR105": return 1;
       case "UPR109": return 3;
       case "UPR126": return 3;
       case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": return 1;
@@ -99,6 +102,7 @@
     switch($cardID)
     {
       case "UPR102": case "UPR103": return -1;
+      case "UPR105": return 3;
       case "UPR106": return 4;
       case "UPR107": return 3;
       case "UPR108": return 2;
@@ -132,6 +136,15 @@
           AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
         }
         return "Encase deals 3 arcane.";
+      case "UPR105":
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Ice Affliction")) + FrozenCount($otherPlayer);
+        }
+        else $damage = 5;
+        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "";
       case "UPR106": case "UPR107": case "UPR108":
         $rv = "";
         if(DelimStringContains($additionalCosts, "ICE"))
@@ -241,12 +254,30 @@
       case "UPR167":
         GainResources($currentPlayer, 1);
         return "Spellfire Cloak gained 1 resource.";
+      case "UPR168":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPX,2");
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        return "Tome of Duplicity lets you look at the top 2 cards of your deck.";
       case "UPR173": case "UPR174": case "UPR175":
         if($cardID == "UPR173") $damage = 3;
         else if($cardID == "UPR174") $damage = 2;
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
+      case "UPR179": case "UPR180": case "UPR181":
+        DealArcane(1, 0, "PLAYCARD", $cardID, false, $currentPlayer);
+        if($cardID == "UPR179") $maxAllies = 3;
+        else if($cardID == "UPR180") $maxAllies = 2;
+        else $maxAllies = 1;
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $allies = &GetAllies($otherPlayer);
+        if(count($allies) < $maxAllies) $maxAllies = count($allies);
+        for($i=0; $i<$maxAllies; ++$i)
+        {
+          DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        }
+        return "Singe is a partially manual card. You have to make sure you damage each target no more than once.";
       default: return "";
     }
   }

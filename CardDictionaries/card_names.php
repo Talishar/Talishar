@@ -1008,7 +1008,9 @@ if($set == "UPR"){
     case "009": return "Invoke Azvolai";
     case "010": return "Invoke Cromai";
     case "011": return "Invoke Kyloria";
+    case "012": return "Invoke Miragai";
     case "013": return "Invoke Nekria";
+    case "014": return "Invoke Ouvia";
     case "015": return "Invoke Themai";
     case "016": return "Invoke Vyskerai";
     case "017": return "Invoke Yenderai";
@@ -1038,6 +1040,7 @@ if($set == "UPR"){
     case "075": case "076": case "077": return "Rising Resentment";
     case "078": case "079": case "080": return "Ronin Renegade";
     case "081": case "082": case "083": return "Searing Strike";
+    case "084": return "Flamescale Furnace";
     case "085": return "Sash of Sandikai";
     case "086": return "Thaw";
     case "087": return "Liquefy";
@@ -1055,6 +1058,7 @@ if($set == "UPR"){
     case "100": return "Stoke the Flames";
     case "101": return "Phoenix Flame";
     case "104": return "Encase";
+    case "105": return "Freezing Point";
     case "106": case "107": case "108": return "Sigil of Permafrost";
     case "109": return "Ice Eternal";
     case "110": case "111": case "112": return "Succumb to Winter";
@@ -1066,10 +1070,20 @@ if($set == "UPR"){
     case "127": case "128": case "129": return "Aether Hail";
     case "130": case "131": case "132": return "Frosting";
     case "133": case "134": case "135": return "Ice Bolt";
+    case "136": return "Coronet Peak";
+    case "137": return "Glacial Horns";
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
+    case "140": return "Insidious Chill";
+    case "141": case "142": case "143": return "Isenhowl Weathervane";
     case "144": case "145": case "146": return "Arctic Incarceration";
     case "147": case "148": case "149": return "Cold Snap";
+    case "151": return "Ghostly Touch";
+    case "152": return "Silent Stilettos";
+    case "153": return "Frightmare";
+    case "154": return "Semblance";
+    case "155": case "156": case "157": return "Transmogrify";
+    case "158": return "Tiger Stripe Shuko";
     case "159": return "Tide Flippers";
     case "160": return "Double Strike";
     case "161": return "Take the Tempo";
@@ -1108,6 +1122,7 @@ if($set == "UPR"){
     case "409": return "Azvolai";
     case "410": return "Cromai";
     case "411": return "Kyloria";
+    case "412": return "Miragai";
     case "413": return "Nekria";
     case "415": return "Themai";
     case "416": return "Vyskerai";

@@ -11,6 +11,8 @@
     {
       case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
       case "UPR046": return 2;
+      case "UPR084": return 1;
+      case "UPR136": return 3;
       case "UPR165": return 2;
       case "UPR183": return 2;
       default: return 0;
@@ -25,7 +27,10 @@
       case "UPR044": case "UPR045": return "I";
       case "UPR046": return "AA";
       case "UPR047": return "I";
+      case "UPR084": return "I";
       case "UPR085": return "I";
+      case "UPR136": return "A";
+      case "UPR137": return "A";
       case "UPR159": return "AR";
       case "UPR165": return "I";
       case "UPR167": return "I";
@@ -46,7 +51,9 @@
       case "UPR009": return true;
       case "UPR010": return true;
       case "UPR011": return true;
+      case "UPR012": return true;
       case "UPR013": return true;
+      case "UPR014": return true;
       case "UPR015": return true;
       case "UPR016": return true;
       case "UPR017": return true;
@@ -75,6 +82,7 @@
       case "UPR096": return true;
       case "UPR097": return true;
       case "UPR101": return true;
+      case "UPR141": case "UPR142": case "UPR143": return true;
       case "UPR147": case "UPR148": case "UPR149": return true;
       case "UPR155": case "UPR156": case "UPR157": return true;
       case "UPR160": return true;
@@ -88,7 +96,7 @@
   {
     switch($cardID)
     {
-
+      case "UPR137": return true;
       default: return false;
     }
   }
@@ -109,6 +117,7 @@
       case "UPR088": return 1;
       case "UPR091": return NumPhoenixFlameChainLinks()*2;
       case "UPR094": return 2;
+      case "UPR158": return 1;
       default: return 0;
     }
   }
@@ -126,7 +135,10 @@
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;
       case "UPR094": return true;
+      case "UPR154": return CardClass($attackID) == "ILLUSIONIST";
       case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
+      case "UPR158": return true;
+      case "UPR412": return true;
       default: return false;
     }
   }
