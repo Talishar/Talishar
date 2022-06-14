@@ -39,7 +39,7 @@ function AllyHealth($cardID)
     case "UPR409": return 3;
     case "UPR410": return 2;
     case "UPR411": return 2;
-    case "UPR412": return 6;
+    case "UPR412": return 4;
     case "UPR413": return 7;
     case "UPR414": return 4;
     case "UPR415": return 4;
@@ -96,6 +96,26 @@ function AllyDamagePrevention($player, $index, $damage)
       }
       return $damage;
     default: return $damage;
+  }
+}
+
+function AllyAttackAbilities($attackID)
+{
+  global $mainPlayer;
+  $allies = &GetAllies($mainPlayer);
+  for($i=0; $i<count($allies); $i+=AllyPieces())
+  {
+    switch($allies[$i])
+    {
+      case "UPR412":
+        if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon"))
+        {
+          AddCurrentTurnEffect("UPR412", $mainPlayer);
+          --$allies[$i+8];
+        }
+        break;
+      default: break;
+    }
   }
 }
 

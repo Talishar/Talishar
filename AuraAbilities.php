@@ -367,7 +367,6 @@ function AuraPlayAbilities($cardID, $from)
     switch($auras[$i])
     {
       case "MON157": DimenxxionalCrossroadsPassive($cardID, $from); break;
-      case "EVR142": if($auras[$i+5]>0 && CardType($cardID) == "AA" && CardClass($cardID) == "ILLUSIONIST") { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $currentPlayer, true); } break;
       case "EVR143": if($auras[$i+5]>0 && CardType($cardID) == "AA" && CardClass($cardID) == "ILLUSIONIST") { WriteLog("Pierce Reality gives the attack +2."); --$auras[$i+5]; AddCurrentTurnEffect("EVR143", $currentPlayer, true); } break;
       default: break;
     }
@@ -391,7 +390,8 @@ function AuraAttackAbilities($attackID)
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
-      case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { WriteLog("Burn Them All deals 1 arcane damage."); --$auras[$i+5]; DealArcane(1, 0, "STATIC", $cardID, false, $currentPlayer); } break;
+      case "EVR142": if($auras[$i+5]>0 && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $mainPlayer, true); } break;
+      case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { WriteLog("Burn Them All deals 1 arcane damage."); --$auras[$i+5]; DealArcane(1, 0, "STATIC", $cardID, false, $mainPlayer); } break;
       default: break;
     }
     if($remove == 1)

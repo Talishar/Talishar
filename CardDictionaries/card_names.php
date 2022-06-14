@@ -1122,6 +1122,7 @@ if($set == "UPR"){
     case "409": return "Azvolai";
     case "410": return "Cromai";
     case "411": return "Kyloria";
+    case "412": return "Miragai";
     case "413": return "Nekria";
     case "415": return "Themai";
     case "416": return "Vyskerai";

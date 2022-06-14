@@ -138,6 +138,7 @@
       case "UPR154": return CardClass($attackID) == "ILLUSIONIST";
       case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
       case "UPR158": return true;
+      case "UPR412": return true;
       default: return false;
     }
   }
