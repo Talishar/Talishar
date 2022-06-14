@@ -3,7 +3,7 @@
   include '../Libraries/HTTPLibraries.php';
   include '../Libraries/IOLibraries.php';
 
-  $numPlayers=TryGet("numPlayers", 1);
+  $numPlayers = $_POST["numPlayers"];
 
   //First get your game ID
   $gcFile = fopen("HostFiles/Counter.txt", "r+");
