@@ -851,7 +851,7 @@ function FinalizeChainLink($chainClosed=false)
     $mainAllies = &GetAllies($mainPlayer);
     for($i=0; $i<count($mainAllies); $i+=AllyPieces())
     {
-      if($mainAllies[$i+1] == 1) { $mainAllies[$i+1] = 2; $mainAllies[$i+2] = AllyHealth($mainAllies[$i]); }
+      if($mainAllies[$i+1] != 0) { $mainAllies[$i+1] = 2; $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7]; }
     }
 
     //Reset Auras
@@ -1555,6 +1555,7 @@ function FinalizeChainLink($chainClosed=false)
       $allies = &GetAllies($defPlayer);
       $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack);
       $allies[$index+2] -= $totalAttack;
+      if($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
       if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
       //TODO: Does this need to do all of ResolveChainLink?
       $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;

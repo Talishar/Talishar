@@ -363,12 +363,20 @@
 
   function UPRIllusionistHitEffect($cardID)
   {
-    global $mainPlayer, $combatChainState, $CCS_AttackFused;
+    global $mainPlayer, $combatChainState, $CCS_AttackFused, $CCS_WeaponIndex;
     switch($cardID)
     {
       case "UPR024": case "UPR025": case "UPR026":
         PutPermanentIntoPlay($mainPlayer, "UPR043");
         Transform($mainPlayer, "Ash", "UPR042");
+        break;
+      case "UPR413":
+        $index = $combatChainState[$CCS_WeaponIndex];
+        $allies = &GetAllies($mainPlayer);
+        $allies[$index+2] -= 1;
+        $allies[$index+7] -= 1;
+        PlayAura("UPR042", $mainPlayer);
+        WriteLog("Nekria got a -1 health counter and created an ash token.");
         break;
       case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
       default: break;
