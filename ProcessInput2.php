@@ -1040,6 +1040,7 @@ function FinalizeChainLink($chainClosed=false)
           SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
         }
         if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
+        if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
         if($currentPlayer == $mainPlayer)
         {
           if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
