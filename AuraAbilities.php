@@ -184,6 +184,7 @@ function AuraStartTurnAbilities()
         { $dest = "Runeblood Invocation is destroyed."; }
         else { --$auras[$i+2]; PlayAura("ARC112", $mainPlayer); } break;
       case "EVR131": case "EVR132": case "EVR133": $dest = "Pyroglyphic Protection is destroyed."; break;
+      case "UPR190": $dest = "Fog Down is destroyed."; break;
       default: break;
     }
     if($dest != "")
