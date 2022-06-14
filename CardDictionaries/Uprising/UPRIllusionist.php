@@ -363,12 +363,20 @@
 
   function UPRIllusionistHitEffect($cardID)
   {
-    global $mainPlayer, $combatChainState, $CCS_AttackFused, $CCS_WeaponIndex;
+    global $mainPlayer, $combatChainState, $CCS_AttackFused, $CCS_WeaponIndex, $defPlayer;
     switch($cardID)
     {
       case "UPR024": case "UPR025": case "UPR026":
         PutPermanentIntoPlay($mainPlayer, "UPR043");
         Transform($mainPlayer, "Ash", "UPR042");
+        break;
+      case "UPR411":
+        $items = &GetItems($defPlayer);
+        if(count($items) == 0)
+        {
+          Draw($mainPlayer);
+          WriteLog("Kyloria drew a card.");
+        }
         break;
       case "UPR413":
         $index = $combatChainState[$CCS_WeaponIndex];
