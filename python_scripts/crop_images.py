@@ -6,7 +6,7 @@ from os.path import isfile, join
 
 mypath = "."
 path = mypath
-dirs = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "jpg" in f ]
+dirs = [f for f in sorted(listdir(mypath)) if isfile(join(mypath, f)) and "png" in f ]
 
 def crop():
     for item in dirs:
