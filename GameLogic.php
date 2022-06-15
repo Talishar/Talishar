@@ -3024,6 +3024,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "OPTX":
       Opt("NA", $parameter);
       return $lastResult;
+    case "SETCLASSSTATE":
+      SetClassState($player, $parameter, $lastResult);
+      return $lastResult;
     case "GAINACTIONPOINTS":
       $actionPoints += $parameter;
       return $lastResult;
