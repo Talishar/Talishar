@@ -30,10 +30,10 @@ function SearchBanish($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, 
   return SearchInner($banish, BanishPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
-function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false, $maxAttack=-1, $maxDef=-1)
 {
   global $combatChain;
-  return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+  return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef);
 }
 
 function SearchArsenal($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
@@ -66,7 +66,7 @@ function SearchPermanents($player, $type="", $subtype="", $maxCost=-1, $minCost=
   return SearchInner($permanents, PermanentPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
-function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1)
+function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1, $maxDef=-1)
 {
   $cardList = "";
   if(!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
