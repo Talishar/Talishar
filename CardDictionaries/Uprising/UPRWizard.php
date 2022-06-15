@@ -124,7 +124,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $mainPlayer;
+    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention;
     $rv = "";
     switch($cardID)
     {
@@ -262,6 +262,13 @@
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
         return "Tome of Duplicity lets you look at the top 2 cards of your deck.";
+      case "UPR170": case "UPR171": case "UPR172":
+        if($cardID == "UPR170") $damage = 4;
+        else if($cardID == "UPR171") $damage = 3;
+        else $damage = 2;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
+        return "";
       case "UPR173": case "UPR174": case "UPR175":
         if($cardID == "UPR173") $damage = 3;
         else if($cardID == "UPR174") $damage = 2;
