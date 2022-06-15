@@ -119,6 +119,7 @@
       case "UPR091": return NumPhoenixFlameChainLinks()*2;
       case "UPR094": return 2;
       case "UPR158": return 1;
+      case "UPR191": case "UPR192": case "UPR193": return 2;
       default: return 0;
     }
   }
@@ -139,6 +140,7 @@
       case "UPR154": return CardClass($attackID) == "ILLUSIONIST";
       case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
       case "UPR158": return true;
+      case "UPR191": case "UPR192": case "UPR193": return true;
       case "UPR412": return true;
       default: return false;
     }
