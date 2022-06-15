@@ -33,6 +33,7 @@
       case "UPR137": return "A";
       case "UPR159": return "AR";
       case "UPR165": return "I";
+      case "UPR166": return "I";
       case "UPR167": return "I";
       case "UPR183": return "I";
       default: return "";
