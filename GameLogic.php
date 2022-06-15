@@ -1353,9 +1353,10 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE035-1": $costModifier += 1; break;
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
         case "ELE144": $costModifier += 1; break;
-        case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID))$costModifier -= 1; $remove = 1; break;
+        case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID)) $costModifier -= 1; $remove = 1; break;
         case "UPR000": if(DelimStringContains(CardTalent($cardID), "DRACONIC")) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
         case "UPR075": case "UPR076": case "UPR077": if(GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i+2]) { --$costModifier; $remove = 1; } break;
+        case "UPR166": if(IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) $costModifier -= 3; $remove = 1; break;
         default: break;
       }
       if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -2539,15 +2540,21 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "EVR053": case "EVR103": case "EVR137":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    default:
-      --$character[$cardIndex+5];
-      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
-      break;
     case "DVR004": case "RVD004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "UPR004": case "UPR047": case "UPR085": case "UPR159": case "UPR167":
       DestroyCharacter($currentPlayer, $cardIndex);
+      break;
+    case "UPR151":
+      $character[$cardIndex+2] -= 1;
+      break;
+    case "UPR166":
+      $character[$cardIndex+2] -= 2;
+      break;
+    default:
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;//By default, if it's used, set it to used
       break;
   }
 }
@@ -2626,6 +2633,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
         case "EQUIPCARD": $rv = FindCharacterIndex($player, $subparam); break;
         case "CCAA": $rv = SearchCombatChain("AA"); break;
+        case "CCDEFLESSX": $rv = SearchCombatChain("", "", -1, -1, "", "", false, false, -1, false, -1, $subparam); break;
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
@@ -3020,6 +3028,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "OPTX":
       Opt("NA", $parameter);
       return $lastResult;
+    case "SETCLASSSTATE":
+      SetClassState($player, $parameter, $lastResult);
+      return $lastResult;
     case "GAINACTIONPOINTS":
       $actionPoints += $parameter;
       return $lastResult;
@@ -3330,10 +3341,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       //Create cancel point
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source, 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
+      PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1, 1);
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
       return $parameter;
+    case "ARCANECHOSEN":
+      if($lastResult > 0)
+      {
+        if(SearchCharacterActive($player, "UPR166"))
+        {
+          $char = &GetPlayerCharacter($player);
+          $index = FindCharacterIndex($player, "UPR166");
+          if($char[$index+2] < 4) ++$char[$index+2];
+        }
+      }
+      return $lastResult;
     case "TAKEARCANE":
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
@@ -3884,6 +3907,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
       }
       return "1";
+    case "CCFILTERTYPE":
+      $arr = explode(",", $lastResult);
+      $rv = [];
+      for($i=0; $i<count($arr); ++$i)
+      {
+        if(CardType($combatChain[$arr[$i]]) != $parameter) array_push($rv, $arr[$i]);
+      }
+      return implode(",", $rv);
+    case "CCFILTERPLAYER":
+      $arr = explode(",", $lastResult);
+      $rv = [];
+      for($i=0; $i<count($arr); ++$i)
+      {
+        if($combatChain[$arr[$i]+1] != $parameter) array_push($rv, $arr[$i]);
+      }
+      return implode(",", $rv);
     default:
       return "NOTSTATIC";
   }

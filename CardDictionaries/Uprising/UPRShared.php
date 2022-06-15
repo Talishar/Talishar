@@ -15,6 +15,7 @@
       case "UPR136": return 3;
       case "UPR165": return 2;
       case "UPR183": return 2;
+      case "UPR551": return 3;
       default: return 0;
     }
   }
@@ -31,10 +32,13 @@
       case "UPR085": return "I";
       case "UPR136": return "A";
       case "UPR137": return "A";
+      case "UPR151": return "A";
       case "UPR159": return "AR";
       case "UPR165": return "I";
+      case "UPR166": return "I";
       case "UPR167": return "I";
       case "UPR183": return "I";
+      case "UPR551": return "AA";
       default: return "";
     }
   }
@@ -97,12 +101,16 @@
     switch($cardID)
     {
       case "UPR137": return true;
+      case "UPR151": return true;
       default: return false;
     }
   }
 
   function UPREffectAttackModifier($cardID)
   {
+    $params = explode("-", $cardID);
+    $cardID = $params[0];
+    if(count($params) > 0) $subparam = $params[1];
     switch($cardID)
     {
       case "UPR036": return 3;
@@ -117,13 +125,18 @@
       case "UPR088": return 1;
       case "UPR091": return NumPhoenixFlameChainLinks()*2;
       case "UPR094": return 2;
+      case "UPR151": return $subparam;
       case "UPR158": return 1;
+      case "UPR191": case "UPR192": case "UPR193": return 2;
       default: return 0;
     }
   }
 
   function UPRCombatEffectActive($cardID, $attackID)
   {
+    $params = explode("-", $cardID);
+    $cardID = $params[0];
+    if(count($params) > 0) $subparam = $params[1];
     switch($cardID)
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
@@ -135,9 +148,11 @@
       case "UPR088": return CardTalent($attackID) == "DRACONIC";
       case "UPR091": return true;
       case "UPR094": return true;
+      case "UPR151": return $attackID == "UPR551";
       case "UPR154": return CardClass($attackID) == "ILLUSIONIST";
       case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
       case "UPR158": return true;
+      case "UPR191": case "UPR192": case "UPR193": return true;
       case "UPR412": return true;
       default: return false;
     }

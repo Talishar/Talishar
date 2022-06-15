@@ -106,6 +106,7 @@
       case "UPR106": return 4;
       case "UPR107": return 3;
       case "UPR108": return 2;
+      case "UPR166": return 0;
       case "UPR168": return 2;
       case "UPR169": return -1;
       case "UPR176": case "UPR177": case "UPR178": return 2;
@@ -124,7 +125,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $mainPlayer;
+    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention;
     $rv = "";
     switch($cardID)
     {
@@ -251,6 +252,9 @@
         else $damage = 2;
         DealArcane($damage, 1, "ABILITY", $cardID);
         return "Waning Moon deals arcane damage.";
+      case "UPR166":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Alluvion Constellas discounts your next staff ability by 3.";
       case "UPR167":
         GainResources($currentPlayer, 1);
         return "Spellfire Cloak gained 1 resource.";
@@ -259,6 +263,13 @@
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
         return "Tome of Duplicity lets you look at the top 2 cards of your deck.";
+      case "UPR170": case "UPR171": case "UPR172":
+        if($cardID == "UPR170") $damage = 4;
+        else if($cardID == "UPR171") $damage = 3;
+        else $damage = 2;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
+        return "";
       case "UPR173": case "UPR174": case "UPR175":
         if($cardID == "UPR173") $damage = 3;
         else if($cardID == "UPR174") $damage = 2;

@@ -47,6 +47,7 @@
       case "UPR415": return "-";
       case "UPR416": return "-";
       case "UPR417": return "-";
+      case "UPR551": return "-";
       default: return "";
     }
   }
@@ -75,6 +76,7 @@
       case "UPR415": return "Dragon,Ally";
       case "UPR416": return "Dragon,Ally";
       case "UPR417": return "Dragon,Ally";
+      case "UPR551": return "Ally";
       default: return "";
     }
   }
@@ -283,6 +285,14 @@
         AddDecisionQueue("MZGETUNIQUEID", $currentPlayer, "-");
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND");
         return "";
+      case "UPR151":
+        $gtIndex = FindCharacterIndex($currentPlayer, "UPR151");
+        $char = &GetPlayerCharacter($currentPlayer);
+        $index = PlayAlly("UPR551", $currentPlayer);
+        $allies = &GetAllies($currentPlayer);
+        $allies[$index+2] = $char[$gtIndex+2];
+        AddCurrentTurnEffect($cardID . "-" . $char[$gtIndex+2], $currentPlayer);
+        return "Ghostly Touch animated itself into an Ally.";
       case "UPR154":
         AddCurrentTurnEffect("UPR154", $currentPlayer);
         return "Semblance makes your next illusionist attack lose Phantasm.";
@@ -404,6 +414,17 @@
   {
     $materialType = RemovePermanent($player, $materialIndex);
     return PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
+  }
+
+  function GhostlyTouchPhantasmDestroy()
+  {
+    global $mainPlayer;
+    $ghostlyTouchIndex = FindCharacterIndex($mainPlayer, "UPR151");
+    if($ghostlyTouchIndex > -1)
+    {
+      $char = &GetPlayerCharacter($mainPlayer);
+      ++$char[$ghostlyTouchIndex+2];
+    }
   }
 
 ?>

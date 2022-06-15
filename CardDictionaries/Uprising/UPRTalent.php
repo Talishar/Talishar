@@ -363,6 +363,12 @@
         $char = &GetPlayerCharacter($currentPlayer);
         $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
         return "Helio's Mitre prevents 1 damage.";
+      case "UPR191": case "UPR192": case "UPR193":
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0," . 2, 0, 1);
+        AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
+        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        return "Flex lets you pay 2 to give it +2 attack.";
       case "UPR194": case "UPR195": case "UPR196":
         $rv = "";
         if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); $rv = "Fyendal's Fighting Spirit gained 1 health."; }

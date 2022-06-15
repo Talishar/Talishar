@@ -213,6 +213,7 @@
       case "UPR021": case "UPR022": case "UPR023": return true;
       case "UPR027": case "UPR028": case "UPR029": return true;
       case "UPR153": return true;
+      case "UPR551": return true;
       default: return false;
     }
   }
@@ -247,6 +248,10 @@
     if(IsPhantasmActive() && ($av >= 6))
     {
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+      if(CardType($attackID) == "AA" && CardClass($attackID) == "ILLUSIONIST")
+      {
+        GhostlyTouchPhantasmDestroy();
+      }
       AttackDestroyed($attackID);
       if(CardType($attackID) == "AA") IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
       CloseCombatChain();
