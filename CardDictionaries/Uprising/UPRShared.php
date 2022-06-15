@@ -110,7 +110,7 @@
   {
     $params = explode("-", $cardID);
     $cardID = $params[0];
-    if(count($params) > 0) $subparam = $params[1];
+    if(count($params) > 1) $subparam = $params[1];
     switch($cardID)
     {
       case "UPR036": return 3;
@@ -136,7 +136,7 @@
   {
     $params = explode("-", $cardID);
     $cardID = $params[0];
-    if(count($params) > 0) $subparam = $params[1];
+    if(count($params) > 1) $subparam = $params[1];
     switch($cardID)
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
