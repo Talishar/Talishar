@@ -7,6 +7,7 @@
     {
       case "UPR102": case "UPR103": return "C";
       case "UPR104": return "A";
+      case "UPR105": return "A";
       case "UPR106": case "UPR107": case "UPR108": return "DR";
       case "UPR109": return "A";
       case "UPR110": case "UPR111": case "UPR112": return "A";
@@ -16,8 +17,17 @@
       case "UPR122": case "UPR123": case "UPR124": return "A";
       case "UPR126": return "A";
       case "UPR127": case "UPR128": case "UPR129": return "A";
+      case "UPR130": case "UPR131": case "UPR132": return "A";
       case "UPR133": case "UPR134": case "UPR135": return "A";
       case "UPR165": return "W";
+      case "UPR166": return "E";
+      case "UPR167": return "E";
+      case "UPR168": return "A";
+      case "UPR169": return "I";
+      case "UPR170": case "UPR171": case "UPR172": return "A";
+      case "UPR173": case "UPR174": case "UPR175": return "A";
+      case "UPR176": case "UPR177": case "UPR178": return "A";
+      case "UPR179": case "UPR180": case "UPR181": return "A";
       default: return "";
     }
   }
@@ -28,6 +38,9 @@
     {
       case "UPR126": return "Affliction,Aura";
       case "UPR165": return "Staff";
+      case "UPR166": return "Chest";
+      case "UPR167": return "Chest";
+      case "UPR176": case "UPR177": case "UPR178": return "Aura";
       default: return "";
     }
   }
@@ -39,6 +52,7 @@
     {
       case "UPR102": case "UPR103": return 0;
       case "UPR104": return 0;
+      case "UPR105": return 3;
       case "UPR106": case "UPR107": case "UPR108": return 1;
       case "UPR109": return 0;
       case "UPR110": case "UPR111": case "UPR112": return 3;
@@ -48,7 +62,14 @@
       case "UPR122": case "UPR123": case "UPR124": return 2;
       case "UPR126": return 3;
       case "UPR127": case "UPR128": case "UPR129": return 1;
+      case "UPR130": case "UPR131": case "UPR132": return 0;
       case "UPR133": case "UPR134": case "UPR135": return 2;
+      case "UPR168": return 3;
+      case "UPR169": return 1;
+      case "UPR170": case "UPR171": case "UPR172": return 2;
+      case "UPR173": case "UPR174": case "UPR175": return 0;
+      case "UPR176": case "UPR177": case "UPR178": return 0;
+      case "UPR179": case "UPR180": case "UPR181": return 1;
       default: return 0;
     }
   }
@@ -58,14 +79,20 @@
     switch($cardID)
     {
       case "UPR104": return 1;
+      case "UPR105": return 1;
       case "UPR109": return 3;
       case "UPR126": return 3;
-      case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": case "UPR133": return 1;
-      case "UPR107": case "UPR111": case "UPR114": case "UPR117": case "UPR120": case "UPR123": case "UPR134": return 2;
-      case "UPR108": case "UPR112": case "UPR115": case "UPR118": case "UPR121": case "UPR124": case "UPR135": return 3;
-      case "UPR127": return 1;
-      case "UPR128": return 2;
-      case "UPR129": return 3;
+      case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": return 1;
+      case "UPR107": case "UPR111": case "UPR114": case "UPR117": case "UPR120": case "UPR123": return 2;
+      case "UPR108": case "UPR112": case "UPR115": case "UPR118": case "UPR121": case "UPR124": return 3;
+      case "UPR127": case "UPR130": case "UPR133": return 1;
+      case "UPR128": case "UPR131": case "UPR134": return 2;
+      case "UPR129": case "UPR132": case "UPR135": return 3;
+      case "UPR168": return 3;
+      case "UPR169": return 3;
+      case "UPR170": case "UPR173": case "UPR176": case "UPR179": return 1;
+      case "UPR171": case "UPR174": case "UPR177": case "UPR180": return 2;
+      case "UPR172": case "UPR175": case "UPR178": case "UPR181": return 3;
       default: return 0;
     }
   }
@@ -75,9 +102,14 @@
     switch($cardID)
     {
       case "UPR102": case "UPR103": return -1;
+      case "UPR105": return 3;
       case "UPR106": return 4;
       case "UPR107": return 3;
       case "UPR108": return 2;
+      case "UPR166": return 0;
+      case "UPR168": return 2;
+      case "UPR169": return -1;
+      case "UPR176": case "UPR177": case "UPR178": return 2;
       default: return 3;
     }
   }
@@ -93,7 +125,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $mainPlayer;
+    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention;
     $rv = "";
     switch($cardID)
     {
@@ -105,6 +137,15 @@
           AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
         }
         return "Encase deals 3 arcane.";
+      case "UPR105":
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Ice Affliction")) + FrozenCount($otherPlayer);
+        }
+        else $damage = 5;
+        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "";
       case "UPR106": case "UPR107": case "UPR108":
         $rv = "";
         if(DelimStringContains($additionalCosts, "ICE"))
@@ -143,6 +184,27 @@
           PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2);
         }
         return "";
+      case "UPR116": case "UPR117": case "UPR118":
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $hand = &GetHand($otherPlayer);
+        $cards = "";
+        for($i=0; $i<count($hand); ++$i)
+        {
+          if($cards != "") $cards .= ",";
+          $cards .= $hand[$i];
+        }
+        $cardsRevealed = RevealCards($cards);
+        if($cardsRevealed && DelimStringContains($additionalCosts, "ICE"))
+        {
+          if($cardID == "UPR116") $maxCost = 2;
+          else if($cardID == "UPR117") $maxCost = 1;
+          else $maxCost = 0;
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDACTIONMAXCOST," . $maxCost);
+          AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $otherPlayer, "-", 1);
+        }
+        return "";
       case "UPR119": case "UPR120": case "UPR121":
         if($cardID == "UPR119") $damage = 3;
         else if($cardID == "UPR120") $damage = 2;
@@ -174,6 +236,11 @@
         else $damage = 2;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
+      case "UPR130": case "UPR131": case "UPR132":
+        if($cardID == "UPR130") $damage = 3;
+        else if($cardID == "UPR131") $damage = 2;
+        else $damage = 1;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
@@ -185,6 +252,43 @@
         else $damage = 2;
         DealArcane($damage, 1, "ABILITY", $cardID);
         return "Waning Moon deals arcane damage.";
+      case "UPR166":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Alluvion Constellas discounts your next staff ability by 3.";
+      case "UPR167":
+        GainResources($currentPlayer, 1);
+        return "Spellfire Cloak gained 1 resource.";
+      case "UPR168":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPX,2");
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        return "Tome of Duplicity lets you look at the top 2 cards of your deck.";
+      case "UPR170": case "UPR171": case "UPR172":
+        if($cardID == "UPR170") $damage = 4;
+        else if($cardID == "UPR171") $damage = 3;
+        else $damage = 2;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
+        return "";
+      case "UPR173": case "UPR174": case "UPR175":
+        if($cardID == "UPR173") $damage = 3;
+        else if($cardID == "UPR174") $damage = 2;
+        else $damage = 1;
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "";
+      case "UPR179": case "UPR180": case "UPR181":
+        DealArcane(1, 0, "PLAYCARD", $cardID, false, $currentPlayer);
+        if($cardID == "UPR179") $maxAllies = 3;
+        else if($cardID == "UPR180") $maxAllies = 2;
+        else $maxAllies = 1;
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $allies = &GetAllies($otherPlayer);
+        if(count($allies) < $maxAllies) $maxAllies = count($allies);
+        for($i=0; $i<$maxAllies; ++$i)
+        {
+          DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        }
+        return "Singe is a partially manual card. You have to make sure you damage each target no more than once.";
       default: return "";
     }
   }

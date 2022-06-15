@@ -212,6 +212,8 @@
       case "EVR147": case "EVR148": case "EVR149": return true;
       case "UPR021": case "UPR022": case "UPR023": return true;
       case "UPR027": case "UPR028": case "UPR029": return true;
+      case "UPR153": return true;
+      case "UPR551": return true;
       default: return false;
     }
   }
@@ -220,7 +222,7 @@
   {
     global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     if(count($combatChain) == 0) return false;
-    if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer)) { return false; }
+    if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("UPR155", "UPR156", "UPR157", $mainPlayer)) return true;
@@ -234,7 +236,7 @@
 
   function ProcessPhantasmOnBlock($index)
   {
-    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumPhantasmAADestroyed;
     if(CardType($combatChain[$index]) != "AA") return;
     if(CardClass($combatChain[$index]) == "ILLUSIONIST") return;
     $attackID = $combatChain[0];
@@ -246,7 +248,12 @@
     if(IsPhantasmActive() && ($av >= 6))
     {
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+      if(CardType($attackID) == "AA" && CardClass($attackID) == "ILLUSIONIST")
+      {
+        GhostlyTouchPhantasmDestroy();
+      }
       AttackDestroyed($attackID);
+      if(CardType($attackID) == "AA") IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
       CloseCombatChain();
     }
   }

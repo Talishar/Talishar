@@ -19,6 +19,13 @@
       <input type="submit" style="font-size:20px;" value="Welcome To Rathe">
     </form>
   </div>
+
+  <h2>Solo Sealed Practice</h2>
+  <div class="draft-form-form">
+    <form action="SealedFiles/CreateGame.php" method="post">
+      <input type="submit" style="font-size:20px;" value="Uprising">
+    </form>
+  </div>
 </section>
 <?php
   include_once 'Footer.php'

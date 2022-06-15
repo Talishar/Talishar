@@ -22,8 +22,11 @@
       case "UPR075": case "UPR076": case "UPR077": return "AA";
       case "UPR078": case "UPR079": case "UPR080": return "AA";
       case "UPR081": case "UPR082": case "UPR083": return "AA";
+      case "UPR158": return "E";
+      case "UPR159": return "E";
       case "UPR160": return "AA";
       case "UPR161": return "AA";
+      case "UPR162": case "UPR163": case "UPR164": return "AR";
       default: return "";
     }
   }
@@ -34,6 +37,8 @@
     {
       case "UPR046": return "Sword";
       case "UPR047": return "Arms";
+      case "UPR158": return "Arms";
+      case "UPR159": return "Legs";
       default: return "";
     }
   }
@@ -59,6 +64,7 @@
       case "UPR081": case "UPR082": case "UPR083": return 1;
       case "UPR160": return 0;
       case "UPR161": return 1;
+      case "UPR162": case "UPR163": case "UPR164": return 1;
       default: return 0;
     }
   }
@@ -75,6 +81,9 @@
       case "UPR053": case "UPR056": case "UPR059": case "UPR062": case "UPR065": case "UPR068": case "UPR071": case "UPR074": case "UPR077": case "UPR080": case "UPR083": return 3;
       case "UPR160": return 1;
       case "UPR161": return 1;
+      case "UPR162": return 1;
+      case "UPR163": return 2;
+      case "UPR164": return 3;
       default: return 0;
     }
   }
@@ -98,8 +107,11 @@
       case "UPR075": case "UPR076": case "UPR077": return 2;
       case "UPR078": case "UPR079": case "UPR080": return 2;
       case "UPR081": case "UPR082": case "UPR083": return 2;
+      case "UPR158": return 2;
+      case "UPR159": return 0;
       case "UPR160": return 2;
       case "UPR161": return 3;
+      case "UPR162": case "UPR163": case "UPR164": return 3;
       default: return -1;
     }
   }
@@ -111,6 +123,7 @@
       case "UPR046": return 3;
       case "UPR048": return 3;
       case "UPR049": return 3;
+      case "UPR050": return 1;
       case "UPR051": return 5;
       case "UPR052": return 4;
       case "UPR053": return 3;
@@ -143,6 +156,9 @@
       case "UPR083": return 2;
       case "UPR160": return 1;
       case "UPR161": return 3;
+      case "UPR162": return 3;
+      case "UPR163": return 2;
+      case "UPR164": return 1;
       default: return 0;
     }
   }
@@ -165,6 +181,14 @@
       case "UPR049":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Spreading Flames buffs your draconic attacks this turn.";
+      case "UPR050":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
+        AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
+        AddDecisionQueue("CCFILTERPLAYER", $currentPlayer, $currentPlayer);
+        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-");
+        AddDecisionQueue("MULTIBANISH", ($currentPlayer == 1 ? 2 : 1), "CC,-");
+        return "";
       case "UPR057": case "UPR058": case "UPR059":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
@@ -172,6 +196,9 @@
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         return "";
+      case "UPR159":
+        GiveAttackGoAgain();
+        return "Tide Flippers gave the attack Go Again.";
       default: return "";
     }
   }
@@ -201,6 +228,17 @@
             array_shift($deck);
           }
         }
+        break;
+      case "UPR054": case "UPR055": case "UPR056":
+      case "UPR075": case "UPR076": case "UPR077":
+      case "UPR081": case "UPR082": case "UPR083":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . (NumDraconicChainLinks()-1));
+        AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{I}", 1);
+        AddDecisionQueue("MZGETUNIQUEID", $mainPlayer, "-", 1);
+        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;
       case "UPR161":
         WriteLog($combatChainState[$CCS_NumHits]);

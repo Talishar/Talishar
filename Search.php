@@ -30,10 +30,10 @@ function SearchBanish($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, 
   return SearchInner($banish, BanishPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
-function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
+function SearchCombatChain($type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false, $maxAttack=-1, $maxDef=-1)
 {
   global $combatChain;
-  return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
+  return SearchInner($combatChain, CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef);
 }
 
 function SearchArsenal($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
@@ -66,7 +66,7 @@ function SearchPermanents($player, $type="", $subtype="", $maxCost=-1, $minCost=
   return SearchInner($permanents, PermanentPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
-function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1)
+function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack=-1, $maxDef=-1)
 {
   $cardList = "";
   if(!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
@@ -584,6 +584,24 @@ function IntimidateCount($player)
     if($banish[$i+1] == "INT") ++$count;
   }
   return $count;
+}
+
+function FrozenCount($player)
+{
+  $numFrozen = 0;
+  $char = &GetPlayerCharacter($player);
+  for($i=0; $i<count($char); $i+=CharacterPieces())
+    if($char[$i+8] == "1")
+      ++$numFrozen;
+  $allies = &GetAllies($player);
+  for($i=0; $i<count($allies); $i+=AllyPieces())
+    if($allies[$i+3] == "1")
+      ++$numFrozen;
+  $arsenal = &GetArsenal($player);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+    if($arsenal[$i+4] == "1")
+      ++$numFrozen;
+  return $numFrozen;
 }
 
 ?>

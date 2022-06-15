@@ -996,16 +996,21 @@ if ($set == "MON")
 if($set == "UPR"){
   switch($num)
   {
+    case "000": return "Blood of the Dracai";
     case "001": return "Dromai, Ash Artist";
     case "002": return "Dromai";
     case "003": return "Storm of Sandikai";
     case "004": return "Silken Form";
     case "005": return "Burn Them All";
+    case "006": return "Invoke Dracona Optimai";
+    case "007": return "Invoke Tomeltai";
     case "008": return "Invoke Dominia";
     case "009": return "Invoke Azvolai";
     case "010": return "Invoke Cromai";
     case "011": return "Invoke Kyloria";
+    case "012": return "Invoke Miragai";
     case "013": return "Invoke Nekria";
+    case "014": return "Invoke Ouvia";
     case "015": return "Invoke Themai";
     case "016": return "Invoke Vyskerai";
     case "017": return "Invoke Yenderai";
@@ -1035,6 +1040,7 @@ if($set == "UPR"){
     case "075": case "076": case "077": return "Rising Resentment";
     case "078": case "079": case "080": return "Ronin Renegade";
     case "081": case "082": case "083": return "Searing Strike";
+    case "084": return "Flamescale Furnace";
     case "085": return "Sash of Sandikai";
     case "086": return "Thaw";
     case "087": return "Liquefy";
@@ -1043,6 +1049,7 @@ if($set == "UPR"){
     case "090": return "Red Hot";
     case "091": return "Rise Up";
     case "092": return "Blaze Headlong";
+    case "093": return "Breaking Point";
     case "094": return "Burn Away";
     case "095": return "Flameborn Retribution";
     case "097": return "Inflame";
@@ -1051,6 +1058,7 @@ if($set == "UPR"){
     case "100": return "Stoke the Flames";
     case "101": return "Phoenix Flame";
     case "104": return "Encase";
+    case "105": return "Freezing Point";
     case "106": case "107": case "108": return "Sigil of Permafrost";
     case "109": return "Ice Eternal";
     case "110": case "111": case "112": return "Succumb to Winter";
@@ -1060,13 +1068,35 @@ if($set == "UPR"){
     case "122": case "123": case "124": return "Polar Cap";
     case "126": return "Frost Hex";
     case "127": case "128": case "129": return "Aether Hail";
+    case "130": case "131": case "132": return "Frosting";
     case "133": case "134": case "135": return "Ice Bolt";
+    case "136": return "Coronet Peak";
+    case "137": return "Glacial Horns";
     case "138": return "Channel the Bleak Expanse";
     case "139": return "Hypothermia";
+    case "140": return "Insidious Chill";
+    case "141": case "142": case "143": return "Isenhowl Weathervane";
+    case "144": case "145": case "146": return "Arctic Incarceration";
     case "147": case "148": case "149": return "Cold Snap";
+    case "151": return "Ghostly Touch";
+    case "152": return "Silent Stilettos";
+    case "153": return "Frightmare";
+    case "154": return "Semblance";
+    case "155": case "156": case "157": return "Transmogrify";
+    case "158": return "Tiger Stripe Shuko";
+    case "159": return "Tide Flippers";
     case "160": return "Double Strike";
     case "161": return "Take the Tempo";
+    case "162": case "163": case "164": return "Rapid Reflex";
     case "165": return "Waning Moon";
+    case "166": return "Alluvion Constellas";
+    case "167": return "Spellfire Cloak";
+    case "168": return "Tome of Duplicity";
+    case "169": return "Rewind";
+    case "170": case "171": case "172": return "Dampen";
+    case "173": case "174": case "175": return "Aether Dart";
+    case "176": case "177": case "178": return "Read the Ripples";
+    case "179": case "180": case "181": return "Singe";
     case "182": return "Crown of Providence";
     case "183": return "Helio's Mitre";
     case "184": return "Quelling Robe";
@@ -1082,17 +1112,22 @@ if($set == "UPR"){
     case "200": case "201": case "202": return "Strategic Planning";
     case "203": case "204": case "205": return "Brothers in Arms";
     case "206": case "207": case "208": return "Critical Strike";
+    case "212": case "213": case "214": return "Trade In";
     case "215": case "216": case "217": return "Healing Balm";
     case "218": case "219": case "220": return "Sigil of Protection";
     case "221": case "222": case "223": return "Oasis Respite";
+    case "406": return "Dracona Optima";
+    case "407": return "Tomeltai";
     case "408": return "Dominia";
     case "409": return "Azvolai";
     case "410": return "Cromai";
     case "411": return "Kyloria";
+    case "412": return "Miragai";
     case "413": return "Nekria";
     case "415": return "Themai";
     case "416": return "Vyskerai";
     case "417": return "Yenderai";
+    case "551": return "Ghostly Touch";
     default: return "Name not populated - please report bug";
   }
 }
