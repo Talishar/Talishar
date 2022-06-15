@@ -2546,6 +2546,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "UPR004": case "UPR047": case "UPR085": case "UPR159": case "UPR167":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "UPR151":
+      $character[$cardIndex+2] -= 1;
+      break;
     case "UPR166":
       $character[$cardIndex+2] -= 2;
       break;

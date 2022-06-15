@@ -1127,6 +1127,7 @@ if($set == "UPR"){
     case "415": return "Themai";
     case "416": return "Vyskerai";
     case "417": return "Yenderai";
+    case "551": return "Ghostly Touch";
     default: return "Name not populated - please report bug";
   }
 }
