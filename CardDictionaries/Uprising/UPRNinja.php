@@ -123,6 +123,7 @@
       case "UPR046": return 3;
       case "UPR048": return 3;
       case "UPR049": return 3;
+      case "UPR050": return 1;
       case "UPR051": return 5;
       case "UPR052": return 4;
       case "UPR053": return 3;
@@ -180,6 +181,14 @@
       case "UPR049":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Spreading Flames buffs your draconic attacks this turn.";
+      case "UPR050":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
+        AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
+        AddDecisionQueue("CCFILTERPLAYER", $currentPlayer, $currentPlayer);
+        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-");
+        AddDecisionQueue("MULTIBANISH", ($currentPlayer == 1 ? 2 : 1), "CC,-");
+        return "";
       case "UPR057": case "UPR058": case "UPR059":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");

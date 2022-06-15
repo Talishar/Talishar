@@ -2630,6 +2630,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
         case "EQUIPCARD": $rv = FindCharacterIndex($player, $subparam); break;
         case "CCAA": $rv = SearchCombatChain("AA"); break;
+        case "CCDEFLESSX": $rv = SearchCombatChain("", "", -1, -1, "", "", false, false, -1, false, -1, $subparam); break;
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;
@@ -3903,6 +3904,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
       }
       return "1";
+    case "CCFILTERTYPE":
+      $arr = explode(",", $lastResult);
+      $rv = [];
+      for($i=0; $i<count($arr); ++$i)
+      {
+        if(CardType($combatChain[$arr[$i]]) != $parameter) array_push($rv, $arr[$i]);
+      }
+      return implode(",", $rv);
+    case "CCFILTERPLAYER":
+      $arr = explode(",", $lastResult);
+      $rv = [];
+      for($i=0; $i<count($arr); ++$i)
+      {
+        if($combatChain[$arr[$i]+1] != $parameter) array_push($rv, $arr[$i]);
+      }
+      return implode(",", $rv);
     default:
       return "NOTSTATIC";
   }
