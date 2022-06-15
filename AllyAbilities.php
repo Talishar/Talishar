@@ -16,7 +16,7 @@ function PlayAlly($cardID, $player, $subCards="-")
   return count($allies) - AllyPieces();
 }
 
-function DestroyAlly($player, $index)
+function DestroyAlly($player, $index, $skipDestroy=false)
 {
   $allies = &GetAllies($player);
   AllyDestroyAbility($player, $allies[$index]);
@@ -55,6 +55,13 @@ function AllyDestroyAbility($player, $cardID)
   switch($cardID)
   {
     case "UPR410": if($player == $mainPlayer) GainActionPoints(1); break;
+    case "UPR551":
+      $gtIndex = FindCharacterIndex($player, "UPR151");
+      if($gtIndex > -1)
+      {
+        DestroyCharacter($player, $gtIndex);
+      }
+      break;
     default: break;
   }
 }
@@ -131,6 +138,20 @@ function AllyDamageTakenAbilities($player, $index)
       WriteLog("Nekria got a -1 health counter and created an ash token.");
       break;
     default: break;
+  }
+}
+
+function AllyEndTurnAbilities()
+{
+  global $mainPlayer;
+  $allies = &GetAllies($mainPlayer);
+  for($i=count($allies)-AllyPieces(); $i>=0; $i-=AllyPieces())
+  {
+    switch($allies[$i])
+    {
+      case "UPR551": DestroyAlly($mainPlayer, $i, true); break;
+      default: break;
+    }
   }
 }
 

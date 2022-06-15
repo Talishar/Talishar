@@ -543,6 +543,7 @@
         else if($number >= 165 && $number <= 181) return "WIZARD";
         else if($number >= 182 && $number <= 223) return "GENERIC";
         else if($number >= 406 && $number <= 417) return "ILLUSIONIST";
+        else if($number == 551) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
         if($number >= 2) return "WARRIOR";
@@ -1856,6 +1857,7 @@
       case "UPR050": return (count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (CardClass($combatChain[0]) != "NINJA" && CardTalent($combatChain[0]) != "DRACONIC"));
       case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR089": $restriction = "UPR089"; return NumDraconicChainLinks() < 4;
+      case "UPR151": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 1;
       case "UPR153": return GetClassState($currentPlayer, $CS_NumPhantasmAADestroyed) < 1;
       case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
       case "UPR162": case "UPR163": case "UPR164": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 0;
@@ -2031,6 +2033,10 @@
     else if($set == "EVR")
     {
       return EVRAbilityHasGoAgain($cardID);
+    }
+    else if($set == "UPR")
+    {
+      return UPRAbilityHasGoAgain($cardID);
     }
     switch($cardID)
     {
