@@ -1859,6 +1859,7 @@
       case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
       case "UPR162": case "UPR163": case "UPR164": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 0;
       case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
+      case "UPR166": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 2;
       case "UPR167": return $currentPlayer == $mainPlayer;
       default: return false;
     }

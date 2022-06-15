@@ -187,6 +187,10 @@
       if($set == "WTR") $deckFile = "./WTRDraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
       else $deckFile = "./DraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
     }
+    if($deckOptions[0] == "SEALED")
+    {
+      $deckFile = "./SealedFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
+    }
     else
     {
       switch($deck)
@@ -222,7 +226,7 @@
     WriteLog("Player $firstPlayerChooser chooses who goes first.");
     $gameStatus = $MGS_ChooseFirstPlayer;
   }
-  
+
   session_start();
   if($playerID == 1 && isset($_SESSION["useruid"])) $p1uid = $_SESSION["useruid"];
   if($playerID == 2 && isset($_SESSION["useruid"])) $p2uid = $_SESSION["useruid"];

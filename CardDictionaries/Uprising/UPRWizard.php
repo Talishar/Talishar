@@ -251,6 +251,9 @@
         else $damage = 2;
         DealArcane($damage, 1, "ABILITY", $cardID);
         return "Waning Moon deals arcane damage.";
+      case "UPR166":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "Alluvion Constellas discounts your next staff ability by 3.";
       case "UPR167":
         GainResources($currentPlayer, 1);
         return "Spellfire Cloak gained 1 resource.";
