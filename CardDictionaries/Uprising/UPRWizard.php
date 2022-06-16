@@ -140,8 +140,8 @@
       case "UPR105":
         if(DelimStringContains($additionalCosts, "ICE"))
         {
-          $otherPlayer = ($player == 1 ? 2 : 1);
-          $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Ice Affliction")) + FrozenCount($otherPlayer);
+          $otherPlayer = ($player == 1 ? 1 : 2);
+          $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
         }
         else $damage = 5;
         DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer);
