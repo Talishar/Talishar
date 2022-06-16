@@ -803,18 +803,16 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
     global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
-    global $mainAuras, $defBanish, $firstPlayer, $lastPlayed, $layerPriority;
+    global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority;
     global $MakeStartTurnBackup;
     //Undo Intimidate
-    for($i=0; $i<count($defBanish); $i+=2)
+    $defBanish = &GetBanish($defPlayer);
+    for($i=count($defBanish)-BanishPieces(); $i>=0; $i-=BanishPieces())
     {
       if($defBanish[$i+1] == "INT")
       {
         array_push($defHand, $defBanish[$i]);
-        unset($defBanish[$i+1]);
-        unset($defBanish[$i]);
-        $defBanish = array_values($defBanish);
-        $i -= 2;
+        RemoveBanish($defPlayer, $i);
       }
     }
 
@@ -1251,6 +1249,7 @@ function FinalizeChainLink($chainClosed=false)
     if($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
     if($numTargets > 1)
     {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
       AddDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
     }
