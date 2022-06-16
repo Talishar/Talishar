@@ -359,7 +359,7 @@
     for($i=0; $i<count($myHand); ++$i)
     {
       $content .= "<td>";
-      $content .= Card($myHand[$i], "concat", $CardSize, 0, 1);
+      $content .= Card($myHand[$i], "concat", $cardSize, 0, 1);
       $content .= "</td>";
     }
     $content .= "</tr><tr>";
