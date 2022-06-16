@@ -98,7 +98,7 @@
       case "UPR050": return 3;
       case "UPR051": case "UPR052": case "UPR053": return 2;
       case "UPR054": case "UPR055": case "UPR056": return 2;
-      case "UPR057": case "UPR058": case "UPR059": return 3;
+      case "UPR057": case "UPR058": case "UPR059": return 2;
       case "UPR060": case "UPR061": case "UPR062": return 2;
       case "UPR063": case "UPR064": case "UPR065": return 3;
       case "UPR066": case "UPR067": case "UPR068": return 2;
