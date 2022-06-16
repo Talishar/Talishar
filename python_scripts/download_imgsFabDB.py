@@ -1,6 +1,6 @@
 import requests 
-import urllib
-
+import json
+import urllib.request
 def getFilename_fromCd(cd):
     """
     Get filename from content-disposition
@@ -12,23 +12,39 @@ def getFilename_fromCd(cd):
         return None
     return fname[0]
 
+sets = [
+    "WTR",
+    "ARC",
+    "CRU",
+    "MON",
+    "ELE",
+    "EVR"
+    "RVD",
+    "DVR",
+    "UPR"
+ ] 
 
-url = "https://fabdb2.imgix.net/cards/printings/"
- # important not to have a '/' at the end of the link
-  
-counter = 1
-while counter<10:
-    
-    if counter < 10 :
-        filename = "UPR00"+ str(counter)
-    if counter <100:
-        
-        filename = "UPR0"+ str(counter)
 
-    else :
-
-        filename = "UPR"+ str(counter)
-    r = urllib.request.urlretrieve(url + filename + ".png")
-    output = open(filename, 'wb').write(r.read())
-    output.close()                           
-    counter+=1
+fabdb_api = "https://api.fabdb.net"
+for code in sets:
+    url_ = fabdb_api+f"/cards?set={code}&per_page=100"
+    counter = 0
+    while True:
+        resp = requests.get(url_)
+        print(resp.text)
+        json_dic = json.loads(resp.text)
+        print("rofl")
+        for card in json_dic['data']:
+            image_url = card['image']
+            card_name = card['name']
+            cardcode = f"{code}{'{:03d}'.format(counter)}"
+            urllib.request.urlretrieve(
+                image_url, 
+                f"{cardcode}.jpg")
+            print(cardcode)
+            counter+=1
+        if json_dic['links']['next']!= None:
+            url_ = fabdb_api+json_dic['links']['next']
+            continue
+        else:
+            break
