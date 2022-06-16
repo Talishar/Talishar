@@ -161,15 +161,10 @@
   function UPRCardTalent($cardID)
   {
     $number = intval(substr($cardID, 3));
-    if($number <= 0) return "??";
+    if($number <= 0) return "DRACONIC";
     else if($number >= 1 && $number <= 101) return "DRACONIC";//Is this right?
-    else if($number >= 102 && $number <= 111) return "ELEMENTAL";//Is this right?
-    else if($number == 112) return "LIGHTNING,ICE";
-    else if($number == 113) return "LIGHTNING,EARTH";
-    else if($number == 114) return "ICE,EARTH";
-    else if($number >= 115 && $number <= 143) return "EARTH";
-    else if($number >= 144 && $number <= 172) return "ICE";
-    else if($number >= 173 && $number <= 201) return "LIGHTNING";
+    else if($number >= 102 && $number <= 124) return "ELEMENTAL";//Is this right?
+    else if($number >= 125 && $number <= 150) return "ICE";//Is this right?
     else return "NONE";
   }
 
