@@ -606,7 +606,7 @@
   function ResolveCombatDamage($damageDone)
   {
     global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary, $CS_HitsWithWeapon;
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
     array_push($chainLinkSummary, $damageDone);
