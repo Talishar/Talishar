@@ -688,7 +688,7 @@
       $actionData = $actionType == 16 ? strval($i) : "";
       echo("<span style='position:relative; margin:1px;'>");
       echo(Card($myHand[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? $actionType : 0, 1 , 0, $border, 0, $actionData));
-      if($restriction != "") echo("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-80px; left:20px;' src='./Images/restricted.png' />");
+      if($restriction != "") echo("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-57px; left:25px;' src='./Images/restricted.png' />");
       echo("</span>");
     }
   }
