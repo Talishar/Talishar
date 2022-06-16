@@ -2298,6 +2298,7 @@
       case "ELE004": case "ELE036": case "ELE066": return true;
       case "EVR003": case "EVR039": case "EVR055": case "EVR070": return true;
       case "DVR008": case "RVD008": return true;
+      case "UPR090": case "UPR091": case "UPR109": case "UPR126": return true;
       default: return false;
     }
   }
