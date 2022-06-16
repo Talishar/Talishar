@@ -164,7 +164,8 @@
     if($number <= 0) return "DRACONIC";
     else if($number >= 1 && $number <= 101) return "DRACONIC";//Is this right?
     else if($number >= 102 && $number <= 124) return "ELEMENTAL";//Is this right?
-    else if($number >= 125 && $number <= 150) return "ICE";//Is this right?
+    else if($number >= 125 && $number <= 150) return "ICE";
+    else if($number >= 406 && $number <= 417 ) return "DRACONIC"; //Is this right?
     else return "NONE";
   }
 
