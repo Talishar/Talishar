@@ -79,8 +79,8 @@
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
       font-size:22px; font-weight:500;'>" . $counters . "</div>";
       }
-      $rv .= "</a>";
     }
+    $rv .= "</a>";
     return $rv;
   }
 
