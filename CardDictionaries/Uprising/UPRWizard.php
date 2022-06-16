@@ -241,6 +241,7 @@
         else if($cardID == "UPR131") $damage = 2;
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "Frosting deals $damage arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
