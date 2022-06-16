@@ -368,7 +368,7 @@
       LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added one health point to themselves.");
+      WriteLog("Player " . $playerID . " manually added one health point their opponent.");
       $theirHealth += 1;
       break;
     case 10009:
