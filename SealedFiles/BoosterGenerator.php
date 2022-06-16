@@ -95,7 +95,7 @@
   function UPRRandomIceCommon()
   {
     $rv = "UPR";
-    $number = 144 + rand(0, 6);
+    $number = 144 + rand(0, 5);
     if($number < 100) $rv .= "0";
     $rv .= $number;
     return $rv;
