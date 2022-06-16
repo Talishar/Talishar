@@ -51,6 +51,9 @@
     $rv = "UPR";
     $number = 203 + rand(0, 20);
     $rv .= $number;
+    if($rv == "UPR209") return "WTR191";
+    else if($rv == "UPR210") return "WTR192";
+    else if($rv == "UPR211") return "WTR193";
     return $rv;
   }
 
