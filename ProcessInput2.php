@@ -1249,6 +1249,7 @@ function FinalizeChainLink($chainClosed=false)
     if($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
     if($numTargets > 1)
     {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
       AddDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
     }
