@@ -2233,8 +2233,9 @@ function MainCharacterEndTurnAbilities()
 
 function MainCharacterHitAbilities()
 {
-  global $mainCharacter, $characterPieces, $combatChain, $combatChainState, $CCS_WeaponIndex, $CCS_HitsInRow, $mainPlayer;
+  global $characterPieces, $combatChain, $combatChainState, $CCS_WeaponIndex, $CCS_HitsInRow, $mainPlayer;
   $attackID = $combatChain[0];
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i=0; $i<count($mainCharacter); $i += CharacterPieces())
   {
     if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i+1] != "2") continue;
@@ -2346,8 +2347,9 @@ function DefCharacterBlockModifier($index)
 
 function MainCharacterHitEffects()
 {
-  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i=0; $i<count($mainCharacterEffects); $i+=2)
   {
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
@@ -2364,9 +2366,10 @@ function MainCharacterHitEffects()
 
 function MainCharacterGrantsGoAgain()
 {
-  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex, $combatChain;
+  global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
   if($combatChainState[$CCS_WeaponIndex] == -1) return false;
   $modifier = 0;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i=0; $i<count($mainCharacterEffects); $i+=2)
   {
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
