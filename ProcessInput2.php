@@ -383,6 +383,23 @@
       WriteLog("Player " . $playerID . " manually added a card to their hand.");
       array_push($myHand, $cardID);
       break;
+    case 10012:
+      WriteLog("Player " . $playerID . " manually added a resource to their pool.");
+      $myResources[0] += 1;
+      break;
+    case 10013:
+      WriteLog("Player " . $playerID . " manually added a resource to their opponent pool.");
+      $theirResources[0] += 1;
+      break;
+    case 10014:
+      WriteLog("Player " . $playerID . " manually removed a resource from their opponent pool.");
+      $theirResources[0] -= 1;
+      break;
+    case 10015:
+      WriteLog("Player " . $playerID . " manually removed a resource from their pool.");
+      $myResources[0] -= 1;
+      break;
+
     case 100000: //Quick Rematch
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
