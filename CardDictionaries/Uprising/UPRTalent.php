@@ -305,6 +305,7 @@
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         }
+        return "";
       case "UPR097":
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
         {
