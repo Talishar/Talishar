@@ -1054,7 +1054,7 @@ function AttackDestroyed($attackID)
   }
   if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON089"))
   {
-    AddDecisionQueue("YESNO", $mainPlayer, "Do_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
@@ -1062,7 +1062,7 @@ function AttackDestroyed($attackID)
   }
   if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "UPR152"))
   {
-    AddDecisionQueue("YESNO", $mainPlayer, "Do_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
