@@ -613,7 +613,6 @@
   $theirPermanents = &GetPermanents($otherPlayer);
   if(count($theirPermanents) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($theirPermanents); $i+=PermanentPieces())
     {
       //if(IsTileable($theirPermanents[$i])) continue;
@@ -621,18 +620,15 @@
       //$border = CardBorderColor($theirPermanents[$i], "PLAY", $playable);
       echo(Card($theirPermanents[$i], "concat", $cardSizeAura, 0, 1));
     }
-    echo("</div>");
   }
   $theirAllies = GetAllies($otherPlayer);
   if(count($theirAllies) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
       echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2]) . "&nbsp");
       if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
-    echo("</div>");
   }
     echo("</div>");
 
@@ -759,7 +755,6 @@
   $myPermanents = &GetPermanents($playerID);
   if(count($myPermanents) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($myPermanents); $i+=PermanentPieces())
     {
       //if(IsTileable($myPermanents[$i])) continue;
@@ -767,12 +762,10 @@
       //$border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
       echo(Card($myPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
     }
-    echo("</div>");
   }
   $myAllies = GetAllies($playerID);
   if(count($myAllies) > 0)
   {
-    echo("<div style='display:inline-block;'>");
     for($i=0; $i<count($myAllies); $i+=AllyPieces())
     {
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
@@ -780,7 +773,6 @@
       echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+2], strval($i)) . "&nbsp");
       if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
-    echo("</div>");
   }
   echo("</div>");
 
