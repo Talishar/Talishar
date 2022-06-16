@@ -299,14 +299,14 @@
         if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Burn Away got +2 and Go Again from banishing."); }
         return "";
       case "UPR096":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 0)
+        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,UPR101");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         }
       case "UPR097":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 0)
+        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
           AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
