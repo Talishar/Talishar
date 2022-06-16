@@ -1026,10 +1026,12 @@ if($set == "UPR"){
     case "043": return "Ash";
     case "044": return "Fai, Rising Rebellion";
     case "045": return "Fai";
+    case "046": return "Searing Emberblade";
     case "047": return "Heat Wave";
     case "048": return "Phoenix Form";
     case "049": return "Spreading Flames";
     case "050": return "Combustion Point";
+    case "051": case "052": case "053": return"Engulfing Flamewave";
     case "054": case "055": case "056": return "Mounting Anger";
     case "057": case "058": case "059": return "Rise from the Ashes";
     case "060": case "061": case "062": return "Brand with Cinderclaw";
@@ -1052,11 +1054,14 @@ if($set == "UPR"){
     case "093": return "Breaking Point";
     case "094": return "Burn Away";
     case "095": return "Flameborn Retribution";
+    case "096": return "Flamecall Awakening";
     case "097": return "Inflame";
     case "098": return "Lava Burst";
     case "099": return "Searing Touch";
     case "100": return "Stoke the Flames";
     case "101": return "Phoenix Flame";
+    case "102": return "Iyslander, Stormbind";
+    case "103": return "Iyslander";
     case "104": return "Encase";
     case "105": return "Freezing Point";
     case "106": case "107": case "108": return "Sigil of Permafrost";
