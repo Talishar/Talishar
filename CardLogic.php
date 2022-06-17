@@ -213,6 +213,7 @@ function IsCombatEffectLimited($index)
   if(DelimStringContains($attackSubType, "Ally"))
   {
     $allies = &GetAllies($mainPlayer);
+    if(count($allies) < $combatChainState[$CCS_WeaponIndex]+5) return false;
     if($allies[$combatChainState[$CCS_WeaponIndex]+5] != $currentTurnEffects[$index+2]) return true;
   }
   else
