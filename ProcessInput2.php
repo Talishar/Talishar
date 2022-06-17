@@ -116,14 +116,10 @@
       {
         $cardToPlay = $myArsenal[$index];
         if(!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;//Card not playable
-        $arsenal = &GetArsenal($playerID);
-        for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
-        {
-          unset($arsenal[$i]);
-        }
-        $arsenal = array_values($arsenal);
+        $uniqueID = $myArsenal[$index+5];
+        RemoveArsenal($playerID, $index);
         WriteLog("Card played from arsenal.");
-        PlayCard($cardToPlay, "ARS");
+        PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
       }
       break;
     case 6://Pitch Deck
@@ -941,10 +937,17 @@ function FinalizeChainLink($chainClosed=false)
     if($dynCostResolved == -1)
     {
       //CR 5.1.2 Announce (CR 2.0)
-      SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);
-      if($turn[0] != "P" && $turn[0] != "B") { MakeGamestateBackup(); $lastPlayed = []; $lastPlayed[0] = $cardID; $lastPlayed[1] = $currentPlayer; $lastPlayed[2] = CardType($cardID); }
+      if($turn[0] != "P" && $turn[0] != "B")
+      {
+        MakeGamestateBackup();
+        $lastPlayed = [];
+        $lastPlayed[0] = $cardID;
+        $lastPlayed[1] = $currentPlayer;
+        $lastPlayed[2] = CardType($cardID);
+        SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
+      }
       if(count($layers) > 0 && $layers[0] == "ENDTURN") $layers[0] = "RESUMETURN";//Means the defending player played something, so the end turn attempt failed
     }
     if($turn[0] != "P")

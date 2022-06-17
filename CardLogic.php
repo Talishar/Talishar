@@ -143,7 +143,7 @@ function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
 {
   global $currentTurnEffects, $combatChain;
   $card = explode("-", $cardID)[0];
-  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") { AddCurrentTurnEffectFromCombat($cardID, $player); return; }
+  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") { AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID); return; }
   array_push($currentTurnEffects, $cardID);
   array_push($currentTurnEffects, $player);
   array_push($currentTurnEffects, $uniqueID);
