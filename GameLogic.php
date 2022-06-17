@@ -1508,7 +1508,7 @@ function CurrentEffectGrantsGoAgain()
   global $currentTurnEffects, $mainPlayer, $combatChain, $combatChainState, $CCS_AttackFused;
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]))
+    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
     {
       switch($currentTurnEffects[$i])
       {
@@ -2443,7 +2443,7 @@ function IsDominateActive()
   $characterEffects = GetCharacterEffects($mainPlayer);
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && DoesEffectGrantDominate($currentTurnEffects[$i])) return true;
+    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantDominate($currentTurnEffects[$i])) return true;
   }
   for($i=0; $i<count($characterEffects); $i+=CharacterEffectPieces())
   {
@@ -3430,32 +3430,30 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddArcaneBonus($parameter, $player);
       return $parameter;
     case "SHIVER":
+      $arsenal = &GetArsenal($player);
       switch($lastResult)
       {
         case "1_Attack":
           WriteLog("Shiver gives the arrow +1.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE033-1", $player);
-          else AddCurrentTurnEffectFromCombat("ELE033-1", $player);
+          AddCurrentTurnEffect("ELE033-1", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
         case "Dominate":
           WriteLog("Shiver gives the arrow Dominate.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE033-2", $player);
-          else AddCurrentTurnEffectFromCombat("ELE033-2", $player);
+          AddCurrentTurnEffect("ELE033-2", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
       }
       return $lastResult;
     case "VOLTAIRE":
+      $arsenal = &GetArsenal($player);
       switch($lastResult)
       {
         case "1_Attack":
           WriteLog("Voltaire gives the arrow +1.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE034-1", $player);
-          else AddCurrentTurnEffectFromCombat("ELE034-1", $player);
+          AddCurrentTurnEffect("ELE034-1", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
         case "Go_again":
           WriteLog("Voltaire gives the arrow Go Again.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE034-2", $player);
-          else AddCurrentTurnEffectFromCombat("ELE034-2", $player);
+          AddCurrentTurnEffect("ELE034-2", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
       }
       return $lastResult;

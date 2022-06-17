@@ -82,7 +82,7 @@
 
   function ArsenalPieces()
   {
-    return 5;
+    return 6;
   }
 
   //Card ID
