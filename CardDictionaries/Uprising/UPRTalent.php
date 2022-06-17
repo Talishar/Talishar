@@ -175,7 +175,7 @@
       case "UPR091": return 3;
       case "UPR092": return 2;
       case "UPR093": return 3;
-      case "UPR094": return 2;
+      case "UPR094": return 3;
       case "UPR095": return 2;
       case "UPR096": return 2;
       case "UPR097": return 2;
