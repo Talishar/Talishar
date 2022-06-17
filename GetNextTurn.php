@@ -122,6 +122,7 @@
 
   $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
   $borderColor = ($darkMode ? "#DDD" : "black");
+  $fontColor = ($darkMode ? "black" : "#EEE");
 
   //Display background
   if(IsDarkPlainMode($playerID))
@@ -133,16 +134,16 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./Images/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:absolute; right:300px; top:calc(50% - 125px); height:200px; z-index:100;'><span style='position:absolute; font-size: 24px; top:149px; left:30px;'>$myHealth</span>");
+  echo("<div style='position:absolute; right:300px; top:calc(50% - 125px); height:200px; z-index:100;'><span style='position:absolute; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "20px") . CreateButton($playerID, "+1", 10006, 0, "20px") . "</span>": ""));
-  echo("<span style='position:absolute; font-size: 24px; top:23px; left:30px;'>$theirHealth</span>");
+  echo("<span style='position:absolute; font-size: 24px; font-weight: 550; top:23px; left:28px;'>$theirHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:0px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "20px") . CreateButton($playerID, "+1", 10008, 0, "20px") . "</span>": ""));
   if(IsDarkMode($playerID)) echo("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo("<img style='height:200px;' src='./Images/DuoLife.png' />");
   echo("<div style='position:absolute; top:37px; left:-130px; z-index:-5;'><img style='height:125px; width:150px;' src='./Images/passBG.png' /></div>");
   if(CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:#DDD; font-family:Helvetica; font-size:36px; user-select: none;'>Pass</span></div>");
   else echo("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:gray; font-family:Helvetica; font-size:36px; user-select: none;'>Pass</span></div>");
-  echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
+  echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-weight:550; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
   echo(($manualMode ? "<span style='position:absolute; top:85%; right:7%; display: inline-block;';>" . CreateButton($playerID, "-1", 10004, 0, "20px") . CreateButton($playerID, "+1", 10002, 0, "20px") . "</span>": ""));
   echo("</div></div>");
 
@@ -196,11 +197,11 @@
   if(GetClassState($playerID, $CS_NextArcaneBonus) > 0) $friendlyEffects .= "<div title='Next arcane bonus: " . GetClassState($playerID, $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid blue;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   if(GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) > 0) $opponentEffects .= "<div title='Next arcane bonus: " . GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid red;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   echo("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
-  echo("<div style='font-weight: bold; text-align:center; border-bottom: 3px solid;'>Opponent<br>Effects</div>");
+  echo("<div style='font-weight: bold; text-align:center; padding-bottom:4px; border-bottom: 4px solid ".$borderColor."; font-size:18px; font-weight: 600; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Opponent<br>Effects</div>");
   echo($opponentEffects);
   echo("<div style='bottom:0px; position:absolute;'>");
   echo($friendlyEffects);
-  echo("<div style='font-weight: bolder; width:100px; text-align:center; border-top: 3px solid;'>Your<br>Effects</div>");
+  echo("<div style='font-weight: bolder; width:100px; text-align:center; padding-top:4px; border-top: 4px solid ".$borderColor."; font-size:18px; font-weight: 600; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Your<br>Effects</div>");
   echo("</div>");
   echo("</div>");
 
@@ -519,11 +520,13 @@
   if(count($theirSoul) > 0) echo(CreatePopup("theirSoulPopup", $theirSoul, 1, 0, "Opponent's Soul"));
 
   //Opponent hand
-  echo("<div style='position: fixed; top: 0px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: -30px; margin-right: 2px; height:100%; text-align: center; font-size:16px; font-weight: 600;vertical-align:middle; display:inline-block;'>Opponent<br>Hand:</span>");
+  echo("<div style='position: fixed; top: 0px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: -30px; margin-right: 2px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; vertical-align:middle; display:inline-block;'>Opponent<br>Hand:</span>");
   for($i=0; $i<count($theirHand); ++$i) {
     echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
-  if(count($theirSoul) > 0) echo("<div title='Click to view the cards in your opponent Soul.' style='padding-left:10px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='ShowPopup(\"theirSoulPopup\");'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img> <div style='position:relative; top:-20px; display:inline-block;'>" . count($theirSoul) . " cards</div></div>");
+  if(count($theirSoul) > 0) echo("<div title='Click to view the cards in your opponent Soul.' style='padding-left:5px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='ShowPopup(\"theirSoulPopup\");'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img>
+  <div style='position:relative; top:-20px; font-size:18px; font-weight: 600; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";
+  display:inline-block;'>" . count($theirSoul) . " cards</div></div>");
   echo("</div>");
 
 
@@ -802,7 +805,7 @@
     if($myCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     if($type == "C")
     {
-      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; text-align:center;'>Soul: " . count($mySoul) . "</div>");
+      if(CardTalent($myCharacter[0]) == "LIGHT" || count($mySoul) > 0) echo("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; font-weight: 600; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; text-align:center;'>Soul: " . count($mySoul) . "</div>");
     }
     echo("</div>");
     echo("</div>");
