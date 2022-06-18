@@ -241,8 +241,7 @@
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;
       case "UPR161":
-        WriteLog($combatChainState[$CCS_NumHits]);
-        if($combatChainState[$CCS_NumHits] >= 2)
+        if($combatChainState[$CCS_NumHits] >= 3)
         {
           $deck = &GetDeck($mainPlayer);
           if(CardType($deck[0]) == "AA")
@@ -250,6 +249,12 @@
             BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
             array_shift($deck);
           }
+          else
+          {
+            BanishCardForPlayer($deck[0], $mainPlayer, "DECK");
+            array_shift($deck);
+          }
+          WriteLog("Take the Tempo banished a card");
         }
         break;
       default: break;
