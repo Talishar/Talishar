@@ -745,7 +745,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Steadfast prevents damage this turn.";
       case "EVR047": case "EVR048": case "EVR049":
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_effect,+1_Attack");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
         AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
         return "";
       case "EVR053":
