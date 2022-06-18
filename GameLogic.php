@@ -3813,9 +3813,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TWINTWISTERS":
       switch($lastResult)
       {
-        case "Hit_effect": WriteLog("If Twin Twisters hits, the next attack gets +1 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
+        case "Hit_Effect": WriteLog("If Twin Twisters hits, the next attack gets +1 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
         case "1_Attack": WriteLog("Twin Twisters gets +1 attack."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
-        default: return 3;
       }
       return $lastResult;
     case "AETHERWILDFIRE":
