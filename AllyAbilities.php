@@ -134,7 +134,7 @@ function AllyDamageTakenAbilities($player, $index)
     case "UPR413":
       $allies[$index+2] -= 1;
       $allies[$index+7] -= 1;
-      PlayAura("UPR042", $player);
+      PutPermanentIntoPlay($player, "UPR043");
       WriteLog("Nekria got a -1 health counter and created an ash token.");
       break;
     default: break;
