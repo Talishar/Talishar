@@ -7,9 +7,16 @@
 
   function UPRAbilityCost($cardID)
   {
+    global $mainPlayer, $currentPlayer;
     switch($cardID)
     {
-      case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
+      case "UPR044": case "UPR045":
+        if($mainPlayer == $currentPlayer) {
+          $cost = 3 - NumDraconicChainLinks();
+        } else {
+          $cost = 3;
+        }
+        return ($cost < 0 ? 0 : $cost);
       case "UPR046": return 2;
       case "UPR084": return 1;
       case "UPR136": return 3;
