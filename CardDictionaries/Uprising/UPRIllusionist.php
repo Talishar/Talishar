@@ -393,7 +393,7 @@
         $allies = &GetAllies($mainPlayer);
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
-        PlayAura("UPR042", $mainPlayer);
+        PlayAura("UPR043", $mainPlayer);
         WriteLog("Nekria got a -1 health counter and created an ash token.");
         break;
       case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
