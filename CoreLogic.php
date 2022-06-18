@@ -332,6 +332,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         {
           AddCurrentTurnEffect($character[$i], $currentPlayer);
           WriteLog("Tiger Strike Shuko gives the attack +1 and makes the damage unable to be prevented.");
+          $character[$i+1] = 1;
         }
         break;
       default:
