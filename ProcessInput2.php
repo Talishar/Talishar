@@ -1275,7 +1275,7 @@ function FinalizeChainLink($chainClosed=false)
     }
     else
     {
-      $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
+      $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";//Their Hero
     }
   }
 

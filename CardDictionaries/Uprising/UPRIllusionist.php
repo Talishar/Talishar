@@ -361,8 +361,8 @@
         return "";
       case "UPR409":
         //TODO: Limit duplicate targets?
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true);
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true);
         return "";
       case "UPR410":
         GainActionPoints(1);
