@@ -262,7 +262,7 @@
         Transform($currentPlayer, "Ash", "UPR417");
         return "";
       case "UPR018": case "UPR019": case "UPR020":
-        Transform($currentPlayer, "Ash", "UPR042");
+        Transform($currentPlayer, "Ash", "UPR042", true);
         return "";
       case "UPR030": case "UPR031": case "UPR032":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
@@ -378,7 +378,7 @@
     {
       case "UPR024": case "UPR025": case "UPR026":
         PutPermanentIntoPlay($mainPlayer, "UPR043");
-        Transform($mainPlayer, "Ash", "UPR042");
+        Transform($mainPlayer, "Ash", "UPR042", true);
         break;
       case "UPR411":
         $items = &GetItems($defPlayer);
