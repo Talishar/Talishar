@@ -1865,6 +1865,23 @@
       case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "UPR166": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 2;
       case "UPR167": return $currentPlayer == $mainPlayer;
+      //Target Ash
+      case "UPR006": case "UPR007": case "UPR008":
+      case "UPR009": case "UPR010": case "UPR011":
+      case "UPR012": case "UPR013": case "UPR014":
+      case "UPR015": case "UPR016": case "UPR017":
+      case "UPR036": case "UPR037": case "UPR038":
+      case "UPR039": case "UPR040": case "UPR041":
+        $myAsh = &GetPermanents($currentPlayer);
+        $ash = 0;
+        for($i=0; $i<count($myAsh); ++$i)
+        {
+          if ($myAsh[$i] == "UPR043")
+          {
+            ++$ash;
+          }
+        }
+      return $ash < 1;
       default: return false;
     }
   }
