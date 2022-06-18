@@ -213,7 +213,7 @@
   }
 
   //OpposingOnly -- 0=Opposing hero only, 1=Any Hero, 2=Any Target
-  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0)
+  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false)
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
@@ -239,7 +239,8 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
+        else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
       }
       else AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
@@ -250,13 +251,22 @@
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
     $rv = "THEIRCHAR-0";
+    // if($opposingOnly >= 1)
+    // {
+    //   $rv .= ",MYCHAR-0";                  WIP for Azvolai
+    // }
     if($opposingOnly == 2)
     {
-      $allies = &GetAllies($otherPlayer);
-      for($i=0; $i<count($allies); $i+=AllyPieces())
+      $theirAllies = &GetAllies($otherPlayer);
+      for($i=0; $i<count($theirAllies); $i+=AllyPieces())
       {
         $rv .= ",THEIRALLY-" . $i;
       }
+      // $myAllies = &GetAllies($player);
+      // for($i=0; $i<count($myAllies); $i+=AllyPieces())   WIP for Azvolai
+      // {
+      //   $rv .= ",MYALLY-" . $i;
+      // }
     }
     return $rv;
   }

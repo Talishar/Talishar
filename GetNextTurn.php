@@ -385,6 +385,7 @@
     $options = explode(",", $turn[2]);
     $otherPlayer = $playerID == 2 ? 1 : 2;
     $theirAllies = &GetAllies($otherPlayer);
+    $myAllies = &GetAllies($playerID);
     for($i=0; $i<count($options); ++$i)
     {
       $option = explode("-", $options[$i]);
@@ -398,6 +399,7 @@
       else if($option[0] == "LAYER") $source = $layers;
       else if($option[0] == "MYHAND") $source = $myHand;
       else if($option[0] == "MYDISCARD") $source = $myDiscard;
+      else if($option[0] == "MYALLY") $source = $myAllies;
       $card = $source[intval($option[1])];
       if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
       $content .= Card($card, "concat", $cardSize, 16, 1, 0, 0, 0, $options[$i]);

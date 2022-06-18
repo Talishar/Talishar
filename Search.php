@@ -568,6 +568,7 @@ function SearchMZ($player, $subparam)
     {
       case "THEIRALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), $zones[$i])); break;
       case "THEIRARS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), $zones[$i])); break;
+      case "MYALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($player), $zones[$i])); break;
       default: break;
     }
   }
