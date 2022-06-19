@@ -139,7 +139,6 @@ border-radius: 3px;">
   Channel the Bleak Expanse<br>
   Rewind<br>
   Erase Face<br>
-  Sigil of Protection<br>
   Quell Mechanic<br>
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Upcoming Events</h1>
