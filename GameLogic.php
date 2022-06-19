@@ -3891,6 +3891,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
+    case "TRANSFORMPERMANENT":
+      return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "MZGETUNIQUEID":
       $params = explode("-", $lastResult);
       $zone = &GetMZZone($player, $params[0]);
