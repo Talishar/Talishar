@@ -1865,7 +1865,7 @@
       case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "UPR166": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 2;
       case "UPR167": return $currentPlayer == $mainPlayer;
-      //Target Ash
+      //Mandatory Target Ash
       case "UPR006": case "UPR007": case "UPR008":
       case "UPR009": case "UPR010": case "UPR011":
       case "UPR012": case "UPR013": case "UPR014":
@@ -1876,12 +1876,13 @@
         $ash = 0;
         for($i=0; $i<count($myAsh); ++$i)
         {
-          if ($myAsh[$i] == "UPR043")
-          {
-            ++$ash;
-          }
+          if ($myAsh[$i] == "UPR043") { ++$ash; }
         }
-      return $ash < 1;
+        return $ash < 1;
+      //Once per turn instants restriction
+      case "MON281": case "MON282": case "MON283": case "ELE195": case "ELE196": case "ELE197":
+        return SearchCurrentTurnEffects($cardID, $currentPlayer);
+
       default: return false;
     }
   }

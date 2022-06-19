@@ -207,6 +207,7 @@
       if($from == "PLAY")
       {
         $combatChain[$myClassState[$CS_PlayIndex] + 6] += 3;
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         $rv = "Rally the Rearguard gained +3 defense.";
       }
       return $rv;

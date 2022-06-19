@@ -417,8 +417,8 @@
       case "ELE195": case "ELE196": case "ELE197":
         if($from == "PLAY")
         {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Shock Striker deals 1 extra damage if it gets a hero.";
+          AddCurrentTurnEffect($cardID, $currentPlayer, "", 1);
+          $rv = "Shock Striker deals 1 extra damage if hits a hero.";
         }
         return $rv;
       case "ELE198": case "ELE199": case "ELE200":
