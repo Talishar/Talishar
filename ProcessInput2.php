@@ -877,13 +877,13 @@ function FinalizeChainLink($chainClosed=false)
     $defResources[1] = 0;
     $lastPlayed = [];
 
-    ArsenalEndTurn($mainPlayer);
-    ArsenalEndTurn($defPlayer);
     CurrentEffectEndTurnAbilities();
     AuraEndTurnAbilities();
     PermanentEndTurnAbilities();
     AllyEndTurnAbilities();
     MainCharacterEndTurnAbilities();
+    ArsenalEndTurn($mainPlayer);
+    ArsenalEndTurn($defPlayer);
     ResetMainClassState();
     ResetCharacterEffects();
     UnsetTurnBanish();
