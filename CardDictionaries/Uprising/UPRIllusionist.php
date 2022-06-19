@@ -312,19 +312,23 @@
       case "UPR406":
         $deck = &GetDeck($currentPlayer);
         $numRed = 0;
-        $cards = "";
+        $redRevealed = "";
+        $cardsReveal = "";
         for($i=0; $i<3 && $i < count($deck); ++$i)
         {
           if(PitchValue($deck[$i]) == 1)
           {
             ++$numRed;
-            if($cards != "") $cards .= ",";
-            $cards .= $deck[$i];
+            if($redRevealed != "") $redRevealed .= ",";
+            $redRevealed .= $deck[$i];
           }
+          if($cardsReveal != "") $cardsReveal .= ",";
+          $cardsReveal .= $deck[$i];
         }
-        $cardsRevealed = RevealCards($cards);
-        if($cardsRevealed)
+        RevealCards($cardsReveal);
+        if($redRevealed)
         {
+          WriteLog("Optimai revealed ". $numRed . " red cards and deal damage equal to twice the number.");
           DealArcane($numRed * 2, 2, "ABILITY", $cardID, false, $currentPlayer);
         }
         return "";
