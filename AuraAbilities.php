@@ -185,6 +185,7 @@ function AuraStartTurnAbilities()
         else { --$auras[$i+2]; PlayAura("ARC112", $mainPlayer); } break;
       case "EVR131": case "EVR132": case "EVR133": $dest = "Pyroglyphic Protection is destroyed."; break;
       case "UPR190": $dest = "Fog Down is destroyed."; break;
+      case "UP218": case "UP219": case "UP220": $dest = "Sigil of Protection is destroyed."; break;
       default: break;
     }
     if($dest != "")
@@ -241,6 +242,7 @@ function AuraBeginEndStepAbilities()
         AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
         $remove = 1;
         break;
+      case "ELE111": FrostHexEndTurnAbility($mainPlayer); $remove = 1; break;
       default: break;
     }
     if($remove == 1) DestroyAura($mainPlayer, $i);
@@ -258,7 +260,6 @@ function AuraEndTurnAbilities()
     switch($auras[$i])
     {
       case "ARC167": case "ARC168": case "ARC169": if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0) { $remove = 1; } break;
-      case "ELE111": FrostHexEndTurnAbility($mainPlayer); $remove = 1; break;
       case "ELE226": $remove = 1; break;
       case "UPR139": $remove = 1; break;
       default: break;
