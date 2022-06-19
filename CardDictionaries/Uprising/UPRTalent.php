@@ -463,10 +463,8 @@
   {
     switch($cardID)
     {
-      case "UPR087": return true;
-      case "UPR090": return true;
-      case "UPR091": return true;
-      case "UPR098": case "UPR099": case "UPR100": return true;
+      case "UPR087": case "UPR090": case "UPR091": return true;
+      case "UPR093": case "UPR098": case "UPR099": return true;
       default: return false;
     }
   }
