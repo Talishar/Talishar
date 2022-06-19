@@ -881,6 +881,7 @@ function FinalizeChainLink($chainClosed=false)
     ArsenalEndTurn($defPlayer);
     CurrentEffectEndTurnAbilities();
     AuraEndTurnAbilities();
+    PermanentEndTurnAbilities();
     AllyEndTurnAbilities();
     MainCharacterEndTurnAbilities();
     ResetMainClassState();
