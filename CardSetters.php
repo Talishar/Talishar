@@ -153,6 +153,7 @@ function AddArsenal($cardID, $player, $from, $facing)
   array_push($arsenal, ArsenalNumUsesPerTurn($cardID));//Num uses
   array_push($arsenal, "0");//Counters
   array_push($arsenal, "0");//Is Frozen (1 = Frozen)
+  array_push($arsenal, GetUniqueId());//Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
   if($facing == "UP")
   {

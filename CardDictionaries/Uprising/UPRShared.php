@@ -7,9 +7,16 @@
 
   function UPRAbilityCost($cardID)
   {
+    global $mainPlayer, $currentPlayer;
     switch($cardID)
     {
-      case "UPR044": case "UPR045": $cost = 3 - NumDraconicChainLinks(); return ($cost < 0 ? 0 : $cost);
+      case "UPR044": case "UPR045":
+        if($mainPlayer == $currentPlayer) {
+          $cost = 3 - NumDraconicChainLinks();
+        } else {
+          $cost = 3;
+        }
+        return ($cost < 0 ? 0 : $cost);
       case "UPR046": return 2;
       case "UPR084": return 1;
       case "UPR136": return 3;
@@ -110,7 +117,7 @@
   {
     $params = explode("-", $cardID);
     $cardID = $params[0];
-    if(count($params) > 0) $subparam = $params[1];
+    if(count($params) > 1) $subparam = $params[1];
     switch($cardID)
     {
       case "UPR036": return 3;
@@ -136,7 +143,7 @@
   {
     $params = explode("-", $cardID);
     $cardID = $params[0];
-    if(count($params) > 0) $subparam = $params[1];
+    if(count($params) > 1) $subparam = $params[1];
     switch($cardID)
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
@@ -161,15 +168,11 @@
   function UPRCardTalent($cardID)
   {
     $number = intval(substr($cardID, 3));
-    if($number <= 0) return "??";
+    if($number <= 0) return "DRACONIC";
     else if($number >= 1 && $number <= 101) return "DRACONIC";//Is this right?
-    else if($number >= 102 && $number <= 111) return "ELEMENTAL";//Is this right?
-    else if($number == 112) return "LIGHTNING,ICE";
-    else if($number == 113) return "LIGHTNING,EARTH";
-    else if($number == 114) return "ICE,EARTH";
-    else if($number >= 115 && $number <= 143) return "EARTH";
-    else if($number >= 144 && $number <= 172) return "ICE";
-    else if($number >= 173 && $number <= 201) return "LIGHTNING";
+    else if($number >= 102 && $number <= 124) return "ELEMENTAL";//Is this right?
+    else if($number >= 125 && $number <= 150) return "ICE";
+    else if($number >= 406 && $number <= 417 ) return "DRACONIC"; //Is this right?
     else return "NONE";
   }
 

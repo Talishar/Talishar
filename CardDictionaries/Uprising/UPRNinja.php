@@ -98,7 +98,7 @@
       case "UPR050": return 3;
       case "UPR051": case "UPR052": case "UPR053": return 2;
       case "UPR054": case "UPR055": case "UPR056": return 2;
-      case "UPR057": case "UPR058": case "UPR059": return 3;
+      case "UPR057": case "UPR058": case "UPR059": return 2;
       case "UPR060": case "UPR061": case "UPR062": return 2;
       case "UPR063": case "UPR064": case "UPR065": return 3;
       case "UPR066": case "UPR067": case "UPR068": return 2;
@@ -155,7 +155,7 @@
       case "UPR082": return 3;
       case "UPR083": return 2;
       case "UPR160": return 1;
-      case "UPR161": return 3;
+      case "UPR161": return 5;
       case "UPR162": return 3;
       case "UPR163": return 2;
       case "UPR164": return 1;
@@ -241,8 +241,7 @@
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;
       case "UPR161":
-        WriteLog($combatChainState[$CCS_NumHits]);
-        if($combatChainState[$CCS_NumHits] >= 2)
+        if($combatChainState[$CCS_NumHits] >= 3)
         {
           $deck = &GetDeck($mainPlayer);
           if(CardType($deck[0]) == "AA")
@@ -250,6 +249,12 @@
             BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
             array_shift($deck);
           }
+          else
+          {
+            BanishCardForPlayer($deck[0], $mainPlayer, "DECK");
+            array_shift($deck);
+          }
+          WriteLog("Take the Tempo banished a card");
         }
         break;
       default: break;

@@ -175,7 +175,7 @@
       case "UPR091": return 3;
       case "UPR092": return 2;
       case "UPR093": return 3;
-      case "UPR094": return 2;
+      case "UPR094": return 3;
       case "UPR095": return 2;
       case "UPR096": return 2;
       case "UPR097": return 2;
@@ -299,14 +299,15 @@
         if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Burn Away got +2 and Go Again from banishing."); }
         return "";
       case "UPR096":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 0)
+        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,UPR101");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         }
+        return "";
       case "UPR097":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 0)
+        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
           AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);

@@ -1508,7 +1508,7 @@ function CurrentEffectGrantsGoAgain()
   global $currentTurnEffects, $mainPlayer, $combatChain, $combatChainState, $CCS_AttackFused;
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]))
+    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
     {
       switch($currentTurnEffects[$i])
       {
@@ -2186,7 +2186,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
   global $chainLinkSummary;
   switch($cardID)
   {
-    case "UPR189": if($chainLinkSummary[$chainLink][1] <= 2) { Draw($player); WriteLog("That's All You Got? drew a card."); } break;
+    case "UPR189": if($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) { Draw($player); WriteLog("That's All You Got? drew a card."); } break;
     default: break;
   }
 }
@@ -2233,8 +2233,9 @@ function MainCharacterEndTurnAbilities()
 
 function MainCharacterHitAbilities()
 {
-  global $mainCharacter, $characterPieces, $combatChain, $combatChainState, $CCS_WeaponIndex, $CCS_HitsInRow, $mainPlayer;
+  global $characterPieces, $combatChain, $combatChainState, $CCS_WeaponIndex, $CCS_HitsInRow, $mainPlayer;
   $attackID = $combatChain[0];
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for($i=0; $i<count($mainCharacter); $i += CharacterPieces())
   {
     if(CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i+1] != "2") continue;
@@ -2346,8 +2347,9 @@ function DefCharacterBlockModifier($index)
 
 function MainCharacterHitEffects()
 {
-  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $modifier = 0;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i=0; $i<count($mainCharacterEffects); $i+=2)
   {
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
@@ -2364,9 +2366,10 @@ function MainCharacterHitEffects()
 
 function MainCharacterGrantsGoAgain()
 {
-  global $mainCharacterEffects, $mainCharacter, $combatChainState, $CCS_WeaponIndex, $combatChain;
+  global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
   if($combatChainState[$CCS_WeaponIndex] == -1) return false;
   $modifier = 0;
+  $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for($i=0; $i<count($mainCharacterEffects); $i+=2)
   {
     if($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex])
@@ -2440,7 +2443,7 @@ function IsDominateActive()
   $characterEffects = GetCharacterEffects($mainPlayer);
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && DoesEffectGrantDominate($currentTurnEffects[$i])) return true;
+    if($currentTurnEffects[$i+1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantDominate($currentTurnEffects[$i])) return true;
   }
   for($i=0; $i<count($characterEffects); $i+=CharacterEffectPieces())
   {
@@ -3427,32 +3430,30 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddArcaneBonus($parameter, $player);
       return $parameter;
     case "SHIVER":
+      $arsenal = &GetArsenal($player);
       switch($lastResult)
       {
         case "1_Attack":
           WriteLog("Shiver gives the arrow +1.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE033-1", $player);
-          else AddCurrentTurnEffectFromCombat("ELE033-1", $player);
+          AddCurrentTurnEffect("ELE033-1", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
         case "Dominate":
           WriteLog("Shiver gives the arrow Dominate.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE033-2", $player);
-          else AddCurrentTurnEffectFromCombat("ELE033-2", $player);
+          AddCurrentTurnEffect("ELE033-2", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
       }
       return $lastResult;
     case "VOLTAIRE":
+      $arsenal = &GetArsenal($player);
       switch($lastResult)
       {
         case "1_Attack":
           WriteLog("Voltaire gives the arrow +1.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE034-1", $player);
-          else AddCurrentTurnEffectFromCombat("ELE034-1", $player);
+          AddCurrentTurnEffect("ELE034-1", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
         case "Go_again":
           WriteLog("Voltaire gives the arrow Go Again.");
-          if(count($combatChain) == 0) AddCurrentTurnEffect("ELE034-2", $player);
-          else AddCurrentTurnEffectFromCombat("ELE034-2", $player);
+          AddCurrentTurnEffect("ELE034-2", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
       }
       return $lastResult;
@@ -3812,9 +3813,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TWINTWISTERS":
       switch($lastResult)
       {
-        case "Hit_effect": WriteLog("If Twin Twisters hits, the next attack gets +1 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
+        case "Hit_Effect": WriteLog("If Twin Twisters hits, the next attack gets +1 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
         case "1_Attack": WriteLog("Twin Twisters gets +1 attack."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
-        default: return 3;
       }
       return $lastResult;
     case "AETHERWILDFIRE":
@@ -3891,6 +3891,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
+    case "TRANSFORMPERMANENT":
+      return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
     case "MZGETUNIQUEID":
       $params = explode("-", $lastResult);
       $zone = &GetMZZone($player, $params[0]);

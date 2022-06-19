@@ -303,7 +303,7 @@ function ArsenalHitEffects()
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumLess3PowPlayed;
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumLess3PowAAPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
@@ -328,10 +328,11 @@ function CharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "UPR158":
-        if(GetClassState($currentPlayer, $CS_NumLess3PowPlayed) == 2 && AttackValue($cardID) <= 2)
+        if(GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && AttackValue($cardID) <= 2)
         {
           AddCurrentTurnEffect($character[$i], $currentPlayer);
           WriteLog("Tiger Strike Shuko gives the attack +1 and makes the damage unable to be prevented.");
+          $character[$i+1] = 1;
         }
         break;
       default:
@@ -432,6 +433,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
+  $damage = PermanentTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   if($damage > 0 && $source != "NA")
   {
@@ -1036,6 +1038,7 @@ function DestroyCurrentWeapon()
 function AttackDestroyed($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  $type = CardType($attackID);
   $class = CardClass($attackID);
   switch($attackID)
   {
@@ -1052,9 +1055,9 @@ function AttackDestroyed($attackID)
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
   }
-  if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON089"))
+  if($type == "AA" && $class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON089"))
   {
-    AddDecisionQueue("YESNO", $mainPlayer, "Do_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
@@ -1062,7 +1065,7 @@ function AttackDestroyed($attackID)
   }
   if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "UPR152"))
   {
-    AddDecisionQueue("YESNO", $mainPlayer, "Do_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);

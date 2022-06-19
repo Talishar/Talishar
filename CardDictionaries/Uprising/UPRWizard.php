@@ -106,7 +106,7 @@
       case "UPR106": return 4;
       case "UPR107": return 3;
       case "UPR108": return 2;
-      case "UPR166": return 0;
+      case "UPR165": case "UPR166": return 0;
       case "UPR168": return 2;
       case "UPR169": return -1;
       case "UPR176": case "UPR177": case "UPR178": return 2;
@@ -140,8 +140,8 @@
       case "UPR105":
         if(DelimStringContains($additionalCosts, "ICE"))
         {
-          $otherPlayer = ($player == 1 ? 2 : 1);
-          $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Ice Affliction")) + FrozenCount($otherPlayer);
+          $otherPlayer = ($player == 1 ? 1 : 2);
+          $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
         }
         else $damage = 5;
         DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer);
@@ -241,6 +241,7 @@
         else if($cardID == "UPR131") $damage = 2;
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        return "Frosting deals $damage arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;

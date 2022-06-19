@@ -12,9 +12,9 @@
     else return "black";
   }
 
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0,$actionDataOverride="",$id="",$rotate=false)
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $ally=false)
   {//
-    global $playerID, $gameName, $darkMode;
+    global $playerID, $gameName, $darkMode, $cardIconSize;
     if($darkMode == null) $darkMode = false;
     if($folder == "crops")
     {
@@ -65,10 +65,21 @@
     }
 
   // Counters Style
-    if($counters != 0) $rv .= "<div style='margin: 0; top: 50%; left: 50%;
-    margin-right: -50%; border-radius: 50%; width: 22px; height: 22px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
-    transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
-    font-size:20px;'>" . $counters . "</div>";
+    if($counters != 0) {
+      if($ally){
+        $rv .= "<div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
+        text-align: center; transform: translate(-50%, -50%);
+        position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
+        <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
+        position: absolute; margin: auto; top: 1; left: -3; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
+
+      } else {
+      $rv .= "<div style='margin: 0; top: 50%; left: 50%;
+      margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
+      transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
+      font-size:22px; font-weight:500;'>" . $counters . "</div>";
+      }
+    }
     $rv .= "</a>";
     return $rv;
   }

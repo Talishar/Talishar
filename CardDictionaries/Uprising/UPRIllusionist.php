@@ -47,6 +47,9 @@
       case "UPR415": return "-";
       case "UPR416": return "-";
       case "UPR417": return "-";
+      case "UPR439": return "-";
+      case "UPR440": return "-";
+      case "UPR441": return "-";
       case "UPR551": return "-";
       default: return "";
     }
@@ -76,6 +79,7 @@
       case "UPR415": return "Dragon,Ally";
       case "UPR416": return "Dragon,Ally";
       case "UPR417": return "Dragon,Ally";
+      case "UPR439": case "UPR440": case "UPR441": return "Ash";
       case "UPR551": return "Ally";
       default: return "";
     }
@@ -262,7 +266,7 @@
         Transform($currentPlayer, "Ash", "UPR417");
         return "";
       case "UPR018": case "UPR019": case "UPR020":
-        Transform($currentPlayer, "Ash", "UPR042");
+        Transform($currentPlayer, "Ash", "UPR042", true);
         return "";
       case "UPR030": case "UPR031": case "UPR032":
         PutPermanentIntoPlay($currentPlayer, "UPR043");
@@ -277,8 +281,14 @@
           Transform($currentPlayer, "Ash", "UPR042", true);
         }
         return "";
-      case "UPR039": case "UPR040": case "UPR041":
-
+      case "UPR039":
+          TransformPermanent($currentPlayer, "Ash", "UPR439");
+        return "";
+      case "UPR040":
+          TransformPermanent($currentPlayer, "Ash", "UPR440");
+        return "";
+      case "UPR041":
+          TransformPermanent($currentPlayer, "Ash", "UPR441");
         return "";
       case "UPR036": case "UPR037": case "UPR038":
         Transform($currentPlayer, "Ash", "UPR042");
@@ -361,8 +371,8 @@
         return "";
       case "UPR409":
         //TODO: Limit duplicate targets?
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true);
+        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true);
         return "";
       case "UPR410":
         GainActionPoints(1);
@@ -378,7 +388,7 @@
     {
       case "UPR024": case "UPR025": case "UPR026":
         PutPermanentIntoPlay($mainPlayer, "UPR043");
-        Transform($mainPlayer, "Ash", "UPR042");
+        Transform($mainPlayer, "Ash", "UPR042", true);
         break;
       case "UPR411":
         $items = &GetItems($defPlayer);
@@ -393,7 +403,7 @@
         $allies = &GetAllies($mainPlayer);
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
-        PlayAura("UPR042", $mainPlayer);
+        PutPermanentIntoPlay($mainPlayer, "UPR043");
         WriteLog("Nekria got a -1 health counter and created an ash token.");
         break;
       case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
@@ -414,6 +424,21 @@
   {
     $materialType = RemovePermanent($player, $materialIndex);
     return PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
+  }
+
+  function TransformPermanent($player, $materialType, $into, $optional=false)
+  {
+    AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform", 1);
+    if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
+    else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
+    AddDecisionQueue("TRANSFORMPERMANENT", $player, $into, 1);
+  }
+
+  function ResolveTransformPermanent($player, $materialIndex, $into)
+  {
+    $materialType = RemovePermanent($player, $materialIndex);
+    return PutPermanentIntoPlay($player, $into);
   }
 
   function GhostlyTouchPhantasmDestroy()

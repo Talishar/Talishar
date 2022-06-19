@@ -1775,7 +1775,7 @@
         return !HasCombo($combatChain[0]);
       case "WTR082": return count($combatChain) == 0 || CardClass($combatChain[0]) != "NINJA" || CardType($combatChain[0]) != "AA";
       case "WTR116":
-        return GetClassState($playerID, $CS_HitsWithWeapon) == 0;
+        return GetClassState($currentPlayer, $CS_HitsWithWeapon) == 0;
       case "WTR120": case "WTR121":
       case "WTR123": case "WTR124": case "WTR125":
       case "WTR135": case "WTR136": case "WTR137":
@@ -1855,8 +1855,9 @@
       case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
       case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
       case "UPR050": return (count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (CardClass($combatChain[0]) != "NINJA" && CardTalent($combatChain[0]) != "DRACONIC"));
+      case "UPR084": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
-      case "UPR089": $restriction = "UPR089"; return NumDraconicChainLinks() < 4;
+      case "UPR089": return ($currentPlayer!=$mainPlayer || NumDraconicChainLinks() < 4);
       case "UPR151": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 1;
       case "UPR153": return GetClassState($currentPlayer, $CS_NumPhantasmAADestroyed) < 1;
       case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
@@ -1864,6 +1865,23 @@
       case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "UPR166": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 2;
       case "UPR167": return $currentPlayer == $mainPlayer;
+      //Target Ash
+      case "UPR006": case "UPR007": case "UPR008":
+      case "UPR009": case "UPR010": case "UPR011":
+      case "UPR012": case "UPR013": case "UPR014":
+      case "UPR015": case "UPR016": case "UPR017":
+      case "UPR036": case "UPR037": case "UPR038":
+      case "UPR039": case "UPR040": case "UPR041":
+        $myAsh = &GetPermanents($currentPlayer);
+        $ash = 0;
+        for($i=0; $i<count($myAsh); ++$i)
+        {
+          if ($myAsh[$i] == "UPR043")
+          {
+            ++$ash;
+          }
+        }
+      return $ash < 1;
       default: return false;
     }
   }
@@ -2298,6 +2316,7 @@
       case "ELE004": case "ELE036": case "ELE066": return true;
       case "EVR003": case "EVR039": case "EVR055": case "EVR070": return true;
       case "DVR008": case "RVD008": return true;
+      case "UPR090": case "UPR091": case "UPR109": case "UPR126": return true;
       default: return false;
     }
   }
