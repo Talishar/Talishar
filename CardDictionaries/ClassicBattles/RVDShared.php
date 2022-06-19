@@ -4,23 +4,16 @@
   {
     switch($cardID)
     {
-      //Hero
       case "RVD001": return "C";
-      //Equipment
       case "RVD002": return "W";
       case "RVD003": case "RVD004": case "RVD005": case "RVD006": return "E";
-      //Mentor
       case "RVD007": return "M";
-      //Action
       case "RVD025": return "A";
-      //Attack Action
       case "RVD009": return "AA";
       case "RVD013": return "AA";
       case "RVD015": return "AA";
       case "RVD018": return "AA";
-      //Defense Reaction
       case "RVD026": return "DR";
-      //Bauble
       case "RVD027": return "R";
       default: return "";
     }
