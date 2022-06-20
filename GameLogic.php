@@ -1905,6 +1905,23 @@ function DefCharacterStartTurnAbilities()
 function PitchAbility($cardID)
 {
   global $currentPlayer;
+
+  $pitchValue = PitchValue($cardID);
+  if($pitchValue == 1)
+  {
+    $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
+    if($talismanOfRecompenseIndex > -1)
+    {
+      WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
+      DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
+      GainResources($currentPlayer, 2);
+    }
+    if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002"))
+    {
+      WriteLog("Dromai creates an Ash.");
+      PutPermanentIntoPlay($currentPlayer, "UPR043");
+    }
+  }
   switch($cardID)
   {
     case "WTR000":
