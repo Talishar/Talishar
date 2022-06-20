@@ -198,11 +198,13 @@ function CurrentTurnEffectUses($cardID)
   }
 }
 
-function AddNextTurnEffect($cardID, $player)
+function AddNextTurnEffect($cardID, $player, $uniqueID=-1)
 {
   global $nextTurnEffects;
   array_push($nextTurnEffects, $cardID);
   array_push($nextTurnEffects, $player);
+  array_push($nextTurnEffects, $uniqueID);
+  array_push($nextTurnEffects, CurrentTurnEffectUses($cardID));
 }
 
 function IsCombatEffectLimited($index)
