@@ -985,21 +985,6 @@ function FinalizeChainLink($chainClosed=false)
     else if($turn[0] == "P")
     {
       $pitchValue = PitchValue($cardID);
-      if($pitchValue == 1)
-      {
-        $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
-        if($talismanOfRecompenseIndex > -1)
-        {
-          WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
-          DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
-          $pitchValue = 3;
-        }
-        if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002"))
-        {
-          WriteLog("Dromai creates an Ash.");
-          PutPermanentIntoPlay($currentPlayer, "UPR043");
-        }
-      }
       $resources[0] += $pitchValue;
       if(SearchCharacterActive($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
       { $resources[0] += 1; }
