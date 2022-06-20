@@ -82,6 +82,7 @@
       case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
       case "EVR106": return true;
       case "EVR107": case "EVR108": case "EVR109": return true;
+      case "EVR138": return FractalReplicationStats("Attack");
       case "EVR150": case "EVR151": case "EVR152": return true;
       case "EVR158": return true;
       case "EVR160": return true;
@@ -924,6 +925,7 @@
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         return "Crown of Reflection let you destroy an aura and play a new one.";
       case "EVR138":
+        FractalReplicationStats("Ability");
         return "Fractal Replication will copy effects of other Illusionist cards on the combat chain. Note that according to Everfest release notes, cards that are no longer on the chain (for example, went to Soul) are not counted.";
       case "EVR150": case "EVR151": case "EVR152":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -1366,6 +1368,7 @@
     $highestAttack = 0;
     $highestBlock = 0;
     $hasPhantasm = false;
+    $hasGoAgain = false;
     for($i=0; $i<count($chainLinks); ++$i)
     {
       for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces())
@@ -1376,6 +1379,10 @@
           {
             ProcessHitEffect($chainLinks[$i][$j]);
           }
+          elseif ($stat == "Ability")
+          {
+            PlayAbility($chainLinks[$i][$j], "HAND", 0);
+          }
           else
           {
             $attack = AttackValue($chainLinks[$i][$j]);
@@ -1383,6 +1390,7 @@
             $block = BlockValue($chainLinks[$i][$j]);
             if($block > $highestBlock) $highestBlock = $block;
             if(!$hasPhantasm) $hasPhantasm = HasPhantasm($chainLinks[$i][$j]);
+            if(!$hasGoAgain) $hasGoAgain = HasGoAgain($chainLinks[$i][$j]);
           }
         }
       }
@@ -1395,6 +1403,10 @@
         {
           ProcessHitEffect($combatChain[$i]);
         }
+        elseif ($stat == "Ability")
+        {
+            PlayAbility($combatChain[$i], "HAND", 0);
+        }
         else
         {
           $attack = AttackValue($combatChain[$i]);
@@ -1402,6 +1414,7 @@
           $block = BlockValue($combatChain[$i]);
           if($block > $highestBlock) $highestBlock = $block;
           if(!$hasPhantasm) $hasPhantasm = HasPhantasm($combatChain[$i]);
+          if(!$hasGoAgain) $hasGoAgain = HasGoAgain($combatChain[$i]);
         }
       }
     }
@@ -1410,6 +1423,7 @@
       case "Attack": return $highestAttack;
       case "Block": return $highestBlock;
       case "Phantasm": return $hasPhantasm;
+      case "GoAgain": return $hasGoAgain;
       default: return 0;
     }
   }
