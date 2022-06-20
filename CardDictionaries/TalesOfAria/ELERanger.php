@@ -287,7 +287,7 @@
     }
   }
 
-  function PayOrDiscard($player, $amount, $fromDQ=false)
+  function PayOrDiscard($player, $amount, $fromDQ=true)
   {
     if($fromDQ)
     {
