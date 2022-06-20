@@ -187,7 +187,7 @@
       case "UPR137": return 0;
       case "UPR139": return 2;
       case "UPR140": return 2;
-      case "UPR141": case "UPR142": case "UPR143": return 1;
+      case "UPR141": case "UPR142": case "UPR143": return 2;
       case "UPR144": case "UPR145": case "UPR146": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       case "UPR182": return 2;
