@@ -139,6 +139,22 @@ function BottomDeckDraw()
   }
 }
 
+function BottomDeckMultizone($zone1, $zone2)
+{
+  global $currentPlayer;
+  AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ," . $zone1 ."|". $zone2, 1);
+  AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+  AddDecisionQueue("MULTIZONEREMOVE", $currentPlayer, "-", 1);
+  AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
+}
+
+function BottomDeckMultizoneDraw($zone1, $zone2)
+{
+  global $currentPlayer;
+  BottomDeckMultizone($zone1, $zone2);
+  AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+}
+
 function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
 {
   global $currentTurnEffects, $combatChain;
@@ -680,6 +696,28 @@ function Intimidate()
 function Banish($player, $cardID, $from)
 {
   BanishCardForPlayer($cardID, $player, $from);
+}
+
+function RemoveCard($player, $index)
+{
+  $hand = &GetHand($player);
+  $cardID = $hand[$index];
+  unset($hand[$index]);
+  $hand = array_values($hand);
+  return $cardID;
+}
+
+function RemoveFromArsenal($player, $index)
+{
+  $arsenal = &GetArsenal($player);
+  $cardID = $arsenal[$index];
+  RemoveArsenalEffects($player, $cardID);
+  for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
+  {
+    unset($arsenal[$i]);
+  }
+  $arsenal = array_values($arsenal);
+ return $cardID;
 }
 
 ?>

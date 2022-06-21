@@ -400,6 +400,8 @@
       else if($option[0] == "MYHAND") $source = $myHand;
       else if($option[0] == "MYDISCARD") $source = $myDiscard;
       else if($option[0] == "MYALLY") $source = $myAllies;
+      else if($option[0] == "MYARS") $source = $myArsenal;
+
       $card = $source[intval($option[1])];
       if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
       $content .= Card($card, "concat", $cardSize, 16, 1, 0, 0, 0, $options[$i]);
