@@ -186,8 +186,8 @@
         AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
         AddDecisionQueue("CCFILTERPLAYER", $currentPlayer, $currentPlayer);
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-");
-        AddDecisionQueue("MULTIBANISH", ($currentPlayer == 1 ? 2 : 1), "CC,-");
+        AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", ($currentPlayer == 1 ? 2 : 1), "CC,-", 1);
         return "";
       case "UPR057": case "UPR058": case "UPR059":
         AddCurrentTurnEffect($cardID, $currentPlayer);
