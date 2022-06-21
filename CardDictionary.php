@@ -698,7 +698,7 @@
       case "WTR144": case "WTR145": case "WTR146": return 2;
       case "WTR147": case "WTR148": case "WTR149": return 1;
       //Generics
-      case "WTR151": case "WTR152": case "WTR154": return -1;
+      case "WTR151": case "WTR152": case "WTR154": return 0;
       case "WTR159": return 0;
       case "WTR160": return 1;
       case "WTR161": return 3;
