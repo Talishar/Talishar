@@ -533,6 +533,7 @@
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
+      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Pay_2_to_prevent_your_equipment_from_being_destroyed");
       WriteLog("Player " . $otherPlayer . " may choose to pay 2 to prevent their equipment from being destroyed.");
   }
 
