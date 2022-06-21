@@ -2080,7 +2080,7 @@ function OnBlockEffects($index, $from)
       }
       break;
     case "UPR182":
-      BottomDeckDraw();
+      BottomDeckMultizoneDraw("MYHAND","MYARS");
       break;
     case "UPR194": case "UPR195": case "UPR196":
       if(PlayerHasLessHealth($currentPlayer))
@@ -3627,6 +3627,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       return $lastResult;
+
+      case "MULTIZONEREMOVE":
+        $params = explode("-", $lastResult);
+        $source = $params[0];
+        $index = $params[1];
+        $otherP = ($player == 1 ? 2 : 1);
+        switch($source)
+        {
+          case "MYARS": RemoveFromArsenal($player, $index); break;
+          case "MYHAND": RemoveCard($player, $index); break;
+          default: break;
+        }
+        return $lastResult;
+
     case "MULTIZONETOKENCOPY":
       $params = explode("-", $lastResult);
       $source = $params[0];
@@ -3906,6 +3920,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $zone[$params[1]];
       MZStartTurnAbility($cardID);
       return "";
+    case "MZREMOVE":
+      $params = explode("-", $lastResult);
+      $zone = &GetMZZone($player, $params[0]);
+      $cardID = $zone[$params[1]];
+      Remove($cardID);
+      return "";
+
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "TRANSFORMPERMANENT":
