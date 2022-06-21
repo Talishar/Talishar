@@ -8,6 +8,10 @@
       case "WTR162": case "WTR170": case "WTR171": case "WTR172":
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         break;
+      case "ELE143": case "ELE172": case "ELE201":
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        break;
+      case "EVR176": case "EVR177": case "EVR178": case "EVR179": case "EVR180": case "EVR181":
       case "EVR182": case "EVR183": case "EVR184": case "EVR185": case "EVR186": case "EVR187":
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         break;

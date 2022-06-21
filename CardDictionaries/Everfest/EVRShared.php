@@ -992,7 +992,6 @@
         $rv = "";
         if($from == "PLAY")
         {
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           $deck = &GetDeck($currentPlayer);
           if(count($deck) == 0) return "Deck is empty.";
           $mod = "DECK";
@@ -1005,7 +1004,6 @@
         $rv = "";
         if($from == "PLAY")
         {
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           PummelHit($otherPlayer);
           PummelHit($otherPlayer);
@@ -1018,7 +1016,6 @@
       case "EVR178":
         if($from == "PLAY")
         {
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           AddDecisionQueue("FINDINDICES", $currentPlayer, "EVR178");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
@@ -1028,7 +1025,6 @@
         $rv = "Amulet of Ignition is a partially manual card. Only use the abiliy when you have not played anything.";
         if($from == "PLAY")
         {
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
           $rv = "Amulet of Intervention reduces your next ability cost by 1.";
         }
@@ -1037,14 +1033,12 @@
         $rv = "Amulet of Intervention is a partially manual card. Only use the abiliy when you are the target of lethal damage.";
         if($from == "PLAY")
         {
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
           $rv = "Amulet of Intervention prevents 1 damage.";
         }
         return $rv;
       case "EVR181":
         if($from == "PLAY"){
-          DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         }
         return "";
