@@ -625,7 +625,7 @@
       //if(IsTileable($theirPermanents[$i])) continue;
       //$playable = ($currentPlayer == $playerID ? IsPlayable($theirPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
       //$border = CardBorderColor($theirPermanents[$i], "PLAY", $playable);
-      echo(Card($theirPermanents[$i], "concat", $cardSizeAura, 0, 1));
+      echo(Card($theirPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
     }
   }
   $theirAllies = GetAllies($otherPlayer);
@@ -781,6 +781,8 @@
       if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
   }
+
+
   echo("</div>");
 
   //Now display my character and equipment
