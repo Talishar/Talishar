@@ -340,7 +340,6 @@
           if($index != -1)
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
-            DestroyMyItem($index);
           }
           $rv = "Amulet of Earth gives your attack actions cards +1 attack and +1 defense for the rest of the turn.";
         }
@@ -387,7 +386,6 @@
           if($index != -1)
           {
             PayOrDiscard($otherPlayer, 2);
-            DestroyMyItem($index);
           }
           $rv = "Amulet of Ice makes your opponent pay 2 resources or discard a card.";
         }
@@ -432,7 +430,6 @@
           if($index != -1)
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
-            DestroyMyItem($index);
           }
           $rv = "Amulet of Lightning gives your next action Go Again.";
         }
