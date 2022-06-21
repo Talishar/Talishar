@@ -787,6 +787,7 @@
   $numWeapons = 0;
   for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
   {
+    $restriction = "";
     $counters = CardType($myCharacter[$i]) == "W" ? $myCharacter[$i+3] : $myCharacter[$i+4];
     if($myCharacter[$i+2] > 0) $counters = $myCharacter[$i+2];//TODO: Display both kinds of counters
     $playable = $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
