@@ -166,7 +166,7 @@
         {
           DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer);
         }
-        return "Ice Eternal created $numFrostBite Frostbites and dealt $amountArcane arcane.";
+        return "Ice Eternal created $numFrostBite Frostbites.";
       case "UPR110": case "UPR111": case "UPR112":
         if($cardID == "UPR110") $damage = 5;
         else if($cardID == "UPR111") $damage = 4;
