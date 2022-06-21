@@ -3933,7 +3933,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         if(CardType($combatChain[$arr[$i]]) != $parameter) array_push($rv, $arr[$i]);
       }
-      return implode(",", $rv);
+      $rv = implode(",", $rv);
+      return ($rv == "" ? "PASS" : $rv);
     case "CCFILTERPLAYER":
       $arr = explode(",", $lastResult);
       $rv = [];
@@ -3941,7 +3942,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         if($combatChain[$arr[$i]+1] != $parameter) array_push($rv, $arr[$i]);
       }
-      return implode(",", $rv);
+      $rv = implode(",", $rv);
+      return ($rv == "" ? "PASS" : $rv);
     default:
       return "NOTSTATIC";
   }
