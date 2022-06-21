@@ -633,7 +633,7 @@
   {
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
-      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+2], "", "", False, True) . "&nbsp");
+      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+6], "", "", False, $theirAllies[$i+2]) . "&nbsp");
       if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
   }
@@ -777,7 +777,7 @@
     {
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
-      echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+2], strval($i), "", False, True) . "&nbsp");
+      echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+6], strval($i), "", False, $myAllies[$i+2]) . "&nbsp");
       if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
   }
