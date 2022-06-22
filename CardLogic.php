@@ -351,6 +351,12 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         }
         else
         {
+          if(RequiresDieRoll($layers[0], explode("|", $layers[2])[0]))
+          {
+            RollDie($currentPlayer);
+            ContinueDecisionQueue("");
+            return;
+          }
           CloseDecisionQueue();
           $cardID = array_shift($layers);
           $player = array_shift($layers);
@@ -378,6 +384,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
               $lastPlayed[3] = ($additionalCosts != "-" ? "FUSED" : "UNFUSED");
             }
             PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3]);
+            ClearDieRoll($player);
           }
         }
       }

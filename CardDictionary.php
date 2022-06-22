@@ -2275,6 +2275,7 @@
   function RequiresDieRoll($cardID, $from)
   {
     global $currentPlayer, $turn;
+    if(GetDieRoll($currentPlayer) > 0) return false;
     if($turn[0] == "B") return false;
     $type = CardType($cardID);
     if($type == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && AttackValue($cardID) >= 6) return true;
