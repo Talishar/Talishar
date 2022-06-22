@@ -353,7 +353,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         {
           if(RequiresDieRoll($layers[0], explode("|", $layers[2])[0]))
           {
-            RollDie($currentPlayer);
+            RollDie($layers[1]);
             ContinueDecisionQueue("");
             return;
           }
