@@ -192,7 +192,7 @@
       case "UPR057": case "UPR058": case "UPR059":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
-        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         return "";
