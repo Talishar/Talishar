@@ -3436,10 +3436,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "LIGHTNING": IncrementClassState($player, $CS_NumFusedLightning); break;
           default: break;
         }
+        AppendClassState($player, $CS_AdditionalCosts, $elements);
         CurrentTurnFuseEffects($player, $element);
         AuraFuseEffects($player, $element);
       }
-      AppendClassState($player, $CS_AdditionalCosts, $elements);
       return $lastResult;
     case "SUBPITCHVALUE":
       return $parameter - PitchValue($lastResult);
