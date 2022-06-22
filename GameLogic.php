@@ -105,8 +105,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "Bloodrush Bellow discarded " . CardLink($discarded, $discarded) . ($drew == 1 ? ", " : ", and ") . "gave your Brute attacks this turn +2" . ($drew == 1 ? ", drew two cards, and gained Go Again." : ".");
     case "WTR008":
       $damaged = false;
-      $discarded = DiscardRandom($currentPlayer, $cardID);
-      if(AttackValue($discarded) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
+      if(AttackValue($additionalCosts) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
       return "Reckless Swing discarded a random card from your hand" . ($damaged ? " and did 2 damage." : ".");
     case "WTR009":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");

@@ -1298,6 +1298,10 @@ function FinalizeChainLink($chainClosed=false)
     }
     switch($cardID)
     {
+      case "WTR008":
+        $discarded = DiscardRandom($currentPlayer, $cardID);
+        SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
+        break;
       case "WTR159":
         BottomDeck();
         break;
