@@ -1,6 +1,6 @@
 <?php
 
-function CardName ($cardID)
+function CardName($cardID)
 {
     $arr = str_split($cardID, 3);
     $set = $arr[0];

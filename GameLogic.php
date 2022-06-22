@@ -3794,7 +3794,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal = &GetArsenal($player);
       $hand = &GetHand($player);
       $deck = &GetDeck($player);
-      $sizeToDraw = count($hand) + count($arsenal)/6;
+      $sizeToDraw = count($hand) + count($arsenal)/ArsenalPieces();
       $i = 0;
       while (count($hand)>0) {
         array_push($deck, $hand[$i]);
