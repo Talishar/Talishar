@@ -326,7 +326,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
-    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
+    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
     global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "RESOLVECOMBATDAMAGE" || $decisionQueue[0] == "PASSTURN")
     {
@@ -451,9 +451,12 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
     $parameter = str_replace("{I}", $dqState[5], $parameter);
-    $parameter = str_replace("{0}", $dqVars[0], $parameter);
-    $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
-    $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
+    if(count($dqVars) > 0)
+    {
+      if(str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
+      if(str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
+    }
+    if(count($dqVars) > 1) $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
     $subsequent = array_shift($decisionQueue);
     $makeCheckpoint = array_shift($decisionQueue);
     $turn[0] = $phase;
