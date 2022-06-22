@@ -1212,7 +1212,6 @@ function FinalizeChainLink($chainClosed=false)
   function AddPostPitchDecisionQueue($cardID, $from, $index=-1)
   {
     global $currentPlayer;
-    if(RequiresDieRoll($cardID, $from)) RollDie($currentPlayer);
     switch($cardID)
     {
       case "MON089":

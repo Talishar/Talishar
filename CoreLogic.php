@@ -941,6 +941,12 @@ function GetDieRoll($player)
   return GetClassState($player, $CS_DieRoll);
 }
 
+function ClearDieRoll($player)
+{
+  global $CS_DieRoll;
+  return SetClassState($player, $CS_DieRoll, 0);
+}
+
 function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
