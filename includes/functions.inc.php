@@ -156,3 +156,25 @@ function loginUser($conn, $username, $pwd) {
 		exit();
 	}
 }
+
+function logCompletedGameStats() {
+	require_once "dbh.inc.php";
+	//global $conn;
+  $sql = "INSERT INTO completedgame (WinningHero, LosingHero, NumTurns) VALUES (?, ?, ?);";
+	global $winner, $currentTurn;
+	$loser = ($winner == 1 ? 2 : 1);
+
+	$stmt = mysqli_stmt_init($conn);
+	if (!mysqli_stmt_prepare($stmt, $sql)) {
+	 	header("location: ../Signup.php?error=stmtfailed");
+		exit();
+	}
+
+	$winHero = &GetPlayerCharacter($winner);
+	$loseHero = &GetPlayerCharacter($loser);
+
+	mysqli_stmt_bind_param($stmt, "sss", $winHero[0], $loseHero[0], $currentTurn);
+	mysqli_stmt_execute($stmt);
+	mysqli_stmt_close($stmt);
+	mysqli_close($conn);
+}
