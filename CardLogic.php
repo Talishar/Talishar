@@ -480,13 +480,8 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function GetDQHelpText()
   {
     global $dqState;
+    if(count($dqState) < 5) return "-";
     return $dqState[4];
-  }
-
-  function GetDQMZIndices()
-  {
-    global $dqState;
-    return $dqState[5];
   }
 
   function FinalizeAction()
