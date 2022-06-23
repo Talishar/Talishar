@@ -450,7 +450,11 @@
 
   ProcessMacros();
 
-  if($winner != 0) { $turn[0] = "OVER"; $currentPlayer = 1; }
+  if($winner != 0 && $turn[0] != "OVER")
+  {
+  	require_once "./includes/functions.inc.php";
+    $turn[0] = "OVER"; $currentPlayer = 1; logCompletedGameStats();
+  }
   CombatDummyAI();//Only does anything if applicable
   CacheCombatResult();
 
