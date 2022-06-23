@@ -2272,13 +2272,13 @@
     }
   }
 
-  function RequiresDieRoll($cardID, $from)
+  function RequiresDieRoll($cardID, $from, $player)
   {
-    global $currentPlayer, $turn;
-    if(GetDieRoll($currentPlayer) > 0) return false;
+    global $turn;
+    if(GetDieRoll($player) > 0) return false;
     if($turn[0] == "B") return false;
     $type = CardType($cardID);
-    if($type == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && AttackValue($cardID) >= 6) return true;
+    if($type == "AA" && SearchCharacterActive($player, "CRU002") && AttackValue($cardID) >= 6) return true;
     switch($cardID)
     {
       case "WTR004": case "WTR005": return true;
