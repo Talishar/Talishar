@@ -3626,20 +3626,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       return $lastResult;
-
-      case "MULTIZONEREMOVE":
-        $params = explode("-", $lastResult);
-        $source = $params[0];
-        $index = $params[1];
-        $otherP = ($player == 1 ? 2 : 1);
-        switch($source)
-        {
-          case "MYARS": RemoveFromArsenal($player, $index); break;
-          case "MYHAND": RemoveCard($player, $index); break;
-          default: break;
-        }
-        return $lastResult;
-
+    case "MULTIZONEREMOVE":
+      $params = explode("-", $lastResult);
+      $source = $params[0];
+      $index = $params[1];
+      $otherP = ($player == 1 ? 2 : 1);
+      switch($source)
+      {
+        case "MYARS":
+          $arsenal = &GetArsenal($player);
+          $card = $arsenal[$index];
+          RemoveFromArsenal($player, $index);
+          break;
+        case "MYHAND":
+          $hand = &GetHand($player);
+          $card = $hand[$index];
+          RemoveCard($player, $index);
+          break;
+        default: break;
+      }
+      return $card;
     case "MULTIZONETOKENCOPY":
       $params = explode("-", $lastResult);
       $source = $params[0];
