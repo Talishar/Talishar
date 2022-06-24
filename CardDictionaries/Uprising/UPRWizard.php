@@ -252,7 +252,7 @@
         if($currentPlayer != $mainPlayer) $damage = 3;
         else $damage = 2;
         DealArcane($damage, 1, "ABILITY", $cardID);
-        return "Waning Moon deals arcane damage.";
+        return "";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Alluvion Constellas discounts your next staff ability by 3.";
