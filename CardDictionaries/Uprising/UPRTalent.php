@@ -204,7 +204,6 @@
       case "UPR206": case "UPR207": case "UPR208": return 3;
       case "UPR212": case "UPR213": case "UPR214": return 2;
       case "UPR215": case "UPR216": case "UPR217": return 2;
-      case "UPR221": case "UPR222": case "UPR223": return 2;
       default: return -1;
     }
   }
