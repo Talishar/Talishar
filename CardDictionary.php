@@ -543,6 +543,7 @@
         else if($number >= 165 && $number <= 181) return "WIZARD";
         else if($number >= 182 && $number <= 223) return "GENERIC";
         else if($number >= 406 && $number <= 417) return "ILLUSIONIST";
+        else if($number >= 439 && $number <= 441) return "ILLUSIONIST";
         else if($number == 551) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
