@@ -61,4 +61,16 @@
     $items = array_values($items);
   }
 
+  function StealItem($srcPlayer, $index, $destPlayer)
+  {
+    $srcItems = &GetItems($srcPlayer);
+    $destItems = &GetItems($destPlayer);
+    for($i=0; $i<ItemPieces(); ++$i)
+    {
+      array_push($destItems, $srcItems[$index+$i]);
+      unset($srcItems[$index+$i]);
+    }
+    $srcItems = array_values($srcItems);
+  }
+
 ?>
