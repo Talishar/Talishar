@@ -401,6 +401,13 @@
           Draw($mainPlayer);
           WriteLog("Kyloria drew a card.");
         }
+        else
+        {
+          AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMS");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take control of");
+          AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ITEMGAINCONTROL", $mainPlayer, "-", 1);
+        }
         break;
       case "UPR413":
         $index = $combatChainState[$CCS_WeaponIndex];

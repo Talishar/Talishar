@@ -2645,7 +2645,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MULTIHANDAA": $search = SearchHand($player, "AA"); $rv = SearchCount($search) . "-" . $search; break;
         case "ARSENAL": $arsenal = &GetArsenal($player); $rv = GetIndices(count($arsenal), 0, ArsenalPieces()); break;
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
-        case "ITEMS": $rv = GetIndices(count(GetItems($player))); break;
+        case "ITEMS": $rv = GetIndices(count(GetItems($player)), 0, ItemPieces()); break;
         case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "DECKITEMMAXCOST": $rv = SearchDeck($player, "", "Item", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
@@ -3970,6 +3970,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $rv = implode(",", $rv);
       return ($rv == "" ? "PASS" : $rv);
+    case "ITEMGAINCONTROL":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      StealItem($otherPlayer, $lastResult, $player);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
