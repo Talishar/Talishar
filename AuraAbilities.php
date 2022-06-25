@@ -61,7 +61,7 @@ function AuraDestroyed($player, $cardID, $isToken=false)
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $player)); ++$i)
   {
     $goesWhere = "SOUL";
-    DealArcane(1, 0, "STATIC", "MON012", false, $player);
+    DealArcane(1, 0, "STATIC", "MON012", true, $player);
   }
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
   switch($goesWhere)
@@ -188,15 +188,7 @@ function AuraStartTurnAbilities()
       case "UPR218": case "UPR219": case "UPR220": $dest = "Sigil of Protection is destroyed."; break;
       default: break;
     }
-    if($dest != "")
-    {
-      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($auras[$j]);
-      }
-      $auras = array_values($auras);
-    }
+    if($dest != "") DestroyAura($mainPlayer, $i);
   }
 }
 
@@ -350,15 +342,7 @@ function AuraLoseHealthAbilities($player, $amount)
       case "MON157": if($player == $mainPlayer) { $remove = 1; } break;
       default: break;
     }
-    if($remove == 1)
-    {
-      AuraDestroyed(player, $auras[$i], $auras[$i+4] == 1);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($auras[$j]);
-      }
-      $auras = array_values($auras);
-    }
+    if($remove == 1) DestroyAura($player, $i);
   }
   return $amount;
 }
@@ -399,15 +383,7 @@ function AuraAttackAbilities($attackID)
       case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { WriteLog("Burn Them All deals 1 arcane damage."); --$auras[$i+5]; DealArcane(1, 0, "STATIC", $attackID, false, $mainPlayer); } break;
       default: break;
     }
-    if($remove == 1)
-    {
-      AuraDestroyed($mainPlayer, $auras[$i], $auras[$i+4] == 1);
-      for($j = $i+AuraPieces()-1; $j >= $i; --$j)
-      {
-        unset($auras[$j]);
-      }
-      $auras = array_values($auras);
-    }
+    if($remove == 1) DestroyAura($mainPlayer, $i);
   }
 }
 
