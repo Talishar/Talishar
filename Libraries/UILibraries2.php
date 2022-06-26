@@ -67,7 +67,7 @@
   // Counters Style
     if($counters != 0) {
       $left = ($health == 0 ? "50%" : "30%");
-      $rv .= "<div style='margin: 0; top: 50%; left: $left;
+      $rv .= "<div style='margin: 0px; top: 50%; left: $left;
       margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
       font-size:22px; font-weight:500;'>" . $counters . "</div>";

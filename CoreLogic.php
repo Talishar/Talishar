@@ -1107,6 +1107,7 @@ function DestroyCharacter($player, $index)
 {
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
+  $char[$index+4] = 0;
   $cardID = $char[$index];
   AddGraveyard($cardID, $player, "CHAR");
   CharacterDestroyEffect($cardID, $player);
