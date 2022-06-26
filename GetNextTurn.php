@@ -134,15 +134,17 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./Images/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:absolute; right:300px; top:calc(50% - 125px); height:200px; z-index:100;'><span style='position:absolute; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");
+  echo("<div style='position:absolute; right:300px; top:calc(50% - 125px); height:200px; z-index:100;'>
+      <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "20px") . CreateButton($playerID, "+1", 10006, 0, "20px") . "</span>": ""));
-  echo("<span style='position:absolute; font-size: 24px; font-weight: 550; top:23px; left:28px;'>$theirHealth</span>");
+  echo("<span style='position:absolute; text-align:center; width:27px; font-size: 24px; font-weight: 550; top:23px; left:28px;'>$theirHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:0px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "20px") . CreateButton($playerID, "+1", 10008, 0, "20px") . "</span>": ""));
   if(IsDarkMode($playerID)) echo("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo("<img style='height:200px;' src='./Images/DuoLife.png' />");
   echo("<div style='position:absolute; top:37px; left:-130px; z-index:-5;'><img style='height:125px; width:150px;' src='./Images/passBG.png' /></div>");
-  if(CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:#DDD; font-family:Helvetica; font-size:36px; user-select: none;'>Pass</span></div>");
-  else echo("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:gray; font-family:Helvetica; font-size:36px; user-select: none;'>Pass</span></div>");
+  if(CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'>
+  <span style='position:absolute; left:100px; top:15px; color:#DDD; font-family:Helvetica; font-size:36px; font-weight: 550;text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; user-select: none;'>Pass</span></div>");
+  else echo("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:gray; font-family:Helvetica; font-size:36px; font-weight: 550; text-shadow: 1px 0 0 ".$borderColor.", 0 -1px 0 ".$borderColor.", 0 1px 0 ".$borderColor.", -1px 0 0 ".$borderColor."; user-select: none;'>Pass</span></div>");
   echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-weight:550; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
   echo(($manualMode ? "<span style='position:absolute; top:85%; right:7%; display: inline-block;';>" . CreateButton($playerID, "-1", 10004, 0, "20px") . CreateButton($playerID, "+1", 10002, 0, "20px") . "</span>": ""));
   echo("</div></div>");
@@ -878,8 +880,8 @@
   echo("<div title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo("</td></tr></table></div></div>");
 
-  echo("<div style='text-align:center; width:200px; font-weight:bold; font-size:24;'>Turn #" . $currentTurn . "</div>");
-  echo("<div style='text-align:center; width:200px; font-weight:bold; font-size:16;'>Last Played</div>");
+  echo("<div style='text-align:center; margin-top: 3px; width:200px; font-weight:bold; font-size:24; font-weight: 550; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Turn #" . $currentTurn . "</div>");
+  echo("<div style='text-align:center; width:200px; font-weight:bold; font-size:16; font-weight: 550; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Last Played</div>");
   echo("<div style='position:relative; left: 7px; top:0px;'>");
     if(count($lastPlayed) == 0) echo Card("cardBack", "CardImages", 271);
     else
@@ -892,7 +894,7 @@
       }
     }
   echo("</div>");
-  echo("<div style='position:relative; z-index:-1; left:3px; top:-6px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
+  echo("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
   if($turn[0] == "B") $trackerLeft = "85";
   else if($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
