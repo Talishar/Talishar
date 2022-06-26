@@ -618,7 +618,12 @@
       echo(Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]) . "&nbsp");
     }
   }
-  $otherPlayer = $playerID == 2 ? 1 : 2;
+  if($playerID == 3)
+  {
+    $otherPlayer = $playerID == 2 ? 2 : 1;
+  } else {
+    $otherPlayer = $playerID == 2 ? 1 : 2;
+  }
   $theirAllies = GetAllies($otherPlayer);
   if(count($theirAllies) > 0)
   {
