@@ -56,7 +56,7 @@ function AllyDestroyAbility($player, $cardID)
   {
     case "UPR410": if($player == $mainPlayer) GainActionPoints(1); break;
     case "UPR551":
-      $gtIndex = FindCharacterIndex($player, "UPR151");
+      $gtIndex = FindCharacterIndex($player, "UPR551");
       if($gtIndex > -1)
       {
         DestroyCharacter($player, $gtIndex);
