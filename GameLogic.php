@@ -2567,6 +2567,8 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "UPR151":
       $character[$cardIndex+2] -= 1;
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;
       break;
     case "UPR166":
       $character[$cardIndex+2] -= 2;
