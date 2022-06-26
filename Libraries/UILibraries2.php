@@ -309,7 +309,7 @@
     }
     if($isPlayable && ComboActive($cardID)) return 3;
     if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
-    if($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 3;
+    if($isPlayable && HasRupture($cardID) && RuptureActive(true, (CardType($cardID) != "AA"))) return 3;
     else if($isPlayable) return 6;
     return 0;
   }
