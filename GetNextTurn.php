@@ -134,7 +134,7 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./Images/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:absolute; right:300px; top:calc(50% - 125px); height:200px; z-index:100;'>
+  echo("<div style='position:absolute; right:300px; top:calc(50% - 100px); height:200px; z-index:100;'>
       <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "20px") . CreateButton($playerID, "+1", 10006, 0, "20px") . "</span>": ""));
   echo("<span style='position:absolute; text-align:center; width:27px; font-size: 24px; font-weight: 550; top:23px; left:28px;'>$theirHealth</span>");

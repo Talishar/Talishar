@@ -1468,7 +1468,7 @@ function cardID ($cardName)
 		 case "Bloodspill Invocation": return array("ARC106","ARC107","ARC108");
 		 case "Read the Runes": return array("ARC109","ARC110","ARC111");
 		 case "Runechant": return array("ARC112","CRU157");
-		 case "Cano, Dracai of Aether": return array("ARC113","CRU158");
+		 case "Kano, Dracai of Aether": return array("ARC113","CRU158");
 		 case "Kano": return array("ARC114");
 		 case "Crucible of Aetherweave": return array("ARC115");
 		 case "Storm Striders": return array("ARC116");
