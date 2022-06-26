@@ -619,6 +619,15 @@
     }
   }
   $otherPlayer = $playerID == 2 ? 1 : 2;
+  $theirAllies = GetAllies($otherPlayer);
+  if(count($theirAllies) > 0)
+  {
+    for($i=0; $i<count($theirAllies); $i+=AllyPieces())
+    {
+      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+6], "", "", False, $theirAllies[$i+2]) . "&nbsp");
+      if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+    }
+  }
   $theirPermanents = &GetPermanents($otherPlayer);
   if(count($theirPermanents) > 0)
   {
@@ -628,15 +637,6 @@
       //$playable = ($currentPlayer == $playerID ? IsPlayable($theirPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
       //$border = CardBorderColor($theirPermanents[$i], "PLAY", $playable);
       echo(Card($theirPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
-    }
-  }
-  $theirAllies = GetAllies($otherPlayer);
-  if(count($theirAllies) > 0)
-  {
-    for($i=0; $i<count($theirAllies); $i+=AllyPieces())
-    {
-      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+6], "", "", False, $theirAllies[$i+2]) . "&nbsp");
-      if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
   }
     echo("</div>");
@@ -761,17 +761,6 @@
       echo(Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)) . "&nbsp");
     }
   }
-  $myPermanents = &GetPermanents($playerID);
-  if(count($myPermanents) > 0)
-  {
-    for($i=0; $i<count($myPermanents); $i+=PermanentPieces())
-    {
-      //if(IsTileable($myPermanents[$i])) continue;
-      //$playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
-      //$border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
-      echo(Card($myPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
-    }
-  }
   $myAllies = GetAllies($playerID);
   if(count($myAllies) > 0)
   {
@@ -783,8 +772,17 @@
       if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:5px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
   }
-
-
+  $myPermanents = &GetPermanents($playerID);
+  if(count($myPermanents) > 0)
+  {
+    for($i=0; $i<count($myPermanents); $i+=PermanentPieces())
+    {
+      //if(IsTileable($myPermanents[$i])) continue;
+      //$playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
+      //$border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
+      echo(Card($myPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
+    }
+  }
   echo("</div>");
 
   //Now display my character and equipment
