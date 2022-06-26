@@ -534,6 +534,7 @@ function CurrentEffectDamageEffects($player, $source, $type, $damage)
   global $currentTurnEffects;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
+    if($currentTurnEffects[$i+1] == $player) continue;
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
