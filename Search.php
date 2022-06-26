@@ -9,7 +9,7 @@ function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $c
 function SearchHand($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false, $maxAttack=-1)
 {
   $hand = &GetHand($player);
-  return SearchInner($hand, HandPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack);
+  return SearchInner($hand, 1, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack);
 }
 
 function SearchPitch($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false)
@@ -82,7 +82,7 @@ function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $clas
         for($k=0; $k<count($cardTalents); ++$k) { if($talents[$j] == $cardTalents[$k]) $talentMatch = 1; }
       }
     }
-    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype)) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost)
+    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || CardSubType($cardID) == $subtype) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost)
      && ($class == "" || CardClass($cardID) == $class) && (count($talents) == 0 || $talentMatch) && ($pitch == -1 || PitchValue($cardID) == $pitch) && ($maxAttack == -1 || AttackValue($cardID) <= $maxAttack))
     {
       if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
@@ -569,8 +569,6 @@ function SearchMZ($player, $subparam)
       case "THEIRALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), $zones[$i])); break;
       case "THEIRARS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), $zones[$i])); break;
       case "MYALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($player), $zones[$i])); break;
-      case "MYHAND": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchHand($player), $zones[$i])); break;
-      case "MYARS" : $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($player), $zones[$i])); break;
       default: break;
     }
   }

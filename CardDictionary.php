@@ -543,7 +543,6 @@
         else if($number >= 165 && $number <= 181) return "WIZARD";
         else if($number >= 182 && $number <= 223) return "GENERIC";
         else if($number >= 406 && $number <= 417) return "ILLUSIONIST";
-        else if($number >= 439 && $number <= 441) return "ILLUSIONIST";
         else if($number == 551) return "ILLUSIONIST";
         else return "NONE";
       case "DVR":
@@ -699,7 +698,7 @@
       case "WTR144": case "WTR145": case "WTR146": return 2;
       case "WTR147": case "WTR148": case "WTR149": return 1;
       //Generics
-      case "WTR151": case "WTR152": case "WTR154": return 0;
+      case "WTR151": case "WTR152": case "WTR154": return -1;
       case "WTR159": return 0;
       case "WTR160": return 1;
       case "WTR161": return 3;
@@ -1708,7 +1707,7 @@
     global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $combatChainState, $CCS_AttackPlayedFrom;
     $otherPlayer = $currentPlayer == 2 ? 1 : 2;
     if($player == "") $player = $currentPlayer;
-    if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
+    if($from == "COMBATCHAIN" && $player != $mainPlayer && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
     {
       case "WTR163": return "BANISH";
@@ -1858,16 +1857,15 @@
       case "UPR050": return (count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (CardClass($combatChain[0]) != "NINJA" && CardTalent($combatChain[0]) != "DRACONIC"));
       case "UPR084": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
-      case "UPR087": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA";
       case "UPR089": return ($currentPlayer!=$mainPlayer || NumDraconicChainLinks() < 4);
-      case "UPR151": $char = &GetPlayerCharacter($currentPlayer); return ($char[$index+2] < 1 && SearchCurrentTurnEffects($cardID, $currentPlayer));
+      case "UPR151": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 1;
       case "UPR153": return GetClassState($currentPlayer, $CS_NumPhantasmAADestroyed) < 1;
       case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
       case "UPR162": case "UPR163": case "UPR164": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 0;
       case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "UPR166": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 2;
       case "UPR167": return $currentPlayer == $mainPlayer;
-      //Mandatory Target Ash
+      //Target Ash
       case "UPR006": case "UPR007": case "UPR008":
       case "UPR009": case "UPR010": case "UPR011":
       case "UPR012": case "UPR013": case "UPR014":
@@ -1878,12 +1876,12 @@
         $ash = 0;
         for($i=0; $i<count($myAsh); ++$i)
         {
-          if ($myAsh[$i] == "UPR043") { ++$ash; }
+          if ($myAsh[$i] == "UPR043")
+          {
+            ++$ash;
+          }
         }
-        return $ash < 1;
-      //Once per turn instants restriction
-      case "MON281": case "MON282": case "MON283": case "ELE195": case "ELE196": case "ELE197":
-        return SearchCurrentTurnEffects($cardID, $currentPlayer);
+      return $ash < 1;
       default: return false;
     }
   }
@@ -2273,13 +2271,12 @@
     }
   }
 
-  function RequiresDieRoll($cardID, $from, $player)
+  function RequiresDieRoll($cardID, $from)
   {
-    global $turn;
-    if(GetDieRoll($player) > 0) return false;
+    global $currentPlayer, $turn;
     if($turn[0] == "B") return false;
     $type = CardType($cardID);
-    if($type == "AA" && SearchCharacterActive($player, "CRU002") && AttackValue($cardID) >= 6) return true;
+    if($type == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && AttackValue($cardID) >= 6) return true;
     switch($cardID)
     {
       case "WTR004": case "WTR005": return true;

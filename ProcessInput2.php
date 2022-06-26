@@ -450,11 +450,7 @@
 
   ProcessMacros();
 
-  if($winner != 0 && $turn[0] != "OVER")
-  {
-  	require_once "./includes/functions.inc.php";
-    $turn[0] = "OVER"; $currentPlayer = 1; logCompletedGameStats();
-  }
+  if($winner != 0) { $turn[0] = "OVER"; $currentPlayer = 1; }
   CombatDummyAI();//Only does anything if applicable
   CacheCombatResult();
 
@@ -727,7 +723,7 @@ function FinalizeChainLink($chainClosed=false)
       $cardType = CardType($combatChain[$i-1]);
       if($cardType != "W" || $cardType != "E" || $cardType != "C")
       {
-        $params = explode(",", GoesWhereAfterResolving($combatChain[$i-1], "COMBATCHAIN", $combatChain[$i]));
+        $params = explode(",", GoesWhereAfterResolving($combatChain[$i-1], "COMBATCHAIN"));
         $goesWhere = $params[0];
         $modifier = (count($params) > 1 ? $params[1] : "NA");
         if($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") { $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves]; }
@@ -881,13 +877,13 @@ function FinalizeChainLink($chainClosed=false)
     $defResources[1] = 0;
     $lastPlayed = [];
 
+    ArsenalEndTurn($mainPlayer);
+    ArsenalEndTurn($defPlayer);
     CurrentEffectEndTurnAbilities();
     AuraEndTurnAbilities();
     PermanentEndTurnAbilities();
     AllyEndTurnAbilities();
     MainCharacterEndTurnAbilities();
-    ArsenalEndTurn($mainPlayer);
-    ArsenalEndTurn($defPlayer);
     ResetMainClassState();
     ResetCharacterEffects();
     UnsetTurnBanish();
@@ -989,6 +985,21 @@ function FinalizeChainLink($chainClosed=false)
     else if($turn[0] == "P")
     {
       $pitchValue = PitchValue($cardID);
+      if($pitchValue == 1)
+      {
+        $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
+        if($talismanOfRecompenseIndex > -1)
+        {
+          WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
+          DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
+          $pitchValue = 3;
+        }
+        if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002"))
+        {
+          WriteLog("Dromai creates an Ash.");
+          PutPermanentIntoPlay($currentPlayer, "UPR043");
+        }
+      }
       $resources[0] += $pitchValue;
       if(SearchCharacterActive($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
       { $resources[0] += 1; }
@@ -1216,6 +1227,7 @@ function FinalizeChainLink($chainClosed=false)
   function AddPostPitchDecisionQueue($cardID, $from, $index=-1)
   {
     global $currentPlayer;
+    if(RequiresDieRoll($cardID, $from)) RollDie($currentPlayer);
     switch($cardID)
     {
       case "MON089":
@@ -1302,10 +1314,6 @@ function FinalizeChainLink($chainClosed=false)
     }
     switch($cardID)
     {
-      case "WTR008":
-        $discarded = DiscardRandom($currentPlayer, $cardID);
-        SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
-        break;
       case "WTR159":
         BottomDeck();
         break;

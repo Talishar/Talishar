@@ -187,7 +187,7 @@
       case "UPR137": return 0;
       case "UPR139": return 2;
       case "UPR140": return 2;
-      case "UPR141": case "UPR142": case "UPR143": return 2;
+      case "UPR141": case "UPR142": case "UPR143": return 1;
       case "UPR144": case "UPR145": case "UPR146": return 2;
       case "UPR147": case "UPR148": case "UPR149": return 2;
       case "UPR182": return 2;
@@ -204,6 +204,7 @@
       case "UPR206": case "UPR207": case "UPR208": return 3;
       case "UPR212": case "UPR213": case "UPR214": return 2;
       case "UPR215": case "UPR216": case "UPR217": return 2;
+      case "UPR221": case "UPR222": case "UPR223": return 2;
       default: return -1;
     }
   }
@@ -462,21 +463,18 @@
   {
     switch($cardID)
     {
-      case "UPR087": case "UPR090": case "UPR091": return true;
-      case "UPR093": case "UPR098": case "UPR099": return true;
+      case "UPR087": return true;
+      case "UPR090": return true;
+      case "UPR091": return true;
+      case "UPR098": case "UPR099": case "UPR100": return true;
       default: return false;
     }
   }
 
-  function RuptureActive($beforePlay=false, $notAttack=false)
+  function RuptureActive($beforePlay=false)
   {
     global $combatChainState, $CCS_NumChainLinks;
-    if($notAttack)
-    {
-      $target = 4; //Doesn't show rupture border for Attack Reactions and future d.react or instants
-    } else {
-      $target = ($beforePlay ? 3 : 4);
-    }
+    $target = ($beforePlay ? 3 : 4);
     if($combatChainState[$CCS_NumChainLinks] >= $target) return true;
     return false;
   }

@@ -56,8 +56,6 @@
   $p2Key = hash("sha256", rand() . rand() . rand());
   $p1uid = "-";
   $p2uid = "-";
-  $p1id = "-";
-  $p2id = "-";
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
   $gameFileHandler = fopen($filename, "w");

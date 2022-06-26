@@ -340,6 +340,7 @@
           if($index != -1)
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
+            DestroyMyItem($index);
           }
           $rv = "Amulet of Earth gives your attack actions cards +1 attack and +1 defense for the rest of the turn.";
         }
@@ -386,6 +387,7 @@
           if($index != -1)
           {
             PayOrDiscard($otherPlayer, 2);
+            DestroyMyItem($index);
           }
           $rv = "Amulet of Ice makes your opponent pay 2 resources or discard a card.";
         }
@@ -415,8 +417,8 @@
       case "ELE195": case "ELE196": case "ELE197":
         if($from == "PLAY")
         {
-          AddCurrentTurnEffect($cardID, $currentPlayer, "", 1);
-          $rv = "Shock Striker deals 1 extra damage if hits a hero.";
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $rv = "Shock Striker deals 1 extra damage if it gets a hero.";
         }
         return $rv;
       case "ELE198": case "ELE199": case "ELE200":
@@ -430,6 +432,7 @@
           if($index != -1)
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
+            DestroyMyItem($index);
           }
           $rv = "Amulet of Lightning gives your next action Go Again.";
         }
@@ -530,7 +533,6 @@
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
-      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Pay_2_to_prevent_your_equipment_from_being_destroyed");
       WriteLog("Player " . $otherPlayer . " may choose to pay 2 to prevent their equipment from being destroyed.");
   }
 
