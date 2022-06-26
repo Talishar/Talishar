@@ -145,13 +145,13 @@
   {
     global $combatChain, $darkMode, $cardSize;
     if($darkMode == null) $darkMode = false;
-    $top = "50%"; $left = "20%"; $width = "60%"; $height = "45%";
+    $top = "50%"; $left = "19%"; $width = "60%"; $height = "35%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
     if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; }
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
-    if($title != "") $rv .= "<h" . ($big ? "2" : "4") . " style='margin-left: 10px; margin-top: 5px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "4") . ">";
+    if($title != "") $rv .= "<h" . ($big ? "2" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 5px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "4") . ">";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:50px; font-weight:lighter;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
