@@ -278,7 +278,7 @@
         else $maxTransform = 1;
         for($i=0; $i<$maxTransform; ++$i)
         {
-          Transform($currentPlayer, "Ash", "UPR042", true);
+          Transform($currentPlayer, "Ash", "UPR042", true, ($i == 0 ? false : true));
         }
         return "";
       case "UPR039":
@@ -312,19 +312,23 @@
       case "UPR406":
         $deck = &GetDeck($currentPlayer);
         $numRed = 0;
-        $cards = "";
+        $redRevealed = "";
+        $cardsReveal = "";
         for($i=0; $i<3 && $i < count($deck); ++$i)
         {
           if(PitchValue($deck[$i]) == 1)
           {
             ++$numRed;
-            if($cards != "") $cards .= ",";
-            $cards .= $deck[$i];
+            if($redRevealed != "") $redRevealed .= ",";
+            $redRevealed .= $deck[$i];
           }
+          if($cardsReveal != "") $cardsReveal .= ",";
+          $cardsReveal .= $deck[$i];
         }
-        $cardsRevealed = RevealCards($cards);
-        if($cardsRevealed)
+        RevealCards($cardsReveal);
+        if($redRevealed)
         {
+          WriteLog("Optimai revealed ". $numRed . " red cards and deal damage equal to twice the number.");
           DealArcane($numRed * 2, 2, "ABILITY", $cardID, false, $currentPlayer);
         }
         return "";
@@ -397,6 +401,13 @@
           Draw($mainPlayer);
           WriteLog("Kyloria drew a card.");
         }
+        else
+        {
+          AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMS");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take control of");
+          AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ITEMGAINCONTROL", $mainPlayer, "-", 1);
+        }
         break;
       case "UPR413":
         $index = $combatChainState[$CCS_WeaponIndex];
@@ -411,9 +422,9 @@
     }
   }
 
-  function Transform($player, $materialType, $into, $optional=false)
+  function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
   {
-    AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType);
+    AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform", 1);
     if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
     else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);

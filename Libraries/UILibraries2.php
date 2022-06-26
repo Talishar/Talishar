@@ -12,7 +12,7 @@
     else return "black";
   }
 
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $ally=false)
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0)
   {//
     global $playerID, $gameName, $darkMode, $cardIconSize;
     if($darkMode == null) $darkMode = false;
@@ -66,19 +66,19 @@
 
   // Counters Style
     if($counters != 0) {
-      if($ally){
-        $rv .= "<div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
-        text-align: center; transform: translate(-50%, -50%);
-        position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
-        <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
-        position: absolute; margin: auto; top: 1; left: -3; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
-
-      } else {
-      $rv .= "<div style='margin: 0; top: 50%; left: 50%;
+      $left = ($health == 0 ? "50%" : "30%");
+      $rv .= "<div style='margin: 0px; top: 50%; left: $left;
       margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
       font-size:22px; font-weight:500;'>" . $counters . "</div>";
-      }
+    }
+    if($health != 0){
+      $left = ($counters == 0 ? "50%" : "70%");
+      $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
+      text-align: center; transform: translate(-50%, -50%);
+      position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health ."
+      <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
+      position: absolute; margin: auto; top: 1; left: -3; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
     }
     $rv .= "</a>";
     return $rv;
@@ -145,13 +145,13 @@
   {
     global $combatChain, $darkMode, $cardSize;
     if($darkMode == null) $darkMode = false;
-    $top = "50%"; $left = "20%"; $width = "60%"; $height = "45%";
+    $top = "50%"; $left = "19%"; $width = "60%"; $height = "35%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; }
     if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; }
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
-    if($title != "") $rv .= "<h" . ($big ? "2" : "4") . " style='margin-left: 10px; margin-top: 5px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "4") . ">";
+    if($title != "") $rv .= "<h" . ($big ? "2" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 5px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "4") . ">";
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:50px; font-weight:lighter;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
@@ -309,7 +309,7 @@
     }
     if($isPlayable && ComboActive($cardID)) return 3;
     if($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
-    if($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 3;
+    if($isPlayable && HasRupture($cardID) && RuptureActive(true, (CardType($cardID) != "AA"))) return 3;
     else if($isPlayable) return 6;
     return 0;
   }

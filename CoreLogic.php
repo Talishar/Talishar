@@ -941,6 +941,12 @@ function GetDieRoll($player)
   return GetClassState($player, $CS_DieRoll);
 }
 
+function ClearDieRoll($player)
+{
+  global $CS_DieRoll;
+  return SetClassState($player, $CS_DieRoll, 0);
+}
+
 function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
@@ -1009,15 +1015,16 @@ function DoesAttackHaveGoAgain()
   $attackType = CardType($combatChain[0]);
   $attackSubtype = CardSubType($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
+  if(HasGoAgain($combatChain[0])) return true;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
-  if(HasGoAgain($combatChain[0]) || $combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
+  if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if(CardClass($combatChain[0]) == "ILLUSIONIST")
   {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
     if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002")) return true;
+  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002"))) return true;
   return false;
 }
 
@@ -1100,6 +1107,7 @@ function DestroyCharacter($player, $index)
 {
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 0;
+  $char[$index+4] = 0;
   $cardID = $char[$index];
   AddGraveyard($cardID, $player, "CHAR");
   CharacterDestroyEffect($cardID, $player);

@@ -12,7 +12,7 @@ function PlayAlly($cardID, $player, $subCards="-")
   array_push($allies, AllyEntersArenaCounters($cardID));//Misc Counters
   array_push($allies, 0);//Life Counters
   array_push($allies, 1);//Ability/effect uses
-  if($cardID == "UPR414") { WriteLog("Ouvia lets you transform an ashling."); Transform($player, "Ash", "UPR042"); }
+  if($cardID == "UPR414") { WriteLog("Ouvia lets you transform an ashling."); Transform($player, "Ash", "UPR042", true); }
   return count($allies) - AllyPieces();
 }
 
@@ -56,7 +56,7 @@ function AllyDestroyAbility($player, $cardID)
   {
     case "UPR410": if($player == $mainPlayer) GainActionPoints(1); break;
     case "UPR551":
-      $gtIndex = FindCharacterIndex($player, "UPR151");
+      $gtIndex = FindCharacterIndex($player, "UPR551");
       if($gtIndex > -1)
       {
         DestroyCharacter($player, $gtIndex);
@@ -73,7 +73,7 @@ function AllyStartTurnAbilities($player)
   {
     switch($allies[$i])
     {
-      case "UPR414": WriteLog("Ouvia lets you transform an ashling."); Transform($player, "Ash", "UPR042"); break;
+      case "UPR414": WriteLog("Ouvia lets you transform an ashling."); Transform($player, "Ash", "UPR042", true); break;
       default: break;
     }
   }

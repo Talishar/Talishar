@@ -202,17 +202,28 @@
   {
     $elementArray = explode(",", $elements);
     $elementText = "";
+    $isAndOrFuse = IsAndOrFuse($cardID);
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
       AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REVEALMYCARD", $player, "<-", 1);
+      if($isAndOrFuse) AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
       if($i > 0) $elementText .= " and ";
       $elementText .= $element;
     }
-    AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
+    if(!$isAndOrFuse) AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
     WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID) . ".");
+  }
+
+  function IsAndOrFuse($cardID)
+  {
+    switch($cardID)
+    {
+      case "ELE091": case "ELE092": case "ELE093": return true;
+      default: return false;
+    }
   }
 
   function FuseAbility($cardID, $player, $element)
@@ -287,7 +298,7 @@
     }
   }
 
-  function PayOrDiscard($player, $amount, $fromDQ=false)
+  function PayOrDiscard($player, $amount, $fromDQ=true)
   {
     if($fromDQ)
     {
