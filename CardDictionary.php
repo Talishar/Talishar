@@ -1860,7 +1860,7 @@
       case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR087": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA";
       case "UPR089": return ($currentPlayer!=$mainPlayer || NumDraconicChainLinks() < 4);
-      case "UPR151": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 1;
+      case "UPR151": $char = &GetPlayerCharacter($currentPlayer); return ($char[$index+2] < 1 && SearchCurrentTurnEffects($cardID, $currentPlayer));
       case "UPR153": return GetClassState($currentPlayer, $CS_NumPhantasmAADestroyed) < 1;
       case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
       case "UPR162": case "UPR163": case "UPR164": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 0;
@@ -1884,7 +1884,6 @@
       //Once per turn instants restriction
       case "MON281": case "MON282": case "MON283": case "ELE195": case "ELE196": case "ELE197":
         return SearchCurrentTurnEffects($cardID, $currentPlayer);
-
       default: return false;
     }
   }
