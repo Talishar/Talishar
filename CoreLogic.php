@@ -214,11 +214,19 @@ function MZStartTurnIndices()
   return $cards;
 }
 
-function MZStartTurnAbility($cardID)
+function MZStartTurnAbility($cardID, $MZIndex)
 {
+  global $currentPlayer;
   switch($cardID)
   {
-    case "UPR086": break;
+    case "UPR086":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $MZIndex);
+      AddDecisionQueue("MULTIZONEREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "UPR086");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("AFTERTHAW", $currentPlayer, "<-", 1);
+      break;
     default: break;
   }
 }

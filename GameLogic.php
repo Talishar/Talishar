@@ -2708,6 +2708,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
         case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
         case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
+        case "UPR086": $rv = ThawIndices($player); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
@@ -3645,6 +3646,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $card = $hand[$index];
           RemoveCard($player, $index);
           break;
+        case "DISCARD": case "MYDISCARD":
+          $discard = &GetDiscard($player);
+          $card = $discard[$index];
+          RemoveGraveyard($player, $index);
+          break;
         default: break;
       }
       return $card;
@@ -3925,7 +3931,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("-", $lastResult);
       $zone = &GetMZZone($player, $params[0]);
       $cardID = $zone[$params[1]];
-      MZStartTurnAbility($cardID);
+      MZStartTurnAbility($cardID, $lastResult);
       return "";
     case "MZREMOVE":
       $params = explode("-", $lastResult);
@@ -3976,6 +3982,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       StealItem($otherPlayer, $lastResult, $player);
       return $lastResult;
+    case "AFTERTHAW":
+      $params = explode("-", $lastResult);
+      if($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
+      return "";
     default:
       return "NOTSTATIC";
   }
