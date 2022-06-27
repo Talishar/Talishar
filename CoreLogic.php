@@ -214,11 +214,19 @@ function MZStartTurnIndices()
   return $cards;
 }
 
-function MZStartTurnAbility($cardID)
+function MZStartTurnAbility($cardID, $MZIndex)
 {
+  global $currentPlayer;
   switch($cardID)
   {
-    case "UPR086": break;
+    case "UPR086":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $MZIndex);
+      AddDecisionQueue("MULTIZONEREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "UPR086");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("AFTERTHAW", $currentPlayer, "<-", 1);
+      break;
     default: break;
   }
 }
@@ -534,6 +542,7 @@ function CurrentEffectDamageEffects($player, $source, $type, $damage)
   global $currentTurnEffects;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
+    if($currentTurnEffects[$i+1] == $player) continue;
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
@@ -1052,7 +1061,7 @@ function AttackDestroyed($attackID)
   AttackDestroyedEffects($attackID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i)
   {
-    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+    if(DelimStringContains(CardTalent($attackID), "LIGHT")) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
   }
   if($type == "AA" && $class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON089"))

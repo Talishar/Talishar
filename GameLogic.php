@@ -2546,11 +2546,13 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DVR004": case "RVD004":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "UPR004": case "UPR047": case "UPR085": case "UPR159": case "UPR167":
+    case "UPR004": case "UPR047": case "UPR085": case "UPR125": case "UPR137": case "UPR159": case "UPR167":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "UPR151":
       $character[$cardIndex+2] -= 1;
+      --$character[$cardIndex+5];
+      if($character[$cardIndex+5] == 0) $character[$cardIndex+1] = 1;
       break;
     case "UPR166":
       $character[$cardIndex+2] -= 2;
@@ -2690,6 +2692,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
         case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
         case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
+        case "UPR086": $rv = ThawIndices($player); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
@@ -3610,6 +3613,31 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       return $lastResult;
+    case "MULTIZONEREMOVE":
+      $params = explode("-", $lastResult);
+      $source = $params[0];
+      $index = $params[1];
+      $otherP = ($player == 1 ? 2 : 1);
+      switch($source)
+      {
+        case "MYARS":
+          $arsenal = &GetArsenal($player);
+          $card = $arsenal[$index];
+          RemoveFromArsenal($player, $index);
+          break;
+        case "MYHAND":
+          $hand = &GetHand($player);
+          $card = $hand[$index];
+          RemoveCard($player, $index);
+          break;
+        case "DISCARD": case "MYDISCARD":
+          $discard = &GetDiscard($player);
+          $card = $discard[$index];
+          RemoveGraveyard($player, $index);
+          break;
+        default: break;
+      }
+      return $card;
     case "MULTIZONETOKENCOPY":
       $params = explode("-", $lastResult);
       $source = $params[0];
@@ -3887,7 +3915,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("-", $lastResult);
       $zone = &GetMZZone($player, $params[0]);
       $cardID = $zone[$params[1]];
-      MZStartTurnAbility($cardID);
+      MZStartTurnAbility($cardID, $lastResult);
       return "";
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
@@ -3924,7 +3952,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         if($combatChain[$arr[$i]+1] != $parameter) array_push($rv, $arr[$i]);
       }
-      return implode(",", $rv);
+      $rv = implode(",", $rv);
+      return ($rv == "" ? "PASS" : $rv);
+    case "ITEMGAINCONTROL":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      StealItem($otherPlayer, $lastResult, $player);
+      return $lastResult;
+    case "AFTERTHAW":
+      $params = explode("-", $lastResult);
+      if($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
+      return "";
     default:
       return "NOTSTATIC";
   }

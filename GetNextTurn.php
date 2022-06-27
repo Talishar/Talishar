@@ -134,7 +134,8 @@
   else
     echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='./Images/findCenterBackground.jpg' /></div>");
 
-  echo("<div style='position:absolute; right:300px; top:calc(50% - 125px); height:200px; z-index:100;'><span style='position:absolute; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");
+  echo("<div style='position:absolute; right:300px; top:calc(50% - 100px); height:200px; z-index:100;'>
+      <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "20px") . CreateButton($playerID, "+1", 10006, 0, "20px") . "</span>": ""));
   echo("<span style='position:absolute; font-size: 24px; font-weight: 550; top:23px; left:28px;'>$theirHealth</span>");
   echo(($manualMode ? "<span style='position:absolute; top:0px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "20px") . CreateButton($playerID, "+1", 10008, 0, "20px") . "</span>": ""));
@@ -616,7 +617,23 @@
       echo(Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]) . "&nbsp");
     }
   }
-  $otherPlayer = $playerID == 2 ? 1 : 2;
+  if($playerID == 3)
+  {
+    $otherPlayer = $playerID == 2 ? 2 : 1;
+  } else {
+    $otherPlayer = $playerID == 2 ? 1 : 2;
+  }
+  $theirAllies = GetAllies($otherPlayer);
+  if(count($theirAllies) > 0)
+  {
+    for($i=0; $i<count($theirAllies); $i+=AllyPieces())
+    {
+      echo("<div style='position:relative; display:inline;'>");
+      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+6], "", "", False, $theirAllies[$i+2]) . "&nbsp");
+      if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:-77px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      echo("</div>");
+    }
+  }
   $theirPermanents = &GetPermanents($otherPlayer);
   if(count($theirPermanents) > 0)
   {
@@ -757,6 +774,19 @@
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       echo(Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)) . "&nbsp");
+    }
+  }
+  $myAllies = GetAllies($playerID);
+  if(count($myAllies) > 0)
+  {
+    for($i=0; $i<count($myAllies); $i+=AllyPieces())
+    {
+      echo("<div style='position:relative; display:inline;'>");
+      $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
+      $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
+      echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, $myAllies[$i+6], strval($i), "", False, $myAllies[$i+2]) . "&nbsp");
+      if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; top:-77px; left:6px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      echo("</div>");
     }
   }
   $myPermanents = &GetPermanents($playerID);

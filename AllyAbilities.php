@@ -19,7 +19,7 @@ function PlayAlly($cardID, $player, $subCards="-")
 function DestroyAlly($player, $index, $skipDestroy=false)
 {
   $allies = &GetAllies($player);
-  AllyDestroyAbility($player, $allies[$index]);
+  if(!$skipDestroy) AllyDestroyAbility($player, $allies[$index]);
   for($j = $index+AllyPieces()-1; $j >= $index; --$j)
   {
     unset($allies[$j]);

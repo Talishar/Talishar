@@ -181,7 +181,7 @@
         if(DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
-          PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2);
+          PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2, false, true);
         }
         return "";
       case "UPR116": case "UPR117": case "UPR118":
