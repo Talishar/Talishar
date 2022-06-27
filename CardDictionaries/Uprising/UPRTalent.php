@@ -503,4 +503,11 @@
     return $numLinks;
   }
 
+  function ThawIndices($player)
+  {
+    $iceAfflictions = SearchMultiZoneFormat(SearchAura($player, "", "Affliction", -1, -1, "", "ICE"), "MYAURAS");
+    $frostBites = SearchMultiZoneFormat(SearchAurasForCard("ELE111", $player), "MYAURAS");
+    return CombineSearches($iceAfflictions, $frostBites);
+  }
+
 ?>

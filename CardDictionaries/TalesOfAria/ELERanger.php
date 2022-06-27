@@ -125,8 +125,9 @@
 
   function ELERangerPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $otherPlayer;
+    global $currentPlayer;
     $rv = "";
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "ELE031": case "ELE032":
@@ -287,7 +288,7 @@
     }
   }
 
-  function PayOrDiscard($player, $amount, $fromDQ=false)
+  function PayOrDiscard($player, $amount, $fromDQ=true, $passable=false)
   {
     if($fromDQ)
     {
@@ -296,11 +297,11 @@
       PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
       PrependDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       PrependDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-      PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", 0, 1);
+      PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
     }
     else
     {
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", 0, 1);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
       AddDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
