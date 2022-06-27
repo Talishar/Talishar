@@ -1060,7 +1060,7 @@ function AttackDestroyed($attackID)
   AttackDestroyedEffects($attackID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i)
   {
-    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+    if(DelimStringContains(CardTalent($attackID), "LIGHT")) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
   }
   if($type == "AA" && $class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON089"))
