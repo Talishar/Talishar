@@ -177,11 +177,11 @@
         if($cardID == "UPR113") $damage = 5;
         else if($cardID == "UPR114") $damage = 4;
         else $damage = 3;
-        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         if(DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
-          PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2, false);
+          PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2, false, true);
         }
         return "";
       case "UPR116": case "UPR117": case "UPR118":
