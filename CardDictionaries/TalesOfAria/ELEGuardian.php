@@ -192,19 +192,25 @@
     switch($cardID)
     {
       case "ELE004":
-        AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
-        AddNextTurnEffect($cardID . "-HIT", $defPlayer);
-        WriteLog("Endless Winter makes the defending player take a frostbite token when activating an ability until the end of their next turn.");
+        if(HitHero())
+        {
+          AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
+          AddNextTurnEffect($cardID . "-HIT", $defPlayer);
+          WriteLog("Endless Winter makes the defending player take a frostbite token when activating an ability until the end of their next turn.");
+        }
         break;
       case "ELE013": case "ELE014": case "ELE015":
-        if($combatChainState[$CCS_AttackFused])
+        if(HitHero() && $combatChainState[$CCS_AttackFused])
         {
           AddNextTurnEffect($cardID, $defPlayer);
           WriteLog("Entangle gives the opponent's first attack next turn -2.");
         }
         break;
       case "ELE209": case "ELE210": case "ELE211":
-        if(HasIncreasedAttack()) PummelHit();
+        if(HitHero() && HasIncreasedAttack())
+        {
+          PummelHit();
+        }
         break;
       default: break;
     }

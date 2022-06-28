@@ -1117,7 +1117,10 @@
     switch($cardID)
     {
       case "EVR021":
-        AddNextTurnEffect($cardID, $defPlayer);
+        if(HitHero())
+        {
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
         break;
       case "EVR038":
         if(ComboActive())
@@ -1150,43 +1153,55 @@
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
       case "EVR088":
-        $hand = &GetHand($defPlayer);
-        $cards = "";
-        $numDiscarded = 0;
-        for($i=count($hand)-HandPieces(); $i>=0; $i-=HandPieces())
+        if(HitHero())
         {
-          $id = $hand[$i];
-          $cardType = CardType($id);
-          if($cardType != "A" && $cardType != "AA")
+          $hand = &GetHand($defPlayer);
+          $cards = "";
+          $numDiscarded = 0;
+          for($i=count($hand)-HandPieces(); $i>=0; $i-=HandPieces())
           {
-            AddGraveyard($id, $defPlayer, "HAND");
-            unset($hand[$i]);
-            ++$numDiscarded;
+            $id = $hand[$i];
+            $cardType = CardType($id);
+            if($cardType != "A" && $cardType != "AA")
+            {
+              AddGraveyard($id, $defPlayer, "HAND");
+              unset($hand[$i]);
+              ++$numDiscarded;
+            }
+            if($cards != "") $cards .= ",";
+            $cards .= $id;
           }
-          if($cards != "") $cards .= ",";
-          $cards .= $id;
+          LoseHealth($numDiscarded, $defPlayer);
+          RevealCards($cards);
+          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
+          $hand = array_values($hand);
         }
-        LoseHealth($numDiscarded, $defPlayer);
-        RevealCards($cards);
-        WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
-        $hand = array_values($hand);
         break;
       case "EVR094": case "EVR095": case "EVR096":
-        AddNextTurnEffect($cardID, $defPlayer);
+        if(HitHero())
+        {
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
         break;
       case "EVR097": case "EVR098": case "EVR099":
-        AddNextTurnEffect($cardID, $defPlayer);
+        if(HitHero())
+        {
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
         break;
       case "EVR104":
-        AddDecisionQueue("FINDINDICES", $defPlayer, "AURACLASS,");
-        AddDecisionQueue("MULTIZONEFORMAT", $defPlayer, "THEIRAURAS", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIZONEDESTROY", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
-        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        if(HitHero())
+        {
+          AddDecisionQueue("FINDINDICES", $defPlayer, "AURACLASS,");
+          AddDecisionQueue("MULTIZONEFORMAT", $defPlayer, "THEIRAURAS", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MULTIZONEDESTROY", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "ARC112", 1);
+          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        }
         break;
       case "EVR105":
-        if(GetClassState($mainPlayer, $CS_NumAuras) >= 3) AddCurrentTurnEffect("EVR105", $defPlayer);
+        if(HitHero() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) AddCurrentTurnEffect("EVR105", $defPlayer);
         break;
       case "EVR110": case "EVR111": case "EVR112":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
@@ -1195,18 +1210,20 @@
         AddDecisionQueue("ADDBOTDECK", $mainPlayer, "-", 1);
         break;
       case "EVR113": case "EVR114": case "EVR115":
-        if(GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
+        if(HitHero() && GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
         break;
       case "EVR138":
         FractalReplicationStats("Hit");
         break;
       case "EVR156":
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-        AddDecisionQueue("HANDCARD", $defPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $defPlayer, "-", 1);
-        AddDecisionQueue("BINGO", $mainPlayer, "-", 1);
-        break;
+        if(HitHero())
+        {
+          AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+          AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+          AddDecisionQueue("HANDCARD", $defPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARD", $defPlayer, "-", 1);
+          AddDecisionQueue("BINGO", $mainPlayer, "-", 1);
+        }
       default: break;
     }
   }
