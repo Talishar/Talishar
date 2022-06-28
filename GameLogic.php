@@ -2995,9 +2995,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$parameter+1] = 1;
       return $parameter;
     case "REVEALMYCARD":
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       $hand = GetHand($player);
       WriteLog(CardLink($hand[$lastResult], $hand[$lastResult]) . " was revealed.");
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       return $lastResult;
     case "DECKCARDS":
       $indices = explode(",", $parameter);
@@ -3010,19 +3010,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $rv == "" ? "PASS" : $rv;;
     case "REVEALCARD":
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       WriteLog(CardLink($lastResult, $lastResult) . " was revealed.");
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       return $lastResult;
     case "REVEALCARDS":
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       for($i=0; $i<count($cards); ++$i)
       {
         WriteLog(CardLink($cards[$i], $cards[$i]) . " was revealed.");
       }
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       return $lastResult;
     case "REVEALHANDCARDS":
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
       $cards = "";
@@ -3032,6 +3031,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $cards .= $hand[$indices[$i]];
         WriteLog(CardLink($hand[$indices[$i]], $hand[$indices[$i]]) . " was revealed.");
       }
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
       return $cards;
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
@@ -3990,6 +3990,29 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("-", $lastResult);
       if($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
       return "";
+    case "SUCCUMBTOWINTER":
+      $params = explode("-", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      if($params[0] == "THEIRALLY")
+      {
+        $allies = &GetAllies($otherPlayer);
+        WriteLog("Succumb to Winter destroyed your frozen ally.");
+        if($allies[$params[1]+8] == "1") DestroyAlly($otherPlayer, $params[1]);
+      }
+      else
+      {
+        $arsenal = &GetArsenal($otherPlayer);
+        for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+        {
+          if($arsenal[$i+5] == "1")
+          {
+            RemoveArsenal($otherPlayer, $i);
+            WriteLog("Succumb to Winter destroyed your frozen arsenal card.");
+            break;
+          }
+        }
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

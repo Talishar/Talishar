@@ -172,6 +172,11 @@
         else if($cardID == "UPR111") $damage = 4;
         else $damage = 3;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        if(DelimStringContains($additionalCosts, "ICE"))
+        {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
+          AddDecisionQueue("SUCCUMBTOWINTER", $currentPlayer, "-", 1);
+        }
         return "";
       case "UPR113": case "UPR114": case "UPR115":
         if($cardID == "UPR113") $damage = 5;

@@ -99,14 +99,14 @@ function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $clas
 function SearchLayerDQ($param)
 {
   global $layers;
-  $type=""; $subtype=""; $maxCost=-1; $minCost=-1; $class=""; $talent=""; $bloodDebtOnly=false; $phantasmOnly=false;
+  $type=""; $subtype=""; $maxCost=-1; $minCost=-1; $class=""; $talent=""; $bloodDebtOnly=false; $phantasmOnly=false; $pitch=-1; $specOnly=false;
   $paramArray = explode("-", $param);
   for($i=0; $i < count($paramArray); $i+=2)
   {
     if($paramArray[$i] == "TYPE") $type = $paramArray[$i+1];
     else if($paramArray[$i] == "MAXCOST") $maxCost = $paramArray[$i+1];
   }
-  return SearchInner($layers, LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly);
+  return SearchInner($layers, LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly);
 }
 
 function SearchHandForCard($player, $card)

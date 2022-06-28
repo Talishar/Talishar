@@ -1102,6 +1102,7 @@ function FinalizeChainLink($chainClosed=false)
       $banish = array_values($banish);
     }
 
+    GetLayerTarget($cardID);//Layer target
     //CR 5.1.4b Declare target of attack
     if($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
     AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));

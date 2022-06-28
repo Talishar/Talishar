@@ -241,6 +241,7 @@
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
         if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
         else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       }
       else AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);

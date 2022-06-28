@@ -594,7 +594,7 @@
       $action = ($playable && $currentPlayer == $playerID ? 25 : 0) ;
       $border = CardBorderColor($landmarks[$i], "PLAY", $playable);
       $counters = 0;
-      echo(Card($landmarks[$i], "concat", $cardSizeAura, $action, 1, 0, $border, $counters, strval($i), "", true));
+      echo(Card($landmarks[$i], "concat", $cardSizeAura, $action, 1, 0, $border, $counters, strval($i), ""));
     }
     echo("</div>");
   }
