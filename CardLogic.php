@@ -725,12 +725,4 @@ function RemoveFromArsenal($player, $index)
  return $cardID;
 }
 
-function HitHero()
-{
-  global $combatChainState, $CCS_AttackTarget;
-
-  $target = explode("-", $combatChainState[$CCS_AttackTarget]);
-  return $target[0] == "THEIRCHAR";
-}
-
 ?>

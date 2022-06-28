@@ -395,21 +395,18 @@
         Transform($mainPlayer, "Ash", "UPR042", true);
         break;
       case "UPR411":
-        if(HitHero())
+        $items = &GetItems($defPlayer);
+        if(count($items) == 0)
         {
-          $items = &GetItems($defPlayer);
-          if(count($items) == 0)
-          {
-            Draw($mainPlayer);
-            WriteLog("Kyloria drew a card.");
-          }
-          else
-          {
-            AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMS");
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take control of");
-            AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
-            AddDecisionQueue("ITEMGAINCONTROL", $mainPlayer, "-", 1);
-          }
+          Draw($mainPlayer);
+          WriteLog("Kyloria drew a card.");
+        }
+        else
+        {
+          AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMS");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to take control of");
+          AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ITEMGAINCONTROL", $mainPlayer, "-", 1);
         }
         break;
       case "UPR413":
@@ -420,7 +417,7 @@
         PutPermanentIntoPlay($mainPlayer, "UPR043");
         WriteLog("Nekria got a -1 health counter and created an ash token.");
         break;
-      case "UPR416": if(HitHero()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
+      case "UPR416": DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); break;
       default: break;
     }
   }
