@@ -1066,19 +1066,19 @@ function EffectHitEffect($cardID)
     case "ELE005": if(HitHero()) { RandomHandBottomDeck($defPlayer); RandomHandBottomDeck($defPlayer); } break;
     case "ELE019": case "ELE020": case "ELE021": if(HitHero()) { ArsenalToBottomDeck($defPlayer); } break;
     case "ELE022": case "ELE023": case "ELE024": if(HitHero()) { PlayAura("ELE111", $defPlayer); } break;
-    case "ELE035-2": if(HitHero()) { AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer) }; break;
-    case "ELE037-2": if(HitHero()) { DamageTrigger($defPlayer, 1, "ATTACKHIT") }; break;
-    case "ELE047": case "ELE048": case "ELE049": if(HitHero()) { DamageTrigger($defPlayer, 1, "ATTACKHIT") }; break;
+    case "ELE035-2": if(HitHero()) { AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer); } break;
+    case "ELE037-2": if(HitHero()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
+    case "ELE047": case "ELE048": case "ELE049": if(HitHero()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
     case "ELE066-HIT": if(HasIncreasedAttack()) MainDrawCard(); break;
-    case "ELE092-BUFF": if(HitHero()) { DamageTrigger($defPlayer, 3, "ATTACKHIT") }; break;
-    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": if(HitHero()) { PlayAura("ELE111", $defPlayer) }; break;
+    case "ELE092-BUFF": if(HitHero()) { DamageTrigger($defPlayer, 3, "ATTACKHIT"); } break;
+    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": if(HitHero()) { PlayAura("ELE111", $defPlayer); } break;
     case "ELE163": if(HitHero()) { PlayAura("ELE111", $defPlayer); } break;
     case "ELE164": if(HitHero()) { PlayAura("ELE111", $defPlayer); } break;
     case "ELE165": if(HitHero()) { PlayAura("ELE111", $defPlayer); } break;
     case "ELE173": if(HitHero()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } return 1;
     case "ELE195": case "ELE196": case "ELE197": if(HitHero()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
     case "ELE198": case "ELE199": case "ELE200":
-      if(HitHero()
+      if(HitHero())
       {
         if($cardID == "ELE198") $damage = 3;
         else if($cardID == "ELE199") $damage = 2;
@@ -1104,7 +1104,7 @@ function EffectHitEffect($cardID)
         return 1;
       }
       break;
-    case "DVR008-1": $char = &GetPlayerCharacter($mainPlayer); if(HitHero()) { ++$char[$combatChainState[$CCS_WeaponIndex]+3] }; break;
+    case "DVR008-1": $char = &GetPlayerCharacter($mainPlayer); if(HitHero()) { ++$char[$combatChainState[$CCS_WeaponIndex]+3]; } break;
     default: break;
   }
   return 0;
