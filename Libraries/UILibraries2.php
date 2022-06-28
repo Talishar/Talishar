@@ -1,5 +1,7 @@
 <?php
 
+  require_once("CoreLibraries.php");
+
   function BackgroundColor($darkMode)
   {
     if($darkMode) return "rgba(74, 74, 74, 0.9)";
