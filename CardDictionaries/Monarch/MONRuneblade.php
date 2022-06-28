@@ -213,7 +213,12 @@
     global $mainPlayer;
     switch($cardID)
     {
-      case "MON155": DealArcane(1, 0, "PLAYCARD", "MON155", false, $mainPlayer); break;//TODO: Not the same hero
+      case "MON155":
+        if(HitHero())
+        {
+          DealArcane(1, 0, "PLAYCARD", "MON155", false, $mainPlayer); 
+        }
+        break;
       default: break;
     }
   }
