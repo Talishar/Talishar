@@ -14,6 +14,7 @@
   include "AI/CombatDummy.php";
   include "AI/PlayerMacros.php";
   include "Libraries/HTTPLibraries.php";
+  require_once("Libraries/CoreLibraries.php");
 
   //We should always have a player ID as a URL parameter
   $gameName=$_GET["gameName"];
