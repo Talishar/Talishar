@@ -423,7 +423,7 @@
     switch($cardID)
     {
       case "UPR087":
-        if(HitHero() && RuptureActive())
+        if(RuptureActive())
         {
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
@@ -435,7 +435,7 @@
         }
         break;
       case "UPR093":
-        if(HitHero() && RuptureActive())
+        if(RuptureActive())
         {
           WriteLog("Breaking Point destroyed the defending player's arsenal.");
           DestroyArsenal($defPlayer);
@@ -448,17 +448,11 @@
         AddDecisionQueue("ADDHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("GIVEATTACKGOAGAIN", $mainPlayer, "-", 1);
         break;
-      case "UPR187":
-        if(HitHero())
-        {} break;
       case "UPR188":
-        if(HitHero())
-        {
-          $hand = &GetHand($defPlayer);
-          $amount = count($hand)/HandPieces();
-          LoseHealth($amount, $defPlayer);
-          WriteLog("Vipox made player $defPlayer lose $amount health.");
-        }
+        $hand = &GetHand($defPlayer);
+        $amount = count($hand)/HandPieces();
+        LoseHealth($amount, $defPlayer);
+        WriteLog("Vipox made player $defPlayer lose $amount health.");
         break;
       default: break;
     }
