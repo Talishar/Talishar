@@ -417,16 +417,24 @@ function AddSpecificGraveyard($cardID, &$graveyard, $from)
   array_push($graveyard, $cardID);
 }
 
-function NegateLayer($MZIndex)
+function NegateLayer($MZIndex, $goesWhere="GY")
 {
   global $layers;
   $params = explode("-", $MZIndex);
   $index = $params[1];
+  $cardID = $layers[$index];
+  $player = $layers[$index+1];
   for($i=$index+LayerPieces(); $i >= $index; --$i)
   {
     unset($layers[$i]);
   }
   $layers = array_values($layers);
+  switch($goesWhere)
+  {
+    case "GY": AddGraveyard($player, $cardID, "LAYER");
+    case "HAND": AddPlayerHand($cardID, $player, "LAYER");
+    default: break;
+  }
 }
 
 ?>

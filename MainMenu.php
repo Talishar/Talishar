@@ -135,7 +135,6 @@ border-radius: 3px;">
   Thaw (Unfreeze part)<br>
   Conduit of Frostburn<br>
   Channel the Bleak Expanse<br>
-  Rewind<br>
   Erase Face<br>
   Quell Mechanic<br>
   <div style='position:absolute; bottom:10px; left:10px;'>
