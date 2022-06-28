@@ -1557,7 +1557,7 @@ function FinalizeChainLink($chainClosed=false)
 
   function ProcessAttackTargetAfterResolve()
   {
-    global $combatChainState, $CCS_AttackTarget, $defPlayer, $CCS_LinkTotalAttack;
+    global $currentPlayer, $combatChainState, $CCS_AttackTarget, $defPlayer, $CCS_LinkTotalAttack;
     $target = explode("-", $combatChainState[$CCS_AttackTarget]);
     if($target[0] == "THEIRALLY")
     {
@@ -1573,8 +1573,8 @@ function FinalizeChainLink($chainClosed=false)
       if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
       //TODO: Does this need to do all of ResolveChainLink?
       $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
-      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $totalAttack);
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $totalAttack);
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $currentPlayer, "-");
       //CloseCombatChain("-");//This makes it NOT close the chain, so it does resolve go again and other chain effects
     }
   }
