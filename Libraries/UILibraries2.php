@@ -12,6 +12,7 @@
     else return "black";
   }
 
+  //Rotate is deprecated
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0)
   {//
     global $playerID, $gameName, $darkMode, $cardIconSize;
@@ -32,6 +33,7 @@
     }
     else if($folder == "concat")
     {
+      if(DelimStringContains(CardSubType($cardNumber), "Landmark")) $rotate = true;
       $fileExt = ".webp";
     }
     $actionData = $actionDataOverride != "" ? $actionDataOverride : $cardNumber;

@@ -544,8 +544,8 @@
   function KorshemRevealAbility($player)
   {
     WriteLog("Korshem triggered by revealing a card.");
-    AddDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
-    AddDecisionQueue("KORSHEM", $player, "-", 1);
+    PrependDecisionQueue("KORSHEM", $player, "-", 1);
+    PrependDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
   }
 
 ?>
