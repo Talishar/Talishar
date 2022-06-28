@@ -269,6 +269,10 @@
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
         return "Tome of Duplicity lets you look at the top 2 cards of your deck.";
+      case "UPR169":
+        NegateLayer($target, "HAND");
+        if($currentPlayer != $mainPlayer) GainActionPoints($mainPlayer, 1);
+        return "Rewind negated a non-attack action and returned it to it's owners hand";
       case "UPR170": case "UPR171": case "UPR172":
         if($cardID == "UPR170") $damage = 4;
         else if($cardID == "UPR171") $damage = 3;
