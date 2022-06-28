@@ -314,11 +314,20 @@
       case "MON072": case "MON073": case "MON074": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
       case "MON078": case "MON079": case "MON080": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
       case "MON198":
-        $numSoul = count(GetSoul($defPlayer));
-        for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
-        LoseHealth($numSoul, $defPlayer);
+        if(HitHero())
+        {
+          $numSoul = count(GetSoul($defPlayer));
+          for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
+          LoseHealth($numSoul, $defPlayer);
+        }
         break;
-      case "MON206": case "MON207": case "MON208": BanishFromSoul($defPlayer); $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BANISH"; break;
+      case "MON206": case "MON207": case "MON208":
+        if(HitHero())
+        {
+          BanishFromSoul($defPlayer);
+          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BANISH";
+        }
+        break;
       default: break;
     }
   }

@@ -127,15 +127,6 @@
     $rv = "";
     switch($cardID)
     {
-
-    // case "DVR002": /* Work in Progress */
-    //   if(GetClassState($currentPlayer, $CS_LastAttack) != "DVR002") return "";
-    //
-    //   if(){
-    //     AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
-    //     return "Dawnblade, Resplendent get +1 attack until the end of turn.";
-    //   }
-
     case "DVR004":
       $resources = &GetResources($currentPlayer);
       $resources[0] += 1;
@@ -144,12 +135,6 @@
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       return "Glistening Steelblade gives your next Dawnblade attack Go Again.";
-    //   //Grant Go Again
-    //   GiveAttackGoAgain();
-    //   AddCurrentTurnEffect($cardID, $currentPlayer);
-    //   //Grant Counter
-    //   Addcurrentturneffect($cardID, $currentPlayer);
-    //   return "Glistening Steelblade gives your next weapon attack Go Again";
 
     case "DVR009":
       AddCurrentTurnEffect($cardID, $currentPlayer);
