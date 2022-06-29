@@ -825,7 +825,7 @@
     $sType = CardSubType($myCharacter[$i]);
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
     echo("<div style='position:absolute; z-index:100; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
-    echo(Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? "EQ" : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
+    echo(Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? "CHAR" : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
     $effects = ActiveCharacterEffects($playerID, $i);
     if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:40px; left:23px;' src='./Images/arsenal.png' />");
     if($restriction != "") {

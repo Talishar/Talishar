@@ -60,7 +60,9 @@
       $playerHealths[$player] += 1;
       WriteLog("Player " . $playerID . " increased player " . ($player+1) . "'s health by 1.");
       break;
-    case "HAND": //Play card from hand
+    case "HAND": //Play card from hand.  input code is converted to old number style and falls into next case.
+    $mode = 2;
+    case 2;
       $found = HasCard($cardID);
       if($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
         //Player actually has the card, now do the effect
@@ -77,7 +79,9 @@
         }
       }
       break;
-    case "EQ": //Play equipment ability
+    case "CHAR": //Play equipment ability
+    $mode = 3;
+    case 3:
       $index = $cardID;
       $found = -1;
       if($index != "")
@@ -107,6 +111,8 @@
       }
       break;
     case "ARS": //Card Played from Arsenal
+    $mode = 4;
+    case 4:
       $index = $cardID;
       if($index < count($myArsenal))
       {
@@ -118,7 +124,24 @@
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
       }
       break;
+
+    case 5:
+    $index = $cardID;
+    if($index < count($myArsenal))
+    {
+      $cardToPlay = $myArsenal[$index];
+      for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
+      {
+        unset($myArsenal[$i]);
+      }
+      $myArsenal = array_values($myArsenal);
+      WriteLog("Card played from arsenal.");
+      PlayCard($cardToPlay, "ARS");
+    }
+    break;
     case "PDECK"://Pitch Deck
+    $mode = 6;
+    case 6:
       if($turn[0] != "PDECK") break;
       $found = PitchHasCard($cardID);
       if($found >= 0)
@@ -133,6 +156,8 @@
        ContinueDecisionQueue($buttonInput);
      }
      break;
+    case "OPT"://Pitch Deck
+    $mode = 8;
     case 8: case 9://OPT, CHOOSETOP, CHOOSEBOTTOM
       if($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM")
       {
@@ -152,6 +177,8 @@
         ContinueDecisionQueue($buttonInput);
       }
       break;
+    case "ITEM":
+    $mode = 10;
     case 10://Item ability
       $index = $cardID;//Overridden to be index instead
       if($index >= count($myItems)) break;//Item doesn't exist
@@ -163,6 +190,8 @@
       $set = CardSet($cardID);
       PlayCard($cardID, "PLAY", -1);
       break;
+    case "CHOOSEDECK":
+    $mode = 11;
     case 11://CHOOSEDECK
       if($turn[0] == "CHOOSEDECK")
       {
@@ -193,6 +222,8 @@
         ContinueDecisionQueue($cardID);
       }
       break;
+    case "BANISH":
+    $mode = 14;
     case 14://Banish
       $index = $cardID;
       $cardID = $myBanish[$index];
@@ -208,6 +239,8 @@
         ContinueDecisionQueue($index);
       }
       break;
+      case "BUTTON":
+      $mode = 17;
     case 17://BUTTONINPUT
       if(($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER"))
       {
@@ -246,6 +279,8 @@
         ContinueDecisionQueue($chkInput);
       }
       break;
+    case "YESNO":
+    $mode = 20;
     case 20://YESNO
       if($turn[0] == "YESNO" && ($buttonInput == "YES" || $buttonInput == "NO")) ContinueDecisionQueue($buttonInput);
       break;
@@ -258,6 +293,8 @@
         PlayCard($cardID, "PLAY", -1);
       }
       break;
+    case "AURA":
+    $mode = 22;
     case 22://Aura ability
       $index = $cardID;//Overridden to be index instead
       if($index >= count($myAuras)) break;//Item doesn't exist
@@ -283,6 +320,8 @@
         ContinueDecisionQueue($buttonInput);
       }
       break;
+    case "ALLY":
+    $mode = 24;
     case 24: //Ally Ability
       $allies = &GetAllies($currentPlayer);
       $index = $cardID;//Overridden to be index instead
@@ -293,6 +332,8 @@
       $myClassState[$CS_PlayIndex] = $index;
       PlayCard($cardID, "PLAY", -1);
       break;
+    case "LAND":
+    $mode = 25;
     case 25: //Landmark Ability
       $index = $cardID;
       if($index >= count($landmarks)) break;//Landmark doesn't exist
@@ -301,19 +342,27 @@
       $myClassState[$CS_PlayIndex] = $index;
       PlayCard($cardID, "PLAY", -1);
       break;
+    case "SETTING":
+    $mode = 26;
     case 26: //Change setting
       $params = explode("-", $buttonInput);
       ChangeSetting($playerID, $params[0], $params[1]);
       break;
+    case "PASS":
+    $mode = 99;
     case 99: //Pass
       if(CanPassPhase($turn[0]))
       {
         PassInput(false);
       }
       break;
+    case "BREAKCHAIN":
+    $mode = 100;
     case 100: //Break Chain
       ResetCombatChainState();
       break;
+    case "PASSREACTS":
+    $mode = 100;
     case 101: //Pass block and Reactions
       ChangeSetting($playerID, $SET_PassDRStep, 1);
       if(CanPassPhase($turn[0]))
@@ -321,20 +370,28 @@
         PassInput(false);
       }
       break;
+    case "UNDOACTION":
+    $mode = 10000;
     case 10000://Undo
       RevertGamestate();
       $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " undid their last action.");
       break;
+    case "UNDOBLOCK":
+    $mode = 10001;
     case 10001:
       RevertGamestate("preBlockBackup.txt");
       $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " undid their blocks.");
       break;
+    case "MANUAL_AP_UP":
+    $mode = 10002;
     case 10002:
       WriteLog("Player " . $playerID . " manually added one action point.");
       ++$actionPoints;
       break;
+    case "LAST_TURN_UNDO":
+    $mode = 10000;
     case 10003://Revert to prior turn
       $params = explode("-", $buttonInput);
       RevertGamestate("p" . $params[0] . "turn" . $params[1] . "Gamestate.txt");
