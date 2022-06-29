@@ -725,4 +725,16 @@ function RemoveFromArsenal($player, $index)
  return $cardID;
 }
 
+function DestroyFrozenArsenal($player)
+{
+  $arsenal = &GetArsenal($player);
+  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
+  {
+    if($arsenal[$i+2] == "1")
+    {
+      DestroyArsenal($player);
+    }
+  }
+}
+
 ?>

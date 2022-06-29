@@ -133,7 +133,6 @@ border-radius: 3px;">
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h3>
   Brand with Cinderclaw<br>
   Thaw (Unfreeze part)<br>
-  Conduit of Frostburn<br>
   Channel the Bleak Expanse<br>
   Erase Face<br>
   Quell Mechanic<br>
