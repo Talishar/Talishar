@@ -867,7 +867,11 @@ function FinalizeChainLink($chainClosed=false)
     $mainAllies = &GetAllies($mainPlayer);
     for($i=0; $i<count($mainAllies); $i+=AllyPieces())
     {
-      if($mainAllies[$i+1] != 0) { $mainAllies[$i+1] = 2; $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7]; }
+      if($mainAllies[$i+1] != 0) {
+        $mainAllies[$i+1] = 2;
+        $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7];
+        $mainAllies[$i+8] = 1;
+      }
     }
 
     //Reset Auras
