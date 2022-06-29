@@ -3368,6 +3368,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
+      if(SearchCurrentTurnEffects("UPR125", $player)) DestroyFrozenArsenal($targetPlayer);
       return $parameter;
     case "ARCANECHOSEN":
       if($lastResult > 0)
@@ -3998,16 +3999,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       else
       {
-        $arsenal = &GetArsenal($otherPlayer);
-        for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
-        {
-          if($arsenal[$i+5] == "1")
-          {
-            RemoveArsenal($otherPlayer, $i);
-            WriteLog("Succumb to Winter destroyed your frozen arsenal card.");
-            break;
-          }
-        }
+        DestroyFrozenArsenal($otherPlayer);
+        WriteLog("Succumb to Winter destroyed your frozen arsenal card.");
+        break;
       }
       return $lastResult;
     default:
