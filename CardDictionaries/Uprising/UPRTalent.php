@@ -423,7 +423,7 @@
     switch($cardID)
     {
       case "UPR087":
-        if(HitHero() && RuptureActive())
+        if(IsHeroHit() && RuptureActive())
         {
           $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
@@ -435,7 +435,7 @@
         }
         break;
       case "UPR093":
-        if(HitHero() && RuptureActive())
+        if(IsHeroHit() && RuptureActive())
         {
           WriteLog("Breaking Point destroyed the defending player's arsenal.");
           DestroyArsenal($defPlayer);
@@ -449,10 +449,10 @@
         AddDecisionQueue("GIVEATTACKGOAGAIN", $mainPlayer, "-", 1);
         break;
       case "UPR187":
-        if(HitHero())
+        if(IsHeroHit())
         {} break;
       case "UPR188":
-        if(HitHero())
+        if(IsHeroHit())
         {
           $hand = &GetHand($defPlayer);
           $amount = count($hand)/HandPieces();

@@ -395,7 +395,7 @@
         Transform($mainPlayer, "Ash", "UPR042", true);
         break;
       case "UPR411":
-        if(HitHero())
+        if(IsHeroHit())
         {
           $items = &GetItems($defPlayer);
           if(count($items) == 0)
@@ -420,7 +420,7 @@
         PutPermanentIntoPlay($mainPlayer, "UPR043");
         WriteLog("Nekria got a -1 health counter and created an ash token.");
         break;
-      case "UPR416": if(HitHero()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
+      case "UPR416": if(IsHeroHit()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
       default: break;
     }
   }

@@ -474,7 +474,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
     CurrentEffectDamageEffects($player, $source, $type, $damage);
   }
-  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer) && HitHero())
+  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer) && IsHeroHit())
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
   PlayerLoseHealth($player, $damage);
   LogDamageStats($player, $damageThreatened, $damage);
@@ -563,7 +563,7 @@ function AttackDamageAbilities()
   switch($attackID)
   {
     case "ELE036":
-      if(HitHero() && $combatChainState[$CCS_AttackTotalDamage] >= NumEquipment($defPlayer))
+      if(IsHeroHit() && $combatChainState[$CCS_AttackTotalDamage] >= NumEquipment($defPlayer))
       { AddCurrentTurnEffect("ELE036", $defPlayer); AddNextTurnEffect("ELE036", $defPlayer); }
       break;
     default: break;
@@ -1222,7 +1222,7 @@ function AddCharacterUses($player, $index, $numToAdd)
     return $permanentUniqueIDCounter;
   }
 
-  function HitHero()
+  function IsHeroHit()
   {
     global $combatChainState, $CCS_AttackTarget;
 

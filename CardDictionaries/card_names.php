@@ -1071,6 +1071,7 @@ if($set == "UPR"){
     case "116": case "117": case "118": return "Brain Freeze";
     case "119": case "120": case "121": return "Ice Bind";
     case "122": case "123": case "124": return "Polar Cap";
+    case "125": return "Conduit of Frostburn";
     case "126": return "Frost Hex";
     case "127": case "128": case "129": return "Aether Hail";
     case "130": case "131": case "132": return "Frosting";

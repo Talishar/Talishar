@@ -15,6 +15,7 @@
       case "UPR116": case "UPR117": case "UPR118": return "A";
       case "UPR119": case "UPR120": case "UPR121": return "A";
       case "UPR122": case "UPR123": case "UPR124": return "A";
+      case "UPR125": return "E";
       case "UPR126": return "A";
       case "UPR127": case "UPR128": case "UPR129": return "A";
       case "UPR130": case "UPR131": case "UPR132": return "A";
@@ -36,6 +37,7 @@
   {
     switch($cardID)
     {
+      case "UPR125": return "Arms";
       case "UPR126": return "Affliction,Aura";
       case "UPR165": return "Staff";
       case "UPR166": return "Chest";
@@ -106,6 +108,7 @@
       case "UPR106": return 4;
       case "UPR107": return 3;
       case "UPR108": return 2;
+      case "UPR125": return 0;
       case "UPR165": case "UPR166": return 0;
       case "UPR168": return 2;
       case "UPR169": return -1;
@@ -234,6 +237,9 @@
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
           AddDecisionQueue("PLAYAURA", ($currentPlayer == 1 ? 2 : 1), "ELE111", 1);
         }
+        return "";
+      case "UPR125":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "UPR127": case "UPR128": case "UPR129":
         if($cardID == "UPR127") $damage = 4;
