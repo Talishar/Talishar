@@ -1551,7 +1551,6 @@ function FinalizeChainLink($chainClosed=false)
       if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
-      //if($openedChain) ProcessAttackTargetAfterResolve();
     }
 
     if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID))
@@ -1580,30 +1579,6 @@ function FinalizeChainLink($chainClosed=false)
       }
     }
     return false;
-  }
-
-  function ProcessAttackTargetAfterResolve()
-  {
-    global $currentPlayer, $combatChainState, $CCS_AttackTarget, $defPlayer, $CCS_LinkTotalAttack;
-    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
-    if($target[0] == "THEIRALLY")
-    {
-      $index = $target[1];
-      $totalAttack = 0;
-      $totalDefense = 0;
-      $chainAttackModifiers = [];
-      EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
-      $allies = &GetAllies($defPlayer);
-      $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack);
-      $allies[$index+2] -= $totalAttack;
-      if($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
-      if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
-      //TODO: Does this need to do all of ResolveChainLink?
-      $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $totalAttack);
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $currentPlayer, "-");
-      //CloseCombatChain("-");//This makes it NOT close the chain, so it does resolve go again and other chain effects
-    }
   }
 
 ?>
