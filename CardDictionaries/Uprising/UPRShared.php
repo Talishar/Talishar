@@ -37,6 +37,7 @@
       case "UPR047": return "I";
       case "UPR084": return "I";
       case "UPR085": return "I";
+      case "UPR125": return "I";
       case "UPR136": return "A";
       case "UPR137": return "A";
       case "UPR151": return "A";
@@ -176,9 +177,6 @@
     else if($number >= 439 && $number <= 441) return "DRACONIC";
     else return "NONE";
   }
-
-
-
 
   function UPRCardType($cardID)
   {

@@ -192,7 +192,7 @@
     switch($cardID)
     {
       case "ELE004":
-        if(HitHero())
+        if(IsHeroHit())
         {
           AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
           AddNextTurnEffect($cardID . "-HIT", $defPlayer);
@@ -200,14 +200,14 @@
         }
         break;
       case "ELE013": case "ELE014": case "ELE015":
-        if(HitHero() && $combatChainState[$CCS_AttackFused])
+        if(IsHeroHit() && $combatChainState[$CCS_AttackFused])
         {
           AddNextTurnEffect($cardID, $defPlayer);
           WriteLog("Entangle gives the opponent's first attack next turn -2.");
         }
         break;
       case "ELE209": case "ELE210": case "ELE211":
-        if(HitHero() && HasIncreasedAttack())
+        if(IsHeroHit() && HasIncreasedAttack())
         {
           PummelHit();
         }

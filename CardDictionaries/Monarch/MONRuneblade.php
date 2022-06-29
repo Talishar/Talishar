@@ -214,7 +214,7 @@
     switch($cardID)
     {
       case "MON155":
-        if(HitHero())
+        if(IsHeroHit())
         {
           DealArcane(1, 0, "PLAYCARD", "MON155", false, $mainPlayer); 
         }
