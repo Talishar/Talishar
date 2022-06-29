@@ -11,7 +11,7 @@ function ProcessMacros()
       $somethingChanged = false;
       if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
-      else if(($turn[0] == "B" || $turn[0] == "D") && IsAllyAttackTarget()) { $somethingChanged = true; PassInput(); }
+      else if(($turn[0] == "B") && IsAllyAttackTarget()) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "CHOOSEARCANE" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue("0"); }
       else if($turn[0] == "BUTTONINPUT" && count(explode(",", $turn[2])) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
     }
