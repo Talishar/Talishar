@@ -139,22 +139,6 @@ function BottomDeckDraw()
   }
 }
 
-function BottomDeckMultizone($zone1, $zone2)
-{
-  global $currentPlayer;
-  AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ," . $zone1 ."|". $zone2, 1);
-  AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-  AddDecisionQueue("MULTIZONEREMOVE", $currentPlayer, "-", 1);
-  AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
-}
-
-function BottomDeckMultizoneDraw($zone1, $zone2)
-{
-  global $currentPlayer;
-  BottomDeckMultizone($zone1, $zone2);
-  AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-}
-
 function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
 {
   global $currentTurnEffects, $combatChain;
@@ -214,13 +198,11 @@ function CurrentTurnEffectUses($cardID)
   }
 }
 
-function AddNextTurnEffect($cardID, $player, $uniqueID=-1)
+function AddNextTurnEffect($cardID, $player)
 {
   global $nextTurnEffects;
   array_push($nextTurnEffects, $cardID);
   array_push($nextTurnEffects, $player);
-  array_push($nextTurnEffects, $uniqueID);
-  array_push($nextTurnEffects, CurrentTurnEffectUses($cardID));
 }
 
 function IsCombatEffectLimited($index)
@@ -326,7 +308,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
-    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
+    global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer;
     global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed;
     if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "RESOLVECOMBATDAMAGE" || $decisionQueue[0] == "PASSTURN")
     {
@@ -351,12 +333,6 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         }
         else
         {
-          if(RequiresDieRoll($layers[0], explode("|", $layers[2])[0], $layers[1]))
-          {
-            RollDie($layers[1]);
-            ContinueDecisionQueue("");
-            return;
-          }
           CloseDecisionQueue();
           $cardID = array_shift($layers);
           $player = array_shift($layers);
@@ -384,7 +360,6 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
               $lastPlayed[3] = ($additionalCosts != "-" ? "FUSED" : "UNFUSED");
             }
             PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3]);
-            ClearDieRoll($player);
           }
         }
       }
@@ -451,12 +426,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
     $parameter = str_replace("{I}", $dqState[5], $parameter);
-    if(count($dqVars) > 0)
-    {
-      if(str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
-      if(str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
-    }
-    if(count($dqVars) > 1) $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
+    $parameter = str_replace("{0}", $dqVars[0], $parameter);
+    $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
+    $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
     $subsequent = array_shift($decisionQueue);
     $makeCheckpoint = array_shift($decisionQueue);
     $turn[0] = $phase;
@@ -480,8 +452,13 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function GetDQHelpText()
   {
     global $dqState;
-    if(count($dqState) < 5) return "-";
     return $dqState[4];
+  }
+
+  function GetDQMZIndices()
+  {
+    global $dqState;
+    return $dqState[5];
   }
 
   function FinalizeAction()
@@ -701,28 +678,6 @@ function Intimidate()
 function Banish($player, $cardID, $from)
 {
   BanishCardForPlayer($cardID, $player, $from);
-}
-
-function RemoveCard($player, $index)
-{
-  $hand = &GetHand($player);
-  $cardID = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
-  return $cardID;
-}
-
-function RemoveFromArsenal($player, $index)
-{
-  $arsenal = &GetArsenal($player);
-  $cardID = $arsenal[$index];
-  RemoveArsenalEffects($player, $cardID);
-  for($i=$index+ArsenalPieces()-1; $i>=$index; --$i)
-  {
-    unset($arsenal[$i]);
-  }
-  $arsenal = array_values($arsenal);
- return $cardID;
 }
 
 ?>

@@ -304,7 +304,7 @@ function AppendClassState($player, $piece, $value)
   $currentState = GetClassState($player, $piece);
   if($currentState != "") $currentState .= ",";
   $currentState .= $value;
-  SetClassState($player, $piece, $currentState);
+  SetClassState($player, $piece, $value);
 }
 
 function SetClassState($player, $piece, $value)
