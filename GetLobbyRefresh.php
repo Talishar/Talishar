@@ -77,7 +77,7 @@
 
     if($playerID == 1 && $gameStatus < $MGS_Player2Joined)
     {
-      echo("<div><input style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Link to Join</button></div>");
+      echo("<div><input style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Invite Link</button></div>");
     }
 
     // Chat Log
