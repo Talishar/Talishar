@@ -1642,7 +1642,6 @@ function CurrentEffectEndTurnAbilities()
         }
         $remove = 1;
         break;
-      case "UPR200": case "UPR201": case "UPR202": Draw($currentTurnEffects[$i+1]); break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -1764,14 +1763,12 @@ function BeginEndStepEffects()
   EndTurnBloodDebt();//This has to be before resetting character, because of sleep dart effects
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
   {
-    if($currentTurnEffects[$i+1] == $mainPlayer)
+    switch($currentTurnEffects[$i])
     {
-      switch($currentTurnEffects[$i])
-      {
-        case "ELE215-1": WriteLog("Seek and Destroy discarded your hand and arsenal."); DestroyArsenal($mainPlayer); DiscardHand($mainPlayer); break;
-        case "EVR106": WriteLog("Revel in Runeblood destroyed your Runechants."); DestroyAllThisAura($mainPlayer, "ARC112"); break;
-        default: break;
-      }
+      case "ELE215-1": WriteLog("Seek and Destroy discarded your hand and arsenal."); DestroyArsenal($currentTurnEffects[$i+1]); DiscardHand($currentTurnEffects[$i+1]); break;
+      case "EVR106": WriteLog("Revel in Runeblood destroyed your Runechants."); DestroyAllThisAura($currentTurnEffects[$i+1], "ARC112"); break;
+      case "UPR200": case "UPR201": case "UPR202": Draw($currentTurnEffects[$i+1]); break;
+      default: break;
     }
   }
 }
