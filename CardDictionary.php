@@ -1657,6 +1657,7 @@
     if($from == "CHAR" && $phase != "B" && $myCharacter[$index+8] == "1") { $restriction = "Frozen"; return false; }
     if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index+3] == "1") { $restriction = "Frozen"; return false; }
     if($from == "ARS" && $phase != "B" && $myArsenal[$index+4] == "1") { $restriction = "Frozen"; return false; }
+    if(($cardType == "AR" || $cardType == "DR") && IsAllyAttackTarget()) return false;
     if(($phase == "B" || ($phase == "D" && $cardType == "DR")) && $from == "HAND")
     {
       if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;
