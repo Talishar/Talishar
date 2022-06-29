@@ -8,7 +8,7 @@
     function WriteGameFile()
     {
       global $gameFileHandler;
-      global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid;
+      global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
       fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
@@ -21,6 +21,8 @@
       fwrite($gameFileHandler, $p2Key . "\r\n");
       fwrite($gameFileHandler, $p1uid . "\r\n");
       fwrite($gameFileHandler, $p2uid . "\r\n");
+      fwrite($gameFileHandler, $p1id . "\r\n");
+      fwrite($gameFileHandler, $p2id . "\r\n");
       fclose($gameFileHandler);
     }
   }

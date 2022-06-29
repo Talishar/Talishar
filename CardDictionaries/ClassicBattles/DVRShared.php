@@ -4,25 +4,18 @@
   {
     switch($cardID)
     {
-      //Hero
       case "DVR001": return "C";
-      //Equipment
       case "DVR002": return "W";
       case "DVR003": case "DVR004": case "DVR005": case "DVR006": return "E";
-      //Mentor
       case "DVR007": return "M";
-      //Action
       case "DVR008": case "DVR009": return "A";
       case "DVR012": return "A";
       case "DVR019": return "A";
       case "DVR022": return "A";
-      //Attack Reaction
       case "DVR013": return "AR";
       case "DVR014": return "AR";
       case "DVR023": return "AR";
-      //Defense Reaction
       case "DVR024": return "DR";
-      //Bauble
       case "DVR027": return "R";
       default: return "";
     }

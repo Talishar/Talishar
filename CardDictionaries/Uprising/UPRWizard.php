@@ -140,7 +140,7 @@
       case "UPR105":
         if(DelimStringContains($additionalCosts, "ICE"))
         {
-          $otherPlayer = ($player == 1 ? 1 : 2);
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
         }
         else $damage = 5;
@@ -166,7 +166,7 @@
         {
           DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer);
         }
-        return "Ice Eternal created $numFrostBite Frostbites and dealt $amountArcane arcane.";
+        return "Ice Eternal created $numFrostBite Frostbites.";
       case "UPR110": case "UPR111": case "UPR112":
         if($cardID == "UPR110") $damage = 5;
         else if($cardID == "UPR111") $damage = 4;
@@ -257,7 +257,7 @@
         if($currentPlayer != $mainPlayer) $damage = 3;
         else $damage = 2;
         DealArcane($damage, 1, "ABILITY", $cardID);
-        return "Waning Moon deals arcane damage.";
+        return "";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Alluvion Constellas discounts your next staff ability by 3.";

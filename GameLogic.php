@@ -105,8 +105,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "Bloodrush Bellow discarded " . CardLink($discarded, $discarded) . ($drew == 1 ? ", " : ", and ") . "gave your Brute attacks this turn +2" . ($drew == 1 ? ", drew two cards, and gained Go Again." : ".");
     case "WTR008":
       $damaged = false;
-      $discarded = DiscardRandom($currentPlayer, $cardID);
-      if(AttackValue($discarded) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
+      if(AttackValue($additionalCosts) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
       return "Reckless Swing discarded a random card from your hand" . ($damaged ? " and did 2 damage." : ".");
     case "WTR009":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
@@ -1906,6 +1905,23 @@ function DefCharacterStartTurnAbilities()
 function PitchAbility($cardID)
 {
   global $currentPlayer;
+
+  $pitchValue = PitchValue($cardID);
+  if($pitchValue == 1)
+  {
+    $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
+    if($talismanOfRecompenseIndex > -1)
+    {
+      WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself.");
+      DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
+      GainResources($currentPlayer, 2);
+    }
+    if(SearchCharacterActive($currentPlayer, "UPR001") || SearchCharacterActive($currentPlayer, "UPR002"))
+    {
+      WriteLog("Dromai creates an Ash.");
+      PutPermanentIntoPlay($currentPlayer, "UPR043");
+    }
+  }
   switch($cardID)
   {
     case "WTR000":
@@ -2064,7 +2080,7 @@ function OnBlockEffects($index, $from)
       }
       break;
     case "UPR182":
-      BottomDeckDraw();
+      BottomDeckMultizoneDraw("MYHAND","MYARS");
       break;
     case "UPR194": case "UPR195": case "UPR196":
       if(PlayerHasLessHealth($currentPlayer))
@@ -2632,7 +2648,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MULTIHANDAA": $search = SearchHand($player, "AA"); $rv = SearchCount($search) . "-" . $search; break;
         case "ARSENAL": $arsenal = &GetArsenal($player); $rv = GetIndices(count($arsenal), 0, ArsenalPieces()); break;
         case "ARSENALDOWN": $rv = GetArsenalFaceDownIndices($player); break;
-        case "ITEMS": $rv = GetIndices(count(GetItems($player))); break;
+        case "ITEMS": $rv = GetIndices(count(GetItems($player)), 0, ItemPieces()); break;
         case "ITEMSMAX": $rv = SearchItems($player, "", "", $subparam); break;
         case "DECKITEMMAXCOST": $rv = SearchDeck($player, "", "Item", $subparam); break;
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
@@ -3423,10 +3439,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "LIGHTNING": IncrementClassState($player, $CS_NumFusedLightning); break;
           default: break;
         }
+        AppendClassState($player, $CS_AdditionalCosts, $elements);
         CurrentTurnFuseEffects($player, $element);
         AuraFuseEffects($player, $element);
       }
-      AppendClassState($player, $CS_AdditionalCosts, $elements);
       return $lastResult;
     case "SUBPITCHVALUE":
       return $parameter - PitchValue($lastResult);
@@ -3793,7 +3809,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal = &GetArsenal($player);
       $hand = &GetHand($player);
       $deck = &GetDeck($player);
-      $sizeToDraw = count($hand) + count($arsenal)/4;
+      $sizeToDraw = count($hand) + count($arsenal)/ArsenalPieces();
       $i = 0;
       while (count($hand)>0) {
         array_push($deck, $hand[$i]);
@@ -3918,6 +3934,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $zone[$params[1]];
       MZStartTurnAbility($cardID, $lastResult);
       return "";
+    case "MZREMOVE":
+      $params = explode("-", $lastResult);
+      $zone = &GetMZZone($player, $params[0]);
+      $cardID = $zone[$params[1]];
+      Remove($cardID);
+      return "";
+
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "TRANSFORMPERMANENT":
@@ -3945,7 +3968,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         if(CardType($combatChain[$arr[$i]]) != $parameter) array_push($rv, $arr[$i]);
       }
-      return implode(",", $rv);
+      $rv = implode(",", $rv);
+      return ($rv == "" ? "PASS" : $rv);
     case "CCFILTERPLAYER":
       $arr = explode(",", $lastResult);
       $rv = [];
