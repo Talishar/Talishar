@@ -1230,4 +1230,11 @@ function AddCharacterUses($player, $index, $numToAdd)
     return $target[0] == "THEIRCHAR";
   }
 
+  function IsAllyAttackTarget()
+  {
+    global $combatChainState, $CCS_AttackTarget;
+    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+    return $target[0] == "THEIRALLY";
+  }
+
 ?>

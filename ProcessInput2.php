@@ -601,7 +601,7 @@
   function ResolveChainLink()
   {
     global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary, $CCS_AttackTarget;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -614,10 +614,25 @@
 
     LogCombatResolutionStats($totalAttack, $totalDefense);
 
-    if($combatChainState[$CCS_CombatDamageReplaced] == 1) $damage = 0;
-    else $damage = $totalAttack - $totalDefense;
-    DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
-    AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+    if($target[0] == "THEIRALLY")
+    {
+      $index = $target[1];
+      $allies = &GetAllies($defPlayer);
+      $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack);
+      $allies[$index+2] -= $totalAttack;
+      if($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
+      if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $totalAttack);
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+    }
+    else
+    {
+      if($combatChainState[$CCS_CombatDamageReplaced] == 1) $damage = 0;
+      else $damage = $totalAttack - $totalDefense;
+      DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]);//Include prevention
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+    }
     ProcessDecisionQueue();
   }
 
@@ -1536,7 +1551,7 @@ function FinalizeChainLink($chainClosed=false)
       if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
-      if($openedChain) ProcessAttackTargetAfterResolve();
+      //if($openedChain) ProcessAttackTargetAfterResolve();
     }
 
     if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID))
