@@ -156,7 +156,7 @@
   echo("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
   echo("<div id='mainDiv' style='left:0px; top:0px; width:100%;height:100%;'></div>");
   echo("<div id='chatbox' style='position:fixed; bottom:0px; right:10px; width:200px; height: 30px;'>");
-  echo("<input style='margin-left: 4px; margin-right: 1px; width:150px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+  echo("<input style='width:150px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
   echo("<button style='display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");

@@ -16,7 +16,7 @@
 
   echo(implode(" ", $playerHealths) . "<BR>");
 
-  echo($"P1". "<BR>");
+  echo("P1". "<BR>");
   OutputPlayerData(1);
   echo("P2" . "<BR>");
   OutputPlayerData(2);
@@ -80,7 +80,7 @@
     $allies = ($player == 1 ? $p1Allies : $p2Allies);
     if($playerID == $player)
     {
-      $actionType = $turn[0] == "ARS" ? 4 : 2;
+      $actionType = $turn[0] == "ARS" ? "ARS" : "HAND";
       if(strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
       $handOut = "";
       for($i=0; $i<count($hand); ++$i)
@@ -105,11 +105,19 @@
       for($j=0; $j<CharacterPieces(); ++$j)
       {
         $charEquipOut .= $charEquip[$j+$i] . " ";
+        if($j==4)
+        {
+            $charEquipOut .= "Uses";
+        }
+        else if($j==8)
+        {
+          $charEquipOut .= "HL";
+        }
       }
       $charEquipOut .= $border . " " . CardSubType($charEquip[$i]);
     }
     echo($charEquipOut . "<BR>");
-    echo(implode(" ", $resources) . "<BR>");
+    echo("Resources".implode(" ", $resources) . "<BR>");
     $arsenalOut = "";
     for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
     {

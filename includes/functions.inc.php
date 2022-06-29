@@ -148,45 +148,11 @@ function loginUser($conn, $username, $pwd) {
 	}
 	elseif ($checkPwd === true) {
 		session_start();
-		$_SESSION["userid"] = $uidExists["usersID"];
+		$_SESSION["userid"] = $uidExists["usersId"];
 		$_SESSION["useruid"] = $uidExists["usersUid"];
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
 		header("location: ../MainMenu.php?error=none");
 		exit();
 	}
-}
-
-function logCompletedGameStats() {
-	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
-	$loser = ($winner == 1 ? 2 : 1);
-	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck";
-	$values = "?, ?, ?, ?, ?";
-	$winnerDeck = file_get_contents("./Games/" . $gameName . "/p" . $winner . "Deck.txt");
-	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
-	require_once "./MenuFiles/ParseGamefile.php";
-	if($p1id != "" && $p1id != "-")
-	{
-		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
-		$values .= ", " . $p1id;
-	}
-	if($p2id != "" && $p2id != "-")
-	{
-		$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
-		$values .= ", " . $p2id;
-	}
-
-	require_once "dbh.inc.php";
-	//global $conn;
-  $sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		$winHero = &GetPlayerCharacter($winner);
-		$loseHero = &GetPlayerCharacter($loser);
-		mysqli_stmt_bind_param($stmt, "sssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
-	}
-
 }
