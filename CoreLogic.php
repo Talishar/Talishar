@@ -1237,4 +1237,11 @@ function AddCharacterUses($player, $index, $numToAdd)
     return $target[0] == "THEIRALLY";
   }
 
+  function IsAllyAttacking()
+  {
+    global $combatChain;
+    if(count($combatChain) == 0) return false;
+    return DelimStringContains(CardSubtype($combatChain[0]), "Ally");
+  }
+
 ?>
