@@ -134,7 +134,7 @@
     {
       case "UPR104":
         DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
+        if(IsHeroAttackTarget() && DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
           AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
@@ -186,7 +186,7 @@
         else if($cardID == "UPR114") $damage = 4;
         else $damage = 3;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
+        if(IsHeroAttackTarget() && DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
           PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2, false, true);
@@ -218,7 +218,7 @@
         else if($cardID == "UPR120") $damage = 2;
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
+        if(IsHeroAttackTarget() && DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
           AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
@@ -232,7 +232,7 @@
         else if($cardID == "UPR123") $damage = 3;
         else $damage = 2;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
+        if(IsHeroAttackTarget() && DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
           AddDecisionQueue("PLAYAURA", ($currentPlayer == 1 ? 2 : 1), "ELE111", 1);
