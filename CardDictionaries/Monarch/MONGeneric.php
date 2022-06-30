@@ -183,16 +183,6 @@
     case "MON263": case "MON264": case "MON265":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Adrenaline Rush gets +3."; }
       return $rv;
-    case "MON266": case "MON267": case "MON268":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2", 1);
-      AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-      AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      return "Belittle let you choose a card in hand to tutor Minnowism.";
     case "MON272": case "MON273": case "MON274":
       $ret = "Their hand is:";
       for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= $theirHand[$i]; }

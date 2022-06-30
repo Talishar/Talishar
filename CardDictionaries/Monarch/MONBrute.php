@@ -147,29 +147,23 @@
         }
         return $rv;
       case "MON126": case "MON127": case "MON128":
-        if(RandomBanish3GY())
+        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Endless Maw gained 3 power from banishing a card with 6 or more power.";
         }
         return $rv;
       case "MON129": case "MON130": case "MON131":
-        if(RandomBanish3GY())
+        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Writhing Beast Hulk gained Dominate from banishing a card with 6 or more power.";
         }
         return $rv;
       case "MON132": case "MON133": case "MON134":
-        if(RandomBanish3GY())
+        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Convulsions gives your next attack action card +" . EffectAttackModifier($cardID) . " and Dominate from banishing a card with 6 or more power.";
         }
         return $rv;
-      case "MON135": case "MON136": case "MON137":
-        RandomBanish3GY();
-        return "";
       case "MON138": case "MON139": case "MON140":
         MyDrawCard();
         $card = DiscardRandom();
@@ -184,17 +178,13 @@
         }
         return $rv;
       case "MON141": case "MON142": case "MON143":
-        if(RandomBanish3GY())
+        if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
           GiveAttackGoAgain();
           $rv = "Dread Screamer gained Go Again from banishing a card with 6 or more power.";
         }
         return $rv;
-      case "MON147": case "MON148": case "MON149":
-        RandomBanish3GY();
-        return "";
       case "MON150": case "MON151": case "MON152":
-        RandomBanish3GY();
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Unworldly Bellow gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
       case "MON221":
