@@ -338,18 +338,18 @@
         if(IsHeroAttackTarget()) {
           $deck = &GetDeck($currentPlayer);
           $numRed = 0;
-          $cards = "";
+          $cardsReveal = "";
           for($i=0; $i<2 && $i < count($deck); ++$i)
           {
             if(PitchValue($deck[$i]) == 1)
             {
               ++$numRed;
-              if($cards != "") $cards .= ",";
-              $cards .= $deck[$i];
             }
+            if($cardsReveal != "") $cardsReveal .= ",";
+            $cardsReveal .= $deck[$i];
           }
-          $cardsRevealed = RevealCards($cards);
-          if($numRed > 0 && $cardsRevealed)
+          RevealCards($cardsReveal);
+          if($numRed > 0)
           {
             $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
             AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
