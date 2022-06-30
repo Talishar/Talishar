@@ -721,8 +721,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  global $combatChain,$defArsenal, $mainClassState, $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $mainCharacter, $defCharacter, $mainArsenal, $CCS_ChainLinkHitEffectsPrevented, $CCS_NextBoostBuff, $CS_ArcaneDamageTaken, $CCS_HitsInRow;
-  global $mainPlayer, $defPlayer;
+  global $combatChain, $defArsenal, $mainClassState, $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $mainCharacter, $defCharacter, $mainArsenal, $CCS_ChainLinkHitEffectsPrevented, $CCS_NextBoostBuff, $CS_ArcaneDamageTaken, $CCS_HitsInRow;
+  global $mainPlayer, $defPlayer, $CCS_DamageDealt;
+
   $attackID = $combatChain[0];
   if(CardType($cardID) == "AA" && SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2)) return;
   if($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) return;
@@ -794,6 +795,11 @@ function ProcessHitEffect($cardID)
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
       if(ComboActive()){
         AddDecisionQueue("ADDMAINHAND", $mainPlayer, "-"); //Only back to hand if combo is active
+      }
+      break;
+    case "WTR085":
+      if(IsHeroHit() && ComboActive()){
+        LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
       }
       break;
     case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog("Whelming Gustwave drew a card."); MainDrawCard(); } break;
@@ -3985,8 +3991,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       StealItem($otherPlayer, $lastResult, $player);
       return $lastResult;
     case "AFTERTHAW":
+      $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode("-", $lastResult);
-      if($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
+      $zone = &GetMZZone($player, $params[0]);
+      $cardID = $zone[$params[1]];
+      $discard = &GetDiscard($currentPlayer);
+      $found = -1;
+      if($params[0] == "MYAURAS") {
+        DestroyAura($player, $params[1]);
+        if(CardType($cardID != "T")) {
+          AddGraveyard($cardID, $otherPlayer, "NA"); 
+          for($i=0; $i<count($discard); $i+=DiscardPieces())
+          {
+            if($discard[$i] == $cardID) $found = $i;
+          }
+        }
+        RemoveGraveyard($player, $found);
+      }
       return "";
     case "SUCCUMBTOWINTER":
       $params = explode("-", $lastResult);
