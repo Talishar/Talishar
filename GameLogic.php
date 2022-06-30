@@ -797,7 +797,7 @@ function ProcessHitEffect($cardID)
       }
       break;
     case "WTR085":
-      if(IsHeroHit() && ComboActive()){
+      if(IsHeroAttackTarget() && ComboActive()){
         LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
       }
       break;
@@ -807,7 +807,7 @@ function ProcessHitEffect($cardID)
      ++$mainClassState[$CS_HitsWDawnblade];
     break;
     case "WTR167": case "WTR168": case "WTR169": MainDrawCard(); break;
-    case "WTR206": case "WTR207": case "WTR208": if(IsHeroHit() && CardType($attackID) == "AA") PummelHit(); break;
+    case "WTR206": case "WTR207": case "WTR208": if(IsHeroAttackTarget() && CardType($attackID) == "AA") PummelHit(); break;
     case "WTR209": case "WTR210": case "WTR211": if(CardType($attackID) == "AA") GiveAttackGoAgain(); break;
     case "CRU054": if(ComboActive()) { PlayAura("CRU075", $mainPlayer); } break;
     case "CRU060": case "CRU061": case "CRU062": if(ComboActive()) RushingRiverHitEffect(); break;
@@ -817,7 +817,7 @@ function ProcessHitEffect($cardID)
     case "CRU074": if($combatChainState[$CCS_HitsInRow] >= 2) { MainDrawCard(); MainDrawCard(); } break;
     case "CRU106": case "CRU107": case "CRU108": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
     case "CRU109": case "CRU110": case "CRU111": $combatChainState[$CCS_NextBoostBuff] += 3; break;
-    case "CRU123": if(IsHeroHit()) { AddCurrentTurnEffect("CRU123-DMG", $defPlayer); AddNextTurnEffect("CRU123-DMG", $defPlayer); } break;
+    case "CRU123": if(IsHeroAttackTarget()) { AddCurrentTurnEffect("CRU123-DMG", $defPlayer); AddNextTurnEffect("CRU123-DMG", $defPlayer); } break;
     case "CRU129": case "CRU130": case "CRU131":
       if(!ArsenalEmpty($mainPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
       AddDecisionQueue("FINDINDICES", $mainPlayer, "MAINHAND");
@@ -825,9 +825,9 @@ function ProcessHitEffect($cardID)
       AddDecisionQueue("REMOVEMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("ADDARSENALFACEDOWN", $mainPlayer, "HAND", 1);
       break;
-    case "CRU132": case "CRU133": case "CRU134": if(IsHeroHit()) { $defCharacter[1] = 3; } break;
+    case "CRU132": case "CRU133": case "CRU134": if(IsHeroAttackTarget()) { $defCharacter[1] = 3; } break;
     case "CRU142": PlayAura("ARC112", $mainPlayer); break;
-    case "CRU148": case "CRU149": case "CRU150": if(IsHeroHit() && GetClassState($defPlayer, $CS_ArcaneDamageTaken)) { PummelHit(); } break;
+    case "CRU148": case "CRU149": case "CRU150": if(IsHeroAttackTarget() && GetClassState($defPlayer, $CS_ArcaneDamageTaken)) { PummelHit(); } break;
     case "CRU151": case "CRU152": case "CRU153":
       PlayAura("ARC112", $mainPlayer);
       break;
@@ -1056,7 +1056,7 @@ function EffectHitEffect($cardID)
     case "WTR129": case "WTR130": case "WTR131": GiveAttackGoAgain(); break;
     case "WTR147": case "WTR148": case "WTR149": NaturesPathPilgrimageHit(); break;
     case "ARC170-1": case "ARC171-1": case "ARC172-1": MainDrawCard(); return 1;
-    case "CRU124": if(IsHeroHit()) { PummelHit(); } break;
+    case "CRU124": if(IsHeroAttackTarget()) { PummelHit(); } break;
     case "CRU145": PlayAura("ARC112", $mainPlayer);
     case "CRU146": PlayAura("ARC112", $mainPlayer);
     case "CRU147": PlayAura("ARC112", $mainPlayer); break;
@@ -1067,23 +1067,23 @@ function EffectHitEffect($cardID)
     case "MON193": ShadowPuppetryHitEffect(); break;
     case "MON218": if(count(GetSoul($defPlayer)) > 0) { BanishFromSoul($defPlayer); LoseHealth(1, $defPlayer); } break;
     case "MON299": case "MON300": case "MON301": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK"; break;
-    case "ELE003": if(IsHeroHit()) { PlayAura("ELE111", $defPlayer); } break;
-    case "ELE005": if(IsHeroHit()) { RandomHandBottomDeck($defPlayer); RandomHandBottomDeck($defPlayer); } break;
-    case "ELE019": case "ELE020": case "ELE021": if(IsHeroHit()) { ArsenalToBottomDeck($defPlayer); } break;
-    case "ELE022": case "ELE023": case "ELE024": if(IsHeroHit()) { PlayAura("ELE111", $defPlayer); } break;
-    case "ELE035-2": if(IsHeroHit()) { AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer); } break;
-    case "ELE037-2": if(IsHeroHit()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
-    case "ELE047": case "ELE048": case "ELE049": if(IsHeroHit()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
+    case "ELE003": if(IsHeroAttackTarget()) { PlayAura("ELE111", $defPlayer); } break;
+    case "ELE005": if(IsHeroAttackTarget()) { RandomHandBottomDeck($defPlayer); RandomHandBottomDeck($defPlayer); } break;
+    case "ELE019": case "ELE020": case "ELE021": if(IsHeroAttackTarget()) { ArsenalToBottomDeck($defPlayer); } break;
+    case "ELE022": case "ELE023": case "ELE024": if(IsHeroAttackTarget()) { PlayAura("ELE111", $defPlayer); } break;
+    case "ELE035-2": if(IsHeroAttackTarget()) { AddCurrentTurnEffect("ELE035-3", $defPlayer); AddNextTurnEffect("ELE035-3", $defPlayer); } break;
+    case "ELE037-2": if(IsHeroAttackTarget()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
+    case "ELE047": case "ELE048": case "ELE049": if(IsHeroAttackTarget()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
     case "ELE066-HIT": if(HasIncreasedAttack()) MainDrawCard(); break;
-    case "ELE092-BUFF": if(IsHeroHit()) { DamageTrigger($defPlayer, 3, "ATTACKHIT"); } break;
-    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": if(IsHeroHit()) { PlayAura("ELE111", $defPlayer); } break;
-    case "ELE163": if(IsHeroHit()) { PlayAura("ELE111", $defPlayer); } break;
-    case "ELE164": if(IsHeroHit()) { PlayAura("ELE111", $defPlayer); } break;
-    case "ELE165": if(IsHeroHit()) { PlayAura("ELE111", $defPlayer); } break;
-    case "ELE173": if(IsHeroHit()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } return 1;
-    case "ELE195": case "ELE196": case "ELE197": if(IsHeroHit()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
+    case "ELE092-BUFF": if(IsHeroAttackTarget()) { DamageTrigger($defPlayer, 3, "ATTACKHIT"); } break;
+    case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": if(IsHeroAttackTarget()) { PlayAura("ELE111", $defPlayer); } break;
+    case "ELE163": if(IsHeroAttackTarget()) { PlayAura("ELE111", $defPlayer); } break;
+    case "ELE164": if(IsHeroAttackTarget()) { PlayAura("ELE111", $defPlayer); } break;
+    case "ELE165": if(IsHeroAttackTarget()) { PlayAura("ELE111", $defPlayer); } break;
+    case "ELE173": if(IsHeroAttackTarget()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } return 1;
+    case "ELE195": case "ELE196": case "ELE197": if(IsHeroAttackTarget()) { DamageTrigger($defPlayer, 1, "ATTACKHIT"); } break;
     case "ELE198": case "ELE199": case "ELE200":
-      if(IsHeroHit())
+      if(IsHeroAttackTarget())
       {
         if($cardID == "ELE198") $damage = 3;
         else if($cardID == "ELE199") $damage = 2;
@@ -1092,8 +1092,8 @@ function EffectHitEffect($cardID)
         return 1;
       }
       break;
-    case "ELE205": if(IsHeroHit()) { PummelHit(); PummelHit(); } break;
-    case "ELE215": if(IsHeroHit()) { AddNextTurnEffect($cardID . "-1", $defPlayer); } break;
+    case "ELE205": if(IsHeroAttackTarget()) { PummelHit(); PummelHit(); } break;
+    case "ELE215": if(IsHeroAttackTarget()) { AddNextTurnEffect($cardID . "-1", $defPlayer); } break;
     case "EVR047-1": case "EVR048-1": case "EVR049-1": $idArr = explode("-", $cardID); AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer); break;
     case "EVR066-1": case "EVR067-1": case "EVR068-1": PutItemIntoPlayForPlayer("CRU197", $mainPlayer); return 1;
     case "EVR161-1": GainHealth(2, $mainPlayer); break;
@@ -1101,7 +1101,7 @@ function EffectHitEffect($cardID)
     case "EVR165": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4); break;
     case "EVR166": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
     case "EVR170-1": case "EVR171-1": case "EVR172-1":
-      if(IsHeroHit())
+      if(IsHeroAttackTarget())
       {
         AddDecisionQueue("FINDINDICES", $defPlayer, "ITEMSMAX,2");
         AddDecisionQueue("CHOOSETHEIRITEM", $mainPlayer, "<-", 1);
@@ -1109,7 +1109,7 @@ function EffectHitEffect($cardID)
         return 1;
       }
       break;
-    case "DVR008-1": $char = &GetPlayerCharacter($mainPlayer); if(IsHeroHit()) { ++$char[$combatChainState[$CCS_WeaponIndex]+3]; } break;
+    case "DVR008-1": $char = &GetPlayerCharacter($mainPlayer); if(IsHeroAttackTarget()) { ++$char[$combatChainState[$CCS_WeaponIndex]+3]; } break;
     default: break;
   }
   return 0;

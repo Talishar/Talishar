@@ -460,13 +460,13 @@
     switch($cardID)
     {
       case "ELE148": case "ELE149": case "ELE150":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           PayOrDiscard($defPlayer, 2);
         }
         break;
       case "ELE157": case "ELE158": case "ELE159":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           PlayAura("ELE111", $defPlayer);
         }

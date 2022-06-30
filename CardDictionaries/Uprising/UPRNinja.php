@@ -209,7 +209,7 @@
     switch($cardID)
     {
       case "UPR048":
-        if(IsHeroHit() && NumPhoenixFlameChainLinks() >= 3)
+        if(IsHeroAttackTarget() && NumPhoenixFlameChainLinks() >= 3)
         {
           Draw($mainPlayer);
           Draw($mainPlayer);
