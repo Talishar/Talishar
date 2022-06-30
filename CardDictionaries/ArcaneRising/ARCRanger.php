@@ -221,7 +221,7 @@
     switch($cardID)
     {
       case "ARC043":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           AddNextTurnEffect($cardID, $defPlayer);
         }
@@ -230,7 +230,7 @@
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "HAND";
         break;
       case "ARC060": case "ARC061": case "ARC062":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           AddNextTurnEffect($cardID, $defPlayer);
         }
@@ -239,7 +239,7 @@
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
         break;
       case "ARC069": case "ARC070": case "ARC071":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           PlayerLoseHealth($defPlayer, 1);
         }

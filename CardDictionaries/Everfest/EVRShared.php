@@ -1117,7 +1117,7 @@
     switch($cardID)
     {
       case "EVR021":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           AddNextTurnEffect($cardID, $defPlayer);
         }
@@ -1153,7 +1153,7 @@
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
       case "EVR088":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           $hand = &GetHand($defPlayer);
           $cards = "";
@@ -1178,19 +1178,19 @@
         }
         break;
       case "EVR094": case "EVR095": case "EVR096":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           AddNextTurnEffect($cardID, $defPlayer);
         }
         break;
       case "EVR097": case "EVR098": case "EVR099":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           AddNextTurnEffect($cardID, $defPlayer);
         }
         break;
       case "EVR104":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           AddDecisionQueue("FINDINDICES", $defPlayer, "AURACLASS,");
           AddDecisionQueue("MULTIZONEFORMAT", $defPlayer, "THEIRAURAS", 1);
@@ -1201,7 +1201,7 @@
         }
         break;
       case "EVR105":
-        if(IsHeroHit() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) AddCurrentTurnEffect("EVR105", $defPlayer);
+        if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) AddCurrentTurnEffect("EVR105", $defPlayer);
         break;
       case "EVR110": case "EVR111": case "EVR112":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "GYNAA");
@@ -1210,13 +1210,13 @@
         AddDecisionQueue("ADDBOTDECK", $mainPlayer, "-", 1);
         break;
       case "EVR113": case "EVR114": case "EVR115":
-        if(IsHeroHit() && GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
+        if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
         break;
       case "EVR138":
         FractalReplicationStats("Hit");
         break;
       case "EVR156":
-        if(IsHeroHit())
+        if(IsHeroAttackTarget())
         {
           AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
           AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
