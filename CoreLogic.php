@@ -447,7 +447,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   {
     $damage += CurrentEffectDamageModifiers($source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $otherPlayer); }
   }
@@ -467,14 +467,14 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   {
     AuraDamageTakenAbilities($Auras, $damage);
     ItemDamageTakenAbilities($player, $damage);
-    if(SearchAuras("MON013", $otherPlayer)) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost 1 health from Ode to Wrath."); }
+    if(SearchAuras("MON013", $otherPlayer) && IsHeroAttackTarget()) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($source == "MON229") AddNextTurnEffect("MON229", $player);
     if($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
     CurrentEffectDamageEffects($player, $source, $type, $damage);
   }
-  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer) && IsHeroHit())
+  if($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ELE037-2", $otherPlayer) && IsHeroAttackTarget())
   { for($i=0; $i<$damage; ++$i) PlayAura("ELE111", $player); }
   PlayerLoseHealth($player, $damage);
   LogDamageStats($player, $damageThreatened, $damage);
@@ -546,10 +546,10 @@ function CurrentEffectDamageEffects($player, $source, $type, $damage)
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
-      case "ELE044": case "ELE045": case "ELE046": if(CardType($source) == "AA") PlayAura("ELE111", $player); break;
-      case "ELE050": case "ELE051": case "ELE052": if(CardType($source) == "AA") PayOrDiscard($player, 1); break;
-      case "ELE064": BlossomingSpellbladeDamageEffect($player); break;
-      case "UPR106": case "UPR107": case "UPR108": if($type == "ARCANE") { PlayAura("ELE111", $player, $damage); $remove = 1; } break;
+      case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA") PlayAura("ELE111", $player); break;
+      case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($player, 1); break;
+      case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($player); break;
+      case "UPR106": case "UPR107": case "UPR108": if(IsHeroAttackTarget() && $type == "ARCANE") { PlayAura("ELE111", $player, $damage); $remove = 1; } break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -563,7 +563,7 @@ function AttackDamageAbilities()
   switch($attackID)
   {
     case "ELE036":
-      if(IsHeroHit() && $combatChainState[$CCS_AttackTotalDamage] >= NumEquipment($defPlayer))
+      if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackTotalDamage] >= NumEquipment($defPlayer))
       { AddCurrentTurnEffect("ELE036", $defPlayer); AddNextTurnEffect("ELE036", $defPlayer); }
       break;
     default: break;
@@ -1222,10 +1222,9 @@ function AddCharacterUses($player, $index, $numToAdd)
     return $permanentUniqueIDCounter;
   }
 
-  function IsHeroHit()
+  function IsHeroAttackTarget()
   {
     global $combatChainState, $CCS_AttackTarget;
-
     $target = explode("-", $combatChainState[$CCS_AttackTarget]);
     return $target[0] == "THEIRCHAR";
   }
