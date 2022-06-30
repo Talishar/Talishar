@@ -3352,6 +3352,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
+      if($type == "PLAYCARD" || $target[0] == "THEIRALLY")
+      {
+        $damage += ConsumeArcaneBonus($player);
+      }
       if($target[0] == "THEIRALLY")
       {
         $allies = &GetAllies($targetPlayer);
@@ -3360,10 +3364,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return;
       }
       $target = $targetPlayer;
-      if($type == "PLAYCARD")
-      {
-        $damage += ConsumeArcaneBonus($player);
-      }
       $sourceType = CardType($source);
       if(SearchCurrentTurnEffects("ELE065", $player) && ($sourceType == "A" || $sourceType == "AA")) ++$damage;
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
@@ -4000,7 +4000,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($params[0] == "MYAURAS") {
         DestroyAura($player, $params[1]);
         if(CardType($cardID != "T")) {
-          AddGraveyard($cardID, $otherPlayer, "NA"); 
+          AddGraveyard($cardID, $otherPlayer, "NA");
           for($i=0; $i<count($discard); $i+=DiscardPieces())
           {
             if($discard[$i] == $cardID) $found = $i;
