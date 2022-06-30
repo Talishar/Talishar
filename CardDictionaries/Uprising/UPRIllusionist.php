@@ -310,67 +310,73 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Transmogrify modifies the base attack of your next attack action card.";
       case "UPR406":
-        $deck = &GetDeck($currentPlayer);
-        $numRed = 0;
-        $redRevealed = "";
-        $cardsReveal = "";
-        for($i=0; $i<3 && $i < count($deck); ++$i)
-        {
-          if(PitchValue($deck[$i]) == 1)
+        if(IsHeroAttackTarget()) {
+          $deck = &GetDeck($currentPlayer);
+          $numRed = 0;
+          $redRevealed = "";
+          $cardsReveal = "";
+          for($i=0; $i<3 && $i < count($deck); ++$i)
           {
-            ++$numRed;
-            if($redRevealed != "") $redRevealed .= ",";
-            $redRevealed .= $deck[$i];
+            if(PitchValue($deck[$i]) == 1)
+            {
+              ++$numRed;
+              if($redRevealed != "") $redRevealed .= ",";
+              $redRevealed .= $deck[$i];
+            }
+            if($cardsReveal != "") $cardsReveal .= ",";
+            $cardsReveal .= $deck[$i];
           }
-          if($cardsReveal != "") $cardsReveal .= ",";
-          $cardsReveal .= $deck[$i];
-        }
-        RevealCards($cardsReveal);
-        if($redRevealed)
-        {
-          WriteLog("Optimai revealed ". $numRed . " red cards and deal damage equal to twice the number.");
-          DealArcane($numRed * 2, 2, "ABILITY", $cardID, false, $currentPlayer);
+          RevealCards($cardsReveal);
+          if($redRevealed)
+          {
+            WriteLog("Optimai revealed ". $numRed . " red cards and deal damage equal to twice the number.");
+            DealArcane($numRed * 2, 2, "ABILITY", $cardID, false, $currentPlayer);
+          }
         }
         return "";
       case "UPR407":
-        $deck = &GetDeck($currentPlayer);
-        $numRed = 0;
-        $cards = "";
-        for($i=0; $i<2 && $i < count($deck); ++$i)
-        {
-          if(PitchValue($deck[$i]) == 1)
+        if(IsHeroAttackTarget()) {
+          $deck = &GetDeck($currentPlayer);
+          $numRed = 0;
+          $cards = "";
+          for($i=0; $i<2 && $i < count($deck); ++$i)
           {
-            ++$numRed;
-            if($cards != "") $cards .= ",";
-            $cards .= $deck[$i];
+            if(PitchValue($deck[$i]) == 1)
+            {
+              ++$numRed;
+              if($cards != "") $cards .= ",";
+              $cards .= $deck[$i];
+            }
           }
-        }
-        $cardsRevealed = RevealCards($cards);
-        if($numRed > 0 && $cardsRevealed)
-        {
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-          if($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-          AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
-          AddDecisionQueue("EQUIPDEFENSE", $otherPlayer, "-", 1);
-          AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "1", 1);
-          AddDecisionQueue("PASSPARAMETER", $otherPlayer, "{0}", 1);
-          AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
+          $cardsRevealed = RevealCards($cards);
+          if($numRed > 0 && $cardsRevealed)
+          {
+            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+            AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+            AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
+            AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+            if($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+            AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
+            AddDecisionQueue("EQUIPDEFENSE", $otherPlayer, "-", 1);
+            AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "1", 1);
+            AddDecisionQueue("PASSPARAMETER", $otherPlayer, "{0}", 1);
+            AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
+          }
         }
         return "";
       case "UPR408":
-        $deck = &GetDeck($currentPlayer);
-        if(count($deck) == 0) return "You have no cards in your deck.";
-        $wasRevealed = RevealCards($deck[0]);
-        if($wasRevealed && PitchValue($deck[0]) == 1)
-        {
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+        if(IsHeroAttackTarget()) {
+          $deck = &GetDeck($currentPlayer);
+          if(count($deck) == 0) return "You have no cards in your deck.";
+          $wasRevealed = RevealCards($deck[0]);
+          if($wasRevealed && PitchValue($deck[0]) == 1)
+          {
+            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+            AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+            AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+            AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+          }
         }
         return "";
       case "UPR409":
