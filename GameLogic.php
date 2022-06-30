@@ -88,7 +88,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       $resources[0] += intval($roll/2);
       return "Barkbone Strapping rolled $roll and gained " . intval($roll/2) . " resources.";
     case "WTR006":
-      DiscardRandom($currentPlayer, $cardID);
       Intimidate();
       return "Alpha Rampage intimidated.";
     case "WTR007":
