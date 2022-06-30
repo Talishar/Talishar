@@ -279,7 +279,7 @@
         $content .= "&nbsp;Attack Target: " . GetMZCardLink($defPlayer, $attackTarget);
       }
     }
-    $content .= "<div style='margin-left:2px; margin-bottom:2px' display:inline;'>";
+    $content .= "<div style='margin-left:1px; margin-top:3px; margin-bottom:5px' display:inline;'>";
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {
       $content .= Card($layers[$i], "concat", $cardSize, 0, 1, 0, $layers[$i+1] == $playerID ? 1 : 2);

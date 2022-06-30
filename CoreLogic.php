@@ -216,7 +216,7 @@ function MZStartTurnIndices()
 
 function MZStartTurnAbility($cardID, $MZIndex)
 {
-  global $currentPlayer;
+  global $currentPlayer, $otherPlayer;
   switch($cardID)
   {
     case "UPR086":
