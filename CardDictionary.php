@@ -1759,7 +1759,7 @@
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
     if(SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID))  { $restriction = "ELE035"; return true; }
     if(CardType($cardID) == "A" && $from != "PLAY" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) {$restriction = "EVR071"; return true; }
-    if($turn[0] != "B" && $turn[0] != "P" && $playerID != $mainPlayer && SearchAlliesForCard($mainPlayer, "UPR415" == "UPR415")) { $restriction = "UPR415"; return true; }
+    if($turn[0] != "B" && $turn[0] != "P" && $playerID != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) { $restriction = "UPR415"; return true; }
     switch($cardID)
     {
       case "ARC004": return $myClassState[$CS_NumBoosted] < 1;
