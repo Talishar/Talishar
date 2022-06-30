@@ -1329,16 +1329,22 @@ function FinalizeChainLink($chainClosed=false)
     }
     switch($cardID)
     {
-      case "WTR006":
-        DiscardRandom($currentPlayer, $cardID);
+      case "WTR006": case "WTR020": case "WTR021": case "WTR022":
+      case "WTR029": case "WTR030": case "WTR031":
+      case "WTR035": case "WTR036": case "WTR037":
+      case "CRU010": case "CRU011": case "CRU012":
+      case "CRU019": case "CRU020": case "CRU021":
+        DiscardRandom($currentPlayer, $cardID); break;
+      case "WTR007": case "WTR011": case "WTR012": case "WTR013":
+      case "WTR014": case "WTR015": case "WTR016":
+        $discarded = DiscardRandom($currentPlayer, $cardID);
+        if(AttackValue($discarded) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         break;
       case "WTR008":
         $discarded = DiscardRandom($currentPlayer, $cardID);
         SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
         break;
-      case "WTR159":
-        BottomDeck();
-        break;
+      case "WTR159": BottomDeck(); break;
       case "WTR179": case "WTR180": case "WTR181":
         $indices = SearchHand($currentPlayer, "", "", -1, 2);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
@@ -1349,15 +1355,31 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
         AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
         break;
-      case "MON001": case "MON002":
-        BanishFromSoul($currentPlayer);
+      case "WTR185": case "WTR186": case "WTR187":
+        $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
+        if($indices == "") { return "No Nimblism to banish."; }
+        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
+        AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
+        AddDecisionQueue("NIMBLESTRIKE", $currentPlayer, "-", 1);
         break;
-      case "MON029": case "MON030":
-        BanishFromSoul($currentPlayer);
+      case "WTR197": case "WTR198": case "WTR199":
+        $indices = SearchDiscardForCard($currentPlayer, "WTR221", "WTR222", "WTR223");
+        if($indices == "") { return "No Sloggism to banish."; }
+        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
+        AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
+        AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
         break;
-      case "MON035":
-        AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-");
+      case "MON001": case "MON002": BanishFromSoul($currentPlayer); break;
+      case "MON029": case "MON030": BanishFromSoul($currentPlayer); break;
+      case "MON033":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
+        AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
         break;
+      case "MON035": AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-"); break;
       case "MON042": case "MON043": case "MON044": case "MON045": case "MON046": case "MON047":
       case "MON048": case "MON049": case "MON050": case "MON051": case "MON052": case "MON053":
       case "MON054": case "MON055": case "MON056": Charge(); break;
@@ -1366,6 +1388,15 @@ function FinalizeChainLink($chainClosed=false)
         BanishFromSoul($currentPlayer);
         BanishFromSoul($currentPlayer);
         break;
+      case "MON126": case "MON127": case "MON128":
+      case "MON129": case "MON130": case "MON131":
+      case "MON132": case "MON133": case "MON134":
+      case "MON141": case "MON142": case "MON143":
+        if(RandomBanish3GY()) AddCurrentTurnEffect($cardID, $currentPlayer); break;
+      case "MON135": case "MON136": case "MON137":
+      case "MON147": case "MON148": case "MON149":
+      case "MON150": case "MON151": case "MON152":
+        RandomBanish3GY(); break;
       case "MON156":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON156");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
@@ -1396,8 +1427,17 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
         break;
-      case "MON251": case "MON252": case "MON253":
-        HandToTopDeck($currentPlayer);
+      case "MON251": case "MON252": case "MON253": HandToTopDeck($currentPlayer); break;
+      case "MON266": case "MON267": case "MON268":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2", 1);
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        WriteLog("Belittle let you choose a card in hand to tutor Minnowism.");
         break;
       case "MON281": case "MON282": case "MON283":
         if($from == "PLAY")
@@ -1422,6 +1462,27 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        break;
+      case "EVR055":
+        $numCopper = CountItem("CRU197", $currentPlayer);
+        if($numCopper == 0) return "No copper.";
+        if($numCopper > 6) $numCopper = 6;
+        $buttons = "";
+        for($i=0; $i<=$numCopper; ++$i)
+        {
+          if($buttons != "") $buttons .= ",";
+          $buttons .= $i;
+        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to destroy");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $buttons);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+        AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Another_Swing,Another_Swing", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
+        AddDecisionQueue("BLOODONHERHANDS", $currentPlayer, "-", 1);
         break;
       case "EVR158":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");

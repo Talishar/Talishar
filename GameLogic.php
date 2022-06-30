@@ -91,17 +91,17 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       Intimidate();
       return "Alpha Rampage intimidated.";
     case "WTR007":
-      $discarded = DiscardRandom($currentPlayer, $cardID);
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $rv = "";
       $drew = 0;
-      if(AttackValue($discarded) >= 6)
+      if(SearchCurrentTurnEffects($cardID, $currentPlayer))
       {
         $drew = 1;
         MyDrawCard();
         MyDrawCard();
         if(!CurrentEffectPreventsGoAgain()) ++$actionPoints;//TODO: This is not strictly accurate, but good enough for now
+        $rv .= "Bloodrush Bellow gives your Brute attacks +2 this turn, drew two cards and gained Go Again.";
       }
-      return "Bloodrush Bellow discarded " . CardLink($discarded, $discarded) . ($drew == 1 ? ", " : ", and ") . "gave your Brute attacks this turn +2" . ($drew == 1 ? ", drew two cards, and gained Go Again." : ".");
+      return $rv;
     case "WTR008":
       $damaged = false;
       if(AttackValue($additionalCosts) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
@@ -117,37 +117,33 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
       return "Bone Head Barrier prevents the next $roll damage that will be dealt to you this turn.";
     case "WTR011": case "WTR012": case "WTR013":
-      $discarded = DiscardRandom($currentPlayer, $cardID);
-      $drew = 0;
-      if(AttackValue($discarded) >= 6) { $drew = 1; $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; }
-      return "Breakneck Battery discarded a random card from your hand" . ($drew ? " and gained Go Again." : ".");
+      $rv = "";
+      if(SearchCurrentTurnEffects($cardID, $currentPlayer))
+      {
+        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+        $rv .= "Breakneck Battery discarded a 6 power card and gained Go Again.";
+      }
+      return $rv;
     case "WTR014": case "WTR015": case "WTR016":
-      $discarded = DiscardRandom($currentPlayer, $cardID);
-      $drew = 0;
-      if(AttackValue($discarded) >= 6) { $drew = 1; MyDrawCard(); }
-      return "Savage Feast discarded a random card from your hand" . ($drew ? " and drew a card." : ".");
+      if(SearchCurrentTurnEffects($cardID, $currentPlayer)){
+        MyDrawCard();
+      }
+      return "Savage Feast discarded a random card from your hand.";
     case "WTR017": case "WTR018": case "WTR019":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       Intimidate();
       return "Barraging Beatdown intimidates and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
-    case "WTR020": case "WTR021": case "WTR022":
-      DiscardRandom($currentPlayer, $cardID);
-      return "";
     case "WTR023": case "WTR024": case "WTR025":
       Intimidate();
       return "Pack Hunt intimidated.";
     case "WTR026": case "WTR027": case "WTR028":
       Intimidate();
       return "Smash Instinct intimidated.";
-    case "WTR029": case "WTR030": case "WTR031":
-      DiscardRandom($currentPlayer, $cardID);
-      return "";
     case "WTR032": case "WTR033": case "WTR034":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       Intimidate();
       return "Awakening Bellow intimidated.";
     case "WTR035": case "WTR036": case "WTR037":
-      DiscardRandom($currentPlayer, $cardID);
       AddCurrentTurnEffect($cardID, $mainPlayer);
       return "Primeval Bellow discarded a random card from your hand and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
     //Guardian
@@ -349,14 +345,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR182": case "WTR183": case "WTR184":
       PlayMyAura("WTR225");
       return "Flight of the Feather Walkers created a Quicken token.";
-    case "WTR185": case "WTR186": case "WTR187":
-      $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
-      if($indices == "") { return "No Nimblism to banish."; }
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
-      AddDecisionQueue("NIMBLESTRIKE", $currentPlayer, "-", 1);
-      return "";
     case "WTR191": case "WTR192": case "WTR193":
       if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Scar for a Scar gained Go Again."; }
       return $rv;
@@ -364,13 +352,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       BottomDeckDraw();
       if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Scour the Battlescape gained Go Again."; }
       return $rv;
-    case "WTR197": case "WTR198": case "WTR199":
-      $indices = SearchDiscardForCard($currentPlayer, "WTR221", "WTR222", "WTR223");
-      if($indices == "") { return "No Sloggism to banish."; }
-      AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, $indices);
-      AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
-      AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
     case "WTR200": case "WTR201": case "WTR202":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Wounded Bull gains +1."; }
       return $rv;
@@ -415,9 +396,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
         AddDecisionQueue("DESTROYITEM", $otherPlayer, "<-", 1);
       }
       return "Argh... Smash! rolled " . $roll . ".";
-    case "CRU010": case "CRU011": case "CRU012":
-      $discarded = DiscardRandom($currentPlayer, $cardID);
-      return "Barraging Bighorn discarded " . $discarded . ".";
     case "CRU013": case "CRU014": case "CRU015":
       if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0)
       {
@@ -425,9 +403,6 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
         $rv = "Predatory Assault gained Dominate.";
       }
       return $rv;
-    case "CRU019": case "CRU020": case "CRU021":
-      $discarded = DiscardRandom($currentPlayer, $cardID);
-      return "Swing Fist, Think Later discarded " . $discarded . ".";
     //CRU Guardian
     case "CRU025":
       AddCurrentTurnEffect($cardID, $currentPlayer);
