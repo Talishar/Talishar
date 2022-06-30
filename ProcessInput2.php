@@ -1329,6 +1329,9 @@ function FinalizeChainLink($chainClosed=false)
     }
     switch($cardID)
     {
+      case "WTR006":
+        DiscardRandom($currentPlayer, $cardID);
+        break;
       case "WTR008":
         $discarded = DiscardRandom($currentPlayer, $cardID);
         SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
@@ -1392,6 +1395,9 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
+        break;
+      case "MON251": case "MON252": case "MON253":
+        HandToTopDeck($currentPlayer);
         break;
       case "MON281": case "MON282": case "MON283":
         if($from == "PLAY")
