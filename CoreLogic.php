@@ -991,7 +991,15 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   return false;
 }
 
-function TalentContains($cardID, $talent)
+
+function ClassContains($cardID, $class, $player="")
+{
+  $cardClass = CardClass($cardID);
+  //Loop over current turn effects to find attackModifiers
+  return DelimStringContains($cardClass, $class);
+}
+
+function TalentContains($cardID, $talent, $player="")
 {
   $cardTalent = CardTalent($cardID);
   $talents = explode(",", $cardTalent);
