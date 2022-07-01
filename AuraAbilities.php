@@ -66,7 +66,10 @@ function AuraDestroyed($player, $cardID, $isToken=false)
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
   switch($goesWhere)
   {
-    case "GY": AddGraveyard($cardID, $player, "PLAY"); break;
+    case "GY":
+      if(DelimStringContains(CardSubType($cardID), "Affliction")) { $player = ($player == 1 ? 2 : 1); }//Swap the player if it's an affliction
+      AddGraveyard($cardID, $player, "PLAY");
+      break;
     case "SOUL": AddSoul($cardID, $player, "PLAY"); break;
     case "BANISH": BanishCardForPlayer($cardID, $player, "PLAY", "NA"); break;
     default: break;

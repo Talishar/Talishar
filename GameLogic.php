@@ -3969,20 +3969,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "AFTERTHAW":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode("-", $lastResult);
-      $zone = &GetMZZone($player, $params[0]);
-      $cardID = $zone[$params[1]];
-      $discard = &GetDiscard($currentPlayer);
-      $found = -1;
       if($params[0] == "MYAURAS") {
         DestroyAura($player, $params[1]);
-        if(CardType($cardID != "T")) {
-          AddGraveyard($cardID, $otherPlayer, "NA");
-          for($i=0; $i<count($discard); $i+=DiscardPieces())
-          {
-            if($discard[$i] == $cardID) $found = $i;
-          }
-        }
-        RemoveGraveyard($player, $found);
       }
       return "";
     case "SUCCUMBTOWINTER":
