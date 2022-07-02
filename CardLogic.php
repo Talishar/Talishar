@@ -94,6 +94,7 @@ function NaturesPathPilgrimageHit()
   if(!ArsenalFull($mainPlayer) && count($deck) > 0)
   {
     $type = CardType($deck[0]);
+    RevealCards($deck[0]);
     if($type == "A" || $type == "AA")
     {
       AddArsenal($deck[0], $mainPlayer, "DECK", "DOWN");
