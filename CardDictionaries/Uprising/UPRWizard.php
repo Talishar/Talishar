@@ -232,7 +232,7 @@
         else if($cardID == "UPR123") $damage = 3;
         else $damage = 2;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(IsHeroAttackTarget() && DelimStringContains($additionalCosts, "ICE"))
+        if(DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
           AddDecisionQueue("PLAYAURA", ($currentPlayer == 1 ? 2 : 1), "ELE111", 1);
