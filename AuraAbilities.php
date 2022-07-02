@@ -53,14 +53,14 @@ function AuraDestroyed($player, $cardID, $isToken=false)
   {
     switch($auras[$i])
     {
-      case "EVR141": if(!$isToken && $auras[$i+5]>0 && CardClass($cardID) == "ILLUSIONIST") { --$auras[$i+5]; PlayAura("MON104", $player); } break;
+      case "EVR141": if(!$isToken && $auras[$i+5]>0 && ClassContains($cardID, "ILLUSIONIST", $player)) { --$auras[$i+5]; PlayAura("MON104", $player); } break;
       default: break;
     }
   }
   $goesWhere = GoesWhereAfterResolving($cardID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $player)); ++$i)
   {
-    if(DelimStringContains(CardTalent($cardID), "LIGHT")) $goesWhere = "SOUL";
+    if(DelimStringContains(TalentContains($cardID, "LIGHT", $player))) $goesWhere = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", true, $player);
   }
   if(CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
@@ -359,7 +359,7 @@ function AuraPlayAbilities($cardID, $from)
     switch($auras[$i])
     {
       case "MON157": DimenxxionalCrossroadsPassive($cardID, $from); break;
-      case "EVR143": if($auras[$i+5]>0 && CardType($cardID) == "AA" && CardClass($cardID) == "ILLUSIONIST") { WriteLog("Pierce Reality gives the attack +2."); --$auras[$i+5]; AddCurrentTurnEffect("EVR143", $currentPlayer, true); } break;
+      case "EVR143": if($auras[$i+5]>0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $player)) { WriteLog("Pierce Reality gives the attack +2."); --$auras[$i+5]; AddCurrentTurnEffect("EVR143", $currentPlayer, true); } break;
       default: break;
     }
   }
@@ -381,8 +381,8 @@ function AuraAttackAbilities($attackID)
       case "ARC112": DealArcane(1, 0, "RUNECHANT", "ARC112"); $remove = 1; break;
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants Go Again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
-      case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
-      case "EVR142": if($auras[$i+5]>0 && CardClass($attackID) == "ILLUSIONIST") { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $mainPlayer, true); } break;
+      case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($cardID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
+      case "EVR142": if($auras[$i+5]>0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $mainPlayer, true); } break;
       case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { WriteLog("Burn Them All deals 1 arcane damage."); --$auras[$i+5]; DealArcane(1, 0, "STATIC", $attackID, false, $mainPlayer); } break;
       default: break;
     }

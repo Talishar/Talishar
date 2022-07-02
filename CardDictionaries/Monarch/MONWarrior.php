@@ -204,7 +204,7 @@
     $cardID = array_shift($deck);
     WriteLog("Processing Lumina Ascension's hit effect:");
     RevealCards($cardID);
-    if(CardTalent($cardID) == "LIGHT")
+    if(TalentContains($cardID, "LIGHT", $mainPlayer))
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);

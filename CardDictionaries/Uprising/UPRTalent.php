@@ -489,13 +489,13 @@
 
   function NumDraconicChainLinks()
   {
-    global $chainLinks, $combatChain;
+    global $chainLinks, $combatChain, $currentPlayer;
     $numLinks = 0;
     for($i=0; $i<count($chainLinks); ++$i)
     {
-      if(CardTalent($chainLinks[$i][0]) == "DRACONIC") ++$numLinks;
+      if(TalentContains($chainLinks[$i][0], "DRACONIC", $currentPlayer)) ++$numLinks;
     }
-    if(count($combatChain) > 0 && CardTalent($combatChain[0]) == "DRACONIC") ++$numLinks;
+    if(count($combatChain) > 0 && TalentContains($combatChain[0], "DRACONIC", $currentPlayer)) ++$numLinks;
     return $numLinks;
   }
 

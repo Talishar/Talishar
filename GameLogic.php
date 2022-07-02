@@ -616,7 +616,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
           if($cards != "") $cards .= ",";
           $card = array_shift($deck);
           $cards .= $card;
-          if(CardClass($card) == "RUNEBLADE" && CardType($card) == "AA") PlayAura("ARC112", $currentPlayer);
+          if(ClassContains($card, "RUNEBLADE", $currentPlayer) && CardType($card) == "AA") PlayAura("ARC112", $currentPlayer);
         }
       }
       RevealCards($cards);
@@ -1188,10 +1188,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   global $defAuras, $defAuras, $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $combatChain;
   $blockModifier = 0;
   $cardType = CardType($cardID);
-  $cardTalent = CardTalent($cardID);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
-  if(SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && ($cardTalent == "ICE" || $cardTalent == "EARTH" || $cardTalent == "ELEMENTAL")) $blockModifier += 1;
+  if(SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   for($i=0; $i<count($defAuras); $i+=AuraPieces())
   {
     if($defAuras[$i] == "WTR072" && CardCost($cardID) >= 3) $blockModifier += 4;
@@ -1323,7 +1322,7 @@ function CurrentEffectCostModifiers($cardID, $from)
       switch($currentTurnEffects[$i])
       {
         case "WTR060": case "WTR061": case "WTR062": if(IsAction($cardID)) { $costModifier += 1; $remove = 1; } break;
-        case "WTR075": if(CardClass($cardID) == "GUARDIAN" && CardType($cardID) == "AA") { $costModifier -= 1; $remove = 1; } break;
+        case "WTR075": if(ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") { $costModifier -= 1; $remove = 1; } break;
         case "WTR152": if(CardType($cardID) == "AA") {$costModifier -= 2; $remove = 1; } break;
         case "CRU081": if(CardType($cardID) == "W" && CardSubType($cardID) == "Sword") { $costModifier -= 1; } break;
         case "CRU085-2": case "CRU086-2": case "CRU087-2": if(CardType($cardID) == "DR") {$costModifier += 1; $remove = 1; } break;
@@ -1339,7 +1338,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
         case "ELE144": $costModifier += 1; break;
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID)) $costModifier -= 1; $remove = 1; break;
-        case "UPR000": if(DelimStringContains(CardTalent($cardID), "DRACONIC")) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
+        case "UPR000": if(DelimStringContains(TalentContains($cardID, "DRACONIC", $currentPlayer))) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
         case "UPR075": case "UPR076": case "UPR077": if(GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i+2]) { --$costModifier; $remove = 1; } break;
         case "UPR166": if(IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) $costModifier -= 3; $remove = 1; break;
         default: break;
@@ -1475,7 +1474,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
       switch($currentTurnEffects[$i])
       {
         case "MON153": case "MON154":
-          if(CardClass($action) == "RUNEBLADE" || CardTalent($action) == "SHADOW") { $hasGoAgain = true; $remove = 1;} break;
+          if(ClassContains($action, "RUNEBLADE", $currentPlayer) || TalentContains($action, "SHADOW", $currentPlayer) { $hasGoAgain = true; $remove = 1;} break;
         case "ELE177": if(CardCost($action) >= 0) { $hasGoAgain = true; $remove = 1; } break;
         case "ELE178": if(CardCost($action) >= 1) { $hasGoAgain = true; $remove = 1; } break;
         case "ELE179": if(CardCost($action) >= 2) { $hasGoAgain = true; $remove = 1; } break;
@@ -1666,14 +1665,14 @@ function IsCombatEffectActive($cardID)
   }
   switch($cardID)
   {
-    case "WTR007": return CardClass($attackID) == "BRUTE";
-    case "WTR017": case "WTR018": case "WTR019": return CardClass($attackID) == "BRUTE";
-    case "WTR032": case "WTR033": case "WTR034": return CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
-    case "WTR035": case "WTR036": case "WTR037": return CardClass($attackID) == "BRUTE";
+    case "WTR007": return ClassContains($attackID, "BRUTE", $mainPlayer);
+    case "WTR017": case "WTR018": case "WTR019": return ClassContains($attackID, "BRUTE", $mainPlayer);
+    case "WTR032": case "WTR033": case "WTR034": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
+    case "WTR035": case "WTR036": case "WTR037": return ClassContains($attackID, "BRUTE", $mainPlayer);
     //Guardian
     case "WTR038": case "WTR039": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;//TODO: Make last the whole turn
     case "WTR066": case "WTR067": case "WTR068": return true;
-    case "WTR069": case "WTR070": case "WTR071": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
+    case "WTR069": case "WTR070": case "WTR071": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
     case "WTR116": return CardType($attackID) == "W";
     case "WTR129": case "WTR130": case "WTR131": return CardType($attackID) == "W";
     case "WTR141": case "WTR142": case "WTR143": return CardType($attackID) == "W";
@@ -2082,8 +2081,7 @@ function OnBlockEffects($index, $from)
       case "ELE174":
         if($from == "HAND")
         {
-          $talent = CardTalent($combatChain[0]);
-          if($talent == "LIGHTNING" || $talent == "ELEMENTAL")
+          if(TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))
           {
             AddDecisionQueue("YESNO", $mainPlayer, "destroy_mark_of_lightning_to_have_the_attack_deal_1_damage");
             AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
@@ -2259,7 +2257,7 @@ function MainCharacterHitAbilities()
         break;
       case "CRU047": if(CardType($attackID) == "AA") { AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer); $mainCharacter[$i+1] = 1; } break;
       case "CRU053":
-        if(CardType($attackID) == "AA" && CardClass($attackID) == "NINJA")
+        if(CardType($attackID) == "AA" && ClassContains($attackID, "NINJA", $mainPlayer))
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
@@ -2385,12 +2383,12 @@ function MainCharacterGrantsGoAgain()
 
 function CombatChainPlayAbility($cardID)
 {
-  global $combatChain;
+  global $combatChain, $defPlayer;
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
     switch($combatChain[$i])
     {
-      case "EVR122": if(CardClass($cardID) == "WIZARD") { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets got +2 block."); } break;
+      case "EVR122": if(ClassContains($cardID, "WIZARD", $defPlayer) { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets got +2 block."); } break;
       default: break;
     }
   }
@@ -3095,7 +3093,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)
       {
-        if(CardClass($cards[$i]) != $parameter) return "PASS";
+        if(!ClassContains($cards[$i], $parameter, $player) return "PASS";
       }
       return $lastResult;
     case "CLASSSTATEGREATERORPASS":
@@ -3468,10 +3466,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       return 1;
     case "DIMENXXIONALGATEWAY":
-        $class = CardClass($lastResult);
         $talent = CardTalent($lastResult);
-        if($class == "RUNEBLADE") DealArcane(1, 0, "PLAYCARD", "MON161", true);//TODO: Not totally correct
-        if($talent == "SHADOW")
+        if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);//TODO: Not totally correct
+        if(TalentContains($lastResult, "SHADOW", $player))
         {
           PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);
           PrependDecisionQueue("MULTIREMOVEDECK", $player, "<-", 1);
@@ -3545,7 +3542,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "GENESIS":
       if(CardTalent($lastResult) == "LIGHT") Draw($player);
-      if(CardClass($lastResult) == "ILLUSIONIST") PlayAura("MON104", $player);
+      if(ClassContains($lastResult, "ILLUSIONIST", $player) PlayAura("MON104", $player);
       return 1;
     case "PREPITCHGIVEGOAGAIN":
       if($parameter == "A") SetClassState($player, $CS_NextNAACardGoAgain, 1);

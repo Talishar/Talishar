@@ -163,7 +163,7 @@
 
   function ELECombatEffectActive($cardID, $attackID)
   {
-    global $combatChainState, $CCS_AttackFused;
+    global $combatChainState, $CCS_AttackFused, $currentPlayer;
     switch($cardID)
     {
       case "ELE000-1": case "ELE000-2": return CardType($attackID) == "AA";
@@ -216,8 +216,8 @@
       case "ELE195": case "ELE196": case "ELE197": return true;
       case "ELE198": case "ELE199": case "ELE200": return CardType($attackID) == "AA";
       case "ELE201": return CardType($attackID) == "AA";
-      case "ELE205": return CardClass($attackID) == "GUARDIAN";
-      case "ELE206": case "ELE207": case "ELE208": return CardClass($attackID) == "GUARDIAN" && CardType($attackID) == "AA";
+      case "ELE205": return ClassContains($attackID, "GUARDIAN", $currentPlayer);
+      case "ELE206": case "ELE207": case "ELE208": return ClassContains($attackID, "GUARDIAN", $currentPlayer) && CardType($attackID) == "AA";
       case "ELE215": return CardSubtype($attackID) == "Arrow";
       case "ELE219": case "ELE220": case "ELE221": return CardSubtype($attackID) == "Arrow";
       case "ELE235": return CardType($attackID) == "AA";

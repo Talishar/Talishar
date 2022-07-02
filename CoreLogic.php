@@ -964,7 +964,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $cardType = CardType($cardID);
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
-    if(CardClass($cardID) == "WIZARD" && $cardType == "A") return true;
+    if(ClassContains($cardID, "WIZARD", $currentPlayer) && $cardType == "A") return true;
   }
   if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "CRU174" || $cardID == "CRU175" || $cardID == "CRU176")) return true;
   if($currentPlayer != $mainPlayer && ($cardID == "CRU165" || $cardID == "CRU166" || $cardID == "CRU167")) return true;
@@ -1035,7 +1035,7 @@ function DoesAttackHaveGoAgain()
   if(HasGoAgain($combatChain[0])) return true;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
-  if(CardClass($combatChain[0]) == "ILLUSIONIST")
+  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
   {
     if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
@@ -1063,7 +1063,6 @@ function AttackDestroyed($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $type = CardType($attackID);
-  $class = CardClass($attackID);
   switch($attackID)
   {
     case "EVR139": MirragingMetamorphDestroyed(); break;
@@ -1076,10 +1075,10 @@ function AttackDestroyed($attackID)
   AttackDestroyedEffects($attackID);
   for($i=0; $i<SearchCount(SearchAurasForCard("MON012", $mainPlayer)); ++$i)
   {
-    if(DelimStringContains(CardTalent($attackID), "LIGHT")) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+    if(DelimStringContains(TalentContains($attackID, "LIGHT", $mainPlayer))) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
   }
-  if($type == "AA" && $class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "MON089"))
+  if($type == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterForCard($mainPlayer, "MON089"))
   {
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
@@ -1087,7 +1086,7 @@ function AttackDestroyed($attackID)
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
     AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
   }
-  if($class == "ILLUSIONIST" && SearchCharacterForCard($mainPlayer, "UPR152"))
+  if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterForCard($mainPlayer, "UPR152"))
   {
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);

@@ -25,7 +25,7 @@ function WeaponIndices($chooser, $player, $subtype="")
     $auras = GetAuras($player);
     for($i=0; $i<count($auras); $i+=AuraPieces())
     {
-      if(CardClass($auras[$i]) == "ILLUSIONIST")
+      if(ClassContains($auras[$i], "ILLUSIONIST", $player))
       {
         if($weapons != "") $weapons .= ",";
         $weapons .= $whoPrefix . "AURAS-" . $i;

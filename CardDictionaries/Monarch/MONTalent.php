@@ -281,7 +281,7 @@
         return "Blood Tribute let you opt $optAmt and banish the top card of your deck.";
       case "MON218":
         $theirCharacter = GetPlayerCharacter($otherPlayer);
-        if(CardTalent($theirCharacter[0]) == "LIGHT")
+        if(TalentContains($theirCharacter[0], "LIGHT", $otherPlayer))
         {
           if(GetHealth($currentPlayer) > GetHealth($otherPlayer))
           {

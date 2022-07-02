@@ -359,8 +359,7 @@
   {
     global $currentPlayer, $myClassState, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
     $type = CardType($cardID);
-    $class = CardClass($cardID);
-    if($type == "A" && $class == "WIZARD") $myClassState[$CS_NextWizardNAAInstant] = 0;
+    if($type == "A" && ClassContains($cardID, "WIZARD", $currentPlayer)) $myClassState[$CS_NextWizardNAAInstant] = 0;
     if($type == "A") $myClassState[$CS_NextNAAInstant] = 0;
   }
 
