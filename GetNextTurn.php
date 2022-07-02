@@ -404,8 +404,11 @@
       else if($option[0] == "MYARS") $source = $myArsenal;
 
       $card = $source[intval($option[1])];
+      $borderColor = 0;
+      if(substr($option[0], 0, 2) == "MY") $borderColor = 1;
+      else if(substr($option[0], 0, 5) == "THEIR") $borderColor = 2;
       if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
-      $content .= Card($card, "concat", $cardSize, 16, 1, 0, 0, 0, $options[$i]);
+      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $borderColor, 0, $options[$i]);
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
