@@ -304,7 +304,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 
   function CloseDecisionQueue()
   {
-    global $turn, $decisionQueue, $dqState;
+    global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer;
     $dqState[0] = "0";
     $turn[0] = $dqState[1];
     $turn[1] = $dqState[2];
@@ -312,6 +312,11 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $dqState[4] = "-";//Clear the context, just in case
     $dqState[5] = "-";//Clear Decision queue multizone indices
     $decisionQueue = [];
+    if(($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0)
+    {
+      $currentPlayer = $mainPlayer;
+      $turn[0] = "M";
+    }
   }
 
   function ShouldHoldPriorityNow($player)

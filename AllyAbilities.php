@@ -20,6 +20,7 @@ function DestroyAlly($player, $index, $skipDestroy=false)
 {
   $allies = &GetAllies($player);
   if(!$skipDestroy) AllyDestroyAbility($player, $allies[$index]);
+  if(IsSpecificAllyAttacking($player, $index)) { CloseCombatChain(); }
   for($j = $index+AllyPieces()-1; $j >= $index; --$j)
   {
     unset($allies[$j]);
