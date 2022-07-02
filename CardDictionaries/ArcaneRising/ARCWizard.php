@@ -200,7 +200,7 @@
       case "ARC141": case "ARC142": case "ARC143":
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
         return "";
       default: return "";
     }
@@ -221,7 +221,21 @@
     if($fromQueue)
     {
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
-      PrependDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
+      PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      if($mayAbility) { PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
+      else { PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
+      PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
+      PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+      if($type == "PLAYCARD" && SearchCharacterActive($player, "CRU161"))
+      {
+        PrependDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
+        PrependDecisionQueue("PAYRESOURCES", $player, "1", 1);
+        PrependDecisionQueue("BUFFARCANE", $player, "1", 1);
+        PrependDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
+        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
+      }
     }
     else
     {
@@ -233,17 +247,13 @@
         AddDecisionQueue("BUFFARCANE", $player, "1", 1);
         AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
       }
-      if($OpposingOnly == 2)
-      {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
-        if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
-        else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      }
-      else AddDecisionQueue("CHOOSEHERO", $player, $OpposingOnly);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
+      if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
+      else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
     }
   }
@@ -252,10 +262,10 @@
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
     $rv = "THEIRCHAR-0";
-    // if($opposingOnly >= 1)
-    // {
-    //   $rv .= ",MYCHAR-0";                  WIP for Azvolai
-    // }
+    if($opposingOnly == 0 || $opposingOnly == 2)
+    {
+      $rv .= ",MYCHAR-0";
+    }
     if($opposingOnly == 2)
     {
       $theirAllies = &GetAllies($otherPlayer);
