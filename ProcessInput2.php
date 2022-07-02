@@ -318,6 +318,7 @@
       break;
     case 100: //Break Chain
       ResetCombatChainState();
+      ProcessDecisionQueue();
       break;
     case 101: //Pass block and Reactions
       ChangeSetting($playerID, $SET_PassDRStep, 1);
