@@ -448,7 +448,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "Courage of Bladehold reduces the cost of your weapon attacks by 1 this turn.";
     case "CRU082":
       $character = &GetPlayerCharacter($currentPlayer);
-      if($character[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $character[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
+      ++$character[$combatChainState[$CCS_WeaponIndex]+5];
+      if($character[$combatChainState[$CCS_WeaponIndex]+1] == 1) { $character[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
       return "Twinning Blade allows you to attack with target sword an additional time.";
     case "CRU083":
       if(RepriseActive()) UnifiedDecreePlayEffect();
