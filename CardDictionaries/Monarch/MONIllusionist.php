@@ -238,7 +238,7 @@
   {
     global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumPhantasmAADestroyed;
     if(CardType($combatChain[$index]) != "AA") return;
-    if(CardClass($combatChain[$index]) == "ILLUSIONIST") return;
+    if(ClassContains($combatChain[$index], "ILLUSIONIST", $mainPlayer) return;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
     $origAV = $av;
@@ -248,7 +248,7 @@
     if(IsPhantasmActive() && ($av >= 6))
     {
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
-      if(CardClass($attackID) == "ILLUSIONIST")
+      if(ClassContains($attackID, "ILLUSIONIST", $currentPlayer))
       {
         GhostlyTouchPhantasmDestroy();
       }

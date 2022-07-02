@@ -138,7 +138,7 @@
           if(count($deck) == $i) { $rv .= "No cards in deck. Could not banish more."; return $rv; }
           $banished = $deck[$i];
           $rv .= "Banished " . CardLink($banished, $banished);
-          if(CardClass($banished) == "MECHANOLOGIST") { GainResources($currentPlayer, 1); $rv .= " and gained 1 resource. "; }
+          if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) { GainResources($currentPlayer, 1); $rv .= " and gained 1 resource. "; }
           else { $rv .= ". "; }
           BanishCardForPlayer($banished, $currentPlayer, "DECK");
           unset($deck[$i]);
@@ -317,7 +317,7 @@
     BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
     unset($deck[0]);
     $deck = array_values($deck);
-    $grantsGA = CardClass($cardID) == "MECHANOLOGIST";
+    $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
     WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
     if($grantsGA) { GiveAttackGoAgain(); }
     IncrementClassState($currentPlayer, $CS_NumBoosted);

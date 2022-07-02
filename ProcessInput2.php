@@ -1100,7 +1100,7 @@ function FinalizeChainLink($chainClosed=false)
         if($cardType == "A" && $abilityType == "")
         {
           IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
-          if(CardClass($cardID) == "WIZARD") { IncrementClassState($currentPlayer, $CS_NumWizardNonAttack); }
+          if(ClassContains($cardID, "WIZARD", $currentPlayer)) { IncrementClassState($currentPlayer, $CS_NumWizardNonAttack); }
         }
         IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
       }

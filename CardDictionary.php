@@ -1776,7 +1776,7 @@
       case "WTR080":
         if(count($combatChain) == 0) return true;
         return !HasCombo($combatChain[0]);
-      case "WTR082": return count($combatChain) == 0 || CardClass($combatChain[0]) != "NINJA" || CardType($combatChain[0]) != "AA";
+      case "WTR082": return count($combatChain) == 0 || !ClassContains($cardID, "NINJA", $player) || CardType($combatChain[0]) != "AA";
       case "WTR116":
         return GetClassState($currentPlayer, $CS_HitsWithWeapon) == 0;
       case "WTR120": case "WTR121":
@@ -1857,7 +1857,7 @@
       case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
       case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
       case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
-      case "UPR050": return (count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (CardClass($combatChain[0]) != "NINJA" && CardTalent($combatChain[0]) != "DRACONIC"));
+      case "UPR050": return (count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (!ClassContains($cardID, "NINJA", $player) && TalentContains($combatChain[0], "DRACONIC", $player));
       case "UPR084": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
       case "UPR087": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA";

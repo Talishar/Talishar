@@ -208,7 +208,7 @@
   {
     global $currentPlayer, $CS_NumNonAttackCards;
     $target = CardType($cardID) == "A" ? 1 : 0;//Don't let a non-attack action count itself
-    if(CardClass($cardID) == "RUNEBLADE" && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target)
+    if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target)
     {
       PlayAura("ARC112", $currentPlayer);
       WriteLog("Viserai created a runechant token.");

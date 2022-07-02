@@ -169,10 +169,10 @@
     if(count($params) > 1) $parameter = $params[1];
     switch($cardID)
     {
-      case "EVR001": return CardClass($attackID) == "BRUTE";
-      case "EVR004": return CardClass($attackID) == "BRUTE";
+      case "EVR001": return ClassContains($attackID, "BRUTE", $mainPlayer);
+      case "EVR004": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "EVR008": case "EVR009": case "EVR010": return true;
-      case "EVR014": case "EVR015": case "EVR016": return CardType($attackID) == "AA" && CardClass($attackID) == "BRUTE";
+      case "EVR014": case "EVR015": case "EVR016": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "EVR017": return CardCost($attackID) >= 3;
       case "EVR019": return HasCrush($attackID);
       case "EVR021": return true;
@@ -191,15 +191,15 @@
       case "EVR066": case "EVR067": case "EVR068": return CardType($attackID) == "W" && Is1H($attackID);
       case "EVR066-1": case "EVR067-1": case "EVR068-1": return CardType($attackID) == "W";
       case "EVR072": return true;
-      case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && CardClass($attackID) == "MECHANOLOGIST";
+      case "EVR082": case "EVR083": case "EVR084": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "EVR087": return CardSubType($attackID) == "Arrow";
       case "EVR090": return CardSubType($attackID) == "Arrow";
       case "EVR091": case "EVR092": case "EVR093": return CardSubType($attackID) == "Arrow";
       case "EVR091-1": case "EVR092-1": case "EVR093-1": return CardSubType($attackID) == "Arrow";
       case "EVR094": case "EVR095": case "EVR096": return CardType($attackID) == "AA";
       case "EVR100": case "EVR101": case "EVR102": return CardSubType($attackID) == "Arrow";
-      case "EVR142": return CardClass($attackID) == "ILLUSIONIST";
-      case "EVR143": return CardClass($attackID) == "ILLUSIONIST" && CardType($attackID) == "AA";
+      case "EVR142": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer);
+      case "EVR143": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && CardType($attackID) == "AA";
       case "EVR150": case "EVR151": case "EVR152": return CardType($attackID) == "AA";
       case "EVR160": return true;
       case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
@@ -1355,7 +1355,8 @@
 
   function FractalReplicationStats($stat)
   {
-    global $chainLinks, $combatChain;
+    global $chainLinks, $combatChain, $currentPlayer;
+
     $highestAttack = 0;
     $highestBlock = 0;
     $hasPhantasm = false;
@@ -1364,7 +1365,7 @@
     {
       for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces())
       {
-        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && CardClass($chainLinks[$i][$j]) == "ILLUSIONIST" && CardType($chainLinks[$i][$j]) == "AA")
+        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) && CardType($chainLinks[$i][$j]) == "AA")
         {
           if($stat == "Hit")
           {
@@ -1388,7 +1389,7 @@
     }
     for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
     {
-      if($combatChain[$i] != "EVR138" && CardClass($combatChain[$i]) == "ILLUSIONIST" && CardType($combatChain[$i]) == "AA")
+      if($combatChain[$i] != "EVR138" && ClassContains($combatChain[$i], "ILLUSIONIST", $currentPlayer) && CardType($combatChain[$i]) == "AA")
       {
         if($stat == "Hit")
         {

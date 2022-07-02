@@ -174,7 +174,7 @@
 
   function MONCombatEffectActive($cardID, $attackID)
   {
-    global $defPlayer;
+    global $defPlayer, $mainPlayer;
     $arr = explode(",", $cardID);
     $cardID = $arr[0];
     switch($cardID)
@@ -182,7 +182,7 @@
       case "MON034": return CardType($attackID) == "W";
       case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";
       case "MON087": $theirChar = GetPlayerCharacter($defPlayer); return TalentContains($theirChar[0], "SHADOW");
-      case "MON090": return CardClass($attackID) == "ILLUSIONIST" && CardType($attackID) == "AA";
+      case "MON090": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && CardType($attackID) == "AA";
       case "MON095": case "MON096": case "MON097": return CardType($attackID) == "AA";
       case "MON108": return CardType($attackID) == "W";
       case "MON109": return CardSubtype($attackID) == "Axe";
@@ -192,8 +192,8 @@
       case "MON126": case "MON127": case "MON128": return true;
       case "MON129": case "MON130": case "MON131": return true;
       case "MON132": case "MON133": case "MON134": return CardType($attackID) == "AA";
-      case "MON150": case "MON151": case "MON152": return CardType($attackID) == "AA" && (CardClass($attackID) == "BRUTE" || CardTalent($attackID) == "SHADOW");
-      case "MON153": case "MON154": return CardClass($attackID) == "RUNEBLADE" || CardTalent($attackID) == "SHADOW";
+      case "MON150": case "MON151": case "MON152": return CardType($attackID) == "AA" && (ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer));
+      case "MON153": case "MON154": return ClassContains($attackID, "RUNEBLADE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
       case "MON165": return CardType($attackID) == "AA" && CardCost($attackID) <= 2;
       case "MON166": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "MON167": return CardType($attackID) == "AA" && CardCost($attackID) == 0;
@@ -206,7 +206,7 @@
       case "MON212": return true;
       case "MON218": return true;
       case "MON221": return true;
-      case "MON222": return CardType($attackID) == "AA" && (CardClass($attackID) == "BRUTE");
+      case "MON222": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "MON223": case "MON224": case "MON225": return true;
       case "MON239": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;
       case "MON247": return true;

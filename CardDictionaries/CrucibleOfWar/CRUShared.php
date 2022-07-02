@@ -121,7 +121,7 @@
 
   function CRUCombatEffectActive($cardID, $attackID)
   {
-    global $combatChain;
+    global $combatChain, $currentPlayer;
     switch($cardID)
     {
       //Brute
@@ -129,8 +129,8 @@
       case "CRU013": case "CRU014": case "CRU015": return true;
       //Guardian
       case "CRU025": return HasCrush($attackID);
-      case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
-      case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && CardClass($attackID) == "GUARDIAN";
+      case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $currentPlayer);
+      case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $currentPlayer);
       //Ninja
       case "CRU047": return true;
       case "CRU053": return HasCombo($combatChain[0]);
@@ -154,7 +154,7 @@
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";
       //Runeblade
-      case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && CardClass($attackID) == "RUNEBLADE";
+      case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $currentPlayer);
       default: return false;
     }
   }
