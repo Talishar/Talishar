@@ -238,7 +238,7 @@
   {
     global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumPhantasmAADestroyed;
     if(CardType($combatChain[$index]) != "AA") return;
-    if(ClassContains($combatChain[$index], "ILLUSIONIST", $mainPlayer) return;
+    if(ClassContains($combatChain[$index], "ILLUSIONIST", $mainPlayer)) return;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
     $origAV = $av;

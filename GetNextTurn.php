@@ -26,7 +26,6 @@
     $otherP = ($playerID == 1 ? 2 : 1);
     $oppLastTime = GetCachePiece($gameName, $otherP+1);
     $oppStatus = GetCachePiece($gameName, $otherP+3);
-    //WriteLog($oppStatus);
     if(($currentTime - $oppLastTime) > 5000 && ($oppStatus == "0"))
     {
       WriteLog("Opponent has disconnected. Waiting to reconnect.");

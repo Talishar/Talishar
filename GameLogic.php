@@ -838,7 +838,6 @@ function ChainLinkBeginResolutionEffects()
     $index = $combatChainState[$CCS_WeaponIndex];
     for($i=0; $i<count($mainCharacterEffects); $i+=CharacterEffectPieces())
     {
-      WriteLog($mainCharacterEffects[$i]);
       if($mainCharacterEffects[$i] == $index)
       {
         switch($mainCharacterEffects[$i+1])
@@ -1474,7 +1473,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
       switch($currentTurnEffects[$i])
       {
         case "MON153": case "MON154":
-          if(ClassContains($action, "RUNEBLADE", $currentPlayer) || TalentContains($action, "SHADOW", $currentPlayer) { $hasGoAgain = true; $remove = 1;} break;
+          if(ClassContains($action, "RUNEBLADE", $currentPlayer) || TalentContains($action, "SHADOW", $currentPlayer)) { $hasGoAgain = true; $remove = 1;} break;
         case "ELE177": if(CardCost($action) >= 0) { $hasGoAgain = true; $remove = 1; } break;
         case "ELE178": if(CardCost($action) >= 1) { $hasGoAgain = true; $remove = 1; } break;
         case "ELE179": if(CardCost($action) >= 2) { $hasGoAgain = true; $remove = 1; } break;
@@ -2388,7 +2387,7 @@ function CombatChainPlayAbility($cardID)
   {
     switch($combatChain[$i])
     {
-      case "EVR122": if(ClassContains($cardID, "WIZARD", $defPlayer) { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets got +2 block."); } break;
+      case "EVR122": if(ClassContains($cardID, "WIZARD", $defPlayer)) { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets got +2 block."); } break;
       default: break;
     }
   }
@@ -3093,7 +3092,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)
       {
-        if(!ClassContains($cards[$i], $parameter, $player) return "PASS";
+        if(!ClassContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "CLASSSTATEGREATERORPASS":
@@ -3326,7 +3325,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
-      if($type == "PLAYCARD" || $target[0] == "THEIRALLY")
+      if($type == "PLAYCARD")
       {
         $damage += ConsumeArcaneBonus($player);
       }
@@ -3541,8 +3540,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("FINDINDICES", $player, $indicesParam);
       return 1;
     case "GENESIS":
-      if(CardTalent($lastResult) == "LIGHT") Draw($player);
-      if(ClassContains($lastResult, "ILLUSIONIST", $player) PlayAura("MON104", $player);
+      if(TalentContains($lastResult, "LIGHT", $player)) Draw($player);
+      if(ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
       return 1;
     case "PREPITCHGIVEGOAGAIN":
       if($parameter == "A") SetClassState($player, $CS_NextNAACardGoAgain, 1);
