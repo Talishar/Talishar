@@ -1006,6 +1006,19 @@ function TalentContains($cardID, $talent, $player="")
   return DelimStringContains($cardTalent, $talent);
 }
 
+//talents = comma delimited list of talents to check
+function TalentContainsAny($cardID, $talents, $player="")
+{
+  $cardTalent = CardTalent($cardID);
+  //Loop over current turn effects to find modifiers
+  $talentArr = explode(",", $talents);
+  for($i=0; $i<count($talentArr); ++$i)
+  {
+    if(DelimStringContains($cardTalent, $talentArr[$i])) return true;
+  }
+  return false;
+}
+
 function RevealCards($cards)
 {
   $cardArray = explode(",", $cards);
