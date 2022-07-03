@@ -24,17 +24,17 @@ if ($handle = opendir($path)) {
         $currentTime = round(microtime(true) * 1000);
         if(file_exists($gs))
         {
-          $lastGamestateUpdate = intval(GetCachePiece($gameToken, 2));
-          if($currentTime - $lastGamestateUpdate < 12000)
+          $lastGamestateUpdate = intval(GetCachePiece($gameToken, 1));
+          if($currentTime - $lastGamestateUpdate < 30000)
           {
             $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn3.php'>";
-            $spectateLinks .= "<label for='joinGame'>Last Update " . ($currentTime - $lastGamestateUpdate) . " seconds ago </label>";
+            $spectateLinks .= "<label for='joinGame'>Last Update " . intval(($currentTime - $lastGamestateUpdate)/1000) . " seconds ago </label>";
             $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
             $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
             $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
             $spectateLinks .= "</form>";
           }
-          else if(time() - $lastGamestateUpdate > 360000)//1 hour
+          else if(time() - $lastGamestateUpdate > 720000)//1 hour
           {
             if($autoDeleteGames)
             {
