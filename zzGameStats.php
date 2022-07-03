@@ -81,7 +81,7 @@ ORDER BY Count";
   foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
     echo("<tr>");
-    echo("<td>" . CardLink($row[0], $row[0]) . "</td>");
+    echo("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0]) . "</a></td>");
     echo("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
     echo("<td>" . $row[1] . "</td>");
     echo("<td>" . (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100) . "% </td>");
