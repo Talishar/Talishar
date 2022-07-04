@@ -602,7 +602,7 @@
   function ResolveChainLink()
   {
     global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary, $CCS_AttackTarget;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CCS_AttackTarget;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -645,6 +645,7 @@
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
     array_push($chainLinkSummary, $damageDone);
     array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
+    array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
 
     if($wasHit)//Resolve hit effects
     {

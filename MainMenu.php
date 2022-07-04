@@ -131,7 +131,6 @@ border-radius: 3px;">
 
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h1>
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h3>
-  Brand with Cinderclaw<br>
   Thaw (Unfreeze part)<br>
   Channel the Bleak Expanse<br>
   Quell Mechanic<br>

@@ -993,19 +993,40 @@ function ClassContains($cardID, $class, $player="")
   return DelimStringContains($cardClass, $class);
 }
 
+function TalentOverride($cardID, $player="")
+{
+  global $currentTurnEffects;
+  if(SearchCurrentTurnEffects("UPR187", $player)) return "";
+  $cardTalent = CardTalent($cardID);
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    if($currentTurnEffects[$i+1] != $player) continue;
+    $toAdd = "";
+    switch($currentTurnEffects[$i])
+    {
+      case "UPR060": case "UPR061": case "UPR062": $toAdd = "DRACONIC";
+      default: break;
+    }
+    if($toAdd != "")
+    {
+      if($cardTalent == "NONE") $cardTalent = "";
+      if($cardTalent != "") $cardTalent .= ",";
+      $cardTalent .= $toAdd;
+    }
+  }
+  return $cardTalent;
+}
+
 function TalentContains($cardID, $talent, $player="")
 {
-  if(SearchCurrentTurnEffects("UPR187", $player)) return false;
-  $cardTalent = CardTalent($cardID);
-  //Loop over current turn effects to find modifiers
+  $cardTalent = TalentOverride($cardID, $player);
   return DelimStringContains($cardTalent, $talent);
 }
 
 //talents = comma delimited list of talents to check
 function TalentContainsAny($cardID, $talents, $player="")
 {
-  if(SearchCurrentTurnEffects("UPR187", $player)) return false;
-  $cardTalent = CardTalent($cardID);
+  $cardTalent = TalentOverride($cardID, $player);
   //Loop over current turn effects to find modifiers
   $talentArr = explode(",", $talents);
   for($i=0; $i<count($talentArr); ++$i)
