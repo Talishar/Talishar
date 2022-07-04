@@ -760,6 +760,27 @@
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR054", 1);
         return "";
+      case "EVR055":
+        $numCopper = CountItem("CRU197", $currentPlayer);
+        if($numCopper == 0) return "No copper.";
+        if($numCopper > 6) $numCopper = 6;
+        $buttons = "";
+        for($i=0; $i<=$numCopper; ++$i)
+        {
+          if($buttons != "") $buttons .= ",";
+          $buttons .= $i;
+        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to destroy");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $buttons);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "CRU197-", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+        AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Another_Swing,Another_Swing", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
+        AddDecisionQueue("BLOODONHERHANDS", $currentPlayer, "-", 1);
+        break;
       case "EVR056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Oath of Steel gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
