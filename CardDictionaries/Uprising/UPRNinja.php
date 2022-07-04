@@ -196,6 +196,9 @@
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         return "";
+      case "UPR060": case "UPR061": case "UPR062":
+        // TODO: Brand with Cinderclaw;
+        return "";
       case "UPR159":
         GiveAttackGoAgain();
         return "Tide Flippers gave the attack Go Again.";
