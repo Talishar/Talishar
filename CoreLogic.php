@@ -1012,7 +1012,7 @@ function ClassOverride($cardID, $player="")
 
 function ClassContains($cardID, $class, $player="")
 {
-  $cardClass = ClassOverride($cardID, $playerID);
+  $cardClass = ClassOverride($cardID, $player);
   //Loop over current turn effects to find modifiers
   return DelimStringContains($cardClass, $class);
 }
