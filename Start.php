@@ -63,6 +63,7 @@
   fwrite($handler, $p1Key . "\r\n");//Player 1 auth key
   fwrite($handler, $p2Key . "\r\n");//Player 2 auth key
   fwrite($handler, 0 . "\r\n");//Permanent unique ID counter
+  fwrite($handler, "0\r\n");//Number of Alluvion Used
   fclose($handler);
 
   //Set up log file

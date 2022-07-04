@@ -2568,7 +2568,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
-  global $CS_AdditionalCosts;
+  global $CS_AdditionalCosts, $CS_AlluvionUsed;
   $rv = "";
   switch($phase)
   {
@@ -3357,7 +3357,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         {
           $char = &GetPlayerCharacter($player);
           $index = FindCharacterIndex($player, "UPR166");
-          if($char[$index+2] < 4) ++$char[$index+2];
+          if($char[$index+2] < 4 && GetClassState($player, $CS_AlluvionUsed) == 0) {
+            ++$char[$index+2];
+            SetClassState($player, $CS_AlluvionUsed, 1);
+          }
         }
       }
       return $lastResult;
