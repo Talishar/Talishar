@@ -1004,6 +1004,9 @@ function TalentOverride($cardID, $player="")
     $toAdd = "";
     switch($currentTurnEffects[$i])
     {
+      case "MON095": case "MON096": case "MON097": $toAdd = "ILLUSIONIST";
+      case "EVR150": case "EVR151": case "EVR152": $toAdd = "ILLUSIONIST";
+      case "UPR155": case "UPR156": case "UPR157": $toAdd = "ILLUSIONIST";
       case "UPR060": case "UPR061": case "UPR062": $toAdd = "DRACONIC";
       default: break;
     }
