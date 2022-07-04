@@ -646,6 +646,7 @@
     array_push($chainLinkSummary, $damageDone);
     array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
     array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
+    array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
 
     if($wasHit)//Resolve hit effects
     {
