@@ -2212,8 +2212,8 @@ function CharacterDestroyEffect($cardID, $player)
 function MainCharacterEndTurnAbilities()
 {
   global $mainCharacter, $characterPieces, $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $defPlayer, $CS_NumNonAttackCards;
-  global $CS_NumAttackCards, $CS_ArcaneDamageTaken;
-  for($i=0; $i<count($mainCharacter); $i += CharacterPieces())
+  global $CS_NumAttackCards, $CS_ArcaneDamageTaken, $defCharacter;
+  for($i=0; $i<count($mainCharacter); $i+=CharacterPieces())
   {
     switch($mainCharacter[$i])
     {
@@ -2221,8 +2221,17 @@ function MainCharacterEndTurnAbilities()
       case "CRU077": KassaiEndTurnAbility(); break;
       case "ELE223":
         if(GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i+3] = 0; break;
+      case "MON089": $mainCharacter[$i+4] = 0;
       case "MON107": if($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i+4] < 0) ++$mainCharacter[$i+4]; break;
       case "ELE224": if(GetClassState($defPlayer, $CS_ArcaneDamageTaken) < $mainCharacter[$i+2]) { DestroyCharacter($mainPlayer, $i); $mainCharacter[$i+2] = 0; } break;
+      default: break;
+    }
+  }
+  for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
+  {
+    switch($defCharacter[$i])
+    {
+      case "MON089": $defCharacter[$i+4] = 0;
       default: break;
     }
   }
