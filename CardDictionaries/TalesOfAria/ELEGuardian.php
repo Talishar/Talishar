@@ -159,7 +159,7 @@
         $icePitched = 0;
         for($i=0; $i<count($pitchArr); ++$i)
         {
-          if(TalentContains($pitchArr[$i], "ICE")) $icePitched = 1;
+          if(TalentContains($pitchArr[$i], "ICE", $currentPlayer)) $icePitched = 1;
         }
         if($icePitched)
         {
