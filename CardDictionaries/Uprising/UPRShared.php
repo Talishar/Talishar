@@ -153,6 +153,7 @@
       case "UPR049": return TalentContains($attackID, "DRACONIC", $currentPlayer) && AttackValue($attackID) < NumDraconicChainLinks();
       case "UPR054": case "UPR055": case "UPR056": return true;
       case "UPR057": case "UPR058": case "UPR059": return TalentContains($attackID, "DRACONIC", $currentPlayer) || ClassContains($attackID, "NINJA", $currentPlayer);
+      case "UPR060": case "UPR061": case "UPR062": return true;
       case "UPR081": case "UPR082": case "UPR083": return true;
       case "UPR088": return TalentContains($attackID, "DRACONIC", $currentPlayer);
       case "UPR091": return true;

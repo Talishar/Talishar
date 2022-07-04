@@ -125,9 +125,10 @@
 
   //Damage Dealt
   //Total Attack
+  //Talents
   function ChainLinkSummaryPieces()
   {
-    return 2;
+    return 3;
   }
 
   //Class State (one for each player)
