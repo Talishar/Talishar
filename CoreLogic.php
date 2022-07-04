@@ -319,7 +319,7 @@ function CharacterPlayCardAbilities($cardID, $from)
     switch($character[$i])
     {
       case "EVR120": case "UPR102": case "UPR103":
-        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE"))
+        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE") && CardType($cardID) != "E")
         {
           PlayAura("ELE111", $mainPlayer);
           WriteLog("Iyslander created a Frostbite token for playing an ice card.");
