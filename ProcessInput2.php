@@ -1010,10 +1010,10 @@ function FinalizeChainLink($chainClosed=false)
     {
       $pitchValue = PitchValue($cardID);
       $resources[0] += $pitchValue;
-      if(SearchCharacterActive($currentPlayer, "MON060") && TalentContains($cardID, "LIGHT", $currentPlayer) && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
+      if(GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "MON060") && TalentContains($cardID, "LIGHT", $currentPlayer))
       { $resources[0] += 1; }
       array_push($pitch, $cardID);
-      AddThisCardPitch($currentPlayer, $cardID);
+      if(CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
       PitchAbility($cardID);
     }
     if($resources[0] < $resources[1])
@@ -1564,7 +1564,6 @@ function FinalizeChainLink($chainClosed=false)
     //Now determine what needs to happen next
     SetClassState($currentPlayer, $CS_PlayIndex, -1);
     SetClassState($currentPlayer, $CS_CharacterIndex, -1);
-    ResetThisCardPitch($currentPlayer);
     ProcessDecisionQueue();
   }
 

@@ -122,20 +122,19 @@
     }
   }
 
-  function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid)
+  function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $CS_PitchedForThisCard, $CS_DamagePrevention;
+    global $currentPlayer, $CS_DamagePrevention;
     $rv = "";
     switch($cardID)
     {
       case "ELE001": case "ELE002":
-        $pitch = &GetClassState($currentPlayer, $CS_PitchedForThisCard);
-        $pitchArr = explode("-", $pitch);
+        $pitchArr = explode(",", $additionalCosts);
         $earthPitched = 0; $icePitched = 0;
         for($i=0; $i<count($pitchArr); ++$i)
         {
-          if(TalentContains($pitchArr[$i], "EARTH")) $earthPitched = 1;
-          if(TalentContains($pitchArr[$i], "ICE")) $icePitched = 1;
+          if(TalentContains($pitchArr[$i], "EARTH", $currentPlayer)) $earthPitched = 1;
+          if(TalentContains($pitchArr[$i], "ICE", $currentPlayer)) $icePitched = 1;
         }
         $rv = "";
         if($earthPitched)
@@ -154,8 +153,7 @@
         }
         return $rv;
       case "ELE003":
-        $pitch = GetClassState($currentPlayer, $CS_PitchedForThisCard);
-        $pitchArr = explode("-", $pitch);
+        $pitchArr = explode(",", $additionalCosts);
         $icePitched = 0;
         for($i=0; $i<count($pitchArr); ++$i)
         {

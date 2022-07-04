@@ -50,7 +50,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
   {
     switch($class)
     {
-      case "GUARDIAN": return ELEGuardianPlayAbility($cardID, $from, $resourcesPaid);
+      case "GUARDIAN": return ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "RANGER": return ELERangerPlayAbility($cardID, $from, $resourcesPaid);
       case "RUNEBLADE": return ELERunebladePlayAbility($cardID, $from, $resourcesPaid);
       default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid);
