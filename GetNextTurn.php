@@ -718,7 +718,7 @@
       echo("</span>");
     }
   }
-  echo(BanishUI("HAND"));
+  if($playerID != 3) echo(BanishUI("HAND"));
   echo("</div>");//End hand div
 
   //Now display arsenal
