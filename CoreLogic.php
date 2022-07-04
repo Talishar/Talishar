@@ -985,10 +985,34 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   return false;
 }
 
+function ClassOverride($cardID, $player="")
+{
+  global $currentTurnEffects;
+  $cardClass = CardClass($cardID);
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
+  {
+    if($currentTurnEffects[$i+1] != $player) continue;
+    $toAdd = "";
+    switch($currentTurnEffects[$i])
+    {
+      case "MON095": case "MON096": case "MON097": $toAdd = "ILLUSIONIST";
+      case "EVR150": case "EVR151": case "EVR152": $toAdd = "ILLUSIONIST";
+      case "UPR155": case "UPR156": case "UPR157": $toAdd = "ILLUSIONIST";
+      default: break;
+    }
+    if($toAdd != "")
+    {
+      if($cardClass == "NONE") $cardClass = "";
+      if($cardClass != "") $cardClass .= ",";
+      $cardClass .= $toAdd;
+    }
+  }
+  return $cardClass;
+}
 
 function ClassContains($cardID, $class, $player="")
 {
-  $cardClass = CardClass($cardID);
+  $cardClass = ClassOverride($cardID, $playerID);
   //Loop over current turn effects to find modifiers
   return DelimStringContains($cardClass, $class);
 }
@@ -1004,9 +1028,6 @@ function TalentOverride($cardID, $player="")
     $toAdd = "";
     switch($currentTurnEffects[$i])
     {
-      case "MON095": case "MON096": case "MON097": $toAdd = "ILLUSIONIST";
-      case "EVR150": case "EVR151": case "EVR152": $toAdd = "ILLUSIONIST";
-      case "UPR155": case "UPR156": case "UPR157": $toAdd = "ILLUSIONIST";
       case "UPR060": case "UPR061": case "UPR062": $toAdd = "DRACONIC";
       default: break;
     }
