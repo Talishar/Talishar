@@ -262,6 +262,8 @@
         if(GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j+1]) == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j+1], "CC");
       }
     }
+    UnsetCombatChainBanish();
+    RemoveEffectsOnChainClose();
     CombatChainClosedCharacterEffects();
     CurrentEffectChainClosedEffects();
     $chainLinks = [];
@@ -293,6 +295,7 @@
     $combatChainState[$CCS_CachedTotalBlock] = 0;
     $combatChainState[$CCS_CombatDamageReplaced] = 0;
     $combatChainState[$CCS_AttackUniqueID] = -1;
+    UnsetChainLinkBanish();
   }
 
   function ResetMainClassState()

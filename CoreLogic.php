@@ -636,12 +636,6 @@ function UnsetCombatChainBanish()
   UnsetBanishModifier(2, "TCL");
 }
 
-function UnsetMyCombatChainBanish()
-{
-  global $currentPlayer;
-  UnsetBanishModifier($currentPlayer, "TCC");
-}
-
 function ReplaceBanishModifier($player, $oldMod, $newMod)
 {
   UnsetBanishModifier($player, $oldMod, $newMod);
@@ -1222,6 +1216,29 @@ function AddCharacterUses($player, $index, $numToAdd)
       $turn[0] = "PDECK";
       return false;
     }
+  }
+
+  function ResolveGoAgain($cardID, $player, $from)
+  {
+    global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer;
+    $cardType = CardType($cardID);
+    $goAgainPrevented = CurrentEffectPreventsGoAgain();
+    if(IsStaticType($cardType, $from, $cardID))
+    {
+      $hasGoAgain = AbilityHasGoAgain($cardID);
+    }
+    else
+    {
+      $hasGoAgain = HasGoAgain($cardID);
+      if(GetClassState($player, $CS_NextNAACardGoAgain) && $cardType == "A")
+      {
+        $hasGoAgain = true;
+        SetClassState($player, $CS_NextNAACardGoAgain, 0);
+      }
+      if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
+      if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
+    }
+    if($player == $mainPlayer && $hasGoAgain) ++$actionPoints;
   }
 
   function PitchDeck($player, $index)

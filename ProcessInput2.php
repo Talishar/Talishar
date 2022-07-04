@@ -762,7 +762,6 @@ function FinalizeChainLink($chainClosed=false)
       array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[$i+1] != "PLAY" ? "1" : "0"));//Still on chain? 1 = yes, 0 = no
     }
     CopyCurrentTurnEffectsFromCombat();
-    UnsetChainLinkBanish();//For things that are banished and playable only to this chain link
     $combatChain = [];
     if($chainClosed)
     {
@@ -1039,45 +1038,24 @@ function FinalizeChainLink($chainClosed=false)
     }
     $cardType = CardType($cardID);
     $abilityType = "";
+    $playType = $cardType;
     PlayerMacrosCardPlayed();
     //We've paid resources, now pay action points if applicable
-    if($turn[0] != "B")// || $cardType == "I" || CanPlayAsInstant($cardID))
+    if($turn[0] != "B")
     {
-      $goAgainPrevented = CurrentEffectPreventsGoAgain();
+      $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
       //if($from == "PLAY" || $from == "EQUIP")
       if(IsStaticType($cardType, $from, $cardID))
       {
-        $abilityType = GetResolvedAbilityType($cardID);
-        $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
-        $hasGoAgain = AbilityHasGoAgain($cardID);
-        if($currentPlayer == $mainPlayer)
-        {
-          if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-          else if(($abilityType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
-          else if($abilityType == "AA") --$actionPoints;//Always resolve this after combat chain
-        }
-        if($abilityType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
+        $playType = GetResolvedAbilityType($cardID);
+        $abilityType = $playType;
+        if($abilityType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); }
         PayAbilityAdditionalCosts($cardID);
         ActivateAbilityEffects();
       }
       else
       {
-        $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
-        $hasGoAgain = HasGoAgain($cardID);
-        if(GetClassState($currentPlayer, $CS_NextNAACardGoAgain) && $cardType == "A")
-        {
-          $hasGoAgain = true;
-          SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 0);
-        }
-        if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
-        if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
-        if($currentPlayer == $mainPlayer)
-        {
-          if($canPlayAsInstant) { if($hasGoAgain && !$goAgainPrevented) ++$actionPoints; }
-          else if(($cardType == "A") && (!$hasGoAgain || $goAgainPrevented)) --$actionPoints;
-          else if($cardType == "AA") --$actionPoints;//Always resolve this after combat chain
-        }
-        if($cardType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); UnsetMyCombatChainBanish(); RemoveEffectsOnChainClose(); }
+        if($cardType == "A" && !$canPlayAsInstant) { ResetCombatChainState(); }
         if(SearchCurrentTurnEffects("CRU123-DMG", $playerID) && ($cardType == "A" || $cardType == "AA")) LoseHealth(1, $playerID);
         CombatChainPlayAbility($cardID);
         ItemPlayAbilities($cardID, $from);
@@ -1096,8 +1074,9 @@ function FinalizeChainLink($chainClosed=false)
           RevertGamestate();
         }
       }
-      if($cardType == "A" || $abilityType == "A" || $cardType == "AA" || $abilityType == "AA")
+      if($playType == "A" || $playType == "AA")
       {
+        if(!$canPlayAsInstant) --$actionPoints;
         if($cardType == "A" && $abilityType == "")
         {
           IncrementClassState($currentPlayer, $CS_NumNonAttackCards);
@@ -1598,6 +1577,7 @@ function FinalizeChainLink($chainClosed=false)
       if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
+      ResolveGoAgain($cardID, $currentPlayer, $from);
     }
 
     if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID))
