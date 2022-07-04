@@ -450,7 +450,11 @@
         break;
       case "UPR187":
         if(IsHeroAttackTarget())
-        {} break;
+        {
+          AddCurrentTurnEffect($cardID, $defPlayer);
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
+        break;
       case "UPR188":
         if(IsHeroAttackTarget())
         {
