@@ -16,7 +16,7 @@
 
   echo(implode(" ", $playerHealths) . "<BR>");
 
-  echo($"P1". "<BR>");
+  echo("P1". "<BR>");
   OutputPlayerData(1);
   echo("P2" . "<BR>");
   OutputPlayerData(2);
