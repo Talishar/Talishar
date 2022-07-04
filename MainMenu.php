@@ -134,7 +134,6 @@ border-radius: 3px;">
   Brand with Cinderclaw<br>
   Thaw (Unfreeze part)<br>
   Channel the Bleak Expanse<br>
-  Erase Face<br>
   Quell Mechanic<br>
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
