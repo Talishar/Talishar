@@ -285,7 +285,7 @@
             if(PitchValue($deck[$i]) == 1) ++$numRed;
           }
           $wasRevealed = RevealCards($cards);
-          if($wasRevealed) DealArcane($numRed, 2, "PLAYCARD", $cardID, false, $currentPlayer);//TODO: Not arcane
+          if($wasRevealed) DamageTrigger($player, $numRed, "DAMAGE"); //TODO: Any target
         }
         return "";
       case "UPR091":
@@ -318,8 +318,8 @@
         $rv = "";
         if(RuptureActive())
         {
-          DealArcane(2, 2, "PLAYCARD", $cardID, false, $currentPlayer);//TODO: Not arcane
-          $rv = "Searing Touch did 2 damage to any target.";
+          DamageTrigger($player, 2, "DAMAGE"); //TODO: Any target
+          $rv = "Searing Touch did 2 damage to an opposing hero.";
         }
         return $rv;
       case "UPR136":
