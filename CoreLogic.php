@@ -319,7 +319,7 @@ function CharacterPlayCardAbilities($cardID, $from)
     switch($character[$i])
     {
       case "EVR120": case "UPR102": case "UPR103":
-        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE") && !IsStaticType(CardType($cardID), $from, $cardID))
+        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
         {
           PlayAura("ELE111", $mainPlayer);
           WriteLog("Iyslander created a Frostbite token for playing an ice card.");
@@ -1001,6 +1001,7 @@ function ClassContains($cardID, $class, $player="")
 
 function TalentContains($cardID, $talent, $player="")
 {
+  if(SearchCurrentTurnEffects("UPR187", $player)) return false;
   $cardTalent = CardTalent($cardID);
   //Loop over current turn effects to find modifiers
   return DelimStringContains($cardTalent, $talent);
@@ -1009,6 +1010,7 @@ function TalentContains($cardID, $talent, $player="")
 //talents = comma delimited list of talents to check
 function TalentContainsAny($cardID, $talents, $player="")
 {
+  if(SearchCurrentTurnEffects("UPR187", $player)) return false;
   $cardTalent = CardTalent($cardID);
   //Loop over current turn effects to find modifiers
   $talentArr = explode(",", $talents);
