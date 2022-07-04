@@ -98,6 +98,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
         $drew = 1;
         MyDrawCard();
         MyDrawCard();
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         if(!CurrentEffectPreventsGoAgain()) ++$actionPoints;//TODO: This is not strictly accurate, but good enough for now
         $rv .= "Bloodrush Bellow gives your Brute attacks +2 this turn, drew two cards and gained Go Again.";
       }
