@@ -202,7 +202,7 @@
       $index = $cardID;
       $cardID = $myBanish[$index];
       if($myBanish[$index+1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-      if($myBanish[$index+1] == "MON212" && CardTalent($theirCharacter[0]) == "LIGHT") AddCurrentTurnEffect("MON212", $currentPlayer);
+      if($myBanish[$index+1] == "MON212" && TalentContains($theirCharacter[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       PlayCard($cardID, "BANISH", -1, $index, $myBanish[$index+2]);
       break;
@@ -1011,7 +1011,7 @@ function FinalizeChainLink($chainClosed=false)
     {
       $pitchValue = PitchValue($cardID);
       $resources[0] += $pitchValue;
-      if(SearchCharacterActive($currentPlayer, "MON060") && CardTalent($cardID) == "LIGHT" && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
+      if(SearchCharacterActive($currentPlayer, "MON060") && TalentContains($cardID, "LIGHT", $currentPlayer) && GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0)
       { $resources[0] += 1; }
       array_push($pitch, $cardID);
       AddThisCardPitch($currentPlayer, $cardID);
