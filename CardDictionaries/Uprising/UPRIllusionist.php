@@ -222,7 +222,7 @@
 
   function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $currentPlayer, $CS_PitchedForThisCard, $CS_DamagePrevention;
+    global $currentPlayer;
     $rv = "";
     switch($cardID)
     {

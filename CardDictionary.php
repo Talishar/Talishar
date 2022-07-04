@@ -2352,4 +2352,13 @@
     }
   }
 
+  function CardCaresAboutPitch($cardID)
+  {
+    switch($cardID)
+    {
+      case "ELE001": case "ELE002": case "ELE003": return true;
+      default: return false;
+    }
+  }
+
 ?>

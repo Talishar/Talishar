@@ -279,21 +279,6 @@ function ConsumeDamagePrevention($player)
   return $prevention;
 }
 
-function AddThisCardPitch($player, $cardID)
-{
-  global $CS_PitchedForThisCard;
-  WriteReplay($player, $cardID, "HAND", "PITCH");
-  $pitch = GetClassState($player, $CS_PitchedForThisCard);
-  if($pitch == "-") SetClassState($player, $CS_PitchedForThisCard, $cardID);
-  else SetClassState($player, $CS_PitchedForThisCard, $pitch . "-" . $cardID);
-}
-
-function ResetThisCardPitch($player)
-{
-  global $CS_PitchedForThisCard;
-  SetClassState($player, $CS_PitchedForThisCard, "-");
-}
-
 function IncrementClassState($player, $piece, $amount=1)
 {
   SetClassState($player, $piece, (GetClassState($player, $piece) + $amount));
@@ -435,6 +420,12 @@ function NegateLayer($MZIndex, $goesWhere="GY")
     case "HAND": AddPlayerHand($cardID, $player, "LAYER");
     default: break;
   }
+}
+
+function AddAdditionalCost($player, $value)
+{
+  global $CS_AdditionalCosts;
+  AppendClassState($player, $CS_AdditionalCosts, $value);
 }
 
 ?>
