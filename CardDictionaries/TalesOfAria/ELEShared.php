@@ -195,24 +195,23 @@
       case "ELE092-DOM": case "ELE092-DOMATK": case "ELE092-BUFF": return true;
       case "ELE097": case "ELE098": case "ELE099": return true;
       case "ELE103": case "ELE104": case "ELE105": return $combatChainState[$CCS_AttackFused] == 1;
-      case "ELE112": $talent = CardTalent($attackID); return $talent == "ICE" || $talent == "LIGHTNING" || $talent == "ELEMENTAL";
+      case "ELE112": return TalentContainsAny($attackID, "ICE,LIGHTNING,ELEMENTAL",$currentPlayer);
       case "ELE122": case "ELE123": case "ELE124":
-        $talent = CardTalent($attackID); return ($talent == "EARTH" || $talent == "ELEMENTAL") && CardType($attackID) == "AA";
+        return TalentContainsAny($attackID, "EARTH,ELEMENTAL",$currentPlayer) && CardType($attackID) == "AA";
       case "ELE137": case "ELE138": case "ELE139": return CardType($attackID) == "AA";
       case "ELE143": return CardType($attackID) == "AA";
       case "ELE147": return true;
       case "ELE151": case "ELE152": case "ELE153": return true;
       case "ELE151-HIT": case "ELE152-HIT": case "ELE153-HIT": return true;
       case "ELE154": case "ELE155": case "ELE156":
-        $talent = CardTalent($attackID);
-        return CardType($attackID) == "AA" && ($talent == "ICE" || $talent == "ELEMENTAL");
-      case "ELE163": case "ELE164": case "ELE165": $talent = CardTalent($attackID); return $talent == "ICE" || $talent == "ELEMENTAL";
+        return CardType($attackID) == "AA" && TalentContainsAny($attackID, "ICE,ELEMENTAL",$currentPlayer);
+      case "ELE163": case "ELE164": case "ELE165": return TalentContainsAny($attackID, "ICE,ELEMENTAL",$currentPlayer);
       case "ELE166": case "ELE167": case "ELE168": return true;
       case "ELE173": return CardType($attackID) == "AA";
       case "ELE177": return CardCost($attackID) >= 0;
       case "ELE178": return CardCost($attackID) >= 1;
       case "ELE179": return CardCost($attackID) >= 2;
-      case "ELE180": case "ELE181": case "ELE182": $talent = CardTalent($attackID); return $talent == "LIGHTNING" || $talent == "ELEMENTAL";
+      case "ELE180": case "ELE181": case "ELE182": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$currentPlayer);
       case "ELE195": case "ELE196": case "ELE197": return true;
       case "ELE198": case "ELE199": case "ELE200": return CardType($attackID) == "AA";
       case "ELE201": return CardType($attackID) == "AA";

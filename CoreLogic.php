@@ -521,7 +521,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
 
 function CurrentEffectDamageModifiers($source, $type)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $currentPlayer;
   $modifier = 0;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
@@ -529,7 +529,7 @@ function CurrentEffectDamageModifiers($source, $type)
     switch($currentTurnEffects[$i])
     {
       case "ELE059": case "ELE060": case "ELE061": if($type == "COMBAT" || $type == "ATTACKHIT") ++$modifier; break;
-      case "ELE186": case "ELE187": case "ELE188": if(TalentContains($source, "LIGHTNING") || TalentContains($source, "ELEMENTAL")) ++$modifier; break;
+      case "ELE186": case "ELE187": case "ELE188": if(TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $currentPlayer)) ++$modifier; break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);

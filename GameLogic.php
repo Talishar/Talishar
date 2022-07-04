@@ -3072,7 +3072,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = explode(",", $lastResult);
       for($i=0; $i<count($cards); ++$i)
       {
-        if(CardTalent($cards[$i]) != $parameter) return "PASS";
+        if(!TalentContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
     case "ALLCARDSCOMBOORPASS":
@@ -3466,7 +3466,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       return 1;
     case "DIMENXXIONALGATEWAY":
-        $talent = CardTalent($lastResult);
         if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);//TODO: Not totally correct
         if(TalentContains($lastResult, "SHADOW", $player))
         {
