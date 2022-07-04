@@ -445,7 +445,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   if($damage > 0 && $source != "NA")
   {
-    $damage += CurrentEffectDamageModifiers($source, $type);
+    $damage += CurrentEffectDamageModifiers($player, $source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
@@ -519,9 +519,9 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   return $prevented;
 }
 
-function CurrentEffectDamageModifiers($source, $type)
+function CurrentEffectDamageModifiers($player, $source, $type)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects;
   $modifier = 0;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
@@ -529,7 +529,7 @@ function CurrentEffectDamageModifiers($source, $type)
     switch($currentTurnEffects[$i])
     {
       case "ELE059": case "ELE060": case "ELE061": if($type == "COMBAT" || $type == "ATTACKHIT") ++$modifier; break;
-      case "ELE186": case "ELE187": case "ELE188": if(TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $currentPlayer)) ++$modifier; break;
+      case "ELE186": case "ELE187": case "ELE188": if(TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player)) ++$modifier; break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
