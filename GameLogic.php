@@ -93,7 +93,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR007":
       $rv = "";
       $drew = 0;
-      if(SearchCurrentTurnEffects($cardID, $currentPlayer))
+      if(AttackValue($additionalCosts) >= 6)
       {
         $drew = 1;
         MyDrawCard();
@@ -118,14 +118,15 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "Bone Head Barrier prevents the next $roll damage that will be dealt to you this turn.";
     case "WTR011": case "WTR012": case "WTR013":
       $rv = "";
-      if(SearchCurrentTurnEffects($cardID, $currentPlayer))
+      if(AttackValue($additionalCosts) >= 6)
       {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         $rv .= "Breakneck Battery discarded a 6 power card and gained Go Again.";
       }
       return $rv;
     case "WTR014": case "WTR015": case "WTR016":
-      if(SearchCurrentTurnEffects($cardID, $currentPlayer)){
+      if(AttackValue($additionalCosts) >= 6)
+      {
         MyDrawCard();
       }
       return "Savage Feast discarded a random card from your hand.";

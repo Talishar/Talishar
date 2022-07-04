@@ -1060,19 +1060,6 @@ function FinalizeChainLink($chainClosed=false)
         CombatChainPlayAbility($cardID);
         ItemPlayAbilities($cardID, $from);
         ResetCardPlayed($cardID);
-
-        //Pay additional costs
-        $hand = &GetHand($currentPlayer);
-        if(RequiresDiscard($cardID) && count($hand) == 0)
-        {
-          WriteLog("This card requires a discard as an additional cost, but have no cards to discard. Reverting gamestate prior to the card declaration.");
-          RevertGamestate();
-        }
-        if($cardID == "WTR159" && count($hand) == 0)
-        {
-          WriteLog("This card requires a card to put on the bottom of your deck, but you have no cards. Reverting gamestate prior to the card declaration.");
-          RevertGamestate();
-        }
       }
       if($playType == "A" || $playType == "AA")
       {
@@ -1307,23 +1294,13 @@ function FinalizeChainLink($chainClosed=false)
     {
       Fuse($cardID, $currentPlayer, $fuseType);
     }
+    if(RequiresDiscard($cardID))
+    {
+      $discarded = DiscardRandom($currentPlayer, $cardID);
+      SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
+    }
     switch($cardID)
     {
-      case "WTR006": case "WTR020": case "WTR021": case "WTR022":
-      case "WTR029": case "WTR030": case "WTR031":
-      case "WTR035": case "WTR036": case "WTR037":
-      case "CRU010": case "CRU011": case "CRU012":
-      case "CRU019": case "CRU020": case "CRU021":
-        DiscardRandom($currentPlayer, $cardID); break;
-      case "WTR007": case "WTR011": case "WTR012": case "WTR013":
-      case "WTR014": case "WTR015": case "WTR016":
-        $discarded = DiscardRandom($currentPlayer, $cardID);
-        if(AttackValue($discarded) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
-        break;
-      case "WTR008":
-        $discarded = DiscardRandom($currentPlayer, $cardID);
-        SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
-        break;
       case "WTR159": BottomDeck(); break;
       case "WTR179": case "WTR180": case "WTR181":
         $indices = SearchHand($currentPlayer, "", "", -1, 2);
