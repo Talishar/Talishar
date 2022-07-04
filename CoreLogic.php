@@ -1095,7 +1095,7 @@ function AttackDestroyed($attackID)
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
     AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
   }
-  if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterForCard($mainPlayer, "UPR152"))
+  if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterActive($mainPlayer, "UPR152"))
   {
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
