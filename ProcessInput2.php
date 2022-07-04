@@ -1577,7 +1577,7 @@ function FinalizeChainLink($chainClosed=false)
       if(!$chainClosed) $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
-      ResolveGoAgain($cardID, $currentPlayer, $from);
+      if(!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
     }
 
     if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID))
