@@ -1331,12 +1331,6 @@ function FinalizeChainLink($chainClosed=false)
         break;
       case "MON001": case "MON002": BanishFromSoul($currentPlayer); break;
       case "MON029": case "MON030": BanishFromSoul($currentPlayer); break;
-      case "MON033":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
-        AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
-        break;
       case "MON035": AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-"); break;
       case "MON042": case "MON043": case "MON044": case "MON045": case "MON046": case "MON047":
       case "MON048": case "MON049": case "MON050": case "MON051": case "MON052": case "MON053":

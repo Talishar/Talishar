@@ -123,6 +123,10 @@
         else { $rv = "Boltyn did not give the current attack Go Again."; }
         return $rv;
       case "MON033":
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
+        AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
