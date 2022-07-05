@@ -113,10 +113,10 @@
       case "ARC004": return true;
       case "ARC010":
         $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? false : true);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
       case "ARC018":
         $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? false : true);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
       case "ARC019": return true;
       case "ARC037": return true;
       case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return true;
