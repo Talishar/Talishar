@@ -27,6 +27,7 @@
     if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
     {
       $folder = str_replace("CardImages", "Images", $folder);
+      $showHover = 0;
     }
     else if(mb_strpos($folder, "CardImages") !== false)
     {

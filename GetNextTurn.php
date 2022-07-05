@@ -121,7 +121,7 @@
 
   $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
   $borderColor = ($darkMode ? "#DDD" : "black");
-  $fontColor = ($darkMode ? "black" : "#EEE");
+  $fontColor = ($darkMode ? "black" : "#EDEDED");
 
   //Display background
   if(IsDarkPlainMode($playerID))
@@ -144,7 +144,7 @@
   if(CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'>
   <span style='position:absolute; left:100px; top:15px; color:#DDD; font-family:Helvetica; font-size:36px; font-weight: 550;text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; user-select: none;'>Pass</span></div>");
   else echo("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'><span style='position:absolute; left:100px; top:15px; color:gray; font-family:Helvetica; font-size:36px; font-weight: 550; text-shadow: 1px 0 0 ".$borderColor.", 0 -1px 0 ".$borderColor.", 0 1px 0 ".$borderColor.", -1px 0 0 ".$borderColor."; user-select: none;'>Pass</span></div>");
-  echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-weight:550; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
+  echo("<div style='position:absolute; top:117px; left:-150px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; font-weight:600; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
   echo(($manualMode ? "<span style='position:absolute; top:85%; right:7%; display: inline-block;';>" . CreateButton($playerID, "-1", 10004, 0, "20px") . CreateButton($playerID, "+1", 10002, 0, "20px") . "</span>": ""));
   echo("</div></div>");
 
@@ -224,10 +224,10 @@
     echo("<table><tr>");
   if($displayCombatChain)
   {
-    echo("<td style='font-size:28px; font-weight:bold;'>$totalAttack</td>");
+    echo("<td style='font-size:28px; font-weight:650; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>$totalAttack</td>");
     echo("<td><img onclick='ShowPopup(\"attackModifierPopup\");' style='cursor:pointer; height:30px; width:30px; display:inline-block;' src='./Images/Attack.png' /></td>");
     echo("<td><img style='height:30px; width:30px; display:inline-block;' src='./Images/Defense.png' /></td>");
-    echo("<td style='font-size:28px; font-weight:bold;'>$totalDefense</td>");
+    echo("<td style='font-size:28px; font-weight:700; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>$totalDefense</td>");
     $damagePrevention = GetDamagePrevention($defPlayer);
     if($damagePrevention > 0) echo("<td style='font-size:24px; font-weight:bold;'>&nbsp;<div title='$damagePrevention damage prevention' style='cursor:default; height:36px; width:36px; display:inline-block; font-size:30px; background-image: url(\"./Images/damagePrevention.png\"); background-size:cover;'>" . GetDamagePrevention($defPlayer) . "</div></td>");
     if(IsDominateActive()) echo("<td style='font-size:24px; font-weight:bold;'><img style='height:40px; display:inline-block;' src='./Images/dominate.png' /></td>");
