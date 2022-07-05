@@ -298,6 +298,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       $dqState[3] = $turn[2];
       $dqState[4] = "-";//DQ helptext initial value
       $dqState[5] = "-";//Decision queue multizone indices
+      $dqState[6] = "0";//Damage dealt
       //array_unshift($turn, "-", "-", "-");
     }
     ContinueDecisionQueue("");
@@ -312,6 +313,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $turn[2] = $dqState[3];
     $dqState[4] = "-";//Clear the context, just in case
     $dqState[5] = "-";//Clear Decision queue multizone indices
+    $dqState[6] = "0";//Damage dealt
     $decisionQueue = [];
     if(($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0)
     {
@@ -439,8 +441,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE")
       {
+        $damageDone = $dqState[6];
         CloseDecisionQueue();
-        ResolveCombatDamage($lastResult);
+        ResolveCombatDamage($damageDone);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN")
       {

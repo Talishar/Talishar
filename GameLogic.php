@@ -3329,6 +3329,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $source = $parameters[1];
       $type = $parameters[2];
       $damage = DealDamageAsync($player, $damage, $type, $source);
+      $dqState[6] = $damage;
       return $damage;
     case "DEALARCANE":
       $target = explode("-", $lastResult);
