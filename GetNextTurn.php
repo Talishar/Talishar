@@ -13,6 +13,16 @@
   include "Libraries/SHMOPLibraries.php";
   include "WriteLog.php";
 
+  $playerStatus = intval(GetCachePiece($gameName, $playerID+3));
+  if($playerStatus == "-1") WriteLog("Player $playerID has connected.");
+  /*
+  if($playerStatus > 0)
+  {
+    WriteLog("Player $playerID has reconnected.");
+    SetCachePiece($gameName, $playerID+3, "0");
+  }
+  */
+  SetCachePiece($gameName, $playerID+3, "0");
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
   while($lastUpdate != 0 && $cacheVal < $lastUpdate)

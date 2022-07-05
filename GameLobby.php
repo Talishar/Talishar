@@ -13,6 +13,7 @@
   include "CardDictionary.php";
   include "HostFiles/Redirector.php";
   include "Libraries/UILibraries2.php";
+  include "Libraries/SHMOPLibraries.php";
   ob_end_clean();
 
   $gameName=$_GET["gameName"];
@@ -33,9 +34,16 @@
 
   if($gameStatus == $MGS_GameStarted)
   {
-    $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-    header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
-    exit;
+    if(GetCachePiece($gameName, $playerID+3) == "-1")
+    {
+      $authKey = ($playerID == 1 ? $p1Key : $p2Key);
+      header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+      exit;
+    }
+    else {
+      echo("That player has already connected. Exiting.");
+      exit;
+    }
   }
 
   $icon = "ready.png";
