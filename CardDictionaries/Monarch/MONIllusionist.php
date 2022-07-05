@@ -236,9 +236,9 @@
 
   function ProcessPhantasmOnBlock($index)
   {
-    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumPhantasmAADestroyed;
+    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumPhantasmAADestroyed, $currentPlayer;
     if(CardType($combatChain[$index]) != "AA") return;
-    if(ClassContains($combatChain[$index], "ILLUSIONIST", $mainPlayer)) return;
+    if(ClassContains($combatChain[$index], "ILLUSIONIST", $currentPlayer)) return;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
     $origAV = $av;
