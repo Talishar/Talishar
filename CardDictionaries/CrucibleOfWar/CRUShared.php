@@ -71,7 +71,7 @@
       case "CRU006": return true;
       case "CRU025": return true;
       case "CRU081": return true;
-      case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 2] > 0 ? false : true);
+      case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 1] > 0 ? true : false);
       case "CRU102": return true;
       case "CRU105": return true;
       case "CRU118": return true;
