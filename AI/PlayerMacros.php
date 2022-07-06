@@ -15,17 +15,14 @@ function ProcessMacros()
       else if($turn[0] == "CHOOSEARCANE" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue("0"); }
       else if($turn[0] == "BUTTONINPUT" && count(explode(",", $turn[2])) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSEMULTIZONE" && $turn[2] == "THEIRCHAR-0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-    }
-  }
-  while($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
-  {
-    if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
-    {
-      PassInput();
-    }
-    else
-    {
-      break;
+      else if($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
+      {
+        if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
+        {
+          $somethingChanged = true;
+          PassInput();
+        }
+      }
     }
   }
 }
