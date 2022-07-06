@@ -95,7 +95,7 @@
   $gameStatus = $MGS_GameStarted;
   WriteGameFile();
 
-  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=1");
+  header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=1&authKey=$p1Key");
 
   exit;
 
