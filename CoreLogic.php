@@ -558,12 +558,13 @@ function CurrentEffectDamageEffects($player, $source, $type, $damage)
 
 function AttackDamageAbilities()
 {
-  global $combatChain, $defPlayer, $combatChainState, $CCS_AttackTotalDamage;
+  global $combatChain, $defPlayer, $combatChainState, $chainLinkSummary;
   $attackID = $combatChain[0];
   switch($attackID)
   {
     case "ELE036":
-      if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackTotalDamage] >= NumEquipment($defPlayer))
+      $damageDone = $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()];
+      if(IsHeroAttackTarget() && $damageDone >= NumEquipment($defPlayer))
       { AddCurrentTurnEffect("ELE036", $defPlayer); AddNextTurnEffect("ELE036", $defPlayer); }
       break;
     default: break;
