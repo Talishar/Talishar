@@ -1020,7 +1020,7 @@ function ClassContains($cardID, $class, $player="")
 function TalentOverride($cardID, $player="")
 {
   global $currentTurnEffects;
-  if(SearchCurrentTurnEffects("UPR187", $player)) return "";
+  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
   $cardTalent = CardTalent($cardID);
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
