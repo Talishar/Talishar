@@ -22,6 +22,8 @@
     SetCachePiece($gameName, $playerID+3, "0");
   }
   */
+  $currentTime = round(microtime(true) * 1000);
+  SetCachePiece($gameName, $playerID+1, $currentTime);
   SetCachePiece($gameName, $playerID+3, "0");
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
