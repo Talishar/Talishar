@@ -441,7 +441,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE")
       {
-        $damageDone = $dqState[6];
+        $parameter = $decisionQueue[2];
+        if($parameter != "-") $damageDone = $parameter;
+        else $damageDone = $dqState[6];
         CloseDecisionQueue();
         ResolveCombatDamage($damageDone);
       }

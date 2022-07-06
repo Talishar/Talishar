@@ -625,8 +625,7 @@
       $allies[$index+2] -= $totalAttack;
       if($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
       if($allies[$index+2] <= 0) DestroyAlly($defPlayer, $index);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $totalAttack);
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalAttack);
     }
     else
     {

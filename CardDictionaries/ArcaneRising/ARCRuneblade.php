@@ -179,7 +179,7 @@
 
   function ARCRunebladeHitEffect($cardID)
   {
-    global $combatChainState, $CCS_AttackTotalDamage, $mainPlayer;
+    global $combatChainState, $CCS_AttackTotalDamage, $mainPlayer, $chainLinkSummary;
     switch($cardID)
     {
       case "ARC077":
@@ -187,7 +187,8 @@
         WriteLog("Nebula Blade created a runechant.");
         break;
       case "ARC080":
-        for($i=0; $i<$combatChainState[$CCS_AttackTotalDamage]; ++$i) PlayAura("ARC112", $mainPlayer);
+        $damageDone = $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()];
+        PlayAura("ARC112", $mainPlayer, $damageDone);
         break;
       default: break;
     }
