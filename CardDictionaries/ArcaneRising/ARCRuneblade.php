@@ -179,7 +179,7 @@
 
   function ARCRunebladeHitEffect($cardID)
   {
-    global $combatChainState, $CCS_AttackTotalDamage, $mainPlayer, $chainLinkSummary;
+    global $combatChainState, $mainPlayer, $chainLinkSummary;
     switch($cardID)
     {
       case "ARC077":

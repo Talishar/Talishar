@@ -198,7 +198,7 @@
   $CCS_NumBoosted = 11;
   $CCS_NextBoostBuff = 12;
   $CCS_AttackFused = 13;
-  $CCS_AttackTotalDamage = 14;
+  $CCS_AttackTotalDamage = 14;//Deprecated -- use chain link summary instead, it has all of them
   $CCS_NumChainLinks = 15;
   $CCS_AttackTarget = 16;
   $CCS_LinkTotalAttack = 17;
