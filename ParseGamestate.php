@@ -36,7 +36,7 @@
       fwrite($errorHandler, $errorOutput . "\r\n");
       fclose($errorHandler);
       include "HostFiles/Redirector.php";
-      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
+      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1&authKey=$p1Key");
     }
     else
     {

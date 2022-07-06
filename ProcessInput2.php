@@ -402,7 +402,8 @@
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
       SetCachePiece($gameName, 3, $currentTime);
-      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=" . $playerID);
+      include "MenuFiles/ParseGamefile.php";
+      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$p1Key");
       exit;
     case 100001: //Main Menu
       header("Location: " . $redirectPath . "/MainMenu.php");
