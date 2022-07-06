@@ -10,6 +10,14 @@
     fclose($handler);
   }
 
+  function ClearLog()
+  {
+    global $gameName;
+    $filename = "./Games/" . $gameName . "/gamelog.txt";
+    $handler = fopen($filename, "w");
+    fclose($handler);
+  }
+
   function WriteError($text)
   {
     WriteLog("ERROR: " . $text);
