@@ -794,6 +794,7 @@ function FinalizeChainLink($chainClosed=false)
   function FinishTurnPass()
   {
     global $mainPlayer;
+    ClearLog();
     ResetCombatChainState();
     Heave();
     ItemEndTurnAbilities();
