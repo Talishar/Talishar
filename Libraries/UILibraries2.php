@@ -50,11 +50,12 @@
 
     if($borderColor > 0){
       $border = "border-radius:10px; border:2px solid " . BorderColorMap($borderColor) . ";";
-    } elseif($folder == "concat"){
-      $border = "border-radius:5px; border:1px solid black;";
+    }elseif($folder == "concat"){
+      $border = "border-radius:8px; border:3px solid transparent;";
     } else {
       $border = "border: 1px solid transparent;";
     }
+
     if($folder == "crops") { $height = $maxHeight; $width = ($height * 1.29); }
     else if($folder == "concat") { $height = $maxHeight; $width = $maxHeight; }
     else if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
