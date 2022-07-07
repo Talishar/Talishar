@@ -2,7 +2,11 @@
 
   include "CardDictionary.php";
   include "./Libraries/UILibraries2.php";
+  include "./Libraries/HTTPLibraries.php";
   require_once "./includes/dbh.inc.php";
+
+
+  $numDays=TryGet("numDays", 365);
 
   echo("<script src=\"./jsInclude.js\"></script>");
 
@@ -15,12 +19,12 @@ echo("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixe
 (
 select WinningHero As Hero,count(WinningHero) AS Count
 from completedgame
-where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\"
+where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL $numDays DAY)
 group by WinningHero
 union all
 select LosingHero As Hero,count(LosingHero) AS Count
 from completedgame
-where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\"
+where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL $numDays DAY)
 group by LosingHero
 ) AS internalQuery
 GROUP BY Hero
@@ -41,7 +45,7 @@ ORDER BY Total DESC";
 
     $sql = "SELECT WinningHero,count(WinningHero) AS Count
 FROM completedgame
-WHERE WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\"
+WHERE WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL $numDays DAY)
 GROUP by WinningHero
 ORDER BY Count";
   	$stmt = mysqli_stmt_init($conn);
@@ -80,13 +84,15 @@ ORDER BY Count";
 
   foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
+    $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
+    $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
+    $playPercent = ($row[1] / $formatDenominator * 100);
     echo("<tr>");
     echo("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0]) . "</a></td>");
     echo("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
     echo("<td>" . $row[1] . "</td>");
-    echo("<td>" . (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100) . "% </td>");
-    $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
-    echo("<td>" . ($row[1] / $formatDenominator * 100) . "% </td>");
+    echo("<td>" . number_format($winPercent, 2, ".", "") . "% </td>");
+    echo("<td>" . number_format($playPercent, 2, ".", "") . "% </td>");
     echo("</tr>");
   }
   echo("</table>");
