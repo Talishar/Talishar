@@ -538,13 +538,6 @@
     echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
   }
 
-  //Display opponent's stuff
-  $theirBanishDisplay = GetTheirBanishForDisplay();
-  echo(CreatePopup("theirPitchPopup", $theirPitch, 1, 0, "Opponent's Pitch Zone"));
-  echo(CreatePopup("theirDiscardPopup", $theirDiscard, 1, 0, "Opponent's Discard Zone"));
-  echo(CreatePopup("theirBanishPopup", $theirBanishDisplay, 1, 0, "Opponent's Banish Zone"));
-  if(count($theirSoul) > 0) echo(CreatePopup("theirSoulPopup", $theirSoul, 1, 0, "Opponent's Soul"));
-
   //Opponent hand
   echo("<div style='position: fixed; top: 0px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: -30px; margin-right: 2px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; vertical-align:middle; display:inline-block;'>Opponent<br>Hand:</span>");
   for($i=0; $i<count($theirHand); ++$i) {
@@ -701,13 +694,6 @@
     }
     echo("</div>");
   }
-
-  echo(CreatePopup("myPitchPopup", $myPitch, 1, 0, "Your Pitch"));
-  echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard"));
-  echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
-  echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
-  echo(CreatePopup("menuPopup", [], 1, 0, "Main Menu", 1, MainMenuUI(), "./", true));
-  if(count($mySoul) > 0) echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
 
   $restriction = "";
   $actionType = $turn[0] == "ARS" ? 4 : 2;

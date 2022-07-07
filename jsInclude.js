@@ -117,11 +117,17 @@ function SubmitInput(mode, params, fullRefresh=false)
 
 function ShowPopup(name)
 {
-  if(_openPopup !== null)
-  {
-    document.getElementById(_openPopup).style.display = "none";
-    _openPopup = null;
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("popupContainer").innerHTML = this.responseText;
+      document.getElementById(name).style.display = "inline";
+    }
   }
-  document.getElementById(name).style.display = "inline";
-  _openPopup = name;
+  var ajaxLink = "./GetPopupContent.php?gameName=" + document.getElementById("gameName").value;
+  ajaxLink += "&playerID=" + document.getElementById("playerID").value;
+  ajaxLink += "&authKey=" + document.getElementById("authKey").value;
+  ajaxLink += "&popupType=" + name;
+  xmlhttp.open("GET", ajaxLink, true);
+  xmlhttp.send();
 }
