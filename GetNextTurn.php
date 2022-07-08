@@ -12,6 +12,7 @@
   include "HostFiles/Redirector.php";
   include "Libraries/SHMOPLibraries.php";
   include "WriteLog.php";
+  $isGamePlayer = $playerID == 1 || $playerID == 2;
 
   $playerStatus = intval(GetCachePiece($gameName, $playerID+3));
   if($playerStatus == "-1") WriteLog("Player $playerID has connected.");
@@ -23,8 +24,11 @@
   }
   */
   $currentTime = round(microtime(true) * 1000);
-  SetCachePiece($gameName, $playerID+1, $currentTime);
-  SetCachePiece($gameName, $playerID+3, "0");
+  if($isGamePlayer)
+  {
+    SetCachePiece($gameName, $playerID+1, $currentTime);
+    SetCachePiece($gameName, $playerID+3, "0");
+  }
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
   while($lastUpdate != 0 && $cacheVal < $lastUpdate)
@@ -32,24 +36,27 @@
     usleep(50000);//50 milliseconds
     $currentTime = round(microtime(true) * 1000);
     $cacheVal = GetCachePiece($gameName, 1);
-    SetCachePiece($gameName, $playerID+1, $currentTime);
+    if($isGamePlayer)
+    {
+      SetCachePiece($gameName, $playerID+1, $currentTime);
+      $otherP = ($playerID == 1 ? 2 : 1);
+      $oppLastTime = GetCachePiece($gameName, $otherP+1);
+      $oppStatus = GetCachePiece($gameName, $otherP+3);
+      if(($currentTime - $oppLastTime) > 5000 && ($oppStatus == "0"))
+      {
+        WriteLog("Opponent has disconnected. Waiting to reconnect.");
+        SetCachePiece($gameName, 1, $currentTime);
+        SetCachePiece($gameName, $otherP+3, "1");
+      }
+      else if(($currentTime - $oppLastTime) > 60000 && $oppStatus == "1")
+      {
+        WriteLog("Opponent has left the game.");
+        SetCachePiece($gameName, 1, $currentTime);
+        SetCachePiece($gameName, $otherP+3, "2");
+      }
+    }
     ++$count;
     if($count == 100) break;
-    $otherP = ($playerID == 1 ? 2 : 1);
-    $oppLastTime = GetCachePiece($gameName, $otherP+1);
-    $oppStatus = GetCachePiece($gameName, $otherP+3);
-    if(($currentTime - $oppLastTime) > 5000 && ($oppStatus == "0"))
-    {
-      WriteLog("Opponent has disconnected. Waiting to reconnect.");
-      SetCachePiece($gameName, 1, $currentTime);
-      SetCachePiece($gameName, $otherP+3, "1");
-    }
-    else if(($currentTime - $oppLastTime) > 60000 && $oppStatus == "1")
-    {
-      WriteLog("Opponent has left the game.");
-      SetCachePiece($gameName, 1, $currentTime);
-      SetCachePiece($gameName, $otherP+3, "2");
-    }
   }
 
   if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo "0"; exit; }
