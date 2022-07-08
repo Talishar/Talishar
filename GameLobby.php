@@ -34,16 +34,15 @@
 
   if($gameStatus == $MGS_GameStarted)
   {
-    if(GetCachePiece($gameName, $playerID+3) == "-1")
+    include "ParseGamestate.php";
+    if($currentTurn > 1)
     {
-      $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-      header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
-      exit;
-    }
-    else {
       echo("That player has already connected. Exiting.");
       exit;
     }
+    $authKey = ($playerID == 1 ? $p1Key : $p2Key);
+    header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    exit;
   }
 
   $icon = "ready.png";
