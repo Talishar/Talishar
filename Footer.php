@@ -1,6 +1,6 @@
     </div>
   </body>
-      <div style="height:11px; bottom:8px; left:20px; width: 90%;
+      <div style="height:11px; bottom:8px; left:20px; width: auto;
         position:absolute;
         color:white;
         font-size: 11px;

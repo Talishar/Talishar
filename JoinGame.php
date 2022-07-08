@@ -11,8 +11,39 @@
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
 ?>
+<style>
+body {
+  margin:0px;
+  color:rgb(240, 240, 240);
+  color: #EDEDED;
+  background-image: url('Images/lord-of-wind.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+h1 {
+  margin-top: 6px;
+  text-align:center;
+  width:100%;
+  color: #EDEDED;
+  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+}
 
-<div style="width:100%; height:100%; background-image: url('Images/lord-of-wind.jpg'); background-size:cover; z-index=0;">
+h2 {
+  text-align:center;
+  width:100%;
+  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+}
+
+p, div, a{
+  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+}
+select, input{
+  font-weight: bold;
+}
+</style>
+
 <div style="position:absolute; z-index:1; top:15%; left:2%; width:25%; height:70%;
 background-color:rgba(74, 74, 74, 0.9);
 border: 2px solid black;

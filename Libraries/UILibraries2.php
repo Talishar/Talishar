@@ -51,7 +51,7 @@
     if($borderColor > 0){
       $border = "border-radius:10px; border:2px solid " . BorderColorMap($borderColor) . ";";
     }elseif($folder == "concat"){
-      $border = "border-radius:8px; border:3px solid transparent;";
+      $border = "border-radius:10px; border:4px solid transparent;";
     } else {
       $border = "border: 1px solid transparent;";
     }
@@ -158,7 +158,7 @@
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:10000; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
     if($title != "") $rv .= "<h" . ($big ? "2" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 5px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "4") . ">";
-    if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:50px; font-weight:lighter;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
+    if($canClose == 1) $rv .= "<div title='Click to close' style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:50px; font-weight:lighter;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
