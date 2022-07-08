@@ -142,7 +142,7 @@
 
   function UPRCombatEffectActive($cardID, $attackID)
   {
-    global $currentPlayer;
+    global $mainPlayer;
     $params = explode("-", $cardID);
     $cardID = $params[0];
     if(count($params) > 1) $subparam = $params[1];
@@ -150,16 +150,16 @@
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
       case "UPR047": return $attackID == "UPR101";
-      case "UPR049": return TalentContains($attackID, "DRACONIC", $currentPlayer) && AttackValue($attackID) < NumDraconicChainLinks();
+      case "UPR049": return TalentContains($attackID, "DRACONIC", $mainPlayer) && AttackValue($attackID) < NumDraconicChainLinks();
       case "UPR054": case "UPR055": case "UPR056": return true;
-      case "UPR057": case "UPR058": case "UPR059": return TalentContains($attackID, "DRACONIC", $currentPlayer) || ClassContains($attackID, "NINJA", $currentPlayer);
+      case "UPR057": case "UPR058": case "UPR059": return TalentContains($attackID, "DRACONIC", $mainPlayer) || ClassContains($attackID, "NINJA", $mainPlayer);
       case "UPR060": case "UPR061": case "UPR062": return true;
       case "UPR081": case "UPR082": case "UPR083": return true;
-      case "UPR088": return TalentContains($attackID, "DRACONIC", $currentPlayer);
+      case "UPR088": return TalentContains($attackID, "DRACONIC", $mainPlayer);
       case "UPR091": return true;
       case "UPR094": return true;
       case "UPR151": return $attackID == "UPR551";
-      case "UPR154": return ClassContains($attackID, "ILLUSIONIST", $currentPlayer);
+      case "UPR154": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer);
       case "UPR155": case "UPR156": case "UPR157": return CardType($attackID) == "AA";
       case "UPR158": return true;
       case "UPR191": case "UPR192": case "UPR193": return true;
