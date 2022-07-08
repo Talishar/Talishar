@@ -10,10 +10,11 @@
   $lastUpdate = TryGet("lastUpdate", 0);
 
 
-  include "HostFiles/Redirector.php";
-  include "Libraries/SHMOPLibraries.php";
   include "WriteLog.php";
-  include "Libraries/UILibraries.php";
+  include "CardDictionary.php";
+  include "HostFiles/Redirector.php";
+  include "Libraries/UILibraries2.php";
+  include "Libraries/SHMOPLibraries.php";
 
   $currentTime = round(microtime(true) * 1000);
   SetCachePiece($gameName, $playerID+1, $currentTime);
@@ -66,12 +67,12 @@
     {
       if($playerID == $firstPlayerChooser)
       {
-          echo("<input type='button' name='action' value='Go First' onclick='SubmitFirstPlayer(1)'>");
-          echo("<input type='button' name='action' value='Go Second' onclick='SubmitFirstPlayer(2)'><br>");
+          echo("<input type='button' name='action' value='Go First' onclick='SubmitFirstPlayer(1)' style='margin-left:15px; margin-right:5px; text-align:center; cursor:pointer;'>");
+          echo("<input type='button' name='action' value='Go Second' onclick='SubmitFirstPlayer(2)' style='text-align:center; cursor:pointer;'><br>");
       }
       else
       {
-        echo("Waiting for other player to choose who will go first.<br>");
+        echo("<div style='text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black; color:#EDEDED'>Waiting for other player to choose who will go first.</div>");
       }
     }
 
@@ -82,7 +83,7 @@
 
     // Chat Log
     echo("<br>");
-    echo("<div id='gamelog' style='text-align:left; position:relative; background-color: rgba(20,20,20,0.70); left:2%; height: 60%; width:96%; overflow-y: auto;'>");
+    echo("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:115px; left:3%; width:94%; bottom:9%; font-weight:550; overflow-y: auto;'>");
     EchoLog($gameName, $playerID);
     echo("</div>");
 
@@ -99,7 +100,9 @@
       fclose($handler);
     }
 
-    echo("<div id='otherHero' style='display:none;'>" . Card($otherHero, "CardImages", 350, 0, 0) . "</div>");
+    echo("<div id='otherHero' style='display:none;'>");
+    echo(Card($otherHero, "concat", 250, 0, 1));
+    echo("</div>");
 
     echo("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
 

@@ -72,17 +72,25 @@ body {
   margin:0px;
   color:rgb(240, 240, 240);
   overflow-y:hidden;
+  color: #DDD;
+  background-image: url('Images/rout.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
 }
 
 h1 {
   margin-top: 6px;
   text-align:center;
   width:100%;
+  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
 }
 
 h2 {
   text-align:center;
   width:100%;
+  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
 }
 
 </style>
@@ -97,14 +105,7 @@ h2 {
 
 <div id="cardDetail" style="display:none; position:absolute;"></div>
 
-<div style="height: 1000px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-color: #111111;
-  overflow: hidden;background-image: url('Images/rout.jpg');">
-
-<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:46%;
+<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:350px;
 background-color:rgba(74, 74, 74, 0.8);
 border: 2px solid black;
 border-radius: 3px;">
@@ -114,15 +115,14 @@ border-radius: 3px;">
 
   $otherHero = "cardBack";
   echo("<div id='oppHero' style='padding-left:5%;'>");
-  echo(Card($otherHero, "CardImages", 350, 0, 0));
+  echo(Card($otherHero, "concat", 250, 0, 0));
   echo("</div>");
-
 ?>
 </div>
 
-<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:46%; background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
-border-radius: 3px;">
+<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.8);
+border: 2px solid black; border-radius: 3px;">
+
 <?php
   $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
   echo("<h1>$displayName Hero</h1>");
@@ -132,7 +132,7 @@ border-radius: 3px;">
   $character = GetArray($handler);
 
   echo("<div style='padding-left:5%;'>");
-  echo(Card($character[0], "CardImages", 350, 0, 0));
+  echo(Card($character[0], "concat", 250, 0, 1));
   echo("</div>");
 
   $weapons = ""; $head = ""; $chest = ""; $arms = ""; $legs = ""; $offhand = "";
@@ -174,12 +174,10 @@ border-radius: 3px;" onclick="TabClick('EQUIP');">
 <h1>Your Equipment</h1>
 </div>
 
-<div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:2.5%;
-background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
-border-radius: 3px;">
+<div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:3%;
+background-color:rgba(74, 74, 74, 0.8); border: 2px solid black; border-radius: 3px;">
 
-<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family:Roboto; font-weight: bold; font-style: italic; font-size:20px;'>Click Cards to Select/Unselect</div>
+<div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;'>Click Cards to Select/Unselect</div>
 
 <table>
 <?php
@@ -191,7 +189,7 @@ border-radius: 3px;">
 
 ?>
 </table>
-  <div id="weaponDisplay" style="position:absolute; z-index:2; top:40px; left:54%; right:20px;">
+  <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:54%; right:20px;">
     <table>
     <?php
 
@@ -207,21 +205,17 @@ border-radius: 3px;">
 </div>
 
 <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:933px; width:290px; height:73px;
-background-color:rgba(175, 175, 175, 0.8);
-border: 2px solid black;
-border-radius: 3px;" onclick="TabClick('DECK');">
+background-color:rgba(175, 175, 175, 0.8); border: 2px solid black; border-radius: 3px;" onclick="TabClick('DECK');">
 
 <?php
 echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
 ?>
 </div>
 
-<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:2.5%;
-background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
-border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
+<div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:639px; right:20px; bottom:3%;
+background-color:rgba(74, 74, 74, 0.8); border: 2px solid black; border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
 
-<div style='margin:10px; margin-left: 20px; width:100%; text-align: left; font-family:Roboto, sans-serif; font-weight: bold; font-style: italic; font-size:20px;'>Click Cards to Select/Unselect</div>
+<div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;'>Click Cards to Select/Unselect</div>
 
 <?php
 
@@ -240,10 +234,7 @@ border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
     }
 ?>
 </div>
-  <div style="position:absolute; z-index:1; top:50%; left:20px; width:600px; height:47%; font-weight:500; font-size:18px;
-    background-color:rgba(74, 74, 74, 0.8);
-    border: 2px solid black;
-    border-radius: 3px;">
+  <div style="position:absolute; z-index:1; top:390px; left:20px; width:600px; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.8); border: 2px solid black;border-radius: 3px;">
   <h1>Game Lobby</h1>
 <?php
 
@@ -260,9 +251,9 @@ border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
   echo("<div id='mainPanel' style='text-align:center;'>");
 
   echo("</div>");
-  echo("<div id='chatbox' style='position:relative; top:2px; left:2%; height: 45px;'>");
+  echo("<div id='chatbox' style='position:absolute; bottom:3%; left:3%; width:97%;'>");
   echo("<input style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline; width:10%; margin-left:5px;' onclick='SubmitChat()'>Chat</button>");
+  echo("<button style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("</div>");

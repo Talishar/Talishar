@@ -1,12 +1,4 @@
 body {
-  height: 1000px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-color: #111111;
-  background-image: url('../Images/background.jpg');
-  overflow: hidden;
-
   font-family: 'Helvetica' sans-serif;
   font-weight: bolder;
   font-size: 18px;
@@ -111,14 +103,14 @@ select {
   border: 2px solid grey;
   border-radius: 3px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 input, button {
   border: 2px solid grey;
   border-radius: 3px;
   font-size: 16px;
-  font-weight: 550;
+  font-weight: 600;
 }
 
 /* Sign Up + Profile */

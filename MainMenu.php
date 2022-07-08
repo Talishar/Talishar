@@ -6,9 +6,15 @@
    include "HostFiles/Redirector.php";
 ?>
 
-<!-- <div style="position:absolute; top: 50px; left: 40%; width: 30%; height: 30%;
-  background-image: url('Images/fab_logo.png'); background-size: 85% auto; z-index=1; background-repeat:no-repeat;">
-</div> -->
+<style>
+body {
+  background-image: url('Images/background.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+</style>
 
 <div style="
   position: absolute; width: 20%; height: 20%; z-index: 15; top: 50px; left: 50%; margin: 0 0 0 -10%; /* -13% = half of width/height */
