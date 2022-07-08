@@ -1776,7 +1776,7 @@
       case "WTR080":
         if(count($combatChain) == 0) return true;
         return !HasCombo($combatChain[0]);
-      case "WTR082": return count($combatChain) == 0 || !ClassContains($cardID, "NINJA", $playerID) || CardType($combatChain[0]) != "AA";
+      case "WTR082": return count($combatChain) == 0 || !ClassContains($combatChain[0], "NINJA", $currentPlayer) || CardType($combatChain[0]) != "AA";
       case "WTR116":
         return GetClassState($currentPlayer, $CS_HitsWithWeapon) == 0;
       case "WTR120": case "WTR121":
