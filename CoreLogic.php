@@ -990,6 +990,7 @@ function ClassOverride($cardID, $player="")
 {
   global $currentTurnEffects;
   $cardClass = CardClass($cardID);
+  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] != $player) continue;

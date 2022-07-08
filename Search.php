@@ -83,8 +83,14 @@ function SearchInner(&$array, $count, $type, $subtype, $maxCost, $minCost, $clas
         for($k=0; $k<count($cardTalents); ++$k) { if($talents[$j] == $cardTalents[$k]) $talentMatch = 1; }
       }
     }
-    if(($type == "" || CardType($cardID) == $type) && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype)) && ($maxCost == -1 || CardCost($cardID) <= $maxCost) && ($minCost == -1 || CardCost($cardID) >= $minCost)
-     && ($class == "" || ClassContains($cardID, $class, $currentPlayer)) && (count($talents) == 0 || $talentMatch) && ($pitch == -1 || PitchValue($cardID) == $pitch) && ($maxAttack == -1 || AttackValue($cardID) <= $maxAttack))
+    if(($type == "" || CardType($cardID) == $type)
+    && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
+    && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
+    && ($minCost == -1 || CardCost($cardID) >= $minCost)
+    && ($class == "" || ClassContains($cardID, $class, $currentPlayer))
+    && (count($talents) == 0 || $talentMatch) && ($pitch == -1 || PitchValue($cardID) == $pitch)
+    && ($maxAttack == -1 || AttackValue($cardID) <= $maxAttack)
+    && ($maxDef == -1 || BlockValue($cardID) <= $maxDef))
     {
       if($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
       if($phantasmOnly && !HasPhantasm($cardID)) continue;
