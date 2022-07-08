@@ -13,21 +13,20 @@
   include "Libraries/SHMOPLibraries.php";
   include "WriteLog.php";
   $isGamePlayer = $playerID == 1 || $playerID == 2;
+  $opponentDisconnected = false;
 
-  $playerStatus = intval(GetCachePiece($gameName, $playerID+3));
-  if($playerStatus == "-1") WriteLog("Player $playerID has connected.");
-  /*
-  if($playerStatus > 0)
-  {
-    WriteLog("Player $playerID has reconnected.");
-    SetCachePiece($gameName, $playerID+3, "0");
-  }
-  */
   $currentTime = round(microtime(true) * 1000);
   if($isGamePlayer)
   {
+    $playerStatus = intval(GetCachePiece($gameName, $playerID+3));
+    if($playerStatus == "-1") WriteLog("Player $playerID has connected.");
     SetCachePiece($gameName, $playerID+1, $currentTime);
     SetCachePiece($gameName, $playerID+3, "0");
+    if($playerStatus > 0)
+    {
+      WriteLog("Player $playerID has reconnected.");
+      SetCachePiece($gameName, $playerID+3, "0");
+    }
   }
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
@@ -53,6 +52,8 @@
         WriteLog("Opponent has left the game.");
         SetCachePiece($gameName, 1, $currentTime);
         SetCachePiece($gameName, $otherP+3, "2");
+        $lastUpdate = 0;
+        $opponentDisconnected = true;
       }
     }
     ++$count;
@@ -63,11 +64,17 @@
   else {
   //First we need to parse the game state from the file
   include "ParseGamestate.php";
+  include 'GameLogic.php';
   include "GameTerms.php";
-  include "GameLogic.php";
   include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
+  if($opponentDisconnected)
+  {
+    PlayerLoseHealth($otherP, 9999);
+    require_once "./includes/functions.inc.php";
+    $turn[0] = "OVER"; $currentPlayer = 1; logCompletedGameStats();
+  }
 
   if($turn[0] == "REMATCH")
   {
