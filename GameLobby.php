@@ -503,6 +503,7 @@ function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
     echo("</td>");
     ++$count;
   }
+  echo("<tr>");
   for($i=0; $i<count($weaponSB); ++$i)
   {
     $id = $name . "-" . $count;
@@ -513,6 +514,7 @@ function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
     echo("</td>");
     ++$count;
   }
+  echo("</tr>");
 
   if($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo("</tr>");
 }
