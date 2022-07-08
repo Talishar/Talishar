@@ -627,8 +627,8 @@
   }
 
   $permTop = 10;
-  $theirPermHeight = $cardSize + 80;
-  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; height:200px; width:" . $permWidth . "; height:" . $theirPermHeight . "px;'>");
+  $theirPermHeight = $cardSize + 100;
+  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; height:" . $theirPermHeight . "px;'>");
   DisplayTiles(($playerID == 1 ? 2 : 1));
   if(count($theirAuras) > 0)
   {
