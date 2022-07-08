@@ -34,7 +34,7 @@ if ($handle = opendir($path)) {
             $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
             $spectateLinks .= "</form>";
           }
-          else if(time() - $lastGamestateUpdate > 720000)//1 hour
+          else if($currentTime - $lastGamestateUpdate > 7200000)//10 hours
           {
             if($autoDeleteGames)
             {
