@@ -68,7 +68,6 @@
       case "DVR001": case "DVR002": return -1;
       case "DVR004": return 0;
       case "DVR003": case "DVR005": case "DVR006": return 1;
-      case "DVR009": return 1;
       case "DVR014": case "DVR019": return 2;
       case "DVR022": case "DVR023": return 2;
       case "DVR024": return 4;
