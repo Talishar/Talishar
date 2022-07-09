@@ -3956,6 +3956,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "1";
     case "CCFILTERTYPE":
+      if($lastResult == "" || $lastResult == "PASS") return "PASS";
       $arr = explode(",", $lastResult);
       $rv = [];
       for($i=0; $i<count($arr); ++$i)
@@ -3965,6 +3966,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $rv = implode(",", $rv);
       return ($rv == "" ? "PASS" : $rv);
     case "CCFILTERPLAYER":
+      if($lastResult == "" || $lastResult == "PASS") return "PASS";
       $arr = explode(",", $lastResult);
       $rv = [];
       for($i=0; $i<count($arr); ++$i)
