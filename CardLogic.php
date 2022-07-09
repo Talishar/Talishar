@@ -462,6 +462,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $phase = array_shift($decisionQueue);
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
+    //WriteLog($phase . " " . $player . " " . $parameter);//Uncomment this to visualize decision queue execution
     $parameter = str_replace("{I}", $dqState[5], $parameter);
     if(count($dqVars) > 0)
     {
