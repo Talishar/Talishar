@@ -69,7 +69,7 @@
   include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
-  if($opponentDisconnected)
+  if($opponentDisconnected && $turn[0] != "OVER")
   {
     PlayerLoseHealth($otherP, 9999);
     require_once "./includes/functions.inc.php";
