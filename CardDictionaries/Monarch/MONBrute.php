@@ -170,11 +170,11 @@
         if(AttackValue($card) >= 6)
         {
           $rv = "Deadwood Rumbler let you banish a card.";
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "GY");
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYDISCARD|THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
-          AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
-          AddDecisionQueue("MULTIBANISH", $currentPlayer, "DISCARD,NA", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         }
         return $rv;
       case "MON141": case "MON142": case "MON143":

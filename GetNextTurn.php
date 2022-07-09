@@ -418,16 +418,21 @@
       $option = explode("-", $options[$i]);
       if($option[0] == "MYAURAS") $source = $myAuras;
       else if($option[0] == "THEIRAURAS") $source = $theirAuras;
-      else if($option[0] == "THEIRALLY") $source = $theirAllies;
-      else if($option[0] == "THEIRARS") $source = $theirArsenal;
       else if($option[0] == "MYCHAR") $source = $myCharacter;
       else if($option[0] == "THEIRCHAR") $source = $theirCharacter;
       else if($option[0] == "MYITEMS") $source = $myItems;
+      else if($option[0] == "THEIRITEMS") $source = $theirItems;
       else if($option[0] == "LAYER") $source = $layers;
       else if($option[0] == "MYHAND") $source = $myHand;
+      else if($option[0] == "THEIRHAND") $source = $theirHand;
       else if($option[0] == "MYDISCARD") $source = $myDiscard;
+      else if($option[0] == "THEIRDISCARD") $source = $theirDiscard;
       else if($option[0] == "MYALLY") $source = $myAllies;
+      else if($option[0] == "THEIRALLY") $source = $theirAllies;
       else if($option[0] == "MYARS") $source = $myArsenal;
+      else if($option[0] == "THEIRARS") $source = $theirArsenal;
+      else if($option[0] == "MYPERM") $source = $myPermanents;
+      else if($option[0] == "THEIRPERM") $source = $theirPermanents;
 
       $counters = 0;
       if(($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && $option[1] == $combatChainState[$CCS_WeaponIndex])

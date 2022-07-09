@@ -3951,6 +3951,37 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $zone[$params[1]];
       MZStartTurnAbility($cardID, $lastResult);
       return "";
+
+    case "MZBANISH":
+      $lastResultArr = explode(",", $lastResult);
+      $params = explode(",", $parameter);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      for($i=0; $i<count($lastResultArr); ++$i)
+      {
+        $mzIndex = explode("-",$lastResultArr[$i]);
+        switch($mzIndex[0])
+        {
+          case "MYDISCARD": $zone = &GetMZZone($player, $mzIndex[0]); BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1]); break;
+          case "THEIRDISCARD": $zone = &GetMZZone($otherPlayer, $mzIndex[0]); BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1]); break;
+          default: break;
+        }
+      }
+      return $lastResult;
+
+    case "MZREMOVE":
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      for($i=0; $i<count($lastResultArr); ++$i)
+      {
+        $mzIndex = explode("-",$lastResultArr[$i]);
+        switch($mzIndex[0])
+        {
+          case "MYDISCARD": RemoveGraveyard($player, $mzIndex[1]); break;
+          case "THEIRDISCARD": RemoveGraveyard($otherPlayer, $mzIndex[1]); break;
+          default: break;
+        }
+      }
+      return $lastResult;
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "TRANSFORMPERMANENT":
