@@ -519,7 +519,14 @@
   {
     $iceAfflictions = SearchMultiZoneFormat(SearchAura($player, "", "Affliction", -1, -1, "", "ICE"), "MYAURAS");
     $frostBites = SearchMultiZoneFormat(SearchAurasForCard("ELE111", $player), "MYAURAS");
-    return CombineSearches($iceAfflictions, $frostBites);
+    $search = CombineSearches($iceAfflictions, $frostBites);
+    $myFrozenArsenal = SearchMultiZoneFormat(SearchArsenal($player, frozenOnly:true), "MYARS");
+    $search = CombineSearches($search, $myFrozenArsenal);
+    $myFrozenAllies = SearchMultiZoneFormat(SearchAllies($player, frozenOnly:true), "MYALLY");
+    $search = CombineSearches($search, $myFrozenAllies);
+    $myFrozenCharacter = SearchMultiZoneFormat(SearchCharacter($player, frozenOnly:true), "MYCHAR");
+    $search = CombineSearches($search, $myFrozenCharacter);
+    return $search;
   }
 
 ?>

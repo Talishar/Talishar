@@ -80,15 +80,21 @@
     return 2;
   }
 
+  //0 - Card ID
+  //1 - Face up/down
+  //2 - ?
+  //3 - ?
+  //4 - Frozen: 0 = no, 1 = yes
+  //5 - ?
   function ArsenalPieces()
   {
     return 6;
   }
 
-  //Card ID
-  //Status - 2 = ready
-  //Health
-  //Frozen - 0 = no, 1 = yes
+  //0 - Card ID
+  //1 - Status: 2 = ready
+  //2 - Health
+  //3 - Frozen - 0 = no, 1 = yes
   //Subcards , delimited
   //Unique ID
   //Misc. Counters
