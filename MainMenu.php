@@ -138,7 +138,6 @@ border-radius: 3px;">
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h1>
 <h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h3>
   Channel the Bleak Expanse<br>
-  Quell Mechanic<br>
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
     <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:40px;' src='./Images/flags/italy.png' /></a>

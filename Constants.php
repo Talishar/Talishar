@@ -188,6 +188,7 @@
   $CS_NumPhantasmAADestroyed = 47;
   $CS_NumLess3PowAAPlayed = 48;
   $CS_AlluvionUsed = 49;
+  $CS_MaxQuellUsed = 50;
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -315,7 +316,7 @@
     global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
     global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
     global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed;
-    global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed;
+    global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -365,6 +366,7 @@
     $mainClassState[$CS_NumPhantasmAADestroyed] = 0;
     $mainClassState[$CS_NumLess3PowAAPlayed] = 0;
     $mainClassState[$CS_AlluvionUsed] = 0;
+    $mainClassState[$CS_MaxQuellUsed] = 0;
   }
 
   function ResetCardPlayed($cardID)

@@ -424,8 +424,6 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           ProcessDecisionQueue();
           return;
         }
-
-
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING")
       {

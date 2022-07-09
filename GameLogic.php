@@ -2579,7 +2579,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
-  global $CS_AdditionalCosts, $CS_AlluvionUsed;
+  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   $rv = "";
   switch($phase)
   {
@@ -2701,6 +2701,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
         case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
         case "UPR086": $rv = ThawIndices($player); break;
+        case "QUELL": $rv = QuellIndices($player); break;
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
@@ -3323,14 +3324,33 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CHOOSEHERO":
       return "THEIRCHAR-0";
     case "DEALDAMAGE":
-      $target = $lastResult;
+      $target = $player;//TODO: Change target to last result to support any target (e.g. Red Hot)
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
+      $quellChoices = QuellChoices($target, $damage);
+      PrependDecisionQueue("TAKEDAMAGE", $target, $parameter);
+      if($quellChoices != "0")
+      {
+        PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
+        PrependDecisionQueue("AFTERQUELL", $target, "-", 1);
+        PrependDecisionQueue("BUTTONINPUT", $target, $quellChoices);
+        PrependDecisionQueue("SETDQCONTEXT", $target, "Choose an amount to pay for Quell");
+      }
+      return $damage;
+    case "TAKEDAMAGE":
+      $params = explode("-", $parameter);
+      $damage = $params[0]; $type = $params[1]; $source = $params[2];
+      if(!CanDamageBePrevented($player, $damage, "DAMAGE")) $lastResult = 0;
+      $damage -= $lastResult;
       $damage = DealDamageAsync($player, $damage, $type, $source);
       $dqState[6] = $damage;
       return $damage;
+    case "AFTERQUELL":
+      $curMaxQuell = GetClassState($player, $CS_MaxQuellUsed);
+      if($lastResult > $curMaxQuell) SetClassState($player, $CS_MaxQuellUsed, $lastResult);
+      return $lastResult;
     case "DEALARCANE":
       $target = explode("-", $lastResult);
       $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1));
@@ -3928,13 +3948,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $zone[$params[1]];
       MZStartTurnAbility($cardID, $lastResult);
       return "";
-    case "MZREMOVE":
-      $params = explode("-", $lastResult);
-      $zone = &GetMZZone($player, $params[0]);
-      $cardID = $zone[$params[1]];
-      Remove($cardID);
-      return "";
-
     case "TRANSFORM":
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "TRANSFORMPERMANENT":
