@@ -3338,6 +3338,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("BUTTONINPUT", $target, $quellChoices);
         PrependDecisionQueue("SETDQCONTEXT", $target, "Choose an amount to pay for Quell");
       }
+      else {
+        PrependDecisionQueue("PASSPARAMETER", $target, "0");//If no quell, we need to discard the previous last result
+      }
       return $damage;
     case "TAKEDAMAGE":
       $params = explode("-", $parameter);
