@@ -290,4 +290,65 @@
     }
   }
 
+  function QuellAmount($cardID)
+  {
+    switch($cardID)
+    {
+      case "UPR004": return 1;
+      case "UPR047": return 1;
+      case "UPR125": return 1;
+      case "UPR184": return 1;
+      case "UPR185": return 1;
+      case "UPR186": return 1;
+      default: return 0;
+    }
+  }
+
+  function QuellChoices($player, $damage)
+  {
+    $character = &GetPlayerCharacter($player);
+    $quellAmount = 0;
+    for($i=0; $i<count($character); $i+=CharacterPieces())
+    {
+      if($character[$i+1] == "0") continue;
+      $quellAmount += QuellAmount($character[$i]);
+    }
+    if($quellAmount > $damage) $quellAmount = $damage;
+    $rv = "0";
+    for($i=1; $i<=$quellAmount; ++$i)
+    {
+      $rv .= "," . $i;
+    }
+    return $rv;
+  }
+
+  function QuellEndPhase($player)
+  {
+    global $CS_MaxQuellUsed;
+    $maxUsed = GetClassState($player, $CS_MaxQuellUsed);
+    for($i=0; $i<$maxUsed; ++$i)
+    {
+      AddDecisionQueue("FINDINDICES", $player, "QUELL");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($maxUsed - $i) . " quell cards to destroy");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MULTIZONEDESTROY", $player, "-", 1);
+    }
+  }
+
+  function QuellIndices($player)
+  {
+    $character = &GetPlayerCharacter($player);
+    $indices = "";
+    for($i=0; $i<count($character); $i+=CharacterPieces())
+    {
+      if($character[$i+1] == "0") continue;
+      if(QuellAmount($character[$i]) > 0)
+      {
+        if($indices != "") $indices .= ",";
+        $indices .= SearchMultizoneFormat($i, "MYCHAR");
+      }
+    }
+    return $indices;
+  }
+
 ?>
