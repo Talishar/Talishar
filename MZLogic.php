@@ -17,15 +17,28 @@ function MZFreeze($target)
 
 function IsFrozenMZ(&$array, $zone, $i)
 {
-  switch($zone)
-  {
-    case "ARS": $offset = 4; break;
-    case "ALLY": $offset = 3; break;
-    case "CHAR": $offset = 8; break;
-    default: $offset = -1;
-  }
+  $offset = FrozenOffsetMZ($zone);
   if($offset == -1) return false;
   return $array[$i+$offset] == "1";
+}
+
+function UnfreezeMZ($player, $zone, $index)
+{
+  $offset = FrozenOffsetMZ($zone);
+  if($offset == -1) return false;
+  $array = &GetMZZone($player, $zone);
+  $array[$index+$offset] = "0";
+}
+
+function FrozenOffsetMZ($zone)
+{
+  switch($zone)
+  {
+    case "ARS": case "MYARS": case "THEIRARS": return 4;
+    case "ALLY": case "MYALLY": case "THEIRALLY": return 3;
+    case "CHAR": case "MYCHAR": case "THEIRCHAR": return 8;
+    default: return -1;
+  }
 }
 
 ?>

@@ -3985,6 +3985,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($params[0] == "MYAURAS") {
         DestroyAura($player, $params[1]);
       }
+      else {
+        UnfreezeMZ($player,$params[0], $params[1]);
+      }
       return "";
     case "SUCCUMBTOWINTER":
       $params = explode("-", $lastResult);
