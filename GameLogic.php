@@ -3344,9 +3344,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $damage;
     case "TAKEDAMAGE":
       $params = explode("-", $parameter);
-      $damage = $params[0]; $type = $params[1]; $source = $params[2];
+      $damage = intval($params[0]); $type = $params[1]; $source = $params[2];
       if(!CanDamageBePrevented($player, $damage, "DAMAGE")) $lastResult = 0;
-      $damage -= $lastResult;
+      $damage -= intval($lastResult);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       $dqState[6] = $damage;
       return $damage;
