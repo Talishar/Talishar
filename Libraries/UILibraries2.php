@@ -49,9 +49,9 @@
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
 
     if($borderColor > 0){
-      $border = "border-radius:10px; border:2px solid " . BorderColorMap($borderColor) . ";";
+      $border = "border-radius:10px; border:2.5px solid " . BorderColorMap($borderColor) . ";";
     }elseif($folder == "concat"){
-      $border = "border-radius:10px; border:4px solid transparent;";
+      $border = "border-radius:10px; border:1.5px solid transparent;";
     } else {
       $border = "border: 1px solid transparent;";
     }
