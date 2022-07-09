@@ -45,6 +45,7 @@
     if(event.keyCode === 32) SubmitInput(99, "");//Space = pass
     if(event.keyCode === 117) SubmitInput(10000, "");//U = undo
     if(event.keyCode === 104) SubmitInput(3, "&cardID=0");//H = hero ability
+    if(event.keyCode === 109) ShowPopup("menuPopup");//M = open menu
     <?php
       if(CardType($myCharacter[CharacterPieces()]) == "W") echo("if(event.keyCode === 108) SubmitInput(3, '&cardID=" . CharacterPieces() . "');");//L = left weapon
       if(CardType($myCharacter[CharacterPieces()*2]) == "W") echo("if(event.keyCode === 114) SubmitInput(3, '&cardID=" . (CharacterPieces() * 2) . "');");//R = right weapon
