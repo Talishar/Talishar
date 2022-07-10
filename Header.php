@@ -20,7 +20,7 @@
       <div class="wrapper">
         <a href="MainMenu.php"></a>
         <ul>
-          <li><a href="MainMenu.php">Main Menu</a></li>
+          <li><a href="MainMenu.php">Home Page</a></li>
           <li><a href="Draft.php">Limited</a></li>
           <li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>
           <li><a target="_blank" href="https://www.patreon.com/bePatron?u=36985868">Support Us</a></li>

@@ -1,8 +1,16 @@
 body {
+  height: 1000px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('../Images/background.jpg');
+  overflow: hidden;
+
   font-family: 'Helvetica' sans-serif;
   font-weight: bolder;
   font-size: 18px;
   color: #DDD;
+  height: 1000px;
 }
 
 .wrapper {

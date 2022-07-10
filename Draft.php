@@ -3,6 +3,16 @@
   include_once 'Header.php';
 ?>
 
+<style>
+body {
+  background-image: url('Images/Metrix.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size:cover;
+  overflow: hidden;
+}
+</style>
+
 <section class="draft-form">
   <h2>Solo Draft Practice</h2>
   <div class="draft-form-form">

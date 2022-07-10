@@ -51,7 +51,7 @@
     if($borderColor > 0){
       $border = "border-radius:10px; border:2.5px solid " . BorderColorMap($borderColor) . ";";
     }elseif($folder == "concat"){
-      $border = "border-radius:10px; border:1.5px solid transparent;";
+      $border = "border-radius:8px; border:1.5px solid transparent;";
     } else {
       $border = "border: 1px solid transparent;";
     }
@@ -347,12 +347,12 @@
   {
     global $playerID;
     $rv = "<table><tr><td>";
-    $rv .= CreateButton($playerID, "Main Menu", 100001, 0, "20px", "", "", false, true) . "<BR>";
+    $rv .= CreateButton($playerID, "Home Page", 100001, 0, "20px", "", "", false, true) . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "20px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "20px") . "<BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "20px") . "<BR>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
-    $rv .= "</td><td>";
+    $rv .= "</td><td style='vertical-align:top;'>";
     $rv .= PreviousTurnSelectionUI();
     $rv .= "</td></tr></table>";
     return $rv;
@@ -361,7 +361,7 @@
   function PreviousTurnSelectionUI()
   {
     global $currentTurn, $mainPlayer, $playerID, $firstPlayer;
-    $rv = "<h2>Revert to Start of Previous Turn</h2>";
+    $rv = "<h3>Revert to Start of Previous Turn</h3>"; // TODO: Revert Player 1 Turn 1 to the start of the game.
     for($i=1; $i<=$currentTurn; ++$i)
     {
       if($i < $currentTurn - 5) continue;
