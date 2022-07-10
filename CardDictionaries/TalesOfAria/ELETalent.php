@@ -351,7 +351,7 @@
         PlayAura("ELE111", $otherPlayer);
         return "Coat of Frost create a frostbite token for the other player.";
       case "ELE147":
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_Go_Again.");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again.");
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $mainPlayer, "0", 1);
