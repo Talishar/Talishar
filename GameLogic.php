@@ -2697,9 +2697,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
         case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
         case "CASHOUT": $rv = CashOutIndices($player); break;
-        case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
-        case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
-        case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
+        //case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
+        //case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
+        //case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
         case "UPR086": $rv = ThawIndices($player); break;
         case "QUELL": $rv = QuellIndices($player); break;
         default: $rv = ""; break;

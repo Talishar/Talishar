@@ -385,10 +385,14 @@
         AddDecisionQueue("SIFT", $currentPlayer, "-", 1);
         return "Sift let you cycle $numCards cards.";
       case "UPR200": case "UPR201": case "UPR202":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        if($cardID == "UPR200") $maxCost = 2;
+        else if($cardID == "UPR201") $maxCost = 1;
+        else $maxCost = 0;
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"MYDISCARD:maxCost=".$maxCost.";type=AA&MYDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=A");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card from a graveyard", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZADDBOTDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Strategic Planning let you return a card and draw a card.";
       case "UPR212": case "UPR213": case "UPR214":
