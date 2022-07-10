@@ -526,11 +526,11 @@
   if(($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK") && $currentPlayer == $playerID)
   {
     $content = "";
-    echo("<div display:inline;'>");
+    echo("<div 'display:inline;'>");
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
-    $caption = "<h3>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "<h3>";
-    if(GetDQHelpText() != "-") $caption = "<h3>" . implode(" ", explode("_", GetDQHelpText())) . "</h3>";
+    $caption = "<div>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "</div>";
+    if(GetDQHelpText() != "-") $caption = "<div>" . implode(" ", explode("_", GetDQHelpText())) . "</div>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
     $content .= "<table><tr>";
     for($i=0; $i<count($options); ++$i)
@@ -543,11 +543,11 @@
     for($i=0; $i<count($options); ++$i)
     {
       $content .= "<td>";
-      if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "CardImages", $bigCardSize);
-      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "CardImages", $bigCardSize);
-      else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "CardImages", $bigCardSize);
-      else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "CardImages", $bigCardSize);
-      else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "CardImages", $bigCardSize);
+      if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1);
+      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1);
+      else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "concat", $cardSize, 0, 1);
+      else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1);
+      else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1);
       else if($turn[0] == "MULTICHOOSETEXT") $content .= str_replace("_", " ", $options[$i]);
       $content .= "</td>";
     }

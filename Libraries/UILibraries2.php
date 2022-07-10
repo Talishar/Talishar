@@ -132,7 +132,12 @@
   {
     global $gameName;
     $rv = "<form>";
-    $rv .= "<input type='button' onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
+    $rv .= "<input type='button' style='display: inline-block; -ms-transform: translateY(-50%); transform: translateY(-50%);
+      margin: 5px; text-align: center; vertical-align: middle; padding: 3px 6px; border: 1px solid; border-radius: 8px;
+      background: #eeeeee; background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#aaaaaa));
+      background: -moz-linear-gradient(top, #eeeeee, #aaaaaa); background: linear-gradient(to bottom, #eeeeee, #aaaaaa); -webkit-box-shadow: #000000 0px 0px 5px 0px; -moz-box-shadow: #000000 0px 0px 5px 0px;
+      box-shadow: #000000 0px 0px 5px 0px; text-shadow: #ffffff 1px 1px 1px; font: helvetica; font-weight: 550; color: #111111;
+      text-decoration: none; cursor:pointer; onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
     $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
     $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
     $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
@@ -142,8 +147,8 @@
 
   function CreateCheckbox($input, $value)
   {
-    $rv = "<input type='checkbox' id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "'>";
-    $rv .= "<label for='chk" . $input . "'>Select?</label>";
+    $rv = "<input type='checkbox'  id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "'>";
+    $rv .= "<label style='font: helvetica; font-size:14px; font-weight: 550; color: #111111;' for='chk" . $input . "'>Select?</label>";
     return $rv;
   }
 
