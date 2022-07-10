@@ -634,7 +634,9 @@ function SearchMultizone($player, $searches)
     $searchResult = "";
     switch($zone)
     {
+      //TODO: Finish adding these
       case "MYHAND": case "THEIRHAND": $searchResult = SearchHand($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack); break;
+      case "MYDISCARD": case "THEIRDISCARD": $searchResult = SearchDiscard($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack); break;
       default: break;
     }
     $searchResult = SearchMultiZoneFormat($searchResult, $zone);

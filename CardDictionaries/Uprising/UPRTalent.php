@@ -388,7 +388,7 @@
         if($cardID == "UPR200") $maxCost = 2;
         else if($cardID == "UPR201") $maxCost = 1;
         else $maxCost = 0;
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"MYDISCARD:maxCost=".$maxCost.";type=AA&MYDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=A");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"MYDISCARD:maxCost=".$maxCost.";type=AA&MYDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=AA&THEIRDISCARD:maxCost=".$maxCost.";type=A");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card from a graveyard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZADDBOTDECK", $currentPlayer, "-", 1);
