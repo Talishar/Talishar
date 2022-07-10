@@ -625,6 +625,7 @@ function SearchMultizone($player, $searches)
           //TODO: Finish adding these
           case "type": $type = $condition[1]; break;
           case "maxAttack": $maxAttack = $condition[1]; break;
+          case "maxCost": $maxCost = $condition[1]; break;
           default: break;
         }
       }
