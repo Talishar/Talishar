@@ -2705,6 +2705,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: $rv = ""; break;
       }
       return ($rv == "" ? "PASS" : $rv);
+    case "MULTIZONEINDICES":
+      $rv = SearchMultizone($player, $parameter);
+      return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
       if($subtype == "Item")
