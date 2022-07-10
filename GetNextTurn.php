@@ -558,7 +558,7 @@
   }
 
   //Opponent hand
-  echo("<div style='position: fixed; top: 0px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: -30px; margin-right: 2px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; vertical-align:middle; display:inline-block;'>Opponent<br>Hand:</span>");
+  echo("<div style='position: fixed; top: 0px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: 5px; margin-right: 5px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; vertical-align:top; display:inline-block;'>Opponent<br>Hand:</span>");
   for($i=0; $i<count($theirHand); ++$i) {
     echo(Card("cardBack", "CardImages", 50, 0, 0, 0, -1));
   }
@@ -692,10 +692,10 @@
     $counters = CardType($theirCharacter[$i]) == "W" ? $theirCharacter[$i+3] : $theirCharacter[$i+4];
     if($theirCharacter[$i+2] > 0) $counters = $theirCharacter[$i+2];//TODO: display both kinds of counters?
     echo("<div style='z-index:5; position:fixed; left:" . GetCharacterLeft($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
-    echo(Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $counters));
+    echo(Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $theirCharacter[$i+1] != 0 ? $counters : 0));
     if($theirCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
-    if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:-25px; left:5px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
-    if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 8px; left:14px;' src='./Images/brokenEquip.png' />");
+    if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:-25px; left:7px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
+    if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
     echo("</div>");
   }
   echo("</div>");
@@ -834,15 +834,15 @@
     $sType = CardSubType($myCharacter[$i]);
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
     echo("<div style='position:absolute; z-index:100; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
-    echo(Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $counters, strval($i)));
+    echo(Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $myCharacter[$i+1] != 0 ? $counters : 0, strval($i)));
     $effects = ActiveCharacterEffects($playerID, $i);
     if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:27px; left:25px;' src='./Images/arsenal.png' />");
     if($restriction != "") {
       $restrictionName = CardName($restriction);
       echo("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:26px; left:26px;' src='./Images/restricted.png' />");
     }
-    if($myCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:5px;' src='./Images/onChain.png' />");
-    if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 8px; left:14px;' src='./Images/brokenEquip.png' />");
+    if($myCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:7px;' src='./Images/onChain.png' />");
+    if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
     if($myCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     if($type == "C")
     {
