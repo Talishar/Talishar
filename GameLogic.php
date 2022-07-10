@@ -676,7 +676,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "CRU188":
       MyDrawCard();
       MyDrawCard();
-      return "Cash In drew two cards.";
+      return "drew two cards.";
     case "CRU189": case "CRU190": case "CRU191":
        $options = GetChainLinkCards($defPlayer, "AA");
        if($options == "") return "No defending attack action cards.";
@@ -1873,7 +1873,7 @@ function DefCharacterStartTurnAbilities()
         if(PlayerHasLessHealth($mainPlayer))
         {
           AddDecisionQueue("CHARREADYORPASS", $defPlayer, $i);
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_silver", 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_silver.", 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $defPlayer, "EVR195", 1);
@@ -2697,9 +2697,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SHATTER": $rv = ShatterIndices($player, $subparam); break;
         case "KNICKKNACK": $rv = KnickKnackIndices($player); break;
         case "CASHOUT": $rv = CashOutIndices($player); break;
-        // case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
-        // case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
-        // case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
+        case "UPR200": $rv = CombineSearches(SearchDiscard($player, "AA", "", 2), SearchDiscard($player, "A", "", 2)); break;
+        case "UPR201": $rv = CombineSearches(SearchDiscard($player, "AA", "", 1), SearchDiscard($player, "A", "", 1)); break;
+        case "UPR202": $rv = CombineSearches(SearchDiscard($player, "AA", "", 0), SearchDiscard($player, "A", "", 0)); break;
         case "UPR086": $rv = ThawIndices($player); break;
         case "QUELL": $rv = QuellIndices($player); break;
         default: $rv = ""; break;
@@ -3964,7 +3964,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $mzIndex = explode("-",$lastResultArr[$i]);
         switch($mzIndex[0])
         {
-          case "MYDISCARD": $zone = &GetMZZone($player, $mzIndex[0]); BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1]); break;
+          case "MYDISCARD": $zone = &GetMZZone($player, $mzIndex[0]);  BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1]); break;
           case "THEIRDISCARD": $zone = &GetMZZone($otherPlayer, $mzIndex[0]); BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1]); break;
           default: break;
         }
