@@ -966,6 +966,7 @@ function FinalizeChainLink($chainClosed=false)
     $layerPriority[1] = ShouldHoldPriority(2);
     if($dynCostResolved == -1)
     {
+      ClearAdditionalCosts($currentPlayer);
       //CR 5.1.2 Announce (CR 2.0)
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);

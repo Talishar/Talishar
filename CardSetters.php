@@ -428,4 +428,10 @@ function AddAdditionalCost($player, $value)
   AppendClassState($player, $CS_AdditionalCosts, $value);
 }
 
+function ClearAdditionalCosts($player)
+{
+  global $CS_AdditionalCosts;
+  SetClassState($player, $CS_AdditionalCosts, "-");
+}
+
 ?>
