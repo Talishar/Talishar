@@ -599,6 +599,49 @@ function SearchMZ($player, $subparam)
   return $rv;
 }
 
+//$searches is the following format:
+//Each search is delimited by &, which means a set UNION
+//Each search is the format <zone>:<condition 1>;<condition 2>,...
+//Each condition is format <search parameter name>=<parameter value>
+//Example: AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:maxAttack=3;type=AA");
+function SearchMultizone($player, $searches)
+{
+  $unionSearches = explode("&", $searches);
+  $rv = "";
+  for($i=0; $i<count($unionSearches); ++$i)
+  {
+    $type=""; $subtype=""; $maxCost=-1; $minCost=-1; $class=""; $talent=""; $bloodDebtOnly=false; $phantasmOnly=false; $pitch=-1; $specOnly=false;
+    $maxAttack=-1; $maxDef=-1; $frozenOnly=false;
+    $searchArr = explode(":", $unionSearches[$i]);
+    $zone = $searchArr[0];
+    if(count($searchArr) > 1)//Means there are conditions
+    {
+      $conditions = explode(";", $searchArr[1]);
+      for($j=0; $j<count($conditions); ++$j)
+      {
+        $condition = explode("=", $conditions[$j]);
+        switch($condition[0])
+        {
+          //TODO: Finish adding these
+          case "type": $type = $condition[1]; break;
+          case "maxAttack": $maxAttack = $condition[1]; break;
+          default: break;
+        }
+      }
+    }
+    $searchPlayer = (substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
+    $searchResult = "";
+    switch($zone)
+    {
+      case "MYHAND": case "THEIRHAND": $searchResult = SearchHand($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack); break;
+      default: break;
+    }
+    $searchResult = SearchMultiZoneFormat($searchResult, $zone);
+    $rv = CombineSearches($rv, $searchResult);
+  }
+  return $rv;
+}
+
 function IntimidateCount($player)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
