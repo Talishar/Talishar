@@ -329,6 +329,7 @@
   function CardLink($caption, $cardNumber)
   {
     //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
+    global $darkMode;
     $name = CardName($cardNumber);
     if($name == "") return "";
     $pitchValue = PitchValue($cardNumber);
@@ -337,7 +338,11 @@
       case 3: $color = "Blue"; break;
       case 2: $color = "GoldenRod"; break;
       case 1: $color = "Red"; break;
-      default: $color = "DimGray"; break;
+      default: if($darkMode) {
+        $color = "GhostWhite"; break;
+      } else {
+        $color = "DimGray"; break;
+      }
     }
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . "</span></b>";
