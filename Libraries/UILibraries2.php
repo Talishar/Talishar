@@ -137,7 +137,7 @@
       background: #eeeeee; background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#aaaaaa));
       background: -moz-linear-gradient(top, #eeeeee, #aaaaaa); background: linear-gradient(to bottom, #eeeeee, #aaaaaa); -webkit-box-shadow: #000000 0px 0px 5px 0px; -moz-box-shadow: #000000 0px 0px 5px 0px;
       box-shadow: #000000 0px 0px 5px 0px; text-shadow: #ffffff 1px 1px 1px; font: helvetica; font-weight: 550; color: #111111;
-      text-decoration: none; cursor:pointer; onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
+      text-decoration: none; cursor:pointer;' onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
     $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
     $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
     $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
