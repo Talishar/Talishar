@@ -204,7 +204,7 @@
         $pitchVal = PitchValue($deck[0]);
         SetCCAttackModifier(0, -$pitchVal);
         return "Ravenous Rabble reveals " . CardLink($deck[0], $deck[0]) . " and gets -" . $pitchVal . " attack.";
-      case "ARC200": case "ARC201": case "ARC202": Opt($cardID, 1); return "Fate Foreseen allows you to Opt 1.";
+      case "ARC200": case "ARC201": case "ARC202": Opt($cardID, 1); return "allows you to Opt 1.";
       case "ARC203": case "ARC204": case "ARC205":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Come to Fight gives your next attack action card +" . EffectAttackModifier($cardID) . ".";
