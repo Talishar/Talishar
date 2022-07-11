@@ -1041,7 +1041,7 @@ if($set == "UPR"){
     case "072": case "073": case "074": return "Rebellious Rush";
     case "075": case "076": case "077": return "Rising Resentment";
     case "078": case "079": case "080": return "Ronin Renegade";
-    case "081": case "082": case "083": return "Searing Strike";
+    case "081": case "082": case "083": return "Soaring Strike";
     case "084": return "Flamescale Furnace";
     case "085": return "Sash of Sandikai";
     case "086": return "Thaw";
