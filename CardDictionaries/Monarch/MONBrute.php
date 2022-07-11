@@ -131,11 +131,11 @@
         $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
         $damage = 6 - $numBD;
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
-        return "Hexagore, the Death Hydra did $damage damage to you.";
+        return "Does $damage damage to yourself.";
       case "MON125":
         MyDrawCard();
         $card = DiscardRandom();
-        $rv = "Shadow of Blasmophet discarded " . CardLink($card, $card);
+        $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
@@ -149,19 +149,19 @@
       case "MON126": case "MON127": case "MON128":
         if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
-          $rv = "Endless Maw gained 3 power from banishing a card with 6 or more power.";
+          $rv = "Gains +3 power from banishing a card with 6 or more power.";
         }
         return $rv;
       case "MON129": case "MON130": case "MON131":
         if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
-          $rv = "Writhing Beast Hulk gained Dominate from banishing a card with 6 or more power.";
+          $rv = "Gains Dominate from banishing a card with 6 or more power.";
         }
         return $rv;
       case "MON132": case "MON133": case "MON134":
         if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
-          $rv = "Convulsions gives your next attack action card +" . EffectAttackModifier($cardID) . " and Dominate from banishing a card with 6 or more power.";
+          $rv = "Gives your next attack action card +" . EffectAttackModifier($cardID) . " and Dominate from banishing a card with 6 or more power.";
         }
         return $rv;
       case "MON138": case "MON139": case "MON140":
@@ -169,7 +169,7 @@
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
         {
-          $rv = "Deadwood Rumbler let you banish a card.";
+          $rv = "Lets you banish a card from a graveyard.";
           AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYDISCARD|THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -181,16 +181,16 @@
         if(SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
           GiveAttackGoAgain();
-          $rv = "Dread Screamer gained Go Again from banishing a card with 6 or more power.";
+          $rv = "Gains go again from banishing a card with 6 or more power.";
         }
         return $rv;
       case "MON150": case "MON151": case "MON152":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Unworldly Bellow gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
+        return "Gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
       case "MON221":
         MyDrawCard();
         $card = DiscardRandom();
-        $rv = "Ravenous Meataxe discarded " . CardLink($card, $card);
+        $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -201,7 +201,7 @@
       case "MON222":
         MyDrawCard();
         $card = DiscardRandom();
-        $rv = "Tear Limb from Limb discarded " . CardLink($card, $card);
+        $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -215,9 +215,9 @@
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Pulping got Dominate from discarding " . CardLink($card, $card) . " with 6 or more power.";
+          $rv = "Gains Dominate from discarding " . CardLink($card, $card) . " with 6 or more power.";
         } else {
-          $rv = "Pulping did not gain dominate from discarding " . CardLink($card, $card);
+          $rv = "Did not gain dominate from discarding " . CardLink($card, $card);
         }
         return $rv;
       default: return "";

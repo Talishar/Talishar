@@ -261,17 +261,17 @@
           if(PitchValue($pitch[$i]) == 1) ++$numRed;
         }
         GainResources($currentPlayer, $numRed);
-        return "Flamescale Furnace gains one resource for each red in your pitch zone.";
+        return "Gain 1 resource for each red in your pitch zone.";
       case "UPR085":
         GainResources($currentPlayer, 1);
-        return "Sash of Sandikai gained a resource.";
+        return "Gain 1 resource.";
       case "UPR088":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Uprising gives your next 4 Draconic attacks +1.";
+        return "Gives your next 4 Draconic attacks +1.";
       case "UPR089":
         Draw($currentPlayer);
         Draw($currentPlayer);
-        return "Tome of Firebrand drew two cards.";
+        return "Draws 2 cards.";
       case "UPR090":
         if(RuptureActive())
         {
@@ -295,7 +295,7 @@
         }
         return "";
       case "UPR094":
-        if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Burn Away got +2 and Go Again from banishing."); }
+        if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Gains +2 and go again from banishing."); }
         return "";
       case "UPR096":
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
@@ -319,12 +319,12 @@
         if(RuptureActive())
         {
           DamageTrigger($player, 2, "DAMAGE"); //TODO: Any target
-          $rv = "Searing Touch did 2 damage to an opposing hero.";
+          $rv = "Does 2 damage to an opposing hero.";
         }
         return $rv;
       case "UPR136":
         PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 1);
-        return "Coronet Peak makes the other player pay 1 or discard a card.";
+        return "Makes the other player pay 1 or discard a card.";
       case "UPR137":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
@@ -334,16 +334,16 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        return "Glacial Horns lets you freeze an arsenal card and ally.";
+        return "Lets you freeze an arsenal card and ally.";
       case "UPR141": case "UPR142": case "UPR143":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Isenhowl Weathervane creates frostbites the next time you fuse Ice.";
+        return "Creates frostbites the next time you Ice fuse.";
       case "UPR144": case "UPR145": case "UPR146":
         if($cardID == "UPR144") $numFrostbites = 3;
         else if($cardID == "UPR145") $numFrostbites = 2;
         else $numFrostbites = 1;
         PlayAura("ELE111", ($currentPlayer == 1 ? 2 : 1), $numFrostbites);
-        return "Arctic Incarceration created frostbite tokens.";
+        return "Creates frostbites.";
       case "UPR147": case "UPR148": case "UPR149":
         if($cardID == "UPR147") $cost = 3;
         else if($cardID == "UPR148") $cost = 2;
@@ -362,16 +362,16 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $char = &GetPlayerCharacter($currentPlayer);
         $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
-        return "Helio's Mitre prevents 1 damage.";
+        return "Prevents the next 1 damage.";
       case "UPR191": case "UPR192": case "UPR193":
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0," . 2, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-        return "Flex lets you pay 2 to give it +2 attack.";
+        return "Lets you pay 2 to give it +2 power.";
       case "UPR194": case "UPR195": case "UPR196":
         $rv = "";
-        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); $rv = "Fyendal's Fighting Spirit gained 1 health."; }
+        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); $rv = "Gained 1 health."; }
         return $rv;
       case "UPR197": case "UPR198": case "UPR199":
         if($cardID == "UPR197") $numCards = 4;
@@ -383,7 +383,7 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SIFT", $currentPlayer, "-", 1);
-        return "Sift let you cycle $numCards cards.";
+        return "Lets you cycle $numCards cards.";
       case "UPR200": case "UPR201": case "UPR202":
         if($cardID == "UPR200") $maxCost = 2;
         else if($cardID == "UPR201") $maxCost = 1;
@@ -394,7 +394,7 @@
         AddDecisionQueue("MZADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Strategic Planning let you return a card and draw a card.";
+        return "Lets you return a card and draw a card.";
       case "UPR212": case "UPR213": case "UPR214":
         if($from == "ARS") GiveAttackGoAgain();
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
@@ -408,15 +408,15 @@
         else if($cardID == "UPR216") $amount = 2;
         else $amount = 1;
         GainHealth($amount, $currentPlayer);
-        return "Healing Balm gained $amount health.";
+        return "Gain $amount health.";
       case "UPR221": case "UPR222": case "UPR223":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);
-          WriteLog("Gained 1 life from Oasis Respite.");
+          WriteLog("Gain 1 health from Oasis Respite.");
         }
-        return "Oasis Respite prevents damage this turn.";
+        return "Prevents damage this turn.";
       default: return "";
     }
   }

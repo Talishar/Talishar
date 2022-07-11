@@ -338,7 +338,7 @@
       WriteLog("Player " . $playerID . " undid their blocks.");
       break;
     case 10002:
-      WriteLog("Player " . $playerID . " manually added one action point.");
+      WriteLog("Player " . $playerID . " manually added 1 action point.");
       ++$actionPoints;
       break;
     case 10003://Revert to prior turn
@@ -349,24 +349,24 @@
     case 10004:
       if($actionPoints > 0)
       {
-        WriteLog("Player " . $playerID . " manually subtracted one action point.");
+        WriteLog("Player " . $playerID . " manually subtracted 1 action point.");
         --$actionPoints;
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted one health point from themselves.");
+      WriteLog("Player " . $playerID . " manually subtracted 1 health point from themselves.");
       LoseHealth(1, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added one health point to themselves.");
+      WriteLog("Player " . $playerID . " manually added 1 health point to themselves.");
       $myHealth += 1;
       break;
     case 10007:
-      WriteLog("Player " . $playerID . " manually added one health point to themselves.");
+      WriteLog("Player " . $playerID . " manually added 1 health point to themselves.");
       LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added one health point their opponent.");
+      WriteLog("Player " . $playerID . " manually added 1 health point their opponent.");
       $theirHealth += 1;
       break;
     case 10009:

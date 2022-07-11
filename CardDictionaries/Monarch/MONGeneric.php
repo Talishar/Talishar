@@ -164,9 +164,9 @@
     switch($cardID)
     {
     //MON Generic
-    case "MON238": $myResources[0] += 1; return "Blood Drop Brocade gave you 1 resource.";
-    case "MON239": AddCurrentTurnEffect($cardID, $currentPlayer); return "Stubby Hammerers gives your attack action cards with less than 3 power +1 attack this turn.";
-    case "MON240": $actionPoints += 2; return "Time Skippers gives you two action points.";
+    case "MON238": $myResources[0] += 1; return "Gain 1 resource.";
+    case "MON239": AddCurrentTurnEffect($cardID, $currentPlayer); return "Gives your attack action cards with less than 3 power +1 power this turn.";
+    case "MON240": $actionPoints += 2; return "Gain 2 action points.";
     case "MON245":
       if($from == "PLAY")
       {
@@ -181,31 +181,31 @@
       AddDecisionQueue("CAPTAINSCALL", $currentPlayer, $cardID, 1);
       return "";
     case "MON263": case "MON264": case "MON265":
-      if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Adrenaline Rush gets +3."; }
+      if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power."; }
       return $rv;
     case "MON272": case "MON273": case "MON274":
       $ret = "Their hand is:";
       for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= $theirHand[$i]; }
-      $ret .= (count($theirHand) == 0 ? "Nothing." : ".");
-      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret .= " Frontline Scout gained Go Again."; }
+      $ret .= (count($theirHand) == 0 ? " Empty." : ".");
+      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret .= " Frontline Scout gains go again."; }
       return $ret;
     case "MON278": case "MON279": case "MON280":
-      if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Pound for Pound gets Dominate."; }
+      if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gains Dominate."; }
       return $rv;
     case "MON281": case "MON282": case "MON283":
       if($from == "PLAY")
       {
         $combatChain[$myClassState[$CS_PlayIndex] + 6] += 3;
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv = "Rally the Rearguard gained +3 defense.";
+        $rv = "Gains +3 defense.";
       }
       return $rv;
     case "MON296": case "MON297": case "MON298":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Minnowism added " . EffectAttackModifier($cardID) . " to your next attack action card with power 3 or less.";
+      return "Adds " . EffectAttackModifier($cardID) . " to your next attack action card with power 3 or less.";
     case "MON299": case "MON300": case "MON301":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Warmonger's Recital gives your next attack action card +" . EffectAttackModifier($cardID) . " and if it hits, put it on the bottom of your deck.";
+      return "Gives your next attack action card +" . EffectAttackModifier($cardID) . " and if it hits, put it on the bottom of your deck.";
     case "MON303": case "MON304": case "MON305":
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
       AddDecisionQueue("CHOOSEDISCARDCANCEL", $currentPlayer, "<-", 1);

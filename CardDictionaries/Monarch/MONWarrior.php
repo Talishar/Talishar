@@ -119,8 +119,8 @@
     switch($cardID)
     {
       case "MON029": case "MON030":
-        if(HasIncreasedAttack()) { GiveAttackGoAgain(); $rv = "Boltyn gave the current attack Go Again."; }
-        else { $rv = "Boltyn did not give the current attack Go Again."; }
+        if(HasIncreasedAttack()) { GiveAttackGoAgain(); $rv = "Gives the current attack go again."; }
+        else { $rv = "Does not give the current attack go again."; }
         return $rv;
       case "MON033":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
@@ -148,39 +148,39 @@
               if($character[$i+1] != 0) { $character[$i+1] = 2; ++$character[$i+5]; }
             }
           }
-          $rv = "Lumina Ascension gave each weapon another use this turn.";
+          $rv = "Gives each weapon an additional use this turn.";
         }
         return $rv;
       case "MON036": case "MON037": case "MON038":
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Battlefield Blitz gained Go Again."; }
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Gains go again."; }
         return $rv;
       case "MON054": case "MON055": case "MON056":
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Take Flight gained Go Again."; }
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) { GiveAttackGoAgain(); $rv = "Gains go again."; }
         return $rv;
       case "MON105":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON106") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
-        return "Hatchet of Body got +1 attack until end of turn.";
+        return "Gains +1 power until end of turn.";
       case "MON106":
         if(GetClassState($currentPlayer, $CS_LastAttack) != "MON105") return "";
         AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
-        return "Hatchet of Mind get +1 attack until end of turn.";
+        return "Gains +1 power until end of turn.";
       case "MON108":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Gallantry Gold gives your weapon attacks this turn +1.";
+        return "Gives your weapon attacks this turn +1.";
       case "MON109":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Spill Blood gives your axe attacks this turn +2 and Dominate.";
+        return "Gives your axe attacks this turn +2 and Dominate.";
       case "MON110": case "MON111": case "MON112":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Dusk Path Pilgrimage gives your next weapon attack +" . EffectAttackModifier($cardID) . " and lets you attack an additional time if it hits.";
+        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and lets you attack an additional time if it hits.";
       case "MON113": case "MON114": case "MON115":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Plow through gives your next weapon attack +" . EffectAttackModifier($cardID) . " and gives it +1 when defended by an attack action card.";
+        return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and gives it +1 when defended by an attack action card.";
       case "MON116": case "MON117": case "MON118":
-        if(GetClassState($currentPlayer, $CS_AtksWWeapon) == 0) return "Second Swing did nothing because there were no weapon attacks this turn.";
+        if(GetClassState($currentPlayer, $CS_AtksWWeapon) == 0) return "Does nothing because there were no weapon attacks this turn.";
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Second Swing gives your next attack +" . EffectAttackModifier($cardID) . ".";
+        return "Gives your next attack +" . EffectAttackModifier($cardID) . ".";
       default: return "";
     }
   }
@@ -212,7 +212,7 @@
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("The revealed card is Light, so it is added to soul and the main player gains 1 life.");
+      WriteLog("The revealed card is Light, so it is added to soul and the main player gains 1 health.");
     }
     else
     {

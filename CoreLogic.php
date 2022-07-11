@@ -322,7 +322,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
         {
           PlayAura("ELE111", $mainPlayer);
-          WriteLog("Iyslander created a Frostbite token for playing an ice card.");
+          WriteLog("Iyslander created a Frostbite for playing an ice card.");
         }
         break;
       case "ARC075": case "ARC076":

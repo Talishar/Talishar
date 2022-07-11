@@ -121,7 +121,7 @@
     {
       case "ARC078":
         PlayAura("ARC112", $currentPlayer);
-        return "Grasp of the Arknight created a runechant.";
+        return "Creates a runechant.";
       case "ARC079":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARC079");
         AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
@@ -130,10 +130,10 @@
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("CROWNOFDICHOTOMY", $currentPlayer, "-", 1);
-        return "Crown of Dichotomy let you put cards from your discard on top of your deck.";
+        return "Lets you put cards from your discard on top of your deck.";
       case "ARC081":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Mordred Tide gives you an extra runechant whenever you create one or more.";
+        return "Gives you an extra runechant whenever you create 1 or more.";
       case "ARC083":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDACTION");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
@@ -158,21 +158,21 @@
         return "";
       case "ARC085": case "ARC086": case "ARC087":
         PlayAura("ARC112", $currentPlayer, 2);
-        return "Spellblade Assault created two runechants.";
+        return "Creates 2 runechants.";
       case "ARC088": case "ARC089": case "ARC090":
         PlayAura("ARC112", $currentPlayer);
-        return "Reduce to Runechant created a runechant.";
+        return "Creates a runechant.";
       case "ARC091": case "ARC092": case "ARC093":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("ARC112", $currentPlayer);
-        return "Oath of the Arknight gives your next Runeblade attack +" . EffectAttackModifier($cardID) . " and created a runechant.";
-      case "ARC097": case "ARC098": case "ARC099": MyDrawCard(); return "Drawn to the Dark Dimension drew a card.";
+        return "Gives your next Runeblade attack +" . EffectAttackModifier($cardID) . " and created a runechant.";
+      case "ARC097": case "ARC098": case "ARC099": MyDrawCard(); return "Draws a card.";
       case "ARC103": case "ARC104": case "ARC105":
         PlayAura("ARC112", $currentPlayer);
-        return "Spellblade Strike created a runechant.";
-      case "ARC109": PlayAura("ARC112", $currentPlayer, 3); return "Read the Runes created 3 runechants.";
-      case "ARC110": PlayAura("ARC112", $currentPlayer, 2); return "Read the Runes created 2 runechants.";
-      case "ARC111": PlayAura("ARC112", $currentPlayer); return "Read the Runes created a runechant.";
+        return "Creates a runechant.";
+      case "ARC109": PlayAura("ARC112", $currentPlayer, 3); return "Creates 3 runechants.";
+      case "ARC110": PlayAura("ARC112", $currentPlayer, 2); return "Creates 2 runechants.";
+      case "ARC111": PlayAura("ARC112", $currentPlayer); return "Creates a runechant.";
       default: return "";
     }
   }
@@ -184,7 +184,7 @@
     {
       case "ARC077":
         PlayAura("ARC112", $mainPlayer);
-        WriteLog("Nebula Blade created a runechant.");
+        WriteLog("Creates a runechant.");
         break;
       case "ARC080":
         $damageDone = $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()];
@@ -212,7 +212,7 @@
     if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target)
     {
       PlayAura("ARC112", $currentPlayer);
-      WriteLog("Viserai created a runechant token.");
+      WriteLog("Viserai created a runechant.");
     }
   }
 

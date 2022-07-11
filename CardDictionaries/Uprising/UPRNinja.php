@@ -180,7 +180,7 @@
         return "";
       case "UPR049":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Spreading Flames buffs your draconic attacks this turn.";
+        return "Buffs your draconic attacks this turn.";
       case "UPR050":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
         AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
@@ -201,7 +201,7 @@
         return "";
       case "UPR159":
         GiveAttackGoAgain();
-        return "Tide Flippers gave the attack Go Again.";
+        return "Gives the attack go again.";
       default: return "";
     }
   }

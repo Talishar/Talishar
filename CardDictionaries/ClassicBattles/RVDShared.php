@@ -134,12 +134,12 @@
       case "RVD004":
         $resources = &GetResources($currentPlayer);
         $resources[0] += 1;
-        return "Blossom of Spring added 1 resource.";
+        return "Gain 1 resource.";
 
       case "RVD013":
         MyDrawCard();
         $card = DiscardRandom();
-        $rv = "Wrecking Ball discarded" . CardLink($card, $card);
+        $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
           Intimidate();
@@ -148,7 +148,7 @@
         $rv .= ".";
         return $rv;
       case "RVD025":
-        $rv = "Clearing Bellow Intimidated";
+        $rv = "Intimidates";
         Intimidate();
         return $rv;
     }

@@ -127,7 +127,7 @@
       case "MON153": case "MON154":
         PlayAura("MON186", $currentPlayer);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Chane created a Soul Shackle and gave your next Runeblade or Shadow action this turn Go Again.";
+        return "Creates a Soul Shackle and gives your next Runeblade or Shadow action this turn go again.";
       case "MON158":
         AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
         AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
@@ -140,7 +140,7 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
-        return "Unhallowed Rites lets you put a non-attack action card with Blood Debt from your graveyard to your deck.";
+        return "Lets you put a non-attack action card with Blood Debt from your graveyard to your deck.";
       case "MON162": case "MON163": case "MON164":
         if($cardID == "MON162") $optAmt = 3;
         else if($cardID == "MON163") $optAmt = 2;
@@ -150,44 +150,44 @@
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("DIMENXXIONALGATEWAY", $currentPlayer, "-", 1);
-        return "Dimenxxional Gateway let you Opt.";
+        return "Lets you Opt.";
       case "MON165": case "MON166": case "MON167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Seeping Shadows gives your next attack +1 and Go Again.";
+        return "Gives your next attack +1 and go again.";
       case "MON168": case "MON169": case "MON170":
         if($from == "BANISH")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Bounding Demigon got +1 because it was played from Banish.";
+          $rv = "Gains +1 because it was played from Banish.";
         }
         return $rv;
       case "MON174": case "MON175": case "MON176":
         if($from == "BANISH")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Rift Bind got +X because it was played from Banish.";
+          $rv = "Gains +X because it was played from Banish.";
         }
         return $rv;
       case "MON177": case "MON178": case "MON179":
         if($from == "BANISH")
         {
           DealArcane(1, 0, "PLAYCARD", $cardID);
-          $rv = "Rifted Torment deals 1 arcane damage.";
+          $rv = "Deals 1 arcane damage.";
         }
         return $rv;
       case "MON183": case "MON184": case "MON185":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Seeds of Agony deals 1 arcane damage with the next attack action card of certain cost.";
+        return "Deals 1 arcane damage to the next attack action card of certain cost.";
       case "MON229":
         DealArcane(1, 0, "PLAYCARD", $cardID);
-        return "Dread Scythe deals 1 arcane damage.";
+        return "Deals 1 arcane damage.";
       case "MON230":
         GainResources($currentPlayer, 2);
-        return "Aether Ironweave gaines 2 resources.";
+        return "Gain 2 resources.";
       case "MON231":
         $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
         $numRevealed = 3 + $xVal;
-        WriteLog("Sonata Arcanix was played with X of " . $xVal . " and reveals " . $numRevealed . " cards.");
+        WriteLog("Was played with X of " . $xVal . " and reveals " . $numRevealed . " cards.");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -200,10 +200,10 @@
         return "";
       case "MON232": case "MON233": case "MON234":
         DealArcane(2, 0, "PLAYCARD", $cardID);
-        return "Vexing Malice deals 2 arcane damage.";
+        return "Deals 2 arcane damage.";
       case "MON235": case "MON236": case "MON237":
         DealArcane(1, 0, "PLAYCARD", $cardID);
-        return "Arcanic Crackle deals 1 arcane damage.";
+        return "Deals 1 arcane damage.";
       default: return "";
     }
   }
@@ -216,7 +216,7 @@
       case "MON155":
         if(IsHeroAttackTarget())
         {
-          DealArcane(1, 0, "PLAYCARD", "MON155", false, $mainPlayer); 
+          DealArcane(1, 0, "PLAYCARD", "MON155", false, $mainPlayer);
         }
         break;
       default: break;

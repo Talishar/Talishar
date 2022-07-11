@@ -81,15 +81,15 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR004":
       $roll = GetDieRoll($currentPlayer);
       $actionPoints += intval($roll/2);
-      return "Scabskin Leathers rolled $roll and gained " . intval($roll/2) . " action points.";
+      return "Rolled $roll and gains " . intval($roll/2) . " action points.";
     case "WTR005":
       $resources = &GetResources($currentPlayer);
       $roll = GetDieRoll($currentPlayer);
       $resources[0] += intval($roll/2);
-      return "Barkbone Strapping rolled $roll and gained " . intval($roll/2) . " resources.";
+      return "Rolled $roll and gains " . intval($roll/2) . " resources.";
     case "WTR006":
       Intimidate();
-      return "Alpha Rampage intimidated.";
+      return "Intimidates.";
     case "WTR007":
       $rv = "";
       $drew = 0;
@@ -100,13 +100,13 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
         MyDrawCard();
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if(!CurrentEffectPreventsGoAgain()) ++$actionPoints;//TODO: This is not strictly accurate, but good enough for now
-        $rv .= "Bloodrush Bellow gives your Brute attacks +2 this turn, drew two cards and gained Go Again.";
+        $rv .= "Gives your Brute attacks +2 this turn, draws 2 cards and gains go again.";
       }
       return $rv;
     case "WTR008":
       $damaged = false;
       if(AttackValue($additionalCosts) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
-      return "Reckless Swing discarded a random card from your hand" . ($damaged ? " and did 2 damage." : ".");
+      return "Discarded a random card from your hand" . ($damaged ? " and does 2 damage." : ".");
     case "WTR009":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
       AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
@@ -116,13 +116,13 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR010":
       $roll = GetDieRoll($currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
-      return "Bone Head Barrier prevents the next $roll damage that will be dealt to you this turn.";
+      return "Prevents the next $roll damage that will be dealt to you this turn.";
     case "WTR011": case "WTR012": case "WTR013":
       $rv = "";
       if(AttackValue($additionalCosts) >= 6)
       {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        $rv .= "Breakneck Battery discarded a 6 power card and gained Go Again.";
+        $rv .= "Discarded a 6 power card and gains go again.";
       }
       return $rv;
     case "WTR014": case "WTR015": case "WTR016":
@@ -130,66 +130,66 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       {
         MyDrawCard();
       }
-      return "Savage Feast discarded a random card from your hand.";
+      return "Discarded a random card from your hand.";
     case "WTR017": case "WTR018": case "WTR019":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       Intimidate();
-      return "Barraging Beatdown intimidates and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
+      return "Intimidates and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
     case "WTR023": case "WTR024": case "WTR025":
       Intimidate();
-      return "Pack Hunt intimidated.";
+      return "Intimidates.";
     case "WTR026": case "WTR027": case "WTR028":
       Intimidate();
-      return "Smash Instinct intimidated.";
+      return "Intimidates.";
     case "WTR032": case "WTR033": case "WTR034":
       AddCurrentTurnEffect($cardID, $mainPlayer);
       Intimidate();
-      return "Awakening Bellow intimidated.";
+      return "Intimidates.";
     case "WTR035": case "WTR036": case "WTR037":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Primeval Bellow discarded a random card from your hand and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
+      return "Discarded a random card from your hand and gives the next Brute attack this turn +" . EffectAttackModifier($cardID) . ".";
     //Guardian
     case "WTR038": case "WTR039":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Bravo gives your action cards with cost 3 or greater Dominate.";
+      return "Gives your action cards with cost 3 or greater Dominate.";
     case "WTR041":
       PlayMyAura("WTR075");
-      return "Tectonic Plating created a Seismic Surge token.";
+      return "Creates a Seismic Surge token.";
     case "WTR042":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Helm of Isen's Peak gives you +1 Intellect until end of turn.";
+      return "Gives you +1 Intellect until end of turn.";
     case "WTR047":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCLASSAA,GUARDIAN");
       AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-      return "Show Time! allows you to search for a Guardian attack card.";
+      return "Lets you to search for a Guardian attack card.";
     //Ninja
     case "WTR078":
       if(CountPitch(GetPitch($currentPlayer), 0, 0)) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
       return "";
     case "WTR082":
       MyDrawCard();
-      return "Ancestral Empowerment drew a card.";
+      return "Draws a card.";
     case "WTR092": case "WTR093": case "WTR094":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Flic Flak gives the next Combo card you block with this turn +2.";
+      return "Gives the next blocking Combo card +2 this turn.";
     //Warrior
     case "WTR116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Braveforge Bracers gives your next weapon attack this turn +1.";
+      return "Gives your next weapon attack +1 this turn.";
     case "WTR118":
       $s1 = "";
       $s2 = "";
       if(CardType($combatChain[0]) == "W")
       {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        $s1 = " gave your weapon attack Go Again";
+        $s1 = " gives your weapon attack go again";
       }
       if(RepriseActive())
       {
         MyDrawCard();
-        $s2 = " drew a card";
+        $s2 = " draws a card";
       }
       return "Glint the Quicksilver" . $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
     case "WTR119": case "WTR122":
@@ -215,25 +215,25 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       }
       return "";
     case "WTR123": case "WTR124": case "WTR125":
-      if(CardType($combatChain[0]) != "W") return "Overpower did nothing, because this is not a weapon attack.";
-      return "Overpower gave your weapon attack +" . AttackModifier($cardID) . ".";
+      if(CardType($combatChain[0]) != "W") return "Does nothing, because this is not a weapon attack.";
+      return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
     case "WTR126": case "WTR127": case "WTR128":
-      $text = "Steelblade Shunt ";
+      $rv = "";
       if(CardType($combatChain[0]) == "W")
       {
         DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
-        $text .= "DID";
-      } else { $text .= "did NOT"; }
-      $text .= " deal 1 damage to the attacking hero.";
-      return $text;
+        $rv .= "DID";
+      } else { $rv .= "Did NOT"; }
+      $rv .= " deal 1 damage to the attacking hero.";
+      return $rv;
     case "WTR129": case "WTR130": case "WTR131":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Warrior's Valor gives your next weapon attack +" . EffectAttackModifier($cardID) . " and if it hits, it gains Go Again";
+      return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and if it hits, it gains go again";
     case "WTR132": case "WTR133": case "WTR134":
-      if(CardType($combatChain[0]) != "W") return "Ironsong Response did nothing, because this is not a weapon attack.";
-      return "Ironsong Response gave your weapon attack +" . AttackModifier($cardID) . ".";
+      if(CardType($combatChain[0]) != "W") return "Does nothing, because this is not a weapon attack.";
+      return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
     case "WTR135": case "WTR136": case "WTR137":
-      $log = "Biting blade gave your weapon attack +" . AttackModifier($cardID);
+      $log = "Gives your weapon attack +" . AttackModifier($cardID);
       if(RepriseActive()) { ApplyEffectToEachWeapon($cardID); $log .= " and gives weapons you control +1 for the rest of the turn"; }
       return $log . ".";
     case "WTR138": case "WTR139": case "WTR140":
@@ -242,20 +242,20 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
         MyDrawCard();
         AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
       }
-      return "Stroke of Foresight gave your weapon attack +" . AttackModifier($cardID) . ".";
+      return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
     case "WTR141": case "WTR142": case "WTR143":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Sharpen Steel gave your next weapon attack +" . EffectAttackModifier($cardID) . ".";
+      return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
     case "WTR144": case "WTR145": case "WTR146":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Driving Blade gives your next weapon attack +" . EffectAttackModifier($cardID) . " and Go Again.";
+      return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and go again.";
     case "WTR147": case "WTR148": case "WTR149":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Nature's Path Pilgrimage gives your next weapon attack +" . EffectAttackModifier($cardID) . " and a hit effect.";
+      return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . " and a hit effect.";
     case "WTR150":
       $resources = &GetResources($currentPlayer);
       $resources[0] += 1;
-      return "Fyendal's Spring Tunic added 1 resource.";
+      return "Gain 1 resource.";
     case "WTR151":
       $indices = GetMyHandIndices();
       if($indices == "") return "";
@@ -267,25 +267,25 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "";
     case "WTR152":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Heartened Cross Strap reduces the resource cost of your next attack action card by 2.";
+      return "Reduces the resource cost of your next attack action card by 2.";
     case "WTR154":
       $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-      return "Snapdragon Scalers gave your current attack Go Again.";
+      return "Gives your current attack go again.";
     case "WTR159":
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_card,2_Attack,Go_again");
       AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
-      return "Enlightened Strike put a card from your hand to the bottom of your deck.";
+      return "Puts a card from your hand to the bottom of your deck.";
     case "WTR160":
       MyDrawCard();
       MyDrawCard();
       $hand = GetHand($currentPlayer); //Get hand size after draw for correct health gain
       if($from == "ARS") GainHealth(count($hand), $currentPlayer);
-      return "Tome of Fyendal drew two cards" . ($from == "ARS" ? " and gained " . count($hand) . " life" : "") . ".";
+      return "Draws 2 cards" . ($from == "ARS" ? " and gained " . count($hand) . " health" : "") . ".";
     case "WTR161":
       if(count(GetDeck($currentPlayer)) == 0) {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv = "Last Ditch Effort gains Go Again and +4.";
+        $rv = "Gains go again and +4.";
       }
       return $rv;
     case "WTR162":
@@ -309,7 +309,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $resources[0] += 2;
           $actionPoints += 2;
-          $rv .= " and gained 2 action points, resources, and damage.";
+          $rv .= " and gained 2 action points, resources, and power.";
         }
       }
       return $rv;
@@ -346,41 +346,41 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "WTR175": GainHealth(1, $currentPlayer); return "Sigil of Solace gained 1 health.";
     case "WTR182": case "WTR183": case "WTR184":
       PlayMyAura("WTR225");
-      return "Flight of the Feather Walkers created a Quicken token.";
+      return "Creates a Quicken token.";
     case "WTR191": case "WTR192": case "WTR193":
-      if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Scar for a Scar gained Go Again."; }
+      if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Gains go again."; }
       return $rv;
     case "WTR194": case "WTR195": case "WTR196":
       BottomDeckDraw();
-      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Scour the Battlescape gained Go Again."; }
+      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Gains go again."; }
       return $rv;
     case "WTR200": case "WTR201": case "WTR202":
-      if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Wounded Bull gains +1."; }
+      if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1."; }
       return $rv;
     case "WTR215": case "WTR216": case "WTR217":
       BottomDeckDraw();
       return "";
     case "WTR218": case "WTR219": case "WTR220":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Nimblism gives the next attack action card with cost 1 or less this turn +" . EffectAttackModifier($cardID) . ".";
+      return "Gives the next attack action card with cost 1 or less this turn +" . EffectAttackModifier($cardID) . ".";
     case "WTR221": case "WTR222": case "WTR223"://Sloggism
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Sloggism gives the next attack action card with cost greater than 2 this turn +" . EffectAttackModifier($cardID) . ".";
+      return "Gives the next attack action card with cost greater than 2 this turn +" . EffectAttackModifier($cardID) . ".";
     case "WTR153":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Goliath Gauntlet gives your next attack action card with cost 2 or greater +" . EffectAttackModifier($cardID) . ".";
+      return "Gives your next attack action card with cost 2 or greater +" . EffectAttackModifier($cardID) . ".";
     //CRU Brute
     case "CRU004": case "CRU005":
       if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0)
       {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        $rv = "Mandible Claw gained Go Again.";
+        $rv = "Gains go again.";
       }
       return $rv;
     case "CRU006":
       MyDrawCard();
       $discarded = DiscardRandom($currentPlayer, $cardID);
-      return "Skullhorn discarded " . $discarded . ".";
+      return "Discarded " . $discarded . ".";
     case "CRU008":
       if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0)
       {
@@ -402,32 +402,32 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       if(GetClassState($currentPlayer, $CS_Num6PowDisc) > 0)
       {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        $rv = "Predatory Assault gained Dominate.";
+        $rv = "Gains Dominate.";
       }
       return $rv;
     //CRU Guardian
     case "CRU025":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Crater Fist gives your Crush attacks +2 this turn.";
+      return "Gives your Crush attacks +2 this turn.";
     case "CRU028":
       if(CountPitch(GetPitch($currentPlayer), 3) >= 2) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Stamp Authority gives you +1 intellect until end of turn."; }
       return $rv;
     case "CRU041": case "CRU042": case "CRU043":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Blessing of Serenity will prevent some of the next combat damage you take this turn.";
+      return "Prevents some of the next damage you take this turn.";
     //Ninja
     case "CRU054":
       if(ComboActive())
       {
         $combatChainState[$CCS_ResourceCostDefenseMin] = $combatChainState[$CCS_NumChainLinks];
-        $rv = "Find Center cannot be defended by cards with resource cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
+        $rv = "Cannot be defended by cards with resource cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
       }
       return $rv;
     case "CRU055":
       if(ComboActive())
       {
         FloodOfForcePlayEffect();
-        $rv = "Flood of Force reveals your deck and puts it in your hand if it has combo.";
+        $rv = "Reveals the top card of your deck and puts it in your hand if it has combo.";
       }
       return $rv;
     case "CRU056":
@@ -441,43 +441,43 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       if(ComboActive())
       {
         $combatChainState[$CCS_BaseAttackDefenseMax] = $combatChainState[$CCS_NumChainLinks];
-        $rv = "Crane Dance cannot be defended by attacks with greater than " . $combatChainState[$CCS_NumChainLinks] . " base attack.";
+        $rv = "Cannot be defended by attacks with greater than " . $combatChainState[$CCS_NumChainLinks] . " base attack.";
       }
       return $rv;
     //CRU Warrior
     case "CRU081":
       AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Courage of Bladehold reduces the cost of your weapon attacks by 1 this turn.";
+      return "Reduces the cost of your weapon attacks by 1 this turn.";
     case "CRU082":
       $character = &GetPlayerCharacter($currentPlayer);
       ++$character[$combatChainState[$CCS_WeaponIndex]+5];
       if($character[$combatChainState[$CCS_WeaponIndex]+1] == 1) { $character[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
-      return "Twinning Blade allows you to attack with target sword an additional time.";
+      return "Allows you to attack with target sword an additional time.";
     case "CRU083":
       if(RepriseActive()) UnifiedDecreePlayEffect();
-      return "Unified Decree gave your weapon attack +" . AttackModifier($cardID) . " and looks for an attack reaction.";
+      return "Gives your weapon attack +" . AttackModifier($cardID) . " and looks for an attack reaction.";
     case "CRU084":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-2", $currentPlayer);//Hit effect
-      return "Spoils of War gives your next weapon attack +2 and go again.";
+      return "Gives your next weapon attack +2 and go again.";
     case "CRU085": case "CRU086": case "CRU087":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       AddCurrentTurnEffect($cardID . "-2", ($mainPlayer == 1 ? 2 : 1));
-      return "Dauntless gives your next weapon attack  +" . EffectAttackModifier($cardID . "-1") . " and makes the next Defense Reaction cost +1 to play.";
+      return "Gives your next weapon attack  +" . EffectAttackModifier($cardID . "-1") . " and makes the next Defense Reaction cost +1 to play.";
     case "CRU088": case "CRU089": case "CRU090":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       if(RepriseActive()) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
-      return "Out for Blood gave your weapon attack +" . EffectAttackModifier($cardID . "-1") . RepriseActive() ? " and gives your next attack +1." : ".";
+      return "Gives your weapon attack +" . EffectAttackModifier($cardID . "-1") . RepriseActive() ? " and gives your next attack +1." : ".";
     case "CRU091": case "CRU092": case "CRU093":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       $atkWWpn = GetClassState($currentPlayer, $CS_AtksWWeapon) > 0;
       if($atkWWpn) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
-      return "Hit and Run gives your next weapon attack Go Again" . ($atkWWpn ? " and +" . EffectAttackModifier($cardID . "-2") : "") . ".";
+      return "Gives your next weapon attack go again" . ($atkWWpn ? " and +" . EffectAttackModifier($cardID . "-2") : "") . ".";
     case "CRU094": case "CRU095": case "CRU096":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       $atkWWpn = GetClassState($currentPlayer, $CS_AtksWWeapon) > 0;
       if($atkWWpn) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
-      return "Push Forward gives your next weapon attack +" . EffectAttackModifier($cardID . "-1") . ($atkWWpn ? " and gives your next attack Dominate." : ".");
+      return "Gives your next weapon attack +" . EffectAttackModifier($cardID . "-1") . ($atkWWpn ? " and gives your next attack Dominate." : ".");
     //CRU Mechanologist
     case "CRU101":
       $character = &GetPlayerCharacter($currentPlayer);
@@ -500,11 +500,11 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
           AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
           $items[$index + 2] = 1;
-          $rv = "Plasma Purifier gave target pistol +1.";
+          $rv = "Gives target pistol +1.";
         }
         else
         {
-          $rv = "Plasma Purifier gained a steam counter.";
+          $rv = "Gains a steam counter.";
         }
       }
       return $rv;
@@ -520,7 +520,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-      return "Teklovossen's Workshop lets you opt and put an item from the top of your deck into play.";
+      return "Lets you opt and put an item from the top of your deck into play.";
     //CRU Merchant
     case "CRU118":
       if(PlayerHasLessHealth(1))
@@ -548,14 +548,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "";
     case "CRU122":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Perch Grapplers gives face up arrow attacks Go Again this turn.";
+      return "Gives face up arrow attacks go again this turn.";
     case "CRU124":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Reload();
-      return "Poison the Tips makes arrow attacks discard on hero hit, and allows you to Reload.";
+      return "Makes arrow attacks discard on hero hit, and allows you to Reload.";
     case "CRU125":
       SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
-      return "Feign Death prevents the next damage you would take.";
+      return "Prevents the next damage you would take.";
     case "CRU126":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
@@ -565,7 +565,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "";
     case "CRU127":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_two_damage", 1, 1);
+      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
       AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
       AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
@@ -580,12 +580,12 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "CRU135": case "CRU136": case "CRU137":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-1", ($currentPlayer == 1 ? 2 : 1));
-      return "Increase the tension gives the next arrow attack this turn +" . EffectAttackModifier($cardID) . " and prevents defense reactions on that chain link.";
+      return "Gives the next arrow attack this turn +" . EffectAttackModifier($cardID) . " and prevents defense reactions on that chain link.";
     //CRU Runeblade
     case "CRU141":
       AddCurrentTurnEffect($cardID . "-AA", $currentPlayer);
       AddCurrentTurnEffect($cardID . "-NAA", $currentPlayer);
-      return "Bloodsheath Skeleta reduces the cost of your next attack action card and non-attack action card this turn.";
+      return "Reduces the cost of your next attack action card and non-attack action card this turn.";
     case "CRU142":
       if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $currentPlayer);
       AddDecisionQueue("CLASSSTATEGREATERORPASS", $defPlayer, $CS_ArcaneDamageTaken . "-1", 1);
@@ -596,16 +596,16 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
       AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("BANISH", $currentPlayer, "TT", 1);
-      return "Rattle Bones banishes a Runeblade attack action card, which can be played this turn.";
+      return "Banishes a Runeblade attack action card, which can be played this turn.";
     case "CRU144":
       PlayAura("ARC112", $currentPlayer);
       PlayAura("ARC112", $currentPlayer);
       PlayAura("ARC112", $currentPlayer);
       PlayAura("ARC112", $currentPlayer);
-      return "Runeblood Barrier created 4 Runechant tokens.";
+      return "Creates 4 Runechant.";
     case "CRU145": case "CRU146": case "CRU147":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Mauvrion Skies gives your next Runeblade attack action Go Again and creates Runechants if it hits.";
+      return "Gives your next Runeblade attack action go again and creates Runechants if it hits.";
     case "CRU154": case "CRU155": case "CRU156":
       if($cardID == "CRU154") $count = 3;
       else if($cardID == "CRU155") $count = 2;
@@ -628,9 +628,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     //CRU Wizard
     case "CRU160":
       DealArcane(2, 1, "PLAYCARD", $cardID);
-      return "Aether Conduit deals 2 arcane damage.";
+      return "Deals 2 arcane damage.";
     case "CRU162":
-      $rv = "Chain lightning let you play your next Wizard non-attack as an instant";
+      $rv = "Lets you play your next Wizard non-attack as an instant";
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant,1);
       if(GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2)
       {
@@ -643,7 +643,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       return "";
     case "CRU164":
       NegateLayer($target);
-      return "Aetherize negated an instant.";
+      return "Negates an instant.";
     case "CRU165": case "CRU166": case "CRU167":
       if($cardID == "CRU165") $optAmt = 3;
       else if($cardID == "CRU166") $optAmt = 2;
@@ -666,17 +666,17 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     case "CRU181":
       $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "CRU181"), SearchDiscardForCard(2, "CRU181")));
       for($i=0; $i<$count; ++$i) { MyDrawCard(); }
-      return "Gorganian Tome drew " . $count . " cards.";
+      return "Draws " . $count . " cards.";
     case "CRU182":
       AddCurrentTurnEffect("CRU182", ($currentPlayer == 1 ? 2 : 1));
-      return "Snag made attack actions unable to gain attack.";
+      return "Makes attack actions unable to gain attack.";
     case "CRU183": case "CRU184": case "CRU185":
-      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Promise of Plenty gained Go Again."; }
+      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Gains go again."; }
       return $rv;
     case "CRU188":
       MyDrawCard();
       MyDrawCard();
-      return "drew two cards.";
+      return "Draws 2 cards.";
     case "CRU189": case "CRU190": case "CRU191":
        $options = GetChainLinkCards($defPlayer, "AA");
        if($options == "") return "No defending attack action cards.";
@@ -1621,7 +1621,7 @@ function CurrentEffectEndTurnAbilities()
         $char = &GetPlayerCharacter($currentTurnEffects[$i+1]);
         for($j=0; $j<count($char); $j+=CharacterPieces())
         {
-          if(CardType($char[$j]) == "W") $char[$j+3] = 0;//Glisten clears out all +1 attack counters
+          if(CardType($char[$j]) == "W") $char[$j+3] = 0;//Glisten clears out all +1 power counters
         }
         $remove = 1;
         break;
@@ -1908,7 +1908,7 @@ function PitchAbility($cardID)
   switch($cardID)
   {
     case "WTR000":
-        if(IHaveLessHealth()) { if(GainHealth(1, $currentPlayer)) WriteLog("Heart of Fyendal gained 1 life."); }
+        if(IHaveLessHealth()) { if(GainHealth(1, $currentPlayer)) WriteLog("Heart of Fyendal gained 1 health."); }
       break;
     case "ARC000":
       Opt($cardID, 2);
@@ -2108,7 +2108,7 @@ function ActivateAbilityEffects()
     {
       switch($currentTurnEffects[$i])
       {
-        case "ELE004-HIT": WriteLog("Endless winter gives a frostbite token."); PlayAura("ELE111", $currentPlayer); break;
+        case "ELE004-HIT": WriteLog("Endless winter creates a frostbite."); PlayAura("ELE111", $currentPlayer); break;
         default: break;
       }
     }
@@ -2399,7 +2399,7 @@ function CombatChainPlayAbility($cardID)
   {
     switch($combatChain[$i])
     {
-      case "EVR122": if(ClassContains($cardID, "WIZARD", $defPlayer)) { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets got +2 block."); } break;
+      case "EVR122": if(ClassContains($cardID, "WIZARD", $defPlayer)) { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets gets +2 defense."); } break;
       default: break;
     }
   }
@@ -3122,8 +3122,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch($lastResult)
       {
         case "Draw_a_card": WriteLog("Englightened Strike drew a card."); return MyDrawCard();
-        case "2_Attack": WriteLog("Englightened Strike got +2 attack."); AddCurrentTurnEffect("WTR159", $player); return 1;
-        case "Go_again": WriteLog("Englightened Strike got Go Again."); $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; return 2;
+        case "2_Attack": WriteLog("Englightened Strike got +2 power."); AddCurrentTurnEffect("WTR159", $player); return 1;
+        case "Go_again": WriteLog("Englightened Strike got go again."); $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; return 2;
       }
       return $lastResult;
     case "NIMBLESTRIKE":
@@ -3141,7 +3141,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $ap = 1;
         $actionPoints += 2;
       }
-      if($ap == 1) WriteLog("Sand Sketched Plan gained two action points.");
+      if($ap == 1) WriteLog("Sand Sketched Plan gained 2 action points.");
       return "1";
     case "REMEMBRANCE":
       $cards = "";
@@ -3176,7 +3176,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $character = &GetPlayerCharacter($player);
         $character[$parameter+1] = 0;
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        WriteLog("Refraction Bolters was destroyed and gave the current attack Go Again.");
+        WriteLog("Refraction Bolters was destroyed and gave the current attack go again.");
       }
       return $lastResult;
     case "TOMEOFAETHERWIND":
@@ -3205,8 +3205,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CAPTAINSCALL":
       switch($lastResult)
       {
-        case "2_Attack": WriteLog("Captain's Call gives +2 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
-        case "Go_again": WriteLog("Captain's Call gives Go Again."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
+        case "2_Attack": WriteLog("Captain's Call gives +2 power."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
+        case "Go_again": WriteLog("Captain's Call gives go again."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
       }
       return $lastResult;
     case "IRONHIDE":
@@ -3274,7 +3274,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PITFALLTRAP":
       if($lastResult == 0)
       {
-        WriteLog("Pitfall Trap did two damage to the attacking hero.");
+        WriteLog("Pitfall Trap did 2 damage to the attacking hero.");
         DamageTrigger($player, 2, "DAMAGE");
       }
       return 1;
@@ -3491,7 +3491,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddCurrentTurnEffect("ELE034-1", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
         case "Go_again":
-          WriteLog("Voltaire gives the arrow Go Again.");
+          WriteLog("Voltaire gives the arrow go again.");
           AddCurrentTurnEffect("ELE034-2", $player, "HAND", $arsenal[count($arsenal)-ArsenalPieces()+5]);
           return 1;
       }
@@ -3536,7 +3536,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($totalAV >= 13)
       {
         AddCurrentTurnEffect("MON247", $player);
-        WriteLog("Rouse the Ancients got +7 and Go Again.");
+        WriteLog("Rouse the Ancients got +7 and go again.");
       }
       return $lastResult;
     case "BEASTWITHIN":
@@ -3789,7 +3789,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BINGO":
       if($lastResult == "") WriteLog("No card was revealed for Bingo.");
       $cardType = CardType($lastResult);
-      if($cardType == "AA") { WriteLog("Bingo gained Go Again."); GiveAttackGoAgain(); }
+      if($cardType == "AA") { WriteLog("Bingo gained go again."); GiveAttackGoAgain(); }
       else if($cardType == "A") {WriteLog("Bingo drew a card."); Draw($player); }
       else WriteLog("Bingo... did not hit the mark.");
       return $lastResult;
@@ -3856,7 +3856,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       RevealCards($cards);
       if($hasLightning && $hasIce && $hasEarth)
       {
-        WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and Go Again.");
+        WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and go again.");
         AddCurrentTurnEffect("EVR017", $player);
       }
       return $lastResult;
@@ -3875,8 +3875,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TWINTWISTERS":
       switch($lastResult)
       {
-        case "Hit_Effect": WriteLog("If Twin Twisters hits, the next attack gets +1 attack."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
-        case "1_Attack": WriteLog("Twin Twisters gets +1 attack."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
+        case "Hit_Effect": WriteLog("If Twin Twisters hits, the next attack gets +1 power."); AddCurrentTurnEffect($parameter . "-1", $player); return 1;
+        case "1_Attack": WriteLog("Twin Twisters gets +1 power."); AddCurrentTurnEffect($parameter . "-2", $player); return 2;
       }
       return $lastResult;
     case "AETHERWILDFIRE":

@@ -681,13 +681,13 @@
     {
       case "EVR003":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Ready to Roll lets you roll an extra die this turn.";
+        return "Lets you roll an extra die this turn.";
       case "EVR004":
         $roll = GetDieRoll($currentPlayer);
         AddCurrentTurnEffect($cardID . "," . $roll, $currentPlayer);
-        return "Rolling Thunder gives your next Brute attack +" . $roll . ".";
+        return "Gives your next Brute attack +" . $roll . ".";
       case "EVR005": case "EVR006": case "EVR007":
-        $rv = "High Roller Intimidated";
+        $rv = "Intimidates";
         Intimidate();
         if($cardID == "EVR005") $targetHigh = 4;
         else if($cardID == "EVR006") $targetHigh = 5;
@@ -701,7 +701,7 @@
       case "EVR008": case "EVR009": case "EVR010":
         MyDrawCard();
         $card = DiscardRandom();
-        $rv = "Bare Fangs discarded " . CardLink($card, $card);
+        $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -712,23 +712,23 @@
       case "EVR011": case "EVR012": case "EVR013":
         MyDrawCard();
         $card = DiscardRandom();
-        $rv = "Wild Ride discarded " . CardLink($card, $card);
+        $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
           GiveAttackGoAgain();
-          $rv .= " and got Go Again from discarding a card with 6 or more power";
+          $rv .= " and got go again from discarding a card with 6 or more power";
         }
         $rv .= ".";
         return $rv;
       case "EVR014": case "EVR015": case "EVR016":
-        $rv = "Bad Beats - Did nothing.";
+        $rv = "Did nothing.";
         if($cardID == "EVR014") $target = 4;
         else if($cardID == "EVR015") $target = 5;
         else $target = 6;
         $roll = GetDieRoll($currentPlayer);
         if($roll >= $target)
         {
-          $rv = "Bad Beats gives the next Brute attack action card +5.";
+          $rv = "Gives the next Brute attack action card +5.";
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return $rv;
@@ -736,16 +736,19 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKAURAMAXCOST," . ($resourcesPaid-3));
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-        return "Imposing Visage let you tutor an aura.";
+        return "Lets you tutor an aura.";
       case "EVR030": case "EVR031": case "EVR032":
         if($cardID == "EVR030") $amount = 3;
         else if($cardID == "EVR031") $amount = 2;
         else $amount = 1;
         PlayAura("WTR075", $currentPlayer, $amount);
-        return "Seismic Stir created " . $amount . " Seismic Surge tokens.";
+        return "Creates " . $amount . " Seismic Surge tokens.";
       case "EVR033": case "EVR034": case "EVR035":
+        if($cardID == "EVR033") $amount = 6;
+        else if($cardID == "EVR034") $amount = 5;
+        else $amount = 4;
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Steadfast prevents damage this turn.";
+        return "Prevents the next " . $amount . " damage from a source.";
       case "EVR047": case "EVR048": case "EVR049":
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
         AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
@@ -754,7 +757,7 @@
         $deck = &GetDeck($currentPlayer);
         $card = array_shift($deck);
         BanishCardForPlayer($card, $currentPlayer, "DECK", "TCC");
-        return "Helm of the Sharp Eye banished a card. It is playable to this combat chain.";
+        return "Banished a card. It is playable on this combat chain.";
       case "EVR054":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -783,7 +786,7 @@
         break;
       case "EVR056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Oath of Steel gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
+        return "Gives your weapon +1 each time you attack this turn, but loses all counters at end of turn.";
       case "EVR057": case "EVR058": case "EVR059":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
@@ -791,7 +794,7 @@
       case "EVR060": case "EVR061": case "EVR062":
         GiveAttackGoAgain();
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-        return "Blade Runner gives Go Again and buffs your next 1H weapon attack.";
+        return "Gives go again and buffs your next 1H weapon attack.";
       case "EVR066": case "EVR067": case "EVR068":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
@@ -812,7 +815,7 @@
       case "EVR079": case "EVR080": case "EVR081":
         $numBoosts = GetClassState($currentPlayer, $CS_NumBoosted);
         Opt($cardID, $numBoosts);
-        return "Zoom In let you opt " . $numBoosts . ".";
+        return "Lets you opt " . $numBoosts . ".";
       case "EVR082": case "EVR083": case "EVR084":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -830,7 +833,7 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("DQVARPASSIFSET", $currentPlayer, "0");
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-        return "Genis Wotchuneed let the opponent choose if they want to sink a card for a silver.";
+        return "Let the opponent choose if they want to sink a card for a silver.";
       case "EVR087":
         if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
@@ -843,28 +846,28 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
-        return "Tri-shot gives your bow 2 additional uses.";
+        return "Gives your bow 2 additional uses.";
       case "EVR090":
         AddCurrentTurnEffect($cardID, 1);
         AddCurrentTurnEffect($cardID, 2);
-        return "Rain Razors gives Arrow attacks +2 this turn.";
+        return "Gives Arrow attacks +2 this turn.";
       case "EVR091": case "EVR092": case "EVR093":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
-        return "Release the Tension buffs your next arrow and prevents Defense reactions on the chain link.";
+        return "Buffs your next arrow and prevents Defense reactions on the chain link.";
       case "EVR100": case "EVR101": case "EVR102":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Opt($cardID, 1);
         return "";
       case "EVR103":
         PlayAura("ARC112", $currentPlayer, 2);
-        return "Vexing Quillhand created two Runechant tokens.";
+        return "Creates 2 Runechants.";
       case "EVR106":
         $rv = "";
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 1 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
           PlayAura("ARC112", $currentPlayer, 4);
-          $rv = "Revel in Runeblood created 4 Runechants.";
+          $rv = "Creates 4 Runechants.";
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }
         return $rv;
@@ -910,7 +913,7 @@
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
         AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
-        return "Pry removes a card. Make sure you choose the right number of options.";
+        return "Removes a card from your opponent hand. Make sure you choose the right number of options.";
       case "EVR134": case "EVR135": case "EVR136":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         return "";
@@ -924,18 +927,18 @@
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
-        return "Crown of Reflection let you destroy an aura and play a new one.";
+        return "Lets you destroy an aura and play a new one.";
       case "EVR138":
         FractalReplicationStats("Ability");
-        return "Fractal Replication will copy effects of other Illusionist cards on the combat chain. Note that according to Everfest release notes, cards that are no longer on the chain (for example, went to Soul) are not counted.";
+        return "Will copy effects of other Illusionist cards on the combat chain. Note that cards that are no longer on the chain (for example, went to Soul) are not counted.";
       case "EVR150": case "EVR151": case "EVR152":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Veiled Intentions buffed your next attack action card and makes it draw if it is destroyed.";
+        return "Buffs your next attack action card and makes it draw if it is destroyed.";
       case "EVR157":
         $rv = "";
         if($from == "PLAY")
         {
-          $rv = "Firebreathing gained +1.";
+          $rv = "Gained +1.";
           ++$combatChain[5];
         }
         return $rv;
@@ -950,12 +953,12 @@
         {
           AddNextTurnEffect($cardID, $otherPlayer);
         }
-        return "This Round's on Me drew a card for each player and gave attacks targeting you -1.";
+        return "Draws a card for each player and gave attacks targeting you -1.";
       case "EVR161": case "EVR162": case "EVR163":
         $rand = rand(1, 3);
-        if($resourcesPaid == 0 || $rand == 1) { WriteLog("Gain +2 life on hit."); AddCurrentTurnEffect("EVR161-1", $currentPlayer); }
-        if($resourcesPaid == 0 || $rand == 2) { WriteLog("Gained +2 attack."); AddCurrentTurnEffect("EVR161-2", $currentPlayer); }
-        if($resourcesPaid == 0 || $rand == 3) { WriteLog("Gained Go Again."); AddCurrentTurnEffect("EVR161-3", $currentPlayer); }
+        if($resourcesPaid == 0 || $rand == 1) { WriteLog("Gain +2 health on hit."); AddCurrentTurnEffect("EVR161-1", $currentPlayer); }
+        if($resourcesPaid == 0 || $rand == 2) { WriteLog("Gained +2 power."); AddCurrentTurnEffect("EVR161-2", $currentPlayer); }
+        if($resourcesPaid == 0 || $rand == 3) { WriteLog("Gained go again."); AddCurrentTurnEffect("EVR161-3", $currentPlayer); }
         return ($resourcesPaid == 0 ? "Party time!" : "");
       case "EVR164": case "EVR165": case "EVR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -973,7 +976,7 @@
         }
         return "";
       case "EVR170": case "EVR171": case "EVR172":
-        $rv = "Smashing Good Time makes your next attack action that hits destroy an item";
+        $rv = "Makes your next attack action that hits destroy an item";
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         if($from == "ARS")
         {
@@ -1011,7 +1014,7 @@
         }
         else
         {
-          $rv = "Amulet of Echoes is a partially manually card. Only activate the ability when the target player has played two or more cards with the same name this turn.";
+          $rv = "Amulet of Echoes is a partially manually card. Only activate the ability when the target player has played 2 or more cards with the same name this turn.";
         }
         return "";
       case "EVR178":
@@ -1027,7 +1030,7 @@
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
-          $rv = "Amulet of Intervention reduces your next ability cost by 1.";
+          $rv = "Reduces your next ability cost by 1.";
         }
         return $rv;
       case "EVR180":
@@ -1035,7 +1038,7 @@
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
-          $rv = "Amulet of Intervention prevents 1 damage.";
+          $rv = "Prevents 1 damage.";
         }
         return $rv;
       case "EVR181":
@@ -1048,19 +1051,19 @@
         if($from == "PLAY")
         {
           Opt($cardID, 2);
-          $rv = "Clarity Potion let you opt 2.";
+          $rv = "Lets you opt 2.";
         }
         return $rv;
       case "EVR183":
         if($from == "PLAY"){
           GainHealth(2, $currentPlayer);
         }
-        return "Healing Potion gained 2 health.";
+        return "Gain 2 healths.";
       case "EVR184":
         $rv = "";
         if($from == "PLAY"){
           LookAtHand($otherPlayer);
-          $rv = "Potion of Seeing revealed the opponent's hand.";
+          $rv = "Reveals the opponent's hand.";
         }
         return $rv;
       case "EVR185":
@@ -1075,7 +1078,7 @@
             for($i=1; $i<PitchPieces(); ++$i) array_shift($pitch);
           }
           if($cards != "") AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
-          $rv = "Potion of Deja Vu put your pitch cards on top of your deck.";
+          $rv = "Puts your cards in your pitch zone on top of your deck.";
         }
         return $rv;
       case "EVR186":
@@ -1083,7 +1086,7 @@
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Potion of Ironhide gives your attack action cards +1 Block this turn.";
+          $rv = "Gives your attack action cards +1 defense this turn.";
         }
         return $rv;
       case "EVR187":
@@ -1096,14 +1099,14 @@
         if($from == "PLAY"){
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           GiveAttackGoAgain();
-          $rv = "Talisman of Featherfoot gave the current attack Go Again.";
+          $rv = "Gives the current attack go again.";
         }
         return $rv;
       case "EVR195":
         $rv = "";
         if($from == "PLAY"){
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-          $rv = "Silver drew a card.";
+          $rv = "Draws a card.";
           Draw($currentPlayer);
         }
         return $rv;
@@ -1356,9 +1359,9 @@
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-1", 1);
           break;
         case "Go_Again":
-          WriteLog("Blood on Her Hands gives a weapon Go Again this turn.");
+          WriteLog("Blood on Her Hands gives a weapon go again this turn.");
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give Go Again", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon to give go again", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, "EVR055-2", 1);
           break;

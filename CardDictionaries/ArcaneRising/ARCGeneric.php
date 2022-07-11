@@ -145,14 +145,14 @@
     {
       case "ARC151":
         Opt($cardID, 2);
-        return "Talismanic Lens lets you Opt 2.";
+        return "Lets you opt 2.";
       case "ARC153":
         $pitchValue = 0;
         $deck = GetDeck($currentPlayer);
         if(count($deck) > 0)
         {
           $pitchValue = PitchValue($deck[0]);
-          $rv = "Bracers of Belief revealed " . CardLink($deck[0], $deck[0]) . " and gives the next attack action card +" . (3 - $pitchValue) . ".";
+          $rv = "Revealed " . CardLink($deck[0], $deck[0]) . " and gives the next attack action card +" . (3 - $pitchValue) . ".";
         }
         else { $rv = "There are no cards in deck for Bracers of Belief to reveal, so the next attack gets +3."; }
         $bonus = 3 - $pitchValue;
@@ -160,18 +160,18 @@
         return $rv;
       case "ARC154":
         SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
-        return "Mage Master Boots gives your next non-attack action card this turn Go Again.";
+        return "Gives your next non-attack action card this turn go again.";
       case "ARC160":
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_attack_actions,Go_again,Attack_actions_from_arsenal,Banish_and_draw");
         AddDecisionQueue("ARTOFWAR", $currentPlayer, "-", 1);
         return "";
       case "ARC162":
-        return "Chains of Eminence is currently a manual resolve card. Name the card in chat, and enforce not playing it manually.";
+        return "Is currently a manual resolve card. Name the card in chat, and enforce not playing it manually.";
       case "ARC164": case "ARC165": case "ARC166":
-        if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Life for a Life gained Go Again."; }
+        if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Gained go again."; }
         return $ret;
       case "ARC170": case "ARC171": case "ARC172":
-        $rv = "Plunder Run makes your next attack action that hits draw a card";
+        $rv = "Makes your next attack action that hits draw a card";
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         if($from == "ARS")
         {
@@ -191,9 +191,9 @@
           $prevent -= PitchValue($revealed);
         }
         IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-        return "Eirina's Prayer reveals " . CardLink($revealed, $revealed) . " and prevents the next " . $prevent . " arcane damage.";
+        return "Reveals " . CardLink($revealed, $revealed) . " and prevents the next " . $prevent . " arcane damage.";
       case "ARC182": case "ARC183": case "ARC184":
-        if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Fervent Forerunner gained Go Again."; }
+        if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret = "Gained go again."; }
         return $ret;
       case "ARC185": case "ARC186": case "ARC187":
         IncrementClassState($currentPlayer, $CS_NumMoonWishPlayed);
@@ -203,13 +203,13 @@
         if(count($deck) == 0) return "Your deck is empty. Ravenous Rabble does not get negative attack.";
         $pitchVal = PitchValue($deck[0]);
         SetCCAttackModifier(0, -$pitchVal);
-        return "Ravenous Rabble reveals " . CardLink($deck[0], $deck[0]) . " and gets -" . $pitchVal . " attack.";
-      case "ARC200": case "ARC201": case "ARC202": Opt($cardID, 1); return "allows you to Opt 1.";
+        return "Reveals " . CardLink($deck[0], $deck[0]) . " and gets -" . $pitchVal . " attack.";
+      case "ARC200": case "ARC201": case "ARC202": Opt($cardID, 1); return "Lets you to Opt 1.";
       case "ARC203": case "ARC204": case "ARC205":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Come to Fight gives your next attack action card +" . EffectAttackModifier($cardID) . ".";
+        return "Gives your next attack action card +" . EffectAttackModifier($cardID) . ".";
       case "ARC206": case "ARC207": case "ARC208":
-        $rv = "Force Sight gives your next attack action card +" . EffectAttackModifier($cardID);
+        $rv = "Gives your next attack action card +" . EffectAttackModifier($cardID);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if($from == "ARS") { Opt($cardID, 2); $rv .= " and lets you opt 2."; }
         else { $rv .= "."; }
@@ -219,13 +219,13 @@
         if($cardID == "ARC209") $cost = 0;
         else if($cardID == "ARC210") $cost = 1;
         else $cost = 2;
-        return "Lead the Charge makes you gain an action point the next time you play an action card with cost $cost or greater.";
+        return "Makes you gain an action point the next time you play an action card with cost $cost or greater.";
       case "ARC212": case "ARC213": case "ARC214":
         if($cardID == "ARC212") $health = 3;
         else if($cardID == "ARC213") $health = 2;
         else $health = 1;
         GainHealth($health, $currentPlayer);
-        $rv = "Sun Kiss gained $health health";
+        $rv = "Gained $health health";
         if(GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) { MyDrawCard(); $rv .= " and drew a card."; }
         else $rv .= ".";
         return $rv;
@@ -234,7 +234,7 @@
         else if($cardID == "ARC216") $opt = 3;
         else $opt = 2;
         Opt($cardID, $opt);
-        return "Whisper of the Oracle lets you opt " . $opt . ".";
+        return "Lets you opt " . $opt . ".";
       default: return "";
     }
   }
@@ -276,11 +276,11 @@
         switch($userInput[$i])
         {
           case "Buff_attack_actions":
-            WriteLog("Art of War gives attack action cards +1 attack and block this turn.");
+            WriteLog("Art of War gives attack action cards +1 power and defense this turn.");
             AddCurrentTurnEffect("ARC160-1", $currentPlayer);
             break;
           case "Go_again":
-            WriteLog("Art of War gives the next attack action card this turn Go Again.");
+            WriteLog("Art of War gives the next attack action card this turn go again.");
             if(count($combatChain) > 0)
             {
               AddCurrentTurnEffectFromCombat("ARC160-3", $currentPlayer);

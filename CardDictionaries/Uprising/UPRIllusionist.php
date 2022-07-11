@@ -302,13 +302,13 @@
         $allies = &GetAllies($currentPlayer);
         $allies[$index+2] = $char[$gtIndex+2];
         AddCurrentTurnEffect($cardID . "-" . $char[$gtIndex+2], $currentPlayer);
-        return "Ghostly Touch animated itself into an Ally.";
+        return "Animates itself into an Ally.";
       case "UPR154":
         AddCurrentTurnEffect("UPR154", $currentPlayer);
-        return "Semblance makes your next illusionist attack lose Phantasm.";
+        return "Makes your next illusionist attack lose Phantasm.";
       case "UPR155": case "UPR156": case "UPR157":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Transmogrify modifies the base attack of your next attack action card.";
+        return "Makes your next attack action card Illusionist, modify its base attack and gain Phantasm.";
       case "UPR406":
         if(IsHeroAttackTarget()) {
           $deck = &GetDeck($currentPlayer);
@@ -329,7 +329,7 @@
           RevealCards($cardsReveal);
           if($redRevealed)
           {
-            WriteLog("Optimai revealed ". $numRed . " red cards and deal damage equal to twice the number.");
+            WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
             DealArcane($numRed * 2, 2, "ABILITY", $cardID, false, $currentPlayer);
           }
         }
@@ -386,7 +386,7 @@
         return "";
       case "UPR410":
         GainActionPoints(1);
-        return "Cromai gives you an action point.";
+        return "Gives you an action point.";
       default: return "";
     }
   }

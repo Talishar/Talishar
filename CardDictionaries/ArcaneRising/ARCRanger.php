@@ -158,7 +158,7 @@
         MyDrawCard();
         MyDrawCard();
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Three of a Kind drew three cards and restricted you to playing cards from arsenal this turn.";
+        return "Draws 3 cards and restrict you to playing cards from arsenal this turn.";
       case "ARC046":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDECKARROW");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
@@ -170,12 +170,12 @@
       case "ARC047":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
-        return "Rapid fire gives arrows you control Go Again this turn and allows you to reload.";
+        return "Gives arrows you control go again this turn and allows you to reload.";
       case "ARC048": case "ARC049": case "ARC050":
         Reload();
         return "Take cover allows you to reload.";
       case "ARC051": case "ARC052": case "ARC053":
-        if(!ArsenalEmpty($currentPlayer)) return "Silver the Tip did nothing because your arsenal is not empty.";
+        if(!ArsenalEmpty($currentPlayer)) return "Did nothing because your arsenal is not empty.";
         if($cardID == "ARC051") $count = 4;
         else if($cardID == "ARC052") $count = 3;
         else $count = 2;
@@ -206,11 +206,11 @@
           AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
           AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
         }
-        return "Silver the Tip lets you load an arrow and rearrange the rest of the cards on the bottom of your deck.";
+        return "Lets you load an arrow and rearrange the rest of the cards on the bottom of your deck.";
       case "ARC054": case "ARC055": case "ARC056":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
-        return "Take Aim gives your next Ranger attack action card +" . EffectAttackModifier($cardID) . " and allows you to reload.";
+        return "Gives your next Ranger attack action card +" . EffectAttackModifier($cardID) . " and allows you to reload.";
       default: return "";
     }
   }

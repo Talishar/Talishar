@@ -132,24 +132,24 @@
     {
       case "MON001": case "MON002":
         PlayAura("MON104", $currentPlayer);
-        return "Prism created a Spectral Shield.";
+        return "Creates a Spectral Shield.";
       case "MON090":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Dream Weavers makes your next Illusionist attack action card you play lose Phantasm.";
+        return "Makes your next Illusionist attack action card you play lose Phantasm.";
       case "MON091":
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
         AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
-        return "Phantasmaclasm let you put a card from your opponent's hand on the bottom of their deck.";
+        return "Lets you put a card from your opponent's hand on the bottom of their deck.";
       case "MON092": PlayAura("MON104", $currentPlayer);
       case "MON093": PlayAura("MON104", $currentPlayer);
       case "MON094": PlayAura("MON104", $currentPlayer);
-        return "Prismatic Shield created Spectral Shields.";
+        return "Creates a Spectral Shields.";
       case "MON095": case "MON096": case "MON097":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Phantasmify makes your next attack be Illusionist, get +" . EffectAttackModifier($cardID) . " and phantasm.";
+        return "Makes your next attack be Illusionist, get +" . EffectAttackModifier($cardID) . " and phantasm.";
       default: return "";
     }
   }

@@ -134,9 +134,9 @@
         if(ArsenalHasFaceDownCard($currentPlayer))
         {
           $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
-          $rv = "Lexi turned " . CardLink($cardFlipped, $cardFlipped) . " face up.";
+          $rv = "Turns " . CardLink($cardFlipped, $cardFlipped) . " face up.";
           if(TalentContains($cardFlipped, "LIGHTNING")) { $rv .= " The next attacks gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
-          if(TalentContains($cardFlipped, "ICE")) { $rv .= " The opponent got a Frostbite token."; PlayAura("ELE111", $otherPlayer); }
+          if(TalentContains($cardFlipped, "ICE")) { $rv .= " The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
         }
         return $rv;
       case "ELE033":
@@ -159,7 +159,7 @@
         return "";
       case "ELE035":
         AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
-        return "Frost Lock makes cards and activating abilities by the opponent cost 1 more this turn.";
+        return "Makes cards and activating abilities by the opponent cost 1 more this turn.";
       case "ELE037":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
@@ -177,11 +177,11 @@
         return "";
       case "ELE215":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Seek and Destroy gives your next arrow attack +3 and if it hits destroys your opponent's hand an arsenal next turn.";
+        return "Gives your next arrow attack +3 and if it hits destroys your opponent's hand an arsenal next turn.";
       case "ELE219": case "ELE220": case "ELE221":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         Reload();
-        return "Over Flex gives your next arrow attack this turn +" . EffectAttackModifier($cardID) . " and lets you reload.";
+        return "Gives your next arrow attack this turn +" . EffectAttackModifier($cardID) . " and lets you reload.";
       default: return "";
     }
   }
