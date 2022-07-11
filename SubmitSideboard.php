@@ -57,7 +57,7 @@
     $gameStatus = $MGS_GameStarted;
   }
   WriteGameFile();
-  SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
+  SetCachePiece($gameName, 1, intval(GetCachePiece($gameName, 1)) + 1);
 
   if($playerID == 1)
   {

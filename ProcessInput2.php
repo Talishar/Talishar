@@ -446,7 +446,7 @@
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
       SetCachePiece($gameName, 3, $currentTime);
-      SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
+      SetCachePiece($gameName, 1, intval(GetCachePiece($gameName, 1)) + 1);
       exit;
     default:break;
   }
@@ -474,7 +474,7 @@
   if($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
   if($MakeStartTurnBackup) MakeStartTurnBackup();
 
-  SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
+  SetCachePiece($gameName, 1, intval(GetCachePiece($gameName, 1)) + 1);
 
   ExitProcessInput();
 
