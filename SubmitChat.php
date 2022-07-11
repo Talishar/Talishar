@@ -19,6 +19,6 @@
   fwrite($handler, $output . "\r\n");
   fclose($handler);
 
-  SetCachePiece($gameName, 1, intval(GetCachePiece($gameName, 1)) + 1);
+  SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
 
 ?>
