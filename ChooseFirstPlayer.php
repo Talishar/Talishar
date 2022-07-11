@@ -23,7 +23,7 @@
   }
   WriteLog("Player " . $firstPlayer . " will go first.");
   $gameStatus = $MGS_P2Sideboard;
-  SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+  GamestateUpdated($gameName);
 
   WriteGameFile();
 

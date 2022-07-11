@@ -24,7 +24,7 @@ if ($handle = opendir($path)) {
         $currentTime = round(microtime(true) * 1000);
         if(file_exists($gs))
         {
-          $lastGamestateUpdate = intval(GetCachePiece($gameToken, 1));
+          $lastGamestateUpdate = intval(GetCachePiece($gameToken, 6));
           if($currentTime - $lastGamestateUpdate < 30000)
           {
             $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn3.php'>";
@@ -51,7 +51,7 @@ if ($handle = opendir($path)) {
         $status = -1;
         if(file_exists($gf))
         {
-          $lastRefresh = intval(GetCachePiece($gameName, 2));//filemtime($gf);
+          $lastRefresh = intval(GetCachePiece($gameName, 2));//Player 1 last connection time
           if($lastRefresh != "" && $currentTime - $lastRefresh < 500)
           {
             include 'MenuFiles/ParseGamefile.php';

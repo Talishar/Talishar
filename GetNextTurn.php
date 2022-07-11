@@ -47,13 +47,13 @@
       if(($currentTime - $oppLastTime) > 5000 && ($oppStatus == "0"))
       {
         WriteLog("Opponent has disconnected. Waiting to reconnect.");
-        SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+        GamestateUpdated($gameName);
         SetCachePiece($gameName, $otherP+3, "1");
       }
       else if(($currentTime - $oppLastTime) > 60000 && $oppStatus == "1")
       {
         WriteLog("Opponent has left the game.");
-        SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+        GamestateUpdated($gameName);
         SetCachePiece($gameName, $otherP+3, "2");
         $lastUpdate = 0;
         $opponentDisconnected = true;
@@ -122,7 +122,7 @@
   if(count($turn) == 0)
   {
     RevertGamestate();
-    SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+    GamestateUpdated($gameName);
     exit();
   }
 

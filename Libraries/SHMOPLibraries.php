@@ -50,4 +50,11 @@ function GetCachePiece($name, $piece)
   return $cacheArray[$piece];
 }
 
+function GamestateUpdated($gameName)
+{
+  SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+  $currentTime = round(microtime(true) * 1000);
+  SetCachePiece($gameName, 6, $currentTime);
+}
+
 ?>
