@@ -23,7 +23,7 @@
   }
   WriteLog("Player " . $firstPlayer . " will go first.");
   $gameStatus = $MGS_P2Sideboard;
-  SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+  SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
 
   WriteGameFile();
 
