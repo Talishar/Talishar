@@ -42,7 +42,7 @@
       if(($currentTime - $oppLastTime) > 8000 && $oppStatus == "0")
       {
         WriteLog("Player $otherP has disconnected.");
-        SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+        GamestateUpdated($gameName);
         SetCachePiece($gameName, $otherP+3, "-1");
         $kickPlayerTwo = true;
       }

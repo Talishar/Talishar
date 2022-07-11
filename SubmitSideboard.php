@@ -57,7 +57,7 @@
     $gameStatus = $MGS_GameStarted;
   }
   WriteGameFile();
-  SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+  GamestateUpdated($gameName);
 
   if($playerID == 1)
   {
