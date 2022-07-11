@@ -9,6 +9,8 @@
   $playerID=TryGet("playerID", 3);
   $lastUpdate = TryGet("lastUpdate", 0);
 
+  if($lastUpdate > 1000000) $lastUpdate = 0;
+
 
   include "WriteLog.php";
   include "CardDictionary.php";
@@ -22,7 +24,7 @@
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
   $kickPlayerTwo = false;
-  while($lastUpdate != 0 && $cacheVal < $lastUpdate)
+  while($lastUpdate != 0 && $cacheVal <= $lastUpdate)
   {
     usleep(50000);//50 milliseconds
     $currentTime = round(microtime(true) * 1000);
@@ -39,7 +41,7 @@
       if(($currentTime - $oppLastTime) > 8000 && $oppStatus == "0")
       {
         WriteLog("Player $otherP has disconnected.");
-        SetCachePiece($gameName, 1, $currentTime);
+        SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
         SetCachePiece($gameName, $otherP+3, "-1");
         $kickPlayerTwo = true;
       }
@@ -62,7 +64,7 @@
   else if($gameStatus == $MGS_GameStarted) { echo("1"); exit; }
   else {
 
-    echo(strval(round(microtime(true) * 1000)) . "ENDTIMESTAMP");
+    echo(GetCachePiece($gameName, 1) . "ENDTIMESTAMP");
     if($gameStatus == $MGS_ChooseFirstPlayer)
     {
       if($playerID == $firstPlayerChooser)
