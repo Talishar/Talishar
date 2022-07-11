@@ -1838,7 +1838,7 @@
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
       case "ELE118": return ArsenalEmpty($currentPlayer);
       case "ELE143": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedEarth) == 0;
-      case "ELE147": return count($combatChain) == 0 && !(CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally"));
+      case "ELE147": return count($combatChain) == 0 && count($layers) == 0;
       case "ELE172": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedIce) == 0;
       case "ELE183": case "ELE184": case "ELE185": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
       case "ELE201": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedLightning) == 0;
