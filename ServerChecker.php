@@ -54,7 +54,6 @@ if ($handle = opendir($path)) {
           $lastRefresh = intval(GetCachePiece($gameName, 2));//filemtime($gf);
           if($lastRefresh != "" && $currentTime - $lastRefresh < 500)
           {
-            //$status = (GetCachePiece($gameName, 5) == "-1" ? 0 : 1);
             include 'MenuFiles/ParseGamefile.php';
             $status = $gameStatus;
             UnlockGamefile();
