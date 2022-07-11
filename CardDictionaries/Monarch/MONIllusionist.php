@@ -146,7 +146,7 @@
       case "MON092": PlayAura("MON104", $currentPlayer);
       case "MON093": PlayAura("MON104", $currentPlayer);
       case "MON094": PlayAura("MON104", $currentPlayer);
-        return "Creates a Spectral Shields.";
+        return "Creates Spectral Shields.";
       case "MON095": case "MON096": case "MON097":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Makes your next attack be Illusionist, get +" . EffectAttackModifier($cardID) . " and phantasm.";
