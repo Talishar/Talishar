@@ -9,7 +9,7 @@
   $playerID=TryGet("playerID", 3);
   $lastUpdate = TryGet("lastUpdate", 0);
 
-  if($lastUpdate > 1000000) $lastUpdate = 0;
+  if($lastUpdate > 10000000) $lastUpdate = 0;
 
 
   include "WriteLog.php";
@@ -23,6 +23,7 @@
 
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
+  if($cacheVal > 10000000) { SetCachePiece($gameName, 1, 1); $lastUpdate = 0; }
   $kickPlayerTwo = false;
   while($lastUpdate != 0 && $cacheVal <= $lastUpdate)
   {

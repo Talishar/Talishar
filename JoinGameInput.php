@@ -236,7 +236,7 @@
   WriteGameFile();
   SetCachePiece($gameName, $playerID+1, strval(round(microtime(true) * 1000)));
   SetCachePiece($gameName, $playerID+3, "0");
-  SetCachePiece($gameName, 1, intval(GetCachePiece($gameName, 1)) + 1);
+  SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 

@@ -7,9 +7,9 @@
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=TryGet("playerID", 3);
   $authKey=TryGet("authKey", 3);
-  $lastUpdate = TryGet("lastUpdate", 0);
+  $lastUpdate = intval(TryGet("lastUpdate", 0));
 
-  if($lastUpdate > 1000000) $lastUpdate = 0;
+  if($lastUpdate > 10000000) { $lastUpdate = 0; }
 
   include "HostFiles/Redirector.php";
   include "Libraries/SHMOPLibraries.php";
@@ -31,7 +31,8 @@
     }
   }
   $count = 0;
-  $cacheVal = GetCachePiece($gameName, 1);
+  $cacheVal = intval(GetCachePiece($gameName, 1));
+  if($cacheVal > 10000000) { SetCachePiece($gameName, 1, 1); $lastUpdate = 0; }
   while($lastUpdate != 0 && $cacheVal <= $lastUpdate)
   {
     usleep(50000);//50 milliseconds
