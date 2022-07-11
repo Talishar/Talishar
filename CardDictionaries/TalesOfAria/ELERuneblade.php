@@ -149,7 +149,7 @@
       case "ELE222":
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
-          $rv = "Rosetta Thorn deals 2 arcane damage to target hero.";
+          $rv = "Deals 2 arcane damage to target hero.";
           DealArcane(2, 0, "PLAYCARD", $cardID);
         }
         return $rv;
@@ -162,10 +162,10 @@
         return $rv;
       case "ELE224":
         SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-        return "Spellbound Creepers lets you play your next non-attack action as if it were an instant.";
+        return "Lets you play your next non-attack action as if it was an instant.";
       case "ELE225":
         GiveAttackGoAgain();
-        return "Sutcliffe's Suede Hides gives the current attack Go Again.";
+        return "Gives the current attack go again.";
       case "ELE227": case "ELE228": case "ELE229":
         DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";

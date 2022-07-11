@@ -162,7 +162,7 @@
         if($icePitched)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv .= "If this hits, your opponent gains a Frostbite token.";
+          $rv .= "If this hits, your opponent gains a Frostbite.";
         }
         return $rv;
       case "ELE006":
@@ -176,9 +176,9 @@
         return "";
       case "ELE205":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Tear Asunder gives your next Guardian attack +1, Dominate, and discards 2 on hit.";
+        return "Gives your next Guardian attack +1, Dominate, and discards 2 on hit.";
       case "ELE206": case "ELE207": case "ELE208":
-        if(NumNonTokenAura($currentPlayer) > 1) { $rv = "Embolden drew a card."; MyDrawCard(); }
+        if(NumNonTokenAura($currentPlayer) > 1) { $rv = "Draws a card."; MyDrawCard(); }
         return $rv;
       default: return "";
     }
@@ -194,7 +194,7 @@
         {
           AddCurrentTurnEffect($cardID . "-HIT", $defPlayer);
           AddNextTurnEffect($cardID . "-HIT", $defPlayer);
-          WriteLog("Endless Winter makes the defending player take a frostbite token when activating an ability until the end of their next turn.");
+          WriteLog("Endless Winter makes the defending player get a frostbite when activating an ability until the end of their next turn.");
         }
         break;
       case "ELE013": case "ELE014": case "ELE015":

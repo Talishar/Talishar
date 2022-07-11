@@ -129,36 +129,36 @@
     case "DVR004":
       $resources = &GetResources($currentPlayer);
       $resources[0] += 1;
-      return "Blossom of Spring added 1 resource.";
+      return "Gain 1 resource.";
     case "DVR008":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
-      return "Glistening Steelblade gives your next Dawnblade attack Go Again.";
+      return "Gives your next Dawnblade attack go again.";
 
     case "DVR009":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "En Garde gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
+      return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
 
     case "DVR013";
       GiveAttackGoAgain();
       AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-      return "Run Through gives Go Again and buffs your next sword weapon attack.";
+      return "Gives go again and buffs your next sword weapon attack.";
 
     case "DVR014";
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Thrust gives your next +3 to your sword attack.";
+      return "Gives your next +3 to your sword attack.";
 
     case "DVR019":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "On a Knife Edge gives your sword attack Go Again.";
+      return "Gives your sword attack go again.";
 
     case "DVR022":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "Visit the Blacksmith gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
+      return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
 
     case "DVR023":
       GiveAttackGoAgain();
-      return "Blade Flash gives your sword attack Go Again.";
+      return "Gives your sword attack go again.";
     }
   }
 

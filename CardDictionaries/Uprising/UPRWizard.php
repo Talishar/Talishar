@@ -139,7 +139,7 @@
           AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
           AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
         }
-        return "Encase deals 3 arcane.";
+        return "Deals 3 arcane.";
       case "UPR105":
         if(DelimStringContains($additionalCosts, "ICE"))
         {
@@ -154,7 +154,7 @@
         if(DelimStringContains($additionalCosts, "ICE"))
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-          $rv = "Sigil of Permafrost makes your next arcane damage give frostbites.";
+          $rv = "Makes your next arcane damage create frostbites.";
         }
         return $rv;
       case "UPR109":
@@ -169,7 +169,7 @@
         {
           DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer);
         }
-        return "Ice Eternal created $numFrostBite Frostbites.";
+        return "Creates $numFrostBite Frostbites.";
       case "UPR110": case "UPR111": case "UPR112":
         if($cardID == "UPR110") $damage = 5;
         else if($cardID == "UPR111") $damage = 4;
@@ -226,7 +226,7 @@
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
         }
-        return "Ice Bind deals $damage arcane.";
+        return "Deals $damage arcane.";
       case "UPR122": case "UPR123": case "UPR124":
         if($cardID == "UPR122") $damage = 4;
         else if($cardID == "UPR123") $damage = 3;
@@ -252,13 +252,13 @@
         else if($cardID == "UPR131") $damage = 2;
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        return "Frosting deals $damage arcane.";
+        return "Deals $damage arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
         else $damage = 3;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        return "Ice Bolt deals $damage arcane.";
+        return "Deals $damage arcane.";
       case "UPR165":
         if($currentPlayer != $mainPlayer) $damage = 3;
         else $damage = 2;
@@ -266,19 +266,19 @@
         return "";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Alluvion Constellas discounts your next staff ability by 3.";
+        return "Discounts your next staff ability by 3.";
       case "UPR167":
         GainResources($currentPlayer, 1);
-        return "Spellfire Cloak gained 1 resource.";
+        return "Gain 1 resource.";
       case "UPR168":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPX,2");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
-        return "Tome of Duplicity lets you look at the top 2 cards of your deck.";
+        return "Lets you look at the top 2 cards of your deck.";
       case "UPR169":
         NegateLayer($target, "HAND");
         if($currentPlayer != $mainPlayer) GainActionPoints($mainPlayer, 1);
-        return "Rewind negated a non-attack action and returned it to it's owners hand";
+        return "Negates a non-attack action and returned it to it's owners hand";
       case "UPR170": case "UPR171": case "UPR172":
         if($cardID == "UPR170") $damage = 4;
         else if($cardID == "UPR171") $damage = 3;
@@ -304,7 +304,7 @@
         {
           DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         }
-        return "Singe is a partially manual card. You have to make sure you damage each target no more than once.";
+        return "Singe is a partially manual card. You have to make sure you damage each target no more than once."; //// TODO: Limite to once each target.
       default: return "";
     }
   }

@@ -169,7 +169,6 @@
     }
   }
 
-
   function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-")
   {
     global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
@@ -183,7 +182,7 @@
           DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
           $rv = "The Great Library of Solana was destroyed.";
         }
-        return ;
+        return $rv;
       case "MON061":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
@@ -199,7 +198,7 @@
           AddSoul($hand[$i], $currentPlayer, "HAND");
         }
         $hand = [];
-        return "Soul Food put itself and all cards in your hand into your soul.";
+        return "Put itself and all cards in your hand into your soul.";
       case "MON065":
         MyDrawCard();
         MyDrawCard();
@@ -209,7 +208,7 @@
         if(count(GetSoul($currentPlayer)) == 0)
         {
           $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
-          $rv = "Invigorating Light will go into your soul after the chain link closes.";
+          $rv = "Goes into your soul after the chain link closes.";
         }
         return $rv;
       case "MON069": case "MON070": case "MON071":
@@ -226,13 +225,13 @@
         return "";
       case "MON081": case "MON082": case "MON083":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Seek Enlightenment gives your next attack action card +" . EffectAttackModifier($cardID) . " and go in your soul if it hits.";
+        return "Gives your next attack action card +" . EffectAttackModifier($cardID) . " and go in your soul if it hits.";
       case "MON084": $combatChain[intval($target)+5] -= 3; return "";
       case "MON085": $combatChain[intval($target)+5] -= 2; return "";
       case "MON086": $combatChain[intval($target)+5] -= 1; return "";
       case "MON087":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Ray of Hope gives attacks against Shadow heroes +1 this turn.";
+        return "Gives attacks against Shadow heroes +1 this turn.";
       case "MON188":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
@@ -243,25 +242,25 @@
         return "";
       case "MON189":
         PlayAlly("MON219", $currentPlayer);
-        return "Doomsday created a Blasmophet token.";
+        return "Creates a Blasmophet Ally.";
       case "MON190":
         PlayAlly("MON220", $currentPlayer);
-        return "Eclipse created an Ursur token.";
+        return "Creates an Ursur Ally.";
       case "MON192":
         if($from=="BANISH")
         {
-          return "Guardian of the Shadowrealm was returned to hand.";
+          return "Returns to hand.";
         }
         return;
       case "MON193":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Shadow Puppetry gives your next action card +1, Go Again, and if it hits you may banish the top card of your deck.";
+        return "Gives your next action card +1, go again, and if it hits you may banish the top card of your deck.";
       case "MON194":
         MyDrawCard();
-        return "Tome of Torment drew a card.";
+        return "Draws a card.";
       case "MON200": case "MON201": case "MON202":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Howl from Beyond gives your next attack action this turn +" . EffectAttackModifier($cardID) . ".";
+        return "Gives your next attack action this turn +" . EffectAttackModifier($cardID) . ".";
       case "MON212": case "MON213": case "MON214":
         if($cardID == "MON212") $maxCost = 2;
         else if($cardID == "MON213") $maxCost = 1;
@@ -269,7 +268,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON212," . $maxCost);
         AddDecisionQueue("CHOOSEBANISH", $currentPlayer, "<-", 1);
         AddDecisionQueue("BANISHADDMODIFIER", $currentPlayer, "MON212", 1);
-        return "Spew Shadow let you play an attack action from your banish zone.";
+        return "Lets you play an attack action from your banish zone.";
       case "MON215": case "MON216": case "MON217":
         if($cardID == "MON215") $optAmt = 3;
         else if($cardID == "MON216") $optAmt = 2;
@@ -278,7 +277,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-        return "Blood Tribute let you opt $optAmt and banish the top card of your deck.";
+        return "Lets you opt $optAmt and banish the top card of your deck.";
       case "MON218":
         $theirCharacter = GetPlayerCharacter($otherPlayer);
         if(TalentContains($theirCharacter[0], "LIGHT", $otherPlayer))

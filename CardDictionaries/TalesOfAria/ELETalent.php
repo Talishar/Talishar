@@ -263,13 +263,13 @@
         return $rv;
       case "ELE103": case "ELE104": case "ELE105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Invigorate gives the next attack you Fuse this turn +" . EffectAttackModifier($cardID) . ".";
+        return "Gives the next attack you Fuse this turn +" . EffectAttackModifier($cardID) . ".";
       case "ELE106": GainHealth(3, $currentPlayer); return "Rejuvenate gains 3 health.";
       case "ELE107": GainHealth(2, $currentPlayer); return "Rejuvenate gains 2 health.";
       case "ELE108": GainHealth(1, $currentPlayer); return "Rejuvenate gains 1 health.";
       case "ELE112":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Pulse of Volthaven gives your next Lightning, Ice, or Elemental attack this turn +4.";
+        return "Gives your next Lightning, Ice, or Elemental attack this turn +4.";
       case "ELE113":
         for($i=0; $i<2; ++$i)
         {
@@ -281,7 +281,7 @@
         return "";
       case "ELE114":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Pulse of Isenloft gives your Ice, Earth, and Elemental action cards +1 defense this turn.";
+        return "Gives your Ice, Earth, and Elemental action cards +1 defense this turn.";
       case "ELE115":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
         AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
@@ -300,22 +300,22 @@
         MyDrawCard();
         MyDrawCard();
         MyDrawCard();
-        return "Tome of Harvests let you draw 3 cards.";
+        return "Draws 3 cards.";
       case "ELE119": case "ELE120": case "ELE121":
         if($from == "ARS")
         {
           $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-          $rv = "Evergreen goes to the bottom of your deck when the combat chain closes.";
+          $rv = "Goes to the bottom of your deck when the combat chain closes.";
         }
         return $rv;
       case "ELE122": case "ELE123": case "ELE124":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Weave Earth gives your next Earth or Elemental attack action card this turn +" . EffectAttackModifier($cardID) .", and +1 if it's fused.";
+        return "Gives your next Earth or Elemental attack action card this turn +" . EffectAttackModifier($cardID) .", and +1 if it's fused.";
       case "ELE125": case "ELE126": case "ELE127":
        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
        AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $currentPlayer, PlayBlockModifier($cardID), 1);
-       return "Summerwood Shelter gives target defending card " . PlayBlockModifier($cardID) . ".";
+       return "Gives target defending card " . PlayBlockModifier($cardID) . ".";
       case "ELE131": case "ELE132": case "ELE133":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
         AddDecisionQueue("MAYCHOOSEARSENAL", $currentPlayer, "<-", 1);
@@ -325,7 +325,7 @@
         return "";
       case "ELE137": case "ELE138": case "ELE139":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Earthlore Surge gives your next attack action card this turn +" . EffectAttackModifier($cardID) .".";
+        return "Gives your next attack action card this turn +" . EffectAttackModifier($cardID) .".";
       case "ELE140": case "ELE141": case "ELE142":
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
@@ -341,15 +341,15 @@
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
           }
-          $rv = "Amulet of Earth gives your attack actions cards +1 attack and +1 defense for the rest of the turn.";
+          $rv = "Gives your attack actions cards +1 power and +1 defense for the rest of the turn.";
         }
         return $rv;
       case "ELE144":
         AddCurrentTurnEffect($cardID, $otherPlayer);
-        return "Heart of Ice makes cards and activated abilities of your opponent cost +1 resource this turn.";
+        return "Makes cards and activated abilities of your opponent cost +1 resource this turn.";
       case "ELE145":
         PlayAura("ELE111", $otherPlayer);
-        return "Coat of Frost create a frostbite token for the other player.";
+        return "Creates a frostbite for the other player.";
       case "ELE147":
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again.");
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
@@ -360,13 +360,13 @@
       case "ELE151": case "ELE152": case "ELE153":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
-        return "Ice Quake gives your next attack this turn +" . EffectAttackModifier($cardID) . " and each hit creates a frostbite token.";
+        return "Gives your next attack this turn +" . EffectAttackModifier($cardID) . " and each hit creates a frostbite.";
       case "ELE154": case "ELE155": case "ELE156":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Weave Ice gives your next Ice or Elemental attack action card this turn +" . EffectAttackModifier($cardID) . " and Dominate if it's fused.";
+        return "Gives your next Ice or Elemental attack action card this turn +" . EffectAttackModifier($cardID) . " and Dominate if it's fused.";
       case "ELE163": case "ELE164": case "ELE165":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Chill to the Bone makes your next Ice or Elemental attack create Frostbite tokens for your opponent.";
+        return "Makes your next Ice or Elemental attack create Frostbites for your opponent.";
       case "ELE166": case "ELE167": case "ELE168":
         if($cardID == "ELE166") $cost = 3;
         else if($cardID == "ELE167") $cost = 2;
@@ -377,9 +377,9 @@
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         if($from == "ARS") MyDrawCard();
         return "";
-      case "ELE169": PayOrDiscard($otherPlayer, 3); return "Winter's Bite makes the opponent pay 3 or discard a card.";
-      case "ELE170": PayOrDiscard($otherPlayer, 2); return "Winter's Bite makes the opponent pay 2 or discard a card.";
-      case "ELE171": PayOrDiscard($otherPlayer, 1); return "Winter's Bite makes the opponent pay 1 or discard a card.";
+      case "ELE169": PayOrDiscard($otherPlayer, 3); return "Makes the opponent pay 3 or discard a card.";
+      case "ELE170": PayOrDiscard($otherPlayer, 2); return "Makes the opponent pay 2 or discard a card.";
+      case "ELE171": PayOrDiscard($otherPlayer, 1); return "Makes the opponent pay 1 or discard a card.";
       case "ELE172":
         if($from == "PLAY")
         {
@@ -388,36 +388,36 @@
           {
             PayOrDiscard($otherPlayer, 2);
           }
-          $rv = "Amulet of Ice makes your opponent pay 2 resources or discard a card.";
+          $rv = "Makes your opponent pay 2 resources or discard a card.";
         }
         return $rv;
       //Lightning
       case "ELE173":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Shock Charmers makes your next attack action card deal 1 damage if it hits.";
+        return "Makes your next attack action card deal 1 damage if it hits.";
       case "ELE176":
-        if($currentPlayer == $mainPlayer) {++$actionPoints; $rv = "Blink grants an action point."; }
+        if($currentPlayer == $mainPlayer) {++$actionPoints; $rv = "Grants an action point."; }
         return $rv;
       case "ELE177": case "ELE178": case "ELE179":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Flash gives your next applicable action card Go Again.";
+        return "Gives your next applicable action card go again.";
       case "ELE180": case "ELE181": case "ELE182":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Weave Lightning gives your next lightning or elemental attack +" . EffectAttackModifier($cardID) . " and go again if it's fused.";
-      case "ELE183": $combatChain[5] += 3; return "Lightning Press gives the current attack +3.";//TODO: Target card to not hardcode to the first?
-      case "ELE184": $combatChain[5] += 2; return "Lightning Press gives the current attack +2.";//TODO: Target card to not hardcode to the first?
-      case "ELE185": $combatChain[5] += 1; return "Lightning Press gives the current attack +1.";//TODO: Target card to not hardcode to the first?
+        return "Gives your next lightning or elemental attack +" . EffectAttackModifier($cardID) . " and go again if it's fused.";
+      case "ELE183": $combatChain[5] += 3; return "Gives the current attack +3.";//TODO: Target card to not hardcode to the first?
+      case "ELE184": $combatChain[5] += 2; return "Gives the current attack +2.";//TODO: Target card to not hardcode to the first?
+      case "ELE185": $combatChain[5] += 1; return "Gives the current attack +1.";//TODO: Target card to not hardcode to the first?
       case "ELE186": case "ELE187": case "ELE188":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE189": case "ELE190": case "ELE191":
-        if($from == "ARS") { $rv = "Lightning Surge gained Go Again."; GiveAttackGoAgain(); }
+        if($from == "ARS") { $rv = "Gains go again."; GiveAttackGoAgain(); }
         return $rv;
       case "ELE195": case "ELE196": case "ELE197":
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer, "", 1);
-          $rv = "Shock Striker deals 1 extra damage if hits a hero.";
+          $rv = "Deals 1 extra damage if hits a hero.";
         }
         return $rv;
       case "ELE198": case "ELE199": case "ELE200":
@@ -432,7 +432,7 @@
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
           }
-          $rv = "Amulet of Lightning gives your next action Go Again.";
+          $rv = "Gives your next action go again.";
         }
         return $rv;
       case "ELE233":
@@ -444,13 +444,13 @@
         return "";
       case "ELE234":
         GainResources($currentPlayer, 3);
-        return "Deep Blue gives you 3 resources.";
+        return "Gain 3 resources.";
       case "ELE235":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Cracker Jax gives your next attack action card this turn +1.";
+        return "Gives your next attack action card this turn +1.";
       case "ELE236":
         IncrementClassState($currentPlayer, $CS_DamagePrevention);
-        return "Runaways prevents the next 1 damage that would be dealt to you this turn.";
+        return "Prevents the next 1 damage that would be dealt to you this turn.";
       default: return "";
     }
   }

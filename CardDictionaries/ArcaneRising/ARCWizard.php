@@ -103,17 +103,17 @@
         return "";
       case "ARC115":
         AddArcaneBonus(1, $currentPlayer);
-        return "Crucible of Aetherweave gives the next card that deals arcane damage +1.";
+        return "Gives the next card that deals arcane damage +1.";
       case "ARC116":
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-        return "Storm Striders lets you play your next Wizard non-attack action as though it were an instant.";
+        return "You can play your next Wizard non-attack action as though it were an instant.";
       case "ARC117":
         GainResources($currentPlayer, 3);
-        return "Robe of Rapture gives 3 resources.";
+        return "Gain 3 resources.";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
         DealArcane($damage, 1, "PLAYCARD", $cardID);
-        return "Blazing Aether did damage equal to the prior arcane damage this turn (" . $damage . ").";
+        return "Deals damage equal to the prior arcane damage this turn (" . $damage . ").";
       case "ARC119":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
@@ -133,7 +133,7 @@
       case "ARC120":
         $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2;
         DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus), 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
-        return "Forked Lightning deals " . $damage . " arcane damage.";
+        return "Deals " . $damage . " arcane damage.";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
@@ -146,10 +146,10 @@
       case "ARC122":
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
         AddDecisionQueue("TOMEOFAETHERWIND", $currentPlayer, "-", 1);
-        return "Tome of Aetherwind allowed drawing cards and/or increasing arcane damage.";
+        return "Lets you draw cards and/or increase arcane damage.";
       case "ARC123": case "ARC124": case "ARC125":
         AddArcaneBonus(2, $currentPlayer);
-        return "Absorb in Aether gives the next card that deals arcane damage +2.";
+        return "Gives the next card that deals arcane damage +2.";
       case "ARC126": case "ARC127": case "ARC128":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
@@ -160,7 +160,7 @@
         else $buff = 1;
         AddArcaneBonus($buff, $currentPlayer);
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-        return "Stir the Aetherwinds gives your next arcane +$buff and lets you play your next Wizard non-attack action as though it were an instant.";
+        return "Gives your next arcane +$buff and lets you play your next Wizard non-attack action as though it were an instant.";
       case "ARC132": case "ARC133": case "ARC134":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
@@ -188,7 +188,7 @@
           AddDecisionQueue("REMOVELAST", $currentPlayer, $cards, 1);
           AddDecisionQueue("CHOOSEBOTTOM", $currentPlayer, "<-", 1);
         }
-        return "Index lets you rearrange the cards of your deck.";
+        return "Lets you rearrange the cards of your deck.";
       case "ARC138": case "ARC139": case "ARC140":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);

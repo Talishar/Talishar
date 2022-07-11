@@ -147,11 +147,11 @@
         return $rv;
       case "ARC005":
         $actionPoints += 1;
-        return "Achilles Accelerator gave you an action point.";
+        return "Gives you an action point.";
       case "ARC006":
         MyDrawCard();
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "High Octane draws you a card and gives you an action point every time you boost a card this turn.";
+        return "Draws you a card and gives you an action point every time you boost a card this turn.";
       case "ARC009":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMMAXCOST," . ($resourcesPaid/2));
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
@@ -159,7 +159,7 @@
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
         if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
-        return "Spark of Genius let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
+        return "Let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
       case "ARC010":
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $items = &GetItems($currentPlayer);
@@ -170,11 +170,11 @@
           {
             $items[$index + 2] = 1;
             $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-            $rv = "Induction Chamber gives your pistol attack go again.";
+            $rv = "Gives your pistol attack go again.";
           }
           else
           {
-            $rv = "Induction Chamber gained a steam counter.";
+            $rv = "Gained a steam counter.";
           }
         }
         return $rv;
@@ -194,11 +194,11 @@
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
             $items[$index + 2] = 2;
-            $rv = "Aether Sink gains +2 arcane barrier this turn.";
+            $rv = "Gains +2 arcane barrier this turn.";
           }
           else
           {
-            $rv = "Aether Sink gained a steam counter.";
+            $rv = "Gained a steam counter.";
           }
         }
         return $rv;
@@ -211,11 +211,11 @@
           if($items[$index + 1] == 0)
           {
             $items[$index + 2] = 1;
-            $rv = "Cognition Nodes makes your attack go on the bottom of your deck if it hits.";
+            $rv = "Makes your attack go on the bottom of your deck if it hits.";
           }
           else
           {
-            $rv = "Cognition Nodes gained a steam counter.";
+            $rv = "Gained a steam counter.";
           }
         }
         return $rv;
@@ -227,21 +227,21 @@
           AddCurrentTurnEffect($cardID, $currentPlayer);
           --$items[$index+1];
           if($items[$index+1] <= 0) DestroyMyItem($index);
-          $rv = "Convection Amplifier gives your next attack this turn Dominate.";
+          $rv = "Gives your next attack this turn Dominate.";
         }
         return $rv;
       case "ARC032": case "ARC033": case "ARC034":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
         if($boosted) Opt($cardID, 1);
-        return "Locked and Loaded gives your next Mechanologist attack action card this turn +" . EffectAttackModifier($cardID) . ($boosted ? " and let you opt 1" : "") . ".";
+        return "Gives your next Mechanologist attack action card this turn +" . EffectAttackModifier($cardID) . ($boosted ? " and let you opt 1" : "") . ".";
       case "ARC035":
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $items = &GetItems($currentPlayer);
         if($index != -1)
         {
           AddCurrentTurnEffect("PREVENT-" . $items[$index+1], $currentPlayer);
-          $rv = "Dissipation Shield will prevent some of the next combat damage you take this turn.";
+          $rv = "Will prevent some of the next combat damage you take this turn.";
           DestroyMyItem($index);
         }
         return $rv;
@@ -253,7 +253,7 @@
           Opt($cardID, 1);
           --$items[$index+1];
           if($items[$index+1] <= 0) DestroyMyItem($index);
-          $rv = "Optekal Monocle lets you Opt 1.";
+          $rv = "Lets you Opt 1.";
         }
         return $rv;
       default: return "";
@@ -318,7 +318,7 @@
     unset($deck[0]);
     $deck = array_values($deck);
     $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
-    WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant Go Again.");
+    WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again.");
     if($grantsGA) { GiveAttackGoAgain(); }
     IncrementClassState($currentPlayer, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];

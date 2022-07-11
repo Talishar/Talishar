@@ -671,7 +671,7 @@ function DiscardRandom($player="", $source="")
   {
     $character = &GetPlayerCharacter($player);
     if(($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001") && $character[1] == 2 && $player == $mainPlayer) {//Rhinar
-      WriteLog("Rhinar Intimidated.");
+      WriteLog("Rhinar Intimidates.");
       Intimidate();
     }
     IncrementClassState($player, $CS_Num6PowDisc);
