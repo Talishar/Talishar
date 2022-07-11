@@ -9,6 +9,8 @@
   $authKey=TryGet("authKey", 3);
   $lastUpdate = TryGet("lastUpdate", 0);
 
+  if($lastUpdate > 1000000) $lastUpdate = 0;
+
   include "HostFiles/Redirector.php";
   include "Libraries/SHMOPLibraries.php";
   include "WriteLog.php";
@@ -30,7 +32,7 @@
   }
   $count = 0;
   $cacheVal = GetCachePiece($gameName, 1);
-  while($lastUpdate != 0 && $cacheVal < $lastUpdate)
+  while($lastUpdate != 0 && $cacheVal <= $lastUpdate)
   {
     usleep(50000);//50 milliseconds
     $currentTime = round(microtime(true) * 1000);
@@ -44,13 +46,13 @@
       if(($currentTime - $oppLastTime) > 5000 && ($oppStatus == "0"))
       {
         WriteLog("Opponent has disconnected. Waiting to reconnect.");
-        SetCachePiece($gameName, 1, $currentTime);
+        SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
         SetCachePiece($gameName, $otherP+3, "1");
       }
       else if(($currentTime - $oppLastTime) > 60000 && $oppStatus == "1")
       {
         WriteLog("Opponent has left the game.");
-        SetCachePiece($gameName, 1, $currentTime);
+        SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
         SetCachePiece($gameName, $otherP+3, "2");
         $lastUpdate = 0;
         $opponentDisconnected = true;
@@ -60,7 +62,7 @@
     if($count == 100) break;
   }
 
-  if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo "0"; exit; }
+  if($lastUpdate != 0 && $cacheVal <= $lastUpdate) { echo "0"; exit; }
   else {
   //First we need to parse the game state from the file
   include "ParseGamestate.php";
@@ -108,7 +110,7 @@
     SetCachePiece($gameName, 3, $currentTime);
     echo("1234REMATCH"); exit;
   }
-  echo(strval(round(microtime(true) * 1000)) . "ENDTIMESTAMP");
+  echo(GetCachePiece($gameName, 1) . "ENDTIMESTAMP");
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if($playerID != 3 && $authKey != $targetAuth) exit;
@@ -119,7 +121,7 @@
   if(count($turn) == 0)
   {
     RevertGamestate();
-    SetCachePiece($gameName, 1, strval(round(microtime(true) * 1000)));
+    SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
     exit();
   }
 
