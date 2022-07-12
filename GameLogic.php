@@ -2878,6 +2878,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYTHEIRCHARACTER":
       DestroyCharacter($player == 1 ? 2 : 1, $lastResult);
       return $lastResult;
+    case "DESTROYEQUIPDEF0":
+      $character = &GetPlayerCharacter($defPlayer);
+      if(BlockValue($character[$lastResult]) <= 0)
+      {
+        DestroyCharacter($defPlayer, $lastResult);
+      }
+      return "";
     case "CHARFLAGDESTROY":
       $character = &GetPlayerCharacter($player);
       $character[$parameter + 7] = 1;
