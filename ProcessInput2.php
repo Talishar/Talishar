@@ -1454,6 +1454,7 @@ function FinalizeChainLink($chainClosed=false)
           AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
         }
         AddDecisionQueue("KNICKKNACK", $currentPlayer, "-");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         break;
       case "UPR094":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");

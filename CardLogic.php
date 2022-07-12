@@ -61,6 +61,7 @@ function KatsuHit($index)
   AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
   AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
   AddDecisionQueue("EXHAUSTCHARACTER", $mainPlayer, $index, 1);
+  AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
 }
 
 function RandomHandBottomDeck($player)

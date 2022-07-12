@@ -284,8 +284,9 @@
             $cards .= $deck[$i];
             if(PitchValue($deck[$i]) == 1) ++$numRed;
           }
-          $wasRevealed = RevealCards($cards);
-          if($wasRevealed) DamageTrigger($player, $numRed, "DAMAGE"); //TODO: Any target
+          $reveals = RevealCards($cards);
+          if($reveals) DamageTrigger($player, $numRed, "DAMAGE"); //TODO: Any target
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
       case "UPR091":
@@ -303,6 +304,7 @@
           AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,UPR101");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
       case "UPR097":

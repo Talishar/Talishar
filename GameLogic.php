@@ -163,6 +163,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "Lets you to search for a Guardian attack card.";
     //Ninja
     case "WTR078":
@@ -212,6 +213,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
         $ARs = SearchDeck($currentPlayer, "AR");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, $ARs);
         AddDecisionQueue("BANISH", $currentPlayer, "TCL");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       return "";
     case "WTR123": case "WTR124": case "WTR125":
@@ -321,6 +323,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       if($actions == "") return "";
       AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "3-" . $actions);
       AddDecisionQueue("REMEMBRANCE", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       return "";
     case "WTR170":
       if($from == "PLAY")
