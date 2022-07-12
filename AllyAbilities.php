@@ -55,7 +55,13 @@ function AllyDestroyAbility($player, $cardID)
   global $mainPlayer;
   switch($cardID)
   {
-    case "UPR410": if($player == $mainPlayer) GainActionPoints(1); break;
+    case "UPR410":
+      if($player == $mainPlayer && !SearchCurrentTurnEffects($cardID, $player))
+      {
+        GainActionPoints(1);
+        WriteLog("Cromai leaves the arena. Gain 1 action point.");
+      }
+      break;
     case "UPR551":
       $gtIndex = FindCharacterIndex($player, "UPR151");
       if($gtIndex > -1)
