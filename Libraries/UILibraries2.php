@@ -23,7 +23,7 @@
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0, $defense=0)
   {//
     global $playerID, $gameName, $darkMode, $cardIconSize;
-    if($darkMode == null) $darkMode = false;
+    $darkMode = IsDarkMode($playerID);
     if($folder == "crops")
     {
       $cardNumber .= "_cropped";
@@ -180,7 +180,7 @@
   {
     global $combatChain, $darkMode, $cardSize;
     $overCC = 1000;
-    if($darkMode == null) $darkMode = false;
+    $darkMode = IsDarkMode($playerID);
     $top = "50%"; $left = "19%"; $width = "60%"; $height = "35%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
     if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
