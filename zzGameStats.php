@@ -84,6 +84,7 @@ ORDER BY Count";
 
   foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
+    if(CharacterHealth($row[0]) <= 25) continue;//Filter out blitz heroes for now
     $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
     $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
     $playPercent = ($row[1] / $formatDenominator * 100);
