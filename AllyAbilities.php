@@ -9,7 +9,7 @@ function PlayAlly($cardID, $player, $subCards="-")
   array_push($allies, 0);//Frozen
   array_push($allies, $subCards);//Subcards
   array_push($allies, GetUniqueId());//Unique ID
-  array_push($allies, AllyEntersArenaCounters($cardID));//Misc Counters
+  array_push($allies, AllyEnduranceCounters($cardID));//Endurance Counters
   array_push($allies, 0);//Life Counters
   array_push($allies, 1);//Ability/effect uses
   if($cardID == "UPR414") { WriteLog("Ouvia lets you transform an ashling."); Transform($player, "Ash", "UPR042", true); }
@@ -86,7 +86,7 @@ function AllyStartTurnAbilities($player)
   }
 }
 
-function AllyEntersArenaCounters($cardID)
+function AllyEnduranceCounters($cardID)
 {
   switch($cardID)
   {
