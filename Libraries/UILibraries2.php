@@ -14,6 +14,11 @@
     else return "black";
   }
 
+  function TextCounterColor($darkMode)
+  {
+    if($darkMode) return "black";
+    else return "#EDEDED";
+  }
   //Rotate is deprecated
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0)
   {//
@@ -71,14 +76,18 @@
     }
 
   // Counters Style
-    if($counters != 0) {
+    if($counters == "Attacker") {
+      $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
+      margin-right: -50%; border-radius: 8px; width: 70px; line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
+      transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
+      font-size:18px; font-weight:650; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
+    } elseif ($counters != 0) {
       $left = ($health == 0 ? "50%" : "30%");
       $rv .= "<div style='margin: 0px; top: 50%; left: $left;
       margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
       font-size:22px; font-weight:500;'>" . $counters . "</div>";
-    }
-    if($health != 0){
+    } elseif ($health != 0){
       $left = ($counters == 0 ? "50%" : "70%");
       $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
       text-align: center; transform: translate(-50%, -50%);
