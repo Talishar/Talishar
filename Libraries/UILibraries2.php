@@ -88,9 +88,9 @@
   elseif($counters != 0) {
     if($health == 0 && $defense == 0){ $left = "50%"; } else { $left = "70%"; }
     $rv .= "<div style='margin: 0px; top: 50%; left: $left;
-    margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
+    margin-right: -50%; border-radius: 50%; width: 26px; height: 26px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
-    font-size:22px; font-weight:500;'>" . $counters . "</div>";
+    font-family: Helvetica; font-size:24px; font-weight:550; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
   //-1 Defense & Endurance Counters style
   if($defense != 0) {
