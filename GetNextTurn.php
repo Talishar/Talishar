@@ -139,7 +139,7 @@
   $cardIconTop = 30;
   $bigCardSize = 200;
   $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
-  $permWidth = "calc(50% - " . ($cardWidth/2 + $cardWidth + 20 + $permLeft) . "px)";
+  $permWidth = "calc(50% - " . ($cardWidth*2 + 20 + $permLeft) . "px)";
   $permHeight = $cardSize * 2 + 20;
 
   $darkMode = IsDarkMode($playerID);
@@ -634,8 +634,8 @@
     echo("</div>");
   }
 
-  $permTop = 10;
-  $theirPermHeight = $cardSize + 100;
+  $permTop = 7;
+  $theirPermHeight = $cardSize + 85;
   echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; height:" . $theirPermHeight . "px;'>");
   DisplayTiles(($playerID == 1 ? 2 : 1));
   if(count($theirAuras) > 0)
@@ -773,8 +773,8 @@
   }
 
   //Now display Auras and items
-  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize - 250;
-  $permHeight = $cardSize + 100;
+  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize - 348;
+  $permHeight = $cardSize*2 + 65;
   echo("<div style='overflow-y:auto; position: fixed; Bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if(count($myAuras) > 0)

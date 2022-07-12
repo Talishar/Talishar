@@ -1916,7 +1916,7 @@ function PitchAbility($cardID)
     case "ARC000":
       Opt($cardID, 2);
       break;
-    case "CRU000":
+    case "CRU000": // TODO: Fix the runechant trigger from the pitch to happens on the next attack only.
       PlayAura("ARC112", $currentPlayer);
       break;
     case "EVR000":
