@@ -693,10 +693,10 @@
     $type = CardType($theirCharacter[$i]);//NOTE: This is not reliable type
     $sType = CardSubType($theirCharacter[$i]);
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
-    $counters = CardType($theirCharacter[$i]) == "W" ? $theirCharacter[$i+3] : $theirCharacter[$i+4];
+    if(CardType($theirCharacter[$i]) == "W") $counters = $theirCharacter[$i+3];
     if($theirCharacter[$i+2] > 0) $counters = $theirCharacter[$i+2];//TODO: display both kinds of counters?
     echo("<div style='z-index:5; position:fixed; left:" . GetCharacterLeft($type, $sType) . "; top:" . GetCharacterTop($type, $sType) .";'>");
-    echo(Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $theirCharacter[$i+1] != 0 ? $counters : 0));
+    echo(Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i+1] !=2 ? 1 : 0, 0, $theirCharacter[$i+1] != 0 ? $counters : 0, "", "", false, 0, $theirCharacter[$i+4]));
     if($theirCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     if($theirCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; top:-25px; left:7px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
     if($theirCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
@@ -830,7 +830,7 @@
   for($i=0; $i<count($myCharacter); $i+=CharacterPieces())
   {
     $restriction = "";
-    $counters = CardType($myCharacter[$i]) == "W" ? $myCharacter[$i+3] : $myCharacter[$i+4];
+    if(CardType($myCharacter[$i]) == "W") $counters = $myCharacter[$i+3];
     if($myCharacter[$i+2] > 0) $counters = $myCharacter[$i+2];//TODO: Display both kinds of counters
     $playable = $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
@@ -838,7 +838,7 @@
     $sType = CardSubType($myCharacter[$i]);
     if($type == "W") { ++$numWeapons; if($numWeapons > 1) {$type = "E"; $sType = "Off-Hand";} }
     echo("<div style='position:absolute; z-index:100; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) .";'>");
-    echo(Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $myCharacter[$i+1] != 0 ? $counters : 0, strval($i)));
+    echo(Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i+1] !=2 ? 1 : 0, $border, $myCharacter[$i+1] != 0 ? $counters : 0, strval($i), "", false, 0, $myCharacter[$i+4]));
     $effects = ActiveCharacterEffects($playerID, $i);
     if($effects != "") echo("<img title='Buffed by: $effects' style='position:absolute; z-index:100; top:27px; left:25px;' src='./Images/arsenal.png' />");
     if($restriction != "") {
