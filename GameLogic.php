@@ -3365,11 +3365,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         $damage += ConsumeArcaneBonus($player);
       }
-      if($target[0] == "THEIRALLY")
+      if($target[0] == "THEIRALLY" || $target[0] == "MYALLY")
       {
         $allies = &GetAllies($targetPlayer);
-        $allies[$target[1] + 2] -= $damage;
-        if($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1]);
+        if($allies[$target[1]+6] > 0)
+        {
+           $damage -= 3;
+           if($damage < 0) $damage = 0;
+           --$allies[$target[1]+6];
+        }
+        $allies[$target[1]+2] -= $damage;
+        if($allies[$target[1]+2] <= 0) DestroyAlly($targetPlayer, $target[1]);
         return;
       }
       $target = $targetPlayer;
