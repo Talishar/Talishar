@@ -53,23 +53,27 @@ function AllyHealth($cardID)
 function AllyDestroyAbility($player, $cardID)
 {
   global $mainPlayer;
-  switch($cardID)
+  $allies = &GetAllies($mainPlayer);
+  for($i=0; $i<count($allies); $i+=AllyPieces())
   {
-    case "UPR410":
-      if($player == $mainPlayer && !SearchCurrentTurnEffects("UPR010", $player, true))
-      {
-        GainActionPoints(1);
-        WriteLog("Cromai leaves the arena. Gain 1 action point.");
-      }
-      break;
-    case "UPR551":
-      $gtIndex = FindCharacterIndex($player, "UPR151");
-      if($gtIndex > -1)
-      {
-        DestroyCharacter($player, $gtIndex);
-      }
-      break;
-    default: break;
+    switch($allies[$i])
+    {
+      case "UPR410":
+        if($player == $mainPlayer && $allies[$i+8] > 0)
+        {
+          GainActionPoints(1);
+          WriteLog("Cromai leaves the arena. Gain 1 action point.");
+          --$allies[$i+8];
+        }
+        break;
+      case "UPR551":
+        $gtIndex = FindCharacterIndex($player, "UPR151");
+        if($gtIndex > -1)
+        {
+          DestroyCharacter($player, $gtIndex);
+        }
+        default: break;
+    }
   }
 }
 
@@ -121,6 +125,14 @@ function AllyAttackAbilities($attackID)
   {
     switch($allies[$i])
     {
+      case "UPR410":
+        if($attackID == $allies[$i] && $allies[$i+8] > 0)
+        {
+          GainActionPoints(1);
+          WriteLog("Cromai Attacks: Gain 1 action point.");
+          --$allies[$i+8];
+        }
+        break;
       case "UPR412":
         if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon"))
         {
@@ -145,31 +157,6 @@ function AllyDamageTakenAbilities($player, $index)
       WriteLog("Nekria got a -1 health counter and created an ash token.");
       break;
     default: break;
-  }
-}
-
-function AllyBeginEndStepEffects()
-{
-  global $mainPlayer, $defPlayer;
-  //CR 2.0 4.4.3a Reset health for all allies
-  $mainAllies = &GetAllies($mainPlayer);
-  for($i=0; $i<count($mainAllies); $i+=AllyPieces())
-  {
-    if($mainAllies[$i+1] != 0) {
-      $mainAllies[$i+1] = 2;
-      $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7];
-      $mainAllies[$i+8] = 1;
-    }
-  }
-
-  $defAllies = &GetAllies($defPlayer);
-  for($i=0; $i<count($defAllies); $i+=AllyPieces())
-  {
-    if($defAllies[$i+1] != 0) {
-      $defAllies[$i+1] = 2;
-      $defAllies[$i+2] = AllyHealth($defAllies[$i]) + $defAllies[$i+7];
-      $defAllies[$i+8] = 1;
-    }
   }
 }
 
