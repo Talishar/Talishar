@@ -215,6 +215,7 @@
       AddDecisionQueue("FINDINDICES", $player, "DECKCARD,DVR008");
       AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
     }
     WriteLog($log . ".");
   }

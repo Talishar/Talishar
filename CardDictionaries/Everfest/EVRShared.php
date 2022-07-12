@@ -736,6 +736,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKAURAMAXCOST," . ($resourcesPaid-3));
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "Lets you tutor an aura.";
       case "EVR030": case "EVR031": case "EVR032":
         if($cardID == "EVR030") $amount = 3;
@@ -1023,6 +1024,7 @@
           AddDecisionQueue("FINDINDICES", $currentPlayer, "EVR178");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDCARDTOCHAIN", $currentPlayer, "DECK", 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
       case "EVR179":

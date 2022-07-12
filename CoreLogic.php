@@ -1337,4 +1337,17 @@ function AddCharacterUses($player, $index, $numToAdd)
     return true;
   }
 
+function ShuffleDeck($player)
+{
+  $zone = &GetDeck($player);
+  $destArr = [];
+  while(count($zone) > 0)
+  {
+    $index = rand(0, count($zone)-1);
+    array_push($destArr, $zone[$index]);
+    unset($zone[$index]);
+    $zone = array_values($zone);
+  }
+  $zone = $destArr;
+}
 ?>

@@ -270,6 +270,7 @@
         AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
         AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       else $log .= " and gave Dominate";
       WriteLog($log . ".");

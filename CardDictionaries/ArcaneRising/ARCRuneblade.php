@@ -140,6 +140,7 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
         AddDecisionQueue("BECOMETHEARKNIGHT", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "ARC084":
         $deck = &GetDeck($currentPlayer);
