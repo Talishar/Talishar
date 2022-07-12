@@ -196,7 +196,7 @@ function AuraStartTurnAbilities()
 }
 
 
-function AuraBeginEndStepAbilities()
+function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
@@ -378,7 +378,7 @@ function AuraAttackAbilities($attackID)
     switch($auras[$i])
     {
       case "WTR225": if($attackType == "AA" || $attackType == "W") { WriteLog("Quicken grants go again."); GiveAttackGoAgain(); $remove = 1; } break;
-      case "ARC112": DealArcane(1, 1, "RUNECHANT", "ARC112"); $remove = 1; break;
+      case "ARC112": if($attackType == "AA" || $attackType == "W") { DealArcane(1, 1, "RUNECHANT", "ARC112"); $remove = 1; } break;
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants go again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
