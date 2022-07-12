@@ -80,11 +80,11 @@
   //Attacker Label Style
   if($counters == "Attacker") {
     $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
-    margin-right: -50%; border-radius: 8px; width: 70px; line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
+    margin-right: -50%; border-radius: 8px; width: 70px; text-align: center; line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
     font-size:18px; font-weight:650; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
-  //Equipments, Hero and other counters style
+  //Equipments, Hero and default counters style
   elseif($counters != 0) {
     $left = ($health == 0 ? "50%" : "30%");
     $rv .= "<div style='margin: 0px; top: 50%; left: $left;
@@ -99,7 +99,7 @@
     text-align: center; transform: translate(-50%, -50%);
     position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $endurance ."
     <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.9;
-    position: absolute; margin: auto; top: 1; left: -4; right: 0;bottom: 0; z-index:-3;' src='./Images/Defense.png'></img></div>";
+    position: absolute; margin: auto; top: 1px; left: -4; right: 0;bottom: 0; z-index:-3;' src='./Images/Defense.png'></img></div>";
   }
   //Health Counters style
   if($health != 0){
