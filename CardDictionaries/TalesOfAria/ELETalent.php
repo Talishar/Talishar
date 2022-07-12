@@ -277,6 +277,7 @@
           AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
           AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+          AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
         }
         return "";
       case "ELE114":

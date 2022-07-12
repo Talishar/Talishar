@@ -3009,6 +3009,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $rv .= $deck[$i];
       }
       return $rv == "" ? "PASS" : $rv;;
+    case "SHOWSELECTEDCARD":
+      WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
+      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
+      return $lastResult;
     case "REVEALCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was revealed.");
       if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
