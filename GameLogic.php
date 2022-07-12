@@ -3378,6 +3378,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
            --$allies[$target[1]+6];
         }
         $allies[$target[1]+2] -= $damage;
+        if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
         if($allies[$target[1]+2] <= 0) DestroyAlly($targetPlayer, $target[1]);
         return;
       }
