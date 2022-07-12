@@ -800,6 +800,7 @@ function FinalizeChainLink($chainClosed=false)
     Heave();
     QuellEndPhase(1);
     QuellEndPhase(2);
+    AllyBeginEndStepEffects();
     ItemEndTurnAbilities();
     AuraBeginEndStepAbilities();
     LandmarkBeginEndStepAbilities();
@@ -883,15 +884,6 @@ function FinalizeChainLink($chainClosed=false)
     {
       if($defCharacter[$i+6] == 1) $defCharacter[$i] = 0;//Destroy if it was flagged for destruction
       if($defCharacter[$i] == 1 || $defCharacter[$i] == 2) { $defCharacter[$i] = 2; $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i-1]); }
-    }
-    $mainAllies = &GetAllies($mainPlayer);
-    for($i=0; $i<count($mainAllies); $i+=AllyPieces())
-    {
-      if($mainAllies[$i+1] != 0) {
-        $mainAllies[$i+1] = 2;
-        $mainAllies[$i+2] = AllyHealth($mainAllies[$i]) + $mainAllies[$i+7];
-        $mainAllies[$i+8] = 1;
-      }
     }
 
     //Reset Auras
