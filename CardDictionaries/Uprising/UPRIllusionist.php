@@ -356,11 +356,7 @@
             AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
             AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
             if($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-            AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
-            AddDecisionQueue("EQUIPDEFENSE", $otherPlayer, "-", 1);
-            AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "1", 1);
-            AddDecisionQueue("PASSPARAMETER", $otherPlayer, "{0}", 1);
-            AddDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
+            AddDecisionQueue("DESTROYEQUIPDEF0", $currentPlayer, "-", 1);
           }
         }
         return "";
