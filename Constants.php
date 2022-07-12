@@ -95,11 +95,11 @@
   //1 - Status: 2 = ready
   //2 - Health
   //3 - Frozen - 0 = no, 1 = yes
-  //Subcards , delimited
-  //Unique ID
-  //Misc. Counters
-  //Health Counters
-  //Ability/effect Uses
+  //4 - Subcards , delimited
+  //5 - Unique ID
+  //6 - Endurance Counters
+  //7 - Health Counters
+  //8 - Ability/effect Uses
   function AllyPieces()
   {
     return 9;
