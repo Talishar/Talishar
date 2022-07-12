@@ -22,7 +22,7 @@ function DestroyLandmark($index)
   AddGraveyard($cardID, $player, "PLAY");
 }
 
-function LandmarkBeginEndStepAbilities()
+function LandmarkBeginEndPhaseAbilities()
 {
   global $landmarks, $mainPlayer;
   for($i=0; $i<count($landmarks); ++$i)

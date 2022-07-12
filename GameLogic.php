@@ -1743,7 +1743,7 @@ function IsCombatEffectPersistent($cardID)
   }
 }
 
-function BeginEndStepEffects()
+function BeginEndPhaseEffects()
 {
   global $currentTurnEffects, $mainPlayer;
   EndTurnBloodDebt();//This has to be before resetting character, because of sleep dart effects

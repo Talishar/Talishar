@@ -800,11 +800,11 @@ function FinalizeChainLink($chainClosed=false)
     Heave();
     QuellEndPhase(1);
     QuellEndPhase(2);
-    AllyBeginEndStepEffects();
     ItemEndTurnAbilities();
-    AuraBeginEndStepAbilities();
-    LandmarkBeginEndStepAbilities();
-    BeginEndStepEffects();
+    AuraBeginEndPhaseAbilities();
+    LandmarkBeginEndPhaseAbilities();
+    BeginEndPhaseEffects();
+    AllyBeginEndPhaseEffects();
     AddDecisionQueue("PASSTURN", $mainPlayer, "-");
     ProcessDecisionQueue("");
   }
