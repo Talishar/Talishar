@@ -436,9 +436,7 @@
           AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
           AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
-          AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP0", 1);
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+          AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
         }
         break;
       case "UPR093":
