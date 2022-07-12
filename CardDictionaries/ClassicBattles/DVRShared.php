@@ -134,28 +134,22 @@
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       return "Gives your next Dawnblade attack go again.";
-
     case "DVR009":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
-
-    case "DVR013";
+    case "DVR013":
       GiveAttackGoAgain();
       AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       return "Gives go again and buffs your next sword weapon attack.";
-
-    case "DVR014";
+    case "DVR014":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next +3 to your sword attack.";
-
     case "DVR019":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your sword attack go again.";
-
     case "DVR022":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next weapon attack +" . EffectAttackModifier($cardID) . ".";
-
     case "DVR023":
       GiveAttackGoAgain();
       return "Gives your sword attack go again.";
