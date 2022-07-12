@@ -20,7 +20,7 @@
     else return "#EDEDED";
   }
   //Rotate is deprecated
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0)
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0, $endurance=0)
   {//
     global $playerID, $gameName, $darkMode, $cardIconSize;
     if($darkMode == null) $darkMode = false;
@@ -76,29 +76,43 @@
     }
 
   // Counters Style
-    if($counters == "Attacker") {
-      $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
-      margin-right: -50%; border-radius: 8px; width: 70px; line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
-      transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
-      font-size:18px; font-weight:650; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
-    } elseif ($counters != 0) {
-      $left = ($health == 0 ? "50%" : "30%");
-      $rv .= "<div style='margin: 0px; top: 50%; left: $left;
-      margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
-      transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
-      font-size:22px; font-weight:500;'>" . $counters . "</div>";
-    }
-    if ($health != 0){
-    $left = ($counters == 0 ? "50%" : "70%");
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
-    text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health ."
-    <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
-    position: absolute; margin: auto; top: 1; left: -4; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
-    }
-    $rv .= "</a>";
-    return $rv;
+
+  //Attacker Label Style
+  if($counters == "Attacker") {
+    $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
+    margin-right: -50%; border-radius: 8px; width: 70px; line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
+    transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
+    font-size:18px; font-weight:650; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
+  //Equipments, Hero and other counters style
+  elseif($counters != 0) {
+    $left = ($health == 0 ? "50%" : "30%");
+    $rv .= "<div style='margin: 0px; top: 50%; left: $left;
+    margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
+    transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
+    font-size:22px; font-weight:500;'>" . $counters . "</div>";
+  }
+  //Endurance Counters style
+  if($endurance != 0) {
+    $left = ($health == 0 ? "50%" : "30%");
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
+    text-align: center; transform: translate(-50%, -50%);
+    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $endurance ."
+    <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.9;
+    position: absolute; margin: auto; top: 1; left: -4; right: 0;bottom: 0; z-index:-3;' src='./Images/Defense.png'></img></div>";
+  }
+  //Health Counters style
+  if($health != 0){
+    if($counters == 0 && $endurance == 0){ $left = "50%"; } else { $left = "70%"; }
+  $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
+  text-align: center; transform: translate(-50%, -50%);
+  position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health ."
+  <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.9;
+  position: absolute; margin: auto; top: 1; left: -5; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
+  }
+  $rv .= "</a>";
+  return $rv;
+}
 
   function BorderColorMap($code)
   {
