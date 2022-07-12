@@ -139,7 +139,7 @@
   $cardIconTop = 30;
   $bigCardSize = 200;
   $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
-  $permWidth = "calc(50% - " . ($cardWidth*2 + 20 + $permLeft) . "px)";
+  $permWidth = "calc(50% - " . ($cardWidth*2 + 30 + $permLeft) . "px)";
   $permHeight = $cardSize * 2 + 20;
 
   $darkMode = IsDarkMode($playerID);
@@ -636,7 +636,8 @@
 
   $permTop = 7;
   $theirPermHeight = $cardSize + 85;
-  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; height:" . $theirPermHeight . "px;'>");
+  $theirPermWidth = "calc(50% - " . ($cardWidth*2 + $permLeft) . "px)";
+  echo("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $theirPermWidth . "; height:" . $theirPermHeight . "px;'>");
   DisplayTiles(($playerID == 1 ? 2 : 1));
   if(count($theirAuras) > 0)
   {
@@ -667,7 +668,7 @@
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
       echo("<div style='position:relative; display:inline;'>");
-      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, $theirAllies[$i+6], "", "", False, $theirAllies[$i+2]) . "&nbsp");
+      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, 0, "", "", False, $theirAllies[$i+2], $theirAllies[$i+6]) . "&nbsp");
       if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-75px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo("</div>");
     }
@@ -773,8 +774,8 @@
   }
 
   //Now display Auras and items
-  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize - 348;
-  $permHeight = $cardSize*2 + 65;
+  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize - 352;
+  $permHeight = $cardSize*2 + 70;
   echo("<div style='overflow-y:auto; position: fixed; Bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if(count($myAuras) > 0)
