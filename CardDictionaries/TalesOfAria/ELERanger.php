@@ -416,9 +416,12 @@
       switch($auras[$i])
       {
         case "UPR140":
-          PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
-          --$auras[$i+2];
-          if($auras[$i+2] == 0) { DestroyAura($player, $i); WriteLog("Insidious Chill was destroyed."); }
+          if($element == "ICE")
+          {
+            PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
+            --$auras[$i+2];
+            if($auras[$i+2] == 0) { DestroyAura($player, $i); WriteLog("Insidious Chill was destroyed."); }
+          }
           break;
         default: break;
       }
