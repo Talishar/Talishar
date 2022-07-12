@@ -1115,6 +1115,7 @@ function AttackDestroyed($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $type = CardType($attackID);
+  $character = &GetPlayerCharacter($mainPlayer);
   switch($attackID)
   {
     case "EVR139": MirragingMetamorphDestroyed(); break;
@@ -1130,14 +1131,24 @@ function AttackDestroyed($attackID)
     if(TalentContains($attackID, "LIGHT", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
   }
-  if($type == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterForCard($mainPlayer, "MON089") && !SearchCurrentTurnEffects("MON089", $mainPlayer))
+  if($type == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer))
   {
-    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
-    AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-    AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
-    AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-    AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
-    AddCurrentTurnEffect("MON089", $mainPlayer);
+    for($i=0; $i<count($character); $i += CharacterPieces())
+    {
+      switch($character[$i]) {
+        case 'MON089':
+          if ($character[$i+5] > 0){
+            AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
+            AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+            AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
+            AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+            AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+            --$character[$i+5];
+          }
+          break;
+        default: break;
+      }
+    }
   }
   if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterActive($mainPlayer, "UPR152"))
   {
