@@ -385,14 +385,9 @@
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true);
         return "";
       case "UPR410":
-        $rv = "";
-        if(!SearchCurrentTurnEffects($cardID, $currentPlayer))
-        {
-          AddCurrentTurnEffect("UPR010", $currentPlayer);
-          GainActionPoints(1);
-          $rv .= "Gain 1 action point.";
-        }
-        return $rv;
+        AddCurrentTurnEffect("UPR010", $currentPlayer);
+        GainActionPoints(1);
+        return"Gain 1 action point.";
       default: return "";
     }
   }
