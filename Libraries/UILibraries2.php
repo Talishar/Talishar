@@ -178,7 +178,7 @@
 
   function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false, $overCombatChain=false)
   {
-    global $combatChain, $darkMode, $cardSize;
+    global $combatChain, $darkMode, $cardSize, $playerID;
     $overCC = 1000;
     $darkMode = IsDarkMode($playerID);
     $top = "50%"; $left = "19%"; $width = "60%"; $height = "35%";
@@ -200,7 +200,7 @@
 
   function CardStatsUI($player)
   {
-    $rv = "<div id='cardStats' style='background-color: rgba(255,255,255,0.80); z-index:100; position: absolute; top:120px; left: 50px; right: 250px; bottom:50px;'>";
+    $rv = "<div id='cardStats' style='background-color:" . BackgroundColor($darkMode) . "; z-index:100; position: absolute; top:120px; left: 50px; right: 250px; bottom:50px;'>";
     $rv .= CardStats($player);
     $rv .= "</div>";
     return $rv;
