@@ -87,13 +87,14 @@
       margin-right: -50%; border-radius: 50%; width: 24px; height: 24px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
       font-size:22px; font-weight:500;'>" . $counters . "</div>";
-    } elseif ($health != 0){
-      $left = ($counters == 0 ? "50%" : "70%");
-      $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
-      text-align: center; transform: translate(-50%, -50%);
-      position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health ."
-      <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
-      position: absolute; margin: auto; top: 1; left: -3; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
+    }
+    if ($health != 0){
+    $left = ($counters == 0 ? "50%" : "70%");
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
+    text-align: center; transform: translate(-50%, -50%);
+    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health ."
+    <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
+    position: absolute; margin: auto; top: 1; left: -4; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
     }
     $rv .= "</a>";
     return $rv;
