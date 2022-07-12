@@ -388,7 +388,7 @@
         $rv = "";
         if(!SearchCurrentTurnEffects($cardID, $currentPlayer))
         {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
+          AddCurrentTurnEffect("UPR010", $currentPlayer);
           GainActionPoints(1);
           $rv .= "Gain 1 action point.";
         }
