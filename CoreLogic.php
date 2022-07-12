@@ -1130,13 +1130,14 @@ function AttackDestroyed($attackID)
     if(TalentContains($attackID, "LIGHT", $mainPlayer)) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $mainPlayer);
   }
-  if($type == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterForCard($mainPlayer, "MON089"))
+  if($type == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterForCard($mainPlayer, "MON089") && !SearchCurrentTurnEffects("MON089", $mainPlayer))
   {
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
     AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+    AddCurrentTurnEffect("MON089", $mainPlayer);
   }
   if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchCharacterActive($mainPlayer, "UPR152"))
   {
