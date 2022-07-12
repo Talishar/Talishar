@@ -273,11 +273,11 @@
       {
         $rv .= ",THEIRALLY-" . $i;
       }
-      // $myAllies = &GetAllies($player);
-      // for($i=0; $i<count($myAllies); $i+=AllyPieces())   WIP for Azvolai
-      // {
-      //   $rv .= ",MYALLY-" . $i;
-      // }
+      $myAllies = &GetAllies($player);
+      for($i=0; $i<count($myAllies); $i+=AllyPieces()) // TODO: WIP Azvolai
+      {
+        $rv .= ",MYALLY-" . $i;
+      }
     }
     return $rv;
   }
