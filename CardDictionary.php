@@ -872,6 +872,15 @@
     }
   }
 
+  function ResourcesPaidAttackModifier($cardID, $amountPaid)
+  {
+    switch($cardID)
+    {
+      case "UPR191": case "UPR192": case "UPR193": return ($amountPaid >= 2 ? 2 : 0);
+      default: return 0;
+    }
+  }
+
   function DynamicCost($cardID)
   {
     global $currentPlayer;
@@ -896,6 +905,7 @@
       case "MON241": case "MON242": case "MON243": case "MON244": case "RVD005": case "RVD006": return "0,1";
       case "ELE203": return "0,1";
       case "UPR203": case "UPR204": case "UPR205": return "0,1";
+      case "UPR191": case "UPR192": case "UPR193": return "0,2";
       default:
         return "";
     }
@@ -1839,7 +1849,7 @@
       case "ELE118": return ArsenalEmpty($currentPlayer);
       case "ELE143": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedEarth) == 0;
       case "ELE147":
-        if(count($layers) != 0) return !(CardType($layers[0]) == "W" || CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to work on Aura attacks and not on Waning Moon activation 
+        if(count($layers) != 0) return !(CardType($layers[0]) == "W" || CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to work on Aura attacks and not on Waning Moon activation
         else return count($combatChain) == 0;
       case "ELE172": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedIce) == 0;
       case "ELE183": case "ELE184": case "ELE185": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;

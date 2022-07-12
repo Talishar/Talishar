@@ -244,6 +244,7 @@
     $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
+    $av += $combatChain[$index+5]; //Add Attack Modifiers
     if($av < 6 && $origAV >= 6) WriteLog("Herald of Triumph reduced the attack below 6, so Phantasm does not trigger.");
     if(IsPhantasmActive() && ($av >= 6))
     {
