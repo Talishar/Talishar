@@ -22,8 +22,8 @@
   //Rotate is deprecated
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0, $defense=0)
   {//
-    global $playerID, $gameName, $darkMode, $cardIconSize;
-    $darkMode = IsDarkMode($playerID);
+    global $playerID, $gameName, $cardIconSize;
+    if($darkMode == null) $darkMode = false;
     if($folder == "crops")
     {
       $cardNumber .= "_cropped";
