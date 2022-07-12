@@ -411,7 +411,7 @@
   function AuraFuseEffects($player, $element)
   {
     $auras = &GetAuras($player);
-    for($i=0; $i<count($auras); $i+=AuraPieces())
+    for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
     {
       switch($auras[$i])
       {
