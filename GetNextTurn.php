@@ -630,7 +630,7 @@
     echo("<h3>Landmark:</h3>");
     for($i=0; $i<count($landmarks); $i+=LandmarkPieces())
     {
-      $playable = IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
+      $playable = $playerID == $currentPlayer && IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
       $action = ($playable && $currentPlayer == $playerID ? 25 : 0) ;
       $border = CardBorderColor($landmarks[$i], "PLAY", $playable);
       $counters = 0;
@@ -746,7 +746,8 @@
     }
     else
     {
-      $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      if($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionData = $actionType == 16 ? strval($i) : "";
       echo("<span style='position:relative; margin:1px;'>");
@@ -772,7 +773,7 @@
       }
       else
       {
-        $playable = $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction);
+        $playable = $playerID == $currentPlayer && $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction);
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $counters = $myArsenal[$i+3];
         echo("<div style='position:relative; margin:1px;>");
@@ -851,7 +852,7 @@
     $atkCounters = 0;
     if(CardType($myCharacter[$i]) == "W") $atkCounters = $myCharacter[$i+3];
     if($myCharacter[$i+2] > 0) $counters = $myCharacter[$i+2];
-    $playable = $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
+    $playable = $playerID == $currentPlayer && $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     $type = CardType($myCharacter[$i]);
     $sType = CardSubType($myCharacter[$i]);

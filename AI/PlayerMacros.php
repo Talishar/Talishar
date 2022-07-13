@@ -30,35 +30,36 @@ function ProcessMacros()
 
 function HasPlayableCard($player, $phase)
 {
+  $restriction = "";
   $character = &GetPlayerCharacter($player);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
-    if($character[$i+1] == 2 && IsPlayable($character[$i], $phase, "CHAR", $i)) return true;
+    if($character[$i+1] == 2 && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
   }
   $hand = &GetHand($player);
   for($i=0; $i<count($hand); $i+=HandPieces())
   {
-    if(IsPlayable($hand[$i], $phase, "HAND", $i)) return true;
+    if(IsPlayable($hand[$i], $phase, "HAND", $i, $restriction, $player)) return true;
   }
   $arsenal = &GetArsenal($player);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
   {
-    if(IsPlayable($arsenal[$i], $phase, "ARS", $i)) return true;
+    if(IsPlayable($arsenal[$i], $phase, "ARS", $i, $restriction, $player)) return true;
   }
   $items = &GetItems($player);
   for($i=0; $i<count($items); $i+=ItemPieces())
   {
-    if(IsPlayable($items[$i], $phase, "PLAY", $i)) return true;
+    if(IsPlayable($items[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
   $banish = &GetBanish($player);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
-    if(IsPlayable($banish[$i], $phase, "BANISH", $i)) return true;
+    if(IsPlayable($banish[$i], $phase, "BANISH", $i, $restriction, $player)) return true;
   }
   $auras = &GetItems($player);
   for($i=0; $i<count($auras); $i+=AuraPieces())
   {
-    if(IsPlayable($auras[$i], $phase, "PLAY", $i)) return true;
+    if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
   //TODO: Combat chain? Landmarks? Allies?
   return false;
