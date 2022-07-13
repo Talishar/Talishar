@@ -17,16 +17,16 @@
     return 1;
   }
 
-  //0 = ID
-  //1 = Status (2=ready, 1=unavailable, 0=destroyed)
-  //2 = Num counters
-  //3 = Num attack counters
-  //4 = Num defense counters
-  //5 = Num uses
-  //6 = On chain (1 = yes, 0 = no)
-  //7 = Flagged for destruction (1 = yes, 0 = no)
-  //8 = Frozen (1 = yes, 0 = no)
-  //9 = Is Active (2 = always active, 1 = yes, 0 = no)
+  //0 - ID
+  //1 - Status (2=ready, 1=unavailable, 0=destroyed)
+  //2 - Num counters
+  //3 - Num attack counters
+  //4 - Num defense counters
+  //5 - Num uses
+  //6 - On chain (1 = yes, 0 = no)
+  //7 - Flagged for destruction (1 = yes, 0 = no)
+  //8 - Frozen (1 = yes, 0 = no)
+  //9 - Is Active (2 = always active, 1 = yes, 0 = no)
   function CharacterPieces()
   {
     return 10;
@@ -37,27 +37,33 @@
     return 3;
   }
 
-  //Card ID
-  //Player
-  //From
-  //Resources Paid
-  //Reprise Active? (Or other class effects?)
-  //Attack Modifier
-  //Defense Modifier
+  //0 - Card ID
+  //1 - Player
+  //2 - From
+  //3 - Resources Paid
+  //4 - Reprise Active? (Or other class effects?)
+  //5 - Attack Modifier
+  //6 - Defense Modifier
   function CombatChainPieces()
   {
     return 7;
   }
 
+  //0 - Card ID
+  //1 - Status (2=ready, 1=unavailable, 0=destroyed)
+  //2 - Num counters
+  //3 - Num attack counters
+  //4 - ?
+  //5 - ?
   function AuraPieces()
   {
     return 6;
   }
 
-  //Item ID
-  //Counters/Steam Counters
-  //Status
-  //Num Uses
+  //0 - Item ID
+  //1 - Counters/Steam Counters
+  //2 - Status
+  //3 - Num Uses
   function ItemPieces()
   {
     return 4;
@@ -68,9 +74,10 @@
     return 1;
   }
 
-  //Effect ID
-  //Player ID
-  //Applies to Unique ID
+  //0 - Effect ID
+  //1 - Player ID
+  //2 - Applies to Unique ID
+  //3 - ?
   function CurrentTurnPieces()
   {
     return 4;
@@ -84,7 +91,7 @@
   //0 - Card ID
   //1 - Face up/down
   //2 - ?
-  //3 - ?
+  //3 - Counters
   //4 - Frozen: 0 = no, 1 = yes
   //5 - ?
   function ArsenalPieces()
