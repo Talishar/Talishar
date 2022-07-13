@@ -20,9 +20,9 @@
     else return "#EDEDED";
   }
   //Rotate is deprecated
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0, $defense=0, $darkMode=null)
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $health=0, $defense=0)
   {//
-    global $playerID, $gameName, $cardIconSize;
+    global $playerID, $gameName, $cardIconSize, $darkMode;
     if($darkMode == null) $darkMode = false;
     if($folder == "crops")
     {
