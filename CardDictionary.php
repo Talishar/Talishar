@@ -2137,9 +2137,16 @@
   {
     switch($cardID)
     {
-      case "UPR004": case "UPR047": case "UPR125": case "UPR184": case "UPR185": case "UPR186": return 0;
+      case "UPR004": case "UPR047": case "UPR125": case "UPR184": case "UPR185": case "UPR186": return 0;//Quell
+      case "MON122": return 0;//Hooves of the Shadowbeast
       default: return 2;
     }
+  }
+
+  function IsCharacterActive($player, $index)
+  {
+    $character = &GetPlayerCharacter($player);
+    return $character[$index+9] == "1";
   }
 
   function ArsenalNumUsesPerTurn($cardID)
