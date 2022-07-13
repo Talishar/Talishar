@@ -111,10 +111,15 @@
     SetCachePiece($gameName, 3, $currentTime);
     echo("1234REMATCH"); exit;
   }
-  echo(GetCachePiece($gameName, 1) . "ENDTIMESTAMP");
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-  if($playerID != 3 && $authKey != $targetAuth) exit;
+  if($playerID != 3 && $authKey != $targetAuth)
+  {
+    echo("999999ENDTIMESTAMP");
+    exit;
+  }
+
+  echo(GetCachePiece($gameName, 1) . "ENDTIMESTAMP");
 
   if($currentPlayer == $playerID) { $icon = "ready.png"; $readyText = "You are the player with priority."; }
   else { $icon = "notReady.png"; $readyText = "The other player has priority."; }
