@@ -211,6 +211,7 @@
       AddDecisionQueue("CHOOSEDISCARDCANCEL", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
       return "";
       default: return "";
     }
