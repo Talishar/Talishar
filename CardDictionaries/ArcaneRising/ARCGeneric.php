@@ -252,6 +252,7 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
         break;
       case "ARC182": case "ARC183": case "ARC184": OptMain(2); break;
       case "ARC185": case "ARC186": case "ARC187":
