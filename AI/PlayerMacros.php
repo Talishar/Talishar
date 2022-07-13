@@ -30,9 +30,6 @@ function ProcessMacros()
 
 function HasPlayableCard($player, $phase)
 {
-  global $currentPlayer;
-  $oldCurrentPlayer = $currentPlayer;//IsPlayable assumes currentPlayer is set
-  $currentPlayer = $player;
   $character = &GetPlayerCharacter($player);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
@@ -64,7 +61,6 @@ function HasPlayableCard($player, $phase)
     if(IsPlayable($auras[$i], $phase, "PLAY", $i)) return true;
   }
   //TODO: Combat chain? Landmarks? Allies?
-  $currentPlayer = $oldCurrentPlayer;
   return false;
 }
 
