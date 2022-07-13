@@ -644,8 +644,9 @@
     for($i=0; $i<count($theirAuras); $i+=AuraPieces())
     {
       if(IsTileable($theirAuras[$i])) continue;
-      $counters = $theirAuras[$i+2] > 0 ? $theirAuras[$i+2] : $theirAuras[$i+3];//TODO: Show both
-      echo(Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters) . "&nbsp");
+      $counters = $theirAuras[$i+2];
+      $atkCounters = $theirAuras[$i+3];
+      echo(Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters, "", "", False, 0, 0, $atkCounters) . "&nbsp");
     }
   }
   if(count($theirItems) > 0)
@@ -786,8 +787,9 @@
       if(IsTileable($myAuras[$i])) continue;
       $playable = ($currentPlayer == $playerID ? $myAuras[$i+1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction): false);
       $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
-      $counters = $myAuras[$i+2] > 0 ? $myAuras[$i+2] : $myAuras[$i+3];//TODO: Show both
-      echo(Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i)) . "&nbsp");
+      $counters = $myAuras[$i+2];
+      $atkCounters = $myAuras[$i+3];
+      echo(Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i),"", False, 0, 0, $atkCounters) . "&nbsp");
     }
   }
   if(count($myItems) > 0)
@@ -833,7 +835,7 @@
     $restriction = "";
     $counters = 0;
     if(CardType($myCharacter[$i]) == "W") $counters = $myCharacter[$i+3];
-    if($myCharacter[$i+2] > 0) $counters = $myCharacter[$i+2];//TODO: Display both kinds of counters
+    if($myCharacter[$i+2] > 0) $counters = $myCharacter[$i+2];
     $playable = $myCharacter[$i+1] == 2 && IsPlayable($myCharacter[$i], $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myCharacter[$i], "CHAR", $playable);
     $type = CardType($myCharacter[$i]);
