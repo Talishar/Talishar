@@ -2155,7 +2155,10 @@ function Draw($player, $mainPhase=true)
   if($mainPhase && SearchCharacterActive($otherPlayer, "EVR019")) PlayAura("WTR075", $otherPlayer);
   if(SearchCharacterActive($player, "EVR020"))
   {
+    //Check if it was played by the player with Eartlore Bounty
     $context = GetClassState($player, $CS_EffectContext);
+    //Otherwise it gets the cardID (context) from the other player.
+    if($context == "-") $context = GetClassState($otherPlayer, $CS_EffectContext);
     if($context != "-")
     {
       $cardType = CardType($context);
