@@ -327,6 +327,10 @@
         PassInput(false);
       }
       break;
+    case 102: //Toggle equipment Active
+      $index = $buttonInput;
+      $myCharacter[$index+9] = ($myCharacter[$index+9] == "1" ? "0" : "1");
+      break;
     case 10000://Undo
       RevertGamestate();
       $skipWriteGamestate = true;
@@ -483,6 +487,7 @@
     switch($mode)
     {
       case 26: return true;
+      case 102: return true;
       case 10000: return true;
       case 100001: return true;
       case 100002: return true;

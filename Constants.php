@@ -26,9 +26,10 @@
   //6 = On chain (1 = yes, 0 = no)
   //7 = Flagged for destruction (1 = yes, 0 = no)
   //8 = Frozen (1 = yes, 0 = no)
+  //9 = Is Active (2 = always active, 1 = yes, 0 = no)
   function CharacterPieces()
   {
-    return 9;
+    return 10;
   }
 
   function BanishPieces()

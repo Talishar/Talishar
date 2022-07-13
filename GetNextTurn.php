@@ -850,6 +850,14 @@
     if($myCharacter[$i+6] == 1) echo("<img title='On Combat Chain' style='position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:7px;' src='./Images/onChain.png' />");
     if($myCharacter[$i+1] == 0) echo("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
     if($myCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+    if($myCharacter[$i+9] != 2)
+    {
+      echo("<img title='Active Toggle' style='position:absolute; z-index:1000; bottom:10px; left:" . $cardWidth/2 - 10 . "px; height:" . 111 / 4 . "px; width:" . 34 . "px;' src='./Images/gemSocket.png'>");
+      $gem = ($myCharacter[$i+9] == 1 ? "greenPhaseMarker.png" : "redPhaseMarker.png");
+      if($myCharacter[$i+9] == 0) echo("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth/2 - 14 . "px; width:42px; height:42px; cursor:pointer;' src='./Images/redPhaseMarker.png' />");
+      else if($myCharacter[$i+9] == 1) echo("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth/2 - 14 . "px; width:42px; height:42px; cursor:pointer;' src='./Images/greenPhaseMarker.png' />");
+      echo("</img>");
+    }
     if($type == "C")
     {
       if(count($mySoul) > 0) echo("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; font-weight: 600; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."; text-align:center;'>Soul: " . count($mySoul) . "</div>");

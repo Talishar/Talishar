@@ -310,7 +310,7 @@
     $quellAmount = 0;
     for($i=0; $i<count($character); $i+=CharacterPieces())
     {
-      if($character[$i+1] == "0") continue;
+      if($character[$i+1] == "0" || $character[$i+9] == "0") continue;
       $quellAmount += QuellAmount($character[$i]);
     }
     if($quellAmount > $damage) $quellAmount = $damage;
