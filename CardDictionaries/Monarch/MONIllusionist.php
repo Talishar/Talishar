@@ -183,6 +183,7 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDISCARD", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHOWSELECTEDCARD", $mainPlayer, "-", 1);
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
         break;
       case "MON023": case "MON024": case "MON025": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;

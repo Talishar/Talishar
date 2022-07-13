@@ -140,6 +140,7 @@
         AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
         return "Lets you put a non-attack action card with Blood Debt from your graveyard to your deck.";
       case "MON162": case "MON163": case "MON164":
         if($cardID == "MON162") $optAmt = 3;

@@ -296,6 +296,7 @@
         AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
         return "";
       case "ELE118":
         MyDrawCard();
@@ -332,6 +333,7 @@
         AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
         if($from == "ARS") MyDrawCard();
         return "";
       case "ELE143":

@@ -1658,7 +1658,6 @@
     global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
     global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $playerID;
     global $combatChain;
-    if($from == "ARS") echo("PLAYER" . $player);
     if($player == "") $player = $currentPlayer;
     $myArsenal = &GetArsenal($player);
     $myAllies = &GetAllies($player);
