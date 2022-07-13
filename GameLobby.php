@@ -86,13 +86,13 @@ h1 {
   margin-top: 6px;
   text-align:center;
   width:100%;
-  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 h2 {
   text-align:center;
   width:100%;
-  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 </style>
@@ -109,7 +109,7 @@ h2 {
 
 <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:350px;
 background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
+border: 2px solid #1a1a1a;
 border-radius: 3px;">
 <?php
   $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
@@ -123,7 +123,7 @@ border-radius: 3px;">
 </div>
 
 <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black; border-radius: 3px;">
+border: 2px solid #1a1a1a; border-radius: 3px;">
 
 <?php
   $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
@@ -170,16 +170,16 @@ border: 2px solid black; border-radius: 3px;">
 
 <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:290px; height:73px;
 background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
+border: 2px solid #1a1a1a;
 border-radius: 3px;" onclick="TabClick('EQUIP');">
 
 <h1>Your Equipment</h1>
 </div>
 
 <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:3%;
-background-color:rgba(74, 74, 74, 0.8); border: 2px solid black; border-radius: 3px;">
+background-color:rgba(74, 74, 74, 0.8); border: 2px solid #1a1a1a; border-radius: 3px;">
 
-<div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;'>Click Cards to Select/Unselect</div>
+<div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
 <table>
 <?php
@@ -207,7 +207,7 @@ background-color:rgba(74, 74, 74, 0.8); border: 2px solid black; border-radius: 
 </div>
 
 <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:933px; width:290px; height:73px;
-background-color:rgba(175, 175, 175, 0.8); border: 2px solid black; border-radius: 3px;" onclick="TabClick('DECK');">
+background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 3px;" onclick="TabClick('DECK');">
 
 <?php
 echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
@@ -215,9 +215,9 @@ echo("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (c
 </div>
 
 <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:639px; right:20px; bottom:3%;
-background-color:rgba(74, 74, 74, 0.8); border: 2px solid black; border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
+background-color:rgba(74, 74, 74, 0.8); border: 2px solid #1a1a1a; border-radius: 3px; overflow-y:scroll; overflow-x:hidden;">
 
-<div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;'>Click Cards to Select/Unselect</div>
+<div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
 <?php
 
@@ -236,7 +236,7 @@ background-color:rgba(74, 74, 74, 0.8); border: 2px solid black; border-radius: 
     }
 ?>
 </div>
-  <div style="position:absolute; z-index:1; top:390px; left:20px; width:600px; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.8); border: 2px solid black;border-radius: 3px;">
+  <div style="position:absolute; z-index:1; top:390px; left:20px; width:600px; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.8); border: 2px solid #1a1a1a;border-radius: 3px;">
   <h1>Game Lobby</h1>
 <?php
 

@@ -27,17 +27,17 @@ h1 {
   text-align:center;
   width:100%;
   color: #EDEDED;
-  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 h2 {
   text-align:center;
   width:100%;
-  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 p, div, a{
-  text-shadow: 2px 0 0 black, 0 -2px 0 black, 0 2px 0 black, -2px 0 0 black;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 select, input{
   font-weight: bold;
@@ -46,7 +46,7 @@ select, input{
 
 <div style="position:absolute; z-index:1; top:15%; left:2%; width:25%; height:70%;
 background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid black;
+border: 2px solid #1a1a1a;
 border-radius: 3px;">
 <h2>Game Lobby</h2>
 <?php
