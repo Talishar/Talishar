@@ -2133,6 +2133,15 @@
     }
   }
 
+  function CharacterDefaultActiveState($cardID)
+  {
+    switch($cardID)
+    {
+      case "UPR004": case "UPR047": case "UPR125": case "UPR184": case "UPR185": case "UPR186": return 0;
+      default: return 2;
+    }
+  }
+
   function ArsenalNumUsesPerTurn($cardID)
   {
     switch($cardID)
