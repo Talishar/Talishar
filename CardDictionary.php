@@ -1655,9 +1655,13 @@
 
   function IsPlayable($cardID, $phase, $from, $index=-1, &$restriction=null)
   {
-    global $myHand, $currentPlayer, $myClassState, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
-    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $myCharacter, $mainPlayer, $playerID;
-    global $combatChain, $myAllies, $myArsenal;
+    global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
+    global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $playerID;
+    global $combatChain;
+    $myArsenal = &GetArsenal($currentPlayer);
+    $myAllies = &GetAllies($currentPlayer);
+    $myCharacter = &GetPlayerCharacter($currentPlayer);
+    $myHand = &GetHand($currentPlayer);
     $restriction = "";
     $cardType = CardType($cardID);
     $subtype = CardSubType($cardID);
@@ -1702,7 +1706,7 @@
     if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
     if($phase == "D" && $subtype == "Trap" && $from != "ARS") return false;
     if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
-    if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && $myClassState[$CS_NumActionsPlayed] >= 1) return false;
+    if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) return false;
     if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
     if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
     switch($cardType)
@@ -1761,9 +1765,14 @@
 
   function IsPlayRestricted($cardID, &$restriction, $from="", $index=-1)
   {
-    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $myCharacter, $myHand, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
-    global $CS_DamageTaken, $myArsenal, $myItems, $mySoul, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
+    global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
+    global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
+    $myCharacter = &GetPlayerCharacter($currentPlayer);
+    $myHand = &GetHand($currentPlayer);
+    $myArsenal = &GetArsenal($currentPlayer);
+    $myItems = &GetItems($currentPlayer);
+    $mySoul = &GetSoul($currentPlayer);
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
