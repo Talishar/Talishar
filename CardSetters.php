@@ -52,14 +52,14 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
-    if($index >= 0 && IsEquipUsable($player, $index))
+    if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index))
     {
-       AddDecisionQueue("CHARREADYORPASS", $player, $index);
-       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hooves_of_the_Shadowbeast_to_gain_an_action_point", 1);
-       AddDecisionQueue("NOPASS", $player, "-", 1);
-       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);//Operates off last result
-       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+      AddDecisionQueue("CHARREADYORPASS", $player, $index);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hooves_of_the_Shadowbeast_to_gain_an_action_point", 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);//Operates off last result
+      AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
     }
   }
   return $rv;
