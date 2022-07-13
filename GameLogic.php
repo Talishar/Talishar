@@ -2835,7 +2835,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $i=0;
       while(count($arsenal)>0)
       {
-        if($i%4 == 0){
+        if($i%ArsenalPieces() == 0){
           array_push($deck, $arsenal[$i]);
           RemoveArsenalEffects($player, $arsenal[$i]);
         }
