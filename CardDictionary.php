@@ -2142,6 +2142,7 @@
     }
   }
 
+  //Active (2 = Always Active, 1 = Yes, 0 = No)
   function CharacterDefaultActiveState($cardID)
   {
     switch($cardID)
