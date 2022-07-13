@@ -15,6 +15,8 @@
 
   $lockTries = 0;
 
+  if(!$gameFileHandler) { exit; }//Game does not exist
+
   while(!flock($gameFileHandler, LOCK_EX) && $lockTries < 10)
   {
     usleep(100000);//100ms

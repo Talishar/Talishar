@@ -54,6 +54,8 @@
 
   $handler = fopen($filename, "r");
 
+  if(!$handler) { exit; }//Game does not exist
+
   $lockTries = 0;
   while(!flock($handler, LOCK_SH) && $lockTries < 10)
   {
