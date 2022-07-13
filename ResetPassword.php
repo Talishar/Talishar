@@ -3,11 +3,10 @@
 ?>
 
 <main>
-  <div class="wrapper">
-    <section class="section-default">
-
+  <div>
+    <section class="signup-form">
       <h1>Reset your password.</h1>
-      <p>An e-mail will be send to you with instructions on how to reset your password.</p>
+      <h3>An e-mail will be send to you with instructions on how to reset your password.</h3>
       <form class="form-resetpwd" action="includes/reset-request.inc.php" method="post">
         <input type="text" name="email" placeholder="Enter your e-mail adress...">
         <button type="submit" name="reset-request-submit">Receive new password by mail</button>

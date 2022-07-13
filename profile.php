@@ -72,7 +72,7 @@ if(isset($_POST['update_profile'])){
 
             <!-- Profile Picture placeholder -->
               <style>
-                img {border: 2px solid black; display: block; margin-left: auto; margin-right: auto; width: 230px; height: 200px; border-radius: 50%; }
+                img {border: 3px solid #1a1a1a; display: block; margin-left: auto; margin-right: auto; width: 230px; height: 200px; border-radius: 50%; }
               </style>
             <img src="Images/default-avatar.jpg" alt="Avatar">
 

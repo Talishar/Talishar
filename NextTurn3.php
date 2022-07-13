@@ -29,7 +29,7 @@
   if($darkMode) $backgroundColor = "rgba(20,20,20,0.70)";
   else $backgroundColor = "rgba(255,255,255,0.70)";
 
-  $borderColor = ($darkMode ? "#DDD" : "black");
+  $borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
   ?>
 
 

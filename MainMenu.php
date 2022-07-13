@@ -23,7 +23,7 @@ body {
 
 <div style="position:absolute; top:50px; left:10px; width:25%; bottom: 30px;
   background-color:rgba(74, 74, 74, 0.8);
-  border: 2px solid black;
+  border: 2px solid #1a1a1a;
   border-radius: 3px;">
   <?php
     include "ServerChecker.php";
@@ -32,7 +32,7 @@ body {
 
 <div style="position:absolute; top:28%; left:50%; width:40%; bottom: 30px; margin: 0 0 0 -20%; /* -13% = half of width/height */
   background-color:rgba(74, 74, 74, 0.8);
-  border: 2px solid black;
+  border: 2px solid #1a1a1a;
   border-radius: 3px;">
 
 <h1 style="margin-top: 3px;">Create New Game</h1>
@@ -41,7 +41,7 @@ body {
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
 ?>
 
-<div style="margin-left: 8px; font-size:19px; font-weight:bolder;">Decks to Try:
+<div style="margin-left: 8px; font-size:19px; font-weight:bolder; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;">Decks to Try:
   <select name="decksToTry" id="decksToTry">
     <option value="1">Dori Axes CC</option>
     <option value="2">Bravo CC</option>
@@ -132,12 +132,13 @@ body {
 
 <div style="position:absolute; top:50px; right:10px; width:25%; bottom: 30px;
 background-color:rgba(74, 74, 74, 0.8);
-border: 2px solid black;
+border: 2px solid #1a1a1a;
 border-radius: 3px;">
 
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h1>
-<h3 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h3>
-  Channel the Bleak Expanse<br>
+<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h2>
+  <p>Channel the Bleak Expanse</p>
+
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
     <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:40px;' src='./Images/flags/italy.png' /></a>

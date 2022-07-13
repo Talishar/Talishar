@@ -154,8 +154,8 @@
   else $backgroundColor = "rgba(235, 235, 235, 0.9)";
 
   $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
-  $borderColor = ($darkMode ? "#DDD" : "black");
-  $fontColor = ($darkMode ? "black" : "#EDEDED");
+  $borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
+  $fontColor = ($darkMode ? "#1a1a1a" : "#EDEDED");
 
   //Display background
   if(IsDarkPlainMode($playerID))

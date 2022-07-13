@@ -11,12 +11,12 @@
   function PopupBorderColor($darkMode)
   {
     if($darkMode) return "#DDD";
-    else return "black";
+    else return "#1a1a1a";
   }
 
   function TextCounterColor($darkMode)
   {
-    if($darkMode) return "black";
+    if($darkMode) return "#1a1a1a";
     else return "#EDEDED";
   }
   //Rotate is deprecated

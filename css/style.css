@@ -28,6 +28,7 @@ body {
   margin-bottom: 3px;
   font-size: 14px;
   color: #111;
+  text-shadow: 0;
 }
 
 .login-status {
@@ -36,11 +37,12 @@ body {
   color: #111;
 }
 
-h1, h2, h3, h4, h5, h6, p, a, label{
+h1, h2, h3, h4, h5, h6, p, a, i, label{
   font-family: 'Helvetica', sans-serif;
   color: #DDD;
   line-height: 24px;
   font-weight: bolder;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 h1 {
@@ -65,12 +67,13 @@ h3 {
 p {
   font-weight: 600;
   font-size: 16px;
+  text-align: center;
 }
 
 nav {
   width: 100%;
   height: 40px;
-  background-color: black;
+  background-color: #1a1a1a;
 }
 
 nav .wrapper {
@@ -124,7 +127,7 @@ input, button {
 /* Sign Up + Profile */
 .signup-form{
   background-color:rgba(74, 74, 74, 0.8);
-  border: 1px solid black;
+  border: 1px solid #1a1a1a;
   border-radius: 5px;
 }
 
@@ -136,6 +139,7 @@ input, button {
   font-size: 18px;
   color: #DDD;
   margin-bottom: 5px;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 .signup-form-form a {
@@ -147,7 +151,7 @@ input, button {
   width: 100%;
   text-align: center;
   color: #DDD;
-  border: 1px black;
+  border: 1px #1a1a1a;
   font-weight: bold;
   font-size: 20px;
 }
@@ -164,11 +168,21 @@ input, button {
   font-size: 24px;
 }
 
+.signup-form h3 {
+  text-align: center;
+  margin-top: 6px;
+  color: #DDD;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 5px;
+}
+
 .signup-form form {
   width: 85%;
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 5px;
+  overflow: auto;
 }
 
 .signup-form form input {
@@ -176,12 +190,12 @@ input, button {
   padding: 5px;
   margin-bottom: 10px;
   margin-top: 3px;
-  border: 1px solid black;
+  border: 1px solid #1a1a1a;
   border-radius: 5px;
   background-color: #EEE;
   font-size: 17px;
   float: left;
-  color: black;
+  color: #1a1a1a;
 }
 
 .signup-form form button {
@@ -191,7 +205,7 @@ input, button {
   margin-top: 3px;
   margin-right: 3px;
   margin-bottom: 5px;
-  border: 1px solid black;
+  border: 1px solid #1a1a1a;
   border-radius: 5px;
   background-color: #333;
   font-size: 20px;
@@ -200,6 +214,7 @@ input, button {
   text-align: center;
   text-decoration: inherit;
   cursor: pointer;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 /* Reset Password */
@@ -223,7 +238,7 @@ input, button {
   width: 100%;
   margin-bottom: 10px;
   margin-top: 3px;
-  border: 1px solid black;
+  border: 1px solid #1a1a1a;
   border-radius: 5px;
   float: left;
   color: #DDD;
@@ -233,6 +248,13 @@ input, button {
   font-weight: bolder;
   text-decoration: inherit;
   cursor: pointer;
+}
+
+.form-resetpwd p{
+  font-family: 'Helvetica', sans-serif;
+  color: #DDD;
+  line-height: 24px;
+  font-weight: bolder;
 }
 
 .p-forgetpwd {
@@ -259,7 +281,7 @@ input, button {
 
 .draft-form {
   background-color:rgba(74, 74, 74, 0.8);
-  border: 1px solid black;
+  border: 1px solid #1a1a1a;
   border-radius: 15px;
   width: 30%;
 }
@@ -298,7 +320,7 @@ input, button {
   width: 100%;
   margin-bottom: 10px;
   margin-top: 3px;
-  border: 1px solid black;
+  border: 1px solid #1a1a1a;
   border-radius: 5px;
   float: left;
   color: #DDD;
@@ -308,4 +330,8 @@ input, button {
   font-weight: bolder;
   text-decoration: inherit;
   cursor: pointer;
+}
+
+.draft-form input {
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
