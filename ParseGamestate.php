@@ -52,6 +52,7 @@
     exit;
   }
 
+  if(!file_exists($filename)) exit;
   $handler = fopen($filename, "r");
 
   if(!$handler) { exit; }//Game does not exist

@@ -11,10 +11,10 @@
   }
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
+  if(!file_exists($filename)) exit;
   $gameFileHandler = fopen($filename, "r+");
 
   $lockTries = 0;
-
   if(!$gameFileHandler) { exit; }//Game does not exist
 
   while(!flock($gameFileHandler, LOCK_EX) && $lockTries < 10)

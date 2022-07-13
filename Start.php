@@ -16,6 +16,8 @@
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
 
+  if(!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
+
   ob_start();
   include "MenuFiles/ParseGamefile.php";
   include "MenuFiles/WriteGamefile.php";
