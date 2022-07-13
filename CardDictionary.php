@@ -2157,8 +2157,11 @@
     {
       case "UPR004": case "UPR047": case "UPR125": case "UPR184": case "UPR185": case "UPR186": return 0;//Quell
       case "WTR117": return 1;//Refraction Bolters
+      case "ARC152": return 1;//Vest of the First Fist
+      case "CRU053": return 1;//Breeze Rider Boots
       case "CRU161": return 1;//Metacarpus Node
       case "MON122": return 0;//Hooves of the Shadowbeast
+      case "ELE173": return 1;//Mark of Lightning
       case "EVR037": return 1;//Mask of the Pouncing Lynx
       default: return 2;
     }

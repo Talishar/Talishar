@@ -2084,7 +2084,7 @@ function OnBlockEffects($index, $from)
     switch($mainCharacter[$i])
     {
       case "ELE174":
-        if($from == "HAND")
+        if($from == "HAND" && IsCharacterActive($mainPlayer, $i))
         {
           if(TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))
           {
@@ -2263,7 +2263,7 @@ function MainCharacterHitAbilities()
         }
         break;
       case "ARC152":
-        if(CardType($attackID) == "AA")
+        if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i))
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
           AddDecisionQueue("VESTOFTHEFIRSTFIST", $mainPlayer, $i, 1);
@@ -2271,7 +2271,7 @@ function MainCharacterHitAbilities()
         break;
       case "CRU047": if(CardType($attackID) == "AA") { AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer); $mainCharacter[$i+1] = 1; } break;
       case "CRU053":
-        if(CardType($attackID) == "AA" && ClassContains($attackID, "NINJA", $mainPlayer))
+        if(CardType($attackID) == "AA" && ClassContains($attackID, "NINJA", $mainPlayer) && IsCharacterActive($mainPlayer, $i))
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
