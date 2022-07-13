@@ -653,7 +653,7 @@ function PlayerOpt($player, $amount)
 {
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPX," . $amount);
   AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
-  AddDecisionQueue("OPT", $player, "<-", 1);
+  AddDecisionQueue("OPT", $player, "<-", 1); // TODO: Write the information how many cards went on top and at the bottom as it us public information.
 }
 
 function DiscardRandom($player="", $source="")

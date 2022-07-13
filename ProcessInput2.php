@@ -1450,6 +1450,7 @@ function FinalizeChainLink($chainClosed=false)
           AddDecisionQueue("DIVIDE", $currentPlayer, "2");
           AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
         }
+        // TODO: Gold
         AddDecisionQueue("KNICKKNACK", $currentPlayer, "-");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         break;

@@ -304,7 +304,7 @@
         {
           DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
         }
-        return "Singe is a partially manual card. You have to make sure you damage each target no more than once."; //// TODO: Limite to once each target.
+        return "Singe is a partially manual card. You have to make sure you damage each target no more than once."; // TODO: Limit to once each target.
       default: return "";
     }
   }
