@@ -2256,7 +2256,7 @@ function MainCharacterHitAbilities()
       case "WTR079": if(CardType($attackID) == "AA" && $combatChainState[$CCS_HitsInRow] >= 3) { MainDrawCard(); $mainCharacter[$i+1] = 1; } break;
       case "WTR113": case "WTR114": if($mainCharacter[$i+1] == 2 && CardType($attackID) == "W" && $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] != 0) { $mainCharacter[$i+1] = 1; $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2; ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5]; } break;
       case "WTR117":
-        if(CardType($attackID) == "W")
+        if(CardType($attackID) == "W" && IsCharacterActive($mainPlayer, $i))
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
           AddDecisionQueue("REFRACTIONBOLTERS", $mainPlayer, $i, 1);
@@ -2281,7 +2281,7 @@ function MainCharacterHitAbilities()
         }
         break;
       case "EVR037":
-        if(CardType($attackID) == "AA")
+        if(CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i))
         {
           AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Mask_of_the_Pouncing_Lynx_to_tutor_a_card");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
