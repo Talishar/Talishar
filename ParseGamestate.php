@@ -1,5 +1,7 @@
 <?php
 
+  if(!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
+
   if(!function_exists("GetArray"))
   {
     function GetArray($handler)
