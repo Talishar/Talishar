@@ -1653,15 +1653,17 @@
     }
   }
 
-  function IsPlayable($cardID, $phase, $from, $index=-1, &$restriction=null)
+  function IsPlayable($cardID, $phase, $from, $index=-1, &$restriction=null, $player="")
   {
     global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
     global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $playerID;
     global $combatChain;
-    $myArsenal = &GetArsenal($currentPlayer);
-    $myAllies = &GetAllies($currentPlayer);
-    $myCharacter = &GetPlayerCharacter($currentPlayer);
-    $myHand = &GetHand($currentPlayer);
+    if($from == "ARS") echo("PLAYER" . $player);
+    if($player == "") $player = $currentPlayer;
+    $myArsenal = &GetArsenal($player);
+    $myAllies = &GetAllies($player);
+    $myCharacter = &GetPlayerCharacter($player);
+    $myHand = &GetHand($player);
     $restriction = "";
     $cardType = CardType($cardID);
     $subtype = CardSubType($cardID);
@@ -1670,6 +1672,11 @@
     if($phase == "B" && $cardType == "E") { $restriction = ($myCharacter[$index+6] == 1 ? "On combat chain" : ""); return $myCharacter[$index+6] == 0; }
     if($from == "CHAR" && $phase != "B" && $myCharacter[$index+8] == "1") { $restriction = "Frozen"; return false; }
     if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index+3] == "1") { $restriction = "Frozen"; return false; }
+    if($from == "ARS" && count($myArsenal) < $index+4)
+    {
+      echo(print_r(debug_backtrace(), true));
+      return false;
+    }
     if($from == "ARS" && $phase != "B" && $myArsenal[$index+4] == "1") { $restriction = "Frozen"; return false; }
     if($cardType == "DR" && IsAllyAttackTarget()) return false;
     if($cardType == "AR" && IsAllyAttacking()) return false;
@@ -1678,7 +1685,7 @@
       if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;
       if(CachedTotalAttack() <= 2 && SearchCharacterForCard($mainPlayer, "CRU047") && CardType($combatChain[0]) == "AA") return false;
     }
-    if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $currentPlayer))) return false;
+    if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player))) return false;
     if($phase == "B" || $phase == "D")
     {
       if($cardType == "AA")
@@ -1702,11 +1709,11 @@
       if($from == "HAND" && count($myHand) < 2) return false;//TODO: Account for where it was from
       else if(count($myHand) < 1) return false;
     }
-    if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index)) return false;
+    if($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
     if($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
     if($phase == "D" && $subtype == "Trap" && $from != "ARS") return false;
-    if(SearchCurrentTurnEffects("ARC044", $currentPlayer) && !$isStaticType && $from != "ARS") return false;
-    if(SearchCurrentTurnEffects("ARC043", $currentPlayer) && ($cardType == "A" || $cardType == "AA") && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) return false;
+    if(SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
+    if(SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
     if(($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
     if(($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
     switch($cardType)
@@ -1722,13 +1729,13 @@
   function GoesWhereAfterResolving($cardID, $from = null, $player="")
   {
     global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $combatChainState, $CCS_AttackPlayedFrom;
-    $otherPlayer = $currentPlayer == 2 ? 1 : 2;
     if($player == "") $player = $currentPlayer;
+    $otherPlayer = $player == 2 ? 1 : 2;
     if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
     switch($cardID)
     {
       case "WTR163": return "BANISH";
-      case "CRU163": return GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
+      case "CRU163": return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
       case "MON063": return "SOUL";
       case "MON064": return "SOUL";
       case "MON231": return "BANISH";
@@ -1736,11 +1743,11 @@
       case "ELE140": case "ELE141": case "ELE142": return "BANISH";
       case "MON087":
         $theirChar = GetPlayerCharacter($otherPlayer);
-        if(TalentContains($theirChar[0], "SHADOW") && PlayerHasLessHealth($currentPlayer)) return "SOUL";
+        if(TalentContains($theirChar[0], "SHADOW") && PlayerHasLessHealth($player)) return "SOUL";
         else return "GY";
       case "MON192": if($from=="BANISH") return "HAND";
-      case "EVR082": case "EVR083": case "EVR084": return (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
-      case "EVR134": case "EVR135": case "EVR136": return ($currentPlayer != $mainPlayer ? "BOTDECK" : "GY");
+      case "EVR082": case "EVR083": case "EVR084": return (GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
+      case "EVR134": case "EVR135": case "EVR136": return ($player != $mainPlayer ? "BOTDECK" : "GY");
       case "UPR160": return ($from == "CHAINCLOSING" || $combatChainState[$CCS_AttackPlayedFrom] == "BANISH" ? "GY" : "BANISH,TCC");
       default: return "GY";
     }
@@ -1763,16 +1770,17 @@
     return false;
   }
 
-  function IsPlayRestricted($cardID, &$restriction, $from="", $index=-1)
+  function IsPlayRestricted($cardID, &$restriction, $from="", $index=-1, $player="")
   {
     global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
     global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards;
     global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-    $myCharacter = &GetPlayerCharacter($currentPlayer);
-    $myHand = &GetHand($currentPlayer);
-    $myArsenal = &GetArsenal($currentPlayer);
-    $myItems = &GetItems($currentPlayer);
-    $mySoul = &GetSoul($currentPlayer);
+    if($player == "") $player = $currentPlayer;
+    $myCharacter = &GetPlayerCharacter($player);
+    $myHand = &GetHand($player);
+    $myArsenal = &GetArsenal($player);
+    $myItems = &GetItems($player);
+    $mySoul = &GetSoul($player);
     if(SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {$restriction = "CRU032"; return true; }
     if(SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {$restriction = "MON007"; return true; }
     if(SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E")  {$restriction = "ELE036"; return true; }
@@ -1786,7 +1794,7 @@
       case "ARC008": return $myClassState[$CS_NumBoosted] < 3;
       case "ARC010": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index+1] > 0 && (CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index+2] != 2));
       case "ARC018": return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index+1] > 0 && (CardType($combatChain[0]) != "AA" || $myItems[$index+2] != 2));
-      case "ARC041": return !ArsenalHasFaceDownCard($currentPlayer);//Restricted if you don't have a face down card
+      case "ARC041": return !ArsenalHasFaceDownCard($player);//Restricted if you don't have a face down card
       case "WTR209": case "WTR210": case "WTR211":
         if(count($combatChain) == 0) return true;
         $subtype = CardSubtype($combatChain[0]);
@@ -1795,9 +1803,9 @@
       case "WTR080":
         if(count($combatChain) == 0) return true;
         return !HasCombo($combatChain[0]);
-      case "WTR082": return count($combatChain) == 0 || !ClassContains($combatChain[0], "NINJA", $currentPlayer) || CardType($combatChain[0]) != "AA";
+      case "WTR082": return count($combatChain) == 0 || !ClassContains($combatChain[0], "NINJA", $player) || CardType($combatChain[0]) != "AA";
       case "WTR116":
-        return GetClassState($currentPlayer, $CS_HitsWithWeapon) == 0;
+        return GetClassState($player, $CS_HitsWithWeapon) == 0;
       case "WTR120": case "WTR121":
       case "WTR123": case "WTR124": case "WTR125":
       case "WTR135": case "WTR136": case "WTR137":
@@ -1830,19 +1838,19 @@
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
         return $type != "W";
-      case "CRU125": return !HasTakenDamage($currentPlayer);
-      case "CRU143": return SearchCount(SearchDiscard($currentPlayer, "AA", "", -1, -1, "RUNEBLADE")) == 0;
+      case "CRU125": return !HasTakenDamage($player);
+      case "CRU143": return SearchCount(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE")) == 0;
       case "CRU164": return count($layers) == 0;
       case "CRU186":
         if(count($combatChain) == 0) return true;
         $type = CardType($combatChain[0]);
         return $type != "AA";
-      case "MON000": return $from == "PLAY" && SearchCount(SearchHand($currentPlayer, "", "", -1, -1, "", "", false, false, 2)) < 2;
+      case "MON000": return $from == "PLAY" && SearchCount(SearchHand($player, "", "", -1, -1, "", "", false, false, 2)) < 2;
       case "MON001": case "MON002": return count($mySoul) == 0;
       case "MON029": case "MON030": return count($mySoul) == 0;
       case "MON062": return count($mySoul) < 3;
       case "MON084": case "MON085": case "MON086": return count($combatChain) == 0;
-      case "MON144": case "MON145": case "MON146": return GetClassState($currentPlayer, $CS_Num6PowBan) == 0;
+      case "MON144": case "MON145": case "MON146": return GetClassState($player, $CS_Num6PowBan) == 0;
       case "MON126": case "MON127": case "MON128":
       case "MON129": case "MON130": case "MON131":
       case "MON132": case "MON133": case "MON134":
@@ -1850,46 +1858,46 @@
       case "MON141": case "MON142": case "MON143":
       case "MON147": case "MON148": case "MON149":
       case "MON150": case "MON151": case "MON152": return count($myDiscard) < 3;
-      case "MON189": return SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true)) < 6;
+      case "MON189": return SearchCount(SearchBanish($player, "", "", -1, -1, "", "", true)) < 6;
       case "MON190": return $myClassState[$CS_NumBloodDebtPlayed] < 6;
-      case "MON198": $discard = GetDiscard($currentPlayer); return count($discard) < 6;
-      case "MON230": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0 || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
+      case "MON198": $discard = GetDiscard($player); return count($discard) < 6;
+      case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
-      case "ELE118": return ArsenalEmpty($currentPlayer);
-      case "ELE143": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedEarth) == 0;
+      case "ELE118": return ArsenalEmpty($player);
+      case "ELE143": return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
       case "ELE147":
         if(count($layers) != 0) return !(CardType($layers[0]) == "W" || CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to work on Aura attacks and not on Waning Moon activation
         else return count($combatChain) == 0;
-      case "ELE172": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedIce) == 0;
+      case "ELE172": return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
       case "ELE183": case "ELE184": case "ELE185": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
-      case "ELE201": return $from == "PLAY" && GetClassState($currentPlayer, $CS_NumFusedLightning) == 0;
-      case "ELE224": return GetClassState($currentPlayer, $CS_NumAttackCards) == 0;
+      case "ELE201": return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;
+      case "ELE224": return GetClassState($player, $CS_NumAttackCards) == 0;
       case "ELE225": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
       case "ELE233": return count($myHand) != 1;
       case "ELE234": return count($myHand) == 0;
-      case "ELE236": return !HasTakenDamage($currentPlayer);
+      case "ELE236": return !HasTakenDamage($player);
       case "EVR054": return count($combatChain) == 0 || CardType($combatChain[0]) != "W" || Is1H($combatChain[0]);
       case "EVR060": case "EVR061": case "EVR062": return count($combatChain) == 0 || CardType($combatChain[0]) != "W" || !Is1H($combatChain[0]);
-      case "EVR063": case "EVR064": case "EVR065": return GetClassState($currentPlayer, $CS_AtksWWeapon) < 1;
+      case "EVR063": case "EVR064": case "EVR065": return GetClassState($player, $CS_AtksWWeapon) < 1;
       case "EVR173": case "EVR174": case "EVR175": return $theirClassState[$CS_DamageTaken] == 0;
-      case "EVR176": $hand = &GetHand($currentPlayer); return $from == "PLAY" && count($hand) < 4;
-      case "EVR178": $hand = &GetHand($currentPlayer); return ($from == "PLAY" && count($hand) > 0);
+      case "EVR176": $hand = &GetHand($player); return $from == "PLAY" && count($hand) < 4;
+      case "EVR178": $hand = &GetHand($player); return ($from == "PLAY" && count($hand) > 0);
       case "EVR053": return !HelmOfSharpEyePlayable();
       case "EVR181": return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
       case "DVR013": return (count($combatChain) == 0 || CardType($combatChain[0]) != "W" || CardSubType($combatChain[0]) != "Sword");
       case "DVR014": case "DVR023": return count($combatChain) == 0 || CardSubType($combatChain[0]) != "Sword";
-      case "UPR050": return (count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (!ClassContains($combatChain[0], "NINJA", $currentPlayer) && !TalentContains($combatChain[0], "DRACONIC", $currentPlayer)));
-      case "UPR084": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
-      case "UPR085": return GetClassState($currentPlayer, $CS_NumRedPlayed) == 0;
+      case "UPR050": return (count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || (!ClassContains($combatChain[0], "NINJA", $player) && !TalentContains($combatChain[0], "DRACONIC", $currentPlayer)));
+      case "UPR084": return GetClassState($player, $CS_NumRedPlayed) == 0;
+      case "UPR085": return GetClassState($player, $CS_NumRedPlayed) == 0;
       case "UPR087": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA";
-      case "UPR089": return ($currentPlayer!=$mainPlayer || NumDraconicChainLinks() < 4);
-      case "UPR151": $char = &GetPlayerCharacter($currentPlayer); return ($char[$index+2] < 1 && SearchCurrentTurnEffects($cardID, $currentPlayer));
-      case "UPR153": return GetClassState($currentPlayer, $CS_NumPhantasmAADestroyed) < 1;
+      case "UPR089": return ($player!=$mainPlayer || NumDraconicChainLinks() < 4);
+      case "UPR151": $char = &GetPlayerCharacter($player); return ($char[$index+2] < 1 && SearchCurrentTurnEffects($cardID, $player));
+      case "UPR153": return GetClassState($player, $CS_NumPhantasmAADestroyed) < 1;
       case "UPR159": return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
       case "UPR162": case "UPR163": case "UPR164": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 0;
-      case "UPR165": return GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
-      case "UPR166": $char = &GetPlayerCharacter($currentPlayer); return $char[$index+2] < 2;
-      case "UPR167": return $currentPlayer == $mainPlayer;
+      case "UPR165": return GetClassState($player, $CS_NumNonAttackCards) == 0;
+      case "UPR166": $char = &GetPlayerCharacter($player); return $char[$index+2] < 2;
+      case "UPR167": return $player == $mainPlayer;
       //Mandatory Target Ash
       case "UPR006": case "UPR007": case "UPR008":
       case "UPR009": case "UPR010": case "UPR011":
@@ -1897,7 +1905,7 @@
       case "UPR015": case "UPR016": case "UPR017":
       case "UPR036": case "UPR037": case "UPR038":
       case "UPR039": case "UPR040": case "UPR041":
-        $myAsh = &GetPermanents($currentPlayer);
+        $myAsh = &GetPermanents($player);
         $ash = 0;
         for($i=0; $i<count($myAsh); ++$i)
         {
@@ -1906,7 +1914,7 @@
         return $ash < 1;
       //Once per turn instants restriction
       case "MON281": case "MON282": case "MON283": case "ELE195": case "ELE196": case "ELE197":
-        return SearchCurrentTurnEffects($cardID, $currentPlayer);
+        return SearchCurrentTurnEffects($cardID, $player);
       default: return false;
     }
   }
