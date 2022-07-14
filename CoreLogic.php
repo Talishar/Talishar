@@ -207,7 +207,11 @@ function MZStartTurnIndices()
   {
     switch($mainDiscard[$i])
     {
-      case "UPR086": $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD")); break;
+      case "UPR086":
+        if(ThawIndices($mainPlayer) != "")
+        {
+          $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD")); break;
+        }
       default: break;
     }
   }
