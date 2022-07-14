@@ -131,7 +131,7 @@ function emptyInputLogin($username, $pwd) {
 }
 
 // Log user into website
-function loginUser($conn, $username, $pwd) {
+function loginUser($conn, $username, $pwd, $rememberMe) {
 	$uidExists = uidExists($conn, $username);
 
 	if ($uidExists === false) {
@@ -152,8 +152,47 @@ function loginUser($conn, $username, $pwd) {
 		$_SESSION["useruid"] = $uidExists["usersUid"];
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
+
+		if($rememberMe)
+		{
+			$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
+			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
+			storeRememberMeCookie($conn, $_SESSION["userid"], $cookie);
+		}
+
 		header("location: ../MainMenu.php?error=none");
 		exit();
+	}
+}
+
+function loginFromCookie()
+{
+	$token = $_COOKIE["rememberMeToken"];
+	require_once "dbh.inc.php";
+	if(!isset($conn)) global $conn;
+	$sql = "SELECT usersID, usersUid, usersEmail FROM users WHERE rememberMeToken='$token'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_array($data, MYSQLI_NUM);
+		mysqli_stmt_close($stmt);
+		mysqli_close($conn);
+		$_SESSION["userid"] = $row[0];
+		$_SESSION["useruid"] = $row[1];
+		$_SESSION["useremail"] = $row[2];
+	}
+}
+
+function storeRememberMeCookie($conn, $uid, $cookie)
+{
+	//global $conn;
+  $sql = "UPDATE users SET rememberMeToken='$cookie' WHERE usersID=$uid";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+		mysqli_close($conn);
 	}
 }
 
