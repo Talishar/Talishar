@@ -129,6 +129,7 @@ input, button {
   background-color:rgba(74, 74, 74, 0.8);
   border: 1px solid #1a1a1a;
   border-radius: 5px;
+  overflow: hidden;
 }
 
 .signup-form-form {
@@ -182,7 +183,6 @@ input, button {
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 5px;
-  overflow: auto;
 }
 
 .signup-form form input {
