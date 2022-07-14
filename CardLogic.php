@@ -742,7 +742,7 @@ function DestroyFrozenArsenal($player)
   $arsenal = &GetArsenal($player);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
   {
-    if($arsenal[$i+5] == "1")
+    if($arsenal[$i+4] == "1")
     {
       DestroyArsenal($player);
     }
