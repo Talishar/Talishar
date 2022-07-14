@@ -19,7 +19,11 @@ function PlayAlly($cardID, $player, $subCards="-")
 function DestroyAlly($player, $index, $skipDestroy=false)
 {
   $allies = &GetAllies($player);
-  if(!$skipDestroy) AllyDestroyAbility($player, $allies[$index]);
+  if(!$skipDestroy)
+  {
+    AllyDestroyAbility($player, $allies[$index]);
+    AllyDestroyedAbility($player, $index);
+  }
   if(IsSpecificAllyAttacking($player, $index)) { CloseCombatChain(); }
   for($j = $index+AllyPieces()-1; $j >= $index; --$j)
   {
@@ -50,22 +54,32 @@ function AllyHealth($cardID)
   }
 }
 
-function AllyDestroyAbility($player, $cardID)
+function AllyDestroyedAbility($player, $index)
 {
   global $mainPlayer;
-  $allies = &GetAllies($mainPlayer);
+  $allies = &GetAllies($player);
+  $cardID = $allies[$index];
+  switch($allies[$i])
+  {
+    case "UPR410":
+      if($player == $mainPlayer && $allies[$i+8] > 0)
+      {
+        GainActionPoints(1);
+        WriteLog("Cromai leaves the arena. Gain 1 action point.");
+        --$allies[$i+8];
+      }
+      break;
+    default: break;
+  }
+}
+
+function AllyDestroyAbility($player, $cardID)
+{
+  $allies = &GetAllies($player);
   for($i=0; $i<count($allies); $i+=AllyPieces())
   {
     switch($allies[$i])
     {
-      case "UPR410":
-        if($player == $mainPlayer && $allies[$i+8] > 0)
-        {
-          GainActionPoints(1);
-          WriteLog("Cromai leaves the arena. Gain 1 action point.");
-          --$allies[$i+8];
-        }
-        break;
       case "UPR551":
         $gtIndex = FindCharacterIndex($player, "UPR151");
         if($gtIndex > -1)
