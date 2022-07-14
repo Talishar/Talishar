@@ -157,7 +157,7 @@ function loginUser($conn, $username, $pwd, $rememberMe) {
 		{
 			$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
 			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
-			storeRememberMeCookie($conn, $_SESSION["userid"], $cookie);
+			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
 
 		header("location: ../MainMenu.php?error=none");
@@ -184,10 +184,10 @@ function loginFromCookie()
 	}
 }
 
-function storeRememberMeCookie($conn, $uid, $cookie)
+function storeRememberMeCookie($conn, $uuid, $cookie)
 {
 	//global $conn;
-  $sql = "UPDATE users SET rememberMeToken='$cookie' WHERE usersID=$uid";
+  $sql = "UPDATE users SET rememberMeToken='$cookie' WHERE usersUid='$uuid'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
