@@ -9,10 +9,16 @@
       <input type="text" name="uid" placeholder="Username...">
       <input type="password" name="pwd" placeholder="Password...">
       <button type="submit" name="submit">Submit</button>
+      <label style='display:inline;' for="rememberMe">Remember Me?</label>
+      <input style='display:inline; width:16px;' type="checkbox" id="rememberMe" name="rememberMe" value="rememberMe">
       <a href="ResetPassword.php">
         <button type="submit" name="reset-password">Forgot Password</input>
       </a>
     </form>
+  </div>
+
+  <section class='signup-form' style='position:absolute; bottom:30px; right:30px;'>
+    <i>By using the Remember Me function, you consent to a cookie being stored in your browser for purpose of identifying your account on future visits.</i>
   </div>
   <?php
     // Error messages

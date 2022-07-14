@@ -5,6 +5,7 @@ if (isset($_POST["submit"])) {
   // First we get the form data from the URL
   $username = $_POST["uid"];
   $pwd = $_POST["pwd"];
+  $rememberMe = isset($_POST["rememberMe"]);
 
   // Then we run a bunch of error handlers to catch any user mistakes we can (you can add more than I did)
   // These functions can be found in functions.inc.php
@@ -21,7 +22,7 @@ if (isset($_POST["submit"])) {
   // If we get to here, it means there are no user errors
 
   // Now we insert the user into the database
-  loginUser($conn, $username, $pwd);
+  loginUser($conn, $username, $pwd, $rememberMe);
 
 } else {
 	header("location: ../Login.php");
