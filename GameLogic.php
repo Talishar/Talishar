@@ -3406,7 +3406,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
-      if(SearchCurrentTurnEffects("UPR125", $player)) DestroyFrozenArsenal($targetPlayer);
       return $parameter;
     case "ARCANECHOSEN":
       if($lastResult > 0)
@@ -3426,10 +3425,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
+      $otherPlayer == 1 ? 2 : 1;
       if(!CanDamageBePrevented($player, $damage, "ARCANE")) $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
       if($damage < 0) $damage = 0;
       WriteLog(CardLink($source, $source) . " dealt $damage arcane damage.");
+      if($damage > 0 && SearchCurrentTurnEffects("UPR125", $otherPlayer, true))
+      {
+        DestroyFrozenArsenal($player);
+      }
       return $damage;
     case "PAYRESOURCES":
       $resources = &GetResources($player);
