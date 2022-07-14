@@ -53,7 +53,7 @@
 
   function UPRHasGoAgain($cardID)
   {
-    global $mainPlayer, $CS_NumRedPlayed;
+    global $mainPlayer, $CS_NumRedPlayed, $combatChain;
     switch($cardID)
     {
       case "UPR005": return true;
@@ -74,7 +74,7 @@
       case "UPR030": case "UPR031": case "UPR032": return true;
       case "UPR033": case "UPR034": case "UPR035": return true;
       case "UPR036": case "UPR037": case "UPR038": return true;
-      case "UPR046": return (NumDraconicChainLinks() >= 3 ? true : false);
+      case "UPR046": return (NumDraconicChainLinks() >= 2 ? true : false);
       case "UPR048": return (NumPhoenixFlameChainLinks() >= 1 ? true : false);
       case "UPR049": return true;
       case "UPR051": case "UPR052": case "UPR053": return true;

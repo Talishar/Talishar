@@ -645,12 +645,9 @@
   function ResolveCombatDamage($damageDone)
   {
     global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $chainLinkSummary, $CS_HitsWithWeapon;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon;
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
-    array_push($chainLinkSummary, $damageDone);
-    array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
-    array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
 
     if($wasHit)//Resolve hit effects
     {
@@ -713,7 +710,7 @@ function FinalizeChainLink($chainClosed=false)
     global $turn, $actionPoints, $combatChain, $mainPlayer, $playerID, $defHealth, $currentTurnEffects, $defCharacter, $mainDiscard, $defDiscard, $currentPlayer, $defPlayer;
     global $combatChainState, $actionPoints, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
     global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_LastAttack, $CCS_LinkTotalAttack, $CCS_AttackTarget, $CS_NumSwordAttacks, $chainLinks;
+    global $CS_LastAttack, $CCS_LinkTotalAttack, $CCS_AttackTarget, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
     UpdateGameState($currentPlayer);
     BuildMainPlayerGameState();
 
@@ -767,6 +764,11 @@ function FinalizeChainLink($chainClosed=false)
       array_push($chainLinks[$CLIndex], $combatChain[$i]);//Player ID
       array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[$i+1] != "PLAY" ? "1" : "0"));//Still on chain? 1 = yes, 0 = no
     }
+
+    array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
+    array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
+    array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
+
     CopyCurrentTurnEffectsFromCombat();
     $combatChain = [];
     if($chainClosed)
