@@ -925,7 +925,13 @@ function ProcessCrushEffect($cardID)
       case "WTR060": case "WTR061": case "WTR062": AddNextTurnEffect($cardID, $defPlayer); break;
       case "WTR063": case "WTR064": case "WTR065": $defCharacter[1] = 3; break;
       case "WTR066": case "WTR067": case "WTR068": AddNextTurnEffect($cardID, $defPlayer); break;
-      case "WTR050": case "WTR049": case "WTR048": ArsenalToBottomDeck($defPlayer); break;
+      case "WTR050": case "WTR049": case "WTR048":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        break;
       case "CRU026":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
@@ -4005,6 +4011,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         {
           case "MYDISCARD": RemoveGraveyard($player, $mzIndex[1]); break;
           case "THEIRDISCARD": RemoveGraveyard($otherPlayer, $mzIndex[1]); break;
+          case "MYARS": RemoveFromArsenal($player, $mzIndex[1]); break;
+          case "THEIRARS": RemoveFromArsenal($otherPlayer, $mzIndex[1]); break;
           default: break;
         }
       }
@@ -4024,6 +4032,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "THEIRDISCARD":
             $deck = &GetDeck($otherPlayer);
             AddBottomDeck($deck[$mzIndex[1]], $otherPlayer, $params[0]); break;
+          case "MYARS":
+            $arsenal = &GetArsenal($player);
+            AddBottomDeck($arsenal[$mzIndex[1]], $player, $params[0]); break;
+          case "THEIRARS":
+            $arsenal = &GetArsenal($otherPlayer);
+            AddBottomDeck($arsenal[$mzIndex[1]], $otherPlayer, $params[0]); break;
           default: break;
         }
       }
