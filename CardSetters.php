@@ -47,11 +47,13 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
     {
       $character = &GetPlayerCharacter($player);
       if(($character[0] == "MON119" || $character[0] == "MON120") && $character[1] == 2) {// Levia
-        WriteLog("Levia Banished a card with 6 or more power, and will not lose health from Blood Debt this turn");
+        WriteLog("Levia Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
       }
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
+    // Hooves doesn't trigger on Soul Harvest.
+    // TODO: When the core dq step resolves, it's clearing out the rest of the dq causing hooves to not trigger. We probably need to change core AddDQ code to look for a core step and prepend it before that core step, instead of blindly at the end.
     if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index))
     {
       AddDecisionQueue("CHARREADYORPASS", $player, $index);
