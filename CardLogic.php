@@ -3,33 +3,6 @@
 include "CardDictionary.php";
 include "CoreLogic.php";
 
-function BlessingOfDeliveranceDestroy($amount)
-{
-  global $mainPlayer;
-  $deck = GetDeck($mainPlayer);
-  $lifegain = 0;
-  $cards = "";
-  for($i=0; $i<$amount; ++$i)
-  {
-    if(count($deck) > $i)
-    {
-      $cards .= $deck[$i] . ($i < 2 ? "," : "");
-      if(CardCost($deck[$i]) >= 3) ++$lifegain;
-    }
-  }
-  RevealCards($cards);
-  GainHealth($lifegain, $mainPlayer);
-  return "Blessing of Deliverance gained " . $lifegain . " life.";
-}
-
-function EmergingPowerDestroy($cardID)
-{
-  global $mainPlayer;
-  $log = "Emerging Power gives the next Guardian attack this turn +" . EffectAttackModifier($cardID) . ".";
-  AddCurrentTurnEffect($cardID, $mainPlayer);
-  return $log;
-}
-
 function PummelHit($player=-1)
 {
   global $defPlayer;
@@ -49,21 +22,6 @@ function HandToTopDeck($player)
   AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
 }
 
-function KatsuHit($index)
-{
-  global $mainPlayer;
-  AddDecisionQueue("YESNO", $mainPlayer, "to_use_Katsu's_ability");
-  AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-  AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
-  AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-  AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
-  AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
-  AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
-  AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
-  AddDecisionQueue("EXHAUSTCHARACTER", $mainPlayer, $index, 1);
-  AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
-}
-
 function RandomHandBottomDeck($player)
 {
   $hand = &GetHand($player);
@@ -74,47 +32,6 @@ function RandomHandBottomDeck($player)
   $hand = array_values($hand);
   $deck = &GetDeck($player);
   array_push($deck, $discarded);
-}
-
-function LordOfWindIndices($player)
-{
-  $array = [];
-  $indices = SearchDiscardForCard($player, "WTR107", "WTR108", "WTR109");
-  if($indices != "") array_push($array, $indices);
-  $indices = SearchDiscardForCard($player, "WTR110", "WTR111", "WTR112");
-  if($indices != "") array_push($array, $indices);
-  $indices = SearchDiscardForCard($player, "WTR83");
-  if($indices != "") array_push($array, $indices);
-  return implode(",", $array);
-}
-
-function NaturesPathPilgrimageHit()
-{
-  global $mainPlayer;
-  $deck = &GetDeck($mainPlayer);
-  if(!ArsenalFull($mainPlayer) && count($deck) > 0)
-  {
-    $type = CardType($deck[0]);
-    RevealCards($deck[0]);
-    if($type == "A" || $type == "AA")
-    {
-      AddArsenal($deck[0], $mainPlayer, "DECK", "DOWN");
-      array_shift($deck);
-    }
-  }
-}
-
-function UnifiedDecreePlayEffect()
-{
-  global $mainPlayer;
-  $deck = &GetDeck($mainPlayer);
-  if(count($deck) == 0) return;
-  RevealCards($deck[0]);
-  if(CardType($deck[0]) == "AR")
-  {
-    BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "TCC");
-    array_shift($deck);
-  }
 }
 
 function BottomDeck()
