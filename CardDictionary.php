@@ -892,7 +892,7 @@
       return false;
     }
     if($from == "ARS" && $phase != "B" && $myArsenal[$index+4] == "1") { $restriction = "Frozen"; return false; }
-    if($cardType == "DR" && IsAllyAttackTarget() && $currentPlayer == $mainPlayer) return false;
+    if($cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
     if($cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer ) return false;
     if(($phase == "B" || ($phase == "D" && $cardType == "DR")) && $from == "HAND")
     {
