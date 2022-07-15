@@ -81,9 +81,9 @@
       case "UPR054": case "UPR055": case "UPR056": return true;
       case "UPR057": case "UPR058": case "UPR059": return true;
       case "UPR060": case "UPR061": case "UPR062": return true;
-      case "UPR063": case "UPR064": case "UPR065": return (NumDraconicChainLinks() >= 3 ? true : false);
+      case "UPR063": case "UPR064": case "UPR065": return (NumDraconicChainLinks() >= 2 ? true : false);
       case "UPR066": case "UPR067": case "UPR068": return true;
-      case "UPR069": case "UPR070": case "UPR071": return (NumDraconicChainLinks() >= 3 ? true : false);
+      case "UPR069": case "UPR070": case "UPR071": return (NumDraconicChainLinks() >= 2 ? true : false);
       case "UPR072": case "UPR073": case "UPR074": return true;
       case "UPR075": case "UPR076": case "UPR077": return true;
       case "UPR078": case "UPR079": case "UPR080": return true;
