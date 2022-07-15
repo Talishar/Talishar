@@ -1869,7 +1869,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
-  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
+  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt;
   $rv = "";
   switch($phase)
   {
@@ -3110,7 +3110,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
       RevealCards($deck[0]);
-      if(AttackValue($deck[0]) > GetClassState(($player == 1 ? 2 :1), $CS_DamageTaken))
+      if(AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt))
       {
         WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
         Draw($player);
