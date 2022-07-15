@@ -72,6 +72,7 @@
   fwrite($handler, $p2Key . "\r\n");//Player 2 auth key
   fwrite($handler, 0 . "\r\n");//Permanent unique ID counter
   fwrite($handler, "0\r\n");//Number of Alluvion Used
+  fwrite($handler, "0\r\n");//Number of Damage Dealt
   fclose($handler);
 
   //Set up log file
@@ -129,7 +130,7 @@
     fwrite($handler, "\r\n");//Discard
     fwrite($handler, "\r\n");//Pitch
     fwrite($handler, "\r\n");//Banish
-    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 - - 0 -1 0 0 0 0\r\n");//Class State
+    fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 - - 0 -1 0 0 0 0 0\r\n");//Class State
     fwrite($handler, "\r\n");//Character effects
     fwrite($handler, "\r\n");//Soul
     fwrite($handler, "\r\n");//Card Stats
