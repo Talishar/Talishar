@@ -1,6 +1,7 @@
 <?php
 
   include "Constants.php";
+  include "CardDictionaries/WelcomeToRathe/WTRShared.php";
   include "CardDictionaries/ArcaneRising/ARCShared.php";
   include "CardDictionaries/ArcaneRising/ARCGeneric.php";
   include "CardDictionaries/ArcaneRising/ARCMechanologist.php";
@@ -30,7 +31,11 @@
   {
     $set = CardSet($cardID);
     $class = CardClass($cardID);
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRCardType($cardID);
+    }
+    else if($set == "ARC")
     {
       switch($class)
       {
@@ -41,6 +46,10 @@
         case "GENERIC": return ARCGenericCardType($cardID);
         default: return "";
       }
+    }
+    else if($set == "CRU")
+    {
+      return CRUCardType($cardID);
     }
     else if($set == "MON")
     {
@@ -101,200 +110,6 @@
       case "OVRPVE015": return "S";
       case "OVRPVE016": return "S";
       case "OVRPVE017": return "S";
-      case "WTR000": return "R";
-      case "WTR113": case "WTR114": case "ARC002": return "C";
-      case "WTR115": case "CRU177": return "W";
-      case "WTR155": case "WTR156": case "WTR157": case "WTR158": case "WTR117": return "E";
-      case "ARC159": case "CRU016": case "CRU017": case "CRU018": return "AA";
-      case "ARC200": case "ARC201": case "ARC202": return "DR";
-      //Brute
-      case "WTR001": case "WTR002": return "C";
-      case "WTR003": return "W";
-      case "WTR004": case "WTR005": return "E";
-      case "WTR006": return "AA";
-      case "WTR007": return "A";
-      case "WTR008": return "DR";
-      case "WTR009": return "A";
-      case "WTR010": return "I";
-      case "WTR011": case "WTR012": case "WTR013": return "AA";
-      case "WTR014": case "WTR015": case "WTR016": return "AA";
-      case "WTR017": case "WTR018": case "WTR019": return "A";
-      case "WTR020": case "WTR021": case "WTR022": return "AA";
-      case "WTR023": case "WTR024": case "WTR025": return "AA";
-      case "WTR026": case "WTR027": case "WTR028": return "AA";
-      case "WTR029": case "WTR030": case "WTR031": return "AA";
-      case "WTR032": case "WTR033": case "WTR034": return "A";
-      case "WTR035": case "WTR036": case "WTR037": return "A";
-      //Guardian
-      case "WTR038": case "WTR039": return "C";
-      case "WTR040": return "W";
-      case "WTR041": case "WTR042": return "E";
-      case "WTR043": case "WTR044": case "WTR045": return "AA";
-      case "WTR046": case "WTR047": return "A";
-      case "WTR048": case "WTR049": case "WTR050": return "AA";
-      case "WTR051": case "WTR052": case "WTR053": return "DR";
-      case "WTR054": case "WTR055": case "WTR056": return "A";
-      case "WTR057": case "WTR058": case "WTR059": return "AA";
-      case "WTR060": case "WTR061": case "WTR062": return "AA";
-      case "WTR063": case "WTR064": case "WTR065": return "AA";
-      case "WTR066": case "WTR067": case "WTR068": return "AA";
-      case "WTR069": case "WTR070": case "WTR071": return "A";
-      case "WTR072": case "WTR073": case "WTR074": return "A";
-      case "WTR075": return "T";
-      //Ninja
-      case "WTR076": case "WTR077": return "C";
-      case "WTR078": return "W";
-      case "WTR079": case "WTR080": return "E";
-      case "WTR082": return "AR";
-      case "WTR081": case "WTR083": case "WTR084": case "WTR085": return "AA";
-      case "WTR086": case "WTR087": case "WTR088": return "AA";
-      case "WTR089": case "WTR090": case "WTR091": return "AA";
-      case "WTR092": case "WTR093": case "WTR094": return "DR";
-      case "WTR095": case "WTR096": case "WTR097": return "AA";
-      case "WTR098": case "WTR099": case "WTR100": return "AA";
-      case "WTR101": case "WTR102": case "WTR103": return "AA";
-      case "WTR104": case "WTR105": case "WTR106": return "AA";
-      case "WTR107": case "WTR108": case "WTR109": return "AA";
-      case "WTR110": case "WTR111": case "WTR112": return "AA";
-      case "WTR116": return "E";
-      case "WTR118": return "AR";
-      case "WTR119": return "A";
-      case "WTR120": case "WTR121": return "AR";
-      case "WTR122": return "A";
-      case "WTR123": case "WTR124": case "WTR125": return "AR";
-      case "WTR126": case "WTR127": case "WTR128": return "DR";
-      case "WTR129": case "WTR130": case "WTR131": return "A";
-      case "WTR132": case "WTR133": case "WTR134": return "AR";
-      case "WTR135": case "WTR136": case "WTR137": return "AR";
-      case "WTR138": case "WTR139": case "WTR140": return "AR";
-      case "WTR141": case "WTR142": case "WTR143": return "A";
-      case "WTR144": case "WTR145": case "WTR146": return "A";
-      case "WTR147": case "WTR148": case "WTR149": return "A";
-      case "WTR150": case "WTR151": case "WTR152": case "WTR153": case "WTR154": return "E";
-      case "WTR159": return "AA";
-      case "WTR160": return "A";
-      case "WTR161": return "AA";
-      case "WTR162": return "A";
-      case "WTR163": return "I";
-      case "WTR167": case "WTR168": case "WTR169": return "AA";
-      case "WTR170": case "WTR171": case "WTR172": return "A";
-      case "WTR173": case "WTR174": case "WTR175": return "I";
-      case "WTR176": case "WTR177": case "WTR178": return "AA";
-      case "WTR179": case "WTR180": case "WTR181": return "AA";
-      case "WTR182": case "WTR183": case "WTR184": return "AA";
-      case "WTR185": case "WTR186": case "WTR187": return "AA";
-      case "WTR188": case "WTR189": case "WTR190": return "AA";
-      case "WTR191": case "WTR192": case "WTR193": return "AA";
-      case "WTR194": case "WTR195": case "WTR196": return "AA";
-      case "WTR197": case "WTR198": case "WTR199": return "AA";
-      case "WTR200": case "WTR201": case "WTR202": return "AA";
-      case "WTR203": case "WTR204": case "WTR205": return "AA";
-      case "WTR206": case "WTR207": case "WTR208": return "AR";
-      case "WTR209": case "WTR210": case "WTR211": return "AR";
-      case "WTR212": case "WTR213": case "WTR214": return "DR";
-      case "WTR215": case "WTR216": case "WTR217": return "DR";
-      case "WTR218": case "WTR219": case "WTR220": return "A";
-      case "WTR221": case "WTR222": case "WTR223": return "A";
-      case "WTR225": return "T";
-      case "ARC203": return "A";
-      case "ARC150": return "E";
-      //CRU Fable
-      case "CRU000": return "R";
-      //CRU Brute
-      case "CRU002": return "C";
-      case "CRU004": case "CRU005": return "W";
-      case "CRU006": return "E";
-      case "CRU007": case "CRU008": return "AA";
-      case "CRU009": return "A";
-      case "CRU010": case "CRU011": case "CRU012": return "AA";
-      case "CRU013": case "CRU014": case "CRU015": return "AA";
-      case "CRU016": case "CRU017": case "CRU018": return "AA";
-      case "CRU019": case "CRU020": case "CRU021": return "AA";
-      //CRU Guardian
-      case "CRU024": return "W";
-      case "CRU025": return "E";
-      case "CRU026": case "CRU027": return "AA";
-      case "CRU028": case "CRU029": case "CRU030": case "CRU031": return "A";
-      case "CRU032": case "CRU033": case "CRU034": return "AA";
-      case "CRU035": case "CRU036": case "CRU037": return "AA";
-      case "CRU038": case "CRU039": case "CRU040": return "A";
-      case "CRU041": case "CRU042": case "CRU043": return "I";
-      //CRU Ninja
-      case "CRU046": case "CRU047": return "C";
-      case "CRU050": case "CRU051": case "CRU052": return "W";
-      case "CRU053": return "E";
-      case "CRU054": case "CRU055": case "CRU056": return "AA";
-      case "CRU057": case "CRU058": case "CRU059": return "AA";
-      case "CRU060": case "CRU061": case "CRU062": return "AA";
-      case "CRU063": case "CRU064": case "CRU065": return "AA";
-      case "CRU066": case "CRU067": case "CRU068": return "AA";
-      case "CRU069": case "CRU070": case "CRU071": return "AA";
-      case "CRU072": case "CRU073": case "CRU074": return "AA";
-      case "CRU075": return "T";
-      //CRU Warrior
-      case "CRU077": return "C";
-      case "CRU079": case "CRU080": return "W";
-      case "CRU081": return "E";
-      case "CRU082": case "CRU083": return "AR";
-      case "CRU084": return "A";
-      case "CRU085": case "CRU086": case "CRU087": return "A";
-      case "CRU088": case "CRU089": case "CRU090": return "AR";
-      case "CRU091": case "CRU092": case "CRU093": return "A";
-      case "CRU094": case "CRU095": case "CRU096": return "A";
-      case "CRU097": return "C";
-      //CRU MECH:
-      case "CRU099": return "C";
-      case "CRU101": return "W";
-      case "CRU102": return "E";
-      case "CRU103": return "AA";
-      case "CRU104": case "CRU105": return "A";
-      case "CRU106": case "CRU107": case "CRU108": return "AA";
-      case "CRU109": case "CRU110": case "CRU111": return "AA";
-      case "CRU112": case "CRU113": case "CRU114": return "AA";
-      case "CRU115": case "CRU116": case "CRU117": return "A";
-      //CRU Merchant
-      case "CRU118": return "C";
-      //CRU Ranger
-      case "CRU121": return "W";
-      case "CRU122": return "E";
-      case "CRU123": return "AA";
-      case "CRU124": return "A";
-      case "CRU125": return "I";
-      case "CRU126": case "CRU127": case "CRU128": return "DR";
-      case "CRU129": case "CRU130": case "CRU131": return "AA";
-      case "CRU132": case "CRU133": case "CRU134": return "AA";
-      case "CRU135": case "CRU136": case "CRU137": return "A";
-      //CRU Runeblade
-      case "CRU140": return "W";
-      case "CRU141": return "E";
-      case "CRU142": return "AA";
-      case "CRU143": return "A";
-      case "CRU144": return "A";
-      case "CRU145": case "CRU146": case "CRU147": return "A";
-      case "CRU148": case "CRU149": case "CRU150": return "AA";
-      case "CRU151": case "CRU152": case "CRU153": return "AA";
-      case "CRU154": case "CRU155": case "CRU156": return "A";
-      //CRU Wizard
-      case "CRU160": return "W";
-      case "CRU161": return "E";
-      case "CRU162": case "CRU163": return "A";
-      case "CRU164": return "I";
-      case "CRU165": case "CRU166": case "CRU167": return "A";
-      case "CRU168": case "CRU169": case "CRU170": return "A";
-      case "CRU171": case "CRU172": case "CRU173": return "A";
-      case "CRU174": case "CRU175": case "CRU176": return "A";
-      //CRU Generics
-      case "CRU179": return "E";
-      case "CRU180": return "AA";
-      case "CRU181": return "A";
-      case "CRU182": return "I";
-      case "CRU183": case "CRU184": case "CRU185": return "AA";
-      case "CRU186": return "AR";
-      case "CRU187": return "DR";
-      case "CRU188": return "A";
-      case "CRU189": case "CRU190": case "CRU191": return "I";
-      case "CRU192": case "CRU193": case "CRU194": return "AA";
-      case "CRU197": return "T";
       default: return "";
     }
   }
@@ -303,7 +118,11 @@
   {
     $set = CardSet($cardID);
     $class = CardClass($cardID);
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRCardSubtype($cardID);
+    }
+    else if($set == "ARC")
     {
       switch($class)
       {
@@ -313,6 +132,10 @@
         case "WIZARD": return ARCWizardCardSubType($cardID);
         case "GENERIC": return ARCGenericCardSubType($cardID);
       }
+    }
+    else if($set == "CRU")
+    {
+      return CRUCardSubtype($cardID);
     }
     else if($set == "MON")
     {
@@ -355,64 +178,6 @@
     }
     switch($cardID)
     {
-      case "WTR003": return "Club";
-      case "WTR004": return "Legs";
-      case "WTR005": return "Chest";
-      case "WTR040": return "Hammer";
-      case "WTR041": return "Chest";
-      case "WTR042": return "Head";
-      case "WTR046": case "WTR047":
-      case "WTR054": case "WTR055": case "WTR056":
-      case "WTR069":  case "WTR070": case "WTR071":
-      case "WTR072": case "WTR073": case "WTR074": case "WTR075": return "Aura";
-      case "WTR078": return "Dagger";
-      case "WTR079": return "Head";
-      case "WTR080": return "Arms";
-      case "WTR115": return "Sword";
-      case "WTR116": return "Arms";
-      case "WTR117": return "Legs";
-      case "WTR150": return "Chest";
-      case "WTR151": return "Head";
-      case "WTR152": return "Chest";
-      case "WTR153": return "Arms";
-      case "WTR154": return "Legs";
-      case "WTR155": return "Head";
-      case "WTR156": return "Chest";
-      case "WTR157": return "Arms";
-      case "WTR158": return "Legs";
-      case "WTR162": return "Item";
-      case "WTR170": case "WTR171": case "WTR172": return "Item";
-      case "WTR225": return "Aura";
-      case "CRU000": return "Gem";
-      case "CRU004": case "CRU005": return "Claw";
-      case "CRU006": return "Head";
-      case "CRU024": return "Hammer";
-      case "CRU025": return "Arms";
-      case "CRU028": case "CRU029": case "CRU030": case "CRU031": return "Aura";
-      case "CRU038": case "CRU039": case "CRU040": return "Aura";
-      case "CRU050": return "Sword";
-      case "CRU051": case "CRU052": return "Dagger";
-      case "CRU053": return "Legs";
-      case "CRU075": return "Aura";
-      case "CRU079": case "CRU080": return "Sword";
-      case "CRU081": return "Chest";
-      case "CRU101": return "Gun";
-      case "CRU102": return "Head";
-      case "CRU104": case "CRU105": return "Item";
-      case "CRU121": return "Bow";
-      case "CRU122": return "Legs";
-      case "CRU123": return "Arrow";
-      case "CRU126": case "CRU127": case "CRU128": return "Trap";
-      case "CRU129": case "CRU130": case "CRU131": return "Arrow";
-      case "CRU132": case "CRU133": case "CRU134": return "Arrow";
-      case "CRU140": return "Sword";
-      case "CRU141": return "Chest";
-      case "CRU144": return "Aura";
-      case "CRU160": return "Staff";
-      case "CRU161": return "Arms";
-      case "CRU177": return "Sword";
-      case "CRU179": return "Arms";
-      case "CRU197": return "Item";
       default: return "";
     }
   }
@@ -578,7 +343,11 @@
   {
     $set = CardSet($cardID);
     $class = CardClass($cardID);
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRCardCost($cardID);
+    }
+    else if($set == "ARC")
     {
       switch($class)
       {
@@ -588,6 +357,10 @@
         case "WIZARD": return ARCWizardCardCost($cardID);
         case "GENERIC": return ARCGenericCardCost($cardID);
       }
+    }
+    else if($set == "CRU")
+    {
+      return CRUCardCost($cardID);
     }
     else if($set == "MON")
     {
@@ -630,184 +403,6 @@
     }
     switch($cardID)
     {
-      case "WTR000": return -1;
-      case "WTR153": return 0;//TODO: Change ability costs to a different function
-      case "WTR078": case "WTR115": return 1;//TODO: Change ability costs to a different function
-      case "CRU177": return 2;//TODO: Change ability costs to a different function
-      case "ARC159": return 2;
-      //Now do in order
-      //Brute
-      case "WTR003": return 2;
-      case "WTR004": case "WTR005": return 0;
-      case "WTR006": return 3;
-      case "WTR007": return 1;
-      case "WTR008": case "WTR009": return 0;
-      case "WTR010": return 1;
-      case "WTR011": case "WTR012": case "WTR013": return 2;
-      case "WTR014": case "WTR015": case "WTR016": return 1;
-      case "WTR017": case "WTR018": case "WTR019": return 0;
-      case "WTR020": case "WTR021": case "WTR022": return 1;
-      case "WTR023": case "WTR024": case "WTR025": return 2;
-      case "WTR026": case "WTR027": case "WTR028": return 3;
-      case "WTR029": case "WTR030": case "WTR031": return 2;
-      case "WTR032": case "WTR033": case "WTR034": return 1;
-      case "WTR035": case "WTR036": case "WTR037": return 0;
-      //Guardian
-      case "WTR038": case "WTR039": return 2;
-      case "WTR040": return 3;
-      case "WTR041": case "WTR042": return 1;
-      case "WTR043": return 7;
-      case "WTR044": return 5;
-      case "WTR045": return 6;
-      case "WTR046": return 2;
-      case "WTR047": return 3;
-      case "WTR048": case "WTR049": case "WTR050": return 5;
-      case "WTR051": case "WTR052": case "WTR053": return 2;
-      case "WTR054": case "WTR055": case "WTR056": return 2;
-      case "WTR057": case "WTR058": case "WTR059": return 4;
-      case "WTR060": case "WTR061": case "WTR062": return 3;
-      case "WTR063": case "WTR064": case "WTR065": return 3;
-      case "WTR066": case "WTR067": case "WTR068": return 4;
-      case "WTR069": case "WTR070": case "WTR071": return 2;
-      case "WTR072": case "WTR073": case "WTR074": return 2;
-      case "WTR075": return 0;
-      //Ninja
-      case "WTR081": case "WTR082": return 0;
-      case "WTR083": case "WTR084": case "WTR085": return 1;
-      case "WTR086": case "WTR087": case "WTR088": return 0;
-      case "WTR089": case "WTR090": case "WTR091": return 1;
-      case "WTR092": case "WTR093": case "WTR094": return 0;
-      case "WTR095": case "WTR096": case "WTR097": return 2;
-      case "WTR098": case "WTR099": case "WTR100": return 0;
-      case "WTR101": case "WTR102": case "WTR103": return 1;
-      case "WTR104": case "WTR105": case "WTR106": return 0;
-      case "WTR107": case "WTR108": case "WTR109": return 2;
-      case "WTR110": case "WTR111": case "WTR112": return 0;
-      case "WTR116": return 1;
-      case "WTR118": return 0;
-      case "WTR119": return 1;
-      case "WTR120": return 2;
-      case "WTR121": return 1;
-      case "WTR122": return 0;
-      case "WTR123": case "WTR124": case "WTR125": return 3;
-      case "WTR126": case "WTR127": case "WTR128": return 1;
-      case "WTR129": case "WTR130": case "WTR131": return 1;
-      case "WTR132": case "WTR133": case "WTR134": return 0;
-      case "WTR135": case "WTR136": case "WTR137": return 2;
-      case "WTR138": case "WTR139": case "WTR140": return 1;
-      case "WTR141": case "WTR142": case "WTR143": return 0;
-      case "WTR144": case "WTR145": case "WTR146": return 2;
-      case "WTR147": case "WTR148": case "WTR149": return 1;
-      //Generics
-      case "WTR151": case "WTR152": case "WTR154": return 0;
-      case "WTR159": return 0;
-      case "WTR160": return 1;
-      case "WTR161": return 3;
-      case "WTR162": return 0;
-      case "WTR167": case "WTR168": case "WTR169": return 0;
-      case "WTR163": case "WTR170": case "WTR171": case "WTR172": return 0;
-      case "WTR173": case "WTR174": case "WTR175": return 0;
-      case "WTR176": case "WTR177": case "WTR178": return 3;
-      case "WTR179": case "WTR180": case "WTR181": return 2;
-      case "WTR182": case "WTR183": case "WTR184": return 1;
-      case "WTR185": case "WTR186": case "WTR187": return 1;
-      case "WTR188": case "WTR189": case "WTR190": return 3;
-      case "WTR191": case "WTR192": case "WTR193": return 0;
-      case "WTR194": case "WTR195": case "WTR196": return 0;
-      case "WTR197": case "WTR198": case "WTR199": return 2;
-      case "WTR200": case "WTR201": case "WTR202": return 3;
-      case "WTR203": case "WTR204": case "WTR205": return 0;
-      case "WTR206": case "WTR207": case "WTR208": return 2;
-      case "WTR209": case "WTR210": case "WTR211": return 1;
-      case "WTR212": case "WTR213": case "WTR214": return 3;
-      case "WTR215": case "WTR216": case "WTR217": return 0;
-      case "WTR218": case "WTR219": case "WTR220": return 0;
-      case "WTR221": case "WTR222": case "WTR223": return 3;
-      case "CRU001": return -1;
-      //CRU Brute
-      case "CRU004": case "CRU005": return 2;
-      case "CRU006": return 0;
-      case "CRU007": case "CRU008": case "CRU009": return 3;
-      case "CRU010": case "CRU011": case "CRU012": return 2;
-      case "CRU013": case "CRU014": case "CRU015": return 2;
-      case "CRU016": case "CRU017": case "CRU018": return 3;
-      case "CRU019": case "CRU020": case "CRU021": return 1;
-      //CRU Guardian
-      case "CRU024": return 4;
-      case "CRU025": return 3;
-      case "CRU026": return 4;
-      case "CRU027": return 7;
-      case "CRU028": return 3;
-      case "CRU029": case "CRU030": case "CRU031": return 9;
-      case "CRU032": case "CRU033": case "CRU034": return 3;
-      case "CRU035": case "CRU036": case "CRU037": return 4;
-      case "CRU038": case "CRU039": case "CRU040": return 2;
-      case "CRU041": case "CRU042": case "CRU043": return 0;
-      //CRU Ninja
-      case "CRU050": case "CRU051": case "CRU052": return 1;
-      case "CRU054": case "CRU055": case "CRU056": return 0;
-      case "CRU057": case "CRU058": case "CRU059": return 0;
-      case "CRU060": case "CRU061": case "CRU062": return 0;
-      case "CRU063": case "CRU064": case "CRU065": return 2;
-      case "CRU066": case "CRU067": case "CRU068": return 0;
-      case "CRU069": case "CRU070": case "CRU071": return 1;
-      case "CRU072": return 1;
-      case "CRU073": return 0;
-      case "CRU074": return 1;
-      //CRU Warrior
-      case "CRU079": case "CRU080": return 1;
-      case "CRU081": return 0;
-      case "CRU082": return 0;
-      case "CRU083": return 2;
-      case "CRU084": return 1;
-      case "CRU085": case "CRU086": case "CRU087": return 1;
-      case "CRU088": case "CRU089": case "CRU090": return 1;
-      case "CRU091": case "CRU092": case "CRU093": return 0;
-      case "CRU094": case "CRU095": case "CRU096": return 1;
-      //CRU Mechanologist
-      case "CRU103": return 2;
-      case "CRU104": return 0;
-      case "CRU105": return 2;
-      case "CRU106": case "CRU107": case "CRU108": return 1;
-      case "CRU109": case "CRU110": case "CRU111": return 2;
-      case "CRU112": case "CRU113": case "CRU114": return 2;
-      case "CRU115": case "CRU116": case "CRU117": return 0;
-      //CRU Ranger
-      case "CRU121": return 0;
-      case "CRU122": return 2;
-      case "CRU123": return 1;
-      case "CRU124": return 0;
-      case "CRU125": return 1;
-      case "CRU126": case "CRU127": case "CRU128": return 0;
-      case "CRU129": case "CRU130": case "CRU131": return 0;
-      case "CRU132": case "CRU133": case "CRU134": return 1;
-      case "CRU135": case "CRU136": case "CRU137": return 1;
-      //CRU Runeblade
-      case "CRU140": return 1;
-      case "CRU141": return 0;
-      case "CRU142": return 3;
-      case "CRU143": return 2;
-      case "CRU144": return 3;
-      case "CRU145": case "CRU146": case "CRU147": return 0;
-      case "CRU148": case "CRU149": case "CRU150": return 1;
-      case "CRU151": case "CRU152": case "CRU153": return 1;
-      case "CRU154": case "CRU155": case "CRU156": return 1;
-      //CRU Wizard
-      case "CRU160": case "CRU161": return 0;
-      case "CRU162": return 1;
-      case "CRU163": return 0;
-      case "CRU164": return 1;
-      case "CRU165": case "CRU166": case "CRU167": return 0;
-      case "CRU168": case "CRU169": case "CRU170": return 1;
-      case "CRU171": case "CRU172": case "CRU173": return 2;
-      case "CRU174": case "CRU175": case "CRU176": return 1;
-      //CRU Generic
-      case "CRU180": case "CRU181": case "CRU182": return 0;
-      case "CRU183": case "CRU184": case "CRU185": return 0;
-      case "CRU186": case "CRU187": return 0;
-      case "CRU188": return 4;
-      case "CRU189": case "CRU190": case "CRU191": return 0;
-      case "CRU192": case "CRU193": case "CRU194": return 2;
       default: return 0;
     }
   }
@@ -915,7 +510,11 @@
   {
     $set = CardSet($cardID);
     $class = CardClass($cardID);
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRPitchValue($cardID);
+    }
+    else if($set == "ARC")
     {
       switch($class)
       {
@@ -925,6 +524,10 @@
         case "WIZARD": return ARCWizardPitchValue($cardID);
         case "GENERIC": return ARCGenericPitchValue($cardID);
       }
+    }
+    else if($set == "CRU")
+    {
+      return CRUPitchValue($cardID);
     }
     else if($set == "MON")
     {
@@ -967,139 +570,6 @@
     }
     switch($cardID)
     {
-       case "WTR000": return 3;
-      //Now do in order
-      //Brute
-      case "WTR001": case "WTR002": case "WTR003": case "WTR004": case "WTR005": return 0;
-      case "WTR006": return 1;
-      case "WTR007": return 2;
-      case "WTR008": case "WTR009": return 3;
-      case "WTR010": return 2;
-      case "WTR011": case "WTR014": case "WTR017": case "WTR020": case "WTR023": case "WTR026": case "WTR029": case "WTR032": case "WTR035": return 1;
-      case "WTR012": case "WTR015": case "WTR018": case "WTR021": case "WTR024": case "WTR027": case "WTR030": case "WTR033": case "WTR036": return 2;
-      case "WTR013": case "WTR016": case "WTR019": case "WTR022": case "WTR025": case "WTR028": case "WTR031": case "WTR034": case "WTR037": return 3;
-      //Guardian
-      case "WTR038": case "WTR039": case "WTR040": return 0;
-      case "WTR041": case "WTR042": return 0;
-      case "WTR043": case "WTR044": return 1;
-      case "WTR045": return 3;
-      case "WTR046": return 2;
-      case "WTR047": return 3;
-      case "WTR048": case "WTR051": case "WTR054": case "WTR057": case "WTR060": case "WTR063": case "WTR066": case "WTR069": case "WTR072": return 1;
-      case "WTR049": case "WTR052": case "WTR055": case "WTR058": case "WTR061": case "WTR064": case "WTR067": case "WTR070": case "WTR073": return 2;
-      case "WTR050": case "WTR053": case "WTR056": case "WTR059": case "WTR062": case "WTR065": case "WTR068": case "WTR071": case "WTR074": return 3;
-      case "WTR075": return 0;
-      //Ninja
-      case "WTR076": case "WTR077": case "WTR078": case "WTR079": case "WTR080": return 0;
-      case "WTR081": return 3;
-      case "WTR082": return 1;
-      case "WTR083": case "WTR084": return 2;
-      case "WTR085": return 1;
-      case "WTR086": case "WTR089": case "WTR092": case "WTR095": case "WTR098": case "WTR101": case "WTR104": case "WTR107": case "WTR110": return 1;
-      case "WTR087": case "WTR090": case "WTR093": case "WTR096": case "WTR099": case "WTR102": case "WTR105": case "WTR108": case "WTR111": return 2;
-      case "WTR088": case "WTR091": case "WTR094": case "WTR097": case "WTR100": case "WTR103": case "WTR106": case "WTR109": case "WTR112": return 3;
-      case "WTR113": case "WTR114": case "WTR115": case "WTR116": case "WTR117": return 0;
-      case "WTR118": return 3;
-      case "WTR119": case "WTR120": return 1;
-      case "WTR121": case "WTR122": return 2;
-      case "WTR123": case "WTR126": case "WTR129": case "WTR132": case "WTR135": case "WTR138": case "WTR141": case "WTR144": case "WTR147": return 1;
-      case "WTR124": case "WTR127": case "WTR130": case "WTR133": case "WTR136": case "WTR139": case "WTR142": case "WTR145": case "WTR148": return 2;
-      case "WTR125": case "WTR128": case "WTR131": case "WTR134": case "WTR137": case "WTR140": case "WTR143": case "WTR146": case "WTR149": return 3;
-      case "WTR150": case "WTR151": case "WTR152": case "WTR153": case "WTR154": case "WTR155": case "WTR156": case "WTR157": case "WTR158": return 0;
-      case "WTR159": return 1;
-      case "WTR160": return 2;
-      case "WTR161": return 3;
-      case "WTR162": return 3;
-      case "WTR163": return 2;
-      case "WTR167": return 1;
-      case "WTR168": return 2;
-      case "WTR169": return 3;
-      case "WTR170": case "WTR171": case "WTR172": return 3;
-      case "WTR173": case "WTR176": case "WTR179": case "WTR182": case "WTR185": case "WTR188": case "WTR191": case "WTR194": case "WTR197": return 1;
-      case "WTR200": case "WTR203": case "WTR206": case "WTR209": case "WTR212": case "WTR215": case "WTR218": case "WTR221": return 1;
-      case "WTR174": case "WTR177": case "WTR180": case "WTR183": case "WTR186": case "WTR189": case "WTR192": case "WTR195": case "WTR198": return 2;
-      case "WTR201": case "WTR204": case "WTR207": case "WTR210": case "WTR213": case "WTR216": case "WTR219": case "WTR222": return 2;
-      case "WTR175": case "WTR178": case "WTR181": case "WTR184": case "WTR187": case "WTR190": case "WTR193": case "WTR196": case "WTR199": return 3;
-      case "WTR202": case "WTR205": case "WTR208": case "WTR211": case "WTR214": case "WTR217": case "WTR220": case "WTR223": return 3;
-      //CRU Guardian
-      case "CRU024": case "CRU025": return 0;
-      case "CRU026": return 1;
-      case "CRU027": return 2;
-      case "CRU028": return 3;
-      case "CRU029": case "CRU032": case "CRU035": case "CRU038": case "CRU041": return 1;
-      case "CRU030": case "CRU033": case "CRU036": case "CRU039": case "CRU042": return 2;
-      case "CRU031": case "CRU034": case "CRU037": case "CRU040": case "CRU043": return 3;
-      //CRU Brute
-      case "CRU002": return 0;
-      case "CRU004": case "CRU005": case "CRU006": return 0;
-      case "CRU007": return 2;
-      case "CRU008": return 1;
-      case "CRU009": return 2;
-      case "CRU010": case "CRU013": case "CRU016": case "CRU019": return 1;
-      case "CRU011": case "CRU014": case "CRU017": case "CRU020": return 2;
-      case "CRU012": case "CRU015": case "CRU018": case "CRU021": return 3;
-      //CRU Ninja
-      case "CRU046": case "CRU047": case "CRU050": case "CRU051": case "CRU052": case "CRU053": return 0;
-      case "CRU054": return 3;
-      case "CRU055": return 2;
-      case "CRU056": return 1;
-      case "CRU057": case "CRU060": case "CRU063": case "CRU066": case "CRU069": return 1;
-      case "CRU058": case "CRU061": case "CRU064": case "CRU067": case "CRU070": return 2;
-      case "CRU059": case "CRU062": case "CRU065": case "CRU068": case "CRU071": return 3;
-      case "CRU072": case "CRU073": case "CRU074": return 2;
-      //CRU Warrior
-      case "CRU077": return 0;
-      case "CRU079": case "CRU080": return 0;
-      case "CRU081": return 0;
-      case "CRU082": case "CRU083": return 2;
-      case "CRU084": return 1;
-      case "CRU085": case "CRU088": case "CRU091": case "CRU094": return 1;
-      case "CRU086": case "CRU089": case "CRU092": case "CRU095": return 2;
-      case "CRU087": case "CRU090": case "CRU093": case "CRU096": return 3;
-      //CRU Shapeshifter
-      case "CRU097": return 0;
-      //CRU Mechanologist
-      case "CRU099": case "CRU101": case "CRU102": return 0;
-      case "CRU103": return 3;
-      case "CRU104": return 2;
-      case "CRU105": return 1;
-      case "CRU106": case "CRU109": case "CRU112": case "CRU115": return 1;
-      case "CRU107": case "CRU110": case "CRU113": case "CRU116": return 2;
-      case "CRU108": case "CRU111": case "CRU114": case "CRU117": return 3;
-      //CRU Merchant
-      case "CRU118": return "0";
-      //CRU Ranger
-      case "CRU121": case "CRU122": return 0;
-      case "CRU123": return 1;
-      case "CRU124": case "CRU125": return 2;
-      case "CRU126": case "CRU129": case "CRU132": case "CRU135": return 1;
-      case "CRU127": case "CRU130": case "CRU133": case "CRU136": return 2;
-      case "CRU126": case "CRU131": case "CRU134": case "CRU137": return 3;
-      //CRU Runeblade
-      case "CRU140": case "CRU141": return 0;
-      case "CRU143": return 1;
-      case "CRU144": return 2;
-      case "CRU145": case "CRU148": case "CRU151": case "CRU154": return 1;
-      case "CRU146": case "CRU149": case "CRU152": case "CRU155": return 2;
-      case "CRU147": case "CRU150": case "CRU153": case "CRU156": return 3;
-      //CRU Wizard
-      case "CRU160": case "CRU161": return 0;
-      case "CRU162": return 2;
-      case "CRU163": case "CRU164": return 3;
-      case "CRU165": case "CRU168": case "CRU171": case "CRU174": return 1;
-      case "CRU166": case "CRU169": case "CRU172": case "CRU175": return 2;
-      case "CRU167": case "CRU170": case "CRU173": case "CRU176": return 3;
-      //CRU Generic
-      case "CRU177": return 0;
-      case "CRU179": return 0;
-      case "CRU180": return 1;
-      case "CRU181": return 0;
-      case "CRU182": return 3;
-      case "CRU183": case "CRU189": case "CRU192": return 1;
-      case "CRU184": case "CRU190": case "CRU193": return 2;
-      case "CRU185": case "CRU191": case "CRU194": return 3;
-      case "CRU186": return 3;
-      case "CRU187": case "CRU188": return 2;
       default: return 3;
     }
   }
@@ -1108,7 +578,11 @@
   {
     $set = CardSet($cardID);
     $class = CardClass($cardID);
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRBlockValue($cardID);
+    }
+    else if($set == "ARC")
     {
       switch($class)
       {
@@ -1118,6 +592,10 @@
         case "WIZARD": return ARCWizardBlockValue($cardID);
         case "GENERIC": return ARCGenericBlockValue($cardID);
       }
+    }
+    else if($set == "CRU")
+    {
+      return CRUBlockValue($cardID);
     }
     else if($set == "MON")
     {
@@ -1160,113 +638,6 @@
     }
     switch($cardID)
     {
-      case "WTR000": return 0;
-      case "WTR038": case "WTR039": case "WTR040": return 0;
-      case "CRU177": case "WTR153": return 0;
-      //Brute
-      case "WTR001": case "WTR002": case "WTR003": return 0;
-      case "WTR004": return 2;
-      case "WTR005": return 1;
-      case "WTR008": return 4;
-      case "WTR010": return 0;
-      //Guardian
-      case "WTR041": return 2;
-      case "WTR042": return 1;
-      case "WTR051": return 7;
-      case "WTR052": return 6;
-      case "WTR053": return 5;
-      case "WTR075": return 0;
-      //Ninja
-      case "WTR076": case "WTR077": case "WTR078": return 0;
-      case "WTR079": return 2;
-      case "WTR080": return 1;
-      case "WTR092": return 4;
-      case "WTR093": return 3;
-      case "WTR094": return 2;
-      case "WTR098": case "WTR099": case "WTR100": case "WTR101": case "WTR102": case "WTR103": return 2;
-      case "WTR107": case "WTR108": case "WTR109": return 2;
-      case "WTR150": return 1;
-      case "WTR155": case "WTR156": case "WTR157": case "WTR158": return 1;
-      case "ARC200": return 4;
-      case "WTR113": case "WTR114": case "WTR115": return 0;
-      case "WTR116": return 2;
-      case "WTR117": return 1;
-      case "WTR126": return 6;
-      case "WTR127": return 5;
-      case "WTR128": return 4;
-      //Generics
-      case "WTR151": case "WTR152": case "WTR154": return 0;
-      case "WTR160": return 2;
-      case "WTR162": return 0;
-      case "WTR163": return 0;
-      case "WTR167": case "WTR168": case "WTR169": return 2;
-      case "WTR170": case "WTR171": case "WTR172": return 0;
-      case "WTR173": case "WTR174": case "WTR175": return 0;
-      case "WTR176": case "WTR177": case "WTR178": return 2;
-      case "WTR179": case "WTR180": case "WTR181": return 2;
-      case "WTR182": case "WTR183": case "WTR184": return 2;
-      case "WTR185": case "WTR186": case "WTR187": return 2;
-      case "WTR191": case "WTR192": case "WTR193": return 2;
-      case "WTR194": case "WTR195": case "WTR196": return 2;
-      case "WTR197": case "WTR198": case "WTR199": return 2;
-      case "WTR200": case "WTR201": case "WTR202": return 2;
-      case "WTR206": case "WTR207": case "WTR208": return 2;
-      case "WTR209": case "WTR210": case "WTR211": return 2;
-      case "WTR212": return 7;
-      case "WTR213": return 6;
-      case "WTR214": return 5;
-      case "WTR215": return 4;
-      case "WTR216": return 3;
-      case "WTR217": return 2;
-      case "WTR218": case "WTR219": case "WTR220": return 2;
-      case "WTR221": case "WTR222": case "WTR223": return 2;
-      case "ARC150": return 1;
-      case "CRU002": return 0;
-      //CRU Guardian
-      case "CRU024": return 0;
-      case "CRU025": return 2;
-      case "CRU041": case "CRU042": case "CRU043": return 0;
-      //CRU Brute
-      case "CRU004": case "CRU005": case "CRU006": return 0;
-      //CRU Ninja
-      case "CRU046": case "CRU047": case "CRU050": case "CRU051": case "CRU052": return 0;
-      case "CRU053": return 1;
-      case "CRU072": case "CRU074": return 2;
-      //CRU Warrior
-      case "CRU077": return 0;
-      case "CRU079": case "CRU080": return 0;
-      case "CRU081": return 2;
-      //CRU Shapeshifter
-      case "CRU097": return 0;
-      //CRU Mechanologist
-      case "CRU099": case "CRU101": case "CRU102": return 0;
-      case "CRU104": case "CRU105": return 0;
-      //CRU Ranger
-      case "CRU121": return 0;
-      case "CRU122": return 2;
-      case "CRU124": return 2;
-      case "CRU125": return 0;
-      case "CRU126": return 4;
-      case "CRU127": return 3;
-      case "CRU128": return 2;
-      case "CRU135": case "CRU136": case "CRU137": return 2;
-      //CRU Runeblade
-      case "CRU000": return 0;
-      case "CRU140": return 0;
-      case "CRU141": return 2;
-      case "CRU144": return 2;
-      case "CRU145": case "CRU146": case "CRU147": return 2;
-      case "CRU154": case "CRU155": case "CRU156": return 2;
-      //CRU Wizard
-      case "CRU160": case "CRU161": case "CRU164": return 0;
-      case "CRU165": case "CRU166": case "CRU167": return 2;
-      //CRU Generics
-      case "CRU179": return 0;
-      case "CRU180": return 2;
-      case "CRU181": case "CRU182": return 0;
-      case "CRU183": case "CRU184": case "CRU185": return 2;
-      case "CRU186": case "CRU187": case "CRU188": return 2;
-      case "CRU189": case "CRU190": case "CRU191": return 0;
       default: return 3;
     }
   }
@@ -1282,7 +653,11 @@
       if(SearchCharacterForCard($mainPlayer, "MON003")) return 1;
       if(SearchCharacterForCard($mainPlayer, "MON088")) return 4;
     }
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRAttackValue($cardID);
+    }
+    else if($set == "ARC")
     {
       switch($class)
       {
@@ -1292,6 +667,10 @@
         case "WIZARD": return ARCWizardAttackValue($cardID);
         case "GENERIC": return ARCGenericAttackValue($cardID);
       }
+    }
+    else if($set == "CRU")
+    {
+      return CRUAttackValue($cardID);
     }
     else if($set == "MON")
     {
@@ -1334,124 +713,6 @@
     }
     switch($cardID)
     {
-      //Brute
-      case "WTR003": return 4;
-      case "WTR006": return 9;
-      case "WTR029": return 8;
-      case "WTR020": case "WTR026": case "WTR030": return 7;
-      case "WTR011": case "WTR014": case "WTR021": case "WTR023": case "WTR027": case "WTR031": return 6;
-      case "WTR012": case "WTR015": case "WTR022": case "WTR024": case "WTR028": return 5;
-      case "WTR013": case "WTR016": case "WTR025": return 4;
-      //Guardian
-      case "WTR040": return 4;
-      case "WTR043": return 11;
-      case "WTR044": case "WTR048": return 9;
-      case "WTR045": case "WTR049": case "WTR057": case "WTR066": return 8;
-      case "WTR050": case "WTR058": case "WTR060": case "WTR063": case "WTR067": return 7;
-      case "WTR059": case "WTR061": case "WTR064": case "WTR068": return 6;
-      case "WTR062": case "WTR065": return 5;
-      //Ninja
-      case "WTR078": case "WTR100": case "WTR106": case "WTR112": return 1;
-      case "WTR081": case "WTR088": case "WTR091": case "WTR099": case "WTR103": case "WTR105": case "WTR111": return 2;
-      case "WTR087": case "WTR090": case "WTR097": case "WTR098": case "WTR102": case "WTR104": case "WTR109": case "WTR110": return 3;
-      case "WTR083": case "WTR084": case "WTR086": case "WTR089": case "WTR096": case "WTR101": case "WTR108": return 4;
-      case "WTR085": case "WTR095": case "WTR107": return 5;
-      case "WTR115": return 3;
-      //Generic
-      case "WTR159": return 5;
-      case "WTR161": return 4;
-      case "WTR167": return 4;
-      case "WTR168": return 3;
-      case "WTR169": return 2;
-      case "WTR176": return 7;
-      case "WTR177": return 6;
-      case "WTR178": return 5;
-      case "WTR179": return 6;
-      case "WTR180": return 5;
-      case "WTR181": return 4;
-      case "WTR182": return 5;
-      case "WTR183": return 4;
-      case "WTR184": return 3;
-      case "WTR185": return 4;
-      case "WTR186": return 3;
-      case "WTR187": return 2;
-      case "WTR188": return 7;
-      case "WTR189": return 6;
-      case "WTR190": return 5;
-      case "WTR191": return 4;
-      case "WTR192": return 3;
-      case "WTR193": return 2;
-      case "WTR194": return 3;
-      case "WTR195": return 2;
-      case "WTR196": return 1;
-      case "WTR197": return 6;
-      case "WTR198": return 5;
-      case "WTR199": return 4;
-      case "WTR200": return 7;
-      case "WTR201": return 6;
-      case "WTR202": return 5;
-      case "WTR203": return 4;
-      case "WTR204": return 3;
-      case "WTR205": return 2;
-      case "ARC159": return 6;
-      //CRU Brute
-      case "CRU004": case "CRU005": return 3;
-      case "CRU007": case "CRU008": return 6;
-      case "CRU010": case "CRU016": return 7;
-      case "CRU011": case "CRU013": case "CRU017": return 6;
-      case "CRU012": case "CRU014": case "CRU018": return 5;
-      case "CRU015": case "CRU019": return 4;
-      case "CRU020": return 3;
-      case "CRU021": return 2;
-      //CRU Ninja
-      case "CRU050": return 1;
-      case "CRU051": case "CRU052": return 2;
-      case "CRU054": return 2;
-      case "CRU055": return 1;
-      case "CRU056": return 3;
-      case "CRU057": case "CRU060": return 3;
-      case "CRU058": case "CRU061": return 2;
-      case "CRU059": case "CRU062": return 1;
-      case "CRU063": case "CRU069": return 5;
-      case "CRU064": case "CRU066": case "CRU070": return 4;
-      case "CRU065": case "CRU067": case "CRU071": case "CRU072": return 3;
-      case "CRU068": case "CRU073": case "CRU074": return 2;
-      //CRU Guardian
-       return 6;
-      case "CRU027": return 10;
-      case "CRU026": case "CRU035": return 8;
-      case "CRU032": case "CRU036": return 7;
-      case "CRU024": case "CRU033": case "CRU037": return 6;
-      case "CRU034": return 5;
-      //CRU Warrior
-      case "CRU079": case "CRU080": return 2;
-      //CRU Mech
-      case "CRU101": return 1 + $combatChainState[$CCS_NumBoosted];
-      case "CRU103": return 4;
-      case "CRU112": return 5;
-      case "CRU106": case "CRU109": case "CRU113": return 4;
-      case "CRU107": case "CRU110": case "CRU114": return 3;
-      case "CRU108": case "CRU111": return 2;
-      //CRU Ranger
-      case "CRU123": return 5;
-      case "CRU132": return 5;
-      case "CRU129": case "CRU133": return 4;
-      case "CRU130": case "CRU134": return 3;
-      case "CRU131": return 2;
-      //CRU Runeblade
-      case "CRU140": return 3;
-      case "CRU142": case "CRU148": case "CRU151": return 4;
-      case "CRU149": case "CRU152": return 3;
-      case "CRU150": case "CRU153": return 2;
-      //CRU Generic
-      case "CRU177": return 4;
-      case "CRU180": return 4;
-      case "CRU183": return 3;
-      case "CRU184": return 2;
-      case "CRU185": return 1;
-      case "CRU192": return 6;
-      case "CRU193": return 5;
-      case "CRU194": return 4;
       default: return 0;
     }
   }
@@ -1460,7 +721,11 @@
   {
     global $myDeck;
     $set = CardSet($cardID);
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRHasGoAgain($cardID);
+    }
+    else if($set == "ARC")
     {
       return ARCHasGoAgain($cardID);
     }
@@ -1494,31 +759,7 @@
     }
     switch($cardID)
     {
-      //Brute
-      case "WTR017": case "WTR018": case "WTR019": return true;
-      case "WTR032": case "WTR033": case "WTR034": return true;
-      case "WTR035": case "WTR036": case "WTR037": return true;
-      //Guardian
-      case "WTR046": return true;
-      case "WTR054": case "WTR055": case "WTR056": return true;
-      case "WTR069": case "WTR070": case "WTR071": return true;
-      case "WTR072": case "WTR073": case "WTR074": return true;
-      //Ninja
-      case "WTR083": case "WTR084":
-      case "WTR095": case "WTR096": case "WTR097": return ComboActive($cardID);
-      case "WTR098": case "WTR099": case "WTR100": return true;
-      case "WTR101": case "WTR102": case "WTR103": return true;
-      case "WTR104": case "WTR105": case "WTR106": return ComboActive($cardID);
-      case "WTR107": case "WTR108": case "WTR109": return true;
-      case "WTR110": case "WTR111": case "WTR112": return ComboActive($cardID);
-      case "WTR119": case "WTR122": return true;
-      case "WTR129": case "WTR130": case "WTR131": return true;
-      case "WTR141": case "WTR142": case "WTR143": return true;
-      case "WTR144": case "WTR145": case "WTR146": return true;
-      case "WTR147": case "WTR148": case "WTR149": return true;
-      case "WTR161": return count($myDeck) == 0;
-      case "WTR218": case "WTR219": case "WTR220": return true;
-      case "WTR223": case "WTR222": case "WTR221": return true;
+
       default: return false;
     }
   }
@@ -1538,7 +779,11 @@
     {
       if(SearchCharacterActive($currentPlayer, "UPR003")) return "AA";
     }
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRAbilityType($cardID, $index);
+    }
+    else if($set == "ARC")
     {
       return ARCAbilityType($cardID, $index);
     }
@@ -1572,36 +817,6 @@
     }
     switch($cardID)
     {
-      case "WTR003": return "AA";
-      case "WTR004": return "A";
-      case "WTR005": return "I";
-      case "WTR038": case "WTR039": return "A";
-      case "WTR040": return "AA";
-      case "WTR041": case "WTR042": return "A";
-      case "WTR078": return "AA";
-      case "WTR080": return "AR";
-      case "WTR115": return "AA";
-      case "WTR116": return "A";
-      case "WTR150": return "I";
-      case "WTR151": return "I";
-      case "WTR152": return "A";
-      case "WTR154": return "AR";
-      case "WTR153": return "A";
-      case "WTR162": return "A";
-      case "WTR170": return "I";
-      case "WTR171": case "WTR172": return "A";
-      case "CRU004": case "CRU005": return "AA";
-      case "CRU006": return "A";
-      case "CRU024": return "AA";
-      case "CRU025": return "A";
-      case "CRU050": case "CRU051": case "CRU052": return "AA";
-      case "CRU079": case "CRU080": return "AA";
-      case "CRU081": return "A";
-      case "CRU121": return "A";
-      case "CRU122": return "A";
-      case "CRU140": return "AA";
-      case "CRU141": return "I";
-      case "CRU177": return "AA";
       default: return "";
     }
   }
@@ -2056,7 +1271,6 @@
 
   function AbilityHasGoAgain($cardID)
   {
-    global $currentPlayer;
     $set = CardSet($cardID);
     $class = CardClass($cardID);
     $subtype = CardSubtype($cardID);
@@ -2064,7 +1278,11 @@
     {
       if(SearchCharacterForCard($currentPlayer, "MON088")) return true;
     }
-    if($set == "ARC")
+    if($set == "WTR")
+    {
+      return WTRAbilityHasGoAgain($cardID);
+    }
+    else if($set == "ARC")
     {
       return ARCAbilityHasGoAgain($cardID);
     }
@@ -2090,13 +1308,6 @@
     }
     switch($cardID)
     {
-      case "WTR038": case "WTR039": return true;
-      case "WTR041": return true;
-      case "WTR116": return true;
-      case "WTR152": return true;
-      case "WTR153": return true;
-      case "WTR162": return GetDieRoll($currentPlayer) <= 4;
-      case "WTR171": return true;
       case "RVD004": return true;
       case "DVR004": return true;
       default: return false;
