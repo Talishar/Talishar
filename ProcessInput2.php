@@ -645,13 +645,14 @@
   function ResolveCombatDamage($damageDone)
   {
     global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon;
+    global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $myClassState;
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
 
     if($wasHit)//Resolve hit effects
     {
       $combatChainState[$CCS_DamageDealt] = $damageDone;
+      SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
       ++$combatChainState[$CCS_NumHits];
       ++$combatChainState[$CCS_HitsInRow];
       if(CardType($combatChain[0]) == "W")
