@@ -1577,6 +1577,7 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("FINDINDICES", $mainPlayer, "MASKPOUNCINGLYNX", 1);
           AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
           AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
+          AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $mainPlayer, $mainCharacter[$i], 1);
         }
         break;
@@ -2024,6 +2025,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $dqState[5] = $mzIndices;
       return $lastResult;
+    case "DUPLICITYBANISH":
+      $cards = explode(",", $lastResult);
+      $params = explode(",", $parameter);
+      $mzIndices = "";
+
+      if (cardType($cards[0]) == "A") {
+        $isPlayable = $params[1];
+      }
+      else {
+        $isPlayable = "-";
+      }
+
+      for($i=0; $i<count($cards); ++$i)
+      {
+        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $isPlayable);
+        if($mzIndices != "") $mzIndices .= ",";
+        $mzIndices .= "BANISH-" . $index;
+      }
+      $dqState[5] = $mzIndices;
+      return $lastResult;
     case "REMOVECOMBATCHAIN":
       $cardID = $combatChain[$lastResult];
       for($i=CombatChainPieces() - 1; $i >= 0; --$i)
@@ -2297,6 +2318,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $rv == "" ? "PASS" : $rv;;
     case "SHOWSELECTEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
+      return $lastResult;
+    case "SHOWBANISHEDCARD":
+      WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
       return $lastResult;
     case "REVEALCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was revealed.");
@@ -2818,6 +2842,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);//TODO: Not totally correct
         if(TalentContains($lastResult, "SHADOW", $player))
         {
+          PrependDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
           PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);
           PrependDecisionQueue("MULTIREMOVEDECK", $player, "<-", 1);
           PrependDecisionQueue("FINDINDICES", $player, "TOPDECK", 1);
