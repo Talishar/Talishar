@@ -215,19 +215,32 @@ function AuraBeginEndPhaseAbilities()
       case "ELE175": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $auras[$i+2]) $remove = 1; break;
       case "UPR005":
         ++$auras[$i+2];
-        $numBanished = 0;
+        $leftToBanish = $auras[$i+2];
         $discard = &GetDiscard($mainPlayer);
-        for($j=count($discard)-DiscardPieces(); $j >= 0 && $numBanished < $auras[$i+2]; $j-=DiscardPieces())
+        $numReds = 0;
+
+        for($j=0; $j < count($discard); $j++)
         {
           if(PitchValue($discard[$j]) == 1)
           {
-            BanishCardForPlayer($discard[$j], $mainPlayer, "GY", "NA");
-            RemoveGraveyard($mainPlayer, $j);
-            ++$numBanished;
-            WriteLog("Burn Them All banished a red card.");
+            ++$numReds;
           }
         }
-        if($numBanished < $auras[$i+2]) { $remove = 1; WriteLog("Burn Them All was unable to banish enough red cards."); }
+        if($numReds >= $auras[$i+2])
+        {
+          for($k=0; $k < $auras[$i+2]; $k++) {
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;");
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more cards to banish for Burn Them All!");
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
+            AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+          }
+        }
+        else
+        {
+          $remove = 1;
+          WriteLog(CardLink($auras[$i], $auras[$i]). " was unable to banish enough red cards.");
+        }
         break;
       case "UPR176": case "UPR177": case "UPR178":
         if($auras[$i] == "UPR176") $numOpt = 3;
