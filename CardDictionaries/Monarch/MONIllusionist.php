@@ -175,7 +175,7 @@
         PlayAura("MON104", $mainPlayer);
         break;
       case "MON017": case "MON018": case "MON019":
-        DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
+        DealArcane(1, 1, "PLAYCARD", $cardID, false, $mainPlayer);
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
         break;
       case "MON020": case "MON021": case "MON022":

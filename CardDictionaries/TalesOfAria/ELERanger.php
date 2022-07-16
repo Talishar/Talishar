@@ -263,7 +263,7 @@
       case "ELE064": AddCurrentTurnEffect($cardID, $player); DealArcane(1, 1, "PLAYCARD", $cardID, true); break;
       case "ELE065": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE066": AddCurrentTurnEffect($cardID, $player); break;
-      case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
+      case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 1, "PLAYCARD", $cardID, true); break;
       case "ELE073": case "ELE074": case "ELE075": DealArcane(1, 1, "PLAYCARD", $cardID, true); break;
       case "ELE076": case "ELE077": case "ELE078": SetClassState($player, $CS_NextNAAInstant, 1); break;
       case "ELE079": case "ELE080": case "ELE081":

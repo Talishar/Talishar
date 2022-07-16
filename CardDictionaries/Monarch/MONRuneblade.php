@@ -172,7 +172,7 @@
       case "MON177": case "MON178": case "MON179":
         if($from == "BANISH")
         {
-          DealArcane(1, 0, "PLAYCARD", $cardID);
+          DealArcane(1, 1, "PLAYCARD", $cardID);
           $rv = "Deals 1 arcane damage.";
         }
         return $rv;
@@ -200,10 +200,10 @@
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "MON232": case "MON233": case "MON234":
-        DealArcane(2, 0, "PLAYCARD", $cardID);
+        DealArcane(2, 1, "PLAYCARD", $cardID);
         return "Deals 2 arcane damage.";
       case "MON235": case "MON236": case "MON237":
-        DealArcane(1, 0, "PLAYCARD", $cardID);
+        DealArcane(1, 1, "PLAYCARD", $cardID);
         return "Deals 1 arcane damage.";
       default: return "";
     }
@@ -251,7 +251,7 @@
     $type = CardType($cardID);
     if(($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 1) || $type == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
     {
-      DealArcane(1, 0, "PLAYCARD", "MON157");
+      DealArcane(1, 1, "PLAYCARD", "MON157");
       WriteLog("Dimenxxional Crossroads deals 1 arcane damage.");
     }
   }
