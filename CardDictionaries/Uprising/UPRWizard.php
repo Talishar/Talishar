@@ -273,7 +273,8 @@
       case "UPR168":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPX,2");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        AddDecisionQueue("DUPLICITYBANISH", $currentPlayer, "DECK,INST", 1);
+        AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
         return "Lets you look at the top 2 cards of your deck.";
       case "UPR169":
         NegateLayer($target, "HAND");
