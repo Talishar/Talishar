@@ -794,9 +794,10 @@
   }
 
   //Now display my Auras and items
-  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize + 200;
+  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize - 332;
   $permHeight = $cardSize*2 + 70;
-  echo("<div style='overflow-y:auto; position: fixed; Top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $permWidth . "; max-height:" . $permHeight . "px;'>");
+  $myPermWidth = $cardSizeAura*2 + 30;
+  echo("<div style='overflow-y:auto; position: fixed; bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $myPermWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if(count($myAuras) > 0)
   {
