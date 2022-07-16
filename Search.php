@@ -577,13 +577,22 @@ function SearchMZ($player, $subparam)
   {
     switch($zones[$i])
     {
-      case "THEIRALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), $zones[$i])); break;
+      case "MYARS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($player), $zones[$i])); break;
       case "THEIRARS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), $zones[$i])); break;
       case "MYALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($player), $zones[$i])); break;
+      case "THEIRALLY": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), $zones[$i])); break;
       case "MYHAND": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchHand($player), $zones[$i])); break;
-      case "MYARS" : $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($player), $zones[$i])); break;
-      case "THEIRDISCARD" : $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchDiscard($otherPlayer), $zones[$i])); break;
-      case "MYDISCARD" : $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchDiscard($player), $zones[$i])); break;
+      case "THEIRHAND": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchHand($otherPlayer), $zones[$i])); break;
+      case "MYDISCARD": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchDiscard($player), $zones[$i])); break;
+      case "THEIRDISCARD": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchDiscard($otherPlayer), $zones[$i])); break;
+      case "MYCHAR": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($player), $zones[$i])); break;
+      case "THEIRCHAR": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer), $zones[$i])); break;
+      case "MYITEMS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($player), $zones[$i])); break;
+      case "THEIRITEMS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($otherPlayer), $zones[$i])); break;
+      case "MYPERM": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPermanents($player), $zones[$i])); break;
+      case "THEIRPERM": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPermanents($otherPlayer), $zones[$i])); break;
+      case "MYAURAS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($player), $zones[$i])); break;
+      case "THEIRAURAS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($otherPlayer), $zones[$i])); break;
       default: break;
     }
   }
