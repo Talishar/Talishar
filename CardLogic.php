@@ -184,12 +184,18 @@ function AddLayer($cardID, $player, $parameter, $target="-", $additionalCosts="-
 function AddDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
 {
   global $decisionQueue;
+  $insertIndex = count($decisionQueue)-DecisionQueuePieces();
+  if(!IsGamePhase($decisionQueue[$insertIndex]))//Stack must be clear before you can continue with the step
+  {
+    $insertIndex = count($decisionQueue);
+  }
+
   $parameter = str_replace(" ", "_", $parameter);
-  array_push($decisionQueue, $phase);
-  array_push($decisionQueue, $player);
-  array_push($decisionQueue, $parameter);
-  array_push($decisionQueue, $subsequent);
-  array_push($decisionQueue, $makeCheckpoint);
+  array_splice($decisionQueue, $insertIndex, 0, $phase);
+  array_splice($decisionQueue, $insertIndex+1, 0, $player);
+  array_splice($decisionQueue, $insertIndex+2, 0, $parameter);
+  array_splice($decisionQueue, $insertIndex+3, 0, $subsequent);
+  array_splice($decisionQueue, $insertIndex+4, 0, $makeCheckpoint);
 }
 
 function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
@@ -250,12 +256,21 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     return true;
   }
 
+  function IsGamePhase($phase)
+  {
+    switch($phase)
+    {
+      case "RESUMEPAYING": case "RESUMEPLAY": case "RESOLVECHAINLINK": case "RESOLVECOMBATDAMAGE": case "PASSTURN": return true;
+      default: return false;
+    }
+  }
+
   //Must be called with the my/their context
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
     global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed;
-    if(count($decisionQueue) == 0 || $decisionQueue[0] == "RESUMEPAYING" || $decisionQueue[0] == "RESUMEPLAY" || $decisionQueue[0] == "RESOLVECHAINLINK" || $decisionQueue[0] == "RESOLVECOMBATDAMAGE" || $decisionQueue[0] == "PASSTURN")
+    if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0]))
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
       else if(count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) { UpdateGameState($currentPlayer); }
