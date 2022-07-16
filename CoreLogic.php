@@ -396,7 +396,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
 
 function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
-  global $CS_DamagePrevention, $combatChainState, $combatChain;
+  global $CS_DamagePrevention, $combatChainState, $combatChain, $mainPlayer;
   global $CCS_AttackFused, $CS_ArcaneDamagePrevention;
 
   $classState = &GetPlayerClassState($player);
@@ -453,7 +453,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
-    { AddCurrentTurnEffect($source, $otherPlayer); }
+    { AddCurrentTurnEffect($source, $mainPlayer); }
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   //Now prepend orderable replacement effects
