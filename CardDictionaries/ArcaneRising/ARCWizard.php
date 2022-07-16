@@ -262,7 +262,7 @@
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
     $rv = "THEIRCHAR-0";
-    if($opposingOnly == 0 || $opposingOnly == 2)
+    if($opposingOnly == 1 || $opposingOnly == 2)
     {
       $rv .= ",MYCHAR-0";
     }
