@@ -649,10 +649,13 @@
     $wasHit = $damageDone > 0;
     WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
 
+    if(!DelimStringContains(CardSubtype($combatChain[0]), "Ally")){
+      SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
+    }
+
     if($wasHit)//Resolve hit effects
     {
       $combatChainState[$CCS_DamageDealt] = $damageDone;
-      SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
       ++$combatChainState[$CCS_NumHits];
       ++$combatChainState[$CCS_HitsInRow];
       if(CardType($combatChain[0]) == "W")
