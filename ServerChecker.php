@@ -28,8 +28,8 @@ if ($handle = opendir($path)) {
           if($currentTime - $lastGamestateUpdate < 30000)
           {
             $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn3.php'>";
-            $spectateLinks .= "<label for='joinGame'>Last Update " . intval(($currentTime - $lastGamestateUpdate)/1000) . " seconds ago </label>";
-            $spectateLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Spectate' />";
+            $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate)/1000) . " seconds ago </label>";
+            $spectateLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
             $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
             $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
             $spectateLinks .= "</form>";
@@ -70,8 +70,8 @@ if ($handle = opendir($path)) {
         if($format == "blitz")
         {
           $blitzLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-          $blitzLinks .= "<label for='joinGame'>Open Game </label>";
-          $blitzLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
+          $blitzLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
+          $blitzLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
           $blitzLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
           $blitzLinks .= "<input type='hidden' name='playerID' value='2' />";
           $blitzLinks .= "</form>";
@@ -79,8 +79,8 @@ if ($handle = opendir($path)) {
         else if($format == "cc")
         {
           $ccLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-          $ccLinks .= "<label for='joinGame'>Open Game </label>";
-          $ccLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
+          $ccLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
+          $ccLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
           $ccLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
           $ccLinks .= "<input type='hidden' name='playerID' value='2' />";
           $ccLinks .= "</form>";
@@ -88,8 +88,8 @@ if ($handle = opendir($path)) {
          else if($format == "commoner")
          {
            $commonerLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-           $commonerLinks .= "<label for='joinGame'>Open Game </label>";
-           $commonerLinks .= "<input type='submit' style='font-size:20px;' id='joinGame' value='Join Game' />";
+           $commonerLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
+           $commonerLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
            $commonerLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
            $commonerLinks .= "<input type='hidden' name='playerID' value='2' />";
            $commonerLinks .= "</form>";
@@ -100,10 +100,13 @@ if ($handle = opendir($path)) {
 }
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
   echo($blitzLinks);
+  echo("<h3 style='text-align:center;'>________</h3>");
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
   echo($ccLinks);
+  echo("<h3 style='text-align:center;'>________</h3>");
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Commoner</h2>");
   echo($commonerLinks);
+  echo("<h3 style='text-align:center;'>________</h3>");
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress</h2>");
   echo($spectateLinks);
 

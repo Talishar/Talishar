@@ -47,37 +47,40 @@ select, input{
 <div style="position:absolute; z-index:1; top:15%; left:2%; width:25%; height:70%;
 background-color:rgba(74, 74, 74, 0.9);
 border: 2px solid #1a1a1a;
-border-radius: 3px;">
-<h2>Game Lobby</h2>
+border-radius: 5px;">
+<h1>Game Lobby</h1></br>
+
 <?php
   echo("<form action='" . $redirectPath . "/JoinGameInput.php'>");
   echo("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
   echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
 ?>
 
-<div style="margin-left: 10px;">Decks to Try:
+<div style="margin-left: 20px;">CC Starter Decks:
   <select name="decksToTry" id="decksToTry">
-    <option value="1">Dori Axes CC</option>
-    <option value="2">Bravo CC</option>
-    <option value="3">Mountain Briar CC</option>
-    <option value="4">Stubby Katsu CC</option>
+    <option value="1">Bravo Starter Deck</option>
+    <option value="2">Rhinar Starter Deck</option>
+    <option value="3">Katsu Starter Deck</option>
+    <option value="4">Dorinthea Starter Deck</option>
+    <option value="5">Dash Starter Deck</option>
+    <option value="6">Viserai Starter Deck</option>
+    <option value="7">Kano Starter Deck</option>
+    <option value="8">Azale Starter Deck</option>
   </select>
 </div><br>
 
-<a title='FaBDB Deckbuilder' href='https://fabdb.net/decks' target='_blank'><img style='height:75px; position:absolute;
-  right:15px; top:10px;' src='./Images/fabdb-symbol.png'/></a>
-
-  <label for="fabdb" style="margin-right: -10px;">FaB DB Link:</label>
+  <label for="fabdb" style="margin-left: 10px;">FaB DB Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
 
   <div style='width:100%; text-align:center;'><input type="submit" value="Submit"></div>
 </form><br>
 
-  <h2 style="border-top: 5px solid;">Instructions</h2>
+  <h3 style="text-align:center;">_________________________</h3>
+  <h2>Instructions</h2>
 
-  <p style="margin-left: 8px;">Choose a deck and click submit. You will be taken to the game lobby.</p><br>
-  <p style="margin-left: 8px;">Once in the game lobby, the player who win the dice roll choose if the go first. Then the host can start the game.</p>
-
+  <p style="text-align:center; padding:10px;">Choose a deck and click submit. You will be taken to the game lobby.</p><br>
+  <p style="text-align:center; padding:10px;">Once in the game lobby, the player who win the dice roll choose if the go first. Then the host can start the game.</p><br>
+  <p style="text-align:center; font-size: 20px; padding:5px;">Have Fun!</p>
 </div>
 </div>
 

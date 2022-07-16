@@ -197,8 +197,8 @@
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:" . $overCC . "; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
-    if($title != "") $rv .= "<h" . ($big ? "2" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 5px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "4") . ">";
-    if($canClose == 1) $rv .= "<div title='Click to close' style='position:absolute; cursor:pointer; top:-5px; right:5px; font-size:50px; font-weight:lighter;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
+    if($title != "") $rv .= "<h" . ($big ? "2" : "3") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "3") . ">";
+    if($canClose == 1) $rv .= "<div title='Click to close' style='position:absolute; cursor:pointer; top:0px; right:10px; font-size:50px;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
@@ -221,9 +221,9 @@
     global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
     global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
     $cardStats = &GetCardStats($player);
-    $rv = "<div style='float:left; height:85%;'>";
-    $rv .= "<h2>Card Play Stats</h2>";
-    $rv .= "<table><tr><td>Card ID</td><td>Times Played</td><td>Times Blocked</td><td>Times Pitched</td></tr>";
+    $rv = "<div style='float:left; width:40%; height:85%;'>";
+    $rv .= "<h2 style='text-align:center'>Card Play Stats</h2>";
+    $rv .= "<table style='text-align:center; width:100%; font-size:16px;'><tr><td>Card ID</td><td>Times Played</td><td>Times Blocked</td><td>Times Pitched</td></tr>";
     for($i=0; $i<count($cardStats); $i+=CardStatPieces())
     {
       $pitch = PitchValue($cardStats[$i]);
@@ -244,8 +244,8 @@
     $rv .= "</table>";
     $rv .= "</div>";
     $turnStats = &GetTurnStats($player);
-    $rv .= "<div style='float:left; height:85%;'>";
-    $rv .= "<h2>Turn Stats</h2>";
+    $rv .= "<div style='float:right; width:50%; height:85%;'>";
+    $rv .= "<h2 style='text-align:center'>Turn Stats</h2>";
     if($player == $firstPlayer) $rv .= "<i>First turn omitted for first player.</i><br>";
     //Damage stats
     $totalDamageThreatened = 0;
@@ -255,7 +255,7 @@
     $totalDefensiveCards = 0;
     $totalBlocked = 0;
     $numTurns = 0;
-    $start = ($player == $firstPlayer ? TurnStatPieces() : 0);//Skip first turn for first player
+    $start = ($player == $firstPlayer ? TurnStatPieces() : 0);// TODO: Not skip first turn for first player
     for($i=$start; $i<count($turnStats); $i+=TurnStatPieces())
     {
       $totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
@@ -278,7 +278,7 @@
       $rv .= "Average Cards Left Over per turn: " . round($totalCardsLeft/$numTurns, 2) . "<br>";
       $rv .= "Average Value per turn (Damage threatened + block): " . round(($totalDamageThreatened + $totalBlocked)/$numTurns, 2) . "<br>";
       //Cards per turn stats
-      $rv .= "<table><tr><td>Turn Number</td><td>Cards Played</td><td>Cards Blocked</td><td>Cards Pitched</td><td>Resources Used</td><td>Cards Left</td></tr>";
+      $rv .= "<table style='font-size:16px; text-align:center; width:100%;'><tr><td>Turn Number</td><td>Cards Played</td><td>Cards Blocked</td><td>Cards Pitched</td><td>Resources Used</td><td>Cards Left</td></tr>";
       for($i=0; $i<count($turnStats); $i+=TurnStatPieces())
       {
         $rv .= "<tr><td>" . (($i / TurnStatPieces()) + 1) . "</td><td>" . ($turnStats[$i+$TurnStats_CardsPlayedOffense] + $turnStats[$i+$TurnStats_CardsPlayedDefense]) . "</td><td>" . $turnStats[$i+$TurnStats_CardsBlocked] . "</td><td>" . $turnStats[$i+$TurnStats_CardsPitched] . "</td><td>" . $turnStats[$i+$TurnStats_ResourcesUsed] . "</td><td>" . $turnStats[$i+$TurnStats_CardsLeft] . "</td></tr>";
@@ -385,13 +385,13 @@
   function MainMenuUI()
   {
     global $playerID;
-    $rv = "<table><tr><td>";
-    $rv .= CreateButton($playerID, "Home Page", 100001, 0, "20px", "", "", false, true) . "<BR>";
-    $rv .= CreateButton($playerID, "Undo", 10000, 0, "20px", "", "Hotkey: U") . "<BR>";
-    $rv .= CreateButton($playerID, "Concede", 100002, 0, "20px") . "<BR>";
-    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "20px") . "<BR>";
+    $rv = "<table style='margin-left:auto; margin-right:auto; height:90%;'><tr><td style='vertical-align:middle; width:40%;'>";
+    $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
+    $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
+    $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
+    $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
-    $rv .= "</td><td style='vertical-align:top;'>";
+    $rv .= "</td><td style='vertical-align:middle; width:40%;'>";
     $rv .= PreviousTurnSelectionUI();
     $rv .= "</td></tr></table>";
     return $rv;
@@ -408,7 +408,7 @@
       {
         if($i == 1 && $firstPlayer == 2 && $j == 1) continue;//Player 1 never got a turn 1
         if($i == $currentTurn && $j > $mainPlayer) continue;//Player 2 hasn't gotten a turn yet
-        $rv .= CreateButton($playerID, "Player $j Turn $i", 10003, $j . "-" . $i, "14px") . "<BR>";
+        $rv .= CreateButton($playerID, "Player $j Turn $i", 10003, $j . "-" . $i, "20px") . "<BR>";
       }
     }
     return $rv;
