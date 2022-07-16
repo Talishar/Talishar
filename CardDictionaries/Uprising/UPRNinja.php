@@ -244,12 +244,15 @@
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $cardID . ",HIT", 1);
         break;
       case "UPR161":
+        $rv = "";
         if($combatChainState[$CCS_NumHits] >= 3)
         {
           $deck = &GetDeck($mainPlayer);
+          $rv .= CardLink($deck[0], $deck[0]) . " was banished.";
           if(CardType($deck[0]) == "AA")
           {
             BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
+            $rv .= " It can be played until the end of next turn";
             array_shift($deck);
           }
           else
@@ -257,7 +260,8 @@
             BanishCardForPlayer($deck[0], $mainPlayer, "DECK");
             array_shift($deck);
           }
-          WriteLog("Take the Tempo banished a card");
+          $rv .= ".";
+          WriteLog($rv);
         }
         break;
       default: break;

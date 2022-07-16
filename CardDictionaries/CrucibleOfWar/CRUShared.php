@@ -1046,6 +1046,7 @@
     if(CardType($deck[0]) == "AR")
     {
       BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "TCC");
+      WriteLog(CardLink($deck[0], $deck[0]) . " was banished and can be played this combat chain.");
       array_shift($deck);
     }
   }
