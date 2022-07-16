@@ -145,6 +145,11 @@
     return 3;
   }
 
+  function DecisionQueuePieces()
+  {
+    return 5;
+  }
+
   //Class State (one for each player)
   $CS_Num6PowDisc = 0;
   $CS_NumBoosted = 1;
