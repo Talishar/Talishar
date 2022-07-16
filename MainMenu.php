@@ -22,18 +22,18 @@ body {
 </div>
 
 <div style="position:absolute; top:50px; left:10px; width:25%; bottom: 30px;
-  background-color:rgba(74, 74, 74, 0.8);
+  background-color:rgba(74, 74, 74, 0.9);
   border: 2px solid #1a1a1a;
-  border-radius: 3px;">
+  border-radius: 5px;">
   <?php
     include "ServerChecker.php";
    ?>
 </div>
 
 <div style="position:absolute; top:28%; left:50%; width:40%; bottom: 30px; margin: 0 0 0 -20%; /* -13% = half of width/height */
-  background-color:rgba(74, 74, 74, 0.8);
+  background-color:rgba(74, 74, 74, 0.9);
   border: 2px solid #1a1a1a;
-  border-radius: 3px;">
+  border-radius: 5px;">
 
 <h1 style="margin-top: 3px;">Create New Game</h1>
 
@@ -41,24 +41,25 @@ body {
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
 ?>
 
-<div style="margin-left: 8px; font-size:19px; font-weight:bolder; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;">Decks to Try:
+<div style="margin-left: 20px; font-size:19px; font-weight:bolder; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;">CC Starter Decks:
   <select name="decksToTry" id="decksToTry">
-    <option value="1">Dori Axes CC</option>
-    <option value="2">Bravo CC</option>
-    <option value="3">Mountain Briar CC</option>
-    <option value="4">Stubby Katsu CC</option>
+    <option value="1">Bravo Starter Deck</option>
+    <option value="2">Rhinar Starter Deck</option>
+    <option value="3">Katsu Starter Deck</option>
+    <option value="4">Dorinthea Starter Deck</option>
+    <option value="5">Dash Starter Deck</option>
+    <option value="6">Viserai Starter Deck</option>
+    <option value="7">Kano Starter Deck</option>
+    <option value="8">Azale Starter Deck</option>
   </select>
-</div>
+</div><br>
 
-<a title='FaBDB Deckbuilder' href='https://fabdb.net/decks' target='_blank'><img style='height:80px; position:absolute;
-  right:20px; top:60px;' src='./Images/fabdb-symbol.png' /></a><br>
-
-  <label for="fabdb" style='font-weight:bolder; margin-right:-10px;'>FaB DB Deck Link:</label>
+  <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>FaB DB Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
 
-  <span style='display:inline-block;'>
+  <span style='display:inline-block; margin-left:5px;'>
     <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
-    <label style='margin-left:-12px;' for="blitz">Blitz</label>
+    <label style='margin-left:-10px;' for="blitz">Blitz</label>
   </span>
 
   <span style='display:inline-block;'>
@@ -69,7 +70,7 @@ body {
   <input type="radio" id="commoner" name="format" value="commoner">
   <label style='margin-left:-12px;' for="commoner">Commoner</label><br><br>
 
-  <span style='display:inline-block;'>
+  <span style='display:inline-block; margin-left:5px;'>
     <input type="radio" id="public" name="visibility" value="public" checked="checked">
     <label style='margin-left:-12px;' for="public">Public</label>
   </span>
@@ -77,7 +78,7 @@ body {
   <input type="radio" id="private" name="visibility" value="private">
   <label style='margin-left:-12px;' for="private">Private</label><br><br>
 
-  <input style="margin-left: 10px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+  <input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
   <label for="deckTestMode">Single Player Mode</label><br><br>
   <div style="text-align:center;">
 
@@ -131,9 +132,9 @@ body {
 </div>
 
 <div style="position:absolute; top:50px; right:10px; width:25%; bottom: 30px;
-background-color:rgba(74, 74, 74, 0.8);
+background-color:rgba(74, 74, 74, 0.9);
 border: 2px solid #1a1a1a;
-border-radius: 3px;">
+border-radius: 5px;">
 
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h1>
 <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h2>

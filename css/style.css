@@ -112,21 +112,21 @@ section {
 
 select {
   border: 2px solid grey;
-  border-radius: 3px;
+  border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
 }
 
 input, button {
   border: 2px solid grey;
-  border-radius: 3px;
+  border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
 }
 
 /* Sign Up + Profile */
 .signup-form{
-  background-color:rgba(74, 74, 74, 0.8);
+  background-color:rgba(74, 74, 74, 0.9);
   border: 1px solid #1a1a1a;
   border-radius: 5px;
   overflow: hidden;
@@ -280,7 +280,7 @@ input, button {
 /* Draft style */
 
 .draft-form {
-  background-color:rgba(74, 74, 74, 0.8);
+  background-color:rgba(74, 74, 74, 0.9);
   border: 1px solid #1a1a1a;
   border-radius: 15px;
   width: 30%;
