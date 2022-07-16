@@ -3293,6 +3293,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       MZStartTurnAbility($cardID, $lastResult);
       return "";
 
+    case "MZDAMAGE":
+      $lastResultArr = explode(",", $lastResult);
+      $params = explode(",", $parameter);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      for($i=0; $i<count($lastResultArr); ++$i)
+      {
+        $mzIndex = explode("-",$lastResultArr[$i]);
+        switch($mzIndex[0])
+        {
+          case "MYCHAR": DamageTrigger($player, $params[0], $params[1]); break;
+          case "THEIRCHAR": DamageTrigger($otherPlayer, $params[0], $params[1]); break;
+          //case "MYALLY": TODO: Add for Red Hot when DamageTrigger support any target
+          //case "THEIRALLY": TODO: Add for Red Hot when DamageTrigger support any target
+          default: break;
+        }
+      }
+      return $lastResult;
+
     case "MZBANISH":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);
@@ -3308,7 +3326,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-
     case "MZREMOVE":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);

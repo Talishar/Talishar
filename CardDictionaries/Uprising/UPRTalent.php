@@ -285,7 +285,12 @@
             if(PitchValue($deck[$i]) == 1) ++$numRed;
           }
           $reveals = RevealCards($cards);
-          if($reveals) DamageTrigger($player, $numRed, "DAMAGE"); //TODO: Any target
+          WriteLog($numRed);
+
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C", 1); // TODO: Add "|MYALLY|THEIRALLY" when DamageTrigger support any target
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
@@ -320,8 +325,11 @@
         $rv = "";
         if(RuptureActive())
         {
-          DamageTrigger($player, 2, "DAMAGE"); //TODO: Any target
-          $rv = "Does 2 damage to an opposing hero.";
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C", 1); // TODO: Add "|MYALLY|THEIRALLY" when DamageTrigger support any target
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage.");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return $rv;
       case "UPR136":
