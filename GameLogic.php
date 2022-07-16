@@ -730,7 +730,7 @@ function CurrentEffectAttackAbility()
           if($attackType == "AA" && CardCost($attackID) <= $maxCost)
           {
             WriteLog("Seeds of Agony dealt 1 damage.");
-            DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true);
+            DealArcane(1, 1, "PLAYCARD", $currentTurnEffects[$i], true);
             $remove = 1;
           }
           break;
@@ -1243,7 +1243,7 @@ function OnAttackEffects($attack)
     {
       switch($currentTurnEffects[$i])
       {
-        case "ELE085": case "ELE086": case "ELE087": if($attackType == "AA") { DealArcane(1, 0, "PLAYCARD", $attack, true); $remove = 1; } break;
+        case "ELE085": case "ELE086": case "ELE087": if($attackType == "AA") { DealArcane(1, 1, "PLAYCARD", $attack, true); $remove = 1; } break;
         case "ELE092-DOM":
           AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
@@ -2629,7 +2629,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $numMatch . "-" . $AAIndices;
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
-      DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);
+      DealArcane($numArcane, 1, "PLAYCARD", "MON231", true);
       WriteLog("Sonata Arcanix deals " . $numArcane . " arcane damage.");
       return 1;
     case "SOULREAPING":

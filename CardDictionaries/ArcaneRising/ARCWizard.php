@@ -131,7 +131,7 @@
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2;
+        $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
         DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus), 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
         return "Deals " . $damage . " arcane damage.";
       case "ARC121":
@@ -200,7 +200,7 @@
       case "ARC141": case "ARC142": case "ARC143":
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
-        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         return "";
       default: return "";
     }

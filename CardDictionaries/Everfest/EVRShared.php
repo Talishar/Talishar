@@ -903,7 +903,7 @@
         if($cardID == "EVR128") $numReveal = 3;
         else if($cardID == "EVR129") $numReveal = 2;
         else $numReveal = 1;
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND"); // TODO: Target Hero. Can be use e.g to sink one card from your hand.
         if($currentPlayer == $mainPlayer)
         {
           AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, $numReveal . "-", 1);
