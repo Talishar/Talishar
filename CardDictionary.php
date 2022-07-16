@@ -962,7 +962,17 @@
       case "MON192": if($from=="BANISH") return "HAND";
       case "EVR082": case "EVR083": case "EVR084": return (GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
       case "EVR134": case "EVR135": case "EVR136": return ($player != $mainPlayer ? "BOTDECK" : "GY");
-      case "UPR160": return ($from == "CHAINCLOSING" || $combatChainState[$CCS_AttackPlayedFrom] == "BANISH" ? "GY" : "BANISH,TCC");
+      case "UPR160":
+        if($from == "COMBATCHAIN" && !SearchCurrentTurnEffects($cardID, $player))
+        {
+          AddCurrentTurnEffect($cardID, $player);
+          return "BANISH,TCC";
+        }
+        else
+        {
+          SearchCurrentTurnEffects($cardID, $player, 1);
+          return "GY";
+        }
       default: return "GY";
     }
   }
