@@ -738,6 +738,7 @@
           $ARs = SearchDeck($currentPlayer, "AR");
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, $ARs);
           AddDecisionQueue("BANISH", $currentPlayer, "TCL");
+          AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
@@ -978,6 +979,7 @@
     AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
     AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
     AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
+    AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
     AddDecisionQueue("EXHAUSTCHARACTER", $mainPlayer, $index, 1);
     AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
   }

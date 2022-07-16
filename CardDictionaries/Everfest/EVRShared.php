@@ -1002,6 +1002,7 @@
           $mod = "DECK";
           if(CardType($deck[0]) == "AA") $mod = "TT";
           BanishCardForPlayer($deck[0], $mainPlayer, "DECK", $mod);
+          WriteLog(CardLink($deck[0], $deck[0]) . " was banished.");
           array_shift($deck);
         }
         return "";
@@ -1132,6 +1133,7 @@
         {
           $deck = &GetDeck($mainPlayer);
           BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
+          WriteLog(CardLink($deck[0], $deck[0]) . " was banished and can be played this combat chain.");
           array_shift($deck);
         }
         break;

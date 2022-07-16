@@ -3222,12 +3222,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       SetClassState($currentPlayer, $CS_EffectContext, "-");
       return $lastResult;
     case "MICROPROCESSOR":
-      $deck = &GetDeck($player);
+      $deck = &GetDeck($player); // TODO: Once per turn restriction
       switch($lastResult)
       {
         case "Opt": Opt("EVR070", 1); break;
         case "Draw_then_top_deck": if(count($deck) > 0) { Draw($player); HandToTopDeck($player); } break;
-        case "Banish_top_deck": if(count($deck) > 0) { $card = array_shift($deck); BanishCardForPlayer($card, $player, "DECK", "-"); } break;
+        case "Banish_top_deck":
+          if(count($deck) > 0) {
+            $card = array_shift($deck);
+            BanishCardForPlayer($card, $player, "DECK", "-");
+            WriteLog(CardLink($card, $card) . " was banished.");
+          } break;
         default: break;
       }
       return "";

@@ -192,6 +192,7 @@
     AddDecisionQueue("MAYCHOOSEDISCARD", $otherPlayer, "<-", 1);
     AddDecisionQueue("REMOVEDISCARD", $otherPlayer, "-", 1);
     AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,INST", 1);
+    AddDecisionQueue("SHOWBANISHEDCARD", $otherPlayer, "-", 1);
   }
 
 ?>

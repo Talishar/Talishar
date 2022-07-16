@@ -277,6 +277,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
+        AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
         return "Lets you opt $optAmt and banish the top card of your deck.";
       case "MON218":
         $theirCharacter = GetPlayerCharacter($otherPlayer);
@@ -342,6 +343,7 @@
     AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK", 1);
     AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,-", 1);
+    AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
   }
 
   function EndTurnBloodDebt()
