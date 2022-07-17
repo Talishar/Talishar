@@ -73,6 +73,7 @@ ORDER BY Count";
     for($i=0; $i<count($cards); ++$i)
     {
       $card = $cards[$i];
+      if($i > 0 && $card == $cards[$i-1]) continue;//Make sure cards count only once; assumes deck is sorted
       if(!array_key_exists($card, $cardData))
       {
         $cardData[$card] = [];
@@ -108,6 +109,7 @@ ORDER BY Count";
     $cards = explode(" ", $deck[1]);
     for($i=0; $i<count($cards); ++$i)
     {
+      if($i > 0 && $cards[$i] == $cards[$i-1]) continue;//Make sure cards count only once; assumes deck is sorted
       $card = $cards[$i];
       if(!array_key_exists($card, $cardData))
       {
@@ -126,6 +128,8 @@ ORDER BY Count";
 
   $totalWins = 0;
   $totalGames = 0;
+  $deckTotalWins = 0;
+  $deckTotalGames = 0;
   foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
     echo("<tr>");
@@ -136,11 +140,17 @@ ORDER BY Count";
     echo("</tr>");
     $totalWins += $row[1];
     $totalGames += $row[1] + $row[2];
+    if(count($row) > 3 && count(explode(" ", $row[3])) > 1)
+    {
+      $deckTotalWins += $row[1];
+      $deckTotalGames += $row[1] + $row[2];
+    }
   }
   echo("</table>");
   echo("</div>");
 
   $totalWinrate = $totalWins / $totalGames;
+  $deckTotalWinrate = ($deckTotalGames > 0 ? $deckTotalWins / $deckTotalGames : 0);
 
   $sortedCardData = [];
   while(count($cardData) > 0)
