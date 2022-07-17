@@ -482,6 +482,7 @@
 
   ExitProcessInput();
 
+  //If true, allows for the case to be doable by any player when they don't have the priority.
   function IsModeAsync($mode)
   {
     switch($mode)
