@@ -295,24 +295,43 @@ function AuraTakeDamageAbilities($player, $damage, $type)
 {
   $Auras = &GetAuras($player);
   $hasRunebloodBarrier = CountAura("CRU144", $player) > 0;
+  $otherPlayer = $player == 1 ? 1 : 2;
+  //CR6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
+  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for($i=count($Auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
     $remove = 0;
     if($damage <= 0) { $damage = 0; break; }
     switch($Auras[$i])
     {
-      case "ARC112": if($hasRunebloodBarrier) { $damage -= 1; $remove = 1; } break;
-      case "ARC167": $damage -= 4; $remove = 1; break;
-      case "ARC168": $damage -= 3; $remove = 1; break;
-      case "ARC169": $damage -= 2; $remove = 1; break;
-      case "CRU075": $damage -= 1; break;
-      case "MON104": $damage -= 1; $remove = 1; break;
-      case "EVR131": if($type == "ARCANE") $damage -= 3; break;
-      case "EVR132": if($type == "ARCANE") $damage -= 2; break;
-      case "EVR133": if($type == "ARCANE") $damage -= 1; break;
-      case "UPR218": $damage -= 4; $remove = 1; break;
-      case "UPR219": $damage -= 3; $remove = 1; break;
-      case "UPR220": $damage -= 2; $remove = 1; break;
+      case "ARC112":
+        if($hasRunebloodBarrier && $preventable) $damage -= 1;
+        $remove = 1; break;
+      case "ARC167":
+        if($preventable) $damage -= 4;
+        $remove = 1; break;
+      case "ARC168":
+        if($preventable) $damage -= 3;
+        $remove = 1; break;
+      case "ARC169":
+        if($preventable) $damage -= 2;
+        $remove = 1; break;
+      case "CRU075": if ($preventable) $damage -= 1; break;
+      case "MON104":
+        if($preventable) $damage -= 1;
+        $remove = 1; break;
+      case "EVR131": if($type == "ARCANE" && $preventable) $damage -= 3; break;
+      case "EVR132": if($type == "ARCANE" && $preventable) $damage -= 2; break;
+      case "EVR133": if($type == "ARCANE" && $preventable) $damage -= 1; break;
+      case "UPR218":
+        if($preventable) $damage -= 4;
+        $remove = 1; break;
+      case "UPR219":
+        if($preventable) $damage -= 3;
+        $remove = 1; break;
+      case "UPR220":
+        if($preventable) $damage -= 2;
+        $remove = 1; break;
       default: break;
     }
     if($remove == 1)
