@@ -905,7 +905,8 @@
   function WTRHitEffect($cardID)
   {
     global $mainClassState, $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $mainCharacter;
-    global $mainPlayer, $defPlayer, $CCS_DamageDealt;
+    global $mainPlayer, $defPlayer, $CCS_DamageDealt, $combatChain;
+    $attackID = $combatChain[0];
     switch ($cardID)
     {
       case "WTR083":
