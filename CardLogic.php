@@ -590,7 +590,7 @@ function PlayerOpt($player, $amount)
 
 function DiscardRandom($player="", $source="")
 {
-  global $CS_Num6PowDisc, $mainPlayer, $currentPlayer;
+  global $currentPlayer;
   if($player == "") $player = $currentPlayer;
   $hand = &GetHand($player);
   if(count($hand) == 0) return;
@@ -600,6 +600,15 @@ function DiscardRandom($player="", $source="")
   $hand = array_values($hand);
   AddGraveyard($discarded, $player, "HAND");
   WriteLog(CardLink($discarded, $discarded) . " was randomly discarded.");
+  CardDiscarded($player, $discarded, $source);
+
+  return $discarded;
+};
+
+function CardDiscarded($player, $discarded, $source="")
+{
+  global $CS_Num6PowDisc, $mainPlayer;
+  WriteLog($player . " " . $discarded);
   if(AttackValue($discarded) >= 6)
   {
     $character = &GetPlayerCharacter($player);
@@ -614,8 +623,7 @@ function DiscardRandom($player="", $source="")
     WriteLog("Massacre Intimidated because it was discarded by a Brute attack action card..");
     Intimidate();
   }
-  return $discarded;
-};
+}
 
 function DefDiscardRandom()
 {
