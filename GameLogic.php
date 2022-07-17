@@ -2654,23 +2654,40 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CHOOSEHERO":
       return "THEIRCHAR-0";
     case "DEALDAMAGE":
-      $target = $player;//TODO: Change target to last result to support any target (e.g. Red Hot)
-      $parameters = explode("-", $parameter);
-      $damage = $parameters[0];
-      $source = $parameters[1];
-      $type = $parameters[2];
-      $quellChoices = QuellChoices($target, $damage);
-      PrependDecisionQueue("TAKEDAMAGE", $target, $parameter);
+    $target = explode("-", $lastResult);
+    $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 1 : 2));
+    $parameters = explode("-", $parameter);
+    $damage = $parameters[0];
+    $source = $parameters[1];
+    $type = $parameters[2];
+    if($target[0] == "THEIRALLY" || $target[0] == "MYALLY")
+    {
+      $allies = &GetAllies($targetPlayer);
+      if($allies[$target[1]+6] > 0)
+      {
+         $damage -= 3;
+         if($damage < 0) $damage = 0;
+         --$allies[$target[1]+6];
+      }
+      $allies[$target[1]+2] -= $damage;
+      if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
+      if($allies[$target[1]+2] <= 0) DestroyAlly($targetPlayer, $target[1]);
+      return $damage;
+    }
+    else {
+      $quellChoices = QuellChoices($targetPlayer, $damage);
+      PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
       if($quellChoices != "0")
       {
-        PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
-        PrependDecisionQueue("AFTERQUELL", $target, "-", 1);
-        PrependDecisionQueue("BUTTONINPUT", $target, $quellChoices);
-        PrependDecisionQueue("SETDQCONTEXT", $target, "Choose an amount to pay for Quell");
+        PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
+        PrependDecisionQueue("AFTERQUELL", $targetPlayer, "-", 1);
+        PrependDecisionQueue("BUTTONINPUT", $targetPlayer, $quellChoices);
+        PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an amount to pay for Quell");
       }
       else {
-        PrependDecisionQueue("PASSPARAMETER", $target, "0");//If no quell, we need to discard the previous last result
+        PrependDecisionQueue("PASSPARAMETER", $targetPlayer, "0");//If no quell, we need to discard the previous last result
       }
+    }
       return $damage;
     case "TAKEDAMAGE":
       $params = explode("-", $parameter);
@@ -3310,13 +3327,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         {
           case "MYCHAR": DamageTrigger($player, $params[0], $params[1]); break;
           case "THEIRCHAR": DamageTrigger($otherPlayer, $params[0], $params[1]); break;
-          //case "MYALLY": TODO: Add for Red Hot when DamageTrigger support any target
-          //case "THEIRALLY": TODO: Add for Red Hot when DamageTrigger support any target
+          case "MYALLY": DamageTrigger($player, $params[0], $params[1]); break;
+          case "THEIRALLY": DamageTrigger($otherPlayer, $params[0], $params[1]); break;
           default: break;
         }
       }
       return $lastResult;
-
     case "MZBANISH":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);
