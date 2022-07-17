@@ -157,7 +157,7 @@
   }
 
 
-  function MONGenericPlayAbility($cardID, $from, $resourcesPaid)
+  function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts)
   {
     global $actionPoints, $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
     $rv = "";
@@ -183,6 +183,17 @@
     case "MON263": case "MON264": case "MON265":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power."; }
       return $rv;
+    case "MON266": case "MON267": case "MON268":
+      if(DelimStringContains($additionalCosts, "BELITTLE"))
+      {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2");
+        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        WriteLog("Belittle let you choose a card in hand to tutor Minnowism.");
+      }
+      return "";
     case "MON272": case "MON273": case "MON274":
       $ret = "Their hand is:";
       for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= $theirHand[$i]; }
