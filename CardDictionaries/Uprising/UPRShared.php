@@ -279,17 +279,6 @@
     }
   }
 
-  function UPRFuseAbility($cardID, $player, $element)
-  {
-    switch($cardID)
-    {
-      case "UPR104":
-        AddDecisionQueue("LESSTHANPASS", $player, 1);
-        break;
-      default: break;
-    }
-  }
-
   function QuellAmount($cardID)
   {
     switch($cardID)
