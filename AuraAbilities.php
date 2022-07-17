@@ -396,7 +396,7 @@ function AuraAttackAbilities($attackID)
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
       case "EVR142": if($auras[$i+5]>0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $mainPlayer, true); } break;
-      case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { WriteLog("Burn Them All deals 1 arcane damage."); --$auras[$i+5]; DealArcane(1, 1, "STATIC", $attackID, false, $mainPlayer); } break;
+      case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { --$auras[$i+5]; DealArcane(1, 1, "STATIC", $attackID, false, $mainPlayer); } break;
       default: break;
     }
     if($remove == 1) DestroyAura($mainPlayer, $i);
