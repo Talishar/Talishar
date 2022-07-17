@@ -258,15 +258,21 @@
     }
   }
 
-  function GetArcaneTargetIndices($player, $opposingOnly)
+  //Parameters:
+  //Player = Player controlling the arcane effects
+  //target =
+  // 0: My Char + their char
+  // 1: Their char only
+  // 2: Any target
+  function GetArcaneTargetIndices($player, $target)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
     $rv = "THEIRCHAR-0";
-    if($opposingOnly == 1 || $opposingOnly == 2)
+    if($target == 0 || $target == 2)
     {
       $rv .= ",MYCHAR-0";
     }
-    if($opposingOnly == 2)
+    if($target == 2)
     {
       $theirAllies = &GetAllies($otherPlayer);
       for($i=0; $i<count($theirAllies); $i+=AllyPieces())
