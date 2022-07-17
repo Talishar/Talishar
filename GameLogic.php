@@ -46,7 +46,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       case "ILLUSIONIST": return MONIllusionistPlayAbility($cardID, $from, $resourcesPaid);
       case "RUNEBLADE": return MONRunebladePlayAbility($cardID, $from, $resourcesPaid);
       case "WARRIOR": return MONWarriorPlayAbility($cardID, $from, $resourcesPaid);
-      case "GENERIC": return MONGenericPlayAbility($cardID, $from, $resourcesPaid);
+      case "GENERIC": return MONGenericPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts);
       case "NONE": return MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target);
       default: return "";
     }
