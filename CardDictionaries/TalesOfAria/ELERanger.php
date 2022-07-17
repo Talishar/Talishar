@@ -232,7 +232,6 @@
     global $CS_NextNAAInstant, $CS_PlayCCIndex, $combatChain;
     $otherPlayer = ($player == 2 ? 1 : 2);
     $set = CardSet($cardID);
-    if($set == "UPR") { UPRFuseAbility($cardID, $player, $element); return; }
     switch($cardID)
     {
       case "ELE004": AddCurrentTurnEffect($cardID, $otherPlayer); break;
