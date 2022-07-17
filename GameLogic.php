@@ -12,6 +12,7 @@ include "MZLogic.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="-")
 {
+  global $currentPlayer;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if(($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID))
