@@ -453,6 +453,11 @@
       {
         $counters = "Attacker";
       }
+      //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
+      if($option[0] == "MYARS")
+      {
+        $counters = "Arsenal";
+      }
 
       $card = $source[intval($option[1])];
       $playerBorderColor = 0;

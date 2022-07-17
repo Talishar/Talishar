@@ -78,7 +78,7 @@
   // Counters Style
 
   //Attacker Label Style
-  if($counters == "Attacker") {
+  if($counters == "Attacker" || $counters == "Arsenal") {
     $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
     margin-right: -50%; border-radius: 8px; width: 70px; text-align: center; line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
