@@ -112,7 +112,7 @@
         return "Gain 3 resources.";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
-        DealArcane($damage, 1, "PLAYCARD", $cardID);
+        DealArcane($damage, 0, "PLAYCARD", $cardID);
         return "Deals damage equal to the prior arcane damage this turn (" . $damage . ").";
       case "ARC119":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
@@ -200,7 +200,7 @@
       case "ARC141": case "ARC142": case "ARC143":
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
         return "";
       default: return "";
     }
