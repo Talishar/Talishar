@@ -46,9 +46,9 @@
   $makeBlockBackup = 0;
   $MakeStartTurnBackup = false;
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-  if($authKey != $targetAuth) exit;
 
-  if($playerID == 3) ExitProcessInput();
+  if($playerID != 3 && $authKey != $targetAuth) exit;
+  if($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
   if(!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
 
   //Now we can process the command
@@ -496,6 +496,15 @@
       case 100003: return true;
     }
     return false;
+  }
+
+  function IsModeAllowedForSpectators($mode)
+  {
+    switch($mode)
+    {
+      case 100001: return true;
+      default: return false;
+    }
   }
 
   function ExitProcessInput()
