@@ -123,7 +123,7 @@
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
         AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to banish <1> with Sonic Boom.");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with Sonic Boom.");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -213,13 +213,18 @@
   }
 
   //OpposingOnly -- 0=Opposing hero only, 1=Any Hero, 2=Any Target
-  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false)
+  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false)
   {
-    global $currentPlayer;
+    global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
     $damage += CurrentEffectArcaneModifier($source);
     if($fromQueue)
     {
+      if(!$limitDuplicates)
+      {
+        PrependDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneTargetsSelected, 1);
+        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, "-", 1);
+      }
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       if($mayAbility) { PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
@@ -255,6 +260,12 @@
       else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
+      if(!$limitDuplicates)
+      {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneTargetsSelected, 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
+      }
     }
   }
 
@@ -266,6 +277,7 @@
   // 2: Any target
   function GetArcaneTargetIndices($player, $target)
   {
+    global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
     $rv = "THEIRCHAR-0";
     if($target == 0 || $target == 2)
@@ -285,7 +297,13 @@
         $rv .= ",MYALLY-" . $i;
       }
     }
-    return $rv;
+    $targets = explode(",", $rv);
+    $targetsSelected = GetClassState($player, $CS_ArcaneTargetsSelected);
+    for($i=count($targets)-1; $i>=0; --$i)
+    {
+      if(DelimStringContains($targetsSelected, $targets[$i])) unset($targets[$i]);
+    }
+    return implode(",", $targets);
   }
 
   function CurrentEffectArcaneModifier($source)

@@ -1871,7 +1871,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
-  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt;
+  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected;
   $rv = "";
   switch($phase)
   {
@@ -2706,9 +2706,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         $allies[$target[1]+2] -= $damage;
         if($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
-        if($allies[$target[1]+2] <= 0) DestroyAlly($targetPlayer, $target[1]);
+        if($allies[$target[1]+2] <= 0)
+        {
+          DestroyAlly($targetPlayer, $target[1]);
+        }
+        else
+        {
+          AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
+        }
         return;
       }
+      AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
       $sourceType = CardType($source);
       if(SearchCurrentTurnEffects("ELE065", $player) && ($sourceType == "A" || $sourceType == "AA")) ++$damage;
@@ -2748,6 +2756,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         DestroyFrozenArsenal($player);
       }
+      $dqVars[0] = $damage;
       return $damage;
     case "PAYRESOURCES":
       $resources = &GetResources($player);
@@ -2783,7 +2792,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "APPENDCLASSSTATE":
       $parameters = explode("-", $parameter);
       AppendClassState($player, $parameters[0], $parameters[1]);
-      return 1;
+      return $lastResult;
     case "AFTERFUSE":
       $params = explode("-", $parameter);
       $card = $params[0];
