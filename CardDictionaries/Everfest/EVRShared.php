@@ -897,7 +897,7 @@
         if($cardID == "EVR125") $damage = ($oppTurn ? 6 : 4);
         if($cardID == "EVR126") $damage = ($oppTurn ? 5 : 3);
         if($cardID == "EVR127") $damage = ($oppTurn ? 4 : 2);
-        DealArcane($damage, 1, "PLAYCARD", $cardID);
+        DealArcane($damage, 0, "PLAYCARD", $cardID);
         return "";
       case "EVR128": case "EVR129": case "EVR130":
         if($cardID == "EVR128") $numReveal = 3;
@@ -916,7 +916,7 @@
         AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
         return "Removes a card from your opponent hand. Make sure you choose the right number of options.";
       case "EVR134": case "EVR135": case "EVR136":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
         return "";
       case "EVR137":
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose an Illusionist Aura to destroy and replace.");
