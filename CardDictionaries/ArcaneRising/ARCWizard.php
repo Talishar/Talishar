@@ -272,9 +272,10 @@
   //Parameters:
   //Player = Player controlling the arcane effects
   //target =
-  // 0: My Char + their char
-  // 1: Their char only
-  // 2: Any target
+  // 0: My Hero + Their Hero
+  // 1: Their Hero only
+  // 2: Any Target
+  // 3: Their Hero + Their Alliers
   function GetArcaneTargetIndices($player, $target)
   {
     global $CS_ArcaneTargetsSelected;
@@ -295,6 +296,14 @@
       for($i=0; $i<count($myAllies); $i+=AllyPieces()) // TODO: WIP Azvolai
       {
         $rv .= ",MYALLY-" . $i;
+      }
+    }
+    elseif($target == 3)
+    {
+      $theirAllies = &GetAllies($otherPlayer);
+      for($i=0; $i<count($theirAllies); $i+=AllyPieces())
+      {
+        $rv .= ",THEIRALLY-" . $i;
       }
     }
     $targets = explode(",", $rv);

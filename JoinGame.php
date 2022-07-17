@@ -65,7 +65,7 @@ border-radius: 5px;">
     <option value="5">Dash Starter Deck</option>
     <option value="6">Viserai Starter Deck</option>
     <option value="7">Kano Starter Deck</option>
-    <option value="8">Azale Starter Deck</option>
+    <option value="8">Azalea Starter Deck</option>
   </select>
 </div><br>
 
