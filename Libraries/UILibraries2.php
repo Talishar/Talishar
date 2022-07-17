@@ -80,9 +80,9 @@
   //Attacker Label Style
   if($counters == "Attacker" || $counters == "Arsenal") {
     $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
-    margin-right: -50%; border-radius: 8px; width: 70px; text-align: center; line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
+    margin-right: -50%; border-radius: 7px; width: fit-content; text-align: center; line-height: 18px; height: 16px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
-    font-size:18px; font-weight:650; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
+    font-size:20px; font-weight:800; color:".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
   //Equipments, Hero and default counters style
   elseif($counters != 0) {
