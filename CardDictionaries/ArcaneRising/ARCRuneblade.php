@@ -138,7 +138,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDACTION");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
         AddDecisionQueue("BECOMETHEARKNIGHT", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
