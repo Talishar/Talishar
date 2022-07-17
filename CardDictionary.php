@@ -787,7 +787,7 @@
     {
       return ARCAbilityType($cardID, $index);
     }
-    else if($set == "CRU" && ($class == "MECHANOLOGIST" || $class == "WIZARD" || $cardID == "CRU197" || $class == "MERCHANT"))
+    else if($set == "CRU")
     {
       return CRUAbilityType($cardID, $index);
     }
