@@ -147,7 +147,7 @@
           $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
         }
         else $damage = 5;
-        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 0, "PLAYCARD", $cardID, false, $currentPlayer);
         return "";
       case "UPR106": case "UPR107": case "UPR108":
         $rv = "";

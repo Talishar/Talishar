@@ -122,13 +122,13 @@
     switch($cardID)
     {
       case "ELE065":
-        DealArcane(1, 1, "PLAYCARD", $cardID);
+        DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "ELE066":
         AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
         return "";
       case "ELE067": case "ELE068": case "ELE069":
-        DealArcane(1, 1, "PLAYCARD", $cardID);
+        DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "ELE070": case "ELE071": case "ELE072":
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $otherPlayer, $CS_ArcaneDamageTaken . "-1", 1);
@@ -151,7 +151,7 @@
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
           $rv = "Deals 2 arcane damage to target hero.";
-          DealArcane(2, 1, "PLAYCARD", $cardID);
+          DealArcane(2, 0, "PLAYCARD", $cardID);
         }
         return $rv;
       case "ELE223":
@@ -171,7 +171,7 @@
         DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "ELE230": case "ELE231": case "ELE232":
-        DealArcane(1, 1, "PLAYCARD", $cardID);
+        DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       default: return "";
     }

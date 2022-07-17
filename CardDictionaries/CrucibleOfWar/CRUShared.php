@@ -883,7 +883,7 @@
         return "";
       //CRU Wizard
       case "CRU160":
-        DealArcane(2, 1, "PLAYCARD", $cardID);
+        DealArcane(2, 0, "PLAYCARD", $cardID);
         return "Deals 2 arcane damage.";
       case "CRU162":
         $rv = "Lets you play your next Wizard non-attack as an instant";
@@ -908,15 +908,15 @@
         Opt($cardID, $optAmt);
         return "";
       case "CRU168": case "CRU169": case "CRU170":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
         Opt($cardID, 1);
         return "";
       case "CRU171": case "CRU172": case "CRU173":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
         AddArcaneBonus(1, $currentPlayer);
         return "";
       case "CRU174": case "CRU175": case "CRU176":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
         return "";
       //CRU Generics
       case "CRU181":
