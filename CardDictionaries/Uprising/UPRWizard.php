@@ -300,7 +300,7 @@
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $allies = &GetAllies($otherPlayer);
         if(count($allies) < $maxAllies) $maxAllies = count($allies);
-        DealArcane(1, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, true);
+        DealArcane(1, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
         for($i=1; $i<$maxAllies; ++$i)
         {
           DealArcane(1, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, true);

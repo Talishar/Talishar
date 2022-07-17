@@ -280,7 +280,7 @@
   {
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
-    $rv = "THEIRCHAR-0";
+    if($target != 3) $rv = "THEIRCHAR-0";
     if($target == 0 || $target == 2)
     {
       $rv .= ",MYCHAR-0";
@@ -303,7 +303,8 @@
       $theirAllies = &GetAllies($otherPlayer);
       for($i=0; $i<count($theirAllies); $i+=AllyPieces())
       {
-        $rv .= ",THEIRALLY-" . $i;
+        if($rv != "") $rv .= ",";
+        $rv .= "THEIRALLY-" . $i;
       }
     }
     $targets = explode(",", $rv);
