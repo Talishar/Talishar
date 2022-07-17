@@ -392,7 +392,7 @@ function DamageTrigger($player, $damage, $type, $source="NA")
 function CanDamageBePrevented($player, $damage, $type, $source="-")
 {
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
-  if(SearchCurrentTurnEffects("UPR158", $player)) return false;
+  if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
   return true;
 }
 
