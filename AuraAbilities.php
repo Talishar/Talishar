@@ -234,6 +234,7 @@ function AuraBeginEndPhaseAbilities()
             AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
             AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
             AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+            --$leftToBanish;
           }
         }
         else
