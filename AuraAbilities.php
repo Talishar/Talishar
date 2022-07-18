@@ -240,7 +240,7 @@ function AuraBeginEndPhaseAbilities()
         else
         {
           $remove = 1;
-          WriteLog(CardLink($auras[$i], $auras[$i]). " was unable to banish enough red cards.");
+          WriteLog(CardLink($auras[$i], $auras[$i]). " was unable to banish enough red cards and was destroyed.");
         }
         break;
       case "UPR176": case "UPR177": case "UPR178":
@@ -305,7 +305,7 @@ function AuraTakeDamageAbilities($player, $damage, $type)
     switch($Auras[$i])
     {
       case "ARC112":
-        if($hasRunebloodBarrier && $preventable) { $damage -= 1 $remove = 1; } break;;
+        if($hasRunebloodBarrier && $preventable) { $damage -= 1; $remove = 1; } break;;
       case "ARC167":
         if($preventable) $damage -= 4;
         $remove = 1; break;
