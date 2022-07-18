@@ -202,7 +202,7 @@
   $CS_NumLess3PowAAPlayed = 48;
   $CS_AlluvionUsed = 49;
   $CS_MaxQuellUsed = 50;
-  $CS_DamageDealt = 51; //Only includes damage dealt by the hero. 8.2.8f If an ally deals damage, the controlling player and their hero are not considered to have dealt damage.
+  $CS_DamageDealt = 51; //Only includes damage dealt by the hero. CR 2.1 8.2.8f If an ally deals damage, the controlling player and their hero are not considered to have dealt damage.
   $CS_ArcaneTargetsSelected = 52;
 
   //Combat Chain State (State for the current combat chain)
