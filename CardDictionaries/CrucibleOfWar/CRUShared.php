@@ -227,6 +227,7 @@
       case "CRU171": case "CRU172": case "CRU173": return "A";
       case "CRU174": case "CRU175": case "CRU176": return "A";
       //CRU Generics
+      case "CRU177": return "W";
       case "CRU179": return "E";
       case "CRU180": return "AA";
       case "CRU181": return "A";
