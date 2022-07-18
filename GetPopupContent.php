@@ -35,18 +35,31 @@
     case "theirPitchPopup": echo(CreatePopup("theirPitchPopup", $theirPitch, 1, 0, "Opponent's Pitch Zone")); break;
     case "theirDiscardPopup": echo(CreatePopup("theirDiscardPopup", $theirDiscard, 1, 0, "Opponent's Discard Zone")); break;
     case "theirSoulPopup": echo(CreatePopup("theirSoulPopup", $theirSoul, 1, 0, "Opponent's Soul")); break;
-    case "chainLinkPopup": echo(CreatePopup("chainLinkPopup-" . $params[1], [], 1, 0, "Chain Link $params[1]", 1, ChainLinkPopup($params[1]), "./", false)); break;
+    case "chainLinkPopup": echo(CreatePopup("chainLinkPopup-" . $params[1], [], 1, 0, "Summary Chain Link " . $params[1]+1, 1, ChainLinkPopup($params[1]), "./", false, false, "Total Damage Dealt: ". $chainLinkSummary[$params[1] * ChainLinkSummaryPieces()])); break;
     default: break;
   }
 
   function ChainLinkPopup($link)
   {
-    global $chainLinks, $cardSize, $playerID;
+    global $chainLinks, $cardSize, $playerID, $mainPlayer, $defPlayer;
     $rv = "";
     for($i=0; $i<count($chainLinks[$link]); $i+=ChainLinksPieces())
     {
-      $rv .= Card($chainLinks[$link][$i], "concat", $cardSize, 0, 1, 0, ($chainLinks[$link][$i+1] == $playerID ? 1 : 2));
+      if ($chainLinks[$link][$i+1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR")
+      {
+        $attackValue = AttackValue($chainLinks[$link][$i]);
+      }
+      elseif ($chainLinks[$link][$i+1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || CardType($chainLinks[$link][$i]) == "I")) {
+        $attackValue = AttackModifier($chainLinks[$link][$i]);
+      }
+      else $attackValue = 0;
+
+      if ($chainLinks[$link][$i+1] == $defPlayer) $blockValue = BlockValue($chainLinks[$link][$i]);
+      else $blockValue = 0;
+
+      $rv .= Card($chainLinks[$link][$i], "concat", $cardSize, 0, 1, 0, ($chainLinks[$link][$i+1] == $playerID ? 1 : 2), 0, "", "", false, 0, $blockValue, $attackValue);
       //$rv .= $chainLinks[$link][$i] . " ";
+
     }
     return $rv;
   }

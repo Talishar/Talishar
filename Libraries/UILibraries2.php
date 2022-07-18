@@ -95,30 +95,30 @@
   //-1 Defense & Endurance Counters style
   if($defCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 1px;
     text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
-    <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
-    position: absolute; margin: auto; top: 1px; left: -4; right: 0;bottom: 0; z-index:-3;' src='./Images/Defense.png'></img></div>";
+    position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
+    <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+    z-index:-3;' src='./Images/Defense.png'></img></div>";
   }
   //Health Counters style
   if($lifeCounters != 0){
     if($defCounters == 0){ $left = "50%"; } else { $left = "70%"; }
   $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
   text-align: center; transform: translate(-50%, -50%);
-  position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
-  <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
-  position: absolute; margin: auto; top: 1; left: -5; right: 0;bottom: 0; z-index:-5;' src='./Images/Life.png'></img></div>";
+  position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
+  <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+  z-index:-3;' src='./Images/Life.png'></img></div>";
   }
 
   //Attack Counters style
   if($atkCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 1px;
     text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
-    <img style='height:". $cardIconSize ."; width:". $cardIconSize ."; opacity: 0.8;
-    position: absolute; margin: auto; top: 1px; left: -4; right: 0;bottom: 0; z-index:-3;' src='./Images/Attack.png'></img></div>";
+    position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
+    <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+    z-index:-3;' src='./Images/Attack.png'></img></div>";
   }
   $rv .= "</a>";
   return $rv;
@@ -186,12 +186,12 @@
     return $rv;
   }
 
-  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false, $overCombatChain=false)
+  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false, $overCombatChain=false, $additionalComments="")
   {
     global $combatChain, $darkMode, $cardSize, $playerID;
     $overCC = 1000;
     $darkMode = IsDarkMode($playerID);
-    $top = "50%"; $left = "19%"; $width = "60%"; $height = "35%";
+    $top = "50%"; $left = "19%"; $width = "60%"; $height = "30%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
     if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
 
@@ -199,6 +199,7 @@
 
     if($title != "") $rv .= "<h" . ($big ? "2" : "3") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "3") . ">";
     if($canClose == 1) $rv .= "<div title='Click to close' style='position:absolute; cursor:pointer; top:0px; right:10px; font-size:50px;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
+    if($additionalComments != "") $rv .= "<h" . ($big ? "3" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $additionalComments . "</h" . ($big ? "3" : "4") . ">";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
