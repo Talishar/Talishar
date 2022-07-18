@@ -18,6 +18,8 @@
   ob_end_clean();
 
   $cardSize = 120;
+  $params = explode("-", $popupType);
+  $popupType = $params[0];
   switch($popupType)
   {
     case "myPitchPopup": echo(CreatePopup("myPitchPopup", $myPitch, 1, 0, "Your Pitch")); break;
@@ -33,7 +35,20 @@
     case "theirPitchPopup": echo(CreatePopup("theirPitchPopup", $theirPitch, 1, 0, "Opponent's Pitch Zone")); break;
     case "theirDiscardPopup": echo(CreatePopup("theirDiscardPopup", $theirDiscard, 1, 0, "Opponent's Discard Zone")); break;
     case "theirSoulPopup": echo(CreatePopup("theirSoulPopup", $theirSoul, 1, 0, "Opponent's Soul")); break;
+    case "chainLinkPopup": echo(CreatePopup("chainLinkPopup-" . $params[1], [], 1, 0, "Chain Link $params[1]", 1, ChainLinkPopup($params[1]), "./", false)); break;
     default: break;
+  }
+
+  function ChainLinkPopup($link)
+  {
+    global $chainLinks, $cardSize, $playerID;
+    $rv = "";
+    for($i=0; $i<count($chainLinks[$link]); $i+=ChainLinksPieces())
+    {
+      $rv .= Card($chainLinks[$link][$i], "concat", $cardSize, 0, 1, 0, ($chainLinks[$link][$i+1] == $playerID ? 1 : 2));
+      //$rv .= $chainLinks[$link][$i] . " ";
+    }
+    return $rv;
   }
 
 ?>

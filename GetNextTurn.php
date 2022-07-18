@@ -280,7 +280,7 @@
       if($i==0) { $iconLeft = 10; $linkWidth = 60; $linkImage = "chainLinkLeft.png"; }
       //else if($i==count($chainLinks)-1) { $iconLeft = 27; $linkWidth = 60; $linkImage = "chainLinkRight.png"; }
       else { $iconLeft = 25; $linkWidth = 70; $linkImage = "chainLink.png"; }
-      echo("<div style='position:relative; display:inline-block;'><img title='Chain Link $i' style='height:30px; width:" . $linkWidth . "px;' src='./Images/$linkImage'>");
+      echo("<div onclick='ShowPopup(\"chainLinkPopup-" . $i . "\")'; style='cursor:pointer; position:relative; display:inline-block;'><img title='Chain Link $i' style='height:30px; width:" . $linkWidth . "px;' src='./Images/$linkImage'>");
       $damage = $chainLinkSummary[$i * ChainLinkSummaryPieces()];
       $linkOverlay = ($damage > 0 ? "./Images/hit.png" : "./Images/Defense.png");
       $linkTitle = ($damage > 0 ? "Hit for $damage damage" : "Fully Blocked");
