@@ -992,7 +992,7 @@
     if($indices != "") array_push($array, $indices);
     $indices = SearchDiscardForCard($player, "WTR110", "WTR111", "WTR112");
     if($indices != "") array_push($array, $indices);
-    $indices = SearchDiscardForCard($player, "WTR83");
+    $indices = SearchDiscardForCard($player, "WTR083");
     if($indices != "") array_push($array, $indices);
     return implode(",", $array);
   }
