@@ -253,7 +253,7 @@ function ProcessCrushEffect($cardID)
       case "WTR045": AddNextTurnEffect($cardID, $defPlayer); break;
       case "WTR057": case "WTR058": case "WTR059":
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-");
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
         AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
         break;
       case "WTR060": case "WTR061": case "WTR062": AddNextTurnEffect($cardID, $defPlayer); break;
