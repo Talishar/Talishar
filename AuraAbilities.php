@@ -296,7 +296,7 @@ function AuraTakeDamageAbilities($player, $damage, $type)
   $Auras = &GetAuras($player);
   $hasRunebloodBarrier = CountAura("CRU144", $player) > 0;
   $otherPlayer = $player == 1 ? 1 : 2;
-  //CR6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
+  //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for($i=count($Auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
