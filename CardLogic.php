@@ -184,10 +184,13 @@ function AddLayer($cardID, $player, $parameter, $target="-", $additionalCosts="-
 function AddDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeCheckpoint=0)
 {
   global $decisionQueue;
-  $insertIndex = count($decisionQueue)-DecisionQueuePieces();
-  if(!IsGamePhase($decisionQueue[$insertIndex]))//Stack must be clear before you can continue with the step
-  {
-    $insertIndex = count($decisionQueue);
+  if(count($decisionQueue) == 0) $insertIndex = 0;
+  else {
+    $insertIndex = count($decisionQueue)-DecisionQueuePieces();
+    if(!IsGamePhase($decisionQueue[$insertIndex]))//Stack must be clear before you can continue with the step
+    {
+      $insertIndex = count($decisionQueue);
+    }
   }
 
   $parameter = str_replace(" ", "_", $parameter);
@@ -608,7 +611,6 @@ function DiscardRandom($player="", $source="")
 function CardDiscarded($player, $discarded, $source="")
 {
   global $CS_Num6PowDisc, $mainPlayer;
-  WriteLog($player . " " . $discarded);
   if(AttackValue($discarded) >= 6)
   {
     $character = &GetPlayerCharacter($player);
