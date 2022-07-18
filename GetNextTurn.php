@@ -449,6 +449,8 @@
       else if($option[0] == "THEIRPERM") $source = $theirPermanents;
 
       $counters = 0;
+      $lifeCounters = 0;
+      $defCounters = 0;
       if(($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && $option[1] == $combatChainState[$CCS_WeaponIndex])
       {
         $counters = "Attacker";
@@ -464,7 +466,17 @@
       if(substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
       else if(substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
       if($option[0] == "THEIRARS" && $theirArsenal[$option[1]+1] == "DOWN") $card = "CardBack";
-      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i]);
+      if($option[0] == "THEIRALLY")
+      {
+        $lifeCounters = $theirAllies[$option[1]+2];
+        $defCounters = $theirAllies[$option[1]+6];
+      }
+      elseif($option[0] == "MYALLY")
+      {
+        $lifeCounters = $myAllies[$option[1]+2];
+        $defCounters = $myAllies[$option[1]+6];
+      }
+      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $defCounters);
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
@@ -562,11 +574,11 @@
     for($i=0; $i<count($options); ++$i)
     {
       $content .= "<td>";
-      if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1);
+      if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1, 0, 0, $counters, "", "", false, $lifeCounters, $defCounters);
+      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1, 0, 0, $counters, "", "", false, $lifeCounters, $defCounters);
+      else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "concat", $cardSize, 0, 1, 0, 0, $counters, "", "", false, $lifeCounters, $defCounters);
+      else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1, 0, 0, $counters, "", "", false, $lifeCounters, $defCounters);
+      else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1, 0, 0, $counters, "", "", false, $lifeCounters, $defCounters);
       else if($turn[0] == "MULTICHOOSETEXT") $content .= str_replace("_", " ", $options[$i]);
       $content .= "</td>";
     }
@@ -680,8 +692,10 @@
   {
     for($i=0; $i<count($theirAllies); $i+=AllyPieces())
     {
+      $lifeCounters = $theirAllies[$i+2];
+      $defCounters = $theirAllies[$i+6];
       echo("<div style='position:relative; display:inline;'>");
-      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, 0, "", "", False, $theirAllies[$i+2], $theirAllies[$i+6]) . "&nbsp");
+      echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, 0, "", "", False, $lifeCounters, $defCounters) . "&nbsp");
       if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-75px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo("</div>");
     }
@@ -831,10 +845,12 @@
   {
     for($i=0; $i<count($myAllies); $i+=AllyPieces())
     {
+      $lifeCounters = $myAllies[$i+2];
+      $defCounters = $myAllies[$i+6];
       echo("<div style='position:relative; display:inline;'>");
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
-      echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, 0, strval($i), "", False, $myAllies[$i+2], $myAllies[$i+6]) . "&nbsp");
+      echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $defCounters) . "&nbsp");
       if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo("</div>");
     }
