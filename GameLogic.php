@@ -1431,6 +1431,11 @@ function Draw($player, $mainPhase=true)
       return "";
     }
   }
+  if($mainPhase && SearchAurasForCard("UPR138", $otherPlayer))
+  {
+    WriteLog("Draw prevented by Channel the Bleak Expanse.");
+    return "";
+  }
   $deck = &GetDeck($player);
   $hand = &GetHand($player);
   if(count($deck) == 0) return -1;
@@ -1912,7 +1917,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CRU105": $rv = GetWeaponChoices("Pistol"); break;
         case "CRU143": $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"); break;
         case "LAYER": $rv = SearchLayerDQ($subparam); break;
-        case "DECK": $deck = GetDeck($player); $rv = GetIndices(count($deck)); break;
+        case "DECK": $rv = SearchDeck($player); break;
         case "TOPDECK": $deck = &GetDeck($player); if(count($deck) > 0) $rv = "0"; break;
         case "DECKTOPX": $rv = ""; $deck = &GetDeck($player); for($i=0; $i<$subparam; ++$i) if($i < count($deck)) { if($rv != "") $rv .= ","; $rv .= $i; } break;
         case "DECKCLASSAA": $rv = SearchDeck($player, "AA", "", -1, -1, $subparam); break;
