@@ -2,6 +2,7 @@
 
 include "Libraries/SHMOPLibraries.php";
 include "HostFiles/Redirector.php";
+include "CardDictionary.php";
 
 define('ROOTPATH', __DIR__);
 
@@ -67,32 +68,29 @@ if ($handle = opendir($path)) {
 
       if($status == 0 && $visibility == "public")
       {
+        $p1Hero = GetCachePiece($gameName, 7);
+
+        $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
+        $link .= "<center><table style='left:40%;'><tr><td>";
+        if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+        $link .= "</td><td style='vertical-align:middle;'>";
+        $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;" . ($p1Hero != "" ? CardName($p1Hero) : "Open Game") . " </span>";
+        $link .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
+        $link .= "</td></tr></table></center>";
+        $link .= "<input type='hidden' name='gameName' value='$gameToken' />";
+        $link .= "<input type='hidden' name='playerID' value='2' />";
+        $link .= "</form>";
         if($format == "blitz")
         {
-          $blitzLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-          $blitzLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
-          $blitzLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
-          $blitzLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-          $blitzLinks .= "<input type='hidden' name='playerID' value='2' />";
-          $blitzLinks .= "</form>";
+          $blitzLinks .= $link;
         }
         else if($format == "cc")
         {
-          $ccLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-          $ccLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
-          $ccLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
-          $ccLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-          $ccLinks .= "<input type='hidden' name='playerID' value='2' />";
-          $ccLinks .= "</form>";
+          $ccLinks .= $link;
          }
          else if($format == "commoner")
          {
-           $commonerLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-           $commonerLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
-           $commonerLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
-           $commonerLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-           $commonerLinks .= "<input type='hidden' name='playerID' value='2' />";
-           $commonerLinks .= "</form>";
+           $commonerLinks .= $link;
          }
       }
     }
