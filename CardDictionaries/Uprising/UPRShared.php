@@ -153,7 +153,7 @@
       case "UPR047": return $attackID == "UPR101";
       case "UPR049": return TalentContains($attackID, "DRACONIC", $mainPlayer) && AttackValue($attackID) < NumDraconicChainLinks();
       case "UPR054": case "UPR055": case "UPR056": return true;
-      case "UPR057": case "UPR058": case "UPR059": return TalentContains($attackID, "DRACONIC", $mainPlayer) || ClassContains($attackID, "NINJA", $mainPlayer);
+      case "UPR057": case "UPR058": case "UPR059": return cardType($attackID) == "AA" && (TalentContains($attackID, "DRACONIC", $mainPlayer) || ClassContains($attackID, "NINJA", $mainPlayer));
       case "UPR060": case "UPR061": case "UPR062": return true;
       case "UPR081": case "UPR082": case "UPR083": return true;
       case "UPR088": return TalentContains($attackID, "DRACONIC", $mainPlayer);
