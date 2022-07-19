@@ -185,6 +185,7 @@
   }
   else
   {
+    $character = "";
     $deckOptions = explode("-", $deck);
     if($deckOptions[0] == "DRAFT")
     {
@@ -240,6 +241,7 @@
   WriteGameFile();
   SetCachePiece($gameName, $playerID+1, strval(round(microtime(true) * 1000)));
   SetCachePiece($gameName, $playerID+3, "0");
+  SetCachePiece($gameName, $playerID+6, $character);
   GamestateUpdated($gameName);
 
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");

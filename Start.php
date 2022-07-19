@@ -81,7 +81,9 @@
   fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
-  WriteCache($gameName, "1!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime);//Initialize SHMOP cache for this game
+  $p1Hero = GetCachePiece($gameName, 7);
+  $p2Hero = GetCachePiece($gameName, 8);
+  WriteCache($gameName, "1!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero);//Initialize SHMOP cache for this game
 
   ob_start();
   include "StartEffects.php";
