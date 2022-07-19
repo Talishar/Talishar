@@ -28,9 +28,22 @@ if ($handle = opendir($path)) {
           $lastGamestateUpdate = intval(GetCachePiece($gameToken, 6));
           if($currentTime - $lastGamestateUpdate < 30000)
           {
+            $p1Hero = GetCachePiece($gameToken, 7);
+            $p2Hero = GetCachePiece($gameToken, 8);
             $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn3.php'>";
-            $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate)/1000) . " seconds ago </label>";
+            $spectateLinks .= "<center><table><tr><td style='vertical-align:middle;'>";
+            if($p1Hero == "")$spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate)/1000) . " seconds ago </label>";
+            else {
+              if($p2Hero == "") $p2Hero = "CRU099";
+              $spectateLinks .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+              $spectateLinks .= "</td><td style='vertical-align:middle;'>";
+              $spectateLinks .= " &nbsp; vs &nbsp; ";
+              $spectateLinks .= "</td><td>";
+              $spectateLinks .= "<img height='40px;' src='./crops/" . $p2Hero . "_cropped.png' />";
+              $spectateLinks .= "</td><td style='vertical-align:middle;'>&nbsp;";
+            }
             $spectateLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
+            $spectateLinks .= "</td></tr></table><center>";
             $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
             $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
             $spectateLinks .= "</form>";
