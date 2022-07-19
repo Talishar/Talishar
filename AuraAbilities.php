@@ -230,7 +230,7 @@ function AuraBeginEndPhaseAbilities()
           for($k=0; $k < $auras[$i+2]; $k++) {
             AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;");
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more cards to banish for Burn Them All!");
-            AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
             AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
             AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
             --$leftToBanish;
