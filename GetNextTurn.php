@@ -540,7 +540,7 @@
     ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from your opponent discard");
   }
 
-  if($turn[0] == "CHOOSECOMBATCHAIN" && $turn[1] == $playerID)
+  if(($turn[0] == "CHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSECOMBATCHAIN") && $turn[1] == $playerID)
   {
     ChoosePopup($combatChain, $turn[2], 16, "Choose a card from the combat chain", CombatChainPieces());
   }
