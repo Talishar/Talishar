@@ -727,9 +727,9 @@
         if(RepriseActive())
         {
           $options = GetChainLinkCards(($mainPlayer == 1 ? 2 : 1), "", "E,C");
-          AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
-          AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-");
-          AddDecisionQueue("ADDHAND", $defPlayer, "-");
+          AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
+          AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
+          AddDecisionQueue("ADDHAND", $defPlayer, "-", 1);
         }
         return "";
       case "WTR121":
