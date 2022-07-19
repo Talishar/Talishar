@@ -945,6 +945,7 @@
   function BlessingOfDeliveranceDestroy($amount)
   {
     global $mainPlayer;
+    if(!CanRevealCards($mainPlayer)) return "Blessing of Deliverance cannot reveal cards.";
     $deck = GetDeck($mainPlayer);
     $lifegain = 0;
     $cards = "";
@@ -956,7 +957,7 @@
         if(CardCost($deck[$i]) >= 3) ++$lifegain;
       }
     }
-    RevealCards($cards);
+    RevealCards($cards, $mainPlayer);//CanReveal called
     GainHealth($lifegain, $mainPlayer);
     return "Blessing of Deliverance gained " . $lifegain . " life.";
   }
@@ -1004,8 +1005,7 @@
     if(!ArsenalFull($mainPlayer) && count($deck) > 0)
     {
       $type = CardType($deck[0]);
-      RevealCards($deck[0]);
-      if($type == "A" || $type == "AA")
+      if(RevealCards($deck[0], $mainPlayer) && ($type == "A" || $type == "AA"))
       {
         AddArsenal($deck[0], $mainPlayer, "DECK", "DOWN");
         array_shift($deck);

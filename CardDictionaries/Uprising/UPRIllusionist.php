@@ -310,7 +310,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Makes your next attack action card Illusionist, modify its base attack and gain Phantasm.";
       case "UPR406":
-        if(IsHeroAttackTarget()) {
+        if(IsHeroAttackTarget() && CanRevealCards($currentPlayer)) {
           $deck = &GetDeck($currentPlayer);
           $numRed = 0;
           $redRevealed = "";
@@ -326,7 +326,7 @@
             if($cardsReveal != "") $cardsReveal .= ",";
             $cardsReveal .= $deck[$i];
           }
-          RevealCards($cardsReveal);
+          RevealCards($cardsReveal);//CanReveal checked
           if($redRevealed)
           {
             WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
@@ -335,7 +335,7 @@
         }
         return "";
       case "UPR407":
-        if(IsHeroAttackTarget()) {
+        if(IsHeroAttackTarget() && CanRevealCards($currentPlayer)) {
           $deck = &GetDeck($currentPlayer);
           $numRed = 0;
           $cardsReveal = "";
@@ -348,7 +348,7 @@
             if($cardsReveal != "") $cardsReveal .= ",";
             $cardsReveal .= $deck[$i];
           }
-          RevealCards($cardsReveal);
+          RevealCards($cardsReveal);//CanReveal checked
           if($numRed > 0)
           {
             $otherPlayer = ($currentPlayer == 1 ? 2 : 1);

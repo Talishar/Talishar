@@ -1160,7 +1160,7 @@
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
       case "EVR088":
-        if(IsHeroAttackTarget())
+        if(IsHeroAttackTarget() && CanRevealCards($mainPlayer))
         {
           $hand = &GetHand($defPlayer);
           $cards = "";
@@ -1179,7 +1179,7 @@
             $cards .= $id;
           }
           LoseHealth($numDiscarded, $defPlayer);
-          RevealCards($cards);
+          RevealCards($cards, $defPlayer);//CanReveal checked earlier
           WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
           $hand = array_values($hand);
         }
