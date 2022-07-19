@@ -95,10 +95,10 @@
   //-1 Defense & Endurance Counters style
   if($defCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 1px;
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
     text-align: center; transform: translate(-50%, -50%);
     position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
-    <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+    <img style='height: 41px; width: 41px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -5px; right: 0px; bottom: 0px ;
     z-index:-3;' src='./Images/Defense.png'></img></div>";
   }
   //Health Counters style
@@ -107,17 +107,17 @@
   $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
   text-align: center; transform: translate(-50%, -50%);
   position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
-  <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+  <img style='height: 41px; width: 41px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -5px; right: 0px; bottom: 0px ;
   z-index:-3;' src='./Images/Life.png'></img></div>";
   }
 
   //Attack Counters style
   if($atkCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 1px;
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
     text-align: center; transform: translate(-50%, -50%);
     position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
-    <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+    <img style='height: 41px; width: 41px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -5px; right: 0px; bottom: 0px ;
     z-index:-3;' src='./Images/Attack.png'></img></div>";
   }
   $rv .= "</a>";
