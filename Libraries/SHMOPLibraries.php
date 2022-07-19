@@ -47,6 +47,7 @@ function GetCachePiece($name, $piece)
   $piece -= 1;
   $cacheVal = ReadCache($name);
   $cacheArray = explode("!", $cacheVal);
+  if($piece >= count($cacheArray)) return "";
   return $cacheArray[$piece];
 }
 
