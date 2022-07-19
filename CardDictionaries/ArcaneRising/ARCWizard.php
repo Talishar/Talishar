@@ -222,9 +222,9 @@
     {
       if(!$limitDuplicates)
       {
-        PrependDecisionQueue("PASSPARAMETER", $player, "{0}", 1);
-        PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected, 1);
-        PrependDecisionQueue("PASSPARAMETER", $player, "-", 1);
+        PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
+        PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
+        PrependDecisionQueue("PASSPARAMETER", $player, "-");
       }
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
@@ -263,9 +263,9 @@
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       if(!$limitDuplicates)
       {
-        AddDecisionQueue("PASSPARAMETER", $player, "-", 1);
-        AddDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected, 1);
-        AddDecisionQueue("PASSPARAMETER", $player, "{0}", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "-");
+        AddDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
+        AddDecisionQueue("PASSPARAMETER", $player, "{0}");
       }
     }
   }

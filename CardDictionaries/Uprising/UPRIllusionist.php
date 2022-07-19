@@ -376,7 +376,6 @@
         }
         return "";
       case "UPR409":
-        //TODO: Limit duplicate targets?
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true, true);
         DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true, false);
         return "";
