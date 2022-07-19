@@ -212,7 +212,13 @@
 
   }
 
-  //OpposingOnly -- 0=Opposing hero only, 1=Any Hero, 2=Any Target
+  //Parameters:
+  //Player = Player controlling the arcane effects
+  //target =
+  // 0: My Hero + Their Hero
+  // 1: Their Hero only
+  // 2: Any Target
+  // 3: Their Hero + Their Alliers
   function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
