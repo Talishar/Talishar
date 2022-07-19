@@ -290,13 +290,17 @@
             if(PitchValue($deck[$i]) == 1) ++$numRed;
           }
           $reveals = RevealCards($cards);
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          if($reveals)
+          {
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
+            AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          }
+          else return "Cannot reveal cards";
         }
-        return "";
+        return "Red Hot lets you reveal and do damage.";
       case "UPR091":
         if(RuptureActive())
         {

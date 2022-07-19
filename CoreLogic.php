@@ -1069,8 +1069,11 @@ function TalentContainsAny($cardID, $talents, $player="")
   return false;
 }
 
-function RevealCards($cards)
+function RevealCards($cards, $player="")
 {
+  global $currentPlayer;
+  if($player == "") $player = $currentPlayer;
+  if(!CanRevealCards($player)) return false;
   $cardArray = explode(",", $cards);
   $string = "";
   for($i=0; $i<count($cardArray); ++$i)
@@ -1217,7 +1220,7 @@ function LookAtHand($player)
     if($cards != "") $cards .= ",";
     $cards .= $hand[$i];
   }
-  RevealCards($cards);
+  RevealCards($cards, $player);
 }
 
 function GainActionPoints($amount=1)
@@ -1353,6 +1356,13 @@ function AddCharacterUses($player, $index, $numToAdd)
     if($weaponIndex == -1) return false;
     if($weaponIndex != $index) return false;
     if(!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) return false;
+    return true;
+  }
+
+  function CanRevealCards($player)
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    if(SearchAurasForCard("UPR138", $otherPlayer)) return false;
     return true;
   }
 

@@ -57,8 +57,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     switch($class)
     {
       case "GUARDIAN": return ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "RANGER": return ELERangerPlayAbility($cardID, $from, $resourcesPaid);
-      case "RUNEBLADE": return ELERunebladePlayAbility($cardID, $from, $resourcesPaid);
+      case "RANGER": return ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "RUNEBLADE": return ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid);
     }
   }
@@ -3171,8 +3171,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
-      RevealCards($deck[0]);
-      if(AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt))
+      if(RevealCards($deck[0], $player) && AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt))
       {
         WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
         Draw($player);
@@ -3226,8 +3225,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if(TalentContains($card, "EARTH")) $hasEarth = true;
         $cards .= $card;
       }
-      RevealCards($cards);
-      if($hasLightning && $hasIce && $hasEarth)
+      if(RevealCards($cards, $player) && $hasLightning && $hasIce && $hasEarth)
       {
         WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and go again.");
         AddCurrentTurnEffect("EVR017", $player);
@@ -3242,8 +3240,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PICKACARD":
       $hand = &GetHand(($player == 1 ? 2 : 1));
       $rand = rand(0, count($hand)-1);
-      RevealCards($hand[$rand]);
-      if(CardName($hand[$dqVars[0]]) == CardName($hand[$rand])) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
+      if(RevealCards($hand[$rand], $player) && CardName($hand[$dqVars[0]]) == CardName($hand[$rand])) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
       return $lastResult;
     case "TWINTWISTERS":
       switch($lastResult)
