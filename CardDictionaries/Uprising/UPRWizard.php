@@ -262,7 +262,7 @@
       case "UPR165":
         if($currentPlayer != $mainPlayer) $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 1, "ABILITY", $cardID);
+        DealArcane($damage, 0, "ABILITY", $cardID);
         return "";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
