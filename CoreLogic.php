@@ -1307,7 +1307,7 @@ function AddCharacterUses($player, $index, $numToAdd)
       if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
       if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
     }
-    if($player == $mainPlayer && $hasGoAgain) ++$actionPoints;
+    if($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
   }
 
   function PitchDeck($player, $index)
