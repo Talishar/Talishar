@@ -1423,6 +1423,14 @@ function FinalizeChainLink($chainClosed=false)
           PummelHit($currentPlayer);
         }
         break;
+      case "ELE031": case "ELE032":
+        if(ArsenalHasFaceDownCard($currentPlayer))
+        {
+          $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
+          AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));
+          WriteLog("Lexi turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
+        }
+        break;
       case "ELE118":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
         AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);

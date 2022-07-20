@@ -131,13 +131,8 @@
     switch($cardID)
     {
       case "ELE031": case "ELE032":
-        if(ArsenalHasFaceDownCard($currentPlayer))
-        {
-          $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
-          $rv = "Turns " . CardLink($cardFlipped, $cardFlipped) . " face up.";
-          if(TalentContains($cardFlipped, "LIGHTNING", $currentPlayer)) { $rv .= " The next attacks gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
-          if(TalentContains($cardFlipped, "ICE", $currentPlayer)) { $rv .= " The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
-        }
+        if(DelimStringContains($additionalCosts, "LIGHTNING")) { $rv .= "The next attack gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
+        if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
         return $rv;
       case "ELE033":
         if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
