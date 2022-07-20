@@ -337,16 +337,23 @@ function AddGraveyard($cardID, $player, $from)
   {
     AddDecisionQueue("BEASTWITHIN", $player, "-");
   }
-  IncrementClassState($player, $CS_CardsEnteredGY);
-  if($mainPlayerGamestateStillBuilt)
+  if($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166")
   {
-    if($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
-    else AddSpecificGraveyard($cardID, $defDiscard, $from);
+    AddBottomDeck($cardID, $player, $from);
   }
   else
   {
-    if($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from);
-    else AddSpecificGraveyard($cardID, $theirDiscard, $from);
+    IncrementClassState($player, $CS_CardsEnteredGY);
+    if($mainPlayerGamestateStillBuilt)
+    {
+      if($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
+      else AddSpecificGraveyard($cardID, $defDiscard, $from);
+    }
+    else
+    {
+      if($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from);
+      else AddSpecificGraveyard($cardID, $theirDiscard, $from);
+    }
   }
 }
 

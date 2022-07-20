@@ -202,6 +202,7 @@
       case "WTR161": return "AA";
       case "WTR162": return "A";
       case "WTR163": return "I";
+      case "WTR164": case "WTR165": case "WTR166": return "AA";
       case "WTR167": case "WTR168": case "WTR169": return "AA";
       case "WTR170": case "WTR171": case "WTR172": return "A";
       case "WTR173": case "WTR174": case "WTR175": return "I";
@@ -337,6 +338,7 @@
       case "WTR160": return 1;
       case "WTR161": return 3;
       case "WTR162": return 0;
+      case "WTR164": case "WTR165": case "WTR166": return 2;
       case "WTR167": case "WTR168": case "WTR169": return 0;
       case "WTR163": case "WTR170": case "WTR171": case "WTR172": return 0;
       case "WTR173": case "WTR174": case "WTR175": return 0;
@@ -409,6 +411,8 @@
       case "WTR161": return 3;
       case "WTR162": return 3;
       case "WTR163": return 2;
+      case "WTR164": return 1;
+      case "WTR165": return 2;
       case "WTR167": return 1;
       case "WTR168": return 2;
       case "WTR169": return 3;
@@ -465,6 +469,7 @@
       case "WTR160": return 2;
       case "WTR162": return 0;
       case "WTR163": return 0;
+      case "WTR164": case "WTR165": case "WTR166": return 2;
       case "WTR167": case "WTR168": case "WTR169": return 2;
       case "WTR170": case "WTR171": case "WTR172": return 0;
       case "WTR173": case "WTR174": case "WTR175": return 0;
@@ -521,6 +526,9 @@
       //Generic
       case "WTR159": return 5;
       case "WTR161": return 4;
+      case "WTR164": return 6;
+      case "WTR165": return 5;
+      case "WTR166": return 4;
       case "WTR167": return 4;
       case "WTR168": return 3;
       case "WTR169": return 2;
