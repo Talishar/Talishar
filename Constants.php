@@ -142,7 +142,7 @@
   //Talents
   function ChainLinkSummaryPieces()
   {
-    return 3;
+    return 4;
   }
 
   function DecisionQueuePieces()

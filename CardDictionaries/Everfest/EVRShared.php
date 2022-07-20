@@ -1384,7 +1384,7 @@
 
   function FractalReplicationStats($stat)
   {
-    global $chainLinks, $combatChain, $currentPlayer;
+    global $chainLinks, $combatChain, $currentPlayer, $chainLinkSummary;
 
     $highestAttack = 0;
     $highestBlock = 0;
@@ -1394,7 +1394,8 @@
     {
       for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces())
       {
-        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) && CardType($chainLinks[$i][$j]) == "AA")
+        $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST"));
+        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
         {
           if($stat == "Hit")
           {
