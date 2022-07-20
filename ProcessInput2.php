@@ -738,13 +738,6 @@ function FinalizeChainLink($chainClosed=false)
 
     ChainLinkResolvedEffects();
 
-    if(CardType($combatChain[0]) == "W")
-    {
-      ++$mainClassState[$CS_AtksWWeapon];
-      if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
-    }
-    $combatChainState[$CCS_LastAttack] = $combatChain[0];
-    SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
     array_push($chainLinks, array());
     $CLIndex = count($chainLinks) - 1;
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
@@ -786,6 +779,16 @@ function FinalizeChainLink($chainClosed=false)
     }
 
     CopyCurrentTurnEffectsFromCombat();
+
+    //Don't change state until the end, in case it changes what effects are active
+    if(CardType($combatChain[0]) == "W")
+    {
+      ++$mainClassState[$CS_AtksWWeapon];
+      if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
+    }
+    $combatChainState[$CCS_LastAttack] = $combatChain[0];
+    SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
+
     $combatChain = [];
     if($chainClosed)
     {
