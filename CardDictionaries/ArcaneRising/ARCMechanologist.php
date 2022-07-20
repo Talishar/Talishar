@@ -312,7 +312,7 @@
     $deck = &GetDeck($currentPlayer);
     if(count($deck) == 0) { WriteLog("Could not boost. No cards left in deck."); return; }
     ItemBoostEffects();
-    if(SearchCurrentTurnEffects("ARC006", $currentPlayer)) ++$actionPoints;//High Octane
+    $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
     $cardID = $deck[0];
     BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
     unset($deck[0]);
