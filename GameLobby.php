@@ -401,6 +401,8 @@ function GetDeckCards()
   return returnValue;
 }
 
+var audioPlayed = false;
+
   function CheckReloadNeeded(lastUpdate) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -413,10 +415,11 @@ function GetDeckCards()
             document.getElementById("mainPanel").innerHTML = responseArr[1];
             CheckReloadNeeded(parseInt(responseArr[0]));
             var playAudio = document.getElementById("playAudio");
-            if(!!playAudio && playAudio.innerText == 1)
+            if(!!playAudio && playAudio.innerText == 1 && !audioPlayed)
             {
               var audio = document.getElementById('playerJoinedAudio');
               audio.play();
+              audioPlayed = true;
             }
             var otherHero = document.getElementById("otherHero");
             if(!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
