@@ -1505,13 +1505,6 @@ function FinalizeChainLink($chainClosed=false)
         $currentTurnEffectsFromCombat = [];
         $combatChainState[$CCS_AttackPlayedFrom] = $from;
         $chainClosed = ProcessAttackTarget();
-        if(!$chainClosed || $definedCardType == "AA")
-        {
-          AuraAttackAbilities($cardID);
-          AllyAttackAbilities($cardID);
-          ArsenalAttackAbilities();
-          OnAttackEffects($cardID);
-        }
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
@@ -1523,6 +1516,13 @@ function FinalizeChainLink($chainClosed=false)
         $openedChain = true;
         if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
         if($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
+        if(!$chainClosed || $definedCardType == "AA")
+        {
+          AuraAttackAbilities($cardID);
+          AllyAttackAbilities($cardID);
+          ArsenalAttackAbilities();
+          OnAttackEffects($cardID);
+        }
       }
       SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
     }

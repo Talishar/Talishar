@@ -122,29 +122,27 @@ function AllyDamagePrevention($player, $index, $damage)
 
 function AllyAttackAbilities($attackID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $allies = &GetAllies($mainPlayer);
-  for($i=0; $i<count($allies); $i+=AllyPieces())
+  $i = $combatChainState[$CCS_WeaponIndex];
+  switch($allies[$i])
   {
-    switch($allies[$i])
-    {
-      case "UPR410":
-        if($attackID == $allies[$i] && $allies[$i+8] > 0)
-        {
-          GainActionPoints(1);
-          WriteLog("Cromai Attacks: Gain 1 action point.");
-          --$allies[$i+8];
-        }
-        break;
-      case "UPR412":
-        if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon"))
-        {
-          AddCurrentTurnEffect("UPR412", $mainPlayer);
-          --$allies[$i+8];
-        }
-        break;
-      default: break;
-    }
+    case "UPR410":
+      if($attackID == $allies[$i] && $allies[$i+8] > 0)
+      {
+        GainActionPoints(1);
+        WriteLog("Cromai Attacks: Gain 1 action point.");
+        --$allies[$i+8];
+      }
+      break;
+    case "UPR412":
+      if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon"))
+      {
+        AddCurrentTurnEffect("UPR412", $mainPlayer);
+        --$allies[$i+8];
+      }
+      break;
+    default: break;
   }
 }
 
