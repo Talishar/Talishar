@@ -693,7 +693,7 @@
     for($i=0; $i<count($theirItems); $i+=ItemPieces())
     {
       if(IsTileable($theirItems[$i])) continue;
-      echo(Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]) . "&nbsp");
+      echo(Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1], "", "", false, 0, 0, 0, "ITEMS") . "&nbsp");
     }
   }
   if($playerID == 3)
@@ -852,7 +852,7 @@
       if(IsTileable($myItems[$i])) continue;
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
-      echo(Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)) . "&nbsp");
+      echo(Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i), "", false, 0, 0, 0, "ITEMS") . "&nbsp");
     }
   }
   $myAllies = GetAllies($playerID);
