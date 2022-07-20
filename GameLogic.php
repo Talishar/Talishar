@@ -647,7 +647,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
         case "ELE144": $costModifier += 1; break;
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID)) $costModifier -= 1; $remove = 1; break;
-        case "UPR000": if(TalentContains($cardID, "DRACONIC", $currentPlayer)) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
+        case "UPR000": if(TalentContains($cardID, "DRACONIC", $currentPlayer)) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; } break;
         case "UPR075": case "UPR076": case "UPR077": if(GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i+2]) { --$costModifier; $remove = 1; } break;
         case "UPR166": if(IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) $costModifier -= 3; $remove = 1; break;
         default: break;
