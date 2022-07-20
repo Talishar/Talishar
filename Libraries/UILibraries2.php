@@ -20,7 +20,7 @@
     else return "#EDEDED";
   }
   //Rotate is deprecated
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0)
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="")
   {//
     global $playerID, $gameName, $cardIconSize, $darkMode;
     if($darkMode == null) $darkMode = false;
@@ -85,7 +85,7 @@
     font-size:20px; font-weight:800; color:".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
   //Steam Counters style
-  elseif ($counters != 0 && ClassContains($cardNumber, "MECHANOLOGIST")) {
+  elseif ($counters != 0 && $from == "ITEMS" && ClassContains($cardNumber, "MECHANOLOGIST")) {
     if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
     $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
     text-align: center; transform: translate(-50%, -50%);
