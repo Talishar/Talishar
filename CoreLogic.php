@@ -1145,6 +1145,7 @@ function AttackDestroyed($attackID)
   {
     for($i=0; $i<count($character); $i += CharacterPieces())
     {
+      if($character[$i+1] == 0) continue;
       switch($character[$i]) {
         case 'MON089':
           if ($character[$i+5] > 0){
