@@ -736,16 +736,6 @@ function FinalizeChainLink($chainClosed=false)
       if($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
     }
 
-    //Clean up combat effects that were used and are one-time
-    for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i-=CurrentTurnEffectPieces())
-    {
-      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
-      {
-        --$currentTurnEffects[$i+3];
-        if($currentTurnEffects[$i+3] == 0) RemoveCurrentTurnEffect($i);
-      }
-    }
-
     ChainLinkResolvedEffects();
 
     if(CardType($combatChain[0]) == "W")
@@ -783,6 +773,17 @@ function FinalizeChainLink($chainClosed=false)
     array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
     array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
     array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
+    array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
+
+    //Clean up combat effects that were used and are one-time
+    for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i-=CurrentTurnEffectPieces())
+    {
+      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
+      {
+        --$currentTurnEffects[$i+3];
+        if($currentTurnEffects[$i+3] == 0) RemoveCurrentTurnEffect($i);
+      }
+    }
 
     CopyCurrentTurnEffectsFromCombat();
     $combatChain = [];
