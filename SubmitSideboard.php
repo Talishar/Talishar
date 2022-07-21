@@ -8,10 +8,21 @@
   $playerID=$_GET["playerID"];
   $playerCharacter =$_GET["playerCharacter"];
   $playerDeck=$_GET["playerDeck"];
+  $authKey=$_GET["authKey"];
 
   include "WriteLog.php";
   include "HostFiles/Redirector.php";
   include "CardDictionary.php";
+
+  include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
+
+  $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+  if($authKey != $targetAuth)
+  {
+    echo("Invalid Auth Key");
+    exit;
+  }
 
   if($playerCharacter != "" && $playerDeck != "")//If they submitted before loading even finished, use the deck as it existed before
   {
@@ -46,8 +57,6 @@
     fclose($deckFile);
   }
 
-  include "MenuFiles/ParseGamefile.php";
-  include "MenuFiles/WriteGamefile.php";
   if($playerID == 2)
   {
     $gameStatus = $MGS_ReadyToStart;
@@ -65,7 +74,7 @@
   }
   else
   {
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
   }
 
 ?>
