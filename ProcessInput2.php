@@ -784,7 +784,7 @@ function FinalizeChainLink($chainClosed=false)
     if(CardType($combatChain[0]) == "W")
     {
       ++$mainClassState[$CS_AtksWWeapon];
-      if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
+      if(CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger") ++$mainClassState[$CS_NumSwordAttacks];
     }
     $combatChainState[$CCS_LastAttack] = $combatChain[0];
     SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
