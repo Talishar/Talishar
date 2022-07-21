@@ -429,7 +429,6 @@ var audioPlayed = false;
             document.getElementById("submitForm").style.display = document.getElementById("submitDisplay").innerHTML;
           }
         }
-        else { CheckReloadNeeded(lastUpdate); }
       }
     };
     xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo($gameName);?>&playerID=<?php echo($playerID);?>&lastUpdate=" + lastUpdate, true);
