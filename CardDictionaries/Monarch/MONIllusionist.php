@@ -256,7 +256,7 @@
       }
       AttackDestroyed($attackID);
       if(CardType($attackID) == "AA") IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
-      CloseCombatChain();
+      //CloseCombatChain();
     }
   }
 

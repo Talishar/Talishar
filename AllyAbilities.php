@@ -70,7 +70,6 @@ function AllyDestroyedAbility($player, $index)
       break;
     case "UPR551":
       $gtIndex = FindCharacterIndex($player, "UPR151");
-      WriteLog($gtIndex);
       if($gtIndex > -1)
       {
         DestroyCharacter($player, $gtIndex);
