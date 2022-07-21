@@ -18,7 +18,7 @@
       case '1': $decklink = "https://fabdb.net/decks/VGkQMojg"; break;
       case '2': $decklink = "https://fabdb.net/decks/eLxddlzb"; break;
       case '3': $decklink = "https://fabdb.net/decks/ydeXXEzW"; break;
-      case '4': $decklink = "https://fabdb.net/decks/zkVmEYOb"; break;
+      case '4': $decklink = "https://fabdb.net/decks/GnlPKqaO"; break;
       case '5': $decklink = "https://fabdb.net/decks/omKmlPDV"; break;
       case '6': $decklink = "https://fabdb.net/decks/OldYPAwm"; break;
       case '7': $decklink = "https://fabdb.net/decks/WAPZxDEQ"; break;
