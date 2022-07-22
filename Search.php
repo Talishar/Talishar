@@ -85,7 +85,6 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
   for($i=0; $i<count($array); $i += $count)
   {
     $cardID = $array[$i];
-    WriteLog(CardType($cardID));
     if(($type == "" || CardType($cardID) == $type)
     && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
     && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
@@ -115,7 +114,6 @@ function SearchLayerDQ($player, $param)
   $paramArray = explode("-", $param);
   for($i=0; $i < count($paramArray); $i+=2)
   {
-    WriteLog($paramArray[$i]);
     if($paramArray[$i] == "TYPE") $type = $paramArray[$i+1];
     else if($paramArray[$i] == "MAXCOST") $maxCost = $paramArray[$i+1];
   }
