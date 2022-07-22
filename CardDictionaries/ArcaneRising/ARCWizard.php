@@ -219,7 +219,7 @@
   // 1: Their Hero only
   // 2: Any Target
   // 3: Their Hero + Their Alliers
-  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false)
+  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
@@ -232,6 +232,7 @@
         PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
         PrependDecisionQueue("PASSPARAMETER", $player, "-");
       }
+      if(!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       if($mayAbility) { PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
@@ -267,6 +268,7 @@
       else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
+      if(!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       if(!$limitDuplicates)
       {
         AddDecisionQueue("PASSPARAMETER", $player, "-");

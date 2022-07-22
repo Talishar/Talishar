@@ -250,6 +250,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       $dqState[4] = "-";//DQ helptext initial value
       $dqState[5] = "-";//Decision queue multizone indices
       $dqState[6] = "0";//Damage dealt
+      $dqState[7] = "0";//Target
       //array_unshift($turn, "-", "-", "-");
     }
     ContinueDecisionQueue("");
@@ -265,6 +266,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $dqState[4] = "-";//Clear the context, just in case
     $dqState[5] = "-";//Clear Decision queue multizone indices
     $dqState[6] = "0";//Damage dealt
+    $dqState[7] = "0";//Target
     $decisionQueue = [];
     if(($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0)
     {
@@ -420,7 +422,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $phase = array_shift($decisionQueue);
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
-    //WriteLog($phase . " " . $player . " " . $parameter);//Uncomment this to visualize decision queue execution
+    //WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
     $parameter = str_replace("{I}", $dqState[5], $parameter);
     if(count($dqVars) > 0)
     {
