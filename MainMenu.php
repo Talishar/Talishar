@@ -137,7 +137,7 @@ border: 2px solid #1a1a1a;
 border-radius: 5px;">
 
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h1>
-<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported expect:</h2>
+<h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h2>
   <p>Shiyana Copy Ability</p>
 
   <div style='position:absolute; bottom:10px; left:10px;'>
