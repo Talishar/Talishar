@@ -596,7 +596,7 @@ function DiscardRandom($player="", $source="")
   global $currentPlayer;
   if($player == "") $player = $currentPlayer;
   $hand = &GetHand($player);
-  if(count($hand) == 0) return;
+  if(count($hand) == 0) return "";
   $index = rand() % count($hand);
   $discarded = $hand[$index];
   unset($hand[$index]);

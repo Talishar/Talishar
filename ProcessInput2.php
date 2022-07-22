@@ -1321,6 +1321,12 @@ function FinalizeChainLink($chainClosed=false)
     if(RequiresDiscard($cardID))
     {
       $discarded = DiscardRandom($currentPlayer, $cardID);
+      if($discarded == "")
+      {
+        WriteLog("You do not have a card to discard. Reverting gamestate.");
+        RevertGamestate();
+        return;
+      }
       SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
     }
     switch($cardID)
