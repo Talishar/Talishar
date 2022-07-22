@@ -76,13 +76,26 @@ function BottomDeckMultizoneDraw($zone1, $zone2)
 
 function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
 {
-  global $currentTurnEffects, $combatChain;
+  global $afterResolveEffects, $combatChain;
   $card = explode("-", $cardID)[0];
   if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") { AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID); return; }
-  array_push($currentTurnEffects, $cardID);
-  array_push($currentTurnEffects, $player);
-  array_push($currentTurnEffects, $uniqueID);
-  array_push($currentTurnEffects, CurrentTurnEffectUses($cardID));
+  array_push($afterResolveEffects, $cardID);
+  array_push($afterResolveEffects, $player);
+  array_push($afterResolveEffects, $uniqueID);
+  array_push($afterResolveEffects, CurrentTurnEffectUses($cardID));
+}
+
+function CopyCurrentTurnEffectsFromAfterResolveEffects()
+{
+  global $currentTurnEffects, $afterResolveEffects;
+  for($i=0; $i<count($afterResolveEffects); $i += CurrentTurnEffectPieces())
+  {
+    array_push($currentTurnEffects, $afterResolveEffects[$i]);
+    array_push($currentTurnEffects, $afterResolveEffects[$i+1]);
+    array_push($currentTurnEffects, $afterResolveEffects[$i+2]);
+    array_push($currentTurnEffects, $afterResolveEffects[$i+3]);
+  }
+  $afterResolveEffects = [];
 }
 
 //This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
