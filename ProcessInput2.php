@@ -702,7 +702,7 @@
       MainCharacterHitEffects();
       ArsenalHitEffects();
       AuraHitEffects($combatChain[0]);
-      AttackDamageAbilities();
+      AttackDamageAbilities($damageDone);
     }
     else
     {
