@@ -402,7 +402,7 @@
         if($currentPlayer == $mainPlayer) {++$actionPoints; $rv = "Grants an action point."; }
         return $rv;
       case "ELE177": case "ELE178": case "ELE179":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddAfterResolveEffect($cardID, $currentPlayer);
         return "Gives your next applicable action card go again.";
       case "ELE180": case "ELE181": case "ELE182":
         AddCurrentTurnEffect($cardID, $currentPlayer);
