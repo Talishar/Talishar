@@ -51,6 +51,8 @@
   if($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
   if(!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
 
+  $afterResolveEffects = [];
+
   //Now we can process the command
   switch($mode) {
     case 0: //Subtract health
@@ -1586,6 +1588,7 @@ function FinalizeChainLink($chainClosed=false)
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
       if(!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
+      CopyCurrentTurnEffectsFromAfterResolveEffects();
     }
 
     if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID))
