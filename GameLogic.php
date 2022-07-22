@@ -159,6 +159,17 @@ function ProcessHitEffect($cardID)
   }
 }
 
+function ArcaneHitEffect($me, $source, $target, $damage)
+{
+  switch($source)
+  {
+    case "UPR115":
+      if(MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
+      break;
+    default: break;
+  }
+}
+
 function ProcessMissEffect($cardID)
 {
   global $defPlayer;
@@ -2708,6 +2719,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult > $curMaxQuell) SetClassState($player, $CS_MaxQuellUsed, $lastResult);
       return $lastResult;
     case "DEALARCANE":
+      $dqState[7] = $lastResult;
       $target = explode("-", $lastResult);
       $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1));
       $parameters = explode("-", $parameter);
@@ -2737,7 +2749,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         {
           AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
         }
-        return;
+        return "";
       }
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
@@ -2752,6 +2764,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
       return $parameter;
+    case "ARCANEHITEFFECT":
+      if($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]);//Source, target, damage
+      return $lastResult;
     case "ARCANECHOSEN":
       if($lastResult > 0)
       {
