@@ -606,6 +606,7 @@
   {
     global $mainPlayer, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
     global $CS_DamagePrevention;
+    $rv = "";
     switch ($cardID)
     {
       case "WTR054": case "WTR055": case "WTR056":
@@ -624,7 +625,6 @@
         Intimidate();
         return "Intimidates.";
       case "WTR007":
-        $rv = "";
         $drew = 0;
         if(AttackValue($additionalCosts) >= 6)
         {
@@ -651,7 +651,6 @@
         IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
         return "Prevents the next $roll damage that will be dealt to you this turn.";
       case "WTR011": case "WTR012": case "WTR013":
-        $rv = "";
         if(AttackValue($additionalCosts) >= 6)
         {
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
@@ -754,7 +753,6 @@
         if(CardType($combatChain[0]) != "W") return "Does nothing, because this is not a weapon attack.";
         return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
       case "WTR126": case "WTR127": case "WTR128":
-        $rv = "";
         if(CardType($combatChain[0]) == "W")
         {
           DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
