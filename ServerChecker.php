@@ -82,9 +82,13 @@ if ($handle = opendir($path)) {
       if($status == 0 && $visibility == "public")
       {
         $p1Hero = GetCachePiece($gameName, 7);
+        $formatName = "";
+        if($format == "commoner") $formatName = "Commoner ";
+        else if($format == "aggrocc") $formatName = "Aggro CC ";
 
         $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-        $link .= "<center><table style='left:40%;'><tr><td>";
+        $link .= "<center><table style='left:40%;'><tr><td style='vertical-align:middle;'>";
+        if($formatName != "") $link .= $formatName . "&nbsp;</td><td>";
         if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
         $link .= "</td><td style='vertical-align:middle;'>";
         $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;" . ($p1Hero != "" ? CardName($p1Hero) : "Open Game") . " </span>";
@@ -101,7 +105,7 @@ if ($handle = opendir($path)) {
         {
           $ccLinks .= $link;
          }
-         else if($format == "commoner")
+         else if($format == "commoner" || $format == "aggrocc")
          {
            $commonerLinks .= $link;
          }
@@ -115,7 +119,7 @@ if ($handle = opendir($path)) {
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
   echo($ccLinks);
   echo("<h3 style='text-align:center;'>________</h3>");
-  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Commoner</h2>");
+  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
   echo($commonerLinks);
   echo("<h3 style='text-align:center;'>________</h3>");
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress</h2>");

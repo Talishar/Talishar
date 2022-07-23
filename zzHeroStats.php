@@ -8,7 +8,7 @@
 
   if(!isset($_SESSION["useruid"])) { echo("Please login to view this page."); exit; }
   $useruid= $_SESSION["useruid"];
-  if($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "PvtVoid") exit;
+  if($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "PvtVoid" && $useruid != "grog") exit;
 
   $heroID=$_GET["heroID"];
 
