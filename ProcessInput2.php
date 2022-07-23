@@ -1535,7 +1535,7 @@ function FinalizeChainLink($chainClosed=false)
         if(!$chainClosed || $definedCardType == "AA")
         {
           AuraAttackAbilities($cardID);
-          AllyAttackAbilities($cardID);
+          if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
           ArsenalAttackAbilities();
           OnAttackEffects($cardID);
         }
