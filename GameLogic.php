@@ -163,7 +163,7 @@ function ArcaneHitEffect($me, $source, $target, $damage)
 {
   switch($source)
   {
-    case "UPR115":
+    case "UPR113": case "UPR114": case "UPR115":
       if(MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
       break;
     default: break;
