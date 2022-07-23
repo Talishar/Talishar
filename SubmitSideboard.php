@@ -40,7 +40,7 @@
     if($numHands > 2)
     {
       WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands of weapons currently equipped.");
-      header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+      header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
       exit;
     }
     $playerDeck = explode(",",$playerDeck);
