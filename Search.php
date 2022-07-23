@@ -3,7 +3,7 @@
 function SearchDeck($player, $type="", $subtype="", $maxCost=-1, $minCost=-1, $class="", $talent="", $bloodDebtOnly=false, $phantasmOnly=false, $pitch=-1, $specOnly=false, $maxAttack=-1, $maxDef=-1, $frozenOnly=false)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if(SearchAurasForCard("UPR138", $otherPlayer))
+  if(SearchAurasForCard("UPR138", $otherPlayer) != "")
   {
     WriteLog("Deck search prevented by Channel the Bleak Expanse.");
     return "";

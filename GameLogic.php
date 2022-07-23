@@ -1442,7 +1442,7 @@ function Draw($player, $mainPhase=true)
       return "";
     }
   }
-  if($mainPhase && SearchAurasForCard("UPR138", $otherPlayer))
+  if($mainPhase && SearchAurasForCard("UPR138", $otherPlayer) != "")
   {
     WriteLog("Draw prevented by Channel the Bleak Expanse.");
     return "";
