@@ -124,6 +124,7 @@ function AllyAttackAbilities($attackID)
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $allies = &GetAllies($mainPlayer);
   $i = $combatChainState[$CCS_WeaponIndex];
+  if($i == -1) return;
   switch($allies[$i])
   {
     case "UPR410":
