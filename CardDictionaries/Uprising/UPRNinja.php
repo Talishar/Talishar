@@ -235,7 +235,8 @@
       case "UPR054": case "UPR055": case "UPR056":
       case "UPR075": case "UPR076": case "UPR077":
       case "UPR081": case "UPR082": case "UPR083":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . (NumDraconicChainLinks()-1));
+        $numDraconicLinks = NumDraconicChainLinks();
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2));
         AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
