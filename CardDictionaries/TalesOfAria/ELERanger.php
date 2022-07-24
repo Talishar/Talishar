@@ -214,7 +214,7 @@
       $element = $elementArray[$i];
       AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-      AddDecisionQueue("REVEALMYCARD", $player, "<-", 1);
+      AddDecisionQueue("REVEALHANDCARDS", $player, "<-", 1);
       if($isAndOrFuse) AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
       if($i > 0) $elementText .= " and ";
       $elementText .= $element;

@@ -1337,12 +1337,12 @@ function FinalizeChainLink($chainClosed=false)
       case "WTR179": case "WTR180": case "WTR181":
         $indices = SearchHand($currentPlayer, "", "", -1, 2);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
-        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
         break;
       case "WTR182": case "WTR183": case "WTR184":
         $indices = SearchHand($currentPlayer, "", "", 1, 0);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
-        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
         break;
       case "WTR185": case "WTR186": case "WTR187":
         $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
@@ -1415,7 +1415,7 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
         break;
