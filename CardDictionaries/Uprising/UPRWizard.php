@@ -185,12 +185,7 @@
         if($cardID == "UPR113") $damage = 5;
         else if($cardID == "UPR114") $damage = 4;
         else $damage = 3;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
-          AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
-          PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 2, false, true);
-        }
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
         return "";
       case "UPR116": case "UPR117": case "UPR118":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -262,7 +257,7 @@
       case "UPR165":
         if($currentPlayer != $mainPlayer) $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 1, "ABILITY", $cardID);
+        DealArcane($damage, 0, "ABILITY", $cardID);
         return "";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);

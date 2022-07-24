@@ -3,8 +3,14 @@
   include "CardDictionary.php";
   include "./Libraries/UILibraries2.php";
   include "./Libraries/HTTPLibraries.php";
-  require_once "./includes/dbh.inc.php";
+  include_once './includes/functions.inc.php';
+  include_once "./includes/dbh.inc.php";
 
+  session_start();
+
+  if(!isset($_SESSION["useruid"])) { echo("Please login to view this page."); exit; }
+  $useruid= $_SESSION["useruid"];
+  if($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore") exit;
 
   $numDays=TryGet("numDays", 365);
 

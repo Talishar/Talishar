@@ -145,7 +145,7 @@
       case "ARC084":
         $deck = &GetDeck($currentPlayer);
         if(count($deck) < 2) return "Not enough cards in deck.";
-        RevealCards($deck[0] . "," . $deck[1]);
+        if(!RevealCards($deck[0] . "," . $deck[1])) return "Cannot reveal cards.";
         $d0Type = CardType($deck[0]);
         $d1Type = CardType($deck[1]);
         if(($d0Type == "AA" && $d1Type == "A") || ($d1Type == "AA" && $d0Type == "A"))

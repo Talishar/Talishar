@@ -81,7 +81,10 @@
   fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
-  WriteCache($gameName, "1!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime);//Initialize SHMOP cache for this game
+  $currentUpdate = GetCachePiece($gameName, 1);
+  $p1Hero = GetCachePiece($gameName, 7);
+  $p2Hero = GetCachePiece($gameName, 8);
+  WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero);//Initialize SHMOP cache for this game
 
   ob_start();
   include "StartEffects.php";
@@ -139,7 +142,7 @@
     fwrite($handler, "\r\n");//Permanents
     //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
     $holdPriority = "0";//Auto-pass layers
-    fwrite($handler, $holdPriority . " 1 0 0 0 0 0\r\n");//Settings
+    fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1\r\n");//Settings
   }
 
   function GetArray($handler)

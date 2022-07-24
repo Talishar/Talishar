@@ -381,7 +381,7 @@ function ArsenalHasFaceUpCard($player)
 function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);
-  $fullCount = SearchCharacterForCard($player, "ELE213") && ArsenalHasFaceUpCard($player) ? ArsenalPieces() * 2 : ArsenalPieces();
+  $fullCount = SearchCharacterActive($player, "ELE213") && ArsenalHasFaceUpCard($player) ? ArsenalPieces() * 2 : ArsenalPieces();
   return count($arsenal) >= $fullCount;
 }
 

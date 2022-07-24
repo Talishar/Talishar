@@ -1160,7 +1160,7 @@
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
       case "EVR088":
-        if(IsHeroAttackTarget())
+        if(IsHeroAttackTarget() && CanRevealCards($mainPlayer))
         {
           $hand = &GetHand($defPlayer);
           $cards = "";
@@ -1179,7 +1179,7 @@
             $cards .= $id;
           }
           LoseHealth($numDiscarded, $defPlayer);
-          RevealCards($cards);
+          RevealCards($cards, $defPlayer);//CanReveal checked earlier
           WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much health.");
           $hand = array_values($hand);
         }
@@ -1229,7 +1229,7 @@
           AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
           AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
           AddDecisionQueue("HANDCARD", $defPlayer, "-", 1);
-          AddDecisionQueue("REVEALCARD", $defPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARDS", $defPlayer, "-", 1);
           AddDecisionQueue("BINGO", $mainPlayer, "-", 1);
         }
       default: break;
@@ -1384,7 +1384,7 @@
 
   function FractalReplicationStats($stat)
   {
-    global $chainLinks, $combatChain, $currentPlayer;
+    global $chainLinks, $combatChain, $currentPlayer, $chainLinkSummary;
 
     $highestAttack = 0;
     $highestBlock = 0;
@@ -1394,7 +1394,8 @@
     {
       for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces())
       {
-        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) && CardType($chainLinks[$i][$j]) == "AA")
+        $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST"));
+        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
         {
           if($stat == "Hit")
           {

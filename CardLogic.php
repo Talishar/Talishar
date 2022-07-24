@@ -85,6 +85,30 @@ function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
   array_push($currentTurnEffects, CurrentTurnEffectUses($cardID));
 }
 
+function AddAfterResolveEffect($cardID, $player, $from="", $uniqueID=-1)
+{
+  global $afterResolveEffects, $combatChain;
+  $card = explode("-", $cardID)[0];
+  if(CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") { AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID); return; }
+  array_push($afterResolveEffects, $cardID);
+  array_push($afterResolveEffects, $player);
+  array_push($afterResolveEffects, $uniqueID);
+  array_push($afterResolveEffects, CurrentTurnEffectUses($cardID));
+}
+
+function CopyCurrentTurnEffectsFromAfterResolveEffects()
+{
+  global $currentTurnEffects, $afterResolveEffects;
+  for($i=0; $i<count($afterResolveEffects); $i += CurrentTurnEffectPieces())
+  {
+    array_push($currentTurnEffects, $afterResolveEffects[$i]);
+    array_push($currentTurnEffects, $afterResolveEffects[$i+1]);
+    array_push($currentTurnEffects, $afterResolveEffects[$i+2]);
+    array_push($currentTurnEffects, $afterResolveEffects[$i+3]);
+  }
+  $afterResolveEffects = [];
+}
+
 //This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
 function AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID=-1)
 {
@@ -226,6 +250,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       $dqState[4] = "-";//DQ helptext initial value
       $dqState[5] = "-";//Decision queue multizone indices
       $dqState[6] = "0";//Damage dealt
+      $dqState[7] = "0";//Target
       //array_unshift($turn, "-", "-", "-");
     }
     ContinueDecisionQueue("");
@@ -241,6 +266,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $dqState[4] = "-";//Clear the context, just in case
     $dqState[5] = "-";//Clear Decision queue multizone indices
     $dqState[6] = "0";//Damage dealt
+    $dqState[7] = "0";//Target
     $decisionQueue = [];
     if(($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0)
     {
@@ -396,7 +422,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     $phase = array_shift($decisionQueue);
     $player = array_shift($decisionQueue);
     $parameter = array_shift($decisionQueue);
-    //WriteLog($phase . " " . $player . " " . $parameter);//Uncomment this to visualize decision queue execution
+    //WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
     $parameter = str_replace("{I}", $dqState[5], $parameter);
     if(count($dqVars) > 0)
     {
@@ -596,7 +622,7 @@ function DiscardRandom($player="", $source="")
   global $currentPlayer;
   if($player == "") $player = $currentPlayer;
   $hand = &GetHand($player);
-  if(count($hand) == 0) return;
+  if(count($hand) == 0) return "";
   $index = rand() % count($hand);
   $discarded = $hand[$index];
   unset($hand[$index]);

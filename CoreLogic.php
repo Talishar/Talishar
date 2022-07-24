@@ -563,14 +563,13 @@ function CurrentEffectDamageEffects($player, $source, $type, $damage)
   }
 }
 
-function AttackDamageAbilities()
+function AttackDamageAbilities($damageDone)
 {
-  global $combatChain, $defPlayer, $combatChainState, $chainLinkSummary;
+  global $combatChain, $defPlayer;
   $attackID = $combatChain[0];
   switch($attackID)
   {
     case "ELE036":
-      $damageDone = $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()];
       if(IsHeroAttackTarget() && $damageDone >= NumEquipment($defPlayer))
       { AddCurrentTurnEffect("ELE036", $defPlayer); AddNextTurnEffect("ELE036", $defPlayer); }
       break;
@@ -1069,8 +1068,11 @@ function TalentContainsAny($cardID, $talents, $player="")
   return false;
 }
 
-function RevealCards($cards)
+function RevealCards($cards, $player="")
 {
+  global $currentPlayer;
+  if($player == "") $player = $currentPlayer;
+  if(!CanRevealCards($player)) return false;
   $cardArray = explode(",", $cards);
   $string = "";
   for($i=0; $i<count($cardArray); ++$i)
@@ -1081,6 +1083,7 @@ function RevealCards($cards)
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
   WriteLog($string);
+  if($player != "" && SearchLandmarks("ELE000")) KorshemRevealAbility($player);
   return true;
 }
 
@@ -1091,8 +1094,8 @@ function DoesAttackHaveGoAgain()
   $attackType = CardType($combatChain[0]);
   $attackSubtype = CardSubType($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
-  if(HasGoAgain($combatChain[0])) return true;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
+  if(HasGoAgain($combatChain[0])) return true;
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
   {
@@ -1142,6 +1145,7 @@ function AttackDestroyed($attackID)
   {
     for($i=0; $i<count($character); $i += CharacterPieces())
     {
+      if($character[$i+1] == 0) continue;
       switch($character[$i]) {
         case 'MON089':
           if ($character[$i+5] > 0){
@@ -1217,7 +1221,7 @@ function LookAtHand($player)
     if($cards != "") $cards .= ",";
     $cards .= $hand[$i];
   }
-  RevealCards($cards);
+  RevealCards($cards, $player);
 }
 
 function GainActionPoints($amount=1)
@@ -1304,7 +1308,7 @@ function AddCharacterUses($player, $index, $numToAdd)
       if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
       if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
     }
-    if($player == $mainPlayer && $hasGoAgain) ++$actionPoints;
+    if($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) ++$actionPoints;
   }
 
   function PitchDeck($player, $index)
@@ -1353,6 +1357,13 @@ function AddCharacterUses($player, $index, $numToAdd)
     if($weaponIndex == -1) return false;
     if($weaponIndex != $index) return false;
     if(!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) return false;
+    return true;
+  }
+
+  function CanRevealCards($player)
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") return false;
     return true;
   }
 

@@ -540,7 +540,7 @@
     ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from your opponent discard");
   }
 
-  if($turn[0] == "CHOOSECOMBATCHAIN" && $turn[1] == $playerID)
+  if(($turn[0] == "CHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSECOMBATCHAIN") && $turn[1] == $playerID)
   {
     ChoosePopup($combatChain, $turn[2], 16, "Choose a card from the combat chain", CombatChainPieces());
   }
@@ -693,7 +693,7 @@
     for($i=0; $i<count($theirItems); $i+=ItemPieces())
     {
       if(IsTileable($theirItems[$i])) continue;
-      echo(Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1]) . "&nbsp");
+      echo(Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i+2] !=2 ? 1 : 0, 0, $theirItems[$i+1], "", "", false, 0, 0, 0, "ITEMS") . "&nbsp");
     }
   }
   if($playerID == 3)
@@ -828,8 +828,8 @@
   }
 
   //Now display my Auras and items
-  $permTop = intval(GetCharacterBottom("C", "")) + $cardSize - 332;
   $permHeight = $cardSize*2 + 70;
+  $permTop = intval(GetCharacterBottom("C", "")) - ($cardSize - 14);// - 332;
   $myPermWidth = $cardSizeAura*2 + 50;
   echo("<div style='overflow-y:auto; position: fixed; bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $myPermWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
@@ -852,7 +852,7 @@
       if(IsTileable($myItems[$i])) continue;
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
-      echo(Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i)) . "&nbsp");
+      echo(Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i+2] !=2 ? 1 : 0, $border, $myItems[$i+1], strval($i), "", false, 0, 0, 0, "ITEMS") . "&nbsp");
     }
   }
   $myAllies = GetAllies($playerID);

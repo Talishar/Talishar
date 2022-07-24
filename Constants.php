@@ -142,7 +142,7 @@
   //Talents
   function ChainLinkSummaryPieces()
   {
-    return 3;
+    return 4;
   }
 
   function DecisionQueuePieces()
@@ -242,7 +242,7 @@
     global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID;
     global $defPlayer;
     global $chainLinks, $chainLinkSummary;
-    WriteLog("The combat chain was closed.");
+    if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
     $combatChainState[$CCS_LastAttack] = "NA";

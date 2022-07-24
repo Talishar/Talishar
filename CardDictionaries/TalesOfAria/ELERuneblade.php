@@ -114,13 +114,20 @@
     }
   }
 
-  function ELERunebladePlayAbility($cardID, $from, $resourcesPaid)
+  function ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $otherPlayer, $CS_ArcaneDamageTaken, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
     global $CS_NextNAAInstant;
     $rv = "";
     switch($cardID)
     {
+      case "ELE064":
+        if(DelimStringContains($additionalCosts, "EARTH") && DelimStringContains($additionalCosts, "LIGHTNING"))
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          DealArcane(1, 0, "PLAYCARD", $cardID, false);
+        }
+        return "";
       case "ELE065":
         DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";

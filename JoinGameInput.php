@@ -18,7 +18,7 @@
       case '1': $decklink = "https://fabdb.net/decks/VGkQMojg"; break;
       case '2': $decklink = "https://fabdb.net/decks/eLxddlzb"; break;
       case '3': $decklink = "https://fabdb.net/decks/ydeXXEzW"; break;
-      case '4': $decklink = "https://fabdb.net/decks/zkVmEYOb"; break;
+      case '4': $decklink = "https://fabdb.net/decks/GnlPKqaO"; break;
       case '5': $decklink = "https://fabdb.net/decks/omKmlPDV"; break;
       case '6': $decklink = "https://fabdb.net/decks/OldYPAwm"; break;
       case '7': $decklink = "https://fabdb.net/decks/WAPZxDEQ"; break;
@@ -54,9 +54,14 @@
 
   if($decklink != "")
   {
-    $decklink = explode("/", $decklink);
-    $slug = $decklink[count($decklink)-1];
-    $apiLink = "https://api.fabdb.net/decks/" . $slug;
+    $isFaBDB = str_contains($decklink, "fabdb");
+    if($isFaBDB)
+    {
+      $decklink = explode("/", $decklink);
+      $slug = $decklink[count($decklink)-1];
+      $apiLink = "https://api.fabdb.net/decks/" . $slug;
+    }
+    else $apiLink = $decklink;
 
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $apiLink);
@@ -79,11 +84,22 @@
     {
       $count = $cards[$i]->{'total'};
       $numSideboard = $cards[$i]->{'sideboardTotal'};
-      $printings = $cards[$i]->{'printings'};
-      $printing = $printings[0];
-      $sku = $printing->{'sku'};
-      $id = $sku->{'sku'};
-      $id = explode("-", $id)[0];
+      if($isFaBDB)
+      {
+        $printings = $cards[$i]->{'printings'};
+        $printing = $printings[0];
+        $sku = $printing->{'sku'};
+        $id = $sku->{'sku'};
+        $id = explode("-", $id)[0];
+      }
+      else
+      {
+        $image = $cards[$i]->{'image'};
+        $image = explode("/", $image);
+        $filename = $image[count($image)-1];
+        $filename = explode(".", $filename);
+        $id = $filename[0];
+      }
       $id = GetAltCardID($id);
       $cardType = CardType($id);
       if($cardType == "") //Card not supported, error
@@ -185,6 +201,7 @@
   }
   else
   {
+    $character = "";
     $deckOptions = explode("-", $deck);
     if($deckOptions[0] == "DRAFT")
     {
@@ -240,9 +257,11 @@
   WriteGameFile();
   SetCachePiece($gameName, $playerID+1, strval(round(microtime(true) * 1000)));
   SetCachePiece($gameName, $playerID+3, "0");
+  SetCachePiece($gameName, $playerID+6, $character);
   GamestateUpdated($gameName);
 
-  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+  $authKey = ($playerID == 1 ? $p1Key : $p2Key);
+  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
 
 function GetAltCardID($cardID)
 {

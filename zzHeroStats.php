@@ -4,6 +4,12 @@
   include "./Libraries/UILibraries2.php";
   require_once "./includes/dbh.inc.php";
 
+  session_start();
+
+  if(!isset($_SESSION["useruid"])) { echo("Please login to view this page."); exit; }
+  $useruid= $_SESSION["useruid"];
+  if($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore") exit;
+
   $heroID=$_GET["heroID"];
 
   echo("<script src=\"./jsInclude.js\"></script>");
@@ -15,8 +21,6 @@ echo("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixe
 
 echo("<div>Detailed stats for " . CardLink($heroID, $heroID) . "</div>");
 
-
-
     $sql = "SELECT WinningHero,LosingHero,count(WinningHero) AS Count,WinnerDeck
 FROM completedgame
 WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\"
@@ -24,16 +28,23 @@ GROUP by LosingHero
 ORDER BY Count";
   	$stmt = mysqli_stmt_init($conn);
   	if (!mysqli_stmt_prepare($stmt, $sql)) {
-  	 	//header("location: ../Signup.php?error=stmtfailed");
       echo("ERROR");
   		exit();
   	}
-
-  	//mysqli_stmt_bind_param($stmt, "ss", $username, $email);
   	mysqli_stmt_execute($stmt);
-
-  	// "Get result" returns the results from a prepared statement
   	$winData = mysqli_stmt_get_result($stmt);
+
+
+    $sql = "SELECT WinningHero,LosingHero,WinnerDeck
+FROM completedgame
+WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\"";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+      echo("ERROR");
+      exit();
+    }
+    mysqli_stmt_execute($stmt);
+    $winCardData = mysqli_stmt_get_result($stmt);
 
 
         $sql = "SELECT WinningHero,LosingHero,count(LosingHero) AS Count,LoserDeck
@@ -43,16 +54,22 @@ ORDER BY Count";
     ORDER BY Count";
       	$stmt = mysqli_stmt_init($conn);
       	if (!mysqli_stmt_prepare($stmt, $sql)) {
-      	 	//header("location: ../Signup.php?error=stmtfailed");
           echo("ERROR");
       		exit();
       	}
-
-      	//mysqli_stmt_bind_param($stmt, "ss", $username, $email);
       	mysqli_stmt_execute($stmt);
-
-      	// "Get result" returns the results from a prepared statement
       	$loseData = mysqli_stmt_get_result($stmt);
+
+        $sql = "SELECT WinningHero,LosingHero,LoserDeck
+    FROM completedgame
+    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$heroID\"";
+        $stmt = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+          echo("ERROR");
+          exit();
+        }
+        mysqli_stmt_execute($stmt);
+        $loseCardData = mysqli_stmt_get_result($stmt);
 
 
   $gameData = [];
@@ -63,10 +80,12 @@ ORDER BY Count";
     $gameData[$index][0] = $row[1];
     $gameData[$index][1] = $row[2];
     $gameData[$index][2] = 0;
+  }
 
-    //Parse Cards
-    $deck = explode("\r\n", $row[3]);
-    if(count($deck) == 1) $deck = explode("\n", $row[3]);
+  while ($row = mysqli_fetch_array($winCardData, MYSQLI_NUM)) {
+    if(count($row) < 3) continue;//no deck
+    $deck = explode("\r\n", $row[2]);
+    if(count($deck) == 1) $deck = explode("\n", $row[2]);
     if(count($deck) == 1) continue;
     $character = explode(" ", $deck[0]);
     $cards = explode(" ", $deck[1]);
@@ -101,24 +120,28 @@ ORDER BY Count";
       $gameData[$index][2] = $row[2];
     }
 
-    //Parse Cards
-    $deck = explode("\r\n", $row[3]);
-    if(count($deck) == 1) $deck = explode("\n", $row[3]);
-    if(count($deck) == 1) continue;
-    $character = explode(" ", $deck[0]);
-    $cards = explode(" ", $deck[1]);
-    for($i=0; $i<count($cards); ++$i)
-    {
-      if($i > 0 && $cards[$i] == $cards[$i-1]) continue;//Make sure cards count only once; assumes deck is sorted
-      $card = $cards[$i];
-      if(!array_key_exists($card, $cardData))
-      {
-        $cardData[$card] = [];
-        $cardData[$card][0] = 0;
-        $cardData[$card][1] = 0;
-      }
-      ++$cardData[$card][1];
-    }
+  }
+
+  while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
+        //Parse Cards
+        if(count($row) < 3) continue;//no deck
+        $deck = explode("\r\n", $row[2]);
+        if(count($deck) == 1) $deck = explode("\n", $row[2]);
+        if(count($deck) == 1) continue;
+        $character = explode(" ", $deck[0]);
+        $cards = explode(" ", $deck[1]);
+        for($i=0; $i<count($cards); ++$i)
+        {
+          if($i > 0 && $cards[$i] == $cards[$i-1]) continue;//Make sure cards count only once; assumes deck is sorted
+          $card = $cards[$i];
+          if(!array_key_exists($card, $cardData))
+          {
+            $cardData[$card] = [];
+            $cardData[$card][0] = 0;
+            $cardData[$card][1] = 0;
+          }
+          ++$cardData[$card][1];
+        }
   }
 
 
@@ -177,7 +200,7 @@ ORDER BY Count";
   echo("<tr><td>Card</td><td>Num Plays</td><td>Win Rate</td><td>Relative Win Rate</td></tr>");
   foreach($sortedCardData as $key => $card)
   {
-    if($card[1] < 3) continue;
+    if($card[1] < 10) continue;
     echo("<tr>");
     echo("<td>" . CardLink($key, $key) . "</td>");
     echo("<td>" . $card[1] . "</td>");
