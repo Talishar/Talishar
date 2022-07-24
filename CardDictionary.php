@@ -883,14 +883,9 @@
     $subtype = CardSubType($cardID);
     if($phase == "P" && $from != "HAND") return false;
     if($phase == "B" && $from == "BANISH") return false;
-    if($phase == "B" && $cardType == "E") { $restriction = ($myCharacter[$index+6] == 1 ? "On combat chain" : ""); return $myCharacter[$index+6] == 0; }
+    if($phase == "B" && $cardType == "E" && $myCharacter[$index+6] == 1) { $restriction = "On combat chain"; return false; }
     if($from == "CHAR" && $phase != "B" && $myCharacter[$index+8] == "1") { $restriction = "Frozen"; return false; }
     if($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index+3] == "1") { $restriction = "Frozen"; return false; }
-    if($from == "ARS" && count($myArsenal) < $index+4)
-    {
-      echo(print_r(debug_backtrace(), true));
-      return false;
-    }
     if($from == "ARS" && $phase != "B" && $myArsenal[$index+4] == "1") { $restriction = "Frozen"; return false; }
     if($cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
     if($cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer ) return false;
@@ -912,7 +907,7 @@
       if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
       if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
     }
-    if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > 0;
+    if($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
     if($phase == "P" && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
     if($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
     $isStaticType = IsStaticType($cardType, $from, $cardID);
