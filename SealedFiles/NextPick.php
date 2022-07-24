@@ -60,7 +60,7 @@
     echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/SealedFiles/LimitedPractice.php'>");
 ?>
     <label for='rhinar'>Dromai</label>
-    <input type='radio' id='dromai' name='hero' value='dromai'><br>
+    <input type='radio' id='dromai' name='hero' value='dromai' checked='checked'><br>
     <label for='bravo'>Fai</label>
     <input type='radio' id='fai' name='hero' value='fai'><br>
     <label for='katsu'>Iyslander</label>
