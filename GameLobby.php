@@ -16,6 +16,8 @@
   include "Libraries/SHMOPLibraries.php";
   ob_end_clean();
 
+  session_start();
+
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
   $authKey=$_GET["authKey"];
@@ -253,11 +255,18 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
   echo("<div id='mainPanel' style='text-align:center;'>");
 
   echo("</div>");
+
   echo("<div id='chatbox' style='position:absolute; bottom:3%; left:3%; width:97%;'>");
-  echo("<input style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
-  echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
-  echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+  if(isset($_SESSION["useruid"]))
+  {
+    echo("<input style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+    echo("<button style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
+    echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
+    echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+  }
+  else {
+    echo("Create an account and log in to enable chat.");
+  }
   echo("</div>");
 
   echo("<script>");
