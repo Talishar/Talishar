@@ -2323,11 +2323,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $character[$parameter+1] = 1;
       return $parameter;
-    case "REVEALMYCARD":
-      $hand = GetHand($player);
-      WriteLog(CardLink($hand[$lastResult], $hand[$lastResult]) . " was revealed.");
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $lastResult;
     case "DECKCARDS":
       $indices = explode(",", $parameter);
       $deck = &GetDeck($player);
@@ -2356,10 +2351,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         if($cards != "") $cards .= ",";
         $cards .= $hand[$indices[$i]];
-        WriteLog(CardLink($hand[$indices[$i]], $hand[$indices[$i]]) . " was revealed.");
       }
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $cards;
+      $revealed = RevealCards($cards, $player);
+      return ($revealed ? $cards : "PASS");
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
