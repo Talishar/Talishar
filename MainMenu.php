@@ -57,6 +57,10 @@ body {
   <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>FaB DB Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
 
+  <?php
+    $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
+   ?>
+
   <span style='display:inline-block; margin-left:5px;'>
     <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
     <label style='margin-left:-10px;' for="blitz">Blitz</label>
@@ -69,6 +73,15 @@ body {
 
   <input type="radio" id="commoner" name="format" value="commoner">
   <label style='margin-left:-12px;' for="commoner">Commoner</label><br><br>
+
+  <?php
+    if($isOmegaEclipse)
+    {
+      echo("<input type='radio' id='aggrocc' name='format' value='aggrocc' checked='checked'>");
+      echo("<label for='aggrocc'>Aggro-only CC</label><br><br>");
+    }
+
+  ?>
 
   <span style='display:inline-block; margin-left:5px;'>
     <input type="radio" id="public" name="visibility" value="public" checked="checked">
@@ -138,7 +151,7 @@ border-radius: 5px;">
 
 <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Open Beta Test</h1>
 <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h2>
-  <p>Channel the Bleak Expanse</p>
+  <p>Shiyana Copy Ability</p>
 
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>

@@ -6,6 +6,8 @@
   include "Libraries/SHMOPLibraries.php";
   ob_end_clean();
 
+  session_start();
+
   $deck=TryGET("deck");
   $decklink=TryGET("fabdb");
   $deckTestMode=TryGET("deckTestMode");
@@ -16,6 +18,9 @@
 
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
   $attemptCount = 0;
+
+  $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
+  if($isOmegaEclipse) $format = "aggrocc";
 
   while(!flock($gcFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
     sleep(1);
@@ -69,7 +74,7 @@
   fclose($handler);
 
   $currentTime = round(microtime(true) * 1000);
-  WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime);//Initialize SHMOP cache for this game
+  WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!");//Initialize SHMOP cache for this game
 
   header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry");
 

@@ -26,6 +26,7 @@
       case "UPR101": return "AA";
       case "UPR136": return "E";
       case "UPR137": return "E";
+      case "UPR138": return "A";
       case "UPR139": return "A";
       case "UPR140": return "A";
       case "UPR141": case "UPR142": case "UPR143": return "A";
@@ -62,6 +63,7 @@
       case "UPR085": return "Chest";
       case "UPR136": return "Head";
       case "UPR137": return "Head";
+      case "UPR138": return "Aura";
       case "UPR139": return "Affliction,Aura";
       case "UPR140": return "Aura";
       case "UPR182": return "Head";
@@ -97,6 +99,7 @@
       case "UPR099": return 1;
       case "UPR100": return 1;
       case "UPR101": return 0;
+      case "UPR138": return 1;
       case "UPR139": return 0;
       case "UPR140": return 3;
       case "UPR141": case "UPR142": case "UPR143": return 1;
@@ -141,6 +144,7 @@
       case "UPR099": return 1;
       case "UPR100": return 1;
       case "UPR101": return 1;
+      case "UPR138": return 3;
       case "UPR139": return 3;
       case "UPR140": return 3;
       case "UPR141": case "UPR144": case "UPR147": return 1;
@@ -185,6 +189,7 @@
       case "UPR101": return -1;
       case "UPR136": return 2;
       case "UPR137": return 0;
+      case "UPR138": return 2;
       case "UPR139": return 2;
       case "UPR140": return 2;
       case "UPR141": case "UPR142": case "UPR143": return 2;
@@ -204,6 +209,7 @@
       case "UPR206": case "UPR207": case "UPR208": return 3;
       case "UPR212": case "UPR213": case "UPR214": return 2;
       case "UPR215": case "UPR216": case "UPR217": return 2;
+      case "UPR218": case "UPR219": case "UPR220": return 2;
       default: return -1;
     }
   }
@@ -285,13 +291,17 @@
             if(PitchValue($deck[$i]) == 1) ++$numRed;
           }
           $reveals = RevealCards($cards);
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          if($reveals)
+          {
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
+            AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          }
+          else return "Cannot reveal cards";
         }
-        return "";
+        return "Red Hot lets you reveal and do damage.";
       case "UPR091":
         if(RuptureActive())
         {
@@ -504,13 +514,13 @@
 
   function NumDraconicChainLinks()
   {
-    global $combatChain, $currentPlayer, $chainLinkSummary;
+    global $combatChain, $mainPlayer, $chainLinkSummary;
     $numLinks = 0;
     for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces())
     {
       if(DelimStringContains($chainLinkSummary[$i+2], "DRACONIC")) ++$numLinks;
     }
-    if(count($combatChain) > 0 && TalentContains($combatChain[0], "DRACONIC", $currentPlayer)) ++$numLinks;
+    if(count($combatChain) > 0 && TalentContains($combatChain[0], "DRACONIC", $mainPlayer)) ++$numLinks;
     return $numLinks;
   }
 

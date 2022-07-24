@@ -27,7 +27,7 @@
   $kickPlayerTwo = false;
   while($lastUpdate != 0 && $cacheVal <= $lastUpdate)
   {
-    usleep(50000);//50 milliseconds
+    usleep(100000);//100 milliseconds
     $currentTime = round(microtime(true) * 1000);
     $cacheVal = GetCachePiece($gameName, 1);
     SetCachePiece($gameName, $playerID+1, $currentTime);
@@ -61,7 +61,7 @@
     WriteGameFile();
   }
 
-  if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo "0"; exit; }
+  if($lastUpdate != 0 && $cacheVal < $lastUpdate) { echo(GetCachePiece($gameName, 1) . "ENDTIMESTAMP"); exit; }
   else if($gameStatus == $MGS_GameStarted) { echo("1"); exit; }
   else {
 

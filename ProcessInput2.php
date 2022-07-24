@@ -51,6 +51,8 @@
   if($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
   if(!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
 
+  $afterResolveEffects = [];
+
   //Now we can process the command
   switch($mode) {
     case 0: //Subtract health
@@ -550,7 +552,7 @@
   function PassInput($autopass=true)
   {
     global $turn, $currentPlayer;
-    if($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "INSTANT")
+    if($turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "INSTANT")
     {
       ContinueDecisionQueue("PASS");
     }
@@ -700,7 +702,7 @@
       MainCharacterHitEffects();
       ArsenalHitEffects();
       AuraHitEffects($combatChain[0]);
-      AttackDamageAbilities();
+      AttackDamageAbilities($damageDone);
     }
     else
     {
@@ -736,25 +738,8 @@ function FinalizeChainLink($chainClosed=false)
       if($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
     }
 
-    //Clean up combat effects that were used and are one-time
-    for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i-=CurrentTurnEffectPieces())
-    {
-      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
-      {
-        --$currentTurnEffects[$i+3];
-        if($currentTurnEffects[$i+3] == 0) RemoveCurrentTurnEffect($i);
-      }
-    }
-
     ChainLinkResolvedEffects();
 
-    if(CardType($combatChain[0]) == "W")
-    {
-      ++$mainClassState[$CS_AtksWWeapon];
-      if(CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
-    }
-    $combatChainState[$CCS_LastAttack] = $combatChain[0];
-    SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
     array_push($chainLinks, array());
     $CLIndex = count($chainLinks) - 1;
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
@@ -783,8 +768,29 @@ function FinalizeChainLink($chainClosed=false)
     array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
     array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
     array_push($chainLinkSummary, TalentOverride($combatChain[0], $mainPlayer));
+    array_push($chainLinkSummary, ClassOverride($combatChain[0], $mainPlayer));
+
+    //Clean up combat effects that were used and are one-time
+    for($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i-=CurrentTurnEffectPieces())
+    {
+      if(IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i]))
+      {
+        --$currentTurnEffects[$i+3];
+        if($currentTurnEffects[$i+3] == 0) RemoveCurrentTurnEffect($i);
+      }
+    }
 
     CopyCurrentTurnEffectsFromCombat();
+
+    //Don't change state until the end, in case it changes what effects are active
+    if(CardType($combatChain[0]) == "W")
+    {
+      ++$mainClassState[$CS_AtksWWeapon];
+      if(CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger") ++$mainClassState[$CS_NumSwordAttacks];
+    }
+    $combatChainState[$CCS_LastAttack] = $combatChain[0];
+    SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
+
     $combatChain = [];
     if($chainClosed)
     {
@@ -1317,6 +1323,12 @@ function FinalizeChainLink($chainClosed=false)
     if(RequiresDiscard($cardID))
     {
       $discarded = DiscardRandom($currentPlayer, $cardID);
+      if($discarded == "")
+      {
+        WriteLog("You do not have a card to discard. Reverting gamestate.");
+        RevertGamestate();
+        return;
+      }
       SetClassState($currentPlayer, $CS_AdditionalCosts, $discarded);
     }
     switch($cardID)
@@ -1325,12 +1337,12 @@ function FinalizeChainLink($chainClosed=false)
       case "WTR179": case "WTR180": case "WTR181":
         $indices = SearchHand($currentPlayer, "", "", -1, 2);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
-        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
         break;
       case "WTR182": case "WTR183": case "WTR184":
         $indices = SearchHand($currentPlayer, "", "", 1, 0);
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
-        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-");
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
         break;
       case "WTR185": case "WTR186": case "WTR187":
         $indices = SearchDiscardForCard($currentPlayer, "WTR218", "WTR219", "WTR220");
@@ -1403,7 +1415,7 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REVEALMYCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
         break;
@@ -1417,6 +1429,14 @@ function FinalizeChainLink($chainClosed=false)
             RevertGamestate();
           }
           PummelHit($currentPlayer);
+        }
+        break;
+      case "ELE031": case "ELE032":
+        if(ArsenalHasFaceDownCard($currentPlayer))
+        {
+          $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
+          AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));
+          WriteLog("Lexi turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
         }
         break;
       case "ELE118":
@@ -1501,13 +1521,6 @@ function FinalizeChainLink($chainClosed=false)
         $currentTurnEffectsFromCombat = [];
         $combatChainState[$CCS_AttackPlayedFrom] = $from;
         $chainClosed = ProcessAttackTarget();
-        if(!$chainClosed || $definedCardType == "AA")
-        {
-          AuraAttackAbilities($cardID);
-          AllyAttackAbilities($cardID);
-          ArsenalAttackAbilities();
-          OnAttackEffects($cardID);
-        }
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
@@ -1519,6 +1532,13 @@ function FinalizeChainLink($chainClosed=false)
         $openedChain = true;
         if($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
         if($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
+        if(!$chainClosed || $definedCardType == "AA")
+        {
+          AuraAttackAbilities($cardID);
+          if($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
+          ArsenalAttackAbilities();
+          OnAttackEffects($cardID);
+        }
       }
       SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
     }
@@ -1568,6 +1588,7 @@ function FinalizeChainLink($chainClosed=false)
       AddDecisionQueue("CLEAREFFECTCONTEXT", $currentPlayer, "-");
       if($playText != "") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ": " . $playText);
       if(!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from);
+      CopyCurrentTurnEffectsFromAfterResolveEffects();
     }
 
     if($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID))

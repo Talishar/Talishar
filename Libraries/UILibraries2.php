@@ -20,7 +20,7 @@
     else return "#EDEDED";
   }
   //Rotate is deprecated
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0)
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="")
   {//
     global $playerID, $gameName, $cardIconSize, $darkMode;
     if($darkMode == null) $darkMode = false;
@@ -84,6 +84,15 @@
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
     font-size:20px; font-weight:800; color:".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
+  //Steam Counters style
+  elseif ($counters != 0 && $from == "ITEMS" && ClassContains($cardNumber, "MECHANOLOGIST")) {
+    if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
+    text-align: center; transform: translate(-50%, -50%);
+    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
+    <img style='height: 44px; width: 44px; opacity: 0.9; position: absolute; margin: auto; top: 3px; left: -6px; right: 0px; bottom: 0px; -webkit-box-shadow:inset 0px 0px 0px 15px black;
+    -moz-box-shadow:inset 0px 0px 0px 15px black; box-shadow:inset 0px 0px 0px 15px black; border-radius: 50%; padding:-5; z-index:-3;' src='./Images/steamCounter.png'></img></div>";
+  }
   //Equipments, Hero and default counters style
   elseif($counters != 0) {
     if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
@@ -95,10 +104,10 @@
   //-1 Defense & Endurance Counters style
   if($defCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 1px;
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
     text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
-    <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
+    <img style='height: 41px; width: 41px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -5px; right: 0px; bottom: 0px;
     z-index:-3;' src='./Images/Defense.png'></img></div>";
   }
   //Health Counters style
@@ -106,18 +115,18 @@
     if($defCounters == 0){ $left = "50%"; } else { $left = "70%"; }
   $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
   text-align: center; transform: translate(-50%, -50%);
-  position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
-  <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+  position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
+  <img style='height: 41px; width: 41px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -5px; right: 0px; bottom: 0px;
   z-index:-3;' src='./Images/Life.png'></img></div>";
   }
 
   //Attack Counters style
   if($atkCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 1px;
+    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width: 28px; height: 28px; padding: 2px;
     text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:28px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
-    <img style='height: 50px; width: 50px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -10px; right: 0px; bottom: 0px ;
+    position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
+    <img style='height: 41px; width: 41px; opacity: 0.8; position: absolute; margin: auto; top: 1px; left: -5px; right: 0px; bottom: 0px;
     z-index:-3;' src='./Images/Attack.png'></img></div>";
   }
   $rv .= "</a>";

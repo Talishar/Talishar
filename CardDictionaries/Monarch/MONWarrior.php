@@ -132,7 +132,7 @@
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
@@ -207,7 +207,7 @@
     if(count($deck) == 0) return;
     $cardID = array_shift($deck);
     WriteLog("Processing Lumina Ascension's hit effect:");
-    RevealCards($cardID);
+    if(!RevealCards($cardID, $mainPlayer)) return;
     if(TalentContains($cardID, "LIGHT", $mainPlayer))
     {
       AddSoul($cardID, $mainPlayer, "DECK");

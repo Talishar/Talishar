@@ -18,6 +18,7 @@
 
   $gameName=$_GET["gameName"];
   $playerID=$_GET["playerID"];
+  $authKey=$_GET["authKey"];
 
   if(!file_exists("./Games/" . $gameName . "/GameFile.txt"))
   {
@@ -29,19 +30,18 @@
   include "MenuFiles/ParseGamefile.php";
   ob_end_clean();
 
+  $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+  if($authKey != $targetAuth)
+  {
+    echo("Invalid Auth Key");
+    exit;
+  }
+
   $yourName = ($playerID == 1 ? $p1uid : $p2uid);
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
 
   if($gameStatus == $MGS_GameStarted)
   {
-    /*
-    include "ParseGamestate.php";
-    if($currentTurn > 1)
-    {
-      echo("That player has already connected. Exiting.");
-      exit;
-    }
-    */
     $authKey = ($playerID == 1 ? $p1Key : $p2Key);
     header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
     exit;
@@ -52,7 +52,6 @@
   if($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";
   else if($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $icon = "notReady.png";
   else if($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $icon = "notReady.png";
-  //if($gameStatus == "") $MGS_GameStarted;
 
   echo '<title>Game Lobby</title> <meta http-equiv="content-type" content="text/html; charset=utf-8" > <meta name="viewport" content="width=device-width, initial-scale=1.0">';
   echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
@@ -246,6 +245,7 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
     echo("<input type='hidden' id='playerCharacter' name='playerCharacter' value=''>");
     echo("<input type='hidden' id='playerDeck' name='playerDeck' value=''>");
+    echo("<input type='hidden' id='authKey' name='authKey' value='$authKey'>");
     echo("<input type='submit' value='" . ($playerID == 1 ? "Start" : "Ready") . "'>");
   echo("</form>");
   echo("</div>");
@@ -401,6 +401,8 @@ function GetDeckCards()
   return returnValue;
 }
 
+var audioPlayed = false;
+
   function CheckReloadNeeded(lastUpdate) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -413,10 +415,11 @@ function GetDeckCards()
             document.getElementById("mainPanel").innerHTML = responseArr[1];
             CheckReloadNeeded(parseInt(responseArr[0]));
             var playAudio = document.getElementById("playAudio");
-            if(!!playAudio && playAudio.innerText == 1)
+            if(!!playAudio && playAudio.innerText == 1 && !audioPlayed)
             {
               var audio = document.getElementById('playerJoinedAudio');
               audio.play();
+              audioPlayed = true;
             }
             var otherHero = document.getElementById("otherHero");
             if(!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
@@ -426,7 +429,6 @@ function GetDeckCards()
             document.getElementById("submitForm").style.display = document.getElementById("submitDisplay").innerHTML;
           }
         }
-        else { CheckReloadNeeded(lastUpdate); }
       }
     };
     xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo($gameName);?>&playerID=<?php echo($playerID);?>&lastUpdate=" + lastUpdate, true);
@@ -445,6 +447,7 @@ function GetDeckCards()
     var ajaxLink = "ChooseFirstPlayer.php?gameName=" + <?php echo($gameName); ?>;
     ajaxLink += "&playerID=" + <?php echo($playerID); ?>;
     ajaxLink += "&action=" + action;
+    ajaxLink += <?php echo("\"&authKey=" . $authKey . "\""); ?>;
     xmlhttp.open("GET", ajaxLink, true);
     xmlhttp.send();
   }

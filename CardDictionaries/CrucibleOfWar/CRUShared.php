@@ -624,6 +624,7 @@
     global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
     global $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
     global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+    $rv = "";
     switch ($cardID)
     {
       //CRU Brute
@@ -864,6 +865,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next Runeblade attack action go again and creates Runechants if it hits.";
       case "CRU154": case "CRU155": case "CRU156":
+        if(!CanRevealCards($currentPlayer)) return "Cannot reveal cards.";
         if($cardID == "CRU154") $count = 3;
         else if($cardID == "CRU155") $count = 2;
         else $count = 1;
@@ -1043,8 +1045,7 @@
     global $mainPlayer;
     $deck = &GetDeck($mainPlayer);
     if(count($deck) == 0) return;
-    RevealCards($deck[0]);
-    if(CardType($deck[0]) == "AR")
+    if(RevealCards($deck[0], $mainPlayer) && CardType($deck[0]) == "AR")
     {
       BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "TCC");
       WriteLog(CardLink($deck[0], $deck[0]) . " was banished and can be played this combat chain.");

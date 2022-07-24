@@ -187,7 +187,7 @@
       case "ELE056": case "ELE057": case "ELE058": return true;
       case "ELE059": case "ELE060": case "ELE061": return true;
       case "ELE066": return true;
-      case "ELE066-HIT": return true;
+      case "ELE066-HIT": return cardType($attackID) == "AA";
       case "ELE067": case "ELE068": case "ELE069": return true;
       case "ELE082": case "ELE083": case "ELE084": return true;
       case "ELE085-FUSE": case "ELE086-FUSE": case "ELE087-FUSE": return CardType($attackID) == "AA";

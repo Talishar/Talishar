@@ -21,7 +21,6 @@ function DestroyAlly($player, $index, $skipDestroy=false)
   $allies = &GetAllies($player);
   if(!$skipDestroy)
   {
-    AllyDestroyAbility($player, $allies[$index]);
     AllyDestroyedAbility($player, $index);
   }
   if(IsSpecificAllyAttacking($player, $index)) { CloseCombatChain(); }
@@ -59,7 +58,7 @@ function AllyDestroyedAbility($player, $index)
   global $mainPlayer;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
-  switch($allies[$i])
+  switch($cardID)
   {
     case "UPR410":
       if($player == $mainPlayer && $allies[$i+8] > 0)
@@ -69,25 +68,14 @@ function AllyDestroyedAbility($player, $index)
         --$allies[$i+8];
       }
       break;
+    case "UPR551":
+      $gtIndex = FindCharacterIndex($player, "UPR151");
+      if($gtIndex > -1)
+      {
+        DestroyCharacter($player, $gtIndex);
+      }
+      break;
     default: break;
-  }
-}
-
-function AllyDestroyAbility($player, $cardID)
-{
-  $allies = &GetAllies($player);
-  for($i=0; $i<count($allies); $i+=AllyPieces())
-  {
-    switch($allies[$i])
-    {
-      case "UPR551":
-        $gtIndex = FindCharacterIndex($player, "UPR151");
-        if($gtIndex > -1)
-        {
-          DestroyCharacter($player, $gtIndex);
-        }
-        default: break;
-    }
   }
 }
 
@@ -133,29 +121,27 @@ function AllyDamagePrevention($player, $index, $damage)
 
 function AllyAttackAbilities($attackID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $allies = &GetAllies($mainPlayer);
-  for($i=0; $i<count($allies); $i+=AllyPieces())
+  $i = $combatChainState[$CCS_WeaponIndex];
+  switch($allies[$i])
   {
-    switch($allies[$i])
-    {
-      case "UPR410":
-        if($attackID == $allies[$i] && $allies[$i+8] > 0)
-        {
-          GainActionPoints(1);
-          WriteLog("Cromai Attacks: Gain 1 action point.");
-          --$allies[$i+8];
-        }
-        break;
-      case "UPR412":
-        if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon"))
-        {
-          AddCurrentTurnEffect("UPR412", $mainPlayer);
-          --$allies[$i+8];
-        }
-        break;
-      default: break;
-    }
+    case "UPR410":
+      if($attackID == $allies[$i] && $allies[$i+8] > 0)
+      {
+        GainActionPoints(1);
+        WriteLog("Cromai Attacks: Gain 1 action point.");
+        --$allies[$i+8];
+      }
+      break;
+    case "UPR412":
+      if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon"))
+      {
+        AddCurrentTurnEffect("UPR412", $mainPlayer);
+        --$allies[$i+8];
+      }
+      break;
+    default: break;
   }
 }
 

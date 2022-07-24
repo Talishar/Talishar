@@ -10,6 +10,8 @@
 
   $SET_PassDRStep = 6;
 
+  $SET_AutotargetArcane = 7;//Auto-target opponent with arcane damage
+
   function HoldPrioritySetting($player)
   {
     global $SET_AlwaysHoldPriority;
@@ -68,6 +70,13 @@
     return $skip;
   }
 
+  function ShouldAutotargetOpponent($player)
+  {
+    global $SET_AutotargetArcane;
+    $settings = GetSettings($player);
+    return $settings[$SET_AutotargetArcane] == "1";
+  }
+
   function ChangeSetting($player, $setting, $value)
   {
     global $SET_ManualMode;
@@ -95,7 +104,7 @@
 
   function GetSettingsUI($player)
   {
-    global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
+    global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane;
     $rv = "";
     $settings = GetSettings($player);
     if($settings[$SET_AlwaysHoldPriority] != 0) $rv .= CreateButton($player, "Auto-pass Priority", 26, $SET_AlwaysHoldPriority . "-0", "24px");
@@ -114,6 +123,10 @@
     $rv .= "<BR>";
     if($settings[$SET_SkipDRs] == 0) $rv .= CreateButton($player, "Skip Defense Reactions", 26, $SET_SkipDRs . "-1", "24px");
     else if($settings[$SET_SkipDRs] == 1) $rv .= CreateButton($player, "Hold Defense Reactions", 26, $SET_SkipDRs . "-0", "24px");
+    $rv .= "<BR>";
+    $rv .= "<BR>";
+    if($settings[$SET_AutotargetArcane] == 0) $rv .= CreateButton($player, "Arcane auto-target opponent", 26, $SET_AutotargetArcane . "-1", "24px");
+    else if($settings[$SET_AutotargetArcane] == 1) $rv .= CreateButton($player, "Arcane manual target", 26, $SET_AutotargetArcane . "-0", "24px");
     $rv .= "<BR>";
     $rv .= "<BR>";
     if($settings[$SET_DarkMode] != 0) $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);

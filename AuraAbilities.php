@@ -218,7 +218,6 @@ function AuraBeginEndPhaseAbilities()
         $leftToBanish = $auras[$i+2];
         $discard = &GetDiscard($mainPlayer);
         $numReds = 0;
-
         for($j=0; $j < count($discard); $j++)
         {
           if(PitchValue($discard[$j]) == 1)
@@ -231,7 +230,7 @@ function AuraBeginEndPhaseAbilities()
           for($k=0; $k < $auras[$i+2]; $k++) {
             AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;");
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more cards to banish for Burn Them All!");
-            AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
             AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
             AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
             --$leftToBanish;
@@ -243,6 +242,7 @@ function AuraBeginEndPhaseAbilities()
           WriteLog(CardLink($auras[$i], $auras[$i]). " was unable to banish enough red cards and was destroyed.");
         }
         break;
+      case "UPR138": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+2]) $remove = 1; break;
       case "UPR176": case "UPR177": case "UPR178":
         if($auras[$i] == "UPR176") $numOpt = 3;
         else if($auras[$i] == "UPR177") $numOpt = 2;

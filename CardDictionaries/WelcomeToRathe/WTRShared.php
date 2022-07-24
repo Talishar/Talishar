@@ -202,6 +202,7 @@
       case "WTR161": return "AA";
       case "WTR162": return "A";
       case "WTR163": return "I";
+      case "WTR164": case "WTR165": case "WTR166": return "AA";
       case "WTR167": case "WTR168": case "WTR169": return "AA";
       case "WTR170": case "WTR171": case "WTR172": return "A";
       case "WTR173": case "WTR174": case "WTR175": return "I";
@@ -337,6 +338,7 @@
       case "WTR160": return 1;
       case "WTR161": return 3;
       case "WTR162": return 0;
+      case "WTR164": case "WTR165": case "WTR166": return 2;
       case "WTR167": case "WTR168": case "WTR169": return 0;
       case "WTR163": case "WTR170": case "WTR171": case "WTR172": return 0;
       case "WTR173": case "WTR174": case "WTR175": return 0;
@@ -409,6 +411,8 @@
       case "WTR161": return 3;
       case "WTR162": return 3;
       case "WTR163": return 2;
+      case "WTR164": return 1;
+      case "WTR165": return 2;
       case "WTR167": return 1;
       case "WTR168": return 2;
       case "WTR169": return 3;
@@ -465,6 +469,7 @@
       case "WTR160": return 2;
       case "WTR162": return 0;
       case "WTR163": return 0;
+      case "WTR164": case "WTR165": case "WTR166": return 2;
       case "WTR167": case "WTR168": case "WTR169": return 2;
       case "WTR170": case "WTR171": case "WTR172": return 0;
       case "WTR173": case "WTR174": case "WTR175": return 0;
@@ -521,6 +526,9 @@
       //Generic
       case "WTR159": return 5;
       case "WTR161": return 4;
+      case "WTR164": return 6;
+      case "WTR165": return 5;
+      case "WTR166": return 4;
       case "WTR167": return 4;
       case "WTR168": return 3;
       case "WTR169": return 2;
@@ -598,6 +606,7 @@
   {
     global $mainPlayer, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
     global $CS_DamagePrevention;
+    $rv = "";
     switch ($cardID)
     {
       case "WTR054": case "WTR055": case "WTR056":
@@ -616,7 +625,6 @@
         Intimidate();
         return "Intimidates.";
       case "WTR007":
-        $rv = "";
         $drew = 0;
         if(AttackValue($additionalCosts) >= 6)
         {
@@ -643,7 +651,6 @@
         IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
         return "Prevents the next $roll damage that will be dealt to you this turn.";
       case "WTR011": case "WTR012": case "WTR013":
-        $rv = "";
         if(AttackValue($additionalCosts) >= 6)
         {
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
@@ -727,9 +734,9 @@
         if(RepriseActive())
         {
           $options = GetChainLinkCards(($mainPlayer == 1 ? 2 : 1), "", "E,C");
-          AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
-          AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-");
-          AddDecisionQueue("ADDHAND", $defPlayer, "-");
+          AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $mainPlayer, $options);
+          AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
+          AddDecisionQueue("ADDHAND", $defPlayer, "-", 1);
         }
         return "";
       case "WTR121":
@@ -746,7 +753,6 @@
         if(CardType($combatChain[0]) != "W") return "Does nothing, because this is not a weapon attack.";
         return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
       case "WTR126": case "WTR127": case "WTR128":
-        $rv = "";
         if(CardType($combatChain[0]) == "W")
         {
           DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
@@ -945,6 +951,7 @@
   function BlessingOfDeliveranceDestroy($amount)
   {
     global $mainPlayer;
+    if(!CanRevealCards($mainPlayer)) return "Blessing of Deliverance cannot reveal cards.";
     $deck = GetDeck($mainPlayer);
     $lifegain = 0;
     $cards = "";
@@ -956,7 +963,7 @@
         if(CardCost($deck[$i]) >= 3) ++$lifegain;
       }
     }
-    RevealCards($cards);
+    RevealCards($cards, $mainPlayer);//CanReveal called
     GainHealth($lifegain, $mainPlayer);
     return "Blessing of Deliverance gained " . $lifegain . " life.";
   }
@@ -1004,8 +1011,7 @@
     if(!ArsenalFull($mainPlayer) && count($deck) > 0)
     {
       $type = CardType($deck[0]);
-      RevealCards($deck[0]);
-      if($type == "A" || $type == "AA")
+      if(RevealCards($deck[0], $mainPlayer) && ($type == "A" || $type == "AA"))
       {
         AddArsenal($deck[0], $mainPlayer, "DECK", "DOWN");
         array_shift($deck);

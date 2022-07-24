@@ -123,7 +123,7 @@
     }
   }
 
-  function ELERangerPlayAbility($cardID, $from, $resourcesPaid)
+  function ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     $rv = "";
@@ -131,13 +131,8 @@
     switch($cardID)
     {
       case "ELE031": case "ELE032":
-        if(ArsenalHasFaceDownCard($currentPlayer))
-        {
-          $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
-          $rv = "Turns " . CardLink($cardFlipped, $cardFlipped) . " face up.";
-          if(TalentContains($cardFlipped, "LIGHTNING")) { $rv .= " The next attacks gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
-          if(TalentContains($cardFlipped, "ICE")) { $rv .= " The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
-        }
+        if(DelimStringContains($additionalCosts, "LIGHTNING")) { $rv .= "The next attack gains go again."; AddCurrentTurnEffect("ELE031-1", $currentPlayer); }
+        if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("ELE111", $otherPlayer); }
         return $rv;
       case "ELE033":
         if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
@@ -162,6 +157,11 @@
         return "Makes cards and activating abilities by the opponent cost 1 more this turn.";
       case "ELE037":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "LIGHTNING"))
+        {
+          AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
+          WriteLog("Ice Storm gets fuse bonuses.");
+        }
         return "";
       case "ELE214":
         $arsenal = &GetArsenal($currentPlayer);
@@ -201,6 +201,11 @@
 
   function Fuse($cardID, $player, $elements)
   {
+    if(!CanRevealCards($player))
+    {
+      WriteLog("Cannot fuse because you cannot reveal cards.");
+      return;
+    }
     $elementArray = explode(",", $elements);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
@@ -209,7 +214,7 @@
       $element = $elementArray[$i];
       AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-      AddDecisionQueue("REVEALMYCARD", $player, "<-", 1);
+      AddDecisionQueue("REVEALHANDCARDS", $player, "<-", 1);
       if($isAndOrFuse) AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
       if($i > 0) $elementText .= " and ";
       $elementText .= $element;
@@ -235,7 +240,6 @@
     switch($cardID)
     {
       case "ELE004": AddCurrentTurnEffect($cardID, $otherPlayer); break;
-      case "ELE005": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE007": case "ELE008": case "ELE009": PayOrDiscard($otherPlayer, 2, true); break;
       case "ELE010": case "ELE011": case "ELE012":
         $index = GetClassState($player, $CS_PlayCCIndex);
@@ -247,7 +251,6 @@
       case "ELE025": case "ELE026": case "ELE027": PlayAura("ELE111", $otherPlayer); break;
       case "ELE028": case "ELE029": case "ELE030": PlayAura("WTR075", $player); break;
       case "ELE035": AddCurrentTurnEffect($cardID . "-2", $player); break;
-      case "ELE037": AddCurrentTurnEffect($cardID . "-2", $player); break;
       case "ELE038": case "ELE039": case "ELE040": AddCurrentTurnEffect($cardID, $otherPlayer); break;
       case "ELE041": case "ELE042": case "ELE043":
         SearchCharacterAddUses($player, 1, "W", "Bow");
@@ -259,7 +262,6 @@
       case "ELE053": case "ELE054": case "ELE055": GiveAttackGoAgain(); break;
       case "ELE056": case "ELE057": case "ELE058": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE059": case "ELE060": case "ELE061": AddCurrentTurnEffect($cardID, $player); break;
-      case "ELE064": AddCurrentTurnEffect($cardID, $player); DealArcane(1, 0, "PLAYCARD", $cardID, true); break;
       case "ELE065": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE066": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE070": case "ELE071": case "ELE072": DealArcane(1, 0, "PLAYCARD", $cardID, true); break;

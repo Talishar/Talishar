@@ -165,13 +165,20 @@
           $rv .= "If this hits, your opponent gains a Frostbite.";
         }
         return $rv;
+      case "ELE005":
+        if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH"))
+        {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          WriteLog("Oaken Old gets +2, Dominate, and discards cards on hit.");
+        }
+        return "";
       case "ELE006":
         if(DelimStringContains($additionalCosts, "EARTH")) AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-");
         AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "ELE205":

@@ -255,8 +255,11 @@
         GhostlyTouchPhantasmDestroy();
       }
       AttackDestroyed($attackID);
-      if(CardType($attackID) == "AA") IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
-      CloseCombatChain();
+      if(CardType($attackID) == "AA")
+      {
+        IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
+        CloseCombatChain();//If it's an ally it will get destroyed with the ally
+      }
     }
   }
 

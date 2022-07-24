@@ -2,6 +2,7 @@
 
 include "Libraries/SHMOPLibraries.php";
 include "HostFiles/Redirector.php";
+include "CardDictionary.php";
 
 define('ROOTPATH', __DIR__);
 
@@ -12,6 +13,8 @@ $spectateLinks = "";
 $blitzLinks = "";
 $ccLinks = "";
 $commonerLinks = "";
+
+$isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
 
 echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
@@ -27,9 +30,22 @@ if ($handle = opendir($path)) {
           $lastGamestateUpdate = intval(GetCachePiece($gameToken, 6));
           if($currentTime - $lastGamestateUpdate < 30000)
           {
+            $p1Hero = GetCachePiece($gameToken, 7);
+            $p2Hero = GetCachePiece($gameToken, 8);
             $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn3.php'>";
-            $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate)/1000) . " seconds ago </label>";
+            $spectateLinks .= "<center><table><tr><td style='vertical-align:middle;'>";
+            if($p1Hero == "")$spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate)/1000) . " seconds ago </label>";
+            else {
+              if($p2Hero == "") $p2Hero = "CRU099";
+              $spectateLinks .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+              $spectateLinks .= "</td><td style='vertical-align:middle;'>";
+              $spectateLinks .= " &nbsp; vs &nbsp; ";
+              $spectateLinks .= "</td><td>";
+              $spectateLinks .= "<img height='40px;' src='./crops/" . $p2Hero . "_cropped.png' />";
+              $spectateLinks .= "</td><td style='vertical-align:middle;'>&nbsp;";
+            }
             $spectateLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
+            $spectateLinks .= "</td></tr></table><center>";
             $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
             $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
             $spectateLinks .= "</form>";
@@ -67,32 +83,37 @@ if ($handle = opendir($path)) {
 
       if($status == 0 && $visibility == "public")
       {
+        $p1Hero = GetCachePiece($gameName, 7);
+        $formatName = "";
+        if($format == "commoner") $formatName = "Commoner ";
+        else if($format == "aggrocc") $formatName = "Aggro CC ";
+
+        $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
+        $link .= "<center><table style='left:40%;'><tr><td style='vertical-align:middle;'>";
+        if($formatName != "") $link .= $formatName . "&nbsp;</td><td>";
+        if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+        $link .= "</td><td style='vertical-align:middle;'>";
+        $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;" . ($p1Hero != "" ? CardName($p1Hero) : "Open Game") . " </span>";
+        $link .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
+        $link .= "</td></tr></table></center>";
+        $link .= "<input type='hidden' name='gameName' value='$gameToken' />";
+        $link .= "<input type='hidden' name='playerID' value='2' />";
+        $link .= "</form>";
         if($format == "blitz")
         {
-          $blitzLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-          $blitzLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
-          $blitzLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
-          $blitzLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-          $blitzLinks .= "<input type='hidden' name='playerID' value='2' />";
-          $blitzLinks .= "</form>";
+          if(!$isOmegaEclipse) $blitzLinks .= $link;
         }
         else if($format == "cc")
         {
-          $ccLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-          $ccLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
-          $ccLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
-          $ccLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-          $ccLinks .= "<input type='hidden' name='playerID' value='2' />";
-          $ccLinks .= "</form>";
+          if(!$isOmegaEclipse) $ccLinks .= $link;
          }
          else if($format == "commoner")
          {
-           $commonerLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
-           $commonerLinks .= "<label for='joinGame' style='font-weight:500;'>Open Game </label>";
-           $commonerLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
-           $commonerLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
-           $commonerLinks .= "<input type='hidden' name='playerID' value='2' />";
-           $commonerLinks .= "</form>";
+           if(!$isOmegaEclipse) $commonerLinks .= $link;
+         }
+         else if($format == "aggrocc")
+         {
+           if($isOmegaEclipse) $commonerLinks .= $link;
          }
       }
     }
@@ -104,7 +125,7 @@ if ($handle = opendir($path)) {
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
   echo($ccLinks);
   echo("<h3 style='text-align:center;'>________</h3>");
-  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Commoner</h2>");
+  echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
   echo($commonerLinks);
   echo("<h3 style='text-align:center;'>________</h3>");
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress</h2>");

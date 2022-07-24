@@ -57,8 +57,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
     switch($class)
     {
       case "GUARDIAN": return ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "RANGER": return ELERangerPlayAbility($cardID, $from, $resourcesPaid);
-      case "RUNEBLADE": return ELERunebladePlayAbility($cardID, $from, $resourcesPaid);
+      case "RANGER": return ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "RUNEBLADE": return ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid);
     }
   }
@@ -155,6 +155,17 @@ function ProcessHitEffect($cardID)
   }
   switch($cardID)
   {
+    default: break;
+  }
+}
+
+function ArcaneHitEffect($me, $source, $target, $damage)
+{
+  switch($source)
+  {
+    case "UPR113": case "UPR114": case "UPR115":
+      if(MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
+      break;
     default: break;
   }
 }
@@ -647,7 +658,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ELE038": case "ELE039": case "ELE040": $costModifier += 1; break;
         case "ELE144": $costModifier += 1; break;
         case "EVR179": if(IsStaticType(CardType($cardID), $from, $cardID)) $costModifier -= 1; $remove = 1; break;
-        case "UPR000": if(TalentContains($cardID, "DRACONIC", $currentPlayer)) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; }
+        case "UPR000": if(TalentContains($cardID, "DRACONIC", $currentPlayer)) { $costModifier -= 1; --$currentTurnEffects[$i+3]; if($currentTurnEffects[$i+3] <= 0) $remove = 1; } break;
         case "UPR075": case "UPR076": case "UPR077": if(GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i+2]) { --$costModifier; $remove = 1; } break;
         case "UPR166": if(IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) $costModifier -= 3; $remove = 1; break;
         default: break;
@@ -1431,6 +1442,11 @@ function Draw($player, $mainPhase=true)
       return "";
     }
   }
+  if($mainPhase && SearchAurasForCard("UPR138", $otherPlayer) != "")
+  {
+    WriteLog("Draw prevented by Channel the Bleak Expanse.");
+    return "";
+  }
   $deck = &GetDeck($player);
   $hand = &GetHand($player);
   if(count($deck) == 0) return -1;
@@ -1911,8 +1927,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CRU026": $rv = SearchEquipNegCounter($defCharacter); break;
         case "CRU105": $rv = GetWeaponChoices("Pistol"); break;
         case "CRU143": $rv = SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE"); break;
-        case "LAYER": $rv = SearchLayerDQ($subparam); break;
-        case "DECK": $deck = GetDeck($player); $rv = GetIndices(count($deck)); break;
+        case "LAYER": $rv = SearchLayerDQ($player, $subparam); break;
+        case "DECK": $rv = SearchDeck($player); break;
         case "TOPDECK": $deck = &GetDeck($player); if(count($deck) > 0) $rv = "0"; break;
         case "DECKTOPX": $rv = ""; $deck = &GetDeck($player); for($i=0; $i<$subparam; ++$i) if($i < count($deck)) { if($rv != "") $rv .= ","; $rv .= $i; } break;
         case "DECKCLASSAA": $rv = SearchDeck($player, "AA", "", -1, -1, $subparam); break;
@@ -2307,11 +2323,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $character[$parameter+1] = 1;
       return $parameter;
-    case "REVEALMYCARD":
-      $hand = GetHand($player);
-      WriteLog(CardLink($hand[$lastResult], $hand[$lastResult]) . " was revealed.");
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $lastResult;
     case "DECKCARDS":
       $indices = explode(",", $parameter);
       $deck = &GetDeck($player);
@@ -2328,18 +2339,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHOWBANISHEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
       return $lastResult;
-    case "REVEALCARD":
-      WriteLog(CardLink($lastResult, $lastResult) . " was revealed.");
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $lastResult;
     case "REVEALCARDS":
-      $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      for($i=0; $i<count($cards); ++$i)
-      {
-        WriteLog(CardLink($cards[$i], $cards[$i]) . " was revealed.");
-      }
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $lastResult;
+      $cards = (is_array($lastResult) ? implode(",", $lastResult) : $lastResult);
+      $revealed = RevealCards($cards, $player);
+      return ($revealed ? $lastResult : "PASS");
     case "REVEALHANDCARDS":
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
@@ -2348,10 +2351,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         if($cards != "") $cards .= ",";
         $cards .= $hand[$indices[$i]];
-        WriteLog(CardLink($hand[$indices[$i]], $hand[$indices[$i]]) . " was revealed.");
       }
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $cards;
+      $revealed = RevealCards($cards, $player);
+      return ($revealed ? $cards : "PASS");
     case "WRITELOG":
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
@@ -2699,9 +2701,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $damage;
     case "AFTERQUELL":
       $curMaxQuell = GetClassState($player, $CS_MaxQuellUsed);
+      WriteLog("Player $player prevented damage with Quell.");
       if($lastResult > $curMaxQuell) SetClassState($player, $CS_MaxQuellUsed, $lastResult);
       return $lastResult;
     case "DEALARCANE":
+      $dqState[7] = $lastResult;
       $target = explode("-", $lastResult);
       $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1));
       $parameters = explode("-", $parameter);
@@ -2731,7 +2735,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         {
           AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
         }
-        return;
+        return "";
       }
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
@@ -2746,6 +2750,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
       return $parameter;
+    case "ARCANEHITEFFECT":
+      if($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]);//Source, target, damage
+      return $lastResult;
     case "ARCANECHOSEN":
       if($lastResult > 0)
       {
@@ -3125,6 +3132,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         $damage -= ArcaneDamagePrevented($player, $lastResult);
         if($damage < 0) $damage = 0;
+        $dqVars[0] = $damage;
         PrependArcaneDamageReplacement($player, $damage);
       }
       return $damage;
@@ -3166,8 +3174,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
-      RevealCards($deck[0]);
-      if(AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt))
+      if(RevealCards($deck[0], $player) && AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt))
       {
         WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
         Draw($player);
@@ -3221,8 +3228,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if(TalentContains($card, "EARTH")) $hasEarth = true;
         $cards .= $card;
       }
-      RevealCards($cards);
-      if($hasLightning && $hasIce && $hasEarth)
+      if(RevealCards($cards, $player) && $hasLightning && $hasIce && $hasEarth)
       {
         WriteLog("Bravo, Star of the Show gives the next attack with cost 3 or more +2, Dominate, and go again.");
         AddCurrentTurnEffect("EVR017", $player);
@@ -3237,8 +3243,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PICKACARD":
       $hand = &GetHand(($player == 1 ? 2 : 1));
       $rand = rand(0, count($hand)-1);
-      RevealCards($hand[$rand]);
-      if(CardName($hand[$dqVars[0]]) == CardName($hand[$rand])) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
+      if(RevealCards($hand[$rand], $player) && CardName($hand[$dqVars[0]]) == CardName($hand[$rand])) { WriteLog("Bingo! Your opponent tossed you a silver."); PutItemIntoPlayForPlayer("EVR195", $player); }
       return $lastResult;
     case "TWINTWISTERS":
       switch($lastResult)

@@ -122,8 +122,8 @@
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
         AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with Sonic Boom.");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with Sonic Boom.", 1);
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -141,7 +141,7 @@
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         return "";
       case "ARC122":
         AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
@@ -212,8 +212,14 @@
 
   }
 
-  //OpposingOnly -- 0=Opposing hero only, 1=Any Hero, 2=Any Target
-  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false)
+  //Parameters:
+  //Player = Player controlling the arcane effects
+  //target =
+  // 0: My Hero + Their Hero
+  // 1: Their Hero only
+  // 2: Any Target
+  // 3: Their Hero + Their Alliers
+  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
@@ -222,10 +228,11 @@
     {
       if(!$limitDuplicates)
       {
-        PrependDecisionQueue("PASSPARAMETER", $player, "{0}", 1);
-        PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected, 1);
-        PrependDecisionQueue("PASSPARAMETER", $player, "-", 1);
+        PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
+        PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
+        PrependDecisionQueue("PASSPARAMETER", $player, "-");
       }
+      if(!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       if($mayAbility) { PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
@@ -261,11 +268,12 @@
       else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
+      if(!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       if(!$limitDuplicates)
       {
-        AddDecisionQueue("PASSPARAMETER", $player, "-", 1);
-        AddDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected, 1);
-        AddDecisionQueue("PASSPARAMETER", $player, "{0}", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "-");
+        AddDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
+        AddDecisionQueue("PASSPARAMETER", $player, "{0}");
       }
     }
   }
@@ -282,7 +290,7 @@
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
     if($target != 3) $rv = "THEIRCHAR-0";
-    if($target == 0 || $target == 2)
+    if(($target == 0 || $target == 2) && !ShouldAutotargetOpponent($player))
     {
       $rv .= ",MYCHAR-0";
     }
