@@ -132,7 +132,7 @@
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
           AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";

@@ -189,7 +189,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2");
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         WriteLog("Belittle let you choose a card in hand to tutor Minnowism.");
       }
