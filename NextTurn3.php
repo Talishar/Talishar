@@ -10,6 +10,8 @@
   $playerID=TryGet("playerID", 3);
   $authKey=TryGet("authKey", 3);
 
+  session_start();
+
   //First we need to parse the game state from the file
   include "WriteLog.php";
   include "ParseGamestate.php";
@@ -158,8 +160,14 @@
   echo("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
   echo("<div id='mainDiv' style='left:0px; top:0px; width:100%;height:100%;'></div>");
   echo("<div id='chatbox' style='position:fixed; bottom:0px; right:10px; width:200px; height: 30px;'>");
-  echo("<input style='margin-left: 4px; margin-right: 1px; width:150px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' onclick='SubmitChat()'>Chat</button>");
+  if(isset($_SESSION["useruid"]))
+  {
+    echo("<input style='margin-left: 4px; margin-right: 1px; width:150px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+    echo("<button style='display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' onclick='SubmitChat()'>Chat</button>");
+  }
+  else {
+    echo("<span style='color:white;'>Log in to chat.</span>");
+  }
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("<input type='hidden' id='authKey' value='" . $authKey . "'>");
