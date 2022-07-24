@@ -14,6 +14,8 @@ $blitzLinks = "";
 $ccLinks = "";
 $commonerLinks = "";
 
+$isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
+
 echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
     while (false !== ($folder = readdir($handle))) {
@@ -99,15 +101,19 @@ if ($handle = opendir($path)) {
         $link .= "</form>";
         if($format == "blitz")
         {
-          $blitzLinks .= $link;
+          if(!$isOmegaEclipse) $blitzLinks .= $link;
         }
         else if($format == "cc")
         {
-          $ccLinks .= $link;
+          if(!$isOmegaEclipse) $ccLinks .= $link;
          }
-         else if($format == "commoner" || $format == "aggrocc")
+         else if($format == "commoner")
          {
-           $commonerLinks .= $link;
+           if(!$isOmegaEclipse) $commonerLinks .= $link;
+         }
+         else if($format == "aggrocc")
+         {
+           if($isOmegaEclipse) $commonerLinks .= $link;
          }
       }
     }
