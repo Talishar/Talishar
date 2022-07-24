@@ -1083,6 +1083,7 @@ function RevealCards($cards, $player="")
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
   WriteLog($string);
+  if($player != "" && SearchLandmarks("ELE000")) KorshemRevealAbility($player);
   return true;
 }
 
@@ -1362,7 +1363,7 @@ function AddCharacterUses($player, $index, $numToAdd)
   function CanRevealCards($player)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
-    if(SearchAurasForCard("UPR138", $otherPlayer)) return false;
+    if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") return false;
     return true;
   }
 

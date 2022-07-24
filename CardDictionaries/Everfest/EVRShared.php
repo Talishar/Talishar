@@ -1229,7 +1229,7 @@
           AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
           AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
           AddDecisionQueue("HANDCARD", $defPlayer, "-", 1);
-          AddDecisionQueue("REVEALCARD", $defPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARDS", $defPlayer, "-", 1);
           AddDecisionQueue("BINGO", $mainPlayer, "-", 1);
         }
       default: break;

@@ -259,7 +259,7 @@
         AddDecisionQueue("FINDINDICES", $mainPlayer, $cardID);
         AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $mainPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
         break;
       case "ARC194": case "ARC195": case "ARC196":

@@ -2344,18 +2344,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHOWBANISHEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
       return $lastResult;
-    case "REVEALCARD":
-      WriteLog(CardLink($lastResult, $lastResult) . " was revealed.");
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $lastResult;
     case "REVEALCARDS":
-      $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      for($i=0; $i<count($cards); ++$i)
-      {
-        WriteLog(CardLink($cards[$i], $cards[$i]) . " was revealed.");
-      }
-      if(SearchLandmarks("ELE000")) KorshemRevealAbility($player);
-      return $lastResult;
+      $cards = (is_array($lastResult) ? implode(",", $lastResult) : $lastResult);
+      $revealed = RevealCards($cards, $player);
+      return ($revealed ? $lastResult : "PASS");
     case "REVEALHANDCARDS":
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
