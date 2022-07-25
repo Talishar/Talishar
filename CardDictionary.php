@@ -1087,8 +1087,9 @@
       case "ELE118": return ArsenalEmpty($player);
       case "ELE143": return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
       case "ELE147":
-        if(count($layers) != 0) return !(CardType($layers[0]) == "W" || CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to work on Aura attacks and not on Waning Moon activation
-        else return count($combatChain) == 0;
+        if(count($layers) != 0) {
+          return !(CardSubType($layers[0]) == "Dagger" || CardSubType($layers[0]) == "Hammer" || CardSubType($layers[0]) == "Sword" || CardSubType($layers[0]) == "Club" || CardSubType($layers[0]) == "Scythe" || CardSubType($layers[0]) == "Axe" || CardSubType($layers[0]) == "Flail" || CardSubType($layers[0]) == "Pistol" || CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to work on Aura attacks and not on Pistol activation
+        } else return count($combatChain) == 0;
       case "ELE172": return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
       case "ELE183": case "ELE184": case "ELE185": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
       case "ELE201": return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;

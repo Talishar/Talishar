@@ -860,7 +860,6 @@ function CurrentEffectPreventsGoAgain()
       switch($currentTurnEffects[$i])
       {
         case "WTR044": return true;
-        case "ELE147": return true;
         default: break;
       }
     }
