@@ -1378,8 +1378,11 @@
       case "CRU053": return 1;//Breeze Rider Boots
       case "CRU161": return 1;//Metacarpus Node
       case "MON122": return 0;//Hooves of the Shadowbeast
-      case "ELE173": return 1;//Mark of Lightning
+      case "ELE174": return 1;//Mark of Lightning
       case "EVR037": return 1;//Mask of the Pouncing Lynx
+      case "ELE173": case "MON061": case "MON090":
+      case "MON188": case "MON302": case "MON400":
+      case "MON401": case "MON402": return 1;//Spellvoid Equipments
       default: return 2;
     }
   }
