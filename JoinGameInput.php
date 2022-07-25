@@ -3,6 +3,7 @@
   include "WriteLog.php";
   include "Libraries/HTTPLibraries.php";
   include "Libraries/SHMOPLibraries.php";
+  include "APIKeys/APIKeys.php";
 
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
@@ -54,6 +55,7 @@
 
   if($decklink != "")
   {
+    $curl = curl_init();
     $isFaBDB = str_contains($decklink, "fabdb");
     if($isFaBDB)
     {
@@ -61,9 +63,16 @@
       $slug = $decklink[count($decklink)-1];
       $apiLink = "https://api.fabdb.net/decks/" . $slug;
     }
-    else $apiLink = $decklink;
+    else
+    {
+      $headers = array(
+        "x-api-key: " . $FaBraryKey,
+        "Content-Type: application/json",
+      );
+      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+      $apiLink = $decklink;
+    }
 
-    $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $apiLink);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     $apiDeck = curl_exec($curl);
