@@ -374,6 +374,7 @@
         if($cardID == "ELE166") $cost = 3;
         else if($cardID == "ELE167") $cost = 2;
         else $cost = 1;
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_".$cost."_to_prevent_your_opponent_next_attack_to_gain_Dominate.");
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
