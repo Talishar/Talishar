@@ -941,6 +941,8 @@
     if($player == "") $player = $currentPlayer;
     $otherPlayer = $player == 2 ? 1 : 2;
     if(($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY";//If it was blocking, don't put it where it would go if it was played
+    $subtype = CardSubType($cardID);
+    if(DelimStringContains($subtype, "Invocation")) return "-";
     switch($cardID)
     {
       case "WTR163": return "BANISH";
