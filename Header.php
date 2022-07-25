@@ -11,6 +11,8 @@
     }
   }
 
+  if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse2") { exit; }
+
 ?>
 
 <!DOCTYPE html>
