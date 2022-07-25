@@ -1095,6 +1095,7 @@ function DoesAttackHaveGoAgain()
   $attackSubtype = CardSubType($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
+  if($attackType == "AA" && SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;
   if(HasGoAgain($combatChain[0])) return true;
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
@@ -1305,6 +1306,7 @@ function AddCharacterUses($player, $index, $numToAdd)
         $hasGoAgain = true;
         SetClassState($player, $CS_NextNAACardGoAgain, 0);
       }
+      if($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
       if($cardType == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID) || $hasGoAgain;
       if($cardType == "A" && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
     }
