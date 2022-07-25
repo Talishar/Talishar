@@ -24,6 +24,17 @@ function DestroyAlly($player, $index, $skipDestroy=false)
     AllyDestroyedAbility($player, $index);
   }
   if(IsSpecificAllyAttacking($player, $index)) { CloseCombatChain(); }
+  if(DelimStringContains(CardSubType($allies[$index]), "Dragon"))
+  {
+    $set = substr($allies[$index], 0, 3);
+    $number = intval(substr($allies[$index], -3));
+    $number -= 400;
+    $id = $number;
+    if($number < 100) $id = "0" . $id;
+    if($number < 10) $id = "0" . $id;
+    $id = $set . $id;
+    AddGraveyard($id, $player, "PLAY");
+  }
   for($j = $index+AllyPieces()-1; $j >= $index; --$j)
   {
     unset($allies[$j]);
