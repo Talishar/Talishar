@@ -91,9 +91,10 @@ if ($handle = opendir($path)) {
         $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
         $link .= "<center><table style='left:40%;'><tr><td style='vertical-align:middle;'>";
         if($formatName != "") $link .= $formatName . "&nbsp;</td><td>";
-        if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+        //else $link .= "Game #" . $gameName . "&nbsp;";
+        //if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
         $link .= "</td><td style='vertical-align:middle;'>";
-        $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;" . ($p1Hero != "" ? CardName($p1Hero) : "Open Game") . " </span>";
+        $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;Game #" . $gameName . " </span>";
         $link .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
         $link .= "</td></tr></table></center>";
         $link .= "<input type='hidden' name='gameName' value='$gameToken' />";
