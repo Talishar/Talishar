@@ -54,7 +54,7 @@ body {
   </select>
 </div><br>
 
-  <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>FaB DB Deck Link:</label>
+  <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
 
   <?php
