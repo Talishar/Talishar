@@ -11,7 +11,16 @@
     }
   }
 
-  if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse2") { exit; }
+  if(isset($_SESSION["useruid"]))
+  {
+    $useruid = $_SESSION["useruid"];
+    $banfileHandler = fopen("./HostFiles/bannedPlayers.txt", "r");
+    while(!feof($banfileHandler))  {
+      $bannedPlayer = fgets($banfileHandler);
+      if($useruid == $bannedPlayer) { fclose($banfileHandler); exit; }
+    }
+    fclose($banfileHandler);
+  }
 
 ?>
 
