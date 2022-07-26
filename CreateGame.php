@@ -64,6 +64,7 @@
   $p2uid = "-";
   $p1id = "-";
   $p2id = "-";
+  $hostIP = $_SERVER['REMOTE_ADDR'];
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
   $gameFileHandler = fopen($filename, "w");
