@@ -345,6 +345,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $layerPriority[1] = ShouldHoldPriority(2);
           if($cardID == "ENDTURN") FinishTurnPass();
           else if($cardID == "RESUMETURN") $turn[0] = "M";
+          else if($cardID == "LAYER") ProcessLayer($player, $parameter);
           else
           {
             SetClassState($player, $CS_AbilityIndex, $params[2]);//This is like a parameter to PlayCardEffect and other functions
@@ -367,8 +368,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         }
         $params = explode("|", $decisionQueue[2]);
         CloseDecisionQueue();
-
-        if($turn[0] == "B")//If a layer is not created
+        if($turn[0] == "B" && count($layers) == 0)//If a layer is not created
         {
           PlayCardEffect($params[0], $params[1], $params[2], "-", $params[3], $params[4]);
         }
@@ -452,6 +452,15 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     else
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+    }
+  }
+
+  function ProcessLayer($player, $parameter)
+  {
+    switch($parameter)
+    {
+      case "PHANTASM": PhantasmLayer(); break;
+      default: break;
     }
   }
 
