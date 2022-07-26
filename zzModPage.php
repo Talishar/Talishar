@@ -18,7 +18,7 @@
   }
   fclose($banfileHandler);
 
-    echo("<br><br><form  action='./HostFiles/BanPlayer.php'>");
+    echo("<br><br><form  action='./BanPlayer.php'>");
 ?>
      <label for="playerToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban:</label>
      <input type="text" id="playerToBan" name="playerToBan" value="">
@@ -46,4 +46,18 @@
     echo($row[0] . "<BR>");
   }
 
+
+  echo("<br><h1>Banned IPs:</h1>");
+  $banfileHandler = fopen("./HostFiles/bannedIPs.txt", "r");
+  while(!feof($banfileHandler))  {
+    $bannedIP = fgets($banfileHandler);
+    echo($bannedIP . "<BR>");
+  }
+  fclose($banfileHandler);
  ?>
+
+  <br><form  action='./BanPlayer.php'>
+       <label for="ipToBan" style='font-weight:bolder; margin-left:10px;'>Game host to IP ban:</label>
+       <input type="text" id="ipToBan" name="ipToBan" value="">
+       <input type="submit" value="Ban">
+      </form>
