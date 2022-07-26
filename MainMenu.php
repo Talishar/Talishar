@@ -156,7 +156,7 @@ border-radius: 5px;">
   <p>Shiyana Copy Ability</p>
 
   <div style='padding-top:10%;'><h2>FaBrary Deck Integration!</h2></div>
-  <div style='vertical-align:middle;'><a href='https://fabrary.net/' target='_blank'><img style='padding-left:25%; width:50%;' src="./Images/fabraryLogo.png" /></a></div>
+  <div style='vertical-align:middle;'><a href='https://fabrary.net/decks/' target='_blank'><img style='padding-left:25%; width:50%;' src="./Images/fabraryLogo.png" /></a></div>
   <h1>Click above to explore tournament winning decks!</h1>
 
 <!--
