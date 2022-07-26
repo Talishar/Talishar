@@ -1,7 +1,5 @@
 <?php
 
-  if($_SERVER['REMOTE_ADDR'] == "74.97.16.117") exit;
-
   include_once 'includes/functions.inc.php';
   include_once 'includes/dbh.inc.php';
   session_start();
