@@ -24,7 +24,7 @@ function DestroyAlly($player, $index, $skipDestroy=false)
     AllyDestroyedAbility($player, $index);
   }
   if(IsSpecificAllyAttacking($player, $index)) { CloseCombatChain(); }
-  if(DelimStringContains(CardSubType($allies[$index]), "Dragon"))
+  if(CardType($allies[$index]) != "T" && DelimStringContains(CardSubType($allies[$index]), "Dragon"))
   {
     $set = substr($allies[$index], 0, 3);
     $number = intval(substr($allies[$index], -3));
