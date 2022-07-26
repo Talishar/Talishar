@@ -599,6 +599,8 @@ function SearchMZ($player, $subparam)
       case "THEIRPERM": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPermanents($otherPlayer), $zones[$i])); break;
       case "MYAURAS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($player), $zones[$i])); break;
       case "THEIRAURAS": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($otherPlayer), $zones[$i])); break;
+      case "MYPITCH": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPitch($player), $zones[$i])); break;
+      case "THEIRPITCH": $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchPitch($otherPlayer), $zones[$i])); break;
       default: break;
     }
   }
@@ -657,6 +659,7 @@ function SearchMultizone($player, $searches)
       case "MYITEMS": case "THEIRITEMS": $searchResult = SearchItems($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
       case "MYALLY": case "THEIRALLY": $searchResult = SearchAllies($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
       case "MYPERM": case "THEIRPERM": $searchResult = SearchPermanents($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
+      case "MYPITCH": case "THEIRPITCH": $searchResult = SearchPitch($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
       default: break;
     }
     $searchResult = SearchMultiZoneFormat($searchResult, $zone);
