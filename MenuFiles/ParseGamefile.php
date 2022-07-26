@@ -37,6 +37,7 @@
   $p2uid = trim(fgets($gameFileHandler));
   $p1id = trim(fgets($gameFileHandler));
   $p2id = trim(fgets($gameFileHandler));
+  $gameDescription = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

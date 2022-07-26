@@ -15,6 +15,7 @@
   $visibility=TryGET("visibility");
   $set=TryGET("set");
   $decksToTry = TryGet("decksToTry");
+  $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
 
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
   $attemptCount = 0;

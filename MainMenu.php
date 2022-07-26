@@ -56,6 +56,8 @@ body {
 
   <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
+  <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
+  <input type="text" id="gameDescription" name="gameDescription" value="Game #"><br><br>
 
   <?php
     $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
