@@ -577,6 +577,8 @@
     {
       $currentPlayer = $currentPlayer == 1 ? 2 : 1;
       $turn[0] = "A";
+      OnBlockResolveEffects();
+      ProcessDecisionQueue();
     }
     else if($turn[0] == "A")
     {
