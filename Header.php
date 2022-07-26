@@ -16,7 +16,7 @@
     $useruid = $_SESSION["useruid"];
     $banfileHandler = fopen("./HostFiles/bannedPlayers.txt", "r");
     while(!feof($banfileHandler))  {
-      $bannedPlayer = fgets($banfileHandler);
+      $bannedPlayer = trim(fgets($banfileHandler), "\r\n");
       if($useruid == $bannedPlayer) { fclose($banfileHandler); exit; }
     }
     fclose($banfileHandler);
