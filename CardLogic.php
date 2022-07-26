@@ -58,20 +58,18 @@ function BottomDeckDraw()
   }
 }
 
-function BottomDeckMultizone($zone1, $zone2)
+function BottomDeckMultizone($player, $zone1, $zone2)
 {
-  global $currentPlayer;
-  AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ," . $zone1 ."|". $zone2, 1);
-  AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-  AddDecisionQueue("MULTIZONEREMOVE", $currentPlayer, "-", 1);
-  AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
+  AddDecisionQueue("FINDINDICES", $player, "SEARCHMZ," . $zone1 ."|". $zone2, 1);
+  AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MULTIZONEREMOVE", $player, "-", 1);
+  AddDecisionQueue("ADDBOTTOMMYDECK", $player, "-", 1);
 }
 
-function BottomDeckMultizoneDraw($zone1, $zone2)
+function BottomDeckMultizoneDraw($player, $zone1, $zone2)
 {
-  global $currentPlayer;
-  BottomDeckMultizone($zone1, $zone2);
-  AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+  BottomDeckMultizone($player, $zone1, $zone2);
+  AddDecisionQueue("DRAW", $player, "-", 1);
 }
 
 function AddCurrentTurnEffect($cardID, $player, $from="", $uniqueID=-1)
