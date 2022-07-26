@@ -569,14 +569,15 @@
   }
 
   function Pass(&$turn, $playerID, &$currentPlayer) {
+    global $defPlayer;
     if($turn[0] == "M" || $turn[0] == "ARS")
     {
       return 1;
     }
     else if($turn[0] == "B")
     {
-      $currentPlayer = $currentPlayer == 1 ? 2 : 1;
-      $turn[0] = "A";
+      $currentPlayer = $defPlayer;
+      $turn[0] = "D";
       OnBlockResolveEffects();
       ProcessDecisionQueue();
     }
