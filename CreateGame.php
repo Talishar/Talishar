@@ -20,8 +20,13 @@
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
   $attemptCount = 0;
 
-  $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
-  if($isOmegaEclipse) $format = "aggrocc";
+  $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse" || $_SERVER['REMOTE_ADDR'] == "72.92.241.141";
+  if($isOmegaEclipse)
+  {
+    if($format == "cc") $format = "shadowcc";
+    else if($format == "blitz") $format = "shadowblitz";
+    else if($format == "commoner") $format = "shadowcommoner";
+  }
 
   while(!flock($gcFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
     sleep(1);
