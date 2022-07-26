@@ -14,7 +14,15 @@ $blitzLinks = "";
 $ccLinks = "";
 $commonerLinks = "";
 
-$isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse" || $_SERVER['REMOTE_ADDR'] == "72.92.241.141";
+$isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
+
+$bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
+while(!feof($bannedIPHandler))  {
+  $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
+  if($_SERVER['REMOTE_ADDR'] == $bannedIP) { $isOmegaEclipse = true; }
+}
+fclose($bannedIPHandler);
+
 $isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
 
 echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");

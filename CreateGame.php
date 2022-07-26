@@ -20,7 +20,16 @@
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
   $attemptCount = 0;
 
-  $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse" || $_SERVER['REMOTE_ADDR'] == "72.92.241.141";
+  $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
+
+  $bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
+  while(!feof($bannedIPHandler))  {
+    $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
+    echo($_SERVER['REMOTE_ADDR'] . " " . $bannedIP . "<BR>");
+    if($_SERVER['REMOTE_ADDR'] == $bannedIP) { $isOmegaEclipse = true; }
+  }
+  fclose($bannedIPHandler);
+
   if($isOmegaEclipse)
   {
     if($format == "cc") $format = "shadowcc";
