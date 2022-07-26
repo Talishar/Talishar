@@ -447,6 +447,8 @@
       else if($option[0] == "THEIRARS") $source = $theirArsenal;
       else if($option[0] == "MYPERM") $source = $myPermanents;
       else if($option[0] == "THEIRPERM") $source = $theirPermanents;
+      else if($option[0] == "MYPITCH") $source = $myPitch;
+      else if($option[0] == "THEIRPITCH") $source = $theirPitch;
 
       $counters = 0;
       $lifeCounters = 0;
