@@ -155,12 +155,18 @@ border-radius: 5px;">
 <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220);">All cards supported except:</h2>
   <p>Shiyana Copy Ability</p>
 
+  <div style='padding-top:10%;'><h2>FaBrary Deck Integration!</h2></div>
+  <div style='vertical-align:middle;'><a href='https://fabrary.net/' target='_blank'><img style='padding-left:25%; width:50%;' src="./Images/fabraryLogo.png" /></a></div>
+  <h1>Click above to explore tournament winning decks!</h1>
+
+<!--
   <div style='position:absolute; bottom:10px; left:10px;'>
     <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
     <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:40px;' src='./Images/flags/italy.png' /></a>
     <br><br>
     <i style="font-size: small;">If you make a video in another language, let us know on Discord!</i>
   </div>
+-->
 
 </div>
 
