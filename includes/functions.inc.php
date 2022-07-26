@@ -178,9 +178,17 @@ function loginFromCookie()
 		$row = mysqli_fetch_array($data, MYSQLI_NUM);
 		mysqli_stmt_close($stmt);
 		mysqli_close($conn);
-		$_SESSION["userid"] = $row[0];
-		$_SESSION["useruid"] = $row[1];
-		$_SESSION["useremail"] = $row[2];
+		if($row != null && count($row) > 0)
+		{
+			$_SESSION["userid"] = $row[0];
+			$_SESSION["useruid"] = $row[1];
+			$_SESSION["useremail"] = $row[2];
+		}
+		else {
+			unset($_SESSION["userid"]);
+			unset($_SESSION["useruid"]);
+			unset($_SESSION["useremail"]);
+		}
 	}
 }
 
