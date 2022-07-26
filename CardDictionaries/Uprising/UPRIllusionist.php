@@ -59,7 +59,7 @@
   {
     switch($cardID)
     {
-      case "UPR006": case "UPR007": case "UPR009": case "UPR010": case "UPR011": case "UPR012": case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
+      case "UPR006": case "UPR007": case "UPR008": case "UPR009": case "UPR010": case "UPR011": case "UPR012": case "UPR013": case "UPR014": case "UPR015": case "UPR016": case "UPR017": return "Invocation";
       case "UPR003": return "Scepter";
       case "UPR004": return "Arms";
       case "UPR005": return "Aura";
