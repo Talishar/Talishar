@@ -70,7 +70,9 @@
         "Content-Type: application/json",
       );
       curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-      $apiLink = $decklink;
+      $decklink = explode("/", $decklink);
+      $slug = $decklink[count($decklink)-1];
+      $apiLink = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/" . $slug;
     }
 
     curl_setopt($curl, CURLOPT_URL, $apiLink);
