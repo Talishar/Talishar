@@ -237,20 +237,45 @@
 
   function ProcessPhantasmOnBlock($index)
   {
-    global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CS_NumPhantasmAADestroyed, $currentPlayer;
+    global $mainPlayer;
+    if(IsPhantasmActive() && DoesBlockTriggerPhantasm($index))
+    {
+      AddLayer("LAYER", $mainPlayer, "PHANTASM");
+    }
+  }
+
+  function DoesBlockTriggerPhantasm($index)
+  {
+    global $combatChain, $mainPlayer, $defPlayer;
     if(CardType($combatChain[$index]) != "AA") return;
-    if(ClassContains($combatChain[$index], "ILLUSIONIST", $currentPlayer)) return;
+    if(ClassContains($combatChain[$index], "ILLUSIONIST", $defPlayer)) return;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
     $origAV = $av;
     if($attackID == "MON008" || $attackID == "MON009" || $attackID == "MON010") --$av;
     $av += AuraAttackModifiers($index);
     $av += $combatChain[$index+5]; //Add Attack Modifiers
-    if($av < 6 && $origAV >= 6) WriteLog("Herald of Triumph reduced the attack below 6, so Phantasm does not trigger.");
-    if(IsPhantasmActive() && ($av >= 6))
+    return $av >= 6;
+  }
+
+  function IsPhantasmStillActive()
+  {
+    global $combatChain;
+    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
     {
+      if(DoesBlockTriggerPhantasm($i)) return true;
+    }
+    return false;
+  }
+
+  function PhantasmLayer()
+  {
+    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn;
+    if(IsPhantasmStillActive())
+    {
+      $attackID = $combatChain[0];
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
-      if(ClassContains($attackID, "ILLUSIONIST", $currentPlayer))
+      if(ClassContains($attackID, "ILLUSIONIST", $defPlayer))
       {
         GhostlyTouchPhantasmDestroy();
       }
@@ -260,6 +285,11 @@
         IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
         CloseCombatChain();//If it's an ally it will get destroyed with the ally
       }
+      ProcessDecisionQueue();
+    }
+    else {
+      $turn[0] = "A";
+      $currentPlayer = $mainPlayer;
     }
   }
 
