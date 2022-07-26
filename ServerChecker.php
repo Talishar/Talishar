@@ -15,6 +15,7 @@ $ccLinks = "";
 $commonerLinks = "";
 
 $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse" || $_SERVER['REMOTE_ADDR'] == "72.92.241.141";
+$isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
 
 echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
@@ -114,6 +115,7 @@ if ($handle = opendir($path)) {
         else if($format == "shadowblitz")
         {
           if($isOmegaEclipse) $blitzLinks .= $link;
+          else if($isMod) $commonerLinks .= $link;
         }
         else if($format == "cc")
         {
@@ -122,6 +124,7 @@ if ($handle = opendir($path)) {
         else if($format == "shadowcc")
         {
           if($isOmegaEclipse) $ccLinks .= $link;
+          else if($isMod) $commonerLinks .= $link;
         }
         else if($format == "commoner")
         {
@@ -130,6 +133,7 @@ if ($handle = opendir($path)) {
         else if($format == "shadowcommoner")
         {
           if($isOmegaEclipse) $commonerLinks .= $link;
+          else if($isMod) $commonerLinks .= $link;
         }
         else if($format == "aggrocc")
         {
