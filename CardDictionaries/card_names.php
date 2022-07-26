@@ -671,7 +671,7 @@ if ($set == "ELE")
 		case "230": return "Singeing Steelblade";
 		case "231": return "Singeing Steelblade";
 		case "232": return "Singeing Steelblade";
-		case "233": return "Ragamufhin's Hat";
+		case "233": return "Ragamuffin's Hat";
 		case "234": return "Deep Blue";
 		case "235": return "Cracker Jax";
 		case "236": return "Runaways";
