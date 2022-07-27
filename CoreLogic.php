@@ -127,6 +127,13 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid)
   return $index;
 }
 
+function CombatChainPowerModifier($index, $amount)
+{
+  global $combatChain;
+  $combatChain[$index+5] += $amount;
+  ProcessPhantasmOnBlock($index);
+}
+
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock;

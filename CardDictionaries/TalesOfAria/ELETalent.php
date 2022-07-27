@@ -246,7 +246,7 @@
     }
   }
 
-  function ELETalentPlayAbility($cardID, $from, $resourcesPaid)
+  function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts)
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     global $combatChain, $CS_DamagePrevention;
@@ -409,9 +409,12 @@
       case "ELE180": case "ELE181": case "ELE182":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next lightning or elemental attack +" . EffectAttackModifier($cardID) . " and go again if it's fused.";
-      case "ELE183": $combatChain[5] += 3; return "Gives the current attack +3.";//TODO: Target card to not hardcode to the first?
-      case "ELE184": $combatChain[5] += 2; return "Gives the current attack +2.";//TODO: Target card to not hardcode to the first?
-      case "ELE185": $combatChain[5] += 1; return "Gives the current attack +1.";//TODO: Target card to not hardcode to the first?
+      case "ELE183": case "ELE184": case "ELE185":
+        $amount = 3;
+        if($cardID == "ELE184") $amount = 2;
+        else if($cardID == "ELE185") $amount = 1;
+        CombatChainPowerModifier(intval($target), $amount);
+        return "";
       case "ELE186": case "ELE187": case "ELE188":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

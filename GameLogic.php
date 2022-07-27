@@ -59,7 +59,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
       case "GUARDIAN": return ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "RANGER": return ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "RUNEBLADE": return ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid);
+      default: return ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }
   }
   else if($set == "EVR")
