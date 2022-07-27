@@ -84,11 +84,11 @@
   {
     switch($cardID)
     {
-      case "ARC001": case "ARC002": case "ARC003": return 0;
+      case "ARC001": case "ARC002": case "ARC003": return -1;
       case "ARC004": return 2;
       case "ARC005": return 0;
-      case "ARC007": case "ARC010": case "ARC017": case "ARC018": case "ARC019": return 0;
-      case "ARC035": case "ARC036": case "ARC037": return 0;
+      case "ARC007": case "ARC010": case "ARC017": case "ARC018": case "ARC019": return -1;
+      case "ARC035": case "ARC036": case "ARC037": return -1;
       default: return 3;
     }
   }

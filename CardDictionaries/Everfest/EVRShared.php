@@ -565,9 +565,9 @@
       case "EVR001": return 1;
       case "EVR008": case "EVR009": case "EVR010": return -1;
       case "EVR011": case "EVR012": case "EVR013": return -1;
-      case "EVR017": return 0;
+      case "EVR017": return -1;
       case "EVR018": return 2;
-      case "EVR019": return 0;
+      case "EVR019": return -1;
       case "EVR020": return 2;
       case "EVR033": case "EVR034": case "EVR035": return -1;
       case "EVR037": return 2;
@@ -588,8 +588,8 @@
       case "EVR103": return 0;
       case "EVR106": return 2;
       case "EVR107": case "EVR108": case "EVR109": return 2;
-      case "EVR120": return 0;
-      case "EVR121": return 0;
+      case "EVR120": return -1;
+      case "EVR121": return -1;
       case "EVR122": return 2;
       case "EVR131": case "EVR132": case "EVR133": return 2;
       case "EVR137": return 0;
