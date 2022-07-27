@@ -20,6 +20,7 @@ function PlayAura($cardID, $player, $number=1, $isToken=false)
     array_push($auras, 0);//Attack counters
     array_push($auras, ($isToken ? 1 : 0));//Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
+    array_push($auras, GetUniqueId());
   }
   IncrementClassState($player, $CS_NumAuras, $number);
 }

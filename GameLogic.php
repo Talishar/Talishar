@@ -1268,6 +1268,54 @@ function OnAttackEffects($attack)
   }
 }
 
+function OnBlockResolveEffects()
+{
+  global $combatChain, $CS_DamageTaken, $defPlayer, $mainPlayer;
+  //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
+  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    switch($combatChain[$i])
+    {
+      case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $mainPlayer); break;
+      case "RVD003": case "RVD015":
+        $deck = &GetDeck($defPlayer);
+        $rv = "";
+        if(count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+        $wasRevealed = RevealCards($deck[0]);
+        if($wasRevealed)
+        {
+          if(AttackValue($deck[0]) < 6)
+          {
+            WriteLog("The card was put on the bottom of your deck.");
+            array_push($deck, array_shift($deck));
+          }
+        }
+        break;
+      case "UPR095":
+        if(GetClassState($defPlayer, $CS_DamageTaken) > 0)
+        {
+          $discard = &GetDiscard($defPlayer);
+          $found = -1;
+          for($i=0; $i<count($discard) && $found == -1; $i+=DiscardPieces())
+          {
+            if($discard[$i] == "UPR101") $found = $i;
+          }
+          if($found == -1) WriteLog("No Phoenix Flames in discard.");
+          else
+          {
+            RemoveGraveyard($defPlayer, $found);
+            AddPlayerHand("UPR101", $defPlayer, "GY");
+          }
+        }
+        break;
+      case "UPR182":
+        BottomDeckMultizoneDraw($defPlayer, "MYHAND","MYARS");
+        break;
+      default: break;
+    }
+  }
+}
+
 function OnBlockEffects($index, $from)
 {
   global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer, $CS_DamageTaken;
@@ -1328,41 +1376,6 @@ function OnBlockEffects($index, $from)
   }
   switch($combatChain[$index])
   {
-    case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $otherPlayer); break;
-    case "RVD003": case "RVD015":
-      $deck = &GetDeck($currentPlayer);
-      $rv = "";
-      if(count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
-      $wasRevealed = RevealCards($deck[0]);
-      if($wasRevealed)
-      {
-        if(AttackValue($deck[0]) < 6)
-        {
-          WriteLog("The card was put on the bottom of your deck.");
-          array_push($deck, array_shift($deck));
-        }
-      }
-      break;
-    case "UPR095":
-      if(GetClassState($currentPlayer, $CS_DamageTaken) > 0)
-      {
-        $discard = &GetDiscard($currentPlayer);
-        $found = -1;
-        for($i=0; $i<count($discard) && $found == -1; $i+=DiscardPieces())
-        {
-          if($discard[$i] == "UPR101") $found = $i;
-        }
-        if($found == -1) WriteLog("No Phoenix Flames in discard.");
-        else
-        {
-          RemoveGraveyard($currentPlayer, $found);
-          AddPlayerHand("UPR101", $currentPlayer, "GY");
-        }
-      }
-      break;
-    case "UPR182":
-      BottomDeckMultizoneDraw("MYHAND","MYARS");
-      break;
     case "UPR194": case "UPR195": case "UPR196":
       if(PlayerHasLessHealth($currentPlayer))
       {
@@ -2558,7 +2571,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         $character = &GetPlayerCharacter($player);
         $character[$parameter+4] = 1;
-        if(CachedTotalAttack() >= 6) $character[$parameter+1] = 0;
+        if(!ClassContains($combatChain[0], "ILLUSIONIST", ($player == 1 ? 2 : 1)) && CachedTotalAttack() >= 6) $character[$parameter+1] = 0;
       }
       return $lastResult;
     case "ARTOFWAR":
