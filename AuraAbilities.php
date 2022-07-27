@@ -204,6 +204,7 @@ function AuraBeginEndPhaseAbilities()
   for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
     $remove = 0;
+    $test = 0;
     switch($auras[$i])
     {
       case "ELE117":
@@ -281,24 +282,21 @@ function ChannelTalent($index, $talent)
       ++$numTalentInPitch;
     }
   }
-  if($numTalentInPitch >= $leftToBottom)
+  AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$index+2]);
+  AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+  for($k=0; $k<$auras[$index+2]; $k++)
   {
-    for($k=0; $k<$auras[$index+2]; $k++)
-    {
-      if($leftToBottom > 1) $plurial = "cards";
-      else $plurial = "card";
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=".$talent.";");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more ".$plurial." to put at the bottom for ".CardName($auras[$index]));
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      --$leftToBottom;
-    }
+    if($leftToBottom > 1) $plurial = "cards";
+    else $plurial = "card";
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=".$talent.";", 1);
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more ".$plurial." to put at the bottom for ".CardName($auras[$index]), 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+    AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+    AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
+    --$leftToBottom;
   }
-  else {
-    WriteLog(CardLink($auras[$index], $auras[$index]). " was unable to put enough cards at the bottom and was destroyed.");
-    DestroyAura($mainPlayer, $index);
-  }
+  AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $index);
 }
 
 function AuraEndTurnAbilities()
