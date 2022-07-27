@@ -3386,6 +3386,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "THEIRDISCARD": RemoveGraveyard($otherPlayer, $mzIndex[1]); break;
           case "MYARS": RemoveFromArsenal($player, $mzIndex[1]); break;
           case "THEIRARS": RemoveFromArsenal($otherPlayer, $mzIndex[1]); break;
+          case "MYPITCH" : RemovefromPitch($player, $mzIndex[1]); break;
+          case "THEIRPITCH" : RemovefromPitch($otherPlayer, $mzIndex[1]); break;
           default: break;
         }
       }
@@ -3411,6 +3413,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "THEIRARS":
             $arsenal = &GetArsenal($otherPlayer);
             AddBottomDeck($arsenal[$mzIndex[1]], $otherPlayer, $params[0]); break;
+          case "MYPITCH":
+            $pitch = &GetPitch($player);
+            AddBottomDeck($pitch[$mzIndex[1]], $player, $params[0]); break;
+          case "THEIRDISCARD":
+            $pitch = &GetPitch($otherPlayer);
+            AddBottomDeck($pitch[$mzIndex[1]], $otherPlayer, $params[0]); break;
           default: break;
         }
       }
