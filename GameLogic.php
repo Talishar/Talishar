@@ -2311,6 +2311,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYAURA":
       DestroyAura($player, $lastResult);
       break;
+    case "DESTROYCHANNEL":
+      WriteLog("Destroy Channel DQVar:". $dqVars[0]);
+      if($dqVars[0] > 0) DestroyAura($player, $parameter);
+      break;
     case "PARAMDELIMTOARRAY":
       return explode(",", $parameter);
     case "ADDSOUL":
@@ -3162,6 +3166,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "INCDQVAR":
       $dqVars[$parameter] += $lastResult;
+      return $lastResult;
+    case "DECDQVAR":
+      WriteLog("My DECDQVAR: ".$dqVars[$parameter]);
+      $dqVars[$parameter] -= 1;
       return $lastResult;
     case "DIVIDE":
       return floor($lastResult / $parameter);
