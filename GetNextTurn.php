@@ -761,7 +761,9 @@
   //Now display their arsenal
   if($theirArsenal != "")
   {
-    echo("<div title='Your opponent's Arsenal' style='position: fixed; top:5px; left:" . GetCharacterLeft("C", "") . "; display:inline-block;'>");
+    $arsenalLeft = (count($theirArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth/2) + 6) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
+    echo("<div title='Your opponent's Arsenal' style='position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) - $cardSize + 70) . "px;'>");//arsenal div
+
     for($i=0; $i<count($theirArsenal); $i+=ArsenalPieces())
     {
       echo("<div style='position:relative; display:inline;'>");
