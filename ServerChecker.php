@@ -16,6 +16,15 @@ $commonerLinks = "";
 
 $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
 
+$bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
+while(!feof($bannedIPHandler))  {
+  $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
+  if($_SERVER['REMOTE_ADDR'] == $bannedIP) { $isOmegaEclipse = true; }
+}
+fclose($bannedIPHandler);
+
+$isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
+
 echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
     while (false !== ($folder = readdir($handle))) {
@@ -111,18 +120,33 @@ if ($handle = opendir($path)) {
         {
           if(!$isOmegaEclipse) $blitzLinks .= $link;
         }
+        else if($format == "shadowblitz")
+        {
+          if($isOmegaEclipse) $blitzLinks .= $link;
+          else if($isMod) $commonerLinks .= $link;
+        }
         else if($format == "cc")
         {
           if(!$isOmegaEclipse) $ccLinks .= $link;
-         }
-         else if($format == "commoner")
-         {
-           if(!$isOmegaEclipse) $commonerLinks .= $link;
-         }
-         else if($format == "aggrocc")
-         {
-           if($isOmegaEclipse) $commonerLinks .= $link;
-         }
+        }
+        else if($format == "shadowcc")
+        {
+          if($isOmegaEclipse) $ccLinks .= $link;
+          else if($isMod) $commonerLinks .= $link;
+        }
+        else if($format == "commoner")
+        {
+          if(!$isOmegaEclipse) $commonerLinks .= $link;
+        }
+        else if($format == "shadowcommoner")
+        {
+          if($isOmegaEclipse) $commonerLinks .= $link;
+          else if($isMod) $commonerLinks .= $link;
+        }
+        else if($format == "aggrocc")
+        {
+          if($isOmegaEclipse) $commonerLinks .= $link;
+        }
       }
     }
     closedir($handle);

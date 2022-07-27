@@ -21,7 +21,21 @@
   $attemptCount = 0;
 
   $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
-  if($isOmegaEclipse) $format = "aggrocc";
+
+  $bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
+  while(!feof($bannedIPHandler))  {
+    $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
+    echo($_SERVER['REMOTE_ADDR'] . " " . $bannedIP . "<BR>");
+    if($_SERVER['REMOTE_ADDR'] == $bannedIP) { $isOmegaEclipse = true; }
+  }
+  fclose($bannedIPHandler);
+
+  if($isOmegaEclipse)
+  {
+    if($format == "cc") $format = "shadowcc";
+    else if($format == "blitz") $format = "shadowblitz";
+    else if($format == "commoner") $format = "shadowcommoner";
+  }
 
   while(!flock($gcFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
     sleep(1);
@@ -64,6 +78,7 @@
   $p2uid = "-";
   $p1id = "-";
   $p2id = "-";
+  $hostIP = $_SERVER['REMOTE_ADDR'];
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
   $gameFileHandler = fopen($filename, "w");

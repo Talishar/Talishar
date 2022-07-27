@@ -18,9 +18,46 @@
   }
   fclose($banfileHandler);
 
-    echo("<br><br><form  action='./HostFiles/BanPlayer.php'>");
+    echo("<br><br><form  action='./BanPlayer.php'>");
 ?>
      <label for="playerToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban:</label>
      <input type="text" id="playerToBan" name="playerToBan" value="">
      <input type="submit" value="Ban">
     </form>
+
+<?php
+
+
+  $sql = "SELECT usersUid FROM users ORDER BY usersID DESC LIMIT 20";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    //header("location: ../Signup.php?error=stmtfailed");
+    echo("ERROR");
+    exit();
+  }
+
+  //mysqli_stmt_bind_param($stmt, "ss", $username, $email);
+  mysqli_stmt_execute($stmt);
+
+  // "Get result" returns the results from a prepared statement
+  echo("<br><div>Most recently created accounts:</div>");
+  $userData = mysqli_stmt_get_result($stmt);
+  while ($row = mysqli_fetch_array($userData, MYSQLI_NUM)) {
+    echo($row[0] . "<BR>");
+  }
+
+
+  echo("<br><h1>Banned IPs:</h1>");
+  $banfileHandler = fopen("./HostFiles/bannedIPs.txt", "r");
+  while(!feof($banfileHandler))  {
+    $bannedIP = fgets($banfileHandler);
+    echo($bannedIP . "<BR>");
+  }
+  fclose($banfileHandler);
+ ?>
+
+  <br><form  action='./BanPlayer.php'>
+       <label for="ipToBan" style='font-weight:bolder; margin-left:10px;'>Game host to IP ban:</label>
+       <input type="text" id="ipToBan" name="ipToBan" value="">
+       <input type="submit" value="Ban">
+      </form>

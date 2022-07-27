@@ -569,14 +569,17 @@
   }
 
   function Pass(&$turn, $playerID, &$currentPlayer) {
+    global $defPlayer;
     if($turn[0] == "M" || $turn[0] == "ARS")
     {
       return 1;
     }
     else if($turn[0] == "B")
     {
-      $currentPlayer = $currentPlayer == 1 ? 2 : 1;
-      $turn[0] = "A";
+      $currentPlayer = $defPlayer;
+      $turn[0] = "D";
+      OnBlockResolveEffects();
+      ProcessDecisionQueue();
     }
     else if($turn[0] == "A")
     {
@@ -984,13 +987,14 @@ function FinalizeChainLink($chainClosed=false)
     $dynCostResolved = intval($dynCostResolved);
     $layerPriority[0] = ShouldHoldPriority(1);
     $layerPriority[1] = ShouldHoldPriority(2);
+    $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
     if($dynCostResolved == -1)
     {
       ClearAdditionalCosts($currentPlayer);
       //CR 5.1.2 Announce (CR 2.0)
       WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
       LogPlayCardStats($currentPlayer, $cardID, $from);
-      if($turn[0] != "P" && $turn[0] != "B")
+      if($playingCard)
       {
         MakeGamestateBackup();
         $lastPlayed = [];
@@ -1007,7 +1011,7 @@ function FinalizeChainLink($chainClosed=false)
         {
           SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
           $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID)));
-          if($turn[0] == "B" && CardType($cardID) != "I") $resources[1] += $dynCostResolved;
+          if(!$playingCard) $resources[1] += $dynCostResolved;
           else $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier() + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
           if($resources[1] < 0) $resources[1] = 0;
           LogResourcesUsedStats($currentPlayer, $resources[1]);
@@ -1018,9 +1022,9 @@ function FinalizeChainLink($chainClosed=false)
           $decisionQueue = [];
           //CR 5.1.3 Declare Costs Begin (CR 2.0)
           $resources[1] = 0;
-          if($turn[0] == "B") $dynCost = BlockDynamicCost($cardID);
+          if(!$playingCard) $dynCost = BlockDynamicCost($cardID);
           else $dynCost = DynamicCost($cardID);//CR 5.1.3a Declare variable cost (CR 2.0)
-          if($turn[0] != "B") AddPrePitchDecisionQueue($cardID, $from, $index);//CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
+          if($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index);//CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
           if($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
           AddPostPitchDecisionQueue($cardID, $from, $index);
           if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
@@ -1067,7 +1071,7 @@ function FinalizeChainLink($chainClosed=false)
     $playType = $cardType;
     PlayerMacrosCardPlayed();
     //We've paid resources, now pay action points if applicable
-    if($turn[0] != "B")
+    if($turn[0] != "B" || count($layers) > 0)
     {
       $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
       //if($from == "PLAY" || $from == "EQUIP")
@@ -1504,14 +1508,14 @@ function FinalizeChainLink($chainClosed=false)
   {
     global $turn, $combatChain, $currentPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
-    global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed;
+    global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
     $character = &GetPlayerCharacter($currentPlayer);
     $definedCardType = CardType($cardID);
     //Figure out where it goes
     $openedChain = false;
     $chainClosed = false;
-    $isBlock = $turn[0] == "B";//This can change over the course of the function; for example if a phantasm gets popped
-    if($turn[0] != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID);
+    $isBlock = $turn[0] == "B" && count($layers) == 0;//This can change over the course of the function; for example if a phantasm gets popped
+    if(!$isBlock && ($from == "EQUIP" || $from == "PLAY")) $cardType = GetResolvedAbilityType($cardID);
     else $cardType = $definedCardType;
     if(GoesOnCombatChain($turn[0], $cardID, $from))
     {

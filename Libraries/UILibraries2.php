@@ -29,14 +29,16 @@
       $cardNumber .= "_cropped";
     }
     $fileExt = ".png";
-    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN")
+    $folderPath = $folder;
+    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM")
     {
-      $folder = str_replace("CardImages", "Images", $folder);
+      $folderPath = str_replace("CardImages", "Images", $folderPath);
+      $folderPath = str_replace("concat", "Images", $folderPath);
       $showHover = 0;
     }
     else if(mb_strpos($folder, "CardImages") !== false)
     {
-      $folder = str_replace("CardImages", "WebpImages", $folder);
+      $folderPath = str_replace("CardImages", "WebpImages", $folder);
       $fileExt = ".webp";
     }
     else if($folder == "concat")
@@ -67,11 +69,11 @@
     else {$height = ($maxHeight * .71); $width = $maxHeight; }
 
     if($rotate == false){
-      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
+      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
       $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
     } else {
       // Landmarks Rotation
-      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='transform:rotate(-90deg);" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folder . "/" . $cardNumber . $fileExt . "' />";
+      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='transform:rotate(-90deg);" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
       $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='transform:rotate(-90deg); visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
     }
 
