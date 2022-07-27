@@ -70,6 +70,8 @@
   DoGamestateUpdate();
   include "WriteGamestate.php";
 
+  MakeStartTurnBackup();
+
 ?>
 
 Something is wrong with the XAMPP installation :-(
