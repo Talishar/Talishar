@@ -2312,8 +2312,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DestroyAura($player, $lastResult);
       break;
     case "DESTROYCHANNEL":
-      WriteLog("Destroy Channel DQVar:". $dqVars[0]);
-      if($dqVars[0] > 0) DestroyAura($player, $parameter);
+      $auras = &GetAuras($mainPlayer);
+      if($dqVars[0] > 0)
+      {
+        WriteLog(CardLink($auras[$parameter], $auras[$parameter]). " was destroyed.");
+        DestroyAura($player, $parameter);
+      }
       break;
     case "PARAMDELIMTOARRAY":
       return explode(",", $parameter);
@@ -3168,7 +3172,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqVars[$parameter] += $lastResult;
       return $lastResult;
     case "DECDQVAR":
-      WriteLog("My DECDQVAR: ".$dqVars[$parameter]);
       $dqVars[$parameter] -= 1;
       return $lastResult;
     case "DIVIDE":

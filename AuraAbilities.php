@@ -221,8 +221,8 @@ function AuraBeginEndPhaseAbilities()
         break;
       case "UPR005":
         ++$auras[$i+2];
-        $leftToBanish = $auras[$i+2];
         $discard = &GetDiscard($mainPlayer);
+        $leftToBanish = $auras[$i+2];
         $numReds = 0;
         for($j=0; $j < count($discard); $j++)
         {
@@ -231,21 +231,21 @@ function AuraBeginEndPhaseAbilities()
             ++$numReds;
           }
         }
-        if($numReds >= $auras[$i+2])
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$i+2]);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+        for($k=0; $k < $auras[$i+2]; $k++)
         {
-          for($k=0; $k < $auras[$i+2]; $k++) {
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;");
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more cards to banish for Burn Them All!");
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
-            AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-            --$leftToBanish;
-          }
+          if($leftToBanish > 1) $plurial = "cards";
+          else $plurial = "card";
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;", 1);
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more ".$plurial." to banish for Burn Them All", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
+          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+          AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
+          --$leftToBanish;
         }
-        else {
-          $remove = 1;
-          WriteLog(CardLink($auras[$i], $auras[$i]). " was unable to banish enough red cards and was destroyed.");
-        }
+        AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $i);
         break;
       case "UPR138":
         ++$auras[$i+2];
