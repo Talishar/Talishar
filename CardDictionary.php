@@ -1091,7 +1091,13 @@
           return !(CardSubType($layers[0]) == "Dagger" || CardSubType($layers[0]) == "Hammer" || CardSubType($layers[0]) == "Sword" || CardSubType($layers[0]) == "Club" || CardSubType($layers[0]) == "Scythe" || CardSubType($layers[0]) == "Axe" || CardSubType($layers[0]) == "Flail" || CardSubType($layers[0]) == "Pistol" || CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to work on Aura attacks and not on Pistol activation
         } else return count($combatChain) == 0;
       case "ELE172": return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
-      case "ELE183": case "ELE184": case "ELE185": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || CardCost($combatChain[0]) > 1;
+      case "ELE183": case "ELE184": case "ELE185":
+        if(count($combatChain) == 0) return true;
+        for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+        {
+          if(CardType($combatChain[$i]) == "AA" && CardCost($combatChain[$i]) <= 1) return false;
+        }
+        return true;
       case "ELE201": return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;
       case "ELE224": return GetClassState($player, $CS_NumAttackCards) == 0;
       case "ELE225": return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
