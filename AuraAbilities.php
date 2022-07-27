@@ -207,13 +207,17 @@ function AuraBeginEndPhaseAbilities()
     switch($auras[$i])
     {
       case "ELE117":
-        $pitchCount = SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "EARTH"));
         ++$auras[$i+2];
-        WriteLog("Channel Mount Heroic has " . $auras[$i+2] . " flow counters, and you have " . $pitchCount . " earth cards in your pitch zone.");
-        if($pitchCount < $auras[$i+2]) $remove = 1;
+        ChannelTalent($i, "EARTH");
         break;
-      case "ELE146": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+2]) $remove = 1; break;
-      case "ELE175": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "LIGHTNING")) < $auras[$i+2]) $remove = 1; break;
+      case "ELE146":
+        ++$auras[$i+2];
+        ChannelTalent($i, "ICE");
+        break;
+      case "ELE175":
+        ++$auras[$i+2];
+        ChannelTalent($i, "LIGHTNING");
+        break;
       case "UPR005":
         ++$auras[$i+2];
         $leftToBanish = $auras[$i+2];
@@ -237,13 +241,15 @@ function AuraBeginEndPhaseAbilities()
             --$leftToBanish;
           }
         }
-        else
-        {
+        else {
           $remove = 1;
           WriteLog(CardLink($auras[$i], $auras[$i]). " was unable to banish enough red cards and was destroyed.");
         }
         break;
-      case "UPR138": ++$auras[$i+2]; if(SearchCount(SearchPitch($mainPlayer, "", "", -1, -1, "", "ICE")) < $auras[$i+2]) $remove = 1; break;
+      case "UPR138":
+        ++$auras[$i+2];
+        ChannelTalent($i, "ICE");
+        break;
       case "UPR176": case "UPR177": case "UPR178":
         if($auras[$i] == "UPR176") $numOpt = 3;
         else if($auras[$i] == "UPR177") $numOpt = 2;
@@ -258,6 +264,41 @@ function AuraBeginEndPhaseAbilities()
     if($remove == 1) DestroyAura($mainPlayer, $i);
   }
   $auras = array_values($auras);
+}
+
+function ChannelTalent($index, $talent)
+{
+  global $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
+  $pitch = &GetPitch($mainPlayer);
+  $leftToBottom = $auras[$index+2];
+  $numTalentInPitch = 0;
+
+  for($j=0; $j < count($pitch); $j++)
+  {
+    if(TalentContains($pitch[$j], $talent, $mainPlayer) == 1)
+    {
+      ++$numTalentInPitch;
+    }
+  }
+  if($numTalentInPitch >= $leftToBottom)
+  {
+    for($k=0; $k<$auras[$index+2]; $k++)
+    {
+      if($leftToBottom > 1) $plurial = "cards";
+      else $plurial = "card";
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=".$talent.";");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more ".$plurial." to put at the bottom for ".CardName($auras[$index]));
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      --$leftToBottom;
+    }
+  }
+  else {
+    WriteLog(CardLink($auras[$index], $auras[$index]). " was unable to put enough cards at the bottom and was destroyed.");
+    DestroyAura($mainPlayer, $index);
+  }
 }
 
 function AuraEndTurnAbilities()
