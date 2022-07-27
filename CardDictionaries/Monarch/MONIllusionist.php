@@ -92,11 +92,11 @@
   {
     switch($cardID)
     {
-      case "MON001": case "MON002": case "MON003": return 0;
-      case "MON005": case "MON006": return 0;
-      case "MON011": case "MON012": case "MON013": return 0;
+      case "MON001": case "MON002": case "MON003": return -1;
+      case "MON005": case "MON006": return -1;
+      case "MON011": case "MON012": case "MON013": return -1;
       case "MON089": case "MON090": return 0;
-      case "MON092": case "MON093": case "MON094": return 0;
+      case "MON092": case "MON093": case "MON094": return -1;
       case "MON095": case "MON096": case "MON097": return 2;
       case "MON404": return 2;
       default: return 3;

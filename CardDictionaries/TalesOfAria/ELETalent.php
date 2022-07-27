@@ -187,29 +187,30 @@
   {
     switch($cardID)
     {
-      case "ELE000": return 0;
-      case "ELE093": return 0;
+      case "ELE000": return -1;
+      case "ELE093": return -1;
+      case "ELE112": return -1;
       case "ELE113": return 3;
       case "ELE114": return 6;
       case "ELE115": return 0;
       case "ELE116": return 0;
       case "ELE117": return 3;
-      case "ELE125": case "ELE126": case "ELE127": return 0;
+      case "ELE125": case "ELE126": case "ELE127": return -1;
       case "ELE128": case "ELE129": case "ELE130": return 3;
-      case "ELE143": return 0;
+      case "ELE143": return -1;
       case "ELE144": return 1;
       case "ELE145": return 0;
       case "ELE146": return 3;
-      case "ELE147": return 0;
+      case "ELE147": return -1;
       case "ELE160": case "ELE161": case "ELE162": return 3;
-      case "ELE172": return 0;
+      case "ELE172": return -1;
       case "ELE173": return 0;
       case "ELE175": return 3;
-      case "ELE176": return 0;
-      case "ELE183": case "ELE184": case "ELE185": return 0;
+      case "ELE176": return -1;
+      case "ELE183": case "ELE184": case "ELE185": return -1;
       case "ELE186": case "ELE187": case "ELE188": return 0;
       case "ELE192": case "ELE193": case "ELE194": return 3;
-      case "ELE201": return 0;
+      case "ELE201": return -1;
       case "ELE233": case "ELE234": case "ELE235": case "ELE236": return 0;
       default: return 2;
     }

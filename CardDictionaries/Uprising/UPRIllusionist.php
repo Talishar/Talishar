@@ -175,7 +175,6 @@
       case "UPR030": case "UPR031": case "UPR032": return 3;
       case "UPR033": case "UPR034": case "UPR035": return 2;
       case "UPR036": case "UPR037": case "UPR038": return 2;
-      case "UPR039": case "UPR040": case "UPR041": return -1;
       case "UPR151": return 0;
       case "UPR152": return 0;
       case "UPR155": case "UPR156": case "UPR157": return 2;

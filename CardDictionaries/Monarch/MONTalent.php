@@ -119,29 +119,29 @@
     global $defPlayer;
     switch($cardID)
     {
-      case "MON000": return 0;
+      case "MON000": return -1;
       case "MON060": return 1;
       case "MON061": return 0;
       case "MON062": return 3;
       case "MON063": return 6;
-      case "MON065": return 0;
-      case "MON069": case "MON070": case "MON071": return 0;
+      case "MON065": return -1;
+      case "MON069": case "MON070": case "MON071": return -1;
       case "MON072": case "MON073": case "MON074": return 3;
       case "MON078": case "MON079": case "MON080": return 3;
-      case "MON084": case "MON085": case "MON086": return 0;
-      case "MON087": return 0;
+      case "MON084": case "MON085": case "MON086": return -1;
+      case "MON087": return -1;
       case "MON187": return 6;
       case "MON188": return 0;
-      case "MON189": case "MON190": return 0;
+      case "MON189": case "MON190": return -1;
       case "MON191": return SearchPitchForNumCosts($defPlayer) * 2;//Not totally accurate
       case "MON192": return 6;
-      case "MON194": return 0;
+      case "MON194": return -1;
       case "MON198": case "MON199": return 3;
       case "MON203": case "MON204": case "MON205": return 3;
       case "MON209": case "MON210": case "MON211": return 3;
       case "MON209": case "MON210": case "MON211": return 3;
-      case "MON215": case "MON216": case "MON217": return 0;
-      case "MON218": return 0;
+      case "MON215": case "MON216": case "MON217": return -1;
+      case "MON218": return -1;
       default: return 2;
     }
   }

@@ -109,7 +109,8 @@
   function MONGenericBlockValue($cardID)
   {
     switch($cardID)
-    {      case "MON238": case "MON239": case "MON240": case "MON241": case "MON242": case "MON243": case "MON244": return 0;
+    {
+      case "MON238": case "MON239": case "MON240": case "MON241": case "MON242": case "MON243": case "MON244": return 0;
       case "MON245": case "MON247": return 2;
       case "MON248": case "MON249": case "MON250": return 2;
       case "MON251": case "MON252": case "MON253": return 2;
@@ -131,7 +132,7 @@
       case "MON293": case "MON294": case "MON295": return 2;
       case "MON296": case "MON297": case "MON298": return 2;
       case "MON299": case "MON300": case "MON301": return 2;
-      case "MON302": case "MON303": case "MON304": case "MON305": return 0;
+      case "MON302": case "MON303": case "MON304": case "MON305": return -1;
       case "MON400": case "MON401": case "MON402": return 0;
       default: return 3;
     }
