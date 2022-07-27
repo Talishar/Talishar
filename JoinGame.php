@@ -44,7 +44,7 @@ select, input{
 }
 </style>
 
-<div style="position:absolute; z-index:1; top:15%; left:2%; width:25%; height:70%;
+<div style="position:absolute; z-index:1; top:10%; left:2%; width:460px; height:550px;
 background-color:rgba(74, 74, 74, 0.9);
 border: 2px solid #1a1a1a;
 border-radius: 5px;">
