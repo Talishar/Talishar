@@ -53,8 +53,8 @@
   //1 - Status (2=ready, 1=unavailable, 0=destroyed)
   //2 - Num counters
   //3 - Num attack counters
-  //4 - ?
-  //5 - ?
+  //4 - Is Token (1 = yes, 0 = no)
+  //5 - Number of ability uses (triggered or activated)
   function AuraPieces()
   {
     return 6;
