@@ -466,53 +466,55 @@
   {
     switch ($cardID)
     {
-      case "CRU002": return 0;
+      case "CRU002": return -1;
       //CRU Guardian
-      case "CRU024": return 0;
+      case "CRU024": return -1;
       case "CRU025": return 2;
-      case "CRU041": case "CRU042": case "CRU043": return 0;
+      case "CRU041": case "CRU042": case "CRU043": return -1;
       //CRU Brute
-      case "CRU004": case "CRU005": case "CRU006": return 0;
+      case "CRU004": case "CRU005": return -1;
+      case "CRU006": return 0;
       //CRU Ninja
       case "CRU046": case "CRU047": case "CRU050": case "CRU051": case "CRU052": return 0;
       case "CRU053": return 1;
       case "CRU072": case "CRU074": return 2;
       //CRU Warrior
       case "CRU077": return 0;
-      case "CRU079": case "CRU080": return 0;
+      case "CRU079": case "CRU080": return -1;
       case "CRU081": return 2;
       //CRU Shapeshifter
       case "CRU097": return 0;
       //CRU Mechanologist
       case "CRU099": case "CRU101": case "CRU102": return 0;
-      case "CRU104": case "CRU105": return 0;
+      case "CRU104": case "CRU105": return -1;
       //CRU Ranger
       case "CRU121": return 0;
       case "CRU122": return 2;
       case "CRU124": return 2;
-      case "CRU125": return 0;
+      case "CRU125": return -1;
       case "CRU126": return 4;
       case "CRU127": return 3;
       case "CRU128": return 2;
       case "CRU135": case "CRU136": case "CRU137": return 2;
       //CRU Runeblade
-      case "CRU000": return 0;
-      case "CRU140": return 0;
+      case "CRU000": return -1;
+      case "CRU140": return -1;
       case "CRU141": return 2;
       case "CRU144": return 2;
       case "CRU145": case "CRU146": case "CRU147": return 2;
       case "CRU154": case "CRU155": case "CRU156": return 2;
       //CRU Wizard
-      case "CRU160": case "CRU161": case "CRU164": return 0;
+      case "CRU160": case "CRU161": return 0;
+      case "CRU164": return -1;
       case "CRU165": case "CRU166": case "CRU167": return 2;
       //CRU Generics
       case "CRU177": return -1;
       case "CRU179": return 0;
       case "CRU180": return 2;
-      case "CRU181": case "CRU182": return 0;
+      case "CRU181": case "CRU182": return -1;
       case "CRU183": case "CRU184": case "CRU185": return 2;
       case "CRU186": case "CRU187": case "CRU188": return 2;
-      case "CRU189": case "CRU190": case "CRU191": return 0;
+      case "CRU189": case "CRU190": case "CRU191": return -1;
       default: return 3;
     }
   }
