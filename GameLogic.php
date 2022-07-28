@@ -1276,7 +1276,10 @@ function OnBlockResolveEffects()
   {
     switch($combatChain[$i])
     {
-      case "EVR018": WriteLog("Stalagmite created a Frostbite."); PlayAura("ELE111", $mainPlayer); break;
+      case "EVR018":
+        WriteLog("Stalagmite frostbite trigger creates a layer.");
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
+        break;
       case "RVD003": case "RVD015":
         $deck = &GetDeck($defPlayer);
         $rv = "";
