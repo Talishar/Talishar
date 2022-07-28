@@ -1148,6 +1148,7 @@
       case "ARC112": return true;
       case "CRU197": return true;
       case "MON186": return true;
+      case "ELE111": return true;
       default: return false;
     }
   }
@@ -1177,6 +1178,13 @@
       if($auras[$i] == "MON186") ++$soulShackleCount;
     }
     if($soulShackleCount > 0) echo(Card("MON186", "concat", $cardSizeAura, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)) . "&nbsp");
+
+    $frostbiteCount = 0;
+    for($i = 0; $i < count($auras); $i += AuraPieces())
+    {
+      if($auras[$i] == "ELE111") ++$frostbiteCount;
+    }
+    if($frostbiteCount > 0) echo(Card("ELE111", "concat", $cardSizeAura, 0, 1, 0, 0, ($frostbiteCount > 1 ? $frostbiteCount : 0)) . "&nbsp");
 
     $items = GetItems($player);
     $copperCount = 0;
