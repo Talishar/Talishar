@@ -184,9 +184,9 @@ function AuraStartTurnAbilities()
       case "MON006": GenesisStartTurnAbility(); break;
       case "CRU075": if($auras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$auras[$i+2]; } break;
       case "EVR107": case "EVR108": case "EVR109":
-        if($auras[$i+2] == 0)
-        { $dest = "Runeblood Invocation is destroyed."; }
-        else { --$auras[$i+2]; PlayAura("ARC112", $mainPlayer); } break;
+        WriteLog(CardLink($auras[$i], $auras[$i])." trigger creates a layer.");
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i]);
+        break;
       case "EVR131": case "EVR132": case "EVR133": $dest = "Pyroglyphic Protection is destroyed."; break;
       case "UPR190": $dest = "Fog Down is destroyed."; break;
       case "UPR218": case "UPR219": case "UPR220": $dest = "Sigil of Protection is destroyed."; break;

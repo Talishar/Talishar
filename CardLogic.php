@@ -467,13 +467,37 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 
   function ProcessTrigger($player, $parameter)
   {
-    switch($parameter)
+    $auras = &GetAuras($player);
+    if(CardSubType($parameter) == "Aura")
     {
-      case "EVR018":
-        PlayAura("ELE111", $player);
-        break;
+      for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
+      {
+        switch($auras[$i])
+        {
+          case "EVR107": case "EVR108": case "EVR109":
+          if($auras[$i+2] == 0) {
+            $dest = "Runeblood Invocation is destroyed.";
+          }
+          else {
+            --$auras[$i+2];
+            PlayAura("ARC112", $player);
+          }
+          break;
+          default: break;
+        }
+        if($dest != "") DestroyAura($player, $i);
+      }
+    }
+    else
+    {
+      switch($parameter)
+      {
+        case "EVR018":
+          PlayAura("ELE111", $player);
+          break;
       default: break;
     }
+  }
   }
 
   function GetDQHelpText()

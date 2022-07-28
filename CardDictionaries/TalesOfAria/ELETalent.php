@@ -246,7 +246,7 @@
     }
   }
 
-  function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts)
+  function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     global $combatChain, $CS_DamagePrevention;
