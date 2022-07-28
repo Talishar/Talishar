@@ -1088,9 +1088,38 @@
       case "ELE118": return ArsenalEmpty($player);
       case "ELE143": return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
       case "ELE147":
-        if(count($layers) != 0) {
-          return !(CardSubType($layers[0]) == "Dagger" || CardSubType($layers[0]) == "Hammer" || CardSubType($layers[0]) == "Sword" || CardSubType($layers[0]) == "Club" || CardSubType($layers[0]) == "Scythe" || CardSubType($layers[0]) == "Axe" || CardSubType($layers[0]) == "Flail" || CardSubType($layers[0]) == "Pistol" || CardType($layers[0]) == "AA" || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to work on Aura attacks and not on Pistol activation
-        } else return count($combatChain) == 0;
+      $weapons = "";
+      $auraWeapons = (SearchCharacterForCard($mainPlayer, "MON003") || SearchCharacterForCard($mainPlayer, "MON088"));
+      if($auraWeapons)
+      {
+        $auras = GetAuras($mainPlayer);
+        for($i=0; $i<count($auras); $i+=AuraPieces())
+        {
+          if(ClassContains($auras[$i], "ILLUSIONIST", $mainPlayer))
+          {
+            $weapons .= "AURAS";
+            break;
+          }
+        }
+      }
+      if(count($layers) != 0)
+      {
+        return !($weapons == "AURAS"
+        || CardSubType($layers[0]) == "Dagger"
+        || CardSubType($layers[0]) == "Hammer"
+        || CardSubType($layers[0]) == "Sword"
+        || CardSubType($layers[0]) == "Club"
+        || CardSubType($layers[0]) == "Scythe"
+        || CardSubType($layers[0]) == "Axe"
+        || CardSubType($layers[0]) == "Flail"
+        || CardSubType($layers[0]) == "Pistol"
+        || CardType($layers[0]) == "AA"
+        || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to not work on Pistol activation
+      }
+      else
+      {
+        return count($combatChain) == 0;
+      }
       case "ELE172": return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
       case "ELE183": case "ELE184": case "ELE185":
         if(count($combatChain) == 0) return true;
