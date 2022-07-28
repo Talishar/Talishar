@@ -109,7 +109,8 @@
       case "UPR107": return 3;
       case "UPR108": return 2;
       case "UPR125": return 0;
-      case "UPR165": case "UPR166": return 0;
+      case "UPR165": return -1;
+      case "UPR166": return 0;
       case "UPR168": return 2;
       case "UPR169": return -1;
       case "UPR176": case "UPR177": case "UPR178": return 2;
