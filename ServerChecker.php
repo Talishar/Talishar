@@ -109,7 +109,7 @@ if ($handle = opendir($path)) {
         //else $link .= "Game #" . $gameName . "&nbsp;";
         //if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
         $link .= "</td><td style='vertical-align:middle;'>";
-        $description = ($gameDescription == "Game #" ? "Game #" . $gameName : $gameDescription);
+        $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
         $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;" . $description . " </span>";
         $link .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
         $link .= "</td></tr></table></center>";

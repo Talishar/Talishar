@@ -57,7 +57,7 @@ body {
   <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
   <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
-  <input type="text" id="gameDescription" name="gameDescription" value="Game #"><br><br>
+  <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
   <span style='display:inline-block; margin-left:5px;'>
     <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
