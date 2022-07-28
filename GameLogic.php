@@ -1277,7 +1277,7 @@ function OnBlockResolveEffects()
     switch($combatChain[$i])
     {
       case "EVR018":
-        WriteLog("Stalagmite frostbite trigger creates a layer.");
+        WriteLog(CardLink($auras[$i], $auras[$i])." trigger creates a layer.");
         AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
       case "RVD003": case "RVD015":
