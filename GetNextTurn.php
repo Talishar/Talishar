@@ -724,7 +724,7 @@
   {
     for($i=0; $i<count($theirPermanents); $i+=PermanentPieces())
     {
-      //if(IsTileable($theirPermanents[$i])) continue;
+      if(IsTileable($theirPermanents[$i])) continue;
       //$playable = ($currentPlayer == $playerID ? IsPlayable($theirPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
       //$border = CardBorderColor($theirPermanents[$i], "PLAY", $playable);
       echo(Card($theirPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
@@ -881,7 +881,7 @@
   {
     for($i=0; $i<count($myPermanents); $i+=PermanentPieces())
     {
-      //if(IsTileable($myPermanents[$i])) continue;
+      if(IsTileable($myPermanents[$i])) continue;
       //$playable = ($currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false);
       //$border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
       echo(Card($myPermanents[$i], "concat", $cardSizeAura, 0, 1) . "&nbsp");
@@ -1149,6 +1149,7 @@
       case "CRU197": return true;
       case "MON186": return true;
       case "ELE111": return true;
+      case "UPR043": return true;
       default: return false;
     }
   }
@@ -1193,6 +1194,14 @@
       if($items[$i] == "CRU197") ++$copperCount;
     }
     if($copperCount > 0) echo(Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
+
+    $permanents = GetPermanents($player);
+    $ashCount = 0;
+    for($i = 0; $i < count($permanents); $i += PermanentPieces())
+    {
+      if($permanents[$i] == "UPR043") ++$ashCount;
+    }
+    if($ashCount > 0) echo(Card("UPR043", "concat", $cardSizeAura, 0, 1, 0, 0, ($ashCount > 1 ? $ashCount : 0)) . "&nbsp");
   }
 
   function GetPhaseHelptext()
