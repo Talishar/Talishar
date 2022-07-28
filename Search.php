@@ -660,6 +660,7 @@ function SearchMultizone($player, $searches)
       case "MYALLY": case "THEIRALLY": $searchResult = SearchAllies($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
       case "MYPERM": case "THEIRPERM": $searchResult = SearchPermanents($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
       case "MYPITCH": case "THEIRPITCH": $searchResult = SearchPitch($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
+      case "CC": $searchResult = SearchCombatChain($type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly); break;
       default: break;
     }
     $searchResult = SearchMultiZoneFormat($searchResult, $zone);
