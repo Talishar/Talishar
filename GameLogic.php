@@ -1277,7 +1277,7 @@ function OnBlockResolveEffects()
     switch($combatChain[$i])
     {
       case "EVR018":
-        WriteLog(CardLink($auras[$i], $auras[$i])." trigger creates a layer.");
+        WriteLog(CardLink($auras[$i], $auras[$i])." frostbite trigger creates a layer.");
         AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
       case "RVD003": case "RVD015":
@@ -1606,11 +1606,7 @@ function MainCharacterHitAbilities()
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
           AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "MASKPOUNCINGLYNX", 1);
-          AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
-          AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, $mainCharacter[$i], 1);
+          AddDecisionQueue("ADDLAYER", $mainPlayer, $mainCharacter[$i], 1);
         }
         break;
       default: break;
@@ -2212,6 +2208,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $hand = array_values($hand);
       return $cards;
+    case "ADDLAYER":
+      AddLayer("TRIGGER", $player, $parameter);
+      return $lastResult;
     case "DESTROYCHARACTER":
       DestroyCharacter($player, $lastResult);
       return $lastResult;
