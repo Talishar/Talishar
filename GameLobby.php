@@ -223,6 +223,7 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
 <?php
     $cardSize = 145;
     $count = 0;
+    sort($deck);
     for($i=0; $i<count($deck); ++$i)
     {
       $id = "DECK-" . $count;
