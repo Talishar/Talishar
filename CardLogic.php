@@ -346,6 +346,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           if($cardID == "ENDTURN") FinishTurnPass();
           else if($cardID == "RESUMETURN") $turn[0] = "M";
           else if($cardID == "LAYER") ProcessLayer($player, $parameter);
+          else if($cardID == "TRIGGER") ProcessTrigger($player, $parameter);
           else
           {
             SetClassState($player, $CS_AbilityIndex, $params[2]);//This is like a parameter to PlayCardEffect and other functions
@@ -460,6 +461,17 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     switch($parameter)
     {
       case "PHANTASM": PhantasmLayer(); break;
+      default: break;
+    }
+  }
+
+  function ProcessTrigger($player, $parameter)
+  {
+    switch($parameter)
+    {
+      case "EVR018":
+        PlayAura("ELE111", $player);
+        break;
       default: break;
     }
   }

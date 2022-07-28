@@ -321,7 +321,7 @@
     $content .= "<div style='margin-left:1px; margin-top:3px; margin-bottom:5px' display:inline;'>";
     for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
     {
-      $layerName = ($layers[$i] == "LAYER" ? $layers[$i+2] : $layers[$i]);
+      $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i+2] : $layers[$i]);
       $content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layers[$i+1] == $playerID ? 1 : 2);
     }
     $content .= "</div>";
