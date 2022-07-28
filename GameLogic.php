@@ -2528,7 +2528,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult == "YES")
       {
         $character = &GetPlayerCharacter($player);
-        $character[$parameter+1] = 0;
+        DestroyCharacter($player, $parameter);
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         WriteLog("Refraction Bolters was destroyed and gave the current attack go again.");
       }
