@@ -726,9 +726,11 @@
         }
         return "Glint the Quicksilver" . $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
       case "WTR119": case "WTR122":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose_target_weapon");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDMZBUFF", $mainPlayer, $cardID, 1);
+        AddDecisionQueue("ADDMZBUFF", $currentPlayer, $cardID, 1);
         return "";
       case "WTR120":
         if(RepriseActive())
