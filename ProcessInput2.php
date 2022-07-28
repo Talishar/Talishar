@@ -1143,8 +1143,8 @@ function FinalizeChainLink($chainClosed=false)
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
         break;
       case "ELE183": case "ELE184": case "ELE185":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "CCAA");
-        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"CC:maxCost=1;type=AA");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
         break;
       case "UPR169":

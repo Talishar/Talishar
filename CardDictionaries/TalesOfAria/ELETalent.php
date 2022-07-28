@@ -413,7 +413,7 @@
         $amount = 3;
         if($cardID == "ELE184") $amount = 2;
         else if($cardID == "ELE185") $amount = 1;
-        CombatChainPowerModifier(intval($target), $amount);
+        CombatChainPowerModifier(intval(explode("-", $target)[1]), $amount);
         return "";
       case "ELE186": case "ELE187": case "ELE188":
         AddCurrentTurnEffect($cardID, $currentPlayer);

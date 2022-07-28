@@ -450,6 +450,7 @@
       else if($option[0] == "THEIRPERM") $source = $theirPermanents;
       else if($option[0] == "MYPITCH") $source = $myPitch;
       else if($option[0] == "THEIRPITCH") $source = $theirPitch;
+      else if($option[0] == "CC") $source = $combatChain;
 
       $counters = 0;
       $lifeCounters = 0;
