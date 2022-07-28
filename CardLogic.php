@@ -495,6 +495,13 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         case "EVR018":
           PlayAura("ELE111", $player);
           break;
+        case "EVR037":
+          AddDecisionQueue("FINDINDICES", $mainPlayer, "MASKPOUNCINGLYNX", 1);
+          AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
+          AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, $mainCharacter[$i], 1);
+          break;
       default: break;
     }
   }
