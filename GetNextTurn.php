@@ -269,7 +269,7 @@
     echo("<td><img style='height:30px; width:30px; display:inline-block;' src='./Images/Defense.png' /></td>");
     echo("<td style='font-size:28px; font-weight:700; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>$totalDefense</td>");
     $damagePrevention = GetDamagePrevention($defPlayer);
-    if($damagePrevention > 0) echo("<td style='font-size:24px; font-weight:bold;'>&nbsp;<div title='$damagePrevention damage prevention' style='cursor:default; height:36px; width:36px; display:inline-block; font-size:30px; background-image: url(\"./Images/damagePrevention.png\"); background-size:cover;'>" . GetDamagePrevention($defPlayer) . "</div></td>");
+    if($damagePrevention > 0) echo("<td style='font-size:30px; font-weight:700; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>&nbsp;<div title='$damagePrevention damage prevention' style='cursor:default; height:36px; width:36px; display:inline-block; background-image: url(\"./Images/damagePrevention.png\"); background-size:cover;'>" . GetDamagePrevention($defPlayer) . "</div></td>");
     if(IsDominateActive()) echo("<td style='font-size:24px; font-weight:bold;'><img style='height:40px; display:inline-block;' src='./Images/dominate.png' /></td>");
     if(DoesAttackHaveGoAgain()) echo("<td><img title='This attack has go again.' style='height:30px; width:30px; display:inline-block;' src='./Images/goAgain.png' /></td>");
     //if($lastPlayed[3] == "FUSED") echo("<td><img title='This card was fused.' style='height:30px; width:30px; display:inline-block;' src='./Images/fuse2.png' /></td>");
