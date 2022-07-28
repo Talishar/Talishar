@@ -137,6 +137,7 @@
         return "Gain 1 resource.";
 
       case "RVD013":
+        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
