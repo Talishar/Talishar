@@ -1084,6 +1084,7 @@
       case "MON198": $discard = GetDiscard($player); return count($discard) < 6;
       case "MON230": return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
       case "MON238": return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
+      case "ELE031": case "ELE032": return !ArsenalHasFaceDownCard($player);
       case "ELE118": return ArsenalEmpty($player);
       case "ELE143": return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
       case "ELE147":
