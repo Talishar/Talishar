@@ -158,12 +158,7 @@
     {
       $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=$onClick>";
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='display: inline-block;
-      margin: 5px; text-align: center; vertical-align: middle; padding: 3px 6px; border: 1px solid; border-radius: 8px;
-      background: #eeeeee; background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#aaaaaa));
-      background: -moz-linear-gradient(top, #eeeeee, #aaaaaa); background: linear-gradient(to bottom, #eeeeee, #aaaaaa); -webkit-box-shadow: #000000 0px 0px 5px 0px; -moz-box-shadow: #000000 0px 0px 5px 0px;
-      box-shadow: #000000 0px 0px 5px 0px; text-shadow: #ffffff 1px 1px 1px; font: helvetica; font-weight: 550; color: #111111;
-      text-decoration: none; cursor:pointer; font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
+    else $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
     return $rv;
   }
 
@@ -177,12 +172,7 @@
   {
     global $gameName;
     $rv = "<form>";
-    $rv .= "<input type='button' style='display: inline-block; -ms-transform: translateY(-50%); transform: translateY(-50%);
-      margin: 5px; text-align: center; vertical-align: middle; padding: 3px 6px; border: 1px solid; border-radius: 8px;
-      background: #eeeeee; background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#aaaaaa));
-      background: -moz-linear-gradient(top, #eeeeee, #aaaaaa); background: linear-gradient(to bottom, #eeeeee, #aaaaaa); -webkit-box-shadow: #000000 0px 0px 5px 0px; -moz-box-shadow: #000000 0px 0px 5px 0px;
-      box-shadow: #000000 0px 0px 5px 0px; text-shadow: #ffffff 1px 1px 1px; font: helvetica; font-weight: 550; color: #111111;
-      text-decoration: none; cursor:pointer;' onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
+    $rv .= "<input type='button' onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
     $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
     $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
     $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
@@ -193,7 +183,7 @@
   function CreateCheckbox($input, $value)
   {
     $rv = "<input type='checkbox'  id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "'>";
-    $rv .= "<label style='font: helvetica; font-size:14px; font-weight: 550; color: #111111;' for='chk" . $input . "'>Select?</label>";
+    $rv .= "<label for='chk" . $input . "'>&nbsp</label>";
     return $rv;
   }
 
@@ -202,13 +192,13 @@
     global $combatChain, $darkMode, $cardSize, $playerID;
     $overCC = 1000;
     $darkMode = IsDarkMode($playerID);
-    $top = "50%"; $left = "19%"; $width = "60%"; $height = "30%";
+    $top = "60%"; $left = "25%"; $width = "50%"; $height = "30%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
     if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:" . $overCC . "; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
-    if($title != "") $rv .= "<h" . ($big ? "2" : "3") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $title . "</h" . ($big ? "2" : "3") . ">";
+    if($title != "") $rv .= "<h" . ($big ? "1" : "3") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $title . "</h" . ($big ? "1" : "3") . ">";
     if($canClose == 1) $rv .= "<div title='Click to close' style='position:absolute; cursor:pointer; top:0px; right:10px; font-size:50px;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div>";
     if($additionalComments != "") $rv .= "<h" . ($big ? "3" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $additionalComments . "</h" . ($big ? "3" : "4") . ">";
     for($i=0; $i<count($fromArr); $i += $arrElements)
@@ -398,7 +388,7 @@
   function MainMenuUI()
   {
     global $playerID;
-    $rv = "<table style='margin-left:auto; margin-right:auto; height:90%;'><tr><td style='vertical-align:middle; width:40%;'>";
+    $rv = "<table style='margin-left:auto; margin-right:auto; width:100% height:100%;'><tr><td style='vertical-align:middle; width:40%;'>";
     $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";

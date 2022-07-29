@@ -162,7 +162,8 @@
         SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
         return "Gives your next non-attack action card this turn go again.";
       case "ARC160":
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_attack_actions,Go_again,Attack_actions_from_arsenal,Banish_and_draw");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes", 1);
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn.,Your_next_attack_action_card_gains_go_again.,Defend_with_attack_action_cards_from_arsenal.,Banish_an_attack_action_card_to_draw_2_cards.");
         AddDecisionQueue("ARTOFWAR", $currentPlayer, "-", 1);
         return "";
       case "ARC162":
@@ -276,11 +277,11 @@
       {
         switch($userInput[$i])
         {
-          case "Buff_attack_actions":
+          case "Buff_your_attack_action_cards_this_turn.":
             WriteLog("Art of War gives attack action cards +1 power and defense this turn.");
             AddCurrentTurnEffect("ARC160-1", $currentPlayer);
             break;
-          case "Go_again":
+          case "Your_next_attack_action_card_gains_go_again.":
             WriteLog("Art of War gives the next attack action card this turn go again.");
             if(count($combatChain) > 0)
             {
@@ -291,11 +292,11 @@
               AddCurrentTurnEffect("ARC160-3", $currentPlayer);
             }
             break;
-          case "Attack_actions_from_arsenal":
+          case "Defend_with_attack_action_cards_from_arsenal.":
             WriteLog("Art of War makes it possible to block with attack actions from arsenal.");
             AddCurrentTurnEffect("ARC160-2", $currentPlayer);
             break;
-          case "Banish_and_draw":
+          case "Banish_an_attack_action_card_to_draw_2_cards.":
             WriteLog("Art of War allows you to banish a card and draw 2.");
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);

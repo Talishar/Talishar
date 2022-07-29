@@ -1,0 +1,114 @@
+/* Hide the browser default checkbox */
+[type="checkbox"]{
+  opacity: 0;
+}
+
+/* Edit the checkbox label */
+[type="checkbox"] + label{
+  position: relative;
+  padding-left: 20px;
+  padding-top: 5px;
+  cursor: pointer;
+  display: inline-block;
+  color: #1a1a1a;
+  line-height: 40px;
+  vertical-align: middle;
+}
+
+/* Checkbox when unchecked */
+[type="checkbox"] + label::before {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  outline: 3px solid #1a1a1a;
+  background: #fff;
+}
+
+/* Apply to the checkbox when checked */
+[type="checkbox"]:checked + label::before {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  outline: 3px solid #1a1a1a;
+  background: #fff;
+}
+
+[type="checkbox"]:checked + label::after {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  background-image: url("../Images/trans-check.png");
+  background-size: contain;
+  transform: scale(1);
+  opacity: 1;
+  transition:all .3s ease;
+}
+
+[type="checkbox"]:not(:checked) + label::after {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  background-image: url("../Images/trans-check.png");
+  background-size: contain;
+  transform: scale(0);
+  opacity: 0;
+}
+
+button {
+	cursor: pointer;
+	font-size: 18px;
+	color: #1a1a1a;
+	background: #EDEDED;
+	border: 1px solid #1a1a1a;
+	box-shadow: 1px 1px 0 #1a1a1a,
+		-1px -1px 0 #1a1a1a,
+		-1px 1px 0 #1a1a1a,
+		1px -1px 0 #1a1a1a;
+	transition: 350ms ease-in-out;
+  margin: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 3px;
+}
+
+input[type="button"] {
+  position:absolute;
+  top:3px;
+  left:5px;
+	cursor: pointer;
+	font-size: 18px;
+	color: #1a1a1a;
+	background: #EDEDED;
+	border: 1px solid #1a1a1a;
+	box-shadow: 1px 1px 0 #1a1a1a,
+		-1px -1px 0 #1a1a1a,
+		-1px 1px 0 #1a1a1a,
+		1px -1px 0 #1a1a1a;
+	transition: 500ms ease-in-out;
+  margin: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 3px;
+}
+
+button:hover, input[type="button"]:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+button:focus, input[type="button"]:focus {
+	outline: none;
+}
