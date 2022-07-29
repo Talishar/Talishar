@@ -346,7 +346,11 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           if($cardID == "ENDTURN") FinishTurnPass();
           else if($cardID == "RESUMETURN") $turn[0] = "M";
           else if($cardID == "LAYER") ProcessLayer($player, $parameter);
-          else if($cardID == "TRIGGER") ProcessTrigger($player, $parameter);
+          else if($cardID == "TRIGGER")
+          {
+            ProcessTrigger($player, $parameter);
+            ProcessDecisionQueue();
+          }
           else
           {
             SetClassState($player, $CS_AbilityIndex, $params[2]);//This is like a parameter to PlayCardEffect and other functions
