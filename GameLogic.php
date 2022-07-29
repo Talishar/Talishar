@@ -390,9 +390,7 @@ function EffectHitEffect($cardID)
     case "WTR147": case "WTR148": case "WTR149": NaturesPathPilgrimageHit(); break;
     case "ARC170-1": case "ARC171-1": case "ARC172-1": MainDrawCard(); return 1;
     case "CRU124": if(IsHeroAttackTarget()) { PummelHit(); } break;
-    case "CRU145": PlayAura("ARC112", $mainPlayer);
-    case "CRU146": PlayAura("ARC112", $mainPlayer);
-    case "CRU147": PlayAura("ARC112", $mainPlayer); break;
+    case "CRU145": case "CRU146": case "CRU147": PlayAura("ARC112", $mainPlayer); break;
     case "CRU084-2": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
     case "MON034": LuminaAscensionHit(); break;
     case "MON081": case "MON082": case "MON083": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
@@ -1211,8 +1209,8 @@ function PitchAbility($cardID)
     case "ARC000":
       Opt($cardID, 2);
       break;
-    case "CRU000": // TODO: Fix the runechant trigger from the pitch to happens on the next attack only.
-      PlayAura("ARC112", $currentPlayer);
+    case "CRU000":
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "EVR000":
       WriteLog("Grandeur of Valahai created a Seismic Surge when it was pitched.");

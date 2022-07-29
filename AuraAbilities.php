@@ -166,7 +166,7 @@ function AuraDestroyAbility($cardID)
     case "CRU144": return "Runeblood Barrier is destroyed at the beginning of your action phase.";
     case "ELE025": case "ELE026": case "ELE027": AddCurrentTurnEffect($cardID, $mainPlayer); return "Emerging Avalanche gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "ELE028": case "ELE029": case "ELE030": AddCurrentTurnEffect($cardID, $mainPlayer); return "Strength of Sequoia gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
-    case "ELE109": return "Embodiment of Earth is destroyed at the beginning of your action phase.";
+    case "ELE109": AddLayer("TRIGGER", $mainPlayer, $cardID); return "Embodiment of Earth is destroyed at the beginning of your action phase.";
     case "ELE206": case "ELE207": case "ELE208": AddCurrentTurnEffect($cardID, $mainPlayer); return "Embolden gives your next Guardian Attack Action card +" . EffectAttackModifier($cardID) . ".";
     default: return "";
   }
@@ -374,10 +374,7 @@ function AuraTakeDamageAbilities($player, $damage, $type)
         $remove = 1; break;
       default: break;
     }
-    if($remove == 1)
-    {
-      DestroyAura($player, $i);
-    }
+    if($remove == 1) DestroyAura($player, $i);
   }
   return $damage;
 }
@@ -452,7 +449,7 @@ function AuraAttackAbilities($attackID)
     {
       case "WTR225": if($attackType == "AA" || $attackType == "W") { WriteLog("Quicken grants go again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ARC112": if($attackType == "AA" || $attackType == "W") { DealArcane(1, 1, "RUNECHANT", "ARC112"); $remove = 1; } break;
-      case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants go again."); GiveAttackGoAgain(); $remove = 1; } break;
+      case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants go again."); AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
       case "EVR142": if($auras[$i+5]>0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $mainPlayer, true); } break;

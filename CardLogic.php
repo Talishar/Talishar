@@ -41,6 +41,7 @@ function BottomDeck()
   if(count($hand) > 0)
   {
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You_may_put_a_card_from_your_hand_on_the_bottom_of_your_deck.");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
@@ -480,6 +481,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         break;
       case "CRU000":
         PlayAura("ARC112", $player);
+        break;
+      case "ELE110":
+        GiveAttackGoAgain();
         break;
       case "EVR018":
         PlayAura("ELE111", $player);
