@@ -1268,8 +1268,8 @@
   function Heave()
   {
     global $mainPlayer;
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may choose to Heave a card or pass.");
     AddDecisionQueue("FINDINDICES", $mainPlayer, "HEAVE");
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may choose to heave a card or pass.");
     AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1, 1);
     AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
     AddDecisionQueue("HEAVE", $mainPlayer, "-", 1);
