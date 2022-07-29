@@ -381,9 +381,9 @@
     $pitchValue = PitchValue($cardNumber);
     switch($pitchValue)
     {
-      case 3: $color = "Blue"; break;
-      case 2: $color = "GoldenRod"; break;
-      case 1: $color = "Red"; break;
+      case 3: $color = "#009DDF"; break;//$color = "Blue"; break;
+      case 2: $color = "#FFF000"; break;//$color = "GoldenRod"; break;
+      case 1: $color = "#AF1518"; break;//$color = "Red"; break;
       default: if($darkMode) {
         $color = "GhostWhite"; break;
       } else {
