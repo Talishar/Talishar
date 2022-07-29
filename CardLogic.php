@@ -482,9 +482,6 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       case "CRU000":
         PlayAura("ARC112", $player);
         break;
-      case "ELE110":
-        GiveAttackGoAgain();
-        break;
       case "EVR018":
         PlayAura("ELE111", $player);
         break;
