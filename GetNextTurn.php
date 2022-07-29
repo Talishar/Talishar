@@ -601,7 +601,7 @@
     }
     else
     {
-      $content .= "<table><tr>";
+      $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
       for($i=0; $i<count($options); ++$i)
       {
         $content .= "<td>";
@@ -612,11 +612,14 @@
       for($i=0; $i<count($options); ++$i)
       {
         $content .= "<td>";
-        if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1);
-        else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1);
-        else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "concat", $cardSize, 0, 1);
-        else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1);
-        else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1);
+        $content .= "<div class='container'>";
+
+        if($turn[0] == "MULTICHOOSEDISCARD") $content .= "<label class='multichoose' for=chk".$i.">".Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1)."</label>";
+        else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= "<label class='multichoose' for=chk".$i.">".Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1)."</label>";
+        else if($turn[0] == "MULTICHOOSEHAND") $content .= "<label class='multichoose' for=chk".$i.">".Card($myHand[$options[$i]], "concat", $cardSize, 0, 1)."</label>";
+        else if($turn[0] == "MULTICHOOSEDECK") $content .= "<label class='multichoose' for=chk".$i.">".Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1)."</label>";
+        else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= "<label class='multichoose' for=chk".$i.">".Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1)."</label>";
+        $content .= "<div class='overlay'><div class='text'>Select</div></div></div>";
         $content .= "</td>";
       }
       $content .= "</tr></table></form></div>";
