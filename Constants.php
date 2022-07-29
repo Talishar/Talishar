@@ -122,7 +122,7 @@
 
   function LayerPieces()
   {
-    return 5;
+    return 6;
   }
 
   function LandmarkPieces()
