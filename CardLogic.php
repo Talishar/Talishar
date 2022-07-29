@@ -192,10 +192,11 @@ function HasEffect($cardID)
   return false;
 }
 
-function AddLayer($cardID, $player, $parameter, $target="-", $additionalCosts="-")
+function AddLayer($cardID, $player, $parameter, $target="-", $additionalCosts="-", $uniqueID="-")
 {
   global $layers;
   //Layers are on a stack, so you need to push things on in reverse order
+  array_unshift($layers, $uniqueID);
   array_unshift($layers, $additionalCosts);
   array_unshift($layers, $target);
   array_unshift($layers, $parameter);
@@ -332,6 +333,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $parameter = array_shift($layers);
           $target = array_shift($layers);
           $additionalCosts = array_shift($layers);
+          $uniqueID = array_shift($layers);
           $params = explode("|", $parameter);
           if($currentPlayer != $player)
           {
@@ -348,7 +350,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           else if($cardID == "LAYER") ProcessLayer($player, $parameter);
           else if($cardID == "TRIGGER")
           {
-            ProcessTrigger($player, $parameter);
+            ProcessTrigger($player, $parameter, $uniqueID);
             ProcessDecisionQueue();
           }
           else
@@ -469,46 +471,30 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     }
   }
 
-  function ProcessTrigger($player, $parameter)
+  function ProcessTrigger($player, $parameter, $uniqueID)
   {
-    $auras = &GetAuras($player);
-    if(CardSubType($parameter) == "Aura")
+    switch($parameter)
     {
-      for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
-      {
-        switch($auras[$i])
-        {
-          case "EVR107": case "EVR108": case "EVR109":
-          if($auras[$i+2] == 0) {
-            $dest = "Runeblood Invocation is destroyed.";
-          }
-          else {
-            --$auras[$i+2];
-            PlayAura("ARC112", $player);
-          }
-          break;
-          default: break;
-        }
-        if($dest != "") DestroyAura($player, $i);
-      }
-    }
-    else
-    {
-      switch($parameter)
-      {
-        case "EVR018":
-          PlayAura("ELE111", $player);
-          break;
-        case "EVR037":
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "MASKPOUNCINGLYNX", 1);
-          AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
-          AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, $mainCharacter[$i], 1);
-          break;
+      case "EVR018":
+        PlayAura("ELE111", $player);
+        break;
+      case "EVR037":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "MASKPOUNCINGLYNX", 1);
+        AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
+        AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, $mainCharacter[$i], 1);
+        break;
+      case "EVR107": case "EVR108": case "EVR109":
+        $index = SearchAurasForUniqueID($uniqueID, $player);
+        if($index == -1) break;
+        $auras = &GetAuras($player);
+        if($auras[$index+2] == 0)
+        { WriteLog("Runeblood Invocation is destroyed."); DestroyAura($player, $index); }
+        else { --$auras[$index+2]; PlayAura("ARC112", $player); }
+        break;
       default: break;
     }
-  }
   }
 
   function GetDQHelpText()
