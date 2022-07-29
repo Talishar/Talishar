@@ -1425,6 +1425,16 @@
     }
   }
 
+  //Hold priority for triggers (2 = Always hold, 1 = Hold, 0 = Don't Hold)
+  function AuraDefaultHoldTriggerState($cardID)
+  {
+    switch($cardID)
+    {
+      case "WTR075": return 0;//Seismic Surge
+      default: return 2;
+    }
+  }
+
   function IsCharacterActive($player, $index)
   {
     $character = &GetPlayerCharacter($player);
