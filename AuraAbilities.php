@@ -21,6 +21,7 @@ function PlayAura($cardID, $player, $number=1, $isToken=false)
     array_push($auras, ($isToken ? 1 : 0));//Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
     array_push($auras, GetUniqueId());
+    array_push($auras, AuraDefaultHoldTriggerState($cardID));//Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
   IncrementClassState($player, $CS_NumAuras, $number);
 }
