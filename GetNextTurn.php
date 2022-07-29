@@ -582,24 +582,46 @@
     $caption = "<div>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "</div>";
     if(GetDQHelpText() != "-") $caption = "<div>" . implode(" ", explode("_", GetDQHelpText())) . "</div>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
-    $content .= "<table style='border-spacing:0; border-collapse: collapse;'>";
-    for($i=0; $i<count($options); ++$i)
+
+    if($turn[0] == "MULTICHOOSETEXT")
     {
-      $content .= "<tr><th>";
-      $content .= CreateCheckbox($i, strval($options[$i]));
-      $content .= "</th><td style='position:relative; padding-left: 5px; top:2px; font-size: 18px; text-align: left;'>";
-      if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1);
-      else if($turn[0] == "MULTICHOOSETEXT") $content .= str_replace("_", " ", $options[$i]);
-      $content .= "</td></tr>";
+      $content .= "<table style='border-spacing:0; border-collapse: collapse;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $content .= "<tr><th>";
+        $content .= CreateCheckbox($i, strval($options[$i]));
+        $content .= "</th><td style='position:relative; padding-left: 5px; top:2px; font-size: 18px; text-align: left;'>";
+        $content .= str_replace("_", " ", $options[$i]);
+        $content .= "</td></tr>";
+      }
+      $content .= "</table>";
+      $content .= "</form>";
+      $content .= "</div>";
+      echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
     }
-    $content .= "</table>";
-    $content .= "</form>";
-    $content .= "</div>";
-    echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+    else
+    {
+      $content .= "<table><tr>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $content .= "<td>";
+        $content .= CreateCheckbox($i, strval($options[$i]));
+        $content .= "</td>";
+      }
+      $content .= "</tr><tr>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $content .= "<td>";
+        if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1);
+        else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1);
+        else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "concat", $cardSize, 0, 1);
+        else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1);
+        else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1);
+        $content .= "</td>";
+      }
+      $content .= "</tr></table></form></div>";
+      echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+    }
   }
 
   //Opponent hand
