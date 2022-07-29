@@ -158,7 +158,7 @@ function AuraDestroyAbility($cardID)
     case "WTR056": return BlessingOfDeliveranceDestroy(1);
     case "WTR069": case "WTR070": case "WTR071": return EmergingPowerDestroy($cardID);
     case "WTR072": case "WTR073": case "WTR074": return "Stonewall Confidence was destroyed at the beginning of your action phase.";
-    case "WTR075": /*AddLayer("TRIGGER", $mainPlayer, $cardID);*/ AddCurrentTurnEffect($cardID, $mainPlayer); return "Seismic Surge reduces the cost of the next Guardian attack action card you play this turn by 1.";
+    case "WTR075": AddLayer("TRIGGER", $mainPlayer, $cardID); return "Seismic Surge reduces the cost of the next Guardian attack action card you play this turn by 1.";
     case "ARC162": return "Chains of Eminence was destroyed at the beginning of your action phase.";
     case "CRU028": return "Stamp Authority is destroyed at the beginning of your action phase.";
     case "CRU029": case "CRU030": case "CRU031": AddCurrentTurnEffect($cardID, $mainPlayer); return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";

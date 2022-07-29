@@ -475,15 +475,21 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   {
     switch($parameter)
     {
+      case "WTR075":
+        AddCurrentTurnEffect($parameter, $player);
+        break;
+      case "CRU000":
+        PlayAura("ARC112", $player);
+        break;
       case "EVR018":
         PlayAura("ELE111", $player);
         break;
       case "EVR037":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "MASKPOUNCINGLYNX", 1);
-        AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,TT", 1);
-        AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, $mainCharacter[$i], 1);
+        AddDecisionQueue("FINDINDICES", $player, "MASKPOUNCINGLYNX", 1);
+        AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+        AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
+        AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, $mainCharacter[$i], 1);
         break;
       case "EVR107": case "EVR108": case "EVR109":
         $index = SearchAurasForUniqueID($uniqueID, $player);
