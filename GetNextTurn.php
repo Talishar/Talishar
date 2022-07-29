@@ -192,7 +192,7 @@
   echo("<span style='position:fixed;  bottom:0px; left:14%; right:14%; z-index:10; display:inline-block; justity-content: center; font-size:30px; text-align:center;'>");
 
 
-  echo(($manualMode ? "<span style='position:relative; top: 5px; z-index:10; color: ".$fontColor."; font-family:Helvetica; font-size:28px; font-weight: 550;text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Add to hand: </span><input id='manualAddCardToHand' type='text' /><input type='button' value='Add' onclick='AddCardToHand()' />&nbsp;" : ""));
+  echo(($manualMode ? "<span style='position:relative; top: 5px; z-index:10; color: ".$fontColor."; font-family:Helvetica; font-size:28px; font-weight: 550;text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Add to hand: </span><input id='manualAddCardToHand' type='text' /><input type='button' style='position:relative; top:0; left:0; bottom: 5px; box-shadow: none;' value='Add' onclick='AddCardToHand()' />&nbsp;" : ""));
 
   //Tell the player what to pick
   if($turn[0] != "OVER")
@@ -576,32 +576,27 @@
   if(($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK") && $currentPlayer == $playerID)
   {
     $content = "";
-    echo("<div 'display:inline;'>");
+    echo("<div 'display:inline; width: 100%;'>");
     $params = explode("-", $turn[2]);
     $options = explode(",", $params[1]);
     $caption = "<div>Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".") . "</div>";
     if(GetDQHelpText() != "-") $caption = "<div>" . implode(" ", explode("_", GetDQHelpText())) . "</div>";
     $content .= CreateForm($playerID, "Submit", 19, count($options));
-    $content .= "<table><tr>";
+    $content .= "<table style='border-spacing:0; border-collapse: collapse;'>";
     for($i=0; $i<count($options); ++$i)
     {
-      $content .= "<td>";
+      $content .= "<tr><th>";
       $content .= CreateCheckbox($i, strval($options[$i]));
-      $content .= "</td>";
-    }
-    $content .= "</tr><tr>";
-    for($i=0; $i<count($options); ++$i)
-    {
-      $content .= "<td>";
+      $content .= "</th><td style='position:relative; padding-left: 5px; top:2px; font-size: 18px; text-align: left;'>";
       if($turn[0] == "MULTICHOOSEDISCARD") $content .= Card($myDiscard[$options[$i]], "concat", $cardSize, 0, 1);
       else if($turn[0] == "MULTICHOOSETHEIRDISCARD") $content .= Card($theirDiscard[$options[$i]], "concat", $cardSize, 0, 1);
       else if($turn[0] == "MULTICHOOSEHAND") $content .= Card($myHand[$options[$i]], "concat", $cardSize, 0, 1);
       else if($turn[0] == "MULTICHOOSEDECK") $content .= Card($myDeck[$options[$i]], "concat", $cardSize, 0, 1);
       else if($turn[0] == "MULTICHOOSETHEIRDECK") $content .= Card($theirDeck[$options[$i]], "concat", $cardSize, 0, 1);
       else if($turn[0] == "MULTICHOOSETEXT") $content .= str_replace("_", " ", $options[$i]);
-      $content .= "</td>";
+      $content .= "</td></tr>";
     }
-    $content .= "</tr></table>";
+    $content .= "</table>";
     $content .= "</form>";
     $content .= "</div>";
     echo CreatePopup("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
@@ -751,10 +746,10 @@
     //Show Player Name for the spectator
     if($type == "C" && $playerID == 3)
     {
-      echo("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 70px; text-align: center;
+      echo("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center;
       line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . $borderColor . ";
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . $backgroundColor . ";
-      font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player 1");
+      font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player 2");
     }
     echo("</div>");
   }
@@ -927,10 +922,10 @@
       //Show Player Name for the spectator
       if($playerID == 3)
       {
-        echo("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 70px; text-align: center;
+        echo("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center;
         line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . $borderColor . ";
         transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . $backgroundColor . ";
-        font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player 2");
+        font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player 1");
       }
     }
     echo("</div>");
