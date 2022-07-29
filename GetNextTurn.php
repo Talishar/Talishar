@@ -189,10 +189,10 @@
   echo("</div></div>");
 
   //Now display the screen for this turn
-  echo("<span style='position:fixed;  bottom:0px; left:15%; right:15%; z-index:10; display:inline-block; justity-content: center; font-size:30px; text-align:center;'>");
+  echo("<span style='position:fixed;  bottom:0px; left:14%; right:14%; z-index:10; display:inline-block; justity-content: center; font-size:30px; text-align:center;'>");
 
 
-  echo(($manualMode ? "Add to hand: <input id='manualAddCardToHand' type='text' /><input type='button' value='Add' onclick='AddCardToHand()' />" : ""));
+  echo(($manualMode ? "<span style='position:relative; top: 5px; z-index:10; color: ".$fontColor."; font-family:Helvetica; font-size:28px; font-weight: 550;text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Add to hand: </span><input id='manualAddCardToHand' type='text' /><input type='button' value='Add' onclick='AddCardToHand()' />&nbsp;" : ""));
 
   //Tell the player what to pick
   if($turn[0] != "OVER")
@@ -204,7 +204,7 @@
     else
     {
       echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid " . $borderColor . "; border-radius: 5px; font-size:22px;'><img height='22px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b> " . GetPhaseHelptext() . "&nbsp");
-      if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo(" (" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "20px") . ")");
+      if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo("(" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "16px") . ")");
       if(CanPassPhase($turn[0]))
       {
         //echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
@@ -215,7 +215,7 @@
       echo("</b></span>");
     }
   }
-  if(IsManualMode($playerID)) echo("&nbsp;&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true));
+  if(IsManualMode($playerID)) echo("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true));
   echo("</span>");
 
   //Display Current Turn Effects
