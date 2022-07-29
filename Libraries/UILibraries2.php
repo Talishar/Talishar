@@ -383,7 +383,7 @@
     switch($pitchValue)
     {
       case 3: $color = "#009DDF"; $pitchText = " (3)"; break;
-      case 2: $color = "#FFF000"; $pitchText = " (2)"; break;
+      case 2: $color = "GoldenRod"; $pitchText = " (2)"; break;
       case 1: $color = "#AF1518"; $pitchText = " (1)"; break;
       default: if($darkMode) {
         $color = "GhostWhite"; break;
