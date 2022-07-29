@@ -379,11 +379,12 @@
     $name = CardName($cardNumber);
     if($name == "") return "";
     $pitchValue = PitchValue($cardNumber);
+    $pitchText = "";
     switch($pitchValue)
     {
-      case 3: $color = "#009DDF"; break;//$color = "Blue"; break;
-      case 2: $color = "#FFF000"; break;//$color = "GoldenRod"; break;
-      case 1: $color = "#AF1518"; break;//$color = "Red"; break;
+      case 3: $color = "#009DDF"; $pitchText = " (3)"; break;
+      case 2: $color = "#FFF000"; $pitchText = " (2)"; break;
+      case 1: $color = "#AF1518"; $pitchText = " (1)"; break;
       default: if($darkMode) {
         $color = "GhostWhite"; break;
       } else {
@@ -391,7 +392,7 @@
       }
     }
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
-    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . "</span></b>";
+    return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
   }
 
   function MainMenuUI()
