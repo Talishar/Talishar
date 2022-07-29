@@ -66,6 +66,60 @@
   opacity: 0;
 }
 
+.multichoose img {
+  width: 100%;
+  position:relative;
+  cursor: pointer;
+  top: -10px;
+  left:0px;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.overlay {
+  position: absolute;
+  top: -10px;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background-color: grey;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  transition: .3s ease;
+  border-radius: 8px;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.container:hover .overlay {
+  bottom: 0;
+  height: 100%;
+  pointer-events: none;
+}
+
+.text {
+  white-space: nowrap;
+  font: Helvetica;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  position: absolute;
+  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  width: 100%;
+  pointer-events: none;
+}
+
+
+/* Buttons */
 button {
 	cursor: pointer;
 	font-size: 18px;
