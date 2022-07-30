@@ -709,7 +709,10 @@
       if(IsTileable($theirAuras[$i])) continue;
       $counters = $theirAuras[$i+2];
       $atkCounters = $theirAuras[$i+3];
+      echo("<div style='position:relative;'>");
       echo(Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters, "", "", False, 0, 0, $atkCounters) . "&nbsp");
+      DisplayPriorityGem($theirAuras[$i+8], $i, 1);
+      echo("</div>");
     }
   }
   if(count($theirItems) > 0)
@@ -864,11 +867,14 @@
     for($i=0; $i<count($myAuras); $i+=AuraPieces())
     {
       if(IsTileable($myAuras[$i])) continue;
+      echo("<div style='position:relative; display:inline;'>");
       $playable = ($currentPlayer == $playerID ? $myAuras[$i+1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction): false);
       $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
       $counters = $myAuras[$i+2];
       $atkCounters = $myAuras[$i+3];
       echo(Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i),"", False, 0, 0, $atkCounters) . "&nbsp");
+      DisplayPriorityGem($myAuras[$i+7], $i);
+      echo("</div>");
     }
   }
   if(count($myItems) > 0)
@@ -1176,15 +1182,26 @@
 
   function DisplayTiles($player)
   {
-    global $cardSize, $cardSizeAura;
+    global $cardSize, $cardSizeAura, $playerID;
     $auras = GetAuras($player);
 
     $count = 0;
+    $first = -1;
     for($i = 0; $i < count($auras); $i += AuraPieces())
     {
-      if($auras[$i] == "WTR075") ++$count;
+      if($auras[$i] == "WTR075")
+      {
+        if($count == 0) $first = $i;
+        ++$count;
+      }
     }
-    if($count > 0) echo(Card("WTR075", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
+    if($count > 0)
+    {
+      echo("<div style='position:relative;'>");
+      echo(Card("WTR075", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
+      DisplayPriorityGem(($player == $playerID ? $auras[$first+7] : $auras[$first+8]), $first, ($player != $playerID ? 1 : 0));
+      echo("</div>");
+    }
 
     $runechantCount = 0;
     for($i = 0; $i < count($auras); $i += AuraPieces())
@@ -1229,6 +1246,19 @@
     global $turn;
     $defaultText = "Choose " . TypeToPlay($turn[0]);
     return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
+  }
+
+  function DisplayPriorityGem($setting, $index, $otherPlayer)
+  {
+    global $cardWidth, $playerID;
+    if($setting != 2 && $playerID != 3)
+    {
+      echo("<img title='Active Toggle' style='position:absolute; z-index:1000; bottom:0px; left:" . $cardWidth/2 - 9 . "px; height:34px; width:34px;' src='./Images/gemSocketHexagon.png'>");
+      $gem = ($setting == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
+      if($setting == 0) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:0px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+      else if($setting == 1) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:0px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+      echo("</img>");
+    }
   }
 
 ?>

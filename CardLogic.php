@@ -478,9 +478,13 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
     {
       case "WTR075":
         AddCurrentTurnEffect($parameter, $player);
+        DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "CRU000":
         PlayAura("ARC112", $player);
+        break;
+      case "ELE109":
+        DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "EVR018":
         PlayAura("ELE111", $player);

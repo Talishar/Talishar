@@ -21,7 +21,8 @@ function PlayAura($cardID, $player, $number=1, $isToken=false)
     array_push($auras, ($isToken ? 1 : 0));//Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
     array_push($auras, GetUniqueId());
-    array_push($auras, AuraDefaultHoldTriggerState($cardID));//Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($auras, AuraDefaultHoldTriggerState($cardID));//My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($auras, AuraDefaultHoldTriggerState($cardID));//Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
   IncrementClassState($player, $CS_NumAuras, $number);
 }
@@ -100,6 +101,13 @@ function AuraPlayCounters($cardID)
   }
 }
 
+function DestroyAuraUniqueID($player, $uniqueID)
+{
+  $auras = &GetAuras($player);
+  $index = SearchAurasForUniqueID($uniqueID, $player);
+  DestroyAura($player, $index);
+}
+
 function DestroyAura($player, $index)
 {
   $auras = &GetAuras($player);
@@ -158,7 +166,6 @@ function AuraDestroyAbility($cardID)
     case "WTR056": return BlessingOfDeliveranceDestroy(1);
     case "WTR069": case "WTR070": case "WTR071": return EmergingPowerDestroy($cardID);
     case "WTR072": case "WTR073": case "WTR074": return "Stonewall Confidence was destroyed at the beginning of your action phase.";
-    case "WTR075": AddLayer("TRIGGER", $mainPlayer, $cardID); return "Seismic Surge reduces the cost of the next Guardian attack action card you play this turn by 1.";
     case "ARC162": return "Chains of Eminence was destroyed at the beginning of your action phase.";
     case "CRU028": return "Stamp Authority is destroyed at the beginning of your action phase.";
     case "CRU029": case "CRU030": case "CRU031": AddCurrentTurnEffect($cardID, $mainPlayer); return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";
@@ -166,7 +173,6 @@ function AuraDestroyAbility($cardID)
     case "CRU144": return "Runeblood Barrier is destroyed at the beginning of your action phase.";
     case "ELE025": case "ELE026": case "ELE027": AddCurrentTurnEffect($cardID, $mainPlayer); return "Emerging Avalanche gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "ELE028": case "ELE029": case "ELE030": AddCurrentTurnEffect($cardID, $mainPlayer); return "Strength of Sequoia gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
-    case "ELE109": AddLayer("TRIGGER", $mainPlayer, $cardID); return "Embodiment of Earth is destroyed at the beginning of your action phase.";
     case "ELE206": case "ELE207": case "ELE208": AddCurrentTurnEffect($cardID, $mainPlayer); return "Embolden gives your next Guardian Attack Action card +" . EffectAttackModifier($cardID) . ".";
     default: return "";
   }
@@ -181,9 +187,11 @@ function AuraStartTurnAbilities()
     $dest = AuraDestroyAbility($auras[$i]);
     switch($auras[$i])
     {
+      case "WTR075": AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); break;
       case "MON186": SoulShackleStartTurn($mainPlayer); break;
       case "MON006": GenesisStartTurnAbility(); break;
       case "CRU075": if($auras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$auras[$i+2]; } break;
+      case "ELE109": AddLayer("TRIGGER", $mainPlayer, $cardID, "-", "-", $auras[$i+6]); break;
       case "EVR107": case "EVR108": case "EVR109":
         WriteLog(CardLink($auras[$i], $auras[$i])." trigger creates a layer.");
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]);
