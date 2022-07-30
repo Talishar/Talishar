@@ -257,6 +257,7 @@
 
   function CardLink($caption, $cardNumber)
   {
+    global $playerID;
     //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
     $name = CardName($cardNumber);
     if($name == "") return "";
@@ -269,6 +270,7 @@
       case 1: $color = "#AF1518"; $pitchText = " (1)"; break;
       default: $color = "DimGray"; break;
     }
+    if(!IsColorblindMode($playerID)) $pitchText = "";
     //$file = "'./" . "BigCardImages" . "/" . $cardNumber . ".png'";
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
