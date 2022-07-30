@@ -64,7 +64,8 @@
   {
     switch($cardID)
     {
-      case "ARC113": case "ARC114": case "ARC115": case "ARC116": case "ARC117": return 0;
+      case "ARC113": case "ARC114": case "ARC115": return -1;
+      case "ARC116": case "ARC117": return 0;
       case "ARC122": return 2;
       case "ARC123": return 4;
       case "ARC124": return 3;
