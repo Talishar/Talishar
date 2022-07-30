@@ -588,11 +588,10 @@
       $content .= "<table style='border-spacing:0; border-collapse: collapse;'>";
       for($i=0; $i<count($options); ++$i)
       {
-        $content .= "<tr><th>";
-        $content .= CreateCheckbox($i, strval($options[$i]));
-        $content .= "</th><td style='position:relative; padding-left: 5px; top:2px; font-size: 18px; text-align: left;'>";
-        $content .= str_replace("_", " ", $options[$i]);
-        $content .= "</td></tr>";
+        $content .= "<tr><th style='text-align: left;'>";
+        $content .= CreateCheckbox($i, strval($options[$i]), -1, false, implode(" ", explode("_", strval($options[$i]))));
+        $content .= "</th>";
+        $content .= "</tr>";
       }
       $content .= "</table>";
       $content .= "</form>";
