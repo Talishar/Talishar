@@ -366,7 +366,7 @@
   function CardLink($caption, $cardNumber)
   {
     //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
-    global $darkMode;
+    global $darkMode, $playerID;
     $name = CardName($cardNumber);
     if($name == "") return "";
     $pitchValue = PitchValue($cardNumber);
@@ -382,6 +382,7 @@
         $color = "DimGray"; break;
       }
     }
+    if(!IsColorblindMode($playerID)) $pitchText = "";
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
   }

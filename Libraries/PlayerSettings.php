@@ -79,6 +79,13 @@
     return $settings[$SET_AutotargetArcane] == "1";
   }
 
+  function IsColorblindMode($player)
+  {
+    global $SET_ColorblindMode;
+    $settings = GetSettings($player);
+    return $settings[$SET_ColorblindMode] == "1";
+  }
+
   function ChangeSetting($player, $setting, $value)
   {
     global $SET_ManualMode;
