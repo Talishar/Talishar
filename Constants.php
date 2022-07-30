@@ -241,6 +241,7 @@
   $CCS_CachedTotalBlock = 23;
   $CCS_CombatDamageReplaced = 24;//CR 6.5.3, CR 6.5.4 (CR 2.0)
   $CCS_AttackUniqueID = 25;
+  $CCS_RequiredEquipmentBlock = 26;
 
   function ResetCombatChainState()
   {
@@ -248,7 +249,7 @@
     global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_ChainAttackBuff, $CCS_ChainLinkHitEffectsPrevented;
     global $CCS_NumBoosted, $CCS_NextBoostBuff, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_NumChainLinks, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
     global $defPlayer;
     global $chainLinks, $chainLinkSummary;
     if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
@@ -278,6 +279,7 @@
     $combatChainState[$CCS_CachedTotalBlock] = 0;
     $combatChainState[$CCS_CombatDamageReplaced] = 0;
     $combatChainState[$CCS_AttackUniqueID] = -1;
+    $combatChainState[$CCS_RequiredEquipmentBlock] = 0;
     $defCharacter = &GetPlayerCharacter($defPlayer);
     for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
     {
@@ -307,7 +309,7 @@
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
     global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
     global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID;
+    global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
     WriteLog("The chain link was closed.");
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
     $combatChainState[$CCS_WeaponIndex] = -1;
@@ -327,6 +329,7 @@
     $combatChainState[$CCS_CachedTotalBlock] = 0;
     $combatChainState[$CCS_CombatDamageReplaced] = 0;
     $combatChainState[$CCS_AttackUniqueID] = -1;
+    $combatChainState[$CCS_RequiredEquipmentBlock] = 0;
     UnsetChainLinkBanish();
   }
 

@@ -1246,8 +1246,35 @@ function AddCharacterUses($player, $index, $numToAdd)
   $character[$index+5] += $numToAdd;
 }
 
+function HaveUnblockedEquip($player)
+{
+  $char = &GetPlayerCharacter($player);
+  for($i=CharacterPieces(); $i<count($char); $i+=CharacterPieces())
+  {
+    if($char[$i+1] == 0) continue;//If broken
+    if($char[$i+6] == 1) continue;//On combat chain
+    if(CardType($char[$i]) != "E") continue;
+    if(BlockValue($char[$i]) == -1) continue;
+    return true;
+  }
+  return false;
+}
+
+function NumEquipBlock()
+{
+  global $combatChain;
+  $numEquipBlock = 0;
+  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    if(CardType($combatChain[$i]) == "E") ++$numEquipBlock;
+  }
+  return $numEquipBlock;
+}
+
   function CanPassPhase($phase)
   {
+    global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer;
+    if($phase == "B" && HaveUnblockedEquip($currentPlayer) && NumEquipBlock() < $combatChainState[$CCS_RequiredEquipmentBlock]) return false;
     switch($phase)
     {
       case "P": return 0;
