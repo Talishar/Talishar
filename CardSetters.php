@@ -287,6 +287,7 @@ function IncrementClassState($player, $piece, $amount=1)
 function AppendClassState($player, $piece, $value)
 {
   $currentState = GetClassState($player, $piece);
+  if($currentState == "-") $currentState = "";
   if($currentState != "") $currentState .= ",";
   $currentState .= $value;
   SetClassState($player, $piece, $currentState);
