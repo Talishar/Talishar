@@ -35,6 +35,7 @@
       $folderPath = str_replace("CardImages", "Images", $folderPath);
       $folderPath = str_replace("concat", "Images", $folderPath);
       $showHover = 0;
+      $borderColor = 0;
     }
     else if(mb_strpos($folder, "CardImages") !== false)
     {
