@@ -423,7 +423,7 @@
       header("Location: " . $redirectPath . "/MainMenu.php");
       exit;
     case 100002: //Concede
-      PlayerLoseHealth($playerID, 9999);
+      PlayerLoseHealth($playerID, $myHealth);
       break;
     case 100003: //Report Bug
       $bugCount = 0;
