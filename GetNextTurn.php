@@ -1248,16 +1248,14 @@
     return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
   }
 
-  function DisplayPriorityGem($setting, $index, $otherPlayer)
+  function DisplayPriorityGem($setting, $index, $otherPlayer=0)
   {
     global $cardWidth, $playerID;
     if($setting != 2 && $playerID != 3)
     {
-      echo("<img title='Active Toggle' style='position:absolute; z-index:1000; bottom:0px; left:" . $cardWidth/2 - 9 . "px; height:34px; width:34px;' src='./Images/gemSocketHexagon.png'>");
       $gem = ($setting == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-      if($setting == 0) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:0px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
-      else if($setting == 1) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:0px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
-      echo("</img>");
+      if($setting == 0) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Not holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+      else if($setting == 1) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
     }
   }
 
