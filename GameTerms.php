@@ -55,7 +55,7 @@
       case "CHOOSEFIRSTPLAYER": return "who will be the first player";
       case "MAYCHOOSETHEIRDISCARD": return "a card from their graveyard";
       case "CHOOSETHEIRAURA": return "one of their auras";
-      case "DYNPITCH": return "how much you want to pay.";
+      case "DYNPITCH": return "how much you want to pay";
     }
   }
 
