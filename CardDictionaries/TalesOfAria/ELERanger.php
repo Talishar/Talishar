@@ -95,7 +95,7 @@
   {
     switch($cardID)
     {
-      case "ELE031": case "ELE032": case "ELE033": case "ELE034": return 0;
+      case "ELE031": case "ELE032": case "ELE033": case "ELE034": return -1;
       case "ELE037": return 2;
       case "ELE213": return 2;
       case "ELE214": return 0;

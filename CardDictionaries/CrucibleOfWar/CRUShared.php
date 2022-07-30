@@ -475,20 +475,20 @@
       case "CRU004": case "CRU005": return -1;
       case "CRU006": return 0;
       //CRU Ninja
-      case "CRU046": case "CRU047": case "CRU050": case "CRU051": case "CRU052": return 0;
+      case "CRU046": case "CRU047": case "CRU050": case "CRU051": case "CRU052": case "CRU053": return -1;
       case "CRU053": return 1;
       case "CRU072": case "CRU074": return 2;
       //CRU Warrior
-      case "CRU077": return 0;
-      case "CRU079": case "CRU080": return -1;
+      case "CRU077": case "CRU079": case "CRU080": return -1;
       case "CRU081": return 2;
       //CRU Shapeshifter
       case "CRU097": return 0;
       //CRU Mechanologist
-      case "CRU099": case "CRU101": case "CRU102": return 0;
+      case "CRU099": case "CRU101": return -1;
+      case "CRU102": return 0;
       case "CRU104": case "CRU105": return -1;
       //CRU Ranger
-      case "CRU121": return 0;
+      case "CRU121": return -1;
       case "CRU122": return 2;
       case "CRU124": return 2;
       case "CRU125": return -1;
@@ -504,8 +504,8 @@
       case "CRU145": case "CRU146": case "CRU147": return 2;
       case "CRU154": case "CRU155": case "CRU156": return 2;
       //CRU Wizard
-      case "CRU160": case "CRU161": return 0;
-      case "CRU164": return -1;
+      case "CRU161": return 0;
+      case "CRU160": case "CRU164": return -1;
       case "CRU165": case "CRU166": case "CRU167": return 2;
       //CRU Generics
       case "CRU177": return -1;

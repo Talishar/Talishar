@@ -433,13 +433,13 @@
     {
       case "WTR000": return -1;
       //Brute
-      case "WTR001": case "WTR002": case "WTR003": return 0;
+      case "WTR001": case "WTR002": case "WTR003": return -1;
       case "WTR004": return 2;
       case "WTR005": return 1;
       case "WTR008": return 4;
       case "WTR010": return -1;
       //Guardian
-      case "WTR038": case "WTR039": case "WTR040": return 0;
+      case "WTR038": case "WTR039": case "WTR040": return -1;
       case "WTR041": return 2;
       case "WTR042": return 1;
       case "WTR051": return 7;
@@ -447,7 +447,7 @@
       case "WTR053": return 5;
       case "WTR075": return -1;
       //Ninja
-      case "WTR076": case "WTR077": case "WTR078": return 0;
+      case "WTR076": case "WTR077": case "WTR078": return -1;
       case "WTR079": return 2;
       case "WTR080": return 1;
       case "WTR092": return 4;
@@ -458,7 +458,7 @@
       case "WTR150": return 1;
       case "WTR155": case "WTR156": case "WTR157": case "WTR158": return 1;
       //Warrior
-      case "WTR113": case "WTR114": case "WTR115": return 0;
+      case "WTR113": case "WTR114": case "WTR115": return -1;
       case "WTR116": return 2;
       case "WTR117": return 1;
       case "WTR126": return 6;
