@@ -115,6 +115,7 @@
   {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
     $rv = "";
+    $rv .= "<h2>Settings</h2>";
     $settings = GetSettings($player);
     if($settings[$SET_AlwaysHoldPriority] != 0) $rv .= CreateButton($player, "Auto-pass Priority", 26, $SET_AlwaysHoldPriority . "-0", "24px");
     $rv .= "<BR>";

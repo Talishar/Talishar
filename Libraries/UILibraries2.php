@@ -391,12 +391,12 @@
   {
     global $playerID;
     $rv = "<table style='margin-left:auto; margin-right:auto; width:100% height:100%;'><tr><td style='vertical-align:middle; width:40%;'>";
+    $rv .= GetSettingsUI($playerID) . "<BR>";
+    $rv .= "</td><td style='vertical-align:middle; width:40%;'>";
     $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
-    $rv .= GetSettingsUI($playerID) . "<BR>";
-    $rv .= "</td><td style='vertical-align:middle; width:40%;'>";
     $rv .= PreviousTurnSelectionUI();
     $rv .= "</td></tr></table>";
     return $rv;
