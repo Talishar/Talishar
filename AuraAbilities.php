@@ -187,11 +187,11 @@ function AuraStartTurnAbilities()
     switch($auras[$i])
     {
       case "WTR075": AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); break;
-      case "ARC162": AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); break; 
+      case "ARC162": AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); break;
       case "MON186": SoulShackleStartTurn($mainPlayer); break;
       case "MON006": GenesisStartTurnAbility(); break;
       case "CRU075": if($auras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$auras[$i+2]; } break;
-      case "ELE109": AddLayer("TRIGGER", $mainPlayer, $cardID, "-", "-", $auras[$i+6]); break;
+      case "ELE109": AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); break;
       case "EVR107": case "EVR108": case "EVR109":
         WriteLog(CardLink($auras[$i], $auras[$i])." trigger creates a layer.");
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]);
