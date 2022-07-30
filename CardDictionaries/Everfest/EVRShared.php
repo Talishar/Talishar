@@ -675,7 +675,7 @@
   function EVRPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_NumBoosted, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -814,7 +814,12 @@
         }
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":
-        return "T-Bone is a partially manual card. If you have a boosted card on the combat chain, the opponent must block with an equipment if possible.";
+        //if($combatChainState[$CCS_NumBoosted])
+        {
+          $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+          $rv = "T-Bone requires you to block with an equipment (if possible).";
+        }
+        return $rv;
       case "EVR079": case "EVR080": case "EVR081":
         $numBoosts = GetClassState($currentPlayer, $CS_NumBoosted);
         Opt($cardID, $numBoosts);
