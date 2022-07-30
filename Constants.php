@@ -56,10 +56,11 @@
   //4 - Is Token (1 = yes, 0 = no)
   //5 - Number of ability uses (triggered or activated)
   //6 - Unique ID
-  //7 - Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
+  //7 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
+  //8 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
   function AuraPieces()
   {
-    return 8;
+    return 9;
   }
 
   //0 - Item ID
@@ -121,6 +122,12 @@
     return 1;
   }
 
+  //0 - Card ID/Layer type
+  //1 - Player
+  //2 - Parameter
+  //3 - Target
+  //4 - Additional Costs
+  //5 - Unique ID
   function LayerPieces()
   {
     return 6;

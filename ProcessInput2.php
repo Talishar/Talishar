@@ -333,6 +333,14 @@
       $index = $buttonInput;
       $myCharacter[$index+9] = ($myCharacter[$index+9] == "1" ? "0" : "1");
       break;
+    case 103: //Toggle aura Active
+      $index = $buttonInput;
+      $myAuras[$index+7] = ($myAuras[$index+7] == "1" ? "0" : "1");
+      break;
+    case 104: //Toggle other player aura Active
+      $index = $buttonInput;
+      $theirAuras[$index+8] = ($theirAuras[$index+8] == "1" ? "0" : "1");
+      break;
     case 10000://Undo
       RevertGamestate();
       $skipWriteGamestate = true;
@@ -491,6 +499,8 @@
     {
       case 26: return true;
       case 102: return true;
+      case 103: return true;
+      case 104: return true;
       case 10000: return true;
       case 10003: return true;
       case 100001: return true;
