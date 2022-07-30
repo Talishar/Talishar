@@ -1737,7 +1737,8 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, $item);//Card ID
     array_push($items, ETASteamCounters($item) + SteamCounterLogic($item, $player) + $steamCounterModifier);//Counters
     array_push($items, 2);//Status
-    array_push($items, ItemUses($item));
+    array_push($items, ItemUses($item));//Num Uses
+    array_push($items, GetUniqueId());//Unique ID
   }
 }
 

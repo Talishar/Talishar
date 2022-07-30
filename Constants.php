@@ -67,9 +67,10 @@
   //1 - Counters/Steam Counters
   //2 - Status
   //3 - Num Uses
+  //4 - Unique ID
   function ItemPieces()
   {
-    return 4;
+    return 5;
   }
 
   function PitchPieces()
