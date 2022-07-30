@@ -163,10 +163,10 @@
     return $rv;
   }
 
-  function ProcessInputLink($player, $mode, $input)
+  function ProcessInputLink($player, $mode, $input, $event='onmousedown')
   {
     global $gameName;
-    return " onmousedown='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'";
+    return " " . $event . "='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'";
   }
 
   function CreateForm($playerID, $caption, $mode, $count)
@@ -181,10 +181,20 @@
     return $rv;
   }
 
-  function CreateCheckbox($input, $value)
+  //input = ?
+  //value = ?
+  //immediateSubmitMode = If set, add onchange event to submit immediately instead of form submit
+  //defaultChecked = Will be checked by default if true
+  //label = label to display
+  function CreateCheckbox($input, $value, $immediateSubmitMode=-1, $defaultChecked=false, $label="&nbsp;")
   {
-    $rv = "<input type='checkbox'  id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "'>";
-    $rv .= "<label for='chk" . $input . "'>&nbsp</label>";
+    global $playerID;
+    $submitLink = "";
+    $check = "";
+    if($immediateSubmitMode != -1) $submitLink = ProcessInputLink($playerID, $immediateSubmitMode, $input, "onchange");
+    if($defaultChecked) $check = " checked='checked'";
+    $rv = "<input type='checkbox' " . $submitLink . " id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "' " . $check . ">";
+    $rv .= "<label for='chk" . $input . "'>" . $label . "</label>";
     return $rv;
   }
 
