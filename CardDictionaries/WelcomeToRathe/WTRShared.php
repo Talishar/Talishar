@@ -981,17 +981,28 @@
   function KatsuHit($index)
   {
     global $mainPlayer;
-    AddDecisionQueue("YESNO", $mainPlayer, "to_use_Katsu's_ability");
-    AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
-    AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-    AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
-    AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
-    AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
-    AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+    $hand = &GetHand($mainPlayer);
+    $costZeroCards = 0;
+    for ($i=0; $i < count($hand) ; $i++) {
+      if (CardCost($hand[$i]) == 0) {
+        ++$costZeroCards;
+      }
+    }
+    //If hand is empty or there no 0 cost card, skip the popup
+    if(count($hand) > 0 && $costZeroCards > 0)
+    {
+      AddDecisionQueue("YESNO", $mainPlayer, "to_use_Katsu's_ability");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-1", 1);
+      AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
+      AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
+      AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
+      AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
+      AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+    }
     AddDecisionQueue("EXHAUSTCHARACTER", $mainPlayer, $index, 1);
-    AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
   }
 
   function LordOfWindIndices($player)
