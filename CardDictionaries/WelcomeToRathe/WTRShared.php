@@ -982,14 +982,8 @@
   {
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
-    $costZeroCards = 0;
-    for ($i=0; $i < count($hand) ; $i++) {
-      if (CardCost($hand[$i]) == 0) {
-        ++$costZeroCards;
-      }
-    }
-    //If hand is empty or there no 0 cost card, skip the popup
-    if(count($hand) > 0 && $costZeroCards > 0)
+    //If hand is empty skip the popup
+    if(count($hand) > 0)
     {
       AddDecisionQueue("YESNO", $mainPlayer, "to_use_Katsu's_ability");
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
