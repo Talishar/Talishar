@@ -166,7 +166,6 @@ function AuraDestroyAbility($cardID)
     case "WTR056": return BlessingOfDeliveranceDestroy(1);
     case "WTR069": case "WTR070": case "WTR071": return EmergingPowerDestroy($cardID);
     case "WTR072": case "WTR073": case "WTR074": return "Stonewall Confidence was destroyed at the beginning of your action phase.";
-    case "ARC162": return "Chains of Eminence was destroyed at the beginning of your action phase.";
     case "CRU028": return "Stamp Authority is destroyed at the beginning of your action phase.";
     case "CRU029": case "CRU030": case "CRU031": AddCurrentTurnEffect($cardID, $mainPlayer); return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "CRU038": case "CRU039": case "CRU040": AddCurrentTurnEffect($cardID, $mainPlayer); return "Emerging Dominance gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . " and dominate.";
@@ -188,6 +187,7 @@ function AuraStartTurnAbilities()
     switch($auras[$i])
     {
       case "WTR075": AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); break;
+      case "ARC162": AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i+6]); break; 
       case "MON186": SoulShackleStartTurn($mainPlayer); break;
       case "MON006": GenesisStartTurnAbility(); break;
       case "CRU075": if($auras[$i+2] == 0) { $dest = "Zen State is destroyed."; } else { --$auras[$i+2]; } break;
