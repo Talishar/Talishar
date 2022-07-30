@@ -1,9 +1,9 @@
-<?php
-   include_once 'Header.php';
-?>
 
 <?php
-   include "HostFiles/Redirector.php";
+  if(!isset($_SERVER['HTTPS'])) { header('Location: https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php'); exit(); }
+
+  include_once 'Header.php';
+  include "HostFiles/Redirector.php";
 ?>
 
 <style>
