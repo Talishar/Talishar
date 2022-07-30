@@ -480,6 +480,10 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         AddCurrentTurnEffect($parameter, $player);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
+      case "ARC162":
+        DestroyAuraUniqueID($player, $uniqueID);
+        WriteLog("Chains of Eminence was destroyed at the beginning of your action phase.");
+        break;
       case "CRU000":
         PlayAura("ARC112", $player);
         break;
