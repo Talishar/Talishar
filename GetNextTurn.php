@@ -224,14 +224,14 @@
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
   {
     $effect = "";
-    $border = ($playerID == $currentTurnEffects[$i+1] ? "2px solid blue" : "2px solid red");
+    $border = ($playerID == $currentTurnEffects[$i+1] || $playerID == 3 ? "2px solid blue" : "2px solid red");
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
     $effect .= "<div style='width:86px; height:66px; margin:2px; border:" . $border . ";'>";
     //$effect .= "<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />";
     $effect .= Card($cardID, "crops", 65, 0, 1);
     $effect .= "</div>";
-    if($playerID == $currentTurnEffects[$i+1]) $friendlyEffects .= $effect;
+    if($playerID == $currentTurnEffects[$i+1] || $playerID == 3) $friendlyEffects .= $effect;
     else $opponentEffects .= $effect;
   }
   //TODO: Make this better by refactoring the above to a function
