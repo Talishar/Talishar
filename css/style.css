@@ -335,3 +335,90 @@ input, button {
 .draft-form input {
   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
+
+.CreateGame_Button {
+	cursor: pointer;
+	font-size: 32px;
+	color: #1a1a1a;
+	background: #EDEDED;
+	border: 2px solid #1a1a1a;
+	box-shadow: 2px 2px 0 #1a1a1a,
+		-2px -2px 0 #1a1a1a,
+		-2px 2px 0 #1a1a1a,
+		2px -2px 0 #1a1a1a;
+	transition: 350ms ease-in-out;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 70px;
+}
+
+.CreateGame_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.CreateGame_Button:focus {
+	outline: none;
+}
+
+.CreateGame_Menu {
+  position:absolute;
+  top:28%;
+  left:50%;
+  width:40%;
+  bottom: 30px;
+  margin: 0 0 0 -20%; /* -13% = half of width/height */
+  background-color:rgba(74, 74, 74, 0.9);
+  border: 2px solid #1a1a1a;
+  border-radius: 5px;
+}
+
+.FabLogo {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  z-index: 15;
+  top: 50px;
+  left: 50%;
+  margin: 0 0 0 -10%; /* -13% = half of width/height */
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+}
+
+.ServerChecker {
+  position:absolute; top:50px; left:10px; width:25%; bottom: 30px;
+  background-color:rgba(74, 74, 74, 0.9);
+  border: 2px solid #1a1a1a;
+  border-radius: 5px;
+}
+
+.DeckToTry {
+  margin-left: 20px;
+  font-size:19px;
+  font-weight:bolder;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+}
+
+.NewsMenu {
+  position:absolute;
+  top:50px;
+  right:10px;
+  width:25%;
+  bottom: 30px;
+  background-color:rgba(74, 74, 74, 0.9);
+  border: 2px solid #1a1a1a;
+  border-radius: 5px;
+}
+
+.NewsMenu h1 {
+  width:100%;
+  text-align:center;
+  color:rgb(220, 220, 220);"
+}
+
+.NewsMenu h2 {
+  width:100%;
+  text-align:center;
+  color:rgb(220, 220, 220);
+}
