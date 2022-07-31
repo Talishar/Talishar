@@ -1043,9 +1043,11 @@
   echo("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo("</div>");
 
+  if($playerID != 3) $gamelogHeight = "calc(100% - 50px)";
+  else $gamelogHeight = "calc(100% - 25px)";
 
   echo("<div style='position:fixed; height: calc(100% - 460px); width:193px; bottom:-13px; right:15px;'>");
-  echo("<div id='gamelog' style=' border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; width:200px; height: calc(100% - 50px); overflow-y: auto;'>");
+  echo("<div id='gamelog' style=' border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; width:200px; height: ".$gamelogHeight."; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
   echo("</div>");
   echo("</div>");
