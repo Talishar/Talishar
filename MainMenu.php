@@ -1,6 +1,7 @@
 
 <?php
-  if(!isset($_SERVER['HTTPS'])) { header('Location: https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php'); exit(); }
+
+  if($_SERVER['REMOTE_ADDR'] != "127.0.0.1" && $_SERVER['REMOTE_ADDR'] != "::1" && !isset($_SERVER['HTTPS'])) { header('Location: https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php'); exit(); }
 
   include_once 'Header.php';
   include "HostFiles/Redirector.php";
