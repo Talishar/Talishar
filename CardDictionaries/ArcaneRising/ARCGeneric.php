@@ -278,11 +278,11 @@
         switch($userInput[$i])
         {
           case "Buff_your_attack_action_cards_this_turn.":
-            WriteLog("Art of War gives attack action cards +1 power and defense this turn.");
+            WriteLog(CardLink("ARC160", "ARC160") . " gives attack action cards +1 power and defense this turn.");
             AddCurrentTurnEffect("ARC160-1", $currentPlayer);
             break;
           case "Your_next_attack_action_card_gains_go_again.":
-            WriteLog("Art of War gives the next attack action card this turn go again.");
+            WriteLog(CardLink("ARC160", "ARC160") . " gives the next attack action card this turn go again.");
             if(count($combatChain) > 0)
             {
               AddCurrentTurnEffectFromCombat("ARC160-3", $currentPlayer);
@@ -293,11 +293,11 @@
             }
             break;
           case "Defend_with_attack_action_cards_from_arsenal.":
-            WriteLog("Art of War makes it possible to block with attack actions from arsenal.");
+            WriteLog(CardLink("ARC160", "ARC160") . " makes it possible to block with attack actions from arsenal.");
             AddCurrentTurnEffect("ARC160-2", $currentPlayer);
             break;
           case "Banish_an_attack_action_card_to_draw_2_cards.":
-            WriteLog("Art of War allows you to banish a card and draw 2.");
+            WriteLog(CardLink("ARC160", "ARC160") . " allows you to banish a card and draw 2.");
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
