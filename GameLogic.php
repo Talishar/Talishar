@@ -211,26 +211,18 @@ function ChainLinkBeginResolutionEffects()
   }
 }
 
+//Was used for cases with "non-natural" go again, but the go again icon wasn't showing.
 function CombatChainResolutionEffects()
 {
-  global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $mainPlayer;
-  for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
-  {
-    $cardID = $combatChain[$i-1];
-    switch($cardID)
-    {
-      case "CRU010": case "CRU011": case "CRU012":
-          if($i == 1 && NumCardsBlocking() < 2) GiveAttackGoAgain(); break;
-        case "MON248": case "MON249": case "MON250":
-          if($i == 1 && SearchHighestAttackDefended() < AttackValue($cardID)) GiveAttackGoAgain(); break;
-        case "MON293": case "MON294": case "MON295":
-          $mainPitch = &GetPitch($mainPlayer);
-          if($i == 1 && SearchPitchHighestAttack($mainPitch) > AttackValue($cardID)) GiveAttackGoAgain(); break;
-        case "ELE216": case "ELE217": case "ELE218":
-          if($i == 1 && HasIncreasedAttack()) GiveAttackGoAgain(); break;
-        default: break;
-      }
-  }
+  // global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $mainPlayer;
+  // for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+  // {
+  //   $cardID = $combatChain[$i-1];
+  //   switch($cardID)
+  //   {
+  //       default: break;
+  //   }
+  // }
 }
 
 function HasCrush($cardID)
