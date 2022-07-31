@@ -903,7 +903,7 @@
         if($baseAttackMax > -1 && AttackValue($cardID) > $baseAttackMax) return false;
       }
       $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
-      if($resourceMin > -1 && CardCost($cardID) < $resourceMin) return false;
+      if($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
       if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
       if($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
     }
