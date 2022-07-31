@@ -1097,9 +1097,11 @@ function RevealCards($cards, $player="")
 function DoesAttackHaveGoAgain()
 {
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_NumRedPlayed;
+
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
   $attackSubtype = CardSubType($combatChain[0]);
+  $attackValue = AttackValue($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;//Blizzard
@@ -1112,6 +1114,25 @@ function DoesAttackHaveGoAgain()
     if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002"))) return true;
+
+  $mainPitch = &GetPitch($mainPlayer);
+  switch ($combatChain[0])
+  {
+    case "MON293": case "MON294": case "MON295":
+      if(SearchPitchHighestAttack($mainPitch) > $attackValue) return true;
+      break;
+    case "CRU010": case "CRU011": case "CRU012":
+      if(NumCardsBlocking() < 2) return true;
+      break;
+    case "MON248": case "MON249": case "MON250":
+      if(SearchHighestAttackDefended() < $attackValue) return true;
+      break;
+    case "ELE216": case "ELE217": case "ELE218":
+      if(HasIncreasedAttack()) return true;
+      break;
+    default:
+      break;
+  }
   return false;
 }
 
