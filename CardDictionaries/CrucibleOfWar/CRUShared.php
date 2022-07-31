@@ -714,7 +714,18 @@
         if($character[$combatChainState[$CCS_WeaponIndex]+1] == 1) { $character[$combatChainState[$CCS_WeaponIndex]+1] = 2; }
         return "Allows you to attack with target sword an additional time.";
       case "CRU083":
-        if(RepriseActive()) UnifiedDecreePlayEffect();
+        if(RepriseActive()) {
+          AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+          AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "AR", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Unified Decree?");
+          AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card the card", 1);
+          AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+          AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
+          AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
+          AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCC", 1);
+          AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
+        }
         return "Gives your weapon attack +" . AttackModifier($cardID) . " and looks for an attack reaction.";
       case "CRU084":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -1039,19 +1050,6 @@
       {
         PutItemIntoPlayForPlayer("CRU197", $mainPlayer);
       }
-    }
-  }
-
-  function UnifiedDecreePlayEffect()
-  {
-    global $mainPlayer;
-    $deck = &GetDeck($mainPlayer);
-    if(count($deck) == 0) return;
-    if(RevealCards($deck[0], $mainPlayer) && CardType($deck[0]) == "AR")
-    {
-      BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "TCC");
-      WriteLog(CardLink($deck[0], $deck[0]) . " was banished and can be played this combat chain.");
-      array_shift($deck);
     }
   }
 ?>
