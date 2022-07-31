@@ -834,7 +834,8 @@
       echo("<div style='position:relative; display:inline-block'>");
       if($playerID == 3)
       {
-        echo(Card("cardBack", "concat", $cardSizeAura, 0, 0, 0, 0));
+        if($myArsenal[$i+1] == "UP") echo(Card($myArsenal[$i], "concat", $cardSizeAura, 0, 1, $myArsenal[$i+2] == 0 ? 1 : 0, 0, $myArsenal[$i+3]));
+        else echo(Card("cardBack", "concat", $cardSizeAura, 0, 0, 0, 0));
       }
       else
       {
