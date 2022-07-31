@@ -341,6 +341,7 @@ input, button {
 	font-size: 32px;
 	color: #1a1a1a;
 	background: #EDEDED;
+  border-radius: 10px;
 	border: 2px solid #1a1a1a;
 	box-shadow: 2px 2px 0 #1a1a1a,
 		-2px -2px 0 #1a1a1a,
