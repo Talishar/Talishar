@@ -1103,9 +1103,9 @@ function DoesAttackHaveGoAgain()
   $attackSubtype = CardSubType($combatChain[0]);
   $attackValue = AttackValue($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
-  if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;//Blizzard
   if(HasGoAgain($combatChain[0])) return true;
+  if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
   {
