@@ -194,7 +194,13 @@
       case "ELE036":
         if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT");
         break;
-      case "ELE216": case "ELE217": case "ELE218": if(HasIncreasedAttack()) Reload($mainPlayer); break;
+      case "ELE216": case "ELE217": case "ELE218":
+        if(HasIncreasedAttack())
+        {
+          WriteLog("Bolt'n' Shot allows you to Reload.");
+          Reload($mainPlayer);
+        }
+        break;
       default: break;
     }
   }

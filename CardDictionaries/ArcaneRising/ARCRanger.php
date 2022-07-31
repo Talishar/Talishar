@@ -258,6 +258,7 @@
       return;
     }
     AddDecisionQueue("FINDINDICES", $player, "HAND");
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to Reload");
     AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
     AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
