@@ -1061,10 +1061,7 @@ function ItemStartTurnAbility($index)
   switch($mainItems[$index])
   {
     case "ARC007":
-      WriteLog("Teklo Core produced 2 resources.");
-      --$mainItems[$index+1];
-      $mainResources[0] += 2;
-      if($mainItems[$index+1] <= 0) DestroyMainItem($index);
+      AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index+4]); // TODO: Doesn't actually create a layer right now.
       break;
     case "ARC035":
       WriteLog("Dissipation Shield lost a steam counter to remain in play.");
