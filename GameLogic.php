@@ -1499,7 +1499,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
   global $chainLinkSummary;
   switch($cardID)
   {
-    case "UPR189": if($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) { Draw($player); WriteLog("That's All You Got? drew a card."); } break;
+    case "UPR189": if($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) { Draw($player); WriteLog(CardLink($cardID, $cardID) . " drew a card."); } break;
     default: break;
   }
 }
@@ -1710,7 +1710,7 @@ function CombatChainPlayAbility($cardID)
   {
     switch($combatChain[$i])
     {
-      case "EVR122": if(ClassContains($cardID, "WIZARD", $defPlayer)) { $combatChain[$i+6] += 2; WriteLog("Sigil of Parapets gets +2 defense."); } break;
+      case "EVR122": if(ClassContains($cardID, "WIZARD", $defPlayer)) { $combatChain[$i+6] += 2; WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " gets +2 defense."); } break;
       default: break;
     }
   }
@@ -2468,9 +2468,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ESTRIKE":
       switch($lastResult)
       {
-        case "Draw_a_card": WriteLog("Englightened Strike drew a card."); return MyDrawCard();
-        case "2_Attack": WriteLog("Englightened Strike got +2 power."); AddCurrentTurnEffect("WTR159", $player); return 1;
-        case "Go_again": WriteLog("Englightened Strike got go again."); $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; return 2;
+        case "Draw_a_card": WriteLog(CardLink("WTR159", "WTR159") . " drew a card."); return MyDrawCard();
+        case "2_Attack": WriteLog(CardLink("WTR159", "WTR159") . " got +2 power."); AddCurrentTurnEffect("WTR159", $player); return 1;
+        case "Go_again": WriteLog(CardLink("WTR159", "WTR159") . " got go again."); $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; return 2;
       }
       return $lastResult;
     case "NIMBLESTRIKE":
