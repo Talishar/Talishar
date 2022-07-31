@@ -187,7 +187,7 @@
       }
     }
     else {
-      $_SESSION['error'] = 'Error: The deck link you have entered is invalid or may contain invalid cards (e.g Tokens).\n\nPlease double-check your deck link and try again.';
+      $_SESSION['error'] = 'Error: The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
       header("Location: MainMenu.php");
       die();
     }
