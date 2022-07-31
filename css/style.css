@@ -215,6 +215,17 @@ input, button {
   text-decoration: inherit;
   cursor: pointer;
   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  transition: 350ms ease-in-out;
+}
+
+.signup-form form button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.signup-form form button:focus {
+	outline: none;
 }
 
 /* Reset Password */
@@ -248,6 +259,17 @@ input, button {
   font-weight: bolder;
   text-decoration: inherit;
   cursor: pointer;
+  transition: 350ms ease-in-out;
+}
+
+.form-resetpwd button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.form-resetpwd button:focus {
+  outline: none;
 }
 
 .form-resetpwd p{
@@ -330,6 +352,17 @@ input, button {
   font-weight: bolder;
   text-decoration: inherit;
   cursor: pointer;
+  transition: 350ms ease-in-out;
+}
+
+.draft-form-form form input:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.draft-form-form form input:focus {
+  outline: none;
 }
 
 .draft-form input {
@@ -351,6 +384,7 @@ input, button {
   padding-left: 10px;
   padding-right: 10px;
   height: 70px;
+  transition: 350ms ease-in-out;
 }
 
 .CreateGame_Button:hover {
@@ -360,7 +394,7 @@ input, button {
 }
 
 .CreateGame_Button:focus {
-	outline: none;
+  outline: none;
 }
 
 .CreateGame_Menu {
