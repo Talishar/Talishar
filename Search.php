@@ -455,6 +455,16 @@ function SearchAurasForUniqueID($uniqueID, $player)
   return -1;
 }
 
+function SearchItemsForUniqueID($uniqueID, $player)
+{
+  $items = &GetItems($player);
+  for($i=0; $i<count($items); $i+=ItemPieces())
+  {
+    if($items[$i+4] == $uniqueID) return $i;
+  }
+  return -1;
+}
+
 function SearchItemsForCard($cardID, $player)
 {
   $items = &GetItems($player);

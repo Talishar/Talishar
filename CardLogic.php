@@ -474,15 +474,25 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
 
   function ProcessTrigger($player, $parameter, $uniqueID)
   {
+    $resources = &GetResources($player);
+    $items = &GetItems($player);
+
     switch($parameter)
     {
       case "WTR075":
         AddCurrentTurnEffect($parameter, $player);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
+      case "ARC007":
+        $index = SearchItemsForUniqueID($uniqueID, $player);
+        --$items[$index+1];
+        $resources[0] += 2;
+        if($items[$index+1] <= 0) DestroyMainItem($index);
+        WriteLog(CardLink($parameter, $parameter)." produced 2 resources.");
+        break;
       case "ARC162":
         DestroyAuraUniqueID($player, $uniqueID);
-        WriteLog("Chains of Eminence was destroyed at the beginning of your action phase.");
+        WriteLog(CardLink($parameter, $parameter)." was destroyed at the beginning of your action phase.");
         break;
       case "CRU000":
         PlayAura("ARC112", $player);
