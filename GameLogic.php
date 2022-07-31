@@ -390,7 +390,12 @@ function EffectHitEffect($cardID)
     case "WTR147": case "WTR148": case "WTR149": NaturesPathPilgrimageHit(); break;
     case "ARC170-1": case "ARC171-1": case "ARC172-1": MainDrawCard(); return 1;
     case "CRU124": if(IsHeroAttackTarget()) { PummelHit(); } break;
-    case "CRU145": case "CRU146": case "CRU147": PlayAura("ARC112", $mainPlayer); break;
+    case "CRU145": case "CRU146": case "CRU147":
+      if($cardID == "CRU145") $amount = 3;
+      else if($cardID == "CRU146") $amount = 2;
+      else $amount = 1;
+      PlayAura("ARC112", $mainPlayer, $amount);
+      break;
     case "CRU084-2": PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2); break;
     case "MON034": LuminaAscensionHit(); break;
     case "MON081": case "MON082": case "MON083": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
