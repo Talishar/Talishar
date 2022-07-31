@@ -5,6 +5,7 @@
   include "Libraries/SHMOPLibraries.php";
   include "APIKeys/APIKeys.php";
 
+  session_start();
   $gameName=$_GET["gameName"];
   if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
   $playerID=$_GET["playerID"];
@@ -91,95 +92,104 @@
     $weapon1 = "";
     $weapon2 = "";
     $weaponSideboard = "";
-    for($i=0; $i<count($cards); ++$i)
+
+    if(is_countable($cards))
     {
-      $count = $cards[$i]->{'total'};
-      $numSideboard = $cards[$i]->{'sideboardTotal'};
-      if($isFaBDB)
+      for($i=0; $i<count($cards); ++$i)
       {
-        $printings = $cards[$i]->{'printings'};
-        $printing = $printings[0];
-        $sku = $printing->{'sku'};
-        $id = $sku->{'sku'};
-        $id = explode("-", $id)[0];
-      }
-      else
-      {
-        $image = $cards[$i]->{'image'};
-        $image = explode("/", $image);
-        $filename = $image[count($image)-1];
-        $filename = explode(".", $filename);
-        $id = $filename[0];
-      }
-      $id = GetAltCardID($id);
-      $cardType = CardType($id);
-      if($cardType == "") //Card not supported, error
-      {
-          if($unsupportedCards != "") $unsupportedCards .= " ";
-          $unsupportedCards .= $id;
-      }
-      else if($cardType == "C")
-      {
-        $character = $id;
-      }
-      else if($cardType == "W")
-      {
-        for($j=0; $j<($count-$numSideboard); ++$j)
+        $count = $cards[$i]->{'total'};
+        $numSideboard = $cards[$i]->{'sideboardTotal'};
+        if($isFaBDB)
         {
-          if($weapon1 == "") $weapon1 = $id;
-          else if($weapon2 == "") $weapon2 = $id;
-          else
+          $printings = $cards[$i]->{'printings'};
+          $printing = $printings[0];
+          $sku = $printing->{'sku'};
+          $id = $sku->{'sku'};
+          $id = explode("-", $id)[0];
+        }
+        else
+        {
+          $image = $cards[$i]->{'image'};
+          $image = explode("/", $image);
+          $filename = $image[count($image)-1];
+          $filename = explode(".", $filename);
+          $id = $filename[0];
+        }
+        $id = GetAltCardID($id);
+        $cardType = CardType($id);
+        if($cardType == "") //Card not supported, error
+        {
+            if($unsupportedCards != "") $unsupportedCards .= " ";
+            $unsupportedCards .= $id;
+        }
+        else if($cardType == "C")
+        {
+          $character = $id;
+        }
+        else if($cardType == "W")
+        {
+          for($j=0; $j<($count-$numSideboard); ++$j)
           {
-            if($weaponSideboard != "") $weaponSideboard .= " ";
-            $weaponSideboard .= $id;
+            if($weapon1 == "") $weapon1 = $id;
+            else if($weapon2 == "") $weapon2 = $id;
+            else
+            {
+              if($weaponSideboard != "") $weaponSideboard .= " ";
+              $weaponSideboard .= $id;
+            }
+          }
+          for($j=0; $j<$numSideboard; ++$j)
+          {
+              if($weaponSideboard != "") $weaponSideboard .= " ";
+              $weaponSideboard .= $id;
           }
         }
-        for($j=0; $j<$numSideboard; ++$j)
+        else if($cardType == "E")
         {
-            if($weaponSideboard != "") $weaponSideboard .= " ";
-            $weaponSideboard .= $id;
-        }
-      }
-      else if($cardType == "E")
-      {
-        $subtype = CardSubType($id);
-        if($numSideboard == 0)
-        {
-          switch($subtype)
+          $subtype = CardSubType($id);
+          if($numSideboard == 0)
           {
-            case "Head": if($head == "") $head = $id; else { if($headSideboard != "") $headSideboard .= " "; $headSideboard .= $id; } break;
-            case "Chest": if($chest == "") $chest = $id; else { if($chestSideboard != "") $chestSideboard .= " "; $chestSideboard .= $id; } break;
-            case "Arms": if($arms == "") $arms = $id; else { $armsSideboard .= " "; $armsSideboard .= $id; } break;
-            case "Legs": if($legs == "") $legs = $id; else { if($legsSideboard != "") $legsSideboard .= " "; $legsSideboard .= $id; }break;
-            case "Off-Hand": if($offhand == "") $offhand = $id; else { if($offhandSideboard != "") $offhandSideboard .= " "; $offhandSideboard .= $id; } break;
-            default: break;
+            switch($subtype)
+            {
+              case "Head": if($head == "") $head = $id; else { if($headSideboard != "") $headSideboard .= " "; $headSideboard .= $id; } break;
+              case "Chest": if($chest == "") $chest = $id; else { if($chestSideboard != "") $chestSideboard .= " "; $chestSideboard .= $id; } break;
+              case "Arms": if($arms == "") $arms = $id; else { $armsSideboard .= " "; $armsSideboard .= $id; } break;
+              case "Legs": if($legs == "") $legs = $id; else { if($legsSideboard != "") $legsSideboard .= " "; $legsSideboard .= $id; }break;
+              case "Off-Hand": if($offhand == "") $offhand = $id; else { if($offhandSideboard != "") $offhandSideboard .= " "; $offhandSideboard .= $id; } break;
+              default: break;
+            }
+          }
+          else {
+            switch($subtype)
+            {
+              case "Head": if($headSideboard != "") $headSideboard .= " "; $headSideboard .= $id; break;
+              case "Chest": if($chestSideboard != "") $chestSideboard .= " "; $chestSideboard .= $id; break;
+              case "Arms": if($armsSideboard != "") $armsSideboard .= " "; $armsSideboard .= $id; break;
+              case "Legs": if($legsSideboard != "") $legsSideboard .= " "; $legsSideboard .= $id; break;
+              case "Off-Hand": if($offhandSideboard != "") $offhandSideboard .= " "; $offhandSideboard .= $id; break;
+              default: break;
+            }
           }
         }
-        else {
-          switch($subtype)
+        else
+        {
+          for($j=0; $j<($count-$numSideboard); ++$j)
           {
-            case "Head": if($headSideboard != "") $headSideboard .= " "; $headSideboard .= $id; break;
-            case "Chest": if($chestSideboard != "") $chestSideboard .= " "; $chestSideboard .= $id; break;
-            case "Arms": if($armsSideboard != "") $armsSideboard .= " "; $armsSideboard .= $id; break;
-            case "Legs": if($legsSideboard != "") $legsSideboard .= " "; $legsSideboard .= $id; break;
-            case "Off-Hand": if($offhandSideboard != "") $offhandSideboard .= " "; $offhandSideboard .= $id; break;
-            default: break;
+            if($deckCards != "") $deckCards .= " ";
+            $deckCards .= $id;
+          }
+          for($j=0; $j<$numSideboard; ++$j)
+          {
+            if($sideboardCards != "") $sideboardCards .= " ";
+            $sideboardCards .= $id;
           }
         }
       }
-      else
-      {
-        for($j=0; $j<($count-$numSideboard); ++$j)
-        {
-          if($deckCards != "") $deckCards .= " ";
-          $deckCards .= $id;
-        }
-        for($j=0; $j<$numSideboard; ++$j)
-        {
-          if($sideboardCards != "") $sideboardCards .= " ";
-          $sideboardCards .= $id;
-        }
-      }
+    }
+    else {
+      $_SESSION['error'] = 'Error: The deck link you have entered is invalid or may contain invalid cards (e.g Tokens).\n\nPlease double-check your deck link and try again.';
+      header("Location: MainMenu.php");
+      die();
     }
 
     if($unsupportedCards != "")

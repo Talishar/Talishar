@@ -4,6 +4,12 @@
 
   include_once 'Header.php';
   include "HostFiles/Redirector.php";
+
+  if(!empty($_SESSION['error']))
+  {
+    echo "<script>alert('".$_SESSION['error']."')</script>";
+    unset($_SESSION['error']);
+  }
 ?>
 
 <style>
