@@ -114,7 +114,7 @@ border: 2px solid #1a1a1a;
 border-radius: 5px;">
 <?php
   $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
-  echo("<h1>$theirDisplayName Hero</h1>");
+  echo("<h2>$theirDisplayName Hero</h2>");
 
   $otherHero = "cardBack";
   echo("<div id='oppHero' style='padding-left:5%;'>");
@@ -128,7 +128,7 @@ border: 2px solid #1a1a1a; border-radius: 5px;">
 
 <?php
   $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
-  echo("<h1>$displayName Hero</h1>");
+  echo("<h2>$displayName Hero</h2>");
 
   $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
   $handler = fopen($deckFile, "r");
