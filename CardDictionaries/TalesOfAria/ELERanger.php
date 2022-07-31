@@ -160,7 +160,7 @@
         if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "LIGHTNING"))
         {
           AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-          WriteLog("Ice Storm gets fuse bonuses.");
+          WriteLog(CardLink($cardID, $cardID)." gets fuse bonuses.");
         }
         return "";
       case "ELE214":
@@ -197,7 +197,7 @@
       case "ELE216": case "ELE217": case "ELE218":
         if(HasIncreasedAttack())
         {
-          WriteLog("Bolt'n' Shot allows you to Reload.");
+          WriteLog(CardLink($cardID, $cardID). " allows you to Reload.");
           Reload($mainPlayer);
         }
         break;
@@ -428,7 +428,7 @@
           {
             PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
             --$auras[$i+2];
-            if($auras[$i+2] == 0) { DestroyAura($player, $i); WriteLog("Insidious Chill was destroyed."); }
+            if($auras[$i+2] == 0) { DestroyAura($player, $i); WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); }
           }
           break;
         default: break;
