@@ -2574,7 +2574,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       {
         $character = &GetPlayerCharacter($player);
         $character[$parameter+4] = 1;
-        if(!ClassContains($combatChain[0], "ILLUSIONIST", ($player == 1 ? 2 : 1)) && CachedTotalAttack() >= 6) $character[$parameter+1] = 0;
       }
       return $lastResult;
     case "ARTOFWAR":
