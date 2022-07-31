@@ -680,7 +680,7 @@
         if(ComboActive())
         {
           $combatChainState[$CCS_ResourceCostDefenseMin] = $combatChainState[$CCS_NumChainLinks];
-          $rv = "Cannot be defended by cards with resource cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
+          $rv = "Cannot be defended by cards with cost less than " . $combatChainState[$CCS_NumChainLinks] . ".";
         }
         return $rv;
       case "CRU055":
