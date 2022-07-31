@@ -62,6 +62,7 @@ function BottomDeckDraw()
 function BottomDeckMultizone($player, $zone1, $zone2)
 {
   AddDecisionQueue("FINDINDICES", $player, "SEARCHMZ," . $zone1 ."|". $zone2, 1);
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or click the Pass button)", 1);
   AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MULTIZONEREMOVE", $player, "-", 1);
   AddDecisionQueue("ADDBOTTOMMYDECK", $player, "-", 1);
