@@ -917,6 +917,7 @@
           AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
           AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
         }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);

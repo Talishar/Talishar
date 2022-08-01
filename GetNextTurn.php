@@ -1094,10 +1094,16 @@
     global $cardSize;
     $content = "";
     $options = explode(",", $options);
+
+    $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
     for($i=0; $i<count($options); ++$i)
     {
-      $content .= Card($zone[$options[$i]], "concat", $cardSize, $mode, 1, 0, 0, 0, strval($options[$i]));
+      $content .= "<td>";
+      $content .= "<div class='container'>";
+      $content .= "<label class='multichoose'>".Card($zone[$options[$i]], "concat", $cardSize, $mode, 1, 0, 0, 0, strval($options[$i]))."</label>";
+      $content .= "<div class='overlay'><div class='text'>Select</div></div></div></td>";
     }
+    $content .= "</tr></table>";
     echo CreatePopup("CHOOSEZONE", [], 0, 1, $caption, 1, $content);
   }
 
