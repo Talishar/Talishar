@@ -3,6 +3,7 @@
 include "Libraries/SHMOPLibraries.php";
 include "HostFiles/Redirector.php";
 include "CardDictionary.php";
+include_once 'Header.php';
 
 define('ROOTPATH', __DIR__);
 
@@ -58,7 +59,7 @@ if ($handle = opendir($path)) {
                 $spectateLinks .= "<img height='40px;' src='./crops/" . $p2Hero . "_cropped.png' />";
                 $spectateLinks .= "</td><td style='vertical-align:middle;'>&nbsp;";
               }
-              $spectateLinks .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
+              $spectateLinks .= "<input class='ServerChecker_Button' type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
               $spectateLinks .= "</td></tr></table><center>";
               $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
               $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
@@ -111,7 +112,7 @@ if ($handle = opendir($path)) {
         $link .= "</td><td style='vertical-align:middle;'>";
         $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
         $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;" . $description . " </span>";
-        $link .= "<input type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
+        $link .= "<input class='ServerChecker_Button' type='submit' style='font-size:16px;' id='joinGame' value='Join Game' />";
         $link .= "</td></tr></table></center>";
         $link .= "<input type='hidden' name='gameName' value='$gameToken' />";
         $link .= "<input type='hidden' name='playerID' value='2' />";
