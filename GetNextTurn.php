@@ -155,7 +155,7 @@
 
   $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
   $borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
-  $fontColor = ($darkMode ? "#1a1a1a" : "#EDEDED");
+  $fontColor = ($darkMode ? "#1a1a1a" : "#DDD");
 
   //Display background
   if(IsDarkPlainMode($playerID))
@@ -290,9 +290,11 @@
   echo("<div style='position:absolute; left:240px; top:38%; z-index:0;'>");
 
   //Display the combat chain
-    echo("<table><tr>");
   if($displayCombatChain)
   {
+  $attackTarget = GetAttackTarget();
+    if($attackTarget != "NA" && $attackTarget != "THEIRCHAR-0") echo ("<div style='font-size:18px; font-weight:650; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Attack Target: " . GetMZCardLink($defPlayer, $attackTarget)."</div>");
+    echo("<table><tr>");
     echo("<td style='font-size:28px; font-weight:650; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>$totalAttack</td>");
     echo("<td><img onclick='ShowPopup(\"attackModifierPopup\");' style='cursor:pointer; height:30px; width:30px; display:inline-block;' src='./Images/Attack.png' /></td>");
     echo("<td><img style='height:30px; width:30px; display:inline-block;' src='./Images/Defense.png' /></td>");

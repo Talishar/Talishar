@@ -389,7 +389,7 @@
       default: if($darkMode) {
         $color = "GhostWhite"; break;
       } else {
-        $color = "DimGray"; break;
+        $color = "#8c8c8c"; break;
       }
     }
     if(!IsColorblindMode($playerID)) $pitchText = "";
