@@ -300,6 +300,7 @@
             WriteLog(CardLink("ARC160", "ARC160") . " allows you to banish a card and draw 2.");
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
             PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
+            PrependDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
             PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
             PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
             PrependDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
