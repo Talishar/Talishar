@@ -625,7 +625,7 @@
     global $mainPlayer, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;
     global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
     global $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
-    global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+    global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock;
     $rv = "";
     switch ($cardID)
     {
@@ -758,7 +758,13 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "CRU103":
-        return "Meganetic Shockwave is a manual card. The opponent must block with " . GetClassState($currentPlayer, $CS_NumBoosted) . " equipment if able.";
+        if($combatChainState[$CS_NumBoosted])
+        {
+          $combatChainState[$CCS_RequiredEquipmentBlock] = $CS_NumBoosted;
+          WriteLog("Here " . $combatChainState[$CCS_RequiredEquipmentBlock] . " " . $CS_NumBoosted);
+          $rv .= "Requires you to block with " . GetClassState($currentPlayer, $CS_NumBoosted) . " equipment if able.";
+        }
+        return $rv;
       case "CRU105":
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if($index != -1)
