@@ -218,22 +218,51 @@
   if(IsManualMode($playerID)) echo("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true));
   echo("</span>");
 
+  //Deduplicate current turn effects
+  $friendlyEffectsArr = [];
+  $opponentEffectsArr = [];
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+  {
+    $cardID = explode("-", $currentTurnEffects[$i])[0];
+    $cardID = explode(",", $cardID)[0];
+    if($playerID == $currentTurnEffects[$i+1] || $playerID == 3) $arr = &$friendlyEffectsArr;
+    else $arr = &$opponentEffectsArr;
+    if(!array_key_exists($cardID, $arr))
+    {
+      $arr[$cardID] = [];
+    }
+    if(!array_key_exists($currentTurnEffects[$i], $arr[$cardID])) $arr[$cardID][$currentTurnEffects[$i]] = 1;
+    else ++$arr[$cardID][$currentTurnEffects[$i]];
+  }
+
   //Display Current Turn Effects
   $friendlyEffects = "";
   $opponentEffects = "";
-  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+  foreach($friendlyEffectsArr as $key => $effectArr)
   {
-    $effect = "";
-    $border = ($playerID == $currentTurnEffects[$i+1] || $playerID == 3 ? "2px solid blue" : "2px solid red");
-    $cardID = explode("-", $currentTurnEffects[$i])[0];
-    $cardID = explode(",", $cardID)[0];
-    $effect .= "<div style='width:86px; height:66px; margin:2px; border:" . $border . ";'>";
-    //$effect .= "<img style='object-fit: cover; height:100%; width:100%;' src='./crops/" . $cardID . "_cropped.png' />";
-    $effect .= Card($cardID, "crops", 65, 0, 1);
-    $effect .= "</div>";
-    if($playerID == $currentTurnEffects[$i+1] || $playerID == 3) $friendlyEffects .= $effect;
-    else $opponentEffects .= $effect;
+    $max = 0;
+    foreach($effectArr as $effectCount) { if($effectCount > $max) $max = $effectCount; }
+    for($i=0; $i<$max; ++$i)
+    {
+      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
+      $effect .= Card($key, "crops", 65, 0, 1);
+      $effect .= "</div>";
+      $friendlyEffects .= $effect;
+    }
   }
+  foreach($opponentEffectsArr as $key => $effectArr)
+  {
+    $max = 0;
+    foreach($effectArr as $effectCount) { if($effectCount > $max) $max = $effectCount; }
+    for($i=0; $i<$max; ++$i)
+    {
+      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
+      $effect .= Card($key, "crops", 65, 0, 1);
+      $effect .= "</div>";
+      $opponentEffects .= $effect;
+    }
+  }
+
   //TODO: Make this better by refactoring the above to a function
   if(GetClassState($playerID, $CS_NextArcaneBonus) > 0) $friendlyEffects .= "<div title='Next arcane bonus: " . GetClassState($playerID, $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid blue;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   if(GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) > 0) $opponentEffects .= "<div title='Next arcane bonus: " . GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid red;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
@@ -1270,6 +1299,11 @@
       if($setting == 0) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Not holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
       else if($setting == 1) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
     }
+  }
+
+  function DisplayEffectsForPlayer($player, $arr)
+  {
+
   }
 
 ?>
