@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   height: 1000px;
   background-position: center;
@@ -521,4 +525,19 @@ input, button {
   padding-right: 5px;
   padding-top: 2px;
   padding-bottom: 2px;
+}
+
+/* Skip to main content for better accessibility */
+.skip-nav-link {
+  position: absolute;
+  padding: 0.5rem, 1.5rem;
+  left: 0.5rem;
+  top: 0.5rem;
+  border-radius: 0, 0, .25rem, .25rem;
+  transform: translateY(-120%);
+  transition: transform 325ms ease-in;
+}
+
+.skip-nav-link:focus {
+  transform: translateY(0px);
 }

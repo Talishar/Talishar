@@ -37,6 +37,8 @@
   </head>
   <body>
 
+    <a class="skip-nav-link" href="#fabdb">Skip Navigation</a>
+
     <nav>
       <div class="wrapper">
         <a href="MainMenu.php"></a>
