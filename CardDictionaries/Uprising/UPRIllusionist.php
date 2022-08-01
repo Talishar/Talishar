@@ -304,7 +304,7 @@
         return "Animates itself into an Ally.";
       case "UPR154":
         AddCurrentTurnEffect("UPR154", $currentPlayer);
-        return "Makes your target illusionist attack lose Phantasm.";
+        return "Makes target illusionist attack lose Phantasm.";
       case "UPR155": case "UPR156": case "UPR157":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Makes your next attack action card Illusionist, modify its base attack and gain Phantasm.";

@@ -428,6 +428,33 @@ input, button {
   border-radius: 5px;
 }
 
+.ServerChecker_Button {
+  cursor: pointer;
+	color: #1a1a1a;
+	background: #EDEDED;
+	border: 1px solid #1a1a1a;
+	box-shadow: 1px 1px 0 #1a1a1a,
+		-1px -1px 0 #1a1a1a,
+		-1px 1px 0 #1a1a1a,
+		1px -1px 0 #1a1a1a;
+	transition: 350ms ease-in-out;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transition: 350ms ease-in-out;
+}
+
+.ServerChecker_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.ServerChecker_Button:focus {
+  outline: none;
+}
+
 .DeckToTry {
   margin-left: 20px;
   font-size:19px;
