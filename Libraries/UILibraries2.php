@@ -1,6 +1,7 @@
 <?php
 
   require_once("CoreLibraries.php");
+  require_once('PlayerSettings.php');
 
   function BackgroundColor($darkMode)
   {
