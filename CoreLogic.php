@@ -136,12 +136,13 @@ function CombatChainPowerModifier($index, $amount)
 
 function CacheCombatResult()
 {
-  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive;
+  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
+  $combatChainState[$CCS_CachedNumBlockedFromHand] = NumBlockedFromHand();
 }
 
 function CachedTotalAttack()
@@ -160,6 +161,12 @@ function CachedDominateActive()
 {
   global $combatChainState, $CCS_CachedDominateActive;
   return ($combatChainState[$CCS_CachedDominateActive] == "1" ? true : false);
+}
+
+function CachedNumBlockedFromHand()
+{
+  global $combatChainState, $CCS_CachedNumBlockedFromHand;
+  return $combatChainState[$CCS_CachedNumBlockedFromHand];
 }
 
 function StartTurnAbilities()
