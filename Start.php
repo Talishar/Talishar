@@ -7,7 +7,7 @@
   include "GameLogic.php";
   include "GameTerms.php";
   include "Libraries/StatFunctions.php";
-  require_once "Libraries/PlayerSettings.php";
+  include "Libraries/PlayerSettings.php";
   include "Libraries/UILibraries2.php";
   include "AI/CombatDummy.php";
   include "WriteReplay.php";

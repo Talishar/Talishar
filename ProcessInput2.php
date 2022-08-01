@@ -10,7 +10,7 @@
   include "Libraries/SHMOPLibraries.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/UILibraries.php";
-  require_once "Libraries/PlayerSettings.php";
+  include "Libraries/PlayerSettings.php";
   include "AI/CombatDummy.php";
   include "AI/PlayerMacros.php";
   include "Libraries/HTTPLibraries.php";

@@ -1,7 +1,5 @@
 <?php
 
-  require_once('PlayerSettings.php');
-
   function BackgroundColor($darkMode)
   {
     if($darkMode) return "rgba(20, 20, 20, 0.7)";
@@ -282,7 +280,7 @@
       case 1: $color = "#AF1518"; $pitchText = " (1)"; break;
       default: $color = "DimGray"; break;
     }
-    if(!IsColorblindMode($playerID)) $pitchText = "";
+    if(function_exists("IsColorblindMode") && !IsColorblindMode($playerID)) $pitchText = "";
     //$file = "'./" . "BigCardImages" . "/" . $cardNumber . ".png'";
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
