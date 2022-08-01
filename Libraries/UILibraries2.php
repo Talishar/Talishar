@@ -392,7 +392,7 @@
         $color = "#8c8c8c"; break;
       }
     }
-    if(!IsColorblindMode($playerID)) $pitchText = "";
+    if(function_exists("IsColorblindMode") && !IsColorblindMode($playerID)) $pitchText = "";
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
   }
