@@ -815,7 +815,7 @@
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":
         $rv = "";
-        //if($combatChainState[$CS_NumBoosted])
+        //if($combatChainState[$CCS_NumBoosted])
         {
           $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
           $rv = "Requires you to block with an equipment if able.";

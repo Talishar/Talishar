@@ -758,10 +758,10 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "CRU103":
-        if($combatChainState[$CS_NumBoosted])
+        if($combatChainState[$CCS_NumBoosted])
         {
-          $combatChainState[$CCS_RequiredEquipmentBlock] = $CS_NumBoosted;
-          $rv .= "Requires you to block with " . GetClassState($currentPlayer, $CS_NumBoosted) . " equipment if able.";
+          $combatChainState[$CCS_RequiredEquipmentBlock] = $CCS_NumBoosted;
+          $rv .= "Requires you to block with " . GetClassState($currentPlayer, $CCS_NumBoosted) . " equipment if able.";
         }
         return $rv;
       case "CRU105":
