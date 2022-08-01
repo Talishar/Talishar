@@ -797,7 +797,7 @@ function CombatChainClosedCharacterEffects()
 
 function NumBlockedFromHand()
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $defPlayer, $layers;
   $num = 0;
   for($i=0; $i<count($combatChain); $i += CombatChainPieces())
   {
@@ -806,6 +806,11 @@ function NumBlockedFromHand()
       $type = CardType($combatChain[$i]);
       if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
     }
+  }
+  for($i=0; $i<count($layers); $i+=LayerPieces())
+  {
+    $params = explode("|", $layers[$i+2]);
+    if($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
   }
   return $num;
 }
