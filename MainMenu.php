@@ -53,7 +53,12 @@
 </div><br>
 
   <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
-  <input type="text" id="fabdb" name="fabdb"><br><br>
+  <input type="text" id="fabdb" name="fabdb">
+  &nbsp;
+  <?php
+    if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
+  ?>
+  <br><br>
   <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
   <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
