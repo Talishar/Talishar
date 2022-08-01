@@ -1425,6 +1425,8 @@ function FinalizeChainLink($chainClosed=false)
         break;
       case "MON247":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHANDAA");
+        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to reveal", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
