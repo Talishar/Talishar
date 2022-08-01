@@ -1824,7 +1824,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "ARC005": case "ARC042": case "ARC079": case "ARC116": case "ARC117": case "ARC151": case "ARC153": case "ARC154":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "ARC113": case "ARC114":
+    case "ARC113": case "ARC114": case "WTR037": case "WTR038":
       $character[$cardIndex+1] = 2;
       break;
     case "CRU006": case "CRU025": case "CRU081": case "CRU102": case "CRU122": case "CRU141":
