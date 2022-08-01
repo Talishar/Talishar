@@ -814,10 +814,10 @@
         }
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":
-        //if($combatChainState[$CCS_NumBoosted])
+        if($combatChainState[$CS_NumBoosted])
         {
           $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
-          $rv = "T-Bone requires you to block with an equipment (if possible).";
+          $rv = "Requires you to block with an equipment if able.";
         }
         return $rv;
       case "EVR079": case "EVR080": case "EVR081":
