@@ -36,7 +36,7 @@
     </p>
   </div>
   <div class="articles">
-    <h2>30 July 2022</h2>
+    <h2>30th July 2022</h2>
     <h3>📣There will be a short downtime today morning as we prepare for a major update that will break any games in progress when the update goes live. We will disable new game creation for a short period of time prior to uploading the update to give players time to finish.</h3>
     <p><br>- New End of Turn and Resume Turn Images.
       <br>- Improved multi-choose popup UI.
@@ -45,7 +45,7 @@
     </p>
   </div>
   <div class="articles">
-    <h2> 29st July 2022</h2>
+    <h2> 29th July 2022</h2>
     <h3>Good morning!👋</h3>
     <p><br>- Your deck list in limited is now sorted.
       <br>- The card highlighted colours are now improved and with the pitch number to better support colourblindness.
@@ -54,7 +54,7 @@
     </p>
   </div>
   <div class="articles">
-    <h2> 28st July 2022</h2>
+    <h2> 28th July 2022</h2>
     <h3>Hello #fabtcg players! We push another great update last night!👩‍🔧</h3>
     <p><br>- We coded lines to create layers. It's currently available for Stalagmite frostbite.
     <br>We need your help!🐛 Are there any specific triggers that come to your mind?
@@ -66,7 +66,18 @@
     <br>Anything else we are missing?
     </p>
   </div>
-  <div class="articles"></div>
+  <div class="articles">
+    <h2> 27th July 2022</h2>
+    <h3>Good evening #fabtcg community! 👋</h3>
+    <p><br>- We added the phantasm layer. (Icon WIP)
+      <br>- We added a gems toggle to all Spellvoid equipment to turn them on/off to create a popup only when needed.
+      <br>- We fixed and improved the input of multiple channels on the board at the once.
+      <br>- We remove from the games in progress the single-player games.
+      <br>- We fixed footsteps getting destroyed when blocking a 6+ Illusionist attack.
+      <br>- Blizzard should be able to target dragon attacks again. It was caught in another fix.
+      <br>Thank you for all the bug reports and feedback!🐛
+    </p>
+  </div>
   <div class="articles"></div>
   <div class="articles"></div>
   <div class="articles"></div>
