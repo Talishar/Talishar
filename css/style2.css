@@ -527,7 +527,9 @@ input, button {
   padding-bottom: 2px;
 }
 
-/* Skip to main content for better accessibility */
+/* =============================================
+   Skip to main content for better accessibility
+   ============================================= */
 .skip-nav-link {
   position: absolute;
   padding: 0.5rem, 1.5rem;
@@ -540,4 +542,45 @@ input, button {
 
 .skip-nav-link:focus {
   transform: translateY(0px);
+}
+
+/* ====
+   Blog
+   ==== */
+
+.grid-even-collum {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 60%;
+  justify-content: center;
+  align-content: center;
+  overflow-y: scroll;
+  height:80%;
+}
+
+
+.articles {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  background: white;
+  background-image: url('../Images/blog_background.jpg');
+}
+
+.articles:empty {
+  display: none;
+}
+
+.articles p {
+  font-size: 14px;
+  font-family: Helvetica;
+  color: black;
+  text-shadow: none;
+}
+
+.articles h1, h2, h3 {
+  width:100%;
+  text-align:center;
+  color: black;
+  text-shadow: none;
 }
