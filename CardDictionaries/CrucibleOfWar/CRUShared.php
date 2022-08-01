@@ -761,7 +761,6 @@
         if($combatChainState[$CS_NumBoosted])
         {
           $combatChainState[$CCS_RequiredEquipmentBlock] = $CS_NumBoosted;
-          WriteLog("Here " . $combatChainState[$CCS_RequiredEquipmentBlock] . " " . $CS_NumBoosted);
           $rv .= "Requires you to block with " . GetClassState($currentPlayer, $CS_NumBoosted) . " equipment if able.";
         }
         return $rv;
