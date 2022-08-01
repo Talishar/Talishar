@@ -1,7 +1,5 @@
 <?php
 
-  require_once('PlayerSettings.php');
-
   function BackgroundColor($darkMode)
   {
     if($darkMode) return "rgba(20, 20, 20, 0.7)";

@@ -20,7 +20,7 @@
   include "HostFiles/Redirector.php";
   include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
-  require_once "Libraries/PlayerSettings.php";
+  include "Libraries/PlayerSettings.php";
 
   if($currentPlayer == $playerID) { $icon = "ready.png"; $readyText = "You are the player with priority."; }
   else { $icon = "notReady.png"; $readyText = "The other player has priority."; }
