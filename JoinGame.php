@@ -72,7 +72,7 @@ border-radius: 5px;">
   <label for="fabdb" style="margin-left: 10px;">FaB DB Link:</label>
   <input type="text" id="fabdb" name="fabdb"><br><br>
 
-  <div style='width:100%; text-align:center;'><input type="submit" value="Submit"></div>
+  <div style='text-align:center;'><input class="JoinGame_Button" type="submit" value="Submit"></div>
 </form><br>
 
   <h3 style="text-align:center;">_________________________</h3>

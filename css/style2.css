@@ -380,7 +380,6 @@ input, button {
 		-2px -2px 0 #1a1a1a,
 		-2px 2px 0 #1a1a1a,
 		2px -2px 0 #1a1a1a;
-	transition: 350ms ease-in-out;
   padding-left: 10px;
   padding-right: 10px;
   height: 70px;
@@ -428,7 +427,7 @@ input, button {
   border-radius: 5px;
 }
 
-.ServerChecker_Button {
+.ServerChecker_Button, .JoinGame_Button {
   cursor: pointer;
 	color: #1a1a1a;
 	background: #EDEDED;
@@ -437,7 +436,6 @@ input, button {
 		-1px -1px 0 #1a1a1a,
 		-1px 1px 0 #1a1a1a,
 		1px -1px 0 #1a1a1a;
-	transition: 350ms ease-in-out;
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 2px;
@@ -445,13 +443,13 @@ input, button {
   transition: 350ms ease-in-out;
 }
 
-.ServerChecker_Button:hover {
+.ServerChecker_Button:hover, .JoinGame_Button:hover {
   -webkit-transform: scale(1.1);
   -ms-transform: scale(1.1);
   transform: scale(1.1);
 }
 
-.ServerChecker_Button:focus {
+.ServerChecker_Button:focus, .JoinGame_Button:focus {
   outline: none;
 }
 
