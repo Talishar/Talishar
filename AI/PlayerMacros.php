@@ -27,9 +27,7 @@ function ProcessMacros()
         {
           if($layers[5] != "-")//Means there is a unique ID
           {
-            $auras = &GetAuras($layers[1]);
-            $index = SearchAurasForUniqueID($layers[5], $layers[1]);
-            if($auras[$index+($currentPlayer == $layers[1] ? 7 : 8)] == 0) { $somethingChanged = true; PassInput(); }
+            if(GetAuraGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
           }
         }
       }
