@@ -1049,9 +1049,9 @@
   echo("<div style='position:fixed; width:200px; top:10px; bottom:10px; right:10px;'>");
 
   echo("<div style='position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr><td>");
-  echo("<div title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
+  echo("<div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
   echo("</td><td></td><td>");
-  echo("<div title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
+  echo("<div class='MenuButtons' title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo("</td></tr></table></div></div>");
 
   echo("<div style='text-align:center; margin-top: 3px; width:200px; font-weight:bold; font-size:24; font-weight: 550; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor.";'>Turn #" . $currentTurn . "</div>");
