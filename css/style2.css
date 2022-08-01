@@ -83,12 +83,12 @@ nav .wrapper {
   align-items: center;
 }
 
-nav ul li {
+li {
   list-style: none;
   float: left;
 }
 
-nav ul li a {
+li a {
   font-family: 'Helvetica', sans-serif;
   font-weight: bold;
   font-size: 14px;
@@ -98,7 +98,7 @@ nav ul li a {
   text-transform: uppercase;
 }
 
-nav ul li a:hover {
+a:hover {
   color: #31a6ff;
 }
 
