@@ -71,7 +71,7 @@
   include "GameTerms.php";
   include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
-  include "Libraries/PlayerSettings.php";
+  require_once "Libraries/PlayerSettings.php";
   if($opponentDisconnected && $turn[0] != "OVER")
   {
     PlayerLoseHealth($otherP, 9999);

@@ -13,7 +13,7 @@
   include "./GameLogic.php";
   include "./Libraries/UILibraries2.php";
   include "./Libraries/StatFunctions.php";
-  include "./Libraries/PlayerSettings.php";
+  require_once "./Libraries/PlayerSettings.php";
   include "./GameTerms.php";
   ob_end_clean();
 
