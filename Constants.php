@@ -125,7 +125,7 @@
 
   //0 - Card ID/Layer type
   //1 - Player
-  //2 - Parameter
+  //2 - Parameter (For play card | Delimited, piece 0 = $from)
   //3 - Target
   //4 - Additional Costs
   //5 - Unique ID
