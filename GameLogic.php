@@ -87,7 +87,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
 
 function ProcessHitEffect($cardID)
 {
-  WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
+  WriteLog("Processing hit effect for " . CardLink($cardID, $cardID) . ".");
   global $combatChain, $combatChainState, $CCS_ChainLinkHitEffectsPrevented;
 
   $attackID = $combatChain[0];
