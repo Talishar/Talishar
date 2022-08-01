@@ -318,7 +318,7 @@
       $damage = $chainLinkSummary[$i * ChainLinkSummaryPieces()];
       $linkOverlay = ($damage > 0 ? "./Images/hit.png" : "./Images/Defense.png");
       $linkTitle = ($damage > 0 ? "Hit for $damage damage" : "Fully Blocked");
-      echo("<div title='$linkTitle' style='position:absolute; left:" . $iconLeft . "px; top:4px;'><img style='width:22px; height:22px;' src='$linkOverlay' /></div>");
+      echo("<div class='chainSummary' title='$linkTitle' style='position:absolute; left:" . $iconLeft . "px; top:4px;'><img style='width:22px; height:22px;' src='$linkOverlay' /></div>");
       echo("</img></div>");
     }
     if(count($chainLinks) > 0)

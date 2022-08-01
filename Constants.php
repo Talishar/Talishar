@@ -65,7 +65,7 @@
 
   //0 - Item ID
   //1 - Counters/Steam Counters
-  //2 - Status
+  //2 - Status (2=ready, 1=unavailable, 0=destroyed)
   //3 - Num Uses
   //4 - Unique ID
   function ItemPieces()
