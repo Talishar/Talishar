@@ -891,7 +891,7 @@
     if($cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer ) return false;
     if(($phase == "B" || (($phase == "D" || $phase == "INSTANT")  && $cardType == "DR")) && $from == "HAND")
     {
-      if(IsDominateActive() && NumBlockedFromHand() >= 1) return false;
+      if(CachedDominateActive() && NumBlockedFromHand() >= 1) return false;
       if(CachedTotalAttack() <= 2 && SearchCharacterForCard($mainPlayer, "CRU047") && CardType($combatChain[0]) == "AA") return false;
     }
     if($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player))) return false;
