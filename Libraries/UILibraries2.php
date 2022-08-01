@@ -216,7 +216,7 @@
     {
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
     }
-    $rv .= "<div style='margin-left: 5px;'>" . $customInput . "</div>";
+    $rv .= "<div style='margin-left: 5px; align-items: center;'>" . $customInput . "</div>";
     $rv .= "</div>";
     return $rv;
   }

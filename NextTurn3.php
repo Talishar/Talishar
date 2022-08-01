@@ -58,6 +58,7 @@
 
   <script src="./jsInclude.js"></script>
 
+<?php // TODO: find a way to move those styles to a stylesheet. Not ure why it's not working. ?>
 <style>
   :root {
     <?php if(IsDarkMode($playerID)) echo("color-scheme: dark;");
@@ -106,9 +107,28 @@
     background: url("./Images/chainLinkBreak.png") no-repeat;
     background-size:contain;
     cursor:pointer;
-    -webkit-transform: scale(1.1);
-    -ms-transform: scale(1.1);
-    transform: scale(1.1);
+    -webkit-transform: scale(1.3);
+    -ms-transform: scale(1.3);
+    transform: scale(1.3);
+  }
+
+  .breakChain:focus {
+    outline: none;
+  }
+
+  .chainSummary {
+    cursor:pointer;
+    transition: 350ms ease-in-out;
+  }
+
+  .chainSummary:hover {
+    -webkit-transform: scale(1.4);
+    -ms-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+
+  .chainSummary:focus {
+    outline: none;
   }
 </style>
 
