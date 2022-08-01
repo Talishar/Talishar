@@ -249,7 +249,7 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     echo("<input type='hidden' id='playerCharacter' name='playerCharacter' value=''>");
     echo("<input type='hidden' id='playerDeck' name='playerDeck' value=''>");
     echo("<input type='hidden' id='authKey' name='authKey' value='$authKey'>");
-    echo("<input type='submit' value='" . ($playerID == 1 ? "Start" : "Ready") . "'>");
+    echo("<input class='GameLobby_Button' type='submit' value='" . ($playerID == 1 ? "Start" : "Ready") . "'>");
   echo("</form>");
   echo("</div>");
 
@@ -258,8 +258,8 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
   echo("</div>");
 
   echo("<div id='chatbox' style='position:absolute; bottom:3%; left:3%; width:97%;'>");
-  echo("<input style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  echo("<button style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
+  echo("<input class='GameLobby_Input' style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+  echo("<button class='GameLobby_Button' style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo("</div>");

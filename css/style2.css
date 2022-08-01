@@ -482,3 +482,43 @@ input, button {
   text-align:center;
   color:rgb(220, 220, 220);
 }
+
+.GameLobby_Button {
+  cursor: pointer;
+	color: #1a1a1a;
+	background: #EDEDED;
+	border: 1px solid #1a1a1a;
+	box-shadow: 1px 1px 0 #1a1a1a,
+		-1px -1px 0 #1a1a1a,
+		-1px 1px 0 #1a1a1a,
+		1px -1px 0 #1a1a1a;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transition: 350ms ease-in-out;
+}
+
+.GameLobby_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.GameLobby_Button:focus {
+  outline: none;
+}
+
+.GameLobby_Input {
+	color: #1a1a1a;
+	background: #EDEDED;
+	border: 1px solid #1a1a1a;
+	box-shadow: 1px 1px 0 #1a1a1a,
+		-1px -1px 0 #1a1a1a,
+		-1px 1px 0 #1a1a1a,
+		1px -1px 0 #1a1a1a;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}

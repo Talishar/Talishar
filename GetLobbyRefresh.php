@@ -70,8 +70,8 @@
     {
       if($playerID == $firstPlayerChooser)
       {
-          echo("<input type='button' name='action' value='Go First' onclick='SubmitFirstPlayer(1)' style='margin-left:15px; margin-right:5px; text-align:center; cursor:pointer;'>");
-          echo("<input type='button' name='action' value='Go Second' onclick='SubmitFirstPlayer(2)' style='text-align:center; cursor:pointer;'><br>");
+          echo("<input class='GameLobby_Button' type='button' name='action' value='Go First' onclick='SubmitFirstPlayer(1)' style='margin-left:15px; margin-right:5px; text-align:center;'>");
+          echo("<input class='GameLobby_Button' type='button' name='action' value='Go Second' onclick='SubmitFirstPlayer(2)' style='text-align:center;'><br>");
       }
       else
       {
@@ -81,7 +81,7 @@
 
     if($playerID == 1 && $gameStatus < $MGS_Player2Joined)
     {
-      echo("<div><input style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button onclick='copyText()'>Copy Invite Link</button></div>");
+      echo("<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Invite Link</button></div>");
     }
 
     // Chat Log
