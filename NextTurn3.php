@@ -75,11 +75,15 @@
   .passButton {
     background: url("./Images/passActive.png") no-repeat;
     background-size:contain;
+    transition: 350ms ease-in-out;
   }
 
   .passButton:hover {
     background: url("./Images/passHover.png") no-repeat;
     background-size:contain;
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
   }
 
   .passButton:active {
@@ -95,12 +99,16 @@
   .breakChain {
     background: url("./Images/chainLinkRight.png") no-repeat;
     background-size:contain;
+    transition: 350ms ease-in-out;
   }
 
   .breakChain:hover {
     background: url("./Images/chainLinkBreak.png") no-repeat;
     background-size:contain;
     cursor:pointer;
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
   }
 </style>
 
