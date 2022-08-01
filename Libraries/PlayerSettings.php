@@ -83,6 +83,7 @@
   {
     global $SET_ColorblindMode;
     $settings = GetSettings($player);
+    if($settings == null) return false;
     return $settings[$SET_ColorblindMode] == "1";
   }
 
