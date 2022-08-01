@@ -810,7 +810,7 @@
       echo("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center;
       line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . $borderColor . ";
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . $backgroundColor . ";
-      font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player 2");
+      font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player ". $otherPlayer);
     }
     echo("</div>");
   }
@@ -987,10 +987,11 @@
       //Show Player Name for the spectator
       if($playerID == 3)
       {
+        $secondPlayer = $otherPlayer = 1 ? 2 : 1;
         echo("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center;
         line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . $borderColor . ";
         transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . $backgroundColor . ";
-        font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player 1");
+        font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player " . $secondPlayer);
       }
     }
     echo("</div>");
