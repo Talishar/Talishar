@@ -1759,6 +1759,7 @@ function IsDominateActive()
 {
   global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $characterPieces, $combatChain, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
+  if(count($combatChain) == 0) return false;
   if(SearchCurrentTurnEffectsForCycle("EVR097", "EVR098", "EVR099", $mainPlayer)) return false;
   $characterEffects = GetCharacterEffects($mainPlayer);
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
