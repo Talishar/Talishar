@@ -717,7 +717,7 @@ function CardDiscarded($player, $discarded, $source="")
   {
     $character = &GetPlayerCharacter($player);
     if(($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001") && $character[1] == 2 && $player == $mainPlayer) {//Rhinar
-      WriteLog(CardLink("RVD001", "RVD001")." Intimidates.");
+      WriteLog(CardLink($character[0], $character[0])." Intimidates.");
       Intimidate();
     }
     IncrementClassState($player, $CS_Num6PowDisc);
