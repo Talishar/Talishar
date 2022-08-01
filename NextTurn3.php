@@ -130,6 +130,21 @@
   .chainSummary:focus {
     outline: none;
   }
+
+  .MenuButtons {
+    cursor:pointer;
+    transition: 350ms ease-in-out;
+  }
+
+  .MenuButtons:hover {
+    -webkit-transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+
+  .MenuButtons:focus {
+    outline: none;
+  }
 </style>
 
 </head>
