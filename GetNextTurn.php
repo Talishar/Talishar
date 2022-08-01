@@ -1220,11 +1220,22 @@
     if($soulShackleCount > 0) echo(Card("MON186", "concat", $cardSizeAura, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)) . "&nbsp");
 
     $frostbiteCount = 0;
+    $first = -1;
     for($i = 0; $i < count($auras); $i += AuraPieces())
     {
-      if($auras[$i] == "ELE111") ++$frostbiteCount;
+      if($auras[$i] == "ELE111")
+      {
+        if($count == 0) $first = $i;
+        ++$frostbiteCount;
+      }
     }
-    if($frostbiteCount > 0) echo(Card("ELE111", "concat", $cardSizeAura, 0, 1, 0, 0, ($frostbiteCount > 1 ? $frostbiteCount : 0)) . "&nbsp");
+    if($frostbiteCount > 0)
+    {
+      echo("<div style='position:relative;'>");
+      echo(Card("ELE111", "concat", $cardSizeAura, 0, 1, 0, 0, ($frostbiteCount > 1 ? $frostbiteCount : 0)) . "&nbsp");
+      DisplayPriorityGem(($player == $playerID ? $auras[$first+7] : $auras[$first+8]), $first, ($player != $playerID ? 1 : 0));
+      echo("</div>");
+    }
 
     $items = GetItems($player);
     $copperCount = 0;

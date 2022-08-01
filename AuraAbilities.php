@@ -130,15 +130,10 @@ function AuraCostModifier()
   $modifier = 0;
   for($i=count($myAuras)-AuraPieces(); $i>=0; $i-=AuraPieces())
   {
-    $remove = 0;
     switch($myAuras[$i])
     {
-      case "ELE111": $modifier += 1; $remove = 1; break;
+      case "ELE111": $modifier += 1; AddLayer("TRIGGER", $currentPlayer, "ELE111", "-", "-", $myAuras[$i+6]); break;
       default: break;
-    }
-    if($remove == 1)
-    {
-      DestroyAura($currentPlayer, $i);
     }
   }
 
@@ -539,6 +534,19 @@ function AuraHitEffects($attackID)
     {
       if($auras[$i] == $cardID) DestroyAura($player, $i);
     }
+  }
+
+  function GetAuraGemState($player, $cardID)
+  {
+    global $currentPlayer;
+    $auras = &GetAuras($player);
+    $offset = ($currentPlayer == $player ? 7 : 8);
+    $state = 0;
+    for($i=0; $i<count($auras); $i+=AuraPieces())
+    {
+      if($auras[$i] == $cardID && $auras[$i+$offset] > $state) $state = $auras[$i+$offset];
+    }
+    return $state;
   }
 
 

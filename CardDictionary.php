@@ -1431,7 +1431,7 @@
     switch($cardID)
     {
       case "WTR075": return 0;//Seismic Surge
-      case "ELE109": case "ELE110": return 0;//Embodiment of Earth and Lightning
+      case "ELE109": case "ELE110": case "ELE111": return 0;//Embodiment of Earth and Lightning, Frostbite
       case "EVR107": case "EVR108": case "EVR109": return 0;//Runeblood incantation
       default: return 2;
     }

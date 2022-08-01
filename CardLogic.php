@@ -501,6 +501,9 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
       case "ELE109":
         DestroyAuraUniqueID($player, $uniqueID);
         break;
+      case "ELE111":
+        DestroyAuraUniqueID($player, $uniqueID);
+        break;
       case "EVR018":
         PlayAura("ELE111", $player);
         break;
