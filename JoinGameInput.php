@@ -109,11 +109,7 @@
         }
         else
         {
-          $image = $cards[$i]->{'image'};
-          $image = explode("/", $image);
-          $filename = $image[count($image)-1];
-          $filename = explode(".", $filename);
-          $id = $filename[0];
+          $id = $cards[$i]->{'cardIdentifier'};
         }
         $id = GetAltCardID($id);
         $cardType = CardType($id);
