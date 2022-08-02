@@ -322,7 +322,7 @@
   {
     global $mainPlayer;
     AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from hand to put in your hero's soul.");
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Genesis: Choose a card to put in your hero's soul");
     AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $mainPlayer, "HAND", 1);
