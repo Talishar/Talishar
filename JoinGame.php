@@ -56,21 +56,56 @@ border-radius: 5px;">
   echo("<input type='hidden' id='playerID' name='playerID' value='$playerID'>");
 ?>
 
-<div style="margin-left: 20px;">CC Starter Decks:
-  <select name="decksToTry" id="decksToTry">
-    <option value="1">Bravo Starter Deck</option>
-    <option value="2">Rhinar Starter Deck</option>
-    <option value="3">Katsu Starter Deck</option>
-    <option value="4">Dorinthea Starter Deck</option>
-    <option value="5">Dash Starter Deck</option>
-    <option value="6">Viserai Starter Deck</option>
-    <option value="7">Kano Starter Deck</option>
-    <option value="8">Azalea Starter Deck</option>
-  </select>
-</div><br>
+<?php
+  echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
+
+  $favoriteDecks = [];
+  if(isset($_SESSION["userid"]))
+  {
+    $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
+    if(count($favoriteDecks) > 0)
+    {
+      echo("<div class='DeckToTry'>Favorite Decks:");
+      echo("<select name='favoriteDecks' id='favoriteDecks'>");
+      for($i=0; $i<count($favoriteDecks); $i+=3)
+      {
+        echo("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i+1] . "</option>");
+      }
+      echo("</select></div>");
+    }
+  }
+  if(count($favoriteDecks) == 0)
+  {
+    echo("<div class='DeckToTry'>CC Starter Decks:");
+    echo("<select name='decksToTry' id='decksToTry'>");
+
+      echo("<option value='1'>Bravo Starter Deck</option>");
+      echo("<option value='2'>Rhinar Starter Deck</option>");
+      echo("<option value='3'>Katsu Starter Deck</option>");
+      echo("<option value='4'>Dorinthea Starter Deck</option>");
+      echo("<option value='5'>Dash Starter Deck</option>");
+      echo("<option value='6'>Viserai Starter Deck</option>");
+      echo("<option value='7'>Kano Starter Deck</option>");
+      echo("<option value='8'>Azalea Starter Deck</option>");
+    echo("</select></div>");
+  }
+
+?>
 
   <label for="fabdb" style="margin-left: 10px;">FaB DB Link:</label>
-  <input type="text" id="fabdb" name="fabdb"><br><br>
+  <input type="text" id="fabdb" name="fabdb">
+  <br>&nbsp;&nbsp;
+<?php
+  //if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
+  if(isset($_SESSION["userid"]))
+  {
+    echo("<div title='Save deck to favorites' style='display:inline; cursor:pointer;'>");
+    echo("<input type='checkbox' id='favoriteDeck' name='favoriteDeck' style='cursor:pointer;' />");
+    echo("<label for='favoriteDeck'>Save as favorite?</label>");
+    echo("</div>");
+  }
+?>
+<br><br>
 
   <div style='text-align:center;'><input class="JoinGame_Button" type="submit" value="Submit"></div>
 </form><br>
