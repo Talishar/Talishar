@@ -8,7 +8,7 @@
 html, body {
   scroll-behavior: smooth;
   height: 100vh;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 /* ====
@@ -17,11 +17,11 @@ html, body {
 
 .grid-even-collum {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: .5fr;
+  gap: 1.5rem;
+  grid-template-columns: .6fr;
   justify-content: center;
   overflow: scroll;
-  height: 94vh;
+  height: 99vh;
 }
 
 .articles {
@@ -31,7 +31,7 @@ html, body {
   opacity: 0.9;
   border: 1px solid #1a1a1a;
   border-radius: 5px;
-  line-height: 1.6rem;
+  line-height: 1.5rem;
 }
 
 .articles:empty {

@@ -15,7 +15,7 @@
   <div class="articles">
     <h2>FaB Online Roadmap</h2>
     <h3>📝 We recently wrote a roadmap and thought it would be nice to share it with you to give you an idea of what we have planned for the long-term.
-    <br>We are overwhelmed by the recent boom that created our Twitter accounts. So many news bugs and features are coming our way. Thank you!</h3>
+      We are overwhelmed by the recent boom that created our Twitter accounts. So many news bugs and features are coming our way. Thank you!</h3>
     <p><br>1. Top priority is fixing the major outstanding bugs/missing gameplay engine features, noted above
     <br>2. Updating the UI to be more interesting, user friendly, and intuitive
     <br>&emsp;- Dynamic scaling of UI to better account for a wide variety of monitor/resolution
@@ -121,7 +121,3 @@
   <div class="articles"></div>
 
 </div>
-
-<?php
-  include_once 'Footer.php';
-?>
