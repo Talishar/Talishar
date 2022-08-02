@@ -31,7 +31,7 @@
     }
   }
 
-  if($favoriteDeckLink != "") $decklink = $favoriteDeckLink;
+  if($favoriteDeckLink != "" && $deckLink == "") $decklink = $favoriteDeckLink;
 
   if($deck == "" && !IsDeckLinkValid($decklink)) {
       echo '<b>' . "Deck URL is not valid: " . $decklink . '</b>';
