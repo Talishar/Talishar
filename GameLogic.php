@@ -193,6 +193,8 @@ function ChainLinkBeginResolutionEffects()
       {
         switch($mainCharacterEffects[$i+1])
         {
+          //CR 2.1 - 6.5.4. Standard-replacement: Third, each player applies any active standard-replacement effects they control.
+          //CR 2.1 - 6.5.5. Prevention: Fourth, each player applies any active prevention effects they control.
           case "EVR054":
             $pendingDamage = CachedTotalAttack() - CachedTotalBlock();
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Currently $pendingDamage damage would be dealt. Do you want to destroy a defending equipment instead?");
