@@ -218,7 +218,7 @@
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
     }
     if($id == "OVER") $style = "text-align: center;";
-    else $stlye = "margin-left: 5px; align-items: center;";
+    else $style = "font-size: 18px; margin-left: 8px; line-height: 22px; align-items: center;";
     $rv .= "<div style='" . $style . "'>" . $customInput . "</div>";
     $rv .= "</div>";
     return $rv;
@@ -315,7 +315,7 @@
       $bonus = $attackModifiers[$i+1];
       if($bonus == 0) continue;
       $cardLink = CardLink($cardID, $cardID);
-      $rv .= ($cardLink != "" ? $cardLink : $cardID) . " gives " . ($bonus > 0 ? "+" : "") . $bonus . "<BR>";
+      $rv .= "&#8226; " . ($cardLink != "" ? $cardLink : $cardID) . " gives " . ($bonus > 0 ? "+" : "") . $bonus . "<BR>";
     }
     return $rv;
   }
