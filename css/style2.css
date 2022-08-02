@@ -23,7 +23,7 @@
 
 
 body {
-  height: 1000px;
+  height: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -421,8 +421,8 @@ input, button {
 
 .CreateGame_Menu {
   position:absolute;
-  top:28%;
   left:50%;
+  height:65vh;
   width:40%;
   bottom: 30px;
   margin: 0 0 0 -20%; /* -13% = half of width/height */
@@ -444,7 +444,12 @@ input, button {
 }
 
 .ServerChecker {
-  position:absolute; top:50px; left:10px; width:25%; bottom: 30px;
+  display:block;
+  position:absolute;
+  top:50px;
+  left:10px;
+  width:25%;
+  bottom: 30px;
   background-color:rgba(74, 74, 74, 0.9);
   border: 2px solid #1a1a1a;
   border-radius: 5px;
@@ -476,6 +481,15 @@ input, button {
   outline: none;
 }
 
+.SpectatorContainer {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .DeckToTry {
   margin-left: 20px;
   font-size:19px;
@@ -485,8 +499,8 @@ input, button {
 
 .NewsMenu {
   position:absolute;
-  top:50px;
   right:10px;
+  height: 90vh;
   width:25%;
   bottom: 30px;
   background-color:rgba(74, 74, 74, 0.9);
