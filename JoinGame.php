@@ -65,7 +65,7 @@ border-radius: 5px;">
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if(count($favoriteDecks) > 0)
     {
-      echo("<div class='DeckToTry'>Favorite Decks:");
+      echo("<div class='DeckToTry'>Favorite Decks: ");
       echo("<select name='favoriteDecks' id='favoriteDecks'>");
       for($i=0; $i<count($favoriteDecks); $i+=3)
       {
