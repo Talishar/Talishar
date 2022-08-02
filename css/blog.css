@@ -26,7 +26,7 @@ html, body {
 
 .articles {
   padding: 1rem;
-  background: white;
+  background-color: white;
   background-image: url('../Images/blog_background.jpg');
   opacity: 0.9;
   border: 1px solid #1a1a1a;

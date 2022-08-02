@@ -7,9 +7,9 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  background-color: black;
   background-image: url('../Images/background.jpg');
   overflow: hidden;
-
   font-family: 'Helvetica' sans-serif;
   font-weight: bolder;
   font-size: 18px;

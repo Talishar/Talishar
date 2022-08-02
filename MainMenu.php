@@ -55,7 +55,7 @@
   }
   if(count($favoriteDecks) == 0)
   {
-    echo("<div class='DeckToTry'>CC Starter Decks:");
+    echo("<div class='DeckToTry'>CC Starter Decks: ");
     echo("<select name='decksToTry' id='decksToTry'>");
 
       echo("<option value='1'>Bravo Starter Deck</option>");
