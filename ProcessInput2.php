@@ -151,8 +151,13 @@
         }
         if($found == -1) break;//Invalid input
         $deck = &GetDeck($playerID);
-        if($mode == 8) array_unshift($deck, $buttonInput);
-        else if($mode == 9) array_push($deck, $buttonInput);
+        if($mode == 8) {
+          array_unshift($deck, $buttonInput);
+          WriteLog("Player " . $playerID . " put a card on top of the deck.");
+        } else if($mode == 9) {
+          array_push($deck, $buttonInput);
+          WriteLog("Player " . $playerID . " put a card on the bottom of the deck.");
+        }
         unset($options[$found]);
         $options = array_values($options);
         if(count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
