@@ -12,6 +12,7 @@
   $deck=TryGet("deck");
   $decklink=$_GET["fabdb"];
   $decksToTry = TryGet("decksToTry");
+  $favoriteDeck = TryGet("favoriteDeck", "0");
   $set=TryGet("set");
 
   if($decklink == "" && $deck == "")
@@ -60,8 +61,8 @@
     $isFaBDB = str_contains($decklink, "fabdb");
     if($isFaBDB)
     {
-      $decklink = explode("/", $decklink);
-      $slug = $decklink[count($decklink)-1];
+      $decklinkArr = explode("/", $decklink);
+      $slug = $decklinkArr[count($decklinkArr)-1];
       $apiLink = "https://api.fabdb.net/decks/" . $slug;
     }
     else
@@ -71,8 +72,8 @@
         "Content-Type: application/json",
       );
       curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-      $decklink = explode("/", $decklink);
-      $slug = $decklink[count($decklink)-1];
+      $decklinkArr = explode("/", $decklink);
+      $slug = $decklinkArr[count($decklinkArr)-1];
       $apiLink = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/" . $slug;
     }
 
@@ -83,6 +84,7 @@
 
     if($apiDeck === FALSE) { echo  '<b>' . "FabDB API for this deck returns no data: " . implode("/", $decklink) . '</b>'; WriteGameFile(); exit; }
     $deckObj = json_decode($apiDeck);
+    $deckName = $deckObj->{'name'};
     $cards = $deckObj->{'cards'};
     $deckCards = "";
     $sideboardCards = "";
@@ -215,6 +217,13 @@
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
     copy($filename, "./Games/" . $gameName . "/p" . $playerID ."DeckOrig.txt");
+
+    if($favoriteDeck == "on" && isset($_SESSION["userid"]))
+    {
+      //Save deck
+      require_once './includes/functions.inc.php';
+      addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character);
+    }
   }
   else
   {

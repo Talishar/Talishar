@@ -15,6 +15,7 @@
   $visibility=TryGET("visibility");
   $set=TryGET("set");
   $decksToTry = TryGet("decksToTry");
+  $favoriteDeck = TryGet("favoriteDeck", "0");
   $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
 
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
@@ -92,6 +93,6 @@
   $currentTime = round(microtime(true) * 1000);
   WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!");//Initialize SHMOP cache for this game
 
-  header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry");
+  header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&set=$set&decksToTry=$decksToTry&favoriteDeck=$favoriteDeck");
 
 ?>

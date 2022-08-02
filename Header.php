@@ -37,7 +37,7 @@
   </head>
   <body>
 
-    <a class="skip-nav-link" href="#fabdb">Skip Navigation</a>
+    <!--<a class="skip-nav-link" href="#fabdb">Skip Navigation</a>-->
 
     <nav>
       <div class="wrapper">
