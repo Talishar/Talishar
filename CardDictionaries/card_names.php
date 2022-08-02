@@ -1017,7 +1017,7 @@ if($set == "UPR"){
     case "018": case "019": case "020": return "Billowing Mirage";
     case "021": case "022": case "023": return "Dunebreaker Cenipai";
     case "024": case "025": case "026": return "Dustup";
-    case "027": case "028": case "029": return "Embermane Cenipai";
+    case "027": case "028": case "029": return "Embermaw Cenipai";
     case "030": case "031": case "032": return "Sweeping Blow";
     case "033": case "034": case "035": return "Rake the Embers";
     case "036": case "037": case "038": return "Skittering Sands";
