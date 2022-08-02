@@ -148,7 +148,7 @@ function loginUser($conn, $username, $pwd, $rememberMe) {
 	}
 	elseif ($checkPwd === true) {
 		session_start();
-		$_SESSION["userid"] = $uidExists["usersId"];
+		$_SESSION["userid"] = $uidExists["usersID"];
 		$_SESSION["useruid"] = $uidExists["usersUid"];
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
@@ -202,6 +202,38 @@ function storeRememberMeCookie($conn, $uuid, $cookie)
 		mysqli_stmt_close($stmt);
 		mysqli_close($conn);
 	}
+}
+
+function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
+{
+	require_once "dbh.inc.php";
+	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "'";
+	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero) VALUES (" . $values. ");";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+		mysqli_close($conn);
+	}
+}
+
+function LoadFavoriteDecks($userID)
+{
+	require_once "dbh.inc.php";
+	if(!isset($conn)) global $conn;
+	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=$userID";
+	$stmt = mysqli_stmt_init($conn);
+	$output = [];
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+	  while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+			for($i=0;$i<3;++$i) array_push($output, $row[$i]);
+		}
+		mysqli_stmt_close($stmt);
+		mysqli_close($conn);
+	}
+	return $output;
 }
 
 function logCompletedGameStats() {
