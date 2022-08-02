@@ -1,0 +1,65 @@
+/* =============
+   basic styling
+   ============= */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  scroll-behavior: smooth;
+  height: 100vh;
+  overflow: scroll;
+}
+
+/* ====
+   Blog
+   ==== */
+
+.grid-even-collum {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: .5fr;
+  justify-content: center;
+  overflow: scroll;
+  height: 94vh;
+}
+
+.articles {
+  padding: 1rem;
+  background: white;
+  background-image: url('../Images/blog_background.jpg');
+  opacity: 0.9;
+  border: 1px solid #1a1a1a;
+  border-radius: 5px;
+  line-height: 1.6rem;
+}
+
+.articles:empty {
+  display: none;
+}
+
+.articles h1, .articles h2, .articles h3 {
+  font-family: 'Helvetica', sans-serif;
+  font-weight: 600;
+  color: black;
+  text-align:center;
+  text-shadow: none;
+}
+
+.articles h2 {
+  font-size: 32px;
+  padding-bottom: 10px;
+}
+
+.articles h3 {
+  font-size: 18px;
+}
+
+.articles p {
+  font-size: 19px;
+  font-family: Helvetica;
+  color: black;
+  text-shadow: none;
+  text-align: left;
+  text-indent: 3rem;
+}

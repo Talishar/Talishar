@@ -2,6 +2,15 @@
   include_once 'Header.php';
 ?>
 
+<head>
+  <meta charset="utf-8">
+  <title>Flesh and Blood Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/blog.css">
+  <link rel="shortcut icon" type="image/png" href="./Images/favicon3.png"/>
+</head>
+
 <div class="grid-even-collum">
   <div class="articles">
     <h2>1st August 2022</h2>
@@ -55,9 +64,8 @@
   </div>
   <div class="articles">
     <h2>28th July 2022</h2>
-    <h3>Hello #fabtcg players! We push another great update last night!👩‍🔧</h3>
+    <h3>Hello players! We push another great update last night!👩‍🔧</h3>
     <p><br>- We coded lines to create layers. It's currently available for Stalagmite frostbite.
-    <br>We need your help!🐛 Are there any specific triggers that come to your mind?
     <br>Here are the ones we are currently working on:
     <br>- Runeblood Incantation.
     <br>- Mask of the Pouncing Lynx.
@@ -68,7 +76,7 @@
   </div>
   <div class="articles">
     <h2>27th July 2022</h2>
-    <h3>Good evening #fabtcg community! 👋</h3>
+    <h3>Good evening community!👋</h3>
     <p><br>- We added the phantasm layer. (Icon WIP)
       <br>- We added a gems toggle to all Spellvoid equipment to turn them on/off to create a popup only when needed.
       <br>- We fixed and improved the input of multiple channels on the board at the once.
@@ -78,6 +86,7 @@
       <br>Thank you for all the bug reports and feedback!🐛
     </p>
   </div>
+
   <div class="articles"></div>
   <div class="articles"></div>
   <div class="articles"></div>
