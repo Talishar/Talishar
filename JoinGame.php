@@ -71,7 +71,7 @@ border-radius: 5px;">
       {
         echo("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i+1] . "</option>");
       }
-      echo("</select></div>");
+      echo("</select></div><br>");
     }
   }
   if(count($favoriteDecks) == 0)
