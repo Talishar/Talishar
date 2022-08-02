@@ -68,7 +68,7 @@
       echo("<option value='8'>Azalea Starter Deck</option>");
     echo("</select></div>");
   }
-  
+
 ?>
 
 <br>
@@ -82,6 +82,7 @@
     {
       echo("<div title='Save deck to favorites' style='display:inline; cursor:pointer;'>");
       echo("<input type='checkbox' id='favoriteDeck' name='favoriteDeck' style='cursor:pointer;' />");
+      echo("<label for='favoriteDeck'>Save as favorite?</label>");
       echo("</div>");
     }
   ?>
