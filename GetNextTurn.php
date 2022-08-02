@@ -978,10 +978,9 @@
     if($myCharacter[$i+8] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     if($myCharacter[$i+9] != 2 && $myCharacter[$i+1] != 0 && $playerID != 3)
     {
-      echo("<img title='Active Toggle' style='position:absolute; z-index:1000; bottom:10px; left:" . $cardWidth/2 - 10 . "px; height:" . 111 / 4 . "px; width:" . 34 . "px;' src='./Images/gemSocket.png'>");
-      $gem = ($myCharacter[$i+9] == 1 ? "greenPhaseMarker.png" : "redPhaseMarker.png");
-      if($myCharacter[$i+9] == 0) echo("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth/2 - 14 . "px; width:42px; height:42px; cursor:pointer;' src='./Images/redPhaseMarker.png' />");
-      else if($myCharacter[$i+9] == 1) echo("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth/2 - 14 . "px; width:42px; height:42px; cursor:pointer;' src='./Images/greenPhaseMarker.png' />");
+      $gem = ($myCharacter[$i+9] == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
+      if($myCharacter[$i+9] == 0) echo("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth/2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
+      else if($myCharacter[$i+9] == 1) echo("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth/2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
       echo("</img>");
     }
     if($type == "C")
@@ -1312,8 +1311,8 @@
     if($setting != 2 && $playerID != 3)
     {
       $gem = ($setting == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-      if($setting == 0) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Not holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
-      else if($setting == 1) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 9 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+      if($setting == 0) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Not holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+      else if($setting == 1) echo("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Holding priority' style='position:absolute; z-index:1001; bottom:2px; left:" . $cardWidth/2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
     }
   }
 
