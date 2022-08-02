@@ -746,10 +746,8 @@
       if(IsTileable($theirAuras[$i])) continue;
       $counters = $theirAuras[$i+2];
       $atkCounters = $theirAuras[$i+3];
-      echo("<div style='position:relative;'>");
       echo(Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i+1] != 2 ? 1 : 0, 0, $counters, "", "", False, 0, 0, $atkCounters) . "&nbsp");
       DisplayPriorityGem($theirAuras[$i+8], $i, 1);
-      echo("</div>");
     }
   }
   if(count($theirItems) > 0)
@@ -773,10 +771,8 @@
     {
       $lifeCounters = $theirAllies[$i+2];
       $defCounters = $theirAllies[$i+6];
-      echo("<div style='position:relative; display:inline;'>");
       echo(Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i+1] !=2 ? 1 : 0, 0, 0, "", "", False, $lifeCounters, $defCounters) . "&nbsp");
       if($theirAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-75px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
-      echo("</div>");
     }
   }
   $theirPermanents = &GetPermanents($otherPlayer);
@@ -895,9 +891,9 @@
   }
 
   //Now display my Auras and items
-  $permHeight = $cardSize*2 + 70;
+  $permHeight = $cardSize*2 + 85;
   $permTop = intval(GetCharacterBottom("C", "")) - ($cardSize - 14);// - 332;
-  $myPermWidth = $cardSizeAura*2 + 50;
+  $myPermWidth = "calc(50% - 30vw)";
   echo("<div style='overflow-y:auto; position: fixed; bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $myPermWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if(count($myAuras) > 0)
@@ -905,14 +901,12 @@
     for($i=0; $i<count($myAuras); $i+=AuraPieces())
     {
       if(IsTileable($myAuras[$i])) continue;
-      echo("<div style='position:relative; display:inline;'>");
       $playable = ($currentPlayer == $playerID ? $myAuras[$i+1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction): false);
       $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
       $counters = $myAuras[$i+2];
       $atkCounters = $myAuras[$i+3];
       echo(Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i+1] != 2 ? 1 : 0, $border, $counters, strval($i),"", False, 0, 0, $atkCounters) . "&nbsp");
       DisplayPriorityGem($myAuras[$i+7], $i);
-      echo("</div>");
     }
   }
   if(count($myItems) > 0)
@@ -932,12 +926,10 @@
     {
       $lifeCounters = $myAllies[$i+2];
       $defCounters = $myAllies[$i+6];
-      echo("<div style='position:relative; display:inline;'>");
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i+1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
       echo(Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i+1] !=2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $defCounters) . "&nbsp");
       if($myAllies[$i+3] == 1) echo("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
-      echo("</div>");
     }
   }
   $myPermanents = &GetPermanents($playerID);
@@ -1243,7 +1235,7 @@
     }
     if($count > 0)
     {
-      echo("<div style='position:relative;'>");
+      echo("<div style='position:relative; display: inline-block;'>");
       echo(Card("WTR075", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
       DisplayPriorityGem(($player == $playerID ? $auras[$first+7] : $auras[$first+8]), $first, ($player != $playerID ? 1 : 0));
       echo("</div>");
@@ -1275,7 +1267,7 @@
     }
     if($frostbiteCount > 0)
     {
-      echo("<div style='position:relative;'>");
+      echo("<div style='position:relative; display: inline-block;'>");
       echo(Card("ELE111", "concat", $cardSizeAura, 0, 1, 0, 0, ($frostbiteCount > 1 ? $frostbiteCount : 0)) . "&nbsp");
       DisplayPriorityGem(($player == $playerID ? $auras[$first+7] : $auras[$first+8]), $first, ($player != $playerID ? 1 : 0));
       echo("</div>");
