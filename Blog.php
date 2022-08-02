@@ -13,6 +13,27 @@
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>FaB Online Roadmap</h2>
+    <h3>📝 We recently wrote a roadmap and thought it would be nice to share it with you to give you an idea of what we have planned for the long-term.
+    <br>We are overwhelmed by the recent boom that created our Twitter accounts. So many news bugs and features are coming our way. Thank you!</h3>
+    <p><br>1. Top priority is fixing the major outstanding bugs/missing gameplay engine features, noted above
+    <br>2. Updating the UI to be more interesting, user friendly, and intuitive
+    <br>&emsp;- Dynamic scaling of UI to better account for a wide variety of monitor/resolution
+    <br>&emsp;- Better mobile support
+    <br>&emsp;- Better Settings menu
+    <br>3. Streamlining the game to remove unnecessary clicks, and make every click meaningful
+    <br>4. Ability to save favorite decks to your profile
+    <br>5. Ability to see your historical matches/winrate
+    <br>6. Tournament mode (disable undo hotkey/make undo and manual tools require opponent approval)
+    <br>7. Better matchmaking
+    <br>&emsp;- “Quick Start” button - Join or create, whatever is available
+    <br>&emsp;- Karma system that gives points for finishing games and being a good sport, takes away points for ragequitting, joining lobbies and leaving, reports, etc.
+    <br>&emsp;-  Ladder/League/ELO
+    <br>&emsp;- Automated tournaments
+    <br>8. Unity Client
+    </p>
+  </div>
+  <div class="articles">
     <h2>1st August 2022</h2>
     <h3>PSA for all players. We made a big update this morning with some visual changes. You will need to clear your browser cache to see all the changes.</h3>
     <p><br>- New combat chain animation.
@@ -87,7 +108,7 @@
     </p>
   </div>
 
-  <div class="articles"></div>
+
   <div class="articles"></div>
   <div class="articles"></div>
   <div class="articles"></div>
