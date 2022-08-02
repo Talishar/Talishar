@@ -26,6 +26,7 @@ fclose($bannedIPHandler);
 
 $isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
 
+echo("<div class='SpectatorContainer'>");
 echo("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
     while (false !== ($folder = readdir($handle))) {
@@ -163,6 +164,7 @@ if ($handle = opendir($path)) {
   echo("<h3 style='text-align:center;'>________</h3>");
   echo("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress</h2>");
   echo($spectateLinks);
+  echo("</div>");
 
 function deleteDirectory($dir) {
     if (!file_exists($dir)) {
