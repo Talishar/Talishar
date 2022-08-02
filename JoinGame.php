@@ -33,7 +33,7 @@ h1 {
 h2 {
   text-align:center;
   width:100%;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a
 }
 
 p, div, a{
@@ -76,7 +76,7 @@ border-radius: 5px;">
   }
   if(count($favoriteDecks) == 0)
   {
-    echo("<div class='DeckToTry'>CC Starter Decks:");
+    echo("<div class='DeckToTry'>CC Starter Decks: ");
     echo("<select name='decksToTry' id='decksToTry'>");
 
       echo("<option value='1'>Bravo Starter Deck</option>");
@@ -87,14 +87,14 @@ border-radius: 5px;">
       echo("<option value='6'>Viserai Starter Deck</option>");
       echo("<option value='7'>Kano Starter Deck</option>");
       echo("<option value='8'>Azalea Starter Deck</option>");
-    echo("</select></div>");
+    echo("</select></div><br>");
   }
 
 ?>
 
-  <label for="fabdb" style="margin-left: 10px;">FaB DB Link:</label>
+  <label for="fabdb" style="margin-left: 10px;">Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb">
-  <br>&nbsp;&nbsp;
+  <br><br>&nbsp;&nbsp;
 <?php
   //if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
   if(isset($_SESSION["userid"]))
@@ -102,10 +102,9 @@ border-radius: 5px;">
     echo("<div title='Save deck to favorites' style='display:inline; cursor:pointer;'>");
     echo("<input type='checkbox' id='favoriteDeck' name='favoriteDeck' style='cursor:pointer;' />");
     echo("<label for='favoriteDeck'>Save as favorite?</label>");
-    echo("</div>");
+    echo("</div><br>");
   }
 ?>
-<br><br>
 
   <div style='text-align:center;'><input class="JoinGame_Button" type="submit" value="Submit"></div>
 </form><br>
