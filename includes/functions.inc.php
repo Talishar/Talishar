@@ -220,7 +220,8 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 function LoadFavoriteDecks($userID)
 {
 	require_once "dbh.inc.php";
-	if(!isset($conn)) global $conn;
+	global $servername, $dBUsername, $dBPassword, $dBName;
+	$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
 	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=$userID";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];

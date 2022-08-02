@@ -16,7 +16,7 @@
   $favoriteDeckLink = TryGet("favoriteDecks", "0");
   $set=TryGet("set");
 
-  if($decklink == "" && $deck == "" && $favoriteDeckLink == "")
+  if($decklink == "" && $deck == "" && $favoriteDeckLink == "0")
   {
     switch ($decksToTry) {
       case '1': $decklink = "https://fabdb.net/decks/VGkQMojg"; break;
@@ -31,7 +31,7 @@
     }
   }
 
-  if($favoriteDeckLink != "" && $deckLink == "") $decklink = $favoriteDeckLink;
+  if($favoriteDeckLink != "0" && $deckLink == "") $decklink = $favoriteDeckLink;
 
   if($deck == "" && !IsDeckLinkValid($decklink)) {
       echo '<b>' . "Deck URL is not valid: " . $decklink . '</b>';
