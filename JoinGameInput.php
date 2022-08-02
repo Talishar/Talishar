@@ -13,9 +13,10 @@
   $decklink=$_GET["fabdb"];
   $decksToTry = TryGet("decksToTry");
   $favoriteDeck = TryGet("favoriteDeck", "0");
+  $favoriteDeckLink = TryGet("favoriteDecks", "0");
   $set=TryGet("set");
 
-  if($decklink == "" && $deck == "")
+  if($decklink == "" && $deck == "" && $favoriteDeckLink == "")
   {
     switch ($decksToTry) {
       case '1': $decklink = "https://fabdb.net/decks/VGkQMojg"; break;
@@ -29,6 +30,8 @@
       default: $decklink = "https://fabdb.net/decks/VGkQMojg"; break;
     }
   }
+
+  if($favoriteDeckLink != "") $decklink = $favoriteDeckLink;
 
   if($deck == "" && !IsDeckLinkValid($decklink)) {
       echo '<b>' . "Deck URL is not valid: " . $decklink . '</b>';
