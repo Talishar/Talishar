@@ -14,7 +14,6 @@ body {
   font-weight: bolder;
   font-size: 18px;
   color: #DDD;
-  height: 1000px;
 }
 
 .wrapper {
@@ -554,8 +553,8 @@ input, button {
   grid-template-columns: 60%;
   justify-content: center;
   align-content: center;
+  height:100%;
   overflow-y: scroll;
-  height:80%;
 }
 
 
@@ -578,7 +577,7 @@ input, button {
   text-shadow: none;
 }
 
-.articles h1, h2, h3 {
+.articles h1, .articles h2, .articles h3 {
   width:100%;
   text-align:center;
   color: black;

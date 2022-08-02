@@ -20,7 +20,7 @@
     </p>
   </div>
   <div class="articles">
-    <h2> 31st July 2022</h2>
+    <h2>31st July 2022</h2>
     <h3>Good evening 🥳 It's update o'clock. Later today those changes will be live:</h3>
     <p><br>- We added a new colour accessibility setting in the menu.
       <br>- We uploaded the alt art version of some of the cards.
@@ -45,7 +45,7 @@
     </p>
   </div>
   <div class="articles">
-    <h2> 29th July 2022</h2>
+    <h2>29th July 2022</h2>
     <h3>Good morning!👋</h3>
     <p><br>- Your deck list in limited is now sorted.
       <br>- The card highlighted colours are now improved and with the pitch number to better support colourblindness.
@@ -54,20 +54,20 @@
     </p>
   </div>
   <div class="articles">
-    <h2> 28th July 2022</h2>
+    <h2>28th July 2022</h2>
     <h3>Hello #fabtcg players! We push another great update last night!👩‍🔧</h3>
     <p><br>- We coded lines to create layers. It's currently available for Stalagmite frostbite.
     <br>We need your help!🐛 Are there any specific triggers that come to your mind?
     <br>Here are the ones we are currently working on:
-    <br>- Runeblood Incantation
-    <br>- Mask of the Pouncing Lynx
-    <br>- Mirraging Metamorph
-    <br>- Frostbites, Seismic and Embodiment tokens
+    <br>- Runeblood Incantation.
+    <br>- Mask of the Pouncing Lynx.
+    <br>- Mirraging Metamorph.
+    <br>- Frostbites, Seismic and Embodiment tokens.
     <br>Anything else we are missing?
     </p>
   </div>
   <div class="articles">
-    <h2> 27th July 2022</h2>
+    <h2>27th July 2022</h2>
     <h3>Good evening #fabtcg community! 👋</h3>
     <p><br>- We added the phantasm layer. (Icon WIP)
       <br>- We added a gems toggle to all Spellvoid equipment to turn them on/off to create a popup only when needed.
