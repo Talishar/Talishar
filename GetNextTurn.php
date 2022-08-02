@@ -371,7 +371,7 @@
     $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
     if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
     if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-    $content .= CardStats($playerID);
+    $content .= "</div>".CardStats($playerID);
     echo CreatePopup("OVER", [], 0, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
   }
 

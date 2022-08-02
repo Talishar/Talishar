@@ -201,6 +201,7 @@
   function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false, $overCombatChain=false, $additionalComments="")
   {
     global $combatChain, $darkMode, $cardSize, $playerID;
+    $style = "";
     $overCC = 1000;
     $darkMode = IsDarkMode($playerID);
     $top = "60%"; $left = "25%"; $width = "50%"; $height = "30%";
@@ -216,7 +217,9 @@
     {
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
     }
-    $rv .= "<div style='margin-left: 5px; align-items: center;'>" . $customInput . "</div>";
+    if($id == "OVER") $style = "text-align: center;";
+    else $stlye = "margin-left: 5px; align-items: center;";
+    $rv .= "<div style='" . $style . "'>" . $customInput . "</div>";
     $rv .= "</div>";
     return $rv;
   }
