@@ -576,3 +576,65 @@ input, button {
 .skip-nav-link:focus {
   transform: translateY(0px);
 }
+
+/* =====================
+   Favourites Deck Style
+   ===================== */
+
+.containerFavoriteDeck {
+  display: flex;
+  margin-left: 5px;
+  max-height: 24px;
+  align-content: flex-start;
+  align-items: center;
+}
+
+/* Hide the browser default checkbox */
+.inputFavoriteDeck[type="checkbox"]{
+  opacity: 0;
+}
+
+/* Apply to the "squared" checkbox when checked it's actually hidden so we only show the heart shape */
+.inputFavoriteDeck[type="checkbox"]:checked + label:before {
+  opacity: 0;
+}
+
+/* Label position and styles */
+.inputFavoriteDeck[type="checkbox"] + label {
+  cursor: pointer;
+  margin-bottom: -5px;
+  margin-right: -5px;
+}
+
+/* Main Classes */
+.inputFavoriteDeck[type="checkbox"] + label:before {
+  content: "";
+  display:inline-block;
+  margin-left: -15px;
+  margin-bottom: -3px;
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+  background-image: url('../Images/favoriteUnfilled.png');
+  background-size: contain;
+  transform: scale(1);
+  opacity: 1;
+  transition:all .4s ease;
+  cursor: pointer;
+}
+
+.inputFavoriteDeck[type="checkbox"]:checked + label:before{
+  content: "";
+  display:inline-block;
+  margin-left: -15px;
+  margin-bottom: -3px;
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+  background-image: url('../Images/favoriteFilled.png');
+  background-size: contain;
+  transform: scale(1);
+  opacity: 1;
+  transition:all .4s ease;
+  cursor: pointer;
+}

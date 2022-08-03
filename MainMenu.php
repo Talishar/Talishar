@@ -72,7 +72,7 @@
 ?>
 
 <br>
-
+  <div class='containerFavoriteDeck'>
   <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb">
   &nbsp;
@@ -80,13 +80,13 @@
     //if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
     if(isset($_SESSION["userid"]))
     {
-      echo("<div title='Save deck to favorites' style='display:inline; cursor:pointer;'>");
-      echo("<input type='checkbox' id='favoriteDeck' name='favoriteDeck' style='cursor:pointer;' />");
+
+      echo("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
       echo("<label for='favoriteDeck'>Save as favorite?</label>");
       echo("</div>");
     }
   ?>
-  <br><br>
+  <br>
   <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
   <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
