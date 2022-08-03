@@ -454,7 +454,7 @@ function AuraPlayAbilities($cardID, $from)
 
 function AuraAttackAbilities($attackID)
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_PlayIndex;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   $numRunechants = CountAura("ARC112", $mainPlayer);
@@ -469,7 +469,14 @@ function AuraAttackAbilities($attackID)
       case "ELE110": if($attackType == "AA") { WriteLog("Embodiment of Lightning grants go again."); GiveAttackGoAgain(); $remove = 1; } break;
       case "ELE226": if($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]); break;
       case "EVR140": if($auras[$i+5]>0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Shimmers of Silver puts a +1 counter."); --$auras[$i+5]; ++$auras[GetClassState($mainPlayer, $CS_PlayIndex)+3]; } break;
-      case "EVR142": if($auras[$i+5]>0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) { WriteLog("Passing Mirage makes your next attack lose Phantasm."); --$auras[$i+5]; AddCurrentTurnEffect("EVR142", $mainPlayer, true); } break;
+      case "EVR142":
+      if($auras[$i+5]>0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) < 1)
+      {
+        WriteLog("Passing Mirage makes your first illusionist attack each turn lose Phantasm.");
+        --$auras[$i+5];
+        AddCurrentTurnEffect("EVR142", $mainPlayer, true);
+      }
+      break;
       case "UPR005": if($auras[$i+5]>0 && DelimStringContains(CardSubType($attackID), "Dragon")) { --$auras[$i+5]; DealArcane(1, 1, "STATIC", $attackID, false, $mainPlayer); } break;
       default: break;
     }

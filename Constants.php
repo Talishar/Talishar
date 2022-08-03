@@ -214,6 +214,9 @@
   $CS_MaxQuellUsed = 50;
   $CS_DamageDealt = 51; //Only includes damage dealt by the hero. CR 2.1 8.2.8f If an ally deals damage, the controlling player and their hero are not considered to have dealt damage.
   $CS_ArcaneTargetsSelected = 52;
+  $CS_NumDragonAttacks = 53;
+  $CS_NumIllusionistAttacks = 54;
+
 
   //Combat Chain State (State for the current combat chain)
   $CCS_CurrentAttackGainedGoAgain = 0;
@@ -351,7 +354,7 @@
     global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
     global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
     global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed;
-    global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected;
+    global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
     $mainClassState[$CS_Num6PowDisc] = 0;
     $mainClassState[$CS_NumBoosted] = 0;
     $mainClassState[$CS_AtksWWeapon] = 0;
@@ -404,6 +407,8 @@
     $mainClassState[$CS_MaxQuellUsed] = 0;
     $mainClassState[$CS_DamageDealt] = 0;
     $mainClassState[$CS_ArcaneTargetsSelected] = "-";
+    $mainClassState[$CS_NumDragonAttacks] = 0;
+    $mainClassState[$CS_NumIllusionistAttacks] = 0;
   }
 
   function ResetCardPlayed($cardID)

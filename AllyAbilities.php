@@ -132,14 +132,14 @@ function AllyDamagePrevention($player, $index, $damage)
 
 function AllyAttackAbilities($attackID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_NumDragonAttacks;
   $allies = &GetAllies($mainPlayer);
   for($i=0; $i<count($allies); $i+=AllyPieces())
   {
     switch($allies[$i])
     {
       case "UPR412":
-        if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon"))
+        if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon") && GetClassState($mainPlayer, $CS_NumDragonAttacks) < 1)
         {
           AddCurrentTurnEffect("UPR412", $mainPlayer);
           --$allies[$i+8];
