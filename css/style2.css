@@ -591,6 +591,13 @@ input, button {
   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
+.FavoriteDeckMainMenu {
+  margin-left: 20px;
+  font-size:19px;
+  font-weight:bolder;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+}
+
 .NewsMenu {
   position:absolute;
   right:10px;
