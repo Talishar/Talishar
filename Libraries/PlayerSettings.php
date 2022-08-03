@@ -14,6 +14,8 @@
 
   $SET_ColorblindMode = 8;//Colorblind mode settings
 
+  $SET_ShortcutAttackThreshold = 9;//Threshold to shortcut attacks
+
   function HoldPrioritySetting($player)
   {
     global $SET_AlwaysHoldPriority;
@@ -87,6 +89,14 @@
     return $settings[$SET_ColorblindMode] == "1";
   }
 
+  function ShortcutAttackThreshold($player)
+  {
+    global $SET_ShortcutAttackThreshold;
+    $settings = GetSettings($player);
+    if(count($settings) < $SET_ShortcutAttackThreshold) return "0";
+    return $settings[$SET_ShortcutAttackThreshold];
+  }
+
   function ChangeSetting($player, $setting, $value)
   {
     global $SET_ManualMode;
@@ -115,6 +125,7 @@
   function GetSettingsUI($player)
   {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
+    global $SET_ShortcutAttackThreshold;
     $rv = "";
     $rv .= "<h2>Settings</h2>";
     $settings = GetSettings($player);
@@ -155,6 +166,14 @@
 
     if($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
     else $rv .= CreateCheckbox($SET_ColorblindMode . "-0", "Accessibility Mode", 26, true, "Accessibility Mode");
+
+    $rv .= "<BR>";
+
+    $currentValue = ShortcutAttackThreshold($player);
+    $rv .= "Attack Shortcut Threshold: ";
+    $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Shortcut");
+    $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "1 Attack", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "1 Attack");
+    $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Always Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Always Shortcut");
 /*
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");

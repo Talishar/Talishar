@@ -31,6 +31,12 @@ function ProcessMacros()
           }
         }
       }
+      if($turn[0] == "B" || $turn[0] == "D")
+      {
+        $threshold = ShortcutAttackThreshold($currentPlayer);
+        if($threshold == "99") { $somethingChanged = true; PassInput(); }
+        else if($threshold == "1" && CachedTotalAttack() <= 1)  { $somethingChanged = true; PassInput(); }
+      }
     }
   }
 }
