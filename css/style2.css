@@ -455,7 +455,7 @@ input, button {
   border-radius: 5px;
 }
 
-.ServerChecker_Button, .JoinGame_Button {
+.ServerChecker_Button {
   cursor: pointer;
 	color: #1a1a1a;
 	background: #EDEDED;
@@ -471,13 +471,13 @@ input, button {
   transition: 350ms ease-in-out;
 }
 
-.ServerChecker_Button:hover, .JoinGame_Button:hover {
+.ServerChecker_Button:hover {
   -webkit-transform: scale(1.1);
   -ms-transform: scale(1.1);
   transform: scale(1.1);
 }
 
-.ServerChecker_Button:focus, .JoinGame_Button:focus {
+.ServerChecker_Button:focus {
   outline: none;
 }
 
@@ -563,6 +563,7 @@ input, button {
 /* =============================================
    Skip to main content for better accessibility
    ============================================= */
+
 .skip-nav-link {
   position: absolute;
   padding: 0.5rem, 1.5rem;
@@ -575,6 +576,43 @@ input, button {
 
 .skip-nav-link:focus {
   transform: translateY(0px);
+}
+
+/* =====================
+   Join Game Styles
+   ===================== */
+
+.JoinGameDiv {
+  position:absolute; z-index:1; top:10%; left:2%; width:560px; height:550px;
+  background-color:rgba(74, 74, 74, 0.9);
+  border: 2px solid #1a1a1a;
+  border-radius: 5px;
+}
+
+.JoinGame_Button {
+  cursor: pointer;
+	color: #1a1a1a;
+	background: #EDEDED;
+	border: 1px solid #1a1a1a;
+	box-shadow: 1px 1px 0 #1a1a1a,
+		-1px -1px 0 #1a1a1a,
+		-1px 1px 0 #1a1a1a,
+		1px -1px 0 #1a1a1a;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transition: 350ms ease-in-out;
+}
+
+.JoinGame_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.JoinGame_Button:focus {
+  outline: none;
 }
 
 /* =====================
