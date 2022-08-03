@@ -599,9 +599,10 @@ input, button {
 }
 
 .NewsMenu {
+  display:block;
   position:absolute;
-  right:10px;
-  height: 90vh;
+  top:50px;
+  left:10px;
   width:25%;
   bottom: 30px;
   background-color:rgba(74, 74, 74, 0.9);
