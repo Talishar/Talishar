@@ -26,7 +26,17 @@
     case "myDiscardPopup": echo(CreatePopup("myDiscardPopup", $myDiscard, 1, 0, "Your Discard")); break;
     case "myBanishPopup": echo(CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI())); break;
     case "myStatsPopup": echo(CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true)); break;
-    case "menuPopup": echo(CreatePopup("menuPopup", [], 1, 0, "Main Menu", 1, MainMenuUI(), "./", true)); break;
+    case "menuPopup":
+      if($turn[0] == "OVER") {
+          $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
+          if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
+          if($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
+          $content .= "</div>".CardStats($playerID);
+          echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
+        }
+        else {
+          echo(CreatePopup("menuPopup", [], 1, 0, "Main Menu", 1, MainMenuUI(), "./", true)); break;
+        }
     case "mySoulPopup": echo(CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul")); break;
     case "theirBanishPopup":
       $theirBanishDisplay = GetTheirBanishForDisplay();
