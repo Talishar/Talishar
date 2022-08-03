@@ -299,7 +299,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
   function ContinueDecisionQueue($lastResult="")
   {
     global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
-    global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed;
+    global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost;
     if(count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0]))
     {
       if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -406,6 +406,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
         }
+        SetClassState($currentPlayer, $CS_LastDynCost ,$lastResult);
         PlayCard($params[0], $params[1], $lastResult, $params[2]);
       }
       else if(count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK")
