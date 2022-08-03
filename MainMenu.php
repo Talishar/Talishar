@@ -68,21 +68,19 @@
     echo("</select></div>");
   }
   echo("<br>");
-  if(isset($_SESSION["userid"])) {
-    echo("<div class='containerFavoriteDeck'>");
-  }
+
 ?>
   <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb">&nbsp;
 <?php
-  //if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
   if(isset($_SESSION["userid"]))
   {
-    echo("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-    echo("<label for='favoriteDeck'>Save Favorite</label>");
-    echo("</div>");
+    echo("<span style='display:inline;'>");
+    echo("<input title='Save deck to Favorites' class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
+    echo("<label for='favoriteDeck'>&nbsp;</label>");
+    echo("</span>");
   }
-  else echo("<br>");
+  echo("<br>");
 ?>
   <br>
   <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
