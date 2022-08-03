@@ -14,7 +14,7 @@
 <div class="grid-even-collum">
   <div class="articles">
     <h2>2nd Augst 2022</h2>
-    <h3>Good evening #fabtcg players!
+    <h3>Good evening #fabtcg players!</h3>
     <p><br>A quick review of today's updates:
     <br>- We added a way to save your decklist. (We are currently working on a way also to remove them from your favorites. 😅)
     <br>- You can visit our new blog section. It's filled with the same updates as Twitter for now.
