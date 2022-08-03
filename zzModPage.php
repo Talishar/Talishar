@@ -13,7 +13,7 @@
   echo("<h1>Banned players:</h1>");
   $banfileHandler = fopen("./HostFiles/bannedPlayers.txt", "r");
   echo("<div style='position:absolute; padding:10px; z-index:1; top:15%; left:35%; width:500px; height:650px;
-  background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;'>");
+  background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y: scroll;'>");
   while(!feof($banfileHandler))  {
     $bannedPlayer = fgets($banfileHandler);
     echo($bannedPlayer . "<BR>");
