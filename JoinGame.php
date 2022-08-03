@@ -46,7 +46,7 @@ body {
       echo("<select style='height:26px;' name='favoriteDecks' id='favoriteDecks'>");
       for($i=0; $i<count($favoriteDecks); $i+=3)
       {
-        echo("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i+1] . "</option>");
+        echo("<option style='background-image: url(crop/". $favoriteDecks[$i+2] .")''; value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i+1] . "</option>");
       }
       echo("</select></div><br>");
     }

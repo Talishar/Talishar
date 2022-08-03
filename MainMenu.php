@@ -57,7 +57,6 @@
   {
     echo("<div class='DeckToTry'>CC Starter Decks: ");
     echo("<select name='decksToTry' id='decksToTry'>");
-
       echo("<option value='1'>Bravo Starter Deck</option>");
       echo("<option value='2'>Rhinar Starter Deck</option>");
       echo("<option value='3'>Katsu Starter Deck</option>");
@@ -68,22 +67,23 @@
       echo("<option value='8'>Azalea Starter Deck</option>");
     echo("</select></div>");
   }
-
+  echo("<br>");
+  if(isset($_SESSION["userid"])) {
+    echo("<div class='containerFavoriteDeck'>");
+  }
 ?>
-<br>
-  <div class='containerFavoriteDeck'>
   <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
-  <input type="text" id="fabdb" name="fabdb">
-  &nbsp;
-  <?php
-    //if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
-    if(isset($_SESSION["userid"]))
-    {
-      echo("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-      echo("<label for='favoriteDeck'>Save as favorite?</label>");
-      echo("</div>");
-    }
-  ?>
+  <input type="text" id="fabdb" name="fabdb">&nbsp;
+<?php
+  //if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
+  if(isset($_SESSION["userid"]))
+  {
+    echo("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
+    echo("<label for='favoriteDeck'>Save as favorite?</label>");
+    echo("</div>");
+  }
+  else echo("<br>");
+?>
   <br>
   <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
   <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
