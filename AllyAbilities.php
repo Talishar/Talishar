@@ -123,7 +123,7 @@ function AllyDamagePrevention($player, $index, $damage)
       {
         $damage -= 3;
         if($damage < 0) $damage = 0;
-        --$allies[$index+6];
+        if($damage > 0) --$allies[$index+6];
       }
       return $damage;
     default: return $damage;
