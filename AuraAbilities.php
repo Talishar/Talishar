@@ -235,21 +235,28 @@ function AuraBeginEndPhaseAbilities()
             ++$numReds;
           }
         }
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$i+2]);
-        AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-        for($k=0; $k < $auras[$i+2]; $k++)
+        if($leftToBanish <= $numReds)
         {
-          if($leftToBanish > 1) $plurial = "cards";
-          else $plurial = "card";
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;", 1);
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more ".$plurial." to banish for Burn Them All", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
-          --$leftToBanish;
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$i+2]);
+          AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+          for($k=0; $k < $auras[$i+2]; $k++)
+          {
+            if($leftToBanish > 1) $plurial = "cards";
+            else $plurial = "card";
+            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;", 1);
+            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more ".$plurial." to banish for Burn Them All", 1);
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
+            AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+            AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
+            --$leftToBanish;
+          }
+          AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $i);
         }
-        AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $i);
+        else {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed.");
+          DestroyAura($mainPlayer, $i);
+        }
         break;
       case "UPR138":
         ++$auras[$i+2];
@@ -286,21 +293,28 @@ function ChannelTalent($index, $talent)
       ++$numTalentInPitch;
     }
   }
-  AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$index+2]);
-  AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-  for($k=0; $k<$auras[$index+2]; $k++)
+  if($leftToBottom <= $numTalentInPitch)
   {
-    if($leftToBottom > 1) $plurial = "cards";
-    else $plurial = "card";
-    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=".$talent.";", 1);
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more ".$plurial." to put at the bottom for ".CardName($auras[$index]), 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-    AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
-    AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-    AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
-    --$leftToBottom;
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $auras[$index+2]);
+    AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+    for($k=0; $k<$auras[$index+2]; $k++)
+    {
+      if($leftToBottom > 1) $plurial = "cards";
+      else $plurial = "card";
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYPITCH:talent=".$talent.";", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBottom . " more ".$plurial." to put at the bottom for ".CardName($auras[$index]), 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
+      --$leftToBottom;
+    }
+    AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $index);
   }
-  AddDecisionQueue("DESTROYCHANNEL", $mainPlayer, $index);
+  else {
+    WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed.");
+    DestroyAura($mainPlayer, $index);
+  }
 }
 
 function AuraEndTurnAbilities()
