@@ -57,7 +57,7 @@ if(isset($_POST['update_profile'])){
 }
 ?>
 
-<section class="signup-form">
+<section class="profile-form">
   <h2>Welcome <?php echo $_SESSION['useruid']?>!</h2>
 
       <?php
@@ -67,7 +67,7 @@ if(isset($_POST['update_profile'])){
       ?>
 
       <div class="wrapper">
-          <div class="signup-form-form">
+          <div class="profile-form-form">
               <form action="Profile.php" method="post">
 
             <!-- Profile Picture placeholder -->
