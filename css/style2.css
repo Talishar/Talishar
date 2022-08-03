@@ -666,7 +666,7 @@ input, button {
   left: 0.5rem;
   top: 0.5rem;
   border-radius: 0, 0, .25rem, .25rem;
-  transform: translateY(-120%);
+  transform: translateY(-150%);
   transition: transform 325ms ease-in;
 }
 
