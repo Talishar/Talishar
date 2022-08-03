@@ -16,7 +16,7 @@
 }
 
 /* Checkbox when unchecked */
-[type="checkbox"] + label::before {
+[type="checkbox"] + label:before {
   content: "";
   position: absolute;
   left: -5;
@@ -28,7 +28,7 @@
 }
 
 /* Apply to the checkbox when checked */
-[type="checkbox"]:checked + label::before {
+[type="checkbox"]:checked + label:before {
   content: "";
   position: absolute;
   left: -5;
@@ -39,7 +39,7 @@
   background: #fff;
 }
 
-[type="checkbox"]:checked + label::after {
+[type="checkbox"]:checked + label:after {
   content: "";
   position: absolute;
   left: -5;
@@ -53,7 +53,7 @@
   transition:all .3s ease;
 }
 
-[type="checkbox"]:not(:checked) + label::after {
+[type="checkbox"]:not(:checked) + label:after {
   content: "";
   position: absolute;
   left: -5;
@@ -166,23 +166,23 @@ button:focus, input[type="button"]:focus {
 	outline: none;
 }
 
-::-webkit-scrollbar {
+:-webkit-scrollbar {
    width: 6px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+:-webkit-scrollbar-track {
    background: gainsboro;
    border-radius: 5px;
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+:-webkit-scrollbar-thumb {
    background: black;
    border-radius: 5px;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+:-webkit-scrollbar-thumb:hover {
    background: #555;
   }
