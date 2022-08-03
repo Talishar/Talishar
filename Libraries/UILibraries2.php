@@ -163,10 +163,10 @@
     return $rv;
   }
 
-  function ProcessInputLink($player, $mode, $input, $event='onmousedown')
+  function ProcessInputLink($player, $mode, $input, $event='onmousedown', $fullRefresh=false)
   {
     global $gameName;
-    return " " . $event . "='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'";
+    return " " . $event . "='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'";
   }
 
   function CreateForm($playerID, $caption, $mode, $count)
@@ -195,6 +195,18 @@
     if($defaultChecked) $check = " checked='checked'";
     $rv = "<input type='checkbox' " . $submitLink . " id='chk" . $input . "' name='chk" . $input . "' value='" . $value . "' " . $check . ">";
     $rv .= "<label for='chk" . $input . "'>" . $label . "</label>";
+    return $rv;
+  }
+
+  function CreateRadioButton($input, $value, $immediateSubmitMode, $currentInput, $label="&nbsp;")
+  {
+    global $playerID;
+    $submitLink = "";
+    $check = "";
+    if($immediateSubmitMode != -1) $submitLink = ProcessInputLink($playerID, $immediateSubmitMode, $input, "onchange", true);
+    if($currentInput == $input) $check = " checked='checked'";
+    $rv = "<input type='radio' " . $submitLink . " id='radio" . $input . "' name='radio" . $input . "' value='" . $value . "' " . $check . ">";
+    $rv .= "<label for='radio" . $input . "'>$label</label>";
     return $rv;
   }
 

@@ -201,23 +201,29 @@
   //Tell the player what to pick
   if($turn[0] != "OVER")
   {
-    if($currentPlayer != $playerID)
+    $helpText = ($currentPlayer != $playerID ? " Waiting for other player to choose " . TypeToPlay($turn[0]) . "&nbsp" : " " . GetPhaseHelptext() . "&nbsp;");
+
+    echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid " . $borderColor . "; border-radius: 5px; font-size:22px;'><img height='22px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>" . $helpText);
+    if($currentPlayer == $playerID)
     {
-      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid " . $borderColor . "; border-radius: 5px; font-size:22px;'><img height='22px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b> Waiting for other player to choose " . TypeToPlay($turn[0]) . "&nbsp</b></span>");
-    }
-    else
-    {
-      echo("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid " . $borderColor . "; border-radius: 5px; font-size:22px;'><img height='22px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b> " . GetPhaseHelptext() . "&nbsp");
       if($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo("(" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "16px") . ")");
       if(CanPassPhase($turn[0]))
       {
-        //echo(" (or " . CreateButton($playerID, "Pass", 99, 0, "24px", "", "Hotkey: Space"));
-        if($turn[0] == "B") echo(CreateButton($playerID, "Undo Block", 10001, 0, "16px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
-        //echo(")");
+        if($turn[0] == "B") echo(CreateButton($playerID, "Undo Block", 10001, 0, "16px"));
+        //if($turn[0] == "B") echo(CreateButton($playerID, "Undo Block", 10001, 0, "16px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
       }
-      //if(($turn[0] == "B" || $turn[0] == "D") && IsDominateActive()) echo("[Dominate is active]");
-      echo("</b></span>");
     }
+    echo("</b>");
+    /*
+    if($playerID != $currentPlayer && $playerID != $mainPlayer)
+    {
+      $currentValue = ShortcutAttackThreshold($playerID);
+      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Pass", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Pass"));
+      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "1 Attack", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "1 Attack"));
+      echo(CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Always Pass", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Always Pass"));
+    }
+    */
+    echo("</span>");
   }
   if(IsManualMode($playerID)) echo("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true));
   echo("</span>");
