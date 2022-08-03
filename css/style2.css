@@ -602,7 +602,7 @@ input, button {
   display:block;
   position:absolute;
   top:50px;
-  left:10px;
+  right:10px;
   width:25%;
   bottom: 30px;
   background-color:rgba(74, 74, 74, 0.9);
