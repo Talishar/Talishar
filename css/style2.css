@@ -24,7 +24,6 @@
 
 body {
   height: 100%;
-  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   background-color: black;
@@ -158,6 +157,7 @@ input, button {
 .signup-form-form {
   display: flex;
   justify-content: center;
+  height: 28vh;
   font-family: 'Helvetica', sans-serif;
   font-weight: bold;
   font-size: 18px;
@@ -327,7 +327,7 @@ input, button {
 .draft-form {
   background-color:rgba(74, 74, 74, 0.9);
   border: 1px solid #1a1a1a;
-  border-radius: 15px;
+  border-radius: 5px;
   width: 30%;
 }
 
@@ -616,7 +616,7 @@ input, button {
 }
 
 /* =====================
-   Favourites Deck Style
+   Favorites Deck Style
    ===================== */
 
 .containerFavoriteDeck {

@@ -77,7 +77,7 @@ body {
   if(isset($_SESSION["userid"]))
   {
     echo("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-    echo("<label for='favoriteDeck'>Save as favorite?</label>");
+    echo("<label for='favoriteDeck'>Save Favorite</label>");
     echo("</div><br>");
   }
 ?>

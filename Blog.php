@@ -16,7 +16,7 @@
     <h2>2nd Augst 2022</h2>
     <h3>Good evening #fabtcg players!
     <p><br>A quick review of today's updates:
-    <br>- We added a way to save your decklist. (We are currently working on a way also to remove them from your favourites. 😅)
+    <br>- We added a way to save your decklist. (We are currently working on a way also to remove them from your favorites. 😅)
     <br>- You can visit our new blog section. It's filled with the same updates as Twitter for now.
     <br>- We made all the gem toggles use the same icons (Which previously had two different styles)
     <br>- We added the information about the space shortcut to pass.
@@ -36,7 +36,7 @@
     <br>&emsp;- Better mobile support
     <br>&emsp;- Better Settings menu
     <br>3. Streamlining the game to remove unnecessary clicks and make every click meaningful
-    <br>4. Ability to save favourite decks to your profile
+    <br>4. Ability to save favorite decks to your profile
     <br>5. Ability to see your historical matches/winrate
     <br>6. Tournament mode (disable “undo” hotkey/make “undo” and manual tools require opponent approval)
     <br>7. Better matchmaking
