@@ -1531,6 +1531,8 @@ function FinalizeChainLink($chainClosed=false)
     global $turn, $combatChain, $currentPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
     global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
+    global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
+
     $character = &GetPlayerCharacter($currentPlayer);
     $definedCardType = CardType($cardID);
     //Figure out where it goes
@@ -1549,6 +1551,8 @@ function FinalizeChainLink($chainClosed=false)
         $chainClosed = ProcessAttackTarget();
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
+        if(CardSubType($cardID) == "Dragon") IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
+        if(ClassContains($cardID, "ILLUSIONIST", $player)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
         $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
         $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
         $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
