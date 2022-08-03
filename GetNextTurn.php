@@ -8,6 +8,8 @@
   $playerID=TryGet("playerID", 3);
   $authKey=TryGet("authKey", 3);
   $lastUpdate = intval(TryGet("lastUpdate", 0));
+  $windowWidth = intval(TryGet("windowWidth", 0));
+  $windowHeight = intval(TryGet("windowHeight", 0));
 
   if($lastUpdate > 10000000) { $lastUpdate = 0; }
 
@@ -133,16 +135,17 @@
 
   echo("<div id='iconHolder' style='display:none;'>" . $icon . "</div>");
 
-  $cardSize = 120;
-  $cardSizeAura = 95;
-  $cardSizeEquipment = 95;
+  $cardSize = ($windowWidth != 0 ? intval($windowWidth / 14) : 120);
+  //$cardSize = 120;
+  $cardSizeAura = intval($cardSize * .8);//95;
+  $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
   $cardWidth = intval($cardSize * 0.72);
-  $cardHeight = intval($cardSize * 0.72);
-  $cardIconSize = 40;
-  $cardIconLeft = 30;
-  $cardIconTop = 30;
-  $bigCardSize = 200;
+  $cardHeight = $cardWidth;
+  $cardIconSize = intval($cardSize/3);//40
+  $cardIconLeft = intval($cardSize/4);//30
+  $cardIconTop = intval($cardSize/4);//30
+  $bigCardSize = intval($cardSize*1.667);//200;
   $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
   $permWidth = "calc(50% - " . ($cardWidth*2 + 30 + $permLeft) . "px)";
   $permHeight = $cardSize * 2 + 20;
