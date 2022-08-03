@@ -76,8 +76,8 @@
   if(isset($_SESSION["userid"]))
   {
     echo("<span style='display:inline;'>");
-    echo("<input title='Save deck to Favorites' class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-    echo("<label for='favoriteDeck'>&nbsp;</label>");
+    echo("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
+    echo("<label title='Save deck to Favorites' for='favoriteDeck'>&nbsp;</label>");
     echo("</span>");
   }
   echo("<br>");
