@@ -22,32 +22,9 @@ body {
   background-size: cover;
   overflow: hidden;
 }
-h1 {
-  margin-top: 6px;
-  text-align:center;
-  width:100%;
-  color: #EDEDED;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
-}
-
-h2 {
-  text-align:center;
-  width:100%;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a
-}
-
-p, div, a{
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
-}
-select, input{
-  font-weight: bold;
-}
 </style>
 
-<div style="position:absolute; z-index:1; top:10%; left:2%; width:460px; height:550px;
-background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid #1a1a1a;
-border-radius: 5px;">
+<div class='JoinGameDiv'>
 <h1>Game Lobby</h1></br>
 
 <?php
@@ -66,7 +43,7 @@ border-radius: 5px;">
     if(count($favoriteDecks) > 0)
     {
       echo("<div class='DeckToTry'>Favorite Decks: ");
-      echo("<select name='favoriteDecks' id='favoriteDecks'>");
+      echo("<select style='height:26px;' name='favoriteDecks' id='favoriteDecks'>");
       for($i=0; $i<count($favoriteDecks); $i+=3)
       {
         echo("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i+1] . "</option>");
@@ -91,16 +68,15 @@ border-radius: 5px;">
   }
 
 ?>
-
-  <label for="fabdb" style="margin-left: 10px;">Deck Link:</label>
+<div class='containerFavoriteDeck'>
+  <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
   <input type="text" id="fabdb" name="fabdb">
-  <br><br>&nbsp;&nbsp;
+&nbsp;
 <?php
   //if(isset($_SESSION["userid"])) echo("<div style='display:inline; cursor:pointer;'><img style='margin-bottom:-10px; height:32px;' src='./Images/favoriteUnfilled.png' /></div>");
   if(isset($_SESSION["userid"]))
   {
-    echo("<div title='Save deck to favorites' style='display:inline; cursor:pointer;'>");
-    echo("<input type='checkbox' id='favoriteDeck' name='favoriteDeck' style='cursor:pointer;' />");
+    echo("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
     echo("<label for='favoriteDeck'>Save as favorite?</label>");
     echo("</div><br>");
   }
@@ -109,7 +85,7 @@ border-radius: 5px;">
   <div style='text-align:center;'><input class="JoinGame_Button" type="submit" value="Submit"></div>
 </form><br>
 
-  <h3 style="text-align:center;">_________________________</h3>
+  <h3 style="text-align:center;">_____________________________</h3>
   <h2>Instructions</h2>
 
   <p style="text-align:center; padding:10px;">Choose a deck and click submit. You will be taken to the game lobby.</p><br>
