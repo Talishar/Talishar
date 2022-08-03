@@ -744,11 +744,11 @@ input, button {
 .inputFavoriteDeck[type="checkbox"] + label:before {
   content: "";
   display:inline-block;
-  margin-left: -15px;
-  margin-bottom: -3px;
+  margin-left: -20px;
+  margin-bottom: -5px;
   margin-right: 5px;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background-image: url('../Images/favoriteUnfilled.png');
   background-size: contain;
   transform: scale(1);
@@ -760,11 +760,11 @@ input, button {
 .inputFavoriteDeck[type="checkbox"]:checked + label:before{
   content: "";
   display:inline-block;
-  margin-left: -15px;
-  margin-bottom: -3px;
+  margin-left: -20px;
+  margin-bottom: -5px;
   margin-right: 5px;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background-image: url('../Images/favoriteFilled.png');
   background-size: contain;
   transform: scale(1);
