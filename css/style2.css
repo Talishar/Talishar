@@ -146,12 +146,13 @@ input, button {
   font-weight: 600;
 }
 
-/* Sign Up + Profile */
+/* Sign Up */
 .signup-form{
   background-color:rgba(74, 74, 74, 0.9);
   border: 1px solid #1a1a1a;
   border-radius: 5px;
   overflow: hidden;
+  height: auto;
 }
 
 .signup-form-form {
@@ -250,6 +251,101 @@ input, button {
 .signup-form form button:focus {
 	outline: none;
 }
+
+/* ============
+   Profile Page
+   ============ */
+
+ .profile-form{
+   background-color:rgba(74, 74, 74, 0.9);
+   border: 1px solid #1a1a1a;
+   border-radius: 5px;
+   overflow: hidden;
+   height: auto;
+ }
+
+ .profile-form-form {
+   display: flex;
+   justify-content: center;
+   height: 70vh;
+   font-family: 'Helvetica', sans-serif;
+   font-weight: bold;
+   font-size: 18px;
+   color: #DDD;
+   margin-bottom: 5px;
+   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+ }
+
+ .profile-form p {
+   width: 100%;
+   text-align: center;
+   color: #DDD;
+   border: 1px #1a1a1a;
+   font-weight: bold;
+   font-size: 20px;
+ }
+
+ .profile-form div {
+   margin-bottom: 4px;
+ }
+
+ .profile-form h2 {
+   text-align: center;
+   margin-top: 6px;
+   color: #DDD;
+   font-weight: bold;
+   font-size: 24px;
+ }
+
+ .profile-form form {
+   width: 85%;
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-top: 5px;
+ }
+
+ .profile-form form input {
+   width: calc(100% - 16px);
+   padding: 5px;
+   margin-bottom: 10px;
+   margin-top: 3px;
+   border: 1px solid #1a1a1a;
+   border-radius: 5px;
+   background-color: #EEE;
+   font-size: 17px;
+   float: left;
+   color: #1a1a1a;
+ }
+
+ .profile-form form button {
+   display: inline-block;
+   width: 100%;
+   height: 40px;
+   margin-top: 3px;
+   margin-right: 3px;
+   margin-bottom: 5px;
+   border: 1px solid #1a1a1a;
+   border-radius: 5px;
+   background-color: #333;
+   font-size: 20px;
+   font-weight: bolder;
+   color: #DDD;
+   text-align: center;
+   text-decoration: inherit;
+   cursor: pointer;
+   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+   transition: 350ms ease-in-out;
+ }
+
+ .profile-form form button:hover {
+   -webkit-transform: scale(1.1);
+   -ms-transform: scale(1.1);
+   transform: scale(1.1);
+ }
+
+ .profile-form form button:focus {
+ 	outline: none;
+ }
 
 /* Reset Password */
 .form-resetpwd {
