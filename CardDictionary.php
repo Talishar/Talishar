@@ -341,11 +341,6 @@
   //Minimum cost of the card
   function CardCost($cardID)
   {
-    global $CS_LastDynCost, $currentPlayer;
-  
-    if(DynamicCost($cardID) != ""){
-      return GetClassState($currentPlayer, $CS_LastDynCost);
-    }
     $set = CardSet($cardID);
     $class = CardClass($cardID);
     if($set == "WTR")
