@@ -30,3 +30,6 @@ SealedFiles/Games/18/gamelog.txt
 SealedFiles/Games/18/LimitedDeck.txt
 SealedFiles/HostFiles/Counter.txt
 WTRDraftFiles/HostFiles/Counter.txt
+.DS_Store
+CardDictionaries/.DS_Store
+Images/.DS_Store
