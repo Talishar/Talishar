@@ -1,3 +1,12 @@
+:root {
+  --dark-color: #1a1a1a;
+  --light-color: #DDD;
+  --text-shadow: 2px 0 0 var(--dark-color), 0 -2px 0 var(--dark-color), 0 2px 0 var(--dark-color), -2px 0 0 var(--dark-color);
+  --grey-transparent-background: rgba(74, 74, 74, 0.9);
+  --font-family: 'Helvetica', sans-serif;
+  --button-box-shadow: 1px 1px 0 var(--dark-color), -1px -1px 0 var(--dark-color), -1px 1px 0 var(--dark-color), 1px -1px 0 var(--dark-color);
+}
+
 ::-webkit-scrollbar {
    width: 6px;
    direction: ltr;
@@ -11,7 +20,7 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-   background: black;
+   background: var(--dark-color:);
    border-radius: 5px;
 }
 
@@ -24,13 +33,13 @@ body {
   height: 100%;
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: black;
+  background-color: var(--dark-color:);
   background-image: url('../Images/background.jpg');
   overflow: hidden;
-  font-family: 'Helvetica' sans-serif;
+  font-family: var(--font-family);
   font-weight: bolder;
   font-size: 18px;
-  color: #DDD;
+  color: var(--light-color);
 }
 
 .wrapper {
@@ -47,22 +56,22 @@ body {
   text-align: center;
   margin-bottom: 3px;
   font-size: 14px;
-  color: #111;
+  color: var(--dark-color);
   text-shadow: 0;
 }
 
 .login-status {
   text-align: center;
   font-size: 24px;
-  color: #111;
+  color: var(--dark-color);
 }
 
 h1, h2, h3, h4, h5, h6, p, a, i, label{
-  font-family: 'Helvetica', sans-serif;
-  color: #DDD;
+  font-family: var(--font-family);
+  color: var(--light-color);
   line-height: 24px;
   font-weight: bolder;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  text-shadow: var(--text-shadow);
 }
 
 h1 {
@@ -93,7 +102,7 @@ p {
 nav {
   width: 100%;
   height: 40px;
-  background-color: #1a1a1a;
+  background-color: var(--dark-color);
 }
 
 nav .wrapper {
@@ -109,7 +118,7 @@ li {
 }
 
 li a {
-  font-family: 'Helvetica', sans-serif;
+  font-family: var(--font-family);
   font-weight: bold;
   font-size: 14px;
   color: #EEE;
@@ -146,8 +155,8 @@ input, button {
 
 /* Sign Up */
 .signup-form{
-  background-color:rgba(74, 74, 74, 0.9);
-  border: 1px solid #1a1a1a;
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
   border-radius: 5px;
   overflow: hidden;
   height: auto;
@@ -157,12 +166,12 @@ input, button {
   display: flex;
   justify-content: center;
   height: 28vh;
-  font-family: 'Helvetica', sans-serif;
+  font-family: var(--font-family);
   font-weight: bold;
   font-size: 18px;
-  color: #DDD;
+  color: var(--light-color);
   margin-bottom: 5px;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  text-shadow: var(--text-shadow);
 }
 
 .signup-form-form a {
@@ -173,8 +182,8 @@ input, button {
 .signup-form p {
   width: 100%;
   text-align: center;
-  color: #DDD;
-  border: 1px #1a1a1a;
+  color: var(--light-color);
+  border: 1px var(--dark-color);
   font-weight: bold;
   font-size: 20px;
 }
@@ -186,7 +195,7 @@ input, button {
 .signup-form h2 {
   text-align: center;
   margin-top: 6px;
-  color: #DDD;
+  color: var(--light-color);
   font-weight: bold;
   font-size: 24px;
 }
@@ -194,7 +203,7 @@ input, button {
 .signup-form h3 {
   text-align: center;
   margin-top: 6px;
-  color: #DDD;
+  color: var(--light-color);
   font-weight: bold;
   font-size: 18px;
   margin: 5px;
@@ -212,12 +221,12 @@ input, button {
   padding: 5px;
   margin-bottom: 10px;
   margin-top: 3px;
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--dark-color);
   border-radius: 5px;
   background-color: #EEE;
   font-size: 17px;
   float: left;
-  color: #1a1a1a;
+  color: var(--dark-color);
 }
 
 .signup-form form button {
@@ -227,16 +236,16 @@ input, button {
   margin-top: 3px;
   margin-right: 3px;
   margin-bottom: 5px;
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--dark-color);
   border-radius: 5px;
   background-color: #333;
   font-size: 20px;
   font-weight: bolder;
-  color: #DDD;
+  color: var(--light-color);
   text-align: center;
   text-decoration: inherit;
   cursor: pointer;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  text-shadow: var(--text-shadow);
   transition: 350ms ease-in-out;
 }
 
@@ -255,8 +264,8 @@ input, button {
    ============ */
 
  .profile-form{
-   background-color:rgba(74, 74, 74, 0.9);
-   border: 1px solid #1a1a1a;
+   background-color: var(--grey-transparent-background);
+   border: 1px solid var(--dark-color);
    border-radius: 5px;
    overflow: hidden;
    height: auto;
@@ -266,19 +275,19 @@ input, button {
    display: flex;
    justify-content: center;
    height: 70vh;
-   font-family: 'Helvetica', sans-serif;
+   font-family: var(--font-family);
    font-weight: bold;
    font-size: 18px;
-   color: #DDD;
+   color: var(--light-color);
    margin-bottom: 5px;
-   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+   text-shadow: var(--text-shadow);
  }
 
  .profile-form p {
    width: 100%;
    text-align: center;
-   color: #DDD;
-   border: 1px #1a1a1a;
+   color: var(--light-color);
+   border: 1px var(--dark-color);
    font-weight: bold;
    font-size: 20px;
  }
@@ -290,7 +299,7 @@ input, button {
  .profile-form h2 {
    text-align: center;
    margin-top: 6px;
-   color: #DDD;
+   color: var(--light-color);
    font-weight: bold;
    font-size: 24px;
  }
@@ -307,12 +316,12 @@ input, button {
    padding: 5px;
    margin-bottom: 10px;
    margin-top: 3px;
-   border: 1px solid #1a1a1a;
+   border: 1px solid var(--dark-color);
    border-radius: 5px;
-   background-color: #EEE;
+   background-color: var(--light-color);
    font-size: 17px;
    float: left;
-   color: #1a1a1a;
+   color: var(--dark-color);
  }
 
  .profile-form form button {
@@ -322,16 +331,16 @@ input, button {
    margin-top: 3px;
    margin-right: 3px;
    margin-bottom: 5px;
-   border: 1px solid #1a1a1a;
+   border: 1px solid var(--dark-color);
    border-radius: 5px;
    background-color: #333;
    font-size: 20px;
    font-weight: bolder;
-   color: #DDD;
+   color: var(--light-color);
    text-align: center;
    text-decoration: inherit;
    cursor: pointer;
-   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+   text-shadow: var(--text-shadow);
    transition: 350ms ease-in-out;
  }
 
@@ -357,7 +366,7 @@ input, button {
   margin: 4px;
   border: 1px solid #CCC;
   border-radius: 5px;
-  background-color: #F6F6F6;
+  background-color: var(--light-color);
   float: left;
   font-size: 18px;
 }
@@ -366,10 +375,10 @@ input, button {
   width: 100%;
   margin-bottom: 10px;
   margin-top: 3px;
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--dark-color);
   border-radius: 5px;
   float: left;
-  color: #DDD;
+  color: var(--light-color);
   height: 40px;
   background-color: #333;
   font-size: 18px;
@@ -390,8 +399,8 @@ input, button {
 }
 
 .form-resetpwd p{
-  font-family: 'Helvetica', sans-serif;
-  color: #DDD;
+  font-family: var(--font-family);
+  color: var(--light-color);
   line-height: 24px;
   font-weight: bolder;
 }
@@ -419,8 +428,8 @@ input, button {
 /* Draft style */
 
 .draft-form {
-  background-color:rgba(74, 74, 74, 0.9);
-  border: 1px solid #1a1a1a;
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
   border-radius: 5px;
   width: 30%;
 }
@@ -428,10 +437,10 @@ input, button {
 .draft-form-form {
   display: flex;
   justify-content: center;
-  font-family: 'Helvetica', sans-serif;
+  font-family: var(--font-family);
   font-weight: bold;
   font-size: 20px;
-  color: #DDD;
+  color: var(--light-color);
   margin-bottom: 5px;
 }
 
@@ -443,7 +452,7 @@ input, button {
   text-transform: uppercase;
   text-align: center;
   margin-top: 6px;
-  color: #DDD;
+  color: var(--light-color);
   font-weight: bold;
   font-size: 24px;
 }
@@ -459,10 +468,10 @@ input, button {
   width: 100%;
   margin-bottom: 10px;
   margin-top: 3px;
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--dark-color);
   border-radius: 5px;
   float: left;
-  color: #DDD;
+  color: var(--light-color);
   height: 40px;
   background-color: #333;
   font-size: 18px;
@@ -483,20 +492,17 @@ input, button {
 }
 
 .draft-form input {
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  text-shadow: var(--text-shadow);
 }
 
 .CreateGame_Button {
 	cursor: pointer;
 	font-size: 32px;
-	color: #1a1a1a;
-	background: #EDEDED;
+	color: var(--dark-color);
+	background: var(--light-color);
   border-radius: 10px;
-	border: 2px solid #1a1a1a;
-	box-shadow: 2px 2px 0 #1a1a1a,
-		-2px -2px 0 #1a1a1a,
-		-2px 2px 0 #1a1a1a,
-		2px -2px 0 #1a1a1a;
+	border: 2px solid var(--dark-color);
+  box-shadow: 2px 2px 0 var(--dark-color), -2px -2px 0 var(--dark-color), -2px 2px 0 var(--dark-color), 2px -2px 0 var(--dark-color);
   padding-left: 10px;
   padding-right: 10px;
   height: 70px;
@@ -519,9 +525,9 @@ input, button {
   height:65vh;
   width:40%;
   bottom: 30px;
-  margin: 0 0 0 -20%; /* -13% = half of width/height */
-  background-color:rgba(74, 74, 74, 0.9);
-  border: 2px solid #1a1a1a;
+  margin: 0 0 0 -20%; /* -20% = half of width/height */
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
   border-radius: 5px;
 }
 
@@ -532,7 +538,7 @@ input, button {
   z-index: 15;
   top: 50px;
   left: 50%;
-  margin: 0 0 0 -10%; /* -13% = half of width/height */
+  margin: 0 0 0 -10%; /* -10% = half of width/height */
   background-size: 100% auto;
   background-repeat: no-repeat;
 }
@@ -544,20 +550,17 @@ input, button {
   left:10px;
   width:25%;
   bottom: 30px;
-  background-color:rgba(74, 74, 74, 0.9);
-  border: 2px solid #1a1a1a;
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
   border-radius: 5px;
 }
 
 .ServerChecker_Button {
   cursor: pointer;
-	color: #1a1a1a;
-	background: #EDEDED;
-	border: 1px solid #1a1a1a;
-	box-shadow: 1px 1px 0 #1a1a1a,
-		-1px -1px 0 #1a1a1a,
-		-1px 1px 0 #1a1a1a,
-		1px -1px 0 #1a1a1a;
+	color: var(--dark-color);
+	background: var(--light-color);;
+	border: 1px solid var(--dark-color);
+	box-shadow: var(--button-box-shadow);
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 2px;
@@ -588,14 +591,14 @@ input, button {
   text-align: center;
   font-size:19px;
   font-weight:bolder;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  text-shadow: var(--text-shadow);
 }
 
 .FavoriteDeckMainMenu {
   margin-left: 20px;
   font-size:19px;
   font-weight:bolder;
-  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  text-shadow: var(--text-shadow);
 }
 
 .NewsMenu {
@@ -605,15 +608,15 @@ input, button {
   right:10px;
   width:25%;
   bottom: 30px;
-  background-color:rgba(74, 74, 74, 0.9);
-  border: 2px solid #1a1a1a;
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
   border-radius: 5px;
 }
 
 .NewsMenu h1 {
   width:100%;
   text-align:center;
-  color:rgb(220, 220, 220);"
+  color:rgb(220, 220, 220);
 }
 
 .NewsMenu h2 {
@@ -624,13 +627,10 @@ input, button {
 
 .GameLobby_Button {
   cursor: pointer;
-	color: #1a1a1a;
-	background: #EDEDED;
-	border: 1px solid #1a1a1a;
-	box-shadow: 1px 1px 0 #1a1a1a,
-		-1px -1px 0 #1a1a1a,
-		-1px 1px 0 #1a1a1a,
-		1px -1px 0 #1a1a1a;
+	color: var(--dark-color);
+	background: var(--light-color);;
+	border: 1px solid var(--dark-color);
+  box-shadow: var(--button-box-shadow);
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 2px;
@@ -649,13 +649,10 @@ input, button {
 }
 
 .GameLobby_Input {
-	color: #1a1a1a;
-	background: #EDEDED;
-	border: 1px solid #1a1a1a;
-	box-shadow: 1px 1px 0 #1a1a1a,
-		-1px -1px 0 #1a1a1a,
-		-1px 1px 0 #1a1a1a,
-		1px -1px 0 #1a1a1a;
+	color: var(--dark-color);
+	background: var(--light-color);
+	border: 1px solid var(--dark-color);
+  box-shadow: var(--button-box-shadow);
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 2px;
@@ -686,20 +683,17 @@ input, button {
 
 .JoinGameDiv {
   position:absolute; z-index:1; top:10%; left:2%; width:450px; height:550px;
-  background-color:rgba(74, 74, 74, 0.9);
-  border: 2px solid #1a1a1a;
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
   border-radius: 5px;
 }
 
 .JoinGame_Button {
   cursor: pointer;
-	color: #1a1a1a;
-	background: #EDEDED;
-	border: 1px solid #1a1a1a;
-	box-shadow: 1px 1px 0 #1a1a1a,
-		-1px -1px 0 #1a1a1a,
-		-1px 1px 0 #1a1a1a,
-		1px -1px 0 #1a1a1a;
+	color: var(--dark-color);
+	background: var(--light-color);;
+	border: 1px solid var(--dark-color);
+  box-shadow: var(--button-box-shadow);
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 2px;
