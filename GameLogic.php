@@ -753,7 +753,16 @@ function CurrentEffectAttackAbility()
 
 function CurrentEffectPlayAbility($cardID)
 {
-  global $currentTurnEffects, $currentPlayer, $actionPoints;
+  global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
+
+  //Check for dynamic costs
+  if(DynamicCost($cardID) != ""){
+    $cost = GetClassState($currentPlayer, $CS_LastDynCost);
+  }
+  else {
+    $cost = CardCost($cardID);
+  }
+
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i>=0; $i-=CurrentTurnPieces())
   {
     $remove = 0;
@@ -762,13 +771,13 @@ function CurrentEffectPlayAbility($cardID)
       switch($currentTurnEffects[$i])
       {
         case "ARC209":
-          $cardType = CardType($cardID); if(($cardType == "A" || $cardType == "AA") && CardCost($cardID) >= 0) { ++$actionPoints; $remove = 1; }
+          $cardType = CardType($cardID); if(($cardType == "A" || $cardType == "AA") && $cost >= 0) { ++$actionPoints; $remove = 1; }
           break;
         case "ARC210":
-          $cardType = CardType($cardID); if(($cardType == "A" || $cardType == "AA") && CardCost($cardID) >= 1) { ++$actionPoints; $remove = 1; }
+          $cardType = CardType($cardID); if(($cardType == "A" || $cardType == "AA") && $cost >= 1) { ++$actionPoints; $remove = 1; }
           break;
         case "ARC211":
-          $cardType = CardType($cardID); if(($cardType == "A" || $cardType == "AA") && CardCost($cardID) >= 2) { ++$actionPoints; $remove = 1; }
+          $cardType = CardType($cardID); if(($cardType == "A" || $cardType == "AA") && $cost >= 2) { ++$actionPoints; $remove = 1; }
           break;
         default: break;
       }
