@@ -13,8 +13,8 @@
 
 <div class="grid-even-collum">
   <div class="articles">
-  <h2>Good evening #fabtcg!</h2>
-    <h3>Hard work pays off! Here's a small summary:</h3>
+  <h2>4th August 2022</h2>
+    <h3>Good evening #fabtcg!<br>Hard work pays off! Here's a small summary:</h3>
     <p><br>- New favorite checkbox with a small animation. You need to be logged in with the Remember me feature checked to see it.
     <br>- We remove the popup for cards like Channels and Burn Them All
     <br>- We fixed Cromai gives 2APs sometimes.
@@ -24,7 +24,7 @@
     </p>
   </div>
   <div class="articles">
-    <h2>2nd Augst 2022</h2>
+    <h2>2nd August 2022</h2>
     <h3>Good evening #fabtcg players!</h3>
     <p><br>A quick review of today's updates:
     <br>- We added a way to save your decklist. (We are currently working on a way also to remove them from your favorites. 😅)
