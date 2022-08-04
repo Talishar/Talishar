@@ -13,6 +13,17 @@
 
 <div class="grid-even-collum">
   <div class="articles">
+  <h2>Good evening #fabtcg!</h2>
+    <h3>Hard work pays off! Here's a small summary:</h3>
+    <p><br>- New favorite checkbox with a small animation. You need to be logged in with the Remember me feature checked to see it.
+    <br>- We remove the popup for cards like Channels and Burn Them All
+    <br>- We fixed Cromai gives 2APs sometimes.
+    <br>- We fixed Yendurai losing its endurance counter when attacked with a 0 power card.
+    <br>- Fix lead the charge not giving an AP when Sonata or another card with a dynamic cost.
+    <br>- Added better context to Tome of Aetherwild popup.
+    </p>
+  </div>
+  <div class="articles">
     <h2>2nd Augst 2022</h2>
     <h3>Good evening #fabtcg players!</h3>
     <p><br>A quick review of today's updates:
@@ -122,7 +133,6 @@
     </p>
   </div>
 
-  <div class="articles"></div>
   <div class="articles"></div>
   <div class="articles"></div>
   <div class="articles"></div>
