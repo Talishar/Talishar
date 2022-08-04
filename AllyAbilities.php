@@ -139,7 +139,7 @@ function AllyAttackAbilities($attackID)
     switch($allies[$i])
     {
       case "UPR412":
-        if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon") && GetClassState($mainPlayer, $CS_NumDragonAttacks) < 1)
+        if($allies[$i+8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon") && GetClassState($mainPlayer, $CS_NumDragonAttacks) <= 1)
         {
           AddCurrentTurnEffect("UPR412", $mainPlayer);
           --$allies[$i+8];
