@@ -27,6 +27,15 @@
       case '6': $decklink = "https://fabdb.net/decks/OldYPAwm"; break;
       case '7': $decklink = "https://fabdb.net/decks/WAPZxDEQ"; break;
       case '8': $decklink = "https://fabdb.net/decks/nnlVMAEG"; break;
+      case '9': $decklink = "https://fabrary.net/decks/01G7FCP2N7N0MNHWAH6JTP0KFN"; break;
+      case '10': $decklink = "https://fabrary.net/decks/01G7B1T1D1M2DAM61K876VJBDK"; break;
+      case '11': $decklink = "https://fabrary.net/decks/01G7FD2B3YQAMR8NJ4B3M58H96"; break;
+      case '12': $decklink = "https://fabrary.net/decks/01G7FDVRZP35DFWBRK64AG5TKQ"; break;
+      case '13': $decklink = "https://fabrary.net/decks/01G7K464J7VS0K7HKW5E395TBK"; break;
+      case '14': $decklink = "https://fabrary.net/decks/01G7K4D304QQCZZSBT7ABCX4XC"; break;
+      case '15': $decklink = "https://fabrary.net/decks/01G7K3WGPVKVDXG2J013GXSXNP"; break;
+      case '16': $decklink = "https://fabrary.net/decks/01G76H7RG7GN5ZA10F3BJBH740"; break;
+      case '17': $decklink = "https://fabrary.net/decks/01G76H1R1ERRBRKS7RVCQAB8RX"; break;
       default: $decklink = "https://fabdb.net/decks/VGkQMojg"; break;
     }
   }

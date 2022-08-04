@@ -55,7 +55,7 @@
   }
   if(count($favoriteDecks) == 0)
   {
-    echo("<div class='DeckToTry'>CC Starter Decks: ");
+    echo("<div class='FavoriteDeckMainMenu'>CC Starter Decks: ");
     echo("<select name='decksToTry' id='decksToTry'>");
       echo("<option value='1'>Bravo Starter Deck</option>");
       echo("<option value='2'>Rhinar Starter Deck</option>");
@@ -65,6 +65,15 @@
       echo("<option value='6'>Viserai Starter Deck</option>");
       echo("<option value='7'>Kano Starter Deck</option>");
       echo("<option value='8'>Azalea Starter Deck</option>");
+      echo("<option value='9'>Prism Starter Deck</option>");
+      echo("<option value='10'>Levia Starter Deck</option>");
+      echo("<option value='11'>Boltyn Starter Deck</option>");
+      echo("<option value='12'>Chane Starter Deck</option>");
+      echo("<option value='13'>Oldhim Starter Deck</option>");
+      echo("<option value='14'>Briar Starter Deck</option>");
+      echo("<option value='15'>Lexi Starter Deck</option>");
+      echo("<option value='16'>Fai Starter Deck</option>");
+      echo("<option value='17'>Dromai Starter Deck</option>");
     echo("</select></div>");
   }
   echo("<br>");
