@@ -1,6 +1,6 @@
-/* =============
-   basic styling
-   ============= */
+/* ===============
+    Basic Styling
+   =============== */
 * {
   box-sizing: border-box;
 }
@@ -11,14 +11,14 @@ html, body {
   overflow: hidden;
 }
 
-/* ====
-   Blog
-   ==== */
+/* ======
+    Blog
+   ====== */
 
 .grid-even-collum {
   display: grid;
   gap: 1.5rem;
-  grid-template-columns: .6fr;
+  grid-template-columns: clamp(45ch, 50%, 75ch);
   justify-content: center;
   overflow: scroll;
   height: 99vh;
@@ -47,16 +47,17 @@ html, body {
 }
 
 .articles h2 {
-  font-size: 32px;
+  font-size: 1.5rem;
   padding-bottom: 10px;
 }
 
 .articles h3 {
-  font-size: 18px;
+  font-size: 1.1rem;
 }
 
 .articles p {
-  font-size: 19px;
+  display: flex;
+  font-size: 1rem;
   font-family: Helvetica;
   color: black;
   text-shadow: none;
