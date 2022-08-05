@@ -772,6 +772,7 @@
           $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
           if($items[$index + 1] == 0)
           {
+            AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization. 
             AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
             AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
             AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
