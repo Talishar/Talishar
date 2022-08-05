@@ -5,10 +5,34 @@
   box-sizing: border-box;
 }
 
-html, body {
+html, 
+body {
   scroll-behavior: smooth;
   height: 100vh;
   overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  direction: ltr;
+  background: #555;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: gainsboro;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--dark-color);
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* ======

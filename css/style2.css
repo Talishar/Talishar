@@ -1,3 +1,4 @@
+
 :root {
   --dark-color: #1a1a1a;
   --light-color: #DDD;
@@ -6,28 +7,6 @@
   --font-family: 'Helvetica', sans-serif;
   --button-box-shadow: 1px 1px 0 var(--dark-color), -1px -1px 0 var(--dark-color), -1px 1px 0 var(--dark-color), 1px -1px 0 var(--dark-color);
 }
-
-::-webkit-scrollbar {
-   width: 6px;
-   direction: ltr;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-   background: gainsboro;
-   border-radius: 5px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-   background: var(--dark-color);
-   border-radius: 5px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-   background: #555;
-  }
 
 body {
   height: 100%;
@@ -40,6 +19,29 @@ body {
   font-weight: bolder;
   font-size: 18px;
   color: var(--light-color);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  direction: ltr;
+  background: #555;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: gainsboro;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--dark-color);
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .wrapper {
