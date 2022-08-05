@@ -1446,5 +1446,3 @@ function NumEquipBlock()
     if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") return false;
     return true;
   }
-
-?>

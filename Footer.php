@@ -1,6 +1,6 @@
     </div>
-  </body>
-      <div style="height:11px; bottom:8px; left:20px; width: auto;
+    </body>
+    <div style="height:11px; bottom:8px; left:20px; width: auto;
         position:absolute;
         color:white;
         font-size: 11px;
@@ -11,11 +11,12 @@
         border-radius: 2px;
         text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
         ">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™,
-          and set names are trademarks of Legend Story Studios.
-          Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.
-          Card Images © Legend Story Studios
-      </div>
-  </div>
-</html>
+      and set names are trademarks of Legend Story Studios.
+      Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.
+      Card Images © Legend Story Studios
+    </div>
+    </div>
 
-<script src="js/script.js"></script>
+    </html>
+
+    <script src="js/script.js"></script>
