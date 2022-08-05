@@ -169,11 +169,14 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
       if ($from == "PLAY") {
         $items = &GetItems($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        WriteLog(ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer));
         if (count($combatChain) > 0) {
-          $items[$index + 1] = 0;
-          $items[$index + 2] = 1;
-          $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-          $rv = "Gives your pistol attack go again.";
+          if(ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer)) {
+            $items[$index + 1] = 0;
+            $items[$index + 2] = 1;
+            $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+            $rv = "Gives your pistol attack go again.";
+          }
         } else {
           $items[$index + 1] = 1;
           $rv = "Gets a steam counter.";
