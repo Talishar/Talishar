@@ -96,7 +96,6 @@
 
   function RVDHasGoAgain($cardID)
   {
-    global $mainPlayer, $CS_NumAuras;
     switch($cardID)
     {
       case "RVD004": return true;
@@ -105,7 +104,7 @@
     }
   }
 
-  function RVDAbilityType($cardID, $index=-1)
+  function RVDAbilityType($cardID)
   {
     switch($cardID)
     {
@@ -115,7 +114,7 @@
     }
   }
 
-  function RVDAbilityCost($cardID, $index=-1)
+  function RVDAbilityCost($cardID)
   {
     switch($cardID)
     {
@@ -125,71 +124,48 @@
     }
   }
 
-  function RVDPlayAbility($cardID, $from, $resourcesPaid)
-  {
-    global  $combatChain, $currentPlayer;
-    $rv = "";
-    switch($cardID)
-    {
-      case "RVD004":
-        $resources = &GetResources($currentPlayer);
-        $resources[0] += 1;
-        return "Gain 1 resource.";
+function RVDPlayAbility($cardID)
+{
+  global $currentPlayer;
+  $rv = "";
+  switch ($cardID) {
+    case "RVD004":
+      $resources = &GetResources($currentPlayer);
+      $resources[0] += 1;
+      return "Gain 1 resource.";
 
-      case "RVD013":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
-        MyDrawCard();
-        $card = DiscardRandom();
-        $rv = "Discarded " . CardLink($card, $card);
-        if(AttackValue($card) >= 6)
-        {
-          Intimidate();
-          $rv .= " and intimidate from discarding a card with 6 or more power";
-        }
-        $rv .= ".";
-        return $rv;
-      case "RVD025":
-        $rv = "Intimidates";
+    case "RVD013":
+      WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+      MyDrawCard();
+      $card = DiscardRandom();
+      $rv = "Discarded " . CardLink($card, $card);
+      if (AttackValue($card) >= 6) {
         Intimidate();
-        return $rv;
-    }
+        $rv .= " and intimidate from discarding a card with 6 or more power";
+      }
+      $rv .= ".";
+      return $rv;
+    case "RVD025":
+      $rv = "Intimidates";
+      Intimidate();
+      return $rv;
   }
+}
 
-  function RVDHitEffect($cardID)
-  {
-
+function ChiefRukutanAbility($player, $index)
+{
+  $log = "Chief Ruk'utan Intimidates";
+  Intimidate();
+  $arsenal = &GetArsenal($player);
+  ++$arsenal[$index + 3];
+  if ($arsenal[$index + 3] == 2) {
+    $log .= " and searchs for an Alpha Rampage card";
+    RemoveArsenal($player, $index);
+    BanishCardForPlayer("RVD007", $player, "ARS", "-");
+    AddDecisionQueue("FINDINDICES", $player, "DECKCARD,WTR006");
+    AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+    AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+    AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
   }
-
-  function RVDCombatEffectActive($cardID, $attackID)
-  {
-    global $combatChain, $mainPlayer;
-    $params = explode(",", $cardID);
-    $cardID = $params[0];
-    if(count($params) > 1) $parameter = $params[1];
-    switch($cardID)
-    {
-      // case "RVD009": return ;  Need to be coded.
-      default: return false;
-    }
-  }
-
-  function ChiefRukutanAbility($player, $index)
-  {
-    $log = "Chief Ruk'utan Intimidates";
-    Intimidate();
-    $arsenal = &GetArsenal($player);
-    ++$arsenal[$index+3];
-    if($arsenal[$index+3] == 2)
-    {
-      $log .= " and searchs for an Alpha Rampage card";
-      RemoveArsenal($player, $index);
-      BanishCardForPlayer("RVD007", $player, "ARS", "-");
-      AddDecisionQueue("FINDINDICES", $player, "DECKCARD,WTR006");
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
-      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
-    }
-    WriteLog($log . ".");
-  }
-
-?>
+  WriteLog($log . ".");
+}

@@ -114,7 +114,7 @@
 
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $CS_NumCharged, $combatChain, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
+    global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
     switch($cardID)
     {
@@ -187,7 +187,7 @@
 
   function MONWarriorHitEffect($cardID)
   {
-    global $mainClassState, $CS_NumCharged, $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $mainClassState, $CS_NumCharged, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "MON042": case "MON043": case "MON044":

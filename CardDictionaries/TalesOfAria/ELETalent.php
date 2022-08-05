@@ -248,8 +248,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    global $combatChain, $CS_DamagePrevention;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
