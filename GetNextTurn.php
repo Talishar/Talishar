@@ -156,7 +156,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
   $permWidth = "calc(50% - " . ($cardWidth * 2 + 30 + $permLeft) . "px)";
   $permHeight = $cardSize * 2 + 20;
-  $counterHeight = $dynamicScaling ? intval($maxHeight / 4.6) : 28;
+  $counterHeight = IsDynamicScalingEnabled($playerID) ? intval($maxHeight / 4.6) : 28;
 
   $darkMode = IsDarkMode($playerID);
   $manualMode = IsManualMode($playerID);
