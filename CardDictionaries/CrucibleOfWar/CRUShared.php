@@ -622,7 +622,7 @@
 
 function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $mainPlayer, $CS_NumBoosted, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;
+  global $mainPlayer, $CS_NumBoosted, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;
   global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
   global $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
@@ -780,21 +780,19 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if ($index != -1) {
         $items = &GetItems($currentPlayer);
         $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-        if ($items[$index + 1] == 0) {
-          AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization. 
-          AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-          AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
-          $items[$index + 2] = 1;
-          $rv = "Gives target pistol +1.";
+        if ($items[$index + 1] == 0 && ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer)) {
+            AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization. 
+            AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+            AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
+            AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
+            $items[$index + 2 ] = 1;
+            $rv = "Gives target pistol +1.";
+          }
         } else {
           $rv = "Gains a steam counter.";
         }
-      }
       return $rv;
-    case "CRU115":
-    case "CRU116":
-    case "CRU117":
+    case "CRU115": case "CRU116": case "CRU117":
       if ($cardID == "CRU115") $maxCost = 2;
       else if ($cardID == "CRU116") $maxCost = 1;
       else if ($cardID == "CRU117") $maxCost = 0;
