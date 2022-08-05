@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-html, 
+html,
 body {
   scroll-behavior: smooth;
   height: 100vh;
@@ -62,11 +62,13 @@ body {
   display: none;
 }
 
-.articles h1, .articles h2, .articles h3 {
+.articles h1,
+.articles h2,
+.articles h3 {
   font-family: 'Helvetica', sans-serif;
   font-weight: 600;
   color: black;
-  text-align:center;
+  text-align: center;
   text-shadow: none;
 }
 
