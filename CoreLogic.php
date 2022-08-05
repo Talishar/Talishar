@@ -269,7 +269,7 @@ function ArsenalStartTurnAbilities()
       case "MON404": case "MON405": case "MON406": case "MON407": case "DVR007": case "RVD007":
         if($arsenal[$i+1] == "DOWN")
         {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_flip_over_your_mentor_card");
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_turn_your_mentor_card_face_up");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
           AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, $i, 1);
