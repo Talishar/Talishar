@@ -146,10 +146,6 @@ function ProcessHitEffect($cardID)
     return EVRHitEffect($cardID);
   } else if ($set == "UPR") {
     return UPRHitEffect($cardID);
-  } else if ($set == "DVR") {
-    return DVRHitEffect($cardID);
-  } else if ($set == "RVD") {
-    return RVDHitEffect($cardID);
   }
   switch ($cardID) {
     default:
@@ -3163,7 +3159,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         array_push($hand, $cards[$i]);
       }
       if ($displayText != "") {
-        $word = (count($hand) == 1 ? "was" : "were");
+        $word = (count($cards) == 1 ? "was" : "were");
         WriteLog($displayText . " $word added to your hand.");
       }
       return $lastResult;
@@ -3634,7 +3630,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);
-      WriteLog("Sonata Arcanix deals " . $numArcane . " arcane damage.");
+      WriteLog(CardLink("MON231", "MON231") . " deals " . $numArcane . " arcane damage.");
       return 1;
     case "SOULREAPING":
       $cards = explode(",", $lastResult);
