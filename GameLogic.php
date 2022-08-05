@@ -37,7 +37,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCos
   }
   else if($set == "CRU")
   {
-    return CRUPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts);
+    return CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
   else if($set == "MON")
   {
