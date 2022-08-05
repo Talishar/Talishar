@@ -620,7 +620,7 @@
     }
   }
 
-  function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
+  function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $mainPlayer, $CS_NumBoosted, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;
     global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
