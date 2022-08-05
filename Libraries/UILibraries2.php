@@ -90,11 +90,11 @@
     font-size:20px; font-weight:800; color:".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
   //Steam Counters style
-  elseif ($counters != 0 && $from == "ITEMS" && ClassContains($cardNumber, "MECHANOLOGIST")) {
+  elseif ($counters != 0 && ($from == "ITEMS" || $from == "CHARACTER") && ClassContains($cardNumber, "MECHANOLOGIST")) {
     if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
     $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 2px;
     text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:" . ($steamCounterHeight-18) . "px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
+    position:absolute; z-index: 6; font-size:" . ($steamCounterHeight-18) . "px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
     <img style='width:" . $steamCounterHeight . "px; height:" . $steamCounterHeight . "px; opacity: 0.9; position: absolute; margin: auto; top: 3px; left: -6px; right: 0px; bottom: 0px; -webkit-box-shadow:inset 0px 0px 0px 15px black;
     -moz-box-shadow:inset 0px 0px 0px 15px black; box-shadow:inset 0px 0px 0px 15px black; border-radius: 50%; padding:-5; z-index:-3;' src='./Images/steamCounter.png'></img></div>";
   }
@@ -240,6 +240,7 @@
 
   function CardStatsUI($player)
   {
+    global $darkMode;
     $rv = "<div id='cardStats' style='background-color:" . BackgroundColor($darkMode) . "; z-index:100; position: absolute; top:120px; left: 50px; right: 250px; bottom:50px;'>";
     $rv .= CardStats($player);
     $rv .= "</div>";
