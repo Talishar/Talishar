@@ -1280,7 +1280,7 @@ function OnBlockResolveEffects()
     switch($combatChain[$i])
     {
       case "EVR018":
-        WriteLog(CardLink($auras[$i], $auras[$i])." frostbite trigger creates a layer.");
+        WriteLog(CardLink($combatChain[$i], $combatChain[$i])." frostbite trigger creates a layer.");
         AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
       case "RVD003": case "RVD015":
