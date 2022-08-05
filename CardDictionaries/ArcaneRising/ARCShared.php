@@ -44,7 +44,7 @@
       case "ARC004": return "A";
       case "ARC005": return "I";
       case "ARC010":
-        return count($combatChain) > 0 ? "AR" : "A";
+        return count($combatChain) > 0 && ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer) ? "AR" : "A";
       case "ARC017":
         $items = &GetItems($currentPlayer);
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
