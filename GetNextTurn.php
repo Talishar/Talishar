@@ -136,7 +136,8 @@
   echo("<div id='iconHolder' style='display:none;'>" . $icon . "</div>");
 
   $cardSize = ($windowWidth != 0 ? intval($windowWidth / 14) : 120);
-  $cardSize = 120;//Temporarily disable dynamic scaling
+  $cardSize = ($windowWidth != 0 ? intval($windowWidth / 20) : 120);
+  if(!IsDynamicScalingEnabled($playerID)) $cardSize = 120;//Temporarily disable dynamic scaling
   $cardSizeAura = intval($cardSize * .8);//95;
   $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);

@@ -15,6 +15,7 @@
   $SET_ColorblindMode = 8;//Colorblind mode settings
 
   $SET_ShortcutAttackThreshold = 9;//Threshold to shortcut attacks
+  $SET_EnableDynamicScaling = 10;//Threshold to shortcut attacks
 
   function HoldPrioritySetting($player)
   {
@@ -97,6 +98,14 @@
     return $settings[$SET_ShortcutAttackThreshold];
   }
 
+  function IsDynamicScalingEnabled($player)
+  {
+    global $SET_EnableDynamicScaling;
+    $settings = GetSettings($player);
+    if($settings == null) return false;
+    return $settings[$SET_EnableDynamicScaling] == "1";
+  }
+
   function ChangeSetting($player, $setting, $value)
   {
     global $SET_ManualMode;
@@ -125,7 +134,7 @@
   function GetSettingsUI($player)
   {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
-    global $SET_ShortcutAttackThreshold;
+    global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
     $rv = "";
     $rv .= "<h2>Settings</h2>";
     $settings = GetSettings($player);
@@ -166,7 +175,10 @@
 
     if($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
     else $rv .= CreateCheckbox($SET_ColorblindMode . "-0", "Accessibility Mode", 26, true, "Accessibility Mode");
+    $rv .= "<BR>";
 
+    if($settings[$SET_EnableDynamicScaling] == 0) $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-1", "Dynamic Scaling (Under Dev)", 26, false, "Dynamic Scaling (Under Dev)");
+    else $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-0", "Dynamic Scaling (Under Dev)", 26, true, "Dynamic Scaling (Under Dev)");
     $rv .= "<BR>";
 
     $currentValue = ShortcutAttackThreshold($player);
