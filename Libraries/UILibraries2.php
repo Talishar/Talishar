@@ -80,8 +80,8 @@
 
   // Counters Style
   $dynamicScaling = (function_exists("IsDynamicScalingEnabled") ? IsDynamicScalingEnabled($playerID) : false);
-  $counterHeight = $dynamicScaling ? intval($maxHeight / 4.6) : 28;
-  $imgCounterHeight = $dynamicScaling ? intval($maxHeight / 2.5) : 44;
+  $counterHeight = $dynamicScaling ? intval($maxHeight / 3.3) : 28;
+  $imgCounterHeight = $dynamicScaling ? intval($maxHeight / 2) : 44;
   //Attacker Label Style
   if($counters == "Attacker" || $counters == "Arsenal") {
     $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
