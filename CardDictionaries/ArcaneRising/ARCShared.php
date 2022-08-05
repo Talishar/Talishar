@@ -2,7 +2,7 @@
 
   function ARCAbilityCost($cardID)
   {
-    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer;
+    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer, $combatChain;
     switch($cardID)
     {
       case "ARC003":
@@ -10,8 +10,8 @@
         return ($abilityType == "A" ? 1 : 0);
       case "ARC004": return 1;
       case "ARC010":
-        $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
+        $abilityType = GetResolvedAbilityType($cardID);
+          return count($combatChain) > 0 ? 0 : 1;
       case "ARC017":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
@@ -36,7 +36,7 @@
 
   function ARCAbilityType($cardID, $index=-1)
   {
-    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex;
+    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex, $combatChain;
     switch($cardID)
     {
       case "ARC003":
@@ -44,9 +44,7 @@
       case "ARC004": return "A";
       case "ARC005": return "I";
       case "ARC010":
-        $items = &GetItems($currentPlayer);
-        if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return ($items[$index + 1] > 0 ? "AR" : "A");
+        return count($combatChain) > 0 ? "AR" : "A";
       case "ARC017":
         $items = &GetItems($currentPlayer);
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -104,7 +102,7 @@
 
   function ARCAbilityHasGoAgain($cardID)
   {
-    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex;
+    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex, $combatChain;
     switch($cardID)
     {
       case "ARC003":
@@ -112,8 +110,7 @@
         return $abilityType == "A";
       case "ARC004": return true;
       case "ARC010":
-        $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
+        return count($combatChain) == 0;
       case "ARC018":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
