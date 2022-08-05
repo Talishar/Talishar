@@ -383,7 +383,7 @@
 
   function UPRIllusionistHitEffect($cardID)
   {
-    global $mainPlayer, $combatChainState, $CCS_AttackFused, $CCS_WeaponIndex, $defPlayer;
+    global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
     switch($cardID)
     {
       case "UPR024": case "UPR025": case "UPR026":
