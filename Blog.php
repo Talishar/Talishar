@@ -16,7 +16,7 @@
   <h2>4th August 2022</h2>
     <h3>Good evening #fabtcg!<br>Hard work pays off! Here's a small summary:</h3>
     <p><br>- New favorite checkbox with a small animation. You need to be logged in with the Remember me feature checked to see it.
-    <br>- We remove the popup for cards like Channels and Burn Them All
+    <br>- We remove the popup for cards like Channels and Burn Them All when there aren't enough cards in the graveyard or pitch zone. So its destroyed automatically without a popup.
     <br>- We fixed Cromai gives 2APs sometimes.
     <br>- We fixed Yendurai losing its endurance counter when attacked with a 0 power card.
     <br>- Fix lead the charge not giving an AP when Sonata or another card with a dynamic cost.

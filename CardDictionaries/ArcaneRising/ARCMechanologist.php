@@ -240,7 +240,7 @@
         $items = &GetItems($currentPlayer);
         if($index != -1)
         {
-          AddCurrentTurnEffect("PREVENT-" . $items[$index+1], $currentPlayer);
+          AddCurrentTurnEffect($cardID . "-" . $items[$index+1], $currentPlayer);
           $rv = "Will prevent some of the next combat damage you take this turn.";
           DestroyMyItem($index);
         }

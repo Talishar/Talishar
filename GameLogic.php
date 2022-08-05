@@ -691,7 +691,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
       $remove = 0;
       switch($effects[0])
       {
-        case "PREVENT": $prevention += $effects[1]; $remove = 1; break;
+        case "ARC035": $prevention += $effects[1]; $remove = 1; break;
         case "CRU041": if($type == "COMBAT") { $prevention += 3; $remove = 1; } break;
         case "CRU042": if($type == "COMBAT") { $prevention += 2; $remove = 1; } break;
         case "CRU043": if($type == "COMBAT") { $prevention += 1; $remove = 1; } break;
