@@ -20,7 +20,7 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-   background: var(--dark-color:);
+   background: var(--dark-color);
    border-radius: 5px;
 }
 
@@ -33,7 +33,7 @@ body {
   height: 100%;
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: var(--dark-color:);
+  background-color: var(--dark-color);
   background-image: url('../Images/background.jpg');
   overflow: hidden;
   font-family: var(--font-family);

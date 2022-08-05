@@ -128,7 +128,7 @@
   {
     global $SET_ManualMode;
     $settings = &GetSettings($player);
-    $settings[$SET_ManualMode] = $value;
+    $settings[$SET_ManualMode] = $value; // TODO: fix $value. The variable is undefined
   }
 
   function GetSettingsUI($player)

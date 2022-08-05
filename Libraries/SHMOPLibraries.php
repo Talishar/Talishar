@@ -29,7 +29,7 @@ function DeleteCache($name)
     if($id)
     {
       shmop_delete($id);
-      shmop_close($id);
+      shmop_close($id); //shmop_close is deprecated
     }
 }
 
