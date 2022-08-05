@@ -28,7 +28,7 @@
     }
   }
 
-  function MONAbilityType($cardID, $index=-1)
+  function MONAbilityType($cardID)
   {
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
@@ -115,7 +115,7 @@
 
   function MONEffectAttackModifier($cardID)
   {
-    global $mainPlayer, $CS_NumNonAttackCards, $combatChainState, $combatChain;
+    global $mainPlayer, $CS_NumNonAttackCards, $combatChain;
     $arr = explode(",", $cardID);
     $cardID = $arr[0];
     switch($cardID)

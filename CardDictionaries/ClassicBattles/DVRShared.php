@@ -86,7 +86,6 @@
 
   function DVRHasGoAgain($cardID)
   {
-    global $mainPlayer, $CS_NumAuras;
     switch($cardID)
     {
       case "DVR004": return true;
@@ -100,7 +99,7 @@
     }
   }
 
-  function DVRAbilityType($cardID, $index=-1)
+  function DVRAbilityType($cardID)
   {
     switch($cardID)
     {
@@ -120,9 +119,9 @@
     }
   }
 
-  function DVRPlayAbility($cardID, $from, $resourcesPaid)
+  function DVRPlayAbility($cardID)
   {
-    global $combatChain, $currentPlayer, $CS_LastAttack, $combatChainState, $CCS_WeaponIndex, $atkWWpn;
+    global $currentPlayer;
     $rv = "";
     switch($cardID)
     {
@@ -156,71 +155,68 @@
     }
   }
 
-  function DVRHitEffect($cardID)
-  {
-    switch($cardID)
-    {
-      default: break;
-    }
+function DVREffectAttackModifier($cardID)
+{
+  $params = explode(",", $cardID);
+  $cardID = $params[0];
+  switch ($cardID) {
+    case "DVR009":
+      return 3;
+    case "DVR013":
+      return 2;
+    case "DVR014":
+      return 3;
+    case "DVR022":
+      return 1;
+    default:
+      return 0;
   }
+}
 
-  function DVREffectAttackModifier($cardID)
-  {
-    global $combatChainState, $CCS_LinkBaseAttack;
-    $params = explode(",", $cardID);
-    $cardID = $params[0];
-    if(count($params) > 1) $parameter = $params[1];
-    switch($cardID)
-    {
-      case "DVR009": return 3;
-      case "DVR013": return 2;
-      case "DVR014": return 3;
-      case "DVR022": return 1;
-      default: return 0;
-    }
+function DVRCombatEffectActive($cardID, $attackID)
+{
+  $params = explode(",", $cardID);
+  $cardID = $params[0];
+  switch ($cardID) {
+    case "DVR008":
+    case "DVR008-1":
+      return $attackID == "DVR002" || $attackID == "WTR115";
+    case "DVR009":
+      return CardType($attackID) == "W";
+    case "DVR013":
+    case "DVR014":
+    case "DVR019":
+    case "DVR022":
+    case "DVR023":
+      return CardSubType($attackID) == "Sword";
+    default:
+      return false;
   }
+}
 
-  function DVRCombatEffectActive($cardID, $attackID)
-  {
-    global $combatChain, $CS_AtksWWeapon, $mainPlayer;
-    $params = explode(",", $cardID);
-    $cardID = $params[0];
-    if(count($params) > 1) $parameter = $params[1];
-    switch($cardID)
-    {
-      case "DVR008": case "DVR008-1": return $attackID == "DVR002" || $attackID == "WTR115";
-      case "DVR009": return CardType($attackID) == "W";
-      case "DVR013": case "DVR014": case "DVR019": case "DVR022": case "DVR023": return CardSubType($attackID) == "Sword";
-      default: return false;
-    }
+function HalaGoldenhelmAbility($player, $index)
+{
+  GiveAttackGoAgain();
+  $log = "Hala Goldenhelm gives the sword attack go again";
+  $arsenal = &GetArsenal($player);
+  ++$arsenal[$index + 3];
+  if ($arsenal[$index + 3] >= 2) {
+    $log .= " and searchs for a Glistening Steelblade card.";
+    RemoveArsenal($player, $index);
+    BanishCardForPlayer("DVR007", $player, "ARS", "-");
+    AddDecisionQueue("FINDINDICES", $player, "DECKCARD,DVR008");
+    AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+    AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+    AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
   }
+  WriteLog($log . ".");
+}
 
-  function HalaGoldenhelmAbility($player, $index)
-  {
-    GiveAttackGoAgain();
-    $log = "Hala Goldenhelm gives the sword attack go again";
-    $arsenal = &GetArsenal($player);
-    ++$arsenal[$index+3];
-    if($arsenal[$index+3] >= 2)
-    {
-      $log .= " and searchs for a Glistening Steelblade card.";
-      RemoveArsenal($player, $index);
-      BanishCardForPlayer("DVR007", $player, "ARS", "-");
-      AddDecisionQueue("FINDINDICES", $player, "DECKCARD,DVR008");
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
-      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
-    }
-    WriteLog($log . ".");
-  }
-
-  function DoriQuicksilverProdigyEffect()
-  {
-    global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
-    $char = &GetPlayerCharacter($mainPlayer);
-    $char[1] = 1;//Exhause Dori
-    $char[$combatChainState[$CCS_WeaponIndex]+1] = 2;
-    ++$char[$combatChainState[$CCS_WeaponIndex]+5];
-  }
-
-?>
+function DoriQuicksilverProdigyEffect()
+{
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  $char = &GetPlayerCharacter($mainPlayer);
+  $char[1] = 1; //Exhause Dori
+  $char[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+  ++$char[$combatChainState[$CCS_WeaponIndex] + 5];
+}

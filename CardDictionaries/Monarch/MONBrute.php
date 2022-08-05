@@ -123,7 +123,7 @@
 
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid)
   {
-    global $CS_Num6PowBan, $combatChain, $currentPlayer;
+    global $currentPlayer;
     $rv = "";
     switch($cardID)
     {
@@ -239,7 +239,7 @@
 
   function RandomBanish3GY()
   {
-    global $CS_Num6PowBan, $currentPlayer;
+    global $currentPlayer;
     $hand = &GetHand($currentPlayer);
     $discard = &GetDiscard($currentPlayer);
     if(count($discard) < 3) return;

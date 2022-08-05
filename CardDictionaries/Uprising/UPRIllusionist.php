@@ -222,7 +222,6 @@
   function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer;
-    $rv = "";
     switch($cardID)
     {
       case "UPR004":

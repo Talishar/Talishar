@@ -36,7 +36,7 @@
 
   function ARCAbilityType($cardID, $index=-1)
   {
-    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex, $combatChain;
+    global $currentPlayer, $CS_PlayIndex, $combatChain;
     switch($cardID)
     {
       case "ARC003":
@@ -102,7 +102,7 @@
 
   function ARCAbilityHasGoAgain($cardID)
   {
-    global $currentPlayer, $CS_CharacterIndex, $CS_PlayIndex, $combatChain;
+    global $currentPlayer, $CS_PlayIndex, $combatChain;
     switch($cardID)
     {
       case "ARC003":
@@ -153,29 +153,38 @@
     }
   }
 
-  function ARCCombatEffectActive($cardID, $attackID)
-  {
-    global $combatChainState, $CCS_AttackPlayedFrom, $currentPlayer;
-    switch($cardID)
-    {
-      case "ARC011": case "ARC012": case "ARC013": return true;
-      case "ARC019": return CardType($attackID) == "AA";
-      case "ARC032": case "ARC033": case "ARC034": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $currentPlayer);
-      case "ARC038": case "ARC039": return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";//TODO: This is only close
-      case "ARC042": return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";//TODO: This is only close
-      case "ARC047": return CardSubType($attackID) == "Arrow";
-      case "ARC054": case "ARC055": case "ARC056": return ClassContains($attackID, "RANGER", $currentPlayer) && CardType($attackID) == "AA";
-      case "ARC057": case "ARC058": case "ARC059": return $cardID == $attackID;
-      case "ARC091": case "ARC092": case "ARC093": return ClassContains($attackID, "RUNEBLADE", $currentPlayer);
-      case "ARC153-1": case "ARC153-2": case "ARC153-3": return CardType($attackID) == "AA";
-      case "ARC160-1": return CardType($attackID) == "AA";
-      case "ARC160-3": return CardType($attackID) == "AA";
-      case "ARC170-1": case "ARC171-1": case "ARC172-1": return CardType($attackID) == "AA";
-      case "ARC170-2": case "ARC171-2": case "ARC172-2": return CardType($attackID) == "AA";
-      case "ARC203": case "ARC204": case "ARC205": return CardType($attackID) == "AA";
-      case "ARC206": case "ARC207": case "ARC208": return CardType($attackID) == "AA";
-      default: return false;
-    }
+function ARCCombatEffectActive($cardID, $attackID)
+{
+  global $combatChainState, $CCS_AttackPlayedFrom, $currentPlayer;
+  switch ($cardID) {
+    case "ARC011": case "ARC012": case "ARC013":
+      return true;
+    case "ARC019":
+      return CardType($attackID) == "AA";
+    case "ARC032": case "ARC033": case "ARC034":
+      return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $currentPlayer);
+    case "ARC038": case "ARC039":
+      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS"; //TODO: This is only close
+    case "ARC042":
+      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS"; //TODO: This is only close
+    case "ARC047":
+      return CardSubType($attackID) == "Arrow";
+    case "ARC054": case "ARC055": case "ARC056":
+      return ClassContains($attackID, "RANGER", $currentPlayer) && CardType($attackID) == "AA";
+    case "ARC057": case "ARC058": case "ARC059":
+      return $cardID == $attackID;
+    case "ARC091": case "ARC092": case "ARC093":
+      return ClassContains($attackID, "RUNEBLADE", $currentPlayer);
+    case "ARC153-1": case "ARC153-2": case "ARC153-3":
+    case "ARC160-1": case "ARC160-3":
+    case "ARC170-1": case "ARC171-1": case "ARC172-1":
+    case "ARC170-2": case "ARC171-2": case "ARC172-2":
+    case "ARC203": case "ARC204": case "ARC205":
+    case "ARC206": case "ARC207": case "ARC208":
+      return CardType($attackID) == "AA";
+    default:
+      return false;
   }
+}
 
 ?>

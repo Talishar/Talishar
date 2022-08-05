@@ -163,10 +163,9 @@
 
   function EVRCombatEffectActive($cardID, $attackID)
   {
-    global $combatChain, $CS_AtksWWeapon, $mainPlayer;
+    global $CS_AtksWWeapon, $mainPlayer;
     $params = explode(",", $cardID);
     $cardID = $params[0];
-    if(count($params) > 1) $parameter = $params[1];
     switch($cardID)
     {
       case "EVR001": return ClassContains($attackID, "BRUTE", $mainPlayer);

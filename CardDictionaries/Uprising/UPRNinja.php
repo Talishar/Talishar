@@ -166,7 +166,6 @@
   function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer;
-    $rv = "";
     switch($cardID)
     {
       case "UPR044": case "UPR045":

@@ -118,244 +118,246 @@
     }
   }
 
-  function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
-  {
-    global $currentPlayer, $myClassState, $CS_NumBoosted, $CS_CharacterIndex, $myCharacter, $actionPoints, $combatChainState, $CS_PlayIndex;
-    global $CCS_CurrentAttackGainedGoAgain, $combatChain, $CS_AbilityIndex;
-    $rv = "";
-    switch($cardID)
-    {
-      case "ARC003":
-        $abilityType = GetResolvedAbilityType($cardID);
-        $character = &GetPlayerCharacter($currentPlayer);
-        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
-        $character[$index+2] = ($abilityType == "A" ? 1 : 0);
-        return "";
-      case "ARC004":
-        for($i=0; $i<2; ++$i)
-        {
-          $deck = &GetDeck($currentPlayer);
-          if(count($deck) == $i) { $rv .= "No cards in deck. Could not banish more."; return $rv; }
-          $banished = $deck[$i];
-          $rv .= "Banished " . CardLink($banished, $banished);
-          if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) { GainResources($currentPlayer, 1); $rv .= " and gained 1 resource. "; }
-          else { $rv .= ". "; }
-          BanishCardForPlayer($banished, $currentPlayer, "DECK");
-          unset($deck[$i]);
+function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
+{
+  global $currentPlayer, $CS_NumBoosted, $CS_CharacterIndex, $actionPoints, $combatChainState, $CS_PlayIndex;
+  global $CCS_CurrentAttackGainedGoAgain, $combatChain;
+  $rv = "";
+  switch ($cardID) {
+    case "ARC003":
+      $abilityType = GetResolvedAbilityType($cardID);
+      $character = &GetPlayerCharacter($currentPlayer);
+      $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+      $character[$index + 2] = ($abilityType == "A" ? 1 : 0);
+      return "";
+    case "ARC004":
+      for ($i = 0; $i < 2; ++$i) {
+        $deck = &GetDeck($currentPlayer);
+        if (count($deck) == $i) {
+          $rv .= "No cards in deck. Could not banish more.";
+          return $rv;
         }
-        $deck = array_values($deck);
-        return $rv;
-      case "ARC005":
-        $actionPoints += 1;
-        return "Gives you an action point.";
-      case "ARC006":
-        MyDrawCard();
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Draws you a card and gives you an action point every time you boost a card this turn.";
-      case "ARC009":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMMAXCOST," . ($resourcesPaid/2));
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-        $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
-        if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
-        return "Let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
-      case "ARC010":
-        if($from == "PLAY")
-        {
-          $items = &GetItems($currentPlayer);
-          $index = GetClassState($currentPlayer, $CS_PlayIndex);
-          if(count($combatChain) > 0)
-          {
-            $items[$index + 1] = 0;
-            $items[$index + 2] = 1;
-            $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-            $rv = "Gives your pistol attack go again.";
-          }
-          else {
-            $items[$index + 1] = 1;
-            $rv = "Gets a steam counter.";
-          }
+        $banished = $deck[$i];
+        $rv .= "Banished " . CardLink($banished, $banished);
+        if (ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) {
+          GainResources($currentPlayer, 1);
+          $rv .= " and gained 1 resource. ";
+        } else {
+          $rv .= ". ";
         }
-        return $rv;
-      case "ARC014": case "ARC015": case "ARC016":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("PUTPLAY", $currentPlayer, (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0), 1);
-        return "";
-      case "ARC017":
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        $items = &GetItems($currentPlayer);
-        if($index != -1)
-        {
-          $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-          if($items[$index + 1] == 0)
-          {
-            AddCurrentTurnEffect($cardID, $currentPlayer);
-            $items[$index + 2] = 2;
-            $rv = "Gains +2 arcane barrier this turn.";
-          }
-          else
-          {
-            $rv = "Gained a steam counter.";
-          }
-        }
-        return $rv;
-      case "ARC018":
-        $items = &GetItems($currentPlayer);
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if($index != -1)
-        {
-          $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-          if($items[$index + 1] == 0)
-          {
-            $items[$index + 2] = 1;
-            $rv = "Makes your attack go on the bottom of your deck if it hits.";
-          }
-          else
-          {
-            $rv = "Gained a steam counter.";
-          }
-        }
-        return $rv;
-      case "ARC019"://Convection Amplifier
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        $items = &GetItems($currentPlayer);
-        if($index != -1)
-        {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          --$items[$index+1];
-          if($items[$index+1] <= 0) DestroyMyItem($index);
-          $rv = "Gives your next attack this turn Dominate.";
-        }
-        return $rv;
-      case "ARC032": case "ARC033": case "ARC034":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
-        if($boosted) Opt($cardID, 1);
-        return "Gives your next Mechanologist attack action card this turn +" . EffectAttackModifier($cardID) . ($boosted ? " and let you opt 1" : "") . ".";
-      case "ARC035":
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        $items = &GetItems($currentPlayer);
-        if($index != -1)
-        {
-          AddCurrentTurnEffect($cardID . "-" . $items[$index+1], $currentPlayer);
-          $rv = "Will prevent some of the next combat damage you take this turn.";
-          DestroyMyItem($index);
-        }
-        return $rv;
-      case "ARC037"://Optekal Monocle
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        $items = &GetItems($currentPlayer);
-        if($index != -1)
-        {
-          Opt($cardID, 1);
-          --$items[$index+1];
-          if($items[$index+1] <= 0) DestroyMyItem($index);
-          $rv = "Lets you Opt 1.";
-        }
-        return $rv;
-      default: return "";
-    }
-  }
-
-  function ARCMechanologistHitEffect($cardID)
-  {
-    global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    switch($cardID)
-    {
-      case "ARC011": case "ARC012": case "ARC013": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
-      case "ARC018": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK"; break;
-      case "ARC020": case "ARC021": case "ARC022":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-        break;
-      default: break;
-    }
-  }
-
-  function HasBoost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC011": case "ARC012": case "ARC013":
-      case "ARC020": case "ARC021": case "ARC022":
-      case "ARC023": case "ARC024": case "ARC025":
-      case "ARC026": case "ARC027": case "ARC028":
-      case "ARC029": case "ARC030": case "ARC031":
-      case "CRU106": case "CRU107": case "CRU108":
-      case "CRU109": case "CRU110": case "CRU111":
-        return true;
-      case "EVR073": case "EVR074": case "EVR075": return true;
-      case "EVR079": case "EVR080": case "EVR081": return true;
-      default:
-        return false;
-    }
-  }
-
-  function Boost()
-  {
-    global $currentPlayer;
-    AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
-    AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-    AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
-    if(SearchCurrentTurnEffects("CRU102", $currentPlayer))
-    {
-      AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-      HandToTopDeck($currentPlayer);
-    }
-  }
-
-  function DoBoost()
-  {
-    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumBoosted, $currentPlayer, $actionPoints, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff;
-    $deck = &GetDeck($currentPlayer);
-    if(count($deck) == 0) { WriteLog("Could not boost. No cards left in deck."); return; }
-    ItemBoostEffects();
-    $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
-    $cardID = $deck[0];
-    BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
-    unset($deck[0]);
-    $deck = array_values($deck);
-    $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
-    WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again.");
-    if($grantsGA) { GiveAttackGoAgain(); }
-    IncrementClassState($currentPlayer, $CS_NumBoosted);
-    ++$combatChainState[$CCS_NumBoosted];
-    $combatChain[5] += $combatChainState[$CCS_NextBoostBuff];
-    $combatChainState[$CCS_NextBoostBuff] = 0;
-  }
-
-  function ItemBoostEffects()
-  {
-    global $currentPlayer;
-    $items = &GetItems($currentPlayer);
-    for($i=count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces())
-    {
-      switch($items[$i])
-      {
-        case "ARC036":
-          if($items[$i+2] == 2)
-          {
-            --$items[$i+1];
-            $items[$i+2] = 1;
-            GainResources($currentPlayer, 1);
-            if($items[$i+1] <= 0) DestroyMyItem($i);
-          }
-          break;
-        case "EVR072":
-          if($items[$i+2] == 2)
-          {
-            WriteLog("Teklo Pounder gives the attack +2.");
-            --$items[$i+1];
-            $items[$i+2] = 1;
-            AddCurrentTurnEffect("EVR072", $currentPlayer, "PLAY");
-            if($items[$i+1] <= 0) DestroyMyItem($i);
-          }
-          break;
-        default: break;
+        BanishCardForPlayer($banished, $currentPlayer, "DECK");
+        unset($deck[$i]);
       }
+      $deck = array_values($deck);
+      return $rv;
+    case "ARC005":
+      $actionPoints += 1;
+      return "Gives you an action point.";
+    case "ARC006":
+      MyDrawCard();
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "Draws you a card and gives you an action point every time you boost a card this turn.";
+    case "ARC009":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMMAXCOST," . ($resourcesPaid / 2));
+      AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
+      if ($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
+      return "Let you search your deck for a Mechanologist item card with cost " . $resourcesPaid / 2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
+    case "ARC010":
+      if ($from == "PLAY") {
+        $items = &GetItems($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        if (count($combatChain) > 0) {
+          $items[$index + 1] = 0;
+          $items[$index + 2] = 1;
+          $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+          $rv = "Gives your pistol attack go again.";
+        } else {
+          $items[$index + 1] = 1;
+          $rv = "Gets a steam counter.";
+        }
+      }
+      return $rv;
+    case "ARC014":
+    case "ARC015":
+    case "ARC016":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("PUTPLAY", $currentPlayer, (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0), 1);
+      return "";
+    case "ARC017":
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $items = &GetItems($currentPlayer);
+      if ($index != -1) {
+        $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
+        if ($items[$index + 1] == 0) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          $items[$index + 2] = 2;
+          $rv = "Gains +2 arcane barrier this turn.";
+        } else {
+          $rv = "Gained a steam counter.";
+        }
+      }
+      return $rv;
+    case "ARC018":
+      $items = &GetItems($currentPlayer);
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      if ($index != -1) {
+        $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
+        if ($items[$index + 1] == 0) {
+          $items[$index + 2] = 1;
+          $rv = "Makes your attack go on the bottom of your deck if it hits.";
+        } else {
+          $rv = "Gained a steam counter.";
+        }
+      }
+      return $rv;
+    case "ARC019": //Convection Amplifier
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $items = &GetItems($currentPlayer);
+      if ($index != -1) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        --$items[$index + 1];
+        if ($items[$index + 1] <= 0) DestroyMyItem($index);
+        $rv = "Gives your next attack this turn Dominate.";
+      }
+      return $rv;
+    case "ARC032":
+    case "ARC033":
+    case "ARC034":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
+      if ($boosted) Opt($cardID, 1);
+      return "Gives your next Mechanologist attack action card this turn +" . EffectAttackModifier($cardID) . ($boosted ? " and let you opt 1" : "") . ".";
+    case "ARC035":
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $items = &GetItems($currentPlayer);
+      if ($index != -1) {
+        AddCurrentTurnEffect($cardID . "-" . $items[$index + 1], $currentPlayer);
+        $rv = "Will prevent some of the next combat damage you take this turn.";
+        DestroyMyItem($index);
+      }
+      return $rv;
+    case "ARC037": //Optekal Monocle
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $items = &GetItems($currentPlayer);
+      if ($index != -1) {
+        Opt($cardID, 1);
+        --$items[$index + 1];
+        if ($items[$index + 1] <= 0) DestroyMyItem($index);
+        $rv = "Lets you Opt 1.";
+      }
+      return $rv;
+    default:
+      return "";
+  }
+}
+
+function ARCMechanologistHitEffect($cardID)
+{
+  global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  switch ($cardID) {
+    case "ARC011":
+    case "ARC012":
+    case "ARC013":
+      AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
+      break;
+    case "ARC018":
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      break;
+    case "ARC020":
+    case "ARC021":
+    case "ARC022":
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      break;
+    default:
+      break;
+  }
+}
+
+function HasBoost($cardID)
+{
+  switch ($cardID) {
+    case "ARC011": case "ARC012": case "ARC013":
+    case "ARC020": case "ARC021": case "ARC022":
+    case "ARC023": case "ARC024": case "ARC025":
+    case "ARC026": case "ARC027": case "ARC028":
+    case "ARC029": case "ARC030": case "ARC031":
+    case "CRU106": case "CRU107": case "CRU108":
+    case "CRU109": case "CRU110": case "CRU111":
+    case "EVR073": case "EVR074": case "EVR075":
+    case "EVR079": case "EVR080": case "EVR081":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function Boost()
+{
+  global $currentPlayer;
+  AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_boost");
+  AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+  AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
+  if (SearchCurrentTurnEffects("CRU102", $currentPlayer)) {
+    AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+    HandToTopDeck($currentPlayer);
+  }
+}
+
+function DoBoost()
+{
+  global $combatChainState, $CS_NumBoosted, $currentPlayer, $actionPoints, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff;
+  $deck = &GetDeck($currentPlayer);
+  if (count($deck) == 0) {
+    WriteLog("Could not boost. No cards left in deck.");
+    return;
+  }
+  ItemBoostEffects();
+  $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
+  $cardID = $deck[0];
+  BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
+  unset($deck[0]);
+  $deck = array_values($deck);
+  $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
+  WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again.");
+  if ($grantsGA) {
+    GiveAttackGoAgain();
+  }
+  IncrementClassState($currentPlayer, $CS_NumBoosted);
+  ++$combatChainState[$CCS_NumBoosted];
+  $combatChain[5] += $combatChainState[$CCS_NextBoostBuff];
+  $combatChainState[$CCS_NextBoostBuff] = 0;
+}
+
+function ItemBoostEffects()
+{
+  global $currentPlayer;
+  $items = &GetItems($currentPlayer);
+  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    switch ($items[$i]) {
+      case "ARC036":
+        if ($items[$i + 2] == 2) {
+          --$items[$i + 1];
+          $items[$i + 2] = 1;
+          GainResources($currentPlayer, 1);
+          if ($items[$i + 1] <= 0) DestroyMyItem($i);
+        }
+        break;
+      case "EVR072":
+        if ($items[$i + 2] == 2) {
+          WriteLog("Teklo Pounder gives the attack +2.");
+          --$items[$i + 1];
+          $items[$i + 2] = 1;
+          AddCurrentTurnEffect("EVR072", $currentPlayer, "PLAY");
+          if ($items[$i + 1] <= 0) DestroyMyItem($i);
+        }
+        break;
+      default:
+        break;
     }
   }
-
-?>
+}

@@ -53,7 +53,7 @@
 
   function UPRHasGoAgain($cardID)
   {
-    global $mainPlayer, $CS_NumRedPlayed, $combatChain;
+    global $mainPlayer, $CS_NumRedPlayed;
     switch($cardID)
     {
       case "UPR005": return true;
@@ -146,7 +146,6 @@
     global $mainPlayer;
     $params = explode("-", $cardID);
     $cardID = $params[0];
-    if(count($params) > 1) $subparam = $params[1];
     switch($cardID)
     {
       case "UPR036": case "UPR037": case "UPR038": return true;
@@ -256,8 +255,6 @@
 
   function UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer;
-    $rv = "";
     $class = CardClass($cardID);
     switch($class)
     {
