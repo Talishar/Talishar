@@ -67,36 +67,35 @@
     if($folder == "crops") { $height = $maxHeight; $width = ($height * 1.29); }
     else if($folder == "concat") { $height = $maxHeight; $width = $maxHeight; }
     else if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
-    else {$height = ($maxHeight * .71); $width = $maxHeight; }
+    else { $height = ($maxHeight * .71); $width = $maxHeight; }
 
     if($rotate == false){
-      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
+      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px; position:relative;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
       $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
     } else {
       // Landmarks Rotation
-      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='transform:rotate(-90deg);" . $border . " height:" . $height . "; width:" . $width . "px;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
+      $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='transform:rotate(-90deg);" . $border . " height:" . $height . "; width:" . $width . "px; position:relative;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
       $rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='transform:rotate(-90deg); visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
     }
 
   // Counters Style
   $dynamicScaling = (function_exists("IsDynamicScalingEnabled") ? IsDynamicScalingEnabled($playerID) : false);
   $counterHeight = $dynamicScaling ? intval($maxHeight / 4.6) : 28;
-  $steamCounterHeight = $dynamicScaling ? intval($maxHeight / 2.5) : 44;
+  $imgCounterHeight = $dynamicScaling ? intval($maxHeight / 2.5) : 44;
   //Attacker Label Style
   if($counters == "Attacker" || $counters == "Arsenal") {
     $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
-    margin-right: -50%; border-radius: 7px; width: fit-content; text-align: center; line-height: 18px; height: 16px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . ";
+    margin-right: -50%; border-radius: 7px; width: fit-content; text-align: center; line-height: 18px; height: 16px; padding: 5px; sborder: 3px solid " . PopupBorderColor($darkMode) . ";
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
     font-size:20px; font-weight:800; color:".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
-  //Steam Counters style
-  elseif ($counters != 0 && ($from == "ITEMS" || $from == "CHARACTER") && ClassContains($cardNumber, "MECHANOLOGIST")) {
-    if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 2px;
-    text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 6; font-size:" . ($steamCounterHeight-18) . "px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
-    <img style='width:" . $steamCounterHeight . "px; height:" . $steamCounterHeight . "px; opacity: 0.9; position: absolute; margin: auto; top: 3px; left: -6px; right: 0px; bottom: 0px; -webkit-box-shadow:inset 0px 0px 0px 15px black;
-    -moz-box-shadow:inset 0px 0px 0px 15px black; box-shadow:inset 0px 0px 0px 15px black; border-radius: 50%; padding:-5; z-index:-3;' src='./Images/steamCounter.png'></img></div>";
+  //Steam Counters style 
+ elseif ($counters != 0 && ($from == "ITEMS" || $from == "CHARACTER") && ClassContains($cardNumber, "MECHANOLOGIST")) {
+   if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
+   $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; 
+   display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px; 
+   font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
+   <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/SteamCounters.png'></div>";
   }
   //Equipments, Hero and default counters style
   elseif($counters != 0) {
@@ -104,35 +103,33 @@
     $rv .= "<div style='margin: 0px; top: 50%; left: $left;
     margin-right: -50%; border-radius: 50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
-    font-family: Helvetica; font-size:" . ($counterHeight-1) . "px; font-weight:550; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
+    font-family: Helvetica; font-size:" . ($counterHeight-2) . "px; font-weight:550; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
   }
+
   //-1 Defense & Endurance Counters style
   if($defCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 2px;
-    text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:" . ($steamCounterHeight-18) . "px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
-    <img style='width:" . $steamCounterHeight . "px; height:" . $steamCounterHeight . "px; opacity: 0.9; position: absolute; margin: auto; top: 3px; left: -6px; right: 0px; bottom: 0px; -webkit-box-shadow:inset 0px 0px 0px 15px black;
-    -moz-box-shadow:inset 0px 0px 0px 15px black; box-shadow:inset 0px 0px 0px 15px black; border-radius: 50%; padding:-5; z-index:-3;' src='./Images/Defense.png'></img></div>";
+    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; 
+    display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px; 
+    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
+    <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
   }
   //Health Counters style
   if($lifeCounters != 0){
     if($defCounters == 0){ $left = "50%"; } else { $left = "70%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 2px;
-    text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:" . ($steamCounterHeight-18) . "px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
-    <img style='width:" . $steamCounterHeight . "px; height:" . $steamCounterHeight . "px; opacity: 0.9; position: absolute; margin: auto; top: 3px; left: -6px; right: 0px; bottom: 0px; -webkit-box-shadow:inset 0px 0px 0px 15px black;
-    -moz-box-shadow:inset 0px 0px 0px 15px black; box-shadow:inset 0px 0px 0px 15px black; border-radius: 50%; padding:-5; z-index:-3;' src='./Images/Life.png'></img></div>";
+    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; 
+    display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px; 
+    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
+    <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Life.png'></div>";
   }
-
+   
   //Attack Counters style
   if($atkCounters != 0) {
     if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0; top: 50%; left: $left; margin-right: -50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 2px;
-    text-align: center; transform: translate(-50%, -50%);
-    position:absolute; z-index: 5; font-size:" . ($steamCounterHeight-18) . "px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
-    <img style='width:" . $steamCounterHeight . "px; height:" . $steamCounterHeight . "px; opacity: 0.9; position: absolute; margin: auto; top: 3px; left: -6px; right: 0px; bottom: 0px; -webkit-box-shadow:inset 0px 0px 0px 15px black;
-    -moz-box-shadow:inset 0px 0px 0px 15px black; box-shadow:inset 0px 0px 0px 15px black; border-radius: 50%; padding:-5; z-index:-3;' src='./Images/Attack.png'></img></div>";
+    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; 
+    display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px; 
+    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
+    <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Attack.png'></div>";
   }
   $rv .= "</a>";
   return $rv;

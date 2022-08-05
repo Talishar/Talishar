@@ -150,6 +150,7 @@
   $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
   $permWidth = "calc(50% - " . ($cardWidth*2 + 30 + $permLeft) . "px)";
   $permHeight = $cardSize * 2 + 20;
+  $counterHeight = $dynamicScaling ? intval($maxHeight / 4.6) : 28;
 
   $darkMode = IsDarkMode($playerID);
   $manualMode = IsManualMode($playerID);
@@ -710,7 +711,7 @@
   }
 
   echo("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'>
-  <img style=' opacity:0.8; height:". $cardIconSize ."; width:". $cardIconSize ."; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
+  <img style=' opacity:0.9; height:". $cardIconSize ."; width:". $cardIconSize ."; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%);
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($theirBanish)/BanishPieces() . "</div></img></span>");
@@ -721,7 +722,7 @@
   echo("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") .";'>");
   $card = (count($theirPitch) > 0 ? $theirPitch[count($theirPitch)-PitchPieces()] : $blankZone);
   echo(Card($card, "concat", $cardSizeAura, 0, 0));
-  echo("<span title='Click to see your opponent Pitch Zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity:0.8; height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/Resource.png'>
+  echo("<span title='Click to see your opponent Pitch Zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity:0.9; height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/Resource.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%);
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $theirResources[0] . "</div></img></span>");
@@ -1023,8 +1024,8 @@
   $card = (count($myBanish) > 0 ? $myBanish[count($myBanish)-BanishPieces()] : $blankZone);
   echo(Card($card, "concat", $cardSizeAura, 0, 0, 0, 0));
   echo("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;
-  position:absolute; display:inline-block;'><img style='opacity:0.8; height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/banish.png'>
-  <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
+  position:absolute; display:inline-block;'><img style='opacity:0.9; height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/banish.png'>
+  <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height:".$counterHeight."; padding: 3px;
   text-align: center; transform: translate(-50%, -50%);
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($myBanish)/BanishPieces() . "</div></img></span>");
 
@@ -1042,7 +1043,7 @@
   echo("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") .";'>");
   $card = (count($myPitch) > 0 ? $myPitch[count($myPitch)-PitchPieces()] : $blankZone);
   echo(Card($card, "concat", $cardSizeAura, 0, 0));
-  echo("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity: 0.8; height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/Resource.png'>
+  echo("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity: 0.9; height:". $cardIconSize ."; width:". $cardIconSize .";' src='./Images/Resource.png'>
   <div style='margin: 0; top: 51%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%);
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $myResources[0] . "</div></img></span>");
