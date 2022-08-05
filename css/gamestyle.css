@@ -1,3 +1,10 @@
+html,
+body {
+  scroll-behavior: smooth;
+  height: 100vh;
+  overflow: hidden;
+}
+
 /* Hide the browser default checkbox */
 [type="checkbox"]{
   opacity: 0;
@@ -166,23 +173,25 @@ button:focus, input[type="button"]:focus {
 	outline: none;
 }
 
-:-webkit-scrollbar {
-   width: 6px;
+::-webkit-scrollbar {
+  width: 6px;
+  direction: ltr;
+  background: #555;
 }
 
 /* Track */
-:-webkit-scrollbar-track {
-   background: gainsboro;
-   border-radius: 5px;
+::-webkit-scrollbar-track {
+  background: gainsboro;
+  border-radius: 5px;
 }
 
 /* Handle */
-:-webkit-scrollbar-thumb {
-   background: black;
-   border-radius: 5px;
+::-webkit-scrollbar-thumb {
+  background: var(--dark-color);
+  border-radius: 5px;
 }
 
 /* Handle on hover */
-:-webkit-scrollbar-thumb:hover {
-   background: #555;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
