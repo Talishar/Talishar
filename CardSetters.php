@@ -1,64 +1,55 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $modifier="-")
+function BanishCardForPlayer($cardID, $player, $from, $modifier = "-")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from);
+  if ($mainPlayerGamestateStillBuilt) {
+    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from);
     else return BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from);
-  }
-  else
-  {
-    if($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from);
+  } else {
+    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from);
     else return BanishCard($theirBanish, $theirClassState, $cardID, $modifier, $player, $from);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $from="")
+function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "")
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
-  if($player == "") $player = $currentPlayer;
+  if ($player == "") $player = $currentPlayer;
   WriteReplay($player, $cardID, $from, "BANISH");
-  if(($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
-      WriteLog("Back Alley Breakline was banished from your deck face up by an action card. Gained 1 action point.");
-      ++$actionPoints;
+  if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+    WriteLog("Back Alley Breakline was banished from your deck face up by an action card. Gained 1 action point.");
+    ++$actionPoints;
   }
   //Do effects that change where it goes, or banish it if not
-  if($from == "DECK" && SearchCharacterActive($player, "CRU099") && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2)
-  {
+  if ($from == "DECK" && SearchCharacterActive($player, "CRU099") && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     PutItemIntoPlay($cardID);
-  }
-  else
-  {
+  } else {
     $rv = count($banish);
     array_push($banish, $cardID);
     array_push($banish, $modifier);
     array_push($banish, GetUniqueId());
   }
   ++$classState[$CS_CardsBanished];
-  if(AttackValue($cardID) >= 6)
-  {
-    if($classState[$CS_Num6PowBan]==0 && $player == $mainPlayer)
-    {
+  if (AttackValue($cardID) >= 6) {
+    if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
       $character = &GetPlayerCharacter($player);
-      if(($character[0] == "MON119" || $character[0] == "MON120") && $character[1] == 2) {// Levia
+      if (($character[0] == "MON119" || $character[0] == "MON120") && $character[1] == 2) { // Levia
         WriteLog("Levia Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
       }
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
-    if($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index))
-    {
+    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index)) {
       AddDecisionQueue("CHARREADYORPASS", $player, $index);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hooves_of_the_Shadowbeast_to_gain_an_action_point", 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);//Operates off last result
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
     }
   }
@@ -68,8 +59,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player="", $fro
 function RemoveBanish($player, $index)
 {
   $banish = &GetBanish($player);
-  for($i = $index+BanishPieces()-1; $i >= $index; --$i)
-  {
+  for ($i = $index + BanishPieces() - 1; $i >= $index; --$i) {
     unset($banish[$i]);
   }
   $banish = array_values($banish);
@@ -97,7 +87,7 @@ function AddBottomDeck($cardID, $player, $from)
 function RemoveTopMyDeck()
 {
   global $myDeck;
-  if(count($myDeck) == 0) return "";
+  if (count($myDeck) == 0) return "";
   return array_shift($myDeck);
 }
 
@@ -117,12 +107,9 @@ function AddPlayerHand($cardID, $player, $from)
 function RemoveHand($cardID, $player)
 {
   $hand = &GetHand($player);
-  for($i=count($hand)-HandPieces(); $i>=0; $i-=HandPieces())
-  {
-    if($hand[$i] == $cardID)
-    {
-      for($j = $i+HandPieces()-1; $j >= $i; --$j)
-      {
+  for ($i = count($hand) - HandPieces(); $i >= 0; $i -= HandPieces()) {
+    if ($hand[$i] == $cardID) {
+      for ($j = $i + HandPieces() - 1; $j >= $i; --$j) {
         unset($hand[$j]);
       }
       $hand = array_values($hand);
@@ -150,23 +137,32 @@ function AddArsenal($cardID, $player, $from, $facing)
   WriteReplay($player, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
-  array_push($arsenal, ArsenalNumUsesPerTurn($cardID));//Num uses
-  array_push($arsenal, "0");//Counters
-  array_push($arsenal, "0");//Is Frozen (1 = Frozen)
-  array_push($arsenal, GetUniqueId());//Unique ID
+  array_push($arsenal, ArsenalNumUsesPerTurn($cardID)); //Num uses
+  array_push($arsenal, "0"); //Counters
+  array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
+  array_push($arsenal, GetUniqueId()); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
-  if($facing == "UP")
-  {
-    if($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
+  if ($facing == "UP") {
+    if ($from == "DECK" && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
       WriteLog("Back Alley Breakline was put into your arsenal from your deck face up. Gained 1 action point.");
-      if($player == $mainPlayer) GainActionPoints(1);
+      if ($player == $mainPlayer) GainActionPoints(1);
     }
-    switch($cardID)
-    {
-      case "ARC057": case "ARC058": case "ARC059": AddCurrentTurnEffect($cardID, $player); break;
-      case "ARC063": case "ARC064": case "ARC065": Opt($cardID, 1); break;
-      case "CRU123": AddCurrentTurnEffect($cardID, $otherPlayer); break;
-      default: break;
+    switch ($cardID) {
+      case "ARC057":
+      case "ARC058":
+      case "ARC059":
+        AddCurrentTurnEffect($cardID, $player);
+        break;
+      case "ARC063":
+      case "ARC064":
+      case "ARC065":
+        Opt($cardID, 1);
+        break;
+      case "CRU123":
+        AddCurrentTurnEffect($cardID, $otherPlayer);
+        break;
+      default:
+        break;
     }
   }
 }
@@ -174,26 +170,26 @@ function AddArsenal($cardID, $player, $from, $facing)
 function ArsenalEndTurn($player)
 {
   $arsenal = &GetArsenal($player);
-  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
-  {
-    $arsenal[$i+2] = ArsenalNumUsesPerTurn($arsenal[$i]);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    $arsenal[$i + 2] = ArsenalNumUsesPerTurn($arsenal[$i]);
   }
 }
 
 function SetArsenalFacing($facing, $player)
 {
   $arsenal = &GetArsenal($player);
-  for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
-  {
-    if($facing == "UP" && $arsenal[$i+1] == "DOWN") { $arsenal[$i+1] = "UP"; return $arsenal[$i]; }
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($facing == "UP" && $arsenal[$i + 1] == "DOWN") {
+      $arsenal[$i + 1] = "UP";
+      return $arsenal[$i];
+    }
   }
 }
 
 function RemoveArsenal($player, $index)
 {
   $arsenal = &GetArsenal($player);
-  for($i=$index+ArsenalPieces()-1; $i >= $index; --$i)
-  {
+  for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
     unset($arsenal[$i]);
   }
   $arsenal = array_values($arsenal);
@@ -212,14 +208,11 @@ function AddSoul($cardID, $player, $from)
   WriteReplay($player, $cardID, $from, "SOUL");
   global $CS_NumAddedToSoul;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
+  if ($mainPlayerGamestateStillBuilt) {
+    if ($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
     else AddSpecificSoul($cardID, $defSoul, $from);
-  }
-  else
-  {
-    if($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
+  } else {
+    if ($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
     else AddSpecificSoul($cardID, $theirSoul, $from);
   }
   IncrementClassState($player, $CS_NumAddedToSoul);
@@ -236,21 +229,18 @@ function BanishFromSoul($player)
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
 
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player);
+  if ($mainPlayerGamestateStillBuilt) {
+    if ($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player);
     else BanishFromSpecificSoul($defSoul, $player);
-  }
-  else
-  {
-    if($player == $myStateBuiltFor) BanishFromSpecificSoul($mySoul, $player);
+  } else {
+    if ($player == $myStateBuiltFor) BanishFromSpecificSoul($mySoul, $player);
     else BanishFromSpecificSoul($theirSoul, $player);
   }
 }
 
 function BanishFromSpecificSoul(&$soul, $player)
 {
-  if(count($soul) == 0) return;
+  if (count($soul) == 0) return;
   $cardID = array_shift($soul);
   WriteReplay($player, $cardID, "SOUL", "BANISH");
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
@@ -275,11 +265,11 @@ function ConsumeDamagePrevention($player)
 {
   global $CS_NextDamagePrevented;
   $prevention = GetClassState($player, $CS_NextDamagePrevented);
-  SetClassState($player,$CS_NextDamagePrevented, 0);
+  SetClassState($player, $CS_NextDamagePrevented, 0);
   return $prevention;
 }
 
-function IncrementClassState($player, $piece, $amount=1)
+function IncrementClassState($player, $piece, $amount = 1)
 {
   SetClassState($player, $piece, (GetClassState($player, $piece) + $amount));
 }
@@ -287,8 +277,8 @@ function IncrementClassState($player, $piece, $amount=1)
 function AppendClassState($player, $piece, $value)
 {
   $currentState = GetClassState($player, $piece);
-  if($currentState == "-") $currentState = "";
-  if($currentState != "") $currentState .= ",";
+  if ($currentState == "-") $currentState = "";
+  if ($currentState != "") $currentState .= ",";
   $currentState .= $value;
   SetClassState($player, $piece, $currentState);
 }
@@ -298,14 +288,11 @@ function SetClassState($player, $piece, $value)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($player == $mainPlayer) $mainClassState[$piece] = $value;
+  if ($mainPlayerGamestateStillBuilt) {
+    if ($player == $mainPlayer) $mainClassState[$piece] = $value;
     else $defClassState[$piece] = $value;
-  }
-  else
-  {
-    if($player == $myStateBuiltFor) $myClassState[$piece] = $value;
+  } else {
+    if ($player == $myStateBuiltFor) $myClassState[$piece] = $value;
     else $theirClassState[$piece] = $value;
   }
 }
@@ -315,15 +302,22 @@ function AddCharacterEffect($player, $index, $effect)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
   global $myStateBuiltFor;
-  if($mainPlayerGamestateStillBuilt)
-  {
-    if($player == $mainPlayer) { array_push($mainCharacterEffects, $index); array_push($mainCharacterEffects, $effect); }
-    else { array_push($defCharacterEffects, $index); array_push($defCharacterEffects, $effect); }
-  }
-  else
-  {
-    if($player == $myStateBuiltFor) { array_push($myCharacterEffects, $index); array_push($myCharacterEffects, $effect); }
-    else { array_push($theirCharacterEffects, $index); array_push($theirCharacterEffects, $effect); }
+  if ($mainPlayerGamestateStillBuilt) {
+    if ($player == $mainPlayer) {
+      array_push($mainCharacterEffects, $index);
+      array_push($mainCharacterEffects, $effect);
+    } else {
+      array_push($defCharacterEffects, $index);
+      array_push($defCharacterEffects, $effect);
+    }
+  } else {
+    if ($player == $myStateBuiltFor) {
+      array_push($myCharacterEffects, $index);
+      array_push($myCharacterEffects, $effect);
+    } else {
+      array_push($theirCharacterEffects, $index);
+      array_push($theirCharacterEffects, $effect);
+    }
   }
 }
 
@@ -333,26 +327,21 @@ function AddGraveyard($cardID, $player, $from)
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor, $CS_CardsEnteredGY;
   WriteReplay($player, $cardID, $from, "GRAVEYARD");
-  if($cardID == "MON124") { BanishCardForPlayer($cardID, $player, $from, "NA"); return; }
-  else if($cardID == "CRU007" && $from != "CC")
-  {
+  if ($cardID == "MON124") {
+    BanishCardForPlayer($cardID, $player, $from, "NA");
+    return;
+  } else if ($cardID == "CRU007" && $from != "CC") {
     AddDecisionQueue("BEASTWITHIN", $player, "-");
   }
-  if($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166")
-  {
+  if ($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166") {
     AddBottomDeck($cardID, $player, $from);
-  }
-  else
-  {
+  } else {
     IncrementClassState($player, $CS_CardsEnteredGY);
-    if($mainPlayerGamestateStillBuilt)
-    {
-      if($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
+    if ($mainPlayerGamestateStillBuilt) {
+      if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
       else AddSpecificGraveyard($cardID, $defDiscard, $from);
-    }
-    else
-    {
-      if($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from);
+    } else {
+      if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from);
       else AddSpecificGraveyard($cardID, $theirDiscard, $from);
     }
   }
@@ -365,26 +354,22 @@ function RemoveGraveyard($player, $index)
   $discard = array_values($discard);
 }
 
-function SearchCharacterAddUses($player, $uses, $type="", $subtype="")
+function SearchCharacterAddUses($player, $uses, $type = "", $subtype = "")
 {
   $character = &GetPlayerCharacter($player);
-  for($i=0; $i<count($character); $i+=CharacterPieces())
-  {
-    if($character[$i+1] != 0 && ($type == "" || CardType($character[$i]) == $type) && ($subtype == "" || $subtype == CardSubtype($character[$i])))
-    {
-      $character[$i+1] = 2;
-      $character[$i+5] += $uses;
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if ($character[$i + 1] != 0 && ($type == "" || CardType($character[$i]) == $type) && ($subtype == "" || $subtype == CardSubtype($character[$i]))) {
+      $character[$i + 1] = 2;
+      $character[$i + 5] += $uses;
     }
   }
 }
 
-function SearchCharacterAddEffect($player, $effect, $type="", $subtype="")
+function SearchCharacterAddEffect($player, $effect, $type = "", $subtype = "")
 {
   $character = &GetPlayerCharacter($player);
-  for($i=0; $i<count($character); $i+=CharacterPieces())
-  {
-    if($character[$i+1] != 0 && ($type == "" || CardType($character[$i]) == $type) && ($subtype == "" || $subtype == CardSubtype($character[$i])))
-    {
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if ($character[$i + 1] != 0 && ($type == "" || CardType($character[$i]) == $type) && ($subtype == "" || $subtype == CardSubtype($character[$i]))) {
       AddCharacterEffect($player, $i, $effect);
     }
   }
@@ -393,11 +378,9 @@ function SearchCharacterAddEffect($player, $effect, $type="", $subtype="")
 function RemoveCharacterEffects($player, $index, $effect)
 {
   $effects = &GetCharacterEffects($player);
-  for($i=count($effects) - CharacterEffectPieces(); $i>=0; $i-=CharacterEffectPieces())
-  {
-    if($effects[$i] == $index && $effects[$i+1] == $effect)
-    {
-      unset($effects[$i+1]);
+  for ($i = count($effects) - CharacterEffectPieces(); $i >= 0; $i -= CharacterEffectPieces()) {
+    if ($effects[$i] == $index && $effects[$i + 1] == $effect) {
+      unset($effects[$i + 1]);
       unset($effects[$i]);
     }
   }
@@ -410,23 +393,24 @@ function AddSpecificGraveyard($cardID, &$graveyard, $from)
   array_push($graveyard, $cardID);
 }
 
-function NegateLayer($MZIndex, $goesWhere="GY")
+function NegateLayer($MZIndex, $goesWhere = "GY")
 {
   global $layers;
   $params = explode("-", $MZIndex);
   $index = $params[1];
   $cardID = $layers[$index];
-  $player = $layers[$index+1];
-  for($i=$index+LayerPieces(); $i >= $index; --$i)
-  {
+  $player = $layers[$index + 1];
+  for ($i = $index + LayerPieces(); $i >= $index; --$i) {
     unset($layers[$i]);
   }
   $layers = array_values($layers);
-  switch($goesWhere)
-  {
-    case "GY": AddGraveyard($player, $cardID, "LAYER");
-    case "HAND": AddPlayerHand($cardID, $player, "LAYER");
-    default: break;
+  switch ($goesWhere) {
+    case "GY":
+      AddGraveyard($player, $cardID, "LAYER");
+    case "HAND":
+      AddPlayerHand($cardID, $player, "LAYER");
+    default:
+      break;
   }
 }
 
@@ -441,5 +425,3 @@ function ClearAdditionalCosts($player)
   global $CS_AdditionalCosts;
   SetClassState($player, $CS_AdditionalCosts, "-");
 }
-
-?>

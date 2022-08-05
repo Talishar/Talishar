@@ -1,5 +1,5 @@
 <?php
-  require 'header.php';
+require 'header.php';
 ?>
 
 <main>
@@ -13,16 +13,16 @@
       </form>
 
       <?php
-        if (isset($_GET["reset"])) {
-          if ($_GET["reset"] == "success") {
-            echo '<p class="signupsuccess">Check your e-mail!</p>';
-          }
+      if (isset($_GET["reset"])) {
+        if ($_GET["reset"] == "success") {
+          echo '<p class="signupsuccess">Check your e-mail!</p>';
         }
+      }
       ?>
     </section>
   </div>
 </main>
 
 <?php
-  require 'footer.php';
+require 'footer.php';
 ?>

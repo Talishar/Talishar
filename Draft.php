@@ -1,16 +1,16 @@
 <?php
-  include "HostFiles/Redirector.php";
-  include_once 'Header.php';
+include "HostFiles/Redirector.php";
+include_once 'Header.php';
 ?>
 
 <style>
-body {
-  background-image: url('Images/Metrix.jpg');
-  background-position: top center;
-  background-repeat: no-repeat;
-  background-size:cover;
-  overflow: hidden;
-}
+  body {
+    background-image: url('Images/Metrix.jpg');
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+  }
 </style>
 
 <section class="draft-form">
@@ -19,8 +19,8 @@ body {
     <form action="DraftFiles/CreateGame.php" method="post">
       <input type="hidden" id="numPlayers" name="numPlayers" value="8">
       <input type="submit" style="font-size:20px;" value="Tales of Aria">
-      </div>
-    </form>
+  </div>
+  </form>
   </div>
 
   <div class="draft-form-form">
@@ -38,5 +38,5 @@ body {
   </div>
 </section>
 <?php
-  include_once 'Footer.php'
+include_once 'Footer.php'
 ?>

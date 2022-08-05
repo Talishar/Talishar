@@ -1,37 +1,35 @@
 <?php
 
-  include "WriteLog.php";
-  include "Libraries/HTTPLibraries.php";
+include "WriteLog.php";
+include "Libraries/HTTPLibraries.php";
 
-  $gameName=$_GET["gameName"];
-  if(!IsGameNameValid($gameName)) { echo("Invalid game name."); exit; }
-  $playerID=$_GET["playerID"];
-  $lastUpdate=$_GET["lastUpdate"];
+$gameName = $_GET["gameName"];
+if (!IsGameNameValid($gameName)) {
+  echo ("Invalid game name.");
+  exit;
+}
+$playerID = $_GET["playerID"];
+$lastUpdate = $_GET["lastUpdate"];
 
-  $filename = "./Games/" . $gameName . "/gamelog.txt";
-  $gsFile = "./Games/" . $gameName . "/gamestate.txt";
-  if(file_exists($filename))
-  {
+$filename = "./Games/" . $gameName . "/gamelog.txt";
+$gsFile = "./Games/" . $gameName . "/gamestate.txt";
+if (file_exists($filename)) {
+  $time = filemtime($filename);
+  $tries = 0;
+  while ($lastUpdate >= $time && $tries < 50) {
+    sleep(1);
+    clearstatcache();
+    if (!file_exists($filename)) {
+      break;
+    }
     $time = filemtime($filename);
-    $tries = 0;
-    while($lastUpdate >= $time && $tries < 50)
-    {
-      sleep(1);
-      clearstatcache();
-      if(!file_exists($filename)) { break; }
-      $time = filemtime($filename);
-      ++$tries;
-    }
-
-    if($tries >= 50)
-    {
-      echo(filemtime($filename));
-    }
-    else
-    {
-      echo(filemtime($filename));
-      EchoLog($gameName, $playerID);
-    }
+    ++$tries;
   }
 
-?>
+  if ($tries >= 50) {
+    echo (filemtime($filename));
+  } else {
+    echo (filemtime($filename));
+    EchoLog($gameName, $playerID);
+  }
+}

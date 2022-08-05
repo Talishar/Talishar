@@ -1,5 +1,5 @@
 <?php
-  require 'header.php';
+require 'header.php';
 ?>
 
 <main>
@@ -17,8 +17,8 @@
       } else {
         // Here we check if all characters in our tokens are hexadecimal 'digits'. This is a boolean. Again another error check to make sure the URL wasn't changed by the user.
         // If this check returns "true", we show the form that the user uses to reset their password.
-        if (ctype_xdigit( $selector ) !== false && ctype_xdigit( $validator ) !== false) {
-          ?>
+        if (ctype_xdigit($selector) !== false && ctype_xdigit($validator) !== false) {
+      ?>
 
           <form class="form-resetpwd" action="includes/reset-password.inc.php" method="post">
             <input type="hidden" name="selector" value="<?php echo $selector ?>">
@@ -29,7 +29,7 @@
             <button type="submit" name="reset-password-submit">Reset password</button>
           </form>
 
-          <?php
+      <?php
         }
       }
       ?>
@@ -39,5 +39,5 @@
 </main>
 
 <?php
-  require 'footer.php';
+require 'footer.php';
 ?>

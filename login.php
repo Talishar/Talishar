@@ -1,5 +1,5 @@
 <?php
-  include_once 'Header.php';
+include_once 'Header.php';
 ?>
 
 <section class="signup-form">
@@ -22,18 +22,17 @@
   </section>
   </div>
   <?php
-    // Error messages
-    if (isset($_GET["error"])) {
-      if ($_GET["error"] == "emptyinput") {
-        echo "<p>Fill in all fields!</p>";
-      }
-      else if ($_GET["error"] == "wronglogin") {
-        echo "<p>Wrong login!</p>";
-      }
+  // Error messages
+  if (isset($_GET["error"])) {
+    if ($_GET["error"] == "emptyinput") {
+      echo "<p>Fill in all fields!</p>";
+    } else if ($_GET["error"] == "wronglogin") {
+      echo "<p>Wrong login!</p>";
     }
+  }
   ?>
 </section>
 
 <?php
-  include_once 'Footer.php';
+include_once 'Footer.php';
 ?>

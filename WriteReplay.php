@@ -1,9 +1,7 @@
-<?php
-
-{
+<?php {
   //We should always have a player ID as a URL parameter
-  $gameName=$_GET["gameName"];
-  $playerID=$_GET["playerID"];
+  $gameName = $_GET["gameName"];
+  $playerID = $_GET["playerID"];
   //$stepCounter;
   function WriteReplay($playerID, $cardID, $from, $destination)
   {
@@ -36,5 +34,3 @@
   //echo(file_get_contents(  $filename = "./Games/" . $gameName . "/Replay.txt"));
 
 }
-
-?>
