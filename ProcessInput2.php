@@ -1555,7 +1555,7 @@ function FinalizeChainLink($chainClosed=false)
         ++$combatChainState[$CCS_NumChainLinks];
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         if(CardSubType($cardID) == "Dragon") IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
-        if(ClassContains($cardID, "ILLUSIONIST", $player)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
+        if(ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
         $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
         $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
         $combatChainState[$CCS_LinkBaseAttack] = $attackValue;

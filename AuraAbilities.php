@@ -447,7 +447,7 @@ function AuraPlayAbilities($cardID, $from)
     {
       case "MON157": DimenxxionalCrossroadsPassive($cardID, $from); break;
       case "EVR143":
-        if($auras[$i+5]>0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $player) && GetClassState($currentPlayer, $CS_NumIllusionistAttacks) <= 1) {
+        if($auras[$i+5]>0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistAttacks) <= 1) {
           WriteLog("Pierce Reality gives the attack +2.");
           --$auras[$i+5];
           AddCurrentTurnEffect("EVR143", $currentPlayer, true);

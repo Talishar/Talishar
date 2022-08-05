@@ -513,7 +513,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent=0, $makeC
         AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
         AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
         AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, $mainCharacter[$i], 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
         break;
       case "EVR107": case "EVR108": case "EVR109":
         $index = SearchAurasForUniqueID($uniqueID, $player);

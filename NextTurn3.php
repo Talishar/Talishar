@@ -58,7 +58,7 @@
 
   <script src="./jsInclude.js"></script>
 
-<?php // TODO: find a way to move those styles to a stylesheet. Not ure why it's not working. ?>
+<?php // TODO: find a way to move those styles to a stylesheet. Not sure why it's not working. ?>
 <style>
   :root {
     <?php if(IsDarkMode($playerID)) echo("color-scheme: dark;");
