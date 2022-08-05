@@ -889,7 +889,7 @@ function GetMyHandIndices()
 function GetDefHandIndices()
 {
   global $defPlayer;
-  return GetIndices(count(GetHand($currentPlayer)));
+  return GetIndices(count(GetHand($defPlayer)));
 }
 
 function CurrentAttack()

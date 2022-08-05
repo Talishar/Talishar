@@ -1969,8 +1969,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "EQUIP": $rv = GetEquipmentIndices($player); break;
         case "EQUIP0": $rv = GetEquipmentIndices($player, 0); break;
         case "EQUIPCARD": $rv = FindCharacterIndex($player, $subparam); break;
-        case "CCAA": $rv = SearchCombatChain("AA"); break;
-        case "CCDEFLESSX": $rv = SearchCombatChain("", "", -1, -1, "", "", false, false, -1, false, -1, $subparam); break;
+        case "CCAA": $rv = SearchCombatChain($player, "AA"); break;
+        case "CCDEFLESSX": $rv = SearchCombatChain($player, "", "", -1, -1, "", "", false, false, -1, false, -1, $subparam); break;
         case "HANDEARTH": $rv = SearchHand($player, "", "", -1, -1, "", "EARTH"); break;
         case "HANDICE": $rv = SearchHand($player, "", "", -1, -1, "", "ICE"); break;
         case "HANDLIGHTNING": $rv = SearchHand($player, "", "", -1, -1, "", "LIGHTNING"); break;

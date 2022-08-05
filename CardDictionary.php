@@ -1316,6 +1316,7 @@
 
   function AbilityHasGoAgain($cardID)
   {
+    global $currentPlayer;
     $set = CardSet($cardID);
     $class = CardClass($cardID);
     $subtype = CardSubtype($cardID);
