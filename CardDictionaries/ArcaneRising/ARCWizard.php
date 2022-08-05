@@ -243,7 +243,7 @@
       PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
       PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
-      if($type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($mainPlayer, FindCharacterIndex($player, "CRU161")))
+      if($type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
       {
         PrependDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
         PrependDecisionQueue("PAYRESOURCES", $player, "1", 1);
