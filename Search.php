@@ -445,6 +445,13 @@ function SearchAurasForCard($cardID, $player)
   return $indices;
 }
 
+function SearchForUniqueID($uniqueID, $player)
+{
+  $index = SearchAurasForUniqueID($uniqueID, $player);
+  if($index == -1) $index = SearchItemsForUniqueID($uniqueID, $player);
+  return $index;
+}
+
 function SearchAurasForUniqueID($uniqueID, $player)
 {
   $auras = &GetAuras($player);

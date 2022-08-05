@@ -173,7 +173,7 @@
       --$items[$index+3];
       SetClassState($playerID, $CS_PlayIndex, $index);
       $set = CardSet($cardID);
-      PlayCard($cardID, "PLAY", -1);
+      PlayCard($cardID, "PLAY", -1, $index, $items[$index+4]);
       break;
     case 11://CHOOSEDECK
       if($turn[0] == "CHOOSEDECK")
@@ -1532,6 +1532,9 @@ function FinalizeChainLink($chainClosed=false)
     global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
     global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
     global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
+
+    $index = SearchForUniqueID($uniqueID, $currentPlayer);
+    if($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
     $character = &GetPlayerCharacter($currentPlayer);
     $definedCardType = CardType($cardID);

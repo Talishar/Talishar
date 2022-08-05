@@ -161,20 +161,20 @@
         if($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
         return "Let you search your deck for a Mechanologist item card with cost " . $resourcesPaid/2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
       case "ARC010":
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        $items = &GetItems($currentPlayer);
-        if($index != -1)
+        if($from == "PLAY")
         {
-          $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-          if($items[$index + 1] == 0)
+          $items = &GetItems($currentPlayer);
+          $index = GetClassState($currentPlayer, $CS_PlayIndex);
+          if(count($combatChain) > 0)
           {
+            $items[$index + 1] = 0;
             $items[$index + 2] = 1;
             $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
             $rv = "Gives your pistol attack go again.";
           }
-          else
-          {
-            $rv = "Gained a steam counter.";
+          else {
+            $items[$index + 1] = 1;
+            $rv = "Gets a steam counter.";
           }
         }
         return $rv;
