@@ -79,9 +79,9 @@
     }
 
   // Counters Style
-
-  $counterHeight = IsDynamicScalingEnabled($playerID) ? intval($maxHeight / 4.6) : 28;
-  $steamCounterHeight = IsDynamicScalingEnabled($playerID) ? intval($maxHeight / 2.5) : 44;
+  $dynamicScaling = (function_exists("IsDynamicScalingEnabled") ? IsDynamicScalingEnabled($playerID) : false);
+  $counterHeight = $dynamicScaling ? intval($maxHeight / 4.6) : 28;
+  $steamCounterHeight = $dynamicScaling ? intval($maxHeight / 2.5) : 44;
   //Attacker Label Style
   if($counters == "Attacker" || $counters == "Arsenal") {
     $rv .= "<div style='margin: 0px; top: 80%; left: 50%;
