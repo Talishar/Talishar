@@ -463,7 +463,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
       {
         if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
         else { $Items[$i+1] -= $damage; $damage = 0; }
-        if($Items[$i+1] <= 0) DestroyItem($Items, $i);
+        if($Items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
       }
     }
   }
@@ -740,14 +740,6 @@ function FindDefCharacter($cardID)
 {
   global $defPlayer;
   return FindCharacterIndex($defPlayer, $cardID);
-}
-
-function DestroyItem(&$Items, $index)
-{
-  unset($Items[$index]);
-  unset($Items[$index+1]);
-  unset($Items[$index+2]);
-  $Items = array_values($Items);
 }
 
 function ChainLinkResolvedEffects()
