@@ -162,6 +162,8 @@
 
 <body onkeypress='Hotkeys(event)' onload='OnLoadCallback(<?php echo (filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 
+  <audio id="yourTurnSound" src="./Assets/sword-clash.wav"></audio>
+
   <script>
     function reload() {
       CheckReloadNeeded(0);
@@ -178,9 +180,15 @@
             var responseArr = this.responseText.split("ENDTIMESTAMP");
             document.getElementById("mainDiv").innerHTML = responseArr[1];
             CheckReloadNeeded(parseInt(responseArr[0]));
-            document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
+            var readyIcon = document.getElementById("iconHolder").innerText;
+            document.getElementById("icon").href = "./HostFiles/" + readyIcon;
             var log = document.getElementById('gamelog');
             if (log !== null) log.scrollTop = log.scrollHeight;
+            if(readyIcon == "ready.png")
+            {
+              var audio = document.getElementById('yourTurnSound');
+              audio.play();
+            }
           } else {
             CheckReloadNeeded(lastUpdate);
           }
@@ -219,4 +227,5 @@
   echo ("<input type='hidden' id='playerID' value='" . $playerID . "'>");
   echo ("<input type='hidden' id='authKey' value='" . $authKey . "'>");
   ?>
+
 </body>
