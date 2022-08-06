@@ -1,9 +1,60 @@
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  ::-webkit-scrollbar {
+    width: .50em;
+    height: .25em;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #d9d6d6;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:vertical {
+    height: 5em;
+    background-color: #000;
+    border-radius: 5px;
+  }
+}
+
 html,
 body {
   scroll-behavior: smooth;
   height: 100vh;
   overflow: hidden;
 }
+
+h2,
+h3 {
+  margin: 5px;
+  text-align: center;
+}
+
+h4 {
+  margin: 0;
+  text-align: center;
+}
+
+/* ==============
+    Setting Menu 
+   ============== */
+
+.table-MainMenu {
+  margin-left: 150px;
+  width: 90%;
+  height: 95%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.table-td-MainMenu {
+  text-align: left; 
+  width:50%;
+}
+
+/* ============
+    Checkboxes
+   ============ */
 
 /* Hide the browser default checkbox */
 [type="checkbox"] {
@@ -20,6 +71,7 @@ body {
   color: #1a1a1a;
   line-height: 40px;
   vertical-align: middle;
+  font-size: 18px;
 }
 
 /* Checkbox when unchecked */
@@ -124,8 +176,84 @@ body {
   pointer-events: none;
 }
 
+/* ===============
+    Radio Buttons
+   =============== */
 
-/* Buttons */
+/* Hide the browser default radio */
+[type="radio"] {
+  opacity: 0;
+}
+
+/* Edit the radio label */
+[type="radio"]+label {
+  position: relative;
+  padding-left: 18px;
+  padding-top: 4px;
+  cursor: pointer;
+  display: inline-block;
+  color: #1a1a1a;
+  line-height: 40px;
+  font-size: 18px;
+}
+
+/* radio when unchecked */
+[type="radio"]+label:before {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  outline: 3px solid #1a1a1a;
+  background: #fff;
+  border-radius: 50%;
+}
+
+/* Apply to the radio when checked */
+[type="radio"]:checked+label:before {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  outline: 3px solid #1a1a1a;
+  background: #fff;
+  border-radius: 50%;
+}
+
+[type="radio"]:checked+label:after {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  background-image: url("../Images/trans-radio.png");
+  background-size: contain;
+  transform: scale(1);
+  opacity: 1;
+  transition: all .3s ease;
+}
+
+[type="radio"]:not(:checked)+label:after {
+  content: "";
+  position: absolute;
+  left: -5;
+  top: 15;
+  width: 16px;
+  height: 16px;
+  background-image: url("../Images/trans-radio.png");
+  background-size: contain;
+  transform: scale(0);
+  opacity: 0;
+}
+
+/* =========
+    Buttons
+   ========= */
+
 button {
   cursor: pointer;
   font-size: 18px;
@@ -173,27 +301,4 @@ input[type="button"]:hover {
 button:focus,
 input[type="button"]:focus {
   outline: none;
-}
-
-::-webkit-scrollbar {
-  width: 6px;
-  direction: ltr;
-  background: #555;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: gainsboro;
-  border-radius: 5px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: var(--dark-color);
-  border-radius: 5px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
