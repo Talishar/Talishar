@@ -8,7 +8,7 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 $playerID = $_GET["playerID"];
-$authKey = $_GET["authKey"];
+$authKey = TryGet("authKey", "");
 $popupType = $_GET["popupType"];
 
 ob_start();
@@ -45,8 +45,8 @@ switch ($popupType) {
       echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
     } else {
       echo (CreatePopup("menuPopup", [], 1, 0, "Main Menu", 1, MainMenuUI(), "./", true));
-      break;
     }
+    break;
   case "mySoulPopup":
     echo (CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
     break;
