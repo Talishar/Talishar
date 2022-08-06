@@ -146,7 +146,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cardSize = ($windowWidth != 0 ? intval($windowWidth / 13) : 120);
   //$cardSize = ($windowWidth != 0 ? intval($windowWidth / 16) : 120);
   if (!IsDynamicScalingEnabled($playerID)) $cardSize = 120; //Temporarily disable dynamic scaling
-  $rightSideWidth = intval($windowWidth * 0.1333);
+  $rightSideWidth = intval($windowWidth * 0.15);
   $cardSizeAura = intval($cardSize * .8); //95;
   $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
@@ -989,7 +989,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</div>"); //End play area div
 
   //Display the log
-  echo ("<div style='position:fixed; width:200px; top:10px; bottom:10px; right:10px;'>");
+  echo ("<div style='display:flex; flex-direction: column; position:fixed; width:" . $rightSideWidth . "px; top:10px; bottom:10px; right:10px;'>");
 
   echo ("<div style='position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr><td>");
   echo ("<div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
@@ -997,36 +997,37 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("<div class='MenuButtons' title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo ("</td></tr></table></div></div>");
 
-  echo ("<div style='text-align:center; margin-top: 3px; width:" . $rightSideWidth . "px; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
-  echo ("<div style='text-align:center; width:" . $rightSideWidth . "px; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Last Played</div>");
+  echo ("<div style='text-align:center; margin-top: 3px; width:100%; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
+  echo ("<div style='text-align:center; width:100%; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Last Played</div>");
   echo ("<div style='position:relative; left: 7px; top:0px;'>");
-  if (count($lastPlayed) == 0) echo Card("cardBack", "CardImages", intval($rightSideWidth * 1.5));
+  if (count($lastPlayed) == 0) echo Card("cardBack", "CardImages", intval($rightSideWidth * 1.3));
   else {
-    echo Card($lastPlayed[0], "CardImages", intval($rightSideWidth * 1.5));
+    echo Card($lastPlayed[0], "CardImages", intval($rightSideWidth * 1.3));
     if (count($lastPlayed) >= 4) {
       if ($lastPlayed[3] == "FUSED") echo ("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse2.png' />");
       //else if($lastPlayed[3] == "UNFUSED") echo("<img title='This card was not fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/Unfused.png' />");
     }
   }
   echo ("</div>");
-  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; width:" . $rightSideWidth*1.15 . "px;' src='./Images/phaseTracker2.png' />");
+  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; width:100%;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
-  if ($turn[0] == "B") $trackerLeft = "85";
-  else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
-  else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = "158";
-  else if (count($chainLinks) > 0) $trackerLeft = "49";
-  else $trackerLeft = "13";
+  if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth*.42);
+  else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth*.6);
+  else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = intval($rightSideWidth*.778);
+  else if (count($chainLinks) > 0) $trackerLeft = $trackerLeft = intval($rightSideWidth*.235);
+  else $trackerLeft = $trackerLeft = intval($rightSideWidth*.052);
   echo ("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo ("</div>");
 
   if ($playerID != 3) $gamelogHeight = "calc(100% - 50px)";
   else $gamelogHeight = "calc(100% - 25px)";
 
-  echo ("<div style='position:fixed; height: calc(100% - 460px); width:" . $rightSideWidth . "px; bottom:-13px; right:34px;'>");
-  echo ("<div id='gamelog' style=' border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; width:200px; height: " . $gamelogHeight . "; overflow-y: auto;'>");
+  echo ("<div id='gamelog' style='flex-grow:1; border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
   echo ("</div>");
+  echo("<div id='chatPlaceholder' style='height:26px;'></div>");
   echo ("</div>");
+
 }
 
 function PlayableCardBorderColor($cardID)
