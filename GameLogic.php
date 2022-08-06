@@ -2222,10 +2222,7 @@ function MainCharacterHitAbilities()
         break;
       case "WTR117":
         if (CardType($attackID) == "W" && IsCharacterActive($mainPlayer, $i)) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
-          AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-          AddDecisionQueue("ADDLAYER", $mainPlayer, $mainCharacter[$i], 1);
+          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$i]);
         }
         break;
       case "ARC152":
@@ -2650,6 +2647,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected;
   $rv = "";
   switch ($phase) {
+    case "FINALIZECHAINLINK":
+      $param = $parameter != "-" ? true : false;
+      FinalizeChainLink($param);
+      return "1";
     case "FINDRESOURCECOST":
       switch ($parameter) {
         case "CRU126":
