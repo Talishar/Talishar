@@ -483,6 +483,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
   $items = &GetItems($player);
 
   switch ($parameter) {
+    case "WTR001": case "WTR002": case "RVD001":
+      WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
+      Intimidate();
+      break;
     case "WTR075":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
@@ -717,8 +721,7 @@ function CardDiscarded($player, $discarded, $source = "")
   if (AttackValue($discarded) >= 6) {
     $character = &GetPlayerCharacter($player);
     if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001") && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
-      WriteLog(CardLink($character[0], $character[0]) . " Intimidates.");
-      Intimidate();
+      AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
