@@ -1753,6 +1753,15 @@ function AuraDefaultHoldTriggerState($cardID)
   }
 }
 
+function ItemDefaultHoldTriggerState($cardID)
+{
+  switch($cardID)
+  {
+    case "ARC007": return 0;
+    default: return 2;
+  }
+}
+
 function IsCharacterActive($player, $index)
 {
   $character = &GetPlayerCharacter($player);

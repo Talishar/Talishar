@@ -28,7 +28,9 @@ function ProcessMacros()
         {
           if($layers[5] != "-")//Means there is a unique ID
           {
-            if(GetAuraGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
+            $subtype = CardSubType($layers[2]);
+            if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
+            if(DelimStringContains($subtype, "Item") && GetItemGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
           }
         }
       }

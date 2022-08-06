@@ -68,9 +68,11 @@ function AuraPieces()
 //2 - Status (2=ready, 1=unavailable, 0=destroyed)
 //3 - Num Uses
 //4 - Unique ID
+//5 - My Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
+//6 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 function ItemPieces()
 {
-  return 5;
+  return 7;
 }
 
 function PitchPieces()

@@ -1677,7 +1677,7 @@ function ItemStartTurnAbility($index)
   $mainItems = &GetItems($mainPlayer);
   switch ($mainItems[$index]) {
     case "ARC007":
-      AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]); // TODO: Doesn't actually create a layer right now.
+      AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
     case "ARC035":
       WriteLog("Dissipation Shield lost a steam counter to remain in play.");
@@ -2414,6 +2414,8 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, 2); //Status
     array_push($items, ItemUses($item)); //Num Uses
     array_push($items, GetUniqueId()); //Unique ID
+    array_push($items, ItemDefaultHoldTriggerState($item));
+    array_push($items, ItemDefaultHoldTriggerState($item));
   }
 }
 
