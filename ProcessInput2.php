@@ -293,7 +293,7 @@ switch ($mode) {
     if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Ally not playable
     $allies[$index + 1] = 1;
     $myClassState[$CS_PlayIndex] = $index;
-    PlayCard($cardID, "PLAY", -1);
+    PlayCard($cardID, "PLAY", -1, $index, $allies[$index+5]);
     break;
   case 25: //Landmark Ability
     $index = $cardID;
@@ -1550,6 +1550,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
 
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
+  if($from == "PLAY" && $uniqueID != "-1" && $index == -1) { WriteLog(CardLink($cardID, $cardID) . " is no longer in play and so the effect does not resolve."); return; }
   if ($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $character = &GetPlayerCharacter($currentPlayer);
