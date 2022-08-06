@@ -716,7 +716,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $atkCounters = $theirAuras[$i + 3];
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i + 1] != 2 ? 1 : 0, 0, $counters, "", "", False, 0, 0, $atkCounters) . "&nbsp");
-      DisplayPriorityGem($theirAuras[$i + 8], $i, 1);
+      DisplayPriorityGem($theirAuras[$i + 8], "AURAS-" . $i, 1);
       echo ("</div>");
     }
   }
@@ -725,7 +725,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (IsTileable($theirItems[$i])) continue;
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i + 2] != 2 ? 1 : 0, 0, $theirItems[$i + 1], "", "", false, 0, 0, 0, "ITEMS") . "&nbsp");
-      DisplayPriorityGem($theirItems[$i + 6], $i, 1);
+      DisplayPriorityGem($theirItems[$i + 6], "ITEMS-" . $i, 1);
       echo ("</div>");
     }
   }
@@ -865,7 +865,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $atkCounters = $myAuras[$i + 3];
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i + 1] != 2 ? 1 : 0, $border, $counters, strval($i), "", False, 0, 0, $atkCounters) . "&nbsp");
-      DisplayPriorityGem($myAuras[$i + 7], $i);
+      DisplayPriorityGem($myAuras[$i + 7], "AURAS-" . $i);
       echo ("</div>");
     }
   }
@@ -876,8 +876,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i + 2] != 2 ? 1 : 0, $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS") . "&nbsp");
-      DisplayPriorityGem($myItems[$i + 5], $i);
-      echo ("</div>");
+      DisplayPriorityGem($myItems[$i + 5], "ITEMS-" . $i);
+      echo("</div>");
 
     }
   }
@@ -1223,7 +1223,7 @@ function DisplayTiles($player)
   if ($count > 0) {
     echo ("<div style='position:relative; display: inline-block;'>");
     echo (Card("WTR075", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
-    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), $first, ($player != $playerID ? 1 : 0));
+    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), "AURAS-" . $first, ($player != $playerID ? 1 : 0));
     echo ("</div>");
   }
 
@@ -1250,7 +1250,7 @@ function DisplayTiles($player)
   if ($frostbiteCount > 0) {
     echo ("<div style='position:relative; display: inline-block;'>");
     echo (Card("ELE111", "concat", $cardSizeAura, 0, 1, 0, 0, ($frostbiteCount > 1 ? $frostbiteCount : 0)) . "&nbsp");
-    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), $first, ($player != $playerID ? 1 : 0));
+    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), "AURAS-" . $first, ($player != $playerID ? 1 : 0));
     echo ("</div>");
   }
 
@@ -1276,7 +1276,7 @@ function GetPhaseHelptext()
   return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
 }
 
-function DisplayPriorityGem($setting, $index, $otherPlayer = 0)
+function DisplayPriorityGem($setting, $MZindex, $otherPlayer = 0)
 {
   global $cardWidth, $playerID;
   if ($otherPlayer != 0) {
@@ -1287,8 +1287,8 @@ function DisplayPriorityGem($setting, $index, $otherPlayer = 0)
   }
   if ($setting != 2 && $playerID != 3) {
     $gem = ($setting == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-    if ($setting == 0) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) . " title='Not holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
-    else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $index) ." title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+    if ($setting == 0) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Not holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+    else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) ." title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
   }
 }
 
