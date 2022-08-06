@@ -1133,16 +1133,16 @@ function GetCharacterTop($cardType, $cardSubType)
 
 function GetZoneRight($zone)
 {
-  global $cardWidth;
+  global $cardWidth, $rightSideWidth;
   switch ($zone) {
     case "DISCARD":
-      return "210px";
+      return ($rightSideWidth + 10) . "px";
     case "DECK":
-      return "210px";
+      return ($rightSideWidth + 10) . "px";
     case "BANISH":
-      return "210px";
+      return ($rightSideWidth + 10) . "px";
     case "PITCH":
-      return (230 + $cardWidth) . "px";
+      return ($rightSideWidth + 30 + $cardWidth) . "px";
   }
 }
 
