@@ -1012,8 +1012,8 @@ if($set == "UPR"){
     case "013": return "Invoke Nekria";
     case "014": return "Invoke Ouvia";
     case "015": return "Invoke Themai";
-    case "016": return "Invoke Vyskerai";
-    case "017": return "Invoke Yenderai";
+    case "016": return "Invoke Vynserakai";
+    case "017": return "Invoke Yendurai";
     case "018": case "019": case "020": return "Billowing Mirage";
     case "021": case "022": case "023": return "Dunebreaker Cenipai";
     case "024": case "025": case "026": return "Dustup";
@@ -1132,8 +1132,8 @@ if($set == "UPR"){
     case "413": return "Nekria";
     case "414": return "Ouvia";
     case "415": return "Themai";
-    case "416": return "Vyskerai";
-    case "417": return "Yenderai";
+    case "416": return "Vynserakai";
+    case "417": return "Yendurai";
     case "551": return "Ghostly Touch";
     default: return "Name not populated - please report bug";
   }
