@@ -1136,13 +1136,13 @@ function GetZoneRight($zone)
   global $cardWidth, $rightSideWidth;
   switch ($zone) {
     case "DISCARD":
-      return ($rightSideWidth + 10) . "px";
+      return intval($rightSideWidth * 1.08) . "px";
     case "DECK":
-      return ($rightSideWidth + 10) . "px";
+      return intval($rightSideWidth * 1.08) . "px";
     case "BANISH":
-      return ($rightSideWidth + 10) . "px";
+      return intval($rightSideWidth * 1.08) . "px";
     case "PITCH":
-      return ($rightSideWidth + 30 + $cardWidth) . "px";
+      return (intval($rightSideWidth * 1.18) + $cardWidth) . "px";
   }
 }
 
