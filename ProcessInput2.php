@@ -326,13 +326,27 @@ switch ($mode) {
     $index = $buttonInput;
     $myCharacter[$index + 9] = ($myCharacter[$index + 9] == "1" ? "0" : "1");
     break;
-  case 103: //Toggle aura Active
-    $index = $buttonInput;
-    $myAuras[$index + 7] = ($myAuras[$index + 7] == "1" ? "0" : "1");
+  case 103: //Toggle my permanent Active
+    $input = explode("-", $buttonInput);
+    $index = $input[1];
+    switch($input[0])
+    {
+      case "AURAS": $zone = &$myAuras; $offset = 7; break;
+      case "ITEMS": $zone = &$myItems; $offset = 5; break;
+      default: $zone = &$myAuras; $offset = 7; break;
+    }
+    $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
     break;
-  case 104: //Toggle other player aura Active
-    $index = $buttonInput;
-    $theirAuras[$index + 8] = ($theirAuras[$index + 8] == "1" ? "0" : "1");
+  case 104: //Toggle other player permanent Active
+    $input = explode("-", $buttonInput);
+    $index = $input[1];
+    switch($input[0])
+    {
+      case "AURAS": $zone = &$theirAuras; $offset = 8; break;
+      case "ITEMS": $zone = &$theirItems; $offset = 6; break;
+      default: $zone = &$theirAuras; $offset = 8; break;
+    }
+    $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
     break;
   case 10000: //Undo
     RevertGamestate();
@@ -653,7 +667,7 @@ function ResolveCombatDamage($damageDone)
   $wasHit = $damageDone > 0;
 
   AddLayer("FINALIZECHAINLINK", $mainPlayer, "0");
-  
+
   WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
 
   if (!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) {
