@@ -211,7 +211,7 @@
 
   function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false, $overCombatChain=false, $additionalComments="")
   {
-    global $combatChain, $darkMode, $cardSize, $playerID;
+    global $darkMode, $cardSize, $playerID;
     $style = "";
     $overCC = 1000;
     $darkMode = IsDarkMode($playerID);
@@ -415,9 +415,9 @@
   function MainMenuUI()
   {
     global $playerID;
-    $rv = "<table style='margin-left:auto; margin-right:auto; width:100% height:100%;'><tr><td style='vertical-align:middle; width:40%;'>";
+    $rv = "<table class='table-MainMenu'><tr><td class='table-td-MainMenu'>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
-    $rv .= "</td><td style='vertical-align:middle; width:40%;'>";
+    $rv .= "</td><td style='vertical-align:middle; width:50%;'>";
     $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
@@ -433,7 +433,7 @@
     $rv = "<h3>Revert to Start of Previous Turn</h3>"; // TODO: Revert Player 1 Turn 1 to the start of the game.
     for($i=1; $i<=$currentTurn; ++$i)
     {
-      if($i < $currentTurn - 5) continue;
+      if($i < $currentTurn - 4) continue;
       for($j=1; $j<=2; ++$j)
       {
         if($i == 1 && $firstPlayer == 2 && $j == 1) continue;//Player 1 never got a turn 1

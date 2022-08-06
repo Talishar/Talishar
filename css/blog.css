@@ -12,27 +12,23 @@ body {
   overflow: hidden;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-  direction: ltr;
-  background: #555;
-}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  ::-webkit-scrollbar {
+    width: .50em;
+    height: .25em;
+    border-radius: 5px;
+  }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: gainsboro;
-  border-radius: 5px;
-}
+  ::-webkit-scrollbar-track {
+    background-color: #d9d6d6;
+    border-radius: 5px;
+  }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: var(--dark-color);
-  border-radius: 5px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  ::-webkit-scrollbar-thumb:vertical {
+    height: 5em;
+    background-color: #000;
+    border-radius: 5px;
+  }
 }
 
 /* ======
