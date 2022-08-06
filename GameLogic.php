@@ -215,8 +215,7 @@ function CombatChainResolutionEffects()
     $cardID = $combatChain[$i-1];
     switch($cardID)
     {
-      case "CRU051":
-      case "CRU052":
+      case "CRU051":case "CRU052":
         $totalAttack = 0;
         $totalBlock = 0;
         WriteLog("Im here!");
@@ -230,8 +229,6 @@ function CombatChainResolutionEffects()
 
 function HasCrush($cardID)
 {
-  global $combatChain, $mainPlayer, $defPlayer, $defCharacter;
-  $attackID = $combatChain[0];
   switch ($cardID) {
     case "WTR043":
     case "WTR044":
@@ -267,8 +264,7 @@ function HasCrush($cardID)
 
 function ProcessCrushEffect($cardID)
 {
-  global $combatChain, $mainPlayer, $defPlayer, $defCharacter;
-  $attackID = $combatChain[0];
+  global $mainPlayer, $defPlayer, $defCharacter;
   if (IsHeroAttackTarget()) {
     switch ($cardID) {
       case "WTR043":
@@ -344,7 +340,8 @@ function ProcessCrushEffect($cardID)
 //NOTE: This happens at combat resolution, so can't use the my/their directly
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
-  global $mainPlayer, $mainPitch, $mainClassState, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainCharacter, $mainAuras, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow, $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
+  global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow;
+  global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CCS_NumChainLinks, $CS_NumAuras, $CS_AtksWWeapon;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
@@ -930,7 +927,7 @@ function RemoveCurrentEffect($player, $effectID)
 
 function CurrentEffectChainClosedEffects()
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects;
   $costModifier = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
@@ -955,7 +952,6 @@ function CurrentEffectBaseAttackSet($cardID)
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $mod = -1;
     if ($currentTurnEffects[$i + 1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
-      $remove = 0;
       switch ($currentTurnEffects[$i]) {
         case "UPR155":
           $mod = 8;
@@ -1319,7 +1315,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChain, $combatChainState, $CCS_AttackFused;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       switch ($currentTurnEffects[$i]) {
@@ -1515,7 +1511,7 @@ function CurrentEffectEndTurnAbilities()
 
 function IsCombatEffectActive($cardID)
 {
-  global $combatChain, $mainPlayer;
+  global $combatChain;
   if (count($combatChain) == 0) return;
   $attackID = $combatChain[0];
   $set = CardSet($cardID);
@@ -1680,7 +1676,6 @@ function ItemStartTurnAbility($index)
 {
   global $mainPlayer;
   $mainItems = &GetItems($mainPlayer);
-  $mainResources = &GetResources($mainPlayer);
   switch ($mainItems[$index]) {
     case "ARC007":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]); // TODO: Doesn't actually create a layer right now.
@@ -1947,7 +1942,7 @@ function OnBlockResolveEffects()
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer, $CS_DamageTaken;
+  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer;
   $cardType = CardType($combatChain[$index]);
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
@@ -2159,7 +2154,7 @@ function CharacterDestroyEffect($cardID, $player)
 
 function MainCharacterEndTurnAbilities()
 {
-  global $mainCharacter, $characterPieces, $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $defPlayer, $CS_NumNonAttackCards;
+  global $mainCharacter, $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $defPlayer, $CS_NumNonAttackCards;
   global $CS_NumAttackCards, $CS_ArcaneDamageTaken, $defCharacter;
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     switch ($mainCharacter[$i]) {
@@ -2199,7 +2194,7 @@ function MainCharacterEndTurnAbilities()
 
 function MainCharacterHitAbilities()
 {
-  global $characterPieces, $combatChain, $combatChainState, $CCS_WeaponIndex, $CCS_HitsInRow, $mainPlayer;
+  global $combatChain, $combatChainState, $CCS_WeaponIndex, $CCS_HitsInRow, $mainPlayer;
   $attackID = $combatChain[0];
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
@@ -2372,9 +2367,8 @@ function MainCharacterHitEffects()
 
 function MainCharacterGrantsGoAgain()
 {
-  global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   if ($combatChainState[$CCS_WeaponIndex] == -1) return false;
-  $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
@@ -2448,7 +2442,7 @@ function SteamCounterLogic($item, $playerID)
 
 function IsDominateActive()
 {
-  global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $characterPieces, $combatChain, $combatChainState;
+  global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("EVR097", "EVR098", "EVR099", $mainPlayer)) return false;
@@ -2651,7 +2645,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
-  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_DamageTaken, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
+  global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected;
   $rv = "";
   switch ($phase) {
