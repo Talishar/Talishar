@@ -374,6 +374,7 @@ function ContinueDecisionQueue($lastResult = "")
         if ($cardID == "ENDTURN") FinishTurnPass();
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
         else if ($cardID == "LAYER") ProcessLayer($player, $parameter);
+        else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID);
           ProcessDecisionQueue();
