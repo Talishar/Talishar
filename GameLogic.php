@@ -1947,9 +1947,7 @@ function OnBlockEffects($index, $from)
     $remove = 0;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "WTR092":
-        case "WTR093":
-        case "WTR094":
+        case "WTR092": case "WTR093": case "WTR094":
           if (HasCombo($combatChain[$index])) {
             $combatChain[$index + 6] += 2;
           }
@@ -1963,12 +1961,17 @@ function OnBlockEffects($index, $from)
       }
     } else if ($currentTurnEffects[$i + 1] == $otherPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "MON113":
-        case "MON114":
-        case "MON115":
+        case "MON113": case "MON114": case "MON115":
           if ($cardType == "AA" && IsCombatEffectActive($currentTurnEffects[$i])) {
-            AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i]);
-            WriteLog("The current weapon got +1 for the rest of the turn.");
+            $first = true;
+
+            if (SearchCharacterEffects($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i])) {
+              $first = false;
+            }
+            if ($first) {
+              AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i]);
+              WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives you weapon +1 for the rest of the turn.");
+            }
           }
           break;
         default:
@@ -1979,8 +1982,7 @@ function OnBlockEffects($index, $from)
   }
   $currentTurnEffects = array_values($currentTurnEffects);
   switch ($combatChain[0]) {
-    case "CRU079":
-    case "CRU080":
+    case "CRU079": case "CRU080":
       if ($cardType == "AA") {
         $first = true;
         for ($i = 0; $i < $index; $i += CombatChainPieces()) {
@@ -1992,8 +1994,7 @@ function OnBlockEffects($index, $from)
         }
       }
       break;
-    case "CRU051":
-    case "CRU052":
+    case "CRU051": case "CRU052":
       $totalAttack = 0;
       $totalBlock = 0;
       EvaluateCombatChain($totalAttack, $totalDefense);
@@ -2003,9 +2004,7 @@ function OnBlockEffects($index, $from)
       break;
   }
   switch ($combatChain[$index]) {
-    case "UPR194":
-    case "UPR195":
-    case "UPR196":
+    case "UPR194": case "UPR195": case "UPR196":
       if (PlayerHasLessHealth($currentPlayer)) {
         GainHealth(1, $currentPlayer);
         WriteLog("Fyendal's Fighting Spirit gained 1 health.");
