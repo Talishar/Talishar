@@ -18,6 +18,7 @@ if (!IsGameNameValid($gameName)) {
   echo ("Invalid game name.");
   exit;
 }
+$playerID = $_GET["playerID"];
 
 if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
 
