@@ -207,18 +207,25 @@ function ChainLinkBeginResolutionEffects()
   }
 }
 
-//Was used for cases with "non-natural" go again, but the go again icon wasn't showing.
 function CombatChainResolutionEffects()
 {
-  // global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $mainPlayer;
-  // for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
-  // {
-  //   $cardID = $combatChain[$i-1];
-  //   switch($cardID)
-  //   {
-  //       default: break;
-  //   }
-  // }
+  global $combatChain;
+  for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    $cardID = $combatChain[$i-1];
+    switch($cardID)
+    {
+      case "CRU051":
+      case "CRU052":
+        $totalAttack = 0;
+        $totalBlock = 0;
+        WriteLog("Im here!");
+        EvaluateCombatChain($totalAttack, $totalBlock);
+        if (BlockValue($combatChain[$i]) > $totalAttack) DestroyCurrentWeapon();
+        break;
+        default: break;
+    }
+  }
 }
 
 function HasCrush($cardID)
@@ -1993,12 +2000,6 @@ function OnBlockEffects($index, $from)
           WriteLog("Cintari Saber got +1 for the rest of the turn.");
         }
       }
-      break;
-    case "CRU051": case "CRU052":
-      $totalAttack = 0;
-      $totalBlock = 0;
-      EvaluateCombatChain($totalAttack, $totalDefense);
-      if (BlockValue($combatChain[$index]) > $totalAttack) DestroyCurrentWeapon();
       break;
     default:
       break;
