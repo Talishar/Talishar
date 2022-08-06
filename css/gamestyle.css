@@ -40,7 +40,6 @@ h4 {
    ============== */
 
 .table-MainMenu {
-  margin-left: 150px;
   width: 90%;
   height: 95%;
   border-spacing: 0;
@@ -71,6 +70,7 @@ h4 {
   line-height: 40px;
   vertical-align: middle;
   font-size: 18px;
+  margin-left: 175px;
 }
 
 /* Checkbox when unchecked */
@@ -194,6 +194,7 @@ h4 {
   color: #1a1a1a;
   line-height: 40px;
   font-size: 18px;
+    margin-left: 75px;
 }
 
 /* radio when unchecked */
