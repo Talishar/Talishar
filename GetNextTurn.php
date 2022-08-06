@@ -991,15 +991,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display the log
   echo ("<div style='display:flex; flex-direction: column; position:fixed; width:" . $rightSideWidth . "px; top:10px; bottom:10px; right:10px;'>");
 
-  echo ("<div style='position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr><td>");
+  echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr><td>");
   echo ("<div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
   echo ("</td><td></td><td>");
   echo ("<div class='MenuButtons' title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo ("</td></tr></table></div></div>");
 
-  echo ("<div style='text-align:center; margin-top: 3px; width:100%; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
-  echo ("<div style='text-align:center; width:100%; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Last Played</div>");
-  echo ("<div style='position:relative; left: 7px; top:0px;'>");
+  echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; margin-top: 3px; width:100%; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
+  echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; width:100%; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Last Played</div>");
+  echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; left: 7px; top:0px;'>");
   if (count($lastPlayed) == 0) echo Card("cardBack", "CardImages", intval($rightSideWidth * 1.3));
   else {
     echo Card($lastPlayed[0], "CardImages", intval($rightSideWidth * 1.3));
@@ -1009,7 +1009,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   echo ("</div>");
-  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; width:100%;' src='./Images/phaseTracker2.png' />");
+  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
   if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth*.42);
   else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth*.6);
@@ -1022,10 +1022,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($playerID != 3) $gamelogHeight = "calc(100% - 50px)";
   else $gamelogHeight = "calc(100% - 25px)";
 
-  echo ("<div id='gamelog' style='flex-grow:1; border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; overflow-y: auto;'>");
+  echo ("<div id='gamelog' style='flex-grow:1; border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; overflow-y: scroll;'>");
   EchoLog($gameName, $playerID);
   echo ("</div>");
-  echo("<div id='chatPlaceholder' style='height:26px;'></div>");
+  echo("<div id='chatPlaceholder' style='flex-grow:0; flex-shrink:0; height:26px;'></div>");
   echo ("</div>");
 
 }
