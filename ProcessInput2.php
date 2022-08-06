@@ -664,9 +664,11 @@ function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
   global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $myClassState;
+  global $combatChainState, $CCS_AttackTarget;
   $wasHit = $damageDone > 0;
 
   AddLayer("FINALIZECHAINLINK", $mainPlayer, "0");
+  $combatChainState[$CCS_AttackTarget] = "NA";
 
   WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
 
