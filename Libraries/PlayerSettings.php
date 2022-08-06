@@ -1,115 +1,115 @@
 <?php
 
-  $SET_AlwaysHoldPriority = 0;
-  $SET_TryUI2 = 1;
-  $SET_DarkMode = 2;
-  $SET_ManualMode = 3;
+$SET_AlwaysHoldPriority = 0;
+$SET_TryUI2 = 1;
+$SET_DarkMode = 2;
+$SET_ManualMode = 3;
 
-  $SET_SkipARs = 4;
-  $SET_SkipDRs = 5;
+$SET_SkipARs = 4;
+$SET_SkipDRs = 5;
 
-  $SET_PassDRStep = 6;
+$SET_PassDRStep = 6;
 
-  $SET_AutotargetArcane = 7;//Auto-target opponent with arcane damage
+$SET_AutotargetArcane = 7; //Auto-target opponent with arcane damage
 
-  $SET_ColorblindMode = 8;//Colorblind mode settings
+$SET_ColorblindMode = 8; //Colorblind mode settings
 
-  $SET_ShortcutAttackThreshold = 9;//Threshold to shortcut attacks
-  $SET_EnableDynamicScaling = 10;//Threshold to shortcut attacks
+$SET_ShortcutAttackThreshold = 9; //Threshold to shortcut attacks
+$SET_EnableDynamicScaling = 10; //Threshold to shortcut attacks
 
-  function HoldPrioritySetting($player)
-  {
-    global $SET_AlwaysHoldPriority;
-    $settings = GetSettings($player);
-    return $settings[$SET_AlwaysHoldPriority];
-  }
+function HoldPrioritySetting($player)
+{
+  global $SET_AlwaysHoldPriority;
+  $settings = GetSettings($player);
+  return $settings[$SET_AlwaysHoldPriority];
+}
 
-  function UseNewUI($player)
-  {
-    global $SET_TryUI2;
-    $settings = GetSettings($player);
-    return $settings[$SET_TryUI2] == 1;
-  }
+function UseNewUI($player)
+{
+  global $SET_TryUI2;
+  $settings = GetSettings($player);
+  return $settings[$SET_TryUI2] == 1;
+}
 
-  function IsDarkMode($player)
-  {
-    global $SET_DarkMode;
-    $settings = GetSettings($player);
-    return $settings[$SET_DarkMode] == 1 || $settings[$SET_DarkMode] == 3;
-  }
+function IsDarkMode($player)
+{
+  global $SET_DarkMode;
+  $settings = GetSettings($player);
+  return $settings[$SET_DarkMode] == 1 || $settings[$SET_DarkMode] == 3;
+}
 
-  function IsPlainMode($player)
-  {
-    global $SET_DarkMode;
-    $settings = GetSettings($player);
-    return $settings[$SET_DarkMode] == 2;
-  }
+function IsPlainMode($player)
+{
+  global $SET_DarkMode;
+  $settings = GetSettings($player);
+  return $settings[$SET_DarkMode] == 2;
+}
 
-  function IsDarkPlainMode($player)
-  {
-    global $SET_DarkMode;
-    $settings = GetSettings($player);
-    return $settings[$SET_DarkMode] == 3;
-  }
+function IsDarkPlainMode($player)
+{
+  global $SET_DarkMode;
+  $settings = GetSettings($player);
+  return $settings[$SET_DarkMode] == 3;
+}
 
-  function IsManualMode($player)
-  {
-    global $SET_ManualMode;
-    $settings = GetSettings($player);
-    return $settings[$SET_ManualMode];
-  }
+function IsManualMode($player)
+{
+  global $SET_ManualMode;
+  $settings = GetSettings($player);
+  return $settings[$SET_ManualMode];
+}
 
-  function ShouldSkipARs($player)
-  {
-    global $SET_SkipARs;
-    $settings = GetSettings($player);
-    return $settings[$SET_SkipARs];
-  }
+function ShouldSkipARs($player)
+{
+  global $SET_SkipARs;
+  $settings = GetSettings($player);
+  return $settings[$SET_SkipARs];
+}
 
-  function ShouldSkipDRs($player)
-  {
-    global $SET_SkipDRs, $SET_PassDRStep;
-    $settings = GetSettings($player);
-    $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
-    ChangeSetting($player, $SET_PassDRStep, 0);
-    return $skip;
-  }
+function ShouldSkipDRs($player)
+{
+  global $SET_SkipDRs, $SET_PassDRStep;
+  $settings = GetSettings($player);
+  $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
+  ChangeSetting($player, $SET_PassDRStep, 0);
+  return $skip;
+}
 
-  function ShouldAutotargetOpponent($player)
-  {
-    global $SET_AutotargetArcane;
-    $settings = GetSettings($player);
-    return $settings[$SET_AutotargetArcane] == "1";
-  }
+function ShouldAutotargetOpponent($player)
+{
+  global $SET_AutotargetArcane;
+  $settings = GetSettings($player);
+  return $settings[$SET_AutotargetArcane] == "1";
+}
 
-  function IsColorblindMode($player)
-  {
-    global $SET_ColorblindMode;
-    $settings = GetSettings($player);
-    if($settings == null) return false;
-    return $settings[$SET_ColorblindMode] == "1";
-  }
+function IsColorblindMode($player)
+{
+  global $SET_ColorblindMode;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return $settings[$SET_ColorblindMode] == "1";
+}
 
-  function ShortcutAttackThreshold($player)
-  {
-    global $SET_ShortcutAttackThreshold;
-    $settings = GetSettings($player);
-    if(count($settings) < $SET_ShortcutAttackThreshold) return "0";
-    return $settings[$SET_ShortcutAttackThreshold];
-  }
+function ShortcutAttackThreshold($player)
+{
+  global $SET_ShortcutAttackThreshold;
+  $settings = GetSettings($player);
+  if (count($settings) < $SET_ShortcutAttackThreshold) return "0";
+  return $settings[$SET_ShortcutAttackThreshold];
+}
 
-  function IsDynamicScalingEnabled($player)
-  {
-    global $SET_EnableDynamicScaling;
-    $settings = GetSettings($player);
-    if($settings == null) return false;
-    return $settings[$SET_EnableDynamicScaling] == "1";
-  }
+function IsDynamicScalingEnabled($player)
+{
+  global $SET_EnableDynamicScaling;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return $settings[$SET_EnableDynamicScaling] == "1";
+}
 
-  function ChangeSetting($player, $setting, $value)
-  {
-    global $SET_ManualMode;
-    /*
+function ChangeSetting($player, $setting, $value)
+{
+  global $SET_ManualMode;
+  /*
     if($setting == $SET_ManualMode && $value == 1)
     {
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -120,73 +120,73 @@
       return;
     }
     */
-    $settings = &GetSettings($player);
-    $settings[$setting] = $value;
-  }
+  $settings = &GetSettings($player);
+  $settings[$setting] = $value;
+}
 
-  // function ApproveManualMode($player)
-  // {
-  //   global $SET_ManualMode;
-  //   $settings = &GetSettings($player);
-  //   $settings[$SET_ManualMode] = $value; // TODO: fix $value. The variable is undefined
-  // }
+// function ApproveManualMode($player)
+// {
+//   global $SET_ManualMode;
+//   $settings = &GetSettings($player);
+//   $settings[$SET_ManualMode] = $value; // TODO: fix $value. The variable is undefined
+// }
 
-  function GetSettingsUI($player)
-  {
-    global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
-    global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
-    $rv = "";
-    $rv .= "<h2>Settings</h2>";
-    $settings = GetSettings($player);
-    if($settings[$SET_AlwaysHoldPriority] != 0) $rv .= CreateButton($player, "Auto-pass Priority", 26, $SET_AlwaysHoldPriority . "-0", "24px");
-    $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 4) $rv .= CreateButton($player, "Always Pass Priority", 26, $SET_AlwaysHoldPriority . "-4", "24px");
-    $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 1) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "24px");
-    $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 2) $rv .= CreateButton($player, "Hold Priority All Opp.", 26, $SET_AlwaysHoldPriority . "-2", "24px");
-    $rv .= "<BR>";
-    if($settings[$SET_AlwaysHoldPriority] != 3) $rv .= CreateButton($player, "Hold Priority Opp. Attacks", 26, $SET_AlwaysHoldPriority . "-3", "24px");
-    $rv .= "<BR>";
-    $rv .= "<BR>";
-    if($settings[$SET_SkipARs] == 0) $rv .= CreateButton($player, "Skip Attack Reactions", 26, $SET_SkipARs . "-1", "24px");
-    else if($settings[$SET_SkipARs] == 1) $rv .= CreateButton($player, "Hold Attack Reactions", 26, $SET_SkipARs . "-0", "24px");
-    $rv .= "<BR>";
-    if($settings[$SET_SkipDRs] == 0) $rv .= CreateButton($player, "Skip Defense Reactions", 26, $SET_SkipDRs . "-1", "24px");
-    else if($settings[$SET_SkipDRs] == 1) $rv .= CreateButton($player, "Hold Defense Reactions", 26, $SET_SkipDRs . "-0", "24px");
-    $rv .= "<BR>";
-    $rv .= "<BR>";
-    if($settings[$SET_AutotargetArcane] == 0) $rv .= CreateButton($player, "Arcane auto-target opponent", 26, $SET_AutotargetArcane . "-1", "24px");
-    else if($settings[$SET_AutotargetArcane] == 1) $rv .= CreateButton($player, "Arcane manual target", 26, $SET_AutotargetArcane . "-0", "24px");
-    $rv .= "<BR>";
-    $rv .= "<BR>";
-    $rv .= CreateRadioButton($SET_DarkMode . "-0", "Normal Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Normal Mode");
-    $rv .= CreateRadioButton($SET_DarkMode . "-1", "Dark Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Mode");
-    $rv .= CreateRadioButton($SET_DarkMode . "-3", "Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Plain Mode");
-    $rv .= CreateRadioButton($SET_DarkMode . "-4", "Dark Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Plain Mode");
-    $rv .= "<BR>";
-    $rv .= "<BR>";
-    if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Manual Mode", 26, $SET_ManualMode . "-1", "24px", "", "", true);
-    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true);
-    $rv .= "<BR>";
-    $rv .= "<BR>";
-    //if($settings[$SET_ColorblindMode] == 0) $rv .= CreateButton($player, "Turn On color accessibility mode", 26, $SET_ColorblindMode . "-1", "24px", "", "", true);
-    //else $rv .= CreateButton($player, "Turn Off color accessibility mode", 26, $SET_ColorblindMode . "-0", "24px", "", "", true);
+function GetSettingsUI($player)
+{
+  global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
+  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
+  $rv = "";
+  $rv .= "<h2>Settings</h2>";
+  $settings = GetSettings($player);
+  if ($settings[$SET_AlwaysHoldPriority] != 0) $rv .= CreateButton($player, "Auto-pass Priority", 26, $SET_AlwaysHoldPriority . "-0", "24px");
+  $rv .= "<BR>";
+  if ($settings[$SET_AlwaysHoldPriority] != 4) $rv .= CreateButton($player, "Always Pass Priority", 26, $SET_AlwaysHoldPriority . "-4", "24px");
+  $rv .= "<BR>";
+  if ($settings[$SET_AlwaysHoldPriority] != 1) $rv .= CreateButton($player, "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-1", "24px");
+  $rv .= "<BR>";
+  if ($settings[$SET_AlwaysHoldPriority] != 2) $rv .= CreateButton($player, "Hold Priority All Opp.", 26, $SET_AlwaysHoldPriority . "-2", "24px");
+  $rv .= "<BR>";
+  if ($settings[$SET_AlwaysHoldPriority] != 3) $rv .= CreateButton($player, "Hold Priority Opp. Attacks", 26, $SET_AlwaysHoldPriority . "-3", "24px");
+  $rv .= "<BR>";
+  $rv .= "<BR>";
+  if ($settings[$SET_SkipARs] == 0) $rv .= CreateButton($player, "Skip Attack Reactions", 26, $SET_SkipARs . "-1", "24px");
+  else if ($settings[$SET_SkipARs] == 1) $rv .= CreateButton($player, "Hold Attack Reactions", 26, $SET_SkipARs . "-0", "24px");
+  $rv .= "<BR>";
+  if ($settings[$SET_SkipDRs] == 0) $rv .= CreateButton($player, "Skip Defense Reactions", 26, $SET_SkipDRs . "-1", "24px");
+  else if ($settings[$SET_SkipDRs] == 1) $rv .= CreateButton($player, "Hold Defense Reactions", 26, $SET_SkipDRs . "-0", "24px");
+  $rv .= "<BR>";
+  $rv .= "<BR>";
+  if ($settings[$SET_AutotargetArcane] == 0) $rv .= CreateButton($player, "Arcane auto-target opponent", 26, $SET_AutotargetArcane . "-1", "24px");
+  else if ($settings[$SET_AutotargetArcane] == 1) $rv .= CreateButton($player, "Arcane manual target", 26, $SET_AutotargetArcane . "-0", "24px");
+  $rv .= "<BR>";
+  $rv .= "<BR>";
+  $rv .= CreateRadioButton($SET_DarkMode . "-0", "Normal Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Normal Mode");
+  $rv .= CreateRadioButton($SET_DarkMode . "-1", "Dark Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Mode");
+  $rv .= CreateRadioButton($SET_DarkMode . "-3", "Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Plain Mode");
+  $rv .= CreateRadioButton($SET_DarkMode . "-4", "Dark Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Plain Mode");
+  $rv .= "<BR>";
+  $rv .= "<BR>";
+  if ($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Manual Mode", 26, $SET_ManualMode . "-1", "24px", "", "", true);
+  else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true);
+  $rv .= "<BR>";
+  $rv .= "<BR>";
+  //if($settings[$SET_ColorblindMode] == 0) $rv .= CreateButton($player, "Turn On color accessibility mode", 26, $SET_ColorblindMode . "-1", "24px", "", "", true);
+  //else $rv .= CreateButton($player, "Turn Off color accessibility mode", 26, $SET_ColorblindMode . "-0", "24px", "", "", true);
 
-    if($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
-    else $rv .= CreateCheckbox($SET_ColorblindMode . "-0", "Accessibility Mode", 26, true, "Accessibility Mode");
-    $rv .= "<BR>";
+  if ($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
+  else $rv .= CreateCheckbox($SET_ColorblindMode . "-0", "Accessibility Mode", 26, true, "Accessibility Mode");
+  $rv .= "<BR>";
 
-    if($settings[$SET_EnableDynamicScaling] == 0) $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-1", "Dynamic Scaling (Under Dev)", 26, false, "Dynamic Scaling (Under Dev)");
-    else $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-0", "Dynamic Scaling (Under Dev)", 26, true, "Dynamic Scaling (Under Dev)");
-    $rv .= "<BR>";
+  if ($settings[$SET_EnableDynamicScaling] == 0) $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-1", "Dynamic Scaling (Under Dev)", 26, false, "Dynamic Scaling (Under Dev)");
+  else $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-0", "Dynamic Scaling (Under Dev)", 26, true, "Dynamic Scaling (Under Dev)");
+  $rv .= "<BR>";
 
-    $currentValue = ShortcutAttackThreshold($player);
-    $rv .= "Attack Shortcut Threshold: ";
-    $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Shortcut");
-    $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "1 Attack", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "1 Attack");
-    $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Always Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Always Shortcut");
-/*
+  $currentValue = ShortcutAttackThreshold($player);
+  $rv .= "Attack Shortcut Threshold: ";
+  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Shortcut");
+  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "1 Attack", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "1 Attack");
+  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Always Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Always Shortcut");
+  /*
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");
     else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px");
@@ -198,7 +198,5 @@
       $rv .= CreateButton($playerID, "+1 Action Point", 10002, 0, "24px");
     }
 */
-    return $rv;
-  }
-
-?>
+  return $rv;
+}
