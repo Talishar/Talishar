@@ -486,6 +486,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "WTR117":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
+      AddDecisionQueue("REFRACTIONBOLTERS", $player, $index, 1);
+      break;
     case "ARC007":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       --$items[$index + 1];

@@ -2222,8 +2222,7 @@ function MainCharacterHitAbilities()
         break;
       case "WTR117":
         if (CardType($attackID) == "W" && IsCharacterActive($mainPlayer, $i)) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
-          AddDecisionQueue("REFRACTIONBOLTERS", $mainPlayer, $i, 1);
+          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$i]);
         }
         break;
       case "ARC152":
