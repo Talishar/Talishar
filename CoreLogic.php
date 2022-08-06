@@ -1450,8 +1450,14 @@ function NumEquipBlock()
 
   function GetDefaultLayerTarget()
   {
-    global $layers, $combatChain;
-    if(count($layers) > 0) return $layers[0];
+    global $layers, $combatChain, $currentPlayer;
+    if(count($layers) > 0)
+    {
+      for($i=count($layers)-LayerPieces(); $i>=0; $i-=LayerPieces())
+      {
+        if($layers[$i+1] != $currentPlayer) return $layers[$i];
+      }
+    }
     if(count($combatChain) > 0) return $combatChain[0];
     return "-";
   }
