@@ -146,7 +146,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cardSize = ($windowWidth != 0 ? intval($windowWidth / 13) : 120);
   //$cardSize = ($windowWidth != 0 ? intval($windowWidth / 16) : 120);
   if (!IsDynamicScalingEnabled($playerID)) $cardSize = 120; //Temporarily disable dynamic scaling
-  $rightSideWidth = intval($windowWidth * 0.15);
+  $rightSideWidth = (IsDynamicScalingEnabled($playerID) ? intval($windowWidth * 0.15) : 200);
   $cardSizeAura = intval($cardSize * .8); //95;
   $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
@@ -187,8 +187,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     filter: url(data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>
     <img style='object-fit: cover; height:100%; width:100%;' src='./Images/findCenterBackground.jpg'/></div>");
 
-  echo ("<div style='position:absolute; right:210px; top:calc(50% - 100px); height:200px; z-index:100;'>
-      <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");
+  echo ("<div style='position:absolute; right:" . intval($rightSideWidth * 1.1) . "px; top:calc(50% - 100px); height:200px; z-index:100;'>
+      <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");//Master pass button div
   echo (($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "24px") . CreateButton($playerID, "+1", 10006, 0, "24px") . "</span>" : ""));
   echo ("<span style='position:absolute; text-align:center; width:27px; font-size: 24px; font-weight: 550; top:23px; left:28px;'>$theirHealth</span>");
   echo (($manualMode ? "<span style='position:absolute; top:0px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "24px") . CreateButton($playerID, "+1", 10008, 0, "24px") . "</span>" : ""));
@@ -1009,7 +1009,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   echo ("</div>");
-  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
+  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:(" . intval($rightSideWidth/2) . ")px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
   if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth*.42);
   else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth*.6);
