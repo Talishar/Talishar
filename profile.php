@@ -54,6 +54,7 @@ if (isset($_POST['update_profile'])) {
   //       $message[] = 'image updated succssfully!';
   //    }
   // }
+
 }
 ?>
 
@@ -66,7 +67,7 @@ if (isset($_POST['update_profile'])) {
   $_SESSION["userspwd"] = $uidExists["usersPwd"];
   ?>
 
-  <div class="wrapper">
+  <div class="wrapper" style='overflow-y:scroll;'>
     <div class="profile-form-form">
       <form action="Profile.php" method="post">
 
@@ -107,6 +108,66 @@ if (isset($_POST['update_profile'])) {
             echo '<p>' . $message . '</p>';
           }
         }
+
+
+
+
+          // This example shows how to have your users log in via Patreon, and acquire access and refresh tokens after logging in
+
+        //  require_once './Assets/patreon-php-master/vendor/autoload.php';
+
+          //use Patreon\API;
+          //use Patreon\OAuth;
+
+          $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
+          $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
+
+          // Set the redirect url where the user will land after oAuth. That url is where the access code will be sent as a _GET parameter. This may be any url in your app that you can accept and process the access code and login
+
+          // In this case, say, /patreon_login request uri
+          $redirect_uri = "https://www.fleshandbloodonline.com/FaBOnline/PatreonLogin.php"; // Replace http://mydomain.com/patreon_login with the url at your site which is going to receive users returning from Patreon confirmation
+
+          // Generate the oAuth url
+          $href = 'https://www.patreon.com/oauth2/authorize?response_type=code&client_id=' . $client_id . '&redirect_uri=' . urlencode($redirect_uri);
+
+          // You can send an array of vars to Patreon and receive them back as they are. Ie, state vars to set the user state, app state or any other info which should be sent back and forth.
+          // for example lets set final page which the user needs to land at - this may be a content the user is unlocking via oauth, or a welcome/thank you page
+          // Lets make it a thank you page
+
+          $state = array();
+
+          $state['final_page'] = 'https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php'; // Replace http://mydomain.com/thank_you with the url that has your thank you page
+
+          // Add any number of vars you need to this array by $state['key'] = variable value
+
+          // Prepare state var. It must be json_encoded, base64_encoded and url encoded to be safe in regard to any odd chars
+          $state_parameters = '&state=' . urlencode( base64_encode( json_encode( $state ) ) );
+
+          // Append it to the url
+
+          $href .= $state_parameters;
+
+          // Now place the url into a login link. Below is a very simple login link with just text. in assets/images folder, there is a button image made with official Patreon assets (login_with_patreon.php). You can also use this image as the inner html of the <a> tag instead of the text provided here
+
+          // Scopes! You must request the scopes you need to have the access token.
+          // In this case, we are requesting the user's identity (basic user info), user's email
+          // For example, if you do not request email scope while logging the user in, later you wont be able to get user's email via /identity endpoint when fetching the user details
+          // You can only have access to data identified with the scopes you asked. Read more at https://docs.patreon.com/#scopes
+
+          // Lets request identity of the user, and email.
+
+          $scope_parameters = '&scope=identity%20identity'.urlencode('[email]');
+
+          $href .= $scope_parameters;
+
+          // Simply echoing it here. You can present the login link/button in any other way.
+
+          echo '<a href="'.$href.'">Click here to login via Patreon</a>';
+
+
+
+
+
         ?>
 
     </div>
