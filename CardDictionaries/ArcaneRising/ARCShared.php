@@ -37,6 +37,7 @@
   function ARCAbilityType($cardID, $index=-1)
   {
     global $currentPlayer, $CS_PlayIndex, $combatChain;
+    $items = &GetItems($currentPlayer);
     switch($cardID)
     {
       case "ARC003":
@@ -44,13 +45,12 @@
       case "ARC004": return "A";
       case "ARC005": return "I";
       case "ARC010":
-        return count($combatChain) > 0 && ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer) ? "AR" : "A";
+        if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        return count($combatChain) > 0 && ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer) && CardSubType($combatChain[0]) == "Pistol" && $items[$index + 1] > 0 ? "AR" : "A";
       case "ARC017":
-        $items = &GetItems($currentPlayer);
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
         return ($items[$index + 1] > 0 ? "I" : "A");
       case "ARC018":
-        $items = &GetItems($currentPlayer);
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
         return ($items[$index + 1] > 0 ? "AR" : "A");
       case "ARC019": return "A";
