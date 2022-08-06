@@ -169,6 +169,9 @@ function CurrentTurnEffectUses($cardID)
       return 3;
     case "UPR088":
       return 4;
+    case "UPR221": return 4;
+    case "UPR222": return 3;
+    case "UPR223": return 2;
     default:
       return 1;
   }

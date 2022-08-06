@@ -456,7 +456,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
       $damage -= $classState[$CS_DamagePrevention];
       $classState[$CS_DamagePrevention] = 0;
     }
-    $damage -= CurrentEffectDamagePrevention($player, $type, $damage);
+    $damage -= CurrentEffectDamagePrevention($player, $type, $damage, $source);
     for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
     {
       if($Items[$i] == "CRU104")
@@ -1446,4 +1446,12 @@ function NumEquipBlock()
     $otherPlayer = ($player == 1 ? 2 : 1);
     if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") return false;
     return true;
+  }
+
+  function GetDefaultLayerTarget()
+  {
+    global $layers, $combatChain;
+    if(count($layers) > 0) return $layers[0];
+    if(count($combatChain) > 0) return $combatChain[0];
+    return "-";
   }
