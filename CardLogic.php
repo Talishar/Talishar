@@ -40,6 +40,19 @@ function BottomDeck()
   $hand = GetHand($currentPlayer);
   if (count($hand) > 0) {
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Put_a_card_from_your_hand_on_the_bottom_of_your_deck.");
+    AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("ADDBOTTOMMYDECK", $currentPlayer, "-", 1);
+  }
+}
+
+function MayBottomDeck()
+{
+  global $currentPlayer;
+  $hand = GetHand($currentPlayer);
+  if (count($hand) > 0) {
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You_may_put_a_card_from_your_hand_on_the_bottom_of_your_deck.");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
@@ -47,12 +60,12 @@ function BottomDeck()
   }
 }
 
-function BottomDeckDraw()
+function MayBottomDeckDraw()
 {
   global $currentPlayer;
   $hand = GetHand($currentPlayer);
   if (count($hand) > 0) {
-    BottomDeck();
+    MayBottomDeck();
     AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
   }
 }
