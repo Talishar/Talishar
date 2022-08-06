@@ -141,9 +141,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   echo ("<div id='iconHolder' style='display:none;'>" . $icon . "</div>");
 
-  $cardSize = ($windowWidth != 0 ? intval($windowWidth / 14) : 120);
+  if($windowWidth/16 > $windowHeight/9) $windowWidth = $windowHeight/9*16;
+
+  $cardSize = ($windowWidth != 0 ? intval($windowWidth / 13) : 120);
   //$cardSize = ($windowWidth != 0 ? intval($windowWidth / 16) : 120);
   if (!IsDynamicScalingEnabled($playerID)) $cardSize = 120; //Temporarily disable dynamic scaling
+  $rightSideWidth = intval($windowWidth * 0.1333);
   $cardSizeAura = intval($cardSize * .8); //95;
   $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
@@ -994,19 +997,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("<div class='MenuButtons' title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo ("</td></tr></table></div></div>");
 
-  echo ("<div style='text-align:center; margin-top: 3px; width:200px; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
-  echo ("<div style='text-align:center; width:200px; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Last Played</div>");
+  echo ("<div style='text-align:center; margin-top: 3px; width:" . $rightSideWidth . "px; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
+  echo ("<div style='text-align:center; width:" . $rightSideWidth . "px; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Last Played</div>");
   echo ("<div style='position:relative; left: 7px; top:0px;'>");
-  if (count($lastPlayed) == 0) echo Card("cardBack", "CardImages", 271);
+  if (count($lastPlayed) == 0) echo Card("cardBack", "CardImages", intval($rightSideWidth * 1.5));
   else {
-    echo Card($lastPlayed[0], "CardImages", 271);
+    echo Card($lastPlayed[0], "CardImages", intval($rightSideWidth * 1.5));
     if (count($lastPlayed) >= 4) {
       if ($lastPlayed[3] == "FUSED") echo ("<img title='This card was fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/fuse2.png' />");
       //else if($lastPlayed[3] == "UNFUSED") echo("<img title='This card was not fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/Unfused.png' />");
     }
   }
   echo ("</div>");
-  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; width:200px;' src='./Images/phaseTracker2.png' />");
+  echo ("<div style='position:relative; z-index:-1; left:3px; top:-8px;'><img style='height:100px; width:" . $rightSideWidth*1.15 . "px;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
   if ($turn[0] == "B") $trackerLeft = "85";
   else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = "122";
@@ -1019,7 +1022,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($playerID != 3) $gamelogHeight = "calc(100% - 50px)";
   else $gamelogHeight = "calc(100% - 25px)";
 
-  echo ("<div style='position:fixed; height: calc(100% - 460px); width:193px; bottom:-13px; right:15px;'>");
+  echo ("<div style='position:fixed; height: calc(100% - 460px); width:" . $rightSideWidth . "px; bottom:-13px; right:34px;'>");
   echo ("<div id='gamelog' style=' border: 3px solid " . $borderColor . "; border-radius: 6px; position:relative; background-color: " . $backgroundColor . "; width:200px; height: " . $gamelogHeight . "; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
   echo ("</div>");
