@@ -84,3 +84,15 @@ function StealItem($srcPlayer, $index, $destPlayer)
   }
   $srcItems = array_values($srcItems);
 }
+
+function GetItemGemState($player, $cardID)
+{
+  global $currentPlayer;
+  $items = &GetItems($player);
+  $offset = ($currentPlayer == $player ? 5 : 6);
+  $state = 0;
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    if ($items[$i] == $cardID && $items[$i + $offset] > $state) $state = $items[$i + $offset];
+  }
+  return $state;
+}

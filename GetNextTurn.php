@@ -722,6 +722,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
       if (IsTileable($theirItems[$i])) continue;
       echo (Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i + 2] != 2 ? 1 : 0, 0, $theirItems[$i + 1], "", "", false, 0, 0, 0, "ITEMS") . "&nbsp");
+      DisplayPriorityGem($theirItems[$i + 6], $i, 1);
     }
   }
   if ($playerID == 3) {
@@ -865,9 +866,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (count($myItems) > 0) {
     for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
       if (IsTileable($myItems[$i])) continue;
+      echo("<div style='display:inline;'>");
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i + 2] != 2 ? 1 : 0, $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS") . "&nbsp");
+      DisplayPriorityGem($myItems[$i + 5], $i);
+      echo("</div>");
     }
   }
   $myAllies = GetAllies($playerID);
