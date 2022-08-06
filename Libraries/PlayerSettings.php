@@ -160,10 +160,10 @@
     else if($settings[$SET_AutotargetArcane] == 1) $rv .= CreateButton($player, "Arcane manual target", 26, $SET_AutotargetArcane . "-0", "24px");
     $rv .= "<BR>";
     $rv .= "<BR>";
-    if($settings[$SET_DarkMode] != 0) $rv .= CreateButton($player, "Normal Mode", 26, $SET_DarkMode . "-0", "24px", "", "", true);
-    if($settings[$SET_DarkMode] != 1) $rv .= CreateButton($player, "Dark Mode", 26, $SET_DarkMode . "-1", "24px", "", "", true);
-    if($settings[$SET_DarkMode] != 2) $rv .= CreateButton($player, "Plain Mode", 26, $SET_DarkMode . "-2", "24px", "", "", true);
-    if($settings[$SET_DarkMode] != 3) $rv .= CreateButton($player, "Dark Plain Mode", 26, $SET_DarkMode . "-3", "24px", "", "", true);
+    $rv .= CreateRadioButton($SET_DarkMode . "-0", "Normal Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Normal Mode");
+    $rv .= CreateRadioButton($SET_DarkMode . "-1", "Dark Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Mode");
+    $rv .= CreateRadioButton($SET_DarkMode . "-3", "Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Plain Mode");
+    $rv .= CreateRadioButton($SET_DarkMode . "-4", "Dark Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Plain Mode");
     $rv .= "<BR>";
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Manual Mode", 26, $SET_ManualMode . "-1", "24px", "", "", true);
