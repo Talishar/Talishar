@@ -317,7 +317,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost;
-  if(count($decisionQueue) > 0) WriteLog($decisionQueue[0]);
+  if(count($decisionQueue) > 0);
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
