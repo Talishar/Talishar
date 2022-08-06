@@ -2647,10 +2647,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected;
   $rv = "";
   switch ($phase) {
-    case "FINALIZECHAINLINK":
-      $param = $parameter != "-" ? true : false;
-      FinalizeChainLink($param);
-      return "1";
     case "FINDRESOURCECOST":
       switch ($parameter) {
         case "CRU126":
