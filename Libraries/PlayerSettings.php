@@ -124,12 +124,12 @@
     $settings[$setting] = $value;
   }
 
-  function ApproveManualMode($player)
-  {
-    global $SET_ManualMode;
-    $settings = &GetSettings($player);
-    $settings[$SET_ManualMode] = $value; // TODO: fix $value. The variable is undefined
-  }
+  // function ApproveManualMode($player)
+  // {
+  //   global $SET_ManualMode;
+  //   $settings = &GetSettings($player);
+  //   $settings[$SET_ManualMode] = $value; // TODO: fix $value. The variable is undefined
+  // }
 
   function GetSettingsUI($player)
   {
