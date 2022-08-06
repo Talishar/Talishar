@@ -714,15 +714,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (IsTileable($theirAuras[$i])) continue;
       $counters = $theirAuras[$i + 2];
       $atkCounters = $theirAuras[$i + 3];
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i + 1] != 2 ? 1 : 0, 0, $counters, "", "", False, 0, 0, $atkCounters) . "&nbsp");
       DisplayPriorityGem($theirAuras[$i + 8], $i, 1);
+      echo ("</div>");
     }
   }
   if (count($theirItems) > 0) {
     for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
       if (IsTileable($theirItems[$i])) continue;
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i + 2] != 2 ? 1 : 0, 0, $theirItems[$i + 1], "", "", false, 0, 0, 0, "ITEMS") . "&nbsp");
       DisplayPriorityGem($theirItems[$i + 6], $i, 1);
+      echo ("</div>");
     }
   }
   if ($playerID == 3) {
@@ -859,19 +863,22 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
       $counters = $myAuras[$i + 2];
       $atkCounters = $myAuras[$i + 3];
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i + 1] != 2 ? 1 : 0, $border, $counters, strval($i), "", False, 0, 0, $atkCounters) . "&nbsp");
       DisplayPriorityGem($myAuras[$i + 7], $i);
+      echo ("</div>");
     }
   }
   if (count($myItems) > 0) {
     for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
       if (IsTileable($myItems[$i])) continue;
-      echo("<div style='display:inline;'>");
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i + 2] != 2 ? 1 : 0, $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS") . "&nbsp");
       DisplayPriorityGem($myItems[$i + 5], $i);
-      echo("</div>");
+      echo ("</div>");
+
     }
   }
   $myAllies = GetAllies($playerID);
