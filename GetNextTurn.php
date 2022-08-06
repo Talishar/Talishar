@@ -322,7 +322,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if (DoesAttackHaveGoAgain()) echo ("<td><img title='This attack has go again.' style='height:30px; width:30px; display:inline-block;' src='./Images/goAgain.png' /></td>");
     if (CachedDominateActive()) echo ("<td><img style='height:40px; display:inline-block;' src='./Images/dominate.png' /></td>");
     // TODO: Uncomment when boost is an additional cost.
-    //if($combatChainState[$CCS_RequiredEquipmentBlock] > 0) echo("<td style='padding-left:5px; font-size:18px; font-weight:650; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."';>Block With Equipment Required</td>");
+    if($combatChainState[$CCS_RequiredEquipmentBlock] > 0) echo("<td style='padding-left:5px; font-size:18px; font-weight:650; color: ".$fontColor."; text-shadow: 2px 0 0 ".$borderColor.", 0 -2px 0 ".$borderColor.", 0 2px 0 ".$borderColor.", -2px 0 0 ".$borderColor."';>Block With Equipment Required</td>");
 
     //if($lastPlayed[3] == "FUSED") echo("<td><img title='This card was fused.' style='height:30px; width:30px; display:inline-block;' src='./Images/fuse2.png' /></td>");
   }
