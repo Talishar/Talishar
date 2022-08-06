@@ -267,7 +267,7 @@ switch ($mode) {
     $auras = &GetAuras($playerID);
     $auras[$index + 1] = 1; //Set status to used - for now
     SetClassState($playerID, $CS_PlayIndex, $index);
-    PlayCard($cardID, "PLAY", -1);
+    PlayCard($cardID, "PLAY", -1, $index, $auras[$index+6]);
     break;
   case 23: //CHOOSECARD
     if ($turn[0] == "CHOOSECARD") {
