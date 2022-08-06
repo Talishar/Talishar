@@ -83,7 +83,7 @@ function PitchPieces()
 //0 - Effect ID
 //1 - Player ID
 //2 - Applies to Unique ID
-//3 - ?
+//3 - Number of uses remaining
 function CurrentTurnPieces()
 {
   return 4;

@@ -1110,7 +1110,7 @@ function BanishCostModifier($from, $index)
   }
 }
 
-function CurrentEffectDamagePrevention($player, $type, $damage)
+function CurrentEffectDamagePrevention($player, $type, $damage, $source)
 {
   global $currentTurnEffects;
   $prevention = 0;
@@ -1161,17 +1161,13 @@ function CurrentEffectDamagePrevention($player, $type, $damage)
           $prevention += 1;
           $remove = 1;
           break;
-        case "UPR221":
-          $prevention += 4;
-          $remove = 1;
-          break;
-        case "UPR222":
-          $prevention += 3;
-          $remove = 1;
-          break;
-        case "UPR223":
-          $prevention += 2;
-          $remove = 1;
+        case "UPR221": case "UPR222": case "UPR223":
+          if($source == $currentTurnEffects[$i+2])
+          {
+            $prevention += $currentTurnEffects[$i+3];
+            $currentTurnEffects[$i+3] -= $damage;
+            if($currentTurnEffects[$i+3] <= 0) $remove = 1;
+          }
           break;
         default:
           break;
