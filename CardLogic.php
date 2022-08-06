@@ -303,7 +303,6 @@ function IsGamePhase($phase)
     case "RESUMEPAYING":
     case "RESUMEPLAY":
     case "RESOLVECHAINLINK":
-    case "FINALIZECHAINLINK"://Process hit effects + go again (CR2.0 7.6 -- Resolution Step)
     case "RESOLVECOMBATDAMAGE":
     case "PASSTURN":
       return true;
@@ -317,13 +316,12 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost;
-  if(count($decisionQueue) > 0);
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
       UpdateGameState($currentPlayer);
     }
-    if (count($layers) > 0) {
+    if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
       if ($currentPlayer == 1) {
         if (ShouldHoldPriorityNow(1)) {
@@ -351,13 +349,12 @@ function ContinueDecisionQueue($lastResult = "")
       if ($priorityHeld) {
         ContinueDecisionQueue("");
       } else {
-        //Resolve a layer
         if (RequiresDieRoll($layers[0], explode("|", $layers[2])[0], $layers[1])) {
           RollDie($layers[1]);
           ContinueDecisionQueue("");
           return;
         }
-        if(count($decisionQueue) == 0) CloseDecisionQueue();
+        CloseDecisionQueue();
         $cardID = array_shift($layers);
         $player = array_shift($layers);
         $parameter = array_shift($layers);
@@ -377,6 +374,7 @@ function ContinueDecisionQueue($lastResult = "")
         if ($cardID == "ENDTURN") FinishTurnPass();
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
         else if ($cardID == "LAYER") ProcessLayer($player, $parameter);
+        else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID);
           ProcessDecisionQueue();
@@ -435,9 +433,6 @@ function ContinueDecisionQueue($lastResult = "")
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN") {
       CloseDecisionQueue();
       PassTurn();
-    } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "FINALIZECHAINLINK") {
-      CloseDecisionQueue();
-      FinalizeChainLink($decisionQueue[2]);
     } else {
       CloseDecisionQueue();
       FinalizeAction();
@@ -493,7 +488,9 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "WTR117":
-      GiveAttackGoAgain();
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
+      AddDecisionQueue("REFRACTIONBOLTERS", $player, $index, 1);
       break;
     case "ARC007":
       $index = SearchItemsForUniqueID($uniqueID, $player);

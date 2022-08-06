@@ -1240,7 +1240,7 @@ function AttackDestroyedEffects($attackID)
 function CloseCombatChain($chainClosed="true")
 {
   global $turn, $currentPlayer, $mainPlayer;
-  AddDecisionQueue("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  AddLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
 }
