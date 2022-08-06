@@ -888,14 +888,14 @@
         if(IHaveLessHealth()) { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Gains go again."; }
         return $rv;
       case "WTR194": case "WTR195": case "WTR196":
-        BottomDeckDraw();
+        MayBottomDeckDraw();
         if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $rv = "Gains go again."; }
         return $rv;
       case "WTR200": case "WTR201": case "WTR202":
         if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1."; }
         return $rv;
       case "WTR215": case "WTR216": case "WTR217":
-        BottomDeckDraw();
+        MayBottomDeckDraw();
         return "";
       case "WTR218": case "WTR219": case "WTR220":
         AddCurrentTurnEffect($cardID, $mainPlayer);
