@@ -1239,10 +1239,11 @@ function AttackDestroyedEffects($attackID)
 
 function CloseCombatChain($chainClosed="true")
 {
-  global $turn, $currentPlayer, $mainPlayer;
+  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget;
   AddLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
+  $combatChainState[$CCS_AttackTarget] = "NA";
 }
 
 function DestroyCharacter($player, $index)
