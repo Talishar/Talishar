@@ -4152,9 +4152,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "LORDSUTCLIFFE":
       LordSutcliffeAfterDQ($player, $parameter);
       return $lastResult;
-    case "APPROVEMANUALMODE":
-      ApproveManualMode($player);
-      return $lastResult;
+    // case "APPROVEMANUALMODE":
+    //   ApproveManualMode($player);
+    //   return $lastResult;
     case "BINGO":
       if ($lastResult == "") WriteLog("No card was revealed for Bingo.");
       $cardType = CardType($lastResult);
