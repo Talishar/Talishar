@@ -771,8 +771,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "CRU103":
       if ($combatChainState[$CCS_NumBoosted]) {
-        $combatChainState[$CCS_RequiredEquipmentBlock] = $CCS_NumBoosted;
-        $rv .= "Requires you to block with " . GetClassState($currentPlayer, $CCS_NumBoosted) . " equipment if able.";
+        $combatChainState[$CCS_RequiredEquipmentBlock] = $combatChainState[$CCS_NumBoosted];
+        $rv .= "Requires you to block with " . $combatChainState[$CCS_NumBoosted] . " equipment if able.";
       }
       return $rv;
     case "CRU105":
