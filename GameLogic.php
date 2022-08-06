@@ -218,7 +218,6 @@ function CombatChainResolutionEffects()
       case "CRU051":case "CRU052":
         $totalAttack = 0;
         $totalBlock = 0;
-        WriteLog("Im here!");
         EvaluateCombatChain($totalAttack, $totalBlock);
         if (BlockValue($combatChain[$i]) > $totalAttack) DestroyCurrentWeapon();
         break;
