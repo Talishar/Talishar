@@ -424,6 +424,7 @@ function SearchForUniqueID($uniqueID, $player)
 {
   $index = SearchAurasForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchItemsForUniqueID($uniqueID, $player);
+  if ($index == -1) $index = SearchAlliesForUniqueID($uniqueID, $player);
   return $index;
 }
 
@@ -441,6 +442,15 @@ function SearchItemsForUniqueID($uniqueID, $player)
   $items = &GetItems($player);
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     if ($items[$i + 4] == $uniqueID) return $i;
+  }
+  return -1;
+}
+
+function SearchAlliesForUniqueID($uniqueID, $player)
+{
+  $allies = &GetAllies($player);
+  for ($i = 0; $i < count($allies); $i += ItemPieces()) {
+    if ($allies[$i + 5] == $uniqueID) return $i;
   }
   return -1;
 }
