@@ -30,7 +30,7 @@
     }
     $fileExt = ".png";
     $folderPath = $folder;
-    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM")
+    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM" || $cardNumber == "FINALIZECHAINLINK")
     {
       $folderPath = str_replace("CardImages", "Images", $folderPath);
       $folderPath = str_replace("concat", "Images", $folderPath);
