@@ -1740,12 +1740,16 @@ function ItemDamageTakenAbilities($player, $damage)
 
 function CharacterStartTurnAbility($index)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   if ($mainCharacter[$index + 1] == 0) return; //Do not process ability if it is destroyed
   switch ($mainCharacter[$index]) {
     case "WTR150":
       if ($mainCharacter[$index + 2] < 3) ++$mainCharacter[$index + 2];
+      break;
+    case "CRU097":
+      AddCurrentTurnEffect($mainCharacter[$index], $mainPlayer);
+      AddNextTurnEffect($mainCharacter[$index], $mainPlayer);
       break;
     case "MON187":
       if (GetHealth($mainPlayer) <= 13) {
