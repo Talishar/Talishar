@@ -187,7 +187,7 @@
             if(readyIcon == "ready.png")
             {
               var audio = document.getElementById('yourTurnSound');
-              audio.play();
+              <?php if(!IsMuted($playerID)) echo("audio.play();"); ?>
             }
           } else {
             CheckReloadNeeded(lastUpdate);
