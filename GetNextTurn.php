@@ -893,8 +893,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myItems[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, $myItems[$i + 2] != 2 ? 1 : 0, $border, $myItems[$i + 1], strval($i), "", false, 0, 0, 0, "ITEMS") . "&nbsp");
       DisplayPriorityGem($myItems[$i + 5], "ITEMS-" . $i);
-      echo("</div>");
-
+      echo ("</div>");
     }
   }
   $myAllies = GetAllies($playerID);
@@ -1036,25 +1035,22 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   echo ("</div>");
-  echo ("<div style='position:relative; z-index:-1;'><img style='height:(" . intval($rightSideWidth/2) . ")px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
+  echo ("<div style='position:relative; z-index:-1;'><img style='height:(" . intval($rightSideWidth / 2) . ")px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
-  if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth*.42);
-  else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth*.6);
-  else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = intval($rightSideWidth*.778);
-  else if (count($chainLinks) > 0) $trackerLeft = $trackerLeft = intval($rightSideWidth*.235);
-  else $trackerLeft = $trackerLeft = intval($rightSideWidth*.06);
+  if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth * .42);
+  else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth * .6);
+  else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = intval($rightSideWidth * .778);
+  else if (count($chainLinks) > 0) $trackerLeft = $trackerLeft = intval($rightSideWidth * .235);
+  else $trackerLeft = $trackerLeft = intval($rightSideWidth * .06);
   echo ("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo ("</div>");
-
-  // if ($playerID != 3) $gamelogHeight = "calc(100% - 50px)";
-  // else $gamelogHeight = "calc(100% - 15px)";
 
   echo ("<div id='gamelog' style='flex-grow:1; border: 3px solid " . $borderColor . "; border-radius: 5px; position:relative; background-color: " . $backgroundColor . "; overflow-y: scroll;'>");
   EchoLog($gameName, $playerID);
   echo ("</div>");
   if ($playerID != 3) {
-  echo("<div id='chatPlaceholder' style='flex-grow:0; flex-shrink:0; height:26px;'></div>");
-  echo ("</div>");
+    echo ("<div id='chatPlaceholder' style='flex-grow:0; flex-shrink:0; height:26px;'></div>");
+    echo ("</div>");
   }
 }
 
@@ -1226,7 +1222,7 @@ function IsTileable($cardID)
 
 function DisplayTiles($player)
 {
-  global $cardSize, $cardSizeAura, $playerID;
+  global $cardSizeAura, $playerID;
   $auras = GetAuras($player);
 
   $count = 0;
@@ -1300,15 +1296,10 @@ function DisplayPriorityGem($setting, $MZindex, $otherPlayer = 0)
     $position = "top: 66px;";
   } else {
     $position = "bottom: 2px;";
-
   }
   if ($setting != 2 && $playerID != 3) {
     $gem = ($setting == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
     if ($setting == 0) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Not holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
-    else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) ." title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
+    else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
   }
-}
-
-function DisplayEffectsForPlayer($player, $arr)
-{
 }
