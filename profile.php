@@ -73,7 +73,7 @@ if (isset($_POST['update_profile'])) {
 
         <!-- Profile Picture placeholder -->
         <style>
-          img {
+          .avatarImage {
             border: 3px solid #1a1a1a;
             display: block;
             margin-left: auto;
@@ -83,7 +83,7 @@ if (isset($_POST['update_profile'])) {
             border-radius: 50%;
           }
         </style>
-        <img src="Images/default-avatar.jpg" alt="Avatar">
+        <img src="Images/default-avatar.jpg" class='avatarImage' alt="Avatar">
 
         <div>Username:</div>
         <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
@@ -147,7 +147,9 @@ if (isset($_POST['update_profile'])) {
 
           if(!isset($_SESSION["isPatron"]))
           {
-            echo '<a style="width:auto;height:auto;" href="'.$href.'">';
+            echo("<BR>");
+            echo("<BR>");
+            echo '<a style="display:block; margin-left:auto; margin-right:auto; width:50%;height:auto;" href="'.$href.'">';
               echo("<img src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
             echo '</a>';
           }
