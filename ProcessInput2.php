@@ -1550,7 +1550,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
 
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
-  if($from == "PLAY" && $uniqueID != "-1" && $index == -1) { WriteLog(CardLink($cardID, $cardID) . " is no longer in play and so the effect does not resolve."); return; }
   if ($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $character = &GetPlayerCharacter($currentPlayer);
@@ -1562,6 +1561,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if (!$isBlock && ($from == "EQUIP" || $from == "PLAY")) $cardType = GetResolvedAbilityType($cardID);
   else $cardType = $definedCardType;
   if (GoesOnCombatChain($turn[0], $cardID, $from)) {
+    if($from == "PLAY" && $uniqueID != "-1" && $index == -1) { WriteLog(CardLink($cardID, $cardID) . " is no longer in play and so the effect does not resolve."); return; }
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if ($index == 0) {
       $currentTurnEffectsFromCombat = [];
