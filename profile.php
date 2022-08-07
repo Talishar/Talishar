@@ -110,15 +110,6 @@ if (isset($_POST['update_profile'])) {
         }
 
 
-
-
-          // This example shows how to have your users log in via Patreon, and acquire access and refresh tokens after logging in
-
-        //  require_once './Assets/patreon-php-master/vendor/autoload.php';
-
-          //use Patreon\API;
-          //use Patreon\OAuth;
-
           $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
           $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
 
@@ -147,25 +138,19 @@ if (isset($_POST['update_profile'])) {
 
           $href .= $state_parameters;
 
-          // Now place the url into a login link. Below is a very simple login link with just text. in assets/images folder, there is a button image made with official Patreon assets (login_with_patreon.php). You can also use this image as the inner html of the <a> tag instead of the text provided here
-
-          // Scopes! You must request the scopes you need to have the access token.
-          // In this case, we are requesting the user's identity (basic user info), user's email
-          // For example, if you do not request email scope while logging the user in, later you wont be able to get user's email via /identity endpoint when fetching the user details
-          // You can only have access to data identified with the scopes you asked. Read more at https://docs.patreon.com/#scopes
-
           // Lets request identity of the user, and email.
-
           $scope_parameters = '&scope=identity%20identity'.urlencode('[email]');
 
           $href .= $scope_parameters;
 
           // Simply echoing it here. You can present the login link/button in any other way.
 
-          echo '<a href="'.$href.'">Click here to login via Patreon</a>';
-
-
-
+          if(!isset($_SESSION["isPatron"]))
+          {
+            echo '<a style="width:auto;height:auto;" href="'.$href.'">';
+              echo("<img src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
+            echo '</a>';
+          }
 
 
         ?>
