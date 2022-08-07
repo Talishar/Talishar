@@ -482,7 +482,7 @@
       case "CRU077": case "CRU079": case "CRU080": return -1;
       case "CRU081": return 2;
       //CRU Shapeshifter
-      case "CRU097": return 0;
+      case "CRU097": return -1;
       //CRU Mechanologist
       case "CRU099": case "CRU101": return -1;
       case "CRU102": return 0;
