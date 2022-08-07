@@ -21,11 +21,14 @@ require_once './Assets/patreon-php-master/src/API.php';
   	$oauth_client = new OAuth($client_id, $client_secret);
 
   	$tokens = $oauth_client->get_tokens($_GET['code'], $redirect_uri);
-    echo(var_dump($tokens));
   	$access_token = $tokens['access_token'];
   	$refresh_token = $tokens['refresh_token'];
 
   	// Here, you should save the access and refresh tokens for this user somewhere. Conceptually this is the point either you link an existing user of your app with his/her Patreon account, or, if the user is a new user, create an account for him or her in your app, log him/her in, and then link this new account with the Patreon account. More or less a social login logic applies here.
+    echo("Access Token length: " . strlen($access_token));
+    echo("<BR><BR>");
+    echo("Refresh token length: " . strlen($refresh_token));
+    echo("<BR><BR>");
 
   }
 
@@ -44,6 +47,11 @@ require_once './Assets/patreon-php-master/src/API.php';
 
   	// Now get the current user:
   	$patron_response = $api_client->fetch_user();
+    $patron = $patron_response->data;
+    $relationships = $patron->relationships;
+    if(isset($relationships)) $memberships = $relationships->memberships;
+    if(isset($memberships)) echo($memberships->data[0]->type);
+
 
   	// At this point you can do anything with the user return. For example, if there is no return for this user, then you can consider the user not logged into Patreon. Or, if there is return, then you can get the user's Patreon id or pledge info. For example if you are able to acquire user's id, then you can consider the user logged into Patreon.
 
