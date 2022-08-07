@@ -1025,11 +1025,16 @@ function ClassOverride($cardID, $player="")
 {
   global $currentTurnEffects;
   $cardClass = CardClass($cardID);
+  if ($cardClass == "NONE") $cardClass = "";
   $otherPlayer = ($player == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($otherPlayer);
-
+  
   if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
-  if(SearchCurrentTurnEffects("CRU097", $player)) return CardClass($mainCharacter[0]) . ",SHAPESHIFTER";
+  if(SearchCurrentTurnEffects("CRU097", $player)) {
+    if ($cardClass != "") $cardClass .= ",";
+    $cardClass .= CardClass($mainCharacter[0]) . ",SHAPESHIFTER";
+  }
+  
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] != $player) continue;
@@ -1043,7 +1048,6 @@ function ClassOverride($cardID, $player="")
     }
     if($toAdd != "")
     {
-      if($cardClass == "NONE") $cardClass = "";
       if($cardClass != "") $cardClass .= ",";
       $cardClass .= $toAdd;
     }
