@@ -152,6 +152,8 @@ function loginUser($conn, $username, $pwd, $rememberMe) {
 		$_SESSION["useruid"] = $uidExists["usersUid"];
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
+		$patreonAccessToken = $uidExists["patreonAccessToken"];
+		PatreonLogin($patreonAccessToken);
 
 		if($rememberMe)
 		{
@@ -170,7 +172,7 @@ function loginFromCookie()
 	$token = $_COOKIE["rememberMeToken"];
 	require_once "dbh.inc.php";
 	if(!isset($conn)) global $conn;
-	$sql = "SELECT usersID, usersUid, usersEmail FROM users WHERE rememberMeToken='$token'";
+	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
@@ -183,6 +185,9 @@ function loginFromCookie()
 			$_SESSION["userid"] = $row[0];
 			$_SESSION["useruid"] = $row[1];
 			$_SESSION["useremail"] = $row[2];
+			$patreonAccessToken = $row[3];
+			$patreonRefreshToken = $row[4];
+			PatreonLogin($patreonAccessToken);
 		}
 		else {
 			unset($_SESSION["userid"]);
@@ -269,4 +274,19 @@ function logCompletedGameStats() {
 		mysqli_close($conn);
 	}
 
+}
+
+function SavePatreonTokens($accessToken, $refreshToken)
+{
+	if(!isset($_SESSION["userid"])) return;
+	$userID = $_SESSION["userid"];
+	require_once "dbh.inc.php";
+	if(!isset($conn)) global $conn;
+	$sql = "UPDATE users SET patreonAccessToken='$accessToken', patreonRefreshToken='$refreshToken' WHERE usersid='$userID'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+		mysqli_close($conn);
+	}
 }
