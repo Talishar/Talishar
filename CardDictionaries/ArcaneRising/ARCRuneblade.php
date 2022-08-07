@@ -184,7 +184,7 @@
     {
       case "ARC077":
         PlayAura("ARC112", $mainPlayer);
-        WriteLog("Creates a runechant.");
+        WriteLog(CardLink($cardID, $cardID) . " creates a runechant.");
         break;
       case "ARC080":
         $damageDone = $combatChainState[$CCS_AttackTotalDamage];
@@ -212,7 +212,7 @@
     if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target)
     {
       PlayAura("ARC112", $currentPlayer);
-      WriteLog("Viserai created a runechant.");
+      WriteLog(CardLink("ARC075", "ARC075") . " created a runechant.");
     }
   }
 

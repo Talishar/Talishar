@@ -173,7 +173,7 @@
       {
         $combatChain[5] += 2;
       }
-      return "Exude Confidence is a partially manual card. Restrict play of instants and defense reactions manually. Use the Revert Gamestate button under the Stats menu if necessary.";
+      return CardLink($cardID, $cardID) . " is a partially manual card. Restrict play of instants and defense reactions manually. Use the Revert Gamestate button under the Stats menu if necessary.";
     case "MON251": case "MON252": case "MON253":
       AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
       return "";
@@ -192,7 +192,7 @@
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        WriteLog("Belittle let you choose a card in hand to tutor Minnowism.");
+        WriteLog(CardLink($cardID, $cardID) . " let you choose a card in hand to tutor Minnowism.");
       }
       return "";
     case "MON272": case "MON273": case "MON274":

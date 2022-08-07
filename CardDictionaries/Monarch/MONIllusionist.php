@@ -335,7 +335,7 @@
     --$arsenal[$index+2];
     ++$arsenal[$index+3];
     Draw($player);
-    $log = "The Librarian drew a card";
+    $log = CardLink("MON404","MON404") . " drew a card";
     if($arsenal[$index+3] == 3)
     {
       $log .= " and searched for a specialization card";

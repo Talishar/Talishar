@@ -154,7 +154,7 @@ function RVDPlayAbility($cardID)
 
 function ChiefRukutanAbility($player, $index)
 {
-  $log = "Chief Ruk'utan Intimidates";
+  $log = CardLink("RVD007", "RVD007") . " Intimidates";
   Intimidate();
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index + 3];
