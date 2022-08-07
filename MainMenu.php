@@ -131,8 +131,7 @@ if (!empty($_SESSION['error'])) {
 <div class="NewsMenu">
 
   <h1>Open Beta Test</h1>
-  <h2>All cards supported except:</h2>
-  <p>Shiyana Copy Ability</p>
+  <h2>All cards supported!</h2>
 
   <div style='padding-top:10%;'>
     <h2>FaBrary Deck Integration!</h2>
