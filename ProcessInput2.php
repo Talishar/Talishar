@@ -429,7 +429,7 @@ switch ($mode) {
     header("Location: " . $redirectPath . "/MainMenu.php");
     exit;
   case 100002: //Concede
-    PlayerLoseHealth($playerID, $myHealth);
+    if($turn[0] != "OVER") PlayerLoseHealth($playerID, $myHealth);
     break;
   case 100003: //Report Bug
     $bugCount = 0;

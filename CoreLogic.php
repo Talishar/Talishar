@@ -635,9 +635,10 @@ function PlayerGainHealth($amount, &$health)
 
 function PlayerWon($playerID)
 {
-  global $winner;
+  global $winner, $turn;
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
+  $turn[0] = "OVER";
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
@@ -1028,13 +1029,13 @@ function ClassOverride($cardID, $player="")
   if ($cardClass == "NONE") $cardClass = "";
   $otherPlayer = ($player == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($otherPlayer);
-  
+
   if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
   if(SearchCurrentTurnEffects("CRU097", $player)) {
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= CardClass($mainCharacter[0]) . ",SHAPESHIFTER";
   }
-  
+
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     if($currentTurnEffects[$i+1] != $player) continue;
