@@ -5,6 +5,7 @@
 
 function PatreonLogin($access_token)
 {
+  if($access_token == "") return;
 	$api_client = new API($access_token);
 	$api_client->api_return_format = 'object';
 
