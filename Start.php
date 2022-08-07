@@ -147,7 +147,7 @@ function initializePlayerState($handler, $deckHandler)
   fwrite($handler, "\r\n"); //Permanents
   //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
   $holdPriority = "0"; //Auto-pass layers
-  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 1\r\n"); //Settings
+  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 1 0\r\n"); //Settings
 }
 
 function GetArray($handler)

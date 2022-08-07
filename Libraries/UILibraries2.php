@@ -446,11 +446,11 @@
 
   function GetTheirBanishForDisplay()
   {
-    global $theirBanish;
+    global $theirBanish, $CardBack;
     $banish = array();
     for($i=0; $i<count($theirBanish); $i+=BanishPieces())
     {
-      if($theirBanish[$i+1] == "INT") array_push($banish, "cardBack");
+      if($theirBanish[$i+1] == "INT") array_push($banish, $CardBack);
       else array_push($banish, $theirBanish[$i]);
     }
     return $banish;
