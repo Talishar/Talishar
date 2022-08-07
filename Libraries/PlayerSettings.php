@@ -18,6 +18,8 @@ $SET_ShortcutAttackThreshold = 9; //Threshold to shortcut attacks
 $SET_EnableDynamicScaling = 10; //Threshold to shortcut attacks
 $SET_Mute = 11; //Mute sounds
 
+$SET_Cardback = 12; //Card backs
+
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
@@ -51,6 +53,55 @@ function IsDarkPlainMode($player)
   global $SET_DarkMode;
   $settings = GetSettings($player);
   return $settings[$SET_DarkMode] == 3;
+}
+
+// 0 - Default
+// 1 - Black
+// 2 - Cream
+// 3 - Golden
+// 4 - White
+// 5 - Red
+// 6 - Tan 
+function IsCardBackBlackMode($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 1;
+}
+
+function IsCardBackCreamMode($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 2;
+}
+
+function IsCardBackGoldMode($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 3;
+}
+
+function IsCardBackWhiteMode($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 4;
+}
+
+function IsCardBackRedMode($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 5;
+}
+
+function IsCardBackTanMode($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 6;
 }
 
 function IsManualMode($player)
@@ -144,7 +195,7 @@ function ChangeSetting($player, $setting, $value)
 function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
-  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute;
+  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback;
   $rv = "";
   $rv .= "<h2>Combat Settings</h2><BR>";
   $settings = GetSettings($player);
@@ -197,7 +248,28 @@ function GetSettingsUI($player)
 
   if ($settings[$SET_Mute] == 0) $rv .= CreateCheckbox($SET_Mute . "-1", "Mute", 26, false, "Mute", true);
   else $rv .= CreateCheckbox($SET_Mute . "-0", "Unmute", 26, true, "Unmute", true);
-  $rv .= "<BR><BR>";
+  $rv .= "<BR>";
+
+  // 0 - Default
+  // 1 - Black
+  // 2 - Cream
+  // 3 - Golden
+  // 4 - White
+  // 5 - Red
+  // 6 - Tan 
+  // if (isset($_SESSION["isPatron"])) {
+    $rv .= "<h3>Card Backs</h3>";
+    $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
+    $rv .= CreateRadioButton($SET_Cardback . "-1", "Black", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Black");
+    $rv .= CreateRadioButton($SET_Cardback . "-2", "Cream", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Cream");
+    $rv .= "<BR>";
+    $rv .= CreateRadioButton($SET_Cardback . "-3", "Golden", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Golden");
+    $rv .= CreateRadioButton($SET_Cardback . "-4", "White", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "White");
+    $rv .= CreateRadioButton($SET_Cardback . "-5", "Red", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Red ");
+    $rv .= "<BR>";
+    $rv .= CreateRadioButton($SET_Cardback . "-6", "Tan", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Tan");
+  // }
+
   /*
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");
