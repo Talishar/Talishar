@@ -180,7 +180,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $CardBack = "CBCreamWhite";
   } else if (IsCardBackGoldMode($playerID)) {
     $CardBack = "CBGold";
-  } else if (IsCardBackWhiteMode($playerID)) {
+  } else if (IsCardBackGreyMode($playerID)) {
     $CardBack = "CBWhite";
   } else if (IsCardBackRedMode($playerID)) {
     $CardBack = "CBRed";
