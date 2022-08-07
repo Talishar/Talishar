@@ -3427,11 +3427,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           WriteLog(CardLink("WTR159", "WTR159") . " drew a card.");
           return MyDrawCard();
         case "2_Attack":
-          WriteLog(CardLink("WTR159", "WTR159") . " got +2 power.");
+          WriteLog(CardLink("WTR159", "WTR159") . " gained +2 power.");
           AddCurrentTurnEffect("WTR159", $player);
           return 1;
         case "Go_again":
-          WriteLog(CardLink("WTR159", "WTR159") . " got go again.");
+          WriteLog(CardLink("WTR159", "WTR159") . " gained go again.");
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
           return 2;
       }
