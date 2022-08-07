@@ -1054,7 +1054,7 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
 
   $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
   for ($i = 0; $i < count($options); ++$i) {
-    $content .= "<td>";
+    $content .= "<td style='display: inline-block;'>";
     $content .= "<div class='container'>";
     $content .= "<label class='multichoose'>" . Card($zone[$options[$i]], "concat", $cardSize, $mode, 1, 0, 0, 0, strval($options[$i])) . "</label>";
     $content .= "<div class='overlay'><div class='text'>Select</div></div></div></td>";
