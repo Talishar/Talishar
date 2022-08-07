@@ -23,7 +23,7 @@ if (isset($_POST["submit"])) {
   // If we get to here, it means there are no user errors
 
   // Now we insert the user into the database
-  loginUser($conn, $username, $pwd, $rememberMe);
+  loginUser($username, $pwd, $rememberMe);
 
 } else {
 	header("location: ../Login.php");

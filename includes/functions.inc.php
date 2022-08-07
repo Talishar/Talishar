@@ -46,6 +46,7 @@ function pwdMatch($pwd, $pwdrepeat) {
 
 // Check if username is in database, if so then return data
 function uidExists($conn, $username) {
+	$conn = GetDBConnection();
   $sql = "SELECT * FROM users WHERE usersUid = ? OR usersEmail = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -71,6 +72,7 @@ function uidExists($conn, $username) {
 
 // Check if username is in database, if so then return data
 function getUInfo($conn, $username) {
+	$conn = GetDBConnection();
   $sql = "SELECT * FROM users WHERE usersUid = ? OR usersEmail = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -96,6 +98,7 @@ function getUInfo($conn, $username) {
 
 // Insert new user into database
 function createUser($conn, $username, $email, $pwd) {
+	$conn = GetDBConnection();
   $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);
@@ -126,7 +129,8 @@ function emptyInputLogin($username, $pwd) {
 }
 
 // Log user into website
-function loginUser($conn, $username, $pwd, $rememberMe) {
+function loginUser($username, $pwd, $rememberMe) {
+	$conn = GetDBConnection();
 	$uidExists = uidExists($conn, $username);
 
 	if ($uidExists === false) {
@@ -142,7 +146,7 @@ function loginUser($conn, $username, $pwd, $rememberMe) {
 		exit();
 	}
 	elseif ($checkPwd === true) {
-		session_start();
+		if(session_status() !== PHP_SESSION_ACTIVE) session_start();
 		$_SESSION["userid"] = $uidExists["usersID"];
 		$_SESSION["useruid"] = $uidExists["usersUid"];
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
@@ -157,6 +161,7 @@ function loginUser($conn, $username, $pwd, $rememberMe) {
 			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
 
+		mysqli_close($conn);
 		header("location: ../MainMenu.php?error=none");
 		exit();
 	}
@@ -166,7 +171,7 @@ function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
 	require_once "dbh.inc.php";
-	if(!isset($conn)) global $conn;
+	$conn = GetDBConnection();
 	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -194,19 +199,18 @@ function loginFromCookie()
 
 function storeRememberMeCookie($conn, $uuid, $cookie)
 {
-	//global $conn;
   $sql = "UPDATE users SET rememberMeToken='$cookie' WHERE usersUid='$uuid'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
 	}
 }
 
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 {
 	require_once "dbh.inc.php";
+	$conn = GetDBConnection();
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero) VALUES (" . $values. ");";
 	$stmt = mysqli_stmt_init($conn);
@@ -220,8 +224,7 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 function LoadFavoriteDecks($userID)
 {
 	require_once "dbh.inc.php";
-	global $servername, $dBUsername, $dBPassword, $dBName;
-	$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+	$conn = GetDBConnection();
 	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=$userID";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
@@ -257,7 +260,8 @@ function logCompletedGameStats() {
 	}
 
 	require_once "dbh.inc.php";
-	//global $conn;
+	$conn = GetDBConnection();
+
   $sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -276,7 +280,7 @@ function SavePatreonTokens($accessToken, $refreshToken)
 	if(!isset($_SESSION["userid"])) return;
 	$userID = $_SESSION["userid"];
 	require_once "dbh.inc.php";
-	if(!isset($conn)) global $conn;
+	$conn = GetDBConnection();
 	$sql = "UPDATE users SET patreonAccessToken='$accessToken', patreonRefreshToken='$refreshToken' WHERE usersid='$userID'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
