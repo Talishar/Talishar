@@ -22,7 +22,7 @@
   //Rotate is deprecated
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="")
   {//
-    global $playerID, $gameName, $cardIconSize, $darkMode;
+    global $playerID, $darkMode;
     if($darkMode == null) $darkMode = false;
     if($folder == "crops")
     {
@@ -215,7 +215,7 @@
     $style = "";
     $overCC = 1000;
     $darkMode = IsDarkMode($playerID);
-    $top = "60%"; $left = "25%"; $width = "50%"; $height = "30%";
+    $top = "57%"; $left = "25%"; $width = "50%"; $height = "33%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
     if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
 
@@ -229,7 +229,7 @@
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
     }
     if($id == "OVER") $style = "text-align: center;";
-    else $style = "font-size: 18px; margin-left: 8px; line-height: 22px; align-items: center;";
+    else $style = "font-size: 18px; margin-left: 10px; line-height: 22px; align-items: center;";
     $rv .= "<div style='" . $style . "'>" . $customInput . "</div>";
     $rv .= "</div>";
     return $rv;
