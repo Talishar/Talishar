@@ -50,11 +50,11 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $otherP = ($playerID == 1 ? 2 : 1);
     $oppLastTime = GetCachePiece($gameName, $otherP + 1);
     $oppStatus = GetCachePiece($gameName, $otherP + 3);
-    if (($currentTime - $oppLastTime) > 5000 && ($oppStatus == "0")) {
-      WriteLog("Opponent has disconnected. Waiting to reconnect.");
+    if (($currentTime - $oppLastTime) > 3000 && ($oppStatus == "0")) {
+      WriteLog("Opponent has disconnected. Waiting 20 seconds to reconnect, then opponent will auto-concede.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "1");
-    } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
+    } else if (($currentTime - $oppLastTime) > 20000 && $oppStatus == "1") {
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "2");
@@ -79,9 +79,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   include "Libraries/PlayerSettings.php";
   if ($opponentDisconnected && $turn[0] != "OVER") {
     PlayerLoseHealth($otherP, 9999);
-    require_once "./includes/functions.inc.php";
     $turn[0] = "OVER";
     $currentPlayer = 1;
+    include "WriteGamestate.php";
+    require_once "./includes/functions.inc.php";
     logCompletedGameStats();
   }
 
