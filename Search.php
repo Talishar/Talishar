@@ -449,7 +449,7 @@ function SearchItemsForUniqueID($uniqueID, $player)
 function SearchAlliesForUniqueID($uniqueID, $player)
 {
   $allies = &GetAllies($player);
-  for ($i = 0; $i < count($allies); $i += ItemPieces()) {
+  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     if ($allies[$i + 5] == $uniqueID) return $i;
   }
   return -1;
