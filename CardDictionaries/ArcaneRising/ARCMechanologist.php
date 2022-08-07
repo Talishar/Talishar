@@ -169,7 +169,6 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
       if ($from == "PLAY") {
         $items = &GetItems($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        WriteLog(ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer));
         if (count($combatChain) > 0) {
           if(ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer)) {
             $items[$index + 1] = 0;
