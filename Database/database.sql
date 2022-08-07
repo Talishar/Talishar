@@ -79,7 +79,9 @@ CREATE TABLE `users` (
   `usersUid` varchar(128) NOT NULL,
   `usersEmail` varchar(128) NOT NULL,
   `usersPwd` varchar(128) NOT NULL,
-  `rememberMeToken` varchar(64) DEFAULT NULL
+  `rememberMeToken` varchar(64) DEFAULT NULL,
+  `patreonAccessToken` varchar(64) DEFAULT NULL,
+  `patreonRefreshToken` varchar(64) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
