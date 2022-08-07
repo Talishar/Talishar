@@ -136,7 +136,7 @@ if (isset($_POST['update_profile'])) {
 
           $state = array();
 
-          $state['final_page'] = 'https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php'; // Replace http://mydomain.com/thank_you with the url that has your thank you page
+          $state['final_page'] = 'http://fleshandbloodonline.com/FaBOnline/MainMenu.php'; // Replace http://mydomain.com/thank_you with the url that has your thank you page
 
           // Add any number of vars you need to this array by $state['key'] = variable value
 

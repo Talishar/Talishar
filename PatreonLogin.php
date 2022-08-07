@@ -3,14 +3,25 @@ include_once 'Header.php';
 
 echo("PATREON LOGIN");
 
+require_once './Assets/patreon-php-master/src/OAuth.php';
+require_once './Assets/patreon-php-master/src/API.php';
+
+
+  use Patreon\API;
+  use Patreon\OAuth;
+
+  $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
+  $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
+  $redirect_uri = "https://www.fleshandbloodonline.com/FaBOnline/PatreonLogin.php";
+
 
   // The below code snippet needs to be active wherever the the user is landing in $redirect_uri parameter above. It will grab the auth code from Patreon and get the tokens via the oAuth client
 
-  if ( isset($_GET['code']) && !empty($_GET['code']) ) {
-
+  if(isset($_GET['code']) && !empty($_GET['code']) ) {
   	$oauth_client = new OAuth($client_id, $client_secret);
 
   	$tokens = $oauth_client->get_tokens($_GET['code'], $redirect_uri);
+    echo(var_dump($tokens));
   	$access_token = $tokens['access_token'];
   	$refresh_token = $tokens['refresh_token'];
 
