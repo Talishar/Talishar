@@ -197,7 +197,7 @@ function DVRCombatEffectActive($cardID, $attackID)
 function HalaGoldenhelmAbility($player, $index)
 {
   GiveAttackGoAgain();
-  $log = "Hala Goldenhelm gives the sword attack go again";
+  $log = CardLink("DVR007", "DVR007") . " gives the sword attack go again";
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index + 3];
   if ($arsenal[$index + 3] >= 2) {

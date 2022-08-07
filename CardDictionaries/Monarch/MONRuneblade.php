@@ -247,19 +247,18 @@
   {
     global $currentPlayer, $CS_NumAttackCards, $CS_NumNonAttackCards;
     if($from != "BANISH") return;
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $type = CardType($cardID);
     if(($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 1) || $type == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
     {
       DealArcane(1, 0, "PLAYCARD", "MON157");
-      WriteLog("Dimenxxional Crossroads deals 1 arcane damage.");
+      WriteLog(CardLink("MON157", "MON157") . " deals 1 arcane damage.");
     }
   }
 
   function LordSutcliffeAbility($player, $index)
   {
     global $currentPlayer;
-    WriteLog("Lord Sutcliffe deals 1 arcane damage to each player.");
+    WriteLog(CardLink("MON407", "MON407") . " deals 1 arcane damage to each player.");
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
     AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
     DealArcane(1, 0, "ABILITY", "MON407", false, 1);
@@ -280,7 +279,7 @@
     $arsenal[$index+3] += $amount;
     if($arsenal[$index+3] >= 3)
     {
-      WriteLog("Lord Sutcliffe searched for a specialization card.");
+      WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card.");
       RemoveArsenal($player, $index);
       BanishCardForPlayer("MON407", $player, "ARS", "-");
       AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");

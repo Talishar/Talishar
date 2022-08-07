@@ -2033,7 +2033,7 @@ function ActivateAbilityEffects()
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "ELE004-HIT":
-          WriteLog("Endless winter creates a frostbite.");
+          WriteLog(CardLink("ELE004", "ELE004") . " creates a frostbite.");
           PlayAura("ELE111", $currentPlayer);
           break;
         default:

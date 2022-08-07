@@ -206,7 +206,7 @@
     $deck = &GetDeck($mainPlayer);
     if(count($deck) == 0) return;
     $cardID = array_shift($deck);
-    WriteLog("Processing Lumina Ascension's hit effect:");
+    WriteLog("Processing ". CardLink("MON034", "MON034") ."'s hit effect:");
     if(!RevealCards($cardID, $mainPlayer)) return;
     if(TalentContains($cardID, "LIGHT", $mainPlayer))
     {
@@ -232,7 +232,7 @@
   {
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
-    if(count($hand) == 0) { WriteLog("No cards in hand to Charge."); return; }
+    if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
@@ -245,7 +245,7 @@
   {
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
-    if(count($hand) == 0) { WriteLog("No cards in hand to Charge."); return; }
+    if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
     PrependDecisionQueue("FINISHCHARGE", $currentPlayer, "This_card_was_charged:_", 1);
     PrependDecisionQueue("WRITECARDLOG", $currentPlayer, "This_card_was_charged:_", 1);
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
@@ -266,7 +266,7 @@
     ++$arsenal[$index+3];
     if($arsenal[$index+3] == 3)
     {
-      WriteLog("Minerva Themis searched for a specialization card.");
+      WriteLog(CardLink("MON405", "MON405") . " searched for a specialization card.");
       RemoveArsenal($player, $index);
       BanishCardForPlayer("MON405", $player, "ARS", "-");
       AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");

@@ -261,7 +261,7 @@
     if(count($deck) == 0) return;
     $topDeck = array_shift($deck);
     BanishCardForPlayer($topDeck, $player, "DECK", "-");
-    $log = "Lady Barthimont banished " . CardLink($topDeck, $topDeck);
+    $log = CardLink("MON406", "MON406") . " banished " . CardLink($topDeck, $topDeck);
     if(AttackValue($topDeck) >= 6)
     {
       $arsenal = &GetArsenal($player);
