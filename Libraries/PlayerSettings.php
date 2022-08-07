@@ -16,6 +16,7 @@ $SET_ColorblindMode = 8; //Colorblind mode settings
 
 $SET_ShortcutAttackThreshold = 9; //Threshold to shortcut attacks
 $SET_EnableDynamicScaling = 10; //Threshold to shortcut attacks
+$SET_Mute = 11; //Mute sounds
 
 function HoldPrioritySetting($player)
 {
@@ -106,6 +107,14 @@ function IsDynamicScalingEnabled($player)
   return $settings[$SET_EnableDynamicScaling] == "1";
 }
 
+function IsMuted($player)
+{
+  global $SET_Mute;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return $settings[$SET_Mute] == "1";
+}
+
 function ChangeSetting($player, $setting, $value)
 {
   /*
@@ -135,7 +144,7 @@ function ChangeSetting($player, $setting, $value)
 function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
-  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
+  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute;
   $rv = "";
   $rv .= "<h2>Combat Settings</h2><BR>";
   $settings = GetSettings($player);
@@ -184,6 +193,10 @@ function GetSettingsUI($player)
 
   if ($settings[$SET_EnableDynamicScaling] == 0) $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-1", "Dynamic Scaling (Under Dev)", 26, false, "Dynamic Scaling (Under Dev)");
   else $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-0", "Dynamic Scaling (Under Dev)", 26, true, "Dynamic Scaling (Under Dev)");
+  $rv .= "<BR>";
+
+  if ($settings[$SET_Mute] == 0) $rv .= CreateCheckbox($SET_Mute . "-1", "Mute", 26, false, "Mute", true);
+  else $rv .= CreateCheckbox($SET_Mute . "-0", "Unmute", 26, true, "Unmute", true);
   $rv .= "<BR><BR>";
   /*
     $rv .= "<BR>";
