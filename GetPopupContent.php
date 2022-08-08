@@ -11,6 +11,8 @@ $playerID = $_GET["playerID"];
 $authKey = TryGet("authKey", "");
 $popupType = $_GET["popupType"];
 
+session_start();
+
 ob_start();
 include "./ParseGamestate.php";
 include "./GameLogic.php";
