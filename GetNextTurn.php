@@ -725,7 +725,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $permTop = 7;
   $theirPermHeight = $cardSize + 85;
-  $theirPermWidth = "calc(50% - " . ($cardWidth * 2 + $permLeft) . "px)";
+  $theirPermWidth = "calc(50% - " . ($cardWidth * 2 + $permLeft - 10) . "px)";
   echo ("<div style='overflow-y:auto; position: fixed; top:" . $permTop . "px; left:" . $permLeft . "px; width:" . $theirPermWidth . "; height:" . $theirPermHeight . "px;'>");
   DisplayTiles(($playerID == 1 ? 2 : 1));
   if (count($theirAuras) > 0) {

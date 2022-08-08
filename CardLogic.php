@@ -508,7 +508,7 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       break;
     case "ARC035":
       $index = SearchItemsForUniqueID($uniqueID, $player);
-      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter to remain in play.");
+      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter and remain in play.");
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
       break;
@@ -537,13 +537,13 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       break;
     case "EVR069":
       $index = SearchItemsForUniqueID($uniqueID, $player);
-      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter to remain in play.");
+      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter and remain in play.");
       --$items[$index + 1];
       if ($items[$index + 1] < 0) DestroyMainItem($index);
       break;
     case "EVR071":
       $index = SearchItemsForUniqueID($uniqueID, $player);
-      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter to remain in play.");
+      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter and remain in play.");
       --$items[$index + 1];
       if ($items[$index + 1] < 0) DestroyMainItem($index);
       break;
