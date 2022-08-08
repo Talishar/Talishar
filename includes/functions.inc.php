@@ -246,12 +246,12 @@ function LoadFavoriteDecks($userID)
 
 function logCompletedGameStats() {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
+	global $p1id, $p2id;
 	$loser = ($winner == 1 ? 2 : 1);
 	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck";
 	$values = "?, ?, ?, ?, ?";
 	$winnerDeck = file_get_contents("./Games/" . $gameName . "/p" . $winner . "Deck.txt");
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
-	require_once "./MenuFiles/ParseGamefile.php";
 	if($p1id != "" && $p1id != "-")
 	{
 		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
