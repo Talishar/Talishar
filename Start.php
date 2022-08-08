@@ -42,12 +42,12 @@ fwrite($handler, "20 20\r\n"); //Player health totals //TODO: Change based on ch
 
 //Player 1
 $p1DeckHandler = fopen("./Games/" . $gameName . "/p1Deck.txt", "r");
-initializePlayerState($handler, $p1DeckHandler);
+initializePlayerState($handler, $p1DeckHandler, 1);
 fclose($p1DeckHandler);
 
 //Player 2
 $p2DeckHandler = fopen("./Games/" . $gameName . "/p2Deck.txt", "r");
-initializePlayerState($handler, $p2DeckHandler);
+initializePlayerState($handler, $p2DeckHandler, 2);
 fclose($p2DeckHandler);
 
 fwrite($handler, "\r\n"); //Landmarks
@@ -117,8 +117,9 @@ function make_seed()
   return $sec + $usec * 1000000;
 }
 
-function initializePlayerState($handler, $deckHandler)
+function initializePlayerState($handler, $deckHandler, $player)
 {
+  global $p1IsPatron, $p2IsPatron;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
   $deckSize = count($deckCards);
@@ -147,7 +148,8 @@ function initializePlayerState($handler, $deckHandler)
   fwrite($handler, "\r\n"); //Permanents
   //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
   $holdPriority = "0"; //Auto-pass layers
-  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 1 0\r\n"); //Settings
+  $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron);
+  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 1 0 " . $isPatron . "\r\n"); //Settings
 }
 
 function GetArray($handler)

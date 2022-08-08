@@ -1021,7 +1021,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("<div style='display:flex; flex-direction: column; position:fixed; width:" . $rightSideWidth . "px; top:5px; bottom:5px; right:10px;'>");
 
   echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr>");
-  if(isset($_SESSION["isPatron"])) echo ("<td><div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div></td>");
+  if(IsPatron($playerID)) echo ("<td><div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div></td>");
   echo ("<td></td><td>");
   echo ("<div class='MenuButtons' title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo ("</td></tr></table></div></div>");
