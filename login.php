@@ -2,6 +2,8 @@
 include_once 'Header.php';
 ?>
 
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 <section class="signup-form">
   <h2>Log In</h2>
   <div class="signup-form-form">
@@ -15,6 +17,21 @@ include_once 'Header.php';
         <button type="submit" name="reset-password">Forgot Password</input>
       </a>
     </form>
+  </div>
+
+  <div id="g_id_onload"
+        data-client_id="1089547347578-lqbvoqb0u3grqi89ibjmti2bc9lq37pr.apps.googleusercontent.com"
+        data-login_uri="http://localhost/FaBOnline/MainMenu.php"
+        data-auto_prompt="false">
+      </div>
+
+  <div class="g_id_signin"
+      data-type="standard"
+      data-shape="pill"
+      data-theme="outline"
+      data-text="signin_with"
+      data-size="large"
+      data-logo_alignment="left">
   </div>
 
   <section class='signup-form' style='position:absolute; bottom:30px; right:30px; padding: 5px;'>
