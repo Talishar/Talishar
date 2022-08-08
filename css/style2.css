@@ -266,6 +266,15 @@ button {
   outline: none;
 }
 
+.g_id_signin {
+  width: 100%;
+  height: 40px;
+  margin-top: 3px;
+  margin-left: 182px;
+  margin-bottom: 5px;
+  position: absolute;
+}
+
 /* ============
    Profile Page
    ============ */
