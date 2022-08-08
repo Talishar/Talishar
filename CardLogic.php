@@ -483,7 +483,7 @@ function ProcessLayer($player, $parameter)
 function ProcessTrigger($player, $parameter, $uniqueID)
 {
   global $combatChain;
-  
+
   $resources = &GetResources($player);
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
@@ -563,6 +563,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       PlayAura("ELE111", $player);
       break;
     case "EVR037":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Mask_of_the_Pouncing_Lynx_to_tutor_a_card");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("FINDINDICES", $player, "MASKPOUNCINGLYNX", 1);
       AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);

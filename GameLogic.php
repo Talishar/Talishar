@@ -2233,11 +2233,7 @@ function MainCharacterHitAbilities()
         break;
       case "EVR037":
         if (CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Mask_of_the_Pouncing_Lynx_to_tutor_a_card");
-          AddDecisionQueue("NOPASS", $mainPlayer, "-");
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
-          AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-          AddDecisionQueue("ADDLAYER", $mainPlayer, $mainCharacter[$i], 1);
+          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$i]);
         }
         break;
       default:
