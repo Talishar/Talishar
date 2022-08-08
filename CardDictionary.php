@@ -1699,36 +1699,27 @@ function CharacterNumUsesPerTurn($cardID)
 function CharacterDefaultActiveState($cardID)
 {
   switch ($cardID) {
-    case "UPR004":
-    case "UPR047":
-    case "UPR125":
-    case "UPR184":
-    case "UPR185":
-    case "UPR186":
-      return 0; //Quell
-    case "WTR117":
-      return 1; //Refraction Bolters
-    case "ARC152":
-      return 1; //Vest of the First Fist
-    case "CRU053":
-      return 1; //Breeze Rider Boots
-    case "CRU161":
-      return 1; //Metacarpus Node
-    case "MON122":
-      return 0; //Hooves of the Shadowbeast
-    case "ELE174":
-      return 1; //Mark of Lightning
-    case "EVR037":
-      return 1; //Mask of the Pouncing Lynx
-    case "ELE173":
-    case "MON061":
-    case "MON090":
-    case "MON188":
-    case "MON302":
-    case "MON400":
-    case "MON401":
-    case "MON402":
-      return 1; //Spellvoid Equipments
+    case "UPR004": case "UPR047": case "UPR125": 
+    case "UPR184": case "UPR185": case "UPR186": // Quell
+      return 0; 
+    case "WTR117": // Refraction Bolters
+      return 1; 
+    case "ARC152": // Vest of the First Fist
+      return 1; 
+    case "CRU053": // Breeze Rider Boots
+      return 1; 
+    case "CRU161": // Metacarpus Node
+      return 1; 
+    case "MON122": // Hooves of the Shadowbeast
+      return 0; 
+    case "ELE174": // Mark of Lightning
+      return 1; 
+    case "EVR037": // Mask of the Pouncing Lynx
+      return 1; 
+    case "ELE173": case "MON061": case "MON090":
+    case "MON188": case "MON302": case "MON400": // Spellvoid Equipments
+    case "MON401": case "MON402":
+      return 1; 
     default:
       return 2;
   }
@@ -1740,13 +1731,9 @@ function AuraDefaultHoldTriggerState($cardID)
   switch ($cardID) {
     case "WTR075":
       return 0; //Seismic Surge
-    case "ELE109":
-    case "ELE110":
-    case "ELE111":
+    case "ELE109": case "ELE110": case "ELE111":
       return 0; //Embodiment of Earth and Lightning, Frostbite
-    case "EVR107":
-    case "EVR108":
-    case "EVR109":
+    case "EVR107": case "EVR108": case "EVR109":
       return 0; //Runeblood incantation
     default:
       return 2;
