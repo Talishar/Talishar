@@ -2232,11 +2232,7 @@ function MainCharacterHitAbilities()
         break;
       case "CRU053":
         if (CardType($attackID) == "AA" && ClassContains($attackID, "NINJA", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
-          AddDecisionQueue("NOPASS", $mainPlayer, "-");
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
-          AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $mainCharacter[$i], 1);
+          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$i]);
         }
         break;
       case "EVR037":
