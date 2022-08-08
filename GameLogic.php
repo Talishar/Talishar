@@ -2009,11 +2009,7 @@ function OnBlockEffects($index, $from)
       case "ELE174":
         if ($from == "HAND" && IsCharacterActive($mainPlayer, $i)) {
           if (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer)) {
-            AddDecisionQueue("YESNO", $mainPlayer, "destroy_mark_of_lightning_to_have_the_attack_deal_1_damage");
-            AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-            AddDecisionQueue("PASSPARAMETER", $mainPlayer, $i, 1);
-            AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-            AddDecisionQueue("DEALDAMAGE", $defPlayer, 1 . "-" . $combatChain[0] . "-" . "COMBAT", 1);
+            AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$i]);
           }
         }
       default:
