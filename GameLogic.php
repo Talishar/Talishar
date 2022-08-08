@@ -1682,9 +1682,7 @@ function ItemStartTurnAbility($index)
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
     case "EVR071":
-      WriteLog("Signal Jammer lost a steam counter to remain in play.");
-      --$mainItems[$index + 1];
-      if ($mainItems[$index + 1] < 0) DestroyMainItem($index);
+      AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
     default:
       break;
