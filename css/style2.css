@@ -41,6 +41,7 @@ body {
 
 .wrapper {
   margin: 0 auto;
+  overflow: auto;
 }
 
 .section-default {
@@ -274,7 +275,6 @@ button {
 }
 
 .g_id_signin div {
-  margin: 0;
   transition: 350ms ease-in-out;
 }
 
@@ -296,14 +296,12 @@ button {
   background-color: var(--grey-transparent-background);
   border: 1px solid var(--dark-color);
   border-radius: 5px;
-  overflow: hidden;
   height: auto;
 }
 
 .profile-form-form {
   display: flex;
   justify-content: center;
-  height: 70vh;
   font-family: var(--font-family);
   font-weight: bold;
   font-size: 18px;
@@ -383,7 +381,43 @@ button {
   outline: none;
 }
 
-/* Reset Password */
+.avatarImage {
+  border: 3px solid #1a1a1a;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 150px;
+  height: 130px;
+  border-radius: 50%;
+}
+
+.containerPatreon {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: -10px;
+}
+
+.imgPatreon {
+  border-radius: 10px;
+  border: 1px solid var(--dark-color);
+  transition: 350ms ease-in-out;
+}
+
+.imgPatreon:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.imgPatreon:focus {
+  outline: none;
+}
+
+/* ================
+    Reset Password 
+   ================ */
+
 .form-resetpwd {
   margin: 0 auto;
   width: 100%;
