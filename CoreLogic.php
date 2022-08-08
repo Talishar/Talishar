@@ -639,6 +639,7 @@ function PlayerWon($playerID)
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
   $turn[0] = "OVER";
+  logCompletedGameStats();
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")

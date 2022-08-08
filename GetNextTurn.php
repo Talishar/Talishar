@@ -79,13 +79,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
   if ($opponentDisconnected && $turn[0] != "OVER") {
-    PlayerLoseHealth($otherP, 9999);
-    $turn[0] = "OVER";
-    $currentPlayer = 1;
-    include "WriteGamestate.php";
     include_once "./includes/dbh.inc.php";
-    require_once "./includes/functions.inc.php";
-    logCompletedGameStats();
+    include_once "./includes/functions.inc.php";
+    PlayerLoseHealth($otherP, 9999);
+    //$turn[0] = "OVER";
+    //$currentPlayer = 1;
+    include "WriteGamestate.php";
+    //logCompletedGameStats();
   }
 
   if ($turn[0] == "REMATCH") {
