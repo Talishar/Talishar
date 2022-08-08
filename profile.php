@@ -67,97 +67,85 @@ if (isset($_POST['update_profile'])) {
   $_SESSION["userspwd"] = $uidExists["usersPwd"];
   ?>
 
-  <div class="wrapper" style='overflow-y:scroll;'>
+  <div class="wrapper"'>
     <div class="profile-form-form">
       <form action="Profile.php" method="post">
 
-        <!-- Profile Picture placeholder -->
-        <style>
-          .avatarImage {
-            border: 3px solid #1a1a1a;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 230px;
-            height: 200px;
-            border-radius: 50%;
-          }
-        </style>
-        <img src="Images/default-avatar.jpg" class='avatarImage' alt="Avatar">
+        <img src="Images/default-avatar.jpg" class=' avatarImage' alt="Avatar">
 
-        <div>Username:</div>
-        <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
-        <div>Your email:</div>
-        <input type="email" name="update_email" value="<?php echo $_SESSION['useremail']; ?>">
+    <div>Username:</div>
+    <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
+    <div>Your email:</div>
+    <input type="email" name="update_email" value="<?php echo $_SESSION['useremail']; ?>">
 
-        <!-- <div>Update your avatar :</div>
+    <!-- <div>Update your avatar :</div>
             <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png"> -->
 
-        <input type="hidden" name="old_pass" value="<?php echo $_SESSION['userspwd']; ?>">
-        <div>Old password:</div>
-        <input type="password" name="update_pass" placeholder="Enter Password">
-        <div>New password:</div>
-        <input type="password" name="new_pass" placeholder="Enter New Password">
-        <div>Confirm password:</div>
-        <input type="password" name="confirm_pass" placeholder="Confirm New Password">
-        <button type="submit" name="update_profile">Update Profile</button>
+    <input type="hidden" name="old_pass" value="<?php echo $_SESSION['userspwd']; ?>">
+    <div>Old password:</div>
+    <input type="password" name="update_pass" placeholder="Enter Password">
+    <div>New password:</div>
+    <input type="password" name="new_pass" placeholder="Enter New Password">
+    <div>Confirm password:</div>
+    <input type="password" name="confirm_pass" placeholder="Confirm New Password">
+    <button type="submit" name="update_profile">Update Profile</button>
 
-        <?php
-        if (isset($message)) {
-          foreach ($message as $message) {
-            echo '<p>' . $message . '</p>';
-          }
-        }
+    <?php
+    if (isset($message)) {
+      foreach ($message as $message) {
+        echo '<p>' . $message . '</p>';
+      }
+    }
 
 
-          $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
-          $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
+    $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
+    $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
 
-          // Set the redirect url where the user will land after oAuth. That url is where the access code will be sent as a _GET parameter. This may be any url in your app that you can accept and process the access code and login
+    // Set the redirect url where the user will land after oAuth. That url is where the access code will be sent as a _GET parameter. This may be any url in your app that you can accept and process the access code and login
 
-          // In this case, say, /patreon_login request uri
-          $redirect_uri = "https://www.fleshandbloodonline.com/FaBOnline/PatreonLogin.php"; // Replace http://mydomain.com/patreon_login with the url at your site which is going to receive users returning from Patreon confirmation
+    // In this case, say, /patreon_login request uri
+    $redirect_uri = "https://www.fleshandbloodonline.com/FaBOnline/PatreonLogin.php"; // Replace http://mydomain.com/patreon_login with the url at your site which is going to receive users returning from Patreon confirmation
 
-          // Generate the oAuth url
-          $href = 'https://www.patreon.com/oauth2/authorize?response_type=code&client_id=' . $client_id . '&redirect_uri=' . urlencode($redirect_uri);
+    // Generate the oAuth url
+    $href = 'https://www.patreon.com/oauth2/authorize?response_type=code&client_id=' . $client_id . '&redirect_uri=' . urlencode($redirect_uri);
 
-          // You can send an array of vars to Patreon and receive them back as they are. Ie, state vars to set the user state, app state or any other info which should be sent back and forth.
-          // for example lets set final page which the user needs to land at - this may be a content the user is unlocking via oauth, or a welcome/thank you page
-          // Lets make it a thank you page
+    // You can send an array of vars to Patreon and receive them back as they are. Ie, state vars to set the user state, app state or any other info which should be sent back and forth.
+    // for example lets set final page which the user needs to land at - this may be a content the user is unlocking via oauth, or a welcome/thank you page
+    // Lets make it a thank you page
 
-          $state = array();
+    $state = array();
 
-          $state['final_page'] = 'http://fleshandbloodonline.com/FaBOnline/MainMenu.php'; // Replace http://mydomain.com/thank_you with the url that has your thank you page
+    $state['final_page'] = 'http://fleshandbloodonline.com/FaBOnline/MainMenu.php'; // Replace http://mydomain.com/thank_you with the url that has your thank you page
 
-          // Add any number of vars you need to this array by $state['key'] = variable value
+    // Add any number of vars you need to this array by $state['key'] = variable value
 
-          // Prepare state var. It must be json_encoded, base64_encoded and url encoded to be safe in regard to any odd chars
-          $state_parameters = '&state=' . urlencode( base64_encode( json_encode( $state ) ) );
+    // Prepare state var. It must be json_encoded, base64_encoded and url encoded to be safe in regard to any odd chars
+    $state_parameters = '&state=' . urlencode(base64_encode(json_encode($state)));
 
-          // Append it to the url
+    // Append it to the url
 
-          $href .= $state_parameters;
+    $href .= $state_parameters;
 
-          // Lets request identity of the user, and email.
-          $scope_parameters = '&scope=identity%20identity'.urlencode('[email]');
+    // Lets request identity of the user, and email.
+    $scope_parameters = '&scope=identity%20identity' . urlencode('[email]');
 
-          $href .= $scope_parameters;
+    $href .= $scope_parameters;
 
-          // Simply echoing it here. You can present the login link/button in any other way.
+    // Simply echoing it here. You can present the login link/button in any other way.
 
           if(!isset($_SESSION["isPatron"]))
           {
             echo("<BR>");
             echo("<BR>");
-            echo '<a style="display:block; margin-left:auto; margin-right:auto; width:50%;height:auto;" href="'.$href.'">';
-              echo("<img src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
+            echo '<a class="containerPatreon" href="'.$href.'">';
+              echo("<img class='imgPatreon' src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
             echo '</a>';
           }
 
 
-        ?>
+    ?>
 
-    </div>
+  </div>
   </div>
   </form>
 </section>
