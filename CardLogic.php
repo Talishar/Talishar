@@ -506,6 +506,12 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
       WriteLog(CardLink($parameter, $parameter) . " produced 2 resources.");
       break;
+    case "ARC035":
+      $index = SearchItemsForUniqueID($uniqueID, $player);
+      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter to remain in play.");
+      --$items[$index + 1];
+      if ($items[$index + 1] <= 0) DestroyMainItem($index);
+      break;
     case "ARC162":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " was destroyed at the beginning of your action phase.");

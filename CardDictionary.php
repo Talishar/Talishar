@@ -1755,10 +1755,14 @@ function AuraDefaultHoldTriggerState($cardID)
 
 function ItemDefaultHoldTriggerState($cardID)
 {
-  switch($cardID)
-  {
-    case "ARC007": return 0;
-    default: return 2;
+  switch ($cardID) {
+    case "ARC007": // Teklo Core
+    case "ARC035": // Dissipation Shiel
+    case "EVR069": // Dissolution Sphere
+    case "EVR071": // Signal Jammer
+      return 0;
+    default:
+      return 2;
   }
 }
 
