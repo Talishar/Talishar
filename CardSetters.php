@@ -22,7 +22,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   if ($player == "") $player = $currentPlayer;
   WriteReplay($player, $cardID, $from, "BANISH");
   if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
-    WriteLog("Back Alley Breakline was banished from your deck face up by an action card. Gained 1 action point.");
+    WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
   }
   //Do effects that change where it goes, or banish it if not
@@ -39,18 +39,13 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
       $character = &GetPlayerCharacter($player);
       if (($character[0] == "MON119" || $character[0] == "MON120") && $character[1] == 2) { // Levia
-        WriteLog("Levia Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
+        WriteLog(CardLink($character[0], $character[0]) . " Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
       }
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
     if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index)) {
-      AddDecisionQueue("CHARREADYORPASS", $player, $index);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hooves_of_the_Shadowbeast_to_gain_an_action_point", 1);
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
-      AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+      AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
   return $rv;

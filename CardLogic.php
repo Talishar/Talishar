@@ -534,6 +534,15 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
       break;
+    case "MON122":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("CHARREADYORPASS", $player, $index);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Hooves_of_the_Shadowbeast_to_gain_an_action_point", 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
+      AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+      break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
