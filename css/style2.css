@@ -172,7 +172,7 @@ button {
 .signup-form-form {
   display: flex;
   justify-content: center;
-  height: 28vh;
+  height: auto;
   font-family: var(--font-family);
   font-weight: bold;
   font-size: 18px;
@@ -266,13 +266,26 @@ button {
   outline: none;
 }
 
-.g_id_signin {
-  width: 100%;
-  height: 40px;
-  margin-top: 3px;
-  margin-left: 182px;
-  margin-bottom: 5px;
-  position: absolute;
+.centeredGoogle {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.g_id_signin div {
+  margin: 0;
+  transition: 350ms ease-in-out;
+}
+
+.g_id_signin div:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.g_id_signin div:focus {
+  outline: none;
 }
 
 /* ============
