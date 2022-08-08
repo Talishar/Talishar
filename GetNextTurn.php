@@ -21,6 +21,7 @@ if ($lastUpdate > 10000000) {
 include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
+
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
 
@@ -82,6 +83,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $turn[0] = "OVER";
     $currentPlayer = 1;
     include "WriteGamestate.php";
+    include_once "./includes/dbh.inc.php";
     require_once "./includes/functions.inc.php";
     logCompletedGameStats();
   }
@@ -1018,9 +1020,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display the log
   echo ("<div style='display:flex; flex-direction: column; position:fixed; width:" . $rightSideWidth . "px; top:5px; bottom:5px; right:10px;'>");
 
-  echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr><td>");
-  echo ("<div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div>");
-  echo ("</td><td></td><td>");
+  echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr>");
+  if(isset($_SESSION["isPatron"])) echo ("<td><div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div></td>");
+  echo ("<td></td><td>");
   echo ("<div class='MenuButtons' title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo ("</td></tr></table></div></div>");
 

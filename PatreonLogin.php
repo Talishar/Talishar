@@ -7,6 +7,7 @@ require_once './Assets/patreon-php-master/src/OAuth.php';
 require_once './Assets/patreon-php-master/src/API.php';
 require_once './Assets/patreon-php-master/src/PatreonLibraries.php';
 require_once './includes/functions.inc.php';
+include_once "./includes/dbh.inc.php";
 
 
   use Patreon\API;

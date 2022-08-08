@@ -68,6 +68,7 @@ function uidExists($conn, $username) {
 		return $result;
 	}
 	mysqli_stmt_close($stmt);
+	mysqli_close($conn);
 }
 
 // Check if username is in database, if so then return data
@@ -76,6 +77,7 @@ function getUInfo($conn, $username) {
   $sql = "SELECT * FROM users WHERE usersUid = ? OR usersEmail = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_close($conn);
 	 	header("location: ../Signup.php?error=stmtfailed");
 		exit();
 	}
@@ -87,13 +89,16 @@ function getUInfo($conn, $username) {
 	$resultData = mysqli_stmt_get_result($stmt);
 
 	if ($row = mysqli_fetch_assoc($resultData)) {
+		mysqli_close($conn);
 		return $row;
 	}
 	else {
 		$result = false;
+		mysqli_close($conn);
 		return $result;
 	}
 	mysqli_stmt_close($stmt);
+	mysqli_close($conn);
 }
 
 // Insert new user into database
@@ -134,6 +139,7 @@ function loginUser($username, $pwd, $rememberMe) {
 	$uidExists = uidExists($conn, $username);
 
 	if ($uidExists === false) {
+		mysqli_close($conn);
 		header("location: ../Login.php?error=wronglogin");
 		exit();
 	}
@@ -142,6 +148,7 @@ function loginUser($username, $pwd, $rememberMe) {
 	$checkPwd = password_verify($pwd, $pwdHashed);
 
 	if ($checkPwd === false) {
+		mysqli_close($conn);
 		header("location: ../Login.php?error=wronglogin");
 		exit();
 	}
@@ -170,7 +177,6 @@ function loginUser($username, $pwd, $rememberMe) {
 function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
-	require_once "dbh.inc.php";
 	$conn = GetDBConnection();
 	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
 	$stmt = mysqli_stmt_init($conn);
@@ -179,7 +185,6 @@ function loginFromCookie()
 		$data = mysqli_stmt_get_result($stmt);
 		$row = mysqli_fetch_array($data, MYSQLI_NUM);
 		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
 		if($row != null && count($row) > 0)
 		{
 			$_SESSION["userid"] = $row[0];
@@ -195,6 +200,7 @@ function loginFromCookie()
 			unset($_SESSION["useremail"]);
 		}
 	}
+	mysqli_close($conn);
 }
 
 function storeRememberMeCookie($conn, $uuid, $cookie)
@@ -209,7 +215,6 @@ function storeRememberMeCookie($conn, $uuid, $cookie)
 
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 {
-	require_once "dbh.inc.php";
 	$conn = GetDBConnection();
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero) VALUES (" . $values. ");";
@@ -217,13 +222,12 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
 	}
+	mysqli_close($conn);
 }
 
 function LoadFavoriteDecks($userID)
 {
-	require_once "dbh.inc.php";
 	$conn = GetDBConnection();
 	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=$userID";
 	$stmt = mysqli_stmt_init($conn);
@@ -235,8 +239,8 @@ function LoadFavoriteDecks($userID)
 			for($i=0;$i<3;++$i) array_push($output, $row[$i]);
 		}
 		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
 	}
+	mysqli_close($conn);
 	return $output;
 }
 
@@ -259,7 +263,6 @@ function logCompletedGameStats() {
 		$values .= ", " . $p2id;
 	}
 
-	require_once "dbh.inc.php";
 	$conn = GetDBConnection();
 
   $sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
@@ -270,8 +273,8 @@ function logCompletedGameStats() {
 		mysqli_stmt_bind_param($stmt, "sssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
 	}
+	mysqli_close($conn);
 
 }
 
@@ -279,13 +282,12 @@ function SavePatreonTokens($accessToken, $refreshToken)
 {
 	if(!isset($_SESSION["userid"])) return;
 	$userID = $_SESSION["userid"];
-	require_once "dbh.inc.php";
 	$conn = GetDBConnection();
 	$sql = "UPDATE users SET patreonAccessToken='$accessToken', patreonRefreshToken='$refreshToken' WHERE usersid='$userID'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
 	}
+	mysqli_close($conn);
 }
