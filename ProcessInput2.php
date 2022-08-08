@@ -474,6 +474,7 @@ ProcessMacros();
 
 if ($winner != 0 && $turn[0] != "OVER") {
   require_once "./includes/functions.inc.php";
+  include_once "./includes/dbh.inc.php";
   $turn[0] = "OVER";
   $currentPlayer = 1;
   logCompletedGameStats();

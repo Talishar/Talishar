@@ -299,6 +299,7 @@ if ($decklink != "") {
   if ($favoriteDeck == "on" && isset($_SESSION["userid"])) {
     //Save deck
     require_once './includes/functions.inc.php';
+    include_once "./includes/dbh.inc.php";
     addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character);
   }
 } else {
