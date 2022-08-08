@@ -621,15 +621,12 @@ button {
   background-color: var(--grey-transparent-background);
   border: 2px solid var(--dark-color);
   border-radius: 5px;
+  overflow: hidden;
 }
 
-.NewsMenu h1 {
-  width: 100%;
-  text-align: center;
-  color: rgb(220, 220, 220);
-}
-
-.NewsMenu h2 {
+.NewsMenu h1,
+.NewsMenu h2,
+.NewsMenu h3 {
   width: 100%;
   text-align: center;
   color: rgb(220, 220, 220);
