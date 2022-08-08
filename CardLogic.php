@@ -512,6 +512,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
       break;
+    case "ARC152":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
+      AddDecisionQueue("VESTOFTHEFIRSTFIST", $player, $index, 1);
+      break;
     case "ARC162":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " was destroyed at the beginning of your action phase.");

@@ -2221,8 +2221,7 @@ function MainCharacterHitAbilities()
         break;
       case "ARC152":
         if (CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
-          AddDecisionQueue("VESTOFTHEFIRSTFIST", $mainPlayer, $i, 1);
+          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$i]);
         }
         break;
       case "CRU047":
