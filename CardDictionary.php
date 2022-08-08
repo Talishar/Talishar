@@ -1257,6 +1257,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR064":
     case "EVR065":
       return GetClassState($player, $CS_AtksWWeapon) < 1;
+    case "EVR137":
+      return $player != $mainPlayer || $turn[0] != "M";
     case "EVR173":
     case "EVR174":
     case "EVR175":
@@ -1699,27 +1701,27 @@ function CharacterNumUsesPerTurn($cardID)
 function CharacterDefaultActiveState($cardID)
 {
   switch ($cardID) {
-    case "UPR004": case "UPR047": case "UPR125": 
+    case "UPR004": case "UPR047": case "UPR125":
     case "UPR184": case "UPR185": case "UPR186": // Quell
-      return 0; 
+      return 0;
     case "WTR117": // Refraction Bolters
-      return 1; 
+      return 1;
     case "ARC152": // Vest of the First Fist
-      return 1; 
+      return 1;
     case "CRU053": // Breeze Rider Boots
-      return 1; 
+      return 1;
     case "CRU161": // Metacarpus Node
-      return 1; 
+      return 1;
     case "MON122": // Hooves of the Shadowbeast
-      return 0; 
+      return 0;
     case "ELE174": // Mark of Lightning
-      return 1; 
+      return 1;
     case "EVR037": // Mask of the Pouncing Lynx
-      return 1; 
+      return 1;
     case "ELE173": case "MON061": case "MON090":
     case "MON188": case "MON302": case "MON400": // Spellvoid Equipments
     case "MON401": case "MON402":
-      return 1; 
+      return 1;
     default:
       return 2;
   }
