@@ -318,7 +318,7 @@ function IsGamePhase($phase)
 function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
-  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost;
+  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -482,10 +482,12 @@ function ProcessLayer($player, $parameter)
 
 function ProcessTrigger($player, $parameter, $uniqueID)
 {
+  global $combatChain;
+  
   $resources = &GetResources($player);
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
-
+  $otherPlayer = ($player == 1 ? 2 : 1);
 
   switch ($parameter) {
     case "WTR001": case "WTR002": case "RVD001":
@@ -549,6 +551,14 @@ function ProcessTrigger($player, $parameter, $uniqueID)
     case "ELE111":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "ELE174":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("YESNO", $player, "destroy_mark_of_lightning_to_have_the_attack_deal_1_damage");
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("DEALDAMAGE", $otherPlayer, 1 . "-" . $combatChain[0] . "-" . "COMBAT", 1);
+      break;
     case "EVR018":
       PlayAura("ELE111", $player);
       break;
@@ -599,8 +609,7 @@ function GetDQHelpText()
 
 function FinalizeAction()
 {
-  global $currentPlayer, $mainPlayer, $otherPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $mainPlayerGamestateStillBuilt;
-  global $layerPriority;
+  global $currentPlayer, $mainPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $mainPlayerGamestateStillBuilt;
   if (!$mainPlayerGamestateStillBuilt) UpdateGameState(1);
   BuildMainPlayerGamestate();
   if ($turn[0] == "M") {
