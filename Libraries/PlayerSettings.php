@@ -19,6 +19,7 @@ $SET_EnableDynamicScaling = 10; //Threshold to shortcut attacks
 $SET_Mute = 11; //Mute sounds
 
 $SET_Cardback = 12; //Card backs
+$SET_IsPatron = 13; //Is Patron
 
 function HoldPrioritySetting($player)
 {
@@ -53,6 +54,14 @@ function IsDarkPlainMode($player)
   global $SET_DarkMode;
   $settings = GetSettings($player);
   return $settings[$SET_DarkMode] == 3;
+}
+
+function IsPatron($player)
+{
+  global $SET_IsPatron;
+  $settings = GetSettings($player);
+  if(count($settings) < $SET_IsPatron) return false;
+  return $settings[$SET_IsPatron] == "1";
 }
 
 // 0 - Default
@@ -257,7 +266,7 @@ function GetSettingsUI($player)
   // 4 - Grey
   // 5 - Red
   // 6 - Tan
-   if (isset($_SESSION["isPatron"])) {
+   if (IsPatron($player)) {
     $rv .= "<h3>Card Backs</h3>";
     $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-1", "Black", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Black");

@@ -39,6 +39,8 @@
   $p2id = trim(fgets($gameFileHandler));
   $gameDescription = trim(fgets($gameFileHandler));
   $hostIP = trim(fgets($gameFileHandler));
+  $p1IsPatron = trim(fgets($gameFileHandler));
+  $p2IsPatron = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

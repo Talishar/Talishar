@@ -354,11 +354,12 @@ if ($playerID == 2) {
   $gameStatus = $MGS_ChooseFirstPlayer;
 }
 
-session_start();
 if ($playerID == 1 && isset($_SESSION["useruid"])) $p1uid = $_SESSION["useruid"];
 if ($playerID == 2 && isset($_SESSION["useruid"])) $p2uid = $_SESSION["useruid"];
 if ($playerID == 1 && isset($_SESSION["userid"])) $p1id = $_SESSION["userid"];
 if ($playerID == 2 && isset($_SESSION["userid"])) $p2id = $_SESSION["userid"];
+if ($playerID == 1 && isset($_SESSION["isPatron"])) $p1IsPatron = "1";
+if ($playerID == 2 && isset($_SESSION["isPatron"])) $p2IsPatron = "1";
 
 WriteGameFile();
 SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));

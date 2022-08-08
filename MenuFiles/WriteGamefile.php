@@ -9,7 +9,7 @@
     {
       global $gameFileHandler;
       global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
-      global $gameDescription, $hostIP;
+      global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
       fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
@@ -26,6 +26,8 @@
       fwrite($gameFileHandler, $p2id . "\r\n");
       fwrite($gameFileHandler, $gameDescription . "\r\n");
       fwrite($gameFileHandler, $hostIP . "\r\n");
+      fwrite($gameFileHandler, $p1IsPatron . "\r\n");
+      fwrite($gameFileHandler, $p2IsPatron . "\r\n");
       fclose($gameFileHandler);
     }
   }
