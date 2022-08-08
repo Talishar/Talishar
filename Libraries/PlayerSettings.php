@@ -61,7 +61,7 @@ function IsDarkPlainMode($player)
 // 3 - Golden
 // 4 - Grey
 // 5 - Red
-// 6 - Tan 
+// 6 - Tan
 function IsCardBackBlackMode($player)
 {
   global $SET_Cardback;
@@ -256,8 +256,8 @@ function GetSettingsUI($player)
   // 3 - Golden
   // 4 - Grey
   // 5 - Red
-  // 6 - Tan 
-  // if (isset($_SESSION["isPatron"])) {
+  // 6 - Tan
+   if (isset($_SESSION["isPatron"])) {
     $rv .= "<h3>Card Backs</h3>";
     $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-1", "Black", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Black");
@@ -268,7 +268,7 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-5", "Red", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Red ");
     $rv .= "<BR>";
     $rv .= CreateRadioButton($SET_Cardback . "-6", "Tan", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Tan");
-  // }
+   }
 
   /*
     $rv .= "<BR>";
