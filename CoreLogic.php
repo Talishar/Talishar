@@ -1054,6 +1054,7 @@ function ClassOverride($cardID, $player="")
       $cardClass .= $toAdd;
     }
   }
+  if($cardClass == "") return "NONE";
   return $cardClass;
 }
 
