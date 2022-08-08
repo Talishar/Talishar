@@ -484,6 +484,8 @@ function ProcessTrigger($player, $parameter, $uniqueID)
 {
   $resources = &GetResources($player);
   $items = &GetItems($player);
+  $character = &GetPlayerCharacter($player);
+
 
   switch ($parameter) {
     case "WTR001": case "WTR002": case "RVD001":
@@ -523,6 +525,14 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       break;
     case "CRU000":
       PlayAura("ARC112", $player);
+      break;
+    case "CRU053":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
       break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
