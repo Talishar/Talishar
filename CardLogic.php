@@ -535,6 +535,12 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       break;
+    case "EVR069":
+      $index = SearchItemsForUniqueID($uniqueID, $player);
+      WriteLog(CardLink($parameter, $parameter) . " lost a steam counter to remain in play.");
+      --$items[$index + 1];
+      if ($items[$index + 1] < 0) DestroyMainItem($index);
+      break;
     case "EVR107":
     case "EVR108":
     case "EVR109":
