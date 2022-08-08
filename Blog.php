@@ -13,6 +13,17 @@ include_once 'Header.php';
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>8th August 2022</h2>
+    <h3>👩‍🔧 Hello, players! Some updates for the following days.</h3>
+    <p><br>- We are implementing a sound for when you have priority (With an option to mute).
+      <br>- We are adding Patreon login and integration to the website.
+      <br>- We are adding google login.
+      <br>- We fixed Shiyana's copy ability.
+      <br>There were a lot more fixes backstage last weekend. We'll show you more of it soon. ❤️
+      <br>The big highlight of our weekend, we had more than 15 games going on at once!
+    </p>
+  </div>
+  <div class="articles">
     <h2>6th August 2022</h2>
     <h3>Happy Saturday #fabtcg fam!<br>
       Today we are bringing you styles and 6 tweets of fixes!</h3>
