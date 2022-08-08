@@ -149,6 +149,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   //$holdPriority = ($charEquip[0] == "ARC113" || $charEquip[0] == "ARC114" ? "1" : "0");
   $holdPriority = "0"; //Auto-pass layers
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron);
+  if($isPatron == "") $isPatron = "0";
   fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 1 0 " . $isPatron . "\r\n"); //Settings
 }
 
