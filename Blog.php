@@ -13,6 +13,21 @@ include_once 'Header.php';
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>9th August 2022</h2>
+    <h3>🎊 Patreons Update!<br>
+      We are happy to announce that we've added Patreon API integration to the website!
+      The login with Patreon button is on the profile page. It comes with some brand new Patron-specific benefits:
+    </h3>
+    <p><br>&emsp;1. Heart of Fyendal icon shows up by your name in the chat
+      <br>&emsp;2. Custom card backs (select in the menu)
+      <br>&emsp;3. Ability to see your completed game stats for each hero on the profile page
+      <br>&emsp;4. Ability to see the in-game stats page on any turn, instead of just at the end.
+      <br><br>We've been growing a lot, so server costs should increase shortly. Then we'll be looking to save funds to re-invest in art assets for the site. We want to work on the game background to bring it closer to the standard of what you might expect for a digital card game.
+      <br><br>The founder tier has been closed to new members, as it has said in the description. We always intended to close the Founder tier once we got to a point where we began adding Patreon benefits. We wanted them to have something extra special since they initially supported the site.
+      <br><br>As such, you will note that the Founder discord role will no longer accept new members. I want to truly thank all the patrons that have supported us up to this point and look forward to continuing to work to improve the site together! ❤️
+    </p>
+  </div>
+  <div class="articles">
     <h2>8th August 2022</h2>
     <h3>👩‍🔧 Hello, players! Some updates for the following days.</h3>
     <p><br>- We are implementing a sound for when you have priority (With an option to mute).
