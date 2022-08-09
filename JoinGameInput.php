@@ -391,6 +391,8 @@ function GetAltCardID($cardID)
       return "MON402";
     case "FAB015":
       return "WTR191";
+    case "FAB016":
+      return "WTR162";
     case "FAB023":
       return "MON135";
     case "DVR026":
