@@ -476,13 +476,9 @@ switch ($mode) {
 
 ProcessMacros();
 
-if ($winner != 0 && $turn[0] != "OVER") {
-  include_once "./includes/functions.inc.php";
-  include_once "./includes/dbh.inc.php";
-	include_once "./MenuFiles/ParseGamefile.php";
+if ($winner != 0) {
   $turn[0] = "OVER";
   $currentPlayer = 1;
-  logCompletedGameStats();
 }
 CombatDummyAI(); //Only does anything if applicable
 CacheCombatResult();

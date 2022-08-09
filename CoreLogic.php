@@ -635,7 +635,7 @@ function PlayerGainHealth($amount, &$health)
 
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName;
+  global $winner, $turn, $gameName, $p1id, $p2id;
 	include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
