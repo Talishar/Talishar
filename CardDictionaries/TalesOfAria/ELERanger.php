@@ -428,7 +428,7 @@
           {
             PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
             --$auras[$i+2];
-            if($auras[$i+2] == 0) { DestroyAura($player, $i); WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); }
+            if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
           }
           break;
         default: break;
