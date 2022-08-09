@@ -219,6 +219,8 @@ $CS_ArcaneTargetsSelected = 52;
 $CS_NumDragonAttacks = 53;
 $CS_NumIllusionistAttacks = 54;
 $CS_LastDynCost = 55;
+$CS_NumIllusionistActionCardAttacks = 56;
+
 
 
 //Combat Chain State (State for the current combat chain)
@@ -355,7 +357,7 @@ function ResetMainClassState()
   global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
   global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed;
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
-  global $CS_LastDynCost;
+  global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -412,6 +414,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumDragonAttacks] = 0;
   $mainClassState[$CS_NumIllusionistAttacks] = 0;
   $mainClassState[$CS_LastDynCost] = 0;
+  $mainClassState[$CS_NumIllusionistActionCardAttacks] = 0;
 }
 
 function ResetCardPlayed($cardID)
