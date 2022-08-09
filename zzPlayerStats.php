@@ -94,10 +94,33 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
 echo ("<table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
+echo("<h3>CC Heroes</h3>");
 foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
   if (CharacterHealth($row[0]) <= 25) continue; //Filter out blitz heroes for now
   //if(CharacterHealth($row[0]) > 25) continue;//Filter out cc heroes for now
+  $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
+  $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
+  $playPercent = ($row[1] / $formatDenominator * 100);
+  echo ("<tr>");
+  //echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0]) . "</a></td>");
+  echo ("<td>" . CardLink($row[0], $row[0]) . "</td>");
+  echo ("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
+  echo ("<td>" . $row[1] . "</td>");
+  echo ("<td>" . number_format($winPercent, 2, ".", "") . "% </td>");
+  echo ("<td>" . number_format($playPercent, 2, ".", "") . "% </td>");
+  echo ("</tr>");
+}
+echo ("</table>");
+
+echo("<BR>");
+echo("<h3>Young Heroes</h3>");
+echo ("<table>");
+echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
+
+foreach ($gameData as $row) {
+  //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
+  if(CharacterHealth($row[0]) > 25) continue;//Filter out cc heroes for now
   $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
   $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
   $playPercent = ($row[1] / $formatDenominator * 100);
