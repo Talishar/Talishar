@@ -136,9 +136,9 @@ function AllyDamagePrevention($player, $index, $damage)
   switch ($cardID) {
     case "UPR417":
       if ($allies[$index + 6] > 0) {
+        if ($damage > 0) --$allies[$index + 6];
         $damage -= 3;
         if ($damage < 0) $damage = 0;
-        if ($damage > 0) --$allies[$index + 6];
       }
       return $damage;
     default:
