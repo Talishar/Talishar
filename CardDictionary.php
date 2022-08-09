@@ -1211,6 +1211,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         }
       }
       if (count($layers) != 0) {
+        $abilityType = GetResolvedAbilityType($layers[0]);
         return !($weapons == "AURAS"
           || CardSubType($layers[0]) == "Dagger"
           || CardSubType($layers[0]) == "Hammer"
@@ -1219,7 +1220,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           || CardSubType($layers[0]) == "Scythe"
           || CardSubType($layers[0]) == "Axe"
           || CardSubType($layers[0]) == "Flail"
-          || CardSubType($layers[0]) == "Pistol"
+          || (CardSubType($layers[0]) == "Pistol" && $abilityType == "AA")
           || CardType($layers[0]) == "AA"
           || DelimStringContains(CardSubType($layers[0]), "Ally")); // TODO: Need to not work on Pistol activation
       } else {
