@@ -2,7 +2,7 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue;
   $somethingChanged = true;
   if($turn[0] != "OVER")
   {
@@ -34,9 +34,10 @@ function ProcessMacros()
           }
         }
       }
-      else if(count($layers) == LayerPieces() && $layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") {
-        $somethingChanged = true; ContinueDecisionQueue($turn[2]);
-      }
+      //else if(count($layers) == LayerPieces() && $layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") {
+      //  echo(count($decisionQueue));
+      //  $somethingChanged = true; ContinueDecisionQueue($turn[2]);
+      //}
       if($turn[0] == "B" || $turn[0] == "D")
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);
