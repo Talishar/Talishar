@@ -546,7 +546,7 @@ function AuraLoseHealthAbilities($player, $amount)
 
 function AuraPlayAbilities($cardID, $from)
 {
-  global $currentPlayer, $CS_NumIllusionistAttacks;
+  global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
   $auras = &GetAuras($currentPlayer);
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     switch ($auras[$i]) {
@@ -554,7 +554,7 @@ function AuraPlayAbilities($cardID, $from)
         DimenxxionalCrossroadsPassive($cardID, $from);
         break;
       case "EVR143":
-        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistAttacks) <= 1) {
+        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
           WriteLog("Pierce Reality gives the attack +2.");
           --$auras[$i + 5];
           AddCurrentTurnEffect("EVR143", $currentPlayer, true);
