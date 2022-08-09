@@ -12,9 +12,8 @@ if (!isset($_SESSION["userid"])) {
 }
 $userID = $_SESSION["userid"];
 
-if(!isset($_SESSION["isPatron"]))
-{
-  echo("Please subscribe to our Patreon to access this page.");
+if (!isset($_SESSION["isPatron"])) {
+  echo ("Please subscribe to our Patreon to access this page.");
   exit;
 }
 
@@ -22,9 +21,28 @@ $numDays = TryGet("numDays", 365);
 
 echo ("<script src=\"./jsInclude.js\"></script>");
 
-echo ("<style>td {
-  border: 1px solid black;
-}</style>");
+echo ("<style>
+
+td {
+  border-bottom: 1px solid black;
+  text-align: center;
+  vertical-align: middle;
+  border-collapse: collapse;
+  height: 50px;
+  padding: 5px;
+}
+
+tr:hover {
+  background-color: DarkRed;
+}
+
+h3 {
+  text-align: center;
+  font-size: 1.25em;
+  padding-bottom: 10px;
+}
+
+</style>");
 echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
 
 $sql = "SELECT Hero,sum(Count) AS Total FROM
@@ -91,10 +109,10 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
   array_push($gameData[$i], $row[1]);
 }
 
-echo ("<table>");
+echo ("<div style='height:80vh; overflow-y:scroll;'><table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
-echo("<h3>CC Heroes</h3>");
+echo ("<h3>CC Heroes</h3>");
 foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
   if (CharacterHealth($row[0]) <= 25) continue; //Filter out blitz heroes for now
@@ -104,7 +122,7 @@ foreach ($gameData as $row) {
   $playPercent = ($row[1] / $formatDenominator * 100);
   echo ("<tr>");
   //echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0]) . "</a></td>");
-  echo ("<td>" . CardLink($row[0], $row[0]) . "</td>");
+  echo ("<td>" . CardLink($row[0], $row[0], true) . "</td>");
   echo ("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
   echo ("<td>" . $row[1] . "</td>");
   echo ("<td>" . number_format($winPercent, 2, ".", "") . "% </td>");
@@ -113,24 +131,24 @@ foreach ($gameData as $row) {
 }
 echo ("</table>");
 
-echo("<BR>");
-echo("<h3>Young Heroes</h3>");
+echo ("<BR>");
+echo ("<h3>Young Heroes</h3>");
 echo ("<table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
 foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
-  if(CharacterHealth($row[0]) > 25) continue;//Filter out cc heroes for now
+  if (CharacterHealth($row[0]) > 25) continue; //Filter out cc heroes for now
   $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
   $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
   $playPercent = ($row[1] / $formatDenominator * 100);
   echo ("<tr>");
   //echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0]) . "</a></td>");
-  echo ("<td>" . CardLink($row[0], $row[0]) . "</td>");
+  echo ("<td>" . CardLink($row[0], $row[0], true) . "</td>");
   echo ("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
   echo ("<td>" . $row[1] . "</td>");
   echo ("<td>" . number_format($winPercent, 2, ".", "") . "% </td>");
   echo ("<td>" . number_format($playPercent, 2, ".", "") . "% </td>");
   echo ("</tr>");
 }
-echo ("</table>");
+echo ("</table><div>");

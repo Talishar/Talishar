@@ -388,7 +388,7 @@
     return 0;
   }
 
-  function CardLink($caption, $cardNumber)
+  function CardLink($caption, $cardNumber, $recordMenu=false)
   {
     //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
     global $darkMode, $playerID;
@@ -396,6 +396,10 @@
     if($name == "") return "";
     $pitchValue = PitchValue($cardNumber);
     $pitchText = "";
+    if($recordMenu) {
+      $color = "#DDD";
+    }
+    else {
     switch($pitchValue)
     {
       case 3: $color = "#009DDF"; $pitchText = " (3)"; break;
@@ -407,6 +411,7 @@
         $color = "#8c8c8c"; break;
       }
     }
+  }
     if(function_exists("IsColorblindMode") && !IsColorblindMode($playerID)) $pitchText = "";
     $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
     return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
@@ -455,5 +460,3 @@
     }
     return $banish;
   }
-
-?>
