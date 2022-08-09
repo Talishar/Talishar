@@ -602,18 +602,16 @@ function Pass(&$turn, $playerID, &$currentPlayer)
     OnBlockResolveEffects();
     ProcessDecisionQueue();
   } else if ($turn[0] == "A") {
-    if ($turn[2] == "D") {
+    if (count($turn) >= 3 && $turn[2] == "D") {
       return BeginChainLinkResolution();
-      return 0;
     } else {
       $currentPlayer = $currentPlayer == 1 ? 2 : 1;
       $turn[0] = "D";
       $turn[2] = "A";
     }
   } else if ($turn[0] == "D") {
-    if ($turn[2] == "A") {
+    if (count($turn) >= 3 && $turn[2] == "A") {
       return BeginChainLinkResolution();
-      return 0;
     } else {
       $currentPlayer = $currentPlayer == 1 ? 2 : 1;
       $turn[0] = "A";
