@@ -56,22 +56,33 @@ function PermanentDestroyed($player, $cardID, $isToken = false)
   }
 }
 
-function PermanentEndTurnAbilities()
+function PermanentBeginEndPhaseEffects()
 {
-  global $mainClassState, $CS_NumNonAttackCards, $mainPlayer;
+  global $mainPlayer, $defPlayer;
   $permanents = &GetPermanents($mainPlayer);
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
-      case "UPR439":
-      case "UPR440":
-      case "UPR441":
+      case "UPR439": case "UPR440":case "UPR441":
         $remove = 1;
         break;
       default:
         break;
     }
     if ($remove == 1) DestroyPermanent($mainPlayer, $i);
+  }
+
+  $permanents = &GetPermanents($defPlayer);
+  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    $remove = 0;
+    switch ($permanents[$i]) {
+      case "UPR439": case "UPR440":case "UPR441":
+        $remove = 1;
+        break;
+      default:
+        break;
+    }
+    if ($remove == 1) DestroyPermanent($defPlayer, $i);
   }
 }
 

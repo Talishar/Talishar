@@ -833,6 +833,7 @@ function FinishTurnPass()
   AuraBeginEndPhaseAbilities();
   LandmarkBeginEndPhaseAbilities();
   BeginEndPhaseEffects();
+  PermanentBeginEndPhaseEffects();
   AllyBeginEndPhaseEffects();
   AddDecisionQueue("PASSTURN", $mainPlayer, "-");
   ProcessDecisionQueue("");
@@ -923,7 +924,6 @@ function FinalizeTurn()
 
   CurrentEffectEndTurnAbilities();
   AuraEndTurnAbilities();
-  PermanentEndTurnAbilities();
   AllyEndTurnAbilities();
   MainCharacterEndTurnAbilities();
   ArsenalEndTurn($mainPlayer);

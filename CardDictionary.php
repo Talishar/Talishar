@@ -1308,24 +1308,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "UPR167":
       return $player == $mainPlayer;
       //Mandatory Target Ash
-    case "UPR006":
-    case "UPR007":
-    case "UPR008":
-    case "UPR009":
-    case "UPR010":
-    case "UPR011":
-    case "UPR012":
-    case "UPR013":
-    case "UPR014":
-    case "UPR015":
-    case "UPR016":
-    case "UPR017":
-    case "UPR036":
-    case "UPR037":
-    case "UPR038":
-    case "UPR039":
-    case "UPR040":
-    case "UPR041":
+    case "UPR006": case "UPR007": case "UPR008":
+    case "UPR009": case "UPR010": case "UPR011":
+    case "UPR012": case "UPR013": case "UPR014":
+    case "UPR015": case "UPR016": case "UPR017":
+    case "UPR036": case "UPR037": case "UPR038":
+    case "UPR039": case "UPR040": case "UPR041":
       $myAsh = &GetPermanents($player);
       $ash = 0;
       for ($i = 0; $i < count($myAsh); ++$i) {
