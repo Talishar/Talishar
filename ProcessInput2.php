@@ -1173,13 +1173,13 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "CRU188":
       AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197");
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "4");
-      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_copper", 1);
+      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_coppers", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
       AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195"); //TODO: Gold
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
-      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_silver", 1);
+      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_silvers", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "EVR195-2", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
