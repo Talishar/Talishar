@@ -34,6 +34,9 @@ function ProcessMacros()
           }
         }
       }
+      else if(count($layers) == LayerPieces() && $layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") {
+        $somethingChanged = true; ContinueDecisionQueue($turn[2]);
+      }
       if($turn[0] == "B" || $turn[0] == "D")
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);
