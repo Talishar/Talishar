@@ -109,7 +109,7 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
   array_push($gameData[$i], $row[1]);
 }
 
-echo ("<div style='height:80vh; overflow-y:scroll;'><table>");
+echo ("<div style='height:75vh; overflow-y:scroll;'><table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
 echo ("<h3>CC Heroes</h3>");
