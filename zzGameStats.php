@@ -19,9 +19,25 @@ $numDays = TryGet("numDays", 365);
 
 echo ("<script src=\"./jsInclude.js\"></script>");
 
-echo ("<style>td {
-  border: 1px solid black;
-}</style>");
+echo ("<style>
+td {
+  border-bottom: 1px solid black;
+  text-align: center;
+  vertical-align: middle;
+  height: 50px;
+  padding: 10px;
+}
+
+tr:hover {
+  background-color: coral;
+}
+
+h3 {
+  text-align: center;
+  font-size: 1.25em;
+  padding-bottom: 10px;
+}
+</style>");
 echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
 
 $sql = "SELECT Hero,sum(Count) AS Total FROM
@@ -88,7 +104,7 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
   array_push($gameData[$i], $row[1]);
 }
 
-echo ("<table>");
+echo ("<table style=' border: 3px solid black; border-radius:10px; border-spacing: 0; border-collapse: collapse;'>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
 foreach ($gameData as $row) {

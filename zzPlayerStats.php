@@ -27,6 +27,7 @@ td {
   border-bottom: 1px solid black;
   text-align: center;
   vertical-align: middle;
+  border-spacing: 0;
   border-collapse: collapse;
   height: 50px;
   padding: 5px;
