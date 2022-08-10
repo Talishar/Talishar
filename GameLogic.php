@@ -1935,7 +1935,7 @@ function OnBlockResolveEffects()
 
 function OnBlockEffects($index, $from)
 {
-  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $defPlayer;
+  global $currentTurnEffects, $combatChain, $currentPlayer, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $cardType = CardType($combatChain[$index]);
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
@@ -1957,15 +1957,22 @@ function OnBlockEffects($index, $from)
     } else if ($currentTurnEffects[$i + 1] == $otherPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "MON113": case "MON114": case "MON115":
+          $numbPlow = 0;
+          for ($j = count($currentTurnEffects) - CurrentTurnPieces(); $j >= 0; $j -= CurrentTurnPieces()) {
+            if ($currentTurnEffects[$j] == $currentTurnEffects[$i]) {
+              ++$numbPlow;
+            }
+          }
           if ($cardType == "AA" && IsCombatEffectActive($currentTurnEffects[$i])) {
             $first = true;
-
             if (SearchCharacterEffects($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i])) {
               $first = false;
             }
             if ($first) {
-              AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i]);
-              WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives you weapon +1 for the rest of the turn.");
+              for ($k = 0; $k < $numbPlow; $k++) {
+                AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i]);
+                WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives you weapon +1 for the rest of the turn.");
+              }
             }
           }
           break;
