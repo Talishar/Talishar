@@ -150,7 +150,8 @@ function initializePlayerState($handler, $deckHandler, $player)
   $holdPriority = "0"; //Auto-pass layers
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron);
   if($isPatron == "") $isPatron = "0";
-  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 1 0 " . $isPatron . "\r\n"); //Settings
+  $mute = 0;
+  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . "\r\n"); //Settings
 }
 
 function GetArray($handler)
