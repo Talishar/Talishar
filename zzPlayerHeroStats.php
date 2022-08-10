@@ -34,7 +34,7 @@ table {
   border-radius: 10px;
   border-spacing: 0;
   border-collapse: collapse;
-  background: rgba(74, 74, 74, 0.9);
+  background: rgba(74, 74, 74);
   font-size: 1em;
 }
 
@@ -174,10 +174,10 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
     ++$cardData[$card][1];
   }
 }
-
+echo ("<div id='wrapper' style='text-align: center;'>");
 
 echo ("<section class='game-stats'>");
-echo ("<h3>Detailed stats for " . CardLink($heroID, $heroID) . "</h3>");
+echo ("<h3>Detailed stats for " . CardLink($heroID, $heroID, true) . "</h3>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Opposing Hero</td><td>Num Wins</td><td>Num Losses</td><td>Win %</td></tr>");
@@ -189,7 +189,7 @@ $deckTotalGames = 0;
 foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
   echo ("<tr>");
-  echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0]) . "</a></td>");
+  echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0], true) . "</a></td>");
   echo ("<td>" . $row[1] . "</td>");
   echo ("<td>" . $row[2] . "</td>");
   echo ("<td>" . (($row[1] / ($row[1] + $row[2])) * 100) . "% </td>");
@@ -204,7 +204,7 @@ foreach ($gameData as $row) {
 echo ("</table>");
 echo ("</section>");
 
-if($totalGames == 0) exit;
+if ($totalGames == 0) exit;
 
 $totalWinrate = $totalWins / $totalGames;
 $deckTotalWinrate = ($deckTotalGames > 0 ? $deckTotalWins / $deckTotalGames : 0);
@@ -227,6 +227,7 @@ while (count($cardData) > 0) {
 }
 
 echo ("<section class='game-stats'>");
+echo ("<h3>Cards Details</h3>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Card</td><td>Num Plays</td><td>Win Rate</td><td>Relative Win Rate</td></tr>");
@@ -240,6 +241,9 @@ foreach ($sortedCardData as $key => $card) {
   echo ("</tr>");
 }
 echo ("</table>");
+echo ("</div>");
 echo ("</section>");
+echo ("</div>");
+
 
 include_once 'Footer.php';

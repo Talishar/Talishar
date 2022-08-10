@@ -143,7 +143,6 @@ section {
   margin-top: 15px;
   width: 30%;
   height: 90vh;
-  overflow: auto;
 }
 
 select {
@@ -847,16 +846,13 @@ button {
   ============ */
 
 .game-stats {
+  position: relative;
   border-radius: 5px;
   margin: auto;
   margin-top: 15px;
   width: 40%;
   height: 90vh;
-  overflow: auto;
-  position: fixed;
-  display: block;
-  left:50%;
-  transform: translateX(-50%);
+  display: inline-block;
 }
 
 .game-stats-div {
@@ -868,4 +864,6 @@ button {
   color: var(--light-color);
   margin-bottom: 5px;
   text-shadow: var(--text-shadow);
+  overflow-y: auto;
+  max-height: 88vh;
 }
