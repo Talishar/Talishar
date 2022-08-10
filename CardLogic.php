@@ -516,6 +516,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
       break;
+    case "ARC112":
+      DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "ARC152":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Vest_of_the_First_Fist_to_gain_2_resources");
