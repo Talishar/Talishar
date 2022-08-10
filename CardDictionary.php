@@ -1210,7 +1210,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           }
         }
       }
-      if (count($layers) != 0) {
+      if (count($layers) != 0 && count($combatChain) == 0) {
         $abilityType = GetResolvedAbilityType($layers[0]);
         return !($weapons == "AURAS"
           || CardSubType($layers[0]) == "Dagger"
