@@ -28,7 +28,6 @@
 
   function WTRAbilityHasGoAgain($cardID)
   {
-    global $currentPlayer;
     switch ($cardID)
     {
       case "WTR038": case "WTR039": return true;
@@ -36,7 +35,6 @@
       case "WTR116": return true;
       case "WTR152": return true;
       case "WTR153": return true;
-      case "WTR162": return GetDieRoll($currentPlayer) <= 4;
       case "WTR171": return true;
       default: return false;
     }
