@@ -1072,6 +1072,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo ("<div id='chatPlaceholder' style='flex-grow:0; flex-shrink:0; height:26px;'></div>");
     echo ("</div>");
   }
+
+  echo("<div id='animations'>" . implode(" ", $animations) . "</div>");
 }
 
 function PlayableCardBorderColor($cardID)

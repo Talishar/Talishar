@@ -3,17 +3,11 @@
   //$stepCounter;
   function WriteReplay($playerID, $cardID, $from, $destination)
   {
-    /*
-    global $gameName, $stepCounter;
-    $filename = "./Games/" . $gameName . "/Replay.txt";
-    $handler = fopen($filename, "a+");
-
-  $output = ($stepCounter . " ID" . $playerID . " " . $cardID . " ". $from . " ". $destination);
-
-
-    fwrite($handler, $output . "\r\n");
-    fclose($handler);
-    */
+    global $animations;
+    array_push($animations, $playerID);
+    array_push($animations, $cardID);
+    array_push($animations, $from);
+    array_push($animations, $destination);
   }
 
   function StartReplay()

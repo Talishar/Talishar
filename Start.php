@@ -75,6 +75,7 @@ fwrite($handler, $p1Key . "\r\n"); //Player 1 auth key
 fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
 fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
 fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+fwrite($handler, "\r\n"); //Animations
 fclose($handler);
 
 //Set up log file
