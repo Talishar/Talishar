@@ -911,7 +911,7 @@
         if($currentPlayer == $mainPlayer)
         {
           AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, $numReveal . "-", 1);
-          AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-1", 1);
+          AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-" . $numReveal, 1);
           AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
           AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
         }
