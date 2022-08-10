@@ -20,7 +20,7 @@
     else return "#EDEDED";
   }
   //Rotate is deprecated
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="")
+  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="", $controller=0)
   {//
     global $playerID, $darkMode;
     if($darkMode == null) $darkMode = false;
@@ -68,6 +68,8 @@
     else if($folder == "concat") { $height = $maxHeight; $width = $maxHeight; }
     else if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
     else { $height = ($maxHeight * .71); $width = $maxHeight; }
+
+    if($controller != 0 && IsPatron($controller) && CardHasAltArt($cardNumber)) $folderPath = "PatreonImages/" . $folderPath;
 
     if($rotate == false){
       $rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='" . $border . " height:" . $height . "; width:" . $width . "px; position:relative;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
