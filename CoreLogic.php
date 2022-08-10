@@ -1137,7 +1137,7 @@ function DoesAttackHaveGoAgain()
   $attackSubtype = CardSubType($combatChain[0]);
   $attackValue = AttackValue($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
-  if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false;//Blizzard
+  if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false; //Blizzard
   if(HasGoAgain($combatChain[0])) return true;
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
@@ -1149,6 +1149,7 @@ function DoesAttackHaveGoAgain()
   }
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002"))) return true;
 
+  // Unnatural Go Again - Important for Hypotermia
   $mainPitch = &GetPitch($mainPlayer);
   switch ($combatChain[0])
   {
@@ -1162,8 +1163,18 @@ function DoesAttackHaveGoAgain()
       if(SearchHighestAttackDefended() < $attackValue) return true;
       break;
     case "ELE216": case "ELE217": case "ELE218":
-      if(HasIncreasedAttack()) return true;
+      if(HasIncreasedAttack()) 
       break;
+    case "UPR046":
+    case "UPR063": case "UPR064": case "UPR065":
+    case "UPR069": case "UPR070": case "UPR071":
+      if(NumDraconicChainLinks() >= 2) return true;
+      break;
+    case "UPR048": 
+      return NumPhoenixFlameChainLinks() >= 1;
+      break;
+    case "UPR092":
+      return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
     default:
       break;
   }
