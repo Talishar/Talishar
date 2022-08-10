@@ -74,12 +74,7 @@ fwrite($handler, "\r\n"); //Chain Link Summaries
 fwrite($handler, $p1Key . "\r\n"); //Player 1 auth key
 fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
 fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
-fwrite($handler, "0\r\n"); //Number of Alluvion Used
-fwrite($handler, "0\r\n"); //Number of Damage Dealt
-fwrite($handler, "0\r\n"); //ArcaneTargetsSelected;
-fwrite($handler, "0\r\n"); //Number of Dragon Attacks
-fwrite($handler, "0\r\n"); //Number of Illusionist Attacks;
-fwrite($handler, "0\r\n"); //Cost of the last DynamicCost;
+fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 fclose($handler);
 
 //Set up log file
@@ -150,7 +145,8 @@ function initializePlayerState($handler, $deckHandler, $player)
   $holdPriority = "0"; //Auto-pass layers
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron);
   if($isPatron == "") $isPatron = "0";
-  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 1 0 " . $isPatron . "\r\n"); //Settings
+  $mute = 0;
+  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . "\r\n"); //Settings
 }
 
 function GetArray($handler)

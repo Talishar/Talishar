@@ -383,9 +383,6 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
-          if (HasFusion($cardID)) {
-            $lastPlayed[3] = ($additionalCosts != "-" ? "FUSED" : "UNFUSED");
-          }
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3]);
           ClearDieRoll($player);
         }
@@ -515,6 +512,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       WriteLog(CardLink($parameter, $parameter) . " lost a steam counter and remain in play.");
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
+      break;
+    case "ARC112":
+      DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
+      DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ARC152":
       $index = FindCharacterIndex($player, $parameter);

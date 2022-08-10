@@ -26,7 +26,8 @@ function ProcessMacros()
         }
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
-          if($layers[5] != "-")//Means there is a unique ID
+          if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+          else if($layers[5] != "-")//Means there is a unique ID
           {
             $subtype = CardSubType($layers[2]);
             if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0) { $somethingChanged = true; PassInput(); }
@@ -34,10 +35,6 @@ function ProcessMacros()
           }
         }
       }
-      //else if(count($layers) == LayerPieces() && $layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") {
-      //  echo(count($decisionQueue));
-      //  $somethingChanged = true; ContinueDecisionQueue($turn[2]);
-      //}
       if($turn[0] == "B" || $turn[0] == "D")
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);

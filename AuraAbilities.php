@@ -585,8 +585,7 @@ function AuraAttackAbilities($attackID)
         break;
       case "ARC112":
         if ($attackType == "AA" || $attackType == "W") {
-          DealArcane(1, 1, "RUNECHANT", "ARC112");
-          $remove = 1;
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
       case "ELE110":

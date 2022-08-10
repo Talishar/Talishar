@@ -225,8 +225,16 @@ switch ($mode) {
     $params = explode("-", $turn[2]);
     $maxSelect = intval($params[0]);
     $options = explode(",", $params[1]);
+    if(count($params) > 2) $minSelect = intval($params[2]);
+    else $minSelect = -1;
     if (count($chkInput) > $maxSelect) {
       WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " was allowed. Reverting gamestate prior to that effect.");
+      RevertGamestate();
+      $skipWriteGamestate = true;
+      break;
+    }
+    if ($minSelect != -1 && count($chkInput) < $minSelect && count($chkInput) < count($options)) {
+      WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " was allowed. Reverting gamestate prior to that effect.");
       RevertGamestate();
       $skipWriteGamestate = true;
       break;
@@ -988,6 +996,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $lastPlayed[0] = $cardID;
       $lastPlayed[1] = $currentPlayer;
       $lastPlayed[2] = CardType($cardID);
+      $lastPlayed[3] = "-";
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
     }
     if (count($layers) > 0 && $layers[0] == "ENDTURN") $layers[0] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
