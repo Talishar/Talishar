@@ -25,7 +25,7 @@ table {
   border-radius: 10px; 
   border-spacing: 0; 
   border-collapse: collapse;
-  background: rgba(74, 74, 74, 0.9);
+  background: rgba(74, 74, 74);
   font-size: 1em;
 }
 
