@@ -3798,6 +3798,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AppendClassState($player, $CS_AdditionalCosts, $elements);
         CurrentTurnFuseEffects($player, $element);
         AuraFuseEffects($player, $element);
+        $lastPlayed[3] = (GetClassState($player, $CS_AdditionalCosts) == HasFusion($card) || IsAndOrFuse($card) ? "FUSED" : "UNFUSED");
       }
       return $lastResult;
     case "SUBPITCHVALUE":
