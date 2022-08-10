@@ -44,7 +44,7 @@ tr:hover {
 h3 {
   text-align: center;
   font-size: 1.25em;
-  padding-bottom: 10px;
+  padding-top: 15px;
 }
 </style>");
 
@@ -113,8 +113,8 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
   for ($i = 0; $i < count($gameData) && $gameData[$i][0] != $heroID; ++$i);
   array_push($gameData[$i], $row[1]);
 }
-
-echo ("<section class='game-stats'>");
+echo ("<h3>Click Heroes For More Details</h3>");
+echo ("<section class='game-stats' style='display: flex; justify-content: center;'>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
