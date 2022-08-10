@@ -225,8 +225,16 @@ switch ($mode) {
     $params = explode("-", $turn[2]);
     $maxSelect = intval($params[0]);
     $options = explode(",", $params[1]);
+    if(count($params) > 2) $minSelect = intval($params[2]);
+    else $minSelect = -1;
     if (count($chkInput) > $maxSelect) {
       WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " was allowed. Reverting gamestate prior to that effect.");
+      RevertGamestate();
+      $skipWriteGamestate = true;
+      break;
+    }
+    if ($minSelect != -1 && count($chkInput) < $minSelect) {
+      WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " was allowed. Reverting gamestate prior to that effect.");
       RevertGamestate();
       $skipWriteGamestate = true;
       break;
