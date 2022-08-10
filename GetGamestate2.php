@@ -82,7 +82,7 @@ function OutputPlayerData($player)
   $allies = ($player == 1 ? $p1Allies : $p2Allies);
   if ($playerID == $player) {
     $actionType = $turn[0] == "ARS" ? 4 : 2;
-    if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
+    if (strpos($turn[0], "CHOOSEHAND") !== false && $turn[0] != "MULTICHOOSEHAND") $actionType = 16;
     $handOut = "";
     for ($i = 0; $i < count($hand); ++$i) {
       if ($player != $currentPlayer) $playable = 0;

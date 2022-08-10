@@ -68,8 +68,6 @@ function TypeToPlay($phase)
       return "cards from discard";
     case "MULTICHOOSEHAND":
       return "cards from hand";
-    case "MAYMULTICHOOSEHAND":
-      return "cards from hand";
     case "MULTICHOOSEDECK":
       return "cards from deck";
     case "YESNO":
