@@ -178,6 +178,8 @@ foreach ($gameData as $row) {
 echo ("</table>");
 echo ("</div>");
 
+if($totalGames == 0) exit;
+
 $totalWinrate = $totalWins / $totalGames;
 $deckTotalWinrate = ($deckTotalGames > 0 ? $deckTotalWins / $deckTotalGames : 0);
 
