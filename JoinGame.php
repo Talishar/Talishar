@@ -75,7 +75,7 @@ $playerID = $_GET["playerID"];
   }
 
   ?>
-    <label for="fabdb" style='font-weight:bolder; margin-left:68px;'>Deck Link:</label>
+    <label for="fabdb" style='font-weight:bolder; margin-left:71px;'>Deck Link:</label>
     <input type="text" id="fabdb" name="fabdb">
   &nbsp;
   <?php
