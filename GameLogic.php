@@ -2778,8 +2778,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ITEMSMAX":
           $rv = SearchItems($player, "", "", $subparam);
           break;
-        case "DECKITEMMAXCOST":
-          $rv = SearchDeck($player, "", "Item", $subparam);
+        case "DECKITEMCOST":
+          $rv = SearchDeck($player, "", "Item", $subparam, $subparam);
           break;
         case "EQUIP":
           $rv = GetEquipmentIndices($player);
