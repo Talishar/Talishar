@@ -59,7 +59,6 @@
 
   function EVRHasGoAgain($cardID)
   {
-    global $mainPlayer, $CS_NumAuras;
     switch($cardID)
     {
       case "EVR003": return true;
@@ -80,10 +79,8 @@
       case "EVR089": return true;
       case "EVR091": case "EVR092": case "EVR093": return true;
       case "EVR100": case "EVR101": case "EVR102": return true;
-      case "EVR105": return GetClassState($mainPlayer, $CS_NumAuras) > 0;
       case "EVR106": return true;
       case "EVR107": case "EVR108": case "EVR109": return true;
-      case "EVR138": return FractalReplicationStats("Attack");
       case "EVR150": case "EVR151": case "EVR152": return true;
       case "EVR158": return true;
       case "EVR160": return true;

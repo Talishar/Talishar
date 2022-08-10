@@ -87,7 +87,6 @@
       case "ELE205": return true;
       case "ELE206": case "ELE207": case "ELE208": return true;
       case "ELE215": return true;
-      case "ELE216": case "ELE217": case "ELE218": return CachedTotalAttack() > AttackValue($cardID);
       case "ELE219": case "ELE220": case "ELE221": return true;
       case "ELE226": return true;
       default: return false;

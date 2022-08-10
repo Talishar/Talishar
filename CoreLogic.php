@@ -1130,7 +1130,8 @@ function RevealCards($cards, $player="")
 
 function DoesAttackHaveGoAgain()
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_NumRedPlayed;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
+  global $CS_NumAuras, $CS_ArcaneDamageTaken;
 
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
@@ -1153,17 +1154,48 @@ function DoesAttackHaveGoAgain()
   $mainPitch = &GetPitch($mainPlayer);
   switch ($combatChain[0])
   {
-    case "MON293": case "MON294": case "MON295":
-      if(SearchPitchHighestAttack($mainPitch) > $attackValue) return true;
+    case "WTR162":
+      return GetDieRoll($mainPlayer) <= 4;
+    case "ARC197": case "ARC198": case "ARC199":
+      return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
+      break;
+    case "ARC212": case "ARC213": case "ARC214":
+      return GetClassState($mainPlayer, $CS_NumMoonWishPlayed) > 0;
       break;
     case "CRU010": case "CRU011": case "CRU012":
       if(NumCardsBlocking() < 2) return true;
       break;
+    case "CRU057": case "CRU058": case "CRU059":
+    case "CRU060": case "CRU061": case "CRU062":
+      return ComboActive($combatChain[0]);
+      break;
+    case "CRU151": case "CRU152": case "CRU153":
+      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+      break;
+    case "MON180": case "MON181": case "MON182":
+      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+      break;
+    case "MON199": case "MON220":
+      return count(GetSoul($defPlayer)) > 0;
+      break;
+    case "MON223": case "MON224": case "MON225":
+      return NumCardsBlocking() < 2;
+      break;
     case "MON248": case "MON249": case "MON250":
       if(SearchHighestAttackDefended() < $attackValue) return true;
       break;
+    case "MON293": case "MON294": case "MON295":
+      if (SearchPitchHighestAttack($mainPitch) > $attackValue) return true;
+      break;
+    case "ELE216": case "ELE217": case "ELE218":
+      return CachedTotalAttack() > AttackValue($combatChain[0]);
     case "ELE216": case "ELE217": case "ELE218":
       if(HasIncreasedAttack()) 
+      break;
+    case "EVR105":
+      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+    case "EVR138":
+      FractalReplicationStats("Attack");
       break;
     case "UPR046":
     case "UPR063": case "UPR064": case "UPR065":
@@ -1175,6 +1207,7 @@ function DoesAttackHaveGoAgain()
       break;
     case "UPR092":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
+      break;
     default:
       break;
   }

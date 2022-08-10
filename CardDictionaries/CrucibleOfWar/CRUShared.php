@@ -588,12 +588,9 @@
 
   function CRUHasGoAgain($cardID)
   {
-    global $defPlayer, $CS_ArcaneDamageTaken;
     switch($cardID)
     {
       //CRU Ninja
-      case "CRU057": case "CRU058": case "CRU059": return ComboActive($cardID);
-      case "CRU060": case "CRU061": case "CRU062": return ComboActive($cardID);
       case "CRU084": return true;
       case "CRU085": case "CRU086": case "CRU087": return true;
       case "CRU091": case "CRU092": case "CRU093": return true;
@@ -611,8 +608,6 @@
       //CRU Runeblade
       case "CRU143": return true;
       case "CRU145": case "CRU146": case "CRU147": return true;
-      case "CRU151": case "CRU152": case "CRU153":
-      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
       case "CRU154": case "CRU155": case "CRU156": return true;
       //CRU Generic
       case "CRU181": case "CRU188": return true;

@@ -61,7 +61,6 @@
 
   function MONHasGoAgain($cardID)
   {
-    global $defPlayer, $CS_ArcaneDamageTaken;
     switch($cardID)
     {
       case "MON034": return true;
@@ -78,16 +77,11 @@
       case "MON157": return true;
       case "MON162": case "MON163": case "MON164": return true;
       case "MON165": case "MON166": case "MON167": return true;
-      case "MON180": case "MON181": case "MON182":
-        return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
       case "MON183": case "MON184": case "MON185": return true;
       case "MON193": return true;
-      case "MON199": return count(GetSoul($defPlayer)) > 0;
       case "MON200": case "MON201": case "MON202": return true;
       case "MON212": case "MON213": case "MON214": return true;
-      case "MON220": return count(GetSoul($defPlayer)) > 0;
       case "MON222": return true;
-      case "MON223": case "MON224": case "MON225": return NumCardsBlocking() < 2;
       case "MON231": return true;
       case "MON260": case "MON261": case "MON262": return true;
       case "MON266": case "MON267": case "MON268": return true;
