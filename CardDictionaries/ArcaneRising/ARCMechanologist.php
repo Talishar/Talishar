@@ -158,7 +158,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Draws you a card and gives you an action point every time you boost a card this turn.";
     case "ARC009":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMMAXCOST," . ($resourcesPaid / 2));
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMCOST," . ($resourcesPaid / 2));
       AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
