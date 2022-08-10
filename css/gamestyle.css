@@ -267,7 +267,7 @@ button {
     -1px -1px 0 #1a1a1a,
     -1px 1px 0 #1a1a1a,
     1px -1px 0 #1a1a1a;
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
   margin: 5px;
   padding-left: 10px;
   padding-right: 10px;
