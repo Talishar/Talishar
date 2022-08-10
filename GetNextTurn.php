@@ -1258,11 +1258,21 @@ function DisplayTiles($player)
     echo ("</div>");
   }
 
-  $runechantCount = 0;
+  $count = 0;
+  $first = -1;
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == "ARC112") ++$runechantCount;
+    if ($auras[$i] == "ARC112") {
+      if ($count == 0) $first = $i;
+      ++$count;
+    }
   }
-  if ($runechantCount > 0) echo (Card("ARC112", "concat", $cardSizeAura, 0, 1, 0, 0, ($runechantCount > 1 ? $runechantCount : 0)) . "&nbsp");
+  if ($count > 0) {
+    echo ("<div style='position:relative; display: inline-block;'>");
+    echo (Card("ARC112", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
+    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), "AURAS-" . $first, ($player != $playerID ? 1 : 0));
+    echo ("</div>");
+  }
+
 
   $soulShackleCount = 0;
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
