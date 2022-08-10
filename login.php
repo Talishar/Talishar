@@ -17,7 +17,7 @@ include_once 'Header.php';
         <button type="submit" name="reset-password">Forgot Password</button>
       </a>
       <div class="centeredGoogle">
-        <div id="g_id_onload" data-client_id="1089547347578-lqbvoqb0u3grqi89ibjmti2bc9lq37pr.apps.googleusercontent.com" data-login_uri="http://localhost/FaBOnline/MainMenu.php" data-auto_prompt="false">
+        <div id="g_id_onload" data-client_id="1089547347578-lqbvoqb0u3grqi89ibjmti2bc9lq37pr.apps.googleusercontent.com" data-login_uri="/FaBOnline/includes/login-google.inc.php" data-auto_prompt="false">
         </div>
         <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left">
         </div>
