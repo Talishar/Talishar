@@ -141,9 +141,7 @@ a:hover {
 section {
   margin: auto;
   margin-top: 15px;
-  background: rgba(240, 240, 240, 0.8);
   width: 30%;
-  padding-bottom: 10px;
 }
 
 select {
@@ -761,7 +759,6 @@ button {
   cursor: pointer;
   color: var(--dark-color);
   background: var(--light-color);
-  ;
   border: 1px solid var(--dark-color);
   box-shadow: var(--button-box-shadow);
   padding-left: 5px;
@@ -841,4 +838,27 @@ button {
   opacity: 1;
   transition: all .4s ease;
   cursor: pointer;
+}
+
+/* ===========
+   Game Stats 
+  ============ */
+
+.game-stats section {
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  height: auto;
+  width: 50vh;
+}
+
+.game-stats-div {
+  display: flex;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--light-color);
+  margin-bottom: 5px;
+  text-shadow: var(--text-shadow);
 }

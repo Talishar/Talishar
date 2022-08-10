@@ -1,5 +1,6 @@
 <?php
 
+include_once 'Header.php';
 include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
 include "./Libraries/HTTPLibraries.php";
@@ -20,6 +21,16 @@ $numDays = TryGet("numDays", 365);
 echo ("<script src=\"./jsInclude.js\"></script>");
 
 echo ("<style>
+
+table {
+  border: 3px solid black; 
+  border-radius:10px; 
+  border-spacing: 0; 
+  border-collapse: collapse;
+  background: rgba(74, 74, 74, 0.9);
+  font-size: 20px;
+}
+
 td {
   border-bottom: 1px solid black;
   text-align: center;
@@ -29,15 +40,16 @@ td {
 }
 
 tr:hover {
-  background-color: coral;
+  background-color: darkred;
 }
 
 h3 {
   text-align: center;
   font-size: 1.25em;
   padding-bottom: 10px;
-}
+} 
 </style>");
+
 echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
 
 $sql = "SELECT Hero,sum(Count) AS Total FROM
@@ -104,7 +116,9 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
   array_push($gameData[$i], $row[1]);
 }
 
-echo ("<table style=' border: 3px solid black; border-radius:10px; border-spacing: 0; border-collapse: collapse;'>");
+echo ("<section class='game-stats'>");
+echo ("<div class='game-stats-div'>");
+echo ("<table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
 foreach ($gameData as $row) {
@@ -115,7 +129,7 @@ foreach ($gameData as $row) {
   $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
   $playPercent = ($row[1] / $formatDenominator * 100);
   echo ("<tr>");
-  echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0]) . "</a></td>");
+  echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0], true) . "</a></td>");
   echo ("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
   echo ("<td>" . $row[1] . "</td>");
   echo ("<td>" . number_format($winPercent, 2, ".", "") . "% </td>");
@@ -123,3 +137,5 @@ foreach ($gameData as $row) {
   echo ("</tr>");
 }
 echo ("</table>");
+echo("</div>");
+echo ("</section>");
