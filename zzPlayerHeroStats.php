@@ -5,8 +5,6 @@ include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
 require_once "./includes/dbh.inc.php";
 
-session_start();
-
 
 if (!isset($_SESSION["userid"])) {
   echo ("Please login to view this page.");
@@ -32,9 +30,9 @@ echo ("<script src=\"./jsInclude.js\"></script>");
 echo ("<style>
 
 table {
-  border: 3px solid black; 
-  border-radius: 10px; 
-  border-spacing: 0; 
+  border: 3px solid black;
+  border-radius: 10px;
+  border-spacing: 0;
   border-collapse: collapse;
   background: rgba(74, 74, 74, 0.9);
   font-size: 1em;
