@@ -102,6 +102,8 @@ if ($playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
 }
 
 if ($decklink != "") {
+  if($playerID == 1) $p1DeckLink = $decklink;
+  else if($playerID == 2) $p2DeckLink = $decklink;
   $curl = curl_init();
   $isFaBDB = str_contains($decklink, "fabdb");
   if ($isFaBDB) {
