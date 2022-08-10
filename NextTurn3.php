@@ -87,7 +87,7 @@
     .passButton {
       background: url("./Images/passActive.png") no-repeat;
       background-size: contain;
-      transition: 350ms ease-in-out;
+      transition: 150ms ease-in-out;
     }
 
     .passButton:hover {
@@ -111,7 +111,7 @@
     .breakChain {
       background: url("./Images/chainLinkRight.png") no-repeat;
       background-size: contain;
-      transition: 350ms ease-in-out;
+      transition: 150ms ease-in-out;
     }
 
     .breakChain:hover {
@@ -129,7 +129,7 @@
 
     .chainSummary {
       cursor: pointer;
-      transition: 350ms ease-in-out;
+      transition: 150ms ease-in-out;
     }
 
     .chainSummary:hover {
@@ -144,7 +144,7 @@
 
     .MenuButtons {
       cursor: pointer;
-      transition: 350ms ease-in-out;
+      transition: 150ms ease-in-out;
     }
 
     .MenuButtons:hover {

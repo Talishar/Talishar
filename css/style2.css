@@ -253,7 +253,7 @@ button {
   text-decoration: inherit;
   cursor: pointer;
   text-shadow: var(--text-shadow);
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .signup-form form button:hover {
@@ -274,7 +274,7 @@ button {
 }
 
 .g_id_signin div {
-  transition: 350ms ease-in-out;
+  transition: 100ms ease-in-out;
 }
 
 .g_id_signin div:hover {
@@ -367,7 +367,7 @@ button {
   text-decoration: inherit;
   cursor: pointer;
   text-shadow: var(--text-shadow);
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .profile-form form button:hover {
@@ -400,7 +400,7 @@ button {
 .imgPatreon {
   border-radius: 10px;
   border: 1px solid var(--dark-color);
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .imgPatreon:hover {
@@ -447,7 +447,7 @@ button {
   font-weight: bolder;
   text-decoration: inherit;
   cursor: pointer;
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .form-resetpwd button:hover {
@@ -540,7 +540,7 @@ button {
   font-weight: bolder;
   text-decoration: inherit;
   cursor: pointer;
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .draft-form-form form input:hover {
@@ -568,7 +568,7 @@ button {
   padding-left: 10px;
   padding-right: 10px;
   height: 70px;
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .CreateGame_Button:hover {
@@ -630,7 +630,7 @@ button {
   padding-right: 5px;
   padding-top: 2px;
   padding-bottom: 2px;
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .ServerChecker_Button:hover {
@@ -698,7 +698,7 @@ button {
   padding-right: 5px;
   padding-top: 2px;
   padding-bottom: 2px;
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .GameLobby_Button:hover {
@@ -766,7 +766,7 @@ button {
   padding-right: 5px;
   padding-top: 2px;
   padding-bottom: 2px;
-  transition: 350ms ease-in-out;
+  transition: 150ms ease-in-out;
 }
 
 .JoinGame_Button:hover {
