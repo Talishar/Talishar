@@ -3730,8 +3730,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
       if ($damage < 0) $damage = 0;
       WriteLog(CardLink($source, $source) . " dealt $damage arcane damage.");
-      if ($damage > 0 && SearchCurrentTurnEffects("UPR125", $otherPlayer, true)) {
+      if ($damage > 0 && SearchCurrentTurnEffects("UPR125", $otherPlayer) && CardType($source) != "W") {
         DestroyFrozenArsenal($player);
+        SearchCurrentTurnEffects("UPR125", $otherPlayer, true); // Remove the effect
       }
       $dqVars[0] = $damage;
       return $damage;
