@@ -74,6 +74,8 @@ function TypeToPlay($phase)
       return str_replace("_", " ", $turn[2]);
     case "MULTICHOOSETEXT":
       return " options";
+    case "MAYMULTICHOOSETEXT":
+      return " options";
     case "CHOOSEARCANE":
       return "an amount to pitch to prevent arcane damage";
     case "MAYCHOOSEARSENAL":
