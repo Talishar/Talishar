@@ -6,12 +6,23 @@ require_once "./includes/dbh.inc.php";
 
 session_start();
 
+
+if (!isset($_SESSION["userid"])) {
+  echo ("Please login to view this page.");
+  exit;
+}
+$userID = $_SESSION["userid"];
+
 if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2") exit;
+
+if (!isset($_SESSION["isPatron"])) {
+  echo ("Please subscribe to our Patreon to access this page.");
+  exit;
+}
 
 $heroID = $_GET["heroID"];
 
@@ -26,7 +37,7 @@ echo ("<div>Detailed stats for " . CardLink($heroID, $heroID) . "</div>");
 
 $sql = "SELECT WinningHero,LosingHero,count(WinningHero) AS Count,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\"
+WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"
 GROUP by LosingHero
 ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -40,7 +51,7 @@ $winData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\"";
+WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
@@ -52,7 +63,7 @@ $winCardData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,count(LosingHero) AS Count,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$heroID\"
+    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$heroID\" and LosingPID=\"$userID\"
     GROUP by WinningHero
     ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -65,7 +76,7 @@ $loseData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$heroID\"";
+    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$heroID\" and LosingPID=\"$userID\"";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");

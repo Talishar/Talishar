@@ -7,14 +7,12 @@ include "./Libraries/HTTPLibraries.php";
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 
-session_start();
-
 if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore") exit;
+if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2") exit;
 
 $numDays = TryGet("numDays", 365);
 
@@ -23,9 +21,9 @@ echo ("<script src=\"./jsInclude.js\"></script>");
 echo ("<style>
 
 table {
-  border: 3px solid black; 
-  border-radius:10px; 
-  border-spacing: 0; 
+  border: 3px solid black;
+  border-radius:10px;
+  border-spacing: 0;
   border-collapse: collapse;
   background: rgba(74, 74, 74, 0.9);
   font-size: 20px;
@@ -47,7 +45,7 @@ h3 {
   text-align: center;
   font-size: 1.25em;
   padding-bottom: 10px;
-} 
+}
 </style>");
 
 echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
