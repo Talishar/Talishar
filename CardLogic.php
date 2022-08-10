@@ -383,9 +383,6 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
-          if (HasFusion($cardID)) {
-            $lastPlayed[3] = ($additionalCosts != "-" ? "FUSED" : "UNFUSED");
-          }
           PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3]);
           ClearDieRoll($player);
         }
