@@ -1354,6 +1354,7 @@ function NumEquipBlock()
       case "MULTICHOOSEDECK": return 0;
       case "CHOOSEPERMANENT": return 0;
       case "OVER": return 0;
+      case "MULTICHOOSETEXT": return 0;
       default: return 1;
     }
   }
