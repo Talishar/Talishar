@@ -221,11 +221,11 @@
       AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REVEALHANDCARDS", $player, "<-", 1);
-      if($isAndOrFuse) AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
+      AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
       if($i > 0) $elementText .= " and ";
       $elementText .= $element;
     }
-    if(!$isAndOrFuse) AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
+    //if(!$isAndOrFuse) AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
     WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID) . ".");
   }
 
