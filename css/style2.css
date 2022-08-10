@@ -740,16 +740,16 @@ button {
   transform: translateY(0px);
 }
 
-/* =====================
-   Join Game Styles
-   ===================== */
+/* ==================
+    Join Game Styles
+   ================== */
 
 .JoinGameDiv {
   position: absolute;
   z-index: 1;
   top: 10%;
   left: 2%;
-  width: 450px;
+  width: 500px;
   height: 550px;
   background-color: var(--grey-transparent-background);
   border: 2px solid var(--dark-color);
