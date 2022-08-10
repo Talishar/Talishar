@@ -791,9 +791,8 @@ function GetAbilityType($cardID, $index = -1)
 {
   global $currentPlayer;
   $set = CardSet($cardID);
-  $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if ($class == "ILLUSIONIST" && $subtype == "Aura") {
+  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $subtype == "Aura") {
     if (SearchCharacterForCard($currentPlayer, "MON003")) return "AA";
     if (SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
   }
