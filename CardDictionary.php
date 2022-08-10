@@ -2215,3 +2215,20 @@ function CardCaresAboutPitch($cardID)
       return false;
   }
 }
+
+function CardHasAltArt($cardID)
+{
+  switch($cardID)
+  {
+    case "ELE146": return true;
+    case "MON155": return true;
+    case "MON219": return true;
+    case "MON220": return true;
+    case "UPR042": return true;
+    case "UPR043": return true;
+    case "WTR002": return true;
+    case "WTR162": return true;
+    case "WTR224": return true;
+    default: return false;
+  }
+}
