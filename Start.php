@@ -74,12 +74,7 @@ fwrite($handler, "\r\n"); //Chain Link Summaries
 fwrite($handler, $p1Key . "\r\n"); //Player 1 auth key
 fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
 fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
-fwrite($handler, "0\r\n"); //Number of Alluvion Used
-fwrite($handler, "0\r\n"); //Number of Damage Dealt
-fwrite($handler, "0\r\n"); //ArcaneTargetsSelected;
-fwrite($handler, "0\r\n"); //Number of Dragon Attacks
-fwrite($handler, "0\r\n"); //Number of Illusionist Attacks;
-fwrite($handler, "0\r\n"); //Cost of the last DynamicCost;
+fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 fclose($handler);
 
 //Set up log file
