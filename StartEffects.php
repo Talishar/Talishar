@@ -56,6 +56,7 @@ AddDecisionQueue("SHUFFLEDECK", 1, "-"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("SHUFFLEDECK", 2, "-"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("DRAWTOINTELLECT", 1, "-"); //CR 2.0 4.1.9 Draw to Intellect
 AddDecisionQueue("DRAWTOINTELLECT", 2, "-"); //CR 2.0 4.1.9 Draw to Intellect
+AddDecisionQueue("STARTGAME", $mainPlayer, "-"); //CR ?? Start Game
 AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-"); //CR 2.0 4.2 Start Phase
 
 ProcessDecisionQueue();

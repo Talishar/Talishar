@@ -791,6 +791,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Now display their character and equipment
   $numWeapons = 0;
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
+    if($i > 0 && $gameStatus == "0") continue;
     $atkCounters = 0;
     $counters = 0;
     $type = CardType($theirCharacter[$i]); //NOTE: This is not reliable type
