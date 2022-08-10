@@ -233,7 +233,7 @@ switch ($mode) {
       $skipWriteGamestate = true;
       break;
     }
-    if ($minSelect != -1 && count($chkInput) < $minSelect) {
+    if ($minSelect != -1 && count($chkInput) < $minSelect && count($chkInput) < count($options)) {
       WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " was allowed. Reverting gamestate prior to that effect.");
       RevertGamestate();
       $skipWriteGamestate = true;
