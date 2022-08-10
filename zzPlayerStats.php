@@ -23,6 +23,16 @@ echo ("<script src=\"./jsInclude.js\"></script>");
 
 echo ("<style>
 
+table, 
+tr { 
+  width:100% 
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
 td {
   border-bottom: 1px solid black;
   text-align: center;
@@ -30,7 +40,12 @@ td {
   border-spacing: 0;
   border-collapse: collapse;
   height: 50px;
-  padding: 5px;
+  padding-top: 5px;
+  padding-bottom: 0px
+  padding-right: 10px;
+  padding-left: 10px;
+  text-underline-position: under;
+  text-shadow: 2px 0 0 var(--dark-color), 0 -2px 0 var(--dark-color), 0 2px 0 var(--dark-color), -2px 0 0 var(--dark-color);
 }
 
 tr:hover {
