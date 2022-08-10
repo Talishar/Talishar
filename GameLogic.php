@@ -2634,7 +2634,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
-  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected;
+  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $gameStatus;
   $rv = "";
   switch ($phase) {
     case "FINDRESOURCECOST":
@@ -3798,6 +3798,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AppendClassState($player, $CS_AdditionalCosts, $elements);
         CurrentTurnFuseEffects($player, $element);
         AuraFuseEffects($player, $element);
+        $lastPlayed[3] = (GetClassState($player, $CS_AdditionalCosts) == HasFusion($card) || IsAndOrFuse($card) ? "FUSED" : "UNFUSED");
       }
       return $lastResult;
     case "SUBPITCHVALUE":
@@ -4489,6 +4490,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         break;
       }
       return $lastResult;
+    case "STARTGAME":
+      $gameStatus = "1";
+      return 0;
     default:
       return "NOTSTATIC";
   }

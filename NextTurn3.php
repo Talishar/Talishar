@@ -162,7 +162,7 @@
 
 <body onkeypress='Hotkeys(event)' onload='OnLoadCallback(<?php echo (filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 
-  <audio id="yourTurnSound" src="./Assets/sword-clash.wav"></audio>
+  <audio id="yourTurnSound" src="./Assets/prioritySound.wav"></audio>
 
   <script>
     function reload() {

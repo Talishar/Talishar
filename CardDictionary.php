@@ -1721,6 +1721,8 @@ function AuraDefaultHoldTriggerState($cardID)
   switch ($cardID) {
     case "WTR075":
       return 0; //Seismic Surge
+    case "ARC112":
+      return 0;
     case "ELE109": case "ELE110": case "ELE111":
       return 0; //Embodiment of Earth and Lightning, Frostbite
     case "EVR107": case "EVR108": case "EVR109":
@@ -2229,7 +2231,7 @@ function CardHasAltArt($cardID)
     case "WTR162": return true;
     case "WTR224": return true;
     case "UPR406": case "UPR407": case "UPR408":
-    case "UPR409": case "UPR410": case "UPR411": 
+    case "UPR409": case "UPR410": case "UPR411":
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
       return true;
