@@ -42,7 +42,7 @@ td {
   height: 50px;
   padding-top: 5px;
   padding-bottom: 0px
-  padding-right: 10px;
+  padding-right: 15px;
   padding-left: 10px;
   text-underline-position: under;
   text-shadow: 2px 0 0 var(--dark-color), 0 -2px 0 var(--dark-color), 0 2px 0 var(--dark-color), -2px 0 0 var(--dark-color);
