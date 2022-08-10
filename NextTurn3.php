@@ -189,6 +189,8 @@
               var audio = document.getElementById('yourTurnSound');
               <?php if(!IsMuted($playerID)) echo("audio.play();"); ?>
             }
+            var animations = document.getElementById("animations").innerText;
+            //if(animations != "") alert(animations[0]);
           } else {
             CheckReloadNeeded(lastUpdate);
           }
