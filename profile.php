@@ -63,16 +63,15 @@ if (isset($_POST['update_profile'])) {
 
 <?php
 
-  if(isset($_SESSION["isPatron"]))
-  {
-    echo("<section class='profile-form' style='position:fixed; display:block; width: 32%; left:20px; top:40px;'>");
-      echo("<h1>Your Record</h1>");
-      include_once "zzPlayerStats.php";
-    echo("</section>");
-  }
+if (isset($_SESSION["isPatron"])) {
+  echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; left:20px; top:40px;'>");
+  echo ("<h1>Your Record</h1>");
+  include_once "zzPlayerStats.php";
+  echo ("</section>");
+}
 
 
- ?>
+?>
 
 <section class="profile-form">
   <h2>Welcome <?php echo $_SESSION['useruid'] ?>!</h2>
@@ -149,36 +148,31 @@ if (isset($_POST['update_profile'])) {
 
     // Simply echoing it here. You can present the login link/button in any other way.
 
-          if(!isset($_SESSION["isPatron"]))
-          {
-            echo("<BR>");
-            echo("<BR>");
-            echo '<a class="containerPatreon" href="'.$href.'">';
-              echo("<img class='imgPatreon' src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
-            echo '</a>';
-          }
+    if (!isset($_SESSION["isPatron"])) {
+      echo ("<BR>");
+      echo ("<BR>");
+      echo '<a class="containerPatreon" href="' . $href . '">';
+      echo ("<img class='imgPatreon' src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
+      echo '</a>';
+    }
 
-
-
-          echo("<section class='profile-form' style='position:fixed; display:block; width: 32%; right:20px; top:40px;'>");
-          echo("<h1>Favorite Decks</h1>");
-            $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
-            if (count($favoriteDecks) > 0) {
-              echo("<table>");
-              echo("<tr><td>Hero</td><td>Deck Name</td><td>Delete</td></tr>");
-              for ($i = 0; $i < count($favoriteDecks); $i += 3) {
-                echo("<tr>");
-                echo("<td>" . CardLink($favoriteDecks[$i+2], $favoriteDecks[$i+2]) . "</td>");
-                echo("<td>" . $favoriteDecks[$i+1] . "</td>");
-                echo("<td><a href='./MenuFiles/DeleteDeck.php?decklink=" . $favoriteDecks[$i] . "'>Delete</a></td>");
-                //echo ("<div id='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "(" . $favoriteDecks[$i+2] . ")</div>");
-                echo("</tr>");
-              }
-              echo("</table>");
-            }
-          echo("</section>");
-
-
+    echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; right:20px; top:40px; padding-bottom: -0px;'>");
+    echo ("<h1>Favorite Decks</h1>");
+    $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
+    if (count($favoriteDecks) > 0) {
+      echo ("<table>");
+      echo ("<tr><td>Hero</td><td>Deck Name</td><td>Delete</td></tr>");
+      for ($i = 0; $i < count($favoriteDecks); $i += 3) {
+        echo ("<tr>");
+        echo ("<td>" . CardLink($favoriteDecks[$i + 2], $favoriteDecks[$i + 2], true) . "</td>");
+        echo ("<td>" . $favoriteDecks[$i + 1] . "</td>");
+        echo ("<td><a href='./MenuFiles/DeleteDeck.php?decklink=" . $favoriteDecks[$i] . "'>Delete</a></td>");
+        //echo ("<div id='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "(" . $favoriteDecks[$i+2] . ")</div>");
+        echo ("</tr>");
+      }
+      echo ("</table>");
+    }
+    echo ("</section>");
 
     ?>
 
