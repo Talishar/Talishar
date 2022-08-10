@@ -1087,7 +1087,7 @@ function CRUHitEffect($cardID)
       break;
     case "CRU180":
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose any number of options");
-      AddDecisionQueue("MULTICHOOSETEXT", $mainPlayer, "3-Quicken_token,Draw_card,Gain_life");
+      AddDecisionQueue("MAYMULTICHOOSETEXT", $mainPlayer, "3-Quicken_token,Draw_card,Gain_life");
       AddDecisionQueue("COAXCOMMOTION", $mainPlayer, "-", 1);
       break;
     case "CRU183":
