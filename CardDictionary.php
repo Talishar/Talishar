@@ -2228,6 +2228,11 @@ function CardHasAltArt($cardID)
     case "WTR002": return true;
     case "WTR162": return true;
     case "WTR224": return true;
+    case "UPR406": case "UPR407": case "UPR408":
+    case "UPR409": case "UPR410": case "UPR411": 
+    case "UPR412": case "UPR413": case "UPR414":
+    case "UPR415": case "UPR416": case "UPR417":
+      return true;
     default: return false;
   }
 }
