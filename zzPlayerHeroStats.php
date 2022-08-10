@@ -1,5 +1,6 @@
 <?php
 
+include_once 'Header.php';
 include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
 require_once "./includes/dbh.inc.php";
@@ -28,12 +29,37 @@ $heroID = $_GET["heroID"];
 
 echo ("<script src=\"./jsInclude.js\"></script>");
 
-echo ("<style>td {
-  border: 1px solid black;
-}</style>");
-echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
+echo ("<style>
 
-echo ("<div>Detailed stats for " . CardLink($heroID, $heroID) . "</div>");
+table {
+  border: 3px solid black; 
+  border-radius: 10px; 
+  border-spacing: 0; 
+  border-collapse: collapse;
+  background: rgba(74, 74, 74, 0.9);
+  font-size: 1em;
+}
+
+td {
+  border-bottom: 1px solid black;
+  text-align: center;
+  vertical-align: middle;
+  height: 50px;
+  padding: 10px;
+}
+
+tr:hover {
+  background-color: darkred;
+}
+
+h3 {
+  text-align: center;
+  font-size: 1.25em;
+  padding-bottom: 10px;
+}
+</style>");
+
+echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
 
 $sql = "SELECT WinningHero,LosingHero,count(WinningHero) AS Count,WinnerDeck
 FROM completedgame
@@ -152,7 +178,9 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
 }
 
 
-echo ("<div style='display:inline-block;'>");
+echo ("<section class='game-stats'>");
+echo ("<h3>Detailed stats for " . CardLink($heroID, $heroID) . "</h3>");
+echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Opposing Hero</td><td>Num Wins</td><td>Num Losses</td><td>Win %</td></tr>");
 
@@ -176,7 +204,7 @@ foreach ($gameData as $row) {
   }
 }
 echo ("</table>");
-echo ("</div>");
+echo ("</section>");
 
 if($totalGames == 0) exit;
 
@@ -200,7 +228,8 @@ while (count($cardData) > 0) {
   unset($cardData[$bestKey]);
 }
 
-echo ("<div style='display:inline-block;'>");
+echo ("<section class='game-stats'>");
+echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Card</td><td>Num Plays</td><td>Win Rate</td><td>Relative Win Rate</td></tr>");
 foreach ($sortedCardData as $key => $card) {
@@ -213,4 +242,6 @@ foreach ($sortedCardData as $key => $card) {
   echo ("</tr>");
 }
 echo ("</table>");
-echo ("</div>");
+echo ("</section>");
+
+include_once 'Footer.php';
