@@ -21,12 +21,12 @@ echo ("<script src=\"./jsInclude.js\"></script>");
 echo ("<style>
 
 table {
-  border: 3px solid black;
-  border-radius:10px;
-  border-spacing: 0;
+  border: 3px solid black; 
+  border-radius: 10px; 
+  border-spacing: 0; 
   border-collapse: collapse;
   background: rgba(74, 74, 74, 0.9);
-  font-size: 20px;
+  font-size: 1em;
 }
 
 td {
@@ -137,3 +137,5 @@ foreach ($gameData as $row) {
 echo ("</table>");
 echo("</div>");
 echo ("</section>");
+
+include_once 'Footer.php';

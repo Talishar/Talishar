@@ -151,5 +151,5 @@ if (!empty($_SESSION['error'])) {
 </div>
 
 <?php
-include_once 'Footer.php'
+include_once 'Footer.php';
 ?>
