@@ -215,7 +215,7 @@ function CombatChainResolutionEffects()
     $cardID = $combatChain[$i-1];
     switch($cardID)
     {
-      case "CRU051":case "CRU052":
+      case "CRU051": case "CRU052":
         $totalAttack = 0;
         $totalBlock = 0;
         EvaluateCombatChain($totalAttack, $totalBlock);
@@ -1991,8 +1991,8 @@ function OnBlockEffects($index, $from)
           if ($combatChain[$i + 1] == $currentPlayer && CardType($combatChain[$i]) == "AA") $first = false;
         }
         if ($first) {
-          AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], "CRU079");
-          WriteLog("Cintari Saber got +1 for the rest of the turn.");
+          AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $combatChain[0]);
+          WriteLog(CardLink($combatChain[0], $combatChain[0]) . " got +1 for the rest of the turn.");
         }
       }
       break;
@@ -2271,6 +2271,7 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
           $modifier += 1;
           break;
         case "CRU079":
+        case "CRU080":
           $modifier += 1;
           break;
         case "CRU105":
