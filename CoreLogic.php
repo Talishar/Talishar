@@ -1158,8 +1158,6 @@ function DoesAttackHaveGoAgain()
       return GetDieRoll($mainPlayer) <= 4;
     case "ARC197": case "ARC198": case "ARC199":
       return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
-    case "ARC212": case "ARC213": case "ARC214":
-      return GetClassState($mainPlayer, $CS_NumMoonWishPlayed) > 0;
     case "CRU010": case "CRU011": case "CRU012":
       if(NumCardsBlocking() < 2) return true;
     case "CRU057": case "CRU058": case "CRU059":
