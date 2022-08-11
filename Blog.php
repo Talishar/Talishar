@@ -13,6 +13,12 @@ include_once 'Header.php';
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>Hero Stats Update</h2>
+    <h3>By: Kugane Gaming</h3>
+    <p>🎥 Watch Kugane analysis of FaB Online hero stats! It is really interesting and we are really happy to start providing those stats for the #fabtcg community.</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/jk14zEIGER8" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="articles">
     <h2>9th August 2022</h2>
     <h3>🎊 Patreons Update!<br>
       We are happy to announce that we've added Patreon API integration to the website!
