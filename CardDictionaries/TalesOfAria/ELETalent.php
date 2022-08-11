@@ -439,7 +439,7 @@
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
           }
-          $rv = "Gives your next action go again.";
+          $rv = "Gives target action go again.";
         }
         return $rv;
       case "ELE233":
