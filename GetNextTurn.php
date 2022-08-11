@@ -1073,7 +1073,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo ("</div>");
   }
 
-  echo("<div id='animations'>" . implode(" ", $animations) . "</div>");
+  echo("<div style='display:none;' id='animations'>" . implode(" ", $animations) . "</div>");
 }
 
 function PlayableCardBorderColor($cardID)
