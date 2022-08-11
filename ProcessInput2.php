@@ -221,7 +221,7 @@ switch ($mode) {
     }
     break;
   case 19: //MULTICHOOSE X
-    if (substr($turn[0], 0, 11) != "MULTICHOOSE") break;
+    if (substr($turn[0], 0, 11) != "MULTICHOOSE" && substr($turn[0], 0, 14) != "MAYMULTICHOOSE") break;
     $params = explode("-", $turn[2]);
     $maxSelect = intval($params[0]);
     $options = explode(",", $params[1]);
