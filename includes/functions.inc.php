@@ -216,41 +216,79 @@ function loginGoogleUser($id_token) {
 
 function loginFromCookie()
 {
-	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
-		$data = mysqli_stmt_get_result($stmt);
-		$row = mysqli_fetch_array($data, MYSQLI_NUM);
-		mysqli_stmt_close($stmt);
-		if($row != null && count($row) > 0)
-		{
-			$_SESSION["userid"] = $row[0];
-			$_SESSION["useruid"] = $row[1];
-			$_SESSION["useremail"] = $row[2];
-			$patreonAccessToken = $row[3];
-			$patreonRefreshToken = $row[4];
-			PatreonLogin($patreonAccessToken);
-		}
-		else {
-			unset($_SESSION["userid"]);
-			unset($_SESSION["useruid"]);
-			unset($_SESSION["useremail"]);
-		}
-	}
+
+  // Prepare and bind statement
+  $stmt = $conn->prepare("SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken=?");
+  
+  // Set parameters
+  $token = $_COOKIE["rememberMeToken"];
+
+  // Declaring string to database. Helps mitigate SQL Injection attacks
+  $stmt->bind_param("s", $token);
+
+  // Execute statement
+  $stmt->execute();
+
+  // Access the data
+  $stmt->store_result();
+  $stmt->bind_result($usersID, $usersUid, $usersEmail, $patreonAccessToken, $patreonRefreshToken);
+  $stmt->fetch();
+
+  $stmt->close();
+
+  $_SESSION["userid"] = $usersID;
+  $_SESSION["useruid"] = $usersUid;
+  $_SESSION["useremail"] = $usersEmail;
+
+  PatreonLogin($patreonAccessToken);
+
+  $conn->close();
+
+	// $sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
+	// $stmt = mysqli_stmt_init($conn);
+	// if (mysqli_stmt_prepare($stmt, $sql)) {
+	// 	mysqli_stmt_execute($stmt);
+	// 	$data = mysqli_stmt_get_result($stmt);
+	// 	$row = mysqli_fetch_array($data, MYSQLI_NUM);
+	// 	mysqli_stmt_close($stmt);
+		// if($row != null && count($row) > 0)
+		// {
+		// 	$_SESSION["userid"] = $row[0];
+		// 	$_SESSION["useruid"] = $row[1];
+		// 	$_SESSION["useremail"] = $row[2];
+		// 	$patreonAccessToken = $row[3];
+		// 	$patreonRefreshToken = $row[4];
+		// 	PatreonLogin($patreonAccessToken);
+		// }
+		// else {
+		// 	unset($_SESSION["userid"]);
+		// 	unset($_SESSION["useruid"]);
+		// 	unset($_SESSION["useremail"]);
+		// }
+	// }
 	mysqli_close($conn);
 }
 
 function storeRememberMeCookie($conn, $uuid, $cookie)
 {
-  $sql = "UPDATE users SET rememberMeToken='$cookie' WHERE usersUid='$uuid'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
+  // Prepare and bind statement
+  $stmt = $conn->prepare("UPDATE users SET rememberMeToken='$cookie' WHERE usersUid=?");
+
+  // Declaring string to database. Helps mitigate SQL Injection attacks
+  $stmt->bind_param("s", $uuid);
+
+  // Execute statement
+  $stmt->execute();
+
+  $stmt->close();
+
+  // $sql = "UPDATE users SET rememberMeToken='$cookie' WHERE usersUid='$uuid'";
+	// $stmt = mysqli_stmt_init($conn);
+	// if (mysqli_stmt_prepare($stmt, $sql)) {
+	// 	mysqli_stmt_execute($stmt);
+	// 	mysqli_stmt_close($stmt);
+	// }
 }
 
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
