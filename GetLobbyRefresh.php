@@ -93,7 +93,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   echo ("<div id='playAudio' style='display:none;'>" . ($playerID == 1 && $gameStatus == $MGS_ChooseFirstPlayer ? 1 : 0) . "</div>");
 
-  $otherHero = "cardBack";
+  $otherHero = "CardBack";
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $deckFile = "./Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
   if (file_exists($deckFile)) {
