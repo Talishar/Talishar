@@ -2164,6 +2164,7 @@ function Is1H($cardID)
 {
   switch ($cardID) {
     case "WTR078":
+    case "CRU049":
       return true;
     case "CRU004":
     case "CRU005":

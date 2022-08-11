@@ -487,6 +487,9 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
       ++$count;
     }
     if ($weapon2 != "") {
+      if (HasReverseArt($weapon1)) {
+        $weapon2 = ReverseArt($weapon1);
+      }
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
@@ -497,6 +500,9 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     }
     echo ("<tr>");
     for ($i = 0; $i < count($weaponSB); ++$i) {
+      if (HasReverseArt($weaponSB[$i])) {
+        $weaponSB[$i+1] = ReverseArt($weaponSB[$i]);
+      }
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
@@ -510,6 +516,38 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</tr>");
   }
 
+  function HasReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return true;
+      case "CRU004":
+        return true;
+      case "CRU051":
+        return true;
+      case "CRU079":
+        return true;
+      default:
+        return false;
+        break;
+    }
+  }
+
+  function ReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return "CRU049";
+      case "CRU004":
+        return "CRU005";
+      case "CRU051":
+        return "CRU052";
+      case "CRU079":
+        return "CRU080";
+      default:
+        break;
+    }
+  }
   ?>
 
   <?php
