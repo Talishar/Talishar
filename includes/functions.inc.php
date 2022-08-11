@@ -174,6 +174,46 @@ function loginUser($username, $pwd, $rememberMe) {
 	}
 }
 
+// Log Google user into website
+function loginGoogleUser($id_token) {
+	$conn = GetDBConnection();
+  $CLIENT_ID = "1089547347578-lqbvoqb0u3grqi89ibjmti2bc9lq37pr.apps.googleusercontent.com";
+  $client = new Google_Client(['client_id' => $CLIENT_ID]);  // Specify the CLIENT_ID of the app that accesses the backend
+  
+  // Verify login is authentic
+  $payload = $client->verifyIdToken($id_token);
+
+  // Prepare and bind statement
+  $stmt = $conn->prepare("SELECT usersID, usersUid, usersEmail FROM users WHERE usersEmail=?");
+
+  // Declaring string to database. Helps mitigate SQL Injection attacks
+  $stmt->bind_param("s", $email);
+
+  // Set parameters and execute
+  $email = $payload["email"];
+  $stmt->execute();
+
+  // Access the data
+  $stmt->store_result();
+  $stmt->bind_result($usersID, $usersUid, $usersEmail);
+  $stmt->fetch();
+  
+  // Create the session
+  if(session_status() !== PHP_SESSION_ACTIVE) session_start(); {
+    $_SESSION["userid"] = $usersID;
+    $_SESSION["useruid"] = $usersUid;
+    $_SESSION["useremail"] = $usersEmail;  
+    
+    $stmt->close();
+    $conn->close();
+    
+    header("location: ../MainMenu.php?error=none");
+    exit;
+  }
+
+  
+}
+
 function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];

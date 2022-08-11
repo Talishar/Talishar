@@ -4,18 +4,26 @@ require_once 'vendor/autoload.php';
 
 $id_token = $_POST['credential'];
 
-$CLIENT_ID = "1089547347578-lqbvoqb0u3grqi89ibjmti2bc9lq37pr.apps.googleusercontent.com";
+require_once 'functions.inc.php';
+require_once "dbh.inc.php";
+loginGoogleUser($id_token);
+// echo json_encode($payload);
 
-$client = new Google_Client(['client_id' => $CLIENT_ID]);  // Specify the CLIENT_ID of the app that accesses the backend
-$payload = $client->verifyIdToken($id_token);
-if ($payload) {
-  require_once 'functions.inc.php';
-  echo json_encode($payload);
-  // loginUser($payload["email"]);
-} else {
-    echo "Goodbye payload";
-  // Invalid ID token
-}
+
+
+
+
+// Start of Old code
+
+// if ($payload) {
+//   require_once 'functions.inc.php';
+//   require_once "dbh.inc.php";
+//   // echo json_encode($payload);
+//   loginGoogleUser($id_token);
+// } else {
+//     echo "Goodbye payload";
+//   // Invalid ID token
+// }
 
 // if (isset($_POST["submit"])) {
 
