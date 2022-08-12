@@ -281,6 +281,29 @@ function logCompletedGameStats() {
 
 }
 
+function UpdateKarma($p1value=0, $p2value=0) {
+
+	global $p1id, $p2id, $p1Karma, $p2Karma;
+	
+	$p1NewKarma = $p1Karma + $p1value;
+	$p2NewKarma = $p2Karma + $p2value;
+
+	$conn = GetDBConnection();
+	$sql = "UPDATE users SET usersKarma='$p1NewKarma' WHERE usersid='$p1id'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+	}
+
+	$sql = "UPDATE users SET usersKarma='$p2NewKarma' WHERE usersid='$p2id'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
 function SavePatreonTokens($accessToken, $refreshToken)
 {
 	if(!isset($_SESSION["userid"])) return;
