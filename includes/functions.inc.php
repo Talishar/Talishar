@@ -160,6 +160,9 @@ function loginUser($username, $pwd, $rememberMe) {
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
 		$patreonAccessToken = $uidExists["patreonAccessToken"];
 		$_SESSION["userKarma"] = $uidExists["usersKarma"];
+		$_SESSION["greenThumb"] = $uidExists["greenThumbs"];
+		$_SESSION["redThumb"] = $uidExists["redThumbs"];
+
 		PatreonLogin($patreonAccessToken);
 
 		if($rememberMe)
@@ -288,6 +291,8 @@ function UpdateKarma($p1value=0, $p2value=0) {
 	$p1NewKarma = $p1Karma + $p1value;
 	$p2NewKarma = $p2Karma + $p2value;
 
+	WriteLog("My user: " . $p1id ." " . $p2id . ", My value: " . $p1value . " " . $p2value . " and my karma: " . $p1Karma . " " . $p2Karma);
+
 	$conn = GetDBConnection();
 	$sql = "UPDATE users SET usersKarma='$p1NewKarma' WHERE usersid='$p1id'";
 	$stmt = mysqli_stmt_init($conn);
@@ -296,6 +301,53 @@ function UpdateKarma($p1value=0, $p2value=0) {
 	}
 
 	$sql = "UPDATE users SET usersKarma='$p2NewKarma' WHERE usersid='$p2id'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
+function AddGreenRating($p1value = 0, $p2value = 0)
+{
+	global $p1id, $p2id, $p1Rating, $p2Rating;
+
+	$p1GreenerThumb = $p1Rating + $p1value;
+	$p2GreenerThumb = $p2Rating + $p2value;
+
+	$conn = GetDBConnection();
+	$sql = "UPDATE users SET greenThumbs='$p1GreenerThumb' WHERE usersid='$p1id'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+	}
+
+	$sql = "UPDATE users SET greenThumbs='$p2GreenerThumb' WHERE usersid='$p2id'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
+function AddRedRating($p1value = 0, $p2value = 0)
+{
+	global $p1id, $p2id, $p1Rating, $p2Rating;
+
+	// TODO: Add a mathematical equasion if the player has too many red compared to green. Maybe like for ech extra 10 you have you lose an extra one. e.g. someone with 1 green and 12 red would get -2 karma.
+	$p1RedderThumb = $p1Rating + $p1value;
+	$p2RedderThumb = $p2Rating + $p2value;
+
+	$conn = GetDBConnection();
+	$sql = "UPDATE users SET redThumbs='$p1RedderThumb' WHERE usersid='$p1id'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+	}
+
+	$sql = "UPDATE users SET redThumbs='$p2RedderThumb' WHERE usersid='$p2id'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
