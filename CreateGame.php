@@ -79,6 +79,8 @@ $p1id = "-";
 $p2id = "-";
 $p1Karma = "-";
 $p2Karma = "-";
+$p1Rating = "-";
+$p2Rating = "-";
 $hostIP = $_SERVER['REMOTE_ADDR'];
 
 $filename = "./Games/" . $gameName . "/GameFile.txt";

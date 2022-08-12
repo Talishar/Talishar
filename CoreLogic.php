@@ -1504,3 +1504,24 @@ function NumEquipBlock()
     }
     return "-";
   }
+
+// TODO: Ask Oot where to put this.
+if (array_key_exists('GreenThumb', $_POST)) {
+  GreenThumb();
+} else if (array_key_exists('RedThumb', $_POST)) {
+  RedThumb();
+}
+function GreenThumb()
+{
+  global $playerID;
+
+  if ($playerID == 1) AddGreenRating(0, 1);
+  else AddGreenRating(1, 0);
+}
+function RedThumb()
+{
+  global $playerID;
+
+  if ($playerID == 1) AddRedRating(0, 1);
+  else AddRedRating(1, 0);
+}

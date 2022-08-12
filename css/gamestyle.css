@@ -305,3 +305,12 @@ button:focus,
 input[type="button"]:focus {
   outline: none;
 }
+
+.Rate-Span {
+  min-height: 50  px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 550;
+  line-height: 1.25em;
+}

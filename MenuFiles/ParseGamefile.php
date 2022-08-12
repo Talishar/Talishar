@@ -39,6 +39,8 @@
   $p2id = trim(fgets($gameFileHandler));
   $p1Karma = trim(fgets($gameFileHandler));
   $p2Karma = trim(fgets($gameFileHandler));
+  $p1Rating = trim(fgets($gameFileHandler));
+  $p2Rating = trim(fgets($gameFileHandler));
   $gameDescription = trim(fgets($gameFileHandler));
   $hostIP = trim(fgets($gameFileHandler));
   $p1IsPatron = trim(fgets($gameFileHandler));
