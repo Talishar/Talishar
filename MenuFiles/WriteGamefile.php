@@ -9,7 +9,7 @@
     {
       global $gameFileHandler;
       global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
-      global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink;
+      global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink, $p1IsChallengeActive, $p2IsChallengeActive;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
       fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
@@ -30,6 +30,8 @@
       fwrite($gameFileHandler, $p2IsPatron . "\r\n");
       fwrite($gameFileHandler, $p1DeckLink . "\r\n");
       fwrite($gameFileHandler, $p2DeckLink . "\r\n");
+      fwrite($gameFileHandler, $p1IsChallengeActive . "\r\n");
+      fwrite($gameFileHandler, $p2IsChallengeActive . "\r\n");
       fclose($gameFileHandler);
     }
   }
