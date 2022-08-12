@@ -87,12 +87,12 @@ if (!empty($_SESSION['error'])) {
     <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
   <span style='display:inline-block; margin-left:5px;'>
-      <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
+      <input type="radio" id="blitz" name="format" value="blitz">
       <label style='margin-left:-10px;' for="blitz">Blitz</label>
   </span>
 
   <span style='display:inline-block;'>
-      <input type="radio" id="cc" name="format" value="cc">
+      <input type="radio" id="cc" name="format" value="cc" checked="checked">
       <label style='margin-left:-12px;' for="cc">Classic Constructed</label>
   </span>
 
