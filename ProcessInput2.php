@@ -50,6 +50,7 @@ $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+$conceded = false;
 
 if ($playerID != 3 && $authKey != $targetAuth) exit;
 if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
@@ -441,6 +442,7 @@ switch ($mode) {
   case 100002: //Concede
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
+    $conceded = true;
     if($turn[0] != "OVER") PlayerLoseHealth($playerID, $myHealth);
     break;
   case 100003: //Report Bug
