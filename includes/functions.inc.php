@@ -159,7 +159,7 @@ function loginUser($username, $pwd, $rememberMe) {
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
 		$patreonAccessToken = $uidExists["patreonAccessToken"];
-		$userKarma = $uidExists["usersKarma"];
+		$_SESSION["userKarma"] = $uidExists["usersKarma"];
 		PatreonLogin($patreonAccessToken);
 
 		if($rememberMe)

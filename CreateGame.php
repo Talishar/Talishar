@@ -18,7 +18,7 @@ $decksToTry = TryGet("decksToTry");
 $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
-$karmaRestriction = TryGet("gameKarmaRestriction");
+$karmaRestriction = TryGet("gameKarmaRestriction", "0");
 
 $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
 $attemptCount = 0;
