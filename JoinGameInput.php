@@ -362,6 +362,8 @@ if ($playerID == 1 && isset($_SESSION["userid"])) $p1id = $_SESSION["userid"];
 if ($playerID == 2 && isset($_SESSION["userid"])) $p2id = $_SESSION["userid"];
 if ($playerID == 1 && isset($_SESSION["isPatron"])) $p1IsPatron = "1";
 if ($playerID == 2 && isset($_SESSION["isPatron"])) $p2IsPatron = "1";
+if ($playerID == 1 && isset($_SESSION["userKarma"])) $p1Karma = $_SESSION["userKarma"];
+if ($playerID == 2 && isset($_SESSION["userKarma"])) $p2Karma = $_SESSION["userKarma"];
 
 WriteGameFile();
 SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));

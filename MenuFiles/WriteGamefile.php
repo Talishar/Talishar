@@ -8,7 +8,7 @@
     function WriteGameFile()
     {
       global $gameFileHandler;
-      global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
+      global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id, $p1Karma, $p2Karma;
       global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink, $karmaRestriction;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
@@ -24,6 +24,8 @@
       fwrite($gameFileHandler, $p2uid . "\r\n");
       fwrite($gameFileHandler, $p1id . "\r\n");
       fwrite($gameFileHandler, $p2id . "\r\n");
+      fwrite($gameFileHandler, $p1Karma . "\r\n");
+      fwrite($gameFileHandler, $p2Karma . "\r\n");
       fwrite($gameFileHandler, $gameDescription . "\r\n");
       fwrite($gameFileHandler, $hostIP . "\r\n");
       fwrite($gameFileHandler, $p1IsPatron . "\r\n");
