@@ -134,11 +134,11 @@ if (!empty($_SESSION['error'])) {
   <h2>All cards supported!</h2>
 
   <div style='padding-top:10%;'>
-    <h2>Challenge #1</h2>
+    <h2>Coax a Commotion!</h2>
     <h3>Win as many games as you can with Sigil of Solace (3)</3>
   </div>
   <div style='vertical-align:middle;'><img style='padding-left:25%; width:50%;' src="./concat/WTR175.webp" /></div>
-  <h3 style='width:90%; padding-left:5%;'>Check back soon for results!</h3>
+  <h3 style='width:90%; padding-left:5%;'>Must be logged in with max copies of Sigil of Solace (3) for challenge to work. Check back soon for results!</h3>
 
   <!--
   <div style='position:absolute; bottom:10px; left:10px;'>
