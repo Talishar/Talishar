@@ -61,6 +61,12 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       SetCachePiece($gameName, $otherP + 3, "2");
       $lastUpdate = 0;
       $opponentDisconnected = true;
+      
+      if ($otherP == 1) {
+        UpdateKarma(-10, 0); // Remove 10 karma to the leaver.
+      } else {
+        UpdateKarma(0, -10); // Give both players +1 karma for finishing the game.
+      }
     }
   }
   ++$count;
