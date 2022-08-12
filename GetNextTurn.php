@@ -231,7 +231,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (IsDarkMode($playerID)) echo ("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo ("<img style='height:200px;' src='./Images/DuoLife.png' />");
   echo ("<div style='position:absolute; top:37px; left:-130px; z-index:-5;'><img style='height:125px; width:150px;' src='./Images/passBG.png' /></div>");
-  if ($turn[0] == "PDECK" || $turn[0] == "ARS" || $layers[0] == "ENDTURN" ) {
+  if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) {
     $passLabel = "End Turn";
     $fontSize = 30;
     $left = 65;
