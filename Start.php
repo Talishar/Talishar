@@ -121,7 +121,8 @@ function initializePlayerState($handler, $deckHandler, $player)
   $deckSize = count($deckCards);
   fwrite($handler, "\r\n"); //Hand
 
-  $challengeThreshold = (HeroHealth($charEquip[0]) > 25 ? 3 : 2);
+  $challengeThreshold = (CharacterHealth($charEquip[0]) > 25 ? 3 : 2);
+  $challengeThreshold = 2;
   $numChallengeCard = 0;
   if($player == 1) $p1IsChallengeActive = "0";
   else if($player == 2) $p2IsChallengeActive = "0";
