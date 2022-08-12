@@ -122,6 +122,27 @@ function createUser($conn, $username, $email, $pwd) {
 	exit();
 }
 
+// Create user from Google login
+function createGoogleUser($conn, $username, $email) {
+	$conn = GetDBConnection();
+
+  // Prepare and bind statement
+  $stmt = $conn->prepare("INSERT INTO users (usersUid, usersEmail) VALUES (?, ?);");
+
+  // Declaring string to database. Helps mitigate SQL Injection attacks
+  $stmt->bind_param("ss", $username, $email);
+
+  // Exectute statement
+  $stmt->execute();
+
+  // Close statement and DB connection
+  $stmt->close();
+  $conn->close();
+  
+	header("location: ../Signup.php?error=none");
+	exit();
+}
+
 // Check for empty input login
 function emptyInputLogin($username, $pwd) {
 	if (empty($username) || empty($pwd)) {
@@ -193,6 +214,32 @@ function loginGoogleUser($id_token) {
   $email = $payload["email"];
   $stmt->execute();
 
+  // Sign up user if they don't already exist
+  if (!$stmt) {
+    // Prepare and bind statement
+    $stmt = $conn->prepare("INSERT INTO users (usersUid, usersEmail) VALUES (?, ?);");
+
+    // Declaring string to database. Helps mitigate SQL Injection attacks
+    $stmt->bind_param("ss", $payload["given_name"], $email);
+
+    // Exectute statement
+    $stmt->execute();
+
+    // Create the session
+    if(session_status() !== PHP_SESSION_ACTIVE) session_start(); {
+      $_SESSION["userid"] = $usersID;
+      $_SESSION["useruid"] = $usersUid;
+      $_SESSION["useremail"] = $usersEmail;  
+            
+      header("location: ../MainMenu.php?error=none");
+      exit;
+    }  
+
+    // Close statement and DB connection
+    $stmt->close();
+    $conn->close();    
+  }
+
   // Access the data
   $stmt->store_result();
   $stmt->bind_result($usersID, $usersUid, $usersEmail);
@@ -209,9 +256,7 @@ function loginGoogleUser($id_token) {
     
     header("location: ../MainMenu.php?error=none");
     exit;
-  }
-
-  
+  }  
 }
 
 function loginFromCookie()
