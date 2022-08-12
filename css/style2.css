@@ -327,7 +327,6 @@ button {
 }
 
 .profile-form form {
-  width: 85%;
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 5px;
@@ -414,12 +413,13 @@ button {
    ==================== */
 
 .karma-container {
-  width: 100%; 
+  width: 99%; 
   font-size: 20px;
   position: relative;
   display: inline-block;
   padding-bottom: 5px;
   padding-top: 5px;
+  border-radius: 5px;
 }
 
 .karma-hover {
@@ -436,10 +436,10 @@ button {
   transform: scale(0);
   transition: transform ease-out 150ms;
 
-
   /* Position the tooltip */
   position: absolute;
-  left: -30px;
+  top: -150px;
+  left: -20px;
   z-index: 1;
 }
 
@@ -455,6 +455,9 @@ button {
 .karma-light-grey {
   color: #000;
   background-color: #f1f1f1;
+  border-radius: 5px;
+  border: 1px solid var(--dark-color);
+  margin-bottom: 5px;
 }
 
 .karma-green {
