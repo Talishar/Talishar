@@ -4,7 +4,6 @@ include_once 'Header.php';
 // Check to see if the user is logged in, and redirects to MainMenu.php if they are
 
 if (isset($_SESSION['useruid'])) {
-  $hostHeader = $_SERVER['HTTP_HOST'];
   header("Location: /FaBOnline/MainMenu.php");
 }
 ?>
