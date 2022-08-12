@@ -88,8 +88,12 @@ if ($handle = opendir($path)) {
         DeleteCache($gameToken);
       }
     }
+    $isKarmaGoodEnough = 75;
+    if (isset($_SESSION["userKarma"])) {
+      $isKarmaGoodEnough = $_SESSION["userKarma"];
+    } 
 
-    if ($status == 0 && $visibility == "public") {
+    if ($status == 0 && $visibility == "public" && $isKarmaGoodEnough >= $karmaRestriction) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
       if ($format == "commoner") $formatName = "Commoner ";

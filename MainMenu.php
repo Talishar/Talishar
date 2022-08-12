@@ -86,6 +86,16 @@ if (!empty($_SESSION['error'])) {
     <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
     <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
+    <label for="gameKarmaRestriction" style='font-weight:bolder; margin-left:10px;'>Restrict by Reputation:</label>
+  <select class="karmaRestriction-Select" name='gameKarmaRestriction' id='gameKarmaRestriction'>
+    <option value="0">No Restriction</option>
+    <option value="50">☯ ≥ 50% - Exclude players with a karma below 50% (Bad reputation).</option>
+    <option value="75">☯ ≥ 75% - Only players with a good reputation.</option>
+    <option value="85">☯ ≥ 85% - Only players with a very good reputation, while excluding new players.</option>
+  </select><br><br>
+
+
+
   <span style='display:inline-block; margin-left:5px;'>
       <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
       <label style='margin-left:-10px;' for="blitz">Blitz</label>
