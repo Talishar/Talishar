@@ -635,13 +635,16 @@ function PlayerGainHealth($amount, &$health)
 
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1Karma, $p2Karma;
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1Karma, $p2Karma, $conceded, $currentTurn;
 	include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
   $turn[0] = "OVER";
   logCompletedGameStats();
-  UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
+  
+  if(!$conceded || $currentTurn >= 3) {
+    UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
+  }
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
