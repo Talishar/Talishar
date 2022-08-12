@@ -23,7 +23,7 @@ if (!isset($_SESSION["isPatron"])) {
   exit;
 }
 
-$heroID = $_GET["heroID"];
+$detailHeroID = $_GET["heroID"];
 
 echo ("<script src=\"./jsInclude.js\"></script>");
 
@@ -61,7 +61,7 @@ echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fix
 
 $sql = "SELECT WinningHero,LosingHero,count(WinningHero) AS Count,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"
+WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"
 GROUP by LosingHero
 ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -75,7 +75,7 @@ $winData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$heroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"";
+WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
@@ -87,7 +87,7 @@ $winCardData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,count(LosingHero) AS Count,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$heroID\" and LosingPID=\"$userID\"
+    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\" and LosingPID=\"$userID\"
     GROUP by WinningHero
     ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -100,7 +100,7 @@ $loseData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$heroID\" and LosingPID=\"$userID\"";
+    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\" and LosingPID=\"$userID\"";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
@@ -177,7 +177,7 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
 echo ("<div id='wrapper' style='text-align: center;'>");
 
 echo ("<section class='game-stats'>");
-echo ("<h3>Detailed stats for " . CardLink($heroID, $heroID, true) . "</h3>");
+echo ("<h3>Detailed stats for " . CardLink($detailHeroID, $detailHeroID, true) . "</h3>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Opposing Hero</td><td>Num Wins</td><td>Num Losses</td><td>Win %</td></tr>");
