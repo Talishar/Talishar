@@ -121,16 +121,16 @@ function initializePlayerState($handler, $deckHandler, $player)
   $deckSize = count($deckCards);
   fwrite($handler, "\r\n"); //Hand
 
+  $challengeThreshold = (HeroHealth($charEquip[0]) > 25 ? 3 : 2);
+  $numChallengeCard = 0;
   if($player == 1) $p1IsChallengeActive = "0";
   else if($player == 2) $p2IsChallengeActive = "0";
   for($i=0; $i<count($deckCards); ++$i)
   {
-    if($deckCards[$i] == "WTR175")
-    {
-      if($player == 1) $p1IsChallengeActive = "1";
-      else if($player == 2) $p2IsChallengeActive = "1";
-    }
+    if($deckCards[$i] == "WTR175") ++$numChallengeCard;
   }
+  if($player == 1 && $numChallengeCard >= $challengeThreshold) $p1IsChallengeActive = "1";
+  else if($player == 2 && $numChallengeCard >= $challengeThreshold) $p2IsChallengeActive = "1";
 
   fwrite($handler, implode(" ", $deckCards) . "\r\n");
 
