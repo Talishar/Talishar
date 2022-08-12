@@ -214,37 +214,18 @@ function loginGoogleUser($id_token) {
   $email = $payload["email"];
   $stmt->execute();
 
-  // Sign up user if they don't already exist
-  if (!$stmt) {
-    // Prepare and bind statement
-    $stmt = $conn->prepare("INSERT INTO users (usersUid, usersEmail) VALUES (?, ?);");
-
-    // Declaring string to database. Helps mitigate SQL Injection attacks
-    $stmt->bind_param("ss", $payload["given_name"], $email);
-
-    // Exectute statement
-    $stmt->execute();
-
-    // Create the session
-    if(session_status() !== PHP_SESSION_ACTIVE) session_start(); {
-      $_SESSION["userid"] = $usersID;
-      $_SESSION["useruid"] = $usersUid;
-      $_SESSION["useremail"] = $usersEmail;  
-            
-      header("location: ../MainMenu.php?error=none");
-      exit;
-    }  
-
-    // Close statement and DB connection
-    $stmt->close();
-    $conn->close();    
-  }
-
   // Access the data
   $stmt->store_result();
   $stmt->bind_result($usersID, $usersUid, $usersEmail);
   $stmt->fetch();
-  
+
+  // Redirect to Sign up user if they don't already exist
+  if ($usersEmail == '') {
+
+    header("location: /FabOnline/GoogleSignup.php?useremail=$email");
+    exit();
+  }
+
   // Create the session
   if(session_status() !== PHP_SESSION_ACTIVE) session_start(); {
     $_SESSION["userid"] = $usersID;
