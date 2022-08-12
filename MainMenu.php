@@ -134,10 +134,11 @@ if (!empty($_SESSION['error'])) {
   <h2>All cards supported!</h2>
 
   <div style='padding-top:10%;'>
-    <h2>FaBrary Deck Integration!</h2>
+    <h2>Challenge #1</h2>
+    <h3>Win as many games as you can with Sigil of Solace (3)</3>
   </div>
-  <div style='vertical-align:middle;'><a href='https://fabrary.net/decks/' target='_blank'><img style='padding-left:25%; width:50%;' src="./Images/fabraryLogo.png" /></a></div>
-  <h2 style='width:90%; padding-left:5%;'>Click above to explore tournament winning decks!</h2>
+  <div style='vertical-align:middle;'><img style='padding-left:25%; width:50%;' src="./concat/WTR175.webp" /></div>
+  <h3 style='width:90%; padding-left:5%;'>Check back soon for results!</h3>
 
   <!--
   <div style='position:absolute; bottom:10px; left:10px;'>
