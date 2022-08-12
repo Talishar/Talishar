@@ -318,10 +318,6 @@ button {
   font-size: 20px;
 }
 
-.profile-form div {
-  margin-bottom: 4px;
-}
-
 .profile-form h2 {
   text-align: center;
   margin-top: 6px;
@@ -411,6 +407,72 @@ button {
 
 .imgPatreon:focus {
   outline: none;
+}
+
+/* ====================
+    Karma Progress Bar
+   ==================== */
+
+.karma-container {
+  width: 100%; 
+  font-size: 20px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.karma-hover {
+  width: 110%;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+  font-size: 16px;
+  padding-left: 5px;
+  padding-top: 5px;
+  line-height: 1.5em;
+  text-shadow: none;
+  transform: scale(0);
+  transition: transform ease-out 150ms;
+
+
+  /* Position the tooltip */
+  position: absolute;
+  left: -30px;
+  z-index: 1;
+}
+
+.karma-container:hover .karma-hover{
+  transform: scale(1);
+}
+
+.karma-title {
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.karma-light-grey {
+  color: #000;
+  background-color: #f1f1f1;
+}
+
+.karma-green {
+  color: #fff;
+  background-color: #4CAF50;
+  text-align: center;
+}
+
+.karma-orange {
+  color: #fff;
+  background-color: #ff9800;
+  text-align: center;
+}
+
+.karma-red {
+  color: #fff;
+  background-color: #f44336;
+  text-align: center;
 }
 
 /* ================
@@ -843,6 +905,10 @@ button {
   opacity: 1;
   transition: all .4s ease;
   cursor: pointer;
+}
+
+.karmaRestriction-Select {
+  width: 50%;
 }
 
 /* ===========

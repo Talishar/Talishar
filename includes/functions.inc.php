@@ -159,6 +159,7 @@ function loginUser($username, $pwd, $rememberMe) {
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
 		$patreonAccessToken = $uidExists["patreonAccessToken"];
+		$userKarma = $uidExists["usersKarma"];
 		PatreonLogin($patreonAccessToken);
 
 		if($rememberMe)
@@ -178,7 +179,7 @@ function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
+	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, usersKarma FROM users WHERE rememberMeToken='$token'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
@@ -192,12 +193,14 @@ function loginFromCookie()
 			$_SESSION["useremail"] = $row[2];
 			$patreonAccessToken = $row[3];
 			$patreonRefreshToken = $row[4];
+			$_SESSION["userKarma"] = $row[5];
 			PatreonLogin($patreonAccessToken);
 		}
 		else {
 			unset($_SESSION["userid"]);
 			unset($_SESSION["useruid"]);
 			unset($_SESSION["useremail"]);
+			unset($_SESSION["userKarma"]);
 		}
 	}
 	mysqli_close($conn);
