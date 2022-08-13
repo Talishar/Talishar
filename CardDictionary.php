@@ -1719,6 +1719,8 @@ function CharacterDefaultActiveState($cardID)
 function AuraDefaultHoldTriggerState($cardID)
 {
   switch ($cardID) {
+    case "WTR054": case "WTR055": case "WTR056":
+      return 0;//Blessing of Deliverance
     case "WTR075":
       return 0; //Seismic Surge
     case "ARC112":

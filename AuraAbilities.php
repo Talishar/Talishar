@@ -176,12 +176,6 @@ function AuraDestroyAbility($cardID)
     case "WTR047":
       MainDrawCard();
       return "Show Time! drew a card.";
-    case "WTR054":
-      return BlessingOfDeliveranceDestroy(3);
-    case "WTR055":
-      return BlessingOfDeliveranceDestroy(2);
-    case "WTR056":
-      return BlessingOfDeliveranceDestroy(1);
     case "WTR069":
     case "WTR070":
     case "WTR071":
@@ -231,6 +225,9 @@ function AuraStartTurnAbilities()
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $dest = AuraDestroyAbility($auras[$i]);
     switch ($auras[$i]) {
+      case "WTR054": case "WTR055": case "WTR056":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "WTR075":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
