@@ -32,6 +32,7 @@
       fwrite($gameFileHandler, $p2DeckLink . "\r\n");
       fwrite($gameFileHandler, $p1IsChallengeActive . "\r\n");
       fwrite($gameFileHandler, $p2IsChallengeActive . "\r\n");
+      fwrite($gameFileHandler, $joinerIP . "\r\n");
       fclose($gameFileHandler);
     }
   }
