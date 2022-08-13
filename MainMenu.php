@@ -93,7 +93,7 @@ if (!empty($_SESSION['error'])) {
 
   <span style='display:inline-block;'>
     <input type="radio" id="cc" name="format" value="cc" checked="checked">
-    <label style='margin-left:0px;' for="cc">Classic Constructed</label>
+    <label style='margin-left:0px;' for="cc">CC</label>
   </span>
 
   <span style='display:inline-block;'>
