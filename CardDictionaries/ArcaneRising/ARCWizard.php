@@ -138,6 +138,8 @@
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
+        AddDecisionQueue("YESNO", $currentPlayer, "Do_you_want_to_tutor_a_card?", 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
