@@ -307,10 +307,9 @@ input[type="button"]:focus {
 }
 
 .Rate-Span {
-  min-height: 50  px;
+  min-height: 50px;
   display: inline-flex;
   align-items: center;
   font-size: 22px;
   font-weight: 550;
-  line-height: 1.25em;
 }

@@ -480,6 +480,22 @@ switch ($mode) {
     SetCachePiece($gameName, 3, $currentTime);
     GamestateUpdated($gameName);
     exit;
+  case 100008: // Green Rating Update players rating with 👍 Good (Green Rating)
+    include "MenuFiles/ParseGamefile.php";
+    $GLO_Player1GreenRating = 0;
+    $GLO_Player2GreenRating = 0;
+    if ($playerID == 1) $GLO_Player2GreenRating = 1; // Will add +1 to Player 2 good rating (Green Rating)
+    else $GLO_Player1GreenRating = 1; // Will add +1 to Player 1 good rating (Green Rating)
+    AddGreenRating($GLO_Player1GreenRating, $GLO_Player2GreenRating);
+    break;
+  case 100009: // Red Rating - Update players rating 👎 Bad (Red Rating)
+    include "MenuFiles/ParseGamefile.php";
+    $GLO_Player1RedRating = 0;
+    $GLO_Player2RedRating = 0;
+    if ($playerID == 1) $GLO_Player2RedRating = 1; // Will add +1 to Player 2 bad rating (Red Rating)
+    else $GLO_Player1RedRating = 1; // Will add +1 to Player 1 bad rating (Red Rating)
+    AddRedRating($GLO_Player1RedRating, $GLO_Player2RedRating);
+    break;
   default:
     break;
 }
@@ -530,6 +546,10 @@ function IsModeAsync($mode)
     case 100002:
       return true;
     case 100003:
+      return true;
+    case 100008:
+      return true;
+    case 100009:
       return true;
   }
   return false;

@@ -635,7 +635,8 @@ function PlayerGainHealth($amount, &$health)
 
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1Karma, $p2Karma, $conceded, $currentTurn;
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1Karma, $p2Karma, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
+
 	include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
@@ -644,6 +645,7 @@ function PlayerWon($playerID)
   
   if(!$conceded || $currentTurn >= 3) {
     UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
+    UpdateKarma($GLO_Player1Disconnected, $GLO_Player2Disconnected); // Give players negative karma if they left the game in progress.
   }
 }
 
@@ -1504,24 +1506,3 @@ function NumEquipBlock()
     }
     return "-";
   }
-
-// TODO: Ask Oot where to put this.
-if (array_key_exists('GreenThumb', $_POST)) {
-  GreenThumb();
-} else if (array_key_exists('RedThumb', $_POST)) {
-  RedThumb();
-}
-function GreenThumb()
-{
-  global $playerID;
-
-  if ($playerID == 1) AddGreenRating(0, 1);
-  else AddGreenRating(1, 0);
-}
-function RedThumb()
-{
-  global $playerID;
-
-  if ($playerID == 1) AddRedRating(0, 1);
-  else AddRedRating(1, 0);
-}

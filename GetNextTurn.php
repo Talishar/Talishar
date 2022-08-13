@@ -63,9 +63,11 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $opponentDisconnected = true;
       
       if ($otherP == 1) {
-        UpdateKarma(-10, 0); // Remove 10 karma to the leaver.
+        $GLO_Player1Disconnected = -10; // Remove 10 karma to the leaver if it's player 1.
+        $GLO_Player2Disconnected = 0; // No punition to the other player.
       } else {
-        UpdateKarma(0, -10); // Give both players +1 karma for finishing the game.
+        $GLO_Player2Disconnected = -10; // Remove 10 karma to the leaver if it's player 2.
+        $GLO_Player1Disconnected = 0; // No punition to the other player.
       }
     }
   }
@@ -237,7 +239,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (IsDarkMode($playerID)) echo ("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo ("<img style='height:200px;' src='./Images/DuoLife.png' />");
   echo ("<div style='position:absolute; top:37px; left:-130px; z-index:-5;'><img style='height:125px; width:150px;' src='./Images/passBG.png' /></div>");
-  if ($turn[0] == "PDECK" || $turn[0] == "ARS" || $layers[0] == "ENDTURN" ) {
+  if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) {
     $passLabel = "End Turn";
     $fontSize = 30;
     $left = 65;
@@ -438,10 +440,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-    $content .= "<form method='post'><span class='Rate-Span'>Rate your Opponent:&nbsp;
-    <input class='GreenThumb' title='👍 I liked and recommend playing with this player.' type='image' src='images/GreenThumb.png' width='24' height='24' alt='Submit' name='GreenThumb' value='Like'/>&nbsp;
-    <input class='RedThumb' title='👎 I disliked with this player.' type='image' src='images/RedThumb.png' width='24' height='24' alt='Submit' name='RedThumb' value='Dislike'/>
-    </span></form>";
+    $content .= "<BR><span class='Rate-Span'>Rate your Opponent:&nbsp;";
+    $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
+    $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
     $content .= "</div>" . CardStats($playerID);
     echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
   }
@@ -1355,24 +1356,4 @@ function DisplayPriorityGem($setting, $MZindex, $otherPlayer = 0)
     if ($setting == 0) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Not holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
     else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/$gem' />");
   }
-}
-
-if (array_key_exists('GreenThumb', $_POST)) {
-  GreenThumb();
-} else if (array_key_exists('RedThumb', $_POST)) {
-  RedThumb();
-}
-function GreenThumb()
-{
-  global $playerID;
-
-  if ($playerID == 1) AddGreenRating(0, 1);
-  else AddGreenRating(1, 0);
-}
-function RedThumb()
-{
-  global $playerID;
-
-  if ($playerID == 1) AddRedRating(0, 1);
-  else AddRedRating(1, 0);
 }

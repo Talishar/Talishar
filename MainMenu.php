@@ -8,11 +8,12 @@ if (!empty($_SESSION['error'])) {
   unset($_SESSION['error']);
 }
 
-$uidExists = getUInfo($conn, $_SESSION['useruid']);
-$_SESSION["userKarma"] = $uidExists["usersKarma"];
-$_SESSION["greenThumb"] = $uidExists["greenThumbs"];
-$_SESSION["redThumb"] = $uidExists["redThumbs"];
-
+if (isset($_SESSION["userid"])) {
+  $uidExists = getUInfo($conn, $_SESSION['useruid']);
+  $_SESSION["userKarma"] = $uidExists["usersKarma"];
+  $_SESSION["greenThumb"] = $uidExists["greenThumbs"];
+  $_SESSION["redThumb"] = $uidExists["redThumbs"];
+}
 ?>
 
 <style>
