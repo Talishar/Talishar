@@ -220,6 +220,7 @@ $CS_NumDragonAttacks = 53;
 $CS_NumIllusionistAttacks = 54;
 $CS_LastDynCost = 55;
 $CS_NumIllusionistActionCardAttacks = 56;
+$CS_ArcaneDamageDealt = 57;
 
 
 
