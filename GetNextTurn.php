@@ -272,6 +272,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         if($turn[0] == "B") echo(CreateButton($playerID, "Undo Block", 10001, 0, "16px") . " " . CreateButton($playerID, "Pass", 99, 0, "16px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
       }
     }
+    else {
+      if($currentPlayerActivity == 2) echo("Opponent is inactive " . CreateButton($playerID, "Claim Victory", 100007, 0, "16px"));
+    }
     echo ("</b>");
     /*
     if($playerID != $currentPlayer && $playerID != $mainPlayer)
