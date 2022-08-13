@@ -137,6 +137,7 @@ $p2Key = trim(fgets($handler));
 $permanentUniqueIDCounter = trim(fgets($handler));
 $gameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 $animations = GetArray($handler); //Animations
+$currentPlayerActivity = trim(fgets($handler)); //Current Player activity status -- 0 = active, 2 = inactive
 fclose($handler);
 BuildMyGamestate($playerID);
 
