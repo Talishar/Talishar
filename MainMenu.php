@@ -7,6 +7,12 @@ if (!empty($_SESSION['error'])) {
   echo "<script>alert('" . $_SESSION['error'] . "')</script>";
   unset($_SESSION['error']);
 }
+
+$uidExists = getUInfo($conn, $_SESSION['useruid']);
+$_SESSION["userKarma"] = $uidExists["usersKarma"];
+$_SESSION["greenThumb"] = $uidExists["greenThumbs"];
+$_SESSION["redThumb"] = $uidExists["redThumbs"];
+
 ?>
 
 <style>

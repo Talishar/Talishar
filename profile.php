@@ -62,7 +62,7 @@ if (isset($_SESSION["isPatron"])) {
   $uidExists = getUInfo($conn, $_SESSION['useruid']);
   $_SESSION["useremail"] = $uidExists["usersEmail"];
   $_SESSION["userspwd"] = $uidExists["usersPwd"];
-  $userKarma = $uidExists["usersKarma"];
+  $_SESSION["userKarma"] = $uidExists["usersKarma"];
 
   ?>
 
@@ -74,8 +74,8 @@ if (isset($_SESSION["isPatron"])) {
 
 
     <?php
-    if ($userKarma < 40) $repColor = "red";
-    else if ($userKarma < 65) $repColor = "orange";
+    if ($_SESSION["userKarma"] < 40) $repColor = "red";
+    else if ($_SESSION["userKarma"] < 65) $repColor = "orange";
     else $repColor = "green";
 
     echo ("<div class='karma-container'>");
@@ -93,7 +93,7 @@ if (isset($_SESSION["isPatron"])) {
 
 
     echo ("<div class='karma-light-grey'>");
-    echo ("<div class='karma-container karma-" . $repColor . "' style='width:" . $userKarma . "%'>☯ " . $userKarma . "</div>");
+    echo ("<div class='karma-container karma-" . $repColor . "' style='width:" . $_SESSION["userKarma"] . "%'>☯ " . $_SESSION["userKarma"] . "</div>");
     echo ("</div></div><br>");
 
     ?>
