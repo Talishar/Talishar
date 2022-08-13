@@ -84,4 +84,5 @@ fwrite($handler, $p2Key . "\r\n");
 fwrite($handler, $permanentUniqueIDCounter . "\r\n");
 fwrite($handler, $gameStatus . "\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 fwrite($handler, implode(" ", $animations) . "\r\n"); //Animations
+fwrite($handler, $currentPlayerActivity . "\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
 fclose($handler);
