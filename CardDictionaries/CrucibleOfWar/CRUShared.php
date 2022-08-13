@@ -784,7 +784,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $items = &GetItems($currentPlayer);
         $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
         if ($items[$index + 1] == 0 && ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer)) {
-            AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization. 
+            AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization.
             AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
             AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
             AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
@@ -957,7 +957,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU172":
     case "CRU173":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
-      AddArcaneBonus(1, $currentPlayer);
+      AddDecisionQueue("ADDARCANEBONUS", $currentPlayer, 1);
       return "";
     case "CRU174":
     case "CRU175":
