@@ -10,7 +10,7 @@ if (!isset($_SESSION["useruid"])) {
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2") exit;
+if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2" && $useruid != "Matt") exit;
 
 $detailHeroID = $_GET["heroID"];
 

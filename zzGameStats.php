@@ -12,7 +12,7 @@ if (!isset($_SESSION["useruid"])) {
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2") exit;
+if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2" && $useruid != "Matt") exit;
 
 $numDays = TryGet("numDays", 365);
 
@@ -21,9 +21,9 @@ echo ("<script src=\"./jsInclude.js\"></script>");
 echo ("<style>
 
 table {
-  border: 3px solid black; 
-  border-radius: 10px; 
-  border-spacing: 0; 
+  border: 3px solid black;
+  border-radius: 10px;
+  border-spacing: 0;
   border-collapse: collapse;
   background: rgba(74, 74, 74);
   font-size: 1em;
