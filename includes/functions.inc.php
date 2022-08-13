@@ -284,77 +284,108 @@ function logCompletedGameStats() {
 
 }
 
-function UpdateKarma($p1value=0, $p2value=0) {
-
+function UpdateKarma($p1value=0, $p2value=0) 
+{
 	global $p1id, $p2id, $p1Karma, $p2Karma;
 	
 	$p1NewKarma = $p1Karma + $p1value;
 	$p2NewKarma = $p2Karma + $p2value;
 
-	WriteLog("My user: " . $p1id ." " . $p2id . ", My value: " . $p1value . " " . $p2value . " and my karma: " . $p1Karma . " " . $p2Karma);
-
 	$conn = GetDBConnection();
-	$sql = "UPDATE users SET usersKarma='$p1NewKarma' WHERE usersid='$p1id'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
+	$stmt = "";
+	if($p1id != "" && $p1id != "-")
+	{
+		$sql = "UPDATE users SET usersKarma='$p1NewKarma' WHERE usersid='$p1id'";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+		}
 	}
-
-	$sql = "UPDATE users SET usersKarma='$p2NewKarma' WHERE usersid='$p2id'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
+	if($p2id != "" && $p2id != "-")
+	{
+		$sql = "UPDATE users SET usersKarma='$p2NewKarma' WHERE usersid='$p2id'";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+		}
+	}
+	if($stmt != ""){
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
 }
 
-function AddGreenRating($p1value = 0, $p2value = 0)
+function AddGreenRating($p1value=0, $p2value=0)
 {
-	global $p1id, $p2id, $p1Rating, $p2Rating;
+	global $p1id, $p2id, $p1GreenRating, $p2GreenRating;
+	
+	$p1GreenerThumb = $p1GreenRating;
+	$p2GreenerThumb = $p2GreenRating;
 
-	$p1GreenerThumb = $p1Rating + $p1value;
-	$p2GreenerThumb = $p2Rating + $p2value;
+	if($p1value == 1) $p1GreenerThumb = $p1GreenRating + 1;
+	if($p2value == 1) $p2GreenerThumb = $p2GreenRating + 1;
+
+	WriteLog("P1 Greener: " . $p1GreenerThumb . " ID: " . $p1id . " Rating: " . $p1GreenRating);
+	WriteLog("P2 Greener: " . $p2GreenerThumb . " ID: " . $p2id . " Rating: " . $p2GreenRating);
 
 	$conn = GetDBConnection();
-	$sql = "UPDATE users SET greenThumbs='$p1GreenerThumb' WHERE usersid='$p1id'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
+	$stmt = "";
+	if($p1id != "" && $p1id != "-")
+	{
+		$sql = "UPDATE users SET greenThumbs='$p1GreenerThumb' WHERE usersid='$p1id'";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+		}
 	}
-
-	$sql = "UPDATE users SET greenThumbs='$p2GreenerThumb' WHERE usersid='$p2id'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
+	if($p2id != "" && $p2id != "-")
+	{
+		$sql = "UPDATE users SET greenThumbs='$p2GreenerThumb' WHERE usersid='$p2id'";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+		}
+	}
+	if($stmt != ""){
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
 }
 
-function AddRedRating($p1value = 0, $p2value = 0)
+function AddRedRating($p1value=0, $p2value=0)
 {
-	global $p1id, $p2id, $p1Rating, $p2Rating;
+	global $p1id, $p2id, $p1RedRating, $p2RedRating;
 
+	$p1RedderThumb = $p1RedRating;
+	$p2RedderThumb = $p2RedRating;
+	
 	// TODO: Add a mathematical equasion if the player has too many red compared to green. Maybe like for ech extra 10 you have you lose an extra one. e.g. someone with 1 green and 12 red would get -2 karma.
-	$p1RedderThumb = $p1Rating + $p1value;
-	$p2RedderThumb = $p2Rating + $p2value;
+	if($p1value == 2) $p1RedderThumb = $p1RedRating + 1;
+	if($p2value == 2) $p2RedderThumb = $p2RedRating + 1;
 
 	$conn = GetDBConnection();
+	$stmt = "";
+	if($p1id != "" && $p1id != "-")
+	{
 	$sql = "UPDATE users SET redThumbs='$p1RedderThumb' WHERE usersid='$p1id'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
 	}
-
-	$sql = "UPDATE users SET redThumbs='$p2RedderThumb' WHERE usersid='$p2id'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
+	}
+	if($p2id != "" && $p2id != "-")
+	{
+		$sql = "UPDATE users SET redThumbs='$p2RedderThumb' WHERE usersid='$p2id'";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+		}
+	}
+	if($stmt != ""){
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
-}
+	}
 
 function SavePatreonTokens($accessToken, $refreshToken)
 {
