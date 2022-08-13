@@ -487,11 +487,14 @@ switch ($mode) {
     WriteLog("The current player is active again.");
     break;
   case 100007: //Claim Victory when opponent is inactive
-    include_once "./includes/dbh.inc.php";
-    include_once "./includes/functions.inc.php";
-    $otherPlayer = ($playerID == 1 ? 2 : 1);
-    if($turn[0] != "OVER") PlayerLoseHealth($otherPlayer, $theirHealth);
-    WriteLog("The opponent forfeit due to inactivity.");
+    if($currentPlayerActivity == 2)
+    {
+      include_once "./includes/dbh.inc.php";
+      include_once "./includes/functions.inc.php";
+      $otherPlayer = ($playerID == 1 ? 2 : 1);
+      if($turn[0] != "OVER") PlayerLoseHealth($otherPlayer, $theirHealth);
+      WriteLog("The opponent forfeit due to inactivity.");
+    }
     break;
   default:
     break;

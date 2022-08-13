@@ -166,7 +166,7 @@
 <?php echo(CreatePopup("inactivePopup", [], 1, 0, "You are Inactive", 1, "You are inactive. Your opponent is able to claim victory. Interact with the screen to clear this.")); ?>
 
 <script>
-  var IDLE_TIMEOUT = 3; //seconds
+  var IDLE_TIMEOUT = 10; //seconds
   var _idleSecondsCounter = 0;
   var _idleState = 0;//0 = not idle, 1 = idle warning, 2 = idle
 
