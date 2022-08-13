@@ -4497,6 +4497,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "STARTGAME":
       $gameStatus = "1";
       return 0;
+    case "ADDARCANEBONUS":
+      AddArcaneBonus($parameter, $player);
+      return 0;
     default:
       return "NOTSTATIC";
   }
