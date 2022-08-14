@@ -92,17 +92,17 @@ if (!empty($_SESSION['error'])) {
   </span>
 
   <span style='display:inline-block;'>
-    <input type="radio" id="cc" name="format" value="cc" checked="checked">
-    <label style='margin-left:0px;' for="cc">CC</label>
+    <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" checked="checked">
+    <label for="cc">CC</label>
   </span>
 
   <span style='display:inline-block;'>
-    <input type="radio" id="compcc" name="format" value="compcc">
-    <label style='margin-left:0px;' for="compcc">Competitive CC</label>
+    <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc">
+    <label for="compcc">Competitive CC</label>
   </span>
 
   <span style='display:inline-block;'>
-    <input type="radio" id="commoner" name="format" value="commoner">
+    <input style='margin-left: 0px;' type="radio" id="commoner" name="format" value="commoner">
     <label style='margin-left:-12px;' for="commoner">Commoner</label>
   </span>
   <br><br>
