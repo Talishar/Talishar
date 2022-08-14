@@ -106,17 +106,25 @@ if (isset($_SESSION["userid"])) {
   ?>
 
   <span style='display:inline-block; margin-left:5px;'>
-      <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
+      <input type="radio" id="blitz" name="format" value="blitz">
       <label style='margin-left:-10px;' for="blitz">Blitz</label>
   </span>
 
   <span style='display:inline-block;'>
-      <input type="radio" id="cc" name="format" value="cc">
-      <label style='margin-left:-12px;' for="cc">Classic Constructed</label>
+    <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" checked="checked">
+    <label for="cc">CC</label>
   </span>
 
-    <input type="radio" id="commoner" name="format" value="commoner">
-    <label style='margin-left:-12px;' for="commoner">Commoner</label><br><br>
+  <span style='display:inline-block;'>
+    <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc">
+    <label for="compcc">Competitive CC</label>
+  </span>
+
+  <span style='display:inline-block;'>
+    <input style='margin-left: 0px;' type="radio" id="commoner" name="format" value="commoner">
+    <label style='margin-left:-12px;' for="commoner">Commoner</label>
+  </span>
+  <br><br>
 
   <span style='display:inline-block; margin-left:5px;'>
       <input type="radio" id="public" name="visibility" value="public" checked="checked">
@@ -152,11 +160,12 @@ if (isset($_SESSION["userid"])) {
   <h1>Open Beta Test</h1>
   <h2>All cards supported!</h2>
 
-  <div style='padding-top:10%;'>
-    <h2>FaBrary Deck Integration!</h2>
+  <div style="padding-top:10%; vertical-align:middle; position: relative;">
+    <h2>Coax a Commotion!</h2>
+    <h3>Win as many games as you can <br>with Sigil of Solace (3)</h3><br>
+  <img style="margin-left:25%; width:50%; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
+  <h3 style="width:90%; padding-left:5%;">Must be logged in with max copies of Sigil of Solace (3) in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</h3>
   </div>
-  <div style='vertical-align:middle;'><a href='https://fabrary.net/decks/' target='_blank'><img style='padding-left:25%; width:50%;' src="./Images/fabraryLogo.png" /></a></div>
-  <h2 style='width:90%; padding-left:5%;'>Click above to explore tournament winning decks!</h2>
 
   <!--
   <div style='position:absolute; bottom:10px; left:10px;'>

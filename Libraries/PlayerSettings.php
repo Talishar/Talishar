@@ -206,7 +206,6 @@ function GetSettingsUI($player)
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
   global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback;
   $rv = "";
-  $rv .= "<h2>Combat Settings</h2><BR>";
   $settings = GetSettings($player);
   $currentValue = HoldPrioritySetting($player);
   $rv .= "<h3>Hold Priority Settings: </h3>";
@@ -229,12 +228,12 @@ function GetSettingsUI($player)
   $rv .= "<BR>";
   $currentValue = ShortcutAttackThreshold($player);
   $rv .= "<h3 style='padding-top:10px;'>Attack Shortcut Threshold: </h3>";
-  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Shortcut");
-  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "1 Attack", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "1 Attack");
+  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Skip", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Skip");
+  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "Skip 1 Power Attacks", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Skip 1 Power Attacks");
   $rv .= "<BR>";
-  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Always Shortcut", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Always Shortcut");
+  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Skip All Attacks", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Skip All Attacks");
   $rv .= "<BR>";
-  $rv .= "<h2>Other Settings</h2>";
+  $rv .= "<h3>In-Game Theme:</h3>";
   $rv .= CreateRadioButton($SET_DarkMode . "-0", "Normal Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Normal Mode");
   $rv .= CreateRadioButton($SET_DarkMode . "-1", "Dark Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Mode");
   $rv .= "<BR>";

@@ -395,7 +395,7 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
   $index = $params[1];
   $cardID = $layers[$index];
   $player = $layers[$index + 1];
-  for ($i = $index + LayerPieces(); $i >= $index; --$i) {
+  for ($i = $index + LayerPieces()-1; $i >= $index; --$i) {
     unset($layers[$i]);
   }
   $layers = array_values($layers);

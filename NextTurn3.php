@@ -162,6 +162,57 @@
 
 <body onkeypress='Hotkeys(event)' onload='OnLoadCallback(<?php echo (filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 
+<?php echo(CreatePopup("inactivityWarningPopup", [], 0, 0, "⚠️ Inactivity Warning ⚠️", 1, "", "", true, true, "Interact with the screen in the next 10 seconds or you could be kicked for inactivity.")); ?>
+<?php echo(CreatePopup("inactivePopup", [], 0, 0, "⚠️ You are Inactive ⚠️", 1, "", "", true, true, "You are inactive. Your opponent is able to claim victory. Interact with the screen to clear this.")); ?>
+
+<script>
+  var IDLE_TIMEOUT = 10; //seconds
+  var _idleSecondsCounter = 0;
+  var _idleState = 0;//0 = not idle, 1 = idle warning, 2 = idle
+
+  var activityFunction = function () {
+      var oldIdleState = _idleState;
+      _idleSecondsCounter = 0;
+      _idleState = 0;
+      var inactivityPopup = document.getElementById('inactivityWarningPopup');
+      if(inactivityPopup) inactivityPopup.style.display = "none";
+      var inactivePopup = document.getElementById('inactivePopup');
+      if(inactivePopup) inactivePopup.style.display = "none";
+      if(oldIdleState == 2) SubmitInput("100006", "");
+  };
+
+  document.onclick = activityFunction;
+
+  document.onmousemove = activityFunction;
+
+  document.onkeydown = activityFunction;
+
+  window.setInterval(CheckIdleTime, 1000);
+
+  function CheckIdleTime() {
+      if(document.getElementById("iconHolder").innerText != "ready.png") return;
+      _idleSecondsCounter++;
+      if (_idleSecondsCounter >= IDLE_TIMEOUT) {
+          if(_idleState == 0)
+          {
+            _idleState = 1;
+            _idleSecondsCounter = 0;
+            var inactivityPopup = document.getElementById('inactivityWarningPopup');
+            if(inactivityPopup) inactivityPopup.style.display = "inline";
+          }
+          else if(_idleState == 1)
+          {
+            _idleState = 2;
+            var inactivityPopup = document.getElementById('inactivityWarningPopup');
+            if(inactivityPopup) inactivityPopup.style.display = "none";
+            var inactivePopup = document.getElementById('inactivePopup');
+            if(inactivePopup) inactivePopup.style.display = "inline";
+            SubmitInput("100005", "");
+          }
+      }
+  }
+</script>
+
   <audio id="yourTurnSound" src="./Assets/prioritySound.wav"></audio>
 
   <script>

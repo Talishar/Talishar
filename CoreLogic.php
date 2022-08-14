@@ -635,8 +635,8 @@ function PlayerGainHealth($amount, &$health)
 
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1Karma, $p2Karma, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
-
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1Karma, $p2Karma, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
+  
 	include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
@@ -1195,7 +1195,7 @@ function DoesAttackHaveGoAgain()
     case "UPR063": case "UPR064": case "UPR065":
     case "UPR069": case "UPR070": case "UPR071":
       return NumDraconicChainLinks() >= 2;
-    case "UPR048": 
+    case "UPR048":
       return NumPhoenixFlameChainLinks() >= 1;
     case "UPR092":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;

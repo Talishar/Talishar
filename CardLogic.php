@@ -491,6 +491,13 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
       Intimidate();
       break;
+    case "WTR054": case "WTR055": case "WTR056":
+      if($parameter == "WTR054") $amount = 3;
+      else if($parameter == "WTR055") $amount = 2;
+      else $amount = 1;
+      BlessingOfDeliveranceDestroy($amount);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "WTR075":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);

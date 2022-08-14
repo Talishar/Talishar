@@ -116,8 +116,8 @@
 
   function ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $otherPlayer, $CS_ArcaneDamageTaken, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
-    global $CS_NextNAAInstant;
+    global $currentPlayer, $otherPlayer, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
+    global $CS_NextNAAInstant, $CS_ArcaneDamageDealt;
     $rv = "";
     switch($cardID)
     {
@@ -138,11 +138,11 @@
         DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
       case "ELE070": case "ELE071": case "ELE072":
-        AddDecisionQueue("CLASSSTATEGREATERORPASS", $otherPlayer, $CS_ArcaneDamageTaken . "-1", 1);
+        AddDecisionQueue("CLASSSTATEGREATERORPASS", $currentPlayer, $CS_ArcaneDamageDealt . "-1", 1);
         AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
         return "";
       case "ELE079": case "ELE080": case "ELE081":
-        if(GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0)
+        if(GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "GYNAA");
           AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);

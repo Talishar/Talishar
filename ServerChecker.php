@@ -13,6 +13,7 @@ $currentlyActiveGames = "";
 $spectateLinks = "";
 $blitzLinks = "";
 $ccLinks = "";
+$compCCLinks = "";
 $commonerLinks = "";
 
 $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
@@ -123,6 +124,11 @@ if ($handle = opendir($path)) {
       } else if ($format == "shadowcc") {
         if ($isOmegaEclipse) $ccLinks .= $link;
         else if ($isMod) $commonerLinks .= $link;
+      } else if ($format == "compcc") {
+        if (!$isOmegaEclipse) $compCCLinks .= $link;
+      } else if ($format == "shadowcompcc") {
+        if ($isOmegaEclipse) $ccLinks .= $link;
+        else if ($isMod) $commonerLinks .= $link;
       } else if ($format == "commoner") {
         if (!$isOmegaEclipse) $commonerLinks .= $link;
       } else if ($format == "shadowcommoner") {
@@ -140,6 +146,9 @@ echo ($blitzLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
 echo ($ccLinks);
+echo ("<h3 style='text-align:center;'>________</h3>");
+echo ("<h2 title='This game mode is intended for training for high level regional and national events.' style='cursor:default; width:100%; text-align:center;'>Competitive CC</h2>");
+echo ($compCCLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
 echo ($commonerLinks);

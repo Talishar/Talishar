@@ -37,6 +37,7 @@ fclose($bannedIPHandler);
 
 if ($isOmegaEclipse) {
   if ($format == "cc") $format = "shadowcc";
+  else if ($format == "compcc") $format = "shadowcompcc";
   else if ($format == "blitz") $format = "shadowblitz";
   else if ($format == "commoner") $format = "shadowcommoner";
 }
