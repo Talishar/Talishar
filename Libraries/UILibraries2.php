@@ -93,7 +93,7 @@
   }
   //Steam Counters style
  elseif ($counters != 0 && ($from == "ITEMS" || $from == "CHARACTER") && ClassContains($cardNumber, "MECHANOLOGIST")) {
-   if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
+   if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "0px"; } else { $left = "-45%"; }
    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
    display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
