@@ -637,7 +637,7 @@ function PlayerWon($playerID)
 {
   global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1Karma, $p2Karma, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
   
-	include_once "./MenuFiles/ParseGamefile.php";
+  include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
   $turn[0] = "OVER";
@@ -646,7 +646,7 @@ function PlayerWon($playerID)
   if(!$conceded || $currentTurn >= 3) {
     // Give players negative karma if they left the game in progress.
     if($GLO_Player1Disconnected != 0 && $GLO_Player1Disconnected != "") UpdateKarma($GLO_Player1Disconnected, 1);
-    else if($GLO_Player2Disconnected != 0 && $GLO_Player2Disconnected != "") { WriteLog("Negative!"); UpdateKarma(1, $GLO_Player2Disconnected); }
+    else if($GLO_Player2Disconnected != 0 && $GLO_Player2Disconnected != "") UpdateKarma(1, $GLO_Player2Disconnected);
     else UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
   }
 }
