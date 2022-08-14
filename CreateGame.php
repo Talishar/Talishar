@@ -18,6 +18,7 @@ $decksToTry = TryGet("decksToTry");
 $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
+$karmaRestriction = TryGet("gameKarmaRestriction", "0");
 
 $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
 $attemptCount = 0;
@@ -77,6 +78,14 @@ $p1uid = "-";
 $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
+$p1Karma = "-";
+$p2Karma = "-";
+$p1GreenRating = "-";
+$p2GreenRating = "-";
+$p1RedRating = "-";
+$p2RedRating = "-";
+$p1PlayerRating = 0;
+$p2PlayerRating = 0;
 $hostIP = $_SERVER['REMOTE_ADDR'];
 
 $filename = "./Games/" . $gameName . "/GameFile.txt";

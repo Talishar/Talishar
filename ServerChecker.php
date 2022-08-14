@@ -29,6 +29,11 @@ fclose($bannedIPHandler);
 
 $isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
 
+$isKarmaGoodEnough = 74;
+if (isset($_SESSION["userKarma"])) {
+  $isKarmaGoodEnough = $_SESSION["userKarma"];
+} 
+
 echo ("<div class='SpectatorContainer'>");
 echo ("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 if ($handle = opendir($path)) {
@@ -90,7 +95,7 @@ if ($handle = opendir($path)) {
       }
     }
 
-    if ($status == 0 && $visibility == "public") {
+    if ($status == 0 && $visibility == "public" && $isKarmaGoodEnough >= $karmaRestriction) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
       if ($format == "commoner") $formatName = "Commoner ";
