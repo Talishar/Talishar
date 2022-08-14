@@ -10,11 +10,16 @@ if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
 }
-$forIndividual = TryGet("forPlayer", false);
+$forIndividual = TryGet("forIndividual", false);
 $forIndividual = ($forIndividual ? true : false);//If it evaluates to true, explicitly cast it to boolean
 $useruid = $_SESSION["useruid"];
-$userid = $_SESSION["userid"];
+$userID = $_SESSION["userid"];
 if (!$forIndividual && $useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2" && $useruid != "Matt" && $useruid != "jacob") exit;
+
+if ($forIndividual && !isset($_SESSION["isPatron"])) {
+  echo ("Please subscribe to our Patreon to access this page.");
+  exit;
+}
 
 $detailHeroID = $_GET["heroID"];
 
