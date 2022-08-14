@@ -37,14 +37,6 @@
   $p2uid = trim(fgets($gameFileHandler));
   $p1id = trim(fgets($gameFileHandler));
   $p2id = trim(fgets($gameFileHandler));
-  $p1Karma = trim(fgets($gameFileHandler));
-  $p2Karma = trim(fgets($gameFileHandler));
-  $p1GreenRating = trim(fgets($gameFileHandler)); // Rating start of the game
-  $p2GreenRating = trim(fgets($gameFileHandler)); // Rating start of the game
-  $p1RedRating = trim(fgets($gameFileHandler)); // Rating start of the game
-  $p2RedRating = trim(fgets($gameFileHandler)); // Rating start of the game
-  $p1PlayerRating = trim(fgets($gameFileHandler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-  $p2PlayerRating = trim(fgets($gameFileHandler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
   $gameDescription = trim(fgets($gameFileHandler));
   $hostIP = trim(fgets($gameFileHandler));
   $p1IsPatron = trim(fgets($gameFileHandler));
