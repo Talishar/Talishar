@@ -34,6 +34,7 @@ CREATE TABLE `completedgame` (
   `WinningPID` int(11) DEFAULT NULL,
   `LosingPID` int(11) DEFAULT NULL,
   `WinnerHealth` int(11) DEFAULT NULL,
+  `FirstPlayer` tinyint(4) DEFAULT NULL,
   `NumTurns` int(11) NOT NULL,
   `Format` int(11) DEFAULT NULL,
   `GameID` int(22) NOT NULL,
@@ -84,7 +85,7 @@ CREATE TABLE `users` (
   `patreonRefreshToken` varchar(64) DEFAULT NULL,
   `usersKarma` TINYINT(3) NOT NULL DEFAULT '75',
   `greenThumbs` int(11) NOT NULL DEFAULT '0',
-  `redThumbs` int(11) NOT NULL DEFAULT '0' 
+  `redThumbs` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
