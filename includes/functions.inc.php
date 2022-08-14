@@ -305,7 +305,42 @@ function logCompletedGameStats() {
 		}
 	}
 	mysqli_close($conn);
+}
 
+function SendFabraryResults()
+{
+	/*
+	Deck
+{
+  deckId: string (this would be the ID used to get the deck, e.g. "01GAEH08RNW47GVERJSJ7ZDBZT")
+  turns: number
+  result: enum? (won/lost/incomplete, etc.)
+  cardResults: array of CardResult (see below)
+}
+
+CardResult
+{
+  cardId: string (I assume this would be WTR001 for e.g.?)
+  played: number
+  blocked: number
+  pitched: number
+}
+*/
+}
+
+function SerializeGameResult($player, $DeckLink, $deckAfterSB)
+{
+	global $winner, $currentTurn;
+	$deck = [];
+	$deck["deckId"] = $DeckLink;
+	$deck["turns"] = $currentTurn;
+	$deck["result"] = ($player == $winner ? 1 : 0);
+	$deck["cardResults"] = [];
+	$deckAfterSB = explode(" ", $deckAfterSB);
+	foreach($deckAfterSB as $card)
+	{
+
+	}
 }
 
 function UpdateKarma($p1value=0, $p2value=0)
