@@ -291,6 +291,9 @@ function UpdateKarma($p1value=0, $p2value=0)
 	$p1NewKarma = $p1Karma + $p1value;
 	$p2NewKarma = $p2Karma + $p2value;
 
+	WriteLog("P1 New Karma: " . $p1NewKarma . " ID: " . $p1id . " Karma: " . $p1Karma);
+	WriteLog("P2 New Karma: " . $p2NewKarma . " ID: " . $p2id . " Karma: " . $p2Karma);
+
 	$conn = GetDBConnection();
 	$stmt = "";
 	if($p1id != "" && $p1id != "-")
@@ -325,8 +328,8 @@ function AddGreenRating($p1value=0, $p2value=0)
 	if($p1value == 1) $p1GreenerThumb = $p1GreenRating + 1;
 	if($p2value == 1) $p2GreenerThumb = $p2GreenRating + 1;
 
-	WriteLog("P1 Greener: " . $p1GreenerThumb . " ID: " . $p1id . " Rating: " . $p1GreenRating);
-	WriteLog("P2 Greener: " . $p2GreenerThumb . " ID: " . $p2id . " Rating: " . $p2GreenRating);
+	// WriteLog("P1 Greener: " . $p1GreenerThumb . " ID: " . $p1id . " Rating: " . $p1GreenRating);
+	// WriteLog("P2 Greener: " . $p2GreenerThumb . " ID: " . $p2id . " Rating: " . $p2GreenRating);
 
 	$conn = GetDBConnection();
 	$stmt = "";
