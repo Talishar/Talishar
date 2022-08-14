@@ -79,12 +79,12 @@ if (isset($_SESSION["userid"])) {
 
   ?>
     <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
-    <input type="text" id="fabdb" name="fabdb">&nbsp;
+    <input type="text" id="fabdb" name="fabdb">
   <?php
   if (isset($_SESSION["userid"])) {
     echo ("<span style='display:inline;'>");
     echo ("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-    echo ("<label title='Save deck to Favorites' for='favoriteDeck'>&nbsp;</label>");
+    echo ("<label title='Save deck to Favorites' for='favoriteDeck' style='margin-left:10px;'></label>");
     echo ("</span>");
   }
   echo ("<br>");
@@ -95,11 +95,11 @@ if (isset($_SESSION["userid"])) {
 
   <?php
   if (isset($_SESSION["userid"])) {
-    echo ("<label for='gameKarmaRestriction' style='font-weight:bolder; margin-left:10px;'>Restrict by Reputation:</label>");
-    echo ("<select class='karmaRestriction-Select' name='gameKarmaRestriction' id='gameKarmaRestriction'>");
+    echo ("<label for='gameKarmaRestriction' style='font-weight:bolder; margin-left:20px;'>Restrict by Reputation:</label>");
+    echo ("<select class='karmaRestriction-Select' style='margin-left:10px;' name='gameKarmaRestriction' id='gameKarmaRestriction'>");
       echo ("<option value='0'>No Restriction</option>");
       if ($_SESSION["userKarma"] >= 50) echo ("<option value='50'>☯ ≥ 50% - Exclude players with a karma below 50% (Bad reputation).</option>");
-      if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation.</option>");
+      if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation. Exclude players without an accounts.</option>");
       if ($_SESSION["userKarma"] >= 85) echo ("<option value='85'>☯ ≥ 85% - Only players with a very good reputation, while excluding new players.</option>");
     echo ("</select><br><br>");
   } 
