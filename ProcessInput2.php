@@ -50,6 +50,7 @@ $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+$conceded = false;
 
 if ($playerID != 3 && $authKey != $targetAuth) exit;
 if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
@@ -441,6 +442,7 @@ switch ($mode) {
   case 100002: //Concede
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
+    $conceded = true;
     if($turn[0] != "OVER") PlayerLoseHealth($playerID, $myHealth);
     break;
   case 100003: //Report Bug
@@ -496,6 +498,22 @@ switch ($mode) {
       WriteLog("The opponent forfeit due to inactivity.");
     }
     break;
+  case 100008: // Green Rating Update players rating with 👍 Good (Green Rating)
+    include "MenuFiles/ParseGamefile.php";
+    include "MenuFiles/WriteGamefile.php";
+    if ($playerID == 1) $p2PlayerRating = 1; // Will add +1 to Player 2 good rating (Green Rating)
+    else $p1PlayerRating = 1; // Will add +1 to Player 1 good rating (Green Rating)
+    WriteGameFile();
+    AddGreenRating($p1PlayerRating, $p2PlayerRating);
+    break;
+  case 100009: // Red Rating - Update players rating 👎 Bad (Red Rating)
+    include "MenuFiles/ParseGamefile.php";
+    include "MenuFiles/WriteGamefile.php";
+    if ($playerID == 1) $p2PlayerRating = 2; // Will add +1 to Player 2 bad rating (Red Rating)
+    else $p1PlayerRating = 2; // Will add +1 to Player 1 bad rating (Red Rating)
+    WriteGameFile();
+    AddRedRating($p1PlayerRating, $p2PlayerRating);
+    break;
   default:
     break;
 }
@@ -548,6 +566,10 @@ function IsModeAsync($mode)
     case 100003:
       return true;
     case 100007:
+      return true;
+    case 100008:
+      return true;
+    case 100009:
       return true;
   }
   return false;

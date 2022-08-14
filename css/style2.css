@@ -148,7 +148,7 @@ section {
 select {
   border: 2px solid grey;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -318,10 +318,6 @@ button {
   font-size: 20px;
 }
 
-.profile-form div {
-  margin-bottom: 4px;
-}
-
 .profile-form h2 {
   text-align: center;
   margin-top: 6px;
@@ -331,7 +327,6 @@ button {
 }
 
 .profile-form form {
-  width: 85%;
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 5px;
@@ -411,6 +406,79 @@ button {
 
 .imgPatreon:focus {
   outline: none;
+}
+
+/* ====================
+    Karma Progress Bar
+   ==================== */
+
+.karma-container {
+  width: 99%; 
+  font-size: 18px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-radius: 5px;
+}
+
+.karma-hover {
+  width: 110%;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+  font-size: 16px;
+  padding-left: 5px;
+  padding-top: 5px;
+  line-height: 1.5em;
+  text-shadow: none;
+  transform: scale(0);
+  transition: transform ease-out 150ms;
+
+  /* Position the tooltip */
+  position: absolute;
+  top: -150px;
+  left: -20px;
+  z-index: 1;
+}
+
+.karma-container:hover .karma-hover{
+  transform: scale(1);
+}
+
+.karma-title {
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.karma-light-grey {
+  color: #000;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  border: 1px solid var(--dark-color);
+  margin-bottom: 5px;
+}
+
+.karma-green {
+  color: #fff;
+  background-color: #4CAF50;
+  text-align: center;
+  border-right: 1px solid var(--dark-color);
+}
+
+.karma-orange {
+  color: #fff;
+  background-color: #ff9800;
+  text-align: center;
+  border-right: 1px solid var(--dark-color);
+}
+
+.karma-red {
+  color: #fff;
+  background-color: #f44336;
+  text-align: center;
+  border-right: 1px solid var(--dark-color);
 }
 
 /* ================
@@ -843,6 +911,10 @@ button {
   opacity: 1;
   transition: all .4s ease;
   cursor: pointer;
+}
+
+.karmaRestriction-Select {
+  width: 50%;
 }
 
 /* ===========

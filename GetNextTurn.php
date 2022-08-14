@@ -61,6 +61,14 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       SetCachePiece($gameName, $otherP + 3, "2");
       $lastUpdate = 0;
       $opponentDisconnected = true;
+      
+      if ($otherP == 1) {
+        $GLO_Player1Disconnected = -10; // Remove 10 karma to the leaver if it's player 1.
+        $GLO_Player2Disconnected = 0; // No punition to the other player.
+      } else {
+        $GLO_Player2Disconnected = -10; // Remove 10 karma to the leaver if it's player 2.
+        $GLO_Player1Disconnected = 0; // No punition to the other player.
+      }
     }
   }
   ++$count;
@@ -435,6 +443,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
+    $content .= "<BR><span class='Rate-Span'>Rate your Opponent:&nbsp;";
+    $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
+    $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
     $content .= "</div>" . CardStats($playerID);
     echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
   }
