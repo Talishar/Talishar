@@ -28,7 +28,7 @@ fclose($bannedIPHandler);
 
 $isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
 
-$isKarmaGoodEnough = 75;
+$isKarmaGoodEnough = 74;
 if (isset($_SESSION["userKarma"])) {
   $isKarmaGoodEnough = $_SESSION["userKarma"];
 } 
