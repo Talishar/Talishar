@@ -644,8 +644,6 @@ function PlayerWon($playerID)
   logCompletedGameStats();
   
   if(!$conceded || $currentTurn >= 3) {
-    WriteLog("Lets update Karma!");
-    WriteLog("P1: " . $GLO_Player1Disconnected . " P2: " . $GLO_Player2Disconnected);
     // Give players negative karma if they left the game in progress.
     if($GLO_Player1Disconnected != 0 && $GLO_Player1Disconnected != "") UpdateKarma($GLO_Player1Disconnected, 1);
     else if($GLO_Player2Disconnected != 0 && $GLO_Player2Disconnected != "") { WriteLog("Negative!"); UpdateKarma(1, $GLO_Player2Disconnected); }
