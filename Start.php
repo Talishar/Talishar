@@ -75,10 +75,10 @@ fwrite($handler, $p1Key . "\r\n"); //Player 1 auth key
 fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
 fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
 fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-fwrite($handler, "0\r\n"); //Player2  Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fwrite($handler, "\r\n"); //Animations
 fwrite($handler, "0\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
+fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fclose($handler);
 
 //Set up log file

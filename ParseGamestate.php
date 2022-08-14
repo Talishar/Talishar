@@ -136,10 +136,10 @@ $p1Key = trim(fgets($handler));
 $p2Key = trim(fgets($handler));
 $permanentUniqueIDCounter = trim(fgets($handler));
 $gameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-$p1PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-$p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 $animations = GetArray($handler); //Animations
 $currentPlayerActivity = trim(fgets($handler)); //Current Player activity status -- 0 = active, 2 = inactive
+$p1PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fclose($handler);
 BuildMyGamestate($playerID);
 
