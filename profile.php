@@ -41,9 +41,6 @@ if (isset($_POST['update_profile'])) {
   }
   $message[] = "Profile saved!";
 }
-?>
-
-<?php
 
 if (isset($_SESSION["isPatron"])) {
   echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; left:20px; top:40px;'>");
@@ -54,6 +51,10 @@ if (isset($_SESSION["isPatron"])) {
 
 
 ?>
+
+
+  <script src="./jsInclude.js"></script>
+  <div id="cardDetail" style="z-index:100000; display:none; position:fixed;"></div>
 
 <section class="profile-form">
   <h2>Welcome <?php echo $_SESSION['useruid'] ?>!</h2>
@@ -81,15 +82,17 @@ if (isset($_SESSION["isPatron"])) {
     echo ("<div class='karma-container'>");
     echo ("<div style='margin-bottom: 3px;'>Your Reputation:");
 
-    echo ("<div class='karma-hover'><span class='karma-title'>How does my reputation score (Karma) work?</span><br>
+    echo ("<div class='karma-hover'><span class='karma-title'>How does reputation score (Karma) work?</span><br>
     The Karma score (☯) is a quick way to check if a player has a good reputation on FaBOnline (does not quit games, is friendly, plays fair).<br><br>
     Depending on your Karma score, you may also be allowed or not allowed to use some features or to join a given game.<br><br>
     Your initial Karma score is 75☯ (on a maximum of 100☯). Then:<br>
     &#8226; Each time you finish a game, you get +1☯.<br>
-    &#8226; If you quit a game in progress, you lose 10☯.<br>
-    &#8226; If you receive too many 'Red thumbs-down' from other players when compared to the amount of 'Green thumbs-up' received, your karma will be reduced each time you receive a Red Thumb.<br> 
-    In this case, the best is to have a good behavior to get Green thumb and restore your ratio and reputation.
+    &#8226; If you quit a game in progress, you lose 10☯ (conceding does not count as quitting).
     </div></div>");
+
+    //<br>
+    //&#8226; If you receive too many 'Red thumbs-down' from other players when compared to the amount of 'Green thumbs-up' received, your karma will be reduced each time you receive a Red Thumb.<br>
+    //In this case, the best is to have a good behavior to get Green thumb and restore your ratio and reputation.
 
 
     echo ("<div class='karma-light-grey'>");

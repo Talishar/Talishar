@@ -327,6 +327,7 @@ button {
 }
 
 .profile-form form {
+  width: 85%;
   padding-left: 5px;
   padding-right: 5px;
   padding-top: 5px;
@@ -413,7 +414,7 @@ button {
    ==================== */
 
 .karma-container {
-  width: 99%; 
+  width: 99%;
   font-size: 18px;
   position: relative;
   display: inline-block;
@@ -423,7 +424,7 @@ button {
 }
 
 .karma-hover {
-  width: 110%;
+  width: 400px;
   background-color: var(--light-color);
   color: var(--dark-color);
   border: 2px solid var(--dark-color);
@@ -437,9 +438,9 @@ button {
   transition: transform ease-out 150ms;
 
   /* Position the tooltip */
-  position: absolute;
-  top: -150px;
-  left: -20px;
+  position: fixed;
+  top: 120px;
+  left: 40px;
   z-index: 1;
 }
 
@@ -482,7 +483,7 @@ button {
 }
 
 /* ================
-    Reset Password 
+    Reset Password
    ================ */
 
 .form-resetpwd {
@@ -918,7 +919,7 @@ button {
 }
 
 /* ===========
-   Game Stats 
+   Game Stats
   ============ */
 
 .game-stats {
