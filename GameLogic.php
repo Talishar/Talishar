@@ -3459,12 +3459,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Remembrance shuffled back " . $cards . ".");
       $discard = array_values($discard);
       return "1";
-    case "HELMHOPEMERCHANT":
+    case "HOPEMERCHANTHOOD":
       $cards = explode(",", $lastResult);
-      for ($i = 0; $i < count($cards); ++$i) {
-        MyDrawCard();
+      WriteLog($cards[0]);
+      if ($cards[0] != "") {
+        for ($i = 0; $i < count($cards); ++$i) {
+          MyDrawCard();
+        }
+        WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew " . count($cards) . " cards.");
+      } else {
+        WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew 0 card.");
       }
-      WriteLog("Helm of the Hope Merchant shuffled and drew " . count($cards) . " cards.");
       return "1";
     case "LORDOFWIND":
       $number = count(explode(",", $lastResult));
