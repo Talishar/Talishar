@@ -252,7 +252,7 @@ function LoadFavoriteDecks($userID)
 
 function logCompletedGameStats() {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
-	global $p1id, $p2id;
+	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive;
 	$loser = ($winner == 1 ? 2 : 1);
 	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck";
 	$values = "?, ?, ?, ?, ?";
@@ -278,7 +278,31 @@ function logCompletedGameStats() {
 		$loseHero = &GetPlayerCharacter($loser);
 		mysqli_stmt_bind_param($stmt, "sssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck);
 		mysqli_stmt_execute($stmt);
+		$gameResultID = mysqli_insert_id($conn);
 		mysqli_stmt_close($stmt);
+		$challengeId = 1;
+		if($p1IsChallengeActive == "1" && $p1id != "-")
+		{
+			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
+			$stmt = mysqli_stmt_init($conn);
+			if (mysqli_stmt_prepare($stmt, $sql)) {
+				$result = ($winner == 1 ? 1 : 0);
+				mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $p1id, $result);//Challenge ID 1 = sigil of solace blue
+				mysqli_stmt_execute($stmt);
+				mysqli_stmt_close($stmt);
+			}
+		}
+		if($p2IsChallengeActive == "1" && $p2id != "-")
+		{
+			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
+			$stmt = mysqli_stmt_init($conn);
+			if (mysqli_stmt_prepare($stmt, $sql)) {
+				$result = ($winner == 2 ? 1 : 0);
+				mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $p2id, $result);//Challenge ID 1 = sigil of solace blue
+				mysqli_stmt_execute($stmt);
+				mysqli_stmt_close($stmt);
+			}
+		}
 	}
 	mysqli_close($conn);
 

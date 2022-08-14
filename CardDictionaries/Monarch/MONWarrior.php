@@ -212,7 +212,7 @@
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("Revelead a Light card, so it's put to the hero's soul and gains 1 health.");
+      WriteLog("It's a Light card, so it goes in the soul and gain 1 health.");
     }
     else
     {

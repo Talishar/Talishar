@@ -176,12 +176,6 @@ function AuraDestroyAbility($cardID)
     case "WTR047":
       MainDrawCard();
       return "Show Time! drew a card.";
-    case "WTR054":
-      return BlessingOfDeliveranceDestroy(3);
-    case "WTR055":
-      return BlessingOfDeliveranceDestroy(2);
-    case "WTR056":
-      return BlessingOfDeliveranceDestroy(1);
     case "WTR069":
     case "WTR070":
     case "WTR071":
@@ -231,6 +225,9 @@ function AuraStartTurnAbilities()
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $dest = AuraDestroyAbility($auras[$i]);
     switch ($auras[$i]) {
+      case "WTR054": case "WTR055": case "WTR056":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "WTR075":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
@@ -578,7 +575,7 @@ function AuraAttackAbilities($attackID)
     switch ($auras[$i]) {
       case "WTR225":
         if ($attackType == "AA" || $attackType == "W") {
-          WriteLog("Quicken grants go again.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
         }
@@ -590,7 +587,7 @@ function AuraAttackAbilities($attackID)
         break;
       case "ELE110":
         if ($attackType == "AA") {
-          WriteLog("Embodiment of Lightning grants go again.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
         }
@@ -600,14 +597,14 @@ function AuraAttackAbilities($attackID)
         break;
       case "EVR140":
         if ($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
-          WriteLog("Shimmers of Silver puts a +1 counter.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " puts a +1 counter.");
           --$auras[$i + 5];
           ++$auras[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
         }
         break;
       case "EVR142":
         if ($auras[$i + 5] > 0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
-          WriteLog("Passing Mirage makes your first illusionist attack each turn lose Phantasm.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " makes your first illusionist attack each turn lose Phantasm.");
           --$auras[$i + 5];
           AddCurrentTurnEffect("EVR142", $mainPlayer, true);
         }
@@ -635,21 +632,21 @@ function AuraHitEffects($attackID)
     switch ($auras[$i]) {
       case "ARC106":
         if ($attackType == "AA") {
-          WriteLog("Bloodspill Invocation created 3 runechants.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " created 3 runechants.");
           PlayAura("ARC112", $mainPlayer, 3);
           $remove = 1;
         }
         break;
       case "ARC107":
         if ($attackType == "AA") {
-          WriteLog("Bloodspill Invocation created 2 runechants.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " created 2 runechants.");
           PlayAura("ARC112", $mainPlayer, 2);
           $remove = 1;
         }
         break;
       case "ARC108":
         if ($attackType == "AA") {
-          WriteLog("Bloodspill Invocation created 1 runechants.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " created 1 runechants.");
           PlayAura("ARC112", $mainPlayer, 1);
           $remove = 1;
         }

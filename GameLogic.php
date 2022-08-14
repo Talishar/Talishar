@@ -2003,7 +2003,7 @@ function OnBlockEffects($index, $from)
     case "UPR194": case "UPR195": case "UPR196":
       if (PlayerHasLessHealth($currentPlayer)) {
         GainHealth(1, $currentPlayer);
-        WriteLog("Fyendal's Fighting Spirit gained 1 health.");
+        WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gained 1 health.");
       }
       break;
     default:
@@ -2065,12 +2065,12 @@ function Draw($player, $mainPhase = true)
     if ($talismanOfTithes != "") {
       $indices = explode(",", $talismanOfTithes);
       DestroyItemForPlayer($otherPlayer, $indices[0]);
-      WriteLog("Talisman of Tithes prevented a draw and was destroyed.");
+      WriteLog(CardLink("EVR192", "EVR192") . " prevented a draw and was destroyed.");
       return "";
     }
   }
   if ($mainPhase && SearchAurasForCard("UPR138", $otherPlayer) != "") {
-    WriteLog("Draw prevented by Channel the Bleak Expanse.");
+    WriteLog("Draw prevented by " . CardLink("UPR138", "UPR138"));
     return "";
   }
   $deck = &GetDeck($player);
@@ -2636,6 +2636,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $gameStatus;
+  global $CS_ArcaneDamageDealt;
   $rv = "";
   switch ($phase) {
     case "FINDRESOURCECOST":
@@ -3707,7 +3708,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (SearchCurrentTurnEffects("ELE065", $player) && ($sourceType == "A" || $sourceType == "AA")) ++$damage;
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
       //Create cancel point
-      PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source, 1);
+      PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player, 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
       PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1, 1);
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
@@ -3733,10 +3734,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
       $source = $parameters[1];
+      $playerSource = $parameters[2];
       $otherPlayer == 1 ? 2 : 1;
       if (!CanDamageBePrevented($player, $damage, "ARCANE")) $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
       if ($damage < 0) $damage = 0;
+      if($damage > 0) IncrementClassState($playerSource, $CS_ArcaneDamageDealt, $damage);
       WriteLog(CardLink($source, $source) . " dealt $damage arcane damage.");
       if ($damage > 0 && SearchCurrentTurnEffects("UPR125", $otherPlayer) && CardType($source) != "W") {
         DestroyFrozenArsenal($player);
@@ -4493,6 +4496,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "STARTGAME":
       $gameStatus = "1";
+      return 0;
+    case "ADDARCANEBONUS":
+      AddArcaneBonus($parameter, $player);
       return 0;
     default:
       return "NOTSTATIC";

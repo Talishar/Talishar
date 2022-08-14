@@ -52,10 +52,10 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $oppLastTime = GetCachePiece($gameName, $otherP + 1);
     $oppStatus = GetCachePiece($gameName, $otherP + 3);
     if (($currentTime - $oppLastTime) > 3000 && ($oppStatus == "0")) {
-      WriteLog("Opponent has disconnected. Waiting 20 seconds to reconnect, then opponent will auto-concede.");
+      WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect, then opponent will auto-concede.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "1");
-    } else if (($currentTime - $oppLastTime) > 20000 && $oppStatus == "1") {
+    } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "2");
@@ -276,9 +276,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($currentPlayer == $playerID) {
       if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo ("(" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "16px") . ")");
       if (CanPassPhase($turn[0])) {
-        if ($turn[0] == "B") echo (CreateButton($playerID, "Undo Block", 10001, 0, "16px"));
-        //if($turn[0] == "B") echo(CreateButton($playerID, "Undo Block", 10001, 0, "16px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
+        //if ($turn[0] == "B") echo (CreateButton($playerID, "Undo Block", 10001, 0, "16px"));
+        if($turn[0] == "B") echo(CreateButton($playerID, "Undo Block", 10001, 0, "16px") . " " . CreateButton($playerID, "Pass", 99, 0, "16px") . " " . CreateButton($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
       }
+    }
+    else {
+      if($currentPlayerActivity == 2) echo("— Opponent is inactive " . CreateButton($playerID, "Claim Victory", 100007, 0, "16px"));
     }
     echo ("</b>");
     /*
