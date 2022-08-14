@@ -3,14 +3,18 @@
 include_once 'Header.php';
 include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
+include_once "Libraries/HTTPLibraries.php";
 require_once "./includes/dbh.inc.php";
 
 if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
 }
+$forIndividual = TryGet("forPlayer", false);
+$forIndividual = ($forIndividual ? true : false);//If it evaluates to true, explicitly cast it to boolean
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2" && $useruid != "Matt" && $useruid != "jacob") exit;
+$userid = $_SESSION["userid"];
+if (!$forIndividual && $useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2" && $useruid != "Matt" && $useruid != "jacob") exit;
 
 $detailHeroID = $_GET["heroID"];
 
