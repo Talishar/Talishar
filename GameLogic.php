@@ -2003,7 +2003,7 @@ function OnBlockEffects($index, $from)
     case "UPR194": case "UPR195": case "UPR196":
       if (PlayerHasLessHealth($currentPlayer)) {
         GainHealth(1, $currentPlayer);
-        WriteLog("Fyendal's Fighting Spirit gained 1 health.");
+        WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gained 1 health.");
       }
       break;
     default:
@@ -2065,12 +2065,12 @@ function Draw($player, $mainPhase = true)
     if ($talismanOfTithes != "") {
       $indices = explode(",", $talismanOfTithes);
       DestroyItemForPlayer($otherPlayer, $indices[0]);
-      WriteLog("Talisman of Tithes prevented a draw and was destroyed.");
+      WriteLog(CardLink("EVR192", "EVR192") . " prevented a draw and was destroyed.");
       return "";
     }
   }
   if ($mainPhase && SearchAurasForCard("UPR138", $otherPlayer) != "") {
-    WriteLog("Draw prevented by Channel the Bleak Expanse.");
+    WriteLog("Draw prevented by " . CardLink("UPR138", "UPR138"));
     return "";
   }
   $deck = &GetDeck($player);
