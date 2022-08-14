@@ -13,6 +13,22 @@ include_once 'Header.php';
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>Reputation System</h2>
+    <h3>👨‍💻Happy Sunday players!
+    <br><br>We heard you! We worked this weekend on a better way to deal with leavers with a reputation system.</h3>
+    <p><br>The system is a quick way to check if a player has a good reputation on FaB Online (does not quit games, is friendly, plays fair).
+    <br>Depending on your Karma score, you may also be allowed or not allowed to use some features or to join a given game.
+    <br><br>Your initial Karma score is 75☯ Then:
+    <br>&emsp;• Each time you finish a game, you get +1☯.
+    <br>&emsp;• If you quit a game in progress, you lose -10☯.
+    <br>&emsp;• If you receive too many 'Red thumbs-down' from other players when compared to the amount of 'Green thumbs-up' received, your karma will be reduced each time you receive a Red Thumb.
+    In this case, the best is to have a good behavior to get Green thumb and restore your ratio and reputation.
+    <br><br>It also includes a new setting for game creation that allows you to restrict your game to people with decent/good karma.
+    <br><br>We hope that this will improve your experience on the platform! 
+    <br>Thank you! ❤️
+  </p>
+  </div>
+  <div class="articles">
     <h2>Hero Stats Update</h2>
     <p style="text-align:center">🎥 Watch Kugane Gaming analyze FaB Online hero stats! It is interesting, and we are happy to start providing those stats for the #fabtcg community.</p>
     <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/jk14zEIGER8" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
