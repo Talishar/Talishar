@@ -9,7 +9,7 @@
     {
       global $gameFileHandler;
       global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id, $p1Karma, $p2Karma, $p1GreenRating, $p2GreenRating, $p1RedRating, $p2RedRating;
-      global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink, $karmaRestriction, $GLO_Player1GreenRating, $GLO_Player2GreenRating, $GLO_Player1RedRating, $GLO_Player2RedRating;
+      global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink, $karmaRestriction, $p1PlayerRating, $p2PlayerRating;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
       fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
@@ -30,6 +30,8 @@
       fwrite($gameFileHandler, $p2GreenRating . "\r\n"); // Rating start of the game
       fwrite($gameFileHandler, $p1RedRating . "\r\n"); // Rating start of the game
       fwrite($gameFileHandler, $p2RedRating . "\r\n"); // Rating start of the game
+      fwrite($gameFileHandler, $p1PlayerRating . "\r\n");  //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+      fwrite($gameFileHandler, $p2PlayerRating . "\r\n");  //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
       fwrite($gameFileHandler, $gameDescription . "\r\n");
       fwrite($gameFileHandler, $hostIP . "\r\n");
       fwrite($gameFileHandler, $p1IsPatron . "\r\n");
