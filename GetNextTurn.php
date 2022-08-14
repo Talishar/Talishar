@@ -554,7 +554,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       $counters = 0;
       $lifeCounters = 0;
-      $defCounters = 0;
+      $enduranceCounters = 0;
       $atkCounters = 0;
       if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
         $counters = "Attacker";
@@ -573,11 +573,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       //Show Life and Def counters on allies in the popups
       if ($option[0] == "THEIRALLY") {
         $lifeCounters = $theirAllies[$option[1] + 2];
-        $defCounters = $theirAllies[$option[1] + 6];
+        $enduranceCounters = $theirAllies[$option[1] + 6];
         // TODO: $atkCounters to be added for Skittering Sands
       } elseif ($option[0] == "MYALLY") {
         $lifeCounters = $myAllies[$option[1] + 2];
-        $defCounters = $myAllies[$option[1] + 6];
+        $enduranceCounters = $myAllies[$option[1] + 6];
         // TODO: $atkCounters to be added for Skittering Sands
       }
 
@@ -587,7 +587,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       } elseif ($option[0] == "MYAURAS") {
         $atkCounters = $myAuras[$option[1] + 3];
       }
-      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $defCounters, $atkCounters);
+      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $enduranceCounters, $atkCounters);
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
@@ -798,8 +798,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (count($theirAllies) > 0) {
     for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) {
       $lifeCounters = $theirAllies[$i + 2];
-      $defCounters = $theirAllies[$i + 6];
-      echo (Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i + 1] != 2 ? 1 : 0, 0, 0, "", "", False, $lifeCounters, $defCounters, controller:$otherPlayer) . "&nbsp");
+      $enduranceCounters = $theirAllies[$i + 6];
+      echo (Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i + 1] != 2 ? 1 : 0, 0, 0, "", "", False, $lifeCounters, $enduranceCounters, controller:$otherPlayer) . "&nbsp");
       if ($theirAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-75px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
   }
@@ -945,10 +945,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (count($myAllies) > 0) {
     for ($i = 0; $i < count($myAllies); $i += AllyPieces()) {
       $lifeCounters = $myAllies[$i + 2];
-      $defCounters = $myAllies[$i + 6];
+      $enduranceCounters = $myAllies[$i + 6];
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i + 1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
-      echo (Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i + 1] != 2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $defCounters, controller:$playerID) . "&nbsp");
+      echo (Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i + 1] != 2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $enduranceCounters, controller:$playerID) . "&nbsp");
       if ($myAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     }
   }
