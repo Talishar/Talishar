@@ -45,7 +45,8 @@ if (isset($_POST['update_profile'])) {
 if (isset($_SESSION["isPatron"])) {
   echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; left:20px; top:40px;'>");
   echo ("<h1>Your Record</h1>");
-  include_once "zzPlayerStats.php";
+  $forIndividual = true;
+  include_once "zzGameStats.php";
   echo ("</section>");
 }
 
