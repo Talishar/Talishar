@@ -499,20 +499,20 @@ switch ($mode) {
     }
     break;
   case 100008: // Green Rating Update players rating with 👍 Good (Green Rating)
+    if($playerID == 1 && $p1PlayerRating != 0) break;
+    if($playerID == 2 && $p2PlayerRating != 0) break;
     include "MenuFiles/ParseGamefile.php";
-    include "MenuFiles/WriteGamefile.php";
-    if ($playerID == 1) $p2PlayerRating = 1; // Will add +1 to Player 2 good rating (Green Rating)
-    else $p1PlayerRating = 1; // Will add +1 to Player 1 good rating (Green Rating)
-    WriteGameFile();
-    AddGreenRating($p1PlayerRating, $p2PlayerRating);
+    AddRating(($playerID == 1 ? 2 : 1), "green");
+    if ($playerID == 1) $p1PlayerRating = 1;
+    if ($playerID == 2) $p2PlayerRating = 1;
     break;
   case 100009: // Red Rating - Update players rating 👎 Bad (Red Rating)
+    if($playerID == 1 && $p1PlayerRating != 0) break;
+    if($playerID == 2 && $p2PlayerRating != 0) break;
     include "MenuFiles/ParseGamefile.php";
-    include "MenuFiles/WriteGamefile.php";
-    if ($playerID == 1) $p2PlayerRating = 2; // Will add +1 to Player 2 bad rating (Red Rating)
-    else $p1PlayerRating = 2; // Will add +1 to Player 1 bad rating (Red Rating)
-    WriteGameFile();
-    AddRedRating($p1PlayerRating, $p2PlayerRating);
+    AddRating(($playerID == 1 ? 2 : 1), "red");
+    if ($playerID == 1) $p1PlayerRating = 1;
+    if ($playerID == 2) $p2PlayerRating = 1;
     break;
   default:
     break;

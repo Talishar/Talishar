@@ -336,63 +336,24 @@ function UpdateKarma($p1value=0, $p2value=0)
 	mysqli_close($conn);
 }
 
-function AddGreenRating($p1value=0, $p2value=0)
+function AddRating($player, $rating)
 {
 	global $p1id, $p2id;//, $p1GreenRating, $p2GreenRating;
 
-	$conn = GetDBConnection();
-	$stmt = "";
-	if($p1id != "" && $p1id != "-" && $p1value == 1)
+	$dbID = ($player == 1 ? $p1id : $p2id);
+
+	if($dbID != "" && $dbID != "-")
 	{
-		$sql = "UPDATE users SET greenThumbs=greenThumbs+1 WHERE usersid='$p1id'";
+		$conn = GetDBConnection();
+		$sql = "UPDATE users SET " . $rating . "Thumbs=" . $rating . "Thumbs+1 WHERE usersid='$dbID'";
 		$stmt = mysqli_stmt_init($conn);
 		if (mysqli_stmt_prepare($stmt, $sql)) {
 			mysqli_stmt_execute($stmt);
+			mysqli_stmt_close($stmt);
 		}
+		mysqli_close($conn);
 	}
-	if($p2id != "" && $p2id != "-" && $p2value == 1)
-	{
-		$sql = "UPDATE users SET greenThumbs=greenThumbs+1 WHERE usersid='$p2id'";
-		$stmt = mysqli_stmt_init($conn);
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_execute($stmt);
-		}
-	}
-	if($stmt != ""){
-		mysqli_stmt_close($stmt);
-	}
-	mysqli_close($conn);
 }
-
-function AddRedRating($p1value=0, $p2value=0)
-{
-	global $p1id, $p2id;//, $p1RedRating, $p2RedRating;
-
-	// TODO: Add a mathematical equasion if the player has too many red compared to green. Maybe like for ech extra 10 you have you lose an extra one. e.g. someone with 1 green and 12 red would get -2 karma.
-
-	$conn = GetDBConnection();
-	$stmt = "";
-	if($p1id != "" && $p1id != "-" && $p1value == 2)
-	{
-		$sql = "UPDATE users SET redThumbs=redThumbs+1 WHERE usersid='$p1id'";
-		$stmt = mysqli_stmt_init($conn);
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_execute($stmt);
-	}
-	}
-	if($p2id != "" && $p2id != "-" && $p2value == 2)
-	{
-		$sql = "UPDATE users SET redThumbs=redThumbs+1 WHERE usersid='$p2id'";
-		$stmt = mysqli_stmt_init($conn);
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_execute($stmt);
-		}
-	}
-	if($stmt != ""){
-		mysqli_stmt_close($stmt);
-	}
-	mysqli_close($conn);
-	}
 
 function SavePatreonTokens($accessToken, $refreshToken)
 {
