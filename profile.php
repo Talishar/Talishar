@@ -79,7 +79,7 @@ if (isset($_SESSION["isPatron"])) {
     else $repColor = "green";
 
     echo ("<div class='karma-container'>");
-    echo ("<div style='margin-bottom: 10px;'>Your Reputation:");
+    echo ("<div style='margin-bottom: 3px;'>Your Reputation:");
 
     echo ("<div class='karma-hover'><span class='karma-title'>How does my reputation score (Karma) work?</span><br>
     The Karma score (☯) is a quick way to check if a player has a good reputation on FaBOnline (does not quit games, is friendly, plays fair).<br><br>

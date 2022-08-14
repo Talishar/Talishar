@@ -83,5 +83,7 @@ fwrite($handler, $p1Key . "\r\n");
 fwrite($handler, $p2Key . "\r\n");
 fwrite($handler, $permanentUniqueIDCounter . "\r\n");
 fwrite($handler, $gameStatus . "\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+fwrite($handler, $p1PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+fwrite($handler, $p2PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fwrite($handler, implode(" ", $animations) . "\r\n"); //Animations
 fclose($handler);

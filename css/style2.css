@@ -414,7 +414,7 @@ button {
 
 .karma-container {
   width: 99%; 
-  font-size: 20px;
+  font-size: 18px;
   position: relative;
   display: inline-block;
   padding-bottom: 5px;
@@ -464,18 +464,21 @@ button {
   color: #fff;
   background-color: #4CAF50;
   text-align: center;
+  border-right: 1px solid var(--dark-color);
 }
 
 .karma-orange {
   color: #fff;
   background-color: #ff9800;
   text-align: center;
+  border-right: 1px solid var(--dark-color);
 }
 
 .karma-red {
   color: #fff;
   background-color: #f44336;
   text-align: center;
+  border-right: 1px solid var(--dark-color);
 }
 
 /* ================
