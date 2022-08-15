@@ -366,7 +366,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2)
         {
           PlayAura("ELE110", $currentPlayer);
-          WriteLog(CardLink($character[$i], $character[$i]) . " Briar created an Embodiment of Lightning aura.");
+          WriteLog(CardLink($character[$i], $character[$i]) . " created an Embodiment of Lightning aura.");
         }
         break;
       case "UPR158":
@@ -1045,12 +1045,12 @@ function ClassOverride($cardID, $player="")
   $cardClass = CardClass($cardID);
   if ($cardClass == "NONE") $cardClass = "";
   $otherPlayer = ($player == 1 ? 2 : 1);
-  $mainCharacter = &GetPlayerCharacter($otherPlayer);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
 
-  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
-  if(SearchCharacterForCard($player, "CRU097") && SearchCurrentTurnEffects($mainCharacter[0], $player)) {
+  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";//Erase Face
+  if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
     if ($cardClass != "") $cardClass .= ",";
-    $cardClass .= CardClass($mainCharacter[0]) . ",SHAPESHIFTER";
+    $cardClass .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
   }
 
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())

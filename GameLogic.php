@@ -1780,6 +1780,7 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which hero to copy");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZGETCARDID", $mainPlayer, "-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-SHIYANA", 1);
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $mainPlayer, "<-", 1);
       }
       break;
@@ -2194,7 +2195,7 @@ function MainCharacterEndTurnAbilities()
   if ($mainCharacter[0] == "CRU097") {
     $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
     $otherPlayerMainCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherPlayerMainCharacter[0], $mainPlayer)) {
+    if (SearchCurrentTurnEffects($otherPlayerMainCharacter[0] . "-SHIYANA", $mainPlayer)) {
       $mainCharacter = &GetPlayerCharacter($otherPlayer);
     }
   }
@@ -2244,9 +2245,9 @@ function MainCharacterHitAbilities()
   if($mainCharacter[0] == "CRU097") {
     $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
     $otherPlayerMainCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherPlayerMainCharacter[0], $mainPlayer)) {
+    if (SearchCurrentTurnEffects($otherPlayerMainCharacter[0] . "-SHIYANA", $mainPlayer)) {
       $mainCharacterID = &GetPlayerCharacter($otherPlayer);
-    } 
+    }
   }
 
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
@@ -2355,7 +2356,7 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
   if ($mainCharacter[0] == "CRU097") {
     $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
     $otherPlayerMainCharacter = &GetPlayerCharacter($otherPlayer);
-    if (SearchCurrentTurnEffects($otherPlayerMainCharacter[0], $mainPlayer)) {
+    if (SearchCurrentTurnEffects($otherPlayerMainCharacter[0] . "-SHIYANA", $mainPlayer)) {
       $mainCharacter = &GetPlayerCharacter($otherPlayer);
     } else $mainCharacter = &GetPlayerCharacter($mainPlayer);
   }
@@ -4525,17 +4526,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "-1";
     case "MZGETCARDID":
       global $mainPlayer, $defplayer;
+      $rv = "-1";
       $params = explode("-", $lastResult);
       if(substr($params[0], 0, 5) == "THEIR"){
         $zone = &GetMZZone($defplayer, $params[0]);
       } else $zone = &GetMZZone($mainPlayer, $params[0]);
       switch ($params[0]) {
         case "MYCHAR":
-          return $zone[$params[1]];
+          $rv = $zone[$params[1]];
         case "THEIRCHAR":
-          return $zone[$params[1]];
+          $rv = $zone[$params[1]];
       }
-      return "-1";
+      return $rv;
     case "SIFT":
       $numCards = SearchCount($lastResult);
       for ($i = 0; $i < $numCards; ++$i) {
