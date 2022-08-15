@@ -4,7 +4,7 @@ function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue;
   $somethingChanged = true;
-  if($turn[0] != "OVER")
+  if(!IsGameOver())
   {
     for($i=0; $i<100 && $somethingChanged; ++$i)
     {

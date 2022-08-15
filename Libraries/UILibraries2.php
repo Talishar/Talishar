@@ -231,7 +231,7 @@
     {
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
     }
-    if($id == "OVER") $style = "text-align: center;";
+    if(IsGameOver()) $style = "text-align: center;";
     else $style = "font-size: 18px; margin-left: 10px; line-height: 22px; align-items: center;";
     $rv .= "<div style='" . $style . "'>" . $customInput . "</div>";
     $rv .= "</div>";
