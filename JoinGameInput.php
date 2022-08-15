@@ -11,7 +11,7 @@ if (!IsGameNameValid($gameName)) {
   echo ("Invalid game name.");
   exit;
 }
-$playerID = $_GET["playerID"];
+$playerID = intval($_GET["playerID"]);
 $deck = TryGet("deck");
 $decklink = $_GET["fabdb"];
 $decksToTry = TryGet("decksToTry");
