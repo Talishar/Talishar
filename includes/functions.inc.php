@@ -305,6 +305,7 @@ function logCompletedGameStats() {
 		}
 	}
 	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck));
+	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck));
 	mysqli_close($conn);
 }
 
@@ -317,7 +318,6 @@ function SendFabraryResults($player, $decklink, $deck)
 	$ch = curl_init($url);
 	$payload = SerializeGameResult($player, $decklink, $deck);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-	//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$headers = array(
 		"x-api-key: " . $FaBraryKey,
@@ -339,7 +339,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB)
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
 	$deck["deckId"] = $DeckLink;
-	$deck["turns"] = $currentTurn;
+	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	$deck["cardResults"] = [];
 	$deckAfterSB = explode(" ", $deckAfterSB);
