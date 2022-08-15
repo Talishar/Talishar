@@ -988,7 +988,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "")
   $otherPlayer = $player == 2 ? 1 : 2;
   if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
-  if (DelimStringContains($subtype, "Invocation")) return "-";
+  if (DelimStringContains($subtype, "Invocation") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
   switch ($cardID) {
     case "WTR163":
       return "BANISH";
