@@ -135,7 +135,8 @@ foreach ($gameData as $row) {
   $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
   $playPercent = ($row[1] / $formatDenominator * 100);
   echo ("<tr>");
-  echo ("<td><a href='./zzPlayerHeroStats.php?heroID=$row[0]'>" . CardName($row[0]) . "</a></td>");
+  if($forIndividual) echo ("<td><a href='./zzPlayerHeroStats.php?heroID=$row[0]'>" . CardName($row[0]) . "</a></td>");
+  else echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardName($row[0]) . "</a></td>");
   //echo ("<td>" . CardLink($row[0], $row[0], true) . "</td>");
   echo ("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
   echo ("<td>" . $row[1] . "</td>");
@@ -157,7 +158,8 @@ foreach ($gameData as $row) {
   $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
   $playPercent = ($row[1] / $formatDenominator * 100);
   echo ("<tr>");
-  echo ("<td><a href='./zzPlayerHeroStats.php?heroID=$row[0]'>" . CardName($row[0]) . "</a></td>");
+  if($forIndividual) echo ("<td><a href='./zzPlayerHeroStats.php?heroID=$row[0]'>" . CardName($row[0]) . "</a></td>");
+  else echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardName($row[0]) . "</a></td>");
   //echo ("<td>" . CardLink($row[0], $row[0], true) . "</td>");
   echo ("<td>" . (count($row) > 2 ? $row[2] : 0) . "</td>");
   echo ("<td>" . $row[1] . "</td>");
