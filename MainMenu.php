@@ -97,39 +97,31 @@ if (isset($_SESSION["userid"])) {
   if (isset($_SESSION["userid"])) {
     echo ("<label for='gameKarmaRestriction' style='font-weight:bolder; margin-left:20px;'>Restrict by Reputation:</label>");
     echo ("<select class='karmaRestriction-Select' style='margin-left:10px;' name='gameKarmaRestriction' id='gameKarmaRestriction'>");
-      echo ("<option value='0'>No Restriction</option>");
-      if ($_SESSION["userKarma"] >= 50) echo ("<option value='50'>☯ ≥ 50% - Exclude players with a karma below 50% (Bad reputation).</option>");
-      if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation. Exclude players without an accounts.</option>");
-      if ($_SESSION["userKarma"] >= 85) echo ("<option value='85'>☯ ≥ 85% - Only players with a very good reputation, while excluding new players.</option>");
+    echo ("<option value='0'>No Restriction</option>");
+    if ($_SESSION["userKarma"] >= 50) echo ("<option value='50'>☯ ≥ 50% - Exclude players with a karma below 50% (Bad reputation).</option>");
+    if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation. Exclude players without an accounts.</option>");
+    if ($_SESSION["userKarma"] >= 85) echo ("<option value='85'>☯ ≥ 85% - Only players with a very good reputation, while excluding new players.</option>");
     echo ("</select><br><br>");
-  } 
+  }
   ?>
 
-  <span style='display:inline-block; margin-left:5px;'>
-      <input type="radio" id="blitz" name="format" value="blitz">
-      <label style='margin-left:-10px;' for="blitz">Blitz</label>
-  </span>
+    <input type="radio" id="blitz" name="format" value="blitz">
+    <label style='margin-left:-10px;' for="blitz">Blitz</label>
 
-  <span style='display:inline-block;'>
-    <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" checked="checked">
-    <label for="cc">CC</label>
-  </span>
+  <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" checked="checked">
+  <label for="cc">CC</label>
+  <br class="BRMobile">
 
-  <span style='display:inline-block;'>
-    <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc">
-    <label for="compcc">Competitive CC</label>
-  </span>
+  <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc">
+  <label for="compcc">Competitive CC</label>
+  <br class="BRMobile">
 
-  <span style='display:inline-block;'>
     <input style='margin-left: 0px;' type="radio" id="commoner" name="format" value="commoner">
     <label style='margin-left:-12px;' for="commoner">Commoner</label>
-  </span>
   <br><br>
 
-  <span style='display:inline-block; margin-left:5px;'>
-      <input type="radio" id="public" name="visibility" value="public" checked="checked">
-      <label style='margin-left:-12px;' for="public">Public</label>
-  </span>
+    <input type="radio" id="public" name="visibility" value="public" checked="checked">
+    <label style='margin-left:-12px;' for="public">Public</label>
 
     <input type="radio" id="private" name="visibility" value="private">
     <label style='margin-left:-12px;' for="private">Private</label><br><br>
@@ -163,8 +155,8 @@ if (isset($_SESSION["userid"])) {
   <div style="padding-top:10%; vertical-align:middle; position: relative;">
     <h2>Coax a Commotion!</h2>
     <h3>Win as many games as you can <br>with Sigil of Solace (3)</h3><br>
-  <img style="margin-left:25%; width:50%; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
-  <h3 style="width:90%; padding-left:5%;">Must be logged in with max copies of Sigil of Solace (3) in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</h3>
+    <img style="margin-left:25%; width:50%; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
+    <h3 style="width:90%; padding-left:5%;">Must be logged in with max copies of Sigil of Solace (3) in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</h3>
   </div>
 
   <!--
