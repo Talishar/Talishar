@@ -343,20 +343,23 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB)
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	$deck["cardResults"] = [];
 	$deckAfterSB = explode(" ", $deckAfterSB);
-	foreach($deckAfterSB as $card)
+	for($i=0; $i<count($deckAfterSB); ++$i)
 	{
-		$deck["cardResults"][$card] = [];
-		$deck["cardResults"][$card]["played"] = 0;
-		$deck["cardResults"][$card]["blocked"] = 0;
-		$deck["cardResults"][$card]["pitched"] = 0;
+		$deck["cardResults"][$i] = [];
+		$deck["cardResults"][$i]["cardId"] = $deckAfterSB[$i];
+		$deck["cardResults"][$i]["played"] = 0;
+		$deck["cardResults"][$i]["blocked"] = 0;
+		$deck["cardResults"][$i]["pitched"] = 0;
 	}
 	$cardStats = &GetCardStats($player);
 	for($i=0; $i<count($cardStats); $i+=CardStatPieces())
 	{
-		if(!isset($deck["cardResults"][$cardStats[$i]])) continue;
-		$deck["cardResults"][$cardStats[$i]]["played"] = $cardStats[$i+$CardStats_TimesPlayed];
-		$deck["cardResults"][$cardStats[$i]]["blocked"] = $cardStats[$i+$CardStats_TimesBlocked];
-		$deck["cardResults"][$cardStats[$i]]["pitched"] = $cardStats[$i+$CardStats_TimesPitched];
+		for($j=0; $j<count($deck["cardResults"]); ++$j)
+		{
+			$deck["cardResults"][$j]["played"] = $cardStats[$i+$CardStats_TimesPlayed];
+			$deck["cardResults"][$j]["blocked"] = $cardStats[$i+$CardStats_TimesBlocked];
+			$deck["cardResults"][$j]["pitched"] = $cardStats[$i+$CardStats_TimesPitched];
+		}
 	}
 	return json_encode($deck);
 }
