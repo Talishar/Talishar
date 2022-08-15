@@ -60,7 +60,7 @@ echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fix
 
 $sql = "SELECT WinningHero,LosingHero,count(WinningHero) AS Count,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\"
+WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\" and numTurns > 1
 GROUP by LosingHero
 ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -74,7 +74,7 @@ $winData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\"";
+WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\" and numTurns > 1";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
@@ -86,7 +86,7 @@ $winCardData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,count(LosingHero) AS Count,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\"
+    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\" and numTurns > 1
     GROUP by WinningHero
     ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -99,7 +99,7 @@ $loseData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\"";
+    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\" and numTurns > 1";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
