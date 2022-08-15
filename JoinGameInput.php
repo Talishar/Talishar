@@ -255,7 +255,8 @@ if ($decklink != "") {
           }
         }
       } else {
-        for ($j = 0; $j < ($count - $numSideboard); ++$j) {
+        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+        for ($j = 0; $j < $numMainBoard; ++$j) {
           if ($deckCards != "") $deckCards .= " ";
           $deckCards .= $id;
         }
