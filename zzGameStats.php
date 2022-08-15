@@ -11,7 +11,7 @@ if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
 }
-$forIndividual = TryGet("forIndividual", false);
+if(!isset($forIndividual)) $forIndividual = TryGet("forIndividual", false);
 $forIndividual = ($forIndividual ? true : false);//If it evaluates to true, explicitly cast it to boolean
 $useruid = $_SESSION["useruid"];
 $userID = $_SESSION["userid"];
