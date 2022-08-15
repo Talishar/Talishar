@@ -483,6 +483,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("YESNO", [], 0, 1, $caption, 1, $content);
   }
 
+  if($turn[0] == "OK" && $turn[1] == $playerID)
+  {
+    $content = CreateButton($playerID, "Ok", 99, "OK", "20px");
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    else $caption = "Choose " . TypeToPlay($turn[0]);
+    echo CreatePopup("OK", [], 0, 1, $caption, 1, $content);
+  }
+
   if (($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID) {
     $content = "<table><tr>";
     $options = explode(",", $turn[2]);

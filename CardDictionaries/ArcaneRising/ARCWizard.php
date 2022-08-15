@@ -101,6 +101,10 @@
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
+        AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Kano shows the top of your deck is <0>");
+        AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Kano", 1);
         return "";
       case "ARC115":
         AddArcaneBonus(1, $currentPlayer);
@@ -306,7 +310,7 @@
         $rv .= ",THEIRALLY-" . $i;
       }
       $myAllies = &GetAllies($player);
-      for($i=0; $i<count($myAllies); $i+=AllyPieces()) 
+      for($i=0; $i<count($myAllies); $i+=AllyPieces())
       {
         $rv .= ",MYALLY-" . $i;
       }
