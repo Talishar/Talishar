@@ -3452,6 +3452,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (CardType($cards[$i]) != $parameter) return "PASS";
       }
       return $lastResult;
+    case "NONECARDTYPEORPASS":
+      $cards = explode(",", $lastResult);
+      for ($i = 0; $i < count($cards); ++$i) {
+        if (CardType($cards[$i]) == $parameter) return "PASS";
+      }
+      return $lastResult;
     case "ALLCARDSUBTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
