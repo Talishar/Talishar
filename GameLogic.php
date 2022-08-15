@@ -2151,7 +2151,7 @@ function CharacterDestroyEffect($cardID, $player)
 function MainCharacterEndTurnAbilities()
 {
   global $mainCharacter, $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $defPlayer, $CS_NumNonAttackCards;
-  global $CS_NumAttackCards, $CS_ArcaneDamageTaken, $defCharacter;
+  global $CS_NumAttackCards, $defCharacter, $CS_ArcaneDamageDealt;
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     switch ($mainCharacter[$i]) {
       case "WTR115":
@@ -2169,7 +2169,7 @@ function MainCharacterEndTurnAbilities()
         if ($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
         break;
       case "ELE224":
-        if (GetClassState($defPlayer, $CS_ArcaneDamageTaken) < $mainCharacter[$i + 2]) {
+        if (GetClassState($mainPlayer, $CS_ArcaneDamageDealt) < $mainCharacter[$i + 2]) {
           DestroyCharacter($mainPlayer, $i);
           $mainCharacter[$i + 2] = 0;
         }
