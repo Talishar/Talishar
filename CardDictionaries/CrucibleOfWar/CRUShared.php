@@ -3,8 +3,6 @@
   function CRUAbilityCost($cardID)
   {
     global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer;
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $mainCharacter = &GetPlayerCharacter($otherPlayer);
 
     switch($cardID)
     {
@@ -19,7 +17,7 @@
 
   function CRUAbilityType($cardID, $index=-1)
   {
-    global $myCharacter, $myClassState, $CS_CharacterIndex, $currentPlayer;
+    global $myCharacter, $myClassState, $CS_CharacterIndex;
     switch($cardID)
     {
       case "CRU004": case "CRU005": return "AA";
@@ -47,7 +45,7 @@
 
   function CRUAbilityHasGoAgain($cardID)
   {
-    global $myCharacter, $myClassState, $CS_CharacterIndex, $currentPlayer;
+    global $myCharacter, $myClassState, $CS_CharacterIndex;
     switch($cardID)
     {
       case "CRU006": return true;
