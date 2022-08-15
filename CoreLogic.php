@@ -1012,6 +1012,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   global $mainPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
+
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
     if(ClassContains($cardID, "WIZARD", $currentPlayer) && $cardType == "A") return true;
@@ -1035,7 +1037,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
-  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103"))) return true;
+  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)))) return true;
   if($cardType == "AR" && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if($cardType == "DR" && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
