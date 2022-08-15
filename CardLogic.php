@@ -484,11 +484,14 @@ function ProcessTrigger($player, $parameter, $uniqueID)
   $resources = &GetResources($player);
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
-  $otherPlayer = ($player == 1 ? 2 : 1);
-  $otherCharacter = &GetPlayerCharacter($otherPlayer);
 
-  if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
-    $parameter = $otherCharacter[0];
+  if(CardType($parameter) == "C")
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    $otherCharacter = &GetPlayerCharacter($otherPlayer);
+    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
+      $parameter = $otherCharacter[0];
+    }
   }
 
   switch ($parameter) {
