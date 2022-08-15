@@ -90,10 +90,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
     PlayerLoseHealth($otherP, 9999);
-    //$turn[0] = "OVER";
-    //$currentPlayer = 1;
     include "WriteGamestate.php";
-    //logCompletedGameStats();
   }
 
   if ($turn[0] == "REMATCH") {
@@ -825,7 +822,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Now display their character and equipment
   $numWeapons = 0;
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
-    if($i > 0 && $gameStatus == "0") continue;
+    if($i > 0 && $inGameStatus == "0") continue;
     $atkCounters = 0;
     $counters = 0;
     $type = CardType($theirCharacter[$i]); //NOTE: This is not reliable type
