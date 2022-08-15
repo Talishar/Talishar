@@ -99,7 +99,7 @@ function CharacterEffectPieces()
 //2 - ?
 //3 - Counters
 //4 - Frozen: 0 = no, 1 = yes
-//5 - ?
+//5 - Unique ID
 function ArsenalPieces()
 {
   return 6;

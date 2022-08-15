@@ -1577,7 +1577,7 @@ function cardID ($cardName)
 		 case "Out for Blood": return array("CRU088","CRU089","CRU090");
 		 case "Hit and Run": return array("CRU091","CRU092","CRU093");
 		 case "Push Forward": return array("CRU094","CRU095","CRU096");
-		 case "riyana, Diamond Gemi": return array("CRU097");
+		 case "Shiyana, Diamond Gemini": return array("CRU097");
 		 case "Data Doll MKII": return array("CRU099");
 		 case "Teklo Plasma Pistol": return array("CRU100");
 		 case "Plasma Barrel Shot": return array("CRU101");

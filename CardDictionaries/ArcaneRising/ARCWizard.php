@@ -306,7 +306,7 @@
         $rv .= ",THEIRALLY-" . $i;
       }
       $myAllies = &GetAllies($player);
-      for($i=0; $i<count($myAllies); $i+=AllyPieces()) // TODO: WIP Azvolai
+      for($i=0; $i<count($myAllies); $i+=AllyPieces()) 
       {
         $rv .= ",MYALLY-" . $i;
       }

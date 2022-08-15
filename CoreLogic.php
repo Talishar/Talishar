@@ -340,6 +340,13 @@ function CharacterPlayCardAbilities($cardID, $from)
 {
   global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumLess3PowAAPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
+  if ($character[0] == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayerCharacter = &GetPlayerCharacter($otherPlayer);
+    if (SearchCurrentTurnEffects($otherPlayerCharacter[0], $currentPlayer)) {
+      $character = &GetPlayerCharacter($otherPlayer);
+    }
+  }
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
     if($character[$i+1] != 2) continue;
@@ -349,7 +356,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
         {
           PlayAura("ELE111", $mainPlayer);
-          WriteLog("Iyslander created a Frostbite for playing an ice card.");
+          WriteLog(CardLink($character[$i], $character[$i]) . " created a Frostbite for playing an ice card.");
         }
         break;
       case "ARC075": case "ARC076":
@@ -359,14 +366,14 @@ function CharacterPlayCardAbilities($cardID, $from)
         if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2)
         {
           PlayAura("ELE110", $currentPlayer);
-          WriteLog("Briar created an Embodiment of Lightning aura.");
+          WriteLog(CardLink($character[$i], $character[$i]) . " Briar created an Embodiment of Lightning aura.");
         }
         break;
       case "UPR158":
         if(GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && AttackValue($cardID) <= 2)
         {
           AddCurrentTurnEffect($character[$i], $currentPlayer);
-          WriteLog("Tiger Strike Shuko gives the attack +1 and makes the damage unable to be prevented.");
+          WriteLog(CardLink($character[$i], $character[$i]) . " gives the attack +1 and makes the damage unable to be prevented.");
           $character[$i+1] = 1;
         }
         break;
@@ -475,7 +482,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   {
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || (SearchCharacterForCard($mainPlayer, "CRU097") && (SearchCurrentTurnEffects("ELE062", $mainPlayer) || SearchCurrentTurnEffects("ELE063", $mainPlayer)))) && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $mainPlayer); }
   }
@@ -1041,7 +1048,7 @@ function ClassOverride($cardID, $player="")
   $mainCharacter = &GetPlayerCharacter($otherPlayer);
 
   if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
-  if(SearchCurrentTurnEffects("CRU097", $player)) {
+  if(SearchCharacterForCard($player, "CRU097") && SearchCurrentTurnEffects($mainCharacter[0], $player)) {
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= CardClass($mainCharacter[0]) . ",SHAPESHIFTER";
   }
@@ -1156,7 +1163,7 @@ function DoesAttackHaveGoAgain()
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
     if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002"))) return true;
+  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || (SearchCharacterForCard($mainPlayer, "CRU097") && (SearchCurrentTurnEffects("UPR001", $mainPlayer) || SearchCurrentTurnEffects("UPR002", $mainPlayer))))) return true;
 
   // Unnatural Go Again - Important for Hypotermia
   $mainPitch = &GetPitch($mainPlayer);
