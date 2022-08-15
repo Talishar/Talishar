@@ -253,6 +253,14 @@ function CharacterHealth($cardID)
 
 function CharacterIntellect($cardID)
 {
+  global $currentPlayer;
+  if ($cardID == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $mainCharacter = &GetPlayerCharacter($otherPlayer);
+    if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
+      return CharacterIntellect($mainCharacter[0]);
+    }
+  }
   switch ($cardID) {
     case "CRU099":
       return 3;
@@ -383,8 +391,16 @@ function CardTalent($cardID)
 //Minimum cost of the card
 function CardCost($cardID)
 {
+  global $currentPlayer;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
+  if ($cardID == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $mainCharacter = &GetPlayerCharacter($otherPlayer);
+    if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
+      return CardCost($mainCharacter[0]);
+    }
+  }
   if ($set == "WTR") {
     return WTRCardCost($cardID);
   } else if ($set == "ARC") {
@@ -451,6 +467,13 @@ function AbilityCost($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
+  if ($cardID == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $mainCharacter = &GetPlayerCharacter($otherPlayer);
+    if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
+      return AbilityCost($mainCharacter[0]);
+    }
+  }
   if ($class == "ILLUSIONIST" && $subtype == "Aura") {
     if (SearchCharacterForCard($currentPlayer, "MON003")) return 0;
     if (SearchCharacterForCard($currentPlayer, "MON088")) return 3;
@@ -792,6 +815,13 @@ function GetAbilityType($cardID, $index = -1)
   global $currentPlayer;
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
+  if ($cardID == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $mainCharacter = &GetPlayerCharacter($otherPlayer);
+    if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
+      return GetAbilityType($mainCharacter[0], $index);
+    }
+  }
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $subtype == "Aura") {
     if (SearchCharacterForCard($currentPlayer, "MON003")) return "AA";
     if (SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
@@ -905,7 +935,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if (($phase == "B" || (($phase == "D" || $phase == "INSTANT")  && $cardType == "DR")) && $from == "HAND") {
     if (CachedDominateActive() && CachedNumBlockedFromHand() >= 1) return false;
-    if (CachedTotalAttack() <= 2 && SearchCharacterForCard($mainPlayer, "CRU047") && CardType($combatChain[0]) == "AA") return false;
+    if (CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || (SearchCharacterForCard($mainPlayer, "CRU097") && SearchCurrentTurnEffects("CRU047", $mainPlayer))) && CardType($combatChain[0]) == "AA") return false;
   }
   if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player))) return false;
   if ($phase == "B" || $phase == "D") {
@@ -1029,11 +1059,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   if ($player == "") $player = $currentPlayer;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $myCharacter = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
   $myArsenal = &GetArsenal($player);
   $myItems = &GetItems($player);
   $mySoul = &GetSoul($player);
+  $mainCharacter = &GetPlayerCharacter($otherPlayer);
+
   if (SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {
     $restriction = "CRU032";
     return true;
@@ -1129,6 +1162,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "W";
+    case "CRU097":
+      if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
+        return IsPlayRestricted($mainCharacter[0], $restriction, $from, $index, $player);
+      }
     case "CRU125":
       return !HasTakenDamage($player);
     case "CRU143":
@@ -1550,6 +1587,13 @@ function AbilityHasGoAgain($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
+  if ($cardID == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $mainCharacter = &GetPlayerCharacter($otherPlayer);
+    if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
+      return AbilityHasGoAgain($mainCharacter[0]);
+    }
+  }
   if ($class == "ILLUSIONIST" && $subtype == "Aura") {
     if (SearchCharacterForCard($currentPlayer, "MON088")) return true;
   }
@@ -1580,7 +1624,14 @@ function AbilityHasGoAgain($cardID)
 
 function DoesEffectGrantDominate($cardID)
 {
-  global $combatChainState, $CCS_AttackFused;
+  global $combatChainState, $CCS_AttackFused, $currentPlayer;
+  if ($cardID == "CRU097") {
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $mainCharacter = &GetPlayerCharacter($otherPlayer);
+    if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
+      return DoesEffectGrantDominate($mainCharacter[0]);
+    }
+  }
   switch ($cardID) {
     case "WTR038":
     case "WTR039":
@@ -2064,7 +2115,7 @@ function RequiresDieRoll($cardID, $from, $player)
   if (GetDieRoll($player) > 0) return false;
   if ($turn[0] == "B") return false;
   $type = CardType($cardID);
-  if ($type == "AA" && SearchCharacterActive($player, "CRU002") && AttackValue($cardID) >= 6) return true;
+  if ($type == "AA" && AttackValue($cardID) >= 6 && (SearchCharacterActive($player, "CRU002") || (SearchCharacterForCard($player, "CRU097") && (SearchCurrentTurnEffects("CRU002", $player))))) return true;
   switch ($cardID) {
     case "WTR004":
     case "WTR005":
@@ -2210,6 +2261,12 @@ function AbilityPlayableFromCombatChain($cardID)
 
 function CardCaresAboutPitch($cardID)
 {
+  global $currentPlayer;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $character = &GetPlayerCharacter($currentPlayer);
+
+  if ($character[0] == "CRU097" && (SearchCurrentTurnEffects("ELE001", $currentPlayer) || SearchCurrentTurnEffects("ELE002", $currentPlayer))) return true;
+  
   switch ($cardID) {
     case "ELE001":
     case "ELE002":

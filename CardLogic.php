@@ -485,6 +485,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
   $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayerCharacter = &GetPlayerCharacter($otherPlayer);
+
+  if($parameter == "CRU097" && SearchCurrentTurnEffects($otherPlayerCharacter[0], $player)) {
+    $parameter = $otherPlayerCharacter[0];
+  }
 
   switch ($parameter) {
     case "WTR001": case "WTR002": case "RVD001":
@@ -787,7 +792,7 @@ function CardDiscarded($player, $discarded, $source = "")
   global $CS_Num6PowDisc, $mainPlayer;
   if (AttackValue($discarded) >= 6) {
     $character = &GetPlayerCharacter($player);
-    if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001") && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
+    if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001" || ($character[0] == "CRU097" && (SearchCurrentTurnEffects("WTR001", $mainPlayer) || SearchCurrentTurnEffects("WTR002", $mainPlayer) || SearchCurrentTurnEffects("RVD001", $mainPlayer)))) && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
     IncrementClassState($player, $CS_Num6PowDisc);
