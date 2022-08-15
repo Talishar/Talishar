@@ -111,7 +111,7 @@ border-radius: 5px;">
     $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
     echo ("<h2>$theirDisplayName Hero</h2>");
 
-    $otherHero = "cardBack";
+    $otherHero = "CardBack";
     echo ("<div id='oppHero' style='padding-left:5%;'>");
     echo (Card($otherHero, "concat", 250, 0, 0));
     echo ("</div>");
