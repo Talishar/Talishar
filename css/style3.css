@@ -1,0 +1,1048 @@
+:root {
+  --dark-color: #1a1a1a;
+  --light-color: #DDD;
+  --text-shadow: 2px 0 0 var(--dark-color), 0 -2px 0 var(--dark-color), 0 2px 0 var(--dark-color), -2px 0 0 var(--dark-color);
+  --grey-transparent-background: rgba(74, 74, 74, 0.9);
+  --font-family: 'Helvetica', sans-serif;
+  --button-box-shadow: 1px 1px 0 var(--dark-color), -1px -1px 0 var(--dark-color), -1px 1px 0 var(--dark-color), 1px -1px 0 var(--dark-color);
+}
+
+body {
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: var(--dark-color);
+  background-image: url('../Images/background.jpg');
+  overflow: hidden;
+  font-family: var(--font-family);
+  font-weight: bolder;
+  font-size: 18px;
+  color: var(--light-color);
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  ::-webkit-scrollbar {
+    width: .50em;
+    height: .25em;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #d9d6d6;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:vertical {
+    height: 5em;
+    background-color: #000;
+    border-radius: 5px;
+  }
+}
+
+.wrapper {
+  margin: 0 auto;
+  overflow: auto;
+}
+
+.section-default {
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.section-default p {
+  padding: 10px 0;
+  text-align: center;
+  margin-bottom: 3px;
+  font-size: 14px;
+  color: var(--dark-color);
+  text-shadow: 0;
+}
+
+.login-status {
+  text-align: center;
+  font-size: 24px;
+  color: var(--dark-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+i,
+label {
+  font-family: var(--font-family);
+  color: var(--light-color);
+  line-height: 24px;
+  font-weight: bolder;
+  text-shadow: var(--text-shadow);
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 32px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+h2 {
+  font-weight: 600;
+  font-size: 24px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+p {
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+}
+
+nav {
+  width: 100%;
+  height: 40px;
+  background-color: var(--dark-color);
+}
+
+nav .wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li {
+  list-style: none;
+  float: left;
+}
+
+li a {
+  font-family: var(--font-family);
+  font-weight: bold;
+  font-size: 14px;
+  color: #EEE;
+  text-decoration: none;
+  padding: 0 16px;
+  text-transform: uppercase;
+}
+
+a:hover {
+  color: #31a6ff;
+}
+
+section {
+  margin: auto;
+  margin-top: 15px;
+  width: 30%;
+  height: 90vh;
+}
+
+select {
+  border: 2px solid grey;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+input,
+button {
+  border: 2px solid grey;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Sign Up */
+.signup-form {
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  overflow: hidden;
+  height: auto;
+}
+
+.signup-form-form {
+  display: flex;
+  justify-content: center;
+  height: auto;
+  font-family: var(--font-family);
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--light-color);
+  margin-bottom: 5px;
+  text-shadow: var(--text-shadow);
+}
+
+.signup-form-form a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.signup-form p {
+  width: 100%;
+  text-align: center;
+  color: var(--light-color);
+  border: 1px var(--dark-color);
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.signup-form div {
+  margin-bottom: 3px;
+}
+
+.signup-form h2 {
+  text-align: center;
+  margin-top: 6px;
+  color: var(--light-color);
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.signup-form h3 {
+  text-align: center;
+  margin-top: 6px;
+  color: var(--light-color);
+  font-weight: bold;
+  font-size: 18px;
+  margin: 5px;
+}
+
+.signup-form form {
+  width: 85%;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+}
+
+.signup-form form input {
+  width: calc(100% - 16px);
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-top: 3px;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  background-color: #EEE;
+  font-size: 17px;
+  float: left;
+  color: var(--dark-color);
+}
+
+.signup-form form button {
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+  margin-top: 3px;
+  margin-right: 3px;
+  margin-bottom: 5px;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  background-color: #333;
+  font-size: 20px;
+  font-weight: bolder;
+  color: var(--light-color);
+  text-align: center;
+  text-decoration: inherit;
+  cursor: pointer;
+  text-shadow: var(--text-shadow);
+  transition: 150ms ease-in-out;
+}
+
+.signup-form form button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.signup-form form button:focus {
+  outline: none;
+}
+
+.centeredGoogle {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.g_id_signin div {
+  transition: 100ms ease-in-out;
+}
+
+.g_id_signin div:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.g_id_signin div:focus {
+  outline: none;
+}
+
+/* ============
+   Profile Page
+   ============ */
+
+.profile-form {
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  height: auto;
+}
+
+.profile-form-form {
+  display: flex;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--light-color);
+  margin-bottom: 5px;
+  text-shadow: var(--text-shadow);
+}
+
+.profile-form p {
+  width: 100%;
+  text-align: center;
+  color: var(--light-color);
+  border: 1px var(--dark-color);
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.profile-form h2 {
+  text-align: center;
+  margin-top: 6px;
+  color: var(--light-color);
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.profile-form form {
+  width: 85%;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+}
+
+.profile-form form input {
+  width: calc(100% - 16px);
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-top: 3px;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  background-color: var(--light-color);
+  font-size: 17px;
+  float: left;
+  color: var(--dark-color);
+}
+
+.profile-form form button {
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+  margin-top: 3px;
+  margin-right: 3px;
+  margin-bottom: 5px;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  background-color: #333;
+  font-size: 20px;
+  font-weight: bolder;
+  color: var(--light-color);
+  text-align: center;
+  text-decoration: inherit;
+  cursor: pointer;
+  text-shadow: var(--text-shadow);
+  transition: 150ms ease-in-out;
+}
+
+.profile-form form button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.profile-form form button:focus {
+  outline: none;
+}
+
+.avatarImage {
+  border: 3px solid #1a1a1a;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 150px;
+  height: 130px;
+  border-radius: 50%;
+}
+
+.containerPatreon {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: -10px;
+}
+
+.imgPatreon {
+  border-radius: 10px;
+  border: 1px solid var(--dark-color);
+  transition: 150ms ease-in-out;
+}
+
+.imgPatreon:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.imgPatreon:focus {
+  outline: none;
+}
+
+/* ====================
+    Karma Progress Bar
+   ==================== */
+
+.karma-container {
+  width: 99%;
+  font-size: 18px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-radius: 5px;
+}
+
+.karma-hover {
+  width: 400px;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+  font-size: 16px;
+  padding-left: 5px;
+  padding-top: 5px;
+  line-height: 1.5em;
+  text-shadow: none;
+  transform: scale(0);
+  transition: transform ease-out 150ms;
+
+  /* Position the tooltip */
+  position: fixed;
+  top: 120px;
+  left: 40px;
+  z-index: 1;
+}
+
+.karma-container:hover .karma-hover {
+  transform: scale(1);
+}
+
+.karma-title {
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.karma-light-grey {
+  color: #000;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  border: 1px solid var(--dark-color);
+  margin-bottom: 5px;
+}
+
+.karma-green {
+  color: #fff;
+  background-color: #4CAF50;
+  text-align: center;
+  border-right: 1px solid var(--dark-color);
+}
+
+.karma-orange {
+  color: #fff;
+  background-color: #ff9800;
+  text-align: center;
+  border-right: 1px solid var(--dark-color);
+}
+
+.karma-red {
+  color: #fff;
+  background-color: #f44336;
+  text-align: center;
+  border-right: 1px solid var(--dark-color);
+}
+
+/* ================
+    Reset Password
+   ================ */
+
+.form-resetpwd {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.form-resetpwd input {
+  width: calc(100% - 16px);
+  padding: 5px;
+  margin: 4px;
+  border: 1px solid #CCC;
+  border-radius: 5px;
+  background-color: var(--light-color);
+  float: left;
+  font-size: 18px;
+}
+
+.form-resetpwd button {
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 3px;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  float: left;
+  color: var(--light-color);
+  height: 40px;
+  background-color: #333;
+  font-size: 18px;
+  font-weight: bolder;
+  text-decoration: inherit;
+  cursor: pointer;
+  transition: 150ms ease-in-out;
+}
+
+.form-resetpwd button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.form-resetpwd button:focus {
+  outline: none;
+}
+
+.form-resetpwd p {
+  font-family: var(--font-family);
+  color: var(--light-color);
+  line-height: 24px;
+  font-weight: bolder;
+}
+
+.p-forgetpwd {
+  display: block;
+  padding: 10px 0;
+  width: fit-content;
+  margin: 0 auto;
+  font-size: 14px;
+  color: #111;
+}
+
+.message {
+  margin: 10px 0;
+  width: 100%;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  background-color: var(--red);
+  color: var(--white);
+  font-size: 20px;
+}
+
+/* Draft style */
+
+.draft-form {
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  width: 30%;
+  height: 45vh;
+  border-radius: 5px;
+  margin: auto;
+  margin-top: 15px;
+}
+
+.draft-form-form {
+  display: flex;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-weight: bold;
+  font-size: 20px;
+  color: var(--light-color);
+  margin-bottom: 5px;
+}
+
+.draft-form div {
+  margin-bottom: 3px;
+}
+
+.draft-form h2 {
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 6px;
+  color: var(--light-color);
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.draft-form form {
+  width: 85%;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+}
+
+.draft-form-form form input {
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 3px;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  float: left;
+  color: var(--light-color);
+  height: 40px;
+  background-color: #333;
+  font-size: 18px;
+  font-weight: bolder;
+  text-decoration: inherit;
+  cursor: pointer;
+  transition: 150ms ease-in-out;
+}
+
+.draft-form-form form input:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.draft-form-form form input:focus {
+  outline: none;
+}
+
+.draft-form input {
+  text-shadow: var(--text-shadow);
+}
+
+.CreateGame_Button {
+  cursor: pointer;
+  font-size: 32px;
+  color: var(--dark-color);
+  background: var(--light-color);
+  border-radius: 10px;
+  border: 2px solid var(--dark-color);
+  box-shadow: 2px 2px 0 var(--dark-color), -2px -2px 0 var(--dark-color), -2px 2px 0 var(--dark-color), 2px -2px 0 var(--dark-color);
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 70px;
+  transition: 150ms ease-in-out;
+}
+
+.CreateGame_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.CreateGame_Button:focus {
+  outline: none;
+}
+
+.CreateGame_Menu {
+  position: absolute;
+  left: 50%;
+  height: 65vh;
+  width: 40%;
+  bottom: 30px;
+  margin: 0 0 0 -20%;
+  /* -20% = half of width/height */
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+}
+
+.FabLogo {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  z-index: 15;
+  top: 50px;
+  left: 50%;
+  margin: 0 0 0 -10%;
+  /* -10% = half of width/height */
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+}
+
+.ServerChecker {
+  display: block;
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  width: 25%;
+  bottom: 30px;
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+}
+
+.ServerChecker_Button {
+  cursor: pointer;
+  color: var(--dark-color);
+  background: var(--light-color);
+  ;
+  border: 1px solid var(--dark-color);
+  box-shadow: var(--button-box-shadow);
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transition: 150ms ease-in-out;
+}
+
+.ServerChecker_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.ServerChecker_Button:focus {
+  outline: none;
+}
+
+.SpectatorContainer {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.DeckToTry {
+  text-align: center;
+  font-size: 19px;
+  font-weight: bolder;
+  text-shadow: var(--text-shadow);
+}
+
+.FavoriteDeckMainMenu {
+  margin-left: 20px;
+  font-size: 19px;
+  font-weight: bolder;
+  text-shadow: var(--text-shadow);
+}
+
+.NewsMenu {
+  display: block;
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  width: 25%;
+  bottom: 30px;
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.NewsMenu h1,
+.NewsMenu h2,
+.NewsMenu h3 {
+  width: 100%;
+  text-align: center;
+  color: rgb(220, 220, 220);
+}
+
+.GameLobby_Button {
+  cursor: pointer;
+  color: var(--dark-color);
+  background: var(--light-color);
+  ;
+  border: 1px solid var(--dark-color);
+  box-shadow: var(--button-box-shadow);
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transition: 150ms ease-in-out;
+}
+
+.GameLobby_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.GameLobby_Button:focus {
+  outline: none;
+}
+
+.GameLobby_Input {
+  color: var(--dark-color);
+  background: var(--light-color);
+  border: 1px solid var(--dark-color);
+  box-shadow: var(--button-box-shadow);
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+/* =============================================
+   Skip to main content for better accessibility
+   ============================================= */
+
+.skip-nav-link {
+  position: absolute;
+  padding: 0.5rem, 1.5rem;
+  left: 0.5rem;
+  top: 0.5rem;
+  border-radius: 0, 0, .25rem, .25rem;
+  transform: translateY(-150%);
+  transition: transform 325ms ease-in;
+}
+
+.skip-nav-link:focus {
+  transform: translateY(0px);
+}
+
+/* ==================
+    Join Game Styles
+   ================== */
+
+.JoinGameDiv {
+  position: absolute;
+  z-index: 1;
+  top: 10%;
+  left: 2%;
+  width: 500px;
+  height: 550px;
+  background-color: var(--grey-transparent-background);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+}
+
+.JoinGame_Button {
+  cursor: pointer;
+  color: var(--dark-color);
+  background: var(--light-color);
+  border: 1px solid var(--dark-color);
+  box-shadow: var(--button-box-shadow);
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transition: 150ms ease-in-out;
+}
+
+.JoinGame_Button:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.JoinGame_Button:focus {
+  outline: none;
+}
+
+/* =====================
+   Favorites Deck Style
+   ===================== */
+
+.containerFavoriteDeck {
+  display: flex;
+  margin-left: 5px;
+  max-height: 24px;
+  align-content: flex-start;
+  align-items: center;
+}
+
+/* Hide the browser default checkbox */
+.inputFavoriteDeck[type="checkbox"] {
+  opacity: 0;
+}
+
+/* Apply to the "squared" checkbox when checked it's actually hidden so we only show the heart shape */
+.inputFavoriteDeck[type="checkbox"]:checked+label:before {
+  opacity: 0;
+}
+
+/* Label position and styles */
+.inputFavoriteDeck[type="checkbox"]+label {
+  cursor: pointer;
+  margin-bottom: -5px;
+  margin-right: -5px;
+}
+
+/* Main Classes */
+.inputFavoriteDeck[type="checkbox"]+label:before {
+  content: "";
+  display: inline-block;
+  margin-left: -20px;
+  margin-bottom: -6px;
+  margin-right: 5px;
+  width: 22px;
+  height: 22px;
+  background-image: url('../Images/favoriteUnfilled.png');
+  background-size: contain;
+  transform: scale(1);
+  opacity: 1;
+  transition: all .4s ease;
+  cursor: pointer;
+}
+
+.inputFavoriteDeck[type="checkbox"]:checked+label:before {
+  content: "";
+  display: inline-block;
+  margin-left: -20px;
+  margin-bottom: -6px;
+  margin-right: 5px;
+  width: 22px;
+  height: 22px;
+  background-image: url('../Images/favoriteFilled.png');
+  background-size: contain;
+  transform: scale(1);
+  opacity: 1;
+  transition: all .4s ease;
+  cursor: pointer;
+}
+
+.karmaRestriction-Select {
+  width: 50%;
+}
+
+/* ===========
+   Game Stats
+  ============ */
+
+.game-stats {
+  position: relative;
+  border-radius: 5px;
+  margin: auto;
+  margin-top: 15px;
+  width: 40%;
+  height: 90vh;
+  display: inline-block;
+}
+
+.game-stats-div {
+  display: flex;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--light-color);
+  margin-bottom: 5px;
+  text-shadow: var(--text-shadow);
+  overflow-y: auto;
+  max-height: 88vh;
+}
+
+.BRMobile {
+  display:none
+}
+/* Phone Settings */
+
+@media screen and (max-width: 600px) {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  a,
+  i,
+  label {
+    line-height: 12px;
+  }
+
+  h1 {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  h2 {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  h3 {
+    font-size: 12px;
+  }
+
+  p {
+    font-size: 12px;
+  }
+
+  nav {
+    width: 100%;
+    height: 40px;
+  }
+
+  nav .wrapper {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  li a {
+    font-size: 12px;
+    padding: 0 8px;
+    text-transform: uppercase;
+  }
+
+  select {
+    font-size: 12px;
+    margin-left: -8%;
+    width: 95%;
+  }
+
+  input {
+    font-size: 10px;
+    margin-left: 5%;
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 10px;
+  }
+
+  span {
+    margin-left: -5%;
+  }
+
+  .FavoriteDeckMainMenu {
+    font-size: 12px;
+  }
+
+  .skip-nav-link {
+    display: none;
+  }
+
+  .karmaRestriction-Select {
+    font-size: 12px;
+  }
+
+  .CreateGame_Button {
+    cursor: pointer;
+    font-size: 16px;
+    height: 40px;
+  }
+
+  .BRMobile {
+    display: inline;
+  }
+}
