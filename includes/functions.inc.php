@@ -273,6 +273,7 @@ function logCompletedGameStats() {
 
   $sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
 	$stmt = mysqli_stmt_init($conn);
+	$gameResultID = 0;
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		$winHero = &GetPlayerCharacter($winner);
 		$loseHero = &GetPlayerCharacter($loser);
@@ -304,19 +305,19 @@ function logCompletedGameStats() {
 			}
 		}
 	}
-	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck));
-	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck));
+	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID);
+	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID);
 	mysqli_close($conn);
 }
 
-function SendFabraryResults($player, $decklink, $deck)
+function SendFabraryResults($player, $decklink, $deck, $gameID)
 {
 	global $FaBraryKey;
 	if(!str_contains($decklink, "fabrary.net")) return;
 
 	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/01G7FD2B3YQAMR8NJ4B3M58H96/results";
 	$ch = curl_init($url);
-	$payload = SerializeGameResult($player, $decklink, $deck);
+	$payload = SerializeGameResult($player, $decklink, $deck, $gameID);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$headers = array(
@@ -329,7 +330,7 @@ function SendFabraryResults($player, $decklink, $deck)
 	curl_close($ch);
 }
 
-function SerializeGameResult($player, $DeckLink, $deckAfterSB)
+function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched;
 	$DeckLink = explode("/", $DeckLink);
@@ -338,6 +339,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB)
 	if(count($deckAfterSB) == 1) return;
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
+	$deck["gameId"] = $gameID;
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
