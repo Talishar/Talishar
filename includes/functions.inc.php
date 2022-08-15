@@ -340,7 +340,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="")
 	if(count($deckAfterSB) == 1) return;
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
-	if($gameId != "") $deck["gameId"] = $gameID;
+	if($gameID != "") $deck["gameId"] = $gameID;
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
