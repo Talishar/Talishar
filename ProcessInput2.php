@@ -1348,8 +1348,6 @@ function PayAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_AdditionalCosts;
   $cardSubtype = CardSubType($cardID);
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  $mainCharacter = &GetPlayerCharacter($otherPlayer);
 
   if ($from == "PLAY" && $cardSubtype == "Item") {
     PayItemAbilityAdditionalCosts($cardID);
@@ -1410,9 +1408,11 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
       AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
       break;
-    case "CRU097":
-      if (SearchCurrentTurnEffects($mainCharacter[0], $currentPlayer)) {
-        PayAdditionalCosts($mainCharacter[0], $from);
+    case "CRU097"://Handled
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+        PayAdditionalCosts($otherCharacter[0], $from);
       }
       break;
     case "MON001":
@@ -1636,7 +1636,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if ($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
-      if ($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && (SearchCurrentTurnEffects("CRU002", $currentPlayer)))) && $attackValue >= 6) KayoStaticAbility();
+      if ($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility();
       $openedChain = true;
       if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
