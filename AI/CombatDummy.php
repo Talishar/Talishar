@@ -4,7 +4,7 @@ function CombatDummyAI()
 {
   global $currentPlayer, $p2CharEquip, $decisionQueue, $turn;
   $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "DUMMY") ? true : false;
-  if($turn[0] != "OVER" && $currentPlayerIsAI)
+  if(!IsGameOver() && $currentPlayerIsAI)
   {
     for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
     {

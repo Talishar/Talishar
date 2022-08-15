@@ -1,5 +1,7 @@
 <?php
 
+$GameStatus_Over = 2;
+
 $characterPieces = 8;
 
 function DeckPieces()

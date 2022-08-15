@@ -642,13 +642,20 @@ function PlayerGainHealth($amount, &$health)
   $health += $amount;
 }
 
+function IsGameOver()
+{
+  global $inGameStatus, $GameStatus_Over;
+  return $inGameStatus == $GameStatus_Over;
+}
+
 function PlayerWon($playerID)
 {
   global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
-  global $p1DeckLink, $p2DeckLink;
+  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
+  $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   logCompletedGameStats();
 
@@ -1398,8 +1405,8 @@ function NumEquipBlock()
       case "CHOOSEFIRSTPLAYER": return 0;
       case "MULTICHOOSEDECK": return 0;
       case "CHOOSEPERMANENT": return 0;
-      case "OVER": return 0;
       case "MULTICHOOSETEXT": return 0;
+      case "OVER": return 0;
       default: return 1;
     }
   }

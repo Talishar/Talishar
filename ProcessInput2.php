@@ -443,7 +443,7 @@ switch ($mode) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
     $conceded = true;
-    if($turn[0] != "OVER") PlayerLoseHealth($playerID, $myHealth);
+    if(!IsGameOver()) PlayerLoseHealth($playerID, $myHealth);
     break;
   case 100003: //Report Bug
     $bugCount = 0;
@@ -494,7 +494,7 @@ switch ($mode) {
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $otherPlayer = ($playerID == 1 ? 2 : 1);
-      if($turn[0] != "OVER") PlayerLoseHealth($otherPlayer, $theirHealth);
+      if(!IsGameOver()) PlayerLoseHealth($otherPlayer, $theirHealth);
       WriteLog("The opponent forfeit due to inactivity.");
     }
     break;
@@ -521,6 +521,7 @@ switch ($mode) {
 ProcessMacros();
 
 if ($winner != 0) {
+  $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   $currentPlayer = 1;
 }
