@@ -11,7 +11,7 @@ while (!flock($handler, LOCK_EX) && $lockTries < 10) {
   ++$lockTries;
 }
 
-if ($lockTries == 10) exit;
+if ($lockTries == 10) { fclose($handler); exit; }
 
 fwrite($handler, implode(" ", $playerHealths) . "\r\n");
 
