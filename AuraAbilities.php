@@ -598,7 +598,7 @@ function AuraAttackAbilities($attackID)
         if ($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
         break;
       case "EVR140":
-        if ($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
+        if ($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " puts a +1 counter.");
           --$auras[$i + 5];
           ++$auras[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
