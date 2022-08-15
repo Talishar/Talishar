@@ -375,9 +375,8 @@ switch ($mode) {
     ++$actionPoints;
     break;
   case 10003: //Revert to prior turn
-    $params = explode("-", $buttonInput);
-    RevertGamestate("p" . $params[0] . "turn" . $params[1] . "Gamestate.txt");
-    WriteLog("Player " . $playerID . " reverted back to player " . $params[0] . " turn " . $params[1] . ".");
+    RevertGamestate($buttonInput);
+    WriteLog("Player " . $playerID . " reverted back to a prior turn.");
     break;
   case 10004:
     if ($actionPoints > 0) {

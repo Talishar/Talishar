@@ -406,15 +406,9 @@ function RevertGamestate($filename = "gamestateBackup.txt")
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $gameName;
-  $filename = "p" . $mainPlayer . "turn" . $currentTurn . "Gamestate.txt";
-  MakeGamestateBackup($filename);
-  if ($currentTurn > 5) {
-    $delTurn = $currentTurn - 5;
-    for ($i = 1; $i <= 2; ++$i) {
-      $fn = "./Games/" . $gameName . "/" . "p" . $i . "turn" . $delTurn . "Gamestate.txt";
-      if (file_exists($fn)) {
-        unlink($fn);
-      }
-    }
-  }
+  $filepath = "./Games/" . $gameName . "/";
+  $lastTurnFN = $filepath . "lastTurnGamestate.txt";
+  $thisTurnFN = $filepath . "beginTurnGamestate.txt";
+  if(file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
+  copy($filepath . "gamestate.txt", $thisTurnFN);
 }

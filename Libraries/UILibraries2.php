@@ -437,18 +437,11 @@
 
   function PreviousTurnSelectionUI()
   {
-    global $currentTurn, $mainPlayer, $playerID, $firstPlayer;
+    global $currentTurn, $mainPlayer, $playerID, $firstPlayer, $gameName;
     $rv = "<h3>Revert to Start of Previous Turn</h3>"; // TODO: Revert Player 1 Turn 1 to the start of the game.
-    for($i=1; $i<=$currentTurn; ++$i)
-    {
-      if($i < $currentTurn - 4) continue;
-      for($j=1; $j<=2; ++$j)
-      {
-        if($i == 1 && $firstPlayer == 2 && $j == 1) continue;//Player 1 never got a turn 1
-        if($i == $currentTurn && $j > $mainPlayer) continue;//Player 2 hasn't gotten a turn yet
-        $rv .= CreateButton($playerID, "Player $j Turn $i", 10003, $j . "-" . $i, "20px") . "<BR>";
-      }
-    }
+    $rv .= CreateButton($playerID, "This Turn", 10003, "beginTurnGamestate.txt", "20px") . "<BR>";
+    $lastTurnFN = "lastTurnGamestate.txt";
+    if(file_exists("./Games/" . $gameName . "/" . $lastTurnFN)) $rv .= CreateButton($playerID, "Last Turn", 10003, $lastTurnFN) . "<BR>";
     return $rv;
   }
 
