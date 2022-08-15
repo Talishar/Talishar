@@ -2711,7 +2711,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
-  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $gameStatus;
+  global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $inGameStatus;
   global $CS_ArcaneDamageDealt, $MakeStartTurnBackup;
   $rv = "";
   switch ($phase) {
@@ -3531,7 +3531,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $actionPoints += 2;
           WriteLog("Sand Sketched Plan gained 2 action points.");
         }
-      } 
+      }
       return "1";
     case "REMEMBRANCE":
       $cards = "";
@@ -4599,7 +4599,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "STARTGAME":
-      $gameStatus = "1";
+      $inGameStatus = "1";
       $MakeStartTurnBackup = true;
       return 0;
     case "ADDARCANEBONUS":
