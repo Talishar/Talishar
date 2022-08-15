@@ -60,6 +60,8 @@ echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fix
 
 $winnerQuery = ($forIndividual ? "where WinningPID = '$userID'" : "where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL $numDays DAY)");
 $loserQuery = ($forIndividual ? "where LosingPID = '$userID'" : "where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL $numDays DAY)");
+$winnerQuery .= " and numTurns>1";
+$loserQuery .= " and numTurns>1";
 $sql = "SELECT Hero,sum(Count) AS Total FROM
 (
 select WinningHero As Hero,count(WinningHero) AS Count
