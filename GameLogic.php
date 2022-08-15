@@ -2636,7 +2636,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $gameStatus;
-  global $CS_ArcaneDamageDealt;
+  global $CS_ArcaneDamageDealt, $MakeStartTurnBackup;
   $rv = "";
   switch ($phase) {
     case "FINDRESOURCECOST":
@@ -4501,6 +4501,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "STARTGAME":
       $gameStatus = "1";
+      $MakeStartTurnBackup = true;
       return 0;
     case "ADDARCANEBONUS":
       AddArcaneBonus($parameter, $player);
