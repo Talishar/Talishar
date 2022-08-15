@@ -635,14 +635,14 @@ function PlayerGainHealth($amount, &$health)
 
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1Karma, $p2Karma, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
-  
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
+  global $p1DeckLink, $p2DeckLink;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
   $turn[0] = "OVER";
   logCompletedGameStats();
-  
+
   if(!$conceded || $currentTurn >= 3) {
     // Give players negative karma if they left the game in progress.
     if($GLO_Player1Disconnected != 0 && $GLO_Player1Disconnected != "") UpdateKarma($GLO_Player1Disconnected, 1);

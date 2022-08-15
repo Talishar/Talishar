@@ -8,7 +8,7 @@
     function WriteGameFile()
     {
       global $gameFileHandler;
-      global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id, $p1Karma, $p2Karma, $p1GreenRating, $p2GreenRating, $p1RedRating, $p2RedRating;
+      global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
       global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink, $karmaRestriction;
       global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP;
       rewind($gameFileHandler);
