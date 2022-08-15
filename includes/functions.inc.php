@@ -252,7 +252,7 @@ function LoadFavoriteDecks($userID)
 
 function logCompletedGameStats() {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
-	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive;
+	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink;
 	$loser = ($winner == 1 ? 2 : 1);
 	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck";
 	$values = "?, ?, ?, ?, ?";
@@ -304,33 +304,39 @@ function logCompletedGameStats() {
 			}
 		}
 	}
+	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck));
 	mysqli_close($conn);
 }
 
-function SendFabraryResults()
+function SendFabraryResults($player, $decklink, $deck)
 {
-	/*
-	Deck
-{
-  deckId: string (this would be the ID used to get the deck, e.g. "01GAEH08RNW47GVERJSJ7ZDBZT")
-  turns: number
-  result: enum? (won/lost/incomplete, etc.)
-  cardResults: array of CardResult (see below)
-}
+	global $FaBraryKey;
+	if(!str_contains($decklink, "fabrary.net")) return;
 
-CardResult
-{
-  cardId: string (I assume this would be WTR001 for e.g.?)
-  played: number
-  blocked: number
-  pitched: number
-}
-*/
+	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/01G7FD2B3YQAMR8NJ4B3M58H96/results";
+	$ch = curl_init($url);
+	$payload = SerializeGameResult($player, $decklink, $deck);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+	//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$headers = array(
+		"x-api-key: " . $FaBraryKey,
+		"Content-Type: application/json",
+	);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+	$result = curl_exec($ch);
+	curl_close($ch);
 }
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB)
 {
-	global $winner, $currentTurn;
+	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched;
+	$DeckLink = explode("/", $DeckLink);
+	$DeckLink = $DeckLink[count($DeckLink)-1];
+	$deckAfterSB = explode("\r\n", $deckAfterSB);
+	if(count($deckAfterSB) == 1) return;
+	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = $currentTurn;
@@ -339,8 +345,20 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB)
 	$deckAfterSB = explode(" ", $deckAfterSB);
 	foreach($deckAfterSB as $card)
 	{
-
+		$deck["cardResults"][$card] = [];
+		$deck["cardResults"][$card]["played"] = 0;
+		$deck["cardResults"][$card]["blocked"] = 0;
+		$deck["cardResults"][$card]["pitched"] = 0;
 	}
+	$cardStats = &GetCardStats($player);
+	for($i=0; $i<count($cardStats); $i+=CardStatPieces())
+	{
+		if(!isset($deck["cardResults"][$cardStats[$i]])) continue;
+		$deck["cardResults"][$cardStats[$i]]["played"] = $cardStats[$i+$CardStats_TimesPlayed];
+		$deck["cardResults"][$cardStats[$i]]["blocked"] = $cardStats[$i+$CardStats_TimesBlocked];
+		$deck["cardResults"][$cardStats[$i]]["pitched"] = $cardStats[$i+$CardStats_TimesPitched];
+	}
+	return json_encode($deck);
 }
 
 function UpdateKarma($p1value=0, $p2value=0)
