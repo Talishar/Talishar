@@ -330,7 +330,7 @@ function SendFabraryResults($player, $decklink, $deck, $gameID)
 	curl_close($ch);
 }
 
-function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID)
+function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="")
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched;
 	$DeckLink = explode("/", $DeckLink);
@@ -339,16 +339,22 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID)
 	if(count($deckAfterSB) == 1) return;
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
-	$deck["gameId"] = $gameID;
+	if($gameId != "") $deck["gameId"] = $gameID;
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	$deck["cardResults"] = [];
 	$deckAfterSB = explode(" ", $deckAfterSB);
+	$deduplicatedDeck = [];
 	for($i=0; $i<count($deckAfterSB); ++$i)
 	{
+		if($i > 0 && $deckAfterSB[$i] == $deckAfterSB[$i-1]) continue;//Don't send duplicates
+		array_push($deduplicatedDeck, $deckAfterSB[$i]);
+	}
+	for($i=0; $i<count($deduplicatedDeck); ++$i)
+	{
 		$deck["cardResults"][$i] = [];
-		$deck["cardResults"][$i]["cardId"] = $deckAfterSB[$i];
+		$deck["cardResults"][$i]["cardId"] = $deduplicatedDeck[$i];
 		$deck["cardResults"][$i]["played"] = 0;
 		$deck["cardResults"][$i]["blocked"] = 0;
 		$deck["cardResults"][$i]["pitched"] = 0;
@@ -358,9 +364,13 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID)
 	{
 		for($j=0; $j<count($deck["cardResults"]); ++$j)
 		{
-			$deck["cardResults"][$j]["played"] = $cardStats[$i+$CardStats_TimesPlayed];
-			$deck["cardResults"][$j]["blocked"] = $cardStats[$i+$CardStats_TimesBlocked];
-			$deck["cardResults"][$j]["pitched"] = $cardStats[$i+$CardStats_TimesPitched];
+			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i])
+			{
+				$deck["cardResults"][$j]["played"] = $cardStats[$i+$CardStats_TimesPlayed];
+				$deck["cardResults"][$j]["blocked"] = $cardStats[$i+$CardStats_TimesBlocked];
+				$deck["cardResults"][$j]["pitched"] = $cardStats[$i+$CardStats_TimesPitched];
+				break;
+			}
 		}
 	}
 	return json_encode($deck);
