@@ -169,12 +169,13 @@ function AuraCostModifier()
 //NOTE: This happens at start of turn, so can't use the my/their directly
 function AuraDestroyAbility($cardID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_EffectContext;
+  SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
     case "WTR046":
       return "Forged for War was destroyed at the beginning of your action phase.";
     case "WTR047":
-      MainDrawCard();
+      Draw($mainPlayer);
       return "Show Time! drew a card.";
     case "WTR069":
     case "WTR070":
@@ -216,6 +217,7 @@ function AuraDestroyAbility($cardID)
     default:
       return "";
   }
+  SetClassState($mainPlayer, $CS_EffectContext, "-");
 }
 
 function AuraStartTurnAbilities()
