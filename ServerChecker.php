@@ -32,7 +32,7 @@ $isMod = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk";
 $isKarmaGoodEnough = 74;
 if (isset($_SESSION["userKarma"])) {
   $isKarmaGoodEnough = $_SESSION["userKarma"];
-} 
+}
 
 echo ("<div class='SpectatorContainer'>");
 echo ("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
@@ -164,6 +164,9 @@ function deleteDirectory($dir)
   }
 
   if (!is_dir($dir)) {
+    $handler = fopen($dir, "w");
+    fwrite($handler, "");
+    fclose($handler);
     return unlink($dir);
   }
 
