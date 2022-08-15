@@ -3527,10 +3527,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $discarded = DiscardRandom($player, "WTR009");
       if (AttackValue($discarded) >= 6) {
-        $ap = 1;
-        $actionPoints += 2;
-      }
-      if ($ap == 1) WriteLog("Sand Sketched Plan gained 2 action points.");
+        if($currentPlayer == $mainPlayer) {
+          $actionPoints += 2;
+          WriteLog("Sand Sketched Plan gained 2 action points.");
+        }
+      } 
       return "1";
     case "REMEMBRANCE":
       $cards = "";
