@@ -116,6 +116,7 @@
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
+    $rv = "";
     switch($cardID)
     {
       case "MON029": case "MON030":
