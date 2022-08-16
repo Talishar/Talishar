@@ -59,6 +59,8 @@ if (!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
 
 $afterResolveEffects = [];
 
+$animations = [];
+
 //Now we can process the command
 switch ($mode) {
   case 0: //Subtract health
