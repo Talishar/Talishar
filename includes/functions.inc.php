@@ -385,7 +385,7 @@ function UpdateKarma($p1value=0, $p2value=0)
 	$stmt = "";
 	if($p1id != "" && $p1id != "-")
 	{
-		$sql = "UPDATE users SET usersKarma=usersKarma+$p1value WHERE usersid='$p1id'";
+		$sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
 		$stmt = mysqli_stmt_init($conn);
 		if (mysqli_stmt_prepare($stmt, $sql)) {
 			mysqli_stmt_execute($stmt);
@@ -393,7 +393,7 @@ function UpdateKarma($p1value=0, $p2value=0)
 	}
 	if($p2id != "" && $p2id != "-")
 	{
-		$sql = "UPDATE users SET usersKarma=usersKarma+$p2value WHERE usersid='$p2id'";
+		$sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'"; // SET field = IF (condition, new value, field)
 		$stmt = mysqli_stmt_init($conn);
 		if (mysqli_stmt_prepare($stmt, $sql)) {
 			mysqli_stmt_execute($stmt);
