@@ -133,11 +133,13 @@ function AllyDamagePrevention($player, $index, $damage)
 {
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
+  $canBePrevented = CanDamageBePrevented($player, $damage, "");
+  
   switch ($cardID) {
     case "UPR417":
       if ($allies[$index + 6] > 0) {
         if ($damage > 0) --$allies[$index + 6];
-        $damage -= 3;
+        if ($canBePrevented) $damage -= 3;
         if ($damage < 0) $damage = 0;
       }
       return $damage;
