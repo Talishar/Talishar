@@ -222,6 +222,8 @@ function storeRememberMeCookie($conn, $uuid, $cookie)
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 {
 	$conn = GetDBConnection();
+	$deckName = implode("", explode("\"", $deckName));
+	$deckName = implode("", explode("'", $deckName));
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero) VALUES (" . $values. ");";
 	$stmt = mysqli_stmt_init($conn);
