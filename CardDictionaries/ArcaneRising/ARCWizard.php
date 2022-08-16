@@ -226,7 +226,7 @@
   // 0: My Hero + Their Hero
   // 1: Their Hero only
   // 2: Any Target
-  // 3: Their Hero + Their Alliers
+  // 3: Their Hero + Their Allies
   function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
@@ -298,6 +298,7 @@
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
     if($target != 3) $rv = "THEIRCHAR-0";
+    else $rv = "";
     if(($target == 0 || $target == 2) && !ShouldAutotargetOpponent($player))
     {
       $rv .= ",MYCHAR-0";
