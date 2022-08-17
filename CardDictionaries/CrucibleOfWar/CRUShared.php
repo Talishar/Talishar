@@ -784,12 +784,12 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if ($index != -1) {
         $items = &GetItems($currentPlayer);
         $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-        if ($items[$index + 1] == 0 && ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer)) {
+        if ($items[$index + 1] == 0 && ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer) && $items[$index + 2] == 2) {
             AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization.
             AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
             AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
             AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
-            $items[$index + 2 ] = 1;
+            $items[$index + 2] = 1;
             $rv = "Gives target pistol +1.";
           }
         } else {
