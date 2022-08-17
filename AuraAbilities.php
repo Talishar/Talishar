@@ -172,11 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "CRU029":
-    case "CRU030":
-    case "CRU031":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "CRU038":
     case "CRU039":
     case "CRU040":
@@ -243,6 +238,9 @@ function AuraStartTurnAbilities()
         break;
       case "CRU028":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+      case "CRU029": case "CRU030": case "CRU031":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "CRU075":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
