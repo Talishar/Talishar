@@ -1787,6 +1787,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Runeblood incantation
     case "EVR131": case "EVR132": case "EVR133":
       return 0; //Pyroglyphic Protection
+    case "UPR190":
+      return 0; //Fog Down
     default:
       return 2;
   }
