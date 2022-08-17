@@ -471,12 +471,16 @@ switch ($mode) {
     ProcessDecisionQueue();
     break;
   case 100005: //Current player inactive
-    $currentPlayerActivity = 2;
-    WriteLog("The current player is inactive.");
+    if ($theirCharacter[0] != "DUMMY") {
+      $currentPlayerActivity = 2;
+      WriteLog("The current player is inactive.");
+    }
     break;
   case 100006: //Current player active
-    $currentPlayerActivity = 0;
-    WriteLog("The current player is active again.");
+    if ($theirCharacter[0] != "DUMMY") {
+      $currentPlayerActivity = 0;
+      WriteLog("The current player is active again.");
+    }
     break;
   case 100007: //Claim Victory when opponent is inactive
     if($currentPlayerActivity == 2)
