@@ -417,7 +417,7 @@ if ($set == "CRU")
 		case "179": return "Gambler's Gloves";
 		case "180": return "Coax a Commotion";
 		case "181": return "Gorganian Tome";
-		case "182": return "Shag";
+		case "182": return "Snag";
 		case "183": return "Promise of Plenty";
 		case "184": return "Promise of Plenty";
 		case "185": return "Promise of Plenty";
