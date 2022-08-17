@@ -1,6 +1,7 @@
 <?php
 
 $GameStatus_Over = 2;
+$GameStatus_Rematch = 3;
 
 $characterPieces = 8;
 

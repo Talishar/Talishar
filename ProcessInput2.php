@@ -60,7 +60,6 @@ if (!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
 $afterResolveEffects = [];
 
 $animations = [];
-
 //Now we can process the command
 switch ($mode) {
   case 0: //Subtract health
@@ -430,14 +429,15 @@ switch ($mode) {
     WriteLog("Player " . $playerID . " manually removed a resource from their pool.");
     $myResources[0] -= 1;
     break;
-
   case 100000: //Quick Rematch
-    $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
-    include "MenuFiles/ParseGamefile.php";
-    header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$p1Key");
-    exit;
+    if($turn[0] != "OVER") break;
+    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    AddDecisionQueue("YESNO", $otherPlayer, "if you want a Quick Rematch?");
+    AddDecisionQueue("NOPASS", $otherPlayer, "-", 1);
+    AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
+    AddDecisionQueue("OVER", $playerID, "-");
+    ProcessDecisionQueue();
+    break;
   case 100001: //Main Menu
     header("Location: " . $redirectPath . "/MainMenu.php");
     exit;
@@ -464,24 +464,12 @@ switch ($mode) {
     WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
     break;
   case 100004: //Full Rematch
-    $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
-    if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
-    $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
-    if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
-    include "MenuFiles/ParseGamefile.php";
-    include "MenuFiles/WriteGamefile.php";
-    $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
-    $firstPlayer = 1;
-    $firstPlayerChooser = ($winner == 1 ? 2 : 1);
-    WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
-    WriteGameFile();
-    $turn[0] = "REMATCH";
-    include "WriteGamestate.php";
-    $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
-    GamestateUpdated($gameName);
-    exit;
+    if($turn[0] != "OVER") break;
+    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    AddDecisionQueue("YESNO", $otherPlayer, "if you want a Rematch?");
+    AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
+    ProcessDecisionQueue();
+    break;
   case 100005: //Current player inactive
     $currentPlayerActivity = 2;
     WriteLog("The current player is inactive.");
@@ -521,11 +509,26 @@ switch ($mode) {
 }
 
 ProcessMacros();
-
-if ($winner != 0) {
-  $inGameStatus = $GameStatus_Over;
-  $turn[0] = "OVER";
-  $currentPlayer = 1;
+if($inGameStatus == $GameStatus_Rematch)
+{
+  $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
+  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
+  $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
+  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
+  include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
+  $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  $firstPlayer = 1;
+  $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
+  WriteGameFile();
+  $turn[0] = "REMATCH";
+  include "WriteGamestate.php";
+  $currentTime = round(microtime(true) * 1000);
+  SetCachePiece($gameName, 2, $currentTime);
+  SetCachePiece($gameName, 3, $currentTime);
+  GamestateUpdated($gameName);
+  exit;
 }
 CombatDummyAI(); //Only does anything if applicable
 CacheCombatResult();
@@ -562,11 +565,15 @@ function IsModeAsync($mode)
       return true;
     case 10003:
       return true;
+    case 100000:
+      return true;
     case 100001:
       return true;
     case 100002:
       return true;
     case 100003:
+      return true;;
+    case 100004:
       return true;
     case 100007:
       return true;
