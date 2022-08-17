@@ -256,7 +256,7 @@ function AuraStartTurnAbilities()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "UPR190":
-        $dest = "Fog Down is destroyed.";
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "UPR218": case "UPR219": case "UPR220":
         $dest = "Sigil of Protection is destroyed.";

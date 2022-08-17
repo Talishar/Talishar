@@ -631,6 +631,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "UPR190":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
     default:
       break;
   }
