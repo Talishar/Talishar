@@ -690,6 +690,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
         --$auras[$index + 2];
         PlayAura("ARC112", $player);
       }
+    case "EVR120": case "UPR102": case "UPR103":
+      PlayAura("ELE111", $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a Frostbite for playing an ice card.");
+      break;
     case "EVR131": case "EVR132": case "EVR133":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");

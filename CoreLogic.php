@@ -357,8 +357,7 @@ function CharacterPlayCardAbilities($cardID, $from)
       case "EVR120": case "UPR102": case "UPR103":
         if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
         {
-          PlayAura("ELE111", $mainPlayer);
-          WriteLog(CardLink($characterID, $characterID) . " created a Frostbite for playing an ice card.");
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
         break;
       case "ARC075": case "ARC076":
