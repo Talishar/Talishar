@@ -4,6 +4,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false)
 {
   global $CS_NumAuras;
   if (CardType($cardID) == "T") $isToken = true;
+  if ($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
   if (DelimStringContains(CardSubType($cardID), "Affliction")) $player = ($player == 1 ? 2 : 1);
   $auras = &GetAuras($player);
   if ($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
@@ -22,7 +23,6 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false)
     array_push($auras, AuraDefaultHoldTriggerState($cardID)); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     array_push($auras, AuraDefaultHoldTriggerState($cardID)); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
-  IncrementClassState($player, $CS_NumAuras, $number);
 }
 
 function AuraNumUses($cardID)
