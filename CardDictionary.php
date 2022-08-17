@@ -1793,6 +1793,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Emerging Dominance
     case "CRU075":
       return 0; //Zen Token
+    case "CRU144":
+      return 0; //Runeblood Barrier 
     case "MON186":
       return 0; //Soul Shackle
     case "ELE109": case "ELE110": case "ELE111":
