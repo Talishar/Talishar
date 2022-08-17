@@ -172,10 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "WTR072":
-    case "WTR073":
-    case "WTR074":
-      return "Stonewall Confidence was destroyed at the beginning of your action phase.";
     case "CRU028":
       return "Stamp Authority is destroyed at the beginning of your action phase.";
     case "CRU029":
@@ -230,6 +226,9 @@ function AuraStartTurnAbilities()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "WTR069": case "WTR070": case "WTR071":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "WTR072": case "WTR073": case "WTR074":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "WTR075":
