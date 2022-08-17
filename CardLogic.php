@@ -563,6 +563,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
     case "CRU000":
       PlayAura("ARC112", $player);
       break;
+    case "CRU028":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
     case "CRU053":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
