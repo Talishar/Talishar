@@ -584,6 +584,9 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
       break;
+    case "MON186":
+      SoulShackleStartTurn($player);
+      break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");

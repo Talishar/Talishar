@@ -211,6 +211,8 @@ function AuraDestroyAbility($cardID)
   SetClassState($mainPlayer, $CS_EffectContext, "-");
 }
 
+// Start of Start Phase with Start of Turn Abilities. No players gain priority // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.
+// Start of Action Phase give players priority // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
   global $mainPlayer;
@@ -237,10 +239,10 @@ function AuraStartTurnAbilities()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "MON186":
-        SoulShackleStartTurn($mainPlayer);
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "MON006":
-        GenesisStartTurnAbility();
+        GenesisStartTurnAbility(); // No priority. Start Phase trigger.
         break;
       case "CRU075":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
