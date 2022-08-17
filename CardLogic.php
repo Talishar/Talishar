@@ -500,6 +500,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
       Intimidate();
       break;
+    case "WTR046":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
     case "WTR047":
       Draw($player);
       WriteLog(CardLink($parameter, $parameter) . " Show Time! drew a card.");
@@ -545,7 +549,7 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       break;
     case "ARC162":
       DestroyAuraUniqueID($player, $uniqueID);
-      WriteLog(CardLink($parameter, $parameter) . " was destroyed at the beginning of your action phase.");
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "CRU000":
       PlayAura("ARC112", $player);
@@ -577,9 +581,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "ELE111":
       DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "ELE174":
       $index = FindCharacterIndex($player, $parameter);
@@ -632,6 +638,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "UPR190":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "UPR218": case "UPR219": case "UPR220":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
