@@ -172,8 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "WTR046":
-      return "Forged for War was destroyed at the beginning of your action phase.";
     case "WTR069":
     case "WTR070":
     case "WTR071":
@@ -224,6 +222,9 @@ function AuraStartTurnAbilities()
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $dest = AuraDestroyAbility($auras[$i]);
     switch ($auras[$i]) {
+      case "WTR046":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "WTR047":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
@@ -259,7 +260,7 @@ function AuraStartTurnAbilities()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "UPR218": case "UPR219": case "UPR220":
-        $dest = "Sigil of Protection is destroyed.";
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
         break;

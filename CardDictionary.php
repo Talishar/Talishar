@@ -1771,6 +1771,8 @@ function CharacterDefaultActiveState($cardID)
 function AuraDefaultHoldTriggerState($cardID)
 {
   switch ($cardID) {
+    case "WTR046":
+      return 0 ; //Forged for War
     case "WTR047":
       return 0; //Show Time!
     case "WTR054": case "WTR055": case "WTR056":
@@ -1789,6 +1791,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Pyroglyphic Protection
     case "UPR190":
       return 0; //Fog Down
+    case "UPR218": case "UPR219": case "UPR220":
+      return 0; //Sigil of Protection
     default:
       return 2;
   }
