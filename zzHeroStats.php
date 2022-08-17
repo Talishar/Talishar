@@ -28,11 +28,9 @@ echo ("<script src=\"./jsInclude.js\"></script>");
 echo ("<style>
 
 table {
-  border: 3px solid black;
   border-radius: 10px;
   border-spacing: 0;
   border-collapse: collapse;
-  background: rgba(74, 74, 74);
   font-size: 1em;
   height: 100%;
 }
