@@ -308,8 +308,8 @@ function logCompletedGameStats() {
 			}
 		}
 	}
-	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID);
-	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID);
+	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
+	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
 	mysqli_close($conn);
 }
 
@@ -333,9 +333,9 @@ function SendFabraryResults($player, $decklink, $deck, $gameID)
 	curl_close($ch);
 }
 
-function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="")
+function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $opposingHero="")
 {
-	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched;
+	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $firstPlayer;
 	$DeckLink = explode("/", $DeckLink);
 	$DeckLink = $DeckLink[count($DeckLink)-1];
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
@@ -346,6 +346,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="")
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
+	$deck["firstPlayer"] = $firstPlayer;
+	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	$deck["cardResults"] = [];
 	$deckAfterSB = explode(" ", $deckAfterSB);
 	$deduplicatedDeck = [];
