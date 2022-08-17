@@ -1264,8 +1264,6 @@ function IsTileable($cardID)
       return true;
     case "ARC112":
       return true;
-    case "CRU197":
-      return true;
     case "MON186":
       return true;
     case "ELE111":
@@ -1334,12 +1332,14 @@ function DisplayTiles($player)
     echo ("</div>");
   }
 
-  $items = GetItems($player);
-  $copperCount = 0;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == "CRU197") ++$copperCount;
-  }
-  if ($copperCount > 0) echo (Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
+  //Remove Copper as they weren't playable if shown as tiles.
+
+  // $items = GetItems($player);
+  // $copperCount = 0;
+  // for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  //   if ($items[$i] == "CRU197") ++$copperCount;
+  // }
+  // if ($copperCount > 0) echo (Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
 
   $permanents = GetPermanents($player);
   $ashCount = 0;
