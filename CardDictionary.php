@@ -1785,6 +1785,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Embodiment of Earth and Lightning, Frostbite
     case "EVR107": case "EVR108": case "EVR109":
       return 0; //Runeblood incantation
+    case "EVR131": case "EVR132": case "EVR133":
+      return 0; //Pyroglyphic Protection
     default:
       return 2;
   }
