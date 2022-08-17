@@ -1777,6 +1777,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Show Time!
     case "WTR054": case "WTR055": case "WTR056":
       return 0; //Blessing of Deliverance
+    case "WTR069": case "WTR070": case "WTR071":
+      return 0; //Emerging Power
     case "WTR075":
       return 0; //Seismic Surge
     case "ARC112":
