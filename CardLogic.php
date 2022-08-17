@@ -499,6 +499,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
       Intimidate();
       break;
+    case "WTR047":
+      Draw($player);
+      WriteLog(CardLink($parameter, $parameter) . " Show Time! drew a card.");
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "WTR054": case "WTR055": case "WTR056":
       if($parameter == "WTR054") $amount = 3;
       else if($parameter == "WTR055") $amount = 2;

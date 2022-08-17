@@ -174,9 +174,6 @@ function AuraDestroyAbility($cardID)
   switch ($cardID) {
     case "WTR046":
       return "Forged for War was destroyed at the beginning of your action phase.";
-    case "WTR047":
-      Draw($mainPlayer);
-      return "Show Time! drew a card.";
     case "WTR069":
     case "WTR070":
     case "WTR071":
@@ -227,6 +224,9 @@ function AuraStartTurnAbilities()
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $dest = AuraDestroyAbility($auras[$i]);
     switch ($auras[$i]) {
+      case "WTR047":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "WTR054": case "WTR055": case "WTR056":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
