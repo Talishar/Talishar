@@ -172,8 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "CRU028":
-      return "Stamp Authority is destroyed at the beginning of your action phase.";
     case "CRU029":
     case "CRU030":
     case "CRU031":
@@ -243,6 +241,8 @@ function AuraStartTurnAbilities()
       case "MON006":
         GenesisStartTurnAbility(); // No priority. Start Phase trigger.
         break;
+      case "CRU028":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
       case "CRU075":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;

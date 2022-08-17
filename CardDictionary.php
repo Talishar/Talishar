@@ -1785,6 +1785,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Seismic Surge
     case "ARC112":
       return 0;
+    case "CRU028":
+      return 0; //Stamp Authority
     case "CRU075":
       return 0; //Zen Token
     case "MON186":
