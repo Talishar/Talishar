@@ -122,9 +122,8 @@
       case "ARC119":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
         AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
@@ -134,6 +133,10 @@
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
+        AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sonic Boom shows the top of your deck is <0>");
+        AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Sonic Boom", 1);
         return "";
       case "ARC120":
         $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
