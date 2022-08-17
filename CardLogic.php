@@ -616,19 +616,20 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       --$items[$index + 1];
       if ($items[$index + 1] < 0) DestroyMainItem($index);
       break;
-    case "EVR107":
-    case "EVR108":
-    case "EVR109":
+    case "EVR107": case "EVR108": case "EVR109":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if ($index == -1) break;
       $auras = &GetAuras($player);
       if ($auras[$index + 2] == 0) {
-        WriteLog("Runeblood Invocation is destroyed.");
-        DestroyAura($player, $index);
+        WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+        DestroyAuraUniqueID($player, $uniqueID);
       } else {
         --$auras[$index + 2];
         PlayAura("ARC112", $player);
       }
+    case "EVR131": case "EVR132": case "EVR133":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     default:
       break;

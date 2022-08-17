@@ -248,23 +248,17 @@ function AuraStartTurnAbilities()
       case "ELE109":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      case "EVR107":
-      case "EVR108":
-      case "EVR109":
+      case "EVR107": case "EVR108": case "EVR109":
         WriteLog(CardLink($auras[$i], $auras[$i]) . " trigger creates a layer.");
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      case "EVR131":
-      case "EVR132":
-      case "EVR133":
-        $dest = "Pyroglyphic Protection is destroyed.";
+      case "EVR131": case "EVR132": case "EVR133":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "UPR190":
         $dest = "Fog Down is destroyed.";
         break;
-      case "UPR218":
-      case "UPR219":
-      case "UPR220":
+      case "UPR218": case "UPR219": case "UPR220":
         $dest = "Sigil of Protection is destroyed.";
         break;
       default:
