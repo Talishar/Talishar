@@ -593,6 +593,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
         --$auras[$index + 2];
       }
       break;
+    case "CRU144":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("CHARREADYORPASS", $player, $index);
