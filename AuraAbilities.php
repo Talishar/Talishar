@@ -172,11 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "CRU038":
-    case "CRU039":
-    case "CRU040":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Emerging Dominance gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . " and dominate.";
     case "CRU144":
       return "Runeblood Barrier is destroyed at the beginning of your action phase.";
     case "ELE025":
@@ -239,6 +234,9 @@ function AuraStartTurnAbilities()
       case "CRU028":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
       case "CRU029": case "CRU030": case "CRU031":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "CRU038": case "CRU039": case "CRU040":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "CRU075":

@@ -1789,6 +1789,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Stamp Authority
     case "CRU029": case "CRU030": case "CRU031":
       return 0; //Towering Titan 
+    case "CRU038": case "CRU039": case "CRU040":
+      return 0; //Emerging Dominance
     case "CRU075":
       return 0; //Zen Token
     case "MON186":
