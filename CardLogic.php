@@ -484,6 +484,7 @@ function ProcessTrigger($player, $parameter, $uniqueID)
   $resources = &GetResources($player);
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
+  $auras = &GetAuras($player);
 
   if(CardType($parameter) == "C")
   {
@@ -556,6 +557,14 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
+      break;
+    case "CRU075":
+      $index = FindCharacterIndex($player, $parameter);
+      if ($auras[$index + 2] == 0) {
+        DestroyAuraUniqueID($player, $uniqueID);
+      } else {
+        --$auras[$index + 2];
+      }
       break;
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);
