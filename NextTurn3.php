@@ -11,6 +11,10 @@
     exit;
   }
   $playerID = TryGet("playerID", 3);
+  if(!is_numeric($playerID)) {
+    echo ("Invalid player ID.");
+    exit;
+  }
   $authKey = TryGet("authKey", 3);
 
   session_start();
