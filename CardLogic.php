@@ -517,7 +517,7 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "WTR069": case "WTR070": case "WTR071":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack this turn +" . EffectAttackModifier($parameter) . ".");
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -568,12 +568,12 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "CRU029": case "CRU030": case "CRU031":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack this turn +" . EffectAttackModifier($parameter) . ".");
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "CRU038": case "CRU039": case "CRU040":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack this turn +" . EffectAttackModifier($parameter) . " and dominate.");
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . " and dominate.");
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -619,6 +619,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "ELE206": case "ELE207": case "ELE208":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
