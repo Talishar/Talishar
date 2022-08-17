@@ -534,6 +534,12 @@ if($inGameStatus == $GameStatus_Rematch)
   GamestateUpdated($gameName);
   exit;
 }
+else if ($winner != 0 && $turn[0] != "YESNO") {
+  $inGameStatus = $GameStatus_Over;
+  $turn[0] = "OVER";
+  $currentPlayer = 1;
+}
+
 CombatDummyAI(); //Only does anything if applicable
 CacheCombatResult();
 
