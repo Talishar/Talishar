@@ -609,6 +609,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
     case "MON186":
       SoulShackleStartTurn($player);
       break;
+    case "ELE025": case "ELE026": case "ELE027":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");

@@ -172,11 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "ELE025":
-    case "ELE026":
-    case "ELE027":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Emerging Avalanche gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "ELE028":
     case "ELE029":
     case "ELE030":
@@ -241,6 +236,9 @@ function AuraStartTurnAbilities()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "CRU144":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "ELE025": case "ELE026": case "ELE027":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "ELE109":
