@@ -172,11 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "ELE206":
-    case "ELE207":
-    case "ELE208":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Embolden gives your next Guardian Attack Action card +" . EffectAttackModifier($cardID) . ".";
     default:
       return "";
   }
@@ -238,7 +233,12 @@ function AuraStartTurnAbilities()
         break;
       case "ELE028": case "ELE029": case "ELE030":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-      break;
+        break;
+      case "ELE206":
+      case "ELE207":
+      case "ELE208":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "ELE109":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
