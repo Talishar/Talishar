@@ -172,11 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "ELE028":
-    case "ELE029":
-    case "ELE030":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Strength of Sequoia gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
     case "ELE206":
     case "ELE207":
     case "ELE208":
@@ -241,6 +236,9 @@ function AuraStartTurnAbilities()
       case "ELE025": case "ELE026": case "ELE027":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "ELE028": case "ELE029": case "ELE030":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+      break;
       case "ELE109":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;

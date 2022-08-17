@@ -1799,6 +1799,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Soul Shackle
     case "ELE025": case "ELE026": case "ELE027":
       return 0; //Emerging Avalanche
+    case "ELE028": case "ELE029": case "ELE030":
+      return 0; //Strength of Sequoia
     case "ELE109": case "ELE110": case "ELE111":
       return 0; //Embodiment of Earth and Lightning, Frostbite
     case "EVR107": case "EVR108": case "EVR109":
