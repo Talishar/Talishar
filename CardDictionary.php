@@ -1779,6 +1779,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Seismic Surge
     case "ARC112":
       return 0;
+    case "CRU075":
+      return 0; //Zen Token
     case "ELE109": case "ELE110": case "ELE111":
       return 0; //Embodiment of Earth and Lightning, Frostbite
     case "EVR107": case "EVR108": case "EVR109":

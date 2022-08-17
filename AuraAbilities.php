@@ -243,11 +243,7 @@ function AuraStartTurnAbilities()
         GenesisStartTurnAbility();
         break;
       case "CRU075":
-        if ($auras[$i + 2] == 0) {
-          $dest = "Zen State is destroyed.";
-        } else {
-          --$auras[$i + 2];
-        }
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "ELE109":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
