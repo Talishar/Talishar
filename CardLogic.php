@@ -614,6 +614,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "ELE028": case "ELE029": case "ELE030":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
