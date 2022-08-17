@@ -1418,7 +1418,7 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
       AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
       break;
-    case "CRU097"://Handled
+    case "CRU097":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {

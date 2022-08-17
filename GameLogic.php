@@ -18,7 +18,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if (($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
   }
-  if($cardID == "CRU097") {//Handled
+  if($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -99,7 +99,7 @@ function ProcessHitEffect($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
 
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -1524,7 +1524,7 @@ function IsCombatEffectActive($cardID)
   global $combatChain, $currentPlayer;
   if (count($combatChain) == 0) return;
   $attackID = $combatChain[0];
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -1558,7 +1558,7 @@ function IsCombatEffectActive($cardID)
 function IsCombatEffectPersistent($cardID)
 {
   global $currentPlayer;
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -1772,7 +1772,7 @@ function CharacterStartTurnAbility($index)
     case "WTR150":
       if ($mainCharacter[$index + 2] < 3) ++$mainCharacter[$index + 2];
       break;
-    case "CRU097"://Handled
+    case "CRU097":
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       $otherPlayerMainCharacter = &GetPlayerCharacter($otherPlayer);
       if ($mainCharacter[$index] != $otherPlayerMainCharacter[$index]) {
@@ -2195,7 +2195,7 @@ function MainCharacterEndTurnAbilities()
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     $characterID = $mainCharacter[$i];
-    if($i == 0 && $mainCharacter[$i] == "CRU097")//Handled
+    if($i == 0 && $mainCharacter[$i] == "CRU097")
     {
       $otherCharacter = &GetPlayerCharacter($defPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
@@ -2246,7 +2246,7 @@ function MainCharacterHitAbilities()
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if (CardType($mainCharacter[$i]) == "W" || $mainCharacter[$i + 1] != "2") continue;
     $characterID = $mainCharacter[$i];
-    if($i == 0 && $mainCharacter[0] == "CRU097") {//Handled
+    if($i == 0 && $mainCharacter[0] == "CRU097") {
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $mainPlayer)) {
@@ -2358,7 +2358,7 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if (!IsEquipUsable($mainPlayer, $i)) continue;
     $characterID = $mainCharacter[$i];
-    if($i == 0 && $mainCharacter[0] == "CRU097")//Handled
+    if($i == 0 && $mainCharacter[0] == "CRU097")
     {
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -2570,7 +2570,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
   global $currentPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
