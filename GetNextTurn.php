@@ -266,7 +266,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo (($manualMode ? "<span style='position:relative; top: 5px; z-index:10; color: " . $fontColor . "; font-family:Helvetica; font-size:28px; font-weight: 550;text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Add to hand: </span><input id='manualAddCardToHand' type='text' /><input type='button' style='position:relative; top:0; left:0; bottom: 5px; box-shadow: none;' value='Add' onclick='AddCardToHand()' />&nbsp;" : ""));
 
   //Tell the player what to pick
-  if (!IsGameOver()) {
+  if ($turn[0] != "OVER") {
     $helpText = ($currentPlayer != $playerID ? " Waiting for other player to choose " . TypeToPlay($turn[0]) . "&nbsp" : " " . GetPhaseHelptext() . "&nbsp;");
 
     echo ("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid " . $borderColor . "; border-radius: 5px; font-size:22px;'><img height='22px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>" . $helpText);
@@ -436,7 +436,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("INSTANT", [], 0, 1, "", 1, $content, "./", false, true);
   }
 
-  if (IsGameOver()) {
+  if ($turn[0] == "OVER") {
     $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");

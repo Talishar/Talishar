@@ -2706,6 +2706,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
+  global $redirectPath, $playerID, $gameName, $p1Key;
   global $currentPlayer, $combatChain, $defPlayer;
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
@@ -4604,6 +4605,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 0;
     case "ADDARCANEBONUS":
       AddArcaneBonus($parameter, $player);
+      return 0;
+    case "QUICKREMATCH":
+      $currentTime = round(microtime(true) * 1000);
+      SetCachePiece($gameName, 2, $currentTime);
+      SetCachePiece($gameName, 3, $currentTime);
+      include "MenuFiles/ParseGamefile.php";
+      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$p1Key");
+      exit;
+    case "REMATCH":
+      global $GameStatus_Rematch, $inGameStatus;
+      if($lastResult == "YES") $inGameStatus = $GameStatus_Rematch;
       return 0;
     default:
       return "NOTSTATIC";
