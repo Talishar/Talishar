@@ -516,6 +516,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       BlessingOfDeliveranceDestroy($amount);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "WTR069": case "WTR070": case "WTR071":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "WTR075":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);

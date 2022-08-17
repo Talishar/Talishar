@@ -172,10 +172,6 @@ function AuraDestroyAbility($cardID)
   global $mainPlayer, $CS_EffectContext;
   SetClassState($mainPlayer, $CS_EffectContext, $cardID);
   switch ($cardID) {
-    case "WTR069":
-    case "WTR070":
-    case "WTR071":
-      return EmergingPowerDestroy($cardID);
     case "WTR072":
     case "WTR073":
     case "WTR074":
@@ -229,6 +225,9 @@ function AuraStartTurnAbilities()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "WTR054": case "WTR055": case "WTR056":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "WTR069": case "WTR070": case "WTR071":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "WTR075":

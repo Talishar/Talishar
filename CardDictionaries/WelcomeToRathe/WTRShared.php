@@ -237,7 +237,7 @@
       case "WTR042": return "Head";
       case "WTR046": case "WTR047":
       case "WTR054": case "WTR055": case "WTR056":
-      case "WTR069":  case "WTR070": case "WTR071":
+      case "WTR069": case "WTR070": case "WTR071":
       case "WTR072": case "WTR073": case "WTR074": case "WTR075": return "Aura";
       case "WTR078": return "Dagger";
       case "WTR079": return "Head";
@@ -966,14 +966,6 @@
     RevealCards($cards, $mainPlayer);//CanReveal called
     GainHealth($lifegain, $mainPlayer);
     return "Blessing of Deliverance gained " . $lifegain . " life.";
-  }
-
-  function EmergingPowerDestroy($cardID)
-  {
-    global $mainPlayer;
-    $log = "Emerging Power gives the next Guardian attack this turn +" . EffectAttackModifier($cardID) . ".";
-    AddCurrentTurnEffect($cardID, $mainPlayer);
-    return $log;
   }
 
   function KatsuHit($index)
