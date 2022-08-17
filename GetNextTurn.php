@@ -9,6 +9,11 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 $playerID = TryGet("playerID", 3);
+if(!is_numeric($playerID)) {
+  echo ("Invalid player ID.");
+  exit;
+}
+
 $authKey = TryGet("authKey", 3);
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
