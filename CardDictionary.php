@@ -254,7 +254,7 @@ function CharacterHealth($cardID)
 function CharacterIntellect($cardID)
 {
   global $currentPlayer;
-  if ($cardID == "CRU097") {//handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -394,7 +394,7 @@ function CardCost($cardID)
   global $currentPlayer;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
-  if ($cardID == "CRU097") {//handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -467,7 +467,7 @@ function AbilityCost($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -815,7 +815,7 @@ function GetAbilityType($cardID, $index = -1)
   global $currentPlayer;
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -1161,7 +1161,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "W";
-    case "CRU097"://Handled
+    case "CRU097":
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
         return IsPlayRestricted($otherCharacter[0], $restriction, $from, $index, $player);
@@ -1588,7 +1588,7 @@ function AbilityHasGoAgain($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -1626,7 +1626,7 @@ function AbilityHasGoAgain($cardID)
 function DoesEffectGrantDominate($cardID)
 {
   global $combatChainState, $CCS_AttackFused, $currentPlayer;
-  if ($cardID == "CRU097") {//Handled
+  if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
@@ -1741,9 +1741,6 @@ function CharacterNumUsesPerTurn($cardID)
 function CharacterDefaultActiveState($cardID)
 {
   switch ($cardID) {
-    case "UPR004": case "UPR047": case "UPR125":
-    case "UPR184": case "UPR185": case "UPR186": // Quell
-      return 0;
     case "WTR117": // Refraction Bolters
       return 1;
     case "ARC152": // Vest of the First Fist
@@ -1756,12 +1753,15 @@ function CharacterDefaultActiveState($cardID)
       return 0;
     case "ELE174": // Mark of Lightning
       return 1;
-    case "EVR037": // Mask of the Pouncing Lynx
-      return 1;
     case "ELE173": case "MON061": case "MON090":
     case "MON188": case "MON302": case "MON400": // Spellvoid Equipments
     case "MON401": case "MON402":
       return 1;
+    case "EVR037": // Mask of the Pouncing Lynx
+      return 1;
+    case "UPR004": case "UPR047": case "UPR125":
+    case "UPR184": case "UPR185": case "UPR186": // Quell
+      return 0;
     default:
       return 2;
   }

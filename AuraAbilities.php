@@ -173,7 +173,6 @@ function AuraStartTurnAbilities()
 {
   global $mainPlayer, $CS_EffectContext;
   $auras = &GetAuras($mainPlayer);
-  
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     SetClassState($mainPlayer, $CS_EffectContext, $auras[$i]);
     switch ($auras[$i]) {

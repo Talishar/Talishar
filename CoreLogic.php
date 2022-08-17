@@ -344,7 +344,7 @@ function CharacterPlayCardAbilities($cardID, $from)
   {
     if($character[$i+1] != 2) continue;
     $characterID = $character[$i];
-    if($i == 0 && $character[0] == "CRU097")//Handled
+    if($i == 0 && $character[0] == "CRU097")
     {
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
