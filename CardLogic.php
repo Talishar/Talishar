@@ -593,6 +593,19 @@ function ProcessTrigger($player, $parameter, $uniqueID)
         --$auras[$index + 2];
       }
       break;
+    case "CRU097":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayerMainCharacter = &GetPlayerCharacter($otherPlayer);
+      $index = FindCharacterIndex($player, $parameter);
+      if ($character[$index] != $otherPlayerMainCharacter[$index]) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero to copy");
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZGETCARDID", $player, "-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $player, "-SHIYANA", 1);
+        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
+      }
+      break;
     case "CRU144":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
