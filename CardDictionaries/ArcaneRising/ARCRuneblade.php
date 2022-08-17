@@ -205,14 +205,13 @@
     return $count;
   }
 
-  function ViseraiPlayCard($cardID)
+  function ViseraiPlayCard($cardID, $characterID)
   {
     global $currentPlayer, $CS_NumNonAttackCards;
     $target = CardType($cardID) == "A" ? 1 : 0;//Don't let a non-attack action count itself
     if(ClassContains($cardID, "RUNEBLADE", $currentPlayer) && GetClassState($currentPlayer, $CS_NumNonAttackCards) > $target)
     {
-      PlayAura("ARC112", $currentPlayer);
-      WriteLog(CardLink("ARC075", "ARC075") . " created a runechant.");
+      AddLayer("TRIGGER", $currentPlayer, $characterID);
     }
   }
 
