@@ -255,10 +255,10 @@ function LoadFavoriteDecks($userID)
 
 function logCompletedGameStats() {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
-	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink;
+	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
 	$loser = ($winner == 1 ? 2 : 1);
-	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck";
-	$values = "?, ?, ?, ?, ?";
+	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
+	$values = "?, ?, ?, ?, ?, ?, ?";
 	$winnerDeck = file_get_contents("./Games/" . $gameName . "/p" . $winner . "Deck.txt");
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
 	if($p1id != "" && $p1id != "-")
@@ -280,7 +280,7 @@ function logCompletedGameStats() {
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		$winHero = &GetPlayerCharacter($winner);
 		$loseHero = &GetPlayerCharacter($loser);
-		mysqli_stmt_bind_param($stmt, "sssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck);
+		mysqli_stmt_bind_param($stmt, "sssssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck, GetHealth($winner), $firstPlayer);
 		mysqli_stmt_execute($stmt);
 		$gameResultID = mysqli_insert_id($conn);
 		mysqli_stmt_close($stmt);
