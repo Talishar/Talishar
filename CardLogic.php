@@ -567,6 +567,11 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "CRU029": case "CRU030": case "CRU031":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "CRU053":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Breeze_Rider_Boots_to_give_your_Combo_attacks_Go_Again");
