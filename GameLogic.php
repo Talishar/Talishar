@@ -1773,16 +1773,7 @@ function CharacterStartTurnAbility($index)
       if ($mainCharacter[$index + 2] < 3) ++$mainCharacter[$index + 2];
       break;
     case "CRU097":
-      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-      $otherPlayerMainCharacter = &GetPlayerCharacter($otherPlayer);
-      if ($mainCharacter[$index] != $otherPlayerMainCharacter[$index]) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=C&THEIRCHAR:type=C");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which hero to copy");
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZGETCARDID", $mainPlayer, "-", 1);
-        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-SHIYANA", 1);
-        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $mainPlayer, "<-", 1);
-      }
+      AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$index]);
       break;
     case "MON187":
       if (GetHealth($mainPlayer) <= 13) {
