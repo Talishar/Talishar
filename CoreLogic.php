@@ -672,7 +672,8 @@ function UnsetBanishModifier($player, $modifier, $newMod="DECK")
   $banish = &GetBanish($mainPlayer);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
-    if($banish[$i+1] == $modifier) $banish[$i+1] = $newMod;
+    $cardModifier = explode("-", $banish[$i+1])[0];
+    if($cardModifier == $modifier) $banish[$i+1] = $newMod;
   }
 }
 
@@ -701,6 +702,8 @@ function UnsetTurnBanish()
   UnsetBanishModifier(1, "INST");
   UnsetBanishModifier(2, "TT");
   UnsetBanishModifier(2, "INST");
+  UnsetBanishModifier(1, "ARC119");
+  UnsetBanishModifier(2, "ARC119");
   UnsetCombatChainBanish();
   ReplaceBanishModifier(1, "NT", "TT");
   ReplaceBanishModifier(2, "NT", "TT");
