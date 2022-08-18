@@ -318,6 +318,11 @@ button {
   font-size: 20px;
 }
 
+.profile-form h1 {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
 .profile-form h2 {
   text-align: center;
   margin-top: 6px;
@@ -930,6 +935,15 @@ button {
   width: 40%;
   height: 90vh;
   display: inline-block;
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+}
+
+.game-stats h3 {
+  margin: 15px 0;
+  text-decoration: underline;
+  text-underline-offset: 5px;
 }
 
 .game-stats-div {
@@ -942,7 +956,8 @@ button {
   margin-bottom: 5px;
   text-shadow: var(--text-shadow);
   overflow-y: auto;
-  max-height: 88vh;
+  height: 80vh;
+  max-height: 85vh;
 }
 
 .BRMobile {
