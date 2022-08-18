@@ -230,7 +230,7 @@ echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Card</td><td>Num Plays</td><td>Win Rate</td><td>Relative Win Rate</td></tr>");
 foreach ($sortedCardData as $key => $card) {
-  //if ($card[1] < 10) continue;
+  if ($card[1] < 3) continue;
   echo ("<tr>");
   echo ("<td>" . CardLink($key, $key) . "</td>");
   echo ("<td>" . $card[1] . "</td>");
