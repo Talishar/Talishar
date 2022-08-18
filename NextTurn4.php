@@ -109,6 +109,10 @@
         else { height = (maxHeight * .71); width = maxHeight; }
 
         //if($controller != 0 && IsPatron($controller) && CardHasAltArt($cardNumber)) $folderPath = "PatreonImages/" . $folderPath;
+        <?php
+        if(IsPatron(1)) echo("if(controller == 1 && CardHasAltArt(cardNumber)) folderPath = 'PatreonImages/' + folderPath;");
+        if(IsPatron(2)) echo("if(controller == 2 && CardHasAltArt(cardNumber)) folderPath = 'PatreonImages/' + folderPath;");
+        ?>
 
         if(rotate == false){
           rv += "<img " + (id != "" ? "id='" + id + "-img' ":"") + "style='" + border + " height:" + height + "; width:" + width + "px; position:relative;' src='./" + folderPath + "/" + cardNumber + fileExt + "' />";
@@ -125,6 +129,27 @@
         return rv;
       }
 
+      function CardHasAltArt(cardID)
+      {
+        switch(cardID)
+        {
+          case "ELE146": return true;
+          case "MON155": return true;
+          case "MON219": return true;
+          case "MON220": return true;
+          case "UPR042": return true;
+          case "UPR043": return true;
+          case "WTR002": return true;
+          case "WTR162": return true;
+          case "WTR224": return true;
+          case "UPR406": case "UPR407": case "UPR408":
+          case "UPR409": case "UPR410": case "UPR411":
+          case "UPR412": case "UPR413": case "UPR414":
+          case "UPR415": case "UPR416": case "UPR417":
+            return true;
+          default: return false;
+        }
+      }
 
       function BorderColorMap(code)
       {
@@ -144,6 +169,7 @@
 
       function PopulateZone(zone)
       {
+        //Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, from="", controller=0)
         var zoneEl = document.getElementById(zone);
         var zoneData = zoneEl.innerHTML;
         var zoneArr = zoneData.split("|");
@@ -152,7 +178,7 @@
         {
           cardArr = zoneArr[i].split(" ");
           newHTML += "<span style='position:relative; margin:1px;'>";
-          newHTML += Card(cardArr[0], "concat", 96, cardArr[1], 1, 0, cardArr[2], 0, cardArr[3]);
+          newHTML += Card(cardArr[0], "concat", 96, cardArr[1], 1, 0, cardArr[2], 0, cardArr[3], "", false, 0, 0, 0, "", cardArr[5]);
           newHTML += "</span>";
         }
         zoneEl.innerHTML = newHTML;

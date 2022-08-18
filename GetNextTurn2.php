@@ -889,7 +889,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionData = $actionType == 16 ? strval($i) : "";
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
-      $handContents .= $myHand[$i] . " " . $actionTypeOut . " " . $border . " " . $actionData . " - -";//TODO: restriction + controller
+      $handContents .= $myHand[$i] . " " . $actionTypeOut . " " . $border . " " . $actionData . " - " . $playerID;//TODO: restriction + controller
       //echo ("<span style='position:relative; margin:1px;'>");
       //echo (Card($myHand[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? $actionType : 0, 1, 0, $border, 0, $actionData, controller:$playerID));
       //if ($restriction != "") echo ("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-56px; left:26px;' src='./Images/restricted.png' />");
