@@ -180,7 +180,7 @@ if (isset($_SESSION["isPatron"])) {
         echo ("<tr>");
         echo ("<td>" . CardLink($favoriteDecks[$i + 2], $favoriteDecks[$i + 2], true) . "</td>");
         echo ("<td>" . $favoriteDecks[$i + 1] . "</td>");
-        echo ("<td><a href='./MenuFiles/DeleteDeck.php?decklink=" . $favoriteDecks[$i] . "'>&nbsp;Delete&nbsp;</a></td>");
+        echo ("<td><a style='text-underline-offset:5px;' href='./MenuFiles/DeleteDeck.php?decklink=" . $favoriteDecks[$i] . "'>Delete</a></td>");
         //echo ("<div id='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "(" . $favoriteDecks[$i+2] . ")</div>");
         echo ("</tr>");
       }
