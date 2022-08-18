@@ -131,6 +131,7 @@
       case "CRU122": return $combatChain[2] == "ARS" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "CRU123": return $attackID == "CRU123";
       case "CRU124": return CardSubtype($combatChain[0]) == "Arrow";
+      case "CRU125": return true;
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";
       //Runeblade
@@ -845,7 +846,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       Reload();
       return "Makes arrow attacks discard on hero hit, and allows you to Reload.";
     case "CRU125":
-      SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
+      SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);     
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Prevents the next damage you would take.";
     case "CRU126":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
