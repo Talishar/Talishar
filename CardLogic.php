@@ -547,10 +547,6 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
       break;
-    case "ARC075": case "ARC076":
-      PlayAura("ARC112", $player);
-      WriteLog(CardLink($parameter, $parameter) . " created a runechant.");
-      break;
     case "ARC112":
       DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
       DestroyAuraUniqueID($player, $uniqueID);
