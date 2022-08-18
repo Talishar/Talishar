@@ -881,7 +881,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($myHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     if ($playerID == 3) {
-      //echo (Card($MyCardBack, "concat", $cardSizeAura, 0, 0, 0, 0));
       $handContents .= $MyCardBack . " 0 0 - - 0";
     } else {
       //Needed: cardID, actionType, border, actionData, restriction, controller?
@@ -898,7 +897,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   echo($handContents);
-  //if ($playerID != 3) echo (BanishUI("HAND"));//TODO: Banish UI
+  if ($playerID != 3)
+  {
+    $banishUI = BanishUIMinimal("HAND");
+    if($handContents != "" && $banishUI != "") echo("|");
+    echo($banishUI);
+  }
   echo ("</div>"); //End hand div
 
   //Now display my arsenal
