@@ -171,15 +171,26 @@ function AuraCostModifier()
   return $modifier;
 }
 
+//NOTE: This happens at start of turn, so can't use the my/their directly
+function AuraDestroyAbility($cardID)
+{
+  global $mainPlayer, $CS_EffectContext;
+  SetClassState($mainPlayer, $CS_EffectContext, $cardID);
+  switch ($cardID) {
+    default:
+      return "";
+  }
+  SetClassState($mainPlayer, $CS_EffectContext, "-");
+}
 
 // Start of Start Phase with Start of Turn Abilities. No players gain priority // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.
 // Start of Action Phase give players priority // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
-  global $mainPlayer, $CS_EffectContext;
+  global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    SetClassState($mainPlayer, $CS_EffectContext, $auras[$i]);
+    $dest = AuraDestroyAbility($auras[$i]);
     switch ($auras[$i]) {
       case "WTR046":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
@@ -252,7 +263,7 @@ function AuraStartTurnAbilities()
       default:
         break;
     }
-    SetClassState($mainPlayer, $CS_EffectContext, "-");
+    if ($dest != "") DestroyAura($mainPlayer, $i);
   }
 }
 
