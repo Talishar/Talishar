@@ -361,7 +361,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "ARC075": case "ARC076":
-        if(!IsStaticType(CardType($cardID), $from, $cardID)) ViseraiPlayCard($cardID, $characterID);
+        if(!IsStaticType(CardType($cardID), $from, $cardID)) ViseraiPlayCard($cardID);
         break;
       case "ELE062": case "ELE063":
         if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2)
