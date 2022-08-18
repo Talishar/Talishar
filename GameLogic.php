@@ -530,7 +530,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "EVR065":
       return 1;
     case "EVR105":
-      WriteLog("I created " . GetClassState($mainPlayer, $CS_NumAuras) . " auras");
       return (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
     case "EVR116":
     case "EVR117":
