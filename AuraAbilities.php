@@ -4,7 +4,6 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false)
 {
   global $CS_NumAuras;
   if (CardType($cardID) == "T") $isToken = true;
-  if ($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
     $player = ($player == 1 ? 2 : 1);
