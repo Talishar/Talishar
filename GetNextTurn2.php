@@ -876,26 +876,29 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $actionType = $turn[0] == "ARS" ? 4 : 2;
   if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
   $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 15)) / 2) . "px)";
-  echo ("<div id='myHand' style='position:fixed; left:" . $handLeft . "; bottom: 5px;'>"); //Hand div
+  echo ("<div id='myHand' style='display:none; position:fixed; left:" . $handLeft . "; bottom: 5px;'>"); //Hand div
   $handContents = "";
   for ($i = 0; $i < count($myHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     if ($playerID == 3) {
       //echo (Card($MyCardBack, "concat", $cardSizeAura, 0, 0, 0, 0));
-      echo()
+      $handContents .= $MyCardBack . " 0 0 - - 0";
     } else {
-      //Needed: cardID, actionType, border, actionData, controller?
+      //Needed: cardID, actionType, border, actionData, restriction, controller?
       if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionData = $actionType == 16 ? strval($i) : "";
-      echo ("<span style='position:relative; margin:1px;'>");
-      echo (Card($myHand[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? $actionType : 0, 1, 0, $border, 0, $actionData, controller:$playerID));
-      if ($restriction != "") echo ("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-56px; left:26px;' src='./Images/restricted.png' />");
-      echo ("</span>");
+      $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
+      $handContents .= $myHand[$i] . " " . $actionTypeOut . " " . $border . " " . $actionData . " - -";//TODO: restriction + controller
+      //echo ("<span style='position:relative; margin:1px;'>");
+      //echo (Card($myHand[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? $actionType : 0, 1, 0, $border, 0, $actionData, controller:$playerID));
+      //if ($restriction != "") echo ("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-56px; left:26px;' src='./Images/restricted.png' />");
+      //echo ("</span>");
     }
   }
-  if ($playerID != 3) echo (BanishUI("HAND"));
+  echo($handContents);
+  //if ($playerID != 3) echo (BanishUI("HAND"));//TODO: Banish UI
   echo ("</div>"); //End hand div
 
   //Now display my arsenal
