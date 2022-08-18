@@ -3202,7 +3202,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($parameter == "1") {
           if ($displayText != "") $displayText .= ", ";
           if ($i != 0 && $i == count($cards) - 1) $displayText .= "and ";
-          $displayText .= CardName($cards[$i]);
+          $displayText .= CardLink($cards[$i], $cards[$i]);
         }
         array_push($hand, $cards[$i]);
       }
