@@ -176,6 +176,7 @@
         //Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, from="", controller=0)
         var zoneEl = document.getElementById(zone);
         var zoneData = zoneEl.innerHTML;
+        if(zoneData == "") return;
         var zoneArr = zoneData.split("|");
         var newHTML = "";
         for(var i=0; i<zoneArr.length; ++i)
