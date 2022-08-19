@@ -112,7 +112,6 @@
         else if(rotate == false) { height = maxHeight; width = (maxHeight * .71); }
         else { height = (maxHeight * .71); width = maxHeight; }
 
-        //if($controller != 0 && IsPatron($controller) && CardHasAltArt($cardNumber)) $folderPath = "PatreonImages/" . $folderPath;
         <?php
         if(IsPatron(1)) echo("if(controller == 1 && CardHasAltArt(cardNumber)) folderPath = 'PatreonImages/' + folderPath;");
         if(IsPatron(2)) echo("if(controller == 2 && CardHasAltArt(cardNumber)) folderPath = 'PatreonImages/' + folderPath;");
@@ -183,7 +182,7 @@
         {
           cardArr = zoneArr[i].split(" ");
           newHTML += "<span style='position:relative; margin:1px;'>";
-          newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, 0, cardArr[2], 0, cardArr[3], "", false, 0, 0, 0, "", cardArr[5]);
+          newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], 0, cardArr[4], "", false, 0, 0, 0, "", cardArr[5]);
           newHTML += "</span>";
         }
         zoneEl.innerHTML = newHTML;

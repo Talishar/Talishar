@@ -713,7 +713,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo("<div id='theirHand' style='display:inline;'>");
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
-    $handContents .= $TheirCardBack . " 0 0 0 - " . ($playerID == 1 ? 2 : 1);
+    $handContents .= ClientRenderedCard($TheirCardBack, 0, 0, 0, "-", ($playerID == 1 ? 2 : 1));
   }
   echo($handContents . "</div>");
   if (count($theirSoul) > 0) echo ("<div title='Click to view the cards in your opponent Soul.' style='padding-left:5px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='ShowPopup(\"theirSoulPopup\");'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img>
@@ -893,7 +893,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionData = $actionType == 16 ? strval($i) : "";
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
-      $handContents .= $myHand[$i] . " " . $actionTypeOut . " " . $border . " " . $actionData . " - " . $playerID;//TODO: restriction + controller
+      $handContents .= ClientRenderedCard($myHand[$i], $actionTypeOut, $border, $actionData, "-", $playerID);
       //echo ("<span style='position:relative; margin:1px;'>");
       //echo (Card($myHand[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? $actionType : 0, 1, 0, $border, 0, $actionData, controller:$playerID));
       //if ($restriction != "") echo ("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-56px; left:26px;' src='./Images/restricted.png' />");
