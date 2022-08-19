@@ -3290,10 +3290,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDDISCARD":
       AddGraveyard($lastResult, $player, $parameter);
+      WriteLog(CardLink($lastResult, $lastResult) . " was discarded.");
       return $lastResult;
     case "ADDBOTTOMMYDECK":
       $deck = &GetDeck($player);
       array_push($deck, $lastResult);
+      WriteLog("A card was put at the bottom of the deck.");
       return $lastResult;
     case "ADDBOTDECK":
       $deck = &GetDeck($player);
