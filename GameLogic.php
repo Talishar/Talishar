@@ -1789,7 +1789,7 @@ function CharacterStartTurnAbility($index)
       AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
       break;
     case "EVR019":
-      if (CountAura("WTR075", $mainPlayer) >= 3) {
+      if (CountAura("WTR075", $mainPlayer) >= 3 && $mainCharacter[$index + 1] == 2) {
         WriteLog(CardLink($mainCharacter[$index], $mainCharacter[$index]) . " gives your Crush attacks Dominate this turn.");
         AddCurrentTurnEffect("EVR019", $mainPlayer);
       }
