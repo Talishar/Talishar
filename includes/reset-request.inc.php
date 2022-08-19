@@ -52,8 +52,8 @@ if (isset($_POST['reset-request-submit'])) {
   $message .= '<a href="' . $url . '">' . $url . '</a></p>';
 
   // Headers
-  $headers = "From: Fleshandbloodonline <Fleshandbloodonline@gmail.com>\r\n";
-  $headers .= "Reply-To: Fleshandbloodonline@gmail.com\r\n";
+  $headers = "From: Flesh and Blood Online <fleshandbloodonline@gmail.com>\r\n";
+  $headers .= "Reply-To: fleshandbloodonline@gmail.com\r\n";
   $headers .= "Content-type: text/html\r\n";
 
   // Send e-mail
