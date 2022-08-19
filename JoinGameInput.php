@@ -93,7 +93,7 @@ include "MenuFiles/WriteGamefile.php";
 
 if ($playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   if ($gameStatus >= $MGS_GameStarted) {
-    header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=3");
+    header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3");
   } else {
     header("Location: " . $redirectPath . "/MainMenu.php");
   }

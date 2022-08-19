@@ -50,7 +50,7 @@ if ($handle = opendir($path)) {
         $p1Hero = GetCachePiece($gameToken, 7);
         $p2Hero = GetCachePiece($gameToken, 8);
         if ($p2Hero != "") {
-          $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn3.php'>";
+          $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn4.php'>";
           $spectateLinks .= "<center><table><tr><td style='vertical-align:middle;'>";
           if ($p1Hero == "") {
             $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate) / 1000) . " seconds ago </label>";
