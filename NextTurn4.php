@@ -86,6 +86,10 @@
           //if(DelimStringContains(CardSubType($cardNumber), "Landmark")) $rotate = true;
           fileExt = ".webp";
         }
+        else if(folder == "WebpImages")
+        {
+          fileExt = ".webp";
+        }
         var actionData = actionDataOverride != "" ? actionDataOverride : cardNumber;
         //Enforce 375x523 aspect ratio as exported (.71)
         margin = "margin:0px;";
@@ -167,7 +171,7 @@
         }
       }
 
-      function PopulateZone(zone)
+      function PopulateZone(zone, size=96, folder="concat")
       {
         //Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, from="", controller=0)
         var zoneEl = document.getElementById(zone);
@@ -178,7 +182,7 @@
         {
           cardArr = zoneArr[i].split(" ");
           newHTML += "<span style='position:relative; margin:1px;'>";
-          newHTML += Card(cardArr[0], "concat", 96, cardArr[1], 1, 0, cardArr[2], 0, cardArr[3], "", false, 0, 0, 0, "", cardArr[5]);
+          newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, 0, cardArr[2], 0, cardArr[3], "", false, 0, 0, 0, "", cardArr[5]);
           newHTML += "</span>";
         }
         zoneEl.innerHTML = newHTML;
@@ -365,6 +369,7 @@
               }
               //var animations = document.getElementById("animations").innerText;
               PopulateZone("myHand");
+              PopulateZone("theirHand", 50, "WebpImages");
               //if(animations != "") alert(animations);
             } else {
               CheckReloadNeeded(lastUpdate);

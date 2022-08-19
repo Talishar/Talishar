@@ -708,10 +708,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   //Opponent hand
+  $handContents = "";
   echo ("<div style='position: fixed; top: 5px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: 5px; margin-right: 5px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; vertical-align:top; display:inline-block;'>Opponent<br>Hand:</span>");
+  echo("<div id='theirHand' style='display:inline;'>");
   for ($i = 0; $i < count($theirHand); ++$i) {
-    echo (Card($TheirCardBack, "CardImages", 50, 0, 0, 0, -1));
+    if($handContents != "") $handContents .= "|";
+    $handContents .= $TheirCardBack . " 0 0 0 - " . ($playerID == 1 ? 2 : 1);
   }
+  echo($handContents . "</div>");
   if (count($theirSoul) > 0) echo ("<div title='Click to view the cards in your opponent Soul.' style='padding-left:5px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='ShowPopup(\"theirSoulPopup\");'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img>
   <div style='position:relative; top:-20px; font-size:18px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";
   display:inline-block;'>" . count($theirSoul) . " cards</div></div>");
