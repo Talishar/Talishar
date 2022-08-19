@@ -41,7 +41,7 @@ $theirName = ($playerID == 1 ? $p2uid : $p1uid);
 
 if ($gameStatus == $MGS_GameStarted) {
   $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-  header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
   exit;
 }
 

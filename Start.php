@@ -106,7 +106,7 @@ while (!file_exists($filename) && $gameStateTries < 10) {
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 
-header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=1&authKey=$p1Key");
+header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
 
 exit;
 
