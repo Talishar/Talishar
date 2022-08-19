@@ -19,6 +19,12 @@
     if($darkMode) return "#1a1a1a";
     else return "#EDEDED";
   }
+
+  function ClientRenderedCard($cardNumber, $action=0, $overlay=0, $borderColor=0, $actionDataOverride="", $controller=0)
+  {
+    return $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $actionDataOverride . " " . $controller;
+  }
+
   //Rotate is deprecated
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="", $controller=0)
   {//
@@ -380,19 +386,22 @@
       $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
       $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
       $mod = explode("-", $banish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($banish[$i], "concat", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      if($mod == "INT")
+      {
+        $rv .= ClientRenderedCard($banish[$i], 0, 1, 0, "-", $playerID);
+      }
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
       {
         //$rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
         if($rv != "") $rv .= "|";
-        $rv .= $banish[$i] . " " . $action . " " . $border . " " . strval($i) . " - -";
+        $rv .= ClientRenderedCard($banish[$i], $action, 0, $border, strval($i), "-", $playerID);
       }
       else// if($from != "HAND")
       {
         if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
         {
           if($rv != "") $rv .= "|";
-          $rv .= $banish[$i] . " " . $action . " " . $border . " " . strval($i) . " - -";
+          $rv .= ClientRenderedCard($banish[$i], $action, 0, $border, strval($i), "-", $playerID);
         }
         else if($from != "HAND")
           $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
