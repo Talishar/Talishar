@@ -13,6 +13,12 @@ include_once 'Header.php';
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>Great Video on FaB Online</h2>
+    <p style="text-align:center">🥳 What else to start the weekend than an amazing video by SloopdoopFaB! This thumbnail is beautiful.<BR><BR>
+      🧑‍🏭 For our part, we are working hard on some background stuff. Handling bandwidth and server improvements.</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/cEEnBRknTdk" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="articles">
     <h2>Blitz Hero Stats Update</h2>
     <p style="text-align:center">🎥 Watch Kugane Gaming second analyze of FaB Online heroes stats! This time it is full Blitz ahead! Enjoy!</p>
     <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/odiNVmtfIsk" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
