@@ -587,7 +587,7 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
       break;
     case "CRU075":
-      $index = FindCharacterIndex($player, $parameter);
+      $index = SearchAurasForUniqueID($uniqueID, $player);
       if ($auras[$index + 2] == 0) {
         DestroyAuraUniqueID($player, $uniqueID);
       } else {
