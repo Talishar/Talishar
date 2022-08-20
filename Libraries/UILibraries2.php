@@ -388,6 +388,7 @@
       $mod = explode("-", $banish[$i+1])[0];
       if($mod == "INT")
       {
+        if($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard($banish[$i], 0, 1, 0, "-", $playerID);
       }
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
