@@ -456,7 +456,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         }
       } 
       else {
-        WriteLog($p2PlayerRating);
         if ($p2PlayerRating != 2) {
           $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
         }
