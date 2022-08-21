@@ -42,8 +42,13 @@ if (isset($_POST['update_profile'])) {
   $message[] = "Profile saved!";
 }
 
+echo("<section class='profile-form' style='position:fixed; display:block; width:32%; left:20px; top:40px; height:200px;'>");
+echo("<h1>Your Badges</h1>");
+
+echo("</section>");
+
 if (isset($_SESSION["isPatron"])) {
-  echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; left:20px; top:40px;'>");
+  echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; left:20px; top:260px;'>");
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
   include_once "zzGameStats.php";
