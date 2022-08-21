@@ -44,7 +44,7 @@ if (isset($_POST['update_profile'])) {
 
 if(isset($_SESSION['userid']))
 {
-  echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:25vh;'>");
+  echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:200px;'>");
   echo ("<h1>Your Badges</h1><br>");
   $badges = LoadBadges($_SESSION['userid']);
   for($i=0; $i<count($badges); $i+=6)
@@ -60,7 +60,7 @@ if(isset($_SESSION['userid']))
 }
 
 if (isset($_SESSION["isPatron"])) {
-  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: 63vh;'>");
+  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px)'>");
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
   include_once "zzGameStats.php";
