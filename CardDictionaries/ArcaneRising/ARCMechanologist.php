@@ -121,7 +121,7 @@
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
 {
   global $currentPlayer, $CS_NumBoosted, $CS_CharacterIndex, $actionPoints, $combatChainState, $CS_PlayIndex;
-  global $CCS_CurrentAttackGainedGoAgain, $combatChain;
+  global $CCS_CurrentAttackGainedGoAgain, $combatChain, $CS_LastDynCost;
   $rv = "";
   switch ($cardID) {
     case "ARC003":
@@ -158,13 +158,13 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Draws you a card and gives you an action point every time you boost a card this turn.";
     case "ARC009":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMCOST," . ($resourcesPaid / 2));
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMCOST," . (GetClassState($currentPlayer, $CS_LastDynCost) / 2));
       AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;
       if ($boosted) AddDecisionQueue("DRAW", $currentPlayer, "-");
-      return "Let you search your deck for a Mechanologist item card with cost " . $resourcesPaid / 2 . " or less" . ($boosted ? " and draw a card" : "") . ".";
+      return "Let you search your deck for a Mechanologist item card with cost " . GetClassState($currentPlayer, $CS_LastDynCost) / 2 . ($boosted ? " and draw a card" : "") . ".";
     case "ARC010":
       if ($from == "PLAY") {
         $items = &GetItems($currentPlayer);
