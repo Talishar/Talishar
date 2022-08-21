@@ -127,7 +127,9 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
   array_push($gameData[$i], $row[1]);
 }
 
-if(!$forIndividual) echo ("<section class='game-stats' style='width:100%; display: flex; justify-content: center;'>");
+echo ("<div id='wrapper' style='text-align: center; position:relative;'>");
+
+if(!$forIndividual) echo ("<section class='game-stats'>");
 echo ("<div style='height: calc(100% - 50px); overflow-y:scroll;'><table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
@@ -174,3 +176,5 @@ foreach ($gameData as $row) {
 }
 echo ("</table><div>");
 if(!$forIndividual) echo ("</section>");
+echo ("</div>");
+
