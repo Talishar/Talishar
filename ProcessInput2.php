@@ -507,8 +507,8 @@ switch ($mode) {
     if($playerID == 2 && $p2PlayerRating != 0) break;
     include "MenuFiles/ParseGamefile.php";
     AddRating(($playerID == 1 ? 2 : 1), "red");
-    if ($playerID == 1) $p1PlayerRating = 1;
-    if ($playerID == 2) $p2PlayerRating = 1;
+    if ($playerID == 1) $p1PlayerRating = 2;
+    if ($playerID == 2) $p2PlayerRating = 2;
     break;
   default:
     break;
