@@ -102,8 +102,9 @@ function getUInfo($conn, $username) {
 }
 
 // Insert new user into database
-function createUser($conn, $username, $email, $pwd) {
-	$conn = GetDBConnection();
+function createUser($conn, $username, $email, $pwd, $reportingServer=false) {
+	if($reportingServer) $conn = GetReportingDBConnection();
+	else $conn = GetDBConnection();
   $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);

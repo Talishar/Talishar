@@ -44,6 +44,7 @@ if (isset($_POST["submit"])) {
 
   // Now we insert the user into the database
   createUser($conn, $username, $email, $pwd);
+  createUser($conn, $username, $email, $pwd, true);
 
 } else {
 	header("location: ../Signup.php");
