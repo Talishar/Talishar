@@ -44,24 +44,23 @@ if (isset($_POST['update_profile'])) {
 
 if(isset($_SESSION['userid']))
 {
-  echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:23vh;'>");
-  echo ("<h1>Your Badges</h1>");
-  echo("<div style='padding-left:20px;'>");
+  echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:25vh;'>");
+  echo ("<h1>Your Badges</h1><br>");
   $badges = LoadBadges($_SESSION['userid']);
   for($i=0; $i<count($badges); $i+=6)
   {
-    echo("<img style='height:100px; position:relative; border-radius:5%;' src='" . $badges[$i+5] . "'>");
-    echo("<div style='position:absolute; top:0px; text-color:white;'>" . $badges[$i+3] . "</div>");
-
-    echo("<div style='position:absolute; bottom:0px; text-color:white;'>" . $badges[$i+4] . "</div>");
-    echo("</img>");
+    echo ("<div style='float:left;'>");
+    echo ("<div class='container'>");
+    echo ("<img class='badge' src='" . $badges[$i + 5] . "'>");
+    echo ("<div class='overlay'>");
+    echo ("<div class='text'>" . $badges[$i + 3] . "<br><br>" . $badges[$i + 4] . "</div>");
+    echo ("</img></div></div></div>");
   }
-  echo("</div>");
   echo ("</section>");
 }
 
 if (isset($_SESSION["isPatron"])) {
-  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: 65vh;'>");
+  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: 63vh;'>");
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
   include_once "zzGameStats.php";
