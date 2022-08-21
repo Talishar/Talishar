@@ -25,7 +25,7 @@ function GetDBConnection()
 function GetReportingDBConnection()
 {
 	global $reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName;
-	return mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+	return mysqli_connect($reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName);
 }
 
 ?>
