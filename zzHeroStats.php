@@ -32,7 +32,10 @@ table {
   border-spacing: 0;
   border-collapse: collapse;
   font-size: 1em;
-  height: 100%;
+  margin-left:auto;
+  margin-right:auto;
+  margin: 5px;
+  font-size:0.95em;
 }
 
 td {
@@ -49,8 +52,7 @@ tr:hover {
 
 h3 {
   text-align: center;
-  font-size: 1.25em;
-  padding-bottom: 10px;
+  font-size: 1.15em;
 }
 </style>");
 
@@ -175,7 +177,7 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
 echo ("<div id='wrapper' style='text-align: center; position:relative;'>");
 
 echo ("<section class='game-stats'>");
-echo ("<h3>Detailed stats for " . CardLink($detailHeroID, $detailHeroID, true) . "</h3>");
+echo ("<h3>Stats for " . CardLink($detailHeroID, $detailHeroID, true) . "</h3>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Opposing Hero</td><td>Num Wins</td><td>Num Losses</td><td>Win %</td></tr>");
