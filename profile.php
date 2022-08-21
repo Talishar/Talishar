@@ -95,9 +95,9 @@ if (isset($_SESSION["isPatron"])) {
     //&#8226; If you receive too many 'Red thumbs-down' from other players when compared to the amount of 'Green thumbs-up' received, your karma will be reduced each time you receive a Red Thumb.<br>
     //In this case, the best is to have a good behavior to get Green thumb and restore your ratio and reputation.
 
-
     echo ("<div class='karma-light-grey'>");
-    echo ("<div class='karma-container karma-" . $repColor . "' style='width:" . $_SESSION["userKarma"] . "%'>☯ " . $_SESSION["userKarma"] . "</div>");
+    echo ("<div class='karma-container karma-" . $repColor . "' style='width:" . $_SESSION["userKarma"] . "%'>&nbsp;</div>");
+    echo ("<div class='karma-amount'>☯ " . $_SESSION["userKarma"] . "</div>");
     echo ("</div></div><br>");
 
     ?>

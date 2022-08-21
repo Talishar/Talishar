@@ -425,7 +425,7 @@ function UpdateKarma($p1value=0, $p2value=0)
 
 function AddRating($player, $rating)
 {
-	global $p1id, $p2id;//, $p1GreenRating, $p2GreenRating;
+	global $p1id, $p2id;
 
 	$dbID = ($player == 1 ? $p1id : $p2id);
 
