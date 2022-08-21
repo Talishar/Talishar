@@ -459,34 +459,40 @@ button {
 }
 
 .karma-light-grey {
-  color: #000;
-  background-color: #f1f1f1;
+  color: #fff;
+  background-color: var(--light-color);
   border-radius: 5px;
   border: 1px solid var(--dark-color);
   margin-bottom: 5px;
+  position: relative;
 }
 
 .karma-green {
   color: #fff;
   background-color: #4CAF50;
-  text-align: center;
   border-right: 1px solid var(--dark-color);
 }
 
 .karma-orange {
   color: #fff;
   background-color: #ff9800;
-  text-align: center;
   border-right: 1px solid var(--dark-color);
 }
 
 .karma-red {
   color: #fff;
   background-color: #f44336;
-  text-align: center;
   border-right: 1px solid var(--dark-color);
 }
 
+.karma-amount {
+  display: inline-block;
+  position: absolute;
+  margin: 0;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);  }
 /* ================
     Reset Password
    ================ */
@@ -754,8 +760,9 @@ button {
   background-color: var(--grey-transparent-background);
   border: 2px solid var(--dark-color);
   border-radius: 5px;
-  overflow: hidden;
-}
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
 .NewsMenu h1,
 .NewsMenu h2,
