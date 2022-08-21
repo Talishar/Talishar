@@ -35,7 +35,9 @@ table {
   font-size: 1em;
   line-height: 24px;
   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
-  margin-left:auto;margin-right:auto;
+  margin-left:auto;
+  margin-right:auto;
+  margin: 5px;
 }
 
 td {
@@ -44,6 +46,7 @@ td {
   vertical-align: middle;
   height: 50px;
   padding: 10px;
+  font-size:0.95em;
 }
 
 tr:hover {
@@ -52,8 +55,7 @@ tr:hover {
 
 h3 {
   text-align: center;
-  font-size: 1.25em;
-  padding-top: 15px;
+  font-size: 1.15em;
 }
 </style>");
 
