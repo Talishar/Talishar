@@ -33,6 +33,8 @@ table {
   border-spacing: 0;
   border-collapse: collapse;
   font-size: 1em;
+  line-height: 24px;
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
 }
 
 td {
@@ -123,7 +125,7 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
 }
 
 if(!$forIndividual) echo ("<section class='game-stats' style='width:100%; display: flex; justify-content: center;'>");
-echo ("<div style='height:82vh; overflow-y:scroll;'><table>");
+echo ("<div style='height:63vh; overflow-y:scroll;'><table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
 echo ("<h2>CC Heroes</h2>");
