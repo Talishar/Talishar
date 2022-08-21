@@ -32,7 +32,6 @@ table {
   font-size: 1em;
   margin-left:auto;
   margin-right:auto;
-  margin: 5px;
 }
 
 td {
