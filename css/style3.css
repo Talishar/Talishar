@@ -974,12 +974,12 @@ button {
   ============ */
 
 .game-stats {
-position: relative;
+  position: relative;
   border-radius: 5px;
   margin: auto;
   margin-top: 15px;
   width: 40%;
-  height: 90vh;
+  height: auto;
   display: inline-block;
   background-color: var(--grey-transparent-background);
   border: 1px solid var(--dark-color);
@@ -993,7 +993,6 @@ position: relative;
 }
 
 .game-stats-div {
-  display: flex;
   font-family: var(--font-family);
   font-weight: bold;
   font-size: 18px;

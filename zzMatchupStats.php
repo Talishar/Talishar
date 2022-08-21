@@ -22,14 +22,16 @@ $detailMatchupID = $_GET["matchupID"];
 
 echo ("<script src=\"./jsInclude.js\"></script>");
 
-echo ("<style>
+echo (
+"<style>
 
 table {
   border-radius: 10px;
   border-spacing: 0;
   border-collapse: collapse;
   font-size: 1em;
-  height: 100%;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 td {
