@@ -42,14 +42,26 @@ if (isset($_POST['update_profile'])) {
   $message[] = "Profile saved!";
 }
 
-echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:18vh;'>");
-echo ("<h1>Your Badges</h1>");
-echo ("<h2>My Badge</h2>");
+if(isset($_SESSION['userid']))
+{
+  echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:23vh;'>");
+  echo ("<h1>Your Badges</h1>");
+  echo("<div style='padding-left:20px;'>");
+  $badges = LoadBadges($_SESSION['userid']);
+  for($i=0; $i<count($badges); $i+=6)
+  {
+    echo("<img style='height:100px; position:relative; border-radius:5%;' src='" . $badges[$i+5] . "'>");
+    echo("<div style='position:absolute; top:0px; text-color:white;'>" . $badges[$i+3] . "</div>");
 
-echo ("</section>");
+    echo("<div style='position:absolute; bottom:0px; text-color:white;'>" . $badges[$i+4] . "</div>");
+    echo("</img>");
+  }
+  echo("</div>");
+  echo ("</section>");
+}
 
 if (isset($_SESSION["isPatron"])) {
-  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: 70vh;'>");
+  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: 65vh;'>");
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
   include_once "zzGameStats.php";
