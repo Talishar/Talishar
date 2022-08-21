@@ -152,6 +152,22 @@ if (isset($_SESSION["userid"])) {
   <h1>Open Beta Test</h1>
   <h2>All cards supported!</h2>
 
+
+  <div style="padding-top:0%; vertical-align:middle; position: relative;">
+    <h2>Commotion #1 Results</h2>
+    <table style='margin-left: auto; margin-right: auto;'>
+      <tr><td>Player</td><td>Wins</td></tr>
+      <tr><td>Tower</td><td>85</td></tr>
+      <tr><td>OotTheMonk</td><td>3</td></tr>
+      <tr><td>qXwXp</td><td>2</td></tr>
+      <tr><td>Cricio</td><td>1</td></tr>
+      <tr><td>TubbyWatkins</td><td>1</td></tr>
+    </table>
+    <br>
+    <img style="margin-left:25%; width:50%; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
+    <h3>Everyone that participated in this challenge will have a badge added to their profile. Check back soon for the next challenge!</h3>
+  </div>
+
 <!--
   <div style="padding-top:10%; vertical-align:middle; position: relative;">
     <h2>Coax a Commotion!</h2>
