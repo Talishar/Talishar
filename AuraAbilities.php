@@ -125,7 +125,7 @@ function DestroyAuraUniqueID($player, $uniqueID)
 {
   $auras = &GetAuras($player);
   $index = SearchAurasForUniqueID($uniqueID, $player);
-  DestroyAura($player, $index);
+  if($index != -1) DestroyAura($player, $index);
 }
 
 function DestroyAura($player, $index)
