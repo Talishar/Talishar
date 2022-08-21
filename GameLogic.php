@@ -1773,7 +1773,9 @@ function CharacterStartTurnAbility($index)
       if ($mainCharacter[$index + 2] < 3) ++$mainCharacter[$index + 2];
       break;
     case "CRU097":
-      AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$index]);
+      if ($mainCharacter[$index + 1] == 2) {
+        AddLayer("TRIGGER", $mainPlayer, $mainCharacter[$index]);
+      }
       break;
     case "MON187":
       if (GetHealth($mainPlayer) <= 13) {
@@ -1783,10 +1785,12 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "EVR017":
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card from your hand for Bravo, Star of the Show.");
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
-      AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
-      AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
+      if ($mainCharacter[$index + 1] == 2) {
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card from your hand for Bravo, Star of the Show.");
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
+        AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
+      }
       break;
     case "EVR019":
       if (CountAura("WTR075", $mainPlayer) >= 3 && $mainCharacter[$index + 1] == 2) {
