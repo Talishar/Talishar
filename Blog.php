@@ -13,6 +13,24 @@ include_once 'Header.php';
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>21st August 2022</h2>
+    <h3>🧑‍🏭 Hello #fabtcg players! Weekend's update just for you!</h3>
+    <p><br>- Better side boarding handling. People cant start a game without a weapon/equipment. It was happening by mistake sometimes.
+      <br>- Add confirmation that you rated a player.
+      <br>- Fix karma limit to 0. The lower limit wasn't coded.
+      <br>- Improve sink below + pummel logs. We now show in the chat log that a card has been sink or which card was discarded.
+      <br>- Fix situations where Zen Token wasn't working as expected.
+      <br>- Fix Valda/Shiyana not been affected by sleep dart.
+      <br>- We added the newer English "Learn to Play" video on the main menu by @TowerNumberNine.
+      <br>- Added badges to the winners of the commotion #1 challenge.
+      <br>- Improved the highlighted tab in the sideboard.
+      <br>- Fix Sonic Boom not showing the top card if unplayable.
+      <br>- Fix the same frostbites getting destroyed multiple times, messing with the auras layout.
+      <br>- Fix Spark of Genius dynamic cost getting messed up by CLF/Frostbites. It wasn't allowing you to search for a specific item.
+      <br><br>Thank you all for your bug reports, ideas and feedback! ❤️
+    </p>
+  </div>
+  <div class="articles">
     <h2>Great Video on FaB Online</h2>
     <p style="text-align:center">🥳 What else to start the weekend than an amazing video by SloopdoopFaB! This thumbnail is beautiful.<BR><BR>
       🧑‍🏭 For our part, we are working hard on some background stuff. Handling bandwidth and server improvements.</p>
