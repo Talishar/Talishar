@@ -445,11 +445,25 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-    if($playerID != 3)
-    {
+    if ($playerID != 3) {
       $content .= "<BR><span class='Rate-Span'>Rate your Opponent:&nbsp;";
-      $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
-      $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
+      if ($playerID == 1) {
+        if ($p1PlayerRating != 2) {
+          $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
+        }
+        if ($p1PlayerRating != 1) {
+          $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
+        }
+      } 
+      else {
+        WriteLog($p2PlayerRating);
+        if ($p2PlayerRating != 2) {
+          $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
+        }
+        if ($p2PlayerRating != 1) {
+          $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
+        }
+      }
     }
     $content .= "</div>" . CardStats($playerID);
     echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
