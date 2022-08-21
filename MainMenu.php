@@ -99,7 +99,7 @@ if (isset($_SESSION["userid"])) {
     echo ("<select class='karmaRestriction-Select' style='margin-left:10px;' name='gameKarmaRestriction' id='gameKarmaRestriction'>");
     echo ("<option value='0'>No Restriction</option>");
     if ($_SESSION["userKarma"] >= 50) echo ("<option value='50'>☯ ≥ 50% - Exclude players with a karma below 50% (Bad reputation).</option>");
-    if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation. Exclude players without an accounts.</option>");
+    if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation. Exclude players without account.</option>");
     if ($_SESSION["userKarma"] >= 85) echo ("<option value='85'>☯ ≥ 85% - Only players with a very good reputation, while excluding new players.</option>");
     echo ("</select><br><br>");
   }
@@ -149,43 +149,45 @@ if (isset($_SESSION["userid"])) {
 
 <div class="NewsMenu">
 
-  <h1>Open Beta Test</h1>
-  <h2>All cards supported!</h2>
+  <h2>Open Beta Test</h2>
+  <h3>All cards supported!</h3>
+  
+  <h3 style='text-align:center;'>________</h3>
 
-
-  <div style="padding-top:0%; vertical-align:middle; position: relative;">
+  <div style="position: relative;">
+    <div style='vertical-align:middle; text-align:center;'>
     <h2>Commotion #1 Results</h2>
-    <table style='margin-left: auto; margin-right: auto;'>
-      <tr><td>Player</td><td>Wins</td></tr>
+    <table class='scoretable'>
+      <tr><th>Player</th><th>Wins</th></tr>
       <tr><td>Tower</td><td>85</td></tr>
       <tr><td>OotTheMonk</td><td>3</td></tr>
       <tr><td>qXwXp</td><td>2</td></tr>
       <tr><td>Cricio</td><td>1</td></tr>
       <tr><td>TubbyWatkins</td><td>1</td></tr>
-    </table>
-    <br>
-    <img style="margin-left:25%; width:50%; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
-    <h3>Everyone that participated in this challenge will have a badge added to their profile. Check back soon for the next challenge!</h3>
+    </table></div><br>
+    <img style="margin-left:32.5%; width:35%; height:120px; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
+    <h4>Everyone that participated in this challenge will have a badge added to their profile. Check back soon for the next challenge!</h4>
   </div>
 
 <!--
   <div style="padding-top:10%; vertical-align:middle; position: relative;">
+  <div style="vertical-align:middle; position: relative;">
     <h2>Coax a Commotion!</h2>
-    <h3>Win as many games as you can <br>with Sigil of Solace (3)</h3><br>
-    <img style="margin-left:25%; width:50%; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
-    <h3 style="width:90%; padding-left:5%;">Must be logged in with max copies of Sigil of Solace (3) in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</h3>
+    <h4>Win as many games as you can <br>with Sigil of Solace (3)</h4><br>
+    <img style="margin-left:30%; width:40%; height:150px; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
+    <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with max copies of Sigil of Solace (3) in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
   </div>
 -->
 
-  <!--
-  <div style='position:absolute; bottom:10px; left:10px;'>
-    <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
-    <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:40px;' src='./Images/flags/italy.png' /></a>
-    <br><br>
-    <i style="font-size: small;">If you make a video in another language, let us know on Discord!</i>
-  </div>
--->
+  <h3 style='text-align:center;'>________</h3>
 
+  <div style='vertical-align:middle; text-align:center;'>
+    <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play Videos</h2>
+    <a title='English' href='https://www.youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
+    <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a>
+    <br>
+    <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
+  </div>
 </div>
 
 <?php
