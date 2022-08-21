@@ -36,6 +36,7 @@ if (isset($_SESSION["userKarma"])) {
 
 echo ("<div class='SpectatorContainer'>");
 echo ("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
+$gameInProgressCount = 0;
 if ($handle = opendir($path)) {
   while (false !== ($folder = readdir($handle))) {
     if ('.' === $folder) continue;
@@ -50,6 +51,7 @@ if ($handle = opendir($path)) {
         $p1Hero = GetCachePiece($gameToken, 7);
         $p2Hero = GetCachePiece($gameToken, 8);
         if ($p2Hero != "") {
+          $gameInProgressCount += 1;
           $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn4.php'>";
           $spectateLinks .= "<center><table><tr><td style='vertical-align:middle;'>";
           if ($p1Hero == "") {
@@ -153,7 +155,7 @@ echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
 echo ($commonerLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
-echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress</h2>");
+echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h2>");
 echo ($spectateLinks);
 echo ("</div>");
 
