@@ -130,7 +130,7 @@ while ($row = mysqli_fetch_array($winData, MYSQLI_NUM)) {
 echo ("<div id='wrapper' style='text-align: center; position:relative;'>");
 
 if(!$forIndividual) echo ("<section class='game-stats'>");
-echo ("<div style='height: calc(100% - 50px); overflow-y:scroll;'><table>");
+echo ("<div><table>");
 echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Played %</td></tr>");
 
 echo ("<h2>CC Heroes</h2>");

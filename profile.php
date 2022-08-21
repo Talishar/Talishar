@@ -61,7 +61,7 @@ if(isset($_SESSION['userid']))
 }
 
 if (isset($_SESSION["isPatron"])) {
-  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px)'>");
+  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px); overflow-y:scroll;'>");
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
   include_once "zzGameStats.php";
