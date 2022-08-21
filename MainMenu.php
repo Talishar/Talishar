@@ -201,7 +201,7 @@ if (isset($_SESSION["userid"])) {
       <h3 style='text-align:center;'>________</h3>
 
       <div style='vertical-align:middle; text-align:center;'>
-        <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play Videos</h2>
+        <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
         <a title='English' href='https://www.youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
         <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a>
         <br>
