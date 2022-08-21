@@ -3395,7 +3395,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(implode(" ", explode("_", $parameter)));
       return $lastResult;
     case "WRITECARDLOG":
-      $message = implode(" ", explode("_", $parameter)) . CardLink($lastResult, $lastResult);
+      $message = CardLink($lastResult, $lastResult) . implode(" ", explode("_", $parameter));
       WriteLog($message);
       return $lastResult;
     case "ADDNEGDEFCOUNTER":
@@ -4276,7 +4276,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       PrependDecisionQueue("FULLARSENALTODECK", $currentPlayer, "-", 1);
       PrependDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      WriteLog("Potion of Luck shuffled your hand and arsenal into your deck and drew " . $sizeToDraw . " cards.");
+      WriteLog(CardLink("EVR187","EVR187") . " shuffled your hand and arsenal into your deck and draw " . $sizeToDraw . " cards.");
       return $lastResult;
     case "BRAVOSTARSHOW":
       $hand = &GetHand($player);
