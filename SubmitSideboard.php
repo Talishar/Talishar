@@ -37,8 +37,13 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
       else $numHands += 2;
     }
   }
+  if ($numHands < 1) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands weapon currently equipped.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    exit;
+  }
   if ($numHands > 2) {
-    WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands of weapons currently equipped.");
+    WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands weapons currently equipped.");
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
     exit;
   }
