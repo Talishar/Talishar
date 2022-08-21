@@ -152,12 +152,14 @@ if (isset($_SESSION["userid"])) {
   <h1>Open Beta Test</h1>
   <h2>All cards supported!</h2>
 
+<!--
   <div style="padding-top:10%; vertical-align:middle; position: relative;">
     <h2>Coax a Commotion!</h2>
     <h3>Win as many games as you can <br>with Sigil of Solace (3)</h3><br>
     <img style="margin-left:25%; width:50%; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
     <h3 style="width:90%; padding-left:5%;">Must be logged in with max copies of Sigil of Solace (3) in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</h3>
   </div>
+-->
 
   <!--
   <div style='position:absolute; bottom:10px; left:10px;'>
