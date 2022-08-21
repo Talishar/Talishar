@@ -253,7 +253,7 @@ function LoadFavoriteDecks($userID)
 	return $output;
 }
 
-function logCompletedGameStats() {
+function logCompletedGameStats(bool reportingServer = false) {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
 	$loser = ($winner == 1 ? 2 : 1);
@@ -272,7 +272,8 @@ function logCompletedGameStats() {
 		$values .= ", " . $p2id;
 	}
 
-	$conn = GetDBConnection();
+	if($reportingServer) $conn = GetReportingDBConnection();
+	else $conn = GetDBConnection();
 
   $sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
 	$stmt = mysqli_stmt_init($conn);
