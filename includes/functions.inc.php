@@ -154,7 +154,7 @@ function loginUser($username, $pwd, $rememberMe) {
 	}
 	elseif ($checkPwd === true) {
 		if(session_status() !== PHP_SESSION_ACTIVE) session_start();
-		$_SESSION["userid"] = $uidExists["usersID"];
+		$_SESSION["userid"] = $uidExists["usersId"];
 		$_SESSION["useruid"] = $uidExists["usersUid"];
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
