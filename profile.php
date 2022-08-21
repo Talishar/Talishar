@@ -53,7 +53,8 @@ if(isset($_SESSION['userid']))
     echo ("<div class='container'>");
     echo ("<img class='badge' src='" . $badges[$i + 5] . "'>");
     echo ("<div class='overlay'>");
-    echo ("<div class='text'>" . $badges[$i + 3] . "<br><br>" . $badges[$i + 4] . "</div>");
+    $bottomText = str_replace("{0}", $badges[$i+2], $badges[$i+4]);
+    echo ("<div class='text'>" . $badges[$i + 3] . "<br><br>" . $bottomText . "</div>");
     echo ("</img></div></div></div>");
   }
   echo ("</section>");

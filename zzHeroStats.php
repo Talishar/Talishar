@@ -25,7 +25,8 @@ $detailHeroID = $_GET["heroID"];
 
 echo ("<script src=\"./jsInclude.js\"></script>");
 
-echo ("<style>
+echo (
+"<style>
 
 table {
   border-radius: 10px;
