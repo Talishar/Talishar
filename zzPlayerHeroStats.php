@@ -34,6 +34,8 @@ table {
   border-spacing: 0;
   border-collapse: collapse;
   font-size: 1em;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 td {
@@ -200,7 +202,10 @@ foreach ($gameData as $row) {
   }
 }
 echo ("</table>");
+echo ("</div>");
+
 echo ("</section>");
+
 
 if ($totalGames == 0) exit;
 
@@ -240,6 +245,7 @@ foreach ($sortedCardData as $key => $card) {
 }
 echo ("</table>");
 echo ("</div>");
+
 echo ("</section>");
 echo ("</div>");
 

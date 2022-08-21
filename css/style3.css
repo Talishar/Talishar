@@ -974,7 +974,7 @@ button {
   ============ */
 
 .game-stats {
-  position: relative;
+position: relative;
   border-radius: 5px;
   margin: auto;
   margin-top: 15px;
@@ -994,7 +994,6 @@ button {
 
 .game-stats-div {
   display: flex;
-  justify-content: center;
   font-family: var(--font-family);
   font-weight: bold;
   font-size: 18px;
@@ -1013,7 +1012,7 @@ button {
 .container {
   position: relative;
   width: 100%;
-  margin: 5px;
+  margin-left: 10px;
 }
 
 .overlay {
@@ -1030,12 +1029,14 @@ button {
   border-radius: 8px;
   pointer-events: none;
   text-align: center;
+  margin-left: 5px;
 }
 
 .container:hover .overlay {
   bottom: 0;
   height: 100%;
   pointer-events: none;
+  margin-left: 5px;
 }
 
 .text {
@@ -1053,7 +1054,7 @@ button {
   text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
   width: 100%;
   pointer-events: none;
-  margin: -5px;
+  margin-left: -10px;
 }
 
 .badge {
