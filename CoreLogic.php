@@ -664,6 +664,12 @@ function PlayerWon($playerID)
     else if($GLO_Player2Disconnected != 0 && $GLO_Player2Disconnected != "") UpdateKarma(1, $GLO_Player2Disconnected);
     else UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
   }
+
+  try {
+    logCompletedGameStats(true);
+  } catch (Exception $e) {
+    //Failed to send to reporting server
+  }
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
