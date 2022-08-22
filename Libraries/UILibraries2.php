@@ -20,9 +20,11 @@
     else return "#EDEDED";
   }
 
-  function ClientRenderedCard($cardNumber, $action=0, $overlay=0, $borderColor=0, $actionDataOverride="", $controller=0)
+  function ClientRenderedCard($cardNumber, $action=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="-", $lifeCounters=0, $defCounters=0, $atkCounters=0, $controller=0, $type="", $sType="", $restriction="", $isBroken=0, $onChain=0, $isFrozen=0)
   {
-    return $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $actionDataOverride . " " . $controller;
+    $rv = $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $counters . " " . $actionDataOverride . " " . $lifeCounters . " " . $defCounters . " " . $atkCounters . " ";
+    $rv .= $controller . " " . $type . " " . $sType . " " . $restriction . " " . $isBroken . " " . $onChain . " " . $isFrozen;
+    return $rv;
   }
 
   //Rotate is deprecated
@@ -389,20 +391,20 @@
       if($mod == "INT")
       {
         if($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard($banish[$i], 0, 1, 0, "-", $playerID);
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
       }
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
       {
         //$rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
         if($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard($banish[$i], $action, 0, $border, strval($i), "-", $playerID);
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
       }
       else// if($from != "HAND")
       {
         if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
         {
           if($rv != "") $rv .= "|";
-          $rv .= ClientRenderedCard($banish[$i], $action, 0, $border, strval($i), "-", $playerID);
+          $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
         }
         else if($from != "HAND")
           $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
