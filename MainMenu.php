@@ -192,7 +192,7 @@ if (isset($_SESSION["userid"])) {
     <h4 style="margin-left:15px; margin-right:15px;">Everyone that participated in this challenge will have a badge added to their profile. If you participated but didn't get one, let us know on Discord! Check back soon for the next challenge!</h4>
   </div>
 
-<!--
+  <!--
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
       <div style="vertical-align:middle; position: relative;">
         <h2>Coax a Commotion!</h2>
@@ -202,17 +202,17 @@ if (isset($_SESSION["userid"])) {
       </div>
       -->
 
-      <h3 style='text-align:center;'>________</h3>
+  <h3 style='text-align:center;'>________</h3>
 
-      <div style='vertical-align:middle; text-align:center;'>
-        <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
-        <a title='English' href='https://www.youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
-        <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a>
-        <br>
-        <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
-      </div>
+  <div style='vertical-align:middle; text-align:center;'>
+    <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
+    <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
+    <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a>
+    <br>
+    <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
   </div>
+</div>
 
-  <?php
-  include_once 'Footer.php';
-  ?>
+<?php
+include_once 'Footer.php';
+?>
