@@ -715,14 +715,14 @@
         if(CardType($combatChain[0]) == "W")
         {
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-          $s1 = " gives your weapon attack go again";
+          $s1 = "Gives your weapon attack go again";
         }
         if(RepriseActive())
         {
           MyDrawCard();
           $s2 = " draws a card";
         }
-        return "Glint the Quicksilver" . $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
+        return $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
       case "WTR119": case "WTR122":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
