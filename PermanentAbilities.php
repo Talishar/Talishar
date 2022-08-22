@@ -63,7 +63,7 @@ function PermanentBeginEndPhaseEffects()
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
-      case "UPR439": case "UPR440":case "UPR441":
+      case "UPR439": case "UPR440": case "UPR441":
         $remove = 1;
         break;
       default:
@@ -76,7 +76,7 @@ function PermanentBeginEndPhaseEffects()
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
-      case "UPR439": case "UPR440":case "UPR441":
+      case "UPR439": case "UPR440": case "UPR441":
         $remove = 1;
         break;
       default:
@@ -94,10 +94,6 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
-    if ($damage <= 0) {
-      $damage = 0;
-      break;
-    }
     switch ($permanents[$i]) {
       case "UPR439":
         if ($preventable) $damage -= 4;
@@ -118,6 +114,7 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
       DestroyPermanent($player, $i);
     }
   }
+  if ($damage <= 0) $damage = 0;
   return $damage;
 }
 
