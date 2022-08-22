@@ -1075,7 +1075,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr>");
   if(IsPatron($playerID)) echo ("<td><div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div></td>");
   echo ("<td></td><td>");
-  echo ("<div class='MenuButtons' title='Click to view the menu.' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
+  echo ("<div class='MenuButtons' title='Click to view the menu. (Hotkey: M)' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo ("</td></tr></table></div></div>");
 
   echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; margin-top: 3px; width:100%; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
