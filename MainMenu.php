@@ -175,6 +175,10 @@ if (isset($_SESSION["userid"])) {
           <td>2</td>
         </tr>
         <tr>
+          <td>Zee_The_B</td>
+          <td>2</td>
+        </tr>
+        <tr>
           <td>Cricio</td>
           <td>1</td>
         </tr>
@@ -185,7 +189,7 @@ if (isset($_SESSION["userid"])) {
       </table>
     </div><br>
     <img style="margin-left:32.5%; width:120px; height:120px; border-radius:5%;" src="./concat/WTR175.webp" /><br>
-    <h4 style="margin-left:15px; margin-right:15px;">Everyone that participated in this challenge will have a badge added to their profile. Check back soon for the next challenge!</h4>
+    <h4 style="margin-left:15px; margin-right:15px;">Everyone that participated in this challenge will have a badge added to their profile. If you participated but didn't get one, let us know on Discord! Check back soon for the next challenge!</h4>
   </div>
 
 <!--
