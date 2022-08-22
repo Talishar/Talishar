@@ -238,8 +238,8 @@
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
-    AddDecisionQueue("WRITECARDLOG", $currentPlayer, "_was_charged.", 1);
-    AddDecisionQueue("FINISHCHARGE", $currentPlayer, "_was_charged.", 1);
+    AddDecisionQueue("WRITECARDLOG", $currentPlayer, "This_card_was_charged:_", 1);
+    AddDecisionQueue("FINISHCHARGE", $currentPlayer, "This_card_was_charged:_", 1);
   }
 
   function DQCharge()
@@ -247,8 +247,8 @@
     global $currentPlayer;
     $hand = &GetHand($currentPlayer);
     if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
-    PrependDecisionQueue("FINISHCHARGE", $currentPlayer, "_was_charged.", 1);
-    PrependDecisionQueue("WRITECARDLOG", $currentPlayer, "_was_charged.", 1);
+    PrependDecisionQueue("FINISHCHARGE", $currentPlayer, "This_card_was_charged:_", 1);
+    PrependDecisionQueue("WRITECARDLOG", $currentPlayer, "This_card_was_charged:_", 1);
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
     PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
