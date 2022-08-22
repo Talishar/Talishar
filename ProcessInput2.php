@@ -665,8 +665,7 @@ function Pass(&$turn, $playerID, &$currentPlayer)
   if ($turn[0] == "M" || $turn[0] == "ARS") {
     return 1;
   } else if ($turn[0] == "B") {
-    $currentPlayer = $defPlayer;
-    $turn[0] = "D";
+    AddLayer("DEFENDSTEP", $mainPlayer, "-");
     OnBlockResolveEffects();
     ProcessDecisionQueue();
   } else if ($turn[0] == "A") {

@@ -27,6 +27,7 @@ function ProcessMacros()
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
           if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+          else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[5] != "-")//Means there is a unique ID
           {
             $subtype = CardSubType($layers[2]);
