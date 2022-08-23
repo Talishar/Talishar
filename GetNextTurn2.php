@@ -901,7 +901,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($myHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     if ($playerID == 3) {
-      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], controller: 2);
+      $handContents .= ClientRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {
       if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
@@ -1029,9 +1029,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $myCharData .= ClientRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem);
 /*
 
-    if ($type == "C") {
-      if (count($mySoul) > 0) echo ("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>Soul: " . count($mySoul) . "</div>");
-
       //Show Player Name for the spectator
       if ($playerID == 3) {
         $secondPlayer = $otherPlayer = 1 ? 2 : 1;
@@ -1047,8 +1044,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo($myCharData);
   echo ("</div>");
   if(count($mySoul) > 0) echo("<div id='soulCount'>" . count($mySoul) . "</div>");
-  //if (count($mySoul) > 0) echo ("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>Soul: " . count($mySoul) . "</div>");
-
 
   echo ("</div>");
 
