@@ -66,8 +66,14 @@
         ?>
       }
 
-      function Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, controller=0)
+      function ProcessInputLink(player, mode, input, event='onmousedown', fullRefresh=false)
       {
+        return " " + event + "='SubmitInput(\"" + mode + "\", \"&buttonInput=" + input + "\", " + fullRefresh + ");'";
+      }
+
+      function Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, controller=0, restriction="", isBroken=0, onChain=0, isFrozen=0, gem=0)
+      {
+        var cardWidth = 96;
         if(folder == "crops")
         {
           cardNumber += "_cropped";
@@ -142,34 +148,46 @@
           rv += "<div style='margin: 0px; top: 50%; left:" + left + "; margin-right: -50%; border-radius: 50%; width:" + counterHeight + "px; height:" + counterHeight + "px; padding: 5px; border: 3px solid " + PopupBorderColor(darkMode) + "; text-align: center;";
           rv += "transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" + BackgroundColor(darkMode) + "; font-family: Helvetica; font-size:" + (counterHeight-2) + "px; font-weight:550; color:" + TextCounterColor(darkMode) + "; text-shadow: 2px 0 0 " + PopupBorderColor(darkMode) + ", 0 -2px 0 " + PopupBorderColor(darkMode) + ", 0 2px 0 " + PopupBorderColor(darkMode) + ", -2px 0 0 " + PopupBorderColor(darkMode) + ";'>" + counters + "</div>";
         }
-/*
         //-1 Defense & Endurance Counters style
-        if($defCounters != 0) {
-          if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
-          $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
-          display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
-          font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
-          <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
+        if(defCounters != 0) {
+          var left = "45%";
+          if(lifeCounters == 0 && counters == 0){ left = "0px"; }
+          rv += "<div style=' position:absolute; margin: auto; top: 0; left:" + left + "; right: 0; bottom: 0;width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" + imgCounterHeight + "px;";
+          rv += "font-size:" + (imgCounterHeight-17) + "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + defCounters +"<img style='position:absolute; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
         }
 
         //Health Counters style
-        if($lifeCounters != 0){
-          if($defCounters == 0){ $left = "0px"; } else { $left = "-45%"; }
-          $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
-          display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
-          font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
-          <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Life.png'></div>";
+        if(lifeCounters != 0){
+          var left = "-45%";
+          if(defCounters == 0){ left = "0px"; }
+          rv += "<div style=' position:absolute; margin: auto; top: 0; left:" + left + "; right: 0; bottom: 0;width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" + imgCounterHeight + "px;";
+          rv += "font-size:" + (imgCounterHeight-17) + "+px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + lifeCounters + "<img style='position:absolute; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Life.png'></div>";
         }
 
         //Attack Counters style
-        if($atkCounters != 0) {
-          if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
-          $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
-          display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
-          font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
-          <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Attack.png'></div>";
+        if(atkCounters != 0) {
+          var left = "45%";
+          if(lifeCounters == 0 && counters == 0){ left = "0px"; }
+          rv += "<div style=' position:absolute; margin: auto; top: 0; left:" + left + "; right: 0; bottom: 0;width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" + imgCounterHeight + "px;";
+          rv += "font-size:" + (imgCounterHeight-17) + "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + atkCounters + "<img style='position:absolute; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Attack.png'></div>";
         }
-*/
+
+        if (restriction != "") {
+          //$restrictionName = CardName($restriction);
+          rv += "<img title='Restricted by: " + restriction + "' style='position:absolute; z-index:100; top:26px; left:26px;' src='./Images/restricted.png' />";
+        }
+        if(onChain == 1) rv += "<img title='On Combat Chain' style='pointer-events: none; position:absolute; z-index:100; width:" + 97 + "; bottom: 5px; left:0px;' src='./Images/onChain.png' />";
+        if(isBroken == 1) rv += "<img title='Equipment Broken' style='position:absolute; z-index:100; border-radius:5px; top:1px; left:14px; height:" + 97 + "; width:" + 70 + ";' src='./Images/brokenEquip.png' />";
+        if(isFrozen == 1) rv += "<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:1px; left:1px; height:" + 97 + "; width:" + 97 + ";' src='./Images/frozenOverlay.png' />";
+
+        if(gem != 0)
+        {
+          var playerID = <?php echo($playerID); ?>;
+          gemImg = (gem == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
+          if (gem == 1) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 10) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+          else if (gem == 2) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 10) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+        }
+
         rv += "</a>";
         return rv;
       }
@@ -251,7 +269,9 @@
             positionStyle = "fixed; left:" + charLeft + "; bottom:" + charBottom;
           }
           newHTML += "<span style='position:" + positionStyle + "; margin:1px;'>";
-          newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], cardArr[4], cardArr[5], "", false, cardArr[6], cardArr[7], cardArr[8], cardArr[9]);
+          var restriction = cardArr[12];
+          restriction = restriction.replaceAll("_", " ");
+          newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], cardArr[4], cardArr[5], "", false, cardArr[6], cardArr[7], cardArr[8], cardArr[9], restriction, cardArr[13], cardArr[14], cardArr[15], cardArr[16]);
           newHTML += "</span>";
         }
         zoneEl.innerHTML = newHTML;

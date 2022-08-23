@@ -1025,17 +1025,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
     }
     if($myCharData != "") $myCharData .= "|";
-    $myCharData .= ClientRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1);
-/*
-    echo ("<div style='position:absolute; z-index:100; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) . ";'>");
-    echo (Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), "", false, 0, $myCharacter[$i + 4], $atkCounters, "CHARACTER", controller:$playerID));
-    if ($restriction != "") {
-      $restrictionName = CardName($restriction);
-      echo ("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:26px; left:26px;' src='./Images/restricted.png' />");
+    $gem = 0;
+    if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
+      //$gem = ($myCharacter[$i + 9] == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
+      $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
+      //if ($myCharacter[$i + 9] == 0) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
+      //else if ($myCharacter[$i + 9] == 1) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
+      //echo ("</img>");
     }
-    if ($myCharacter[$i + 6] == 1) echo ("<img title='On Combat Chain' style='pointer-events: none; position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:7px;' src='./Images/onChain.png' />");
-    if ($myCharacter[$i + 1] == 0) echo ("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
-    if ($myCharacter[$i + 8] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+    $restriction = implode("_", explode(" ", $restriction));
+    $myCharData .= ClientRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem);
+/*
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
       $gem = ($myCharacter[$i + 9] == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
       if ($myCharacter[$i + 9] == 0) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
