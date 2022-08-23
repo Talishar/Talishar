@@ -1209,6 +1209,11 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
       break;
+    case "UPR221": case "UPR222": case "UPR223":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DMGPREVENTION");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      break;
     default:
       break;
   }
