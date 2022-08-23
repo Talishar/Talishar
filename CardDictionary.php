@@ -975,7 +975,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     case "AR":
       return $phase == "A";
     case "DR":
-      return $phase == "D" && IsDefenseReactionPlayable($cardID, $from);
+      if($phase != "D") return false;
+      if(!IsDefenseReactionPlayable($cardID, $from)) { $restriction = "Defense reaction not playable."; return false; }
+      return true;
     default:
       return false;
   }
@@ -1780,7 +1782,7 @@ function AuraDefaultHoldTriggerState($cardID)
     case "WTR069": case "WTR070": case "WTR071":
       return 0; //Emerging Power
     case "WTR072": case "WTR073": case "WTR074":
-      return 0; //Stonewall Confidence 
+      return 0; //Stonewall Confidence
     case "WTR075":
       return 0; //Seismic Surge
     case "ARC112":
@@ -1788,13 +1790,13 @@ function AuraDefaultHoldTriggerState($cardID)
     case "CRU028":
       return 0; //Stamp Authority
     case "CRU029": case "CRU030": case "CRU031":
-      return 0; //Towering Titan 
+      return 0; //Towering Titan
     case "CRU038": case "CRU039": case "CRU040":
       return 0; //Emerging Dominance
     case "CRU075":
       return 0; //Zen Token
     case "CRU144":
-      return 0; //Runeblood Barrier 
+      return 0; //Runeblood Barrier
     case "MON186":
       return 0; //Soul Shackle
     case "ELE025": case "ELE026": case "ELE027":
