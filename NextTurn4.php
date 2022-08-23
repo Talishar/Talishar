@@ -66,8 +66,14 @@
         ?>
       }
 
-      function Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, from="", controller=0)
+      function ProcessInputLink(player, mode, input, event='onmousedown', fullRefresh=false)
       {
+        return " " + event + "='SubmitInput(\"" + mode + "\", \"&buttonInput=" + input + "\", " + fullRefresh + ");'";
+      }
+
+      function Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, controller=0, restriction="", isBroken=0, onChain=0, isFrozen=0, gem=0)
+      {
+        var cardWidth = 96;
         if(folder == "crops")
         {
           cardNumber += "_cropped";
@@ -127,9 +133,81 @@
         }
 
         //TODO: counters
+        var darkMode = false;
+        counterHeight =  28;
+        imgCounterHeight =  44;
+        //Attacker Label Style
+        if(counters == "Attacker" || counters == "Arsenal") {
+          rv += "<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 7px; width: fit-content; text-align: center; line-height: 16px; height: 16px; padding: 5px; border: 3px solid " + PopupBorderColor(darkMode);
+          rv += "; transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" + BackgroundColor(darkMode) + "; font-size:20px; font-weight:800; color:" + PopupBorderColor(darkMode) + ";'>" + counters + "</div>";
+        }
+        //Equipments, Hero and default counters style
+        else if(counters != 0) {
+          var left = "30%";
+          if(lifeCounters == 0 && defCounters == 0 && atkCounters == 0){ left = "50%"; }
+          rv += "<div style='margin: 0px; top: 50%; left:" + left + "; margin-right: -50%; border-radius: 50%; width:" + counterHeight + "px; height:" + counterHeight + "px; padding: 5px; border: 3px solid " + PopupBorderColor(darkMode) + "; text-align: center;";
+          rv += "transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" + BackgroundColor(darkMode) + "; font-family: Helvetica; font-size:" + (counterHeight-2) + "px; font-weight:550; color:" + TextCounterColor(darkMode) + "; text-shadow: 2px 0 0 " + PopupBorderColor(darkMode) + ", 0 -2px 0 " + PopupBorderColor(darkMode) + ", 0 2px 0 " + PopupBorderColor(darkMode) + ", -2px 0 0 " + PopupBorderColor(darkMode) + ";'>" + counters + "</div>";
+        }
+        //-1 Defense & Endurance Counters style
+        if(defCounters != 0) {
+          var left = "45%";
+          if(lifeCounters == 0 && counters == 0){ left = "0px"; }
+          rv += "<div style=' position:absolute; margin: auto; top: 0; left:" + left + "; right: 0; bottom: 0;width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" + imgCounterHeight + "px;";
+          rv += "font-size:" + (imgCounterHeight-17) + "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + defCounters +"<img style='position:absolute; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
+        }
+
+        //Health Counters style
+        if(lifeCounters != 0){
+          var left = "-45%";
+          if(defCounters == 0){ left = "0px"; }
+          rv += "<div style=' position:absolute; margin: auto; top: 0; left:" + left + "; right: 0; bottom: 0;width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" + imgCounterHeight + "px;";
+          rv += "font-size:" + (imgCounterHeight-17) + "+px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + lifeCounters + "<img style='position:absolute; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Life.png'></div>";
+        }
+
+        //Attack Counters style
+        if(atkCounters != 0) {
+          var left = "45%";
+          if(lifeCounters == 0 && counters == 0){ left = "0px"; }
+          rv += "<div style=' position:absolute; margin: auto; top: 0; left:" + left + "; right: 0; bottom: 0;width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" + imgCounterHeight + "px;";
+          rv += "font-size:" + (imgCounterHeight-17) + "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" + atkCounters + "<img style='position:absolute; width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; opacity: 0.9; z-index:-1;' src='./Images/Attack.png'></div>";
+        }
+
+        if (restriction != "") {
+          //$restrictionName = CardName($restriction);
+          rv += "<img title='Restricted by: " + restriction + "' style='position:absolute; z-index:100; top:26px; left:26px;' src='./Images/restricted.png' />";
+        }
+        if(onChain == 1) rv += "<img title='On Combat Chain' style='pointer-events: none; position:absolute; z-index:100; width:" + 97 + "; bottom: 5px; left:0px;' src='./Images/onChain.png' />";
+        if(isBroken == 1) rv += "<img title='Equipment Broken' style='position:absolute; z-index:100; border-radius:5px; top:1px; left:14px; height:" + 97 + "; width:" + 70 + ";' src='./Images/brokenEquip.png' />";
+        if(isFrozen == 1) rv += "<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:1px; left:1px; height:" + 97 + "; width:" + 97 + ";' src='./Images/frozenOverlay.png' />";
+
+        if(gem != 0)
+        {
+          var playerID = <?php echo($playerID); ?>;
+          gemImg = (gem == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
+          if (gem == 1) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 10) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+          else if (gem == 2) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 10) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+        }
 
         rv += "</a>";
         return rv;
+      }
+
+      function BackgroundColor(darkMode)
+      {
+        if(darkMode) return "rgba(74, 74, 74, 0.9)";
+        else return "rgba(235, 235, 235, 0.9)";
+      }
+
+      function PopupBorderColor(darkMode)
+      {
+        if(darkMode) return "#DDD";
+        else return "#1a1a1a";
+      }
+
+      function TextCounterColor(darkMode)
+      {
+        if(darkMode) return "#1a1a1a";
+        else return "#EDEDED";
       }
 
       function CardHasAltArt(cardID)
@@ -181,13 +259,75 @@
         for(var i=0; i<zoneArr.length; ++i)
         {
           cardArr = zoneArr[i].split(" ");
-          newHTML += "<span style='position:relative; margin:1px;'>";
-          newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], 0, cardArr[4], "", false, 0, 0, 0, "", cardArr[5]);
+          var positionStyle = "relative";
+          var type = cardArr[10];
+          var substype = cardArr[11];
+          if(type != "")
+          {
+            var charLeft = GetCharacterLeft(type, substype);
+            var charBottom = GetCharacterBottom(type, substype);
+            positionStyle = "fixed; left:" + charLeft + "; bottom:" + charBottom;
+          }
+          newHTML += "<span style='position:" + positionStyle + "; margin:1px;'>";
+          var restriction = cardArr[12];
+          restriction = restriction.replaceAll("_", " ");
+          newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], cardArr[4], cardArr[5], "", false, cardArr[6], cardArr[7], cardArr[8], cardArr[9], restriction, cardArr[13], cardArr[14], cardArr[15], cardArr[16]);
           newHTML += "</span>";
         }
         zoneEl.innerHTML = newHTML;
         zoneEl.style.display = "inline";
       }
+
+      function GetCharacterLeft(cardType, cardSubType)
+      {
+        var cardWidth = 96;
+        switch (cardType) {
+          case "C":
+            return "calc(50% - " + (cardWidth / 2) + "px)";
+          case "W":
+            return "calc(50% - " + (cardWidth / 2 + cardWidth + 10) + "px)"; //TODO: Second weapon
+          default:
+            break;
+        }
+        switch (cardSubType) {
+          case "Head":
+            return "95px";
+          case "Chest":
+            return "95px";
+          case "Arms":
+            return (cardWidth + 105) + "px";
+          case "Legs":
+            return "95px";
+          case "Off-Hand":
+            return "calc(50% + " + (cardWidth / 2 + 10) + "px)";
+        }
+      }
+
+      function GetCharacterBottom(cardType, cardSubType)
+      {
+        var cardSize = 96;
+        switch (cardType) {
+          case "C":
+            return (cardSize * 2 + 25) + "px";
+          case "W":
+            return (cardSize * 2 + 25) + "px"; //TODO: Second weapon
+          default:
+            break;
+        }
+        switch (cardSubType) {
+          case "Head":
+            return (cardSize * 2 + 25) + "px";
+          case "Chest":
+            return (cardSize + 15) + "px";
+          case "Arms":
+            return (cardSize + 15) + "px";
+          case "Legs":
+            return "5px";
+          case "Off-Hand":
+            return (cardSize * 2 + 25) + "px";
+        }
+      }
+
     </script>
 
     <script src="./jsInclude.js"></script>
@@ -370,6 +510,7 @@
               //var animations = document.getElementById("animations").innerText;
               PopulateZone("myHand");
               PopulateZone("theirHand", 50, "WebpImages");
+              PopulateZone("myChar");
               //if(animations != "") alert(animations);
             } else {
               CheckReloadNeeded(lastUpdate);
