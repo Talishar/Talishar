@@ -1089,16 +1089,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       //else if($lastPlayed[3] == "UNFUSED") echo("<img title='This card was not fused.' style='position:absolute; z-index:100; top:125px; left:7px;' src='./Images/Unfused.png' />");
     }
   }
-  echo ("</div>");
-  echo ("<div style='position:relative; z-index:-1;'><img style='height:(" . intval($rightSideWidth / 2) . ")px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
-  $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
-  if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth * .42);
-  else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth * .6);
-  else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = intval($rightSideWidth * .778);
-  else if (count($chainLinks) > 0) $trackerLeft = $trackerLeft = intval($rightSideWidth * .235);
-  else $trackerLeft = $trackerLeft = intval($rightSideWidth * .06);
-  echo ("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
-  echo ("</div>");
+  // echo ("</div>");
+  // echo ("<div style='position:relative; z-index:-1;'><img style='height:(" . intval($rightSideWidth / 2) . ")px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
+  // $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
+  // if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth * .42);
+  // else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth * .6);
+  // else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = intval($rightSideWidth * .778);
+  // else if (count($chainLinks) > 0) $trackerLeft = $trackerLeft = intval($rightSideWidth * .235);
+  // else $trackerLeft = $trackerLeft = intval($rightSideWidth * .06);
+  // echo ("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
+  // echo ("</div>");
 
   echo ("<div id='gamelog' style='flex-grow:1; border: 3px solid " . $borderColor . "; border-radius: 5px; position:relative; background-color: " . $backgroundColor . "; overflow-y: scroll;'>");
   EchoLog($gameName, $playerID);
