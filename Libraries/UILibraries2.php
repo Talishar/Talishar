@@ -468,12 +468,13 @@
     global $playerID;
     $rv = "<table class='table-MainMenu'><tr><td class='table-td-MainMenu'>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
-    $rv .= "</td><td style='width:50%; margin-top: 10px; vertical-align:top;'>";
+    $rv .= "</td><td style='width:45%;  margin-top: 10px; vertical-align:top;'>";
     $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
-    $rv .= PreviousTurnSelectionUI();
+    $rv .= PreviousTurnSelectionUI() . "<BR>";
+    $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
     $rv .= "</td></tr></table>";
     return $rv;
   }
