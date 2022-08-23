@@ -661,7 +661,7 @@ function PassInput($autopass = true)
 
 function Pass(&$turn, $playerID, &$currentPlayer)
 {
-  global $defPlayer;
+  global $mainPlayer, $defPlayer;
   if ($turn[0] == "M" || $turn[0] == "ARS") {
     return 1;
   } else if ($turn[0] == "B") {
