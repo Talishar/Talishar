@@ -269,6 +269,16 @@
             positionStyle = "fixed; left:" + charLeft + "; bottom:" + charBottom;
           }
           newHTML += "<span style='position:" + positionStyle + "; margin:1px;'>";
+          if(type == "C")
+          {
+            var soulCountEl = document.getElementById("soulCount");
+            if(!!soulCountEl)
+            {
+              var fontColor = "white";
+              var borderColor = "black";
+              newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; text-align:center;'>Soul: " + soulCountEl.innerHTML + "</div>";
+            }
+          }
           var restriction = cardArr[12];
           if(!!restriction) restriction = restriction.replaceAll("_", " ");
           newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], cardArr[4], cardArr[5], "", false, cardArr[6], cardArr[7], cardArr[8], cardArr[9], restriction, cardArr[13], cardArr[14], cardArr[15], cardArr[16]);

@@ -1023,21 +1023,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if($myCharData != "") $myCharData .= "|";
     $gem = 0;
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
-      //$gem = ($myCharacter[$i + 9] == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
-      //if ($myCharacter[$i + 9] == 0) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
-      //else if ($myCharacter[$i + 9] == 1) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
-      //echo ("</img>");
     }
     $restriction = implode("_", explode(" ", $restriction));
     $myCharData .= ClientRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem);
 /*
-    if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
-      $gem = ($myCharacter[$i + 9] == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-      if ($myCharacter[$i + 9] == 0) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
-      else if ($myCharacter[$i + 9] == 1) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
-      echo ("</img>");
-    }
+
     if ($type == "C") {
       if (count($mySoul) > 0) echo ("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>Soul: " . count($mySoul) . "</div>");
 
@@ -1050,13 +1041,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player " . $secondPlayer);
       }
     }
-    echo ("</div>");
-    echo ("</div>");
 */
   }
   echo("<div id='myChar' style='display:none;'>");
   echo($myCharData);
   echo ("</div>");
+  if(count($mySoul) > 0) echo("<div id='soulCount'>" . count($mySoul) . "</div>");
+  //if (count($mySoul) > 0) echo ("<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:20; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>Soul: " . count($mySoul) . "</div>");
 
 
   echo ("</div>");
