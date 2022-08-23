@@ -434,10 +434,14 @@ switch ($mode) {
   case 100000: //Quick Rematch
     if($turn[0] != "OVER") break;
     $otherPlayer = ($playerID == 1 ? 2 : 1);
-    AddDecisionQueue("YESNO", $otherPlayer, "if you want a Quick Rematch?");
-    AddDecisionQueue("NOPASS", $otherPlayer, "-", 1);
-    AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
-    AddDecisionQueue("OVER", $playerID, "-");
+    if ($theirCharacter[0] != "DUMMY") {
+      AddDecisionQueue("YESNO", $otherPlayer, "if you want a Quick Rematch?");
+      AddDecisionQueue("NOPASS", $otherPlayer, "-", 1);
+      AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
+      AddDecisionQueue("OVER", $playerID, "-");
+    } else {
+      AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
+    }
     ProcessDecisionQueue();
     break;
   case 100001: //Main Menu
