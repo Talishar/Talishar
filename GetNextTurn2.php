@@ -901,7 +901,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($myHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     if ($playerID == 3) {
-      $handContents .= $MyCardBack . " 0 0 - - 0";
+      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], controller: 2);
     } else {
       //Needed: cardID, actionType, border, actionData, restriction, controller?
       if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
