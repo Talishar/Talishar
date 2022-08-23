@@ -454,7 +454,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         if ($p1PlayerRating != 1) {
           $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
         }
-      } 
+      }
       else {
         if ($p2PlayerRating != 2) {
           $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
@@ -729,7 +729,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo("<div id='theirHand' style='display:inline;'>");
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
-    $handContents .= ClientRenderedCard($TheirCardBack, 0, 0, 0, "-", ($playerID == 1 ? 2 : 1));
+    $handContents .= ClientRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1));
   }
   echo($handContents . "</div>");
   if (count($theirSoul) > 0) echo ("<div title='Click to view the cards in your opponent Soul.' style='padding-left:5px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='ShowPopup(\"theirSoulPopup\");'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img>
@@ -909,7 +909,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionData = $actionType == 16 ? strval($i) : "";
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
-      $handContents .= ClientRenderedCard($myHand[$i], $actionTypeOut, 0, $border, $actionData, $playerID);
+      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionData, controller: $playerID);
       //echo ("<span style='position:relative; margin:1px;'>");
       //echo (Card($myHand[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? $actionType : 0, 1, 0, $border, 0, $actionData, controller:$playerID));
       //if ($restriction != "") echo ("<img title='Restricted by " . CardName($restriction) . "' style='position:absolute; z-index:100; top:-56px; left:26px;' src='./Images/restricted.png' />");
@@ -1006,6 +1006,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Now display my character and equipment
   $numWeapons = 0;
+  $myCharData = "";
   for ($i = 0; $i < count($myCharacter); $i += CharacterPieces()) {
     $restriction = "";
     $counters = 0;
@@ -1023,15 +1024,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $sType = "Off-Hand";
       }
     }
-    echo ("<div style='position:absolute; z-index:100; left:" . GetCharacterLeft($type, $sType) . "; bottom:" . GetCharacterBottom($type, $sType) . ";'>");
-    echo (Card($myCharacter[$i], "concat", $cardSizeEquipment, $currentPlayer == $playerID && $playable ? 3 : 0, 1, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), "", false, 0, $myCharacter[$i + 4], $atkCounters, "CHARACTER", controller:$playerID));
-    if ($restriction != "") {
-      $restrictionName = CardName($restriction);
-      echo ("<img title='Restricted by: " . ($restrictionName != "" ? $restrictionName : $restriction) . "' style='position:absolute; z-index:100; top:26px; left:26px;' src='./Images/restricted.png' />");
+    if($myCharData != "") $myCharData .= "|";
+    $gem = 0;
+    if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
+      //$gem = ($myCharacter[$i + 9] == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
+      $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
+      //if ($myCharacter[$i + 9] == 0) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
+      //else if ($myCharacter[$i + 9] == 1) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
+      //echo ("</img>");
     }
-    if ($myCharacter[$i + 6] == 1) echo ("<img title='On Combat Chain' style='pointer-events: none; position:absolute; z-index:100; width:" . $cardWidth . "; bottom: 5px; left:7px;' src='./Images/onChain.png' />");
-    if ($myCharacter[$i + 1] == 0) echo ("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
-    if ($myCharacter[$i + 8] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+    $restriction = implode("_", explode(" ", $restriction));
+    $myCharData .= ClientRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem);
+/*
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3) {
       $gem = ($myCharacter[$i + 9] == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
       if ($myCharacter[$i + 9] == 0) echo ("<img " . ProcessInputLink($playerID, 102, $i) . " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" . $cardWidth / 2 - 10 . "px; width:34px; height:34px; cursor:pointer;' src='./Images/" . $gem . "' />");
@@ -1052,7 +1056,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     echo ("</div>");
     echo ("</div>");
+*/
   }
+  echo("<div id='myChar' style='display:none;'>");
+  echo($myCharData);
+  echo ("</div>");
+
+
   echo ("</div>");
 
   //Show deck, discard, pitch, banish
