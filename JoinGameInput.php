@@ -275,6 +275,21 @@ if ($decklink != "") {
   if ($unsupportedCards != "") {
     echo ("The following cards are not yet supported: " . $unsupportedCards);
   }
+  
+  if($count < 60    && ($format == "cc" || $format == "compcc"))
+  {
+    $_SESSION['error'] = 'Error: The decklist link you have entered is likely for blitz.\n\nPlease double-check your decklist link and try again.';
+    header("Location: MainMenu.php");
+    die();
+  }
+
+  if($numMainBoard + $numSideboard > 52 && ($format == "blitz" || $format == "commoner"))
+  {
+    $_SESSION['error'] = 'Error: The decklist link you have entered has an invalid number of cards for this format.\n\nPlease double-check your decklist link and try again.';
+    header("Location: MainMenu.php");
+    die();
+  }
+
 
   //We have the decklist, now write to file
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
