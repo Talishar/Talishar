@@ -665,11 +665,13 @@ function PlayerWon($playerID)
     else UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
   }
 
+/*
   try {
     logCompletedGameStats(true);
   } catch (Exception $e) {
     //Failed to send to reporting server
   }
+  */
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
