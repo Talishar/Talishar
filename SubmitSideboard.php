@@ -49,7 +49,7 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
     exit;
   }
-  if ($numEquip < 4) {
+  if ($numEquip < 1) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. $numEquip equipment pieces are equipped.");
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
     exit;
