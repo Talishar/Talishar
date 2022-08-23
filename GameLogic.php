@@ -2934,6 +2934,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "WEAPON":
           $rv = WeaponIndices($player, $player, $subparam);
           break;
+        case "DMGPREVENTION": $rv = GetDamagePreventionIndices(); break;
         case "MON020":
         case "MON021":
         case "MON022":

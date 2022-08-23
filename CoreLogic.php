@@ -1535,3 +1535,16 @@ function NumEquipBlock()
     }
     return "-";
   }
+
+  function GetDamagePreventionIndices()
+  {
+    global $combatChain, $currentPlayer;
+    $rv = SearchLayerDQ(($currentPlayer == 1 ? 2 : 1), "");
+    $rv = SearchMultiZoneFormat($rv, "LAYER");
+    if(count($combatChain) > 0)
+    {
+      if($rv != "") $rv .= ",";
+      $rv .= "CC-0";
+    }
+    return $rv;
+  }
