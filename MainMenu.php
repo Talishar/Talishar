@@ -150,15 +150,15 @@ if (isset($_SESSION["userid"])) {
 
 <div class="NewsMenu">
 
-  <h2>Open Beta Test</h2>
-  <div style='margin:10px; font-size:13px;'><b>Disclaimer: </b>FaB Online is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</div>
+  <h1>Open Beta Test</h1>
+  <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>FaB Online is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
   <h3 style='text-align:center;'>________</h3>
 
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
       <h2>Coax a Commotion #2</h2>
-    <img style="width:95%;" src="./Images/challenges/challenge2.webp" /><br>
+    <img style="width:95%; border-radius:2.5%;" src="./Images/challenges/challenge2.webp" /><br>
     <h4 style="margin-left:15px; margin-right:15px;">Rules: Must include Talishar, hero must not be Dash. Everyone that participates will get a badge with their win count!</h4>
   </div>
 
