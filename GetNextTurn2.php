@@ -893,7 +893,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</div>");
 
   $restriction = "";
-  $actionType = $turn[0] == "ARS" ? 4 : 27;
+  $actionType = $turn[0] == "ARS" ? 4 : 2;
   if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
   $handLeft = "calc(50% - " . ((count($myHand) * ($cardWidth + 15)) / 2) . "px)";
   echo ("<div id='myHand' style='display:none; position:fixed; left:" . $handLeft . "; bottom: 5px;'>"); //Hand div
@@ -906,9 +906,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
+      $actionData = $actionType == 16 ? strval($i) : "";
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
       if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: strval($i), controller: $playerID, restriction: $restriction);
+      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionData, controller: $playerID, restriction: $restriction);
     }
   }
   echo($handContents);
