@@ -710,6 +710,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "UPR113": case "UPR114":  case "UPR115":
       PayOrDiscard(MZPlayerID($player, $target), 2, true);
       break;
+    case "UPR140":
+      $index = SearchAurasForUniqueID($uniqueID, $player);
+      if ($index == -1) break;
+      $auras = &GetAuras($player);
+      --$auras[$index + 2];
+      PayOrDiscard($target, 2, true);
+      if ($auras[$index + 2] == 0) {
+        WriteLog(CardLink($auras[$index], $auras[$index]) . " is destroyed.");
+        DestroyAura($player, $index);
+      }
+      break;
     case "UPR190":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
