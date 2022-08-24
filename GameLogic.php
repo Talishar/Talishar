@@ -171,10 +171,8 @@ function ProcessHitEffect($cardID)
 function ArcaneHitEffect($me, $source, $target, $damage)
 {
   switch ($source) {
-    case "UPR113":
-    case "UPR114":
-    case "UPR115":
-      if (MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
+    case "UPR113": case "UPR114": case "UPR115":
+      if (MZIsPlayer($target)) AddLayer("TRIGGER", $me, $source, $target);
       break;
     default:
       break;
@@ -2713,13 +2711,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   switch ($phase) {
     case "FINDRESOURCECOST":
       switch ($parameter) {
-        case "CRU126":
-        case "CRU127":
-        case "CRU128":
+        case "CRU126": case "CRU127": case "CRU128":
           return ($lastResult == "YES" ? 1 : 0);
-        case "ELE148":
-        case "ELE149":
-        case "ELE150":
+        case "ELE148": case "ELE149": case "ELE150":
           return ($lastResult == "YES" ? 2 : 0);
         default:
           return ($lastResult == "YES" ? $parameter : 0);
