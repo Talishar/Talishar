@@ -418,6 +418,7 @@
   function AuraFuseEffects($player, $element)
   {
     $auras = &GetAuras($player);
+    $otherPlayer = $player == 1 ? 2 : 1;
     for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
     {
       switch($auras[$i])
@@ -425,9 +426,7 @@
         case "UPR140":
           if($element == "ICE")
           {
-            PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
-            --$auras[$i+2];
-            if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
+            AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
           }
           break;
         default: break;
