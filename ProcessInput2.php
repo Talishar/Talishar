@@ -320,19 +320,6 @@ switch ($mode) {
     $params = explode("-", $buttonInput);
     ChangeSetting($playerID, $params[0], $params[1]);
     break;
-  case 27: //Play card from hand by index
-    $found = $cardID;
-    if ($found >= 0) {
-      //Player actually has the card, now do the effect
-      //First remove it from their hand
-      $hand = &GetHand($playerID);
-      $cardID = $hand[$found];
-      if(!IsPlayable($cardID, $turn[0], "HAND", $found)) break;
-      unset($hand[$found]);
-      $hand = array_values($hand);
-      PlayCard($cardID, "HAND");
-    }
-    break;
   case 99: //Pass
     if (CanPassPhase($turn[0])) {
       PassInput(false);
