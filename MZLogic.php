@@ -76,12 +76,8 @@ function MZPlayerID($me, $MZIndex)
 
 function GetMZCard($MZIndex)
 {
-  global $combatChain, $layers;
-  $indexArr = explode("-", $MZIndex);
-  switch($indexArr[0])
-  {
-    case "CC": return $combatChain[$indexArr[1]];
-    case "LAYER": return $combatChain[$indexArr[1]];
-    default: return "";
-  }
+  $params = explode("-", $MZIndex);
+  $zoneDS = &GetMZZone($player, $params[0]);
+  $index = $params[1];
+  return $zoneDS[$index];
 }
