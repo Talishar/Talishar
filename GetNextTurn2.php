@@ -590,7 +590,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $counters = "Arsenal";
       }
 
-      $card = $source[intval($option[1])];
+      $index = intval($option[1]);
+      $card = $source[$index];
+      if($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index+2];
       $playerBorderColor = 0;
       if (substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
