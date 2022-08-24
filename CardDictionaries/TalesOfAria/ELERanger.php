@@ -245,7 +245,7 @@
     switch($cardID)
     {
       case "ELE004": AddCurrentTurnEffect($cardID, $otherPlayer); break;
-      case "ELE007": case "ELE008": case "ELE009": PayOrDiscard($otherPlayer, 2, true); break;
+      case "ELE007": case "ELE008": case "ELE009": AddLayer("TRIGGER", $player, $cardID, $otherPlayer); break;
       case "ELE010": case "ELE011": case "ELE012":
         $index = GetClassState($player, $CS_PlayCCIndex);
         $combatChain[$index + 6] += 2;
