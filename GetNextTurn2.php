@@ -908,7 +908,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
       if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: strval($i), controller: $playerID, restriction: $restriction);
+      $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
+      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
     }
   }
   echo($handContents);
