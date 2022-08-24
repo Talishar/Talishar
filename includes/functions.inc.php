@@ -254,6 +254,8 @@ function LoadFavoriteDecks($userID)
 	return $output;
 }
 
+//Challenge ID 1 = sigil of solace blue
+//Challenge ID 2 = Talishar no dash
 function logCompletedGameStats($reportingServer = false) {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
@@ -286,7 +288,7 @@ function logCompletedGameStats($reportingServer = false) {
 		mysqli_stmt_execute($stmt);
 		$gameResultID = mysqli_insert_id($conn);
 		mysqli_stmt_close($stmt);
-		$challengeId = 1;
+		$challengeId = 2;
 		if($p1IsChallengeActive == "1" && $p1id != "-")
 		{
 			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";

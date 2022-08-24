@@ -27,6 +27,7 @@ if (isset($_SESSION["userid"])) {
 </style>
 
 <div class="FabLogo" style="background-image: url('Images/fab_logo.png');">
+  <div style='position: absolute; font-size:20px; width:100%; bottom:-24px; text-align: center;'>Unofficial Online Client</div>
 </div>
 
 <div class="ServerChecker">
@@ -150,46 +151,15 @@ if (isset($_SESSION["userid"])) {
 <div class="NewsMenu">
 
   <h2>Open Beta Test</h2>
-  <h3>All cards supported!</h3>
+  <div style='margin:10px; font-size:13px;'><b>Disclaimer: </b>FaB Online is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</div>
 
   <h3 style='text-align:center;'>________</h3>
 
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
-      <h2>Commotion #1 Results</h2>
-      <table class='scoretable'>
-        <tr>
-          <th>Player</th>
-          <th>Wins</th>
-        </tr>
-        <tr>
-          <td>Tower</td>
-          <td>85</td>
-        </tr>
-        <tr>
-          <td>OotTheMonk</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>qXwXp</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>Zee_The_B</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>Cricio</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td>TubbyWatkins</td>
-          <td>1</td>
-        </tr>
-      </table>
-    </div><br>
-    <img style="margin-left:32.5%; width:120px; height:120px; border-radius:5%;" src="./concat/WTR175.webp" /><br>
-    <h4 style="margin-left:15px; margin-right:15px;">Everyone that participated in this challenge will have a badge added to their profile. If you participated but didn't get one, let us know on Discord! Check back soon for the next challenge!</h4>
+      <h2>Coax a Commotion #2</h2>
+    <img style="width:95%;" src="./Images/challenges/challenge2.webp" /><br>
+    <h4 style="margin-left:15px; margin-right:15px;">Rules: Must include Talishar, hero must not be Dash. Everyone that participates will get a badge with their win count!</h4>
   </div>
 
   <!--
