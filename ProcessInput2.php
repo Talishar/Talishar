@@ -1224,6 +1224,7 @@ function GetLayerTarget($cardID)
       break;
     case "UPR221": case "UPR222": case "UPR223":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DMGPREVENTION");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Oasis Respite");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
       break;
