@@ -380,7 +380,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if ($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
         else if ($cardID == "TRIGGER") {
-          ProcessTrigger($player, $parameter, $uniqueID);
+          ProcessTrigger($player, $parameter, $uniqueID, $target);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
@@ -479,7 +479,7 @@ function ProcessLayer($player, $parameter)
   }
 }
 
-function ProcessTrigger($player, $parameter, $uniqueID)
+function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
   global $combatChain;
 
@@ -700,6 +700,9 @@ function ProcessTrigger($player, $parameter, $uniqueID)
     case "EVR131": case "EVR132": case "EVR133":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "UPR113": case "UPR114":  case "UPR115":
+      PayOrDiscard(MZPlayerID($player, $target), 2, true);
       break;
     case "UPR190":
       DestroyAuraUniqueID($player, $uniqueID);
