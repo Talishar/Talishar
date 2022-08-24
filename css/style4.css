@@ -981,6 +981,7 @@ button {
   background-color: var(--grey-transparent-background);
   border: 1px solid var(--dark-color);
   border-radius: 5px;
+  overflow-y: scroll;
 }
 
 .game-stats h3 {
