@@ -136,6 +136,7 @@ echo ("<h2>CC Heroes</h2>");
 foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
   if (CharacterHealth($row[0]) <= 25) continue; //Filter out blitz heroes for now
+  if (CardType($row[0]) != "C") continue;
   //if(CharacterHealth($row[0]) > 25) continue;//Filter out cc heroes for now
   $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
   $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
@@ -160,6 +161,7 @@ echo ("<tr><td>Hero</td><td>Num Wins</td><td>Num Plays</td><td>Win %</td><td>Pla
 foreach ($gameData as $row) {
   //while ($row = mysqli_fetch_array($playData, MYSQLI_NUM)) {
   if (CharacterHealth($row[0]) > 25) continue; //Filter out cc heroes for now
+  if (CardType($row[0]) != "C") continue;
   $formatDenominator = (CharacterHealth($row[0]) > 25 ? $ccPlays : $blitzPlays);
   $winPercent = (((count($row) > 2 ? $row[2] : 0) / $row[1]) * 100);
   $playPercent = ($row[1] / $formatDenominator * 100);
