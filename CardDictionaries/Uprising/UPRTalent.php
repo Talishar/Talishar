@@ -429,7 +429,7 @@
         GainHealth($amount, $currentPlayer);
         return "Gain $amount health.";
       case "UPR221": case "UPR222": case "UPR223":
-        AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetDefaultLayerTarget());
+        AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($target));
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);

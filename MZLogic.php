@@ -73,3 +73,15 @@ function MZPlayerID($me, $MZIndex)
   if ($indexArr[0] == "THEIRCHAR") return ($me == 1 ? 2 : 1);
   return -1;
 }
+
+function GetMZCard($MZIndex)
+{
+  global $combatChain, $layers;
+  $indexArr = explode("-", $MZIndex);
+  switch($indexArr[0])
+  {
+    case "CC": return $combatChain[$indexArr[1]];
+    case "LAYER": return $combatChain[$indexArr[1]];
+    default: return "";
+  }
+}
