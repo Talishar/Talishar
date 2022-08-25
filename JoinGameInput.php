@@ -388,6 +388,8 @@ if ($playerID == 2 && isset($_SESSION["userid"])) $p2id = $_SESSION["userid"];
 if ($playerID == 1 && isset($_SESSION["isPatron"])) $p1IsPatron = "1";
 if ($playerID == 2 && isset($_SESSION["isPatron"])) $p2IsPatron = "1";
 
+if($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());
+
 WriteGameFile();
 SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
 SetCachePiece($gameName, $playerID + 3, "0");
