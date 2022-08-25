@@ -19,6 +19,12 @@ $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $set = TryGet("set");
 
+if(GetCachePiece($gameName, $playerID + 6) != "")
+{
+  echo("That player has already joined the game.");
+  exit;
+}
+
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
   switch ($decksToTry) {
     case '1':
