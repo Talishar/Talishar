@@ -232,7 +232,9 @@ function CombatChainResolutionEffects()
         $totalAttack = 0;
         $totalBlock = 0;
         EvaluateCombatChain($totalAttack, $totalBlock);
-        if (BlockValue($combatChain[$i]) > $totalAttack) DestroyCurrentWeapon();
+        if ($totalBlock > 0 && BlockValue($combatChain[$i]) > $totalAttack) {
+          DestroyCurrentWeapon();
+        }
         break;
         default: break;
     }
