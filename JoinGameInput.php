@@ -151,11 +151,12 @@ if ($decklink != "") {
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
+  $totalCards = 0;
 
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
-      $count += $cards[$i]->{'total'};
-      $numSideboard += $cards[$i]->{'sideboardTotal'};
+      $count = $cards[$i]->{'total'};
+      $numSideboard = $cards[$i]->{'sideboardTotal'};
       if ($isFaBDB) {
         $printings = $cards[$i]->{'printings'};
         $printing = $printings[0];
@@ -265,6 +266,7 @@ if ($decklink != "") {
           if ($sideboardCards != "") $sideboardCards .= " ";
           $sideboardCards .= $id;
         }
+        $totalCards += $numMainBoard + $numSideboard;
       }
     }
   } else {
@@ -277,16 +279,16 @@ if ($decklink != "") {
     echo ("The following cards are not yet supported: " . $unsupportedCards);
   }
 
-  if($numMainBoard < 60  && ($format == "cc" || $format == "compcc"))
+  if($totalCards < 60  && ($format == "cc" || $format == "compcc"))
   {
-    $_SESSION['error'] = 'Error: The decklist link you have entered has an invalid number and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
 
-  if($numMainBoard + $numSideboard > 52 && ($format == "blitz" || $format == "commoner"))
+  if($totalCards > 52 && ($format == "blitz" || $format == "commoner"))
   {
-    $_SESSION['error'] = 'Error: The decklist link you have entered has an invalid number of cards for this format and is likely for CC.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
