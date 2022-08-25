@@ -215,37 +215,77 @@ function loginGoogleUser($id_token) {
     header("location: ../MainMenu.php?error=none");
     exit;
   }
-
-  
 }
 
 function loginFromCookie()
 {
+	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_execute($stmt);
-		$data = mysqli_stmt_get_result($stmt);
-		$row = mysqli_fetch_array($data, MYSQLI_NUM);
-		mysqli_stmt_close($stmt);
-		if($row != null && count($row) > 0)
-		{
-			$_SESSION["userid"] = $row[0];
-			$_SESSION["useruid"] = $row[1];
-			$_SESSION["useremail"] = $row[2];
-			$patreonAccessToken = $row[3];
-			$patreonRefreshToken = $row[4];
-			PatreonLogin($patreonAccessToken);
-		}
-		else {
-			unset($_SESSION["userid"]);
-			unset($_SESSION["useruid"]);
-			unset($_SESSION["useremail"]);
-		}
-	}
-	mysqli_close($conn);
+
+  // Prepare and bind statement
+  $stmt = $conn->prepare("SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, usersKarma FROM users WHERE rememberMeToken=?");
+	// $sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, usersKarma FROM users WHERE rememberMeToken='$token'";
+
+  // Declaring string to database. Helps mitigate SQL Injection attacks
+  $stmt->bind_param("i", $token);
+
+  // Execute
+  $stmt->execute();
+
+  // Access the data
+  $stmt->store_result();
+  $stmt->bind_result($usersID, $usersUid, $usersEmail, $patreonAccessToken, $patreonRefreshToken, $usersKarma);
+  $stmt->fetch();
+
+  // Create the session
+  if ($usersID != null) {
+    // session_start();
+    $_SESSION["userid"] = $usersID;
+    $_SESSION["useruid"] = $usersUid;
+    $_SESSION["useremail"] = $usersEmail;
+    $_SESSION["userKarma"] = $usersKarma;
+    PatreonLogin($patreonAccessToken);
+    
+    // $stmt->close();
+    // $conn->close();
+    
+    header("location: /FaBOnline/MainMenu.php?error=none");
+    exit;
+
+  } else {
+    unset($_SESSION["userid"]);
+    unset($_SESSION["useruid"]);
+    unset($_SESSION["useremail"]);
+    unset($_SESSION["userKarma"]);
+  }
+
+	// $stmt = mysqli_stmt_init($conn);
+	// if (mysqli_stmt_prepare($stmt, $sql)) {
+	// 	mysqli_stmt_execute($stmt);
+	// 	$data = mysqli_stmt_get_result($stmt);
+	// 	$row = mysqli_fetch_array($data, MYSQLI_NUM);
+	// 	mysqli_stmt_close($stmt);
+	// 	if($row != null && count($row) > 0)
+	// 	{
+	// 		$_SESSION["userid"] = $row[0];
+	// 		$_SESSION["useruid"] = $row[1];
+	// 		$_SESSION["useremail"] = $row[2];
+	// 		$patreonAccessToken = $row[3];
+	// 		$patreonRefreshToken = $row[4];
+	// 		$_SESSION["userKarma"] = $row[5];
+	// 		PatreonLogin($patreonAccessToken);
+	// 	}
+	// 	else {
+	// 		unset($_SESSION["userid"]);
+	// 		unset($_SESSION["useruid"]);
+	// 		unset($_SESSION["useremail"]);
+	// 		unset($_SESSION["userKarma"]);
+	// 	}
+	// }
+	// mysqli_close($conn);
+  $conn->close();
 }
+
 
 function storeRememberMeCookie($conn, $uuid, $cookie)
 {
