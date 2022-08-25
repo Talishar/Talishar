@@ -288,7 +288,7 @@ if ($decklink != "") {
 
   if($totalCards > 52 && ($format == "blitz" || $format == "commoner"))
   {
-    $_SESSION['error'] = 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = 'Error: The deck link you have entered has too many cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
