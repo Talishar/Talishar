@@ -11,6 +11,7 @@ if (!IsGameNameValid($gameName)) {
 }
 $playerID = TryGet("playerID", 3);
 $lastUpdate = TryGet("lastUpdate", 0);
+$authKey = TryGet("authKey", 0);
 
 if ($lastUpdate > 10000000) $lastUpdate = 0;
 
@@ -54,6 +55,12 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
 include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
+
+$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+if ($authKey != $targetAuth) {
+  echo ("Invalid Auth Key");
+  exit;
+}
 
 if ($kickPlayerTwo) {
   if (file_exists("./Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");

@@ -413,7 +413,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
           }
         }
       };
-      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate, true);
+      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo($authKey); ?>", true);
       xmlhttp.send();
     }
 
