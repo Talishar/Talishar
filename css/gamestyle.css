@@ -165,7 +165,7 @@ h4 {
   white-space: nowrap;
   font: Helvetica;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   position: absolute;
   overflow: hidden;
@@ -304,4 +304,12 @@ input[type="button"]:hover {
 button:focus,
 input[type="button"]:focus {
   outline: none;
+}
+
+.Rate-Span {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 550;
 }

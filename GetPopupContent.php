@@ -37,7 +37,7 @@ switch ($popupType) {
     echo (CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
     break;
   case "menuPopup":
-    if ($turn[0] == "OVER") {
+    if (IsGameOver()) {
       $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
       if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
       if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");

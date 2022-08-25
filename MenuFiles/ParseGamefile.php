@@ -43,6 +43,10 @@
   $p2IsPatron = trim(fgets($gameFileHandler));
   $p1DeckLink = trim(fgets($gameFileHandler));
   $p2DeckLink = trim(fgets($gameFileHandler));
+  $p1IsChallengeActive = trim(fgets($gameFileHandler));
+  $p2IsChallengeActive = trim(fgets($gameFileHandler));
+  $joinerIP = trim(fgets($gameFileHandler));
+  $karmaRestriction = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

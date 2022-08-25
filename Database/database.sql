@@ -11,22 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `fabonline`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `completedgame`
---
-
 CREATE TABLE `completedgame` (
   `CompletionTime` timestamp NOT NULL DEFAULT current_timestamp(),
   `WinningHero` char(6) NOT NULL,
@@ -34,6 +18,7 @@ CREATE TABLE `completedgame` (
   `WinningPID` int(11) DEFAULT NULL,
   `LosingPID` int(11) DEFAULT NULL,
   `WinnerHealth` int(11) DEFAULT NULL,
+  `FirstPlayer` tinyint(4) DEFAULT NULL,
   `NumTurns` int(11) NOT NULL,
   `Format` int(11) DEFAULT NULL,
   `GameID` int(22) NOT NULL,
@@ -81,7 +66,10 @@ CREATE TABLE `users` (
   `usersPwd` varchar(128) NOT NULL,
   `rememberMeToken` varchar(64) DEFAULT NULL,
   `patreonAccessToken` varchar(64) DEFAULT NULL,
-  `patreonRefreshToken` varchar(64) DEFAULT NULL
+  `patreonRefreshToken` varchar(64) DEFAULT NULL,
+  `usersKarma` TINYINT(3) NOT NULL DEFAULT '75',
+  `greenThumbs` int(11) NOT NULL DEFAULT '0',
+  `redThumbs` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -151,6 +139,58 @@ ALTER TABLE `completedgame`
   ADD CONSTRAINT `FK_WINNING_PLAYER` FOREIGN KEY (`WinningPID`) REFERENCES `users` (`usersID`);
 COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+CREATE TABLE `badges` (
+  `badgeId` int(11) NOT NULL,
+  `topText` varchar(128) DEFAULT NULL,
+  `bottomText` varchar(128) DEFAULT NULL,
+  `image` varchar(128) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `badges`
+--
+
+INSERT INTO `badges` (`badgeId`, `topText`, `bottomText`, `image`) VALUES
+(1, 'Commotion #1', 'Wins: {0}', './concat/WTR175.webp');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `badges`
+--
+ALTER TABLE `badges`
+  ADD PRIMARY KEY (`badgeId`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `badges`
+--
+ALTER TABLE `badges`
+  MODIFY `badgeId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+COMMIT;
+
+
+CREATE TABLE `playerbadge` (
+  `playerId` int(11) NOT NULL,
+  `badgeId` int(11) NOT NULL,
+  `intVariable` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `playerbadge`
+--
+
+--
+-- Indexes for table `playerbadge`
+--
+ALTER TABLE `playerbadge`
+  ADD PRIMARY KEY (`playerId`,`badgeId`);

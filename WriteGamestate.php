@@ -11,7 +11,7 @@ while (!flock($handler, LOCK_EX) && $lockTries < 10) {
   ++$lockTries;
 }
 
-if ($lockTries == 10) exit;
+if ($lockTries == 10) { fclose($handler); exit; }
 
 fwrite($handler, implode(" ", $playerHealths) . "\r\n");
 
@@ -82,6 +82,9 @@ fwrite($handler, implode(" ", $chainLinkSummary) . "\r\n");
 fwrite($handler, $p1Key . "\r\n");
 fwrite($handler, $p2Key . "\r\n");
 fwrite($handler, $permanentUniqueIDCounter . "\r\n");
-fwrite($handler, $gameStatus . "\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-fwrite($handler, $animations . "\r\n"); //Animations
+fwrite($handler, $inGameStatus . "\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+fwrite($handler, implode(" ", $animations) . "\r\n"); //Animations
+fwrite($handler, $currentPlayerActivity . "\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
+fwrite($handler, $p1PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+fwrite($handler, $p2PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fclose($handler);

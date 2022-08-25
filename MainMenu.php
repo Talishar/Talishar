@@ -7,6 +7,13 @@ if (!empty($_SESSION['error'])) {
   echo "<script>alert('" . $_SESSION['error'] . "')</script>";
   unset($_SESSION['error']);
 }
+
+if (isset($_SESSION["userid"])) {
+  $uidExists = getUInfo($conn, $_SESSION['useruid']);
+  $_SESSION["userKarma"] = $uidExists["usersKarma"];
+  $_SESSION["greenThumb"] = $uidExists["greenThumbs"];
+  $_SESSION["redThumb"] = $uidExists["redThumbs"];
+}
 ?>
 
 <style>
@@ -19,8 +26,12 @@ if (!empty($_SESSION['error'])) {
   }
 </style>
 
-<div class="FabLogo" style="background-image: url('Images/fab_logo.png');">
+<!--<div class="FabLogo" style="background-image: url('Images/fab_logo.png');">-->
+<div class="FabLogo">
+  <h1 style='font-size:44px; text-align: center;'>Flesh and Blood Online</h1>
+  <h2 style='font-size:30px; text-align: center;'>Unofficial Online Client</h2>
 </div>
+<!--</div>-->
 
 <div class="ServerChecker">
   <?php
@@ -49,35 +60,35 @@ if (!empty($_SESSION['error'])) {
   if (count($favoriteDecks) == 0) {
     echo ("<div class='FavoriteDeckMainMenu'>CC Starter Decks: ");
     echo ("<select name='decksToTry' id='decksToTry'>");
-    echo ("<option value='1'>Bravo Starter Deck</option>");
-    echo ("<option value='2'>Rhinar Starter Deck</option>");
-    echo ("<option value='3'>Katsu Starter Deck</option>");
-    echo ("<option value='4'>Dorinthea Starter Deck</option>");
-    echo ("<option value='5'>Dash Starter Deck</option>");
-    echo ("<option value='6'>Viserai Starter Deck</option>");
-    echo ("<option value='7'>Kano Starter Deck</option>");
-    echo ("<option value='8'>Azalea Starter Deck</option>");
-    echo ("<option value='9'>Prism Starter Deck</option>");
-    echo ("<option value='10'>Levia Starter Deck</option>");
-    echo ("<option value='11'>Boltyn Starter Deck</option>");
-    echo ("<option value='12'>Chane Starter Deck</option>");
-    echo ("<option value='13'>Oldhim Starter Deck</option>");
-    echo ("<option value='14'>Briar Starter Deck</option>");
-    echo ("<option value='15'>Lexi Starter Deck</option>");
-    echo ("<option value='16'>Fai Starter Deck</option>");
-    echo ("<option value='17'>Dromai Starter Deck</option>");
+    echo ("<option value='1'>Bravo CC Starter Deck</option>");
+    echo ("<option value='2'>Rhinar CC Starter Deck</option>");
+    echo ("<option value='3'>Katsu CC Starter Deck</option>");
+    echo ("<option value='4'>Dorinthea CC Starter Deck</option>");
+    echo ("<option value='5'>Dash CC Starter Deck</option>");
+    echo ("<option value='6'>Viserai CC Starter Deck</option>");
+    echo ("<option value='7'>Kano CC Starter Deck</option>");
+    echo ("<option value='8'>Azalea CC Starter Deck</option>");
+    echo ("<option value='9'>Prism Blitz Starter Deck</option>");
+    echo ("<option value='10'>Levia Blitz Starter Deck</option>");
+    echo ("<option value='11'>Boltyn Blitz Starter Deck</option>");
+    echo ("<option value='12'>Chane Blitz Starter Deck</option>");
+    echo ("<option value='13'>Oldhim BlitzStarter Deck</option>");
+    echo ("<option value='14'>Briar Blitz Starter Deck</option>");
+    echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
+    echo ("<option value='16'>Fai Blitz Starter Deck</option>");
+    echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
     echo ("</select></div>");
   }
   echo ("<br>");
 
   ?>
     <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
-    <input type="text" id="fabdb" name="fabdb">&nbsp;
+    <input type="text" id="fabdb" name="fabdb">
   <?php
   if (isset($_SESSION["userid"])) {
     echo ("<span style='display:inline;'>");
     echo ("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-    echo ("<label title='Save deck to Favorites' for='favoriteDeck'>&nbsp;</label>");
+    echo ("<label title='Save deck to Favorites' for='favoriteDeck' style='margin-left:10px;'></label>");
     echo ("</span>");
   }
   echo ("<br>");
@@ -86,23 +97,35 @@ if (!empty($_SESSION['error'])) {
     <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
     <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
-  <span style='display:inline-block; margin-left:5px;'>
-      <input type="radio" id="blitz" name="format" value="blitz" checked="checked">
-      <label style='margin-left:-10px;' for="blitz">Blitz</label>
-  </span>
+  <?php
+  if (isset($_SESSION["userid"])) {
+    echo ("<label for='gameKarmaRestriction' style='font-weight:bolder; margin-left:20px;'>Restrict by Reputation:</label>");
+    echo ("<select class='karmaRestriction-Select' style='margin-left:10px;' name='gameKarmaRestriction' id='gameKarmaRestriction'>");
+    echo ("<option value='0'>No Restriction</option>");
+    if ($_SESSION["userKarma"] >= 50) echo ("<option value='50'>☯ ≥ 50% - Exclude players with a karma below 50% (Bad reputation).</option>");
+    if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation. Exclude players without accounts.</option>");
+    if ($_SESSION["userKarma"] >= 85) echo ("<option value='85'>☯ ≥ 85% - Only players with a very good reputation, while excluding new players.</option>");
+    echo ("</select><br><br>");
+  }
+  ?>
 
-  <span style='display:inline-block;'>
-      <input type="radio" id="cc" name="format" value="cc">
-      <label style='margin-left:-12px;' for="cc">Classic Constructed</label>
-  </span>
+    <input type="radio" id="blitz" name="format" value="blitz">
+    <label style='margin-left:-10px;' for="blitz">Blitz</label>
 
-    <input type="radio" id="commoner" name="format" value="commoner">
-    <label style='margin-left:-12px;' for="commoner">Commoner</label><br><br>
+  <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" checked="checked">
+  <label for="cc">CC</label>
+  <br class="BRMobile">
 
-  <span style='display:inline-block; margin-left:5px;'>
-      <input type="radio" id="public" name="visibility" value="public" checked="checked">
-      <label style='margin-left:-12px;' for="public">Public</label>
-  </span>
+  <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc">
+  <label for="compcc">Competitive CC</label>
+  <br class="BRMobile">
+
+    <input style='margin-left: 0px;' type="radio" id="commoner" name="format" value="commoner">
+    <label style='margin-left:-12px;' for="commoner">Commoner</label>
+  <br><br>
+
+    <input type="radio" id="public" name="visibility" value="public" checked="checked">
+    <label style='margin-left:-12px;' for="public">Public</label>
 
     <input type="radio" id="private" name="visibility" value="private">
     <label style='margin-left:-12px;' for="private">Private</label><br><br>
@@ -131,23 +154,36 @@ if (!empty($_SESSION['error'])) {
 <div class="NewsMenu">
 
   <h1>Open Beta Test</h1>
-  <h2>All cards supported!</h2>
+  <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>FaB Online is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
-  <div style='padding-top:10%;'>
-    <h2>FaBrary Deck Integration!</h2>
+  <h3 style='text-align:center;'>________</h3>
+
+  <div style="position: relative;">
+    <div style='vertical-align:middle; text-align:center;'>
+      <h2>Coax a Commotion #2</h2>
+    <img style="width:95%; border-radius:2.5%;" src="./Images/challenges/challenge2.webp" /><br>
+    <h4 style="margin-left:15px; margin-right:15px;">Rules: Must include Talishar, hero must not be Dash. Everyone that participates will get a badge with their win count!</h4>
   </div>
-  <div style='vertical-align:middle;'><a href='https://fabrary.net/decks/' target='_blank'><img style='padding-left:25%; width:50%;' src="./Images/fabraryLogo.png" /></a></div>
-  <h2 style='width:90%; padding-left:5%;'>Click above to explore tournament winning decks!</h2>
 
   <!--
-  <div style='position:absolute; bottom:10px; left:10px;'>
-    <h1 style="width:100%; text-align:center; color:rgb(220, 220, 220);">Learn to Play Videos</h1>
-    <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:40px;' src='./Images/flags/italy.png' /></a>
-    <br><br>
-    <i style="font-size: small;">If you make a video in another language, let us know on Discord!</i>
-  </div>
--->
+  <div style=" padding-top:10%; vertical-align:middle; position: relative;">
+      <div style="vertical-align:middle; position: relative;">
+        <h2>Coax a Commotion!</h2>
+        <h4>Win as many games as you can <br>with Sigil of Solace (3)</h4><br>
+        <img style="margin-left:30%; width:40%; height:150px; border-radius:5%;" src="./concat/WTR175.webp" /><br><br>
+        <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with max copies of Sigil of Solace (3) in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
+      </div>
+      -->
 
+  <h3 style='text-align:center;'>________</h3>
+
+  <div style='vertical-align:middle; text-align:center;'>
+    <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
+    <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
+    <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a>
+    <br>
+    <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
+  </div>
 </div>
 
 <?php

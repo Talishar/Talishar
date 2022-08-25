@@ -30,15 +30,27 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
 {
   $char = explode(",", $playerCharacter);
   $numHands = 0;
+  $numEquip = 0;
   for ($i = 0; $i < count($char); ++$i) {
     if (CardSubType($char[$i]) == "Off-Hand") ++$numHands;
     else if (CardType($char[$i]) == "W") {
       if (Is1H($char[$i])) ++$numHands;
       else $numHands += 2;
     }
+    else if (CardType($char[$i]) == "E") ++$numEquip;
+  }
+  if ($numHands < 1) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands weapon currently equipped.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    exit;
   }
   if ($numHands > 2) {
-    WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands of weapons currently equipped.");
+    WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands weapons currently equipped.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    exit;
+  }
+  if ($numEquip < 1) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. $numEquip equipment pieces are equipped.");
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
     exit;
   }

@@ -76,6 +76,9 @@ fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
 fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
 fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 fwrite($handler, "\r\n"); //Animations
+fwrite($handler, "0\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
+fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fclose($handler);
 
 //Set up log file
@@ -103,7 +106,7 @@ while (!file_exists($filename) && $gameStateTries < 10) {
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 
-header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=1&authKey=$p1Key");
+header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
 
 exit;
 
@@ -115,11 +118,34 @@ function make_seed()
 
 function initializePlayerState($handler, $deckHandler, $player)
 {
-  global $p1IsPatron, $p2IsPatron;
+  global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
   $deckSize = count($deckCards);
   fwrite($handler, "\r\n"); //Hand
+
+  if($player == 1) $p1IsChallengeActive = "0";
+  else if($player == 2) $p2IsChallengeActive = "0";
+
+  //Equipment challenge
+  if($charEquip[0] != "ARC001" && $charEquip[0] != "ARC002" && $charEquip[1] == "CRU177")
+  {
+    if($player == 1) $p1IsChallengeActive = "1";
+    else if($player == 2) $p2IsChallengeActive = "1";
+  }
+
+  /*
+  $challengeThreshold = (CharacterHealth($charEquip[0]) > 25 ? 3 : 2);
+  $challengeThreshold = 2;
+  $numChallengeCard = 0;
+  for($i=0; $i<count($deckCards); ++$i)
+  {
+    if($deckCards[$i] == "WTR175") ++$numChallengeCard;
+  }
+  if($player == 1 && $numChallengeCard >= $challengeThreshold) $p1IsChallengeActive = "1";
+  else if($player == 2 && $numChallengeCard >= $challengeThreshold) $p2IsChallengeActive = "1";
+  */
+
   fwrite($handler, implode(" ", $deckCards) . "\r\n");
 
   for ($i = 0; $i < count($charEquip); ++$i) {
@@ -135,7 +161,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   fwrite($handler, "\r\n"); //Discard
   fwrite($handler, "\r\n"); //Pitch
   fwrite($handler, "\r\n"); //Banish
-  fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0\r\n"); //Class State
+  fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0\r\n"); //Class State
   fwrite($handler, "\r\n"); //Character effects
   fwrite($handler, "\r\n"); //Soul
   fwrite($handler, "\r\n"); //Card Stats

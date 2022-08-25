@@ -343,13 +343,21 @@ function CharacterPlayCardAbilities($cardID, $from)
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
     if($character[$i+1] != 2) continue;
-    switch($character[$i])
+    $characterID = $character[$i];
+    if($i == 0 && $character[0] == "CRU097")
+    {
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
+    switch($characterID)
     {
       case "EVR120": case "UPR102": case "UPR103":
         if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
         {
-          PlayAura("ELE111", $mainPlayer);
-          WriteLog("Iyslander created a Frostbite for playing an ice card.");
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
         break;
       case "ARC075": case "ARC076":
@@ -359,14 +367,14 @@ function CharacterPlayCardAbilities($cardID, $from)
         if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2)
         {
           PlayAura("ELE110", $currentPlayer);
-          WriteLog("Briar created an Embodiment of Lightning aura.");
+          WriteLog(CardLink($characterID, $characterID) . " created an Embodiment of Lightning aura.");
         }
         break;
       case "UPR158":
         if(GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && AttackValue($cardID) <= 2)
         {
-          AddCurrentTurnEffect($character[$i], $currentPlayer);
-          WriteLog("Tiger Strike Shuko gives the attack +1 and makes the damage unable to be prevented.");
+          AddCurrentTurnEffect($characterID, $currentPlayer);
+          WriteLog(CardLink($characterID, $characterID) . " gives the attack +1 and makes the damage unable to be prevented.");
           $character[$i+1] = 1;
         }
         break;
@@ -475,7 +483,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   {
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer)) && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $mainPlayer); }
   }
@@ -633,14 +641,37 @@ function PlayerGainHealth($amount, &$health)
   $health += $amount;
 }
 
+function IsGameOver()
+{
+  global $inGameStatus, $GameStatus_Over;
+  return $inGameStatus == $GameStatus_Over;
+}
+
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id;
-	include_once "./MenuFiles/ParseGamefile.php";
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
+  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer;
+  include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
+  $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   logCompletedGameStats();
+
+  if(!$conceded || $currentTurn >= 3) {
+    // Give players negative karma if they left the game in progress.
+    if($GLO_Player1Disconnected != 0 && $GLO_Player1Disconnected != "") UpdateKarma($GLO_Player1Disconnected, 1);
+    else if($GLO_Player2Disconnected != 0 && $GLO_Player2Disconnected != "") UpdateKarma(1, $GLO_Player2Disconnected);
+    else UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
+  }
+
+/*
+  try {
+    logCompletedGameStats(true);
+  } catch (Exception $e) {
+    //Failed to send to reporting server
+  }
+  */
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
@@ -649,7 +680,8 @@ function UnsetBanishModifier($player, $modifier, $newMod="DECK")
   $banish = &GetBanish($mainPlayer);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
-    if($banish[$i+1] == $modifier) $banish[$i+1] = $newMod;
+    $cardModifier = explode("-", $banish[$i+1])[0];
+    if($cardModifier == $modifier) $banish[$i+1] = $newMod;
   }
 }
 
@@ -678,6 +710,8 @@ function UnsetTurnBanish()
   UnsetBanishModifier(1, "INST");
   UnsetBanishModifier(2, "TT");
   UnsetBanishModifier(2, "INST");
+  UnsetBanishModifier(1, "ARC119");
+  UnsetBanishModifier(2, "ARC119");
   UnsetCombatChainBanish();
   ReplaceBanishModifier(1, "NT", "TT");
   ReplaceBanishModifier(2, "NT", "TT");
@@ -792,7 +826,6 @@ function CombatChainClosedCharacterEffects()
       switch($chainLinks[$i][$j])
       {
         case "MON089":
-          WriteLog($chainLinkSummary[$i * ChainLinkSummaryPieces() + 2] . " " . $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1]);
           if($chainLinkSummary[$i * ChainLinkSummaryPieces() + 2] != "ILLUSIONIST" && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6)
           {
             $character[FindCharacterIndex($defPlayer, "MON089")+1] = 0;
@@ -995,6 +1028,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   global $mainPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
+
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
     if(ClassContains($cardID, "WIZARD", $currentPlayer) && $cardType == "A") return true;
@@ -1018,7 +1053,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
-  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103"))) return true;
+  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)))) return true;
   if($cardType == "AR" && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if($cardType == "DR" && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
@@ -1030,12 +1065,12 @@ function ClassOverride($cardID, $player="")
   $cardClass = CardClass($cardID);
   if ($cardClass == "NONE") $cardClass = "";
   $otherPlayer = ($player == 1 ? 2 : 1);
-  $mainCharacter = &GetPlayerCharacter($otherPlayer);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
 
-  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
-  if(SearchCurrentTurnEffects("CRU097", $player)) {
+  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";//Erase Face
+  if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
     if ($cardClass != "") $cardClass .= ",";
-    $cardClass .= CardClass($mainCharacter[0]) . ",SHAPESHIFTER";
+    $cardClass .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
   }
 
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
@@ -1148,7 +1183,7 @@ function DoesAttackHaveGoAgain()
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
     if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002"))) return true;
+  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
 
   // Unnatural Go Again - Important for Hypotermia
   $mainPitch = &GetPitch($mainPlayer);
@@ -1158,8 +1193,6 @@ function DoesAttackHaveGoAgain()
       return GetDieRoll($mainPlayer) <= 4;
     case "ARC197": case "ARC198": case "ARC199":
       return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
-    case "ARC212": case "ARC213": case "ARC214":
-      return GetClassState($mainPlayer, $CS_NumMoonWishPlayed) > 0;
     case "CRU010": case "CRU011": case "CRU012":
       if(NumCardsBlocking() < 2) return true;
     case "CRU057": case "CRU058": case "CRU059":
@@ -1189,7 +1222,7 @@ function DoesAttackHaveGoAgain()
     case "UPR063": case "UPR064": case "UPR065":
     case "UPR069": case "UPR070": case "UPR071":
       return NumDraconicChainLinks() >= 2;
-    case "UPR048": 
+    case "UPR048":
       return NumPhoenixFlameChainLinks() >= 1;
     case "UPR092":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
@@ -1381,8 +1414,8 @@ function NumEquipBlock()
       case "CHOOSEFIRSTPLAYER": return 0;
       case "MULTICHOOSEDECK": return 0;
       case "CHOOSEPERMANENT": return 0;
-      case "OVER": return 0;
       case "MULTICHOOSETEXT": return 0;
+      case "OVER": return 0;
       default: return 1;
     }
   }
@@ -1501,4 +1534,17 @@ function NumEquipBlock()
       }
     }
     return "-";
+  }
+
+  function GetDamagePreventionIndices()
+  {
+    global $combatChain, $currentPlayer;
+    $rv = SearchLayerDQ(($currentPlayer == 1 ? 2 : 1), "");
+    $rv = SearchMultiZoneFormat($rv, "LAYER");
+    if(count($combatChain) > 0)
+    {
+      if($rv != "") $rv .= ",";
+      $rv .= "CC-0";
+    }
+    return $rv;
   }

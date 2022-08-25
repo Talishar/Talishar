@@ -19,6 +19,14 @@
     if($darkMode) return "#1a1a1a";
     else return "#EDEDED";
   }
+
+  function ClientRenderedCard($cardNumber, $action=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="-", $lifeCounters=0, $defCounters=0, $atkCounters=0, $controller=0, $type="", $sType="", $restriction="", $isBroken=0, $onChain=0, $isFrozen=0, $gem=0)
+  {
+    $rv = $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $counters . " " . $actionDataOverride . " " . $lifeCounters . " " . $defCounters . " " . $atkCounters . " ";
+    $rv .= $controller . " " . $type . " " . $sType . " " . $restriction . " " . $isBroken . " " . $onChain . " " . $isFrozen . " " . $gem;
+    return $rv;
+  }
+
   //Rotate is deprecated
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="", $controller=0)
   {//
@@ -30,7 +38,7 @@
     }
     $fileExt = ".png";
     $folderPath = $folder;
-    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM" || $cardNumber == "FINALIZECHAINLINK")
+    if($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM" || $cardNumber == "FINALIZECHAINLINK" || $cardNumber == "DEFENDSTEP")
     {
       $folderPath = str_replace("CardImages", "Images", $folderPath);
       $folderPath = str_replace("concat", "Images", $folderPath);
@@ -93,16 +101,16 @@
   }
   //Steam Counters style
  elseif ($counters != 0 && ($from == "ITEMS" || $from == "CHARACTER") && ClassContains($cardNumber, "MECHANOLOGIST")) {
-   if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
-   $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
+   if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "0px"; } else { $left = "-45%"; }
+   $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
    display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
    <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/SteamCounters.png'></div>";
   }
   //Equipments, Hero and default counters style
   elseif($counters != 0) {
-    if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "70%"; }
-    $rv .= "<div style='margin: 0px; top: 50%; left: $left;
+    if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "30%"; }
+    $rv .= "<div style='margin: 0px; top: 50%; left:" . $left . ";
     margin-right: -50%; border-radius: 50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center;
     transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
     font-family: Helvetica; font-size:" . ($counterHeight-2) . "px; font-weight:550; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode).";'>" . $counters . "</div>";
@@ -110,16 +118,17 @@
 
   //-1 Defense & Endurance Counters style
   if($defCounters != 0) {
-    if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
+    if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
+    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
     font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
     <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
   }
+
   //Health Counters style
   if($lifeCounters != 0){
-    if($defCounters == 0){ $left = "50%"; } else { $left = "70%"; }
-    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
+    if($defCounters == 0){ $left = "0px"; } else { $left = "-45%"; }
+    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
     font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
     <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Life.png'></div>";
@@ -127,8 +136,8 @@
 
   //Attack Counters style
   if($atkCounters != 0) {
-    if($lifeCounters == 0 && $counters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
+    if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
+    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0;width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle;line-height:" . $imgCounterHeight . "px;
     font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
     <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Attack.png'></div>";
@@ -230,7 +239,7 @@
     {
       $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
     }
-    if($id == "OVER") $style = "text-align: center;";
+    if(IsGameOver()) $style = "text-align: center;";
     else $style = "font-size: 18px; margin-left: 10px; line-height: 22px; align-items: center;";
     $rv .= "<div style='" . $style . "'>" . $customInput . "</div>";
     $rv .= "</div>";
@@ -369,6 +378,41 @@
     return $rv;
   }
 
+  function BanishUIMinimal($from="")
+  {
+    global $turn, $currentPlayer, $playerID, $cardSize, $cardSizeAura;
+    $rv = "";
+    $size = ($from == "HAND" ? $cardSizeAura : 120);
+    $banish = GetBanish($playerID);
+    for($i=0; $i<count($banish); $i+=BanishPieces()) {
+      $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+      $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
+      $mod = explode("-", $banish[$i+1])[0];
+      if($mod == "INT")
+      {
+        if($rv != "") $rv .= "|";
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
+      }
+      else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
+      {
+        //$rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+        if($rv != "") $rv .= "|";
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
+      }
+      else// if($from != "HAND")
+      {
+        if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
+        {
+          if($rv != "") $rv .= "|";
+          $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
+        }
+        else if($from != "HAND")
+          $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+      }
+    }
+    return $rv;
+  }
+
   function CardBorderColor($cardID, $from, $isPlayable)
   {
     global $playerID, $currentPlayer, $turn;
@@ -424,30 +468,24 @@
     global $playerID;
     $rv = "<table class='table-MainMenu'><tr><td class='table-td-MainMenu'>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
-    $rv .= "</td><td style='width:50%;'>";
+    $rv .= "</td><td style='width:45%;  margin-top: 10px; vertical-align:top;'>";
     $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
     $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
-    $rv .= PreviousTurnSelectionUI();
+    $rv .= PreviousTurnSelectionUI() . "<BR>";
+    $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
     $rv .= "</td></tr></table>";
     return $rv;
   }
 
   function PreviousTurnSelectionUI()
   {
-    global $currentTurn, $mainPlayer, $playerID, $firstPlayer;
+    global $currentTurn, $mainPlayer, $playerID, $firstPlayer, $gameName;
     $rv = "<h3>Revert to Start of Previous Turn</h3>"; // TODO: Revert Player 1 Turn 1 to the start of the game.
-    for($i=1; $i<=$currentTurn; ++$i)
-    {
-      if($i < $currentTurn - 4) continue;
-      for($j=1; $j<=2; ++$j)
-      {
-        if($i == 1 && $firstPlayer == 2 && $j == 1) continue;//Player 1 never got a turn 1
-        if($i == $currentTurn && $j > $mainPlayer) continue;//Player 2 hasn't gotten a turn yet
-        $rv .= CreateButton($playerID, "Player $j Turn $i", 10003, $j . "-" . $i, "20px") . "<BR>";
-      }
-    }
+    $rv .= CreateButton($playerID, "This Turn", 10003, "beginTurnGamestate.txt", "20px") . "<BR>";
+    $lastTurnFN = "lastTurnGamestate.txt";
+    if(file_exists("./Games/" . $gameName . "/" . $lastTurnFN)) $rv .= CreateButton($playerID, "Last Turn", 10003, $lastTurnFN) . "<BR>";
     return $rv;
   }
 

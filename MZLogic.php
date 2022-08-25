@@ -73,3 +73,11 @@ function MZPlayerID($me, $MZIndex)
   if ($indexArr[0] == "THEIRCHAR") return ($me == 1 ? 2 : 1);
   return -1;
 }
+
+function GetMZCard($MZIndex)
+{
+  $params = explode("-", $MZIndex);
+  $zoneDS = &GetMZZone($player, $params[0]);
+  $index = $params[1];
+  return $zoneDS[$index];
+}

@@ -116,6 +116,7 @@
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
+    $rv = "";
     switch($cardID)
     {
       case "MON029": case "MON030":
@@ -206,13 +207,13 @@
     $deck = &GetDeck($mainPlayer);
     if(count($deck) == 0) return;
     $cardID = array_shift($deck);
-    WriteLog("Processing ". CardLink("MON034", "MON034") ."'s hit effect:");
+    WriteLog(CardLink("MON034", "MON034") ."'s hit effect:");
     if(!RevealCards($cardID, $mainPlayer)) return;
     if(TalentContains($cardID, "LIGHT", $mainPlayer))
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("The revealed card is Light, so it is added to soul and the main player gains 1 health.");
+      WriteLog("It's a Light card, so it goes in the soul and gain 1 health.");
     }
     else
     {

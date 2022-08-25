@@ -70,6 +70,7 @@
 
   function ARCHasGoAgain($cardID)
   {
+    global $currentPlayer, $CS_NumMoonWishPlayed;
     switch($cardID)
     {
       case "ARC006": return true;
@@ -92,7 +93,9 @@
       case "ARC203": case "ARC204": case "ARC205": return true;
       case "ARC206": case "ARC207": case "ARC208": return true;
       case "ARC209": case "ARC210": case "ARC211": return true;
+      case "ARC212": case "ARC213": case "ARC214": return GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0;
       case "ARC215": case "ARC216": case "ARC217": return true;
+      
       default: return false;
     }
   }

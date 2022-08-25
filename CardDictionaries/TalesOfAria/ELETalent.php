@@ -439,7 +439,7 @@
           {
             AddCurrentTurnEffect($cardID, $currentPlayer);
           }
-          $rv = "Gives your next action go again.";
+          $rv = "Gives target action go again.";
         }
         return $rv;
       case "ELE233":
@@ -464,13 +464,13 @@
 
   function ELETalentHitEffect($cardID)
   {
-    global $defPlayer;
+    global $mainPlayer, $defPlayer;
     switch($cardID)
     {
       case "ELE148": case "ELE149": case "ELE150":
         if(IsHeroAttackTarget())
         {
-          PayOrDiscard($defPlayer, 2);
+          AddLayer("TRIGGER", $mainPlayer, $cardID, $defPlayer);
         }
         break;
       case "ELE157": case "ELE158": case "ELE159":

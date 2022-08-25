@@ -135,8 +135,11 @@ $chainLinkSummary = GetArray($handler);
 $p1Key = trim(fgets($handler));
 $p2Key = trim(fgets($handler));
 $permanentUniqueIDCounter = trim(fgets($handler));
-$gameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+$inGameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 $animations = GetArray($handler); //Animations
+$currentPlayerActivity = trim(fgets($handler)); //Current Player activity status -- 0 = active, 2 = inactive
+$p1PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fclose($handler);
 BuildMyGamestate($playerID);
 
@@ -403,15 +406,9 @@ function RevertGamestate($filename = "gamestateBackup.txt")
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $gameName;
-  $filename = "p" . $mainPlayer . "turn" . $currentTurn . "Gamestate.txt";
-  MakeGamestateBackup($filename);
-  if ($currentTurn > 5) {
-    $delTurn = $currentTurn - 5;
-    for ($i = 1; $i <= 2; ++$i) {
-      $fn = "./Games/" . $gameName . "/" . "p" . $i . "turn" . $delTurn . "Gamestate.txt";
-      if (file_exists($fn)) {
-        unlink($fn);
-      }
-    }
-  }
+  $filepath = "./Games/" . $gameName . "/";
+  $lastTurnFN = $filepath . "lastTurnGamestate.txt";
+  $thisTurnFN = $filepath . "beginTurnGamestate.txt";
+  if(file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
+  copy($filepath . "gamestate.txt", $thisTurnFN);
 }

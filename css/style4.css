@@ -73,7 +73,8 @@ h6,
 p,
 a,
 i,
-label {
+label,
+.scoretable {
   font-family: var(--font-family);
   color: var(--light-color);
   line-height: 24px;
@@ -81,23 +82,34 @@ label {
   text-shadow: var(--text-shadow);
 }
 
+a {
+  text-underline-offset: 2px;
+}
+
 h1 {
   font-weight: 600;
   font-size: 32px;
-  padding: 20px 0;
+  padding: 15px 0;
   text-align: center;
 }
 
 h2 {
   font-weight: 600;
   font-size: 24px;
-  padding: 20px 0;
+  padding: 15px 0;
   text-align: center;
 }
 
 h3 {
   font-weight: 600;
   font-size: 16px;
+  text-align: center;
+}
+
+h4 {
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
 }
 
 p {
@@ -148,7 +160,7 @@ section {
 select {
   border: 2px solid grey;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -318,8 +330,9 @@ button {
   font-size: 20px;
 }
 
-.profile-form div {
-  margin-bottom: 4px;
+.profile-form h1 {
+  text-decoration: underline;
+  text-underline-offset: 5px;
 }
 
 .profile-form h2 {
@@ -413,8 +426,103 @@ button {
   outline: none;
 }
 
+.grid-container {
+  display: grid;
+  grid-template-rows: auto;
+  padding: 10px;
+}
+
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
+/* ====================
+    Karma Progress Bar
+   ==================== */
+
+.karma-container {
+  width: 99%;
+  font-size: 18px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-radius: 5px;
+}
+
+.karma-hover {
+  width: 400px;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+  font-size: 16px;
+  padding-left: 5px;
+  padding-top: 5px;
+  line-height: 1.5em;
+  text-shadow: none;
+  transform: scale(0);
+  transition: transform ease-out 150ms;
+
+  /* Position the tooltip */
+  position: fixed;
+  top: 120px;
+  left: 40px;
+  z-index: 1;
+}
+
+.karma-container:hover .karma-hover {
+  transform: scale(1);
+}
+
+.karma-title {
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.karma-light-grey {
+  color: #fff;
+  background-color: var(--light-color);
+  border-radius: 5px;
+  border: 1px solid var(--dark-color);
+  margin-bottom: 5px;
+  position: relative;
+}
+
+.karma-green {
+  color: #fff;
+  background-color: #4CAF50;
+  border-right: 1px solid var(--dark-color);
+}
+
+.karma-orange {
+  color: #fff;
+  background-color: #ff9800;
+  border-right: 1px solid var(--dark-color);
+}
+
+.karma-red {
+  color: #fff;
+  background-color: #f44336;
+  border-right: 1px solid var(--dark-color);
+}
+
+.karma-amount {
+  display: inline-block;
+  position: absolute;
+  margin: 0;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 /* ================
-    Reset Password 
+    Reset Password
    ================ */
 
 .form-resetpwd {
@@ -494,6 +602,10 @@ button {
   border: 1px solid var(--dark-color);
   border-radius: 5px;
   width: 30%;
+  height: 45vh;
+  border-radius: 5px;
+  margin: auto;
+  margin-top: 15px;
 }
 
 .draft-form-form {
@@ -596,12 +708,12 @@ button {
 
 .FabLogo {
   position: absolute;
-  width: 20%;
+  width: 40%;
   height: 20%;
   z-index: 15;
-  top: 50px;
+  top: 80px;
   left: 50%;
-  margin: 0 0 0 -10%;
+  margin: 0 0 0 -20%;
   /* -10% = half of width/height */
   background-size: 100% auto;
   background-repeat: no-repeat;
@@ -676,7 +788,8 @@ button {
   background-color: var(--grey-transparent-background);
   border: 2px solid var(--dark-color);
   border-radius: 5px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .NewsMenu h1,
@@ -687,11 +800,22 @@ button {
   color: rgb(220, 220, 220);
 }
 
+.scoretable {
+  font-size: smaller;
+  width: 70%;
+  margin-left: 10%
+}
+
+.scoretable th {
+  font-size: large;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .GameLobby_Button {
   cursor: pointer;
   color: var(--dark-color);
   background: var(--light-color);
-  ;
   border: 1px solid var(--dark-color);
   box-shadow: var(--button-box-shadow);
   padding-left: 5px;
@@ -841,29 +965,204 @@ button {
   cursor: pointer;
 }
 
+.karmaRestriction-Select {
+  width: 50%;
+}
+
 /* ===========
-   Game Stats 
+   Game Stats
   ============ */
 
 .game-stats {
   position: relative;
   border-radius: 5px;
-  margin: auto;
-  margin-top: 15px;
-  width: 40%;
-  height: 90vh;
+  margin-left: 5px;
   display: inline-block;
+  background-color: var(--grey-transparent-background);
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  overflow-y: scroll;
+}
+
+.game-stats h3 {
+  margin: 15px 0;
+  text-decoration: underline;
+  text-underline-offset: 5px;
 }
 
 .game-stats-div {
-  display: flex;
-  justify-content: center;
   font-family: var(--font-family);
   font-weight: bold;
   font-size: 18px;
   color: var(--light-color);
   margin-bottom: 5px;
   text-shadow: var(--text-shadow);
+  overflow-x: hidden;
   overflow-y: auto;
-  max-height: 88vh;
+  height: 82vh;
+  max-height: 85vh;
+}
+
+.BRMobile {
+  display: none
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  margin-left: 10px;
+}
+
+.overlay {
+  position: absolute;
+  top: -10px;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  transition: .3s ease;
+  border-radius: 8px;
+  pointer-events: none;
+  text-align: center;
+  margin-left: 5px;
+}
+
+.container:hover .overlay {
+  bottom: 0;
+  height: 100%;
+  pointer-events: none;
+  margin-left: 5px;
+}
+
+.text {
+  white-space: nowrap;
+  font: Helvetica;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  position: absolute;
+  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+  width: 100%;
+  pointer-events: none;
+  margin-left: -10px;
+}
+
+.badge {
+  height: 125px;
+  position: relative;
+  border-radius: 5%;
+  top: -10px;
+  left: 0px;
+}
+
+/* Phone Settings */
+
+@media screen and (max-width: 600px) {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  a,
+  i,
+  label {
+    line-height: 12px;
+  }
+
+  h1 {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  h2 {
+    font-size: 13px;
+    padding: 8px 0;
+  }
+
+  h3 {
+    font-size: 12px;
+  }
+
+  h4 {
+    font-size: 11px;
+  }
+
+
+  p {
+    font-size: 12px;
+  }
+
+  nav {
+    width: 100%;
+    height: 40px;
+  }
+
+  nav .wrapper {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  li a {
+    font-size: 12px;
+    padding: 0 8px;
+    text-transform: uppercase;
+  }
+
+  select {
+    font-size: 12px;
+    margin-left: -8%;
+    width: 95%;
+  }
+
+  input {
+    font-size: 10px;
+    margin-left: 5%;
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 10px;
+  }
+
+  span {
+    margin-left: -5%;
+  }
+
+  .FavoriteDeckMainMenu {
+    font-size: 12px;
+  }
+
+  .skip-nav-link {
+    display: none;
+  }
+
+  .karmaRestriction-Select {
+    font-size: 12px;
+  }
+
+  .CreateGame_Button {
+    cursor: pointer;
+    font-size: 16px;
+    height: 40px;
+  }
+
+  .BRMobile {
+    display: inline;
+  }
 }

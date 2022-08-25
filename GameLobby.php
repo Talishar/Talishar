@@ -3,7 +3,7 @@
   <title>Flesh and Blood Online</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/style2.css">
+  <link rel="stylesheet" href="css/style4.css">
 </head>
 
 <?php
@@ -41,7 +41,7 @@ $theirName = ($playerID == 1 ? $p2uid : $p1uid);
 
 if ($gameStatus == $MGS_GameStarted) {
   $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-  header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
   exit;
 }
 
@@ -80,7 +80,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
   }
 
   h1 {
-    margin-top: 6px;
+    margin-top: 10px;
     text-align: center;
     width: 100%;
     text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
@@ -103,23 +103,19 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
   <div id="cardDetail" style="display:none; position:absolute;"></div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:350px;
-background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid #1a1a1a;
-border-radius: 5px;">
+  <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
     <?php
     $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
     echo ("<h2>$theirDisplayName Hero</h2>");
 
-    $otherHero = "cardBack";
+    $otherHero = "CardBack";
     echo ("<div id='oppHero' style='padding-left:5%;'>");
     echo (Card($otherHero, "concat", 250, 0, 0));
     echo ("</div>");
     ?>
   </div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <?php
     $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
@@ -177,16 +173,12 @@ border: 2px solid #1a1a1a; border-radius: 5px;">
     ?>
   </div>
 
-  <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:290px; height:73px;
-background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid #1a1a1a;
-border-radius: 5px;" onclick="TabClick('EQUIP');">
+  <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:320px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
 
     <h1>Your Equipment</h1>
   </div>
 
-  <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:3%;
-background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
@@ -215,16 +207,14 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     </div>
   </div>
 
-  <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:933px; width:290px; height:73px;
-background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
+  <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:963px; width:320px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
 
     <?php
     echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
     ?>
   </div>
 
-  <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:639px; right:20px; bottom:3%;
-background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
+  <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:639px; right:20px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
 
     <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
@@ -307,8 +297,8 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
       var deckDisplay = document.getElementById("deckDisplay");
       equipDisplay.style.display = tab == "EQUIP" ? "block" : "none";
       deckDisplay.style.display = tab == "DECK" ? "block" : "none";
-      equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(74, 74, 74, 0.8)" : "rgba(196, 196, 196, 0.7)";
-      deckTab.style.backgroundColor = tab == "DECK" ? "rgba(74, 74, 74, 0.8)" : "rgba(196, 196, 196, 0.7)";
+      equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
+      deckTab.style.backgroundColor = tab == "DECK" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
     }
 
     function CardClick(id) {
@@ -487,6 +477,9 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
       ++$count;
     }
     if ($weapon2 != "") {
+      if (HasReverseArt($weapon1) && $weapon2 == $weapon1) {
+        $weapon2 = ReverseArt($weapon1);
+      }
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
@@ -497,6 +490,9 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     }
     echo ("<tr>");
     for ($i = 0; $i < count($weaponSB); ++$i) {
+      if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
+        $weaponSB[$i + 1] = ReverseArt($weaponSB[$i]);
+      }
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
@@ -510,6 +506,38 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</tr>");
   }
 
+  function HasReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return true;
+      case "CRU004":
+        return true;
+      case "CRU051":
+        return true;
+      case "CRU079":
+        return true;
+      default:
+        return false;
+        break;
+    }
+  }
+
+  function ReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return "CRU049";
+      case "CRU004":
+        return "CRU005";
+      case "CRU051":
+        return "CRU052";
+      case "CRU079":
+        return "CRU080";
+      default:
+        break;
+    }
+  }
   ?>
 
   <?php

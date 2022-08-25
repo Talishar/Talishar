@@ -4,7 +4,7 @@ function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue;
   $somethingChanged = true;
-  if($turn[0] != "OVER")
+  if(!IsGameOver())
   {
     for($i=0; $i<100 && $somethingChanged; ++$i)
     {
@@ -27,6 +27,7 @@ function ProcessMacros()
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
           if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+          else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[5] != "-")//Means there is a unique ID
           {
             $subtype = CardSubType($layers[2]);

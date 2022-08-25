@@ -3,7 +3,7 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $p1Permanents;
+  global $p1Permanents, $layers, $combatChain;
   $rv = "";
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
@@ -12,6 +12,8 @@ function &GetMZZone($player, $zone)
   else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
   else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
   else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
+  else if($zone == "LAYER") return $layers;
+  else if($zone == "CC") return $combatChain;
   return $rv;
 }
 

@@ -26,7 +26,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     ++$actionPoints;
   }
   //Do effects that change where it goes, or banish it if not
-  if ($from == "DECK" && SearchCharacterActive($player, "CRU099") && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
+  if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     PutItemIntoPlay($cardID);
   } else {
     $rv = count($banish);
@@ -36,9 +36,9 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   }
   ++$classState[$CS_CardsBanished];
   if (AttackValue($cardID) >= 6) {
+    $character = &GetPlayerCharacter($player);
     if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
-      $character = &GetPlayerCharacter($player);
-      if (($character[0] == "MON119" || $character[0] == "MON120") && $character[1] == 2) { // Levia
+      if (($character[0] == "MON119" || $character[0] == "MON120" || SearchCurrentTurnEffects("MON119-SHIYANA", $player) || SearchCurrentTurnEffects("MON120-SHIYANA", $player)) && $character[1] == 2) { // Levia
         WriteLog(CardLink($character[0], $character[0]) . " Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
       }
     }
@@ -395,7 +395,7 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
   $index = $params[1];
   $cardID = $layers[$index];
   $player = $layers[$index + 1];
-  for ($i = $index + LayerPieces(); $i >= $index; --$i) {
+  for ($i = $index + LayerPieces()-1; $i >= $index; --$i) {
     unset($layers[$i]);
   }
   $layers = array_values($layers);

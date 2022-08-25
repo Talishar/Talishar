@@ -237,7 +237,7 @@
       case "WTR042": return "Head";
       case "WTR046": case "WTR047":
       case "WTR054": case "WTR055": case "WTR056":
-      case "WTR069":  case "WTR070": case "WTR071":
+      case "WTR069": case "WTR070": case "WTR071":
       case "WTR072": case "WTR073": case "WTR074": case "WTR075": return "Aura";
       case "WTR078": return "Dagger";
       case "WTR079": return "Head";
@@ -715,14 +715,14 @@
         if(CardType($combatChain[0]) == "W")
         {
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-          $s1 = " gives your weapon attack go again";
+          $s1 = "Gives your weapon attack go again";
         }
         if(RepriseActive())
         {
           MyDrawCard();
           $s2 = " draws a card";
         }
-        return "Glint the Quicksilver" . $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
+        return $s1 . ($s1 != "" && $s2 != "" ? " and" : "") . $s2 . ".";
       case "WTR119": case "WTR122":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
@@ -797,7 +797,7 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("HELMHOPEMERCHANT", $currentPlayer, "-", 1);
+        AddDecisionQueue("HOPEMERCHANTHOOD", $currentPlayer, "-", 1);
         return "";
       case "WTR152":
         AddCurrentTurnEffect($cardID, $mainPlayer);
@@ -966,14 +966,6 @@
     RevealCards($cards, $mainPlayer);//CanReveal called
     GainHealth($lifegain, $mainPlayer);
     return "Blessing of Deliverance gained " . $lifegain . " life.";
-  }
-
-  function EmergingPowerDestroy($cardID)
-  {
-    global $mainPlayer;
-    $log = "Emerging Power gives the next Guardian attack this turn +" . EffectAttackModifier($cardID) . ".";
-    AddCurrentTurnEffect($cardID, $mainPlayer);
-    return $log;
   }
 
   function KatsuHit($index)

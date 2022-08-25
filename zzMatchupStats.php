@@ -3,31 +3,27 @@
 include_once 'Header.php';
 include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
+include_once "Libraries/HTTPLibraries.php";
 require_once "./includes/dbh.inc.php";
-
-
-if (!isset($_SESSION["userid"])) {
-  echo ("Please login to view this page.");
-  exit;
-}
-$userID = $_SESSION["userid"];
 
 if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
 }
-$useruid = $_SESSION["useruid"];
 
-if (!isset($_SESSION["isPatron"])) {
-  echo ("Please subscribe to our Patreon to access this page.");
-  exit;
-}
+$forIndividual = TryGet("forPlayer", false);
+$forIndividual = ($forIndividual ? true : false);//If it evaluates to true, explicitly cast it to boolean
+$useruid = $_SESSION["useruid"];
+$userid = $_SESSION["userid"];
+if (!$forIndividual && $useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2" && $useruid != "Matt" && $useruid != "jacob" && $useruid != "Tower") exit;
 
 $detailHeroID = $_GET["heroID"];
+$detailMatchupID = $_GET["matchupID"];
 
 echo ("<script src=\"./jsInclude.js\"></script>");
 
-echo ("<style>
+echo (
+"<style>
 
 table {
   border-radius: 10px;
@@ -59,9 +55,10 @@ h3 {
 
 echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
 
+
 $sql = "SELECT WinningHero,LosingHero,count(WinningHero) AS Count,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"
+WHERE WinningHero=\"$detailHeroID\" and LosingHero=\"$detailMatchupID\" and numTurns>1
 GROUP by LosingHero
 ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -72,10 +69,9 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
 mysqli_stmt_execute($stmt);
 $winData = mysqli_stmt_get_result($stmt);
 
-
 $sql = "SELECT WinningHero,LosingHero,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$detailHeroID\" and LosingHero<>\"DUMMY\" and WinningPID=\"$userID\"";
+WHERE WinningHero=\"$detailHeroID\" and LosingHero=\"$detailMatchupID\" and numTurns>1";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
@@ -87,7 +83,7 @@ $winCardData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,count(LosingHero) AS Count,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\" and LosingPID=\"$userID\"
+    WHERE WinningHero=\"$detailMatchupID\" and LosingHero=\"$detailHeroID\" and numTurns>1
     GROUP by WinningHero
     ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -100,7 +96,7 @@ $loseData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,LoserDeck
     FROM completedgame
-    WHERE WinningHero<>\"DUMMY\" and LosingHero=\"$detailHeroID\" and LosingPID=\"$userID\"";
+    WHERE WinningHero=\"$detailMatchupID\" and LosingHero=\"$detailHeroID\" and numTurns>1";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
@@ -174,10 +170,11 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
     ++$cardData[$card][1];
   }
 }
-echo ("<div id='wrapper' style='text-align: center;'>");
+
+echo ("<div id='wrapper' style='text-align: center; position:relative;'>");
 
 echo ("<section class='game-stats'>");
-echo ("<h3>Stats for " . CardLink($detailHeroID, $detailHeroID, true) . "</h3>");
+echo ("<h3>" . CardLink($detailHeroID, $detailHeroID, true) . " vs. " . CardLink($detailMatchupID, $detailMatchupID, true) . "</h3>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Opposing Hero</td><td>Num Wins</td><td>Num Losses</td><td>Win %</td></tr>");
@@ -192,7 +189,7 @@ foreach ($gameData as $row) {
   echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0], true) . "</a></td>");
   echo ("<td>" . $row[1] . "</td>");
   echo ("<td>" . $row[2] . "</td>");
-  echo ("<td>" . number_format((($row[1] / ($row[1] + $row[2])) * 100), 2, ".", "") . "% </td>");
+  echo ("<td>" . (($row[1] / ($row[1] + $row[2])) * 100) . "% </td>");
   echo ("</tr>");
   $totalWins += $row[1];
   $totalGames += $row[1] + $row[2];
@@ -203,11 +200,8 @@ foreach ($gameData as $row) {
 }
 echo ("</table>");
 echo ("</div>");
-
 echo ("</section>");
 
-
-if ($totalGames == 0) exit;
 
 $totalWinrate = $totalWins / $totalGames;
 $deckTotalWinrate = ($deckTotalGames > 0 ? $deckTotalWins / $deckTotalGames : 0);
@@ -235,7 +229,7 @@ echo ("<div class='game-stats-div'>");
 echo ("<table>");
 echo ("<tr><td>Card</td><td>Num Plays</td><td>Win Rate</td><td>Relative Win Rate</td></tr>");
 foreach ($sortedCardData as $key => $card) {
-  if ($card[1] < 3) continue;
+  if ($card[1] < 10) continue;
   echo ("<tr>");
   echo ("<td>" . CardLink($key, $key) . "</td>");
   echo ("<td>" . $card[1] . "</td>");
@@ -245,9 +239,7 @@ foreach ($sortedCardData as $key => $card) {
 }
 echo ("</table>");
 echo ("</div>");
-
 echo ("</section>");
 echo ("</div>");
-
 
 include_once 'Footer.php';

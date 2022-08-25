@@ -17,6 +17,7 @@ include "Libraries/HTTPLibraries.php";
 require_once("Libraries/CoreLibraries.php");
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
+include_once "APIKeys/APIKeys.php";
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -50,6 +51,7 @@ $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+$conceded = false;
 
 if ($playerID != 3 && $authKey != $targetAuth) exit;
 if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
@@ -57,6 +59,7 @@ if (!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
 
 $afterResolveEffects = [];
 
+$animations = [];
 //Now we can process the command
 switch ($mode) {
   case 0: //Subtract health
@@ -221,7 +224,7 @@ switch ($mode) {
     }
     break;
   case 19: //MULTICHOOSE X
-    if (substr($turn[0], 0, 11) != "MULTICHOOSE") break;
+    if (substr($turn[0], 0, 11) != "MULTICHOOSE" && substr($turn[0], 0, 14) != "MAYMULTICHOOSE") break;
     $params = explode("-", $turn[2]);
     $maxSelect = intval($params[0]);
     $options = explode(",", $params[1]);
@@ -317,14 +320,29 @@ switch ($mode) {
     $params = explode("-", $buttonInput);
     ChangeSetting($playerID, $params[0], $params[1]);
     break;
+  case 27: //Play card from hand by index
+    $found = $cardID;
+    if ($found >= 0) {
+      //Player actually has the card, now do the effect
+      //First remove it from their hand
+      $hand = &GetHand($playerID);
+      $cardID = $hand[$found];
+      if(!IsPlayable($cardID, $turn[0], "HAND", $found)) break;
+      unset($hand[$found]);
+      $hand = array_values($hand);
+      PlayCard($cardID, "HAND");
+    }
+    break;
   case 99: //Pass
     if (CanPassPhase($turn[0])) {
       PassInput(false);
     }
     break;
   case 100: //Break Chain
-    ResetCombatChainState();
-    ProcessDecisionQueue();
+    if($currentPlayer == $mainPlayer) {
+      ResetCombatChainState();
+      ProcessDecisionQueue();
+    }
     break;
   case 101: //Pass block and Reactions
     ChangeSetting($playerID, $SET_PassDRStep, 1);
@@ -373,9 +391,8 @@ switch ($mode) {
     ++$actionPoints;
     break;
   case 10003: //Revert to prior turn
-    $params = explode("-", $buttonInput);
-    RevertGamestate("p" . $params[0] . "turn" . $params[1] . "Gamestate.txt");
-    WriteLog("Player " . $playerID . " reverted back to player " . $params[0] . " turn " . $params[1] . ".");
+    RevertGamestate($buttonInput);
+    WriteLog("Player " . $playerID . " reverted back to a prior turn.");
     break;
   case 10004:
     if ($actionPoints > 0) {
@@ -427,21 +444,27 @@ switch ($mode) {
     WriteLog("Player " . $playerID . " manually removed a resource from their pool.");
     $myResources[0] -= 1;
     break;
-
   case 100000: //Quick Rematch
-    $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
-    include "MenuFiles/ParseGamefile.php";
-    header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$p1Key");
-    exit;
+    if($turn[0] != "OVER") break;
+    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    if ($theirCharacter[0] != "DUMMY") {
+      AddDecisionQueue("YESNO", $otherPlayer, "if you want a Quick Rematch?");
+      AddDecisionQueue("NOPASS", $otherPlayer, "-", 1);
+      AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
+      AddDecisionQueue("OVER", $playerID, "-");
+    } else {
+      AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
+    }
+    ProcessDecisionQueue();
+    break;
   case 100001: //Main Menu
     header("Location: " . $redirectPath . "/MainMenu.php");
     exit;
   case 100002: //Concede
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
-    if($turn[0] != "OVER") PlayerLoseHealth($playerID, $myHealth);
+    $conceded = true;
+    if(!IsGameOver()) PlayerLoseHealth($playerID, $myHealth);
     break;
   case 100003: //Report Bug
     $bugCount = 0;
@@ -460,34 +483,82 @@ switch ($mode) {
     WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
     break;
   case 100004: //Full Rematch
-    $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
-    if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
-    $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
-    if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
+    if($turn[0] != "OVER") break;
+    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    AddDecisionQueue("YESNO", $otherPlayer, "if you want a Rematch?");
+    AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
+    ProcessDecisionQueue();
+    break;
+  case 100005: //Current player inactive
+    if ($theirCharacter[0] != "DUMMY") {
+      $currentPlayerActivity = 2;
+      WriteLog("The current player is inactive.");
+    }
+    break;
+  case 100006: //Current player active
+    if ($theirCharacter[0] != "DUMMY") {
+      $currentPlayerActivity = 0;
+      WriteLog("The current player is active again.");
+    }
+    break;
+  case 100007: //Claim Victory when opponent is inactive
+    if($currentPlayerActivity == 2)
+    {
+      include_once "./includes/dbh.inc.php";
+      include_once "./includes/functions.inc.php";
+      $otherPlayer = ($playerID == 1 ? 2 : 1);
+      if(!IsGameOver()) PlayerLoseHealth($otherPlayer, $theirHealth);
+      WriteLog("The opponent forfeit due to inactivity.");
+    }
+    break;
+  case 100008: // Green Rating Update players rating with 👍 Good (Green Rating)
+    if($playerID == 1 && $p1PlayerRating != 0) break;
+    if($playerID == 2 && $p2PlayerRating != 0) break;
     include "MenuFiles/ParseGamefile.php";
-    include "MenuFiles/WriteGamefile.php";
-    $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
-    $firstPlayer = 1;
-    $firstPlayerChooser = ($winner == 1 ? 2 : 1);
-    WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
-    WriteGameFile();
-    $turn[0] = "REMATCH";
-    include "WriteGamestate.php";
-    $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
-    GamestateUpdated($gameName);
-    exit;
+    AddRating(($playerID == 1 ? 2 : 1), "green");
+    if ($playerID == 1) $p1PlayerRating = 1;
+    if ($playerID == 2) $p2PlayerRating = 1;
+    break;
+  case 100009: // Red Rating - Update players rating 👎 Bad (Red Rating)
+    if($playerID == 1 && $p1PlayerRating != 0) break;
+    if($playerID == 2 && $p2PlayerRating != 0) break;
+    include "MenuFiles/ParseGamefile.php";
+    AddRating(($playerID == 1 ? 2 : 1), "red");
+    if ($playerID == 1) $p1PlayerRating = 2;
+    if ($playerID == 2) $p2PlayerRating = 2;
+    break;
   default:
     break;
 }
 
 ProcessMacros();
-
-if ($winner != 0) {
+if($inGameStatus == $GameStatus_Rematch)
+{
+  $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
+  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
+  $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
+  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
+  include "MenuFiles/ParseGamefile.php";
+  include "MenuFiles/WriteGamefile.php";
+  $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  $firstPlayer = 1;
+  $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
+  WriteGameFile();
+  $turn[0] = "REMATCH";
+  include "WriteGamestate.php";
+  $currentTime = round(microtime(true) * 1000);
+  SetCachePiece($gameName, 2, $currentTime);
+  SetCachePiece($gameName, 3, $currentTime);
+  GamestateUpdated($gameName);
+  exit;
+}
+else if ($winner != 0 && $turn[0] != "YESNO") {
+  $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   $currentPlayer = 1;
 }
+
 CombatDummyAI(); //Only does anything if applicable
 CacheCombatResult();
 
@@ -523,11 +594,21 @@ function IsModeAsync($mode)
       return true;
     case 10003:
       return true;
+    case 100000:
+      return true;
     case 100001:
       return true;
     case 100002:
       return true;
     case 100003:
+      return true;;
+    case 100004:
+      return true;
+    case 100007:
+      return true;
+    case 100008:
+      return true;
+    case 100009:
       return true;
   }
   return false;
@@ -583,7 +664,7 @@ function Passed(&$turn, $playerID)
 function PassInput($autopass = true)
 {
   global $turn, $currentPlayer;
-  if ($turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "INSTANT") {
+  if ($turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MAYCHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSEMULTIZONE" ||$turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MAYCHOOSEHAND" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "MAYCHOOSEPERMANENT" || $turn[0] == "INSTANT" || $turn[0] == "OK") {
     ContinueDecisionQueue("PASS");
   } else {
     if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed.");
@@ -597,12 +678,11 @@ function PassInput($autopass = true)
 
 function Pass(&$turn, $playerID, &$currentPlayer)
 {
-  global $defPlayer;
+  global $mainPlayer, $defPlayer;
   if ($turn[0] == "M" || $turn[0] == "ARS") {
     return 1;
   } else if ($turn[0] == "B") {
-    $currentPlayer = $defPlayer;
-    $turn[0] = "D";
+    AddLayer("DEFENDSTEP", $mainPlayer, "-");
     OnBlockResolveEffects();
     ProcessDecisionQueue();
   } else if ($turn[0] == "A") {
@@ -1142,6 +1222,12 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
       break;
+    case "UPR221": case "UPR222": case "UPR223":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DMGPREVENTION");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Oasis Respite");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      break;
     default:
       break;
   }
@@ -1306,6 +1392,7 @@ function PayAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_AdditionalCosts;
   $cardSubtype = CardSubType($cardID);
+
   if ($from == "PLAY" && $cardSubtype == "Item") {
     PayItemAbilityAdditionalCosts($cardID);
     return;
@@ -1364,6 +1451,13 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
       AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
+      break;
+    case "CRU097":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+        PayAdditionalCosts($otherCharacter[0], $from);
+      }
       break;
     case "MON001":
     case "MON002":
@@ -1586,7 +1680,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if ($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
-      if ($definedCardType == "AA" && SearchCharacterActive($currentPlayer, "CRU002") && $attackValue >= 6) KayoStaticAbility();
+      if ($definedCardType == "AA" && (SearchCharacterActive($currentPlayer, "CRU002") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects("CRU002-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility();
       $openedChain = true;
       if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;

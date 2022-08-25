@@ -11,6 +11,10 @@
     exit;
   }
   $playerID = TryGet("playerID", 3);
+  if(!is_numeric($playerID)) {
+    echo ("Invalid player ID.");
+    exit;
+  }
   $authKey = TryGet("authKey", 3);
 
   session_start();
@@ -162,6 +166,57 @@
 
 <body onkeypress='Hotkeys(event)' onload='OnLoadCallback(<?php echo (filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 
+<?php if($theirCharacter[0] != "DUMMY") echo(CreatePopup("inactivityWarningPopup", [], 0, 0, "⚠️ Inactivity Warning ⚠️", 1, "", "", true, true, "Interact with the screen in the next 10 seconds or you could be kicked for inactivity.")); ?>
+<?php if($theirCharacter[0] != "DUMMY") echo(CreatePopup("inactivePopup", [], 0, 0, "⚠️ You are Inactive ⚠️", 1, "", "", true, true, "You are inactive. Your opponent is able to claim victory. Interact with the screen to clear this.")); ?>
+
+<script>
+  var IDLE_TIMEOUT = 40; //seconds
+  var _idleSecondsCounter = 0;
+  var _idleState = 0;//0 = not idle, 1 = idle warning, 2 = idle
+
+  var activityFunction = function () {
+      var oldIdleState = _idleState;
+      _idleSecondsCounter = 0;
+      _idleState = 0;
+      var inactivityPopup = document.getElementById('inactivityWarningPopup');
+      if(inactivityPopup) inactivityPopup.style.display = "none";
+      var inactivePopup = document.getElementById('inactivePopup');
+      if(inactivePopup) inactivePopup.style.display = "none";
+      if(oldIdleState == 2) SubmitInput("100006", "");
+  };
+
+  document.onclick = activityFunction;
+
+  document.onmousemove = activityFunction;
+
+  document.onkeydown = activityFunction;
+
+  window.setInterval(CheckIdleTime, 1000);
+
+  function CheckIdleTime() {
+      if(document.getElementById("iconHolder").innerText != "ready.png") return;
+      _idleSecondsCounter++;
+      if (_idleSecondsCounter >= IDLE_TIMEOUT) {
+          if(_idleState == 0)
+          {
+            _idleState = 1;
+            _idleSecondsCounter = 0;
+            var inactivityPopup = document.getElementById('inactivityWarningPopup');
+            if(inactivityPopup) inactivityPopup.style.display = "inline";
+          }
+          else if(_idleState == 1)
+          {
+            _idleState = 2;
+            var inactivityPopup = document.getElementById('inactivityWarningPopup');
+            if(inactivityPopup) inactivityPopup.style.display = "none";
+            var inactivePopup = document.getElementById('inactivePopup');
+            if(inactivePopup) inactivePopup.style.display = "inline";
+            SubmitInput("100005", "");
+          }
+      }
+  }
+</script>
+
   <audio id="yourTurnSound" src="./Assets/prioritySound.wav"></audio>
 
   <script>
@@ -173,7 +228,7 @@
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          if (parseInt(this.responseText.split("REMATCH")[0]) == 1234) {
+          if (this.responseText.split("REMATCH")[0] == "1234") {
             location.replace('GameLobby.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&authKey=<?php echo ($authKey); ?>');
           } else if (parseInt(this.responseText) != 0) {
             HideCardDetail();
@@ -190,7 +245,7 @@
               <?php if(!IsMuted($playerID)) echo("audio.play();"); ?>
             }
             var animations = document.getElementById("animations").innerText;
-            //if(animations != "") alert(animations[0]);
+            //if(animations != "") alert(animations);
           } else {
             CheckReloadNeeded(lastUpdate);
           }

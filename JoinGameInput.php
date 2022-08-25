@@ -11,7 +11,7 @@ if (!IsGameNameValid($gameName)) {
   echo ("Invalid game name.");
   exit;
 }
-$playerID = $_GET["playerID"];
+$playerID = intval($_GET["playerID"]);
 $deck = TryGet("deck");
 $decklink = $_GET["fabdb"];
 $decksToTry = TryGet("decksToTry");
@@ -93,7 +93,7 @@ include "MenuFiles/WriteGamefile.php";
 
 if ($playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   if ($gameStatus >= $MGS_GameStarted) {
-    header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=3");
+    header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3");
   } else {
     header("Location: " . $redirectPath . "/MainMenu.php");
   }
@@ -151,6 +151,7 @@ if ($decklink != "") {
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
+  $totalCards = 0;
 
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
@@ -237,6 +238,7 @@ if ($decklink != "") {
             case "Chest":
               if ($chestSideboard != "") $chestSideboard .= " ";
               $chestSideboard .= $id;
+
               break;
             case "Arms":
               if ($armsSideboard != "") $armsSideboard .= " ";
@@ -255,7 +257,8 @@ if ($decklink != "") {
           }
         }
       } else {
-        for ($j = 0; $j < ($count - $numSideboard); ++$j) {
+        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+        for ($j = 0; $j < $numMainBoard; ++$j) {
           if ($deckCards != "") $deckCards .= " ";
           $deckCards .= $id;
         }
@@ -263,6 +266,7 @@ if ($decklink != "") {
           if ($sideboardCards != "") $sideboardCards .= " ";
           $sideboardCards .= $id;
         }
+        $totalCards += $numMainBoard + $numSideboard;
       }
     }
   } else {
@@ -274,6 +278,21 @@ if ($decklink != "") {
   if ($unsupportedCards != "") {
     echo ("The following cards are not yet supported: " . $unsupportedCards);
   }
+
+  if($totalCards < 60  && ($format == "cc" || $format == "compcc"))
+  {
+    $_SESSION['error'] = 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
+    header("Location: MainMenu.php");
+    die();
+  }
+
+  if(($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "commoner"))
+  {
+    $_SESSION['error'] = 'Error: The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
+    header("Location: MainMenu.php");
+    die();
+  }
+
 
   //We have the decklist, now write to file
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";

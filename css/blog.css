@@ -52,6 +52,7 @@ body {
   border: 1px solid #1a1a1a;
   border-radius: 5px;
   line-height: 1.5rem;
+  text-align: center;
 }
 
 .articles:empty {
@@ -84,5 +85,8 @@ body {
   color: black;
   text-shadow: none;
   text-align: left;
-  text-indent: 3rem;
+}
+
+.blog-iframe {
+  border: 3px solid black;
 }

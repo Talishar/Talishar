@@ -101,6 +101,10 @@
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
+        AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Kano shows the top of your deck is <0>");
+        AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Kano", 1);
         return "";
       case "ARC115":
         AddArcaneBonus(1, $currentPlayer);
@@ -120,16 +124,19 @@
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
         AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with Sonic Boom.", 1);
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}");
+        AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sonic Boom shows the top of your deck is <1>", 1);
+        AddDecisionQueue("OK", $currentPlayer, "-", 1);
         return "";
       case "ARC120":
         $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
@@ -137,7 +144,11 @@
         return "Deals " . $damage . " arcane damage.";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_tutor_a_card?", 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
         AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
@@ -220,7 +231,7 @@
   // 0: My Hero + Their Hero
   // 1: Their Hero only
   // 2: Any Target
-  // 3: Their Hero + Their Alliers
+  // 3: Their Hero + Their Allies
   function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
@@ -292,6 +303,7 @@
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
     if($target != 3) $rv = "THEIRCHAR-0";
+    else $rv = "";
     if(($target == 0 || $target == 2) && !ShouldAutotargetOpponent($player))
     {
       $rv .= ",MYCHAR-0";
@@ -304,7 +316,7 @@
         $rv .= ",THEIRALLY-" . $i;
       }
       $myAllies = &GetAllies($player);
-      for($i=0; $i<count($myAllies); $i+=AllyPieces()) // TODO: WIP Azvolai
+      for($i=0; $i<count($myAllies); $i+=AllyPieces())
       {
         $rv .= ",MYALLY-" . $i;
       }
