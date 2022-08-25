@@ -154,8 +154,8 @@ if ($decklink != "") {
 
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
-      $count = $cards[$i]->{'total'};
-      $numSideboard = $cards[$i]->{'sideboardTotal'};
+      $count += $cards[$i]->{'total'};
+      $numSideboard += $cards[$i]->{'sideboardTotal'};
       if ($isFaBDB) {
         $printings = $cards[$i]->{'printings'};
         $printing = $printings[0];
@@ -237,6 +237,7 @@ if ($decklink != "") {
             case "Chest":
               if ($chestSideboard != "") $chestSideboard .= " ";
               $chestSideboard .= $id;
+
               break;
             case "Arms":
               if ($armsSideboard != "") $armsSideboard .= " ";
@@ -275,17 +276,17 @@ if ($decklink != "") {
   if ($unsupportedCards != "") {
     echo ("The following cards are not yet supported: " . $unsupportedCards);
   }
-  
-  if($count < 60    && ($format == "cc" || $format == "compcc"))
+
+  if($numMainBoard < 60  && ($format == "cc" || $format == "compcc"))
   {
-    $_SESSION['error'] = 'Error: The decklist link you have entered is likely for blitz.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = 'Error: The decklist link you have entered has an invalid number and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
 
   if($numMainBoard + $numSideboard > 52 && ($format == "blitz" || $format == "commoner"))
   {
-    $_SESSION['error'] = 'Error: The decklist link you have entered has an invalid number of cards for this format.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = 'Error: The decklist link you have entered has an invalid number of cards for this format and is likely for CC.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
