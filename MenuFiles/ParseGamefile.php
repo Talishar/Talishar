@@ -64,4 +64,19 @@
     }
   }
 
+  if(isset($playerID))
+  {
+    $ipTarget = ($playerID == 1 ? $hostIP : $joinerIP);
+    if($ipTarget != "" && $_SERVER['REMOTE_ADDR'] != $ipTarget)
+    {
+
+        $hackFileName = "./BugReports/PossibleHackAttempts.txt";
+        $hackHandler = fopen($hackFileName, "a");
+        date_default_timezone_set('America/Chicago');
+        $errorDate = date('m/d/Y h:i:s a');
+        fwrite($hackHandler, "Hack Attempt? $errorDate Game name: $gameName IP: " . $_SERVER['REMOTE_ADDR'] . " Target IP: $ipTarget PlayerID: $playerID" . "\r\n");
+        fclose($hackHandler);
+    }
+  }
+
 ?>
