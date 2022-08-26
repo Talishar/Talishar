@@ -13,6 +13,11 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 $playerID = $_GET["playerID"];
+if($playerID == "1")
+{
+  echo("Player 1 should not use JoinGame.php");
+  exit;
+}
 ?>
 <style>
   body {
