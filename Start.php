@@ -27,10 +27,8 @@ include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
 ob_end_clean();
 
-if (file_exists("./Games/" . $gameName . "/gamestate.txt")) {
-  $authKey = $_GET["authKey"];
-  if ($authKey != $p1Key) exit;
-}
+$authKey = $_GET["authKey"];
+if ($authKey != $p1Key) exit;
 
 //Setup the random number generator
 srand(make_seed());
