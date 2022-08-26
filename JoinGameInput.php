@@ -379,6 +379,7 @@ if ($playerID == 2) {
   $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
   WriteLog("Player $firstPlayerChooser chooses who goes first.");
   $gameStatus = $MGS_ChooseFirstPlayer;
+  $joinerIP = $_SERVER['REMOTE_ADDR'];
 }
 
 if ($playerID == 1 && isset($_SESSION["useruid"])) $p1uid = $_SESSION["useruid"];
