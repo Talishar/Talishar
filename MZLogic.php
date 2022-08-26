@@ -74,7 +74,7 @@ function MZPlayerID($me, $MZIndex)
   return -1;
 }
 
-function GetMZCard($MZIndex)
+function GetMZCard($player, $MZIndex)
 {
   $params = explode("-", $MZIndex);
   $zoneDS = &GetMZZone($player, $params[0]);

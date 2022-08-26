@@ -429,7 +429,7 @@
         GainHealth($amount, $currentPlayer);
         return "Gain $amount health.";
       case "UPR221": case "UPR222": case "UPR223":
-        AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($target));
+        AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);
