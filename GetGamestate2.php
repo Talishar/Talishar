@@ -1,5 +1,7 @@
 <?php
 
+exit;
+
 include "Libraries/HTTPLibraries.php";
 
 $gameName = $_GET["gameName"];
