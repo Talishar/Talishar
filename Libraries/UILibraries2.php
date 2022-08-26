@@ -20,6 +20,23 @@
     else return "#EDEDED";
   }
 
+  //Card number = card ID (e.g. WTR000 = Heart of Fyendal)
+  //action = (ProcessInput2 mode)
+  //overlay = 0 is none, 1 is grayed out/disabled
+  //borderColor = Border Color
+  //Counters = number of counters
+  //actionDataOverride = The value to give to ProcessInput2
+  //lifeCounters = Number of life counters
+  //defCounters = Number of defense counters
+  //atkCounters = Number of attack counters
+  //controller = Player that controls it
+  //type = card type
+  //sType = card subtype
+  //restriction = something preventing the card from being played (or "" if nothing)
+  //isBroken = 1 if card is destroyed
+  //onChain = 1 if card is on combat chain (mostly for equipment)
+  //isFrozen = 1 if frozen
+  //gem = (0, 1, 2?)
   function ClientRenderedCard($cardNumber, $action=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="-", $lifeCounters=0, $defCounters=0, $atkCounters=0, $controller=0, $type="", $sType="", $restriction="", $isBroken=0, $onChain=0, $isFrozen=0, $gem=0)
   {
     $rv = $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $counters . " " . $actionDataOverride . " " . $lifeCounters . " " . $defCounters . " " . $atkCounters . " ";
