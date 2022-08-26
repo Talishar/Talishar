@@ -19,6 +19,8 @@ $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
 
+if($lastUpdate == "NaN") $lastUpdate = 0;
+
 if ($lastUpdate > 10000000) {
   $lastUpdate = 0;
 }
