@@ -1,5 +1,7 @@
 <?php
 
+exit;
+
 include "HostFiles/Redirector.php";
 include "CardDictionary.php";
 
