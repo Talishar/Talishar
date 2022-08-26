@@ -1,5 +1,7 @@
 <?php
 
+use SendGrid\Mail\Mail;
+
 // Check for empty input signup
 function emptyInputSignup($username, $email, $pwd, $pwdRepeat) {
 	if (empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat)) {
@@ -483,3 +485,36 @@ function LoadBadges($userID)
 	mysqli_close($conn);
 	return $output;
 }
+
+function SendEmail($userEmail, $url) {
+  include "../APIKeys/APIKeys.php";
+  require '../vendor/autoload.php';
+
+  $email = new Mail();
+  $email->setFrom("no-reply@fleshandbloodonline.com", "No-Reply");
+  $email->setSubject("Flesh and Blood Online Password Reset");
+  $email->addTo($userEmail);
+  $email->addContent(
+      "text/html", 
+      "
+        <p>
+          We recieved a password reset request. The link to reset your password is below.
+          If you did not make this request, you can ignore this email
+        </p>
+        <p>
+          Here is your password reset link: </br>
+          <a href=$url>Password Reset</a>
+        </p>      
+      "
+  );
+  $sendgrid = new \SendGrid($sendgridKey);
+  try {
+      $response = $sendgrid->send($email);
+      print $response->statusCode() . "\n";
+      print_r($response->headers());
+      print $response->body() . "\n";
+  } catch (Exception $e) {
+      echo 'Caught exception: '. $e->getMessage() ."\n";
+  }
+}
+
