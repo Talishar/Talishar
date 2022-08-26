@@ -13,6 +13,7 @@ $playerID = TryGet("playerID", 3);
 $lastUpdate = TryGet("lastUpdate", 0);
 $authKey = TryGet("authKey", 0);
 
+if($lastUpdate == "NaN") $lastUpdate = 0;
 if ($lastUpdate > 10000000) $lastUpdate = 0;
 
 
