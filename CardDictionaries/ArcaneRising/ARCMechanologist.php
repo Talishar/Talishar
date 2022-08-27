@@ -126,9 +126,12 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
   switch ($cardID) {
     case "ARC003":
       $abilityType = GetResolvedAbilityType($cardID);
-      $character = &GetPlayerCharacter($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_CharacterIndex);
-      $character[$index + 2] = ($abilityType == "A" ? 1 : 0);
+      if($abilityType == "A")
+      {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        $character[$index + 2] = 1;
+      }
       return "";
     case "ARC004":
       for ($i = 0; $i < 2; ++$i) {
