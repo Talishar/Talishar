@@ -133,8 +133,9 @@
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}");
-        AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
+        AddDecisionQueue("ELSE", $currentPlayer, "-");
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
+        AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sonic Boom shows the top of your deck is <1>", 1);
         AddDecisionQueue("OK", $currentPlayer, "-", 1);
         return "";

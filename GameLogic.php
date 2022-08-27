@@ -3430,6 +3430,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "NULLPASS":
       if ($lastResult == "") return "PASS";
       return $lastResult;
+    case "ELSE":
+      if($lastResult == "PASS") return "0";
+      else return "PASS";
     case "LESSTHANPASS":
       if ($lastResult < $parameter) return "PASS";
       return $lastResult;
