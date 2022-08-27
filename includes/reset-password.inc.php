@@ -24,7 +24,7 @@ if (isset($_POST['reset-password-submit'])) {
   $sql = "SELECT * FROM pwdReset WHERE pwdResetSelector=? AND pwdResetExpires >= $currentDate";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
-    echo "There was an error!";
+    echo "There was an error finding your password reset selector.";
     exit();
   } else {
     mysqli_stmt_bind_param($stmt, "s", $selector);
@@ -40,7 +40,7 @@ if (isset($_POST['reset-password-submit'])) {
 
       // Then if they match we grab the users e-mail from the database.
       if ($tokenCheck === false) {
-        echo "There was an error!";
+        echo "There was an error with your token.";
       } elseif ($tokenCheck === true) {
 
         // Before we get the users info from the user table we need to store the token email for later.
@@ -50,14 +50,14 @@ if (isset($_POST['reset-password-submit'])) {
         $sql = "SELECT * FROM users WHERE usersEmail=?";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
-          echo "There was an error!";
+          echo "There was an error preparing the email query.";
           exit();
         } else {
           mysqli_stmt_bind_param($stmt, "s", $tokenEmail);
           mysqli_stmt_execute($stmt);
           $result = mysqli_stmt_get_result($stmt);
           if (!$row = mysqli_fetch_assoc($result)) {
-            echo "There was an error!";
+            echo "Your email could not be found in the database.";
             exit();
           } else {
 
@@ -65,7 +65,7 @@ if (isset($_POST['reset-password-submit'])) {
             $sql = "UPDATE users SET usersPwd=? WHERE usersEmail=?";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
-              echo "There was an error!";
+              echo "There was an issue updating your password.";
               exit();
             } else {
               $newPwdHash = password_hash($password, PASSWORD_DEFAULT);
@@ -76,7 +76,7 @@ if (isset($_POST['reset-password-submit'])) {
               $sql = "DELETE FROM pwdReset WHERE pwdResetEmail=?";
               $stmt = mysqli_stmt_init($conn);
               if (!mysqli_stmt_prepare($stmt, $sql)) {
-                echo "There was an error!";
+                echo "There was an issue deleting the password request.";
                 exit();
               } else {
                 mysqli_stmt_bind_param($stmt, "s", $tokenEmail);
