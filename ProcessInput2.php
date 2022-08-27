@@ -1390,7 +1390,7 @@ function PayAbilityAdditionalCosts($cardID)
 
 function PayAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex;
   $cardSubtype = CardSubType($cardID);
 
   if ($from == "PLAY" && $cardSubtype == "Item") {
@@ -1451,6 +1451,15 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("REMOVEMYDISCARD", $currentPlayer, "-", 1);
       AddDecisionQueue("BANISH", $currentPlayer, "DISCARD", 1);
       AddDecisionQueue("SLOGGISM", $currentPlayer, "-", 1);
+      break;
+    case "ARC003":
+      $abilityType = GetResolvedAbilityType($cardID);
+      if($abilityType == "AA")
+      {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        $character[$index + 2] = 0;
+      }
       break;
     case "CRU097":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
