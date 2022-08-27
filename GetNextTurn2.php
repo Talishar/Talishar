@@ -848,6 +848,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Now display their character and equipment
   $numWeapons = 0;
+  echo("<div id='theirChar'>");
+  $characterContents = "";
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
     if($i > 0 && $inGameStatus == "0") continue;
     $atkCounters = 0;
@@ -863,8 +865,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     if (CardType($theirCharacter[$i]) == "W") $atkCounters = $theirCharacter[$i + 3];
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
+    $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
+    if($characterContents != "") $characterContents .= "|";
+    $characterContents .= ClientRenderedCard(cardNumber:$theirCharacter[$i], overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters:$counters, defCounters:$theirCharacter[$i+4], atkCounters: $atkCounters, controller:$otherPlayer, type:$type, sType:$sType, isFrozen:($theirCharacter[$i + 8] == 1), onChain:($theirCharacter[$i + 6] == 1), isBroken:($theirCharacter[$i + 1] == 0));
+
+    /*
     echo ("<div style='z-index:5; position:fixed; left:" . GetCharacterLeft($type, $sType) . "; top:" . GetCharacterTop($type, $sType) . ";'>");
-    echo (Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i + 1] != 2 ? 1 : 0, 0, $theirCharacter[$i + 1] != 0 ? $counters : 0, "", "", false, 0, $theirCharacter[$i + 4], $atkCounters, "CHARACTER", controller:$otherPlayer));
+    echo (Card($theirCharacter[$i], "concat", $cardSizeEquipment, 0, 1, $theirCharacter[$i + 1] != 2 ? 1 : 0, 0, $counters, "", "", false, 0, $theirCharacter[$i + 4], $atkCounters, "CHARACTER", controller:$otherPlayer));
     if ($theirCharacter[$i + 8] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
     if ($theirCharacter[$i + 6] == 1) echo ("<img title='On Combat Chain' style='position:absolute; z-index:100; top:-25px; left:7px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
     if ($theirCharacter[$i + 1] == 0) echo ("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
@@ -873,10 +880,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       echo ("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center;
       line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . $borderColor . ";
       transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . $backgroundColor . ";
-      font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player " . $otherPlayer);
+      font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player " . $otherPlayer);;
     }
     echo ("</div>");
+
+    */
   }
+  echo($characterContents);
+
   echo ("</div>");
   //Now display their arsenal
   if ($theirArsenal != "") {
