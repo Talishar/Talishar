@@ -49,6 +49,7 @@ if (isset($_SESSION["useruid"])) {
       <a href="MainMenu.php"></a>
       <ul>
         <li><a href="MainMenu.php">Home Page</a></li>
+        <?php if(isset($_SESSION["isPatron"])) echo '<li><a href="https://reporting.fleshandbloodonline.com/FaBOnline/zzGameStats.php">Stats</a></li>'; ?>
         <li><a href="Draft.php">Limited</a></li>
         <li><a href="Blog.php">Blog</a></li>
         <li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>
