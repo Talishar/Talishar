@@ -263,9 +263,18 @@
           var substype = cardArr[11];
           if(type != "")
           {
-            var charLeft = GetCharacterLeft(type, substype);
-            var charBottom = GetCharacterBottom(type, substype);
-            positionStyle = "fixed; left:" + charLeft + "; bottom:" + charBottom;
+            if(zone == "myChar")
+            {
+              var charLeft = GetCharacterLeft(type, substype);
+              var charBottom = GetCharacterBottom(type, substype);
+              positionStyle = "fixed; left:" + charLeft + "; bottom:" + charBottom;
+            }
+            else if(zone == "theirChar")
+            {
+              var charLeft = GetCharacterLeft(type, substype);
+              var charTop = GetCharacterTop(type, substype);
+              positionStyle = "fixed; left:" + charLeft + "; top:" + charTop;
+            }
           }
           newHTML += "<span style='position:" + positionStyle + "; margin:1px;'>";
           if(type == "C")
@@ -334,6 +343,33 @@
             return "5px";
           case "Off-Hand":
             return (cardSize * 2 + 25) + "px";
+        }
+      }
+
+      function GetCharacterTop(cardType, cardSubType)
+      {
+        var cardSize = 96;
+        switch (cardType) {
+          case "C":
+            return "52px";
+          case "W":
+            return "52px"; //TODO: Second weapon
+            //case "C": return ($cardSize + 20) . "px";
+            //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
+          default:
+            break;
+        }
+        switch (cardSubType) {
+          case "Head":
+            return "5px";
+          case "Chest":
+            return (cardSize - 10) + "px";
+          case "Arms":
+            return (cardSize - 10) + "px";
+          case "Legs":
+            return (cardSize * 2 - 25) + "px";
+          case "Off-Hand":
+            return "52px";
         }
       }
 
@@ -520,6 +556,7 @@
               PopulateZone("myHand");
               PopulateZone("theirHand", 50, "WebpImages");
               PopulateZone("myChar");
+              PopulateZone("theirChar");
               //if(animations != "") alert(animations);
             } else {
               CheckReloadNeeded(lastUpdate);
