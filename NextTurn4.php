@@ -179,6 +179,7 @@
         if(onChain == 1) rv += "<img title='On Combat Chain' style='pointer-events: none; position:absolute; z-index:100; width:" + 97 + "; bottom: 5px; left:0px;' src='./Images/onChain.png' />";
         if(isBroken == 1) rv += "<img title='Equipment Broken' style='position:absolute; z-index:100; border-radius:5px; top:1px; left:14px; height:" + 97 + "; width:" + 70 + ";' src='./Images/brokenEquip.png' />";
         if(isFrozen == 1) rv += "<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:1px; left:1px; height:" + 97 + "; width:" + 97 + ";' src='./Images/frozenOverlay.png' />";
+        rv += "</a>";
 
         if(gem != 0)
         {
@@ -187,8 +188,6 @@
           if (gem == 1) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 10) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
           else if (gem == 2) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 10) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
         }
-
-        rv += "</a>";
         return rv;
       }
 
