@@ -363,11 +363,11 @@
           case "Head":
             return "5px";
           case "Chest":
-            return (cardSize - 10) + "px";
+            return (cardSize + 15) + "px";
           case "Arms":
-            return (cardSize - 10) + "px";
+            return (cardSize + 15) + "px";
           case "Legs":
-            return (cardSize * 2 - 25) + "px";
+            return (cardSize * 2 + 25) + "px";
           case "Off-Hand":
             return "52px";
         }
