@@ -1060,6 +1060,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
+  
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $myCharacter = &GetPlayerCharacter($player);
@@ -1270,10 +1271,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE183":
     case "ELE184":
     case "ELE185":
-      if (count($combatChain) == 0) return true;
+      if (count($layers) == 0 && count($combatChain) == 0) return true;
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if (CardType($combatChain[$i]) == "AA" && CardCost($combatChain[$i]) <= 1) return false;
       }
+      // for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      //   if (CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false; // TODO: Make Lightning Press target cards on the layer
+      // }
       return true;
     case "ELE201":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;
