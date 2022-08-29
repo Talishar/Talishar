@@ -184,7 +184,9 @@ function ProcessMissEffect($cardID)
   global $defPlayer;
   switch ($cardID) {
     case "EVR002":
-      PlayAura("WTR225", $defPlayer);
+      if(!IsAllyAttackTarget()) {
+        PlayAura("WTR225", $defPlayer);
+      }
     default:
       break;
   }

@@ -180,7 +180,9 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Deals 1 arcane damage to the next attack action card of certain cost.";
       case "MON229":
-        DealArcane(1, 0, "PLAYCARD", $cardID);
+        if (!IsAllyAttackTarget()) {
+          DealArcane(1, 0, "PLAYCARD", $cardID);
+        }
         return "Deals 1 arcane damage.";
       case "MON230":
         GainResources($currentPlayer, 2);
