@@ -775,7 +775,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "CRU103":
-      if ($combatChainState[$CCS_NumBoosted]) {
+      if ($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) {
         $combatChainState[$CCS_RequiredEquipmentBlock] = $combatChainState[$CCS_NumBoosted];
         $rv .= "Requires you to block with " . $combatChainState[$CCS_NumBoosted] . " equipment if able.";
       }
