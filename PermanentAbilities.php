@@ -59,11 +59,13 @@ function PermanentDestroyed($player, $cardID, $isToken = false)
 function PermanentBeginEndPhaseEffects()
 {
   global $mainPlayer, $defPlayer;
+
   $permanents = &GetPermanents($mainPlayer);
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
+        PutPermanentIntoPlay($mainPlayer, "UPR043");
         $remove = 1;
         break;
       default:
@@ -77,6 +79,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
+        PutPermanentIntoPlay($defPlayer, "UPR043");
         $remove = 1;
         break;
       default:
