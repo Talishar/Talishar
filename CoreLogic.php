@@ -1539,12 +1539,15 @@ function NumEquipBlock()
   function GetDamagePreventionIndices()
   {
     global $combatChain, $currentPlayer;
-    $rv = SearchLayerDQ(($currentPlayer == 1 ? 2 : 1), "");
+    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+    $rv = SearchLayerDQ($otherPlayer, "");
     $rv = SearchMultiZoneFormat($rv, "LAYER");
     if(count($combatChain) > 0)
     {
       if($rv != "") $rv .= ",";
       $rv .= "CC-0";
     }
+    $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
+    $rv = CombineSearches($rv, $theirWeapon);
     return $rv;
   }

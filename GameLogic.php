@@ -4054,6 +4054,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETLAYERTARGET":
       SetClassState($player, $CS_LayerTarget, $lastResult);
       return $lastResult;
+    case "SHOWSELECTEDTARGET":
+      if (substr($lastResult, 0, 5) == "THEIR") {
+        $otherP = ($player == 1 ? 2 : 1);
+        WriteLog(GetMZCardLink($otherP, $lastResult) . " was targetted");
+      } else {
+        WriteLog(GetMZCardLink($player, $lastResult) . " was targetted");
+      }
+      return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
     case "MULTIZONEDESTROY":
