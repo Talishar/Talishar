@@ -137,12 +137,16 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Makes your next Illusionist attack action card you play lose Phantasm.";
       case "MON091":
+        $rv = "";
+      if (!IsAllyAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
         AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
-        return "Lets you put a card from your opponent's hand on the bottom of their deck.";
+        $rv .= "Lets you put a card from your opponent's hand on the bottom of their deck.";
+      }
+      return $rv;
       case "MON092": PlayAura("MON104", $currentPlayer);
       case "MON093": PlayAura("MON104", $currentPlayer);
       case "MON094": PlayAura("MON104", $currentPlayer);
@@ -165,8 +169,10 @@
         MainDrawCard();
         break;
       case "MON007":
-        AddCurrentTurnEffect($cardID, $defPlayer);
-        AddNextTurnEffect($cardID, $defPlayer);
+        if (!IsAllyAttackTarget()) {
+          AddCurrentTurnEffect($cardID, $defPlayer);
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
         break;
       case "MON008": case "MON009": case "MON010": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
