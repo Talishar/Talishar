@@ -42,21 +42,22 @@ if (isset($_SESSION["useruid"])) {
 
 <body>
 
-  <a class="skip-nav-link" href="#fabdb">Skip Navigation</a>
 
   <nav>
     <div class="wrapper">
-      <a href="MainMenu.php"></a>
       <ul>
         <li><a href="MainMenu.php">Home Page</a></li>
-        <?php if(isset($_SESSION["isPatron"])) echo '<li><a href="https://reporting.fleshandbloodonline.com/FaBOnline/zzGameStats.php">Stats</a></li>'; ?>
-        <li><a href="Draft.php">Limited</a></li>
         <li><a href="Blog.php">Blog</a></li>
         <li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>
+        <li><a target="_blank" href="https://twitter.com/fabtcg_online">Twitter</a></li>
         <li><a target="_blank" href="https://www.patreon.com/bePatron?u=36985868">Support Us</a></li>
-        <?php
+      </ul>
+
+      <ul>
+        <li><a href="Draft.php">Limited</a></li>
+        <?php if (isset($_SESSION["isPatron"])) echo '<li><a href="https://reporting.fleshandbloodonline.com/FaBOnline/zzGameStats.php">Stats</a></li>';
         if (isset($_SESSION["useruid"])) {
-          echo "<li><a href='Profile.php'>Profile Page</a></li>";
+          echo "<li><a href='Profile.php'>My Profile</a></li>";
           echo "<li><a href='Logout.php'>Logout</a></li>";
         } else {
           echo "<li><a href='Signup.php'>Sign up</a></li>";
