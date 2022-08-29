@@ -247,7 +247,7 @@
     $found = false;
     for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
     {
-      if($combatChain[$i+1] == $defPlayer && AttackValue($combatChain[$i]) >= CachedTotalAttack()) $found = true;
+      if(!IsAllyAttackTarget() && $combatChain[$i+1] == $defPlayer && AttackValue($combatChain[$i]) >= CachedTotalAttack()) $found = true;
     }
     return $found;
   }

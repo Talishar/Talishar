@@ -1203,7 +1203,7 @@ function DoesAttackHaveGoAgain()
     case "MON180": case "MON181": case "MON182":
       return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "MON199": case "MON220":
-      return count(GetSoul($defPlayer)) > 0;
+      return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
     case "MON223": case "MON224": case "MON225":
       return NumCardsBlocking() < 2;
     case "MON248": case "MON249": case "MON250":

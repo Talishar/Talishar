@@ -175,7 +175,9 @@
         GiveAttackGoAgain();
         return "Gives the current attack go again.";
       case "ELE227": case "ELE228": case "ELE229":
-        DealArcane(1, 0, "PLAYCARD", $cardID);
+        if (!IsAllyAttacking()) {
+          DealArcane(1, 0, "PLAYCARD", $cardID);
+        }
         return "";
       case "ELE230": case "ELE231": case "ELE232":
         DealArcane(1, 0, "PLAYCARD", $cardID);
