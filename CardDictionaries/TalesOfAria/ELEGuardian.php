@@ -143,7 +143,7 @@
           IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
           $rv .= "Prevent the next 2 damage that would be dealt to Oldhim this turn. ";
         }
-        if($icePitched)
+        if($icePitched && !IsAllyAttacking())
         {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
