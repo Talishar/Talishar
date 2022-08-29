@@ -162,7 +162,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
       return "Draws you a card and gives you an action point every time you boost a card this turn.";
     case "ARC009":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKITEMCOST," . (GetClassState($currentPlayer, $CS_LastDynCost) / 2));
-      AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "-");
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       $boosted = GetClassState($currentPlayer, $CS_NumBoosted) > 0;

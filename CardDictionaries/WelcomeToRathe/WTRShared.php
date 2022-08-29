@@ -640,7 +640,7 @@
         return "Discarded a random card from your hand" . ($damaged ? " and does 2 damage." : ".");
       case "WTR009":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SANDSKETCH", $currentPlayer, "-");
         return "";
@@ -690,7 +690,7 @@
         return "Gives you +1 Intellect until end of turn.";
       case "WTR047":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCLASSAA,GUARDIAN");
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
@@ -743,7 +743,7 @@
         if(RepriseActive())
         {
           $ARs = SearchDeck($currentPlayer, "AR");
-          AddDecisionQueue("CHOOSEDECK", $currentPlayer, $ARs);
+          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
           AddDecisionQueue("BANISH", $currentPlayer, "TCL");
           AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
@@ -981,7 +981,7 @@
       AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
       AddDecisionQueue("DISCARDMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("FINDINDICES", $mainPlayer, "WTR076-2", 1);
-      AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("BANISH", $mainPlayer, "TT", 1);
       AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);

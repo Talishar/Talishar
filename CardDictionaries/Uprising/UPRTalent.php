@@ -315,7 +315,7 @@
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,UPR101");
-          AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }

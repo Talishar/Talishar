@@ -131,7 +131,7 @@
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
-          AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
           AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);

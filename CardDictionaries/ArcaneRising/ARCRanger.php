@@ -161,7 +161,7 @@
         return "Draws 3 cards and restrict you to playing cards from arsenal this turn.";
       case "ARC046":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDECKARROW");
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
