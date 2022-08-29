@@ -176,7 +176,7 @@ while ($row = mysqli_fetch_array($loseCardData, MYSQLI_NUM)) {
 
 echo ("<div id='wrapper' style='text-align: center; position:relative;'>");
 
-echo ("<section class='game-stats'>");
+echo ("<section class='game-stats' style='overflow-y:hidden;'>");
 echo ("<h3>Stats for " . CardLink($detailHeroID, $detailHeroID, true) . "</h3>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
@@ -226,7 +226,7 @@ while (count($cardData) > 0) {
   unset($cardData[$bestKey]);
 }
 
-echo ("<section class='game-stats'>");
+echo ("<section class='game-stats' style='overflow-y:hidden;'>");
 echo ("<h3>Cards Details</h3>");
 echo ("<div class='game-stats-div'>");
 echo ("<table>");
