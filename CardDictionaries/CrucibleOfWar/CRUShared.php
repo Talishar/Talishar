@@ -850,25 +850,31 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Prevents the next damage you would take.";
     case "CRU126":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
-      AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
-      AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-      AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
+      if (!IsAllyAttacking()) {
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+        AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+        AddDecisionQueue("TRIPWIRETRAP", $otherPlayer, "-", 1);
+      }
       return "";
     case "CRU127":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
-      AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
-      AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-      AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
+      if(!IsAllyAttacking()) {
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
+        AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+        AddDecisionQueue("PITFALLTRAP", $otherPlayer, "-", 1);
+      }
       return "";
     case "CRU128":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-1", 1, 1);
-      AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
-      AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-      AddDecisionQueue("ROCKSLIDETRAP", $otherPlayer, "-", 1);
+      if (!IsAllyAttacking()) {
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-1", 1, 1);
+        AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
+        AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
+        AddDecisionQueue("ROCKSLIDETRAP", $otherPlayer, "-", 1);
+      }
       return "";
     case "CRU135":
     case "CRU136":
