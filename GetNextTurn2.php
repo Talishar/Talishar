@@ -283,7 +283,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
     }
     else {
-      if($currentPlayerActivity == 2) echo("— Opponent is inactive " . CreateButton($playerID, "Claim Victory", 100007, 0, "16px"));
+      if($currentPlayerActivity == 2 && $playerID != 3) echo("— Opponent is inactive " . CreateButton($playerID, "Claim Victory", 100007, 0, "16px"));
     }
     echo ("</b>");
     /*
