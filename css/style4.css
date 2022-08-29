@@ -846,24 +846,6 @@ button {
   padding-bottom: 2px;
 }
 
-/* =============================================
-   Skip to main content for better accessibility
-   ============================================= */
-
-.skip-nav-link {
-  position: absolute;
-  padding: 0.5rem, 1.5rem;
-  left: 0.5rem;
-  top: 0.5rem;
-  border-radius: 0, 0, .25rem, .25rem;
-  transform: translateY(-150%);
-  transition: transform 325ms ease-in;
-}
-
-.skip-nav-link:focus {
-  transform: translateY(0px);
-}
-
 /* ==================
     Join Game Styles
    ================== */
@@ -1146,10 +1128,6 @@ button {
 
   .FavoriteDeckMainMenu {
     font-size: 12px;
-  }
-
-  .skip-nav-link {
-    display: none;
   }
 
   .karmaRestriction-Select {
