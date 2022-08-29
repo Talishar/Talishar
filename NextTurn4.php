@@ -55,6 +55,12 @@
     </head>
 
     <script>
+
+      var IsDynamicScalingEnabled = <?php echo(IsDynamicScalingEnabled($playerID) ? "true" : "false"); ?>;
+      var cardSize = IsDynamicScalingEnabled == 1 ? window.innerWidth / 13 : 96;
+      //alert(cardSize);
+      //var cardSize = 96;
+
       function Hotkeys(event) {
         if (event.keyCode === 32) SubmitInput(99, ""); //Space = pass
         if (event.keyCode === 117) SubmitInput(10000, ""); //U = undo
@@ -73,7 +79,6 @@
 
       function Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, controller=0, restriction="", isBroken=0, onChain=0, isFrozen=0, gem=0)
       {
-        var cardWidth = 96;
         if(folder == "crops")
         {
           cardNumber += "_cropped";
@@ -298,12 +303,11 @@
 
       function GetCharacterLeft(cardType, cardSubType)
       {
-        var cardWidth = 96;
         switch (cardType) {
           case "C":
-            return "calc(50% - " + (cardWidth / 2) + "px)";
+            return "calc(50% - " + (cardSize / 2) + "px)";
           case "W":
-            return "calc(50% - " + (cardWidth / 2 + cardWidth + 10) + "px)"; //TODO: Second weapon
+            return "calc(50% - " + (cardSize / 2 + cardSize + 10) + "px)"; //TODO: Second weapon
           default:
             break;
         }
@@ -313,17 +317,16 @@
           case "Chest":
             return "95px";
           case "Arms":
-            return (cardWidth + 105) + "px";
+            return (cardSize + 105) + "px";
           case "Legs":
             return "95px";
           case "Off-Hand":
-            return "calc(50% + " + (cardWidth / 2 + 10) + "px)";
+            return "calc(50% + " + (cardSize / 2 + 10) + "px)";
         }
       }
 
       function GetCharacterBottom(cardType, cardSubType)
       {
-        var cardSize = 96;
         switch (cardType) {
           case "C":
             return (cardSize * 2 + 25) + "px";
@@ -348,7 +351,6 @@
 
       function GetCharacterTop(cardType, cardSubType)
       {
-        var cardSize = 96;
         switch (cardType) {
           case "C":
             return "52px";
@@ -550,13 +552,13 @@
               if(readyIcon == "ready.png")
               {
                 var audio = document.getElementById('yourTurnSound');
-                <?php if(!IsMuted($playerID)) echo("audio.play();"); ?>
+                <?php //if(!IsMuted($playerID)) echo("audio.play();"); ?>
               }
               //var animations = document.getElementById("animations").innerText;
-              PopulateZone("myHand");
+              PopulateZone("myHand", cardSize);
               PopulateZone("theirHand", 50, "WebpImages");
-              PopulateZone("myChar");
-              PopulateZone("theirChar");
+              PopulateZone("myChar", cardSize);
+              PopulateZone("theirChar", cardSize);
               //if(animations != "") alert(animations);
             } else {
               CheckReloadNeeded(lastUpdate);
