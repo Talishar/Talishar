@@ -188,7 +188,7 @@
       if(DelimStringContains($additionalCosts, "BELITTLE"))
       {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2");
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);

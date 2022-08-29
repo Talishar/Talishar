@@ -670,7 +670,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("FINDINDICES", $player, "MASKPOUNCINGLYNX", 1);
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
       AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);

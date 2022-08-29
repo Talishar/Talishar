@@ -304,7 +304,7 @@ function ARCGenericHitEffect($cardID)
       break;
     case "ARC185": case "ARC186": case "ARC187":
       AddDecisionQueue("FINDINDICES", $mainPlayer, $cardID);
-      AddDecisionQueue("CHOOSEDECK", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("ADDMYHAND", $mainPlayer, "-", 1);
       AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);

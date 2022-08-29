@@ -3999,7 +3999,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $indicesParam = ($lastType == "A" ? "DECKCLASSAA,RUNEBLADE" : "DECKCLASSNAA,RUNEBLADE");
       PrependDecisionQueue("MULTIADDHAND", $player, "-", 1);
       PrependDecisionQueue("REVEALCARDS", $player, "-", 1);
-      PrependDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $player, $indicesParam);
       return 1;
     case "GENESIS":
@@ -4376,7 +4376,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "KNICKKNACK":
       for ($i = 0; $i < ($dqVars[0] + 1); ++$i) {
         PrependDecisionQueue("PUTPLAY", $player, "-", 1);
-        PrependDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+        PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
       }
       return "";
