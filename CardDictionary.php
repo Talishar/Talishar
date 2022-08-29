@@ -1236,6 +1236,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ArsenalHasFaceDownCard($player);
     case "ELE115": case "ELE118":
       return ArsenalEmpty($player);
+    case "ELE140":
+    case "ELE141":
+    case "ELE142":
+      $legalTarget = SowTomorrowIndices($player, $cardID);
+      if($legalTarget != "") return false;
+      return true;
     case "ELE143":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
     case "ELE147":
