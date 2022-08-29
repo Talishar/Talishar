@@ -625,7 +625,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       SoulShackleStartTurn($player);
       break;
     case "ELE007": case "ELE008": case "ELE009":
-      PayOrDiscard($target, 2, true); 
+      if (!IsAllyAttacking()) {
+        PayOrDiscard($target, 2, true); 
+      }
       break;
     case "ELE025": case "ELE026": case "ELE027":
       WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
