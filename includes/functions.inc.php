@@ -316,7 +316,33 @@ function logCompletedGameStats($reportingServer = false) {
 	}
 	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
 	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
+	SendFabDBResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
 	mysqli_close($conn);
+}
+
+
+function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
+{
+	global $FaBraryKey, $gameName;
+	if(!str_contains($decklink, "fabdb.net")) return;
+
+	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
+	//WriteLog($payload);
+/*
+	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/01G7FD2B3YQAMR8NJ4B3M58H96/results";
+	$ch = curl_init($url);
+	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$headers = array(
+		"x-api-key: " . $FaBraryKey,
+		"Content-Type: application/json",
+	);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+	$result = curl_exec($ch);
+	curl_close($ch);
+	*/
 }
 
 function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero)
@@ -495,7 +521,7 @@ function SendEmail($userEmail, $url) {
   $email->setSubject("Flesh and Blood Online Password Reset");
   $email->addTo($userEmail);
   $email->addContent(
-      "text/html", 
+      "text/html",
       "
         <p>
           We recieved a password reset request. The link to reset your password is below.
@@ -504,7 +530,7 @@ function SendEmail($userEmail, $url) {
         <p>
           Here is your password reset link: </br>
           <a href=$url>Password Reset</a>
-        </p>      
+        </p>
       "
   );
   $sendgrid = new \SendGrid($sendgridKey);
@@ -517,4 +543,3 @@ function SendEmail($userEmail, $url) {
       echo 'Caught exception: '. $e->getMessage() ."\n";
   }
 }
-
