@@ -78,7 +78,7 @@
       case "MON231": case "MON232": case "MON235": return 1;
       case "MON233": case "MON236": return 2;
       case "MON234": case "MON237": return 3;
-      case "MON406": return 0;
+      case "MON407": return 0;
       default: return 0;
     }
   }
@@ -283,7 +283,7 @@
       RemoveArsenal($player, $index);
       BanishCardForPlayer("MON407", $player, "ARS", "-");
       AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
     }

@@ -621,7 +621,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
   }
 
-  if ($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID) {
+  if (($turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK") && $turn[1] == $playerID) {
     ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
   }
 
@@ -891,14 +891,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</div>");
   //Now display their arsenal
   if ($theirArsenal != "") {
-    $arsenalLeft = (count($theirArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth / 2) + 5) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
-    echo ("<div title='Your opponent's Arsenal' style='position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) - $cardSize + 70) . "px;'>"); //arsenal div
+    $arsenalLeft = (count($theirArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth / 2) + 4) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
+    echo ("<div title='Your opponent's Arsenal' style='z-index:-10; position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) - $cardSize + 70) . "px;'>"); //arsenal div
 
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       echo ("<div style='position:relative; display:inline;'>");
       if ($theirArsenal[$i + 1] == "UP") echo (Card($theirArsenal[$i], "concat", $cardSizeAura, 0, 1, $theirArsenal[$i + 2] == 0 ? 1 : 0, 0, $theirArsenal[$i + 3], controller:$otherPlayer));
       else echo (Card($TheirCardBack, "concat", $cardSizeAura, 0, 0));
-      if ($theirArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      if ($theirArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:10; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo ("</div>");
     }
     echo ("</div>");
