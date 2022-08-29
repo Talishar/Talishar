@@ -248,7 +248,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -412,7 +412,13 @@
         $amount = 3;
         if($cardID == "ELE184") $amount = 2;
         else if($cardID == "ELE185") $amount = 1;
-        CombatChainPowerModifier(intval(explode("-", $target)[1]), $amount);
+        // if (count($combatChain) != 0) { // TODO: Make Lightning Press target cards on the layer
+          CombatChainPowerModifier(intval(explode("-", $target)[1]), $amount);
+        // } 
+        // elseif (count($layers) != 0) {
+        //   $layerTarget = intval(explode("-", $target)[1]);
+        //   PrependDecisionQueue("LAYERATKMODIFIER", $currentPlayer, $layerTarget . "-" .$amount);
+        // }
         return "";
       case "ELE186": case "ELE187": case "ELE188":
         AddCurrentTurnEffect($cardID, $currentPlayer);

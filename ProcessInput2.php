@@ -1212,7 +1212,7 @@ function GetLayerTarget($cardID)
     case "ELE183":
     case "ELE184":
     case "ELE185":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "CC:maxCost=1;type=AA");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "CC:maxCost=1;type=AA"); // &LAYER:maxCost=1;type=AA
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
       break;
