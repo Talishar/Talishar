@@ -1928,8 +1928,8 @@ function OnBlockResolveEffects()
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     switch ($combatChain[$i]) {
       case "EVR018":
-        WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " frostbite trigger creates a layer.");
-        AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
+          WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " frostbite trigger creates a layer.");
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
       case "RVD003":
       case "RVD015":

@@ -661,7 +661,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("DEALDAMAGE", $otherPlayer, 1 . "-" . $combatChain[0] . "-" . "COMBAT", 1);
       break;
     case "EVR018":
-      PlayAura("ELE111", $player);
+      if (!IsAllyAttacking()) {
+        PlayAura("ELE111", $player);
+      }
       break;
     case "EVR037":
       $index = FindCharacterIndex($player, $parameter);
