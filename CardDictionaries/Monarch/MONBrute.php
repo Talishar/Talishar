@@ -273,7 +273,7 @@
         RemoveArsenal($player, $index);
         BanishCardForPlayer("MON406", $player, "ARS", "-");
         AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-        AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       }
