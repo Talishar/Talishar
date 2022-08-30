@@ -605,7 +605,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
   }
 
-  if ($turn[0] == "CHOOSEDECK" && $turn[1] == $playerID) {
+  if (($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") && $turn[1] == $playerID) {
     ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
   }
 

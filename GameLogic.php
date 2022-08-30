@@ -80,6 +80,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     return DVRPlayAbility($cardID, $from, $resourcesPaid);
   } else if ($set == "RVD") {
     return RVDPlayAbility($cardID, $from, $resourcesPaid);
+  } else if ($set == "DYN") {
+    return DYNPlayAbility($cardID, $from, $resourcesPaid);
   }
   $rv = "";
   switch ($cardID) {
@@ -161,6 +163,8 @@ function ProcessHitEffect($cardID)
     return EVRHitEffect($cardID);
   } else if ($set == "UPR") {
     return UPRHitEffect($cardID);
+  } else if ($set == "DYN") {
+    return DYNHitEffect($cardID);
   }
   switch ($cardID) {
     default:
@@ -791,6 +795,8 @@ function EffectAttackModifier($cardID)
     return RVDEffectAttackModifier($cardID);
   } else if ($set == "UPR") {
     return UPREffectAttackModifier($cardID);
+  } else if ($set == "DYN") {
+    return DYNEffectAttackModifier($cardID);
   }
   switch ($cardID) {
     default:
@@ -1550,6 +1556,8 @@ function IsCombatEffectActive($cardID)
     return DVRCombatEffectActive($cardID, $attackID);
   } else if ($set == "UPR") {
     return UPRCombatEffectActive($cardID, $attackID);
+  } else if ($set == "DYN") {
+    return DYNCombatEffectActive($cardID, $attackID);
   }
   switch ($cardID) {
     default:
@@ -3112,7 +3120,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "QUELL":
           $rv = QuellIndices($player);
-          break;
+          break; 
         default:
           $rv = "";
           break;

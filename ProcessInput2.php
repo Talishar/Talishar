@@ -175,7 +175,7 @@ switch ($mode) {
     PlayCard($cardID, "PLAY", -1, $index, $items[$index + 4]);
     break;
   case 11: //CHOOSEDECK
-    if ($turn[0] == "CHOOSEDECK") {
+    if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
       $index = $cardID;
       $cardID = $myDeck[$index];
       unset($myDeck[$index]);
