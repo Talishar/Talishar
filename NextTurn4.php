@@ -286,7 +286,7 @@
           if(type == "C")
           {
             var soulCountEl = document.getElementById("soulCount");
-            if(!!soulCountEl)
+            if(!!soulCountEl && zone == "myChar")
             {
               var fontColor = "white";
               var borderColor = "black";
