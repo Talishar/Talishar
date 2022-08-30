@@ -1542,7 +1542,7 @@ function NumEquipBlock()
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     $rv = SearchLayerDQ($otherPlayer, "");
     $rv = SearchMultiZoneFormat($rv, "LAYER");
-    if(count($combatChain) > 0)
+    if(count($combatChain) > 0 && CardType($combatChain[0]) != "W")
     {
       if($rv != "") $rv .= ",";
       $rv .= "CC-0";
