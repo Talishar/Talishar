@@ -493,6 +493,14 @@
     $rv .= PreviousTurnSelectionUI() . "<BR>";
     $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
     $rv .= "</td></tr></table>";
+    $rv .= "<script>";
+    $rv .= "function copyText() {";
+    $rv .= "gameLink = document.getElementById('gameLink');";
+    $rv .= "gameLink.select();";
+    $rv .= "gameLink.setSelectionRange(0, 99999);";
+    $rv .= "document.execCommand('copy');";
+    $rv .= "}";
+    $rv .= "</script>";
     return $rv;
   }
 
