@@ -144,17 +144,18 @@ function LandmarkPieces()
   return 2;
 }
 
-//Card ID
-//Player ID
-//Still on chain? 1 = yes, 0 = no
+//0 - Card ID
+//1 - Player ID
+//2 - Still on chain? 1 = yes, 0 = no
 function ChainLinksPieces()
 {
   return 3;
 }
 
-//Damage Dealt
-//Total Attack
-//Talents
+//0 - Damage Dealt
+//1 - Total Attack
+//2 - Talents
+//3 - Class
 function ChainLinkSummaryPieces()
 {
   return 4;
