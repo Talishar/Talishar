@@ -76,7 +76,7 @@ WriteGameFile();
 GamestateUpdated($gameName);
 
 if ($playerID == 1) {
-  header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$p1Key");
+  header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
 } else {
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
 }
