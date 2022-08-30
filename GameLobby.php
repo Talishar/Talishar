@@ -57,7 +57,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
 <script>
   function copyText() {
-    gameLink = document.getElementById("gameLink");
+    var gameLink = document.getElementById("gameLink");
     gameLink.select();
     gameLink.setSelectionRange(0, 99999);
 
