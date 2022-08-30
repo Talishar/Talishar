@@ -26,6 +26,8 @@ include "CardDictionaries/Uprising/UPRShared.php";
 include "CardDictionaries/card_names.php";
 include "CardDictionaries/ClassicBattles/DVRShared.php";
 include "CardDictionaries/ClassicBattles/RVDShared.php";
+include "CardDictionaries/Dynasty/DYNShared.php";
+
 
 function CardType($cardID)
 {
@@ -86,7 +88,9 @@ function CardType($cardID)
     return DVRCardType($cardID);
   } else if ($set == "RVD") {
     return RVDCardType($cardID);
-  }
+  } else if ($set == "DYN") {
+    return DYNCardType($cardID);
+  } 
   switch ($cardID) {
     case "DUMMY":
       return "C";
@@ -186,7 +190,9 @@ function CardSubType($cardID)
     return DVRCardSubtype($cardID);
   } else if ($set == "RVD") {
     return RVDCardSubtype($cardID);
-  }
+  } else if ($set == "DYN") {
+    return DYNCardSubtype($cardID);
+  } 
   switch ($cardID) {
     default:
       return "";
@@ -246,6 +252,8 @@ function CharacterHealth($cardID)
       return 36;
     case "UPR103":
       return 18;
+    case "DYN030":
+      return 15;
     default:
       return 20;
   }
@@ -374,6 +382,9 @@ function CardClass($cardID)
       else if ($number = 23) return "BRUTE";
       else if ($number = 25) return "BRUTE";
       else return "GENERIC";
+    case "DYN":
+      if ($number = 30) return "WARRIOR,WIZARD";
+      else return "GENERIC";
     default:
       return 0;
   }
@@ -385,6 +396,7 @@ function CardTalent($cardID)
   if ($set == "MON") return MONCardTalent($cardID);
   else if ($set == "ELE") return ELECardTalent($cardID);
   else if ($set == "UPR") return UPRCardTalent($cardID);
+  else if ($set == "DYN") return DYNCardTalent($cardID);
   return "NONE";
 }
 
@@ -454,6 +466,8 @@ function CardCost($cardID)
     return DVRCardCost($cardID);
   } else if ($set == "RVD") {
     return RVDCardCost($cardID);
+  } else if ($set == "DYN") {
+    return DYNCardCost($cardID);
   }
   switch ($cardID) {
     default:
@@ -497,6 +511,8 @@ function AbilityCost($cardID)
     return DVRAbilityCost($cardID);
   } else if ($set == "RVD") {
     return RVDAbilityCost($cardID);
+  } else if ($set == "DYN") {
+    return DYNAbilityCost($cardID);
   }
   return CardCost($cardID);
 }
@@ -639,6 +655,8 @@ function PitchValue($cardID)
     return DVRPitchValue($cardID);
   } else if ($set == "RVD") {
     return RVDPitchValue($cardID);
+  } else if ($set == "DYN") {
+    return DYNPitchValue($cardID);
   }
   switch ($cardID) {
     default:
@@ -703,6 +721,8 @@ function BlockValue($cardID)
     return DVRBlockValue($cardID);
   } else if ($set == "RVD") {
     return RVDBlockValue($cardID);
+  } else if ($set == "DYN") {
+    return DYNBlockValue($cardID);
   }
   switch ($cardID) {
     default:
@@ -773,6 +793,8 @@ function AttackValue($cardID)
     return DVRAttackValue($cardID);
   } else if ($set == "RVD") {
     return RVDAttackValue($cardID);
+  } else if ($set == "DYN") {
+    return DYNAttackValue($cardID);
   }
   switch ($cardID) {
     default:
@@ -802,6 +824,8 @@ function HasGoAgain($cardID)
     return DVRHasGoAgain($cardID);
   } else if ($set == "RVD") {
     return RVDHasGoAgain($cardID);
+  } else if ($set == "DYN") {
+    return DYNHasGoAgain($cardID);
   }
   switch ($cardID) {
 
@@ -847,7 +871,9 @@ function GetAbilityType($cardID, $index = -1)
     return DVRAbilityType($cardID, $index);
   } else if ($set == "RVD") {
     return RVDAbilityType($cardID, $index);
-  }
+  } else if ($set == "DYN") {
+    return DYNAbilityType($cardID, $index);
+  } 
   switch ($cardID) {
     default:
       return "";
@@ -1624,7 +1650,9 @@ function AbilityHasGoAgain($cardID)
     return EVRAbilityHasGoAgain($cardID);
   } else if ($set == "UPR") {
     return UPRAbilityHasGoAgain($cardID);
-  }
+  } else if ($set == "DYN") {
+    return DYNAbilityHasGoAgain($cardID);
+  } 
   switch ($cardID) {
     case "RVD004":
       return true;

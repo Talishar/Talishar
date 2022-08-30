@@ -40,6 +40,8 @@ function TypeToPlay($phase)
       return "a card to add to the deck top or bottom";
     case "CHOOSEDECK":
       return "a card from deck";
+    case "MAYCHOOSEDECK":
+      return "a card from deck";  
     case "HANDTOPBOTTOM":
       return "a card from hand";
     case "CHOOSECOMBATCHAIN":
