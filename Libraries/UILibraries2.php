@@ -503,7 +503,7 @@
     $rv = "<h3>Revert to Start of Previous Turn</h3>"; // TODO: Revert Player 1 Turn 1 to the start of the game.
     $rv .= CreateButton($playerID, "This Turn", 10003, "beginTurnGamestate.txt", "20px") . "<BR>";
     $lastTurnFN = "lastTurnGamestate.txt";
-    if(file_exists("./Games/" . $gameName . "/" . $lastTurnFN)) $rv .= CreateButton($playerID, "Last Turn", 10003, $lastTurnFN) . "<BR>";
+    if(file_exists("./Games/" . $gameName . "/" . $lastTurnFN)) $rv .= CreateButton($playerID, "Last Turn", 10003, $lastTurnFN, "20px") . "<BR>";
     return $rv;
   }
 
