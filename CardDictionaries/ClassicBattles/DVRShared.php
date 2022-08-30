@@ -122,7 +122,6 @@
   function DVRPlayAbility($cardID)
   {
     global $currentPlayer;
-    $rv = "";
     switch($cardID)
     {
     case "DVR004":

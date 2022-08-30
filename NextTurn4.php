@@ -309,7 +309,7 @@
             if (!!soulCountEl && zone == "myChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
-              newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:18px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; text-align:center;'>Soul: " + soulCountEl.innerHTML + "</div>";
+              newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:1px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; text-align:center;'>Soul: " + soulCountEl.innerHTML + "</div>";
             }
             <?php
               echo("var p1uid = '" . ($p1uid == "-" ? "Player 1" : $p1uid) . "';");
@@ -320,13 +320,13 @@
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var myName = document.getElementById("myUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 78%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center; line-height: 14px; height: 14px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 18px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 90%; left: 50%; margin-right: -50%; border-radius: 8px; width: 80px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
             } else if (zone == "theirChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var theirName = document.getElementById("theirUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 78%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center; line-height: 14px; height: 14px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 18px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 90%; left: 50%; margin-right: -50%; border-radius: 8px; width: 80px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
             }
 
           }
