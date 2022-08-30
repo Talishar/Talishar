@@ -4326,6 +4326,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCARDTOCHAIN":
       AddCombatChain($lastResult, $player, $parameter, 0);
       return $lastResult;
+      
+    case "ATTACKWITHIT":
+
+      AddCombatChain($lastResult, $player, $parameter, 0);
+      PlayCardEffect($lastResult, "DECK", 3);
+
+      return $lastResult;
+
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
       if (RevealCards($deck[0], $player) && AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
