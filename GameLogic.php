@@ -2498,7 +2498,7 @@ function SteamCounterLogic($item, $playerID)
 function IsDominateActive()
 {
   global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $combatChainState;
-  global $CS_NumAuras, $CCS_NumBoosted;
+  global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary;
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("EVR097", "EVR098", "EVR099", $mainPlayer)) return false;
   $characterEffects = GetCharacterEffects($mainPlayer);
@@ -2516,6 +2516,72 @@ function IsDominateActive()
     }
   }
   switch ($combatChain[0]) {
+    case "WTR095":
+    case "WTR096":
+    case "WTR097":
+      return (ComboActive() ? true : false);
+    case "WTR179":
+    case "WTR180":
+    case "WTR181":
+      return true;
+    case "ARC080":
+      return true;
+    case "MON004":
+      return true;
+    case "MON023":
+    case "MON024":
+    case "MON025":
+      return true;
+    case "MON246":
+      return SearchDiscard($mainPlayer, "AA") == "";
+    case "MON275":
+    case "MON276":
+    case "MON277":
+      return true;
+    case "ELE209":
+    case "ELE210":
+    case "ELE211":
+      return HasIncreasedAttack();
+    case "EVR027":
+    case "EVR028":
+    case "EVR029":
+      return true;
+    case "EVR038":
+      return (ComboActive() ? true : false);
+    case "EVR076":
+    case "EVR077":
+    case "EVR078":
+      return $combatChainState[$CCS_NumBoosted] > 0;
+    case "EVR110":
+    case "EVR111":
+    case "EVR112":
+      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+    case "EVR138":
+      $hasDominate = false;
+      for ($i = 0; $i < count($chainLinks); ++$i) 
+      {
+        for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) 
+        {
+          $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST"));
+          if ($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA") 
+          {
+              if (!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
+            }
+          }
+        }
+      return $hasDominate;
+    default:
+      break;
+  }
+  return false;
+}
+
+function HasDominate ($cardID) 
+{
+  global $mainPlayer, $combatChainState;
+  global $CS_NumAuras, $CCS_NumBoosted;
+  switch ($cardID) 
+  {
     case "WTR095":
     case "WTR096":
     case "WTR097":
