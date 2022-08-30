@@ -28,6 +28,7 @@
     include "Libraries/UILibraries2.php";
     include "Libraries/StatFunctions.php";
     include "Libraries/PlayerSettings.php";
+    include "MenuFiles/ParseGamefile.php";
 
     if ($currentPlayer == $playerID) {
       $icon = "ready.png";
@@ -310,18 +311,22 @@
               var borderColor = "black";
               newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:18px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; text-align:center;'>Soul: " + soulCountEl.innerHTML + "</div>";
             }
+            <?php
+              echo("var p1uid = '" . ($p1uid == "-" ? "Player 1" : $p1uid) . "';");
+              echo("var p2uid = '" . ($p2uid == "-" ? "Player 2" : $p2uid) . "';");
+             ?>
             if (zone == "myChar") {
               var fontColor = "white";
               var borderColor = "black";
               var backgroundColor = "white";
-              var myName = document.getElementById("myUsername").innerHTML;
-              newHTML += "<div style='margin: 0px; top: 78%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center; line-height: 14px; height: 14px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 18px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + myName + "</div>";
+              //var myName = document.getElementById("myUsername").innerHTML;
+              newHTML += "<div style='cursor:default; margin: 0px; top: 78%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center; line-height: 14px; height: 14px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 18px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
             } else if (zone == "theirChar") {
               var fontColor = "white";
               var borderColor = "black";
               var backgroundColor = "white";
-              var theirName = document.getElementById("theirUsername").innerHTML;
-              newHTML += "<div style='margin: 0px; top: 78%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center; line-height: 14px; height: 14px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 18px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + theirName + "</div>";
+              //var theirName = document.getElementById("theirUsername").innerHTML;
+              newHTML += "<div style='cursor:default; margin: 0px; top: 78%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center; line-height: 14px; height: 14px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 18px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
             }
 
           }
