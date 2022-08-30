@@ -1138,18 +1138,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   echo("<div style='display:none;' id='animations'>" . implode(" ", $animations) . "</div>");
-
-  // Display Player Name to Spectators
-  $player1Username = "Player " . $playerID;
-  echo ("<div id='myUsername' style='display:none;'>");
-  echo ($player1Username);
-  echo ("</div>");
-
-  $secondPlayer = $playerID = 1 ? 2 : 1;
-  $player2Username = "Player " . $secondPlayer;
-  echo ("<div id='theirUsername' style='display:none;'>");
-  echo ($player2Username);
-  echo ("</div>");
 }
 
 function PlayableCardBorderColor($cardID)
