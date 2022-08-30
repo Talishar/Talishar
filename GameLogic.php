@@ -2558,13 +2558,12 @@ function IsDominateActive()
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138":
       $hasDominate = false;
-      WriteLog(count($chainLinks));
-      for ($i = 0; $i < count($chainLinks); ++$i) 
+      for ($i = 0; $i < count($chainLinks); ++$i)
       {
-        for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) 
+        for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces())
         {
           $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST"));
-          if ($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA") 
+          if ($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "EVR138" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
           {
               if (!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
             }
@@ -2577,11 +2576,11 @@ function IsDominateActive()
   return false;
 }
 
-function HasDominate ($cardID) 
+function HasDominate ($cardID)
 {
   global $mainPlayer, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
-  switch ($cardID) 
+  switch ($cardID)
   {
     case "WTR095":
     case "WTR096":
