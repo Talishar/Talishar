@@ -21,6 +21,8 @@ $SET_Mute = 11; //Mute sounds
 $SET_Cardback = 12; //Card backs
 $SET_IsPatron = 13; //Is Patron
 
+$SET_MuteChat = 14; //Did this player mute chat
+
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
@@ -175,6 +177,14 @@ function IsMuted($player)
   return $settings[$SET_Mute] == "1";
 }
 
+function IsChatMuted()
+{
+  global $SET_MuteChat;
+  $p1Settings = GetSettings(1);
+  $p2Settings = GetSettings(2);
+  return $p1Settings[$SET_MuteChat] == "1" || $p2Settings[$SET_MuteChat] == "1";
+}
+
 function ChangeSetting($player, $setting, $value)
 {
   /*
@@ -204,7 +214,7 @@ function ChangeSetting($player, $setting, $value)
 function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
-  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback;
+  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat;
   $rv = "";
   $settings = GetSettings($player);
   $currentValue = HoldPrioritySetting($player);
@@ -256,6 +266,11 @@ function GetSettingsUI($player)
 
   if ($settings[$SET_Mute] == 0) $rv .= CreateCheckbox($SET_Mute . "-1", "Mute", 26, false, "Mute", true);
   else $rv .= CreateCheckbox($SET_Mute . "-0", "Unmute", 26, true, "Unmute", true);
+  $rv .= "<BR>";
+
+
+  if ($settings[$SET_MuteChat] == 0) $rv .= CreateCheckbox($SET_MuteChat . "-1", "Disable Chat", 26, false, "Disable Chat", true);
+  else $rv .= CreateCheckbox($SET_MuteChat . "-0", "Disable Chat", 26, true, "Disable Chat", true);
   $rv .= "<BR>";
 
   // 0 - Default
