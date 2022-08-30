@@ -482,7 +482,7 @@
 
   function MainMenuUI()
   {
-    global $playerID;
+    global $playerID, $gameName, $redirectPath;
     $rv = "<table class='table-MainMenu'><tr><td class='table-td-MainMenu'>";
     $rv .= GetSettingsUI($playerID) . "<BR>";
     $rv .= "</td><td style='width:45%;  margin-top: 10px; vertical-align:top;'>";
@@ -492,15 +492,8 @@
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
     $rv .= PreviousTurnSelectionUI() . "<BR>";
     $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
+    $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3'><button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Invite Link</button></div><br>";
     $rv .= "</td></tr></table>";
-    $rv .= "<script>";
-    $rv .= "function copyText() {";
-    $rv .= "gameLink = document.getElementById('gameLink');";
-    $rv .= "gameLink.select();";
-    $rv .= "gameLink.setSelectionRange(0, 99999);";
-    $rv .= "document.execCommand('copy');";
-    $rv .= "}";
-    $rv .= "</script>";
     return $rv;
   }
 

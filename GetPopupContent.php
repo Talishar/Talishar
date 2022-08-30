@@ -18,6 +18,7 @@ include "./Libraries/UILibraries2.php";
 include "./Libraries/StatFunctions.php";
 include "./Libraries/PlayerSettings.php";
 include "./GameTerms.php";
+include "./HostFiles/Redirector.php";
 ob_end_clean();
 
 $cardSize = 120;
