@@ -1396,6 +1396,7 @@
     $highestBlock = 0;
     $hasPhantasm = false;
     $hasGoAgain = false;
+    $hasDominate = false;
     for($i=0; $i<count($chainLinks); ++$i)
     {
       for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces())

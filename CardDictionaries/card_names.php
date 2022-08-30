@@ -10,7 +10,6 @@ $showPitch = false;
 
 if ($set == "ARC")
 	{  switch($num)	   {
-
 		case "000": return "Eye of Ophidia";
 		case "001": return "Dash, Inventor Extraordinaire";
 		case "002": return "Dash";
@@ -1206,6 +1205,12 @@ if($set == "RVD"){
     default: return "Name not populated - please report bug";
   }
 }
+if ($set == "DYN") {
+	switch ($num) {
+		case "030":
+			return "Emperor, Dracai of Aesir";
+	}
+}
 if($set == "WTR"){
   switch($num)
   {
@@ -1435,12 +1440,10 @@ if($set == "WTR"){
 		case "223": return "Sloggism";
 		case "224": return "Cracked Bauble";
 		case "225": return "Quicken";
-
-		   }	}
-
-
-              else if ($set == "EVR")
-              	{  switch($num)	   {
+		   }	
+		}
+		 else if ($set == "EVR")
+        		{  switch($num)	   {
 
               		case "000": if ($showPitch == false) return "Grandeur of Valahai";
               			else return "Grandeur of Valahai (blue)";
@@ -1816,9 +1819,9 @@ if($set == "WTR"){
               		case "196": return "Quicken";
               		case "197": return "Frostbite";
               		case "198": return "Frostbite";
-
-               } }
-
-        return "";    }
+               } 
+			}
+        return "";    
+	}
 
 ?>
