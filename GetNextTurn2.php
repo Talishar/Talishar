@@ -876,19 +876,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($theirCharacter[$i + 6] == 1) echo ("<img title='On Combat Chain' style='position:absolute; z-index:100; top:-25px; left:7px; width:" . $cardWidth . "' src='./Images/onChain.png' />");
     if ($theirCharacter[$i + 1] == 0) echo ("<img title='Equipment Broken' style='position:absolute; z-index:100; width:" . $cardEquipmentWidth . "; bottom: 6px; left:16px;' src='./Images/brokenEquip.png' />");
     //Show Player Name for the spectator
-    if ($type == "C" && $playerID == 3) {
-      echo ("<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 8px; width: 72px; text-align: center;
-      line-height: 18px; height: 18px; padding: 5px; border: 3px solid " . $borderColor . ";
-      transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . $backgroundColor . ";
-      font-size:18px; font-weight:650; color:" . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Player " . $otherPlayer);;
-    }
-    echo ("</div>");
-
     */
   }
   echo($characterContents);
 
   echo ("</div>");
+
   //Now display their arsenal
   if ($theirArsenal != "") {
     $arsenalLeft = (count($theirArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth / 2) + 4) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
@@ -1145,6 +1138,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   echo("<div style='display:none;' id='animations'>" . implode(" ", $animations) . "</div>");
+
+  // Display Player Name to Spectators
+  $player1Username = "Player " . $playerID;
+  echo ("<div id='myUsername' style='display:none;'>");
+  echo ($player1Username);
+  echo ("</div>");
+
+  $secondPlayer = $playerID = 1 ? 2 : 1;
+  $player2Username = "Player " . $secondPlayer;
+  echo ("<div id='theirUsername' style='display:none;'>");
+  echo ($player2Username);
+  echo ("</div>");
 }
 
 function PlayableCardBorderColor($cardID)
