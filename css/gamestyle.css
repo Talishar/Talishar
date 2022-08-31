@@ -10,7 +10,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   ::-webkit-scrollbar {
     width: .50em;
-    height: .25em;
+    height: .50em;
     border-radius: 5px;
   }
 
@@ -20,6 +20,12 @@
   }
 
   ::-webkit-scrollbar-thumb:vertical {
+    height: 5em;
+    background-color: #000;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:horizontal {
     height: 5em;
     background-color: #000;
     border-radius: 5px;
