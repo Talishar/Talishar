@@ -15,9 +15,11 @@
       echo ("Invalid player ID.");
       exit;
     }
-    $authKey = TryGet("authKey", 3);
-
     session_start();
+    if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+    else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+    else $authKey = TryGet("authKey", 3);
+
 
     //First we need to parse the game state from the file
     include "WriteLog.php";
@@ -591,7 +593,7 @@
               if (log !== null) log.scrollTop = log.scrollHeight;
               if (readyIcon == "ready.png") {
                 var audio = document.getElementById('yourTurnSound');
-                <?php //if(!IsMuted($playerID)) echo("audio.play();");
+                <?php if(!IsMuted($playerID)) echo("audio.play();");
                 ?>
               }
               //var animations = document.getElementById("animations").innerText;

@@ -397,8 +397,12 @@ SetCachePiece($gameName, $playerID + 3, "0");
 SetCachePiece($gameName, $playerID + 6, $character);
 GamestateUpdated($gameName);
 
-$authKey = ($playerID == 1 ? $p1Key : $p2Key);
-header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+//$authKey = ($playerID == 1 ? $p1Key : $p2Key);
+//$_SESSION["authKey"] = $authKey;
+if($playerID == 1) $_SESSION["p1AuthKey"] = $p1Key;
+if($playerID == 2) $_SESSION["p2AuthKey"] = $p2Key;
+//header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
 function GetAltCardID($cardID)
 {
