@@ -384,7 +384,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
-          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3]);
+          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3], $params[2]);
           ClearDieRoll($player);
         }
       }
@@ -626,7 +626,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "ELE007": case "ELE008": case "ELE009":
       if (!IsAllyAttacking()) {
-        PayOrDiscard($target, 2, true); 
+        PayOrDiscard($target, 2, true);
       }
       break;
     case "ELE025": case "ELE026": case "ELE027":
