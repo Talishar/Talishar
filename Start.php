@@ -27,9 +27,9 @@ include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
 ob_end_clean();
 session_start();
-if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
-else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
-if ($authKey != $p1Key) exit;
+if($playerID == 1 && isset($_SESSION["p1AuthKey"])) { $targetKey = $p1Key; $authKey = $_SESSION["p1AuthKey"]; }
+else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) { $targetKey = $p2Key; $authKey = $_SESSION["p2AuthKey"]; }
+if ($authKey != $targetKey) { echo("Invalid auth key"); exit; }
 
 //Setup the random number generator
 srand(make_seed());
