@@ -19,7 +19,9 @@ session_start();
 
 $gameName = $_GET["gameName"];
 $playerID = $_GET["playerID"];
-$authKey = $_GET["authKey"];
+if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+else if(isset($_GET["authKey"])) $authKey = $_GET["authKey"];
 
 if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
   header("Location: " . $redirectPath . "/MainMenu.php"); //If the game file happened to get deleted from inactivity, redirect back to the main menu instead of erroring out
@@ -41,7 +43,8 @@ $theirName = ($playerID == 1 ? $p2uid : $p1uid);
 
 if ($gameStatus == $MGS_GameStarted) {
   $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-  header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  //header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
   exit;
 }
 
