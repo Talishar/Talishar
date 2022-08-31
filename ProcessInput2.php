@@ -1596,6 +1596,15 @@ function PayAdditionalCosts($cardID, $from)
         WriteLog("Lexi turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
       }
       break;
+    case "ELE115":
+      if (ArsenalHasFaceDownCard($currentPlayer)) {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
+        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        WriteLog(CardLink($cardID, $cardID) . " put your arsenal at the bottom of your deck");
+      }
+      break;
     case "ELE118":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
       AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);

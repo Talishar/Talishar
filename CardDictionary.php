@@ -1259,8 +1259,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
     case "ELE031":
     case "ELE032":
+    case "ELE115": 
       return !ArsenalHasFaceDownCard($player);
-    case "ELE115": case "ELE118":
+    case "ELE118":
       return ArsenalEmpty($player);
     case "ELE140":
     case "ELE141":
