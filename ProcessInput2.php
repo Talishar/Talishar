@@ -1692,7 +1692,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $chainClosed = ProcessAttackTarget();
       ++$combatChainState[$CCS_NumChainLinks];
       IncrementClassState($currentPlayer, $CS_NumAttacks);
-      if (CardSubType($cardID) == "Dragon") IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
+      if (DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
       if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
       if (ClassContains($cardID, "ILLUSIONIST" , $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
       $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
