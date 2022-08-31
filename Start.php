@@ -26,8 +26,9 @@ ob_start();
 include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
 ob_end_clean();
-
-$authKey = $_GET["authKey"];
+session_start();
+if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 if ($authKey != $p1Key) exit;
 
 //Setup the random number generator
@@ -104,7 +105,8 @@ while (!file_exists($filename) && $gameStateTries < 10) {
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 
-header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
+//header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
+header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1");
 
 exit;
 
