@@ -284,10 +284,6 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your Ice, Earth, and Elemental action cards +1 defense this turn.";
       case "ELE115":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALDOWN");
-        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDCLASSSTATE", $currentPlayer, $CS_DamagePrevention . "-1", 1);
         return "";
