@@ -44,24 +44,31 @@ if (isset($_POST['update_profile'])) {
 
 if(isset($_SESSION['userid']))
 {
-  echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:200px;'>");
-  echo ("<h1>Your Badges</h1><br>");
   $badges = LoadBadges($_SESSION['userid']);
-  for($i=0; $i<count($badges); $i+=6)
-  {
-    echo ("<div style='float:left;'>");
-    echo ("<div class='container'>");
-    echo ("<img class='badge' src='" . $badges[$i + 5] . "'>");
-    echo ("<div class='overlay'>");
-    $bottomText = str_replace("{0}", $badges[$i+2], $badges[$i+4]);
-    echo ("<div class='text'>" . $badges[$i + 3] . "<br><br>" . $bottomText . "</div>");
-    echo ("</img></div></div></div>");
+  if (count($badges) > 0) {
+    echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:200px;'>");
+    echo ("<h1>Your Badges</h1><br>");
+    
+    for($i=0; $i<count($badges); $i+=6)
+    {
+      echo ("<div style='float:left;'>");
+      echo ("<div class='container'>");
+      echo ("<img class='badge' src='" . $badges[$i + 5] . "'>");
+      echo ("<div class='overlay'>");
+      $bottomText = str_replace("{0}", $badges[$i+2], $badges[$i+4]);
+      echo ("<div class='text'>" . $badges[$i + 3] . "<br><br>" . $bottomText . "</div>");
+      echo ("</img></div></div></div>");
+    }
+    echo ("</section>");
   }
-  echo ("</section>");
 }
 
 if (isset($_SESSION["isPatron"])) {
-  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px); overflow-y:scroll;'>");
+  if (count($badges) > 0) {
+  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px);'>");
+  } else {
+    echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; top:40px; height: calc(90% - 220px);'>");
+  }
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
   include_once "zzGameStats.php";
