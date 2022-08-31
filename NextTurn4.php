@@ -593,7 +593,7 @@
               if (log !== null) log.scrollTop = log.scrollHeight;
               if (readyIcon == "ready.png") {
                 var audio = document.getElementById('yourTurnSound');
-                <?php //if(!IsMuted($playerID)) echo("audio.play();");
+                <?php if(!IsMuted($playerID)) echo("audio.play();");
                 ?>
               }
               //var animations = document.getElementById("animations").innerText;
