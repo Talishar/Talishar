@@ -3120,7 +3120,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "QUELL":
           $rv = QuellIndices($player);
-          break; 
+          break;
         default:
           $rv = "";
           break;
@@ -4695,7 +4695,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       SetCachePiece($gameName, 2, $currentTime);
       SetCachePiece($gameName, 3, $currentTime);
       include "MenuFiles/ParseGamefile.php";
-      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$p1Key");
+      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
       exit;
     case "REMATCH":
       global $GameStatus_Rematch, $inGameStatus;
