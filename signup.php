@@ -3,16 +3,17 @@ include_once 'Header.php';
 ?>
 
 <section class="signup-form">
-  <h2>Sign Up</h2>
+  <h2>SIGN UP</h2>
   <div class="signup-form-form">
     <form action="includes/signup.inc.php" method="post">
       <input type="text" name="uid" placeholder="Username...">
       <input type="text" name="email" placeholder="Email...">
       <input type="password" name="pwd" placeholder="Password...">
       <input type="password" name="pwdrepeat" placeholder="Repeat password...">
-      <button type="submit" name="submit">Sign up</button>
+      <button type="submit" name="submit">SIGN UP</button>
     </form>
   </div>
+  <br>
   <?php
   // Error messages
   if (isset($_GET["error"])) {

@@ -141,7 +141,7 @@ if (isset($_SESSION["isPatron"])) {
     <input type="password" name="new_pass" placeholder="Enter New Password">
     <div>Confirm password:</div>
     <input type="password" name="confirm_pass" placeholder="Confirm New Password">
-    <button type="submit" name="update_profile">Update Profile</button>
+    <button type="submit" name="update_profile">UPDATE PROFILE</button>
 
     <?php
     if (isset($message)) {

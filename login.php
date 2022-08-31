@@ -11,16 +11,16 @@ if (isset($_SESSION['useruid'])) {
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <section class="signup-form">
-  <h2>Log In</h2>
+  <h2>LOG IN</h2>
   <div class="signup-form-form">
     <form action="includes/login.inc.php" method="post" style='overflow:hidden;'>
       <input type="text" name="uid" placeholder="Username...">
       <input type="password" name="pwd" placeholder="Password...">
-      <label style='display:inline;' for="rememberMe">Remember Me?</label>
+      <label style='display:inline;' for="rememberMe">Remember Me</label>
       <input style='display:inline; width:16px;' type="checkbox" id="rememberMe" name="rememberMe" value="rememberMe">
-      <button type="submit" name="submit">Submit</button>
+      <button type="submit" name="submit">SUBMIT</button>
       <a href="ResetPassword.php">
-        <button type="submit" name="reset-password">Forgot Password</button>
+        <button type="submit" name="reset-password">FORGOT PASSWORD</button>
       </a>
       <div class="centeredGoogle">
         <div id="g_id_onload" data-client_id="1089547347578-lqbvoqb0u3grqi89ibjmti2bc9lq37pr.apps.googleusercontent.com" data-login_uri="http://localhost/FaBOnline/MainMenu.php" data-auto_prompt="false">
