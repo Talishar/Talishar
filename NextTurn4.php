@@ -16,8 +16,8 @@
       exit;
     }
     session_start();
-    if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
-    else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+    if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+    else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
     else $authKey = TryGet("authKey", 3);
 
 
@@ -201,8 +201,8 @@
           var playerID = <?php echo ($playerID); ?>;
           var cardWidth = 96;
           gemImg = (gem == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-          if (gem == 1) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 15) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
-          else if (gem == 2) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 15) + "px; width:34px; height:34px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+          if (gem == 1) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 15) + "px; width:40px; height:40px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+          else if (gem == 2) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 15) + "px; width:40px; height:40px; cursor:pointer;' src='./Images/" + gemImg + "' />";
         }
         return rv;
       }
@@ -314,21 +314,21 @@
               newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; height:20px; font-size:1px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; text-align:center;'>Soul: " + soulCountEl.innerHTML + "</div>";
             }
             <?php
-              echo("var p1uid = '" . ($p1uid == "-" ? "Player 1" : $p1uid) . "';");
-              echo("var p2uid = '" . ($p2uid == "-" ? "Player 2" : $p2uid) . "';");
-             ?>
+            echo ("var p1uid = '" . ($p1uid == "-" ? "Player 1" : $p1uid) . "';");
+            echo ("var p2uid = '" . ($p2uid == "-" ? "Player 2" : $p2uid) . "';");
+            ?>
             if (zone == "myChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var myName = document.getElementById("myUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 90%; left: 50%; margin-right: -50%; border-radius: 8px; width: 80px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 90%; left: 50%; margin-right: -50%; border-radius: 8px; width: 80px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo ($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
             } else if (zone == "theirChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var theirName = document.getElementById("theirUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 90%; left: 50%; margin-right: -50%; border-radius: 8px; width: 80px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 90%; left: 50%; margin-right: -50%; border-radius: 8px; width: 80px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo ($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
             }
 
           }
@@ -593,7 +593,7 @@
               if (log !== null) log.scrollTop = log.scrollHeight;
               if (readyIcon == "ready.png") {
                 var audio = document.getElementById('yourTurnSound');
-                <?php if(!IsMuted($playerID)) echo("audio.play();");
+                <?php if (!IsMuted($playerID)) echo ("audio.play();");
                 ?>
               }
               //var animations = document.getElementById("animations").innerText;
