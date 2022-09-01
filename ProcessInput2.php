@@ -1673,6 +1673,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
+  if($cardID == "ARC003") $index = FindCharacterIndex($currentPlayer, "ARC003");//TODO: Fix this. This is an issue with the entire "multiple abilities" framework
   if ($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $character = &GetPlayerCharacter($currentPlayer);
