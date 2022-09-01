@@ -190,6 +190,7 @@ switch ($mode) {
       unset($myHand[$buttonInput]);
       $myHand = array_values($myHand);
       ContinueDecisionQueue($cardID);
+      WriteLog("Player " . $playerID . " put a card on the top of the deck.");
     }
     break;
   case 13: //HANDBOTTOM
@@ -199,6 +200,7 @@ switch ($mode) {
       unset($myHand[$buttonInput]);
       $myHand = array_values($myHand);
       ContinueDecisionQueue($cardID);
+      WriteLog("Player " . $playerID . " put a card on the bottom of the deck.");
     }
     break;
   case 14: //Banish
