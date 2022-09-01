@@ -192,7 +192,7 @@ foreach ($gameData as $row) {
   echo ("<td><a href='./zzMatchupStats.php?heroID=$detailHeroID&matchupID=" . $row[0] . "'>" . CardName($row[0]) . "</a></td>");
   echo ("<td>" . $row[1] . "</td>");
   echo ("<td>" . $row[2] . "</td>");
-  echo ("<td>" . (($row[1] / ($row[1] + $row[2])) * 100) . "% </td>");
+  echo ("<td>" . number_format(($row[1] / ($row[1] + $row[2])) * 100, 2, ".", "") . "% </td>");
   echo ("</tr>");
   $totalWins += $row[1];
   $totalGames += $row[1] + $row[2];
