@@ -301,7 +301,7 @@
           }
           else return "Cannot reveal cards";
         }
-        return "Red Hot lets you reveal and do damage.";
+        return CardLink($cardID, $cardID) . " lets you reveal and deal damage.";
       case "UPR091":
         if(RuptureActive())
         {
@@ -433,7 +433,7 @@
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);
-          WriteLog("Gain 1 health from Oasis Respite.");
+          WriteLog("Gain 1 health from " . CardLink($cardID, $cardID) . ".");
         }
         return "Prevents damage this turn.";
       default: return "";
