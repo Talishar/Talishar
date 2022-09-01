@@ -1057,6 +1057,7 @@ function CRUHitEffect($cardID)
     case "CRU109":
     case "CRU110":
     case "CRU111":
+      AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       $combatChainState[$CCS_NextBoostBuff] += 3;
       break;
     case "CRU123":
