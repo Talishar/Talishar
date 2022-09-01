@@ -414,7 +414,7 @@ function HasIncreasedAttack()
 
 function DamageTrigger($player, $damage, $type, $source="NA")
 {
-  AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type, 1);
+  AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type);
   return $damage;
 }
 
