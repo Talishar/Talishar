@@ -105,7 +105,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     $attack = $combatChainState[$CCS_ChainAttackBuff];
     if($CanGainAttack || $attack < 0)
     {
-      array_push($attackModifiers, "Whole combat chain buff");
+      array_push($attackModifiers, "Whole Combat Chain Buff");
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
