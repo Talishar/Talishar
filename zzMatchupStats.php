@@ -189,7 +189,7 @@ foreach ($gameData as $row) {
   echo ("<td><a href='./zzHeroStats.php?heroID=$row[0]'>" . CardLink($row[0], $row[0], true) . "</a></td>");
   echo ("<td>" . $row[1] . "</td>");
   echo ("<td>" . $row[2] . "</td>");
-  echo ("<td>" . (($row[1] / ($row[1] + $row[2])) * 100) . "% </td>");
+  echo ("<td>" . number_format(($row[1] / ($row[1] + $row[2])) * 100, 2, ".", "") . "% </td>");
   echo ("</tr>");
   $totalWins += $row[1];
   $totalGames += $row[1] + $row[2];
