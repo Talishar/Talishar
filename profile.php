@@ -67,7 +67,7 @@ if (isset($_SESSION["isPatron"])) {
   if (count($badges) > 0) {
   echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px);'>");
   } else {
-    echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; top:40px; height: calc(90% - 220px);'>");
+    echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; top:40px; height: calc(90% - 129px);'>");
   }
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
