@@ -623,10 +623,8 @@
         Intimidate();
         return "Intimidates.";
       case "WTR007":
-        $drew = 0;
         if(AttackValue($additionalCosts) >= 6)
         {
-          $drew = 1;
           MyDrawCard();
           MyDrawCard();
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -936,7 +934,7 @@
           LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
         }
         break;
-      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog("Whelming Gustwave drew a card."); MainDrawCard(); } break;
+      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog(CardLink($cardID,$cardID) . " draw a card."); MainDrawCard(); } break;
       case "WTR115":
        if($mainClassState[$CS_HitsWDawnblade] == 1 && $CCS_WeaponIndex < count($combatChainState)) { ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+3]; }
        ++$mainClassState[$CS_HitsWDawnblade];

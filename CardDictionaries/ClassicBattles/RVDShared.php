@@ -135,7 +135,7 @@ function RVDPlayAbility($cardID)
       return "Gain 1 resource.";
 
     case "RVD013":
-      WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+      WriteLog(CardLink($cardID, $cardID) . " draw a card.");
       MyDrawCard();
       $card = DiscardRandom();
       $rv = "Discarded " . CardLink($card, $card);
