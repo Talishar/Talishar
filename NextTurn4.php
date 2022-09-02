@@ -607,7 +607,8 @@
           }
         };
         var dimensions = "&windowWidth=" + window.innerWidth + "&windowHeight=" + window.innerHeight;
-        if(lastUpdate != "NaN") xmlhttp.open("GET", "GetNextTurn2.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>" + dimensions, true);
+        if(lastUpdate == "NaN") window.location.replace("https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php");
+        else xmlhttp.open("GET", "GetNextTurn2.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>" + dimensions, true);
         xmlhttp.send();
       }
 
