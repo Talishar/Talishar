@@ -83,6 +83,13 @@ function SearchLayer($player, $type = "", $subtype = "", $maxCost = -1, $minCost
   return SearchInner($layers, $player, "LAYER", LayerPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly);
 }
 
+function SearchLandmarks($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false)
+{
+  global $landmarks;
+  return SearchInner($landmarks, $player, "LANDMARK", LandmarkPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly);
+}
+
+
 function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost, $minCost, $class, $talents, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly)
 {
   $cardList = "";
@@ -474,7 +481,7 @@ function SearchItemsForCard($cardID, $player)
   return $indices;
 }
 
-function SearchLandmarks($cardID)
+function SearchLandmark($cardID)
 {
   global $landmarks;
   for ($i = 0; $i < count($landmarks); $i += LandmarkPieces()) {
@@ -770,6 +777,9 @@ function SearchMultizone($player, $searches)
         break;
       case "LAYER":
         $searchResult = SearchLayer($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly);
+        break;
+      case "LANDMARK":
+        $searchResult = SearchLandmarks($searchPlayer, $type, $subtype,$maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly);
         break;
       default:
         break;

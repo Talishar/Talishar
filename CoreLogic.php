@@ -1163,7 +1163,7 @@ function RevealCards($cards, $player="")
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
   WriteLog($string);
-  if($player != "" && SearchLandmarks("ELE000")) KorshemRevealAbility($player);
+  if($player != "" && SearchLandmark("ELE000")) KorshemRevealAbility($player);
   return true;
 }
 
