@@ -90,7 +90,7 @@ function CardType($cardID)
     return RVDCardType($cardID);
   } else if ($set == "DYN") {
     return DYNCardType($cardID);
-  } 
+  }
   switch ($cardID) {
     case "DUMMY":
       return "C";
@@ -192,7 +192,7 @@ function CardSubType($cardID)
     return RVDCardSubtype($cardID);
   } else if ($set == "DYN") {
     return DYNCardSubtype($cardID);
-  } 
+  }
   switch ($cardID) {
     default:
       return "";
@@ -873,7 +873,7 @@ function GetAbilityType($cardID, $index = -1)
     return RVDAbilityType($cardID, $index);
   } else if ($set == "DYN") {
     return DYNAbilityType($cardID, $index);
-  } 
+  }
   switch ($cardID) {
     default:
       return "";
@@ -1086,7 +1086,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  
+
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $myCharacter = &GetPlayerCharacter($player);
@@ -1259,7 +1259,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
     case "ELE031":
     case "ELE032":
-    case "ELE115": 
+    case "ELE115":
       return !ArsenalHasFaceDownCard($player);
     case "ELE118":
       return ArsenalEmpty($player);
@@ -1383,6 +1383,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $char[$index + 2] < 2;
     case "UPR167":
       return $player == $mainPlayer;
+    case "UPR169":
+      return SearchLayer($otherPlayer, "A") == "";
       //Mandatory Target Ash
     case "UPR006": case "UPR007": case "UPR008":
     case "UPR009": case "UPR010": case "UPR011":
@@ -1653,7 +1655,7 @@ function AbilityHasGoAgain($cardID)
     return UPRAbilityHasGoAgain($cardID);
   } else if ($set == "DYN") {
     return DYNAbilityHasGoAgain($cardID);
-  } 
+  }
   switch ($cardID) {
     case "RVD004":
       return true;
