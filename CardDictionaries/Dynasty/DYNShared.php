@@ -3,7 +3,7 @@
 function DYNAbilityCost($cardID)
 {
     switch ($cardID) {
-        case "DYN030": return 3;
+        case "DYN001": return 3;
         default:
             return 0;
     }
@@ -13,7 +13,7 @@ function DYNAbilityType($cardID, $index = -1)
 {
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch ($cardID) {
-        case "DYN030": return "A";
+        case "DYN001": return "A";
         default:
             return "";
     }
@@ -71,7 +71,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 function DYNCardType($cardID)
 {
     switch ($cardID) {
-        case "DYN030": return "C";
+        case "DYN001": return "C";
         default:
             return "";
     }
@@ -89,7 +89,7 @@ function DYNCardSubtype($cardID)
 function DYNCardCost($cardID)
 {
     switch ($cardID) {
-        case "DYN030": return 0;
+        case "DYN001": return 0;
         default:
             return 0;
     }
@@ -98,7 +98,7 @@ function DYNCardCost($cardID)
 function DYNPitchValue($cardID)
 {
     switch ($cardID) {
-        case "DYN030": return 0;
+        case "DYN001": return 0;
         default:
             return 3;
     }
@@ -107,7 +107,7 @@ function DYNPitchValue($cardID)
 function DYNBlockValue($cardID)
 {
     switch ($cardID) {
-        case "DYN030": return -1;
+        case "DYN001": return -1;
         default:
             return 3;
     }
@@ -128,7 +128,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid)
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_NumBoosted, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch ($cardID) {
-        case "DYN030": 
+        case "DYN001": 
             AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,ARC159");
             AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
             AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
