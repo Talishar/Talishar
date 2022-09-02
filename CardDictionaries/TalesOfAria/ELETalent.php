@@ -335,11 +335,7 @@
       case "ELE143":
         if($from == "PLAY")
         {
-          $index = GetClassState($currentPlayer, $CS_PlayIndex);
-          if($index != -1)
-          {
-            AddCurrentTurnEffect($cardID, $currentPlayer);
-          }
+          AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gives your attack actions cards +1 power and +1 defense for the rest of the turn.";
         }
         return $rv;
@@ -410,7 +406,7 @@
         else if($cardID == "ELE185") $amount = 1;
         // if (count($combatChain) != 0) { // TODO: Make Lightning Press target cards on the layer
           CombatChainPowerModifier(intval(explode("-", $target)[1]), $amount);
-        // } 
+        // }
         // elseif (count($layers) != 0) {
         //   $layerTarget = intval(explode("-", $target)[1]);
         //   PrependDecisionQueue("LAYERATKMODIFIER", $currentPlayer, $layerTarget . "-" .$amount);
