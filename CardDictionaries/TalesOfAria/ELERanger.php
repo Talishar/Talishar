@@ -431,10 +431,10 @@
           if($element == "ICE")
           {
             //TODO: Make this go back to a layer once it can go in the right order
-            PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
-            --$auras[$i+2];
-            if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
-            //AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
+            // PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
+            // --$auras[$i+2];
+            // if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
+            AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
           }
           break;
         default: break;
