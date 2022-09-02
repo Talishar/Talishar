@@ -1580,12 +1580,15 @@ function PayAdditionalCosts($cardID, $from)
     case "MON266":
     case "MON267":
     case "MON268":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      if (CanRevealCards($currentPlayer)) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      }
       break;
     case "MON281":
     case "MON282":
