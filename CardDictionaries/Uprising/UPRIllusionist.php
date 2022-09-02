@@ -397,7 +397,7 @@
           if(count($items) == 0)
           {
             Draw($mainPlayer);
-            WriteLog("Kyloria drew a card.");
+            WriteLog(CardLink($cardID,$cardID) . " draw a card.");
           }
           else
           {
@@ -414,7 +414,7 @@
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
         PutPermanentIntoPlay($mainPlayer, "UPR043");
-        WriteLog("Nekria got a -1 health counter and created an ash token.");
+        WriteLog(CardLink($cardID,$cardID) . " got a -1 health counter and created an ash token.");
         break;
       case "UPR416": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
       default: break;

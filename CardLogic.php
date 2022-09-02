@@ -508,7 +508,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "WTR047":
       Draw($player);
-      WriteLog(CardLink($parameter, $parameter) . " Show Time! drew a card.");
+      WriteLog(CardLink($parameter, $parameter) . " draw a card.");
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "WTR054": case "WTR055": case "WTR056":

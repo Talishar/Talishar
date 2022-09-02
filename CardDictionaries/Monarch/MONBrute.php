@@ -133,7 +133,7 @@
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
         return "Does $damage damage to yourself.";
       case "MON125":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
@@ -166,7 +166,7 @@
         }
         return $rv;
       case "MON138": case "MON139": case "MON140":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
@@ -190,7 +190,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
       case "MON221":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
@@ -202,7 +202,7 @@
         $rv .= ".";
         return $rv;
       case "MON222":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
@@ -214,7 +214,7 @@
         $rv .= ".";
         return $rv;
       case "MON223": case "MON224": case "MON225":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)

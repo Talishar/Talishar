@@ -2171,7 +2171,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
     case "UPR189":
       if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) {
         Draw($player);
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
       }
       break;
     default:
@@ -3594,7 +3594,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ESTRIKE":
       switch ($lastResult) {
         case "Draw_a_card":
-          WriteLog(CardLink("WTR159", "WTR159") . " drew a card.");
+          WriteLog(CardLink("WTR159", "WTR159") . " draw a card.");
           return MyDrawCard();
         case "2_Attack":
           WriteLog(CardLink("WTR159", "WTR159") . " gained +2 power.");
@@ -3646,9 +3646,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for ($i = 0; $i < count($cards); ++$i) {
           MyDrawCard();
         }
-        WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew " . count($cards) . " cards.");
+        WriteLog(CardLink("WTR151", "WTR151") . " shuffle and draw " . count($cards) . " cards.");
       } else {
-        WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew 0 card.");
+        WriteLog(CardLink("WTR151", "WTR151") . " shuffle and draw 0 card.");
       }
       return "1";
     case "LORDOFWIND":
@@ -3671,7 +3671,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             AddArcaneBonus(1, $player);
             break;
           case "Draw_card":
-            WriteLog(CardLink("ARC122", "ARC122") . " drew a card");
+            WriteLog(CardLink("ARC122", "ARC122") . " draw a card");
             MyDrawCard();
             break;
           default:
@@ -4335,15 +4335,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     //   ApproveManualMode($player);
     //   return $lastResult;
     case "BINGO":
-      if ($lastResult == "") WriteLog("No card was revealed for Bingo.");
+      if ($lastResult == "") WriteLog("No card was revealed for " . CardLink("EVR156","EVR156") . ".");
       $cardType = CardType($lastResult);
       if ($cardType == "AA") {
-        WriteLog("Bingo gained go again.");
+        WriteLog(CardLink("EVR156","EVR156") . " gained go again.");
         GiveAttackGoAgain();
       } else if ($cardType == "A") {
-        WriteLog("Bingo drew a card.");
+        WriteLog(CardLink("EVR156","EVR156") . " draw a card.");
         Draw($player);
-      } else WriteLog("Bingo... did not hit the mark.");
+      } else WriteLog(CardLink("EVR156","EVR156") . "... did not hit the mark.");
       return $lastResult;
     case "ADDCARDTOCHAIN":
       AddCombatChain($lastResult, $player, $parameter, 0);
@@ -4354,7 +4354,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
       if (RevealCards($deck[0], $player) && AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
-        WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
+        WriteLog("Even Bigger Than That! draw a card and create a Quicken token.");
         Draw($player);
         PlayAura("WTR225", $player);
       }
