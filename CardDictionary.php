@@ -252,7 +252,7 @@ function CharacterHealth($cardID)
       return 36;
     case "UPR103":
       return 18;
-    case "DYN030":
+    case "DYN001":
       return 15;
     default:
       return 20;
@@ -2366,6 +2366,8 @@ function CardHasAltArt($cardID)
     case "UPR409": case "UPR410": case "UPR411":
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
+      return true;
+    case "DYN234":
       return true;
     default: return false;
   }
