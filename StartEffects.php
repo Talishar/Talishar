@@ -52,6 +52,15 @@ if ($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045") {
     AddDecisionQueue("ADDDISCARD", 2, "DECK", 1);
   }
 }
+//Crown of Dominion
+if(SearchCharacterForCard(1, "DYN234")) {
+  AddDecisionQueue("STARTOFGAMEPUTPLAY", 1, "DYN243");
+}
+
+if(SearchCharacterForCard(2, "DYN234")) {
+  AddDecisionQueue("STARTOFGAMEPUTPLAY", 2, "DYN243");
+}
+
 AddDecisionQueue("SHUFFLEDECK", 1, "-"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("SHUFFLEDECK", 2, "-"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("DRAWTOINTELLECT", 1, "-"); //CR 2.0 4.1.9 Draw to Intellect

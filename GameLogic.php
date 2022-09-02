@@ -3138,6 +3138,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayAbility($lastResult, "-", 0);
       }
       return $lastResult;
+    case "STARTOFGAMEPUTPLAY":
+      PutItemIntoPlayForPlayer($parameter, $player);
+      return "";
     case "DRAW":
       return Draw($player);
     case "BANISH":

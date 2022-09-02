@@ -1106,10 +1106,14 @@ function TalentOverride($cardID, $player="")
   global $currentTurnEffects;
   if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
   $cardTalent = CardTalent($cardID);
+  if(CardType($cardID) == "C" && SearchCharacterForCard($player, "DYN234")) {
+    if($cardTalent == "NONE") $cardTalent = "ROYAL";
+    elseif($cardTalent != "") $cardTalent .= ",ROYAL";
+  }
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    if($currentTurnEffects[$i+1] != $player) continue;
     $toAdd = "";
+    if($currentTurnEffects[$i+1] != $player) continue;
     switch($currentTurnEffects[$i])
     {
       case "UPR060": case "UPR061": case "UPR062": $toAdd = "DRACONIC";
