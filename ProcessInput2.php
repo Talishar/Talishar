@@ -328,6 +328,7 @@ switch ($mode) {
       //Player actually has the card, now do the effect
       //First remove it from their hand
       $hand = &GetHand($playerID);
+      if($found >= count($hand)) break;
       $cardID = $hand[$found];
       if(!IsPlayable($cardID, $turn[0], "HAND", $found)) break;
       unset($hand[$found]);
