@@ -3667,9 +3667,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($lastResult); ++$i) {
         switch ($lastResult[$i]) {
           case "Buff_Arcane":
+            WriteLog(CardLink("ARC122", "ARC122") . " add arcane bonus");
             AddArcaneBonus(1, $player);
             break;
           case "Draw_card":
+            WriteLog(CardLink("ARC122", "ARC122") . " drew a card");
             MyDrawCard();
             break;
           default:
