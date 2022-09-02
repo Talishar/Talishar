@@ -77,6 +77,7 @@
         return " " + event + "='SubmitInput(\"" + mode + "\", \"&buttonInput=" + input + "\", " + fullRefresh + ");'";
       }
 
+      //Rotate is deprecated
       function Card(cardNumber, folder, maxHeight, action = 0, showHover = 0, overlay = 0, borderColor = 0, counters = 0, actionDataOverride = "", id = "", rotate = false, lifeCounters = 0, defCounters = 0, atkCounters = 0, controller = 0, restriction = "", isBroken = 0, onChain = 0, isFrozen = 0, gem = 0) {
         if (folder == "crops") {
           cardNumber += "_cropped";
@@ -89,7 +90,6 @@
           showHover = 0;
           borderColor = 0;
         } else if (folder == "concat") {
-          //if(DelimStringContains(CardSubType($cardNumber), "Landmark")) $rotate = true;
           fileExt = ".webp";
         } else if (folder == "WebpImages") {
           fileExt = ".webp";
@@ -117,12 +117,9 @@
         } else if (folder == "concat") {
           height = maxHeight;
           width = maxHeight;
-        } else if (rotate == false) {
+        } else {
           height = maxHeight;
           width = (maxHeight * .71);
-        } else {
-          height = (maxHeight * .71);
-          width = maxHeight;
         }
 
         <?php
@@ -130,14 +127,8 @@
         if (IsPatron(2)) echo ("if(controller == 2 && CardHasAltArt(cardNumber)) folderPath = 'PatreonImages/' + folderPath;");
         ?>
 
-        if (rotate == false) {
-          rv += "<img " + (id != "" ? "id='" + id + "-img' " : "") + "style='" + border + " height:" + height + "; width:" + width + "px; position:relative;' src='./" + folderPath + "/" + cardNumber + fileExt + "' />";
-          rv += "<div " + (id != "" ? "id='" + id + "-ovr' " : "") + "style='visibility:" + (overlay == 1 ? "visible" : "hidden") + "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-        } else {
-          // Landmarks Rotation
-          //$rv .= "<img " . ($id != "" ? "id='".$id."-img' ":"") . "style='transform:rotate(-90deg);" . $border . " height:" . $height . "; width:" . $width . "px; position:relative;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
-          //$rv .= "<div " . ($id != "" ? "id='".$id."-ovr' ":"") . "style='transform:rotate(-90deg); visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
-        }
+        rv += "<img " + (id != "" ? "id='" + id + "-img' " : "") + "style='" + border + " height:" + height + "; width:" + width + "px; position:relative;' src='./" + folderPath + "/" + cardNumber + fileExt + "' />";
+        rv += "<div " + (id != "" ? "id='" + id + "-ovr' " : "") + "style='visibility:" + (overlay == 1 ? "visible" : "hidden") + "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
 
         //TODO: counters
         var darkMode = false;
@@ -154,7 +145,7 @@
           if (lifeCounters == 0 && defCounters == 0 && atkCounters == 0) {
             left = "50%";
           }
-          rv += "<div style='margin: 0px; top: 50%; left:" + left + "; margin-right: -50%; border-radius: 50%; width:" + counterHeight + "px; height:" + counterHeight + "px; padding: 5px; border: 3px solid " + PopupBorderColor(darkMode) + "; text-align: center; line-height:" + imgCounterHeight/1.5 + "px;";
+          rv += "<div style='margin: 0px; top: 50%; left:" + left + "; margin-right: -50%; border-radius: 50%; width:" + counterHeight + "px; height:" + counterHeight + "px; padding: 5px; border: 3px solid " + PopupBorderColor(darkMode) + "; text-align: center; line-height:" + imgCounterHeight / 1.5 + "px;";
           rv += "transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" + BackgroundColor(darkMode) + "; font-family: Helvetica; font-size:" + (counterHeight - 2) + "px; font-weight:550; color:" + TextCounterColor(darkMode) + "; text-shadow: 2px 0 0 " + PopupBorderColor(darkMode) + ", 0 -2px 0 " + PopupBorderColor(darkMode) + ", 0 2px 0 " + PopupBorderColor(darkMode) + ", -2px 0 0 " + PopupBorderColor(darkMode) + ";'>" + counters + "</div>";
         }
         //-1 Defense & Endurance Counters style
@@ -282,7 +273,6 @@
       }
 
       function PopulateZone(zone, size = 96, folder = "concat") {
-        //Card(cardNumber, folder, maxHeight, action=0, showHover=0, overlay=0, borderColor=0, counters=0, actionDataOverride="", id="", rotate=false, lifeCounters=0, defCounters=0, atkCounters=0, from="", controller=0)
         var zoneEl = document.getElementById(zone);
         var zoneData = zoneEl.innerHTML;
         if (zoneData == "") return;
@@ -607,7 +597,7 @@
           }
         };
         var dimensions = "&windowWidth=" + window.innerWidth + "&windowHeight=" + window.innerHeight;
-        if(lastUpdate == "NaN") window.location.replace("https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php");
+        if (lastUpdate == "NaN") window.location.replace("https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php");
         else xmlhttp.open("GET", "GetNextTurn2.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>" + dimensions, true);
         xmlhttp.send();
       }
