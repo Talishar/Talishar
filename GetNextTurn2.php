@@ -576,6 +576,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "THEIRPERM") $source = $theirPermanents;
       else if ($option[0] == "MYPITCH") $source = $myPitch;
       else if ($option[0] == "THEIRPITCH") $source = $theirPitch;
+      else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
 
       $counters = 0;

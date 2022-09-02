@@ -4,6 +4,7 @@ function DYNAbilityCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 3;
+        case "DYN242": return 1;
         case "DYN243": return 2;
         default:
             return 0;
@@ -15,7 +16,7 @@ function DYNAbilityType($cardID, $index = -1)
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch ($cardID) {
         case "DYN001": return "A";
-        case "DYN243": return "A";
+        case "DYN242": case "DYN243": return "A";
         default:
             return "";
     }
@@ -83,7 +84,7 @@ function DYNCardType($cardID)
     switch ($cardID) {
         case "DYN001": return "C";
         case "DYN234": return "E";
-
+        case "DYN242": return "A";
         case "DYN243": return "T";
 
         default:
@@ -96,7 +97,7 @@ function DYNCardSubtype($cardID)
     switch ($cardID) {
 
         case "DYN234": return "Head";
-
+        case "DYN242": return "Item";
         case "DYN243": return "Item";
 
         default:
@@ -108,8 +109,9 @@ function DYNCardCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 0;
-        case "DYN243": return 0;
 
+        case "DYN242": return 2;
+        case "DYN243": return 0;
         default:
             return 0;
     }
@@ -121,6 +123,7 @@ function DYNPitchValue($cardID)
         case "DYN001": return 0;
         case "DYN234": return 0;
 
+        case "DYN242": return 1;
         case "DYN243": return 0;
 
         default:
@@ -134,7 +137,7 @@ function DYNBlockValue($cardID)
         case "DYN001": return -1;
         case "DYN234": return -1;
 
-        case "DYN243": return -1;
+        case "DYN242": case "DYN243": return -1;
 
         default:
             return 3;
@@ -162,6 +165,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid)
             AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
             AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
             return "";
+        case "DYN242":   
+            $rv = "";
+            if($from == "PLAY"){
+                DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+                AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Both_Heroes,Target_Yourself,Target_No_Heroes");
+                AddDecisionQueue("IMPERIALWARHORN", $currentPlayer, "<-", 1);
+            }
+        return $rv;
         case "DYN243":
             $rv = "";
             if($from == "PLAY"){
