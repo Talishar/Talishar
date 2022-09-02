@@ -1266,17 +1266,25 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC185", 1);
       break;
     case "CRU188":
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197");
+      AddDecisionQueue("COUNTITEM", $currentPlayer, "CRU197"); //Copper
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "4");
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_coppers", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195"); //TODO: Gold
+
+      AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195"); //Silver
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_silvers", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "EVR195-2", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
+
+      AddDecisionQueue("COUNTITEM", $currentPlayer, "DYN243"); //Gold
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
+      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_gold", 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
       break;
     case "MON199":
@@ -1651,7 +1659,16 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("DIVIDE", $currentPlayer, "2");
         AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
       }
-      // TODO: Gold
+      $numGold = CountItem("DYN243", $currentPlayer);
+      if ($numGold > 0) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "DYN243-");
+        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
+        AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+        AddDecisionQueue("DIVIDE", $currentPlayer, "1"); //Useless line?
+        AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
+      }
       AddDecisionQueue("KNICKKNACK", $currentPlayer, "-");
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       break;

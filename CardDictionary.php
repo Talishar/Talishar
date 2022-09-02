@@ -396,7 +396,6 @@ function CardTalent($cardID)
   if ($set == "MON") return MONCardTalent($cardID);
   else if ($set == "ELE") return ELECardTalent($cardID);
   else if ($set == "UPR") return UPRCardTalent($cardID);
-  else if ($set == "DYN") return DYNCardTalent($cardID);
   return "NONE";
 }
 
