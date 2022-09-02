@@ -695,7 +695,7 @@
         }
         return $rv . ".";
       case "EVR008": case "EVR009": case "EVR010":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
@@ -707,7 +707,7 @@
         $rv .= ".";
         return $rv;
       case "EVR011": case "EVR012": case "EVR013":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
