@@ -624,11 +624,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "MON186":
       SoulShackleStartTurn($player);
       break;
-    case "ELE007": case "ELE008": case "ELE009":
-      if (!IsAllyAttacking()) {
-        PayOrDiscard($target, 2, true);
-      }
-      break;
     case "ELE025": case "ELE026": case "ELE027":
       WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
       AddCurrentTurnEffect($parameter, $player);
@@ -650,9 +645,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "ELE111":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
-      break;
-    case "ELE148": case "ELE149": case "ELE150":
-      PayOrDiscard($target, 2);
       break;
     case "ELE174":
       $index = FindCharacterIndex($player, $parameter);
@@ -710,9 +702,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "EVR131": case "EVR132": case "EVR133":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
-      break;
-    case "UPR113": case "UPR114":  case "UPR115":
-      PayOrDiscard(MZPlayerID($player, $target), 2, true);
       break;
     case "UPR140":
       $index = SearchAurasForUniqueID($uniqueID, $player);

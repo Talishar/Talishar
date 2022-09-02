@@ -176,7 +176,8 @@ function ArcaneHitEffect($me, $source, $target, $damage)
 {
   switch ($source) {
     case "UPR113": case "UPR114": case "UPR115":
-      if (MZIsPlayer($target)) AddLayer("TRIGGER", $me, $source, $target);
+      if (MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
+        break;
       break;
     default:
       break;
