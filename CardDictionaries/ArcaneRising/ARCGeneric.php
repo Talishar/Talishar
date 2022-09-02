@@ -258,10 +258,10 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid)
       else if ($cardID == "ARC213") $health = 2;
       else $health = 1;
       GainHealth($health, $currentPlayer);
-      $rv = "Gained $health health";
+      $rv = "Gain $health health";
       if (GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0) {
         MyDrawCard();
-        $rv .= " and drew a card.";
+        $rv .= " and draw a card.";
       } else $rv .= ".";
       return $rv;
     case "ARC215":

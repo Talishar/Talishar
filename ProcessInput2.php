@@ -387,64 +387,64 @@ switch ($mode) {
   case 10001:
     RevertGamestate("preBlockBackup.txt");
     $skipWriteGamestate = true;
-    WriteLog("Player " . $playerID . " undid their blocks.");
+    WriteLog("Player " . $playerID . " cancel their blocks.");
     break;
   case 10002:
-    WriteLog("Player " . $playerID . " manually added 1 action point.");
+    WriteLog("Player " . $playerID . " manually add 1 action point.");
     ++$actionPoints;
     break;
   case 10003: //Revert to prior turn
     RevertGamestate($buttonInput);
-    WriteLog("Player " . $playerID . " reverted back to a prior turn.");
+    WriteLog("Player " . $playerID . " revert back to a prior turn.");
     break;
   case 10004:
     if ($actionPoints > 0) {
-      WriteLog("Player " . $playerID . " manually subtracted 1 action point.");
+      WriteLog("Player " . $playerID . " manually subtract 1 action point.");
       --$actionPoints;
     }
     break;
   case 10005:
-    WriteLog("Player " . $playerID . " manually subtracted 1 health point from themselves.");
+    WriteLog("Player " . $playerID . " manually subtract 1 health point from themselves.");
     LoseHealth(1, $playerID);
     break;
   case 10006:
-    WriteLog("Player " . $playerID . " manually added 1 health point to themselves.");
+    WriteLog("Player " . $playerID . " manually add 1 health point to themselves.");
     $myHealth += 1;
     break;
   case 10007:
-    WriteLog("Player " . $playerID . " manually added 1 health point to themselves.");
+    WriteLog("Player " . $playerID . " manually add 1 health point to themselves.");
     LoseHealth(1, ($playerID == 1 ? 2 : 1));
     break;
   case 10008:
-    WriteLog("Player " . $playerID . " manually added 1 health point their opponent.");
+    WriteLog("Player " . $playerID . " manually add 1 health point their opponent.");
     $theirHealth += 1;
     break;
   case 10009:
-    WriteLog("Player " . $playerID . " manually drew a card for themselves.");
+    WriteLog("Player " . $playerID . " manually draw a card for themselves.");
     Draw($playerID);
     break;
   case 10010:
-    WriteLog("Player " . $playerID . " manually drew a card for their opponent.");
+    WriteLog("Player " . $playerID . " manually draw a card for their opponent.");
     Draw(($playerID == 1 ? 2 : 1));
     break;
   case 10011:
-    WriteLog("Player " . $playerID . " manually added a card to their hand.");
+    WriteLog("Player " . $playerID . " manually add a card to their hand.");
     array_push($myHand, $cardID);
     break;
   case 10012:
-    WriteLog("Player " . $playerID . " manually added a resource to their pool.");
+    WriteLog("Player " . $playerID . " manually add a resource to their pool.");
     $myResources[0] += 1;
     break;
   case 10013:
-    WriteLog("Player " . $playerID . " manually added a resource to their opponent pool.");
+    WriteLog("Player " . $playerID . " manually add a resource to their opponent pool.");
     $theirResources[0] += 1;
     break;
   case 10014:
-    WriteLog("Player " . $playerID . " manually removed a resource from their opponent pool.");
+    WriteLog("Player " . $playerID . " manually remove a resource from their opponent pool.");
     $theirResources[0] -= 1;
     break;
   case 10015:
-    WriteLog("Player " . $playerID . " manually removed a resource from their pool.");
+    WriteLog("Player " . $playerID . " manually remove a resource from their pool.");
     $myResources[0] -= 1;
     break;
   case 100000: //Quick Rematch
