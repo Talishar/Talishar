@@ -60,7 +60,6 @@
     <script>
       var IsDynamicScalingEnabled = <?php echo (IsDynamicScalingEnabled($playerID) ? "true" : "false"); ?>;
       var cardSize = IsDynamicScalingEnabled == 1 ? window.innerWidth / 13 : 96;
-      //alert(cardSize);
       //var cardSize = 96;
 
       function Hotkeys(event) {

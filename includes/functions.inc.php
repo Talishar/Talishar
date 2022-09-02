@@ -512,6 +512,21 @@ function LoadBadges($userID)
 	return $output;
 }
 
+function AwardBadge($userID, $badgeID)
+{
+	if($userID == "") return "";
+	$conn = GetDBConnection();
+	$sql = "insert ignore into playerbadge (playerId, badgeId, intVariable) values (?, ?, 0)";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $userID, $badgeID);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+		$id = mysqli_insert_id($conn);
+	}
+	mysqli_close($conn);
+}
+
 function SendEmail($userEmail, $url) {
   include "../APIKeys/APIKeys.php";
   require '../vendor/autoload.php';
