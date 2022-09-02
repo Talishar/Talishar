@@ -65,10 +65,25 @@ function DYNCombatEffectActive($cardID, $attackID)
     }
 }
 
+
+function DYNCardTalent($cardID) // TODO
+{
+  $number = intval(substr($cardID, 3));
+  if($number <= 0) return "";
+  else if($number >= 1 && $number <= 2) return "ROYAL,DRACONIC";
+//   else if($number >= 3 && $number <= 124) return "";
+//   else if($number >= 125 && $number <= 150) return "";
+//   else if($number >= 406 && $number <= 417 ) return "";
+//   else if($number >= 439 && $number <= 441) return "";
+  else return "NONE";
+}
+
 function DYNCardType($cardID)
 {
     switch ($cardID) {
         case "DYN001": return "C";
+        case "DYN234": return "E";
+
         case "DYN243": return "T";
 
         default:
@@ -79,7 +94,10 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
     switch ($cardID) {
-        case "DYN243": return "item";
+
+        case "DYN234": return "Head";
+
+        case "DYN243": return "Item";
 
         default:
             return "";
@@ -101,6 +119,8 @@ function DYNPitchValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 0;
+        case "DYN234": return 0;
+
         case "DYN243": return 0;
 
         default:
@@ -112,6 +132,8 @@ function DYNBlockValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return -1;
+        case "DYN234": return -1;
+
         case "DYN243": return -1;
 
         default:

@@ -1207,8 +1207,12 @@ if($set == "RVD"){
 }
 if ($set == "DYN") {
 	switch ($num) {
-		case "030":
-			return "Emperor, Dracai of Aesir";
+		case "001": return "Emperor, Dracai of Aesir";
+		
+		case "234": return "Crown of Dominion";
+
+		case "243": return "Imperial Warhorn";
+		case "243": return "Gold";
 	}
 }
 if($set == "WTR"){
