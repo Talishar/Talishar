@@ -4,6 +4,7 @@ function DYNAbilityCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 3;
+        case "DYN243": return 2;
         default:
             return 0;
     }
@@ -14,6 +15,7 @@ function DYNAbilityType($cardID, $index = -1)
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch ($cardID) {
         case "DYN001": return "A";
+        case "DYN243": return "A";
         default:
             return "";
     }
@@ -31,16 +33,11 @@ function DYNHasGoAgain($cardID)
 function DYNAbilityHasGoAgain($cardID)
 {
     switch ($cardID) {
+        case "DYN243": return true;
 
         default:
             return false;
     }
-}
-
-function DYNCardTalent($cardID)
-{
-    $number = intval(substr($cardID, 3));
-    return "NONE";
 }
 
 function DYNEffectAttackModifier($cardID)
@@ -72,6 +69,8 @@ function DYNCardType($cardID)
 {
     switch ($cardID) {
         case "DYN001": return "C";
+        case "DYN243": return "T";
+
         default:
             return "";
     }
@@ -80,6 +79,7 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
     switch ($cardID) {
+        case "DYN243": return "item";
 
         default:
             return "";
@@ -90,6 +90,8 @@ function DYNCardCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 0;
+        case "DYN243": return 0;
+
         default:
             return 0;
     }
@@ -99,6 +101,8 @@ function DYNPitchValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 0;
+        case "DYN243": return 0;
+
         default:
             return 3;
     }
@@ -108,6 +112,8 @@ function DYNBlockValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return -1;
+        case "DYN243": return -1;
+
         default:
             return 3;
     }
@@ -134,6 +140,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid)
             AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
             AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
             return "";
+        case "DYN243":
+            $rv = "";
+            if($from == "PLAY"){
+                DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+                $rv = "Draws a card.";
+                Draw($currentPlayer);
+            }
+            return $rv;
         default:
             return "";
     }
