@@ -641,6 +641,7 @@
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SANDSKETCH", $currentPlayer, "-");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "WTR010":
         $roll = GetDieRoll($currentPlayer);

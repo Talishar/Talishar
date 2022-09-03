@@ -3622,7 +3622,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (AttackValue($discarded) >= 6) {
         if($currentPlayer == $mainPlayer) {
           $actionPoints += 2;
-          WriteLog("Sand Sketched Plan gained 2 action points.");
+          WriteLog(CardLink("WTR009","WTR009") . " gained 2 action points.");
         }
       }
       return "1";
