@@ -2367,8 +2367,7 @@ function CardHasAltArt($cardID)
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
       return true;
-    case "DYN234":
-      return true;
+    case "DYN234": return true;
     default: return false;
   }
 }

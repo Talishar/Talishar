@@ -245,6 +245,8 @@
           case "UPR416":
           case "UPR417":
             return true;
+          case "DYN234":
+            return true;
           default:
             return false;
         }
