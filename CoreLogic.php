@@ -1559,5 +1559,10 @@ function NumEquipBlock()
     }
     $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
     $rv = CombineSearches($rv, $theirWeapon);
+    $theirAllies = SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY");
+    $rv = CombineSearches($rv, $theirAllies);
+    $theirAuras = SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS");
+    $rv = CombineSearches($rv, $theirAuras);
+
     return $rv;
   }
