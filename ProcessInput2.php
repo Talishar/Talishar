@@ -530,6 +530,14 @@ switch ($mode) {
     if ($playerID == 1) $p1PlayerRating = 2;
     if ($playerID == 2) $p2PlayerRating = 2;
     break;
+  case 100010: //Grant badge
+    include "MenuFiles/ParseGamefile.php";
+    include_once "./includes/dbh.inc.php";
+    include_once "./includes/functions.inc.php";
+    if($playerID == 1) $userID = $p1id;
+    else $userID = $p2id;
+    if($userID != "") AwardBadge($userID, 3);
+    break;
   default:
     break;
 }
@@ -612,6 +620,8 @@ function IsModeAsync($mode)
     case 100008:
       return true;
     case 100009:
+      return true;
+    case 100010:
       return true;
   }
   return false;
