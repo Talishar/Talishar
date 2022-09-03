@@ -220,6 +220,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
+  return count($layers);//How far it is from the end
 }
 
 function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
@@ -318,7 +319,7 @@ function IsGamePhase($phase)
 function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
-  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost, $mainPlayer;
+  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost, $mainPlayer, $CS_LayerPlayIndex;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -406,7 +407,9 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
         if ($layerTarget == "") $layerTarget = "-";
         if ($additionalCosts == "") $additionalCosts = "-";
-        AddLayer($params[0], $currentPlayer, $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4], $layerTarget, $additionalCosts);
+        $layerIndex = count($layers) - GetClassState($currentPlayer, $CS_LayerPlayIndex);
+        $layers[$layerIndex + 3] = $layerTarget;
+        $layers[$layerIndex + 4] = $additionalCosts;
         ProcessDecisionQueue();
         return;
       }
