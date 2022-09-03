@@ -846,7 +846,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       Reload();
       return "Makes arrow attacks discard on hero hit, and allows you to Reload.";
     case "CRU125":
-      SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);     
+      SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Prevents the next damage you would take.";
     case "CRU126":
