@@ -485,7 +485,7 @@ function ProcessLayer($player, $parameter)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
-  global $combatChain;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt;
 
   $resources = &GetResources($player);
   $items = &GetItems($player);
@@ -611,6 +611,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("APPENDLASTRESULT", $player, "-SHIYANA", 1);
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       }
+      break;
+    case "CRU142": // TODO: Not 100% exact. It should create 2 separate triggers instead of 1.
+      //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
+      if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
+      //When you attack with Dread Triptych, if you've dealt arcane damage this turn, create a Runechant token.
+      if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("ARC112", $player);
       break;
     case "CRU144":
       DestroyAuraUniqueID($player, $uniqueID);

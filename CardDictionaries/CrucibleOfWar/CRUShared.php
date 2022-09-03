@@ -888,9 +888,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID . "-NAA", $currentPlayer);
       return "Reduces the cost of your next attack action card and non-attack action card this turn.";
     case "CRU142":
-      if (GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $currentPlayer);
-      AddDecisionQueue("CLASSSTATEGREATERORPASS", $defPlayer, $CS_ArcaneDamageTaken . "-1", 1);
-      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
+      //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
+      //When you attack with Dread Triptych, if you've dealt arcane damage this turn, create a Runechant token.
+      AddLayer("TRIGGER", $currentPlayer, "CRU142");
       return "";
     case "CRU143":
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
