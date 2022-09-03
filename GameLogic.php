@@ -4314,7 +4314,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SETDQVAR":
-      writelog($lastResult);
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
     case "INCDQVAR":
