@@ -13,7 +13,7 @@ function PlayAlly($cardID, $player, $subCards = "-")
   array_push($allies, 0); //Life Counters
   array_push($allies, 1); //Ability/effect uses
   if ($cardID == "UPR414") {
-    WriteLog("Ouvia lets you transform an ashling.");
+    WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
     Transform($player, "Ash", "UPR042", true);
   }
   return count($allies) - AllyPieces();
@@ -89,7 +89,7 @@ function AllyDestroyedAbility($player, $index)
     case "UPR410":
       if ($player == $mainPlayer && $allies[$index + 8] > 0) {
         GainActionPoints(1);
-        WriteLog("Cromai leaves the arena. Gain 1 action point.");
+        WriteLog(CardLink($cardID, $cardID) . " leaves the arena. Gain 1 action point.");
         --$allies[$index + 8];
       }
       break;
@@ -110,7 +110,7 @@ function AllyStartTurnAbilities($player)
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     switch ($allies[$i]) {
       case "UPR414":
-        WriteLog("Ouvia lets you transform an ashling.");
+        WriteLog(CardLink($allies[$i], $allies[$i]) . " lets you transform up to 1 ash into an Ashwing.");
         Transform($player, "Ash", "UPR042", true);
         break;
       default:
@@ -175,7 +175,7 @@ function SpecificAllyAttackAbilities($attackID)
     case "UPR410":
       if ($attackID == $allies[$i] && $allies[$i + 8] > 0) {
         GainActionPoints(1);
-        WriteLog("Cromai Attacks: Gain 1 action point.");
+        WriteLog(CardLink($allies[$i], $allies[$i]) . " Attacks: Gain 1 action point.");
         --$allies[$i + 8];
       }
       break;
@@ -184,15 +184,15 @@ function SpecificAllyAttackAbilities($attackID)
   }
 }
 
-function AllyDamageTakenAbilities($player, $index)
+function AllyDamageTakenAbilities($player, $i)
 {
   $allies = &GetAllies($player);
-  switch ($allies[$index]) {
+  switch ($allies[$i]) {
     case "UPR413":
-      $allies[$index + 2] -= 1;
-      $allies[$index + 7] -= 1;
+      $allies[$i + 2] -= 1;
+      $allies[$i + 7] -= 1;
       PutPermanentIntoPlay($player, "UPR043");
-      WriteLog("Nekria got a -1 health counter and created an ash token.");
+      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 health counter and created an ash token.");
       break;
     default:
       break;
