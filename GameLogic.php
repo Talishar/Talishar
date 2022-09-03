@@ -628,13 +628,13 @@ function EffectHitEffect($cardID)
     case "ELE005":
       if (IsHeroAttackTarget()) {
           AddDecisionQueue("RANDMULTIZONEINDICES", $defPlayer, "MYHAND", 1);
-          AddDecisionQueue("PASSPARAMETER", $defPlayer, "<-", 1); 
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, "<-", 1);
           AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
           AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose which card to put to the bottom first", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1); 
-          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1); 
-          AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1); 
-          AddDecisionQueue("REMOVEFIRSTCHOICEINDICES", $defPlayer, "0", 1); 
+          AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1);
+          AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
+          AddDecisionQueue("REMOVEFIRSTCHOICEINDICES", $defPlayer, "0", 1);
           AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1);
           AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
         }
@@ -3139,9 +3139,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
     case "RANDMULTIZONEINDICES":
-      $rv = SearchMultizone($player, $parameter); 
+      $rv = SearchMultizone($player, $parameter);
       //THEIRHAND-0,THEIRHAND-1,THEIRHAND-2,THEIRHAND-3
-      $hand = explode(",", $rv);      
+      $hand = explode(",", $rv);
       $randHand = array_rand($hand, 2);
       $rv = $hand[$randHand[0]] . "," . $hand[$randHand[1]];
       return ($rv == "" ? "PASS" : $rv);
@@ -3894,11 +3894,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
       //Create cancel point
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player, 1);
+      PrependDecisionQueue("PASSPARAMETER", $target, "{1}", 1);
+      $quellChoices = QuellChoices($target, $damage);
+      if ($quellChoices != "0") {
+        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
+        PrependDecisionQueue("AFTERQUELL", $target, "-", 1);
+        PrependDecisionQueue("BUTTONINPUT", $target, $quellChoices);
+        PrependDecisionQueue("SETDQCONTEXT", $target, "Choose an amount to pay for Quell");
+      }
+      PrependDecisionQueue("INCDQVAR", $target, "1", 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
       PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1, 1);
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
+      PrependDecisionQueue("SETDQVAR", $target, "1", 1);
+      PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
       return $parameter;
     case "ARCANEHITEFFECT":
       if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //Source, target, damage
@@ -4628,7 +4640,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             AddBottomDeck($pitch[$mzIndex[1]], $otherPlayer, $params[0]);
             break;
           case "MYHAND":
-            $hand = &GetHand($player); 
+            $hand = &GetHand($player);
             AddBottomDeck($hand[$mzIndex[1]], $player, $params[0]);
             break;
           case "THEIRHAND":
@@ -4739,7 +4751,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVEFIRSTCHOICEINDICES":
       $choices = explode(",", $dqVars[$parameter]); //MYHAND-0,MYHAND-3
 
-      $firstChoice = substr($choices[0], strpos($choices[0], "-") + 1);   //0   
+      $firstChoice = substr($choices[0], strpos($choices[0], "-") + 1);   //0
       $secondChoice = substr($choices[1], strpos($choices[1], "-") + 1);  //3
 
       if ($firstChoice > $secondChoice) {
