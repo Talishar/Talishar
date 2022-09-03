@@ -225,6 +225,7 @@ $CS_NumIllusionistAttacks = 54;
 $CS_LastDynCost = 55;
 $CS_NumIllusionistActionCardAttacks = 56;
 $CS_ArcaneDamageDealt = 57;
+$CS_LayerPlayIndex = 58;
 
 
 
@@ -362,7 +363,7 @@ function ResetMainClassState()
   global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY;
   global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed;
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
-  global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt;
+  global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -421,6 +422,7 @@ function ResetMainClassState()
   $mainClassState[$CS_LastDynCost] = 0;
   $mainClassState[$CS_NumIllusionistActionCardAttacks] = 0;
   $mainClassState[$CS_ArcaneDamageDealt] = 0;
+  $mainClassState[$CS_LayerPlayIndex] = -1;
 }
 
 function ResetCardPlayed($cardID)

@@ -497,7 +497,7 @@ function AbilityCost($cardID)
   }
   if ($set == "ARC") {
     return ARCAbilityCost($cardID);
-  } else if ($set == "CRU" && ($class == "MECHANOLOGIST" || $class == "WIZARD" || $cardID == "CRU197" || $class == "MERCHANT")) {
+  } else if ($set == "CRU") {
     return CRUAbilityCost($cardID);
   } else if ($set == "MON") {
     return MONAbilityCost($cardID);
@@ -2367,8 +2367,7 @@ function CardHasAltArt($cardID)
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
       return true;
-    case "DYN234":
-      return true;
+    case "DYN234": return true;
     default: return false;
   }
 }

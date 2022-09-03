@@ -163,7 +163,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cardSizeAura = intval($cardSize * .8); //95;
   $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
-  $cardWidth = intval($cardSize * 0.72);
+  $cardWidth = intval($cardSize * 0.73);
   $cardHeight = $cardWidth;
   $cardIconSize = intval($cardSize / 3); //40
   $cardIconLeft = intval($cardSize / 4); //30
@@ -785,7 +785,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Now display their Auras and Items
   if (count($landmarks) > 0) {
     echo ("<div style='position: fixed; top:105px; left: calc(50% + 200px); display:inline;'>");
-    echo ("<h3>Landmark:</h3>");
+    echo ("<h3 style='font-size:16px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Landmark:</h3>");
     for ($i = 0; $i < count($landmarks); $i += LandmarkPieces()) {
       $playable = $playerID == $currentPlayer && IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
       $action = ($playable && $currentPlayer == $playerID ? 25 : 0);
@@ -831,8 +831,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) {
       $lifeCounters = $theirAllies[$i + 2];
       $enduranceCounters = $theirAllies[$i + 6];
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i + 1] != 2 ? 1 : 0, 0, 0, "", "", False, $lifeCounters, $enduranceCounters, controller:$otherPlayer) . "&nbsp");
-      if ($theirAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-75px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      if ($theirAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:1001; top: 6px; left: 7px; cursor:pointer; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      echo ("</div>");
     }
   }
   $theirPermanents = &GetPermanents($otherPlayer);
@@ -990,8 +992,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $enduranceCounters = $myAllies[$i + 6];
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i + 1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i + 1] != 2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $enduranceCounters, controller:$playerID) . "&nbsp");
-      if ($myAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      if ($myAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:1001; top: 6px; left: 7px; cursor:pointer; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      echo ("</div>");
     }
   }
   $myPermanents = &GetPermanents($playerID);

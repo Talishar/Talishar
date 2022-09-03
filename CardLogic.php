@@ -220,6 +220,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
+  return count($layers);//How far it is from the end
 }
 
 function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
@@ -318,7 +319,7 @@ function IsGamePhase($phase)
 function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
-  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost, $mainPlayer;
+  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost, $mainPlayer, $CS_LayerPlayIndex;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -406,7 +407,10 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
         if ($layerTarget == "") $layerTarget = "-";
         if ($additionalCosts == "") $additionalCosts = "-";
-        AddLayer($params[0], $currentPlayer, $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4], $layerTarget, $additionalCosts);
+        $layerIndex = count($layers) - GetClassState($currentPlayer, $CS_LayerPlayIndex);
+        $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4];
+        $layers[$layerIndex + 3] = $layerTarget;
+        $layers[$layerIndex + 4] = $additionalCosts;
         ProcessDecisionQueue();
         return;
       }
@@ -481,7 +485,7 @@ function ProcessLayer($player, $parameter)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
-  global $combatChain;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed;
 
   $resources = &GetResources($player);
   $items = &GetItems($player);
@@ -508,7 +512,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "WTR047":
       Draw($player);
-      WriteLog(CardLink($parameter, $parameter) . " Show Time! drew a card.");
+      WriteLog(CardLink($parameter, $parameter) . " draw a card.");
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "WTR054": case "WTR055": case "WTR056":
@@ -608,6 +612,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       }
       break;
+    case "CRU142": // TODO: Not 100% exact. It should create 2 separate triggers instead of 1.
+      //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
+      if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
+      //When you attack with Dread Triptych, if you've dealt arcane damage this turn, create a Runechant token.
+      if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("ARC112", $player);
+      break;
     case "CRU144":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
@@ -703,6 +713,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "UPR096":
+        if(GetClassState($player, $CS_NumRedPlayed) > 1)
+        {
+          AddDecisionQueue("FINDINDICES", $player, "DECKCARD,UPR101");
+          AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+          AddDecisionQueue("ADDMYHAND", $player, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        }
+        return "";
     case "UPR140":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if ($index == -1) break;

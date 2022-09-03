@@ -1983,6 +1983,7 @@ function OnBlockResolveEffects()
       default:
         break;
     }
+    ProcessPhantasmOnBlock($i);
   }
 }
 
@@ -2076,7 +2077,6 @@ function OnBlockEffects($index, $from)
         break;
     }
   }
-  ProcessPhantasmOnBlock($index);
 }
 
 function ActivateAbilityEffects()
@@ -3622,7 +3622,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (AttackValue($discarded) >= 6) {
         if($currentPlayer == $mainPlayer) {
           $actionPoints += 2;
-          WriteLog("Sand Sketched Plan gained 2 action points.");
+          WriteLog(CardLink("WTR009","WTR009") . " gained 2 action points.");
         }
       }
       return "1";
@@ -4314,7 +4314,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SETDQVAR":
-      writelog($lastResult);
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
     case "INCDQVAR":

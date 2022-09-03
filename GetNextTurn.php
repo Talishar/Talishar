@@ -765,7 +765,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Now display their Auras and Items
   if (count($landmarks) > 0) {
     echo ("<div style='position: fixed; top:105px; left: calc(50% + 200px); display:inline;'>");
-    echo ("<h3>Landmark:</h3>");
+    echo ("<h3 style='font-size:16px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Landmark:</h3>");
     for ($i = 0; $i < count($landmarks); $i += LandmarkPieces()) {
       $playable = $playerID == $currentPlayer && IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
       $action = ($playable && $currentPlayer == $playerID ? 25 : 0);
