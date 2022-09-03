@@ -115,8 +115,8 @@
    if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "0px"; } else { $left = "-45%"; }
    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
    display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
-   font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters ."
-   <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/SteamCounters.png'></div>";
+   font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $counters . "
+   <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/SteamCounters.png'></div>";
   }
   //Equipments, Hero and default counters style
   elseif($counters != 0) {
@@ -132,8 +132,8 @@
     if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle; line-height:" . $imgCounterHeight . "px;
-    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters ."
-    <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
+    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $defCounters . "
+    <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Defense.png'></div>";
   }
 
   //Health Counters style
@@ -142,7 +142,7 @@
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
     font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $lifeCounters ."
-    <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Life.png'></div>";
+    <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Life.png'></div>";
   }
 
   //Attack Counters style
@@ -150,8 +150,8 @@
     if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
-    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters ."
-    <img style='position:absolute; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Attack.png'></div>";
+    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $atkCounters . "
+    <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1;' src='./Images/Attack.png'></div>";
   }
   $rv .= "</a>";
   return $rv;
