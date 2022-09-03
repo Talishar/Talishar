@@ -1029,6 +1029,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  $abilityType = GetResolvedAbilityType($cardID);
 
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
@@ -1054,8 +1055,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)))) return true;
-  if($cardType == "AR" && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
-  if($cardType == "DR" && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
+  if(($cardType == "AR" || $abilityType == "AR") && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
+  if(($cardType == "DR" || $abilityType == "DR") && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
 }
 
@@ -1104,12 +1105,16 @@ function ClassContains($cardID, $class, $player="")
 function TalentOverride($cardID, $player="")
 {
   global $currentTurnEffects;
-  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
   $cardTalent = CardTalent($cardID);
+
+  // CR 2.2.1 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not remove properties, or parts of properties, that were added by another effect.
+  if(SearchCurrentTurnEffects("UPR187", $player)) $cardTalent = "NONE";
+
   if(CardType($cardID) == "C" && SearchCharacterForCard($player, "DYN234")) {
     if($cardTalent == "NONE") $cardTalent = "ROYAL";
     elseif($cardTalent != "") $cardTalent .= ",ROYAL";
   }
+
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     $toAdd = "";
@@ -1316,7 +1321,8 @@ function AttackDestroyedEffects($attackID)
 
 function CloseCombatChain($chainClosed="true")
 {
-  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget;
+  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
+  $layers = [];//In case there's another combat chain related layer like defense step
   AddLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
@@ -1553,5 +1559,10 @@ function NumEquipBlock()
     }
     $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
     $rv = CombineSearches($rv, $theirWeapon);
+    $theirAllies = SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY");
+    $rv = CombineSearches($rv, $theirAllies);
+    $theirAuras = SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS");
+    $rv = CombineSearches($rv, $theirAuras);
+
     return $rv;
   }
