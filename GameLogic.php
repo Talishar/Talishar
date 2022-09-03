@@ -1983,6 +1983,7 @@ function OnBlockResolveEffects()
       default:
         break;
     }
+    ProcessPhantasmOnBlock($i);
   }
 }
 
@@ -2076,7 +2077,6 @@ function OnBlockEffects($index, $from)
         break;
     }
   }
-  ProcessPhantasmOnBlock($index);
 }
 
 function ActivateAbilityEffects()
