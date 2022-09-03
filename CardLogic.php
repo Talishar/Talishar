@@ -485,7 +485,7 @@ function ProcessLayer($player, $parameter)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed;
 
   $resources = &GetResources($player);
   $items = &GetItems($player);
@@ -713,6 +713,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "UPR096":
+        if(GetClassState($player, $CS_NumRedPlayed) > 1)
+        {
+          AddDecisionQueue("FINDINDICES", $player, "DECKCARD,UPR101");
+          AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+          AddDecisionQueue("ADDMYHAND", $player, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        }
+        return "";
     case "UPR140":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if ($index == -1) break;
