@@ -128,11 +128,13 @@ function initializePlayerState($handler, $deckHandler, $player)
   else if($player == 2) $p2IsChallengeActive = "0";
 
   //Equipment challenge
+  /*
   if($charEquip[0] != "ARC001" && $charEquip[0] != "ARC002" && $charEquip[1] == "CRU177")
   {
     if($player == 1) $p1IsChallengeActive = "1";
     else if($player == 2) $p2IsChallengeActive = "1";
   }
+  */
 
   /*
   $challengeThreshold = (CharacterHealth($charEquip[0]) > 25 ? 3 : 2);
