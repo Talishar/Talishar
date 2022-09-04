@@ -191,7 +191,17 @@ function DYNHitEffect($cardID)
     global $mainPlayer, $defPlayer, $CS_NumAuras, $chainLinks;
     switch ($cardID) {
 
-        default:
-            break;
+        default: break;
     }
+}
+
+function IsRoyal($cardID, $player) 
+{
+    if(SearchCharacterForCard($player, "DYN234")) return true;
+    switch ($cardID) {
+        case "DYN001":
+            return true;
+        default: break;
+    }
+    return false;
 }
