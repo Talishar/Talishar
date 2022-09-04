@@ -230,14 +230,11 @@ function ChainLinkBeginResolutionEffects()
 function CombatChainResolutionEffects()
 {
   global $combatChain;
-  for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
+  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
-    $cardID = $combatChain[$i-1];
-    switch($cardID)
+    switch($combatChain[0])
     {
       case "CRU051": case "CRU052":
-        $totalAttack = 0;
-        $totalBlock = 0;
         EvaluateCombatChain($totalAttack, $totalBlock);
         if ($totalBlock > 0 && BlockValue($combatChain[$i]) > $totalAttack) {
           DestroyCurrentWeapon();
