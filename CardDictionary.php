@@ -1262,7 +1262,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE115":
       return !ArsenalHasFaceDownCard($player);
     case "ELE118":
-      return ArsenalEmpty($player);
+      return $from == "ARS" || ArsenalEmpty($player);
     case "ELE140":
     case "ELE141":
     case "ELE142":
