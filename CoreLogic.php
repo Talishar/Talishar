@@ -1175,7 +1175,7 @@ function RevealCards($cards, $player="")
 function DoesAttackHaveGoAgain()
 {
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
-  global $CS_NumAuras, $CS_ArcaneDamageTaken;
+  global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck;
 
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
@@ -1198,6 +1198,14 @@ function DoesAttackHaveGoAgain()
   $mainPitch = &GetPitch($mainPlayer);
   switch ($combatChain[0])
   {
+    case "WTR095": case "WTR096": case "WTR097":
+      return ComboActive($combatChain[0]);
+    case "WTR104": case "WTR105": case "WTR106":
+      return ComboActive($combatChain[0]);
+    case "WTR110": case "WTR111": case "WTR112":
+      return ComboActive($combatChain[0]);
+    case "WTR161":
+      return count($myDeck) == 0;
     case "WTR162":
       return GetDieRoll($mainPlayer) <= 4;
     case "ARC197": case "ARC198": case "ARC199":

@@ -802,9 +802,9 @@ function AttackValue($cardID)
   }
 }
 
+// Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
 function HasGoAgain($cardID)
 {
-  global $myDeck;
   $set = CardSet($cardID);
   if ($set == "WTR") {
     return WTRHasGoAgain($cardID);
