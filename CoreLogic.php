@@ -1116,11 +1116,6 @@ function TalentOverride($cardID, $player="")
   // CR 2.2.1 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not remove properties, or parts of properties, that were added by another effect.
   if(SearchCurrentTurnEffects("UPR187", $player)) $cardTalent = "NONE";
 
-  if(CardType($cardID) == "C" && SearchCharacterForCard($player, "DYN234")) {
-    if($cardTalent == "NONE") $cardTalent = "ROYAL";
-    elseif($cardTalent != "") $cardTalent .= ",ROYAL";
-  }
-
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
     $toAdd = "";
@@ -1174,7 +1169,7 @@ function RevealCards($cards, $player="")
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
   WriteLog($string);
-  if($player != "" && SearchLandmarks("ELE000")) KorshemRevealAbility($player);
+  if($player != "" && SearchLandmark("ELE000")) KorshemRevealAbility($player);
   return true;
 }
 

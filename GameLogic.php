@@ -4554,6 +4554,41 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+
+    case "MZDESTROY":
+      $lastResultArr = explode(",", $lastResult);
+      $params = explode(",", $parameter);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      for ($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch ($mzIndex[0]) {
+          case "MYALLY":
+            DestroyAlly($player, $mzIndex[1]);
+            break;
+          case "THEIRALLY":
+            DestroyAlly($otherPlayer, $mzIndex[1]);
+            break;
+          case "MYAURAS":
+            DestroyAura($player, $mzIndex[1]);
+            break;
+          case "THEIRAURAS":
+            DestroyAura($otherPlayer, $mzIndex[1]);
+            break;
+          case "MYITEMS":
+            DestroyItemForPlayer($player, $mzIndex[1]);
+            break;
+          case "THEIRITEMS":
+            DestroyItemForPlayer($otherPlayer, $mzIndex[1]);
+            break;
+          case "LANDMARK":
+            DestroyLandmark($mzIndex[1]);
+            break;
+          default:
+            break;
+        }
+      }
+      return $lastResult;
+
     case "MZBANISH":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);
@@ -4767,7 +4802,62 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $lastResult = "MYHAND-" . strval($int_value); //MYHAND-2
       }
       return $lastResult;
+    case "IMPERIALWARHORN":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      switch ($lastResult) {
+        case "Target_Opponent":
+          $mainCharacter = &GetPlayerCharacter($player);
+          if (IsRoyal($mainCharacter[0], $player)) {
+            ImperialWarHorn($player, "THEIR");
+          } else {
+            ImperialWarHorn($otherPlayer, "MY");
+          }
+          break;
+        case "Target_Both_Heroes":
+          $mainCharacter = &GetPlayerCharacter($player);
+          if (IsRoyal($mainCharacter[0], $player)) {
+            ImperialWarHorn($player, "MY");
+            ImperialWarHorn($player, "THEIR");
+          } else {
+            ImperialWarHorn($player, "MY");
+            ImperialWarHorn($otherPlayer, "MY");
+          }
+          break;
+        case "Target_Yourself":
+          ImperialWarHorn($player, "MY");
+          break;
+        case "Target_No_Heroes":
+          return "";
+        default:
+          break;
+      }
+      return "";
+
     default:
       return "NOTSTATIC";
   }
+}
+
+function ImperialWarHorn($player, $term)
+{
+  //Allies
+  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "ALLY");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an ally to destroy", 1);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZDESTROY", $player, "-", 1);
+  //Auras
+  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "AURAS");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an aura to destroy", 1);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZDESTROY", $player, "-", 1);
+  //Items
+  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "ITEMS");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to destroy", 1);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZDESTROY", $player, "-", 1);
+  //Landmarks
+  AddDecisionQueue("MULTIZONEINDICES", $player, "LANDMARK");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a landmark to destroy", 1);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }
