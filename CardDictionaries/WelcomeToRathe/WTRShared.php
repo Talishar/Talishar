@@ -566,7 +566,6 @@
 
   function WTRHasGoAgain($cardID)
   {
-    global $myDeck;
     switch ($cardID)
     {
       //Brute
@@ -580,12 +579,9 @@
       case "WTR072": case "WTR073": case "WTR074": return true;
       //Ninja
       case "WTR083": case "WTR084":
-      case "WTR095": case "WTR096": case "WTR097": return ComboActive($cardID);
       case "WTR098": case "WTR099": case "WTR100": return true;
       case "WTR101": case "WTR102": case "WTR103": return true;
-      case "WTR104": case "WTR105": case "WTR106": return ComboActive($cardID);
       case "WTR107": case "WTR108": case "WTR109": return true;
-      case "WTR110": case "WTR111": case "WTR112": return ComboActive($cardID);
       //Warrior
       case "WTR119": case "WTR122": return true;
       case "WTR129": case "WTR130": case "WTR131": return true;
@@ -593,7 +589,6 @@
       case "WTR144": case "WTR145": case "WTR146": return true;
       case "WTR147": case "WTR148": case "WTR149": return true;
       //Generics
-      case "WTR161": return count($myDeck) == 0;
       case "WTR218": case "WTR219": case "WTR220": return true;
       case "WTR223": case "WTR222": case "WTR221": return true;
       default: return false;

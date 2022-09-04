@@ -21,6 +21,7 @@ function DYNAbilityType($cardID, $index = -1)
     }
 }
 
+// Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
 function DYNHasGoAgain($cardID)
 {
     switch ($cardID) {
