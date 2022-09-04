@@ -586,16 +586,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $counters = "Attacker";
       }
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
-      if ($option[0] == "MYARS") {
-        $counters = "Arsenal";
-      }
+      if ($option[0] == "MYARS") $counters = "Arsenal";
 
       $index = intval($option[1]);
       $card = $source[$index];
       if($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index+2];
       $playerBorderColor = 0;
+
       if (substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
+      else if ($option[0] == "LAYER") $playerBorderColor = $layers[$i*LayerPieces() + 1];
+
       if ($option[0] == "THEIRARS" && $theirArsenal[$option[1] + 1] == "DOWN") $card = $TheirCardBack;
 
       //Show Life and Def counters on allies in the popups
