@@ -330,7 +330,7 @@
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
-        if($from == "ARS") MyDrawCard();
+        if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ELE143":
         if($from == "PLAY")
