@@ -15,7 +15,7 @@ $forIndividual = TryGet("forPlayer", false);
 $forIndividual = ($forIndividual ? true : false);//If it evaluates to true, explicitly cast it to boolean
 $useruid = $_SESSION["useruid"];
 $userid = $_SESSION["userid"];
-if (!$forIndividual && $useruid != "OotTheMonk" && $useruid != "Kugane" && $useruid != "Kugane2" && $useruid != "PvtVoid" && $useruid != "grog" && $useruid != "underscore" && $useruid != "HelpMeJace2" && $useruid != "Matt" && $useruid != "jacob" && $useruid != "Tower") exit;
+if (!$forIndividual) exit;
 
 $detailHeroID = $_GET["heroID"];
 $detailMatchupID = $_GET["matchupID"];

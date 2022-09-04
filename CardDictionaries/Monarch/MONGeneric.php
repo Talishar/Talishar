@@ -185,7 +185,7 @@
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power."; }
       return $rv;
     case "MON266": case "MON267": case "MON268":
-      if(DelimStringContains($additionalCosts, "BELITTLE"))
+      if(DelimStringContains($additionalCosts, "BELITTLE") && CanRevealCards($currentPlayer))
       {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);

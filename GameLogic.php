@@ -627,9 +627,17 @@ function EffectHitEffect($cardID)
       break;
     case "ELE005":
       if (IsHeroAttackTarget()) {
-        RandomHandBottomDeck($defPlayer);
-        RandomHandBottomDeck($defPlayer);
-      }
+          AddDecisionQueue("RANDMULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, "<-", 1);
+          AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose which card to put to the bottom first", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1);
+          AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
+          AddDecisionQueue("REMOVEFIRSTCHOICEINDICES", $defPlayer, "0", 1);
+          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1);
+          AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
+        }
       break;
     case "ELE019":
     case "ELE020":
@@ -1975,6 +1983,7 @@ function OnBlockResolveEffects()
       default:
         break;
     }
+    ProcessPhantasmOnBlock($i);
   }
 }
 
@@ -2068,7 +2077,6 @@ function OnBlockEffects($index, $from)
         break;
     }
   }
-  ProcessPhantasmOnBlock($index);
 }
 
 function ActivateAbilityEffects()
@@ -2163,7 +2171,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
     case "UPR189":
       if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) {
         Draw($player);
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
       }
       break;
     default:
@@ -3130,6 +3138,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
+    case "RANDMULTIZONEINDICES":
+      $rv = SearchMultizone($player, $parameter);
+      //THEIRHAND-0,THEIRHAND-1,THEIRHAND-2,THEIRHAND-3
+      $hand = explode(",", $rv);
+      $randHand = array_rand($hand, 2);
+      $rv = $hand[$randHand[0]] . "," . $hand[$randHand[1]];
+      return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
       if ($subtype == "Item") {
@@ -3579,7 +3594,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ESTRIKE":
       switch ($lastResult) {
         case "Draw_a_card":
-          WriteLog(CardLink("WTR159", "WTR159") . " drew a card.");
+          WriteLog(CardLink("WTR159", "WTR159") . " draw a card.");
           return MyDrawCard();
         case "2_Attack":
           WriteLog(CardLink("WTR159", "WTR159") . " gained +2 power.");
@@ -3607,7 +3622,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (AttackValue($discarded) >= 6) {
         if($currentPlayer == $mainPlayer) {
           $actionPoints += 2;
-          WriteLog("Sand Sketched Plan gained 2 action points.");
+          WriteLog(CardLink("WTR009","WTR009") . " gained 2 action points.");
         }
       }
       return "1";
@@ -3631,9 +3646,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for ($i = 0; $i < count($cards); ++$i) {
           MyDrawCard();
         }
-        WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew " . count($cards) . " cards.");
+        WriteLog(CardLink("WTR151", "WTR151") . " shuffle and draw " . count($cards) . " cards.");
       } else {
-        WriteLog(CardLink("WTR151", "WTR151") . " shuffled and drew 0 card.");
+        WriteLog(CardLink("WTR151", "WTR151") . " shuffle and draw 0 card.");
       }
       return "1";
     case "LORDOFWIND":
@@ -3652,9 +3667,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($lastResult); ++$i) {
         switch ($lastResult[$i]) {
           case "Buff_Arcane":
+            WriteLog(CardLink("ARC122", "ARC122") . " add arcane bonus");
             AddArcaneBonus(1, $player);
             break;
           case "Draw_card":
+            WriteLog(CardLink("ARC122", "ARC122") . " draw a card");
             MyDrawCard();
             break;
           default:
@@ -3877,11 +3894,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
       //Create cancel point
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player, 1);
+      PrependDecisionQueue("PASSPARAMETER", $target, "{1}", 1);
+      $quellChoices = QuellChoices($target, $damage);
+      if ($quellChoices != "0") {
+        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
+        PrependDecisionQueue("AFTERQUELL", $target, "-", 1);
+        PrependDecisionQueue("BUTTONINPUT", $target, $quellChoices);
+        PrependDecisionQueue("SETDQCONTEXT", $target, "Choose an amount to pay for Quell");
+      }
+      PrependDecisionQueue("INCDQVAR", $target, "1", 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
       PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1, 1);
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
+      PrependDecisionQueue("SETDQVAR", $target, "1", 1);
+      PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
       return $parameter;
     case "ARCANEHITEFFECT":
       if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //Source, target, damage
@@ -3913,6 +3942,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DestroyFrozenArsenal($player);
         SearchCurrentTurnEffects("UPR125", $otherPlayer, true); // Remove the effect
       }
+      if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessHitEffect($source); // Interaction with Burn Them All! + Nekria
       $dqVars[0] = $damage;
       return $damage;
     case "PAYRESOURCES":
@@ -4317,15 +4347,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     //   ApproveManualMode($player);
     //   return $lastResult;
     case "BINGO":
-      if ($lastResult == "") WriteLog("No card was revealed for Bingo.");
+      if ($lastResult == "") WriteLog("No card was revealed for " . CardLink("EVR156","EVR156") . ".");
       $cardType = CardType($lastResult);
       if ($cardType == "AA") {
-        WriteLog("Bingo gained go again.");
+        WriteLog(CardLink("EVR156","EVR156") . " gained go again.");
         GiveAttackGoAgain();
       } else if ($cardType == "A") {
-        WriteLog("Bingo drew a card.");
+        WriteLog(CardLink("EVR156","EVR156") . " draw a card.");
         Draw($player);
-      } else WriteLog("Bingo... did not hit the mark.");
+      } else WriteLog(CardLink("EVR156","EVR156") . "... did not hit the mark.");
       return $lastResult;
     case "ADDCARDTOCHAIN":
       AddCombatChain($lastResult, $player, $parameter, 0);
@@ -4336,7 +4366,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
       if (RevealCards($deck[0], $player) && AttackValue($deck[0]) > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
-        WriteLog("Even Bigger Than That! drew a card and created a Quicken token.");
+        WriteLog("Even Bigger Than That! draw a card and create a Quicken token.");
         Draw($player);
         PlayAura("WTR225", $player);
       }
@@ -4603,6 +4633,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "THEIRPITCH":
             RemovefromPitch($otherPlayer, $mzIndex[1]);
             break;
+          case "MYHAND":
+            RemoveCard($player, $mzIndex[1]);
+            break;
+          case "THEIRHAND":
+            RemoveCard($otherPlayer, $mzIndex[1]);
+            break;
           default:
             break;
         }
@@ -4638,6 +4674,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "THEIRDISCARD":
             $pitch = &GetPitch($otherPlayer);
             AddBottomDeck($pitch[$mzIndex[1]], $otherPlayer, $params[0]);
+            break;
+          case "MYHAND":
+            $hand = &GetHand($player);
+            AddBottomDeck($hand[$mzIndex[1]], $player, $params[0]);
+            break;
+          case "THEIRHAND":
+            $hand = &GetHand($otherPlayer);
+            AddBottomDeck($hand[$mzIndex[1]], $otherPlayer, $params[0]);
             break;
           default:
             break;
@@ -4788,6 +4832,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
       }
       return "";
+
     default:
       return "NOTSTATIC";
   }

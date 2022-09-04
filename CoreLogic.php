@@ -357,7 +357,7 @@ function CharacterPlayCardAbilities($cardID, $from)
       case "EVR120": case "UPR102": case "UPR103":
         if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
         {
-          AddLayer("TRIGGER", $mainPlayer, $characterID);
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       case "ARC075": case "ARC076":
@@ -483,7 +483,13 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   {
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer)) && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
+
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer)) 
+    && (IsHeroAttackTarget() || $type == "ARCANE") 
+    && $otherCharacter[1] == "2" 
+    && CardType($source) == "AA" 
+    && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
+
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
     { AddCurrentTurnEffect($source, $mainPlayer); }
   }
@@ -1029,6 +1035,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  $abilityType = GetResolvedAbilityType($cardID);
 
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
@@ -1054,8 +1061,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)))) return true;
-  if($cardType == "AR" && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
-  if($cardType == "DR" && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
+  if(($cardType == "AR" || $abilityType == "AR") && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
+  if(($cardType == "DR" || $abilityType == "DR") && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
 }
 
@@ -1105,6 +1112,7 @@ function TalentOverride($cardID, $player="")
 {
   global $currentTurnEffects;
   $cardTalent = CardTalent($cardID);
+
   // CR 2.2.1 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not remove properties, or parts of properties, that were added by another effect.
   if(SearchCurrentTurnEffects("UPR187", $player)) $cardTalent = "NONE";
 
@@ -1168,7 +1176,7 @@ function RevealCards($cards, $player="")
 function DoesAttackHaveGoAgain()
 {
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
-  global $CS_NumAuras, $CS_ArcaneDamageTaken;
+  global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck;
 
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
@@ -1191,6 +1199,14 @@ function DoesAttackHaveGoAgain()
   $mainPitch = &GetPitch($mainPlayer);
   switch ($combatChain[0])
   {
+    case "WTR095": case "WTR096": case "WTR097":
+      return ComboActive($combatChain[0]);
+    case "WTR104": case "WTR105": case "WTR106":
+      return ComboActive($combatChain[0]);
+    case "WTR110": case "WTR111": case "WTR112":
+      return ComboActive($combatChain[0]);
+    case "WTR161":
+      return count($myDeck) == 0;
     case "WTR162":
       return GetDieRoll($mainPlayer) <= 4;
     case "ARC197": case "ARC198": case "ARC199":
@@ -1314,7 +1330,8 @@ function AttackDestroyedEffects($attackID)
 
 function CloseCombatChain($chainClosed="true")
 {
-  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget;
+  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
+  $layers = [];//In case there's another combat chain related layer like defense step
   AddLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
@@ -1538,18 +1555,26 @@ function NumEquipBlock()
     return "-";
   }
 
-  function GetDamagePreventionIndices()
-  {
-    global $combatChain, $currentPlayer;
-    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
-    $rv = SearchLayerDQ($otherPlayer, "");
-    $rv = SearchMultiZoneFormat($rv, "LAYER");
-    if(count($combatChain) > 0 && CardType($combatChain[0]) != "W")
-    {
-      if($rv != "") $rv .= ",";
-      $rv .= "CC-0";
-    }
-    $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
-    $rv = CombineSearches($rv, $theirWeapon);
-    return $rv;
+function GetDamagePreventionIndices()
+{
+  global $combatChain, $currentPlayer;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $rv = "";
+
+  $rv = SearchLayerDQ($otherPlayer, "");
+  $rv = SearchMultiZoneFormat(SearchLayer($otherPlayer), "LAYER");
+
+  if (count($combatChain) > 0 && CardType($combatChain[0]) != "W") {
+    if ($rv != "") $rv .= ",";
+    $rv .= "CC-0";
   }
+
+  $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
+  $rv = CombineSearches($rv, $theirWeapon);
+  $theirAllies = SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY");
+  $rv = CombineSearches($rv, $theirAllies);
+  $theirAuras = SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS");
+  $rv = CombineSearches($rv, $theirAuras);
+
+  return $rv;
+}

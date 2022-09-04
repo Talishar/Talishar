@@ -312,13 +312,7 @@
         if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Gains +2 and go again from banishing."); }
         return "";
       case "UPR096":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
-        {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,UPR101");
-          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        }
+        AddLayer("TRIGGER", $currentPlayer, $cardID);
         return "";
       case "UPR097":
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)

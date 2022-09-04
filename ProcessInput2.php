@@ -387,64 +387,64 @@ switch ($mode) {
   case 10001:
     RevertGamestate("preBlockBackup.txt");
     $skipWriteGamestate = true;
-    WriteLog("Player " . $playerID . " undid their blocks.");
+    WriteLog("Player " . $playerID . " cancel their blocks.");
     break;
   case 10002:
-    WriteLog("Player " . $playerID . " manually added 1 action point.");
+    WriteLog("Player " . $playerID . " manually add 1 action point.");
     ++$actionPoints;
     break;
   case 10003: //Revert to prior turn
     RevertGamestate($buttonInput);
-    WriteLog("Player " . $playerID . " reverted back to a prior turn.");
+    WriteLog("Player " . $playerID . " revert back to a prior turn.");
     break;
   case 10004:
     if ($actionPoints > 0) {
-      WriteLog("Player " . $playerID . " manually subtracted 1 action point.");
+      WriteLog("Player " . $playerID . " manually subtract 1 action point.");
       --$actionPoints;
     }
     break;
   case 10005:
-    WriteLog("Player " . $playerID . " manually subtracted 1 health point from themselves.");
+    WriteLog("Player " . $playerID . " manually subtract 1 health point from themselves.");
     LoseHealth(1, $playerID);
     break;
   case 10006:
-    WriteLog("Player " . $playerID . " manually added 1 health point to themselves.");
+    WriteLog("Player " . $playerID . " manually add 1 health point to themselves.");
     $myHealth += 1;
     break;
   case 10007:
-    WriteLog("Player " . $playerID . " manually added 1 health point to themselves.");
+    WriteLog("Player " . $playerID . " manually add 1 health point to themselves.");
     LoseHealth(1, ($playerID == 1 ? 2 : 1));
     break;
   case 10008:
-    WriteLog("Player " . $playerID . " manually added 1 health point their opponent.");
+    WriteLog("Player " . $playerID . " manually add 1 health point their opponent.");
     $theirHealth += 1;
     break;
   case 10009:
-    WriteLog("Player " . $playerID . " manually drew a card for themselves.");
+    WriteLog("Player " . $playerID . " manually draw a card for themselves.");
     Draw($playerID);
     break;
   case 10010:
-    WriteLog("Player " . $playerID . " manually drew a card for their opponent.");
+    WriteLog("Player " . $playerID . " manually draw a card for their opponent.");
     Draw(($playerID == 1 ? 2 : 1));
     break;
   case 10011:
-    WriteLog("Player " . $playerID . " manually added a card to their hand.");
+    WriteLog("Player " . $playerID . " manually add a card to their hand.");
     array_push($myHand, $cardID);
     break;
   case 10012:
-    WriteLog("Player " . $playerID . " manually added a resource to their pool.");
+    WriteLog("Player " . $playerID . " manually add a resource to their pool.");
     $myResources[0] += 1;
     break;
   case 10013:
-    WriteLog("Player " . $playerID . " manually added a resource to their opponent pool.");
+    WriteLog("Player " . $playerID . " manually add a resource to their opponent pool.");
     $theirResources[0] += 1;
     break;
   case 10014:
-    WriteLog("Player " . $playerID . " manually removed a resource from their opponent pool.");
+    WriteLog("Player " . $playerID . " manually remove a resource from their opponent pool.");
     $theirResources[0] -= 1;
     break;
   case 10015:
-    WriteLog("Player " . $playerID . " manually removed a resource from their pool.");
+    WriteLog("Player " . $playerID . " manually remove a resource from their pool.");
     $myResources[0] -= 1;
     break;
   case 100000: //Quick Rematch
@@ -530,6 +530,20 @@ switch ($mode) {
     if ($playerID == 1) $p1PlayerRating = 2;
     if ($playerID == 2) $p2PlayerRating = 2;
     break;
+  case 100010: //Grant badge
+    include "MenuFiles/ParseGamefile.php";
+    include_once "./includes/dbh.inc.php";
+    include_once "./includes/functions.inc.php";
+    $myName = ($playerID == 1 ? $p1uid : $p2uid);
+    $theirName = ($playerID == 1 ? $p2uid : $p1uid);
+    if($playerID == 1) $userID = $p1id;
+    else $userID = $p2id;
+    if($userID != "")
+    {
+      AwardBadge($userID, 3);
+      WriteLog($myName . " gave a badge to " . $theirName);
+    }
+    break;
   default:
     break;
 }
@@ -612,6 +626,8 @@ function IsModeAsync($mode)
     case 100008:
       return true;
     case 100009:
+      return true;
+    case 100010:
       return true;
   }
   return false;
@@ -1061,14 +1077,20 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
   global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
-  global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID;
+  global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex;
   $resources = &GetResources($currentPlayer);
   $pitch = &GetPitch($currentPlayer);
   $dynCostResolved = intval($dynCostResolved);
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
-  $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
+  $playingCard = $turn[0] != "P" && $turn[0] != "B";
   if ($dynCostResolved == -1) {
+    //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
+    if($playingCard)
+    {
+      $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-");
+      SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
+    }
     //CR 5.1.2 Announce (CR 2.0)
     WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
     LogPlayCardStats($currentPlayer, $cardID, $from);
@@ -1136,13 +1158,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $turn[0] = $turn[2];
     $cardID = $turn[3];
     $from = $turn[4];
+    $playingCard = $turn[0] != "P" && $turn[0] != "B";
   }
   $cardType = CardType($cardID);
   $abilityType = "";
   $playType = $cardType;
   PlayerMacrosCardPlayed();
   //We've paid resources, now pay action points if applicable
-  if ($turn[0] != "B" || count($layers) > 0) {
+  if ($playingCard) {
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from);
     //if($from == "PLAY" || $from == "EQUIP")
     if (IsStaticType($cardType, $from, $cardID)) {
@@ -1580,12 +1603,15 @@ function PayAdditionalCosts($cardID, $from)
     case "MON266":
     case "MON267":
     case "MON268":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
-      AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      if (CanRevealCards($currentPlayer)) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      }
       break;
     case "MON281":
     case "MON282":
@@ -1701,7 +1727,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   //Figure out where it goes
   $openedChain = false;
   $chainClosed = false;
-  $isBlock = $turn[0] == "B" && count($layers) == 0; //This can change over the course of the function; for example if a phantasm gets popped
+  $isBlock = $turn[0] == "B"; //This can change over the course of the function; for example if a phantasm gets popped
   if (!$isBlock && ($from == "EQUIP" || $from == "PLAY")) $cardType = GetResolvedAbilityType($cardID);
   else $cardType = $definedCardType;
   if (GoesOnCombatChain($turn[0], $cardID, $from)) {

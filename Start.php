@@ -128,11 +128,13 @@ function initializePlayerState($handler, $deckHandler, $player)
   else if($player == 2) $p2IsChallengeActive = "0";
 
   //Equipment challenge
+  /*
   if($charEquip[0] != "ARC001" && $charEquip[0] != "ARC002" && $charEquip[1] == "CRU177")
   {
     if($player == 1) $p1IsChallengeActive = "1";
     else if($player == 2) $p2IsChallengeActive = "1";
   }
+  */
 
   /*
   $challengeThreshold = (CharacterHealth($charEquip[0]) > 25 ? 3 : 2);
@@ -161,7 +163,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   fwrite($handler, "\r\n"); //Discard
   fwrite($handler, "\r\n"); //Pitch
   fwrite($handler, "\r\n"); //Banish
-  fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0\r\n"); //Class State
+  fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 0 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 - 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1\r\n"); //Class State
   fwrite($handler, "\r\n"); //Character effects
   fwrite($handler, "\r\n"); //Soul
   fwrite($handler, "\r\n"); //Card Stats

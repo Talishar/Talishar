@@ -13,6 +13,13 @@ include_once 'Header.php';
 
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>Interview with Push the Point!</h2>
+    <p style="text-align:center">The first of many, we hope! Thank you to Hamish for been such a nice host and inviting us on his platform.
+      Go watch the video and let us know what you've thoughts about it!</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/lORS6mU0uLM" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
+  <div class="articles">
     <h2>21st August 2022</h2>
     <h3>🧑‍🏭 Hello #fabtcg players! Weekend's update just for you!</h3>
     <p><br>- Better side boarding handling. People cant start a game without a weapon/equipment. It was happening by mistake sometimes.

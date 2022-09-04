@@ -159,7 +159,7 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $deck = &GetDeck($player);
   $cardList = "";
-  for ($i = 0; $i < count($deck); ++$i) {
+  for ($i = 0; $i < count($deck); $i += DeckPieces()) {
     $id = $deck[$i];
     if ($id == $card1 || $id == $card2 || $id == $card3) {
       if ($cardList != "") $cardList = $cardList . ",";
@@ -173,7 +173,7 @@ function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $discard = &GetDiscard($player);
   $cardList = "";
-  for ($i = 0; $i < count($discard); ++$i) {
+  for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
     $id = $discard[$i];
     if ($id == $card1 || $id == $card2 || $id == $card3) {
       if ($cardList != "") $cardList = $cardList . ",";
@@ -187,7 +187,7 @@ function SearchAlliesForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $allies = &GetAllies($player);
   $cardList = "";
-  for ($i = 0; $i < count($allies); ++$i) {
+  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     $id = $allies[$i];
     if ($id == $card1 || $id == $card2 || $id == $card3) {
       if ($cardList != "") $cardList = $cardList . ",";
@@ -201,7 +201,7 @@ function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
 {
   $allies = &GetAllies($player);
   $cardList = "";
-  for ($i = 0; $i < count($allies); ++$i) {
+  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     $id = $allies[$i];
     if ($id == $card1 || $id == $card2 || $id == $card3) {
       if ($cardList != "") $cardList = $cardList . ",";

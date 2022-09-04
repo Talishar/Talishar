@@ -330,7 +330,7 @@
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
-        if($from == "ARS") MyDrawCard();
+        if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ELE143":
         if($from == "PLAY")
@@ -379,11 +379,7 @@
       case "ELE172":
         if($from == "PLAY")
         {
-          $index = GetClassState($currentPlayer, $CS_PlayIndex);
-          if($index != -1)
-          {
-            PayOrDiscard($otherPlayer, 2);
-          }
+          PayOrDiscard($otherPlayer, 2);
           $rv = "Makes your opponent pay 2 resources or discard a card.";
         }
         return $rv;
@@ -432,11 +428,7 @@
       case "ELE201":
         if($from == "PLAY")
         {
-          $index = GetClassState($currentPlayer, $CS_PlayIndex);
-          if($index != -1)
-          {
-            AddCurrentTurnEffect($cardID, $currentPlayer);
-          }
+          AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gives target action go again.";
         }
         return $rv;
