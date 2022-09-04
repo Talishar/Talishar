@@ -1201,7 +1201,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "CRU143":
       return SearchCount(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE")) == 0;
     case "CRU164":
-      return count($layers) == 0;
+      return count($layers) == 0 || SearchLayer($player, "I", "", 1) == "";
     case "CRU186":
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
@@ -1257,6 +1257,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238":
       return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
+    case "MON303":
+      return SearchDiscard($player, "AA", "", 2) == "";
+    case "MON304":
+      return SearchDiscard($player, "AA", "", 1) == "";
+    case "MON305":
+      return SearchDiscard($player, "AA", "", 0) == "";
     case "ELE031":
     case "ELE032":
     case "ELE115":
@@ -1266,9 +1272,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE140":
     case "ELE141":
     case "ELE142":
-      $legalTarget = SowTomorrowIndices($player, $cardID);
-      if($legalTarget != "") return false;
-      return true;
+      return SowTomorrowIndices($player, $cardID) == "";
     case "ELE143":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
     case "ELE147":
