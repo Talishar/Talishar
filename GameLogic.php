@@ -4806,16 +4806,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       switch ($lastResult) {
         case "Target_Opponent":
-          $mainCharacter = &GetPlayerCharacter($player);
-          if (IsRoyal($mainCharacter[0], $player)) {
+          if (IsRoyal($player)) {
             ImperialWarHorn($player, "THEIR");
           } else {
             ImperialWarHorn($otherPlayer, "MY");
           }
           break;
         case "Target_Both_Heroes":
-          $mainCharacter = &GetPlayerCharacter($player);
-          if (IsRoyal($mainCharacter[0], $player)) {
+          if (IsRoyal($player)) {
             ImperialWarHorn($player, "MY");
             ImperialWarHorn($player, "THEIR");
           } else {

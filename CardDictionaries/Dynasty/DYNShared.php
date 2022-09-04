@@ -196,10 +196,13 @@ function DYNHitEffect($cardID)
     }
 }
 
-function IsRoyal($cardID, $player) 
+function IsRoyal($player) 
 {
-    if(SearchCharacterForCard($player, "DYN234")) return true;
-    switch ($cardID) {
+    $mainCharacter = &GetPlayerCharacter($player);
+
+    if (SearchCharacterForCard($player, "DYN234")) return true;
+
+    switch ($mainCharacter[0]) {
         case "DYN001":
             return true;
         default: break;
