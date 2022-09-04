@@ -149,7 +149,7 @@
           rv += "transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" + BackgroundColor(darkMode) + "; font-family: Helvetica; font-size:" + (counterHeight - 2) + "px; font-weight:550; color:" + TextCounterColor(darkMode) + "; text-shadow: 2px 0 0 " + PopupBorderColor(darkMode) + ", 0 -2px 0 " + PopupBorderColor(darkMode) + ", 0 2px 0 " + PopupBorderColor(darkMode) + ", -2px 0 0 " + PopupBorderColor(darkMode) + ";'>" + counters + "</div>";
         }
         //-1 Defense & Endurance Counters style
-        if (defCounters != 0) {
+        if (defCounters != 0 && isBroken != 1) {
           var left = "45%";
           if (lifeCounters == 0 && counters == 0) {
             left = "0px";
