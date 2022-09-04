@@ -160,9 +160,29 @@ if (isset($_SESSION["userid"])) {
 
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
-      <h2>Coax a Commotion #2 (Ending 9/3!)</h2>
+      <h2>Commotion #2 has concluded!</h2>
     <img style="width:95%; border-radius:2.5%;" src="./Images/challenges/challenge2.webp" /><br>
-    <h4 style="margin-left:15px; margin-right:15px;">Rules: Must include Talishar, hero must not be Dash. Everyone that participates will get a badge with their win count!</h4>
+    <h3 style="margin-left:15px; margin-right:15px;">Results</h3>
+    <table style='margin-left: 20px; width:100%; text-align:left;'>
+      <tr>
+        <td>Player</td><td>Wins</td>
+      </tr>
+      <tr>
+        <td>Doomsayer</td><td>67</td>
+      </tr>
+      <tr>
+        <td>Tubby Watkins</td><td>44</td>
+      </tr>
+      <tr>
+        <td>Taliksanis</td><td>42</td>
+      </tr>
+      <tr>
+        <td>TheOrknight</td><td>23</td>
+      </tr>
+      <tr>
+        <td>TheTablePitTY</td><td>18</td>
+      </tr>
+    </table>
   </div>
 
   <!--
