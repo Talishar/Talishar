@@ -497,7 +497,7 @@ function AbilityCost($cardID)
   }
   if ($set == "ARC") {
     return ARCAbilityCost($cardID);
-  } else if ($set == "CRU" && ($class == "MECHANOLOGIST" || $class == "WIZARD" || $cardID == "CRU197" || $class == "MERCHANT")) {
+  } else if ($set == "CRU") {
     return CRUAbilityCost($cardID);
   } else if ($set == "MON") {
     return MONAbilityCost($cardID);
@@ -802,9 +802,9 @@ function AttackValue($cardID)
   }
 }
 
+// Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
 function HasGoAgain($cardID)
 {
-  global $myDeck;
   $set = CardSet($cardID);
   if ($set == "WTR") {
     return WTRHasGoAgain($cardID);
@@ -1262,7 +1262,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE115":
       return !ArsenalHasFaceDownCard($player);
     case "ELE118":
-      return ArsenalEmpty($player);
+      return $from == "ARS" || ArsenalEmpty($player);
     case "ELE140":
     case "ELE141":
     case "ELE142":
@@ -2367,8 +2367,7 @@ function CardHasAltArt($cardID)
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
       return true;
-    case "DYN234":
-      return true;
+    case "DYN234": return true;
     default: return false;
   }
 }

@@ -566,7 +566,6 @@
 
   function WTRHasGoAgain($cardID)
   {
-    global $myDeck;
     switch ($cardID)
     {
       //Brute
@@ -580,12 +579,9 @@
       case "WTR072": case "WTR073": case "WTR074": return true;
       //Ninja
       case "WTR083": case "WTR084":
-      case "WTR095": case "WTR096": case "WTR097": return ComboActive($cardID);
       case "WTR098": case "WTR099": case "WTR100": return true;
       case "WTR101": case "WTR102": case "WTR103": return true;
-      case "WTR104": case "WTR105": case "WTR106": return ComboActive($cardID);
       case "WTR107": case "WTR108": case "WTR109": return true;
-      case "WTR110": case "WTR111": case "WTR112": return ComboActive($cardID);
       //Warrior
       case "WTR119": case "WTR122": return true;
       case "WTR129": case "WTR130": case "WTR131": return true;
@@ -593,7 +589,6 @@
       case "WTR144": case "WTR145": case "WTR146": return true;
       case "WTR147": case "WTR148": case "WTR149": return true;
       //Generics
-      case "WTR161": return count($myDeck) == 0;
       case "WTR218": case "WTR219": case "WTR220": return true;
       case "WTR223": case "WTR222": case "WTR221": return true;
       default: return false;
@@ -623,10 +618,8 @@
         Intimidate();
         return "Intimidates.";
       case "WTR007":
-        $drew = 0;
         if(AttackValue($additionalCosts) >= 6)
         {
-          $drew = 1;
           MyDrawCard();
           MyDrawCard();
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -643,6 +636,7 @@
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("SANDSKETCH", $currentPlayer, "-");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "WTR010":
         $roll = GetDieRoll($currentPlayer);
@@ -936,7 +930,7 @@
           LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
         }
         break;
-      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog("Whelming Gustwave drew a card."); MainDrawCard(); } break;
+      case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog(CardLink($cardID,$cardID) . " draw a card."); MainDrawCard(); } break;
       case "WTR115":
        if($mainClassState[$CS_HitsWDawnblade] == 1 && $CCS_WeaponIndex < count($combatChainState)) { ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+3]; }
        ++$mainClassState[$CS_HitsWDawnblade];

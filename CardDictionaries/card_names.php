@@ -547,7 +547,7 @@ if ($set == "ELE")
 		case "107": return "Rejuvenate";
 		case "108": return "Rejuvenate";
 		case "109": return "Embodiment of Earth";
-		case "110": return "mbodiment of Lightnin";
+		case "110": return "Embodiment of Lightning";
 		case "111": return "Frostbite";
 		case "112": return "Pulse of Volthaven";
 		case "113": return "Pulse of Candlehold";
@@ -1208,7 +1208,7 @@ if($set == "RVD"){
 if ($set == "DYN") {
 	switch ($num) {
 		case "001": return "Emperor, Dracai of Aesir";
-		
+
 		case "234": return "Crown of Dominion";
 
 		case "243": return "Imperial Warhorn";
@@ -1444,7 +1444,7 @@ if($set == "WTR"){
 		case "223": return "Sloggism";
 		case "224": return "Cracked Bauble";
 		case "225": return "Quicken";
-		   }	
+		   }
 		}
 		 else if ($set == "EVR")
         		{  switch($num)	   {
@@ -1823,9 +1823,9 @@ if($set == "WTR"){
               		case "196": return "Quicken";
               		case "197": return "Frostbite";
               		case "198": return "Frostbite";
-               } 
+               }
 			}
-        return "";    
+        return "";
 	}
 
 ?>

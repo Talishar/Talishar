@@ -397,7 +397,7 @@
           if(count($items) == 0)
           {
             Draw($mainPlayer);
-            WriteLog("Kyloria drew a card.");
+            WriteLog(CardLink($cardID,$cardID) . " draw a card.");
           }
           else
           {
@@ -414,7 +414,7 @@
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
         PutPermanentIntoPlay($mainPlayer, "UPR043");
-        WriteLog("Nekria got a -1 health counter and created an ash token.");
+        WriteLog(CardLink($cardID,$cardID) . " got a -1 health counter and created an ash token.");
         break;
       case "UPR416": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
       default: break;
@@ -424,7 +424,7 @@
   function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
   {
     AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into) . " or skip with the Pass button", 1);
     if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
     else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
     AddDecisionQueue("TRANSFORM", $player, $into, 1);

@@ -6,10 +6,19 @@
 
     switch($cardID)
     {
+      case "CRU004": case "CRU005": return 2;
+      case "CRU024": return 4;
+      case "CRU025": return 3;
+      case "CRU049": return 1;
+      case "CRU050": case "CRU051": case "CRU052": return 1;
+      case "CRU079": case "CRU080": return 1;
       case "CRU101": $char = &GetPlayerCharacter($currentPlayer); return ($char[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? 0 : 2);
       case "CRU105": $items = &GetItems($currentPlayer); return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "CRU118": return 3;
+      case "CRU122": return 2;
+      case "CRU140": return 1;
       case "CRU160": return 2;
+      case "CRU177": return 2;
       case "CRU197": return 4;
       default: return 0;
     }
@@ -292,16 +301,12 @@
     {
       case "CRU001": return -1;
       //CRU Brute
-      case "CRU004": case "CRU005": return 2;
-      case "CRU006": return 0;
       case "CRU007": case "CRU008": case "CRU009": return 3;
       case "CRU010": case "CRU011": case "CRU012": return 2;
       case "CRU013": case "CRU014": case "CRU015": return 2;
       case "CRU016": case "CRU017": case "CRU018": return 3;
       case "CRU019": case "CRU020": case "CRU021": return 1;
       //CRU Guardian
-      case "CRU024": return 4;
-      case "CRU025": return 3;
       case "CRU026": return 4;
       case "CRU027": return 7;
       case "CRU028": return 3;
@@ -311,8 +316,6 @@
       case "CRU038": case "CRU039": case "CRU040": return 2;
       case "CRU041": case "CRU042": case "CRU043": return 0;
       //CRU Ninja
-      case "CRU049": return 1;
-      case "CRU050": case "CRU051": case "CRU052": return 1;
       case "CRU054": case "CRU055": case "CRU056": return 0;
       case "CRU057": case "CRU058": case "CRU059": return 0;
       case "CRU060": case "CRU061": case "CRU062": return 0;
@@ -323,8 +326,6 @@
       case "CRU073": return 0;
       case "CRU074": return 1;
       //CRU Warrior
-      case "CRU079": case "CRU080": return 1;
-      case "CRU081": return 0;
       case "CRU082": return 0;
       case "CRU083": return 2;
       case "CRU084": return 1;
@@ -335,14 +336,11 @@
       //CRU Mechanologist
       case "CRU103": return 2;
       case "CRU104": return 0;
-      case "CRU105": return 2;
       case "CRU106": case "CRU107": case "CRU108": return 1;
       case "CRU109": case "CRU110": case "CRU111": return 2;
       case "CRU112": case "CRU113": case "CRU114": return 2;
       case "CRU115": case "CRU116": case "CRU117": return 0;
       //CRU Ranger
-      case "CRU121": return 0;
-      case "CRU122": return 2;
       case "CRU123": return 1;
       case "CRU124": return 0;
       case "CRU125": return 1;
@@ -351,8 +349,6 @@
       case "CRU132": case "CRU133": case "CRU134": return 1;
       case "CRU135": case "CRU136": case "CRU137": return 1;
       //CRU Runeblade
-      case "CRU140": return 1;
-      case "CRU141": return 0;
       case "CRU142": return 3;
       case "CRU143": return 2;
       case "CRU144": return 3;
@@ -361,7 +357,6 @@
       case "CRU151": case "CRU152": case "CRU153": return 1;
       case "CRU154": case "CRU155": case "CRU156": return 1;
       //CRU Wizard
-      case "CRU160": case "CRU161": return 0;
       case "CRU162": return 1;
       case "CRU163": return 0;
       case "CRU164": return 1;
@@ -370,7 +365,6 @@
       case "CRU171": case "CRU172": case "CRU173": return 2;
       case "CRU174": case "CRU175": case "CRU176": return 1;
       //CRU Generic
-      case "CRU177": return 2;
       case "CRU180": case "CRU181": case "CRU182": return 0;
       case "CRU183": case "CRU184": case "CRU185": return 0;
       case "CRU186": case "CRU187": return 0;
@@ -846,7 +840,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       Reload();
       return "Makes arrow attacks discard on hero hit, and allows you to Reload.";
     case "CRU125":
-      SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);     
+      SetClassState($currentPlayer, $CS_NextDamagePrevented, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Prevents the next damage you would take.";
     case "CRU126":
@@ -888,9 +882,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID . "-NAA", $currentPlayer);
       return "Reduces the cost of your next attack action card and non-attack action card this turn.";
     case "CRU142":
-      if (GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $currentPlayer);
-      AddDecisionQueue("CLASSSTATEGREATERORPASS", $defPlayer, $CS_ArcaneDamageTaken . "-1", 1);
-      AddDecisionQueue("PLAYAURA", $currentPlayer, "ARC112", 1);
+      //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
+      //When you attack with Dread Triptych, if you've dealt arcane damage this turn, create a Runechant token.
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
       return "";
     case "CRU143":
       AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);

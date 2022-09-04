@@ -163,7 +163,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cardSizeAura = intval($cardSize * .8); //95;
   $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
-  $cardWidth = intval($cardSize * 0.72);
+  $cardWidth = intval($cardSize * 0.73);
   $cardHeight = $cardWidth;
   $cardIconSize = intval($cardSize / 3); //40
   $cardIconLeft = intval($cardSize / 4); //30
@@ -587,16 +587,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $counters = "Attacker";
       }
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
-      if ($option[0] == "MYARS") {
-        $counters = "Arsenal";
-      }
+      if ($option[0] == "MYARS") $counters = "Arsenal";
 
       $index = intval($option[1]);
       $card = $source[$index];
       if($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index+2];
       $playerBorderColor = 0;
+
       if (substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
+      else if ($option[0] == "LAYER") $playerBorderColor = $layers[$i*LayerPieces() + 1];
+
       if ($option[0] == "THEIRARS" && $theirArsenal[$option[1] + 1] == "DOWN") $card = $TheirCardBack;
 
       //Show Life and Def counters on allies in the popups
@@ -786,7 +787,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Now display their Auras and Items
   if (count($landmarks) > 0) {
     echo ("<div style='position: fixed; top:105px; left: calc(50% + 200px); display:inline;'>");
-    echo ("<h3>Landmark:</h3>");
+    echo ("<h3 style='font-size:16px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Landmark:</h3>");
     for ($i = 0; $i < count($landmarks); $i += LandmarkPieces()) {
       $playable = $playerID == $currentPlayer && IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction);
       $action = ($playable && $currentPlayer == $playerID ? 25 : 0);
@@ -832,8 +833,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) {
       $lifeCounters = $theirAllies[$i + 2];
       $enduranceCounters = $theirAllies[$i + 6];
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirAllies[$i], "concat", $cardSizeAura, 0, 1, $theirAllies[$i + 1] != 2 ? 1 : 0, 0, 0, "", "", False, $lifeCounters, $enduranceCounters, controller:$otherPlayer) . "&nbsp");
-      if ($theirAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-75px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      if ($theirAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:1001; top: 6px; left: 7px; cursor:pointer; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      echo ("</div>");
     }
   }
   $theirPermanents = &GetPermanents($otherPlayer);
@@ -991,8 +994,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $enduranceCounters = $myAllies[$i + 6];
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i + 1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i + 1] != 2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $enduranceCounters, controller:$playerID) . "&nbsp");
-      if ($myAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      if ($myAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:1001; top: 6px; left: 7px; cursor:pointer; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      echo ("</div>");
     }
   }
   $myPermanents = &GetPermanents($playerID);
