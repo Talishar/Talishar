@@ -63,7 +63,7 @@
       fclose($gameFileHandler);
     }
   }
-
+/*
   if(isset($playerID) && $gameStatus == $MGS_GameStarted)
   {
     $ipTarget = ($playerID == 1 ? $hostIP : $joinerIP);
@@ -77,5 +77,5 @@
       fclose($hackHandler);
     }
   }
-
+*/
 ?>

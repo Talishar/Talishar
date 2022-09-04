@@ -534,9 +534,15 @@ switch ($mode) {
     include "MenuFiles/ParseGamefile.php";
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
+    $myName = ($playerID == 1 ? $p1uid : $p2uid);
+    $theirName = ($playerID == 1 ? $p2uid : $p1uid);
     if($playerID == 1) $userID = $p1id;
     else $userID = $p2id;
-    if($userID != "") AwardBadge($userID, 3);
+    if($userID != "")
+    {
+      AwardBadge($userID, 3);
+      WriteLog($myName . " gave a badge to " . $theirName);
+    }
     break;
   default:
     break;

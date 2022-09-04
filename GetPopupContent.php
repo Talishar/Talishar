@@ -19,7 +19,11 @@ include "./Libraries/StatFunctions.php";
 include "./Libraries/PlayerSettings.php";
 include "./GameTerms.php";
 include "./HostFiles/Redirector.php";
+include_once "./includes/dbh.inc.php";
+include_once "./includes/functions.inc.php";
 ob_end_clean();
+
+session_start();
 
 $cardSize = 120;
 $params = explode("-", $popupType);

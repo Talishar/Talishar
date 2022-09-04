@@ -487,7 +487,15 @@
     $rv .= PreviousTurnSelectionUI() . "<BR>";
     $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
     $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
-    $rv .= CreateButton($playerID, "Give Badge", 100010, 0, "24px") . "<BR>";
+    if(isset($_SESSION["userid"]))
+    {
+      $userID = $_SESSION["userid"];
+      $badges = GetMyAwardableBadges($userID);
+      for($i=0; $i<count($badges); ++$i)
+      {
+        $rv .= CreateButton($playerID, "Give Badge", 100010, 0, "24px") . "<BR>";
+      }
+    }
     $rv .= "</td></tr></table>";
     return $rv;
   }

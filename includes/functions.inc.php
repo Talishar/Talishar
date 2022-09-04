@@ -512,17 +512,36 @@ function LoadBadges($userID)
 	return $output;
 }
 
+function GetMyAwardableBadges($userID)
+{
+	if($userID == "") return "";
+	$output = [];
+	$conn = GetDBConnection();
+	$sql = "select * from userassignablebadge where playerId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $userID);
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+	  while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+			array_push($output, $row[0]);
+		}
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	return $output;
+}
+
 function AwardBadge($userID, $badgeID)
 {
 	if($userID == "") return "";
 	$conn = GetDBConnection();
-	$sql = "insert ignore into playerbadge (playerId, badgeId, intVariable) values (?, ?, 0)";
+	$sql = "insert into playerbadge (playerId, badgeId, intVariable) values (?, ?, 1) ON DUPLICATE KEY UPDATE intVariable = intVariable + 1;";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "ss", $userID, $badgeID);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
-		$id = mysqli_insert_id($conn);
 	}
 	mysqli_close($conn);
 }
