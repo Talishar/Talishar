@@ -336,6 +336,7 @@
       //CRU Mechanologist
       case "CRU103": return 2;
       case "CRU104": return 0;
+      case "CRU105": return 2;
       case "CRU106": case "CRU107": case "CRU108": return 1;
       case "CRU109": case "CRU110": case "CRU111": return 2;
       case "CRU112": case "CRU113": case "CRU114": return 2;
