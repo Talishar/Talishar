@@ -1035,7 +1035,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $abilityType = GetResolvedAbilityType($cardID);
+  $abilityType = GetAbilityType($cardID, $index);
 
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
