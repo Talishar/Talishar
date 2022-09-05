@@ -183,14 +183,14 @@ function StartTurnAbilities()
   $mainItems = &GetItems($mainPlayer);
   for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
   {
-    if($mainItems[$i+2] == 1) $mainItems[$i+2] = 2;
+    $mainItems[$i+2] = "2";
     $mainItems[$i+3] = ItemUses($mainItems[$i]);
     ItemStartTurnAbility($i);
   }
   $defItems = &GetItems($defPlayer);
   for($i=0; $i<count($defItems); $i+=ItemPieces())
   {
-    if($defItems[$i+2] == 1) $defItems[$i+2] = 2;
+    $defItems[$i+2] = "2";
     $defItems[$i+3] = ItemUses($defItems[$i]);
   }
   ArsenalStartTurnAbilities();
