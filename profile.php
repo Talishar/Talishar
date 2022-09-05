@@ -8,7 +8,7 @@ include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries2.php";
 
 if (isset($_POST['update_profile'])) {
-
+/*
   $user_id = $_SESSION['userid'];
   $update_name = mysqli_real_escape_string($conn, $_POST['update_name']);
   $update_email = mysqli_real_escape_string($conn, $_POST['update_email']);
@@ -40,6 +40,7 @@ if (isset($_POST['update_profile'])) {
     }
   }
   $message[] = "Profile saved!";
+  */
 }
 
 if(isset($_SESSION['userid']))
@@ -48,7 +49,7 @@ if(isset($_SESSION['userid']))
   if (count($badges) > 0) {
     echo ("<section class='profile-form' style='position:absolute; width:32%; left:20px; top:40px; height:200px;'>");
     echo ("<h1>Your Badges</h1><br>");
-    
+
     for($i=0; $i<count($badges); $i+=6)
     {
       echo ("<div style='float:left;'>");
@@ -64,7 +65,7 @@ if(isset($_SESSION['userid']))
 }
 
 if (isset($_SESSION["isPatron"])) {
-  if (count($badges) > 0) {
+  if (isset($badges) && count($badges) > 0) {
   echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px);'>");
   } else {
     echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; top:40px; height: calc(90% - 129px);'>");
@@ -125,14 +126,14 @@ if (isset($_SESSION["isPatron"])) {
     echo ("</div></div><br>");
 
     ?>
-
+<!--
     <div>Username:</div>
     <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
     <div>Your email:</div>
     <input type="email" name="update_email" value="<?php echo $_SESSION['useremail']; ?>">
 
-    <!-- <div>Update your avatar :</div>
-            <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png"> -->
+    <div>Update your avatar :</div>
+            <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png">
 
     <input type="hidden" name="old_pass" value="<?php echo $_SESSION['userspwd']; ?>">
     <div>Old password:</div>
@@ -142,7 +143,7 @@ if (isset($_SESSION["isPatron"])) {
     <div>Confirm password:</div>
     <input type="password" name="confirm_pass" placeholder="Confirm New Password">
     <button type="submit" name="update_profile">UPDATE PROFILE</button>
-
+ -->
     <?php
     if (isset($message)) {
       foreach ($message as $message) {
