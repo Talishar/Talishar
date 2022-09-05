@@ -708,13 +708,12 @@ button {
 
 .FabLogo {
   position: absolute;
-  width: 40%;
-  height: 20%;
+  width: 24%;
+  height: 120%;
   z-index: 15;
-  top: 80px;
+  top: 50px;
   left: 50%;
-  margin: 0 0 0 -20%;
-  /* -10% = half of width/height */
+  margin: 0 0 0 -12%; /* = half of width */
   background-size: 100% auto;
   background-repeat: no-repeat;
 }
