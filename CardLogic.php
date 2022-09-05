@@ -165,6 +165,12 @@ function CurrentTurnEffectPieces()
 function CurrentTurnEffectUses($cardID)
 {
   switch ($cardID) {
+    case "EVR033": 
+      return 6;
+    case "EVR034": 
+      return 5;
+    case "EVR035": 
+      return 4;
     case "UPR000":
       return 3;
     case "UPR088":
