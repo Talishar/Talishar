@@ -70,7 +70,7 @@ if ($handle = opendir($path)) {
           $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
           $spectateLinks .= "</form>";
         }
-      } else if ($currentTime - $lastGamestateUpdate > 7200000) //10 hours
+      } else if ($currentTime - $lastGamestateUpdate > 1800000) //~2 hours
       {
         if ($autoDeleteGames) {
           deleteDirectory($folder);
