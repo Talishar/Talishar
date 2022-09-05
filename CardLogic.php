@@ -706,7 +706,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "EVR120": case "UPR102": case "UPR103":
-      PlayAura("ELE111", $player);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      PlayAura("ELE111", $otherPlayer);
       WriteLog(CardLink($parameter, $parameter) . " created a Frostbite for playing an ice card.");
       break;
     case "EVR131": case "EVR132": case "EVR133":
