@@ -288,7 +288,7 @@
 
   function PhantasmLayer()
   {
-    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn;
+    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers;
     if(IsPhantasmStillActive())
     {
       $attackID = $combatChain[0];
@@ -308,6 +308,7 @@
     else {
       $turn[0] = "A";
       $currentPlayer = $mainPlayer;
+      for($i=0; $i<LayerPieces(); ++$i) array_shift($layers);//Get rid of defense step layer
     }
   }
 
