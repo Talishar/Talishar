@@ -110,7 +110,7 @@
 
   function CRUCombatEffectActive($cardID, $attackID)
   {
-    global $combatChain, $currentPlayer;
+    global $combatChain, $currentPlayer, $combatChainState, $CCS_IsBoosted;
     switch($cardID)
     {
       //Brute
@@ -135,7 +135,7 @@
       case "CRU091-2": case "CRU092-2": case "CRU093-2": return true;
       case "CRU094-1": case "CRU095-1": case "CRU096-1": return CardType($attackID) == "W";
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
-      case "CRU106": case "CRU107": case "CRU108": return HasBoost($attackID);
+      case "CRU106": case "CRU107": case "CRU108": return $combatChainState[$CCS_IsBoosted] == "1";
       //Ranger
       case "CRU122": return $combatChain[2] == "ARS" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "CRU123": return $attackID == "CRU123";
