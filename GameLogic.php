@@ -79,7 +79,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         return ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }
   } else if ($set == "EVR") {
-    return EVRPlayAbility($cardID, $from, $resourcesPaid);
+    return EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   } else if ($set == "UPR") {
     return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   } else if ($set == "DVR") {
@@ -87,7 +87,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   } else if ($set == "RVD") {
     return RVDPlayAbility($cardID, $from, $resourcesPaid);
   } else if ($set == "DYN") {
-    return DYNPlayAbility($cardID, $from, $resourcesPaid);
+    return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
   $rv = "";
   switch ($cardID) {
@@ -1176,17 +1176,12 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source)
             $remove = 1;
           }
           break;
-        case "EVR033":
-          $prevention += 6;
-          $remove = 1;
-          break;
-        case "EVR034":
-          $prevention += 5;
-          $remove = 1;
-          break;
-        case "EVR035":
-          $prevention += 4;
-          $remove = 1;
+        case "EVR033": case "EVR034": case "EVR035":
+          if ($source == $currentTurnEffects[$i + 2]) {
+            $prevention += $currentTurnEffects[$i + 3];
+            $currentTurnEffects[$i + 3] -= $damage;
+            if ($currentTurnEffects[$i + 3] <= 0) $remove = 1;
+          }
           break;
         case "EVR180":
           $prevention += 1;

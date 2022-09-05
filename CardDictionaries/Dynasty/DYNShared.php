@@ -154,7 +154,7 @@ function DYNAttackValue($cardID)
     }
 }
 
-function DYNPlayAbility($cardID, $from, $resourcesPaid)
+function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_NumBoosted, $CCS_RequiredEquipmentBlock;
