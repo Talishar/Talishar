@@ -3145,8 +3145,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $rv = SearchMultizone($player, $parameter);
       //THEIRHAND-0,THEIRHAND-1,THEIRHAND-2,THEIRHAND-3
       $hand = explode(",", $rv);
-      $randHand = array_rand($hand, 2);
-      $rv = $hand[$randHand[0]] . "," . $hand[$randHand[1]];
+      if(count($hand) == 0) $rv = "PASS";
+      else if(count($hand) == 1) $rv = "MYHAND-0";
+      else if(count($hand) == 2) $rv = "MYHAND-0,MYHAND-1";
+      else {
+        $randHand = array_rand($hand, 2);
+        $rv = $hand[$randHand[0]] . "," . $hand[$randHand[1]];
+      }
       return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
