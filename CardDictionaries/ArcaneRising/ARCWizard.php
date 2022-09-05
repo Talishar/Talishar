@@ -305,7 +305,7 @@
     $otherPlayer = ($player == 1 ? 2 : 1);
     if($target != 3) $rv = "THEIRCHAR-0";
     else $rv = "";
-    if(($target == 0 || $target == 2) && !ShouldAutotargetOpponent($player))
+    if(($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2)
     {
       $rv .= ",MYCHAR-0";
     }
