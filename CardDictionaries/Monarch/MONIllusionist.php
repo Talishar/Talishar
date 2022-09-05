@@ -268,6 +268,12 @@
   {
     global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     if(count($combatChain) == 0) return false;
+    $blockGreaterThan6 = false;
+    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+    {
+      if(DoesBlockTriggerPhantasm($i)) $blockGreaterThan6 = true;
+    }
+    if(!$blockGreaterThan6) return false;
     if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
@@ -276,10 +282,6 @@
     {
       $allies = &GetAllies($mainPlayer);
       if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
-    }
-    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
-    {
-      if(DoesBlockTriggerPhantasm($i)) return true;
     }
     return false;
   }
