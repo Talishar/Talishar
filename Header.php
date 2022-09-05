@@ -55,7 +55,8 @@ if (isset($_SESSION["useruid"])) {
       <ul>
         <li><a href="MainMenu.php">Home Page</a></li>
         <li><a href="Draft.php">Limited</a></li>
-        <?php if (isset($_SESSION["isPatron"])) echo '<li><a href="https://reporting.fleshandbloodonline.com/FaBOnline/zzGameStats.php">Stats</a></li>';
+        <li><a href="https://reporting.fleshandbloodonline.com/FaBOnline/zzGameStats.php">Stats</a></li>
+        <?php
         if (isset($_SESSION["useruid"])) {
           echo "<li><a href='Profile.php'>Profile</a></li>";
           echo "<li><a href='Logout.php'>Logout</a></li>";
