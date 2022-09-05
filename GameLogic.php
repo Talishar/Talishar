@@ -15,6 +15,12 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   global $currentPlayer;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
+  if($target != "-")
+  {
+    $targetArr = explode("-", $target);
+    if($targetArr[0] == "LAYER" && $targetArr[1] > 0) $targetArr[1] -= 6;
+    $target = $targetArr[0] . "-" . $targetArr[1];
+  }
   if (($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
   }
