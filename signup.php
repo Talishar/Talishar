@@ -20,9 +20,9 @@ include_once 'Header.php';
     if ($_GET["error"] == "emptyinput") {
       echo "<p>Fill in all fields!</p>";
     } else if ($_GET["error"] == "invaliduid") {
-      echo "<p>Choose a proper username!</p>";
+      echo "<p>Choose a username without any special characters</p>";
     } else if ($_GET["error"] == "invalidemail") {
-      echo "<p>Choose a proper email!</p>";
+      echo "<p>Choose a valid email</p>";
     } else if ($_GET["error"] == "passwordsdontmatch") {
       echo "<p>Passwords doesn't match!</p>";
     } else if ($_GET["error"] == "stmtfailed") {
