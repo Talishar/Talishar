@@ -26,12 +26,12 @@ if (isset($_SESSION["userid"])) {
   }
 </style>
 
-<!--<div class="FabLogo" style="background-image: url('Images/fab_logo.png');">-->
-<div class="FabLogo">
+<div class="FabLogo" style="background-image: url('Images/fab_logo.png');">
+<!-- <div class="FabLogo">
   <h1 style='font-size:44px; text-align: center;'>Flesh and Blood Online</h1>
   <h2 style='font-size:30px; text-align: center;'>Unofficial Online Client</h2>
+</div> -->
 </div>
-<!--</div>-->
 
 <div class="ServerChecker">
   <?php
