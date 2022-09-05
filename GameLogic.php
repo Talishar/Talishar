@@ -3945,7 +3945,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DestroyFrozenArsenal($player);
         SearchCurrentTurnEffects("UPR125", $otherPlayer, true); // Remove the effect
       }
-      if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessHitEffect($source); // Interaction with Burn Them All! + Nekria
       $dqVars[0] = $damage;
       return $damage;
     case "PAYRESOURCES":
