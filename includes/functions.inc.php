@@ -15,7 +15,7 @@ function emptyInputSignup($username, $email, $pwd, $pwdRepeat) {
 
 // Check invalid username
 function invalidUid($username) {
-	if (!preg_match("^[a-zA-Z0-9]*$", $username)) {
+	if(!ctype_alnum($username)) {
 		$result = true;
 	}
 	else {
