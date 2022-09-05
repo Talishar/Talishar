@@ -253,8 +253,8 @@
   function DoesBlockTriggerPhantasm($index)
   {
     global $combatChain, $mainPlayer, $defPlayer;
-    if(CardType($combatChain[$index]) != "AA") return;
-    if(ClassContains($combatChain[$index], "ILLUSIONIST", $defPlayer)) return;
+    if(CardType($combatChain[$index]) != "AA") return false;
+    if(ClassContains($combatChain[$index], "ILLUSIONIST", $defPlayer)) return false;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
     $origAV = $av;
@@ -275,6 +275,8 @@
     }
     if(!$blockGreaterThan6) return false;
     if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
+    return true;
+    /*
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("UPR155", "UPR156", "UPR157", $mainPlayer)) return true;
@@ -284,6 +286,7 @@
       if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
     }
     return false;
+    */
   }
 
   function PhantasmLayer()
