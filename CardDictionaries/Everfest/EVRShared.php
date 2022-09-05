@@ -668,10 +668,10 @@
     }
   }
 
-  function EVRPlayAbility($cardID, $from, $resourcesPaid)
+  function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_NumBoosted, $CCS_RequiredEquipmentBlock;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -743,11 +743,8 @@
         PlayAura("WTR075", $currentPlayer, $amount);
         return "Creates " . $amount . " Seismic Surge tokens.";
       case "EVR033": case "EVR034": case "EVR035":
-        if($cardID == "EVR033") $amount = 6;
-        else if($cardID == "EVR034") $amount = 5;
-        else $amount = 4;
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Prevents the next " . $amount . " damage from a source.";
+        if ($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
+        return "Prevents damage this turn.";
       case "EVR047": case "EVR048": case "EVR049":
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
         AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
