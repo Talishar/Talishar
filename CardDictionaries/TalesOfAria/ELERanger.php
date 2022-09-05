@@ -245,9 +245,9 @@
     switch($cardID)
     {
       case "ELE004": AddCurrentTurnEffect($cardID, $otherPlayer); break;
-      case "ELE007": case "ELE008": case "ELE009":  
+      case "ELE007": case "ELE008": case "ELE009":
         if (!IsAllyAttacking()) {
-          PayOrDiscard($$otherPlayer, 2, true);
+          PayOrDiscard($otherPlayer, 2, true);
         }
         break;
       case "ELE010": case "ELE011": case "ELE012":
