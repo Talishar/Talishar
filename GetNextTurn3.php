@@ -256,6 +256,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   echo($handContents . "<BR>");
 
+  //Their Health
+  echo($theirHealth . "<BR>");
+  //Their soul count
+  echo(count($theirSoul) . "<BR>");
+
   //Display their discard, pitch, deck, and banish
   $theirZoneContents = count($theirDiscard) . " " . (count($theirDiscard) > 0 ? $theirDiscard[0] : $blankZone);
   $theirZoneContents .= "|" . count($theirPitch) . " " . (count($theirPitch) > 0 ? $theirPitch[0] : $blankZone);
@@ -318,6 +323,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo($banishUI);
   }
   echo ("<br>"); //End hand div
+
+  //My Health
+  echo($myHealth . "<BR>");
+  //My soul count
+  echo(count($mySoul) . "<BR>");
 
   //Display my discard, pitch, deck, and banish
   $myZoneContents = count($myDiscard) . " " . (count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
