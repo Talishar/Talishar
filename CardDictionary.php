@@ -1371,7 +1371,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return ($player != $mainPlayer || NumDraconicChainLinks() < 4);
     case "UPR151":
       $char = &GetPlayerCharacter($player);
-      return ($char[$index + 2] < 1 && SearchCurrentTurnEffects($cardID, $player));
+      return ($char[$index + 2] < 2 && !SearchCurrentTurnEffects($cardID, $player));
     case "UPR153":
       return GetClassState($player, $CS_NumPhantasmAADestroyed) < 1;
     case "UPR159":
