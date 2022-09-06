@@ -209,26 +209,13 @@
         if($cardID == "UPR119") $damage = 3;
         else if($cardID == "UPR120") $damage = 2;
         else $damage = 1;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
-          AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        }
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
         return "Deals $damage arcane.";
       case "UPR122": case "UPR123": case "UPR124":
         if($cardID == "UPR122") $damage = 4;
         else if($cardID == "UPR123") $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
-          AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
-          AddDecisionQueue("PLAYAURA", ($currentPlayer == 1 ? 2 : 1), "ELE111", 1);
-        }
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
         return "";
       case "UPR125":
         AddCurrentTurnEffect($cardID, $currentPlayer);
