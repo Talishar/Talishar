@@ -228,13 +228,32 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   echo("<BR>");
+  //Display combat chain
+  $combatChainContents = "";
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    //$action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
+    //$actionDisabled = 0;
+    //echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i)));
+    if($combatChainContents != "") $combatChainContents .= "|";
+    $combatChainContents .= ClientRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i+1]);
+  }
+  echo($combatChainContents . "<BR>");
+
+
   //Opponent hand
   $handContents = "";
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     $handContents .= ClientRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1));
   }
-  echo($handContents . "<br>");
+  echo($handContents . "<BR>");
+
+  //Display their discard, pitch, deck, and banish
+  $theirZoneContents = count($theirDiscard) . " " . (count($theirDiscard) > 0 ? $theirDiscard[0] : $blankZone);
+  $theirZoneContents .= "|" . count($theirPitch) . " " . (count($theirPitch) > 0 ? $theirPitch[0] : $blankZone);
+  $theirZoneContents .= "|" . count($theirDeck) . " " . $TheirCardBack;
+  $theirZoneContents .= "|" . count($theirBanish) . " " . (count($theirBanish) > 0 ? ($theirBanish[1] == "INT" ? $TheirCardBack : $theirBanish[0]) : $blankZone);
+  echo($theirZoneContents . "<BR>");
 
   //Now display their character and equipment
   $numWeapons = 0;
@@ -291,6 +310,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo($banishUI);
   }
   echo ("<br>"); //End hand div
+
+  //Display my discard, pitch, deck, and banish
+  $myZoneContents = count($myDiscard) . " " . (count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
+  $myZoneContents .= "|" . count($myPitch) . " " . (count($myPitch) > 0 ? $myPitch[0] : $blankZone);
+  $myZoneContents .= "|" . count($myDeck) . " " . $MyCardBack;
+  $myZoneContents .= "|" . count($myBanish) . " " . (count($myBanish) > 0 ? $myBanish[0] : $blankZone);
+  echo($myZoneContents . "<BR>");
 
   //Now display my character and equipment
   $numWeapons = 0;
