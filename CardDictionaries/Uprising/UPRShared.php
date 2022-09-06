@@ -271,6 +271,17 @@
     }
   }
 
+function UPRDealDamageEffect($cardID)
+{
+  $class = CardClass($cardID);
+  switch ($class) {
+    case "ILLUSIONIST":
+      return UPRIllusionistDealDamageEffect($cardID);
+    default:
+      return UPRTalentHitEffect($cardID);
+  }
+}
+
   function QuellAmount($cardID)
   {
     switch($cardID)

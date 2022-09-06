@@ -421,6 +421,23 @@
     }
   }
 
+function UPRIllusionistDealDamageEffect($cardID)
+{
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  switch ($cardID) {
+    case "UPR413":
+      $index = $combatChainState[$CCS_WeaponIndex];
+      $allies = &GetAllies($mainPlayer);
+      $allies[$index + 2] -= 1;
+      $allies[$index + 7] -= 1;
+      PutPermanentIntoPlay($mainPlayer, "UPR043");
+      WriteLog(CardLink($cardID, $cardID) . " got a -1 health counter and created an ash token.");
+      break;
+    default:
+      break;
+  }
+}
+
   function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
   {
     AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));

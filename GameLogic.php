@@ -178,6 +178,18 @@ function ProcessHitEffect($cardID)
   }
 }
 
+function ProcessDealDamageEffect($cardID)
+{
+  $set = CardSet($cardID);
+  if ($set == "UPR") {
+    return UPRDealDamageEffect($cardID);
+  }
+  switch ($cardID) {
+    default:
+      break;
+  }
+}
+
 function ArcaneHitEffect($me, $source, $target, $damage)
 {
   switch ($source) 
@@ -3956,6 +3968,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DestroyFrozenArsenal($player);
         SearchCurrentTurnEffects("UPR125", $otherPlayer, true); // Remove the effect
       }
+      if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessDealDamageEffect($source); // Interaction with Burn Them All! + Nekria
       $dqVars[0] = $damage;
       return $damage;
     case "PAYRESOURCES":
