@@ -238,6 +238,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $combatChainContents .= ClientRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i+1]);
   }
   echo($combatChainContents . "<BR>");
+  $layerContents = "";
+  for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+    $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
+    //$content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layers[$i + 1] == $playerID || $playerID == 3 ? 1 : 2, controller:$layers[$i+1]);
+    if($layerContents != "") $layerContents .= "|";
+    $layerContents .= ClientRenderedCard(cardNumber: $layerName, controller:$layers[$i+1]);
+  }
+  echo($layerContents . "<BR>");
 
 
   //Opponent hand
