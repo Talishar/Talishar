@@ -238,6 +238,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $combatChainContents .= ClientRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i+1]);
   }
   echo($combatChainContents . "<BR>");
+
+  //Display layer
   $layerContents = "";
   for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
     $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
@@ -248,7 +250,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo($layerContents . "<BR>");
 
 
-  //Opponent hand
+  //Opponent Hand
   $handContents = "";
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
@@ -268,9 +270,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $theirZoneContents .= "|" . count($theirBanish) . " " . (count($theirBanish) > 0 ? ($theirBanish[1] == "INT" ? $TheirCardBack : $theirBanish[0]) : $blankZone);
   echo($theirZoneContents . "<BR>");
 
+
   //Now display their character and equipment
   $numWeapons = 0;
-  echo("<div id='theirChar'>");
   $characterContents = "";
   for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
     if($i > 0 && $inGameStatus == "0") continue;
@@ -293,9 +295,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   echo($characterContents);
 
-  echo ("</div>");
-
-
+  echo ("<br>");
 
   $restriction = "";
   $actionType = $turn[0] == "ARS" ? 4 : 27;
@@ -367,6 +367,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   echo($myCharData);
   echo ("<br>");
+
+  // current chain link attack
+  $totalAttack = 0;
+  $totalDefense = 0;
+  $chainAttackModifiers = [];
+  EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
+  echo($totalAttack);
+  echo("<br>");
+
+  // current chain link defence
+  echo($totalDefense);
+  echo("<br>");
 
 
 }
