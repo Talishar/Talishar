@@ -4822,11 +4822,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       global $GameStatus_Rematch, $inGameStatus;
       if($lastResult == "YES") $inGameStatus = $GameStatus_Rematch;
       return 0;
-    case "CONCEDE":
-      global $conceded, $myHealth;
-      $conceded = true;
-      if (!IsGameOver()) PlayerLoseHealth($playerID, $myHealth);
-      return 0;
     case "REMOVEFIRSTCHOICEINDICES":
       $choices = explode(",", $dqVars[$parameter]); //MYHAND-0,MYHAND-3
 
