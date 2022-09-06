@@ -192,19 +192,31 @@ function ProcessDealDamageEffect($cardID)
 
 function ArcaneHitEffect($me, $source, $target, $damage)
 {
-  switch ($source) 
-  {
+  switch ($source) {
     case "UPR104":
-      if (MZIsPlayer($target)) 
-      {   
+      if (MZIsPlayer($target)) {
         AddDecisionQueue("LESSTHANPASS", MZPlayerID($me, $target), 1, 1);
         AddDecisionQueue("ENCASEDAMAGE", MZPlayerID($me, $target), "-", 1);
       }
       break;
     case "UPR113": case "UPR114": case "UPR115":
       if (MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
-        break;
       break;
+    case "UPR119": case "UPR120": case "UPR121":
+      if (MZIsPlayer($target)) {
+        AddDecisionQueue("LESSTHANPASS", MZPlayerID($me, $target), 1, 1);
+        AddDecisionQueue("FINDINDICES", MZPlayerID($me, $target), "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", MZPlayerID($me, $target), "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", MZPlayerID($me, $target), "<-", 1);
+        AddDecisionQueue("MZOP", MZPlayerID($me, $target), "FREEZE", 1);
+      }
+      break;
+    case "UPR122": case "UPR123": case "UPR124":
+      if (MZIsPlayer($target)) {
+        AddDecisionQueue("LESSTHANPASS", MZPlayerID($me, $target), 1, 1);
+        AddDecisionQueue("PLAYAURA", MZPlayerID($me, $target), "ELE111", 1);
+        break;
+      }
     default:
       break;
   }
