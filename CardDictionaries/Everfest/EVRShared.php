@@ -904,20 +904,12 @@
         if($cardID == "EVR128") $numReveal = 3;
         else if($cardID == "EVR129") $numReveal = 2;
         else $numReveal = 1;
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND"); // TODO: Target Hero. Can be use e.g to sink one card from your hand.
-        if($currentPlayer == $mainPlayer)
-        {
-          AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, $numReveal . "-", 1);
-          AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-" . $numReveal, 1);
-          AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
-          AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
-        }
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
-        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-        AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
-        return "Removes a card from your opponent hand. Make sure you choose the right number of options.";
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numReveal);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+        AddDecisionQueue("PRY", $currentPlayer, "<-", 1);
+        return "Removes a card from target hero hand. Make sure you choose the right number of options.";
       case "EVR134": case "EVR135": case "EVR136":
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
         return "";
