@@ -183,14 +183,14 @@ function StartTurnAbilities()
   $mainItems = &GetItems($mainPlayer);
   for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
   {
-    if($mainItems[$i+2] == 1) $mainItems[$i+2] = 2;
+    $mainItems[$i+2] = "2";
     $mainItems[$i+3] = ItemUses($mainItems[$i]);
     ItemStartTurnAbility($i);
   }
   $defItems = &GetItems($defPlayer);
   for($i=0; $i<count($defItems); $i+=ItemPieces())
   {
-    if($defItems[$i+2] == 1) $defItems[$i+2] = 2;
+    $defItems[$i+2] = "2";
     $defItems[$i+3] = ItemUses($defItems[$i]);
   }
   ArsenalStartTurnAbilities();
@@ -484,10 +484,10 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
 
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer)) 
-    && (IsHeroAttackTarget() || $type == "ARCANE") 
-    && $otherCharacter[1] == "2" 
-    && CardType($source) == "AA" 
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer))
+    && (IsHeroAttackTarget() || $type == "ARCANE")
+    && $otherCharacter[1] == "2"
+    && CardType($source) == "AA"
     && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
 
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
@@ -1035,7 +1035,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $abilityType = GetResolvedAbilityType($cardID);
+  $abilityType = GetAbilityType($cardID, $index);
 
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
@@ -1061,8 +1061,9 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)))) return true;
-  if(($cardType == "AR" || $abilityType == "AR") && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
-  if(($cardType == "DR" || $abilityType == "DR") && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
+  $isStaticType = IsStaticType($cardType, $from, $cardID);
+  if(($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
+  if(($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
 }
 

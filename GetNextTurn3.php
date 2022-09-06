@@ -228,13 +228,74 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   echo("<BR>");
+  //Display combat chain
+  $combatChainContents = "";
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    //$action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
+    //$actionDisabled = 0;
+    //echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i)));
+    if($combatChainContents != "") $combatChainContents .= "|";
+    $combatChainContents .= ClientRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i+1]);
+  }
+  echo($combatChainContents . "<BR>");
+  $layerContents = "";
+  for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+    $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
+    //$content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layers[$i + 1] == $playerID || $playerID == 3 ? 1 : 2, controller:$layers[$i+1]);
+    if($layerContents != "") $layerContents .= "|";
+    $layerContents .= ClientRenderedCard(cardNumber: $layerName, controller:$layers[$i+1]);
+  }
+  echo($layerContents . "<BR>");
+
+
   //Opponent hand
   $handContents = "";
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     $handContents .= ClientRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1));
   }
-  echo($handContents . "<br>");
+  echo($handContents . "<BR>");
+
+  //Their Health
+  echo($theirHealth . "<BR>");
+  //Their soul count
+  echo(count($theirSoul) . "<BR>");
+
+  //Display their discard, pitch, deck, and banish
+  $theirZoneContents = count($theirDiscard) . " " . (count($theirDiscard) > 0 ? $theirDiscard[0] : $blankZone);
+  $theirZoneContents .= "|" . count($theirPitch) . " " . (count($theirPitch) > 0 ? $theirPitch[0] : $blankZone);
+  $theirZoneContents .= "|" . count($theirDeck) . " " . $TheirCardBack;
+  $theirZoneContents .= "|" . count($theirBanish) . " " . (count($theirBanish) > 0 ? ($theirBanish[1] == "INT" ? $TheirCardBack : $theirBanish[0]) : $blankZone);
+  echo($theirZoneContents . "<BR>");
+
+  //Now display their character and equipment
+  $numWeapons = 0;
+  echo("<div id='theirChar'>");
+  $characterContents = "";
+  for ($i = 0; $i < count($theirCharacter); $i += CharacterPieces()) {
+    if($i > 0 && $inGameStatus == "0") continue;
+    $atkCounters = 0;
+    $counters = 0;
+    $type = CardType($theirCharacter[$i]); //NOTE: This is not reliable type
+    $sType = CardSubType($theirCharacter[$i]);
+    if ($type == "W") {
+      ++$numWeapons;
+      if ($numWeapons > 1) {
+        $type = "E";
+        $sType = "Off-Hand";
+      }
+    }
+    if (CardType($theirCharacter[$i]) == "W") $atkCounters = $theirCharacter[$i + 3];
+    if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
+    $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
+    if($characterContents != "") $characterContents .= "|";
+    $characterContents .= ClientRenderedCard(cardNumber:$theirCharacter[$i], overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0), counters:$counters, defCounters:$theirCharacter[$i+4], atkCounters: $atkCounters, controller:$otherPlayer, type:$type, sType:$sType, isFrozen:($theirCharacter[$i + 8] == 1), onChain:($theirCharacter[$i + 6] == 1), isBroken:($theirCharacter[$i + 1] == 0));
+  }
+  echo($characterContents);
+
+  echo ("</div>");
+
+
 
   $restriction = "";
   $actionType = $turn[0] == "ARS" ? 4 : 27;
@@ -262,6 +323,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo($banishUI);
   }
   echo ("<br>"); //End hand div
+
+  //My Health
+  echo($myHealth . "<BR>");
+  //My soul count
+  echo(count($mySoul) . "<BR>");
+
+  //Display my discard, pitch, deck, and banish
+  $myZoneContents = count($myDiscard) . " " . (count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
+  $myZoneContents .= "|" . count($myPitch) . " " . (count($myPitch) > 0 ? $myPitch[0] : $blankZone);
+  $myZoneContents .= "|" . count($myDeck) . " " . $MyCardBack;
+  $myZoneContents .= "|" . count($myBanish) . " " . (count($myBanish) > 0 ? $myBanish[0] : $blankZone);
+  echo($myZoneContents . "<BR>");
 
   //Now display my character and equipment
   $numWeapons = 0;

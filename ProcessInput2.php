@@ -1242,6 +1242,13 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
       break;
+    case "EVR033": case "EVR034": case "EVR035":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DMGPREVENTION");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Steadfast");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      break;
     case "UPR169":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER,TYPE-A");
       AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "LAYER", 1);
