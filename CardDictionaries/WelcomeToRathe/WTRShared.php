@@ -578,7 +578,6 @@
       case "WTR069": case "WTR070": case "WTR071": return true;
       case "WTR072": case "WTR073": case "WTR074": return true;
       //Ninja
-      case "WTR083": case "WTR084":
       case "WTR098": case "WTR099": case "WTR100": return true;
       case "WTR101": case "WTR102": case "WTR103": return true;
       case "WTR107": case "WTR108": case "WTR109": return true;
