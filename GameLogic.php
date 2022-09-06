@@ -79,7 +79,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         return ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }
   } else if ($set == "EVR") {
-    return EVRPlayAbility($cardID, $from, $resourcesPaid);
+    return EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   } else if ($set == "UPR") {
     return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   } else if ($set == "DVR") {
@@ -87,7 +87,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   } else if ($set == "RVD") {
     return RVDPlayAbility($cardID, $from, $resourcesPaid);
   } else if ($set == "DYN") {
-    return DYNPlayAbility($cardID, $from, $resourcesPaid);
+    return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
   $rv = "";
   switch ($cardID) {
@@ -1176,17 +1176,12 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source)
             $remove = 1;
           }
           break;
-        case "EVR033":
-          $prevention += 6;
-          $remove = 1;
-          break;
-        case "EVR034":
-          $prevention += 5;
-          $remove = 1;
-          break;
-        case "EVR035":
-          $prevention += 4;
-          $remove = 1;
+        case "EVR033": case "EVR034": case "EVR035":
+          if ($source == $currentTurnEffects[$i + 2]) {
+            $prevention += $currentTurnEffects[$i + 3];
+            $currentTurnEffects[$i + 3] -= $damage;
+            if ($currentTurnEffects[$i + 3] <= 0) $remove = 1;
+          }
           break;
         case "EVR180":
           $prevention += 1;
@@ -3145,8 +3140,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $rv = SearchMultizone($player, $parameter);
       //THEIRHAND-0,THEIRHAND-1,THEIRHAND-2,THEIRHAND-3
       $hand = explode(",", $rv);
-      $randHand = array_rand($hand, 2);
-      $rv = $hand[$randHand[0]] . "," . $hand[$randHand[1]];
+      if(count($hand) == 0) $rv = "PASS";
+      else if(count($hand) == 1) $rv = "MYHAND-0";
+      else if(count($hand) == 2) $rv = "MYHAND-0,MYHAND-1";
+      else {
+        $randHand = array_rand($hand, 2);
+        $rv = $hand[$randHand[0]] . "," . $hand[$randHand[1]];
+      }
       return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
@@ -3945,7 +3945,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DestroyFrozenArsenal($player);
         SearchCurrentTurnEffects("UPR125", $otherPlayer, true); // Remove the effect
       }
-      if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessHitEffect($source); // Interaction with Burn Them All! + Nekria
       $dqVars[0] = $damage;
       return $damage;
     case "PAYRESOURCES":

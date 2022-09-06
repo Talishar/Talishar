@@ -315,7 +315,7 @@ function Boost()
 
 function DoBoost()
 {
-  global $combatChainState, $CS_NumBoosted, $currentPlayer, $actionPoints, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff;
+  global $combatChainState, $CS_NumBoosted, $currentPlayer, $actionPoints, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff, $CCS_IsBoosted;
   $deck = &GetDeck($currentPlayer);
   if (count($deck) == 0) {
     WriteLog("Could not boost. No cards left in deck.");
@@ -334,6 +334,7 @@ function DoBoost()
   }
   IncrementClassState($currentPlayer, $CS_NumBoosted);
   ++$combatChainState[$CCS_NumBoosted];
+  $combatChainState[$CCS_IsBoosted] = 1;
   $combatChain[5] += $combatChainState[$CCS_NextBoostBuff];
   $combatChainState[$CCS_NextBoostBuff] = 0;
 }
