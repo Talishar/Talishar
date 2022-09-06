@@ -4843,7 +4843,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
       }
       return "";
-
+    case "CORONETPEAK":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      switch ($lastResult) {
+        case "Target_Opponent":
+          AddDecisionQueue("PAYORDISCARD", $otherPlayer, "1");
+          break;
+        case "Target_Yourself":
+          AddDecisionQueue("PAYORDISCARD", $player, "1");
+          break;
+        default:
+          break;
+      }
+      return "";
+    case "PAYORDISCARD":
+      PayOrDiscard($player, $parameter);
+      return "";      
     default:
       return "NOTSTATIC";
   }

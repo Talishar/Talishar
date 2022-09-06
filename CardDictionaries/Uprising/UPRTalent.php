@@ -335,8 +335,10 @@
         }
         return $rv;
       case "UPR136":
-        PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 1);
-        return "Makes the other player pay 1 or discard a card.";
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+        AddDecisionQueue("CORONETPEAK", $currentPlayer, "<-", 1);
+        return "Makes target hero pay 1 or discard a card.";
       case "UPR137":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
