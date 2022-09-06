@@ -199,7 +199,7 @@ function AllyDamageTakenAbilities($player, $i)
   }
 }
 
-function AllyBeginEndPhaseEffects()
+function AllyBeginEndTurnEffects()
 {
   global $mainPlayer, $defPlayer;
   //CR 2.0 4.4.3a Reset health for all allies

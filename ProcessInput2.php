@@ -937,7 +937,6 @@ function FinishTurnPass()
   LandmarkBeginEndPhaseAbilities();
   BeginEndPhaseEffects();
   PermanentBeginEndPhaseEffects();
-  AllyBeginEndPhaseEffects();
   AddDecisionQueue("PASSTURN", $mainPlayer, "-");
   ProcessDecisionQueue("");
 }
@@ -968,10 +967,13 @@ function PassTurn()
 
 function FinalizeTurn()
 {
+  //4.4.1. Players do not get priority during the End Phase.
   global $currentPlayer, $currentTurn, $playerID, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
   global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority;
   global $MakeStartTurnBackup;
+  
+  //4.4.2. First, the “beginning of the end phase” event occurs and abilities that trigger at the beginning of the end phase are triggered.
   //Undo Intimidate
   $defBanish = &GetBanish($defPlayer);
   for ($i = count($defBanish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
@@ -982,21 +984,19 @@ function FinalizeTurn()
   }
 
   LogEndTurnStats($mainPlayer);
+  CurrentEffectEndTurnAbilities();
+  AuraEndTurnAbilities();
+  AllyEndTurnAbilities();
+  MainCharacterEndTurnAbilities();
 
-  //Draw Cards
-  if ($mainPlayer == $firstPlayer && $currentTurn == 1) //Defender draws up on turn 1
-  {
-    $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);
-    for ($i = 0; $i < $toDraw; ++$i) {
-      Draw($defPlayer, false);
-    }
-  }
-  $toDraw = CharacterIntellect($mainCharacter[0]) - count($mainHand) + CurrentEffectIntellectModifier();
-  for ($i = 0; $i < $toDraw; ++$i) {
-    Draw($mainPlayer, false);
-  }
-  if ($toDraw > 0) WriteLog("Main player drew " . $toDraw . " cards and now has " . count($mainHand) . " cards.");
+  //4.4.3a All allies’ life totals are reset to their base life, modified by any counters on the object.
+  AllyBeginEndTurnEffects();
 
+  //4.4.3b The turn player may put a card from their hand face down into an empty arsenal zone they own.
+  ArsenalEndTurn($mainPlayer);
+  ArsenalEndTurn($defPlayer);
+
+  //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information.  
   //Reset characters/equipment
   for ($i = 1; $i < count($mainCharacter); $i += CharacterPieces()) {
     if ($mainCharacter[$i - 1] == "CRU177" && $mainCharacter[$i + 1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
@@ -1019,18 +1019,28 @@ function FinalizeTurn()
     $mainAuras[$i + 1] = 2; //If it were destroyed, it wouldn't be in the auras array
   }
 
+  //4.4.3d All players lose all action points and resources.
   $mainResources[0] = 0;
   $mainResources[1] = 0;
   $defResources[0] = 0;
   $defResources[1] = 0;
   $lastPlayed = [];
 
-  CurrentEffectEndTurnAbilities();
-  AuraEndTurnAbilities();
-  AllyEndTurnAbilities();
-  MainCharacterEndTurnAbilities();
-  ArsenalEndTurn($mainPlayer);
-  ArsenalEndTurn($defPlayer);
+  // 4.4.3e The turn player draws cards until the number of cards in their hand is equal to their hero’s intellect.
+  //Draw Cards
+  if ($mainPlayer == $firstPlayer && $currentTurn == 1) //Defender draws up on turn 1
+  {
+    $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);
+    for ($i = 0; $i < $toDraw; ++$i) {
+      Draw($defPlayer, false);
+    }
+  }
+  $toDraw = CharacterIntellect($mainCharacter[0]) - count($mainHand) + CurrentEffectIntellectModifier();
+  for ($i = 0; $i < $toDraw; ++$i) {
+    Draw($mainPlayer, false);
+  }
+  if ($toDraw > 0) WriteLog("Main player drew " . $toDraw . " cards and now has " . count($mainHand) . " cards.");
+
   ResetMainClassState();
   ResetCharacterEffects();
   UnsetTurnBanish();
@@ -1058,7 +1068,6 @@ function FinalizeTurn()
   $currentPlayer = $mainPlayer;
 
   BuildMainPlayerGameState();
-  ResetMainClassState();
 
   //Start of turn effects
   if ($mainPlayer == 1) StatsStartTurn();
