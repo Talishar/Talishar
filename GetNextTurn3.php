@@ -297,6 +297,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   echo ("<br>");
 
+
+  // my hand contents
   $restriction = "";
   $actionType = $turn[0] == "ARS" ? 4 : 27;
   if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
@@ -316,6 +318,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   echo($handContents);
+
+
   if ($playerID != 3)
   {
     $banishUI = BanishUIMinimal("HAND");
@@ -380,7 +384,59 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo($totalDefense);
   echo("<br>");
 
+   // what's up their arse
+   $theirArse = "";
+   if ($theirArsenal != "") {
+    for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
+      if ($theirArse != "") $theirArse .= "|";
+      if ($theirArsenal[$i + 1] == "UP") {
+        $theirArse .= ClientRenderedCard(cardNumber: $theirArsenal[$i], controller: ($playerID == 1 ? 2 : 1)); 
+      } else $theirArse .= (ClientRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1)));
+    }
+   }
+   echo($theirArse);
+   echo("<br>");
 
+   // what's up my arse
+    $myArse = "";
+   if ($myArsenal != "") {
+    for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
+    if ($myArse != "") $myArse .= "|";
+    if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
+      $myArse .= ClientRenderedCard(cardNumber: $MyCardBack, controller: 2);
+    } else {
+      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      else $playable = false;
+      $border = CardBorderColor($myHand[$i], "HAND", $playable);
+      $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
+      if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+      $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
+      $myArse .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
+    }
+    }
+   }
+   echo($myArse);
+   echo("<br>");
+
+   // Chain Links, how many are there and do they do things?
+   $chainLinkOutput = "";
+   for ($i = 0; $i < count($chainLinks); ++$i) {
+    if ($chainLinkOutput != "") $chainLinkOutput .= "|";
+    $damage = $chainLinkSummary[$i * ChainLinkSummaryPieces()];
+    $chainLinkOutput .= ($damage > 0 ? "hit" : "no-hit");
+   }
+   echo($chainLinkOutput);
+   echo("<br>");
+
+   // their permanents (throw all items, auras, allies etc into one bucket)
+   $theirAlliesOutput = "";
+   $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
+   for ($i = 0; $i < count($theirAllies); ++$i) {
+    if ($theirAlliesOutput != "") $theirAlliesOutput .= "|";
+
+   }
+   echo("  go go allies");
+   echo("JOB DONE");
 }
 
 function PlayableCardBorderColor($cardID)
