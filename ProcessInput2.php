@@ -1068,6 +1068,7 @@ function FinalizeTurn()
   $currentPlayer = $mainPlayer;
 
   BuildMainPlayerGameState();
+  ResetMainClassState();
 
   //Start of turn effects
   if ($mainPlayer == 1) StatsStartTurn();
