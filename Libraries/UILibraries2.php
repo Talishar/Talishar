@@ -170,7 +170,15 @@
       case 7: return "Orchid";
     }
   }
-
+  // 1 - Player ID
+  // 2 - Caption
+  // 3 - Mode (ProcessInput2 case)
+  // 4 - Input
+  // 5 - Font Size
+  // 6 - Image
+  // 7 - Tooltip
+  // 8 - fullRefresh
+  // 9 - fullReload
   function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false, $fullReload=false)
   {
     global $gameName, $authKey;
@@ -481,7 +489,7 @@
     $rv .= GetSettingsUI($playerID) . "<BR>";
     $rv .= "</td><td style='width:45%;  margin-top: 10px; vertical-align:top;'>";
     $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
-    $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR><BR>";
+    $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px", "", "are you sure you want to concede?", true, false) . "<BR><BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
 

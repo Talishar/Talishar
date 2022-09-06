@@ -19,6 +19,7 @@ include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
 
+
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
@@ -466,8 +467,14 @@ switch ($mode) {
   case 100002: //Concede
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
-    $conceded = true;
-    if(!IsGameOver()) PlayerLoseHealth($playerID, $myHealth);
+    if ($theirCharacter[0] != "DUMMY") {
+      AddDecisionQueue("YESNO", $playerID, "if_you_want_to_concede?_(Are_you_sure?)");
+      AddDecisionQueue("NOPASS", $playerID, "-", 1);
+      AddDecisionQueue("CONCEDE", $playerID, "-", 1);
+      ProcessDecisionQueue();
+    } else {
+      AddDecisionQueue("CONCEDE", $playerID, "-", 1);
+    }
     break;
   case 100003: //Report Bug
     $bugCount = 0;
