@@ -483,7 +483,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $content = "<div display:inline;'>";
     if ($turn[0] == "CHOOSEARCANE") {
       $vars = explode("-", $dqVars[0]);
-      $content .= "<div>Source: " . CardLink($vars[1], $vars[1]) . " Total Damage: " . $vars[0] . "</div>";
+      $content .= "<div>Source: " . CardLink($vars[1], $vars[1]) . "&nbsp Target: " . CardLink($vars[2], $vars[2]) . "&nbsp Total Damage: " . $vars[0] . "</div>";
     }
     $options = explode(",", $turn[2]);
     for ($i = 0; $i < count($options); ++$i) {

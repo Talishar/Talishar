@@ -3884,6 +3884,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
+        WriteLog(CardLink($allies[$target[1]], $allies[$target[1]]) . " was targetted");
         if ($allies[$target[1] + 6] > 0) {
           $damage -= 3;
           if ($damage < 0) $damage = 0;
@@ -3897,6 +3898,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
         }
         return "";
+      } else {
+        $targetID = GetPlayerCharacter($targetPlayer)[0];
       }
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
@@ -3919,7 +3922,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1, 1);
       PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1, 1);
       PrependDecisionQueue("SETDQVAR", $target, "0", 1);
-      PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source, 1);
+      PrependDecisionQueue("PASSPARAMETER", $target, $damage . "-" . $source . "-" . GetPlayerCharacter($targetID)[0], 1); // TODO change GetPlayerCharacter when we add a priority window when targeting allies
       PrependDecisionQueue("SETDQVAR", $target, "1", 1);
       PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
       return $parameter;
