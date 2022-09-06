@@ -578,7 +578,8 @@
               HideCardDetail();
               var responseArr = this.responseText.split("ENDTIMESTAMP");
               document.getElementById("mainDiv").innerHTML = responseArr[1];
-              CheckReloadNeeded(parseInt(responseArr[0]));
+              var update = parseInt(responseArr[0]);
+              if(update != "NaN") CheckReloadNeeded(update);
               var readyIcon = document.getElementById("iconHolder").innerText;
               document.getElementById("icon").href = "./HostFiles/" + readyIcon;
               var log = document.getElementById('gamelog');
