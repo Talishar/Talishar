@@ -972,7 +972,7 @@ function FinalizeTurn()
   global $mainHand, $defHand, $mainDeck, $mainItems, $defItems, $defDeck, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority;
   global $MakeStartTurnBackup;
-  
+
   //4.4.2. First, the “beginning of the end phase” event occurs and abilities that trigger at the beginning of the end phase are triggered.
   //Undo Intimidate
   $defBanish = &GetBanish($defPlayer);
@@ -996,7 +996,7 @@ function FinalizeTurn()
   ArsenalEndTurn($mainPlayer);
   ArsenalEndTurn($defPlayer);
 
-  //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information.  
+  //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information.
   //Reset characters/equipment
   for ($i = 1; $i < count($mainCharacter); $i += CharacterPieces()) {
     if ($mainCharacter[$i - 1] == "CRU177" && $mainCharacter[$i + 1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
@@ -1092,7 +1092,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $dynCostResolved = intval($dynCostResolved);
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
-  $playingCard = $turn[0] != "P" && $turn[0] != "B";
+  $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if($playingCard)
@@ -1167,7 +1167,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $turn[0] = $turn[2];
     $cardID = $turn[3];
     $from = $turn[4];
-    $playingCard = $turn[0] != "P" && $turn[0] != "B";
+    $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   }
   $cardType = CardType($cardID);
   $abilityType = "";
@@ -1743,7 +1743,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   //Figure out where it goes
   $openedChain = false;
   $chainClosed = false;
-  $isBlock = $turn[0] == "B"; //This can change over the course of the function; for example if a phantasm gets popped
+  $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if (!$isBlock && ($from == "EQUIP" || $from == "PLAY")) $cardType = GetResolvedAbilityType($cardID);
   else $cardType = $definedCardType;
   if (GoesOnCombatChain($turn[0], $cardID, $from)) {
