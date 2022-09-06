@@ -1200,6 +1200,8 @@ function DoesAttackHaveGoAgain()
   $mainPitch = &GetPitch($mainPlayer);
   switch ($combatChain[0])
   {
+    case "WTR083": case "WTR084":
+      return ComboActive($combatChain[0]);
     case "WTR095": case "WTR096": case "WTR097":
       return ComboActive($combatChain[0]);
     case "WTR104": case "WTR105": case "WTR106":
