@@ -135,12 +135,7 @@
     switch($cardID)
     {
       case "UPR104":
-        DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer);
-        if(DelimStringContains($additionalCosts, "ICE"))
-        {
-          AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
-          AddDecisionQueue("ENCASEDAMAGE", ($currentPlayer == 1 ? 2 : 1), "-", 1);
-        }
+        DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
         return "Deals 3 arcane.";
       case "UPR105":
         if(DelimStringContains($additionalCosts, "ICE"))

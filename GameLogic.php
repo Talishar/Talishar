@@ -180,7 +180,15 @@ function ProcessHitEffect($cardID)
 
 function ArcaneHitEffect($me, $source, $target, $damage)
 {
-  switch ($source) {
+  switch ($source) 
+  {
+    case "UPR104":
+      if (MZIsPlayer($target)) 
+      {   
+        AddDecisionQueue("LESSTHANPASS", MZPlayerID($me, $target), 1, 1);
+        AddDecisionQueue("ENCASEDAMAGE", MZPlayerID($me, $target), "-", 1);
+      }
+      break;
     case "UPR113": case "UPR114": case "UPR115":
       if (MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
         break;
