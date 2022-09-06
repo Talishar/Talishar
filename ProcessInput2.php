@@ -120,7 +120,6 @@ switch ($mode) {
       if (!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break; //Card not playable
       $uniqueID = $myArsenal[$index + 5];
       RemoveArsenal($playerID, $index);
-      WriteLog("Card played from arsenal.");
       PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
     }
     break;
@@ -1102,7 +1101,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
     }
     //CR 5.1.2 Announce (CR 2.0)
-    WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
+    if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
+    else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
+
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {
       ClearAdditionalCosts($currentPlayer);
