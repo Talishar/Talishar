@@ -1113,7 +1113,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $lastPlayed[3] = "-";
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
     }
-    if (count($layers) > 0 && $layers[0] == "ENDTURN") $layers[0] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
+    if (count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDTURN") $layers[count($layers)-LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
   }
   if ($turn[0] != "P") {
     if ($dynCostResolved >= 0) {
