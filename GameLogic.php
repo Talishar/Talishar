@@ -4858,7 +4858,47 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "PAYORDISCARD":
       PayOrDiscard($player, $parameter);
-      return "";      
+      return "";
+    case "PRY":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $plurial = "";
+      switch ($lastResult) {
+        case "Target_Opponent":
+          $theirHand = &GetHand($otherPlayer);
+          if ($player != $mainPlayer) $dqVars[0] = count($theirHand);
+          if ($dqVars[0] > 1) $plurial = "s";
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, $dqVars[0] . "-", 1);
+          AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-" . $dqVars[0], 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $dqVars[0] . " card" . $plurial, 1);
+          AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
+          AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card", 1);
+          AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+          AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
+          break;
+        case "Target_Yourself":
+          $myHand = &GetHand($player);
+          if ($player != $mainPlayer) $dqVars[0] = count($myHand);
+          if ($dqVars[0] > 1) $plurial = "s";
+          AddDecisionQueue("FINDINDICES", $player, "HAND");
+          AddDecisionQueue("PREPENDLASTRESULT", $player, $dqVars[0] . "-", 1);
+          AddDecisionQueue("APPENDLASTRESULT", $player, "-" . $dqVars[0], 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $dqVars[0] . " card" . $plurial, 1);
+          AddDecisionQueue("MULTICHOOSEHAND", $player, "<-", 1);
+          AddDecisionQueue("IMPLODELASTRESULT", $player, ",", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card", 1);
+          AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+          AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+          AddDecisionQueue("DRAW", $player, "-", 1);
+          break;
+        default:
+          break;
+      }
+      return "";
     default:
       return "NOTSTATIC";
   }
