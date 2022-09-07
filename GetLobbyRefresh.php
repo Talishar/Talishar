@@ -13,6 +13,8 @@ $playerID = TryGet("playerID", 3);
 $lastUpdate = TryGet("lastUpdate", 0);
 $authKey = TryGet("authKey", 0);
 
+if(!file_exists("./Games/" . $gameName . "/")) { header('HTTP/1.0 403 Forbidden'); exit; }
+
 if($lastUpdate == "NaN") $lastUpdate = 0;
 if ($lastUpdate > 10000000) $lastUpdate = 0;
 
