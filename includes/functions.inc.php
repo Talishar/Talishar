@@ -174,6 +174,7 @@ function loginUser($username, $pwd, $rememberMe) {
 			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
 			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
+		session_write_close();
 
 		mysqli_close($conn);
 		header("location: ../MainMenu.php?error=none");
@@ -192,6 +193,7 @@ function loginFromCookie()
 		$data = mysqli_stmt_get_result($stmt);
 		$row = mysqli_fetch_array($data, MYSQLI_NUM);
 		mysqli_stmt_close($stmt);
+		if(session_status() !== PHP_SESSION_ACTIVE) session_start();
 		if($row != null && count($row) > 0)
 		{
 			$_SESSION["userid"] = $row[0];
@@ -208,6 +210,7 @@ function loginFromCookie()
 			unset($_SESSION["useremail"]);
 			unset($_SESSION["userKarma"]);
 		}
+		session_write_close();
 	}
 	mysqli_close($conn);
 }

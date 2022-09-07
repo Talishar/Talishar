@@ -6,8 +6,6 @@ include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
 ob_end_clean();
 
-session_start();
-
 $deck = TryGET("deck");
 $decklink = TryGET("fabdb");
 $deckTestMode = TryGET("deckTestMode");
@@ -23,7 +21,9 @@ $karmaRestriction = TryGet("gameKarmaRestriction", "0");
 $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
 $attemptCount = 0;
 
+session_start();
 $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
+session_write_close();
 
 $bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
 while (!feof($bannedIPHandler)) {

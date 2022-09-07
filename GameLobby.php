@@ -23,6 +23,8 @@ if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1Auth
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else if(isset($_GET["authKey"])) $authKey = $_GET["authKey"];
 
+session_write_close();
+
 if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
   header("Location: " . $redirectPath . "/MainMenu.php"); //If the game file happened to get deleted from inactivity, redirect back to the main menu instead of erroring out
   exit;
