@@ -14,6 +14,8 @@ if(!is_numeric($playerID)) {
   exit;
 }
 
+if(!file_exists("./Games/" . $gameName . "/gamestate.txt")) { echo("NaNENDTIMESTAMP"); exit; }
+
 $authKey = TryGet("authKey", 3);
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
