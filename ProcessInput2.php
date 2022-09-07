@@ -1756,10 +1756,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget();
       ++$combatChainState[$CCS_NumChainLinks];
-      IncrementClassState($currentPlayer, $CS_NumAttacks);
-      if (DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
-      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
-      if (ClassContains($cardID, "ILLUSIONIST" , $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
       $baseAttackSet = CurrentEffectBaseAttackSet($cardID);
       $attackValue = ($baseAttackSet != -1 ? $baseAttackSet : AttackValue($cardID));
       $combatChainState[$CCS_LinkBaseAttack] = $attackValue;
@@ -1769,12 +1765,18 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $openedChain = true;
       if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
-      if (!$chainClosed || $definedCardType == "AA") {
+      // If you didn't attack an aura with Spectra
+      if (!$chainClosed && $definedCardType == "AA") { 
+        IncrementClassState($currentPlayer, $CS_NumAttacks);
+        if (DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
+        if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
+        if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
+        ArsenalAttackAbilities();
+        OnAttackEffects($cardID);
+      } elseif (!$chainClosed || $definedCardType == "AA") {
         AuraAttackAbilities($cardID);
         if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
         if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
-        ArsenalAttackAbilities();
-        OnAttackEffects($cardID);
       }
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
