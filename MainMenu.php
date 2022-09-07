@@ -18,7 +18,7 @@ if (isset($_SESSION["userid"])) {
 
 <style>
   body {
-    background-image: url('Images/background.jpg');
+    background-image: url('Images/background_UPR.jpg');
     background-position: top center;
     background-repeat: no-repeat;
     background-size: cover;
