@@ -5,16 +5,16 @@ include 'Libraries/HTTPLibraries.php';
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
+  echo("NaNENDTIMESTAMP");
   exit;
 }
 $playerID = TryGet("playerID", 3);
 if(!is_numeric($playerID)) {
-  echo ("Invalid player ID.");
+  echo("NaNENDTIMESTAMP");
   exit;
 }
 
-if(!file_exists("./Games/" . $gameName . "/gamestate.txt")) { echo("NaNENDTIMESTAMP"); exit; }
+if(!file_exists("./Games/" . $gameName . "/")) { echo("NaNENDTIMESTAMP"); exit; }
 
 $authKey = TryGet("authKey", 3);
 $lastUpdate = intval(TryGet("lastUpdate", 0));
