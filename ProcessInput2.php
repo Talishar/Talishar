@@ -1225,6 +1225,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   GetLayerTarget($cardID); //Layer target
   //CR 5.1.4b Declare target of attack
   if ($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
+  MainCharacterPlayCardAbilities($cardID, $from);
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
   ProcessDecisionQueue();
 }
@@ -1781,7 +1782,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
-      } elseif (!$chainClosed || $definedCardType == "AA") {
+      } 
+      if (!$chainClosed || $definedCardType == "AA") {
         AuraAttackAbilities($cardID);
         if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
         if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);

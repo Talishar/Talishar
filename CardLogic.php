@@ -559,6 +559,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
       break;
+    case "ARC075":
+    case "ARC076":
+      ViseraiPlayCard($target);
+      break;
     case "ARC112":
       DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
       DestroyAuraUniqueID($player, $uniqueID);
@@ -649,6 +653,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "ELE062": case "ELE063":
+        PlayAura("ELE110", $player);
+        WriteLog(CardLink($parameter, $parameter) . " created an Embodiment of Lightning aura.");
       break;
     case "ELE206": case "ELE207": case "ELE208":
       WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");

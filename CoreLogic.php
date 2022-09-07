@@ -338,44 +338,59 @@ function ArsenalHitEffects()
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumLess3PowAAPlayed;
+  global $currentPlayer, $CS_NumLess3PowAAPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
     if($character[$i+1] != 2) continue;
     $characterID = $character[$i];
-    if($i == 0 && $character[0] == "CRU097")
-    {
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      $otherCharacter = &GetPlayerCharacter($otherPlayer);
-      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-        $characterID = $otherCharacter[0];
-      }
-    }
     switch($characterID)
     {
-      case "EVR120": case "UPR102": case "UPR103":
-        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
-        {
-          AddLayer("TRIGGER", $currentPlayer, $characterID);
-        }
-        break;
-      case "ARC075": case "ARC076":
-        if(!IsStaticType(CardType($cardID), $from, $cardID)) ViseraiPlayCard($cardID);
-        break;
-      case "ELE062": case "ELE063":
-        if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2)
-        {
-          PlayAura("ELE110", $currentPlayer);
-          WriteLog(CardLink($characterID, $characterID) . " created an Embodiment of Lightning aura.");
-        }
-        break;
       case "UPR158":
         if(GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && AttackValue($cardID) <= 2)
         {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           WriteLog(CardLink($characterID, $characterID) . " gives the attack +1 and makes the damage unable to be prevented.");
           $character[$i+1] = 1;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function MainCharacterPlayCardAbilities($cardID, $from)
+{
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards;
+  $character = &GetPlayerCharacter($currentPlayer);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if ($character[$i + 1] != 2) continue;
+    $characterID = $character[$i];
+    if ($i == 0 && $character[0] == "CRU097") {
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
+    switch ($characterID) {
+      case "EVR120":
+      case "UPR102":
+      case "UPR103":
+        if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
+        }
+        break;
+      case "ARC075":
+      case "ARC076":
+        if (!IsStaticType(CardType($cardID), $from, $cardID)) {
+          AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
+        }
+        break;
+      case "ELE062":
+      case "ELE063":
+        if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2) {
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       default:
