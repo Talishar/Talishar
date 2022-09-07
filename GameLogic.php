@@ -59,11 +59,11 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
       case "RUNEBLADE":
         return MONRunebladePlayAbility($cardID, $from, $resourcesPaid);
       case "WARRIOR":
-        return MONWarriorPlayAbility($cardID, $from, $resourcesPaid);
+        return MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "GENERIC":
-        return MONGenericPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts);
+        return MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "NONE":
-        return MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target);
+        return MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default:
         return "";
     }
@@ -3791,9 +3791,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("CHARGE", $player, "-", 1);
       }
       return "1";
-    case "BEACONOFVICTORY":
-      $combatChain[5] += $lastResult;
-      return $lastResult;
+    case "BEACONOFVICTORY-1":
+      return $lastResult . ",BEACONOFVICTORY";
+    case "BEACONOFVICTORY-2":
+      $combatChain[5] += $parameter;
+      return 1;
     case "TRIPWIRETRAP":
       if ($lastResult == 0) {
         WriteLog("Hit effects are prevented by Tripwire Trap this chain link.");

@@ -169,7 +169,7 @@
     }
   }
 
-  function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-")
+  function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts = "")
   {
     global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;

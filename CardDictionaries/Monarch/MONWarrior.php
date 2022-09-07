@@ -112,7 +112,7 @@
     }
   }
 
-  function MONWarriorPlayAbility($cardID, $from, $resourcesPaid)
+  function MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
@@ -124,12 +124,10 @@
         else { $rv = "Does not give the current attack go again."; }
         return $rv;
       case "MON033":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
-        AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0 && DelimStringContains($additionalCosts, "BEACONOFVICTORY"))
         {
+          $addCostValue = (int) $additionalCosts;
+          AddDecisionQueue("BEACONOFVICTORY-2", $currentPlayer, $addCostValue, 1);
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
