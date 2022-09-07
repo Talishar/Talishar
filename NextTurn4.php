@@ -191,8 +191,8 @@
           var playerID = <?php echo ($playerID); ?>;
           var cardWidth = 96;
           gemImg = (gem == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-          if (gem == 1) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 15) + "px; width:40px; height:40px; cursor:pointer;' src='./Images/" + gemImg + "' />";
-          else if (gem == 2) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 15) + "px; width:40px; height:40px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+          if (gem == 1) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Active' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 18) + "px; width:40px; height:40px; cursor:pointer;' src='./Images/" + gemImg + "' />";
+          else if (gem == 2) rv += "<img " + ProcessInputLink(playerID, 102, actionDataOverride) + " title='Effect Inactive' style='position:absolute; z-index:1001; bottom:3px; left:" + (cardWidth / 2 - 18) + "px; width:40px; height:40px; cursor:pointer;' src='./Images/" + gemImg + "' />";
         }
         return rv;
       }

@@ -709,7 +709,7 @@ button {
 .FabLogo {
   position: absolute;
   width: 20%;
-  height: 180px;
+  height: 20vh;
   z-index: 15;
   top: 50px;
   left: 50%;

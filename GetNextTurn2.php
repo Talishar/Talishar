@@ -262,7 +262,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo ("<span style='position:absolute; left:" . $left . "px; top:" . $top . "px; color:gray; font-family:Helvetica; font-size:" . $fontSize . "px; font-weight: 550; text-shadow: 1px 0 0 " . $borderColor . ", 0 -1px 0 " . $borderColor . ", 0 1px 0 " . $borderColor . ", -1px 0 0 " . $borderColor . "; user-select: none;'>" . $passLabel . "</span>");
     echo ("<span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color:gray; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>[Space]</span></div>");
   }
-  echo ("<div style='position:absolute; top:117px; left:-153px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; left:85; top:20; z-index:10; color:#111; font-weight:600; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
+  echo ("<div style='position:absolute; top:117px; left:-153px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; margin-top:2px; left:85; top:20; z-index:10; color:#111; font-weight:600; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
   echo (($manualMode ? "<span style='position:absolute; top:85%; right:7%; display: inline-block;';>" . CreateButton($playerID, "-1", 10004, 0, "24px") . CreateButton($playerID, "+1", 10002, 0, "24px") . "</span>" : ""));
   echo ("</div></div>");
 
@@ -427,7 +427,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //if($turn[0] == "INSTANT" && ($playerID == $turn[1] || count($layers) > 0))
   if (count($layers) > 0) {
     $content = "";
-    $content .= "<div style='font-size:24px; margin-left:5px; margin-bottom:5px;'><b>Layers</b>&nbsp;<i style='font-size:16px; margin-right: 5px;'>(Priority settings can be adjusted in the menu)</i></div>";
+    $content .= "<div style='font-size:24px; margin-left:5px; margin-bottom:5px; margin-top:5px;'><b>Layers</b>&nbsp;<i style='font-size:16px; margin-right: 5px;'>(Priority settings can be adjusted in the menu)</i></div>";
     if (CardType($layers[0]) == "AA" || IsWeapon($layers[0])) {
       $attackTarget = GetAttackTarget();
       if ($attackTarget != "NA") {
@@ -1396,11 +1396,11 @@ function DisplayPriorityGem($setting, $MZindex, $otherPlayer = 0)
   if ($otherPlayer != 0) {
     $position = "top: 60px;";
   } else {
-    $position = "bottom: 5px;";
+    $position = "bottom: 3px;";
   }
   if ($setting != 2 && $playerID != 3) {
     $gem = ($setting == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-    if ($setting == 0) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Not holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 12 . "px; width:40px; height:40px; cursor:pointer;' src='./Images/$gem' />");
-    else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 12 . "px; width:40px; height:40px; cursor:pointer;' src='./Images/$gem' />");
+    if ($setting == 0) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Not holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 13 . "px; width:40px; height:40px; cursor:pointer;' src='./Images/$gem' />");
+    else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 13 . "px; width:40px; height:40px; cursor:pointer;' src='./Images/$gem' />");
   }
 }
