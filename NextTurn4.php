@@ -541,7 +541,7 @@
       window.setInterval(CheckIdleTime, 1000);
 
       function CheckIdleTime() {
-        if (document.getElementById("iconHolder").innerText != "ready.png") return;
+        if (document.getElementById("iconHolder") == null || document.getElementById("iconHolder").innerText != "ready.png") return;
         _idleSecondsCounter++;
         if (_idleSecondsCounter >= IDLE_TIMEOUT) {
           if (_idleState == 0) {
@@ -572,6 +572,7 @@
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
+            if(this.responseText == "NaN") {}//Do nothing, game is invalid
             if (this.responseText.split("REMATCH")[0] == "1234") {
               location.replace('GameLobby.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&authKey=<?php echo ($authKey); ?>');
             } else if (parseInt(this.responseText) != 0) {
