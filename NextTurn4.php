@@ -15,10 +15,14 @@
       echo ("Invalid player ID.");
       exit;
     }
+
+    if(!file_exists("./Games/" . $gameName . "/")) { echo("Game does not exist"); exit; }
+
     session_start();
     if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
     else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
     else $authKey = TryGet("authKey", 3);
+		session_write_close();
 
 
     //First we need to parse the game state from the file
