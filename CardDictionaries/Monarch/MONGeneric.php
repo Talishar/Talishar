@@ -158,7 +158,7 @@
   }
 
 
-  function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts)
+  function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $actionPoints, $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
     $rv = "";
