@@ -1084,7 +1084,7 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
   global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
-  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt;
+  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
 
   if ($player == "") $player = $currentPlayer;
@@ -1319,7 +1319,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE201":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;
     case "ELE224":
-      return GetClassState($player, $CS_NumAttackCards) == 0;
+      return GetClassState($player, $CS_NumAttacks) == 0;
     case "ELE225":
       return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
     case "ELE233":
