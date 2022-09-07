@@ -2375,3 +2375,15 @@ function CardHasAltArt($cardID)
     default: return false;
   }
 }
+
+function isIyslander($character)
+{
+  switch ($character) {
+    case 'EVR120':
+    case 'UPR102':
+    case 'UPR103':
+      return true;
+    default:
+      return false;
+  }
+}
