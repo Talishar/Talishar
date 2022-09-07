@@ -14,7 +14,7 @@ if(!is_numeric($playerID)) {
   exit;
 }
 
-if(!file_exists("./Games/" . $gameName . "/")) { echo("NaNENDTIMESTAMP"); exit; }
+if(!file_exists("./Games/" . $gameName . "/")) { header('HTTP/1.0 403 Forbidden'); exit; }
 
 $authKey = TryGet("authKey", 3);
 $lastUpdate = intval(TryGet("lastUpdate", 0));
