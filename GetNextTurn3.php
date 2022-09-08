@@ -520,7 +520,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
    }
    echo($myPermanentsOutput . "<BR>");
 
-   echo("JOB DONE");
+   //Now the log!
+   EchoLog($gameName, $playerID);
 }
 
 function PlayableCardBorderColor($cardID)
