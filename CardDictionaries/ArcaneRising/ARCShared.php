@@ -111,6 +111,9 @@
       case "ARC004": return true;
       case "ARC010":
         return count($combatChain) == 0;
+      case "ARC017":
+        $items = &GetItems($currentPlayer);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
       case "ARC018":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
