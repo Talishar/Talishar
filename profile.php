@@ -109,7 +109,7 @@ if (isset($_SESSION["isPatron"])) {
     echo ("<div style='margin-bottom: 3px;'>Your Reputation:");
 
     echo ("<div class='karma-hover'><span class='karma-title'>How does reputation score (Karma) work?</span><br>
-    The Karma score (☯) is a quick way to check if a player has a good reputation on FaBOnline (does not quit games, is friendly, plays fair).<br><br>
+    The Karma score (☯) is a quick way to check if a player has a good reputation on Talishar (does not quit games, is friendly, plays fair).<br><br>
     Depending on your Karma score, you may also be allowed or not allowed to use some features or to join a given game.<br><br>
     Your initial Karma score is 75☯ (on a maximum of 100☯). Then:<br>
     &#8226; Each time you finish a game, you get +1☯.<br>
