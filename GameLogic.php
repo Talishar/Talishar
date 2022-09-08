@@ -2330,7 +2330,7 @@ function MainCharacterHitAbilities()
         }
         break;
       case "CRU047":
-        if (CardType($attackID) == "AA") {
+        if (CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
           AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer);
           $mainCharacter[$i + 1] = 1;
         }
