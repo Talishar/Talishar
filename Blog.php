@@ -10,15 +10,27 @@ include_once 'Header.php';
   <link rel="stylesheet" href="css/blog.css">
   <link rel="shortcut icon" type="image/png" href="./Images/hit.png" />
 </head>
-
 <div class="grid-even-collum">
+  <div class="articles">
+    <h2>Welcome Talishar.net 🍾</h2>
+    <h3>Good morning #fabtcg player!<br>
+      We are happy to present you
+      <a class="talishar.net" href="http://Talishar.net">Talishar.net</a> 🎉
+    </h3>
+    <p>
+      <br><br>We are slowly working our way through a rebranding. It's important for us that the players know we are a fan-made platform and not associated with LSS.
+      LSS didn't contact us or asked us to make this change. It is our own decision and based on feedback we've received.
+      We hope to stay engaged in the community and provide a tool for the players so they can make the most of the limited time when they play in person locally.❤️
+      <br>We will soon start redirecting people to this new website. Normally the process should be done smoothly.
+      <br><br>Thank you everyone and don't hesitate if you have any questions or feedback!
+    </p>
+  </div>
   <div class="articles">
     <h2>Interview with Push the Point!</h2>
     <p style="text-align:center">The first of many, we hope! Thank you to Hamish for been such a nice host and inviting us on his platform.
       Go watch the video and let us know what you've thoughts about it!</p>
     <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/lORS6mU0uLM" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </div>
-
   <div class="articles">
     <h2>21st August 2022</h2>
     <h3>🧑‍🏭 Hello #fabtcg players! Weekend's update just for you!</h3>
