@@ -36,7 +36,7 @@
   //13 isBroken = 1 if card is destroyed
   //14 onChain = 1 if card is on combat chain (mostly for equipment)
   //15 isFrozen = 1 if frozen
-  //16 showsegem = (0, 1, 2?)
+  //16 shows gem = (0, 1, 2?) (0 off, 1 inactive, 2 active at a guess?)
   function ClientRenderedCard($cardNumber, $action=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="-", $lifeCounters=0, $defCounters=0, $atkCounters=0, $controller=0, $type="", $sType="", $restriction="", $isBroken=0, $onChain=0, $isFrozen=0, $gem=0)
   {
     $rv = $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $counters . " " . $actionDataOverride . " " . $lifeCounters . " " . $defCounters . " " . $atkCounters . " ";
