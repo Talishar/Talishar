@@ -531,7 +531,6 @@ function AuraPlayAbilities($cardID, $from="")
     $remove = 0;
     switch ($auras[$i]) {
       case "ARC112":
-        WriteLog($attackType);
         if ($attackType == "AA") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
