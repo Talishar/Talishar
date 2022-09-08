@@ -379,6 +379,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       case "UPR102":
       case "UPR103":
         if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       case "ARC075":
