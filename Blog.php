@@ -57,7 +57,7 @@ include_once 'Header.php';
   </div>
   <div class="articles">
     <h2>Blitz Hero Stats Update</h2>
-    <p style="text-align:center">🎥 Watch Kugane Gaming second analyze of FaB Online heroes stats! This time it is full Blitz ahead! Enjoy!</p>
+    <p style="text-align:center">🎥 Watch Kugane Gaming second analyze of Talishar heroes stats! This time it is full Blitz ahead! Enjoy!</p>
     <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/odiNVmtfIsk" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </div>
   <div class="articles">
@@ -65,7 +65,7 @@ include_once 'Header.php';
     <h3>👨‍💻Happy Sunday players!
       <br><br>We heard you! We worked this weekend on a better way to deal with leavers with a reputation system.
     </h3>
-    <p><br>The system is a quick way to check if a player has a good reputation on FaB Online (does not quit games, is friendly, plays fair).
+    <p><br>The system is a quick way to check if a player has a good reputation on Talishar (does not quit games, is friendly, plays fair).
       <br>Depending on your Karma score, you may also be allowed or not allowed to use some features or to join a given game.
       <br><br>Your initial Karma score is 75☯ Then:
       <br>&emsp;• Each time you finish a game, you get +1☯.
@@ -79,7 +79,7 @@ include_once 'Header.php';
   </div>
   <div class="articles">
     <h2>CC Hero Stats Update</h2>
-    <p style="text-align:center">🎥 Watch Kugane Gaming analyze FaB Online hero stats! It is interesting, and we are happy to start providing those stats for the #fabtcg community.</p>
+    <p style="text-align:center">🎥 Watch Kugane Gaming analyze Talishar hero stats! It is interesting, and we are happy to start providing those stats for the #fabtcg community.</p>
     <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/jk14zEIGER8" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </div>
   <div class="articles">
@@ -161,7 +161,7 @@ include_once 'Header.php';
       <br>- Added information about which card got banished.
   </div>
   <div class="articles">
-    <h2>FaB Online Roadmap</h2>
+    <h2>Talishar Roadmap</h2>
     <h3>📝 We recently wrote a roadmap and thought it would be nice to share it with you to give you an idea of what we have planned for the long-term.
       We are overwhelmed by the recent boom that created our Twitter accounts. So many news bugs and features are coming our way. Thank you!</h3>
     <p><br>1. The top priority is fixing the major outstanding bugs/missing gameplay engine features.
