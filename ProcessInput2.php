@@ -1097,6 +1097,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if($playingCard)
     {
+      SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-");
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
     }
@@ -1778,14 +1779,14 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
       // If you didn't attack an aura with Spectra
-      if (!$chainClosed && $definedCardType == "AA") { 
+      if (!$chainClosed && $definedCardType == "AA") {
         IncrementClassState($currentPlayer, $CS_NumAttacks);
         if (DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
         if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
         if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
-      } 
+      }
       if (!$chainClosed || $definedCardType == "AA") {
         AuraAttackAbilities($cardID);
         if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
