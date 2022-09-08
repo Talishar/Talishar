@@ -555,7 +555,7 @@ function SendEmail($userEmail, $url) {
 
   $email = new Mail();
   $email->setFrom("no-reply@fleshandbloodonline.com", "No-Reply");
-  $email->setSubject("Flesh and Blood Online Password Reset");
+  $email->setSubject("Talishar Password Reset");
   $email->addTo($userEmail);
   $email->addContent(
       "text/html",

@@ -16,13 +16,16 @@
       exit;
     }
 
-    if(!file_exists("./Games/" . $gameName . "/")) { echo("Game does not exist"); exit; }
+    if (!file_exists("./Games/" . $gameName . "/")) {
+      echo ("Game does not exist");
+      exit;
+    }
 
     session_start();
     if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
     else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
     else $authKey = TryGet("authKey", 3);
-		session_write_close();
+    session_write_close();
 
 
     //First we need to parse the game state from the file
@@ -56,7 +59,7 @@
 
     <head>
       <meta charset="utf-8">
-      <title>Flesh and Blood Online</title>
+      <title>Talishar</title>
       <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="css/gamestyle.css">
     </head>
@@ -576,7 +579,7 @@
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
-            if(this.responseText == "NaN") {}//Do nothing, game is invalid
+            if (this.responseText == "NaN") {} //Do nothing, game is invalid
             if (this.responseText.split("REMATCH")[0] == "1234") {
               location.replace('GameLobby.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&authKey=<?php echo ($authKey); ?>');
             } else if (parseInt(this.responseText) != 0) {
@@ -584,7 +587,7 @@
               var responseArr = this.responseText.split("ENDTIMESTAMP");
               document.getElementById("mainDiv").innerHTML = responseArr[1];
               var update = parseInt(responseArr[0]);
-              if(update != "NaN") CheckReloadNeeded(update);
+              if (update != "NaN") CheckReloadNeeded(update);
               var readyIcon = document.getElementById("iconHolder").innerText;
               document.getElementById("icon").href = "./HostFiles/" + readyIcon;
               var log = document.getElementById('gamelog');

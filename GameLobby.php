@@ -1,6 +1,6 @@
 <head>
   <meta charset="utf-8">
-  <title>Flesh and Blood Online</title>
+  <title>Talishar</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style4.css">
@@ -19,9 +19,9 @@ session_start();
 
 $gameName = $_GET["gameName"];
 $playerID = $_GET["playerID"];
-if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
-else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
-else if(isset($_GET["authKey"])) $authKey = $_GET["authKey"];
+if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+else if (isset($_GET["authKey"])) $authKey = $_GET["authKey"];
 
 session_write_close();
 
@@ -418,7 +418,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
           }
         }
       };
-      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo($authKey); ?>", true);
+      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>", true);
       xmlhttp.send();
     }
 
