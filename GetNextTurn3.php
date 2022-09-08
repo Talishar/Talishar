@@ -390,7 +390,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       if ($theirArse != "") $theirArse .= "|";
       if ($theirArsenal[$i + 1] == "UP") {
-        $theirArse .= ClientRenderedCard(cardNumber: $theirArsenal[$i], controller: ($playerID == 1 ? 2 : 1)); 
+        $theirArse .= ClientRenderedCard(cardNumber: $theirArsenal[$i], controller: ($playerID == 1 ? 2 : 1));
       } else $theirArse .= (ClientRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1)));
     }
    }
@@ -428,14 +428,34 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
    echo($chainLinkOutput);
    echo("<br>");
 
-   // their permanents (throw all items, auras, allies etc into one bucket)
+   // their allies
    $theirAlliesOutput = "";
    $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
    for ($i = 0; $i < count($theirAllies); ++$i) {
     if ($theirAlliesOutput != "") $theirAlliesOutput .= "|";
 
    }
-   echo("  go go allies");
+
+   //their auras
+   echo("<br>");
+
+   //their items
+   echo("<br>");
+
+   //their permanents
+   echo("<br>");
+
+
+   //my allies
+   echo("<br>");
+
+   //my auras
+   echo("<br>");
+
+   //my items
+   echo("<br>");
+
+   //my permanents
    echo("JOB DONE");
 }
 
