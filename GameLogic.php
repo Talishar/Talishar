@@ -2417,9 +2417,6 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
           $modifier += 1;
         }
         break;
-      case "CRU046":
-        if (GetClassState($mainPlayer, $CS_NumAttacks) == 2) $modifier += 1;
-        break;
       default:
         break;
     }

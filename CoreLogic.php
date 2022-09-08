@@ -338,7 +338,7 @@ function ArsenalHitEffects()
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $CS_NumLess3PowAAPlayed;
+  global $currentPlayer, $CS_NumLess3PowAAPlayed, $CS_NumAttacks;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
@@ -352,6 +352,12 @@ function CharacterPlayCardAbilities($cardID, $from)
           AddCurrentTurnEffect($characterID, $currentPlayer);
           WriteLog(CardLink($characterID, $characterID) . " gives the attack +1 and makes the damage unable to be prevented.");
           $character[$i+1] = 1;
+        }
+        break;
+      case "CRU046":
+        if (GetClassState($currentPlayer, $CS_NumAttacks) == 2) {
+          AddCurrentTurnEffect($characterID, $currentPlayer);
+          $character[$i + 1] = 1;
         }
         break;
       default:
