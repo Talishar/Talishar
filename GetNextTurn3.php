@@ -438,7 +438,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($theirAlliesOutput != "") $theirAlliesOutput .= "|";
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
-    $theirAlliesOutput .= ClientRenderedCard(cardNumber:$theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters:$theirAllies[$i+6], controller:$otherPlayer, type:$type, sType:$sType, isFrozen:($myAllies[$i + 3] == 1));
+    $theirAlliesOutput .= ClientRenderedCard(cardNumber:$theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters:$theirAllies[$i+6], controller:$otherPlayer, type:$type, sType:$sType, isFrozen:($$theirAllies[$i + 3] == 1));
    }
    echo($theirAlliesOutput . "<BR>");
 
