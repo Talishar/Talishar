@@ -520,12 +520,22 @@ function AuraLoseHealthAbilities($player, $amount)
   return $amount;
 }
 
-function AuraPlayAbilities($cardID, $from)
+function AuraPlayAbilities($cardID, $from="")
 {
   global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
   $auras = &GetAuras($currentPlayer);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $attackType = CardType($cardID);
+  $numRunechants = CountAura("ARC112", $currentPlayer);
+  if ($numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $remove = 0;
     switch ($auras[$i]) {
+      case "ARC112":
+        WriteLog($attackType);
+        if ($attackType == "AA") {
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        }
+        break;
       case "MON157":
         DimenxxionalCrossroadsPassive($cardID, $from);
         break;
@@ -539,6 +549,7 @@ function AuraPlayAbilities($cardID, $from)
       default:
         break;
     }
+  if ($remove == 1) DestroyAura($currentPlayer, $i);
   }
 }
 
@@ -560,7 +571,7 @@ function AuraAttackAbilities($attackID)
         }
         break;
       case "ARC112":
-        if ($attackType == "AA" || $attackType == "W") {
+        if ($attackType == "W") {
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;

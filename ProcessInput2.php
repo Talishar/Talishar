@@ -1226,6 +1226,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   //CR 5.1.4b Declare target of attack
   if ($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
   MainCharacterPlayCardAbilities($cardID, $from);
+  AuraPlayAbilities($cardID);
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
   ProcessDecisionQueue();
 }
@@ -1825,7 +1826,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if (!$isBlock) {
     if ($from != "PLAY") {
       CurrentEffectPlayAbility($cardID);
-      AuraPlayAbilities($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
       if (HasBoost($cardID)) Boost();
       CharacterPlayCardAbilities($cardID, $from);
