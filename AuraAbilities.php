@@ -557,13 +557,14 @@ function AuraAttackAbilities($attackID)
   global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
+  $attackSubType = CardSubType($attackID);
   $numRunechants = CountAura("ARC112", $mainPlayer);
   if ($numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
       case "WTR225":
-        if ($attackType == "AA" || $attackType == "W") {
+        if ($attackType == "AA" || $attackType == "W" || $attackSubType == "Aura") {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
