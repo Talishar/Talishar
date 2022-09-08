@@ -11,7 +11,7 @@
     exit;
   }
   $playerID = TryGet("playerID", 3);
-  if(!is_numeric($playerID)) {
+  if (!is_numeric($playerID)) {
     echo ("Invalid player ID.");
     exit;
   }
@@ -49,7 +49,7 @@
 
   <head>
     <meta charset="utf-8">
-    <title>Flesh and Blood Online</title>
+    <title>Talishar</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/gamestyle.css">
   </head>
@@ -166,56 +166,53 @@
 
 <body onkeypress='Hotkeys(event)' onload='OnLoadCallback(<?php echo (filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
 
-<?php if($theirCharacter[0] != "DUMMY") echo(CreatePopup("inactivityWarningPopup", [], 0, 0, "⚠️ Inactivity Warning ⚠️", 1, "", "", true, true, "Interact with the screen in the next 10 seconds or you could be kicked for inactivity.")); ?>
-<?php if($theirCharacter[0] != "DUMMY") echo(CreatePopup("inactivePopup", [], 0, 0, "⚠️ You are Inactive ⚠️", 1, "", "", true, true, "You are inactive. Your opponent is able to claim victory. Interact with the screen to clear this.")); ?>
+  <?php if ($theirCharacter[0] != "DUMMY") echo (CreatePopup("inactivityWarningPopup", [], 0, 0, "⚠️ Inactivity Warning ⚠️", 1, "", "", true, true, "Interact with the screen in the next 10 seconds or you could be kicked for inactivity.")); ?>
+  <?php if ($theirCharacter[0] != "DUMMY") echo (CreatePopup("inactivePopup", [], 0, 0, "⚠️ You are Inactive ⚠️", 1, "", "", true, true, "You are inactive. Your opponent is able to claim victory. Interact with the screen to clear this.")); ?>
 
-<script>
-  var IDLE_TIMEOUT = 40; //seconds
-  var _idleSecondsCounter = 0;
-  var _idleState = 0;//0 = not idle, 1 = idle warning, 2 = idle
+  <script>
+    var IDLE_TIMEOUT = 40; //seconds
+    var _idleSecondsCounter = 0;
+    var _idleState = 0; //0 = not idle, 1 = idle warning, 2 = idle
 
-  var activityFunction = function () {
+    var activityFunction = function() {
       var oldIdleState = _idleState;
       _idleSecondsCounter = 0;
       _idleState = 0;
       var inactivityPopup = document.getElementById('inactivityWarningPopup');
-      if(inactivityPopup) inactivityPopup.style.display = "none";
+      if (inactivityPopup) inactivityPopup.style.display = "none";
       var inactivePopup = document.getElementById('inactivePopup');
-      if(inactivePopup) inactivePopup.style.display = "none";
-      if(oldIdleState == 2) SubmitInput("100006", "");
-  };
+      if (inactivePopup) inactivePopup.style.display = "none";
+      if (oldIdleState == 2) SubmitInput("100006", "");
+    };
 
-  document.onclick = activityFunction;
+    document.onclick = activityFunction;
 
-  document.onmousemove = activityFunction;
+    document.onmousemove = activityFunction;
 
-  document.onkeydown = activityFunction;
+    document.onkeydown = activityFunction;
 
-  window.setInterval(CheckIdleTime, 1000);
+    window.setInterval(CheckIdleTime, 1000);
 
-  function CheckIdleTime() {
-      if(document.getElementById("iconHolder").innerText != "ready.png") return;
+    function CheckIdleTime() {
+      if (document.getElementById("iconHolder").innerText != "ready.png") return;
       _idleSecondsCounter++;
       if (_idleSecondsCounter >= IDLE_TIMEOUT) {
-          if(_idleState == 0)
-          {
-            _idleState = 1;
-            _idleSecondsCounter = 0;
-            var inactivityPopup = document.getElementById('inactivityWarningPopup');
-            if(inactivityPopup) inactivityPopup.style.display = "inline";
-          }
-          else if(_idleState == 1)
-          {
-            _idleState = 2;
-            var inactivityPopup = document.getElementById('inactivityWarningPopup');
-            if(inactivityPopup) inactivityPopup.style.display = "none";
-            var inactivePopup = document.getElementById('inactivePopup');
-            if(inactivePopup) inactivePopup.style.display = "inline";
-            SubmitInput("100005", "");
-          }
+        if (_idleState == 0) {
+          _idleState = 1;
+          _idleSecondsCounter = 0;
+          var inactivityPopup = document.getElementById('inactivityWarningPopup');
+          if (inactivityPopup) inactivityPopup.style.display = "inline";
+        } else if (_idleState == 1) {
+          _idleState = 2;
+          var inactivityPopup = document.getElementById('inactivityWarningPopup');
+          if (inactivityPopup) inactivityPopup.style.display = "none";
+          var inactivePopup = document.getElementById('inactivePopup');
+          if (inactivePopup) inactivePopup.style.display = "inline";
+          SubmitInput("100005", "");
+        }
       }
-  }
-</script>
+    }
+  </script>
 
   <audio id="yourTurnSound" src="./Assets/prioritySound.wav"></audio>
 
@@ -239,10 +236,9 @@
             document.getElementById("icon").href = "./HostFiles/" + readyIcon;
             var log = document.getElementById('gamelog');
             if (log !== null) log.scrollTop = log.scrollHeight;
-            if(readyIcon == "ready.png")
-            {
+            if (readyIcon == "ready.png") {
               var audio = document.getElementById('yourTurnSound');
-              <?php if(!IsMuted($playerID)) echo("audio.play();"); ?>
+              <?php if (!IsMuted($playerID)) echo ("audio.play();"); ?>
             }
             var animations = document.getElementById("animations").innerText;
             //if(animations != "") alert(animations);

@@ -28,7 +28,7 @@ if (isset($_SESSION["userid"])) {
 
 <!--<div class="FabLogo" style="background-image: url('Images/fab_logo.png');"></div>-->
 <div class="FabLogo">
-  <h1 style='font-size:36px; text-align: center;'>Talishar Online</h1>
+  <h1 style='font-size:36px; text-align: center;'>Talishar</h1>
   <h2 style='font-size:30px; text-align: center;'>Unofficial Client</h2>
 </div>
 
@@ -154,7 +154,7 @@ if (isset($_SESSION["userid"])) {
 <div class="NewsMenu">
 
   <h1>Open Beta Test</h1>
-  <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>Talishar Online is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
+  <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>Talishar is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
   <h3 style='text-align:center;'>________</h3>
 
