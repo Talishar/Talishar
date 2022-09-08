@@ -1869,7 +1869,7 @@ function ItemDefaultHoldTriggerState($cardID)
 {
   switch ($cardID) {
     case "ARC007": // Teklo Core
-    case "ARC035": // Dissipation Shiel
+    case "ARC035": // Dissipation Shield
     case "EVR069": // Dissolution Sphere
     case "EVR071": // Signal Jammer
       return 0;
