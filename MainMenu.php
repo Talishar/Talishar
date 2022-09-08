@@ -26,12 +26,12 @@ if (isset($_SESSION["userid"])) {
   }
 </style>
 
-<div class="FabLogo" style="background-image: url('Images/fab_logo.png');">
-<!-- <div class="FabLogo">
-  <h1 style='font-size:44px; text-align: center;'>Flesh and Blood Online</h1>
+<!--<div class="FabLogo" style="background-image: url('Images/fab_logo.png');"></div>-->
+<div class="FabLogo">
+  <h1 style='font-size:44px; text-align: center;'>Blade Break</h1>
   <h2 style='font-size:30px; text-align: center;'>Unofficial Online Client</h2>
-</div> -->
 </div>
+
 
 <div class="ServerChecker">
   <?php
@@ -154,7 +154,7 @@ if (isset($_SESSION["userid"])) {
 <div class="NewsMenu">
 
   <h1>Open Beta Test</h1>
-  <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>FaB Online is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
+  <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>Blade Break is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
   <h3 style='text-align:center;'>________</h3>
 
@@ -197,6 +197,7 @@ if (isset($_SESSION["userid"])) {
 
   <h3 style='text-align:center;'>________</h3>
 
+  <!--
   <div style='vertical-align:middle; text-align:center;'>
     <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
     <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
@@ -204,6 +205,7 @@ if (isset($_SESSION["userid"])) {
     <br>
     <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
   </div>
+-->
 </div>
 
 <?php
