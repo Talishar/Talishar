@@ -978,7 +978,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else return "Draws " . $count . " cards.";
     case "CRU182":
       AddCurrentTurnEffect("CRU182", ($currentPlayer == 1 ? 2 : 1));
-      return "Makes attack actions unable to gain attack.";
+      return "Makes attack actions unable to gain power.";
     case "CRU183":
     case "CRU184":
     case "CRU185":
