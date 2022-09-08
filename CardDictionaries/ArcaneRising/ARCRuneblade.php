@@ -135,6 +135,7 @@
         return "Gives you an extra runechant whenever you create 1 or more.";
       case "ARC083":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDACTION");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard (or pass)", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
