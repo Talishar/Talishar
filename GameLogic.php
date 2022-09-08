@@ -1515,10 +1515,10 @@ function CurrentEffectPreventsDraw($player, $isMainPhase)
 
 function CurrentEffectIntellectModifier()
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $mainPlayer;
   $intellectModifier = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
-    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "WTR042":
           $intellectModifier += 1;
