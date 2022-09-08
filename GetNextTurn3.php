@@ -375,8 +375,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // current chain link attack
   $totalAttack = 0;
   $totalDefense = 0;
-  $chainAttackModifiers = [];
-  EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
+  if(count($combatChain) > 0)
+  {
+    $chainAttackModifiers = [];
+    EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
+  }
   echo($totalAttack);
   echo("<br>");
 
@@ -431,31 +434,92 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
    // their allies
    $theirAlliesOutput = "";
    $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
-   for ($i = 0; $i < count($theirAllies); ++$i) {
+   for ($i = 0; $i < count($theirAllies); $i+=AllyPieces()) {
     if ($theirAlliesOutput != "") $theirAlliesOutput .= "|";
-
+    $type = CardType($theirAllies[$i]);
+    $sType = CardSubType($theirAllies[$i]);
+    $theirAlliesOutput .= ClientRenderedCard(cardNumber:$theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters:$theirAllies[$i+6], controller:$otherPlayer, type:$type, sType:$sType, isFrozen:($myAllies[$i + 3] == 1));
    }
+   echo($theirAlliesOutput . "<BR>");
 
    //their auras
-   echo("<br>");
+   $theirAurasOutput = "";
+   $theirAuras = GetAuras($playerID == 1 ? 2 : 1);
+   for ($i = 0; $i < count($theirAuras); $i+=AuraPieces()) {
+     if ($theirAurasOutput != "") $theirAurasOutput .= "|";
+     $type = CardType($theirAuras[$i]);
+     $sType = CardSubType($theirAuras[$i]);
+     $theirAurasOutput .= ClientRenderedCard(cardNumber:$theirAuras[$i], overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0), counters:$theirAuras[$i+2], controller:$otherPlayer, type:$type, sType:$sType);
+   }
+   echo($theirAurasOutput . "<BR>");
 
    //their items
-   echo("<br>");
+   $theirItemsOutput = "";
+   $theirItems = GetItems($playerID == 1 ? 2 : 1);
+   for ($i = 0; $i < count($theirItems); $i+=ItemPieces()) {
+     if ($theirItemsOutput != "") $theirItemsOutput .= "|";
+     $type = CardType($theirItems[$i]);
+     $sType = CardSubType($theirItems[$i]);
+     $theirItemsOutput .= ClientRenderedCard(cardNumber:$theirItems[$i], overlay: ($theirItems[$i + 2] != 2 ? 1 : 0), counters:$theirItems[$i+1], controller:$otherPlayer, type:$type, sType:$sType);
+   }
+   echo($theirItemsOutput . "<BR>");
 
    //their permanents
-   echo("<br>");
+   $theirPermanentsOutput = "";
+   $theirPermanents = GetPermanents($playerID == 1 ? 2 : 1);
+   for ($i = 0; $i < count($theirPermanents); $i+=PermanentPieces()) {
+     if ($theirPermanentsOutput != "") $theirPermanentsOutput .= "|";
+     $type = CardType($theirPermanents[$i]);
+     $sType = CardSubType($theirPermanents[$i]);
+     $theirPermanentsOutput .= ClientRenderedCard(cardNumber:$theirPermanents[$i], controller:$otherPlayer, type:$type, sType:$sType);
+   }
+   echo($theirPermanentsOutput . "<BR>");
 
 
    //my allies
-   echo("<br>");
+    $myAlliesOutput = "";
+    $myAllies = GetAllies($playerID == 1 ? 1 : 2);
+    for ($i = 0; $i < count($myAllies); $i+=AllyPieces()) {
+     if ($myAlliesOutput != "") $myAlliesOutput .= "|";
+     $type = CardType($myAllies[$i]);
+     $sType = CardSubType($myAllies[$i]);
+     $myAlliesOutput .= ClientRenderedCard(cardNumber:$myAllies[$i], overlay: ($myAllies[$i + 1] != 2 ? 1 : 0), counters:$myAllies[$i+6], controller:$otherPlayer, type:$type, sType:$sType, isFrozen:($myAllies[$i + 3] == 1));
+    }
+    echo($myAlliesOutput . "<BR>");
 
    //my auras
-   echo("<br>");
+   $myAurasOutput = "";
+   $myAuras = GetAuras($playerID == 1 ? 1 : 2);
+   for ($i = 0; $i < count($myAuras); $i+=AuraPieces()) {
+     if ($myAurasOutput != "") $myAurasOutput .= "|";
+     $type = CardType($myAuras[$i]);
+     $sType = CardSubType($myAuras[$i]);
+     $myAurasOutput .= ClientRenderedCard(cardNumber:$myAuras[$i], overlay: ($myAuras[$i + 1] != 2 ? 1 : 0), counters:$myAuras[$i+2], controller:$otherPlayer, type:$type, sType:$sType);
+   }
+   echo($myAurasOutput . "<BR>");
 
    //my items
-   echo("<br>");
+   $myItemsOutput = "";
+   $myItems = GetItems($playerID == 1 ? 1 : 2);
+   for ($i = 0; $i < count($myItems); $i+=ItemPieces()) {
+     if ($myItemsOutput != "") $myItemsOutput .= "|";
+     $type = CardType($myItems[$i]);
+     $sType = CardSubType($myItems[$i]);
+     $myItemsOutput .= ClientRenderedCard(cardNumber:$myItems[$i], overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters:$myItems[$i+1], controller:$otherPlayer, type:$type, sType:$sType);
+   }
+   echo($myItemsOutput . "<BR>");
 
    //my permanents
+   $myPermanentsOutput = "";
+   $myPermanents = GetPermanents($playerID == 1 ? 1 : 2);
+   for ($i = 0; $i < count($myPermanents); $i+=PermanentPieces()) {
+     if ($myPermanentsOutput != "") $myPermanentsOutput .= "|";
+     $type = CardType($myPermanents[$i]);
+     $sType = CardSubType($myPermanents[$i]);
+     $myPermanentsOutput .= ClientRenderedCard(cardNumber:$myPermanents[$i], controller:$otherPlayer, type:$type, sType:$sType);
+   }
+   echo($myPermanentsOutput . "<BR>");
+
    echo("JOB DONE");
 }
 
