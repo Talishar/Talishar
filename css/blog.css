@@ -87,6 +87,14 @@ body {
   text-align: left;
 }
 
+.articles a {
+  font-family: 'Helvetica', sans-serif;
+    font-weight: 600;
+    color: black;
+    text-align: center;
+    text-shadow: none;
+  }
+
 .blog-iframe {
   border: 3px solid black;
 }
