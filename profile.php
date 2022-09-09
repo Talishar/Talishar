@@ -158,7 +158,7 @@ if (isset($_SESSION["isPatron"])) {
     // Set the redirect url where the user will land after oAuth. That url is where the access code will be sent as a _GET parameter. This may be any url in your app that you can accept and process the access code and login
 
     // In this case, say, /patreon_login request uri
-    $redirect_uri = "https://www.fleshandbloodonline.com/FaBOnline/PatreonLogin.php"; // Replace http://mydomain.com/patreon_login with the url at your site which is going to receive users returning from Patreon confirmation
+    $redirect_uri = "https://www.talishar.net/game/PatreonLogin.php"; // Replace http://mydomain.com/patreon_login with the url at your site which is going to receive users returning from Patreon confirmation
 
     // Generate the oAuth url
     $href = 'https://www.patreon.com/oauth2/authorize?response_type=code&client_id=' . $client_id . '&redirect_uri=' . urlencode($redirect_uri);
