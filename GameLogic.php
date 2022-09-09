@@ -190,31 +190,29 @@ function ProcessDealDamageEffect($cardID)
   }
 }
 
-function ArcaneHitEffect($me, $source, $target, $damage)
+function ArcaneHitEffect($player, $source, $target, $damage)
 {
+  $otherPlayer = ($player == 1 ? 2 : 1);
   switch ($source) {
     case "UPR104":
-      if (MZIsPlayer($target)) {
-        AddDecisionQueue("LESSTHANPASS", MZPlayerID($me, $target), 1, 1);
-        AddDecisionQueue("ENCASEDAMAGE", MZPlayerID($me, $target), "-", 1);
+      if (MZIsPlayer($target) && $damage > 0) {
+        AddDecisionQueue("ENCASEDAMAGE", MZPlayerID($player, $target), "-", 1);
       }
       break;
     case "UPR113": case "UPR114": case "UPR115":
-      if (MZIsPlayer($target)) PayOrDiscard(MZPlayerID($me, $target), 2, true);
+      if (MZIsPlayer($target)) PayOrDiscard(MZPlayerID($player, $target), 2, true);
       break;
     case "UPR119": case "UPR120": case "UPR121":
-      if (MZIsPlayer($target)) {
-        AddDecisionQueue("LESSTHANPASS", MZPlayerID($me, $target), 1, 1);
-        AddDecisionQueue("FINDINDICES", MZPlayerID($me, $target), "SEARCHMZ,THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", MZPlayerID($me, $target), "Choose which card you want to freeze", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", MZPlayerID($me, $target), "<-", 1);
-        AddDecisionQueue("MZOP", MZPlayerID($me, $target), "FREEZE", 1);
+      if (MZIsPlayer($target) && $damage > 0) {
+        AddDecisionQueue("FINDINDICES", $player, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to freeze", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "FREEZE", 1);
       }
       break;
     case "UPR122": case "UPR123": case "UPR124":
-      if (MZIsPlayer($target)) {
-        AddDecisionQueue("LESSTHANPASS", MZPlayerID($me, $target), 1, 1);
-        AddDecisionQueue("PLAYAURA", MZPlayerID($me, $target), "ELE111", 1);
+      if (MZIsPlayer($target) && $damage > 0) {
+        AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "ELE111", 1);
         break;
       }
     default:
@@ -2330,7 +2328,7 @@ function MainCharacterHitAbilities()
         }
         break;
       case "CRU047":
-        if (CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
+        if (CardType($attackID) == "AA" && SearchCharacterActive($mainPlayer, $characterID)) {
           AddCurrentTurnEffectFromCombat("CRU047", $mainPlayer);
           $mainCharacter[$i + 1] = 1;
         }
@@ -2416,9 +2414,6 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) {
           $modifier += 1;
         }
-        break;
-      case "CRU046":
-        if (GetClassState($mainPlayer, $CS_NumAttacks) == 2) $modifier += 1;
         break;
       default:
         break;
@@ -3950,7 +3945,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
       return $parameter;
     case "ARCANEHITEFFECT":
-      if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //Source, target, damage
+      if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //player, source, target, damage
       return $lastResult;
     case "ARCANECHOSEN":
       if ($lastResult > 0) {

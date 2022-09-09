@@ -15,7 +15,7 @@ include_once "./includes/dbh.inc.php";
 
   $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
   $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
-  $redirect_uri = "https://www.fleshandbloodonline.com/FaBOnline/PatreonLogin.php";
+  $redirect_uri = "https://www.talishar.net/game/PatreonLogin.php";
 
 
   // The below code snippet needs to be active wherever the the user is landing in $redirect_uri parameter above. It will grab the auth code from Patreon and get the tokens via the oAuth client

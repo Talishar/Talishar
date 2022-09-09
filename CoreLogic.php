@@ -338,7 +338,7 @@ function ArsenalHitEffects()
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $CS_NumLess3PowAAPlayed;
+  global $currentPlayer, $CS_NumLess3PowAAPlayed, $CS_NumAttacks;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
@@ -352,6 +352,12 @@ function CharacterPlayCardAbilities($cardID, $from)
           AddCurrentTurnEffect($characterID, $currentPlayer);
           WriteLog(CardLink($characterID, $characterID) . " gives the attack +1 and makes the damage unable to be prevented.");
           $character[$i+1] = 1;
+        }
+        break;
+      case "CRU046":
+        if (GetClassState($currentPlayer, $CS_NumAttacks) == 2) {
+          AddCurrentTurnEffect($characterID, $currentPlayer);
+          $character[$i + 1] = 1;
         }
         break;
       default:
@@ -384,7 +390,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "ARC075":
       case "ARC076":
-        if (!IsStaticType(CardType($cardID), $from, $cardID)) {
+        if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
@@ -595,19 +601,19 @@ function CurrentEffectDamageModifiers($player, $source, $type)
   return $modifier;
 }
 
-function CurrentEffectDamageEffects($player, $source, $type, $damage)
+function CurrentEffectDamageEffects($target, $source, $type, $damage) // Briar, ELE111, ARCANE, DAMAGE
 {
   global $currentTurnEffects;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
-    if($currentTurnEffects[$i+1] == $player) continue;
+    if($currentTurnEffects[$i+1] == $target) continue;
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
-      case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA") PlayAura("ELE111", $player); break;
-      case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($player, 1); break;
-      case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($player); break;
-      case "UPR106": case "UPR107": case "UPR108": if((IsHeroAttackTarget() || IsHeroAttackTarget() == "") && $type == "ARCANE") { PlayAura("ELE111", $player, $damage); $remove = 1; } break;
+      case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA") PlayAura("ELE111", $target); break;
+      case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($target, 1); break;
+      case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($target); break;
+      case "UPR106": case "UPR107": case "UPR108": if((IsHeroAttackTarget()) && $type == "ARCANE") { PlayAura("ELE111", $target, $damage); $remove = 1; } break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
