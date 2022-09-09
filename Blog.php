@@ -12,6 +12,12 @@ include_once 'Header.php';
 </head>
 <div class="grid-even-collum">
   <div class="articles">
+    <h2>Interview with <a class="talishar.net" href="https://twitter.com/TheCombatChain">The Combat Chain</a>!</h2>
+    <p> Do you want to heard more about Talishar? Go listen to our last interview.
+    <br>We answer a lot of question and share our thoughts about the future of the platform! ❤️</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/dXEkeUbZxvc" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="articles">
     <h2>Welcome Talishar.net 🍾</h2>
     <h3>Good morning #fabtcg player!<br>
       We are happy to present you
