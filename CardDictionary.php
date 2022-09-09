@@ -991,7 +991,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase == "D" && $subtype == "Trap" && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
-  if ((($cardType == "I" && $from == "HAND") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
+  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if (($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
   switch ($cardType) {
     case "A":

@@ -396,7 +396,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "ELE062":
       case "ELE063":
-        WriteLog(GetClassState($currentPlayer, $CS_NumNonAttackCards));
         if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
