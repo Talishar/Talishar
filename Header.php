@@ -48,7 +48,7 @@ if (isset($_SESSION["useruid"])) {
       <ul>
         <li><a href="Blog.php">Blog</a></li>
         <li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>
-        <li><a target="_blank" href="https://twitter.com/fabtcg_online">Twitter</a></li>
+        <li><a target="_blank" href="https://twitter.com/talishar_online">Twitter</a></li>
         <li><a target="_blank" href="https://www.patreon.com/bePatron?u=36985868">Support Us</a></li>
       </ul>
 
