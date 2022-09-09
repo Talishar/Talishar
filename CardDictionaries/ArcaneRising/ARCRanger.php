@@ -151,7 +151,7 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC042", 1);
+        AddDecisionQueue("BULLEYESBRACERS", $currentPlayer, $cardID, 1);
         return "";
       case "ARC044":
         MyDrawCard();
