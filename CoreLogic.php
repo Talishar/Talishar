@@ -390,7 +390,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "ARC075":
       case "ARC076":
-        if (!IsStaticType(CardType($cardID), $from, $cardID)) {
+        if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
