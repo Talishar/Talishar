@@ -130,7 +130,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention;
+    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost;
     $rv = "";
     switch($cardID)
     {
@@ -156,7 +156,7 @@
         return $rv;
       case "UPR109":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        $numFrostBite = $resourcesPaid/2;
+        $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
         for($i=0; $i<$numFrostBite; ++$i)
         {
           PlayAura("ELE111", $otherPlayer);
