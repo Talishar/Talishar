@@ -319,6 +319,7 @@ function HasCrush($cardID)
 function ProcessCrushEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $defCharacter;
+  if (CardType($cardID) == "AA" && SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2)) return;
   if (IsHeroAttackTarget()) {
     switch ($cardID) {
       case "WTR043":
