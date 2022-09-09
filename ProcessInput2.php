@@ -1086,7 +1086,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $playerID, $turn, $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $CS_NumAddedToSoul, $layers;
   global $combatChainState, $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NextNAACardGoAgain, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $CS_LayerTarget, $lastPlayed, $CS_PlayIndex;
-  global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex;
+  global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost;
   $resources = &GetResources($currentPlayer);
   $pitch = &GetPitch($currentPlayer);
   $dynCostResolved = intval($dynCostResolved);
@@ -1134,7 +1134,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (!$playingCard) $dynCost = BlockDynamicCost($cardID);
       else $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
-      if ($dynCost != "") AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
+      if ($dynCost != "") {
+        AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
+      }
       AddPostPitchDecisionQueue($cardID, $from, $index); // <-- For equipments
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
