@@ -4066,6 +4066,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return 1;
       }
       return $lastResult;
+    case "AZALEA":
+      $arsenal = &GetArsenal($player);
+      AddCurrentTurnEffect($parameter, $player, "DECK", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+      return 1;
     case "AWAKENINGTOKENS":
       $num = GetHealth($player == 1 ? 2 : 1) - GetHealth($player);
       for ($i = 0; $i < $num; ++$i) {
