@@ -401,9 +401,11 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
   $layers = array_values($layers);
   switch ($goesWhere) {
     case "GY":
-      AddGraveyard($player, $cardID, "LAYER");
+      AddGraveyard($cardID, $player, "LAYER");
+      break;
     case "HAND":
       AddPlayerHand($cardID, $player, "LAYER");
+      break;
     default:
       break;
   }
