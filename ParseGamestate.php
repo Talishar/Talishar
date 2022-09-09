@@ -14,7 +14,7 @@ $mpgBuiltFor = -1;
 $myStateBuiltFor = -1;
 
 $filename = "./Games/" . $gameName . "/gamestate.txt";
-/*
+
 $fileTries = 0;
 $targetTries = ($playerID == 1 ? 5 : 100);
 $waitTime = ($playerID == 1 ? 100000 : 1000000);
@@ -45,7 +45,7 @@ if ($fileTries == $targetTries) {
   }
   exit;
 }
-*/
+
 if (!file_exists($filename)) exit;
 $handler = fopen($filename, "r");
 
