@@ -430,7 +430,6 @@ function ContinueDecisionQueue($lastResult = "")
         $otherPlayer = $currentPlayer == 1 ? 2 : 1;
         BuildMyGamestate($currentPlayer);
       }
-      SetClassState($currentPlayer, $CS_LastDynCost, $lastResult);
       PlayCard($params[0], $params[1], $lastResult, $params[2]);
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
