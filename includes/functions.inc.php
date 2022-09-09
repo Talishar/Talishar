@@ -554,7 +554,7 @@ function SendEmail($userEmail, $url) {
   require '../vendor/autoload.php';
 
   $email = new Mail();
-  $email->setFrom("no-reply@fleshandbloodonline.com", "No-Reply");
+  $email->setFrom("no-reply@talishar.net", "No-Reply");
   $email->setSubject("Talishar Password Reset");
   $email->addTo($userEmail);
   $email->addContent(
