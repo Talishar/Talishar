@@ -216,11 +216,14 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid)
     case "ARC191":
     case "ARC192":
     case "ARC193":
-      $deck = GetDeck($currentPlayer);
-      if (count($deck) == 0) return "Your deck is empty. Ravenous Rabble does not get negative attack.";
-      $pitchVal = PitchValue($deck[0]);
-      SetCCAttackModifier(0, -$pitchVal);
-      return "Reveals " . CardLink($deck[0], $deck[0]) . " and gets -" . $pitchVal . " attack.";
+      if (CanRevealCards($currentPlayer)) {
+        $deck = GetDeck($currentPlayer);
+        if (count($deck) == 0) return "Your deck is empty. Ravenous Rabble does not get negative attack.";
+        $pitchVal = PitchValue($deck[0]);
+        SetCCAttackModifier(0, -$pitchVal);
+        return "Reveals " . CardLink($deck[0], $deck[0]) . " and gets -" . $pitchVal . " attack.";
+      }
+      return "Reveal has been prevented.";
     case "ARC200":
     case "ARC201":
     case "ARC202":

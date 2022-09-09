@@ -500,13 +500,20 @@ function CountAura($cardID, $player)
   return $count;
 }
 
-
 function GetItemIndex($cardID, $player)
 {
   $items = &GetItems($player);
-  $count = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     if ($items[$i] == $cardID) return $i;
+  }
+  return -1;
+}
+
+function GetAuraIndex($cardID, $player)
+{
+  $auras = &GetAuras($player);
+  for ($i = 0; $i < count($auras); $i += ItemPieces()) {
+    if ($auras[$i] == $cardID) return $i;
   }
   return -1;
 }
