@@ -3945,7 +3945,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
       return $parameter;
     case "ARCANEHITEFFECT":
-      if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //Source, target, damage
+      if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //player, source, target, damage
       return $lastResult;
     case "ARCANECHOSEN":
       if ($lastResult > 0) {

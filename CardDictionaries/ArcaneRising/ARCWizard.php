@@ -233,7 +233,8 @@
   // 1: Their Hero only
   // 2: Any Target
   // 3: Their Hero + Their Allies
-  function DealArcane($damage, $OpposingOnly=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false)
+  // 4: My Hero only (For afflications)
+  function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
@@ -252,7 +253,7 @@
       if($mayAbility) { PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
       else { PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
-      PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
+      PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
       PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
       if($type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
@@ -276,7 +277,7 @@
       }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $OpposingOnly);
+      AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
       if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
       else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
@@ -299,10 +300,12 @@
   // 1: Their Hero only
   // 2: Any Target
   // 3: Their Hero + Their Alliers
+  // 4: My Hero only (For afflications)
   function GetArcaneTargetIndices($player, $target)
   {
     global $CS_ArcaneTargetsSelected;
     $otherPlayer = ($player == 1 ? 2 : 1);
+    if ($target == 4) return "MYCHAR-0";
     if($target != 3) $rv = "THEIRCHAR-0";
     else $rv = "";
     if(($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2)
