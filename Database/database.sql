@@ -147,7 +147,8 @@ CREATE TABLE `badges` (
   `badgeId` int(11) NOT NULL,
   `topText` varchar(128) DEFAULT NULL,
   `bottomText` varchar(128) DEFAULT NULL,
-  `image` varchar(128) DEFAULT NULL
+  `image` varchar(128) DEFAULT NULL,
+  `link` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
