@@ -598,11 +598,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       if (substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
-      else if ($option[0] == "LAYER" && $currentPlayer == $defPlayer) {
+      else if ($option[0] == "LAYER") {
         $playerBorderColor = $layers[$i * LayerPieces() + 1];
-      }
-      else if ($option[0] == "LAYER" && $currentPlayer == $mainPlayer) {
-        $playerBorderColor = $layers[$i * LayerPieces() + 1] == 2 ? 1 : 2;
       }
 
       if ($option[0] == "THEIRARS" && $theirArsenal[$option[1] + 1] == "DOWN") $card = $TheirCardBack;

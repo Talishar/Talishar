@@ -96,25 +96,36 @@ function SearchInner(&$array, $player, $zone, $count, $type, $subtype, $maxCost,
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
     $cardID = $array[$i];
-    if (($type == "" || CardType($cardID) == $type)
-      && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
-      && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
-      && ($minCost == -1 || CardCost($cardID) >= $minCost)
-      && ($class == "" || ClassContains($cardID, $class, $player))
-      && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player))
-      && ($pitch == -1 || PitchValue($cardID) == $pitch)
-      && ($maxAttack == -1 || AttackValue($cardID) <= $maxAttack)
-      && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
-    ) {
-      if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
-      if ($phantasmOnly && !HasPhantasm($cardID)) continue;
-      if ($specOnly && !IsSpecialization($cardID)) continue;
-      if ($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;
-      if ($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
+    if (!isPriorityStep($cardID)) {
+      if (($type == "" || CardType($cardID) == $type)
+        && ($subtype == "" || DelimStringContains(CardSubType($cardID), $subtype))
+        && ($maxCost == -1 || CardCost($cardID) <= $maxCost)
+        && ($minCost == -1 || CardCost($cardID) >= $minCost)
+        && ($class == "" || ClassContains($cardID, $class, $player))
+        && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player))
+        && ($pitch == -1 || PitchValue($cardID) == $pitch)
+        && ($maxAttack == -1 || AttackValue($cardID) <= $maxAttack)
+        && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
+      ) {
+        if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
+        if ($phantasmOnly && !HasPhantasm($cardID)) continue;
+        if ($specOnly && !IsSpecialization($cardID)) continue;
+        if ($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;
+        if ($cardList != "") $cardList = $cardList . ",";
+        $cardList = $cardList . $i;
+      }
     }
   }
   return $cardList;
+}
+
+function isPriorityStep($cardID)
+{
+  switch ($cardID) {
+    case "ENDTURN": case "RESUMETURN": case "PHANTASM": case "FINALIZECHAINLINK": case "DEFENDSTEP":
+      return true;
+    default: return false;
+  }
 }
 
 //Parses DQ subparams into search format
