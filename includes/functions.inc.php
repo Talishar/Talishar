@@ -293,7 +293,7 @@ function logCompletedGameStats($reportingServer = false) {
 		mysqli_stmt_execute($stmt);
 		$gameResultID = mysqli_insert_id($conn);
 		mysqli_stmt_close($stmt);
-		$challengeId = 2;
+		$challengeId = 3;
 		if($p1IsChallengeActive == "1" && $p1id != "-")
 		{
 			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
