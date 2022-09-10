@@ -18,8 +18,9 @@ $decksToTry = TryGet("decksToTry");
 $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $set = TryGet("set");
+$matchup = TryGet("matchup", "");
 
-if(GetCachePiece($gameName, $playerID + 6) != "")
+if($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "")
 {
   echo("That player has already joined the game.");
   exit;
@@ -97,7 +98,7 @@ include "CardDictionary.php";
 include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
 
-if ($playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
+if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   if ($gameStatus >= $MGS_GameStarted) {
     header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3");
   } else {
@@ -125,6 +126,7 @@ if ($decklink != "") {
     $decklinkArr = explode("/", $decklink);
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/" . $slug;
+    if($matchup != "") $apiLink .= "?matchupId=" . $matchup;
   }
 
   curl_setopt($curl, CURLOPT_URL, $apiLink);
@@ -139,6 +141,8 @@ if ($decklink != "") {
   }
   $deckObj = json_decode($apiDeck);
   $deckName = $deckObj->{'name'};
+  if($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
+  else if($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
   $cards = $deckObj->{'cards'};
   $deckCards = "";
   $sideboardCards = "";
@@ -361,46 +365,50 @@ if ($decklink != "") {
   copy($deckFile, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 }
 
-if ($playerID == 2) {
+if($matchup == "")
+{
+  if ($playerID == 2) {
 
-  $gameStatus = $MGS_Player2Joined;
-  if (file_exists("./Games/" . $gameName . "/gamestate.txt")) unlink("./Games/" . $gameName . "/gamestate.txt");
+    $gameStatus = $MGS_Player2Joined;
+    if (file_exists("./Games/" . $gameName . "/gamestate.txt")) unlink("./Games/" . $gameName . "/gamestate.txt");
 
-  $firstPlayerChooser = 1;
-  $p1roll = 0;
-  $p2roll = 0;
-  $tries = 10;
-  while ($p1roll == $p2roll && $tries > 0) {
-    $p1roll = rand(1, 6) + rand(1, 6);
-    $p2roll = rand(1, 6) + rand(1, 6);
-    WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.");
-    --$tries;
+    $firstPlayerChooser = 1;
+    $p1roll = 0;
+    $p2roll = 0;
+    $tries = 10;
+    while ($p1roll == $p2roll && $tries > 0) {
+      $p1roll = rand(1, 6) + rand(1, 6);
+      $p2roll = rand(1, 6) + rand(1, 6);
+      WriteLog("Player 1 rolled $p1roll and Player 2 rolled $p2roll.");
+      --$tries;
+    }
+    $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
+    WriteLog("Player $firstPlayerChooser chooses who goes first.");
+    $gameStatus = $MGS_ChooseFirstPlayer;
+    $joinerIP = $_SERVER['REMOTE_ADDR'];
   }
-  $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
-  WriteLog("Player $firstPlayerChooser chooses who goes first.");
-  $gameStatus = $MGS_ChooseFirstPlayer;
-  $joinerIP = $_SERVER['REMOTE_ADDR'];
+
+  if ($playerID == 1 && isset($_SESSION["useruid"])) $p1uid = $_SESSION["useruid"];
+  if ($playerID == 2 && isset($_SESSION["useruid"])) $p2uid = $_SESSION["useruid"];
+  if ($playerID == 1 && isset($_SESSION["userid"])) $p1id = $_SESSION["userid"];
+  if ($playerID == 2 && isset($_SESSION["userid"])) $p2id = $_SESSION["userid"];
+  if ($playerID == 1 && isset($_SESSION["isPatron"])) $p1IsPatron = "1";
+  if ($playerID == 2 && isset($_SESSION["isPatron"])) $p2IsPatron = "1";
+
+  if($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());
+
+  WriteGameFile();
+  SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
+  SetCachePiece($gameName, $playerID + 3, "0");
+  SetCachePiece($gameName, $playerID + 6, $character);
+  GamestateUpdated($gameName);
+
+  //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
+  //$_SESSION["authKey"] = $authKey;
+  if($playerID == 1) $_SESSION["p1AuthKey"] = $p1Key;
+  if($playerID == 2) $_SESSION["p2AuthKey"] = $p2Key;
 }
 
-if ($playerID == 1 && isset($_SESSION["useruid"])) $p1uid = $_SESSION["useruid"];
-if ($playerID == 2 && isset($_SESSION["useruid"])) $p2uid = $_SESSION["useruid"];
-if ($playerID == 1 && isset($_SESSION["userid"])) $p1id = $_SESSION["userid"];
-if ($playerID == 2 && isset($_SESSION["userid"])) $p2id = $_SESSION["userid"];
-if ($playerID == 1 && isset($_SESSION["isPatron"])) $p1IsPatron = "1";
-if ($playerID == 2 && isset($_SESSION["isPatron"])) $p2IsPatron = "1";
-
-if($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());
-
-WriteGameFile();
-SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
-SetCachePiece($gameName, $playerID + 3, "0");
-SetCachePiece($gameName, $playerID + 6, $character);
-GamestateUpdated($gameName);
-
-//$authKey = ($playerID == 1 ? $p1Key : $p2Key);
-//$_SESSION["authKey"] = $authKey;
-if($playerID == 1) $_SESSION["p1AuthKey"] = $p1Key;
-if($playerID == 2) $_SESSION["p2AuthKey"] = $p2Key;
 session_write_close();
 //header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
 header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
