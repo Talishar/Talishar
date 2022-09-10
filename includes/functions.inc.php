@@ -320,32 +320,42 @@ function logCompletedGameStats($reportingServer = false) {
 	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
 	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
 	SendFabDBResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
+	SendFabDBResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
 	mysqli_close($conn);
 }
 
 
 function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 {
-	global $FaBraryKey, $gameName;
+	global $fabDBToken, $fabDBSecret, $gameName;
 	if(!str_contains($decklink, "fabdb.net")) return;
 
-	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
-	//WriteLog($payload);
-/*
-	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/01G7FD2B3YQAMR8NJ4B3M58H96/results";
+	$linkArr = explode("/", $decklink);
+	$slug = array_pop($linkArr);
+
+	$url = "https://api.fabdb.net/game/results/" . $slug;
 	$ch = curl_init($url);
 	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+	$payloadArr = json_decode($payload, true);
+	$payloadArr["time"] = microtime();
+	$payloadArr["hash"] = hash("sha512", $fabDBSecret . $payloadArr["time"]);
+	$payloadArr["player"] = $player;
+	//$payloadArr = ksort($payloadArr);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloadArr));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$headers = array(
-		"x-api-key: " . $FaBraryKey,
-		"Content-Type: application/json",
-	);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
+	$headers = array(
+		"Authorization: Bearer " . $fabDBToken,
+	);
+	//"Content-Type: application/json",
+
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 	$result = curl_exec($ch);
+	$information = curl_getinfo($ch);
+	WriteLog($result);
 	curl_close($ch);
-	*/
 }
 
 function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero)
@@ -554,7 +564,7 @@ function SendEmail($userEmail, $url) {
   require '../vendor/autoload.php';
 
   $email = new Mail();
-  $email->setFrom("no-reply@talishar.net", "No-Reply");
+  $email->setFrom("no-reply@fleshandbloodonline.com", "No-Reply");
   $email->setSubject("Talishar Password Reset");
   $email->addTo($userEmail);
   $email->addContent(
