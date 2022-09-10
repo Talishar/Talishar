@@ -654,13 +654,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ELE062": case "ELE063":
-        PlayAura("ELE110", $player);
-        WriteLog(CardLink($parameter, $parameter) . " created an Embodiment of Lightning aura.");
+      PlayAura("ELE110", $player);
+      WriteLog(CardLink($parameter, $parameter) . " created an Embodiment of Lightning aura.");
       break;
-    case "ELE206": case "ELE207": case "ELE208":
-      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
-      AddCurrentTurnEffect($parameter, $player);
-      DestroyAuraUniqueID($player, $uniqueID);
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
@@ -676,6 +672,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("DEALDAMAGE", $otherPlayer, 1 . "-" . $combatChain[0] . "-" . "COMBAT", 1);
+      break;
+    case "ELE206": case "ELE207": case "ELE208":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "ELE222":
+      WriteLog("Deals 2 arcane damage to target hero.");
+      DealArcane(2, 0, "PLAYCARD", $parameter);
       break;
     case "EVR018":
       if (!IsAllyAttacking()) {
