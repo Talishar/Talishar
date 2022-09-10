@@ -1190,6 +1190,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "W";
+    case "CRU088":
+    case "CRU089":
+    case "CRU090":
+      if (count($combatChain) == 0) return true;
+      $type = CardType($combatChain[0]);
+      return $type != "W";
     case "CRU097":
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
