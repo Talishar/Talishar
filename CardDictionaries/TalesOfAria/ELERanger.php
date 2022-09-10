@@ -140,7 +140,7 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate", 1);
         AddDecisionQueue("SHIVER", $currentPlayer, "-", 1);
         return "";
       case "ELE034":
@@ -149,7 +149,7 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
         AddDecisionQueue("VOLTAIRE", $currentPlayer, "-", 1);
         return "";
       case "ELE035":
