@@ -526,7 +526,7 @@ function AuraPlayAbilities($cardID, $from="")
   $auras = &GetAuras($currentPlayer);
   $attackType = CardType($cardID);
   $numRunechants = CountAura("ARC112", $currentPlayer);
-  if ($numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
+  if ($attackType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
@@ -559,7 +559,7 @@ function AuraAttackAbilities($attackID)
   $attackType = CardType($attackID);
   $attackSubType = CardSubType($attackID);
   $numRunechants = CountAura("ARC112", $mainPlayer);
-  if ($numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
+  if ($attackType == "W" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
