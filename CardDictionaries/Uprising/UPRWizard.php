@@ -157,6 +157,7 @@
       case "UPR109":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
+        WriteLog(CardLink($cardID, $cardID) . " was played with X of " . GetClassState($currentPlayer, $CS_LastDynCost) . " and created " . $numFrostBite . " Frostbites.");
         for($i=0; $i<$numFrostBite; ++$i)
         {
           PlayAura("ELE111", $otherPlayer);
@@ -166,7 +167,7 @@
         {
           DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer);
         }
-        return "Creates $numFrostBite Frostbites.";
+        return "";
       case "UPR110": case "UPR111": case "UPR112":
         if($cardID == "UPR110") $damage = 5;
         else if($cardID == "UPR111") $damage = 4;

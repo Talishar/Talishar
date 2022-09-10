@@ -190,7 +190,7 @@
       case "MON231":
         $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
         $numRevealed = 3 + $xVal;
-        WriteLog("Was played with X of " . $xVal . " and reveals " . $numRevealed . " cards.");
+        WriteLog(CardLink($cardID, $cardID) . "wWas played with X of " . $xVal . " and reveals " . $numRevealed . " cards.");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
