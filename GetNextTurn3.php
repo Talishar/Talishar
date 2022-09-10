@@ -27,6 +27,8 @@ include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 
+header("Access-Control-Allow-Origin: https://talishar.net");
+
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
 
