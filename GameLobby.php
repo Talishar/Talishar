@@ -178,12 +178,38 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     ?>
   </div>
 
+  <div id="matchupTab" style="position:absolute; z-index:1; top:20px; right:10px; width:160px; height:73px;">
+    <h1>Matchups</h2>
+  </div>
+  <div id="matchups" style="position:absolute; z-index:1; top:95px; right:10px; bottom:3%; width:160px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+
+    <?php
+
+      $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
+      $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
+      if($matchups != NULL)
+      {
+        for($i=0; $i<count($matchups); ++$i)
+        {
+          echo("<div style='cursor:pointer; font-size:24px;'>");
+          $matchuplink = $redirectPath . "/JoinGameInput.php?gameName=" . $gameName . "&playerID=" . $playerID . "&fabdb=" . $decklink . "&matchup=" . $matchups[$i]->{"matchupId"};
+          echo("<a href='" . $matchuplink . "'>");
+          echo("<input type='button' value='" . $matchups[$i]->{"name"} . "' />");
+          echo("</a>");
+          echo("</div>");
+        }
+      }
+
+     ?>
+
+  </div>
+
   <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:320px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
 
     <h1>Your Equipment</h1>
   </div>
 
-  <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
@@ -442,7 +468,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
   function DisplayEquipRow($equip, $equipSB, $name)
   {
-    $cardSize = 145;
+    $cardSize = 110;
     $count = 0;
     if ($equip != "" || count($equipSB) > 0) echo ("<tr>");
     if ($equip != "") {
@@ -469,7 +495,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
   function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
   {
-    $cardSize = 145;
+    $cardSize = 110;
     $count = 0;
     if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr>");
     if ($weapon1 != "") {
