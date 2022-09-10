@@ -340,7 +340,6 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	$payloadArr["time"] = microtime();
 	$payloadArr["hash"] = hash("sha512", $fabDBSecret . $payloadArr["time"]);
 	$payloadArr["player"] = $player;
-	//$payloadArr = ksort($payloadArr);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloadArr));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -348,13 +347,11 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	$headers = array(
 		"Authorization: Bearer " . $fabDBToken,
 	);
-	//"Content-Type: application/json",
 
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 	$result = curl_exec($ch);
 	$information = curl_getinfo($ch);
-	WriteLog($result);
 	curl_close($ch);
 }
 
