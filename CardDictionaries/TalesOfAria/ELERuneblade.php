@@ -157,8 +157,7 @@
       case "ELE222":
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
-          $rv = "Deals 2 arcane damage to target hero.";
-          DealArcane(2, 0, "PLAYCARD", $cardID);
+          AddLayer("TRIGGER", $currentPlayer, $cardID);
         }
         return $rv;
       case "ELE223":
