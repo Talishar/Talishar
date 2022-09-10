@@ -221,40 +221,28 @@
 
       function CardHasAltArt(cardID) {
         switch (cardID) {
-          case "ELE146":
+          case "WTR002": case "WTR162": case "WTR224": 
             return true;
-          case "MON155":
+          case "MON155": case "MON215": case "MON216": 
+          case "MON217": case "MON219": case "MON220": 
             return true;
-          case "MON219":
+          case "ELE146": 
             return true;
-          case "MON220":
+          case "UPR006": case "UPR007": case "UPR008":
+          case "UPR009": case "UPR010": case "UPR011":
+          case "UPR012": case "UPR013": case "UPR014":
+          case "UPR015": case "UPR016": case "UPR017":
             return true;
-          case "UPR042":
+          case "UPR042": case "UPR043": case "UPR169":
             return true;
-          case "UPR043":
+          case "UPR406": case "UPR407": case "UPR408":
+          case "UPR409": case "UPR410": case "UPR411":
+          case "UPR412": case "UPR413": case "UPR414":
+          case "UPR415": case "UPR416": case "UPR417":
             return true;
-          case "WTR002":
+          case "DYN234": 
             return true;
-          case "WTR162":
-            return true;
-          case "WTR224":
-            return true;
-          case "UPR406":
-          case "UPR407":
-          case "UPR408":
-          case "UPR409":
-          case "UPR410":
-          case "UPR411":
-          case "UPR412":
-          case "UPR413":
-          case "UPR414":
-          case "UPR415":
-          case "UPR416":
-          case "UPR417":
-            return true;
-          case "DYN234":
-            return true;
-          default:
+        default:
             return false;
         }
       }
