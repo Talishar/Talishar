@@ -1894,7 +1894,7 @@ function PitchAbility($cardID)
   switch ($cardID) {
     case "WTR000":
       if (IHaveLessHealth()) {
-        if (GainHealth(1, $currentPlayer)) WriteLog("Heart of Fyendal gained 1 health.");
+        if (GainHealth(1, $currentPlayer)) WriteLog(CardLink($cardID, $cardID) . " gained 1 health.");
       }
       break;
     case "ARC000":
@@ -1904,11 +1904,11 @@ function PitchAbility($cardID)
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "EVR000":
-      WriteLog("Grandeur of Valahai created a Seismic Surge when it was pitched.");
+      WriteLog(CardLink($cardID, $cardID). " created a Seismic Surge.");
       PlayAura("WTR075", $currentPlayer);
       break;
     case "UPR000":
-      WriteLog("Blood of the Dracai makes each of your next 3 draconic cards this turn cost 1 less.");
+      WriteLog(CardLink($cardID, $cardID) . " makes the next 3 draconic cards you play cost 1 less this turn.");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     default:
