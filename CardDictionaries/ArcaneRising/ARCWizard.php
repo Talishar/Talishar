@@ -238,7 +238,7 @@
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
-    $damage += CurrentEffectArcaneModifier($source);
+    if($damage > 0) $damage += CurrentEffectArcaneModifier($source);
     if($fromQueue)
     {
       if(!$limitDuplicates)
@@ -256,7 +256,7 @@
       PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
       PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
-      if($type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
+      if($damage > 0 && $type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
       {
         PrependDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
         PrependDecisionQueue("PAYRESOURCES", $player, "1", 1);
@@ -267,7 +267,7 @@
     }
     else
     {
-      if($type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
+      if($damage > 0 && $type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
       {
         AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
         AddDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
