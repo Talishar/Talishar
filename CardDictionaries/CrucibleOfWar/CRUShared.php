@@ -781,21 +781,21 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return $rv;
     case "CRU105":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($index != -1) {
+      if ($from == "PLAY") {
         $items = &GetItems($currentPlayer);
-        $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-        if ($items[$index + 1] == 0 && ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer) && $items[$index + 2] == 2) {
-            AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization.
-            AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-            AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);
-            AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
-            $items[$index + 2] = 1;
-            $rv = "Gives target pistol +1.";
-          }
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        if (ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer) && $items[$index + 2] == 2 && $additionalCosts == "PAID") {
+          $items[$index + 2] = 1;
+          AddCurrentTurnEffect($cardID, $currentPlayer); //Show an effect for better visualization.
+          // AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+          // AddDecisionQueue("CHOOSECHARACTER", $currentPlayer, "<-", 1);      // TODO: Uncomment if they release 1H pistol
+          // AddDecisionQueue("ADDCHARACTEREFFECT", $currentPlayer, $cardID, 1);
+          $rv = "Gives target pistol +1.";
         } else {
+          $items[$index + 1] = 1;
           $rv = "Gains a steam counter.";
         }
+      }
       return $rv;
     case "CRU115": case "CRU116": case "CRU117":
       if ($cardID == "CRU115") $maxCost = 2;

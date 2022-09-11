@@ -11,13 +11,13 @@
       case "ARC004": return 1;
       case "ARC010":
         $abilityType = GetResolvedAbilityType($cardID);
-          return count($combatChain) > 0 ? 0 : 1;
+        return count($combatChain) > 0 ? 0 : 1;
       case "ARC017":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "ARC018":
-        $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
+        $abilityType = GetResolvedAbilityType($cardID);
+        return count($combatChain) > 0 ? 0 : 1;
       case "ARC040": return 1;
       case "ARC077": return 2;
       case "ARC078": return 2 + NumRunechants($currentPlayer);
@@ -52,7 +52,7 @@
         return ($items[$index + 1] > 0 ? "I" : "A");
       case "ARC018":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return ($items[$index + 1] > 0 ? "AR" : "A");
+        return (count($combatChain) > 0 && $items[$index + 1] > 0 ? "AR" : "A");
       case "ARC019": return "A";
       case "ARC035": return "I";
       case "ARC037": return "A";

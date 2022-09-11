@@ -174,14 +174,12 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if (count($combatChain) > 0) {
           if(ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer)) {
-            $items[$index + 1] = 0;
-            $items[$index + 2] = 1;
             $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
             $rv = "Gives your pistol attack go again.";
           }
         } else {
           $items[$index + 1] = 1;
-          $rv = "Gets a steam counter.";
+          $rv = "Gained a steam counter.";
         }
       }
       return $rv;
@@ -210,15 +208,12 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid)
     case "ARC018":
       $items = &GetItems($currentPlayer);
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      if ($index != -1) {
-        $items[$index + 1] = ($items[$index + 1] == 0 ? 1 : 0);
-        if ($items[$index + 1] == 0) {
-          $items[$index + 2] = 1;
+        if (count($combatChain) > 0) {
           $rv = "Makes your attack go on the bottom of your deck if it hits.";
         } else {
+          $items[$index + 1] = 1;
           $rv = "Gained a steam counter.";
         }
-      }
       return $rv;
     case "ARC019": //Convection Amplifier
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
