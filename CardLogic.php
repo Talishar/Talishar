@@ -944,8 +944,10 @@ function CardDiscarded($player, $discarded, $source = "")
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
+  WriteLog($discarded . " " . $source . " " . ClassContains($source, "BRUTE", $mainPlayer) . " " . CardType($source));
+  
   if ($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
-    WriteLog("Massacre Intimidated because it was discarded by a Brute attack action card..");
+    WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     Intimidate();
   }
 }

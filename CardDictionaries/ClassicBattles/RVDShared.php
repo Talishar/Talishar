@@ -137,7 +137,7 @@ function RVDPlayAbility($cardID)
     case "RVD013":
       WriteLog(CardLink($cardID, $cardID) . " draw a card.");
       MyDrawCard();
-      $card = DiscardRandom();
+      $card = DiscardRandom($currentPlayer, $cardID);
       $rv = "Discarded " . CardLink($card, $card);
       if (AttackValue($card) >= 6) {
         Intimidate();
