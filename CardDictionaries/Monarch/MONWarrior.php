@@ -124,10 +124,10 @@
         else { $rv = "Does not give the current attack go again."; }
         return $rv;
       case "MON033":
+        $addCostValue = (int) $additionalCosts;
+        AddDecisionQueue("BEACONOFVICTORY-2", $currentPlayer, $addCostValue, 1);
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0 && DelimStringContains($additionalCosts, "BEACONOFVICTORY"))
         {
-          $addCostValue = (int) $additionalCosts;
-          AddDecisionQueue("BEACONOFVICTORY-2", $currentPlayer, $addCostValue, 1);
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
