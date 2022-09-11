@@ -157,7 +157,7 @@
       case "UPR109":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
-        WriteLog(CardLink($cardID, $cardID) . " was played with X of " . GetClassState($currentPlayer, $CS_LastDynCost) . " and created " . $numFrostBite . " Frostbites.");
+        WriteLog(CardLink($cardID, $cardID) . " was played with X = " . GetClassState($currentPlayer, $CS_LastDynCost) . " and created " . $numFrostBite . " Frostbites.");
         for($i=0; $i<$numFrostBite; ++$i)
         {
           PlayAura("ELE111", $otherPlayer);

@@ -1627,8 +1627,8 @@ function PayAdditionalCosts($cardID, $from)
       HandToTopDeck($currentPlayer);
       break;
     case "MON033":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
       AddDecisionQueue("BEACONOFVICTORY-1", $currentPlayer, "-", 1);
