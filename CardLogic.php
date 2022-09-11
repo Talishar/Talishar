@@ -578,6 +578,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "CRU000":
       PlayAura("ARC112", $player);
       break;
+    case "CRU008":
+      Intimidate();
+      break;
     case "CRU028":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
@@ -944,11 +947,9 @@ function CardDiscarded($player, $discarded, $source = "")
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
-  WriteLog($discarded . " " . $source . " " . ClassContains($source, "BRUTE", $mainPlayer) . " " . CardType($source));
-  
   if ($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
-    Intimidate();
+    AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
 }
 

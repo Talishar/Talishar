@@ -1838,7 +1838,7 @@ function AuraDefaultHoldTriggerState($cardID)
     case "WTR075":
       return 0; //Seismic Surge
     case "ARC112":
-      return 0;
+      return 0; //Runechant
     case "CRU028":
       return 0; //Stamp Authority
     case "CRU029": case "CRU030": case "CRU031":
