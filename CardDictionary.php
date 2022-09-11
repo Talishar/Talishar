@@ -571,33 +571,6 @@ function DynamicCost($cardID)
   }
 }
 
-function BlockDynamicCost($cardID)
-{
-  switch ($cardID) {
-    case "MON089":
-      return "0,1";
-    case "MON241":
-    case "MON242":
-    case "MON243":
-    case "MON244":
-    case "RVD005":
-    case "RVD006":
-      return "0,1";
-    case "ELE203":
-      return "0,1";
-    case "UPR203":
-    case "UPR204":
-    case "UPR205":
-      return "0,1";
-    case "UPR191":
-    case "UPR192":
-    case "UPR193":
-      return "0,2";
-    default:
-      return "";
-  }
-}
-
 function PitchValue($cardID)
 {
   $set = CardSet($cardID);
