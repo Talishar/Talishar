@@ -1239,8 +1239,6 @@ function DoesAttackHaveGoAgain()
       return ComboActive($combatChain[0]);
     case "WTR161":
       return count($myDeck) == 0;
-    case "WTR162":
-      return GetDieRoll($mainPlayer) <= 4;
     case "ARC197": case "ARC198": case "ARC199":
       return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
     case "CRU010": case "CRU011": case "CRU012":
