@@ -41,7 +41,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         if(CardType($combatChain[$i-1]) == "E")
         {
           $index = FindDefCharacter($combatChain[$i-1]);
-          $defense += $defCharacter[$index+4] + DefCharacterBlockModifier($index);
+          $defense += $defCharacter[$index+4];
         }
         if($defense > 0) $totalDefense += $defense;
       }

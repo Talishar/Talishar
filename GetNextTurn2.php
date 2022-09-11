@@ -1046,7 +1046,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
     $restriction = implode("_", explode(" ", $restriction));
     $myCharData .= ClientRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem);
-
   }
   echo("<div id='myChar' style='display:none;'>");
   echo($myCharData);

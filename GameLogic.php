@@ -1979,8 +1979,9 @@ function OnBlockResolveEffects()
           WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " frostbite trigger creates a layer.");
           AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
-
-      case "MON244":
+      case "MON241": case "MON242": case "MON243":
+      case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
+      case "UPR203": case "UPR204": case "UPR205":
         AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
         AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,1");
         AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
@@ -1988,8 +1989,29 @@ function OnBlockResolveEffects()
         AddDecisionQueue("PASSPARAMETER", $defPlayer, $i, 1);
         AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $defPlayer, "2", 1);
         break;
-      case "RVD003":
-      case "RVD015":
+      case "ELE203": // Rampart of the Ram's Head
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
+        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,1");
+        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
+        AddDecisionQueue("RAMPARTOFTHERAMSHEAD", $defPlayer, $i, 1);
+        break;
+      case "MON089": // Phantasmal Footsteps
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
+        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,1");
+        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
+        AddDecisionQueue("LESSTHANPASS", $defPlayer, "1", 1);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $i, 1);
+        AddDecisionQueue("PHANTASMALFOOTSTEPS", $defPlayer, "1", 1);
+        break;
+      case "UPR191": case "UPR192": case "UPR193": // Flex
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
+        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2");
+        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
+        AddDecisionQueue("LESSTHANPASS", $defPlayer, "2", 1);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $i, 1);
+        AddDecisionQueue("COMBATCHAINBUFFPOWER", $defPlayer, "2", 1);
+        break;
+      case "RVD003": case "RVD015":
         $deck = &GetDeck($defPlayer);
         $rv = "";
         if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
@@ -2261,13 +2283,16 @@ function MainCharacterEndTurnAbilities()
       case "CRU077":
         KassaiEndTurnAbility();
         break;
-      case "ELE223":
-        if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i + 3] = 0;
-        break;
       case "MON089":
         $mainCharacter[$i + 4] = 0;
       case "MON107":
         if ($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
+        break;
+      case "ELE203":
+        $mainCharacter[$i + 4] = 0;
+        break;
+      case "ELE223":
+        if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i + 3] = 0;
         break;
       case "ELE224":
         if (GetClassState($mainPlayer, $CS_ArcaneDamageDealt) < $mainCharacter[$i + 2]) {
@@ -2424,25 +2449,6 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         break;
       default:
         break;
-    }
-  }
-  return $modifier;
-}
-
-function DefCharacterBlockModifier($index)
-{
-  global $defPlayer;
-  $characterEffects = &GetCharacterEffects($defPlayer);
-  $modifier = 0;
-  for ($i = 0; $i < count($characterEffects); $i += CharacterEffectPieces()) {
-    if ($characterEffects[$i] == $index) {
-      switch ($characterEffects[$i + 1]) {
-        case "ELE203":
-          $modifier += 1;
-          break;
-        default:
-          break;
-      }
     }
   }
   return $modifier;
@@ -3235,6 +3241,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $combatChain = array_values($combatChain);
       return $cardID;
+    case "COMBATCHAINBUFFPOWER":
+      $combatChain[$lastResult + 5] += $parameter;
+      return $lastResult;
     case "COMBATCHAINBUFFDEFENSE":
       $combatChain[$lastResult + 6] += $parameter;
       return $lastResult;
@@ -3748,22 +3757,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return 2;
       }
       return $lastResult;
-    case "IRONHIDE":
-      if ($lastResult == 1) {
-        $character = &GetPlayerCharacter($player);
-        $character[$parameter + 1] = 0;
-      }
-      return $lastResult;
     case "RAMPARTOFTHERAMSHEAD":
-      if ($lastResult == 1) {
-        AddCharacterEffect($player, $parameter, "ELE203");
-      }
+      $character = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, $combatChain[$parameter]);
+      $character[$index + 4] += $lastResult;
       return $lastResult;
     case "PHANTASMALFOOTSTEPS":
-      if ($lastResult == 1) {
-        $character = &GetPlayerCharacter($player);
-        $character[$parameter + 4] = 1;
-      }
+      $character = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, $combatChain[$lastResult]);
+      $character[$index + 4] = 1;
       return $lastResult;
     case "ARTOFWAR":
       ArtOfWarResolvePlay($lastResult);
