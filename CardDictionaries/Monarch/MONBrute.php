@@ -135,7 +135,7 @@
       case "MON125":
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
-        $card = DiscardRandom();
+        $card = DiscardRandom($currentPlayer, $cardID);
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
@@ -168,7 +168,7 @@
       case "MON138": case "MON139": case "MON140":
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
-        $card = DiscardRandom();
+        $card = DiscardRandom($currentPlayer, $cardID);
         if(AttackValue($card) >= 6)
         {
           $rv = "Lets you banish a card from a graveyard.";
@@ -192,7 +192,7 @@
       case "MON221":
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
-        $card = DiscardRandom();
+        $card = DiscardRandom($currentPlayer, $cardID);
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
@@ -204,7 +204,7 @@
       case "MON222":
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
-        $card = DiscardRandom();
+        $card = DiscardRandom($currentPlayer, $cardID);
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
@@ -216,7 +216,7 @@
       case "MON223": case "MON224": case "MON225":
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
-        $card = DiscardRandom();
+        $card = DiscardRandom($currentPlayer, $cardID);
         if(AttackValue($card) >= 6)
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
