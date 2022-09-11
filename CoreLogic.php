@@ -863,6 +863,9 @@ function CombatChainClosedCharacterEffects()
             $character[FindCharacterIndex($defPlayer, "MON089")+1] = 0;
           }
           break;
+        case "RVD003":
+          AddLayer("TRIGGER", $defPlayer, $chainLinks[$i][$j]);
+          break;
         default: break;
       }
     }
