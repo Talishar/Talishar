@@ -1977,68 +1977,29 @@ function OnBlockResolveEffects()
     switch ($combatChain[$i]) {
       case "EVR018":
           WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " frostbite trigger creates a layer.");
-          AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[$i],);
         break;
       case "MON241": case "MON242": case "MON243":
       case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
       case "UPR203": case "UPR204": case "UPR205":
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
-        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,1");
-        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
-        AddDecisionQueue("LESSTHANPASS", $defPlayer, "1", 1);
-        AddDecisionQueue("PASSPARAMETER", $defPlayer, $i, 1);
-        AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $defPlayer, "2", 1);
         break;
       case "ELE203": // Rampart of the Ram's Head
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
-        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,1");
-        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
-        AddDecisionQueue("RAMPARTOFTHERAMSHEAD", $defPlayer, $i, 1);
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "MON089": // Phantasmal Footsteps
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
-        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,1");
-        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
-        AddDecisionQueue("LESSTHANPASS", $defPlayer, "1", 1);
-        AddDecisionQueue("PASSPARAMETER", $defPlayer, $i, 1);
-        AddDecisionQueue("PHANTASMALFOOTSTEPS", $defPlayer, "1", 1);
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "UPR191": case "UPR192": case "UPR193": // Flex
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
-        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2");
-        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
-        AddDecisionQueue("LESSTHANPASS", $defPlayer, "2", 1);
-        AddDecisionQueue("PASSPARAMETER", $defPlayer, $i, 1);
-        AddDecisionQueue("COMBATCHAINBUFFPOWER", $defPlayer, "2", 1);
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
-      case "RVD003": case "RVD015":
-        $deck = &GetDeck($defPlayer);
-        $rv = "";
-        if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
-        $wasRevealed = RevealCards($deck[0]);
-        if ($wasRevealed) {
-          if (AttackValue($deck[0]) < 6) {
-            WriteLog("The card was put on the bottom of your deck.");
-            array_push($deck, array_shift($deck));
-          }
-        }
+      case "RVD015":
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
       case "UPR095":
-        if (GetClassState($defPlayer, $CS_DamageTaken) > 0) {
-          $discard = &GetDiscard($defPlayer);
-          $found = -1;
-          for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
-            if ($discard[$i] == "UPR101") $found = $i;
-          }
-          if ($found == -1) WriteLog("No Phoenix Flames in discard.");
-          else {
-            RemoveGraveyard($defPlayer, $found);
-            AddPlayerHand("UPR101", $defPlayer, "GY");
-          }
-        }
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
       case "UPR182":
-        BottomDeckMultizoneDraw($defPlayer, "MYHAND", "MYARS");
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
       default:
         break;

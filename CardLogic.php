@@ -490,7 +490,7 @@ function ProcessLayer($player, $parameter)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken;
 
   $resources = &GetResources($player);
   $items = &GetItems($player);
@@ -634,6 +634,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "MON089": // Phantasmal Footsteps
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("PHANTASMALFOOTSTEPS", $player, "1", 1);
+      break;
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("CHARREADYORPASS", $player, $index);
@@ -645,6 +653,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "MON186":
       SoulShackleStartTurn($player);
+      break;
+    case "MON241": case "MON242": case "MON243":
+    case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
+    case "UPR203": case "UPR204": case "UPR205":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $player, "2", 1);
       break;
     case "ELE025": case "ELE026": case "ELE027":
       WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
@@ -675,6 +693,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("DEALDAMAGE", $otherPlayer, 1 . "-" . $combatChain[0] . "-" . "COMBAT", 1);
+      break;
+    case "ELE203": // Rampart of the Ram's Head
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("RAMPARTOFTHERAMSHEAD", $player, $target, 1);
       break;
     case "ELE206": case "ELE207": case "ELE208":
       WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
@@ -735,6 +759,32 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "RVD003": case "RVD015":
+      $deck = &GetDeck($player);
+      $rv = "";
+      if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+      $wasRevealed = RevealCards($deck[0]);
+      if ($wasRevealed) {
+        if (AttackValue($deck[0]) < 6) {
+          WriteLog("The card was put on the bottom of your deck.");
+          array_push($deck, array_shift($deck));
+        }
+      }
+      break;
+    case "UPR095":
+      if (GetClassState($player, $CS_DamageTaken) > 0) {
+        $discard = &GetDiscard($player);
+        $found = -1;
+        for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
+          if ($discard[$i] == "UPR101") $found = $i;
+        }
+        if ($found == -1) WriteLog("No Phoenix Flames in discard.");
+        else {
+          RemoveGraveyard($player, $found);
+          AddPlayerHand("UPR101", $player, "GY");
+        }
+      }
+      break;
     case "UPR096":
         if(GetClassState($player, $CS_NumRedPlayed) > 1)
         {
@@ -755,9 +805,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         DestroyAura($player, $index);
       }
       break;
+    case "UPR182":
+      BottomDeckMultizoneDraw($player, "MYHAND", "MYARS");
+      break;
     case "UPR190":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "UPR191": case "UPR192": case "UPR193": // Flex
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,2");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "2", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINBUFFPOWER", $player, "2", 1);
       break;
     case "UPR218": case "UPR219": case "UPR220":
       DestroyAuraUniqueID($player, $uniqueID);
