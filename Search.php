@@ -444,6 +444,15 @@ function SearchAurasForCard($cardID, $player)
   return $indices;
 }
 
+function SearchZoneForUniqueID($uniqueID, $player, $zone)
+{
+  switch($zone)
+  {
+    case "MYALLY": case "THEIRALLY": return SearchAlliesForUniqueID($uniqueID, $player);
+    default: return -1;
+  }
+}
+
 function SearchForUniqueID($uniqueID, $player)
 {
   $index = SearchAurasForUniqueID($uniqueID, $player);
