@@ -26,13 +26,7 @@ if (isset($_SESSION["userid"])) {
   }
 </style>
 
-<div class="FabLogo" style="background-image: url('Images/TalisharLogo.webp');"></div>-->
-<!--
-<div class="FabLogo">
-  <h1 style='font-size:36px; text-align: center;'>Talishar</h1>
-  <h2 style='font-size:30px; text-align: center;'>Unofficial Client</h2>
-</div>
--->
+<div class="FabLogo" style="background-image: url('Images/TalisharLogo.webp');"></div>
 
 <div class="ServerChecker">
   <?php
