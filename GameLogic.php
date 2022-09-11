@@ -2375,9 +2375,6 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         case "CRU080":
           $modifier += 1;
           break;
-        case "CRU105":
-          $modifier += 1;
-          break;
         case "MON105":
         case "MON106":
           $modifier += 1;

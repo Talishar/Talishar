@@ -92,6 +92,8 @@ function CurrentTurnPieces()
   return 4;
 }
 
+//0 - ?
+//1 - Effect Card ID
 function CharacterEffectPieces()
 {
   return 2;
