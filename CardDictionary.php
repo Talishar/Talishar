@@ -1346,7 +1346,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR065":
       return GetClassState($player, $CS_AtksWWeapon) < 1;
     case "EVR137":
-      return $player != $mainPlayer || $turn[0] != "M";
+      return $player != $mainPlayer;
     case "EVR173":
     case "EVR174":
     case "EVR175":
