@@ -615,9 +615,8 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($target, 1); break;
       case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($target); break;
       case "UPR106": case "UPR107": case "UPR108":
-        WriteLog($source);
-        if((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") { 
-          PlayAura("ELE111", $target, $damage); $remove = 1; 
+        if((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") {
+          PlayAura("ELE111", $target, $damage); $remove = 1;
         } break;
       default: break;
     }
