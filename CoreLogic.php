@@ -601,7 +601,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
   return $modifier;
 }
 
-function CurrentEffectDamageEffects($target, $source, $type, $damage) // Briar, ELE111, ARCANE, DAMAGE
+function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
   global $currentTurnEffects;
   if (CardType($source) == "AA" && SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2)) return;
@@ -614,7 +614,11 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage) // Briar, 
       case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA") PlayAura("ELE111", $target); break;
       case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($target, 1); break;
       case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($target); break;
-      case "UPR106": case "UPR107": case "UPR108": if((IsHeroAttackTarget()) && $type == "ARCANE") { PlayAura("ELE111", $target, $damage); $remove = 1; } break;
+      case "UPR106": case "UPR107": case "UPR108":
+        WriteLog($source);
+        if((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") { 
+          PlayAura("ELE111", $target, $damage); $remove = 1; 
+        } break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
