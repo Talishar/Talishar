@@ -1131,14 +1131,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $decisionQueue = [];
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
-      if (!$playingCard) $dynCost = BlockDynamicCost($cardID);
-      else $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
+      //if (!$playingCard) $dynCost = BlockDynamicCost($cardID);
+      if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
       if ($dynCost != "") {
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
-      AddPostPitchDecisionQueue($cardID, $from, $index); // <-- For equipments
+      //AddPostPitchDecisionQueue($cardID, $from, $index); // <-- For equipments
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
       $decisionQueue = array_merge($decisionQueue, $dqCopy);

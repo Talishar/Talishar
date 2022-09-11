@@ -1979,6 +1979,15 @@ function OnBlockResolveEffects()
           WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " frostbite trigger creates a layer.");
           AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         break;
+
+      case "MON244":
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose how much to pay for " . CardLink($combatChain[$i], $combatChain[$i]));
+        AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,1");
+        AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
+        AddDecisionQueue("LESSTHANPASS", $defPlayer, "1", 1);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $i, 1);
+        AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $defPlayer, "2", 1);
+        break;
       case "RVD003":
       case "RVD015":
         $deck = &GetDeck($defPlayer);
