@@ -8,14 +8,43 @@ function WriteLog($text, $playerColor = 0)
   $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>;'>" : "") . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, $output . "\r\n");
   fclose($handler);
+  /*TODO: persistent chat
+  $handler = fopen("./Games/" . $gameName . "/p1gamelog.txt", "a");
+  fwrite($handler, $output . "\r\n");
+  fclose($handler);
+
+  $handler = fopen("./Games/" . $gameName . "/p2gamelog.txt", "a");
+  fwrite($handler, $output . "\r\n");
+  fclose($handler);
+  */
 }
 
 function ClearLog()
 {
   global $gameName;
+  /*
   $filename = "./Games/" . $gameName . "/gamelog.txt";
   $handler = fopen($filename, "w");
   fclose($handler);
+  */
+
+  $filename = "./Games/" . $gameName . "/gamelog.txt";
+  $n = 20;
+  $handle = fopen("./Games/" . $gameName . "/gamelog.txt", "r");
+  $lines = array_fill(0, $n-1, '');
+  if ($handle) {
+    while (!feof($handle)) {
+        $buffer = fgets($handle);
+        array_push($lines, $buffer);
+        array_shift($lines);
+    }
+    fclose($handle);
+  }
+
+  $handle = fopen($filename, "w");
+  fwrite($handle, implode("", $lines));
+  fclose($handle);
+
 }
 
 function WriteError($text)
