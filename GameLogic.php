@@ -3203,7 +3203,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChain = array_values($combatChain);
       return $cardID;
     case "COMBATCHAINBUFFPOWER":
-      $combatChain[$lastResult + 5] += $parameter;
+      CombatChainPowerModifier($lastResult, $parameter);
       return $lastResult;
     case "COMBATCHAINBUFFDEFENSE":
       $combatChain[$lastResult + 6] += $parameter;
