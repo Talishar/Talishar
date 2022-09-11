@@ -178,33 +178,31 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     ?>
   </div>
 
-  <div id="matchupTab" style="position:absolute; z-index:1; top:20px; right:10px; width:160px; height:73px;">
-    <h1>Matchups</h2>
+  <div id="matchupTab" style="position:absolute; z-index:1; top:20px; right:10px; width:160px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+    <h1>Matchups</h1>
   </div>
-  <div id="matchups" style="position:absolute; z-index:1; top:95px; right:10px; bottom:3%; width:160px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div id="matchups" style="position:absolute; text-align: center; z-index:1; top:95px; right:10px; bottom:3%; width:160px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <?php
 
-      $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
-      $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
-      if($matchups != NULL)
-      {
-        for($i=0; $i<count($matchups); ++$i)
-        {
-          echo("<div style='cursor:pointer; font-size:24px;'>");
-          $matchuplink = $redirectPath . "/JoinGameInput.php?gameName=" . $gameName . "&playerID=" . $playerID . "&fabdb=" . $decklink . "&matchup=" . $matchups[$i]->{"matchupId"};
-          echo("<a href='" . $matchuplink . "'>");
-          echo("<input type='button' value='" . $matchups[$i]->{"name"} . "' />");
-          echo("</a>");
-          echo("</div>");
-        }
+    $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
+    $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
+    if ($matchups != NULL) {
+      for ($i = 0; $i < count($matchups); ++$i) {
+        echo ("<div style='cursor:pointer; padding:5px; font-size:24px;'>");
+        $matchuplink = $redirectPath . "/JoinGameInput.php?gameName=" . $gameName . "&playerID=" . $playerID . "&fabdb=" . $decklink . "&matchup=" . $matchups[$i]->{"matchupId"};
+        echo ("<a href='" . $matchuplink . "'>");
+        echo ("<input type='button' value='" . $matchups[$i]->{"name"} . "' />");
+        echo ("</a>");
+        echo ("</div>");
       }
+    }
 
-     ?>
+    ?>
 
   </div>
 
-  <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:320px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
+  <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:280px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
 
     <h1>Your Equipment</h1>
   </div>
@@ -238,19 +236,19 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     </div>
   </div>
 
-  <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:963px; width:320px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
+  <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:922px; width:280px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
 
     <?php
     echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
     ?>
   </div>
 
-  <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:639px; right:20px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
+  <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
 
     <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
     <?php
-    $cardSize = 145;
+    $cardSize = 110;
     $count = 0;
     sort($deck);
     for ($i = 0; $i < count($deck); ++$i) {
