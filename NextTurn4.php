@@ -221,7 +221,8 @@
 
       function CardHasAltArt(cardID) {
         switch (cardID) {
-          case "WTR002": case "WTR162": case "WTR224": 
+          case "WTR002": case "WTR150": case "WTR162": 
+          case "WTR224": 
             return true;
           case "MON155": case "MON215": case "MON216": 
           case "MON217": case "MON219": case "MON220": 
