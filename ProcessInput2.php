@@ -1451,11 +1451,12 @@ function PayAbilityAdditionalCosts($cardID)
 
 function PayAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex;
   $cardSubtype = CardSubType($cardID);
 
   if ($from == "PLAY" && $cardSubtype == "Item") {
-    PayItemAbilityAdditionalCosts($cardID);
+    $paidSteamCounter = PayItemAbilityAdditionalCosts($cardID, $from);
+    SetClassState($currentPlayer, $CS_AdditionalCosts, $paidSteamCounter);
     return;
   }
   $fuseType = HasFusion($cardID);

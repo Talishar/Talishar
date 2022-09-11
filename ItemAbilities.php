@@ -1,8 +1,9 @@
 <?php
 
-function PayItemAbilityAdditionalCosts($cardID)
+function PayItemAbilityAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_PlayIndex;
+  global $currentPlayer, $CS_PlayIndex, $combatChain;
+  $paidSteamCounter = "NOTPAID"; 
   switch ($cardID) {
     case "WTR162":
     case "WTR170":
@@ -25,9 +26,27 @@ function PayItemAbilityAdditionalCosts($cardID)
     case "EVR187":
       DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       break;
+    case "ARC010": case "ARC018":
+      $items = &GetItems($currentPlayer);
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      if ($from == "PLAY" && $items[$index + 1] > 0 && count($combatChain) > 0) {
+        $items[$index + 1] = 0;
+        $items[$index + 2] = 1;
+        $paidSteamCounter = "PAID";
+      }
+      break;
+    case "CRU105":
+      $items = &GetItems($currentPlayer);
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      if ($from == "PLAY" && $items[$index + 1] > 0) {
+        $items[$index + 1] = 0;
+        $paidSteamCounter = "PAID";
+      }
+      break;
     default:
       break;
   }
+  return $paidSteamCounter;
 }
 
 function ItemPlayAbilities($cardID, $from)
