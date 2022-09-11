@@ -735,7 +735,7 @@ function BeginChainLinkResolution()
 function ResolveChainLink()
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $defPlayer, $currentTurnEffects, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
-  global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CCS_AttackTarget;
+  global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
 
@@ -748,7 +748,7 @@ function ResolveChainLink()
 
   LogCombatResolutionStats($totalAttack, $totalDefense);
 
-  $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+  $target = explode("-", GetAttackTarget());
   if ($target[0] == "THEIRALLY") {
     $index = $target[1];
     $allies = &GetAllies($defPlayer);
@@ -830,7 +830,7 @@ function FinalizeChainLink($chainClosed = false)
   global $turn, $actionPoints, $combatChain, $mainPlayer, $playerID, $defHealth, $currentTurnEffects, $defCharacter, $mainDiscard, $defDiscard, $currentPlayer, $defPlayer;
   global $combatChainState, $actionPoints, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
   global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves;
-  global $CS_LastAttack, $CCS_LinkTotalAttack, $CCS_AttackTarget, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
+  global $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
 
@@ -1856,8 +1856,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function ProcessAttackTarget()
 {
-  global $combatChainState, $CCS_AttackTarget, $defPlayer;
-  $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+  global $defPlayer;
+  $target = explode("-", GetAttackTarget());
   if ($target[0] == "THEIRAURAS") {
     $auras = &GetAuras($defPlayer);
     if (HasSpectra($auras[$target[1]])) {

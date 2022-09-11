@@ -1529,15 +1529,13 @@ function NumEquipBlock()
 
   function IsHeroAttackTarget()
   {
-    global $combatChainState, $CCS_AttackTarget;
-    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+    $target = explode("-", GetAttackTarget());
     return $target[0] == "THEIRCHAR";
   }
 
   function IsAllyAttackTarget()
   {
-    global $combatChainState, $CCS_AttackTarget;
-    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+    $target = explode("-", GetAttackTarget());
     return $target[0] == "THEIRALLY";
   }
 
