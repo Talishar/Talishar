@@ -141,8 +141,11 @@ if ($decklink != "") {
   }
   $deckObj = json_decode($apiDeck);
   $deckName = $deckObj->{'name'};
-  if($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
-  else if($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
+  if(isset($deckObj->{'matchups'}))
+  {
+    if($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
+    else if($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
+  }
   $cards = $deckObj->{'cards'};
   $deckCards = "";
   $sideboardCards = "";
