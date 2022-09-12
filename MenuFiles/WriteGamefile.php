@@ -10,7 +10,7 @@
       global $gameFileHandler;
       global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
       global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink, $karmaRestriction;
-      global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP;
+      global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP, $p1deckbuilderID, $p2deckbuilderID;
       global $p1Matchups, $p2Matchups;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
@@ -38,6 +38,8 @@
       fwrite($gameFileHandler, $karmaRestriction . "\r\n");
       fwrite($gameFileHandler, json_encode($p1Matchups) . "\r\n");
       fwrite($gameFileHandler, json_encode($p2Matchups) . "\r\n");
+      fwrite($gameFileHandler, $p1deckbuilderID . "\r\n");
+      fwrite($gameFileHandler, $p2deckbuilderID . "\r\n");
       fclose($gameFileHandler);
     }
   }
