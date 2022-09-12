@@ -520,17 +520,6 @@ function AbilityCost($cardID)
 function ResourcesPaidBlockModifier($cardID, $amountPaid)
 {
   switch ($cardID) {
-    case "MON241":
-    case "MON242":
-    case "MON243":
-    case "MON244":
-    case "RVD005":
-    case "RVD006":
-      return ($amountPaid >= 1 ? 2 : 0);
-    case "UPR203":
-    case "UPR204":
-    case "UPR205":
-      return ($amountPaid >= 1 ? 2 : 0);
     default:
       return 0;
   }
@@ -539,10 +528,6 @@ function ResourcesPaidBlockModifier($cardID, $amountPaid)
 function ResourcesPaidAttackModifier($cardID, $amountPaid)
 {
   switch ($cardID) {
-    case "UPR191":
-    case "UPR192":
-    case "UPR193":
-      return ($amountPaid >= 2 ? 2 : 0);
     default:
       return 0;
   }

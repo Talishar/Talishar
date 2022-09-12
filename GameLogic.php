@@ -1982,6 +1982,7 @@ function OnBlockResolveEffects()
       case "MON241": case "MON242": case "MON243":
       case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
       case "UPR203": case "UPR204": case "UPR205":
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "ELE203": // Rampart of the Ram's Head
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
