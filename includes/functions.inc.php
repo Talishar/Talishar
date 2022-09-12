@@ -269,12 +269,12 @@ function logCompletedGameStats($reportingServer = false) {
 	$values = "?, ?, ?, ?, ?, ?, ?";
 	$winnerDeck = file_get_contents("./Games/" . $gameName . "/p" . $winner . "Deck.txt");
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
-	if($p1id != "" && $p1id != "-")
+	if(!$reportingServer && $p1id != "" && $p1id != "-")
 	{
 		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
 		$values .= ", " . $p1id;
 	}
-	if($p2id != "" && $p2id != "-")
+	if(!$reportingServer && $p2id != "" && $p2id != "-")
 	{
 		$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
 		$values .= ", " . $p2id;
@@ -294,7 +294,7 @@ function logCompletedGameStats($reportingServer = false) {
 		$gameResultID = mysqli_insert_id($conn);
 		mysqli_stmt_close($stmt);
 		$challengeId = 3;
-		if($p1IsChallengeActive == "1" && $p1id != "-")
+		if(!$reportingServer && $p1IsChallengeActive == "1" && $p1id != "-")
 		{
 			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
 			$stmt = mysqli_stmt_init($conn);
@@ -305,7 +305,7 @@ function logCompletedGameStats($reportingServer = false) {
 				mysqli_stmt_close($stmt);
 			}
 		}
-		if($p2IsChallengeActive == "1" && $p2id != "-")
+		if(!$reportingServer && $p2IsChallengeActive == "1" && $p2id != "-")
 		{
 			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
 			$stmt = mysqli_stmt_init($conn);
@@ -317,10 +317,13 @@ function logCompletedGameStats($reportingServer = false) {
 			}
 		}
 	}
-	SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
-	SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
-	SendFabDBResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
-	SendFabDBResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
+	if(!$reportingServer)
+	{
+		SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
+		SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
+		SendFabDBResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
+		SendFabDBResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
+	}
 	mysqli_close($conn);
 }
 
