@@ -49,6 +49,8 @@
   $karmaRestriction = trim(fgets($gameFileHandler));
   $p1Matchups = json_decode(trim(fgets($gameFileHandler)));
   $p2Matchups = json_decode(trim(fgets($gameFileHandler)));
+  $p1deckbuilderID = trim(fgets($gameFileHandler));
+  $p2deckbuilderID = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;
