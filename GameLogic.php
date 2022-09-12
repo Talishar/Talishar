@@ -1633,6 +1633,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "CRU084-2":
       return true;
+    case "CRU105":
+      return true;
     case "CRU122":
       return true;
     case "CRU124":
