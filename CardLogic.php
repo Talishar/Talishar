@@ -655,14 +655,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       SoulShackleStartTurn($player);
       break;
     case "MON241": case "MON242": case "MON243":
-    case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
-    case "UPR203": case "UPR204": case "UPR205":
+    case "MON244": case "RVD005": case "RVD006":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-      AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $player, "2", 1);
+      AddDecisionQueue("IRONHIDE", $player, $target, 1);
       break;
     case "ELE025": case "ELE026": case "ELE027":
       WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
@@ -819,6 +817,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("LESSTHANPASS", $player, "2", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINBUFFPOWER", $player, "2", 1);
+      break;
+    case "UPR203": case "UPR204": case "UPR205":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $player, "2", 1);
       break;
     case "UPR218": case "UPR219": case "UPR220":
       DestroyAuraUniqueID($player, $uniqueID);

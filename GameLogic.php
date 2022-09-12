@@ -1983,7 +1983,6 @@ function OnBlockResolveEffects()
         break;
       case "MON241": case "MON242": case "MON243":
       case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
-      case "UPR203": case "UPR204": case "UPR205":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       case "ELE203": // Rampart of the Ram's Head
@@ -2003,6 +2002,9 @@ function OnBlockResolveEffects()
         break;
       case "UPR182":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
+        break;
+      case "UPR203": case "UPR204": case "UPR205":
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
       default:
         break;
@@ -3720,6 +3722,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddCurrentTurnEffect($parameter . "-2", $player);
           return 2;
       }
+      return $lastResult;
+    case "IRONHIDE":
+      $character = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, $combatChain[$parameter]);
+      $character[$index + 4] = 2;
       return $lastResult;
     case "RAMPARTOFTHERAMSHEAD":
       $character = &GetPlayerCharacter($player);
