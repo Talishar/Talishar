@@ -35,51 +35,48 @@ if (isset($_SESSION["userid"])) {
 </div>
 
 <div class="CreateGame_Menu">
-  <h1 style="margin-top: 3px;">Create New Game Currently Unavailable</h1>
-  <h2 stlye=>Around 30 minutes downtime will be needed to update the website Thank you for your patience.</h2>
+  <h1 style="margin-top: 3px;">Create New Game</h1>
 
-  <!-- <h1 style="margin-top: 3px;">Create New Game</h1> -->
+  <?php
+  echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
 
-  <!-- <?php
-        echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
+  $favoriteDecks = [];
+  if (isset($_SESSION["userid"])) {
+    $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
+    if (count($favoriteDecks) > 0) {
+      echo ("<div class='FavoriteDeckMainMenu'>Favorite Decks: ");
+      echo ("<select name='favoriteDecks' id='favoriteDecks'>");
+      for ($i = 0; $i < count($favoriteDecks); $i += 3) {
+        echo ("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "</option>");
+      }
+      echo ("</select></div>");
+    }
+  }
+  if (count($favoriteDecks) == 0) {
+    echo ("<div class='FavoriteDeckMainMenu'>CC Starter Decks: ");
+    echo ("<select name='decksToTry' id='decksToTry'>");
+    echo ("<option value='1'>Bravo CC Starter Deck</option>");
+    echo ("<option value='2'>Rhinar CC Starter Deck</option>");
+    echo ("<option value='3'>Katsu CC Starter Deck</option>");
+    echo ("<option value='4'>Dorinthea CC Starter Deck</option>");
+    echo ("<option value='5'>Dash CC Starter Deck</option>");
+    echo ("<option value='6'>Viserai CC Starter Deck</option>");
+    echo ("<option value='7'>Kano CC Starter Deck</option>");
+    echo ("<option value='8'>Azalea CC Starter Deck</option>");
+    echo ("<option value='9'>Prism Blitz Starter Deck</option>");
+    echo ("<option value='10'>Levia Blitz Starter Deck</option>");
+    echo ("<option value='11'>Boltyn Blitz Starter Deck</option>");
+    echo ("<option value='12'>Chane Blitz Starter Deck</option>");
+    echo ("<option value='13'>Oldhim BlitzStarter Deck</option>");
+    echo ("<option value='14'>Briar Blitz Starter Deck</option>");
+    echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
+    echo ("<option value='16'>Fai Blitz Starter Deck</option>");
+    echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
+    echo ("</select></div>");
+  }
+  echo ("<br>");
 
-        $favoriteDecks = [];
-        if (isset($_SESSION["userid"])) {
-          $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
-          if (count($favoriteDecks) > 0) {
-            echo ("<div class='FavoriteDeckMainMenu'>Favorite Decks: ");
-            echo ("<select name='favoriteDecks' id='favoriteDecks'>");
-            for ($i = 0; $i < count($favoriteDecks); $i += 3) {
-              echo ("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "</option>");
-            }
-            echo ("</select></div>");
-          }
-        }
-        if (count($favoriteDecks) == 0) {
-          echo ("<div class='FavoriteDeckMainMenu'>CC Starter Decks: ");
-          echo ("<select name='decksToTry' id='decksToTry'>");
-          echo ("<option value='1'>Bravo CC Starter Deck</option>");
-          echo ("<option value='2'>Rhinar CC Starter Deck</option>");
-          echo ("<option value='3'>Katsu CC Starter Deck</option>");
-          echo ("<option value='4'>Dorinthea CC Starter Deck</option>");
-          echo ("<option value='5'>Dash CC Starter Deck</option>");
-          echo ("<option value='6'>Viserai CC Starter Deck</option>");
-          echo ("<option value='7'>Kano CC Starter Deck</option>");
-          echo ("<option value='8'>Azalea CC Starter Deck</option>");
-          echo ("<option value='9'>Prism Blitz Starter Deck</option>");
-          echo ("<option value='10'>Levia Blitz Starter Deck</option>");
-          echo ("<option value='11'>Boltyn Blitz Starter Deck</option>");
-          echo ("<option value='12'>Chane Blitz Starter Deck</option>");
-          echo ("<option value='13'>Oldhim BlitzStarter Deck</option>");
-          echo ("<option value='14'>Briar Blitz Starter Deck</option>");
-          echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
-          echo ("<option value='16'>Fai Blitz Starter Deck</option>");
-          echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
-          echo ("</select></div>");
-        }
-        echo ("<br>");
-
-        ?>
+  ?>
     <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
     <input type="text" id="fabdb" name="fabdb">
   <?php
@@ -144,8 +141,8 @@ if (isset($_SESSION["userid"])) {
   //echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/PVE/PVEMenu.php'>");
   ?>
   <!---<div style="text-align:center;"><input type="submit" style="font-size:20px;" value="PVE Menu"></div>
-  </form>
-  --->
+</form>
+--->
 </div>
 </div>
 
@@ -155,7 +152,7 @@ if (isset($_SESSION["userid"])) {
   <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>Talishar is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
   <h3 style='text-align:center;'>________</h3>
-  <!--
+<!--
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
       <h2>Commotion #2 has concluded!</h2>
@@ -185,16 +182,16 @@ if (isset($_SESSION["userid"])) {
 -->
 
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
-    <div style="vertical-align:middle; position: relative;">
-      <h2>Coax a Commotion #3!</h2>
-      <h4>Win as many games as you can <br>with Moon Wish</h4><br>
-      <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/challenges/moonwish.png" /><br><br>
-      <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
-    </div>
-    <div style='text-align:center;'><a href='./Images/challenges/mooncake.jpeg'>Happy Mid-Autumn Festival!</a></div>
-    <h3 style='text-align:center;'>________</h3>
+      <div style="vertical-align:middle; position: relative;">
+        <h2>Coax a Commotion #3!</h2>
+        <h4>Win as many games as you can <br>with Moon Wish</h4><br>
+        <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/challenges/moonwish.png" /><br><br>
+        <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
+      </div>
+      <div style='text-align:center;'><a href='./Images/challenges/mooncake.jpeg'>Happy Mid-Autumn Festival!</a></div>
+  <h3 style='text-align:center;'>________</h3>
 
-    <!--
+  <!--
   <div style='vertical-align:middle; text-align:center;'>
     <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
     <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
@@ -203,8 +200,8 @@ if (isset($_SESSION["userid"])) {
     <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
   </div>
 -->
-  </div>
+</div>
 
-  <?php
-  include_once 'Footer.php';
-  ?>
+<?php
+include_once 'Footer.php';
+?>
