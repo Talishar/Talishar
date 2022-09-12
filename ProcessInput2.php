@@ -1227,7 +1227,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   GetLayerTarget($cardID); //Layer target
   //CR 5.1.4b Declare target of attack
   if ($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
-  if ($turn[0] != "B") {
+  if ($turn[0] != "B" || $layers[0] != "") {
   MainCharacterPlayCardAbilities($cardID, $from);
   AuraPlayAbilities($cardID);
   }
