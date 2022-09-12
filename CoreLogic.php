@@ -851,6 +851,9 @@ function CombatChainClosedCharacterEffects()
         else if(HasBladeBreak($chainLinks[$i][$j]))
         {
           DestroyCharacter($defPlayer, $charIndex);
+        } 
+        else if (HasDynamicBlock($chainLinks[$i][$j])) {
+          DestroyCharacter($defPlayer, $charIndex);
         }
       }
       switch($chainLinks[$i][$j])

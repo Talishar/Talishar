@@ -1530,6 +1530,17 @@ function HasTemper($cardID)
   }
 }
 
+function HasDynamicBlock($cardID) // For Equipments
+{
+  switch ($cardID) {
+    case "MON241": case "MON242": case "MON243":
+    case "MON244": case "RVD005": case "RVD006":
+    return true;
+  default: 
+    return false;
+  }
+}   
+
 function RequiresDiscard($cardID)
 {
   switch ($cardID) {
