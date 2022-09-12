@@ -330,7 +330,7 @@ function logCompletedGameStats($reportingServer = false) {
 
 function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 {
-	global $fabDBToken, $fabDBSecret, $gameName;
+	global $fabDBToken, $fabDBSecret, $gameName, $p1deckbuilderID, $p2deckbuilderID;
 	if(!str_contains($decklink, "fabdb.net")) return;
 
 	$linkArr = explode("/", $decklink);
@@ -343,6 +343,7 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	$payloadArr["time"] = microtime();
 	$payloadArr["hash"] = hash("sha512", $fabDBSecret . $payloadArr["time"]);
 	$payloadArr["player"] = $player;
+	$payloadArr["user"] = ($player == 1 ? $p1deckbuilderID : $p2deckbuilderID);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloadArr));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

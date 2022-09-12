@@ -17,6 +17,7 @@ $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
 $karmaRestriction = TryGet("gameKarmaRestriction", "0");
+$deckbuilderID = TryGet("user", "");
 
 $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
 $attemptCount = 0;
@@ -79,6 +80,7 @@ $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
 $hostIP = $_SERVER['REMOTE_ADDR'];
+if($deckbuilderID != "") $p1deckbuilderID = $deckbuilderID;
 
 $filename = "./Games/" . $gameName . "/GameFile.txt";
 $gameFileHandler = fopen($filename, "w");
