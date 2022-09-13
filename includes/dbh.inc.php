@@ -1,8 +1,8 @@
 <?php
 
-$servername = "localhost";
+$servername = "mysql-server";
 $dBUsername = "root";
-$dBPassword = "";
+$dBPassword = "secret";
 $dBName = "fabonline";
 
 $reportingServername = "142.11.213.202";
