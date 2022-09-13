@@ -155,6 +155,7 @@ if ($decklink != "") {
   $legsSideboard = "";
   $offhandSideboard = "";
   $unsupportedCards = "";
+  $bannedCard = "";
   $character = "";
   $head = "";
   $chest = "";
@@ -181,6 +182,12 @@ if ($decklink != "") {
       }
       $id = GetAltCardID($id);
       $cardType = CardType($id);
+
+      if (IsBanned($id, $format)) {
+        if ($bannedCard != "") $bannedCard .= ", ";
+        $bannedCard .= CardName($id);
+      }
+
       if ($cardType == "") //Card not supported, error
       {
         if ($unsupportedCards != "") $unsupportedCards .= " ";
@@ -290,6 +297,18 @@ if ($decklink != "") {
 
   if ($unsupportedCards != "") {
     echo ("The following cards are not yet supported: " . $unsupportedCards);
+  }
+
+  if ($bannedCard != "") {
+    if ($format == "blitz") {
+      $_SESSION['error'] = 'Error: The following cards are not legal in the Blitz format: ' . $bannedCard;
+    } elseif ($format == "cc" || $format == "compcc") {
+      $_SESSION['error'] = 'Error: The following cards are not legal in the Classic Constructed format: ' . $bannedCard;
+    } elseif ($format == "commoner") {
+      $_SESSION['error'] = 'Error: The following cards are not legal the Commoner format: ' . $bannedCard;
+    }
+    header("Location: MainMenu.php");
+    die();
   }
 
   if($totalCards < 60  && ($format == "cc" || $format == "compcc"))
@@ -455,4 +474,115 @@ function GetAltCardID($cardID)
       return "WTR193";
   }
   return $cardID;
+}
+
+function IsBanned($cardID, $format)
+{
+  switch ($format) {
+
+      //    The following cards are banned in Blitz:
+      //    ARC076: Viserai
+      //    ARC077: Nebula Blade
+      //    ELE186: ELE187: ELE188: Awakening
+      //    ELE186: ELE187: ELE188: Ball Lightning
+      //    WTR164: WTR165: WTR166: Drone of Brutality
+      //    ELE223: Duskblade
+      //    WTR152: Heartened Cross Strap
+      //    CRU174: CRU175: CRU176: Snapback
+      //    ARC129: ARC130: ARC131: Stir the Aetherwind
+      //    MON239: Stubby Hammerers
+      //    ELE115: Crown of Seeds (Until Oldhim becomes Living Legend)
+      //    MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
+      //    MON231: Sonata Arcanix (Until the next banned and suspended announcement)
+    case "blitz":
+      switch ($cardID) {
+        case "ARC076":
+        case "ARC077":
+        case "ELE006":
+        case "ELE186":
+        case "ELE187":
+        case "ELE188":
+        case "WTR164":
+        case "WTR165":
+        case "WTR166":
+        case "ELE223":
+        case "WTR152":
+        case "CRU174":
+        case "CRU175":
+        case "CRU176":
+        case "ARC129":
+        case "ARC130":
+        case "ARC131":
+        case "MON239":
+        case "ELE115":
+        case "MON183":
+        case "MON184":
+        case "MON185":
+        case "MON231":
+          return true;
+        default:
+          return false;
+      }
+      break;
+
+      //    MON001: Prism, Sculptor of Arc Light (as of August 30, 2022)
+      //    MON003: Luminaris (as of August 30, 2022)
+      //    EVR017: Bravo, Star of the Show
+      //    MON153: Chane, Bound by Shadow
+      //    MON155: Galaxxi Black
+
+      //    The following cards are banned in Classic Constructed:
+      //    ELE006: Awakening
+      //    ELE186: ELE187: ELE188: Ball Lightning
+      //    WTR164: WTR165: WTR166: Drone of Brutality
+      //    ELE223: Duskblade
+      //    ARC170: ARC171: ARC172: Plunder Run
+      //    MON239: Stubby Hammerers
+      //    CRU141: Bloodsheath Skeleta (until Viserai, Rune Blood becomes Living Legend)
+    case "cc":
+    case "compcc":
+      switch ($cardID) {
+        case "MON001":
+        case "MON003":
+        case "EVR017":
+        case "MON153":
+        case "MON155":
+        case "ELE006":
+        case "ELE186":
+        case "ELE187":
+        case "ELE188":
+        case "WTR164":
+        case "WTR165":
+        case "WTR166":
+        case "ELE223":
+        case "ARC170":
+        case "ARC171":
+        case "ARC172":
+        case "MON239":
+        case "CRU141":
+          return true;
+        default:
+          return false;
+      }
+      break;
+
+      //   The following cards are banned in Commoner:
+      //   ELE186: ELE187: ELE188: Ball Lightning
+      //   MON266: MON267: MON268: Belittle
+    case "commoner":
+      switch ($cardID) {
+        case "ELE186":
+        case "ELE187":
+        case "ELE188":
+        case "MON266":
+        case "MON267":
+        case "MON268":
+          return true;
+        default:
+          return false;
+      }
+      break;
+    default:
+      return false;
+  }
 }
