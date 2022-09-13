@@ -269,62 +269,58 @@ function logCompletedGameStats($reportingServer = false) {
 	$values = "?, ?, ?, ?, ?, ?, ?";
 	$winnerDeck = file_get_contents("./Games/" . $gameName . "/p" . $winner . "Deck.txt");
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
-	if(!$reportingServer && $p1id != "" && $p1id != "-")
-	{
-		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
-		$values .= ", " . $p1id;
-	}
-	if(!$reportingServer && $p2id != "" && $p2id != "-")
-	{
-		$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
-		$values .= ", " . $p2id;
-	}
-
+	$winHero = &GetPlayerCharacter($winner);
+	$loseHero = &GetPlayerCharacter($loser);
 	if($reportingServer) $conn = GetReportingDBConnection();
 	else $conn = GetDBConnection();
 
-  $sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
-	$stmt = mysqli_stmt_init($conn);
-	$gameResultID = 0;
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		$winHero = &GetPlayerCharacter($winner);
-		$loseHero = &GetPlayerCharacter($loser);
-		mysqli_stmt_bind_param($stmt, "sssssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck, GetHealth($winner), $firstPlayer);
-		mysqli_stmt_execute($stmt);
-		$gameResultID = mysqli_insert_id($conn);
-		mysqli_stmt_close($stmt);
-		$challengeId = 3;
-		if(!$reportingServer && $p1IsChallengeActive == "1" && $p1id != "-")
+	if(!AreStatsDisabled(1) && !AreStatsDisabled(2))
+	{
+		if(!$reportingServer && $p1id != "" && $p1id != "-")
 		{
-			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
-			$stmt = mysqli_stmt_init($conn);
-			if (mysqli_stmt_prepare($stmt, $sql)) {
-				$result = ($winner == 1 ? 1 : 0);
-				mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $p1id, $result);//Challenge ID 1 = sigil of solace blue
-				mysqli_stmt_execute($stmt);
-				mysqli_stmt_close($stmt);
-			}
+			$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
+			$values .= ", " . $p1id;
 		}
-		if(!$reportingServer && $p2IsChallengeActive == "1" && $p2id != "-")
+		if(!$reportingServer && $p2id != "" && $p2id != "-")
 		{
-			$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
-			$stmt = mysqli_stmt_init($conn);
-			if (mysqli_stmt_prepare($stmt, $sql)) {
-				$result = ($winner == 2 ? 1 : 0);
-				mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $p2id, $result);//Challenge ID 1 = sigil of solace blue
-				mysqli_stmt_execute($stmt);
-				mysqli_stmt_close($stmt);
-			}
+			$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
+			$values .= ", " . $p2id;
+		}
+
+		$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
+		$stmt = mysqli_stmt_init($conn);
+		$gameResultID = 0;
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, "sssssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck, GetHealth($winner), $firstPlayer);
+			mysqli_stmt_execute($stmt);
+			$gameResultID = mysqli_insert_id($conn);
+			mysqli_stmt_close($stmt);
 		}
 	}
+
+	if(!$reportingServer && $p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, ($winner == 1 ? 1 : 0));
+	if(!$reportingServer && $p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, ($winner == 2 ? 1 : 0));
+
 	if(!$reportingServer)
 	{
-		SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
-		SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
-		SendFabDBResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
-		SendFabDBResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
+		if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
+		if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
+		if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
+		if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
 	}
 	mysqli_close($conn);
+}
+
+function LogChallengeResult($conn, $gameResultID, $playerID, $result)
+{
+	$challengeId = 3;
+	$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $playerID, $result);//Challenge ID 1 = sigil of solace blue
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
 }
 
 
