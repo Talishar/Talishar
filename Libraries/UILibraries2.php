@@ -270,6 +270,7 @@
   {
     global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
     global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
+    if(AreStatsDisabled($player)) return "";
     $cardStats = &GetCardStats($player);
     $rv = "<div style='float:left; width:40%; height:85%;'>";
     $rv .= "<h2 style='text-align:center'>Card Play Stats</h2>";

@@ -23,6 +23,8 @@ $SET_IsPatron = 13; //Is Patron
 
 $SET_MuteChat = 14; //Did this player mute chat
 
+$SET_DisableStats = 15; //Did this disable stats
+
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
@@ -185,6 +187,14 @@ function IsChatMuted()
   return $p1Settings[$SET_MuteChat] == "1" || $p2Settings[$SET_MuteChat] == "1";
 }
 
+function AreStatsDisabled($player)
+{
+  global $SET_DisableStats;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return $settings[$SET_DisableStats] == "1";
+}
+
 function ChangeSetting($player, $setting, $value)
 {
   /*
@@ -214,7 +224,7 @@ function ChangeSetting($player, $setting, $value)
 function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
-  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat;
+  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat, $SET_DisableStats;
   $rv = "";
   $settings = GetSettings($player);
   $currentValue = HoldPrioritySetting($player);
@@ -292,6 +302,10 @@ function GetSettingsUI($player)
     $rv .= "<BR>";
     $rv .= CreateRadioButton($SET_Cardback . "-6", "Tan", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Tan");
    }
+
+   if ($settings[$SET_DisableStats] == 0) $rv .= CreateCheckbox($SET_DisableStats . "-1", "Disable Stats", 26, false, "Disable Stats", true);
+   else $rv .= CreateCheckbox($SET_DisableStats . "-0", "Disable Stats", 26, true, "Disable Stats", true);
+   $rv .= "<BR>";
 
   /*
     $rv .= "<BR>";
