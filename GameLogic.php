@@ -3986,6 +3986,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
       }
       return $parameter;
+    case "BLIZZARDLOG":
+      if ($lastResult > 0) WriteLog($lastResult . " was paid for " . CardLink("ELE147", "ELE147"));
+      else WriteLog("Target attack lost and can't gain go again due to " . CardLink("ELE147", "ELE147"));
+      return $lastResult;
     case "ADDCLASSSTATE":
       $parameters = explode("-", $parameter);
       IncrementClassState($player, $parameters[0], $parameters[1]);
