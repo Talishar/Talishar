@@ -1796,51 +1796,50 @@ function AuraDefaultHoldTriggerState($cardID)
   global $mainPlayer, $defPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $defCharacter = &GetPlayerCharacter($defPlayer);
-  $defaultState = 0;
-  if (isWizard($mainCharacter[0]) || isWizard($defCharacter[0])) $defaultState = 1;
+  if (isWizard($mainCharacter[0]) || isWizard($defCharacter[0])) return 1;
   switch ($cardID) {
     case "WTR046":
-      return $defaultState; //Forged for War
+      return 0 ; //Forged for War
     case "WTR047":
-      return $defaultState; //Show Time!
+      return 0; //Show Time!
     case "WTR054": case "WTR055": case "WTR056":
-      return $defaultState; //Blessing of Deliverance
+      return 0; //Blessing of Deliverance
     case "WTR069": case "WTR070": case "WTR071":
-      return $defaultState; //Emerging Power
+      return 0; //Emerging Power
     case "WTR072": case "WTR073": case "WTR074":
-      return $defaultState; //Stonewall Confidence
+      return 0; //Stonewall Confidence
     case "WTR075":
-      return $defaultState; //Seismic Surge
+      return 0; //Seismic Surge
     case "ARC112":
-      return $defaultState; //Runechant
+      return 0; //Runechant
     case "CRU028":
-      return $defaultState; //Stamp Authority
+      return 0; //Stamp Authority
     case "CRU029": case "CRU030": case "CRU031":
-      return $defaultState; //Towering Titan
+      return 0; //Towering Titan
     case "CRU038": case "CRU039": case "CRU040":
-      return $defaultState; //Emerging Dominance
+      return 0; //Emerging Dominance
     case "CRU075":
-      return $defaultState; //Zen Token
+      return 0; //Zen Token
     case "CRU144":
-      return $defaultState; //Runeblood Barrier
+      return 0; //Runeblood Barrier
     case "MON186":
-      return $defaultState; //Soul Shackle
+      return 0; //Soul Shackle
     case "ELE025": case "ELE026": case "ELE027":
-      return $defaultState; //Emerging Avalanche
+      return 0; //Emerging Avalanche
     case "ELE028": case "ELE029": case "ELE030":
-      return $defaultState; //Strength of Sequoia
+      return 0; //Strength of Sequoia
     case "ELE206": case "ELE207": case "ELE208":
-      return $defaultState; //Embolden
+      return 0; //Embolden
     case "ELE109": case "ELE110": case "ELE111":
-      return $defaultState; //Embodiment of Earth and Lightning, Frostbite
+      return 0; //Embodiment of Earth and Lightning, Frostbite
     case "EVR107": case "EVR108": case "EVR109":
-      return $defaultState; //Runeblood incantation
+      return 0; //Runeblood incantation
     case "EVR131": case "EVR132": case "EVR133":
-      return $defaultState; //Pyroglyphic Protection
+      return 0; //Pyroglyphic Protection
     case "UPR190":
-      return $defaultState; //Fog Down
+      return 0; //Fog Down
     case "UPR218": case "UPR219": case "UPR220":
-      return $defaultState; //Sigil of Protection
+      return 0; //Sigil of Protection
     default:
       return 2;
   }
@@ -1851,14 +1850,13 @@ function ItemDefaultHoldTriggerState($cardID)
   global $mainPlayer, $defPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $defCharacter = &GetPlayerCharacter($defPlayer);
-  $defaultState = 0;
-  if (isWizard($mainCharacter[0]) || isWizard($defCharacter[0])) $defaultState = 1;
+  if (isWizard($mainCharacter[0]) || isWizard($defCharacter[0])) return 1;
   switch ($cardID) {
     case "ARC007": // Teklo Core
     case "ARC035": // Dissipation Shield
     case "EVR069": // Dissolution Sphere
     case "EVR071": // Signal Jammer
-      return $defaultState;
+      return 0;
     default:
       return 2;
   }
