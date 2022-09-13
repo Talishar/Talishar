@@ -213,7 +213,7 @@
       case "ELE180": case "ELE181": case "ELE182": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer);
       case "ELE195": case "ELE196": case "ELE197": return true;
       case "ELE198": case "ELE199": case "ELE200": return CardType($attackID) == "AA";
-      case "ELE201": return CardType($attackID) == "AA";
+      case "ELE201": return CardType($attackID) == "AA" || CardType($attackID) == "A";
       case "ELE205": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
       case "ELE206": case "ELE207": case "ELE208": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";
       case "ELE215": return CardSubtype($attackID) == "Arrow";

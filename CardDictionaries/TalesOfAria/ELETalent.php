@@ -428,7 +428,8 @@
       case "ELE201":
         if($from == "PLAY")
         {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
+          if (count($combatChain) > 0) GiveAttackGoAgain();
+          else AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gives target action go again.";
         }
         return $rv;
