@@ -99,16 +99,22 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439":
-        if ($preventable) $damage -= 4;
-        $remove = 1;
+        if ($damage > 0) {
+          if ($preventable) $damage -= 4;
+          $remove = 1;
+        }
         break;
       case "UPR440":
-        if ($preventable) $damage -= 3;
-        $remove = 1;
+        if ($damage > 0) {
+          if ($preventable) $damage -= 3;
+          $remove = 1;
+        }
         break;
       case "UPR441":
-        if ($preventable) $damage -= 2;
-        $remove = 1;
+        if ($damage > 0) {
+          if ($preventable) $damage -= 2;
+          $remove = 1;
+        }
         break;
       default:
         break;
