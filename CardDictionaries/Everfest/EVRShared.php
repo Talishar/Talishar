@@ -697,7 +697,7 @@
       case "EVR008": case "EVR009": case "EVR010":
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
-        $card = DiscardRandom($currentPlayer, $cardID);
+        $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
@@ -709,7 +709,7 @@
       case "EVR011": case "EVR012": case "EVR013":
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
-        $card = DiscardRandom($currentPlayer, $cardID);
+        $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
