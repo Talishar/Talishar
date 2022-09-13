@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 ob_start();
 include "HostFiles/Redirector.php";
@@ -22,14 +23,13 @@ $deckbuilderID = TryGet("user", "");
 $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
 $attemptCount = 0;
 
-session_start();
 $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
 session_write_close();
 
 $bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
 while (!feof($bannedIPHandler)) {
   $bannedIP = trim(fgets($bannedIPHandler), "\r\n");
-  echo ($_SERVER['REMOTE_ADDR'] . " " . $bannedIP . "<BR>");
+  // echo ($_SERVER['REMOTE_ADDR'] . " " . $bannedIP . "<BR>");
   if ($_SERVER['REMOTE_ADDR'] == $bannedIP) {
     $isOmegaEclipse = true;
   }
@@ -103,5 +103,4 @@ fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!"); //Initialize SHMOP cache for this game
-
 header("Location: JoinGameInput.php?gameName=$gameName&playerID=1&deck=$deck&fabdb=$decklink&format=$format&set=$set&decksToTry=$decksToTry&favoriteDeck=$favoriteDeck&favoriteDecks=$favoriteDeckLink");
