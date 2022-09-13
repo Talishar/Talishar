@@ -769,7 +769,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       //CRU Mechanologist
     case "CRU101":
       $character = &GetPlayerCharacter($currentPlayer);
-      $character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] = ($character[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] == 0 ? 1 : 0);
+      $index = FindCharacterIndex($currentPlayer, $cardID);
+      $character[$index + 2] = ($character[$index + 2] == 0 ? 1 : 0);
       return "";
     case "CRU102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
