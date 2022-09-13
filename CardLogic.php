@@ -634,6 +634,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "CRU161":
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
+      AddDecisionQueue("NOPASS", $player, "-", 1, 1); //Create cancel point
+      AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
+      AddDecisionQueue("BUFFARCANE", $player, "1", 1);
+      AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
+      break;
     case "MON089": // Phantasmal Footsteps
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
