@@ -38,6 +38,9 @@ switch ($popupType) {
   case "myBanishPopup":
     echo (CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
     break;
+  case "myDeckPopup":
+    echo (CreatePopup("myDeckPopup", $myDeck, 1, 0, "Your Deck (In order from top to bottom"));
+    break;
   case "myStatsPopup":
     echo (CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
     break;
