@@ -520,26 +520,33 @@ function AuraLoseHealthAbilities($player, $amount)
   return $amount;
 }
 
-function AuraPlayAbilities($cardID, $from="")
+function AuraPlayAbilities($attackID, $from="")
 {
   global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
   $auras = &GetAuras($currentPlayer);
-  $attackType = CardType($cardID);
+  $attackType = CardType($attackID);
   $numRunechants = CountAura("ARC112", $currentPlayer);
   if ($attackType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
+      case "WTR225":
+        if ($attackType == "AA") {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
+          GiveAttackGoAgain();
+          $remove = 1;
+        }
+        break;
       case "ARC112":
         if ($attackType == "AA") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
       case "MON157":
-        DimenxxionalCrossroadsPassive($cardID, $from);
+        DimenxxionalCrossroadsPassive($attackID, $from);
         break;
       case "EVR143":
-        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
+        if ($auras[$i + 5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2.");
           --$auras[$i + 5];
           AddCurrentTurnEffect("EVR143", $currentPlayer, true);
@@ -564,7 +571,7 @@ function AuraAttackAbilities($attackID)
     $remove = 0;
     switch ($auras[$i]) {
       case "WTR225":
-        if ($attackType == "AA" || $attackType == "W" || $attackSubType == "Aura") {
+        if ($attackType == "W" || $attackSubType == "Aura") {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
