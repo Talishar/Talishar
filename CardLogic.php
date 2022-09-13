@@ -803,6 +803,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         DestroyAura($player, $index);
       }
       break;
+      
     case "UPR182":
       BottomDeckMultizoneDraw($player, "MYHAND", "MYARS");
       break;
@@ -817,6 +818,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("LESSTHANPASS", $player, "2", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINBUFFPOWER", $player, "2", 1);
+      break;
+    case "UPR194": case "UPR195": case "UPR196":
+      if (PlayerHasLessHealth($player)) {
+        GainHealth(1, $player);
+        WriteLog(CardLink($parameter, $parameter) . " gives 1 health.");
+      }
       break;
     case "UPR203": case "UPR204": case "UPR205":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));

@@ -1998,6 +1998,9 @@ function OnBlockResolveEffects()
       case "UPR191": case "UPR192": case "UPR193": // Flex
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
+      case "UPR194": case "UPR195": case "UPR196":
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+        break;
       case "RVD015":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
         break;
@@ -2078,16 +2081,6 @@ function OnBlockEffects($index, $from)
           AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $combatChain[0]);
           WriteLog(CardLink($combatChain[0], $combatChain[0]) . " got +1 for the rest of the turn.");
         }
-      }
-      break;
-    default:
-      break;
-  }
-  switch ($combatChain[$index]) {
-    case "UPR194": case "UPR195": case "UPR196":
-      if (PlayerHasLessHealth($currentPlayer)) {
-        GainHealth(1, $currentPlayer);
-        WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gained 1 health.");
       }
       break;
     default:
