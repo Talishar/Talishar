@@ -366,6 +366,17 @@ function CharacterPlayCardAbilities($cardID, $from)
   }
 }
 
+function DoesArcaneDamage($cardID)
+{
+  
+  switch ($cardID) {
+    case "":
+      return true;
+    default:
+      return false;
+  }
+}
+
 function MainCharacterPlayCardAbilities($cardID, $from)
 {
   global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards;
@@ -381,6 +392,12 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       }
     }
     switch ($characterID) {
+      case "CRU161":
+        if (DoesArcaneDamage($cardID) && $type == "PLAYCARD" && SearchCharacterActive($currentPlayer, "CRU161") && IsCharacterActive($currentPlayer, FindCharacterIndex($currentPlayer, "CRU161")))
+        {
+          AddLayer("TRIGGER", $currentPlayer, "CRU161");
+        }
+        break;
       case "EVR120":
       case "UPR102":
       case "UPR103":

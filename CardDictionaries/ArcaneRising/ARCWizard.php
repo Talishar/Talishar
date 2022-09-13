@@ -256,25 +256,9 @@
       PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
       PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
-      if($damage > 0 && $type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
-      {
-        PrependDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
-        PrependDecisionQueue("PAYRESOURCES", $player, "1", 1);
-        PrependDecisionQueue("BUFFARCANE", $player, "1", 1);
-        PrependDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
-        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
-      }
     }
     else
     {
-      if($damage > 0 && $type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
-      {
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
-        AddDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
-        AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
-        AddDecisionQueue("BUFFARCANE", $player, "1", 1);
-        AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
-      }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
