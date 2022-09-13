@@ -285,21 +285,6 @@ if ($decklink != "") {
     echo ("The following cards are not yet supported: " . $unsupportedCards);
   }
 
-  if($totalCards < 60  && ($format == "cc" || $format == "compcc"))
-  {
-    $_SESSION['error'] = 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if(($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "commoner"))
-  {
-    $_SESSION['error'] = 'Error: The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-
   //We have the decklist, now write to file
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
   $deckFile = fopen($filename, "w");
