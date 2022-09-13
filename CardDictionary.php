@@ -1793,6 +1793,10 @@ function CharacterDefaultActiveState($cardID)
 //Hold priority for triggers (2 = Always hold, 1 = Hold, 0 = Don't Hold)
 function AuraDefaultHoldTriggerState($cardID)
 {
+  global $mainPlayer, $defPlayer;
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  if (isWizard($mainCharacter[0]) || isWizard($defCharacter[0])) return 1;
   switch ($cardID) {
     case "WTR046":
       return 0 ; //Forged for War
@@ -1843,6 +1847,10 @@ function AuraDefaultHoldTriggerState($cardID)
 
 function ItemDefaultHoldTriggerState($cardID)
 {
+  global $mainPlayer, $defPlayer;
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  if (isWizard($mainCharacter[0]) || isWizard($defCharacter[0])) return 1;
   switch ($cardID) {
     case "ARC007": // Teklo Core
     case "ARC035": // Dissipation Shield
@@ -2365,6 +2373,21 @@ function isIyslander($character)
     case 'EVR120':
     case 'UPR102':
     case 'UPR103':
+      return true;
+    default:
+      return false;
+  }
+}
+
+function isWizard($character)
+{
+  switch ($character) {
+    case 'EVR120':
+    case 'UPR102':
+    case 'UPR103':
+    case 'ARC113':
+    case 'ARC114':
+    case 'DYN001':
       return true;
     default:
       return false;
