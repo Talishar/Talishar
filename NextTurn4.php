@@ -1,62 +1,60 @@
+<?php
+
+include 'Libraries/HTTPLibraries.php';
+
+//We should always have a player ID as a URL parameter
+$gameName = $_GET["gameName"];
+if (!IsGameNameValid($gameName)) {
+  echo ("Invalid game name.");
+  exit;
+}
+$playerID = TryGet("playerID", 3);
+if (!is_numeric($playerID)) {
+  echo ("Invalid player ID.");
+  exit;
+}
+
+if (!file_exists("./Games/" . $gameName . "/")) {
+  echo ("Game does not exist");
+  exit;
+}
+
+session_start();
+if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+else $authKey = TryGet("authKey", 3);
+session_write_close();
+
+
+//First we need to parse the game state from the file
+include "WriteLog.php";
+include "ParseGamestate.php";
+include "GameTerms.php";
+include "GameLogic.php";
+include "HostFiles/Redirector.php";
+include "Libraries/UILibraries2.php";
+include "Libraries/StatFunctions.php";
+include "Libraries/PlayerSettings.php";
+include "MenuFiles/ParseGamefile.php";
+
+if ($currentPlayer == $playerID) {
+  $icon = "ready.png";
+  $readyText = "You are the player with priority.";
+} else {
+  $icon = "notReady.png";
+  $readyText = "The other player has priority.";
+}
+echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
+
+$darkMode = IsDarkMode($playerID);
+
+if ($darkMode) $backgroundColor = "rgba(20,20,20,0.70)";
+else $backgroundColor = "rgba(255,255,255,0.70)";
+
+$borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
+?>
+  
   <head>
-
-    <?php
-
-    include 'Libraries/HTTPLibraries.php';
-
-    //We should always have a player ID as a URL parameter
-    $gameName = $_GET["gameName"];
-    if (!IsGameNameValid($gameName)) {
-      echo ("Invalid game name.");
-      exit;
-    }
-    $playerID = TryGet("playerID", 3);
-    if (!is_numeric($playerID)) {
-      echo ("Invalid player ID.");
-      exit;
-    }
-
-    if (!file_exists("./Games/" . $gameName . "/")) {
-      echo ("Game does not exist");
-      exit;
-    }
-
-    session_start();
-    if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
-    else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
-    else $authKey = TryGet("authKey", 3);
-    session_write_close();
-
-
-    //First we need to parse the game state from the file
-    include "WriteLog.php";
-    include "ParseGamestate.php";
-    include "GameTerms.php";
-    include "GameLogic.php";
-    include "HostFiles/Redirector.php";
-    include "Libraries/UILibraries2.php";
-    include "Libraries/StatFunctions.php";
-    include "Libraries/PlayerSettings.php";
-    include "MenuFiles/ParseGamefile.php";
-
-    if ($currentPlayer == $playerID) {
-      $icon = "ready.png";
-      $readyText = "You are the player with priority.";
-    } else {
-      $icon = "notReady.png";
-      $readyText = "The other player has priority.";
-    }
-    echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
-
-    $darkMode = IsDarkMode($playerID);
-
-    if ($darkMode) $backgroundColor = "rgba(20,20,20,0.70)";
-    else $backgroundColor = "rgba(255,255,255,0.70)";
-
-    $borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
-    ?>
-
-
     <head>
       <meta charset="utf-8">
       <title>Talishar</title>

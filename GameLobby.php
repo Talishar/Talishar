@@ -1,12 +1,5 @@
-<head>
-  <meta charset="utf-8">
-  <title>Talishar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/style4.css">
-</head>
-
 <?php
+session_start();
 ob_start();
 include "WriteLog.php";
 include "CardDictionary.php";
@@ -15,7 +8,7 @@ include "Libraries/UILibraries2.php";
 include "Libraries/SHMOPLibraries.php";
 ob_end_clean();
 
-session_start();
+
 
 $gameName = $_GET["gameName"];
 $playerID = $_GET["playerID"];
@@ -59,6 +52,14 @@ else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $icon = "notReady.p
 echo '<title>Game Lobby</title> <meta http-equiv="content-type" content="text/html; charset=utf-8" > <meta name="viewport" content="width=device-width, initial-scale=1.0">';
 echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 ?>
+
+<head>
+  <meta charset="utf-8">
+  <title>Talishar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style4.css">
+</head>
 
 <script>
   function copyText() {
