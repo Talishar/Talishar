@@ -236,9 +236,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     <img style='object-fit: cover; height:100%; width:100%;' src='./Images/findCenterBackground.jpg'/></div>");
 
   echo ("<div style='position:absolute; right:" . intval($rightSideWidth * 1.1) . "px; top:calc(50% - 100px); height:200px; z-index:100;'>
-      <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px;'>$myHealth</span>");//Master pass button div
+      <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px; user-select: none;'>$myHealth</span>");//Master pass button div
   echo (($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "24px") . CreateButton($playerID, "+1", 10006, 0, "24px") . "</span>" : ""));
-  echo ("<span style='position:absolute; text-align:center; width:27px; font-size: 24px; font-weight: 550; top:23px; left:28px;'>$theirHealth</span>");
+  echo ("<span style='position:absolute; text-align:center; width:27px; font-size: 24px; font-weight: 550; top:23px; left:28px; user-select: none;'>$theirHealth</span>");
   echo (($manualMode ? "<span style='position:absolute; top:0px; left:65px;'>" . CreateButton($playerID, "-1", 10007, 0, "24px") . CreateButton($playerID, "+1", 10008, 0, "24px") . "</span>" : ""));
   if (IsDarkMode($playerID)) echo ("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo ("<img style='height:200px;' src='./Images/DuoLife.png' />");
@@ -256,13 +256,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   if (CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo ("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'>
   <span style='position:absolute; left:" . $left . "px; top:" . $top . "px; color: " . $fontColor . "; font-family:Helvetica; font-size:". $fontSize ."px; font-weight: 550; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>" . $passLabel . "</span>
-  <span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color: " . $fontColor . "; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>[Space]</span></div>");
+  <span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color: " . $fontColor . "; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>[Space]</span></div>");
   else {
     echo ("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'>");
     echo ("<span style='position:absolute; left:" . $left . "px; top:" . $top . "px; color:gray; font-family:Helvetica; font-size:" . $fontSize . "px; font-weight: 550; text-shadow: 1px 0 0 " . $borderColor . ", 0 -1px 0 " . $borderColor . ", 0 1px 0 " . $borderColor . ", -1px 0 0 " . $borderColor . "; user-select: none;'>" . $passLabel . "</span>");
-    echo ("<span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color:gray; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>[Space]</span></div>");
+    echo ("<span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color:gray; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>[Space]</span></div>");
   }
-  echo ("<div style='position:absolute; top:117px; left:-153px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; margin-top:2px; left:85; top:20; z-index:10; color:#111; font-weight:600; font-size:30px;'>" . $actionPoints . "AP" . "</span>");
+  echo ("<div style='position:absolute; top:117px; left:-153px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; margin-top:2px; left:85; top:20; z-index:10; color:#111; font-weight:600; font-size:30px; user-select: none;'>" . $actionPoints . "AP" . "</span>");
   echo (($manualMode ? "<span style='position:absolute; top:85%; right:7%; display: inline-block;';>" . CreateButton($playerID, "-1", 10004, 0, "24px") . CreateButton($playerID, "+1", 10002, 0, "24px") . "</span>" : ""));
   echo ("</div></div>");
 
@@ -349,11 +349,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (GetClassState($playerID, $CS_NextArcaneBonus) > 0) $friendlyEffects .= "<div title='Next arcane bonus: " . GetClassState($playerID, $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid blue;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   if (GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) > 0) $opponentEffects .= "<div title='Next arcane bonus: " . GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid red;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   echo ("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
-  echo ("<div style='font-weight: bold; text-align:center; padding-bottom:4px; border-bottom: 4px solid " . $borderColor . "; font-size:18px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Opponent<br>Effects</div>");
+  echo ("<div style='font-weight: bold; text-align:center; padding-bottom:4px; border-bottom: 4px solid " . $borderColor . "; font-size:18px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>Opponent<br>Effects</div>");
   echo ($opponentEffects);
   echo ("<div style='bottom:0px; position:absolute;'>");
   echo ($friendlyEffects);
-  echo ("<div style='font-weight: bolder; width:100px; text-align:center; padding-top:4px; border-top: 4px solid " . $borderColor . "; font-size:18px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Your<br>Effects</div>");
+  echo ("<div style='font-weight: bolder; width:100px; text-align:center; padding-top:4px; border-top: 4px solid " . $borderColor . "; font-size:18px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>Your<br>Effects</div>");
   echo ("</div>");
   echo ("</div>");
 
@@ -1109,8 +1109,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("<div class='MenuButtons' title='Click to view the menu. (Hotkey: M)' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
   echo ("</td></tr></table></div></div>");
 
-  echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; margin-top: 3px; width:100%; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Turn #" . $currentTurn . "</div>");
-  echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; width:100%; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Last Played</div>");
+  echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; margin-top: 3px; width:100%; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>Turn #" . $currentTurn . "</div>");
+  echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; width:100%; font-weight:bold; font-size:16; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>Last Played</div>");
   echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; left: 6px; top:2px;'>");
   if (count($lastPlayed) == 0) echo Card($MyCardBack, "CardImages", intval($rightSideWidth * 1.3));
   else {
