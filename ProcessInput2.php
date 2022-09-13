@@ -1148,9 +1148,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   } else if ($turn[0] == "P") {
     $pitchValue = PitchValue($cardID);
     $resources[0] += $pitchValue;
-    if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "MON060") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
-      $resources[0] += 1;
-    }
     array_push($pitch, $cardID);
     if (CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
     PitchAbility($cardID);

@@ -1878,9 +1878,13 @@ function DefCharacterStartTurnAbilities()
 
 function PitchAbility($cardID)
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_NumAddedToSoul;
 
   $pitchValue = PitchValue($cardID);
+  if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "MON060") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
+    $resources = &GetResources($currentPlayer);
+    $resources[0] += 1;
+  }
   if ($pitchValue == 1) {
     $talismanOfRecompenseIndex = GetItemIndex("EVR191", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
