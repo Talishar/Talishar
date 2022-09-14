@@ -306,11 +306,7 @@ function ARCGenericHitEffect($cardID)
       OptMain(2);
       break;
     case "ARC185": case "ARC186": case "ARC187":
-      AddDecisionQueue("FINDINDICES", $mainPlayer, $cardID);
-      AddDecisionQueue("MAYCHOOSEDECK", $mainPlayer, "<-", 1);
-      AddDecisionQueue("ADDMYHAND", $mainPlayer, "-", 1);
-      AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+      AddLayer("TRIGGER", $mainPlayer, $cardID);
       break;
     case "ARC194": case "ARC195": case "ARC196":
       SetClassState($mainPlayer, $CS_NextNAAInstant, 1);
