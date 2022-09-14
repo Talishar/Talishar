@@ -1980,6 +1980,7 @@ function OnBlockResolveEffects()
   global $combatChain, $CS_DamageTaken, $defPlayer, $mainPlayer;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    ProcessPhantasmOnBlock($i);
     switch ($combatChain[$i]) {
       case "EVR018":
           WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " frostbite trigger creates a layer.");
@@ -2016,7 +2017,6 @@ function OnBlockResolveEffects()
       default:
         break;
     }
-    ProcessPhantasmOnBlock($i);
   }
 }
 
