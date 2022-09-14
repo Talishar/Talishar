@@ -1496,6 +1496,11 @@ function PayAdditionalCosts($cardID, $from)
         $character[$index + 2] = 0;
       }
       break;
+    case "ARC041":
+      if (ArsenalHasFaceDownCard($currentPlayer)) {
+        SetArsenalFacing("UP", $currentPlayer);
+      }
+      break;
     case "CRU097":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);

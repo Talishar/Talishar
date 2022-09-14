@@ -139,11 +139,7 @@
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ARC041":
-        if(ArsenalHasFaceDownCard($currentPlayer))
-        {
-          SetArsenalFacing("UP", $currentPlayer);
           Opt($cardID, 1);
-        }
         return "";
       case "ARC042":
         if(!ArsenalEmpty($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
