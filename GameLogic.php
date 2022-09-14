@@ -2271,6 +2271,10 @@ function MainCharacterEndTurnAbilities()
     switch ($defCharacter[$i]) {
       case "MON089":
         $defCharacter[$i + 4] = 0;
+        break;
+      case "ELE203":
+        $defCharacter[$i + 4] = 0;
+        break;
       default:
         break;
     }
