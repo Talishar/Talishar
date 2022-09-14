@@ -788,12 +788,15 @@ function EffectHitEffect($cardID)
       break;
     case "EVR164":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 6);
+      RemoveCurrentEffect($mainPlayer, $cardID);
       break;
     case "EVR165":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 4);
+      RemoveCurrentEffect($mainPlayer, $cardID);
       break;
     case "EVR166":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
+      RemoveCurrentEffect($mainPlayer, $cardID);
       break;
     case "EVR170-1":
     case "EVR171-1":
@@ -1702,6 +1705,10 @@ function IsCombatEffectPersistent($cardID)
     case "EVR090":
       return true;
     case "EVR160":
+      return true;
+    case "EVR164":
+    case "EVR165":
+    case "EVR166":
       return true;
     case "EVR170-1":
     case "EVR171-1":
