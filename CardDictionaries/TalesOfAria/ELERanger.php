@@ -404,10 +404,7 @@
             if($element == "ICE")
             {
               $otherPlayer = ($player == 1 ? 2 : 1);
-              if($currentTurnEffects[$i] == "UPR141") $numFrost = 4;
-              else if($currentTurnEffects[$i] == "UPR142") $numFrost = 3;
-              else $numFrost = 2;
-              PlayAura("ELE111", $otherPlayer, $numFrost);
+              AddLayer("TRIGGER", $player, $currentTurnEffects[$i], $otherPlayer);
               $remove = 1;
             }
             break;

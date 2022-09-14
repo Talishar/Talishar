@@ -803,7 +803,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         DestroyAura($player, $index);
       }
       break;
-      
+    case "UPR141": case "UPR142": case "UPR143":
+      if ($parameter == "UPR141") $numFrost = 4;
+      else if ($parameter == "UPR142") $numFrost = 3;
+      else $numFrost = 2;
+      PlayAura("ELE111", $target, $numFrost);
+      break;
     case "UPR182":
       BottomDeckMultizoneDraw($player, "MYHAND", "MYARS");
       break;
