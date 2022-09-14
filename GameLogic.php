@@ -594,7 +594,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 //Return 1 if the effect should be removed
 function EffectHitEffect($cardID)
 {
-  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex;
+  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain;
   switch ($cardID) {
     case "WTR129":
     case "WTR130":
@@ -619,10 +619,12 @@ function EffectHitEffect($cardID)
     case "CRU145":
     case "CRU146":
     case "CRU147":
-      if ($cardID == "CRU145") $amount = 3;
-      else if ($cardID == "CRU146") $amount = 2;
-      else $amount = 1;
-      PlayAura("ARC112", $mainPlayer, $amount);
+      if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)){
+        if ($cardID == "CRU145") $amount = 3;
+        else if ($cardID == "CRU146") $amount = 2;
+        else $amount = 1;
+        PlayAura("ARC112", $mainPlayer, $amount);
+      }
       break;
     case "CRU084-2":
       PutItemIntoPlayForPlayer("CRU197", $mainPlayer, 0, 2);
