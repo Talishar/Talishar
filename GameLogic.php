@@ -4863,6 +4863,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "CORONETPEAK":
       $otherPlayer = ($player == 1 ? 2 : 1);
+      if ($lastResult == "") $lastResult = $parameter;
       switch ($lastResult) {
         case "Target_Opponent":
           AddDecisionQueue("PAYORDISCARD", $otherPlayer, "1");

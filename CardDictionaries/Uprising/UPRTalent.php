@@ -335,9 +335,13 @@
         }
         return $rv;
       case "UPR136":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-        AddDecisionQueue("CORONETPEAK", $currentPlayer, "<-", 1);
+        if (ShouldAutotargetOpponent($currentPlayer)) {
+          AddDecisionQueue("CORONETPEAK", $currentPlayer, "Target_Opponent", 1);
+        } else {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+          AddDecisionQueue("CORONETPEAK", $currentPlayer, "<-", 1);
+        }
         return "Makes target hero pay 1 or discard a card.";
       case "UPR137":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
