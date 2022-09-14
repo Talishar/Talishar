@@ -152,7 +152,7 @@ if (isset($_SESSION["userid"])) {
   <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>Talishar is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
   <h3 style='text-align:center;'>________</h3>
-<!--
+  <!--
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
       <h2>Commotion #2 has concluded!</h2>
@@ -182,26 +182,27 @@ if (isset($_SESSION["userid"])) {
 -->
 
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
-      <div style="vertical-align:middle; position: relative;">
-        <h2>Coax a Commotion #3!</h2>
-        <h4>Win as many games as you can <br>with Moon Wish</h4><br>
-        <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/challenges/moonwish.png" /><br><br>
-        <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
-      </div>
-      <div style='text-align:center;'><a href='./Images/challenges/mooncake.jpeg'>Happy Mid-Autumn Festival!</a></div>
-  <h3 style='text-align:center;'>________</h3>
+    <div style="vertical-align:middle; position: relative;">
+      <h2>Coax a Commotion #3!</h2>
+      <h4>Win as many games as you can <br>with Moon Wish</h4><br>
+      <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/challenges/moonwish.png" /><br><br>
+      <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
+    </div>
+    <div style='text-align:center;'><a href='./Images/challenges/mooncake.jpeg'>Happy Mid-Autumn Festival!</a></div>
+    <h3 style='text-align:center;'>________</h3>
 
-  <!--
-  <div style='vertical-align:middle; text-align:center;'>
-    <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
-    <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
-    <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a>
-    <br>
-    <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
+
+    <div style='vertical-align:middle; text-align:center;'>
+      <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
+      <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
+      <!-- <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a> -->
+      <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
+      <br>
+      <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
+    </div>
+
   </div>
--->
-</div>
 
-<?php
-include_once 'Footer.php';
-?>
+  <?php
+  include_once 'Footer.php';
+  ?>
