@@ -669,7 +669,7 @@ function EffectHitEffect($cardID)
           AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1);
           AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
           AddDecisionQueue("REMOVEFIRSTCHOICEINDICES", $defPlayer, "0", 1);
-          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1);
+          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "<-", 1);
           AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
         }
       break;
