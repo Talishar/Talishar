@@ -820,7 +820,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   if (count($theirItems) > 0) {
     for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
-      if (IsTileable($theirItems[$i])) continue;
+      if (IsTileable($theirItems[$i]) && $i > 0) continue;
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i + 2] != 2 ? 1 : 0, 0, $theirItems[$i + 1], "", "", false, 0, 0, 0, "ITEMS", controller:$otherPlayer) . "&nbsp");
       DisplayPriorityGem($theirItems[$i + 6], "ITEMS-" . $i, 1);
@@ -982,7 +982,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   if (count($myItems) > 0) {
     for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
-      if (IsTileable($myItems[$i])) continue;
+      if (IsTileable($myItems[$i]) && $i > 0) continue;
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       echo ("<div style='position:relative; display: inline-block;'>");
@@ -1292,13 +1292,10 @@ function IsTileable($cardID)
 {
   switch ($cardID) {
     case "WTR075":
-      return true;
     case "ARC112":
-      return true;
+    case "CRU197":
     case "MON186":
-      return true;
     case "ELE111":
-      return true;
     case "UPR043":
       return true;
     default:
@@ -1363,14 +1360,12 @@ function DisplayTiles($player)
     echo ("</div>");
   }
 
-  //Remove Copper as they weren't playable if shown as tiles.
-
-  // $items = GetItems($player);
-  // $copperCount = 0;
-  // for ($i = 0; $i < count($items); $i += ItemPieces()) {
-  //   if ($items[$i] == "CRU197") ++$copperCount;
-  // }
-  // if ($copperCount > 0) echo (Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
+  $items = GetItems($player);
+  $copperCount = -1;
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    if ($items[$i] == "CRU197") ++$copperCount;
+  }
+  if ($copperCount > 0) echo (Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
 
   $permanents = GetPermanents($player);
   $ashCount = 0;
