@@ -532,8 +532,17 @@ function GetItemIndex($cardID, $player)
 function GetAuraIndex($cardID, $player)
 {
   $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += ItemPieces()) {
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     if ($auras[$i] == $cardID) return $i;
+  }
+  return -1;
+}
+
+function GetAllyIndex($cardID, $player)
+{
+  $Allies = &GetAllies($player);
+  for ($i = 0; $i < count($Allies); $i += AllyPieces()) {
+    if ($Allies[$i] == $cardID) return $i;
   }
   return -1;
 }
