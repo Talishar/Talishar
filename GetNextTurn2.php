@@ -586,7 +586,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $enduranceCounters = 0;
       $atkCounters = 0;
 
-      $params = explode("|", $layers[2]);
+      if ($layers[0] != "") $params = explode("|", $layers[2]);
       if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && ($option[1] == $combatChainState[$CCS_WeaponIndex] || $option[1] == $params[2])) {
         $counters = "Attacker";
       }
