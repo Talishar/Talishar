@@ -313,6 +313,7 @@ function logCompletedGameStats($reportingServer = false) {
 
 function LogChallengeResult($conn, $gameResultID, $playerID, $result)
 {
+	WriteLog("Writing challenge result for player " . $playerID);
 	$challengeId = 3;
 	$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
