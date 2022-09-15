@@ -174,7 +174,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron);
   if($isPatron == "") $isPatron = "0";
   $mute = 0;
-  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . " 0 0\r\n"); //Settings
+  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . " 0 0 0\r\n"); //Settings
 }
 
 function GetArray($handler)

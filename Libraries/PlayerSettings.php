@@ -23,7 +23,8 @@ $SET_IsPatron = 13; //Is Patron
 
 $SET_MuteChat = 14; //Did this player mute chat
 
-$SET_DisableStats = 15; //Did this disable stats
+$SET_DisableStats = 15; //Did this player disable stats
+$SET_CasterMode = 16; //Did this player enable caster mode
 
 function HoldPrioritySetting($player)
 {
@@ -203,6 +204,15 @@ function AreStatsDisabled($player)
   return $settings[$SET_DisableStats] == "1";
 }
 
+function IsCasterMode()
+{
+  global $SET_CasterMode;
+  $settings1 = GetSettings(1);
+  $settings2 = GetSettings(2);
+  if($settings1 == null || $settings2 == null) return false;
+  return $settings1[$SET_CasterMode] == "1" && $settings2[$SET_CasterMode] == "1";
+}
+
 function ChangeSetting($player, $setting, $value)
 {
   /*
@@ -233,6 +243,7 @@ function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
   global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat, $SET_DisableStats;
+  global $SET_CasterMode;
   $rv = "";
   $settings = GetSettings($player);
   $currentValue = HoldPrioritySetting($player);
@@ -292,6 +303,10 @@ function GetSettingsUI($player)
 
   if ($settings[$SET_DisableStats] == 0) $rv .= CreateCheckbox($SET_DisableStats . "-1", "Disable Stats", 26, false, "Disable Stats", true);
   else $rv .= CreateCheckbox($SET_DisableStats . "-0", "Disable Stats", 26, true, "Disable Stats", true);
+  $rv .= "<BR>";
+
+  if ($settings[$SET_CasterMode] == 0) $rv .= CreateCheckbox($SET_CasterMode . "-1", "Caster Mode", 26, false, "Caster Mode", true);
+  else $rv .= CreateCheckbox($SET_CasterMode . "-0", "Caster Mode", 26, true, "Caster Mode", true);
   $rv .= "<BR>";
 
   // 0 - Default
