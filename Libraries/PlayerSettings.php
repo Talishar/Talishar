@@ -75,6 +75,7 @@ function IsPatron($player)
 // 4 - Grey
 // 5 - Red
 // 6 - Tan
+// 7 - Blue
 function IsCardBackBlackMode($player)
 {
   global $SET_Cardback;
@@ -115,6 +116,13 @@ function IsCardBackTanMode($player)
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 6;
+}
+
+function IsCardBackBlueMode($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 7;
 }
 
 function IsManualMode($player)
@@ -304,6 +312,7 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-5", "Red", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Red ");
     $rv .= "<BR>";
     $rv .= CreateRadioButton($SET_Cardback . "-6", "Tan", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Tan");
+    $rv .= CreateRadioButton($SET_Cardback . "-7", "Blue", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Blue");
    }
 
   /*

@@ -200,6 +200,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBRed";
   } else if (IsCardBackTanMode($playerID)) {
     $MyCardBack = "CBParchment";
+  } else if (IsCardBackBlueMode($playerID)) {
+    $MyCardBack = "CBBlue";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -216,8 +218,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBRed";
   } else if (IsCardBackTanMode($otherPlayer)) {
     $TheirCardBack = "CBParchment";
+  } else if (IsCardBackTanMode($otherPlayer)) {
+    $TheirCardBack = "CBBlue";
   }
-
 
   //Display background
   if (IsDarkPlainMode($playerID))
