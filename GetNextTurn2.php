@@ -589,9 +589,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $lifeCounters = 0;
       $enduranceCounters = 0;
       $atkCounters = 0;
-
-      if ($layers[0] != "") $params = explode("|", $layers[2]);
-      if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && ($option[1] == $combatChainState[$CCS_WeaponIndex] || $option[1] == $params[2])) {
+      
+      if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
         $counters = "Attacker";
       }
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
