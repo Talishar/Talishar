@@ -301,6 +301,7 @@ function GetSettingsUI($player)
   // 4 - Grey
   // 5 - Red
   // 6 - Tan
+  // 7 - Blue
    if (IsPatron($player)) {
     $rv .= "<h3>Card Backs</h3>";
     $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
