@@ -54,7 +54,7 @@
     $numPacks = GetZoneCount($i, "DecisionQueue", "CHOOSECARD");
     if($i == $playerID) echo("<span style='font-size: 40px;'>You ");
     else echo("<span style='font-size: 40px;'>Player $i ");
-    for($j=0; $j<$numPacks; ++$j) echo(Card("cardBack", "../CardImages", 50, 0, 0, 0, -1));
+    for($j=0; $j<$numPacks; ++$j) echo(Card("CardBack", "../CardImages", 50, 0, 0, 0, -1));
     echo("</span>");
     echo("</td>");
   }
