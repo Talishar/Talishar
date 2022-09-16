@@ -683,6 +683,7 @@ function PlayerWon($playerID)
 {
   global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID;
+  if($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
   WriteLog("Player " . $playerID . " wins!");
@@ -707,7 +708,7 @@ function PlayerWon($playerID)
   } catch (Exception $e) {
     //Failed to send to reporting server
   }
-  
+
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
