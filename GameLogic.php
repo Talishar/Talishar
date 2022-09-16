@@ -32,19 +32,19 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     }
   }
   if ($set == "WTR") {
-    return WTRPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts);
+    return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   } else if ($set == "ARC") {
     switch ($class) {
       case "MECHANOLOGIST":
-        return ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid);
+        return ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "RANGER":
-        return ARCRangerPlayAbility($cardID, $from, $resourcesPaid);
+        return ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "RUNEBLADE":
-        return ARCRunebladePlayAbility($cardID, $from, $resourcesPaid);
+        return ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "WIZARD":
-        return ARCWizardPlayAbility($cardID, $from, $resourcesPaid);
+        return ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "GENERIC":
-        return ARCGenericPlayAbility($cardID, $from, $resourcesPaid);
+        return ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default:
         return "";
     }
@@ -3494,6 +3494,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHOWSELECTEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
       return $lastResult;
+    case "SHOWSELECTEDMODE":
+      $rv = implode(" ", explode("_", $lastResult));
+      WriteLog(CardLink($parameter, $parameter) . " mode is: " . $rv);
+      return $lastResult;
+    case "SHOWSELECTEDMODES":
+      $rv = "";
+      for ($i = 0; $i < count($lastResult); ++$i) {
+        if ($rv != "") $rv .= " and ";
+        $rv .= implode(" ", explode("_", $lastResult[$i]));
+      }
+      WriteLog(CardLink($parameter, $parameter) . " modes are: " . $rv);
+      return $lastResult;
     case "SHOWBANISHEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
       return $lastResult;
@@ -3540,6 +3552,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SETCLASSSTATE":
       SetClassState($player, $parameter, $lastResult);
+      return $lastResult;
+    case "SETCLASSSTATEAOW":
+      $value = $lastResult[0] . "," . $lastResult[1];
+      SetClassState($player, $parameter, $value);
       return $lastResult;
     case "GAINACTIONPOINTS":
       $actionPoints += $parameter;
@@ -3618,14 +3634,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "ESTRIKE":
       switch ($lastResult) {
-        case "Draw_a_card":
+        case "Draw_a_Card":
           WriteLog(CardLink("WTR159", "WTR159") . " draw a card.");
           return MyDrawCard();
-        case "2_Attack":
+        case "Buff_Power":
           WriteLog(CardLink("WTR159", "WTR159") . " gained +2 power.");
           AddCurrentTurnEffect("WTR159", $player);
           return 1;
-        case "Go_again":
+        case "Go_Again":
           WriteLog(CardLink("WTR159", "WTR159") . " gained go again.");
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
           return 2;
@@ -3726,12 +3742,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CAPTAINSCALL":
       switch ($lastResult) {
-        case "2_Attack":
-          WriteLog("Captain's Call gives +2 power.");
+        case "Buff_Power":
+          WriteLog(CardLink($parameter, $parameter) . " gives +2 power.");
           AddCurrentTurnEffect($parameter . "-1", $player);
           return 1;
-        case "Go_again":
-          WriteLog("Captain's Call gives go again.");
+        case "Go_Again":
+          WriteLog(CardLink($parameter, $parameter) . " gives go again.");
           AddCurrentTurnEffect($parameter . "-2", $player);
           return 2;
       }
@@ -3752,7 +3768,40 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$index + 4] = 1;
       return $lastResult;
     case "ARTOFWAR":
-      ArtOfWarResolvePlay($lastResult);
+      global $currentPlayer, $combatChain;
+      $params = explode(",", $lastResult);
+      for ($i = 0; $i < count($params); ++$i) {
+        switch ($params[$i]) {
+          case "Buff_your_attack_action_cards_this_turn":
+            WriteLog(CardLink("ARC160", "ARC160") . " gives attack action cards +1 power and defense this turn.");
+            AddCurrentTurnEffect("ARC160-1", $currentPlayer);
+            break;
+          case "Your_next_attack_action_card_gains_go_again":
+            WriteLog(CardLink("ARC160", "ARC160") . " gives the next attack action card this turn go again.");
+            if (count($combatChain) > 0) {
+              AddCurrentTurnEffectFromCombat("ARC160-3", $currentPlayer);
+            } else {
+              AddCurrentTurnEffect("ARC160-3", $currentPlayer);
+            }
+            break;
+          case "Defend_with_attack_action_cards_from_arsenal":
+            WriteLog(CardLink("ARC160", "ARC160") . " makes it possible to block with attack actions from arsenal.");
+            AddCurrentTurnEffect("ARC160-2", $currentPlayer);
+            break;
+          case "Banish_an_attack_action_card_to_draw_2_cards":
+            WriteLog(CardLink("ARC160", "ARC160") . " allows you to banish a card and draw 2.");
+            PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
+            PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
+            PrependDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
+            PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
+            PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+            PrependDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDAA");
+            break;
+          default:
+            break;
+        }
+      }
       return $lastResult;
     case "BLOODONHERHANDS":
       BloodOnHerHandsResolvePlay($lastResult);

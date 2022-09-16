@@ -746,8 +746,7 @@
         if ($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
         return "Prevents damage this turn.";
       case "EVR047": case "EVR048": case "EVR049":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
         return "";
       case "EVR053":

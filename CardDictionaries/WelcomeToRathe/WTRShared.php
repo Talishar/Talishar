@@ -594,7 +594,7 @@
     }
   }
 
-  function WTRPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts)
+  function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $mainPlayer, $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer, $actionPoints;
     global $CS_DamagePrevention;
@@ -800,10 +800,9 @@
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         return "Gives your current attack go again.";
       case "WTR159":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_card,2_Attack,Go_again");
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
-        return "Puts a card from your hand to the bottom of your deck.";
+        return "";
       case "WTR160":
         MyDrawCard();
         MyDrawCard();
