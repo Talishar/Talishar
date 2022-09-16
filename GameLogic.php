@@ -2310,7 +2310,7 @@ function MainCharacterHitAbilities()
       case "WTR076":
       case "WTR077":
         if (CardType($attackID) == "AA") {
-          KatsuHit($i);
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
           $mainCharacter[$i + 1] = 1;
         }
         break;

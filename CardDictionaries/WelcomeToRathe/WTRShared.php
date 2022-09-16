@@ -965,7 +965,7 @@
     return "Blessing of Deliverance gained " . $lifegain . " life.";
   }
 
-  function KatsuHit($index)
+  function KatsuHit()
   {
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
@@ -983,7 +983,6 @@
       AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
     }
-    AddDecisionQueue("EXHAUSTCHARACTER", $mainPlayer, $index, 1);
   }
 
   function LordOfWindIndices($player)
