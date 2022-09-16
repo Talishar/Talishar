@@ -218,7 +218,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBRed";
   } else if (IsCardBackTanMode($otherPlayer)) {
     $TheirCardBack = "CBParchment";
-  } else if (IsCardBackTanMode($otherPlayer)) {
+  } else if (IsCardBackBlueMode($otherPlayer)) {
     $TheirCardBack = "CBBlue";
   }
 
