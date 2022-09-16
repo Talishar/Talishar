@@ -130,7 +130,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost;
+    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost, $CS_NextArcaneBonus;
     $rv = "";
     switch($cardID)
     {
@@ -280,12 +280,13 @@
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $allies = &GetAllies($otherPlayer);
         if(count($allies) < $maxAllies) $maxAllies = count($allies);
-        DealArcane(1, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
+        $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer);
+        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
         for($i=1; $i<$maxAllies; ++$i)
         {
-          DealArcane(1, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, true);
+          DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, true);
         }
-        DealArcane(1, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
+        DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
         return "";
       default: return "";
     }
