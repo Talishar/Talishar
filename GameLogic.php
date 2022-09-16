@@ -2316,7 +2316,7 @@ function MainCharacterHitAbilities()
         break;
       case "WTR079":
         if (CardType($attackID) == "AA" && $combatChainState[$CCS_HitsInRow] >= 3) {
-          MainDrawCard();
+          AddLayer("TRIGGER", $mainPlayer, $characterID);
           $mainCharacter[$i + 1] = 1;
         }
         break;
