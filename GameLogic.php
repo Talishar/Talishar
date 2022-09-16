@@ -3347,7 +3347,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DestroyCharacter($player, $lastResult);
       return $lastResult;
     case "DESTROYTHEIRCHARACTER":
+      $character = &GetPlayerCharacter($defPlayer);
       DestroyCharacter($player == 1 ? 2 : 1, $lastResult);
+      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " was destroyed.");
       return $lastResult;
     case "DESTROYEQUIPDEF0":
       $character = &GetPlayerCharacter($defPlayer);
@@ -3519,6 +3521,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDNEGDEFCOUNTER":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 4] -= 1;
+      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative counter.");
       return $lastResult;
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
