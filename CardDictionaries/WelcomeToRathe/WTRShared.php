@@ -767,7 +767,8 @@
         if(RepriseActive())
         {
           MyDrawCard();
-          AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
+          $hand = &GetHand($mainPlayer);
+          if (count($hand) > 0) AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
         }
         return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
       case "WTR141": case "WTR142": case "WTR143":
