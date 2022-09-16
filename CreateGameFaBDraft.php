@@ -30,8 +30,9 @@ fwrite($gcFile, $counter + 1);
 flock($gcFile, LOCK_UN);    // release the lock
 fclose($gcFile);
 
-if (!file_exists("Games/" . $gameName)) {
-  mkdir("Games/" . $gameName, 0700, true);
+if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true)) ){
+} else {
+  print_r("Encountered a problem creating a game. Please return to the main menu and try again"); 
 }
 
 $p1Data = [1];
