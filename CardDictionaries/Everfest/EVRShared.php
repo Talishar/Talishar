@@ -746,6 +746,7 @@
         if ($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
         return "Prevents damage this turn.";
       case "EVR047": case "EVR048": case "EVR049":
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
         AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
         return "";
@@ -802,6 +803,7 @@
           $rv = "";
           $items = &GetItems($currentPlayer);
           if($items[GetClassState($currentPlayer, $CS_PlayIndex)+3] == 2) { $rv = "Gained an action point from Micro-Processor."; GainActionPoints(1); }
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Opt,Draw_then_top_deck,Banish_top_deck");
           AddDecisionQueue("MICROPROCESSOR", $currentPlayer, "-", 1);
         }

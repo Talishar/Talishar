@@ -800,6 +800,7 @@
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         return "Gives your current attack go again.";
       case "WTR159":
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_card,2_Attack,Go_again");
         AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
         return "Puts a card from your hand to the bottom of your deck.";

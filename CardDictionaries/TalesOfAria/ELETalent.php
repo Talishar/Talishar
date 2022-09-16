@@ -543,6 +543,7 @@
   function KorshemRevealAbility($player)
   {
     WriteLog("Korshem triggered by revealing a card.");
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a bonus", 1);
     AddDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
     AddDecisionQueue("KORSHEM", $player, "-", 1);
   }

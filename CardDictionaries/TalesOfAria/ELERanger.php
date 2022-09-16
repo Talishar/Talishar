@@ -140,6 +140,7 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate", 1);
         AddDecisionQueue("SHIVER", $currentPlayer, "-", 1);
         return "";
@@ -149,6 +150,7 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
         AddDecisionQueue("VOLTAIRE", $currentPlayer, "-", 1);
         return "";
