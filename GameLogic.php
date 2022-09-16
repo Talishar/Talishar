@@ -407,7 +407,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR080":
       return 1;
     case "WTR081":
-      return $resourcesPaid;
+      return (ComboActive() ? $resourcesPaid : 0);
     case "WTR082":
       return 1;
     case "WTR083":
