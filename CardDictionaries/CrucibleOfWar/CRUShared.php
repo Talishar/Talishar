@@ -699,6 +699,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return $rv;
     case "CRU056":
       if (ComboActive()) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Attack_Action,Non-attack_Action");
         AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_CardTypeDefenseRequirement, 1);
       }
