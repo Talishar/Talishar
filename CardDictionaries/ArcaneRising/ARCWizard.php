@@ -85,7 +85,7 @@
     }
   }
 
-  function ARCWizardPlayAbility($cardID, $from, $resourcesPaid)
+  function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);

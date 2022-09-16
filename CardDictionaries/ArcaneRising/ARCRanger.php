@@ -112,7 +112,7 @@
     }
   }
 
-  function ARCRangerPlayAbility($cardID, $from, $resourcesPaid)
+  function ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
     switch($cardID)

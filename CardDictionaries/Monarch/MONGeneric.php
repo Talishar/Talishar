@@ -178,8 +178,7 @@
       AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
       return "";
     case "MON260": case "MON261": case "MON262":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "2_Attack,Go_again");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("CAPTAINSCALL", $currentPlayer, $cardID, 1);
       return "";
     case "MON263": case "MON264": case "MON265":

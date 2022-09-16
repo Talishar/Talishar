@@ -137,7 +137,7 @@
   }
 
 
-function ARCGenericPlayAbility($cardID, $from, $resourcesPaid)
+function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;
   global $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
@@ -161,8 +161,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid)
       SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
       return "Gives your next non-attack action card this turn go again.";
     case "ARC160":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes", 1);
-      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn.,Your_next_attack_action_card_gains_go_again.,Defend_with_attack_action_cards_from_arsenal.,Banish_an_attack_action_card_to_draw_2_cards.");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("ARTOFWAR", $currentPlayer, "-", 1);
       return "";
     case "ARC162":
@@ -313,42 +312,5 @@ function ARCGenericHitEffect($cardID)
       break;
     default:
       break;
-  }
-}
-
-function ArtOfWarResolvePlay($userInput)
-{
-  global $currentPlayer, $combatChain;
-  for ($i = 0; $i < count($userInput); ++$i) {
-    switch ($userInput[$i]) {
-      case "Buff_your_attack_action_cards_this_turn.":
-        WriteLog(CardLink("ARC160", "ARC160") . " gives attack action cards +1 power and defense this turn.");
-        AddCurrentTurnEffect("ARC160-1", $currentPlayer);
-        break;
-      case "Your_next_attack_action_card_gains_go_again.":
-        WriteLog(CardLink("ARC160", "ARC160") . " gives the next attack action card this turn go again.");
-        if (count($combatChain) > 0) {
-          AddCurrentTurnEffectFromCombat("ARC160-3", $currentPlayer);
-        } else {
-          AddCurrentTurnEffect("ARC160-3", $currentPlayer);
-        }
-        break;
-      case "Defend_with_attack_action_cards_from_arsenal.":
-        WriteLog(CardLink("ARC160", "ARC160") . " makes it possible to block with attack actions from arsenal.");
-        AddCurrentTurnEffect("ARC160-2", $currentPlayer);
-        break;
-      case "Banish_an_attack_action_card_to_draw_2_cards.":
-        WriteLog(CardLink("ARC160", "ARC160") . " allows you to banish a card and draw 2.");
-        PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
-        PrependDecisionQueue("DRAW", $currentPlayer, "-", 1);
-        PrependDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
-        PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
-        PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        PrependDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
-        PrependDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDAA");
-        break;
-      default:
-        break;
-    }
   }
 }

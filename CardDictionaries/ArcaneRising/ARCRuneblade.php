@@ -113,7 +113,7 @@
     }
   }
 
-  function ARCRunebladePlayAbility($cardID, $from, $resourcesPaid)
+  function ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
     switch($cardID)

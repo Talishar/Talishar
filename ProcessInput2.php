@@ -1448,6 +1448,10 @@ function PayAdditionalCosts($cardID, $from)
   switch ($cardID) {
     case "WTR159":
       BottomDeck();
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Draw_a_Card,Buff_Power,Go_Again");
+      AddDecisionQueue("SHOWSELECTEDMODE", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "WTR179":
     case "WTR180":
@@ -1501,6 +1505,12 @@ function PayAdditionalCosts($cardID, $from)
         SetArsenalFacing("UP", $currentPlayer);
       }
       break;
+    case "ARC160":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn,Your_next_attack_action_card_gains_go_again,Defend_with_attack_action_cards_from_arsenal,Banish_an_attack_action_card_to_draw_2_cards");
+      AddDecisionQueue("SETCLASSSTATEAOW", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWSELECTEDMODES", $currentPlayer, $cardID, 1);
+      break;
     case "CRU097":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -1515,6 +1525,14 @@ function PayAdditionalCosts($cardID, $from)
     case "MON029":
     case "MON030":
       BanishFromSoul($currentPlayer);
+      break;
+    case "MON033":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
+      AddDecisionQueue("BEACONOFVICTORY-1", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "MON035":
       AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-");
@@ -1600,22 +1618,16 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
       break;
-    case "MON251":
-    case "MON252":
-    case "MON253":
+    case "MON251": case "MON252": case "MON253":
       HandToTopDeck($currentPlayer);
       break;
-    case "MON033":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
-      AddDecisionQueue("BEACONOFVICTORY-1", $currentPlayer, "-", 1);
+    case "MON260": case "MON261": case "MON262":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Buff_Power,Go_Again");
+      AddDecisionQueue("SHOWSELECTEDMODE", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
-    case "MON266":
-    case "MON267":
-    case "MON268":
+    case "MON266": case "MON267": case "MON268":
       if (CanRevealCards($currentPlayer)) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-1");
@@ -1626,9 +1638,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       break;
-    case "MON281":
-    case "MON282":
-    case "MON283":
+    case "MON281": case "MON282": case "MON283":
       if ($from == "PLAY") {
         $hand = &GetHand($currentPlayer);
         if (count($hand) == 0) {
@@ -1666,6 +1676,12 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+      break;
+    case "EVR047": case "EVR048": case "EVR049":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Hit_Effect,1_Attack");
+      AddDecisionQueue("SHOWSELECTEDMODE", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "EVR158":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
