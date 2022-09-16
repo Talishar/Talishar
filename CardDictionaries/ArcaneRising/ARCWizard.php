@@ -140,8 +140,8 @@
         AddDecisionQueue("OK", $currentPlayer, "-", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
-        DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus), 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
+        $damage = ArcaneDamage($cardID) +ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
+        DealArcane($damage, 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
         return "Deals " . $damage . " arcane damage.";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
@@ -364,6 +364,8 @@
       case "EVR134": return 5;
       case "EVR135": return 4;
       case "EVR136": return 3;
+      //UPR
+      case "UPR179": case "UPR180": case "UPR181":return 1;
       default: return 0;
     }
   }
