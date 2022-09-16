@@ -219,6 +219,7 @@
     {
       $element = $elementArray[$i];
       AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REVEALHANDCARDS", $player, "<-", 1);
       AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
