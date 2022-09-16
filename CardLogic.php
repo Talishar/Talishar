@@ -540,6 +540,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "WTR076": case "WTR077":
+        KatsuHit();
+      break;
     case "WTR117":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
