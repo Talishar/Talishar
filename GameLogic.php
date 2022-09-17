@@ -4014,9 +4014,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($damage < 0) $damage = 0;
       if($damage > 0) IncrementClassState($playerSource, $CS_ArcaneDamageDealt, $damage);
       WriteLog(CardLink($source, $source) . " dealt $damage arcane damage.");
-      if ($damage > 0 && SearchCurrentTurnEffects("UPR125", $otherPlayer) && CardType($source) != "W") {
+      if ($damage > 0 && SearchCurrentTurnEffects("UPR125", $playerSource) && CardType($source) != "W") {
         DestroyFrozenArsenal($player);
-        SearchCurrentTurnEffects("UPR125", $otherPlayer, true); // Remove the effect
+        SearchCurrentTurnEffects("UPR125", $playerSource, true); // Remove the effect
       }
       if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessDealDamageEffect($source); // Interaction with Burn Them All! + Nekria
       $dqVars[0] = $damage;
