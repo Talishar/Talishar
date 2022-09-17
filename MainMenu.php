@@ -3,10 +3,6 @@
 include_once 'Header.php';
 include "HostFiles/Redirector.php";
 
-if (!empty($_SESSION['error'])) {
-  echo "<script>alert('" . $_SESSION['error'] . "')</script>";
-  unset($_SESSION['error']);
-}
 
 if (isset($_SESSION["userid"])) {
   $uidExists = getUInfo($conn, $_SESSION['useruid']);
@@ -14,6 +10,13 @@ if (isset($_SESSION["userid"])) {
   $_SESSION["greenThumb"] = $uidExists["greenThumbs"];
   $_SESSION["redThumb"] = $uidExists["redThumbs"];
 }
+
+if (!empty($_SESSION['error'])) {
+  $error = $_SESSION['error'];
+  unset($_SESSION['error']);
+  echo "<script>alert('" . $error . "')</script>";
+}
+
 ?>
 
 <style>
