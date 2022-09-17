@@ -186,7 +186,7 @@ if (!empty($_SESSION['error'])) {
 
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
     <div style="vertical-align:middle; position: relative;">
-      <h2>Coax a Commotion #3! [Ending Soon!]</h2>
+      <h2>Coax a Commotion #3!<br>[Ending Soon!]</h2>
       <h4>Win as many games as you can <br>with Moon Wish</h4><br>
       <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/challenges/moonwish.png" /><br><br>
       <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
