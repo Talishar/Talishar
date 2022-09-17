@@ -1138,7 +1138,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           $remove = 1;
           break;
         case "UPR000":
-          if (TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+          if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP") {
             $costModifier -= 1;
             --$currentTurnEffects[$i + 3];
             if ($currentTurnEffects[$i + 3] <= 0) $remove = 1;
@@ -3354,6 +3354,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYEQUIPDEF0":
       $character = &GetPlayerCharacter($defPlayer);
       if (BlockValue($character[$lastResult]) + $character[$lastResult + 4] <= 0) {
+        WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " was destroyed.");
         DestroyCharacter($defPlayer, $lastResult);
       }
       return "";
