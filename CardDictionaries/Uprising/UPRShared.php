@@ -16,7 +16,7 @@
         } else {
           $cost = 3;
         }
-        return ($cost < 0 ? 0 : $cost);
+        return $cost;
       case "UPR046": return 2;
       case "UPR084": return 1;
       case "UPR136": return 3;
