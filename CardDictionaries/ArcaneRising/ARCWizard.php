@@ -157,10 +157,9 @@
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         return "";
       case "ARC122":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes", 1);
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("TOMEOFAETHERWIND", $currentPlayer, "-", 1);
-        return "Lets you draw cards and/or increase arcane damage.";
+        return "";
       case "ARC123": case "ARC124": case "ARC125":
         AddArcaneBonus(2, $currentPlayer);
         return "Gives the next card that deals arcane damage +2.";

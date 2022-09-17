@@ -580,8 +580,8 @@ CacheCombatResult();
 
 if(!IsGameOver())
 {
-  if($playerID == 1) $p1TotalTime += time() - $lastUpdateTime;
-  else if($playerID == 2) $p2TotalTime += time() - $lastUpdateTime;
+  if($playerID == 1) $p1TotalTime += time() - intval($lastUpdateTime);
+  else if($playerID == 2) $p2TotalTime += time() - intval($lastUpdateTime);
   $lastUpdateTime = time();
 }
 
@@ -1513,10 +1513,16 @@ function PayAdditionalCosts($cardID, $from)
         SetArsenalFacing("UP", $currentPlayer);
       }
       break;
+    case "ARC122":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card");
+      AddDecisionQueue("SETCLASSSTATEMULTICHOOSETEXT", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWSELECTEDMODES", $currentPlayer, $cardID, 1);
+      break;
     case "ARC160":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn,Your_next_attack_action_card_gains_go_again,Defend_with_attack_action_cards_from_arsenal,Banish_an_attack_action_card_to_draw_2_cards");
-      AddDecisionQueue("SETCLASSSTATEAOW", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SETCLASSSTATEMULTICHOOSETEXT", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWSELECTEDMODES", $currentPlayer, $cardID, 1);
       break;
     case "CRU097":
