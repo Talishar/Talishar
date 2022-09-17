@@ -1226,6 +1226,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   //CR 5.1.4b Declare target of attack
   if ($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
   if ($turn[0] != "B" || $layers[0] != "") {
+  if (HasBoost($cardID)) Boost();
   MainCharacterPlayCardAbilities($cardID, $from);
   AuraPlayAbilities($cardID);
   }
@@ -1744,7 +1745,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $turn, $combatChain, $currentPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
   global $CS_CharacterIndex, $CS_NumNonAttackCards, $CS_PlayCCIndex, $CS_NumAttacks, $CCS_NumChainLinks, $CCS_LinkBaseAttack;
   global $currentTurnEffectsFromCombat, $CCS_WeaponIndex, $CS_EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
-  global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
+  global $CS_NumDragonAttacks, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks, $CCS_IsBoosted;
 
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
@@ -1828,7 +1829,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($from != "PLAY") {
       CurrentEffectPlayAbility($cardID);
       ArsenalPlayCardAbilities($cardID);
-      if (HasBoost($cardID)) Boost();
+      if (HasBoost($cardID) && $combatChainState[$CCS_IsBoosted]) DoBoost();
       CharacterPlayCardAbilities($cardID, $from);
     }
     SetClassState($currentPlayer, $CS_EffectContext, $cardID);
