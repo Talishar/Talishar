@@ -318,8 +318,13 @@ switch ($mode) {
     PlayCard($cardID, "PLAY", -1);
     break;
   case 26: //Change setting
+    include "MenuFiles/ParseGamefile.php";
+    include_once "./includes/dbh.inc.php";
+    include_once "./includes/functions.inc.php";
     $params = explode("-", $buttonInput);
-    ChangeSetting($playerID, $params[0], $params[1]);
+    if($playerID == 1) $userID = $p1id;
+    else $userID = $p2id;
+    ChangeSetting($playerID, $params[0], $params[1], $userID);
     break;
   case 27: //Play card from hand by index
     $found = $cardID;
