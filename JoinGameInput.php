@@ -117,7 +117,7 @@ if ($decklink != "") {
     $decklinkArr = explode("/", $decklink);
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
-  } else {
+  } else if(str_contains($decklink, "fabrary")) {
     $headers = array(
       "x-api-key: " . $FaBraryKey,
       "Content-Type: application/json",
@@ -127,6 +127,11 @@ if ($decklink != "") {
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/" . $slug;
     if($matchup != "") $apiLink .= "?matchupId=" . $matchup;
+  }
+  else {
+    $decklinkArr = explode("/", $decklink);
+    $slug = $decklinkArr[count($decklinkArr) - 1];
+    $apiLink = "https://api.fabmeta.net/deck/" . $slug;
   }
 
   curl_setopt($curl, CURLOPT_URL, $apiLink);
