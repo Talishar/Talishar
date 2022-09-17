@@ -113,6 +113,7 @@ if ($decklink != "") {
   else if($playerID == 2) $p2DeckLink = $decklink;
   $curl = curl_init();
   $isFaBDB = str_contains($decklink, "fabdb");
+  $isFaBMeta = str_contains($decklink, "fabmeta");
   if ($isFaBDB) {
     $decklinkArr = explode("/", $decklink);
     $slug = $decklinkArr[count($decklinkArr) - 1];
@@ -182,7 +183,10 @@ if ($decklink != "") {
         $sku = $printing->{'sku'};
         $id = $sku->{'sku'};
         $id = explode("-", $id)[0];
-      } else {
+      } else if($isFaBMeta) {
+        $id = $cards[$i]->{'identifier'};
+      }
+      else {
         $id = $cards[$i]->{'cardIdentifier'};
       }
       $id = GetAltCardID($id);
