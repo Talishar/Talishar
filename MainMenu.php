@@ -191,7 +191,7 @@ if (!empty($_SESSION['error'])) {
       <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/challenges/moonwish.png" /><br><br>
       <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
     </div>
-    <div style='text-align:center;'><a href='./Images/challenges/mooncake.jpeg'>Happy Mid-Autumn Festival!</a></div>
+    <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
     <h3 style='text-align:center;'>________</h3>
 
 
