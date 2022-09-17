@@ -872,7 +872,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU128":
       if (!IsAllyAttacking()) {
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-1", 1, 1);
+        AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
         AddDecisionQueue("FINDRESOURCECOST", $otherPlayer, $cardID, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("ROCKSLIDETRAP", $otherPlayer, "-", 1);

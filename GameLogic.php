@@ -3841,19 +3841,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $parameter;
     case "TRIPWIRETRAP":
       if ($lastResult == 0) {
-        WriteLog("Hit effects are prevented by Tripwire Trap this chain link.");
+        WriteLog("Hit effects are prevented by " . CardLink("CRU126", "CRU126") . " this chain link.");
         $combatChainState[$CCS_ChainLinkHitEffectsPrevented] = 1;
       }
       return 1;
     case "PITFALLTRAP":
       if ($lastResult == 0) {
-        WriteLog("Pitfall Trap did 2 damage to the attacking hero.");
+        WriteLog(CardLink("CRU127", "CRU127") . " deals 2 damage to the attacking hero.");
         DamageTrigger($player, 2, "DAMAGE");
       }
       return 1;
     case "ROCKSLIDETRAP":
       if ($lastResult == 0) {
-        WriteLog("Pitfall Trap gave the current attack -2.");
+        WriteLog(CardLink("CRU128", "CRU128") . " give the target attack -2.");
         $combatChain[5] -= 2;
       }
       return 1;
