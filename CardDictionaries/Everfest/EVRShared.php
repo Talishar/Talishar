@@ -871,8 +871,8 @@
         {
           PlayAura("ARC112", $currentPlayer, 4);
           $rv = "Creates 4 Runechants.";
-          AddCurrentTurnEffect($cardID, $currentPlayer);
         }
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "EVR121":
         DealArcane(1, 1, "ABILITY", $cardID);

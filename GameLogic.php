@@ -1740,12 +1740,12 @@ function BeginEndPhaseEffects()
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch ($currentTurnEffects[$i]) {
       case "ELE215-1":
-        WriteLog("Seek and Destroy discarded your hand and arsenal.");
+        WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " discarded your hand and arsenal.");
         DestroyArsenal($currentTurnEffects[$i + 1]);
         DiscardHand($currentTurnEffects[$i + 1]);
         break;
       case "EVR106":
-        WriteLog("Revel in Runeblood destroyed your Runechants.");
+        WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechants.");
         DestroyAllThisAura($currentTurnEffects[$i + 1], "ARC112");
         break;
       case "UPR200":
