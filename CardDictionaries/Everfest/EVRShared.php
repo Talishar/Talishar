@@ -670,7 +670,7 @@
 
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -809,8 +809,7 @@
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":
         $rv = "";
-      //if($combatChainState[$CCS_NumBoosted])
-        if (!IsAllyAttackTarget()) {
+      if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) {
           $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
           $rv = "Requires you to block with an equipment if able.";
         }

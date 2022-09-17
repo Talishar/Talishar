@@ -3820,8 +3820,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "BOOST":
-      DoBoost();
-      return "1";
+      global $CS_NumBoosted, $CCS_NumBoosted;
+      $deck = &GetDeck($currentPlayer);
+      if (count($deck) == 0) {
+        WriteLog("Could not boost. No cards left in deck.");
+        return;
+      }
+      ItemBoostEffects();
+      $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
+      $cardID = $deck[0];
+      BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
+      unset($deck[0]);
+      $deck = array_values($deck);
+      $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
+      WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again.");
+      IncrementClassState($currentPlayer, $CS_NumBoosted);
+      ++$combatChainState[$CCS_NumBoosted];
+      if ($grantsGA) {
+        GiveAttackGoAgain();
+      }
+      return $grantsGA;
     case "VOFTHEVANGUARD":
       if ($parameter == "1" && TalentContains($lastResult, "LIGHT")) {
         WriteLog("V of the Vanguard gives all attacks on this combat chain +1.");
