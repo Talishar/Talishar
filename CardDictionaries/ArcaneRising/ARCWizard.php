@@ -140,8 +140,8 @@
         AddDecisionQueue("OK", $currentPlayer, "-", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
-        DealArcane(ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus), 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
+        $damage = ArcaneDamage($cardID) +ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
+        DealArcane($damage, 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
         return "Deals " . $damage . " arcane damage.";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
@@ -255,25 +255,9 @@
       PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
       PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
       PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
-      if($damage > 0 && $type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
-      {
-        PrependDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
-        PrependDecisionQueue("PAYRESOURCES", $player, "1", 1);
-        PrependDecisionQueue("BUFFARCANE", $player, "1", 1);
-        PrependDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
-        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
-      }
     }
     else
     {
-      if($damage > 0 && $type == "PLAYCARD" && SearchCharacterActive($player, "CRU161") && IsCharacterActive($player, FindCharacterIndex($player, "CRU161")))
-      {
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
-        AddDecisionQueue("NOPASS", $player, "-", 1, 1);//Create cancel point
-        AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
-        AddDecisionQueue("BUFFARCANE", $player, "1", 1);
-        AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
-      }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
@@ -379,6 +363,8 @@
       case "EVR134": return 5;
       case "EVR135": return 4;
       case "EVR136": return 3;
+      //UPR
+      case "UPR179": case "UPR180": case "UPR181":return 1;
       default: return 0;
     }
   }

@@ -366,6 +366,44 @@ function CharacterPlayCardAbilities($cardID, $from)
   }
 }
 
+function DoesArcaneDamage($cardID)
+{
+  
+  switch ($cardID) {
+    case "ARC118": case "ARC119": case "ARC120": 
+    case "ARC121": case "ARC126": case "ARC127": 
+    case "ARC128": case "ARC132": case "ARC133": 
+    case "ARC134": case "ARC138": case "ARC139": 
+    case "ARC140": case "ARC141": case "ARC142": 
+    case "ARC143": case "ARC144": case "ARC145": 
+    case "ARC146": case "ARC147": case "ARC148": 
+    case "ARC149": 
+      return true;
+    case "CRU162": case "CRU171": case "CRU172": 
+    case "CRU173": case "CRU174": case "CRU175": 
+    case "CRU176": 
+      return true;
+    case "EVR123": case "EVR124": case "EVR125": 
+    case "EVR126": case "EVR127": case "EVR134": 
+    case "EVR135": case "EVR136": 
+      return true;
+    case "UPR104": case "UPR105": case "UPR109": 
+    case "UPR110": case "UPR111": case "UPR112": 
+    case "UPR113": case "UPR114": case "UPR115": 
+    case "UPR119": case "UPR120": case "UPR121": 
+    case "UPR122": case "UPR123": case "UPR124": 
+    case "UPR127": case "UPR128": case "UPR129": 
+    case "UPR130": case "UPR131": case "UPR132": 
+    case "UPR133": case "UPR134": case "UPR135": 
+    case "UPR170": case "UPR171": case "UPR172": 
+    case "UPR173": case "UPR174": case "UPR175": 
+    case "UPR179": case "UPR180": case "UPR181":
+      return true;
+    default:
+      return false;
+  }
+}
+
 function MainCharacterPlayCardAbilities($cardID, $from)
 {
   global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards;
@@ -381,6 +419,12 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       }
     }
     switch ($characterID) {
+      case "CRU161":
+        if (DoesArcaneDamage($cardID) && SearchCharacterActive($currentPlayer, "CRU161") && IsCharacterActive($currentPlayer, FindCharacterIndex($currentPlayer, "CRU161")))
+        {
+          AddLayer("TRIGGER", $currentPlayer, "CRU161");
+        }
+        break;
       case "EVR120":
       case "UPR102":
       case "UPR103":
