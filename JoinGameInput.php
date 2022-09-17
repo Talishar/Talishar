@@ -410,12 +410,18 @@ if($matchup == "")
     $joinerIP = $_SERVER['REMOTE_ADDR'];
   }
 
-  if ($playerID == 1 && isset($_SESSION["useruid"])) $p1uid = $_SESSION["useruid"];
-  if ($playerID == 2 && isset($_SESSION["useruid"])) $p2uid = $_SESSION["useruid"];
-  if ($playerID == 1 && isset($_SESSION["userid"])) $p1id = $_SESSION["userid"];
-  if ($playerID == 2 && isset($_SESSION["userid"])) $p2id = $_SESSION["userid"];
-  if ($playerID == 1 && isset($_SESSION["isPatron"])) $p1IsPatron = "1";
-  if ($playerID == 2 && isset($_SESSION["isPatron"])) $p2IsPatron = "1";
+  if($playerID == 1)
+  {
+    $p1uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "");
+    $p1id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
+    $p1IsPatron = (isset($_SESSION["isPatron"]) ? "1" : "");
+  }
+  else if($playerID == 2)
+  {
+    $p2uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "");
+    $p2id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
+    $p2IsPatron = (isset($_SESSION["isPatron"]) ? "1" : "");
+  }
 
   if($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());
 
