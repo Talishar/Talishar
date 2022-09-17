@@ -78,6 +78,9 @@ fwrite($handler, "\r\n"); //Animations
 fwrite($handler, "0\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
 fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+fwrite($handler, "0\r\n"); //Player 1 total time
+fwrite($handler, "0\r\n"); //Player 2 total time
+fwrite($handler, time() . "\r\n"); //Last update time
 fclose($handler);
 
 //Set up log file

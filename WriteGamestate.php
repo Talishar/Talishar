@@ -87,4 +87,7 @@ fwrite($handler, implode(" ", $animations) . "\r\n"); //Animations
 fwrite($handler, $currentPlayerActivity . "\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
 fwrite($handler, $p1PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fwrite($handler, $p2PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+fwrite($handler, $p1TotalTime . "\r\n"); //Player 1 total time
+fwrite($handler, $p2TotalTime . "\r\n"); //Player 2 total time
+fwrite($handler, $lastUpdateTime . "\r\n"); //Last update time
 fclose($handler);

@@ -578,6 +578,13 @@ else if ($winner != 0 && $turn[0] != "YESNO") {
 CombatDummyAI(); //Only does anything if applicable
 CacheCombatResult();
 
+if(!IsGameOver())
+{
+  if($playerID == 1) $p1TotalTime += time() - $lastUpdateTime;
+  else if($playerID == 2) $p2TotalTime += time() - $lastUpdateTime;
+  $lastUpdateTime = time();
+}
+
 //Now write out the game state
 if (!$skipWriteGamestate) {
   //if($mainPlayerGamestateStillBuilt) UpdateMainPlayerGamestate();

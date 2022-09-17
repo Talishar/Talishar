@@ -138,6 +138,9 @@ $animations = GetArray($handler); //Animations
 $currentPlayerActivity = trim(fgets($handler)); //Current Player activity status -- 0 = active, 2 = inactive
 $p1PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 $p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$p1TotalTime = trim(fgets($handler));//Player 1 total time
+$p2TotalTime = trim(fgets($handler));//Player 2 total time
+$lastUpdateTime = trim(fgets($handler));//Last update time
 fclose($handler);
 BuildMyGamestate($playerID);
 

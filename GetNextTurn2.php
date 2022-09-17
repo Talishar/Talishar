@@ -470,7 +470,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         }
       }
     }
-    $content .= "</div>" . CardStats($playerID);
+    $content .= "</div>";
+    $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
+    $content .= "<div>Your time: " . intval($time/60) . " minutes " . $time%60 . " seconds</div>";
+    $content .= CardStats($playerID);
     echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
   }
 

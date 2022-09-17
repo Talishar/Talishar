@@ -49,7 +49,10 @@ switch ($popupType) {
       $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
       if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
       if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-      $content .= "</div>" . CardStats($playerID);
+      $content .= "</div>";
+      $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
+      $content .= "<div>Your time: " . intval($time/60) . " minutes " . $time%60 . " seconds</div>";
+      $content .= CardStats($playerID);
       echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
     } else {
       echo (CreatePopup("menuPopup", [], 1, 0, "Main Menu", 1, MainMenuUI(), "./", true));
