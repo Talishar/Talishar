@@ -136,7 +136,7 @@
       case "CRU084-2": return CardType($attackID) == "W";
       case "CRU085-1": case "CRU086-1": case "CRU087-1": return CardType($attackID) == "W";
       case "CRU088-1": case "CRU089-1": case "CRU090-1": return CardType($attackID) == "W";
-      case "CRU088-2": case "CRU089-2": case "CRU090-2": return !HasEffect(substr($cardID, 0, -1) . "1");
+      case "CRU088-2": case "CRU089-2": case "CRU090-2": return true;
       case "CRU091-1": case "CRU092-1": case "CRU093-1": return CardType($attackID) == "W";
       case "CRU091-2": case "CRU092-2": case "CRU093-2": return true;
       case "CRU094-1": case "CRU095-1": case "CRU096-1": return CardType($attackID) == "W";
@@ -754,7 +754,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU089":
     case "CRU090":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      if (RepriseActive()) AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
+      if (RepriseActive()) AddCurrentTurnEffectFromCombat($cardID . "-2", $mainPlayer);
       return "Gives your weapon attack +" . EffectAttackModifier($cardID . "-1") . RepriseActive() ? " and gives your next attack +1." : ".";
     case "CRU091":
     case "CRU092":
