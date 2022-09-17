@@ -557,6 +557,41 @@ function AwardBadge($userID, $badgeID)
 	mysqli_close($conn);
 }
 
+function SaveSetting($playerId, $settingNumber, $value)
+{
+	if($playerId == "") return;
+	$conn = GetDBConnection();
+	$sql = "insert into savedsettings (playerId, settingNumber, settingValue) values (?, ?, ?) ON DUPLICATE KEY UPDATE settingValue = VALUES(settingValue);";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "sss", $playerId, $settingNumber, $value);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
+function LoadSavedSettings($playerId)
+{
+	if($playerId == "") return [];
+	$output = [];
+	$conn = GetDBConnection();
+	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $playerId);
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+			array_push($output, $row[0]);
+			array_push($output, $row[1]);
+		}
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	return $output;
+}
+
 function SendEmail($userEmail, $url) {
   include "../APIKeys/APIKeys.php";
   require '../vendor/autoload.php';

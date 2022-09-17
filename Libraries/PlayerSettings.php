@@ -213,7 +213,7 @@ function IsCasterMode()
   return $settings1[$SET_CasterMode] == "1" && $settings2[$SET_CasterMode] == "1";
 }
 
-function ChangeSetting($player, $setting, $value)
+function ChangeSetting($player, $setting, $value, $playerId="")
 {
   /*
   global $SET_ManualMode;
@@ -230,6 +230,7 @@ function ChangeSetting($player, $setting, $value)
     */
   $settings = &GetSettings($player);
   $settings[$setting] = $value;
+  if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
 }
 
 // function ApproveManualMode($player)
@@ -344,4 +345,19 @@ function GetSettingsUI($player)
     }
 */
   return $rv;
+}
+
+function SaveSettingInDatabase($setting)
+{
+  global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats;
+  switch($setting)
+  {
+    case $SET_DarkMode:
+    case $SET_ColorblindMode:
+    case $SET_Mute:
+    case $SET_Cardback:
+    case $SET_DisableStats:
+      return true;
+    default: return false;
+  }
 }

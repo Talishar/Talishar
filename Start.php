@@ -11,6 +11,8 @@ include "Libraries/PlayerSettings.php";
 include "Libraries/UILibraries2.php";
 include "AI/CombatDummy.php";
 include "WriteReplay.php";
+include_once "./includes/dbh.inc.php";
+include_once "./includes/functions.inc.php";
 ob_end_clean();
 
 $gameName = $_GET["gameName"];
@@ -121,7 +123,10 @@ function make_seed()
 
 function initializePlayerState($handler, $deckHandler, $player)
 {
-  global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive;
+  global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
+  global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
+  global $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
+  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
   $deckSize = count($deckCards);
@@ -177,7 +182,42 @@ function initializePlayerState($handler, $deckHandler, $player)
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron);
   if($isPatron == "") $isPatron = "0";
   $mute = 0;
-  fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . " 0 0 0\r\n"); //Settings
+  $userId = ($player == 1 ? $p1id : $p2id);
+  $savedSettings = LoadSavedSettings($userId);
+  $settingArray = [];
+  for($i=0; $i<=16; ++$i)
+  {
+    $value = "";
+    switch($i)
+    {
+      case $SET_Mute: $value = $mute; break;
+      case $SET_IsPatron: $value = $isPatron; break;
+      default: $value = SettingDefaultValue($i); break;
+    }
+    array_push($settingArray, $value);
+  }
+  for($i=0; $i<count($savedSettings); $i+=2)
+  {
+    //echo($savedSettings[intval($i)] . " " . $savedSettings[intval($i)+1] . "<BR>");
+    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
+  }
+  fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
+  //fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . " 0 0 0\r\n"); //Settings
+}
+
+
+
+function SettingDefaultValue($setting)
+{
+  global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
+  global $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
+  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode;
+  switch($setting)
+  {
+    case $SET_TryUI2: return "1";
+    case $SET_AutotargetArcane: return "1";
+    default: return "0";
+  }
 }
 
 function GetArray($handler)
