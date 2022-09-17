@@ -3558,7 +3558,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETCLASSSTATE":
       SetClassState($player, $parameter, $lastResult);
       return $lastResult;
-    case "SETCLASSSTATEAOW":
+    case "SETCLASSSTATEMULTICHOOSETEXT":
       $value = $lastResult[0] . "," . $lastResult[1];
       SetClassState($player, $parameter, $value);
       return $lastResult;
@@ -3710,8 +3710,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "TOMEOFAETHERWIND":
-      for ($i = 0; $i < count($lastResult); ++$i) {
-        switch ($lastResult[$i]) {
+      $params = explode(",", $lastResult);
+      for ($i = 0; $i < count($params); ++$i) {
+        switch ($params[$i]) {
           case "Buff_Arcane":
             WriteLog(CardLink("ARC122", "ARC122") . " add arcane bonus");
             AddArcaneBonus(1, $player);
