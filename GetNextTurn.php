@@ -188,38 +188,42 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Choose Cardback
   $MyCardBack = "CardBack";
-  if (IsCardBackBlackMode($playerID)) {
+  if (IsCardBackBlack($playerID)) {
     $MyCardBack = "CBBlack";
-  } else if (IsCardBackCreamMode($playerID)) {
+  } else if (IsCardBackCream($playerID)) {
     $MyCardBack = "CBCreamWhite";
-  } else if (IsCardBackGoldMode($playerID)) {
+  } else if (IsCardBackGold($playerID)) {
     $MyCardBack = "CBGold";
-  } else if (IsCardBackGreyMode($playerID)) {
+  } else if (IsCardBackGrey($playerID)) {
     $MyCardBack = "CBWhite";
-  } else if (IsCardBackRedMode($playerID)) {
+  } else if (IsCardBackRed($playerID)) {
     $MyCardBack = "CBRed";
-  } else if (IsCardBackTanMode($playerID)) {
+  } else if (IsCardBackTan($playerID)) {
     $MyCardBack = "CBParchment";
-  } else if (IsCardBackBlueMode($playerID)) {
+  } else if (IsCardBackBlue($playerID)) {
     $MyCardBack = "CBBlue";
+  } else if (IsCardBackRuneblood($playerID)) {
+    $MyCardBack = "CBRuneblood";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
   $TheirCardBack = "CardBack";
-  if (IsCardBackBlackMode($otherPlayer)) {
+  if (IsCardBackBlack($otherPlayer)) {
     $TheirCardBack = "CBBlack";
-  } else if (IsCardBackCreamMode($otherPlayer)) {
+  } else if (IsCardBackCream($otherPlayer)) {
     $TheirCardBack = "CBCreamWhite";
-  } else if (IsCardBackGoldMode($otherPlayer)) {
+  } else if (IsCardBackGold($otherPlayer)) {
     $TheirCardBack = "CBGold";
-  } else if (IsCardBackGreyMode($otherPlayer)) {
+  } else if (IsCardBackGrey($otherPlayer)) {
     $TheirCardBack = "CBWhite";
-  } else if (IsCardBackRedMode($otherPlayer)) {
+  } else if (IsCardBackRed($otherPlayer)) {
     $TheirCardBack = "CBRed";
-  } else if (IsCardBackTanMode($otherPlayer)) {
+  } else if (IsCardBackTan($otherPlayer)) {
     $TheirCardBack = "CBParchment";
-  } else if (IsCardBackBlueMode($otherPlayer)) {
+  } else if (IsCardBackBlue($otherPlayer)) {
     $TheirCardBack = "CBBlue";
+  } else if (IsCardBackRuneblood($otherPlayer)) {
+    $TheirCardBack = "CBRuneblood";
   }
 
   //Display background

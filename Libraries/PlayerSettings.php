@@ -77,53 +77,61 @@ function IsPatron($player)
 // 5 - Red
 // 6 - Tan
 // 7 - Blue
-function IsCardBackBlackMode($player)
+// 8 - Runeblood
+function IsCardBackBlack($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 1;
 }
 
-function IsCardBackCreamMode($player)
+function IsCardBackCream($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 2;
 }
 
-function IsCardBackGoldMode($player)
+function IsCardBackGold($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 3;
 }
 
-function IsCardBackGreyMode($player)
+function IsCardBackGrey($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 4;
 }
 
-function IsCardBackRedMode($player)
+function IsCardBackRed($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 5;
 }
 
-function IsCardBackTanMode($player)
+function IsCardBackTan($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 6;
 }
 
-function IsCardBackBlueMode($player)
+function IsCardBackBlue($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 7;
+}
+
+function IsCardBackRuneblood($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 8;
 }
 
 function IsManualMode($player)
@@ -318,6 +326,7 @@ function GetSettingsUI($player)
   // 5 - Red
   // 6 - Tan
   // 7 - Blue
+  // 8 - Runeblood
    if (IsPatron($player)) {
     $rv .= "<h3>Card Backs</h3>";
     $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
@@ -330,6 +339,8 @@ function GetSettingsUI($player)
     $rv .= "<BR>";
     $rv .= CreateRadioButton($SET_Cardback . "-6", "Tan", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Tan");
     $rv .= CreateRadioButton($SET_Cardback . "-7", "Blue", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Blue");
+    $rv .= CreateRadioButton($SET_Cardback . "-8", "Runeblood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Runeblood");
+    $rv .= "<BR>";
    }
 
   /*
