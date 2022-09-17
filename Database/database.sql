@@ -195,3 +195,25 @@ CREATE TABLE `playerbadge` (
 --
 ALTER TABLE `playerbadge`
   ADD PRIMARY KEY (`playerId`,`badgeId`);
+
+
+CREATE TABLE `challengeresult` (
+  `gameId` int(11) NOT NULL,
+  `challengeId` int(11) NOT NULL,
+  `playerId` int(11) NOT NULL,
+  `result` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `challengeresult`
+  ADD PRIMARY KEY (`gameId`,`playerId`) USING BTREE,
+  ADD KEY `PLAYER_ID_INDEX` (`playerId`);
+ALTER TABLE `challengeresult`
+  ADD CONSTRAINT `FK_GAME_ID` FOREIGN KEY (`gameId`) REFERENCES `completedgame` (`GameID`);
+
+
+CREATE TABLE `savedsettings` (
+  `playerId` int(11) NOT NULL,
+  `settingNumber` int(11) NOT NULL,
+  `settingValue` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `savedsettings`
+  ADD PRIMARY KEY (`playerId`,`settingNumber`);
