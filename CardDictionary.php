@@ -949,7 +949,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if (($phase == "D" || $phase == "INSTANT") && $subtype == "Trap" && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
-  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
+  if ((((PlayableFromBanish($cardID) || $from != "BANISH") && $cardType == "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if (($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
   switch ($cardType) {
     case "A":
@@ -1504,10 +1504,10 @@ function HasDynamicBlock($cardID) // For Equipments
     case "MON241": case "MON242": case "MON243":
     case "MON244": case "RVD005": case "RVD006":
     return true;
-  default: 
+  default:
     return false;
   }
-}   
+}
 
 function RequiresDiscard($cardID)
 {
@@ -2300,13 +2300,13 @@ function CardCaresAboutPitch($cardID)
 function CardHasAltArt($cardID)
 {
   switch ($cardID) {
-    case "WTR002": case "WTR150": case "WTR162": 
-    case "WTR224": 
+    case "WTR002": case "WTR150": case "WTR162":
+    case "WTR224":
       return true;
-    case "MON155": case "MON215": case "MON216": 
-    case "MON217": case "MON219": case "MON220": 
+    case "MON155": case "MON215": case "MON216":
+    case "MON217": case "MON219": case "MON220":
       return true;
-    case "ELE146": 
+    case "ELE146":
       return true;
     case "UPR006": case "UPR007": case "UPR008":
     case "UPR009": case "UPR010": case "UPR011":
@@ -2320,7 +2320,7 @@ function CardHasAltArt($cardID)
     case "UPR412": case "UPR413": case "UPR414":
     case "UPR415": case "UPR416": case "UPR417":
       return true;
-    case "DYN234": 
+    case "DYN234":
       return true;
   default:
       return false;
