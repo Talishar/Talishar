@@ -5,7 +5,7 @@ $dBUsername = "root";
 $dBPassword = "";
 $dBName = "fabonline";
 
-$reportingServername = "142.11.213.202";
+$reportingServername = "localhost";
 $reportingDBUsername = "root";
 $reportingDBPassword = "";
 $reportingDBName = "fabonline";
