@@ -1829,7 +1829,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($from != "PLAY") {
       CurrentEffectPlayAbility($cardID);
       ArsenalPlayCardAbilities($cardID);
-      if (HasBoost($cardID) && $combatChainState[$CCS_IsBoosted]) DoBoost();
       CharacterPlayCardAbilities($cardID, $from);
     }
     SetClassState($currentPlayer, $CS_EffectContext, $cardID);

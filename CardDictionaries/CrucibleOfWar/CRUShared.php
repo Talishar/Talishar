@@ -103,6 +103,9 @@
       case "CRU095-1": return 2;
       case "CRU096-1": return 1;
       case "CRU105": return 1;
+      case "CRU109": return 3;
+      case "CRU110": return 2;
+      case "CRU111": return 1;
       case "CRU135": return 3;
       case "CRU136": return 2;
       case "CRU137": return 1;
@@ -141,6 +144,7 @@
       //Mechnologist
       case "CRU105": return CardType($attackID) == "W" && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $currentPlayer);
       case "CRU106": case "CRU107": case "CRU108": return $combatChainState[$CCS_IsBoosted] == "1";
+      case "CRU109": case "CRU110": case "CRU111": return $combatChainState[$CCS_IsBoosted] == "1";
       //Ranger
       case "CRU122": return $combatChain[2] == "ARS" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "CRU123": return $attackID == "CRU123";
@@ -625,8 +629,7 @@
 function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $mainPlayer, $CS_NumBoosted, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $currentPlayer, $defPlayer;
-  global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_CharacterIndex, $CS_PlayIndex;
-  global $CS_NumNonAttackCards, $CS_ArcaneDamageTaken, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
+  global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_NumChainLinks, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
   switch ($cardID) {
@@ -1019,8 +1022,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function CRUHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState;
-  global $CCS_NextBoostBuff, $CS_ArcaneDamageTaken, $CCS_HitsInRow;
+  global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken, $CCS_HitsInRow;
   switch ($cardID) {
     case "CRU054":
       if (ComboActive()) {
@@ -1060,7 +1062,6 @@ function CRUHitEffect($cardID)
     case "CRU110":
     case "CRU111":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
-      $combatChainState[$CCS_NextBoostBuff] += 3;
       break;
     case "CRU123":
       if (IsHeroAttackTarget()) {

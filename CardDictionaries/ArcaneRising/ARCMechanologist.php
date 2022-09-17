@@ -308,13 +308,6 @@ function Boost()
   }
 }
 
-function DoBoost()
-{
-  global $combatChainState, $combatChain, $CCS_NextBoostBuff;
-  $combatChain[5] += $combatChainState[$CCS_NextBoostBuff];
-  $combatChainState[$CCS_NextBoostBuff] = 0;
-}
-
 function ItemBoostEffects()
 {
   global $currentPlayer;
