@@ -3820,7 +3820,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "BOOST":
-      global $CS_NumBoosted, $CCS_NumBoosted;
+      global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
       $deck = &GetDeck($currentPlayer);
       if (count($deck) == 0) {
         WriteLog("Could not boost. No cards left in deck.");
@@ -3836,6 +3836,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Boost banished " . CardLink($cardID, $cardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again.");
       IncrementClassState($currentPlayer, $CS_NumBoosted);
       ++$combatChainState[$CCS_NumBoosted];
+      $combatChainState[$CCS_IsBoosted] = 1;
       if ($grantsGA) {
         GiveAttackGoAgain();
       }

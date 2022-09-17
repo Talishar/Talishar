@@ -310,7 +310,7 @@ function Boost()
 
 function DoBoost()
 {
-  global $combatChainState, $CCS_NumBoosted, $combatChain, $CCS_NextBoostBuff, $CCS_IsBoosted;
+  global $combatChainState, $combatChain, $CCS_NextBoostBuff;
   $combatChain[5] += $combatChainState[$CCS_NextBoostBuff];
   $combatChainState[$CCS_NextBoostBuff] = 0;
 }
