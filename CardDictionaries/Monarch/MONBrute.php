@@ -246,7 +246,7 @@
     $BanishedIncludes6 = false;
     for($i = 0; $i < 3; $i++)
     {
-      $index = rand() % count($discard);
+      $index = GetRandom() % count($discard);
       if(AttackValue($discard[$index]) >= 6) $BanishedIncludes6 = true;
       BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", "NA");
       unset($discard[$index]);
