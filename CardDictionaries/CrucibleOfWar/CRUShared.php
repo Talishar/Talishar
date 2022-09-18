@@ -103,9 +103,7 @@
       case "CRU095-1": return 2;
       case "CRU096-1": return 1;
       case "CRU105": return 1;
-      case "CRU109": return 3;
-      case "CRU110": return 2;
-      case "CRU111": return 1;
+      case "CRU109": case "CRU110": case "CRU111": return 3;
       case "CRU135": return 3;
       case "CRU136": return 2;
       case "CRU137": return 1;
