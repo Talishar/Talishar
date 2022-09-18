@@ -7,6 +7,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
   switch ($cardID) {
     case "WTR162":
     case "WTR170": case "WTR171": case "WTR172":
+    case "ARC035":
     case "ELE143": case "ELE172": case "ELE201":
     case "EVR176": case "EVR177": case "EVR178":
     case "EVR179": case "EVR180": case "EVR181":
