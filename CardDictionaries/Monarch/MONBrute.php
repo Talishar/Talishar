@@ -144,7 +144,7 @@
           AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-          $rv .= "and banished a card with Blood Debt your Deck.";
+          $rv .= " and banished a card with Blood Debt your Deck.";
         }
         return $rv;
       case "MON126": case "MON127": case "MON128":
