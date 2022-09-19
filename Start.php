@@ -33,9 +33,6 @@ if($playerID == 1 && isset($_SESSION["p1AuthKey"])) { $targetKey = $p1Key; $auth
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) { $targetKey = $p2Key; $authKey = $_SESSION["p2AuthKey"]; }
 if ($authKey != $targetKey) { echo("Invalid auth key"); exit; }
 
-//Setup the random number generator
-srand(make_seed());
-
 //First initialize the initial state of the game
 $filename = "./Games/" . $gameName . "/gamestate.txt";
 $handler = fopen($filename, "w");
@@ -114,12 +111,6 @@ WriteGameFile();
 header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=1");
 
 exit;
-
-function make_seed()
-{
-  list($usec, $sec) = explode(' ', microtime());
-  return $sec + $usec * 1000000;
-}
 
 function initializePlayerState($handler, $deckHandler, $player)
 {
