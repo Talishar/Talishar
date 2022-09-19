@@ -171,16 +171,25 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false, $fullReload=false)
+  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false, $fullReload=false, $prompt="")
   {
     global $gameName, $authKey;
-    if($fullReload) $onClick = "\"document.location.href = './ProcessInput2.php?gameName=$gameName&playerID=$playerID&authKey=$authKey&mode=$mode&buttonInput=$input'\"";
-    else $onClick = "'SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'";
+
+    // JavaScript to execute on-click
+    if ($fullReload)
+      $onClick = "document.location.href = \"./ProcessInput2.php?gameName=$gameName&playerID=$playerID&authKey=$authKey&mode=$mode&buttonInput=$input\";";
+    else
+      $onClick = "SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");";
+
+    // If a prompt is given, surround the code with a "confirm()" call
+    if ($prompt != "")
+      $onClick = "if (confirm(\"" . $prompt . "\")) { " . $onClick . " }";
+
     if($image != "")
-    {
-      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=$onClick>";
-    }
-    else $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick=$onClick>" . $caption . "</button>";
+      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='" . $onClick . "'>";
+    else
+      $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
+
     return $rv;
   }
 
@@ -482,7 +491,7 @@
     $rv .= GetSettingsUI($playerID) . "<BR>";
     $rv .= "</td><td style='width:45%;  margin-top: 10px; vertical-align:top;'>";
     $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
-    $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px") . "<BR><BR>";
+    $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px", prompt: "Do you really want to concede ?") . "<BR><BR>";
     $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
     $rv .= CreateButton($playerID, "Undo", 10000, 0, "24px", "", "Hotkey: U") . "<BR>";
 
