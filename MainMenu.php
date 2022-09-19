@@ -155,35 +155,38 @@ if (!empty($_SESSION['error'])) {
   <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>Talishar is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
   <h3 style='text-align:center;'>________</h3>
-  <!--
+
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
-      <h2>Commotion #2 has concluded!</h2>
-    <img style="width:95%; border-radius:2.5%;" src="./Images/challenges/challenge2.webp" /><br>
-    <h3 style="margin-left:15px; margin-right:15px;">Results</h3>
-    <table style='margin-left: 20px; width:100%; text-align:left;'>
-      <tr>
-        <td>Player</td><td>Wins</td>
-      </tr>
-      <tr>
-        <td>Doomsayer</td><td>67</td>
-      </tr>
-      <tr>
-        <td>Tubby Watkins</td><td>44</td>
-      </tr>
-      <tr>
-        <td>Taliksanis</td><td>42</td>
-      </tr>
-      <tr>
-        <td>TheOrknight</td><td>23</td>
-      </tr>
-      <tr>
-        <td>TheTablePitTY</td><td>18</td>
-      </tr>
-    </table>
-  </div>
--->
+      <h2>Commotion #3 has concluded!</h2>
+      <img style="width:95%; border-radius:2.5%;" src="./Images/challenges/moonwish.png" /><br>
+      <h2 style="margin-left:15px; margin-right:15px;">Results</h2>
+      <table style='margin-left: 20px; width:100%; text-align:center;'>
+        <tbody>
+          <tr>
+            <th>Wins</th>
+            <th>Player</th>
+          </tr>
+          <tr>
+            <td>52</td>
+            <td>monkas</td>
+          </tr>
+          <tr>
+            <td>31</td>
+            <td>exit_right</td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td>TheTablePitYT</td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td>AngelPillow</td>
+        </tbody>
+      </table>
+    </div>
 
+    <!--
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
     <div style="vertical-align:middle; position: relative;">
       <h2>Coax a Commotion #3!<br>[Ending Soon!]</h2>
@@ -192,8 +195,9 @@ if (!empty($_SESSION['error'])) {
       <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
     </div>
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
-    <h3 style='text-align:center;'>________</h3>
+-->
 
+    <h3 style='text-align:center;'>________</h3>
 
     <div style='vertical-align:middle; text-align:center;'>
       <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play FaB Online</h2>
