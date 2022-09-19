@@ -1639,7 +1639,12 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
       break;
     case "MON251": case "MON252": case "MON253":
-      HandToTopDeck($currentPlayer);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on top of your deck (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDTOPDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "MON260": case "MON261": case "MON262":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");

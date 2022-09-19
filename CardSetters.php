@@ -79,6 +79,13 @@ function AddBottomDeck($cardID, $player, $from)
   array_push($deck, $cardID);
 }
 
+function AddTopDeck($cardID, $player, $from)
+{
+  $deck = &GetDeck($player);
+  WriteReplay($player, $cardID, $from, "TOP");
+  array_unshift($deck, $cardID);
+}
+
 function RemoveTopMyDeck()
 {
   global $myDeck;

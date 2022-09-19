@@ -158,7 +158,7 @@
   }
 
 
-  function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
+  function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
     global $actionPoints, $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
     $rv = "";
@@ -175,7 +175,7 @@
       }
       return " restrict play of instants and defense reactions";
     case "MON251": case "MON252": case "MON253":
-      AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+      if ($additionalCosts != "-") AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
       return "";
     case "MON260": case "MON261": case "MON262":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
