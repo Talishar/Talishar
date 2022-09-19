@@ -61,8 +61,8 @@ if(SearchCharacterForCard(2, "DYN234")) {
   AddDecisionQueue("STARTOFGAMEPUTPLAY", 2, "DYN243");
 }
 
-AddDecisionQueue("SHUFFLEDECK", 1, "-"); //CR 2.0 4.1.7 Shuffle Deck
-AddDecisionQueue("SHUFFLEDECK", 2, "-"); //CR 2.0 4.1.7 Shuffle Deck
+AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
+AddDecisionQueue("SHUFFLEDECK", 2, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("DRAWTOINTELLECT", 1, "-"); //CR 2.0 4.1.9 Draw to Intellect
 AddDecisionQueue("DRAWTOINTELLECT", 2, "-"); //CR 2.0 4.1.9 Draw to Intellect
 AddDecisionQueue("STARTGAME", $mainPlayer, "-"); //CR ?? Start Game
