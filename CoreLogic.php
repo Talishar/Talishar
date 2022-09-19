@@ -368,35 +368,35 @@ function CharacterPlayCardAbilities($cardID, $from)
 
 function DoesArcaneDamage($cardID)
 {
-  
+
   switch ($cardID) {
-    case "ARC118": case "ARC119": case "ARC120": 
-    case "ARC121": case "ARC126": case "ARC127": 
-    case "ARC128": case "ARC132": case "ARC133": 
-    case "ARC134": case "ARC138": case "ARC139": 
-    case "ARC140": case "ARC141": case "ARC142": 
-    case "ARC143": case "ARC144": case "ARC145": 
-    case "ARC146": case "ARC147": case "ARC148": 
-    case "ARC149": 
+    case "ARC118": case "ARC119": case "ARC120":
+    case "ARC121": case "ARC126": case "ARC127":
+    case "ARC128": case "ARC132": case "ARC133":
+    case "ARC134": case "ARC138": case "ARC139":
+    case "ARC140": case "ARC141": case "ARC142":
+    case "ARC143": case "ARC144": case "ARC145":
+    case "ARC146": case "ARC147": case "ARC148":
+    case "ARC149":
       return true;
-    case "CRU162": case "CRU171": case "CRU172": 
-    case "CRU173": case "CRU174": case "CRU175": 
-    case "CRU176": 
+    case "CRU162": case "CRU171": case "CRU172":
+    case "CRU173": case "CRU174": case "CRU175":
+    case "CRU176":
       return true;
-    case "EVR123": case "EVR124": case "EVR125": 
-    case "EVR126": case "EVR127": case "EVR134": 
-    case "EVR135": case "EVR136": 
+    case "EVR123": case "EVR124": case "EVR125":
+    case "EVR126": case "EVR127": case "EVR134":
+    case "EVR135": case "EVR136":
       return true;
-    case "UPR104": case "UPR105": case "UPR109": 
-    case "UPR110": case "UPR111": case "UPR112": 
-    case "UPR113": case "UPR114": case "UPR115": 
-    case "UPR119": case "UPR120": case "UPR121": 
-    case "UPR122": case "UPR123": case "UPR124": 
-    case "UPR127": case "UPR128": case "UPR129": 
-    case "UPR130": case "UPR131": case "UPR132": 
-    case "UPR133": case "UPR134": case "UPR135": 
-    case "UPR170": case "UPR171": case "UPR172": 
-    case "UPR173": case "UPR174": case "UPR175": 
+    case "UPR104": case "UPR105": case "UPR109":
+    case "UPR110": case "UPR111": case "UPR112":
+    case "UPR113": case "UPR114": case "UPR115":
+    case "UPR119": case "UPR120": case "UPR121":
+    case "UPR122": case "UPR123": case "UPR124":
+    case "UPR127": case "UPR128": case "UPR129":
+    case "UPR130": case "UPR131": case "UPR132":
+    case "UPR133": case "UPR134": case "UPR135":
+    case "UPR170": case "UPR171": case "UPR172":
+    case "UPR173": case "UPR174": case "UPR175":
     case "UPR179": case "UPR180": case "UPR181":
       return true;
     default:
@@ -551,7 +551,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
       if ($Items[$i] == "CRU104") {
         $Items[$i + 1] = 0;
         DestroyItemForPlayer($player, $i);
-        } 
+        }
     }
   }
   $damage = $damage > 0 ? $damage : 0;
@@ -863,7 +863,7 @@ function ChainLinkResolvedEffects()
   {
     switch($combatChain[$i])
     {
-      case "MON245": 
+      case "MON245":
         if (!ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[$i], $mainPlayer, "CC");
         break;
       default: break;
@@ -1114,7 +1114,6 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $abilityType = GetAbilityType($cardID, $index);
 
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
@@ -1141,6 +1140,8 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && isIyslander($otherCharacter[0])))) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
+  $abilityType = "-";
+  if($isStaticType) $abilityType = GetAbilityType($cardID, $index);
   if(($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if(($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
