@@ -268,6 +268,7 @@
 
   function CardStats($player)
   {
+    global $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched;
     global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
     global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
     if(AreStatsDisabled($player)) return "";
@@ -278,19 +279,20 @@
     for($i=0; $i<count($cardStats); $i+=CardStatPieces())
     {
       $pitch = PitchValue($cardStats[$i]);
-      $timesPlayed = $cardStats[$i+1];
+      $timesPlayed = $cardStats[$i + $CardStats_TimesPlayed];
       $playStyle = "";
       if($pitch == 3 && $timesPlayed > 1) $playStyle = "font-weight: bold; color:red;";
       else if($pitch == 3 && $timesPlayed > 0) $playStyle = "font-weight: bold; color:gold;";
       else if($pitch == 2 && $timesPlayed > 4) $playStyle = "font-weight: bold; color:red;";
       else if($pitch == 2 && $timesPlayed > 2) $playStyle = "font-weight: bold; color:gold;";
-      $timesPitched = $cardStats[$i+3];
+      $timesPitched = $cardStats[$i + $CardStats_TimesPitched];
       $pitchStyle = "";
       if($pitch == 1 && $timesPitched > 1) $pitchStyle = "font-weight: bold; color:red;";
       else if($pitch == 1 && $timesPitched > 0) $pitchStyle = "font-weight: bold; color:gold;";
       else if($pitch == 2 && $timesPitched > 4) $pitchStyle = "font-weight: bold; color:red;";
       else if($pitch == 2 && $timesPitched > 2) $pitchStyle = "font-weight: bold; color:gold;";
-      $rv .= "<tr><td>" . CardLink($cardStats[$i], $cardStats[$i]) . "</td><td style='" . $playStyle . "'>" . $timesPlayed . "</td><td>" . $cardStats[$i+2] . "</td><td style='" . $pitchStyle . "'>" . $timesPitched . "</td></tr>";
+      $timesBlocked = $cardStats[$i + $CardStats_TimesBlocked];
+      $rv .= "<tr><td>" . CardLink($cardStats[$i], $cardStats[$i]) . "</td><td style='" . $playStyle . "'>" . $timesPlayed . "</td><td>" . $timesBlocked . "</td><td style='" . $pitchStyle . "'>" . $timesPitched . "</td></tr>";
     }
     $rv .= "</table>";
     $rv .= "</div>";
