@@ -134,9 +134,9 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return "";
     case "ARC004":
+      $deck = &GetDeck($currentPlayer);
       for ($i = 0; $i < 2; ++$i) {
-        $deck = &GetDeck($currentPlayer);
-        if (count($deck) == $i) {
+        if (count($deck) < $i) {
           $rv .= "No cards in deck. Could not banish more.";
           return $rv;
         }
