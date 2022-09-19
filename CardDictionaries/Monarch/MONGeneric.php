@@ -169,11 +169,11 @@
     case "MON239": AddCurrentTurnEffect($cardID, $currentPlayer); return "Gives your attack action cards with less than 3 power +1 power this turn.";
     case "MON240": $actionPoints += 2; return "Gain 2 action points.";
     case "MON245":
-      if($from == "PLAY")
-      {
+      if($from == "PLAY") {
         $combatChain[5] += 2;
+        return " gains 2 power";
       }
-      return CardLink($cardID, $cardID) . " is a partially manual card. Restrict play of instants and defense reactions manually. Use the Revert Gamestate button under the Stats menu if necessary.";
+      return " restrict play of instants and defense reactions";
     case "MON251": case "MON252": case "MON253":
       AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
       return "";

@@ -858,12 +858,14 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain;
+  global $combatChain, $mainPlayer;
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
     switch($combatChain[$i])
     {
-      case "MON245": break;
+      case "MON245": 
+        if (!ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[$i], $mainPlayer, "CC");
+        break;
       default: break;
     }
   }
