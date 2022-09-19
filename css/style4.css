@@ -74,12 +74,20 @@ p,
 a,
 i,
 label,
+td,
+th,
 .scoretable {
   font-family: var(--font-family);
   color: var(--light-color);
   line-height: 24px;
   font-weight: bolder;
   text-shadow: var(--text-shadow);
+}
+
+td,
+.scoretable {
+  font-size: 17px;
+  line-height: 20px;
 }
 
 a {
