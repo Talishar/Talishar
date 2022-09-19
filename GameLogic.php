@@ -4561,7 +4561,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PICKACARD":
       $hand = &GetHand(($player == 1 ? 2 : 1));
-      $rand = rand(0, count($hand) - 1);
+      $rand = GetRandom(0, count($hand) - 1);
       if (RevealCards($hand[$rand], $player) && CardName($hand[$dqVars[0]]) == CardName($hand[$rand])) {
         WriteLog("Bingo! Your opponent tossed you a silver.");
         PutItemIntoPlayForPlayer("EVR195", $player);
