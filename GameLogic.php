@@ -667,19 +667,17 @@ function EffectHitEffect($cardID)
       break;
     case "ELE005":
       if (IsHeroAttackTarget()) {
-        $hand = &GetHand($defPlayer);
-        $ind = GetRandom() % count($hand);
-        $card = $hand[$ind];
-        unset($hand[$ind]);
-        $hand = array_values($hand);
-        AddBottomDeck($card, $defPlayer, "HAND");
-
-        $ind = GetRandom() % count($hand);
-        $card = $hand[$ind];
-        unset($hand[$ind]);
-        $hand = array_values($hand);
-        AddBottomDeck($card, $defPlayer, "HAND");
-      }
+          AddDecisionQueue("RANDMULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, "<-", 1);
+          AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose which card to put to the bottom first", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "-", 1);
+          AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
+          AddDecisionQueue("REMOVEFIRSTCHOICEINDICES", $defPlayer, "0", 1);
+          AddDecisionQueue("MZADDBOTDECK", $defPlayer, "<-", 1);
+          AddDecisionQueue("MZREMOVE", $defPlayer, "-", 1);
+        }
       break;
     case "ELE019":
     case "ELE020":
@@ -3163,6 +3161,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
+    case "RANDMULTIZONEINDICES":
+      $rv = SearchMultizone($player, $parameter);
+      //THEIRHAND-0,THEIRHAND-1,THEIRHAND-2,THEIRHAND-3
+      $hand = explode(",", $rv);
+      if(count($hand) == 0) $rv = "PASS";
+      else if(count($hand) == 1) $rv = "MYHAND-0";
+      else if(count($hand) == 2) $rv = "MYHAND-0,MYHAND-1";
+      else {
+        $randHand = array_rand($hand, 2);
+        $rv = $hand[$randHand[0]] . "," . $hand[$randHand[1]];
+      }
+      return ($rv == "" ? "PASS" : $rv);
     case "PUTPLAY":
       $subtype = CardSubType($lastResult);
       if ($subtype == "Item") {
@@ -4904,6 +4914,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       global $GameStatus_Rematch, $inGameStatus;
       if($lastResult == "YES") $inGameStatus = $GameStatus_Rematch;
       return 0;
+    case "REMOVEFIRSTCHOICEINDICES":
+      $choices = explode(",", $dqVars[$parameter]); //MYHAND-0,MYHAND-3
+
+      $firstChoice = substr($choices[0], strpos($choices[0], "-") + 1);   //0
+      $secondChoice = substr($choices[1], strpos($choices[1], "-") + 1);  //3
+
+      if ($firstChoice > $secondChoice) {
+        if ($choices[0] == $lastResult) {
+          $lastResult = $choices[1];
+        } else {
+          $lastResult = $choices[0];
+        }
+      } else {
+        $int_value = (int) $secondChoice;
+        --$int_value;
+        $lastResult = "MYHAND-" . strval($int_value); //MYHAND-2
+      }
+      return $lastResult;
     case "IMPERIALWARHORN":
       $otherPlayer = ($player == 1 ? 2 : 1);
       switch ($lastResult) {
