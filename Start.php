@@ -143,7 +143,7 @@ function initializePlayerState($handler, $deckHandler, $player)
     else if($player == 2) $p2IsChallengeActive = "1";
   }
   */
-
+/*
   $challengeThreshold = (CharacterHealth($charEquip[0]) > 25 ? 6 : 4);
   $numChallengeCard = 0;
   for($i=0; $i<count($deckCards); ++$i)
@@ -154,7 +154,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   }
   if($player == 1 && $numChallengeCard >= $challengeThreshold) $p1IsChallengeActive = "1";
   else if($player == 2 && $numChallengeCard >= $challengeThreshold) $p2IsChallengeActive = "1";
-
+*/
   fwrite($handler, implode(" ", $deckCards) . "\r\n");
 
   for ($i = 0; $i < count($charEquip); ++$i) {
