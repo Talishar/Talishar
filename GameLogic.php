@@ -3950,6 +3950,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Player $player prevented damage with Quell.");
       if ($lastResult > $curMaxQuell) SetClassState($player, $CS_MaxQuellUsed, $lastResult);
       return $lastResult;
+    case "SPELLVOIDCHOICES":
+      $damage = $parameter;
+      if ($lastResult != "PASS") {
+        $prevented = ArcaneDamagePrevented($player, $lastResult);
+        $damage -= $prevented;
+        if ($damage < 0) $damage = 0;
+        $dqVars[0] = $damage;
+      }
+      return $prevented;
     case "DEALARCANE":
       $dqState[7] = $lastResult;
       $target = explode("-", $lastResult);
@@ -3983,8 +3992,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($sourceType == "A" || $sourceType == "AA") $damage += CountCurrentTurnEffects("ELE065", $player);
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
       //Create cancel point
-      PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player, 1);
-      PrependDecisionQueue("PASSPARAMETER", $target, "{1}", 1);
+      PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player);
+      PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
+      
+      $spellvoidChoices = SearchSpellvoidIndices($target);
+      if ($spellvoidChoices != "") {
+        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        PrependDecisionQueue("SPELLVOIDCHOICES", $target, $damage, 1);
+        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $target, $spellvoidChoices);
+        PrependDecisionQueue("SETDQCONTEXT", $target, "Choose if you want to use a Spellvoid equipment");
+      }
       $quellChoices = QuellChoices($target, $damage);
       if ($quellChoices != "0") {
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
@@ -4408,15 +4425,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);
       return FinalizeDamage($player, $lastResult, $params[0], $params[1], $params[2]);
-    case "ONARCANEDAMAGEPREVENTED":
-      $damage = $parameter;
-      if ($lastResult != "PASS") {
-        $damage -= ArcaneDamagePrevented($player, $lastResult);
-        if ($damage < 0) $damage = 0;
-        $dqVars[0] = $damage;
-        PrependArcaneDamageReplacement($player, $damage);
-      }
-      return $damage;
     case "KORSHEM":
       switch ($lastResult) {
         case "Gain_a_resource":

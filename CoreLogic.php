@@ -573,8 +573,6 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
     { AddCurrentTurnEffect($source, $mainPlayer); }
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
-  //Now prepend orderable replacement effects
-  if($type == "ARCANE") PrependArcaneDamageReplacement($player, $damage);
   return $damage;
 }
 
@@ -600,21 +598,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   PlayerLoseHealth($player, $damage);
   LogDamageStats($player, $damageThreatened, $damage);
   return $damage;
-}
-
-function PrependArcaneDamageReplacement($player, $damage)
-{
-  $character = &GetPlayerCharacter($player);
-  $search = SearchArcaneReplacement($player, "MYCHAR");
-  $indices = SearchMultizoneFormat($search, "MYCHAR");//TODO: Add items, use FINDINDICES
-  $search = SearchArcaneReplacement($player, "MYITEMS");
-  $indices2 = SearchMultizoneFormat($search, "MYITEMS");//TODO: Add items, use FINDINDICES
-  $indices = CombineSearches($indices, $indices2);
-  if($indices != "")
-  {
-    PrependDecisionQueue("ONARCANEDAMAGEPREVENTED", $player, $damage);
-    PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, 1);
-  }
 }
 
 function ArcaneDamagePrevented($player, $cardMZIndex)

@@ -854,3 +854,13 @@ function FrozenCount($player)
       ++$numFrozen;
   return $numFrozen;
 }
+
+function SearchSpellvoidIndices($player)
+{
+  $search = SearchArcaneReplacement($player, "MYCHAR");
+  $indices = SearchMultizoneFormat($search, "MYCHAR"); //TODO: Add items, use FINDINDICES
+  $search = SearchArcaneReplacement($player, "MYITEMS");
+  $indices2 = SearchMultizoneFormat($search, "MYITEMS"); //TODO: Add items, use FINDINDICES
+  $indices = CombineSearches($indices, $indices2);
+  return $indices;
+}
