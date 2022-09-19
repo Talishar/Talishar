@@ -3477,8 +3477,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHUFFLEDECK":
       $zone = &GetDeck($player);
       $destArr = [];
+      if($parameter == "SKIPSEED") { global $randomSeeded; $randomSeeded = true; }
       while (count($zone) > 0) {
-        $index = rand(0, count($zone) - 1);
+        $index = GetRandom(0, count($zone) - 1);
         array_push($destArr, $zone[$index]);
         unset($zone[$index]);
         $zone = array_values($zone);
@@ -4009,7 +4010,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       //Create cancel point
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player);
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
-      
+
       $spellvoidChoices = SearchSpellvoidIndices($target);
       if ($spellvoidChoices != "") {
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
