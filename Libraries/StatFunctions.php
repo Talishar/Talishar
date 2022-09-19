@@ -45,7 +45,11 @@ function LogPlayCardStats($player, $cardID, $from)
     case "P": ++$cardStats[$i + $CardStats_TimesPitched]; ++$turnStats[$baseIndex + $TurnStats_CardsPitched]; break;
     case "B": ++$cardStats[$i + $CardStats_TimesBlocked]; if($from != "PLAY" && $from != "EQUIP") ++$turnStats[$baseIndex + $TurnStats_CardsBlocked]; break;
     default:
-      ++$cardStats[$i + $CardStats_TimesPlayed];
+      if ($from != "PLAY")
+      {
+        // From "PLAY" means it was already played, don't account for it a second time.
+        ++$cardStats[$i + $CardStats_TimesPlayed];
+      }
       if($from != "PLAY" && $from != "EQUIP")
       {
         if($player == $mainPlayer) ++$turnStats[$baseIndex + $TurnStats_CardsPlayedOffense];
