@@ -1662,6 +1662,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "MON239":
       return true;
+    case "MON245":
+      return true;
     case "ELE044":
     case "ELE045":
     case "ELE046":
@@ -1943,6 +1945,9 @@ function RemoveEffectsOnChainClose()
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
     switch ($currentTurnEffects[$i]) {
+      case "MON245":
+        $remove = 1;
+        break;
       case "ELE067":
       case "ELE068":
       case "ELE069":
