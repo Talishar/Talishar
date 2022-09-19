@@ -327,8 +327,8 @@ function ProcessCrushEffect($cardID)
   if (IsHeroAttackTarget()) {
     switch ($cardID) {
       case "WTR043":
-        DefDiscardRandom();
-        DefDiscardRandom();
+        DiscardRandom($defPlayer);
+        DiscardRandom($defPlayer);
         break;
       case "WTR044":
         AddNextTurnEffect($cardID, $defPlayer);

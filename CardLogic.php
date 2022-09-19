@@ -22,18 +22,6 @@ function HandToTopDeck($player)
   AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
 }
 
-function RandomHandBottomDeck($player)
-{
-  $hand = &GetHand($player);
-  if (count($hand) == 0) return;
-  $index = rand() % count($hand);
-  $discarded = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
-  $deck = &GetDeck($player);
-  array_push($deck, $discarded);
-}
-
 function BottomDeck()
 {
   global $currentPlayer;
@@ -165,11 +153,11 @@ function CurrentTurnEffectPieces()
 function CurrentTurnEffectUses($cardID)
 {
   switch ($cardID) {
-    case "EVR033": 
+    case "EVR033":
       return 6;
-    case "EVR034": 
+    case "EVR034":
       return 5;
-    case "EVR035": 
+    case "EVR035":
       return 4;
     case "UPR000":
       return 3;
@@ -1025,7 +1013,7 @@ function DiscardRandom($player = "", $source = "")
   if ($player == "") $player = $currentPlayer;
   $hand = &GetHand($player);
   if (count($hand) == 0) return "";
-  $index = rand() % count($hand);
+  $index = GetRandom() % count($hand);
   $discarded = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
@@ -1052,17 +1040,6 @@ function CardDiscarded($player, $discarded, $source = "")
   }
 }
 
-function DefDiscardRandom()
-{
-  global $defPlayer;
-  $hand = &GetHand($defPlayer);
-  if (count($hand) == 0) return;
-  $index = rand() % count($hand);
-  AddGraveyard($hand[$index], $defPlayer, "HAND");
-  unset($hand[$index]);
-  $hand = array_values($hand);
-};
-
 function Intimidate()
 {
   global $defPlayer; //For now we'll assume you can only intimidate the opponent
@@ -1072,7 +1049,7 @@ function Intimidate()
     WriteLog("Intimidate did nothing because there are no cards in hand.");
     return;
   } //Nothing to do if they have no hand
-  $index = rand() % count($hand);
+  $index = GetRandom() % count($hand);
   BanishCardForPlayer($hand[$index], $defPlayer, "HAND", "INT");
   unset($hand[$index]);
   $hand = array_values($hand);
