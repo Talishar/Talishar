@@ -951,7 +951,7 @@
         }
         return "Draws a card for each player and gave attacks targeting you -1.";
       case "EVR161": case "EVR162": case "EVR163":
-        $rand = rand(1, 3);
+        $rand = GetRandom(1, 3);
         if($resourcesPaid == 0 || $rand == 1) { WriteLog(CardLink($cardID, $cardID) . " gained 'When this hits, gain 2 life.'"); AddCurrentTurnEffect("EVR161-1", $currentPlayer); }
         if($resourcesPaid == 0 || $rand == 2) { WriteLog(CardLink($cardID, $cardID) . " gained +2 power."); AddCurrentTurnEffect("EVR161-2", $currentPlayer); }
         if($resourcesPaid == 0 || $rand == 3) { WriteLog(CardLink($cardID, $cardID) . " gained go again."); AddCurrentTurnEffect("EVR161-3", $currentPlayer); }
