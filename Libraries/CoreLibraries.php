@@ -8,10 +8,4 @@ function DelimStringContains($str, $find)
   }
   return false;
 }
-
-function GetRandom($low=-1, $high=-1)
-{
-  if($low == -1) return rand();
-  return rand($low, $high);
-}
 ?>
