@@ -52,6 +52,7 @@ $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
+$randomSeeded = false;
 
 if ($playerID != 3 && $authKey != $targetAuth) exit;
 if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();

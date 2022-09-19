@@ -1027,7 +1027,7 @@ function RollDie($player, $fromDQ=false, $subsequent=false)
   $highRoll = 0;
   for($i=0; $i<$numRolls; ++$i)
   {
-    $roll = random_int(1, 6);
+    $roll = GetRandom(1, 6);
     WriteLog($roll . " was rolled.");
     if($roll > $highRoll) $highRoll = $roll;
   }
