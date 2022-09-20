@@ -480,6 +480,12 @@ function HasIncreasedAttack()
 
 function DamageTrigger($player, $damage, $type, $source="NA")
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if (SearchCurrentTurnEffects("DYN075", $otherPlayer) && $player != $otherPlayer) { // TODO: Yoji cardID to be modified with set release
+    SearchCurrentTurnEffects("DYN075", $otherPlayer, true);
+    AddCurrentTurnEffect("DYN075-1", $otherPlayer);
+    $player = $otherPlayer;
+  }
   AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type);
   return $damage;
 }
@@ -495,7 +501,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
 function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $combatChainState, $combatChain, $mainPlayer;
-  global $CCS_AttackFused, $CS_ArcaneDamagePrevention;
+  global $CCS_AttackFused, $CS_ArcaneDamagePrevention, $currentPlayer;
 
   $classState = &GetPlayerClassState($player);
   $Items = &GetItems($player);
@@ -569,8 +575,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
     && CardType($source) == "AA"
     && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
 
-    if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
-    { AddCurrentTurnEffect($source, $mainPlayer); }
+    if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   return $damage;
