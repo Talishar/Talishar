@@ -447,7 +447,6 @@ if($matchup == "")
 }
 
 session_write_close();
-//header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
 header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
 function GetAltCardID($cardID)
