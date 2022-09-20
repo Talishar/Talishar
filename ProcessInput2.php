@@ -56,7 +56,13 @@ $randomSeeded = false;
 
 if ($playerID != 3 && $authKey != $targetAuth) exit;
 if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
-if (!IsModeAsync($mode) && $currentPlayer != $playerID) ExitProcessInput();
+if (!IsModeAsync($mode) && $currentPlayer != $playerID)
+{
+  $currentTime = round(microtime(true) * 1000);
+  SetCachePiece($gameName, 2, $currentTime);
+  SetCachePiece($gameName, 3, $currentTime);
+  ExitProcessInput();
+}
 
 $afterResolveEffects = [];
 
