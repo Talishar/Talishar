@@ -41,17 +41,17 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
   }
   if ($numHands < 1) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands weapon currently equipped.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
   if ($numHands > 2) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands weapons currently equipped.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
   if ($numEquip < 1) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. $numEquip equipment pieces are equipped.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
   $playerDeck = explode(",", $playerDeck);
@@ -76,7 +76,7 @@ WriteGameFile();
 GamestateUpdated($gameName);
 
 if ($playerID == 1) {
-  header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
 } else {
-  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 }

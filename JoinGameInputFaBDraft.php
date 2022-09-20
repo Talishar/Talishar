@@ -387,7 +387,6 @@ GamestateUpdated($gameName);
 if($playerID == 1) $_SESSION["p1AuthKey"] = $p1Key;
 if($playerID == 2) $_SESSION["p2AuthKey"] = $p2Key;
 session_write_close();
-//header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
 header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 
 function GetAltCardID($cardID)
