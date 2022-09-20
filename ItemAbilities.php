@@ -7,12 +7,17 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
   switch ($cardID) {
     case "WTR162":
     case "WTR170": case "WTR171": case "WTR172":
-    case "ARC035":
     case "ELE143": case "ELE172": case "ELE201":
     case "EVR176": case "EVR177": case "EVR178":
     case "EVR179": case "EVR180": case "EVR181":
     case "EVR182": case "EVR183": case "EVR184":
     case "EVR185": case "EVR186": case "EVR187":
+      DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      break;
+    case "ARC035":
+      $items = &GetItems($currentPlayer);
+      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      $paidSteamCounter = $items[$index + 1];
       DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
       break;
     case "ARC010": case "ARC018":
