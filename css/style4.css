@@ -1150,4 +1150,17 @@ button {
   .BRMobile {
     display: inline;
   }
+
+  .FabLogo {
+    position: absolute;
+    width: 150px;
+    height: 10vh;
+    z-index: 15;
+    top: 50px;
+    left: 50%;
+    margin: 0 0 0 -75px;
+    /* = half of width */
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+  }
 }
