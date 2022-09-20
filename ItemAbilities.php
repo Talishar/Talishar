@@ -18,7 +18,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       $items = &GetItems($currentPlayer);
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       $paidSteamCounter = $items[$index + 1];
-      DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+      DestroyMyItem($index);
       break;
     case "ARC010": case "ARC018":
       $items = &GetItems($currentPlayer);
