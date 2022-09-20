@@ -1311,6 +1311,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return ($char[$index + 2] < 2 && !SearchCurrentTurnEffects($cardID, $player));
     case "UPR153":
       return GetClassState($player, $CS_NumPhantasmAADestroyed) < 1;
+    case "UPR154":
+      if (count($combatChain) != 0) return CardType($combatChain[0]) != "AA" || !ClassContains($combatChain[0], "ILLUSIONIST", $player);
+      elseif (count($layers) != 0) return CardType($layers[0]) != "AA" || !ClassContains($layers[0], "ILLUSIONIST", $player);
+      return false;
     case "UPR159":
       return count($combatChain) == 0 || AttackValue($combatChain[0]) > 2 || CardType($combatChain[0]) != "AA";
     case "UPR162":
