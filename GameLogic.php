@@ -1324,6 +1324,13 @@ function CurrentEffectPlayAbility($cardID)
             $remove = 1;
           }
           break;
+        case "DYN116": case "DYN117": case "DYN118": // TODO: Blessing of Aether cardID to be edited
+          if ($currentTurnEffects[$i] == "DYN116") $amount = 3;
+          else if ($currentTurnEffects[$i] == "DYN117") $amount = 2;
+          else $amount = 1;
+          if (DoesArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
+          $remove = 1;
+          break;
         default:
           break;
       }
