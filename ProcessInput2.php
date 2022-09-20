@@ -1370,23 +1370,6 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     default:
       break;
   }
-  $auras = &GetAuras($currentPlayer);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    switch ($auras[$i]) {
-      case "ELE175":
-        $type = CardType($cardID);
-        if ($type == "A" || $type == "AA") {
-          AddDecisionQueue("YESNO", $currentPlayer, "Do_you_want_to_pay_1_to_give_this_action_go_again", 0, 1);
-          AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, 1, 1);
-          AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
-          AddDecisionQueue("PREPITCHGIVEGOAGAIN", $currentPlayer, $type, 1);
-        }
-        break;
-      default:
-        break;
-    }
-  }
 }
 
 function GetTargetOfAttack()
