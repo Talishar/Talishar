@@ -18,6 +18,7 @@ require_once("Libraries/CoreLibraries.php");
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
+require "Types/Mode.php";
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -29,7 +30,7 @@ $playerID = $_GET["playerID"];
 $authKey = $_GET["authKey"];
 
 //We should also have some information on the type of command
-$mode = $_GET["mode"];
+$mode = Mode::from($_GET["mode"]);
 $buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : ""; //The player that is the target of the command - e.g. for changing health total
 $cardID = isset($_GET["cardID"]) ? $_GET["cardID"] : "";
 $chkCount = isset($_GET["chkCount"]) ? $_GET["chkCount"] : 0;
@@ -63,15 +64,15 @@ $afterResolveEffects = [];
 $animations = [];
 //Now we can process the command
 switch ($mode) {
-  case 0: //Subtract health
+  case Mode::SubstractHealth:
     $playerHealths[$player] -= 1;
     WriteLog("Player " . $playerID . " reduced player " . ($player + 1) . "'s health by 1.");
     break;
-  case 1: //Add health
+  case Mode::AddHealth:
     $playerHealths[$player] += 1;
     WriteLog("Player " . $playerID . " increased player " . ($player + 1) . "'s health by 1.");
     break;
-  case 2: //Play card from hand
+  case Mode::PlayCardFromHand:
     $found = HasCard($cardID);
     if ($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
       //Player actually has the card, now do the effect
@@ -82,7 +83,7 @@ switch ($mode) {
       PlayCard($cardID, "HAND");
     }
     break;
-  case 3: //Play equipment ability
+  case Mode::UseEquipementAbility:
     $index = $cardID;
     $found = -1;
     if ($index != "") {
@@ -104,7 +105,7 @@ switch ($mode) {
       PlayCard($cardID, "EQUIP", -1, $index);
     }
     break;
-  case 4: //Add something to your arsenal
+  case Mode::AddToArsenal:
     $found = HasCard($cardID);
     if ($turn[0] == "ARS" && $found >= 0) {
       $hand = &GetHand($playerID);
@@ -114,7 +115,7 @@ switch ($mode) {
       PassTurn();
     }
     break;
-  case 5: //Card Played from Arsenal
+  case Mode::PlayFromArsenal:
     $index = $cardID;
     if ($index < count($myArsenal)) {
       $cardToPlay = $myArsenal[$index];
@@ -124,7 +125,7 @@ switch ($mode) {
       PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
     }
     break;
-  case 6: //Pitch Deck
+  case Mode::PitchDeck:
     if ($turn[0] != "PDECK") break;
     $found = PitchHasCard($cardID);
     if ($found >= 0) {
@@ -132,13 +133,13 @@ switch ($mode) {
       PassTurn(); //Resume passing the turn
     }
     break;
-  case 7: //Number input
+  case Mode::InputNumber:
     if ($turn[0] == "DYNPITCH") {
       ContinueDecisionQueue($buttonInput);
     }
     break;
-  case 8:
-  case 9: //OPT, CHOOSETOP, CHOOSEBOTTOM
+  case Mode::Opt:
+  case Mode::ChooseTopOrBottom:
     if ($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
       $options = explode(",", $turn[2]);
       $found = -1;
@@ -163,7 +164,7 @@ switch ($mode) {
       ContinueDecisionQueue($buttonInput);
     }
     break;
-  case 10: //Item ability
+  case Mode::UseItemAbility:
     $index = $cardID; //Overridden to be index instead
     if ($index >= count($myItems)) break; //Item doesn't exist
     $cardID = $myItems[$index];
@@ -608,9 +609,9 @@ GamestateUpdated($gameName);
 ExitProcessInput();
 
 //If true, allows for the case to be doable by any player when they don't have the priority.
-function IsModeAsync($mode)
+function IsModeAsync(Mode $mode)
 {
-  switch ($mode) {
+  switch ($mode->value) {
     case 26:
       return true;
     case 102:
@@ -645,9 +646,9 @@ function IsModeAsync($mode)
   return false;
 }
 
-function IsModeAllowedForSpectators($mode)
+function IsModeAllowedForSpectators(Mode $mode)
 {
-  switch ($mode) {
+  switch ($mode->value) {
     case 100001:
       return true;
     default:
