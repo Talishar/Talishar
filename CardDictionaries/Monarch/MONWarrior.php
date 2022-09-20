@@ -120,9 +120,8 @@
     switch($cardID)
     {
       case "MON029": case "MON030":
-        if(HasIncreasedAttack()) { GiveAttackGoAgain(); $rv = "Gives the current attack go again."; }
-        else { $rv = "Does not give the current attack go again."; }
-        return $rv;
+        GiveAttackGoAgain();
+        return "Gives the current attack go again.";
       case "MON033":
         $addCostValue = (int) $additionalCosts;
         AddDecisionQueue("BEACONOFVICTORY-2", $currentPlayer, $addCostValue, 1);
