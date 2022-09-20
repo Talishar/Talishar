@@ -6,6 +6,7 @@ function DYNAbilityCost($cardID)
         case "DYN001": return 3;
         case "DYN242": return 1;
         case "DYN243": return 2;
+       
         default:
             return 0;
     }
@@ -84,6 +85,7 @@ function DYNCardType($cardID)
 {
     switch ($cardID) {
         case "DYN001": return "C";
+        case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return "E";
         case "DYN242": return "A";
         case "DYN243": return "T";
@@ -96,7 +98,7 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
     switch ($cardID) {
-
+        case "DYN116": case "DYN117": case "DYN118": return "Aura"; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return "Head";
         case "DYN242": return "Item";
         case "DYN243": return "Item";
@@ -110,7 +112,7 @@ function DYNCardCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 0;
-
+        case "DYN116": case "DYN117": case "DYN118": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN242": return 2;
         case "DYN243": return 0;
         default:
@@ -123,6 +125,8 @@ function DYNPitchValue($cardID)
     switch ($cardID) {
         case "DYN001": return 0;
         case "DYN234": return 0;
+        case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
+        case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
 
         case "DYN242": return 1;
         case "DYN243": return 0;
@@ -136,8 +140,8 @@ function DYNBlockValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return -1;
+        case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return -1;
-
         case "DYN242": case "DYN243": return -1;
 
         default:

@@ -237,7 +237,7 @@
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
-    if($damage > 0) $damage += CurrentEffectArcaneModifier($source);
+    if($damage > 0) $damage += CurrentEffectArcaneModifier($source, $player);
     if($fromQueue)
     {
       if(!$limitDuplicates)
@@ -326,7 +326,7 @@
     return implode(",", $targets);
   }
 
-  function CurrentEffectArcaneModifier($source)
+  function CurrentEffectArcaneModifier($source, $player)
   {
     global $currentTurnEffects;
     $modifier = 0;
@@ -335,7 +335,10 @@
       $effectArr = explode(",", $currentTurnEffects[$i]);
       switch($effectArr[0])
       {
-        case "EVR123": $cardType = CardType($source); if($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1]; break;
+        case "EVR123": 
+          $cardType = CardType($source); 
+          if($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1];
+          break;
         default: break;
       }
     }
