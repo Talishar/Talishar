@@ -733,7 +733,7 @@
         }
         return "";
       case "WTR121":
-        if(RepriseActive())
+        if(RepriseActive() && SearchDeck($currentPlayer, "AR") != "")
         {
           $ARs = SearchDeck($currentPlayer, "AR");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
