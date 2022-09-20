@@ -236,7 +236,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       $items = &GetItems($currentPlayer);
       if ($index != -1) {
-        AddCurrentTurnEffect($cardID . "-" . $items[$index + 1], $currentPlayer, "PLAY");
+        AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer, "PLAY");
         $rv = "Will prevent some of the next combat damage you take this turn.";
         DestroyMyItem($index);
       }
