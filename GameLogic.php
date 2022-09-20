@@ -4262,7 +4262,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (TalentContains($lastResult, "LIGHT", $player)) Draw($player);
       if (ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
       return 1;
-    case "PREPITCHGIVEGOAGAIN":
+    case "GIVEACTIONGOAGAIN":
       if ($parameter == "A") SetClassState($player, $CS_NextNAACardGoAgain, 1);
       else if ($parameter == "AA") GiveAttackGoAgain();
       return 1;

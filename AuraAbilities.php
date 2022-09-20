@@ -532,21 +532,21 @@ function AuraPlayAbilities($attackID, $from="")
 {
   global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
   $auras = &GetAuras($currentPlayer);
-  $attackType = CardType($attackID);
+  $cardType = CardType($attackID);
   $numRunechants = CountAura("ARC112", $currentPlayer);
-  if ($attackType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
+  if ($cardType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
       case "WTR225":
-        if ($attackType == "AA") {
+        if ($cardType == "AA") {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
         }
         break;
       case "ARC112":
-        if ($attackType == "AA") {
+        if ($cardType == "AA") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
@@ -558,6 +558,11 @@ function AuraPlayAbilities($attackID, $from="")
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2.");
           --$auras[$i + 5];
           AddCurrentTurnEffect("EVR143", $currentPlayer, true);
+        }
+        break;
+      case "ELE175":
+        if ($cardType == "A" || $cardType == "AA") {
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
       default:
