@@ -1128,7 +1128,7 @@
         {
           $deck = &GetDeck($mainPlayer);
           BanishCardForPlayer($deck[0], $mainPlayer, "DECK", "NT");
-          WriteLog(CardLink($deck[0], $deck[0]) . " was banished and can be played this combat chain.");
+          WriteLog(CardLink($deck[0], $deck[0]) . " was banished and can be played until end of next turn");
           array_shift($deck);
         }
         break;

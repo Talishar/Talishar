@@ -1139,7 +1139,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   {
     $banish = GetBanish($currentPlayer);
     $mod = explode("-", $banish[$index+1])[0];
-    if($mod == "INST" || $mod == "ARC119") return true;
+    if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   }
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
