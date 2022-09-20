@@ -305,7 +305,9 @@ if ($decklink != "") {
   }
 
   if ($unsupportedCards != "") {
-    echo ("The following cards are not yet supported: " . $unsupportedCards);
+    $_SESSION['error'] = 'Error: The following cards are not yet supported: ' . $unsupportedCards;
+    header("Location: MainMenu.php");
+    die();
   }
 
   if ($bannedCard != "") {
@@ -560,7 +562,6 @@ function IsBanned($cardID, $format)
       //    ELE223: Duskblade
       //    ARC170: ARC171: ARC172: Plunder Run
       //    MON239: Stubby Hammerers
-      //    CRU141: Bloodsheath Skeleta (until Viserai, Rune Blood becomes Living Legend)
     case "cc":
     case "compcc":
       switch ($cardID) {
@@ -588,16 +589,13 @@ function IsBanned($cardID, $format)
       }
       break;
 
-      //   The following cards are banned in Commoner:
-      //   ELE186: ELE187: ELE188: Ball Lightning
-      //   MON266: MON267: MON268: Belittle
     case "commoner":
       switch ($cardID) {
-        case "ELE186":
-        case "ELE187":
+        case "ELE186": //Ball Lightning
+        case "ELE187": 
         case "ELE188":
-        case "MON266":
-        case "MON267":
+        case "MON266": //Belittle
+        case "MON267": 
         case "MON268":
           return true;
         default:
