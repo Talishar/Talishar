@@ -486,6 +486,14 @@ function GetAltCardID($cardID)
       return "WTR192";
     case "UPR211":
       return "WTR193";
+    case "DYN075": // TODO: Yoji cardID to be edited
+      return "HER075";
+    case "DYN116": // TODO: Blessing of Aether cardID to be edited
+      return "LGS116";
+    case "DYN117": // TODO: Blessing of Aether cardID to be edited
+      return "LGS117";
+    case "DYN118": // TODO: Blessing of Aether cardID to be edited
+      return "LGS118";
   }
   return $cardID;
 }

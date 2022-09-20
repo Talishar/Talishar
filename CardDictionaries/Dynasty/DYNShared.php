@@ -4,6 +4,7 @@ function DYNAbilityCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 3;
+        case "DYN075": return 3; // TODO: Yoji cardID to be modified with set release
         case "DYN242": return 1;
         case "DYN243": return 2;
        
@@ -17,6 +18,7 @@ function DYNAbilityType($cardID, $index = -1)
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch ($cardID) {
         case "DYN001": return "A";
+        case "DYN075": return "I"; // TODO: Yoji cardID to be modified with set release
         case "DYN242": case "DYN243": return "A";
         default:
             return "";
@@ -58,7 +60,6 @@ function DYNEffectAttackModifier($cardID)
 
 function DYNCombatEffectActive($cardID, $attackID)
 {
-    global $CS_AtksWWeapon, $mainPlayer;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     switch ($cardID) {
@@ -85,6 +86,7 @@ function DYNCardType($cardID)
 {
     switch ($cardID) {
         case "DYN001": return "C";
+        case "DYN075": return "C"; // TODO: Yoji cardID to be modified with set release
         case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return "E";
         case "DYN242": return "A";
@@ -124,10 +126,10 @@ function DYNPitchValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 0;
+        case "DYN075": return 0; // TODO: Yoji cardID to be modified with set release
         case "DYN234": return 0;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
-
         case "DYN242": return 1;
         case "DYN243": return 0;
 
@@ -140,10 +142,10 @@ function DYNBlockValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return -1;
+        case "DYN075": return -1; // TODO: Yoji cardID to be modified with set release
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return -1;
         case "DYN242": case "DYN243": return -1;
-
         default:
             return 3;
     }
@@ -170,6 +172,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
             AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
             return "";
+        case "DYN075": // TODO: Yoji cardID to be modified with set release
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+            return ""; 
         case "DYN242":   
             $rv = "";
             if($from == "PLAY"){
