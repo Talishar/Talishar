@@ -66,8 +66,10 @@ fclose($banfileHandler);
 
 <br>
 <form action='./BanPlayer.php'>
-  <label for="ipToBan" style='font-weight:bolder; margin-left:10px;'>Game host to IP ban:</label>
+  <label for="ipToBan" style='font-weight:bolder; margin-left:10px;'>Game to IP ban from:</label>
   <input type="text" id="ipToBan" name="ipToBan" value="">
+  <label for="playerNumberToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban? (1 or 2):</label>
+  <input type="text" id="playerNumberToBan" name="playerNumberToBan" value="">
   <input type="submit" value="Ban">
 </form>
 </div>
