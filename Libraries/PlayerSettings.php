@@ -7,13 +7,10 @@ $SET_ManualMode = 3;
 
 $SET_SkipARs = 4;
 $SET_SkipDRs = 5;
-
 $SET_PassDRStep = 6;
 
 $SET_AutotargetArcane = 7; //Auto-target opponent with arcane damage
-
 $SET_ColorblindMode = 8; //Colorblind mode settings
-
 $SET_ShortcutAttackThreshold = 9; //Threshold to shortcut attacks
 $SET_EnableDynamicScaling = 10; //Threshold to shortcut attacks
 $SET_Mute = 11; //Mute sounds
@@ -248,7 +245,7 @@ function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
   global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat, $SET_DisableStats;
-  global $SET_CasterMode;
+  global $SET_CasterMode, $SET_Language;
   $rv = "";
   $settings = GetSettings($player);
   $currentValue = HoldPrioritySetting($player);
@@ -529,5 +526,32 @@ function SaveSettingInDatabase($setting)
     case $SET_Language:
       return true;
     default: return false;
+  }
+}
+
+function TranslationExist($Language, $cardID)
+{
+  switch ($Language) {
+    case "JP": //Japanese
+      switch ($cardID) {
+        case "CRU046":
+        case "CRU050":
+        case "CRU063":
+        case "CRU069":
+        case "CRU072":
+        case "CRU073":
+        case "CRU074":
+        case "CRU186":
+        case "CRU187":
+        case "CRU194":
+        case "WTR100":
+        case "WTR191":
+          return true;
+        default:
+          return false;
+      }
+      break;
+    default:
+      return false;
   }
 }
