@@ -311,9 +311,9 @@ if ($decklink != "") {
   }
 
   if ($bannedCard != "") {
-    if ($format == "blitz") {
+    if ($format == "blitz" || $format = "compblitz") {
       $_SESSION['error'] = 'Error: The following cards are not legal in the Blitz format: ' . $bannedCard;
-    } elseif ($format == "cc" || $format == "compcc") {
+    } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc") {
       $_SESSION['error'] = 'Error: The following cards are not legal in the Classic Constructed format: ' . $bannedCard;
     } elseif ($format == "commoner") {
       $_SESSION['error'] = 'Error: The following cards are not legal the Commoner format: ' . $bannedCard;
@@ -322,14 +322,14 @@ if ($decklink != "") {
     die();
   }
 
-  if($totalCards < 60  && ($format == "cc" || $format == "compcc"))
+  if($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc"))
   {
-    $_SESSION['error'] = 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = $format . 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
 
-  if(($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "commoner"))
+  if(($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner"))
   {
     $_SESSION['error'] = 'Error: The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
@@ -518,7 +518,7 @@ function IsBanned($cardID, $format)
       //    ELE115: Crown of Seeds (Until Oldhim becomes Living Legend)
       //    MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
       //    MON231: Sonata Arcanix (Until the next banned and suspended announcement)
-    case "blitz":
+    case "blitz": case "compblitz":
       switch ($cardID) {
         case "ARC076":
         case "ARC077":
@@ -562,8 +562,7 @@ function IsBanned($cardID, $format)
       //    ELE223: Duskblade
       //    ARC170: ARC171: ARC172: Plunder Run
       //    MON239: Stubby Hammerers
-    case "cc":
-    case "compcc":
+    case "cc": case "compcc":
       switch ($cardID) {
         case "MON001":
         case "MON003":

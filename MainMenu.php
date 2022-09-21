@@ -110,6 +110,10 @@ if (!empty($_SESSION['error'])) {
     <input type="radio" id="blitz" name="format" value="blitz">
     <label style='margin-left:-10px;' for="blitz">Blitz</label>
 
+  <input style='margin-left: 10px;' type="radio" id="compblitz" name="format" value="compblitz">
+  <label for="compblitz">Competitive Blitz</label>
+  <br class="BRMobile">
+
   <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" checked="checked">
   <label for="cc">CC</label>
   <br class="BRMobile">
@@ -118,8 +122,13 @@ if (!empty($_SESSION['error'])) {
   <label for="compcc">Competitive CC</label>
   <br class="BRMobile">
 
-    <input style='margin-left: 0px;' type="radio" id="commoner" name="format" value="commoner">
+  <br><br>
+    <input style='margin-left: 5px;' type="radio" id="commoner" name="format" value="commoner">
     <label style='margin-left:-12px;' for="commoner">Commoner</label>
+
+
+   <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc">
+   <label style='margin-left:-12px;' for="livinglegendscc">Living Legends CC ❓</label>
   <br><br>
 
     <input type="radio" id="public" name="visibility" value="public" checked="checked">

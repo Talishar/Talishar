@@ -12,9 +12,11 @@ $path = ROOTPATH . "/Games";
 $currentlyActiveGames = "";
 $spectateLinks = "";
 $blitzLinks = "";
+$compBlitzLinks = "";
 $ccLinks = "";
 $compCCLinks = "";
-$commonerLinks = "";
+$otherFormatsLinks = "";
+$livingLegendsCCLinks = "";
 
 $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
 
@@ -101,6 +103,7 @@ if ($handle = opendir($path)) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
       if ($format == "commoner") $formatName = "Commoner ";
+      else if ($format == "livinglegendscc") $formatName = "Living Legends CC ";
       else if ($format == "aggrocc") $formatName = "Aggro CC ";
 
       $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
@@ -118,26 +121,40 @@ if ($handle = opendir($path)) {
       $link .= "</form>";
       if ($format == "blitz") {
         if (!$isOmegaEclipse) $blitzLinks .= $link;
-      } else if ($format == "shadowblitz") {
+      } 
+      else if ($format == "shadowblitz") {
         if ($isOmegaEclipse) $blitzLinks .= $link;
-        else if ($isMod) $commonerLinks .= $link;
-      } else if ($format == "cc") {
+        else if ($isMod) $otherFormatsLinks .= $link;
+      } 
+      else if ($format == "compblitz") {
+        if (!$isOmegaEclipse) $compBlitzLinks .= $link;
+      } 
+      else if ($format == "cc") {
         if (!$isOmegaEclipse) $ccLinks .= $link;
-      } else if ($format == "shadowcc") {
+      } 
+      else if ($format == "shadowcc") {
         if ($isOmegaEclipse) $ccLinks .= $link;
-        else if ($isMod) $commonerLinks .= $link;
-      } else if ($format == "compcc") {
+        else if ($isMod) $otherFormatsLinks .= $link;
+      } 
+      else if ($format == "compcc") {
         if (!$isOmegaEclipse) $compCCLinks .= $link;
-      } else if ($format == "shadowcompcc") {
+      } 
+      else if ($format == "shadowcompcc") {
         if ($isOmegaEclipse) $ccLinks .= $link;
-        else if ($isMod) $commonerLinks .= $link;
-      } else if ($format == "commoner") {
-        if (!$isOmegaEclipse) $commonerLinks .= $link;
-      } else if ($format == "shadowcommoner") {
-        if ($isOmegaEclipse) $commonerLinks .= $link;
-        else if ($isMod) $commonerLinks .= $link;
-      } else if ($format == "aggrocc") {
-        if ($isOmegaEclipse) $commonerLinks .= $link;
+        else if ($isMod) $otherFormatsLinks .= $link;
+      } 
+      else if ($format == "livinglegendscc") {
+        if (!$isOmegaEclipse) $otherFormatsLinks .= $link;
+      } 
+      else if ($format == "commoner") {
+        if (!$isOmegaEclipse) $otherFormatsLinks .= $link;
+      } 
+      else if ($format == "shadowcommoner") {
+        if ($isOmegaEclipse) $otherFormatsLinks .= $link;
+        else if ($isMod) $otherFormatsLinks .= $link;
+      } 
+      else if ($format == "aggrocc") {
+        if ($isOmegaEclipse) $otherFormatsLinks .= $link;
       }
     }
   }
@@ -146,6 +163,9 @@ if ($handle = opendir($path)) {
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
 echo ($blitzLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
+echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Competitive Blitz</h2>");
+echo ($compBlitzLinks);
+echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
 echo ($ccLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
@@ -153,7 +173,7 @@ echo ("<h2 title='This game mode is intended for training for high level regiona
 echo ($compCCLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
-echo ($commonerLinks);
+echo ($otherFormatsLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h2>");
 echo ($spectateLinks);
