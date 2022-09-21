@@ -217,17 +217,37 @@
     $elementArray = explode(",", $elements);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
+
+    // First fuse ask to fuse all elements
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
-      AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
+      // If there's multiple elements and it's an AND fusion, subsequent elements
+      // depends on the previous ones being fulfilled.
+      $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
+      AddDecisionQueue("FINDINDICES", $player, "HAND" . $element, $subsequent);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REVEALHANDCARDS", $player, "<-", 1);
-      AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
-      if($i > 0) $elementText .= " and ";
+      if ($isAndOrFuse)
+      {
+        AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
+        if($i > 0) $elementText .= " and/or ";
+      }
+      else
+      {
+        if($i > 0) $elementText .= " and ";
+      }
       $elementText .= $element;
     }
+
+    // Then if all elements have been fused allow the fusion
+    if (!$isAndOrFuse)
+    {
+      $elements = implode(",", $elementArray);
+      AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
+    }
+
     WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID) . ".");
   }
 
