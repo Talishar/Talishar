@@ -6,8 +6,8 @@ use JetBrains\PhpStorm\Language;
 
   function BackgroundColor($darkMode)
   {
-    if($darkMode) return "rgba(74, 74, 74, 0.9)";
-    else return "rgba(235, 235, 235, 0.9)";
+    if($darkMode) return "rgba(74, 74, 74, 1)";
+    else return "rgba(235, 235, 235, 1)";
   }
 
   function PopupBorderColor($darkMode)

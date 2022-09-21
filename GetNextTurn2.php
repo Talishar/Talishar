@@ -473,10 +473,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
         }
       }
+      $time = ($playerID == 1 ? $p1TotalTime : $p1TotalTime);
+      $totalTime = $p1TotalTime + $p1TotalTime;
+      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $time % 60 . "s</span>";
     }
     $content .= "</div>";
-    $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
-    $content .= "<div>Your time: " . intval($time/60) . " minutes " . $time%60 . " seconds</div>";
     $content .= CardStats($playerID);
     echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
   }
