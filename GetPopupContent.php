@@ -51,7 +51,8 @@ switch ($popupType) {
       if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
       $content .= "</div>";
       $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
-      $content .= "<div>Your time: " . intval($time/60) . " minutes " . $time%60 . " seconds</div>";
+      $totalTime = $p1TotalTime + $p1TotalTime;
+      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $time % 60 . "s</span>";
       $content .= CardStats($playerID);
       echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
     } else {
