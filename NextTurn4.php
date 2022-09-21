@@ -97,6 +97,9 @@
         }
         fileExt = ".png";
         folderPath = folder;
+
+        var LanguageJP = <?php echo (IsLanguageJP($controller) && TranslationExist('JP', $cardNumber)); ?>;
+
         if (cardNumber == "ENDTURN" || cardNumber == "RESUMETURN" || cardNumber == "PHANTASM" || cardNumber == "FINALIZECHAINLINK" || cardNumber == "DEFENDSTEP") {
           //folderPath = str_replace("CardImages", "Images", folderPath);
           //folderPath = str_replace("concat", "Images", folderPath);
