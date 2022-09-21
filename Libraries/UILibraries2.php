@@ -1,5 +1,7 @@
 <?php
 
+use JetBrains\PhpStorm\Language;
+
   require_once("CoreLibraries.php");
 
   function BackgroundColor($darkMode)
