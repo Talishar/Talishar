@@ -284,7 +284,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($turn[0] != "OVER") {
     $helpText = ($currentPlayer != $playerID ? " Waiting for other player to choose " . TypeToPlay($turn[0]) . "&nbsp" : " " . GetPhaseHelptext() . "&nbsp;");
 
-    echo ("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid " . $borderColor . "; border-radius: 5px; font-size:22px;'><img height='22px;' style='margin-left:3px; vertical-align: -3px;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b>" . $helpText);
+    echo ("<span style='display:inline-block; background-color: " . $backgroundColor . "; border: 2px solid " . $borderColor . "; border-radius: 5px; font-size:22px;'><img height='22px;' style='margin-left:3px; vertical-align: -5px; user-select: none;' title='" . $readyText . "' src='./HostFiles/" . $icon . "'/><b style='user-select: none;'>" . $helpText);
     if ($currentPlayer == $playerID) {
       if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") echo ("(" . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . "or " . CreateButton($playerID, "Cancel", 10000, 0, "16px") . ")");
       if (CanPassPhase($turn[0])) {
@@ -746,7 +746,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Opponent hand
   $handContents = "";
-  echo ("<div style='position: fixed; top: 5px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: 5px; margin-right: 5px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; vertical-align:top; display:inline-block;'>Opponent<br>Hand:</span>");
+  echo ("<div style='position: fixed; top: 5px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: 5px; margin-right: 5px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; vertical-align:top; display:inline-block; user-select: none;'>Opponent<br>Hand:</span>");
   echo("<div id='theirHand' style='display:inline;'>");
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
