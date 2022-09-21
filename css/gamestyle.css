@@ -329,6 +329,14 @@ input[type="button"]:focus {
   font-weight: 550;
 }
 
+.time-Span {
+  min-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .GameLobby_Input {
   font-family: var(--font-family);
   color: var(--dark-color);
