@@ -723,9 +723,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DealArcane(2, 0, "PLAYCARD", $parameter);
       break;
     case "EVR018":
-      if (!IsAllyAttacking()) {
         PlayAura("ELE111", $player);
-      }
       break;
     case "EVR037":
       $index = FindCharacterIndex($player, $parameter);
