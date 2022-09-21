@@ -412,4 +412,9 @@ function MakeStartTurnBackup()
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
   if(file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
   copy($filepath . "gamestate.txt", $thisTurnFN);
+  $startGameFN = $filepath . "startGamestate.txt";
+  if((IsPatron(1) || IsPatron(2)) && $currentTurn == 1 && !file_exists($startGameFN))
+  {
+    copy($filepath . "gamestate.txt", $startGameFN);
+  }
 }

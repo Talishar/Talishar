@@ -67,6 +67,14 @@ if (!IsModeAsync($mode) && $currentPlayer != $playerID)
 $afterResolveEffects = [];
 
 $animations = [];
+
+if((IsPatron(1) || IsPatron(2)))
+{
+  $commandFile = fopen("./Games/" . $gameName . "/commandfile.txt", "a");
+  fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
+  fclose($commandFile);
+}
+
 //Now we can process the command
 switch ($mode) {
   case 0: //Subtract health
