@@ -1636,6 +1636,7 @@ function PayAdditionalCosts($cardID, $from)
         AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
       }
+      break;
     case "MON251": case "MON252": case "MON253":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on top of your deck (or pass)", 1);

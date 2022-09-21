@@ -221,29 +221,53 @@
 
       function CardHasAltArt(cardID) {
         switch (cardID) {
-          case "WTR002": case "WTR150": case "WTR162": 
-          case "WTR224": 
+          case "WTR002":
+          case "WTR150":
+          case "WTR162":
+          case "WTR224":
             return true;
-          case "MON155": case "MON215": case "MON216": 
-          case "MON217": case "MON219": case "MON220": 
+          case "MON155":
+          case "MON215":
+          case "MON216":
+          case "MON217":
+          case "MON219":
+          case "MON220":
             return true;
-          case "ELE146": 
+          case "ELE146":
             return true;
-          case "UPR006": case "UPR007": case "UPR008":
-          case "UPR009": case "UPR010": case "UPR011":
-          case "UPR012": case "UPR013": case "UPR014":
-          case "UPR015": case "UPR016": case "UPR017":
+          case "UPR006":
+          case "UPR007":
+          case "UPR008":
+          case "UPR009":
+          case "UPR010":
+          case "UPR011":
+          case "UPR012":
+          case "UPR013":
+          case "UPR014":
+          case "UPR015":
+          case "UPR016":
+          case "UPR017":
             return true;
-          case "UPR042": case "UPR043": case "UPR169":
+          case "UPR042":
+          case "UPR043":
+          case "UPR169":
             return true;
-          case "UPR406": case "UPR407": case "UPR408":
-          case "UPR409": case "UPR410": case "UPR411":
-          case "UPR412": case "UPR413": case "UPR414":
-          case "UPR415": case "UPR416": case "UPR417":
+          case "UPR406":
+          case "UPR407":
+          case "UPR408":
+          case "UPR409":
+          case "UPR410":
+          case "UPR411":
+          case "UPR412":
+          case "UPR413":
+          case "UPR414":
+          case "UPR415":
+          case "UPR416":
+          case "UPR417":
             return true;
-          case "DYN234": 
+          case "DYN234":
             return true;
-        default:
+          default:
             return false;
         }
       }
@@ -298,7 +322,7 @@
             if (!!soulCountEl && zone == "myChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
-              newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; top:-23px; left: 17px; font-size:20px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>Soul: " + soulCountEl.innerHTML + "</div>";
+              newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; user-select: none;top:-23px; left: 17px; font-size:20px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>Soul: " + soulCountEl.innerHTML + "</div>";
               soulCountEl.innerHTML = "";
             }
             <?php
@@ -310,13 +334,13 @@
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var myName = document.getElementById("myUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; width: 81px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo ($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; width: 81px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; user-select: none;'>" + <?php echo ($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
             } else if (zone == "theirChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var theirName = document.getElementById("theirUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; width: 81px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>" + <?php echo ($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; width: 81px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; user-select: none;'>" + <?php echo ($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
             }
 
           }
