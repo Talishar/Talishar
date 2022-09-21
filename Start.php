@@ -117,7 +117,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
   global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
   global $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
-  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode;
+  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
   $deckSize = count($deckCards);
@@ -176,7 +176,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $userId = ($player == 1 ? $p1id : $p2id);
   $savedSettings = LoadSavedSettings($userId);
   $settingArray = [];
-  for($i=0; $i<=16; ++$i)
+  for($i=0; $i<=17; ++$i)
   {
     $value = "";
     switch($i)
@@ -193,7 +193,7 @@ function initializePlayerState($handler, $deckHandler, $player)
     $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
   }
   fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
-  //fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . " 0 0 0\r\n"); //Settings
+  //fwrite($handler, $holdPriority . " 1 0 0 0 0 0 1 0 0 0 " . $mute . " 0 " . $isPatron . " 0 0 0 0\r\n"); //Settings
 }
 
 
@@ -202,7 +202,7 @@ function SettingDefaultValue($setting)
 {
   global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
   global $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
-  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode;
+  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language;
   switch($setting)
   {
     case $SET_TryUI2: return "1";
@@ -219,5 +219,3 @@ function GetArray($handler)
 }
 
 ?>
-
-Something is wrong with the XAMPP installation :-(
