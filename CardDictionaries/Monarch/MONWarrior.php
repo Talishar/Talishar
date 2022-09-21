@@ -232,6 +232,7 @@
     $hand = &GetHand($currentPlayer);
     if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to charge", 1);
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
@@ -249,6 +250,7 @@
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
     PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
+    PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to charge", 1);
     PrependDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
   }
 
