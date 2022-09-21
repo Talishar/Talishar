@@ -642,7 +642,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU006":
       MyDrawCard();
       $discarded = DiscardRandom($currentPlayer, $cardID);
-      return "Discarded " . $discarded . ".";
+      return "Discarded " . CardLink($discarded, $discarded);
     case "CRU008":
       if (GetClassState($currentPlayer, $CS_Num6PowDisc) > 0) {
         Intimidate();
