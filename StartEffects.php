@@ -30,13 +30,21 @@ if ($p2Char[0] == "DUMMY") {
 if ($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002") {
   $items = SearchDeck(1, "", "Item", 2, -1, "MECHANOLOGIST");
   AddDecisionQueue("CHOOSEDECK", 1, $items);
-  AddDecisionQueue("PUTPLAY", 1, "0");
+  AddDecisionQueue("SETDQVAR", 1, "0");
 }
 if ($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002") {
   $items = SearchDeck(2, "", "Item", 2, -1, "MECHANOLOGIST");
   AddDecisionQueue("CHOOSEDECK", 2, $items);
-  AddDecisionQueue("PUTPLAY", 2, "0");
+  AddDecisionQueue("SETDQVAR", 2, "1");
 }
+// Syncronous item put in play so there's no advantage in the mirror match-ups
+if ($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002") {
+  AddDecisionQueue("PUTPLAYITEMDQVAR", 1, "0");
+}
+if ($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002") {
+  AddDecisionQueue("PUTPLAYITEMDQVAR", 2, "1");
+}
+
 //Fai
 if ($p1Char[0] == "UPR044" || $p1Char[0] == "UPR045") {
   $cards = SearchDeckForCard(1, "UPR101");
@@ -52,11 +60,11 @@ if ($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045") {
     AddDecisionQueue("ADDDISCARD", 2, "DECK", 1);
   }
 }
+
 //Crown of Dominion
 if(SearchCharacterForCard(1, "DYN234")) {
   AddDecisionQueue("STARTOFGAMEPUTPLAY", 1, "DYN243");
 }
-
 if(SearchCharacterForCard(2, "DYN234")) {
   AddDecisionQueue("STARTOFGAMEPUTPLAY", 2, "DYN243");
 }
