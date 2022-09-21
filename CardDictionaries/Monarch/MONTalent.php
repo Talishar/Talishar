@@ -337,13 +337,14 @@
   function ShadowPuppetryHitEffect()
   {
     global $mainPlayer;
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK");
-    AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
-    AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
+    AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+    AddDecisionQueue("DECKCARDS", $mainPlayer, "0", 1);
+    AddDecisionQueue("SETDQVAR", $mainPlayer, "1", 1);
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <1> with Shadow Puppetry", 1);
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_the_card", 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK", 1);
-    AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
+    AddDecisionQueue("PARAMDELIMTOARRAY", $mainPlayer, "0", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "0", 1);
     AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,-", 1);
     AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
   }
