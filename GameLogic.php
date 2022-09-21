@@ -2021,8 +2021,10 @@ function OnBlockResolveEffects()
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     switch ($combatChain[$i]) {
       case "EVR018":
-          WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " frostbite trigger creates a layer.");
-          AddLayer("TRIGGER", $mainPlayer, $combatChain[$i],);
+        if (!IsAllyAttacking()) {
+          WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " trigger creates a layer.");
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
+        }
         break;
       case "MON241": case "MON242": case "MON243":
       case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
@@ -3728,11 +3730,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($params); ++$i) {
         switch ($params[$i]) {
           case "Buff_Arcane":
-            WriteLog(CardLink("ARC122", "ARC122") . " add arcane bonus");
             AddArcaneBonus(1, $player);
             break;
           case "Draw_card":
-            WriteLog(CardLink("ARC122", "ARC122") . " draw a card");
             MyDrawCard();
             break;
           default:
