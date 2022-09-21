@@ -1641,12 +1641,14 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
       break;
     case "MON247":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHANDAA");
-      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to reveal", 1);
-      AddDecisionQueue("MAYMULTICHOOSEHAND", $currentPlayer, "<-", 1);
-      AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
-      AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
+      if(CanRevealCards($currentPlayer)) {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHANDAA");
+        AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to reveal", 1);
+        AddDecisionQueue("MAYMULTICHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("ROUSETHEANCIENTS", $currentPlayer, "-", 1);
+      }
       break;
     case "MON251": case "MON252": case "MON253":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
