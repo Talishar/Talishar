@@ -184,6 +184,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
         AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
         AddDecisionQueue("CCFILTERPLAYER", $currentPlayer, $currentPlayer);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", ($currentPlayer == 1 ? 2 : 1), "CC,-", 1);
@@ -236,6 +237,7 @@
       case "UPR081": case "UPR082": case "UPR083":
         $numDraconicLinks = NumDraconicChainLinks();
         AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2));
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
