@@ -460,7 +460,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10011:
       WriteLog("Player " . $playerID . " manually add a card to their hand.");
-      array_push(&GetHand($playerID), $cardID);
+      array_push(GetHand($playerID), $cardID);
       break;
     case 10012:
       WriteLog("Player " . $playerID . " manually add a resource to their pool.");
