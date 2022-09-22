@@ -3818,7 +3818,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             PrependDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
             PrependDecisionQueue("BANISH", $currentPlayer, "-", 1);
             PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-            PrependDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
             PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
             PrependDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDAA");
             break;
