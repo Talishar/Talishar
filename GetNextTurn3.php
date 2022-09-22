@@ -1,6 +1,7 @@
 <?php
 
 include 'Libraries/HTTPLibraries.php';
+require_once "Types/Mode.php";
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -310,21 +311,21 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // my hand contents
   $restriction = "";
-  $actionType = $turn[0] == "ARS" ? 4 : 27;
-  if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
+  $mode = $turn[0] == "ARS" ? Mode::AddToArsenal : Mode::PlayFromHandByIndex;
+  if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $mode = 16;
   $handContents = "";
   for ($i = 0; $i < count($myHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     if ($playerID == 3) {
       $handContents .= ClientRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {
-      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($mode == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
-      $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
+      $modeOut = (($currentPlayer == $playerID) && $playable == 1 ? $mode : Mode::None);
       if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-      $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
+      $actionDataOverride = (($mode == 16 || $mode == 27) ? strval($i) : "");
+      $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], mode: $modeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
     }
   }
   echo($handContents);
@@ -418,13 +419,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
       $myArse .= ClientRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {
-      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($mode == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
-      $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
+      $modeOut = (($currentPlayer == $playerID) && $playable == 1 ? $mode : Mode::None);
       if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-      $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-      $myArse .= ClientRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
+      $actionDataOverride = (($mode == Mode::Choose || $mode == Mode::PlayFromHandByIndex) ? strval($i) : "");
+      $myArse .= ClientRenderedCard(cardNumber: $myHand[$i], mode: $modeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
     }
     }
    }
@@ -540,7 +541,7 @@ function PlayableCardBorderColor($cardID)
   return 0;
 }
 
-function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
+function ChoosePopup($zone, $options, Mode $mode, $caption = "", $zoneSize = 1)
 {
   global $cardSize;
   $content = "";

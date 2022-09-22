@@ -115,7 +115,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
     $otherHero = "CardBack";
     echo ("<div id='oppHero' style='padding-left:5%;'>");
-    echo (Card($otherHero, "concat", 250, 0, 0));
+    echo (Card($otherHero, "concat", 250, Mode::None, 0));
     echo ("</div>");
     ?>
   </div>
@@ -131,7 +131,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     $character = GetArray($handler);
 
     echo ("<div style='padding-left:5%;'>");
-    echo (Card($character[0], "concat", 250, 0, 1));
+    echo (Card($character[0], "concat", 250, Mode::None, 1));
     echo ("</div>");
 
     $weapons = "";
@@ -253,12 +253,12 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     sort($deck);
     for ($i = 0; $i < count($deck); ++$i) {
       $id = "DECK-" . $count;
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, Mode::None, 1, 0, 0, 0, "", $id) . "</span>");
       ++$count;
     }
     for ($i = 0; $i < count($deckSB); ++$i) {
       $id = "DECK-" . $count;
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "concat", $cardSize, Mode::None, 1, 1, 0, 0, "", $id) . "</span>");
       ++$count;
     }
     ?>
@@ -473,7 +473,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", $cardSize, Mode::None, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
       echo ("</td>");
       ++$count;
@@ -482,7 +482,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", $cardSize, Mode::None, 1, 1, 0, 0, "", $id) . "</span>");
       echo ("</div>");
       echo ("</td>");
       ++$count;
@@ -500,7 +500,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", $cardSize, Mode::None, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
       echo ("</td>");
       ++$count;
@@ -512,7 +512,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", $cardSize, Mode::None, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
       echo ("</td>");
       ++$count;
@@ -525,7 +525,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", $cardSize, Mode::None, 1, 1, 0, 0, "", $id) . "</span>");
       echo ("</div>");
       echo ("</td>");
       ++$count;

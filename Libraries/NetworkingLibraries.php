@@ -1,12 +1,17 @@
 <?php
-function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput)
+
+require_once "Types/Mode.php";
+
+function ProcessInput($playerID, Mode $mode, $buttonInput, $cardID, $chkCount, $chkInput)
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating, $redirectPath;
   switch ($mode) {
-    case 0: break; //Deprecated
-    case 1: break; //Deprecated
-    case 2: //Play card from hand
+    case Mode::None:
+      break;
+    case Mode::Deprecated_1:
+      break;
+    case Mode::PlayCardFromHand:
       $found = HasCard($cardID);
       if ($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
         //Player actually has the card, now do the effect
@@ -17,7 +22,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "HAND");
       }
       break;
-    case 3: //Play equipment ability
+    case Mode::PlayEquipmentAbility:
       $index = $cardID;
       $found = -1;
       $character = &GetPlayerCharacter($playerID);
@@ -40,7 +45,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "EQUIP", -1, $index);
       }
       break;
-    case 4: //Add something to your arsenal
+    case Mode::AddToArsenal:
       $found = HasCard($cardID);
       if ($turn[0] == "ARS" && $found >= 0) {
         $hand = &GetHand($playerID);
@@ -50,7 +55,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PassTurn();
       }
       break;
-    case 5: //Card Played from Arsenal
+    case Mode::PlayFromArsenal:
       $index = $cardID;
       $arsenal = &GetArsenal($playerID);
       if ($index < count($arsenal)) {
@@ -61,7 +66,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
       }
       break;
-    case 6: //Pitch Deck
+    case Mode::PitchToDeck:
       if ($turn[0] != "PDECK") break;
       $found = PitchHasCard($cardID);
       if ($found >= 0) {
@@ -69,13 +74,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PassTurn(); //Resume passing the turn
       }
       break;
-    case 7: //Number input
+    case Mode::InputNumber:
       if ($turn[0] == "DYNPITCH") {
         ContinueDecisionQueue($buttonInput);
       }
       break;
-    case 8:
-    case 9: //OPT, CHOOSETOP, CHOOSEBOTTOM
+    case Mode::ChooseTop:
+    case Mode::ChooseBottom:
       if ($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
         $options = explode(",", $turn[2]);
         $found = -1;
@@ -87,10 +92,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         if ($found == -1) break; //Invalid input
         $deck = &GetDeck($playerID);
-        if ($mode == 8) {
+        if ($mode == Mode::ChooseTop) {
           array_unshift($deck, $buttonInput);
           WriteLog("Player " . $playerID . " put a card on top of the deck.");
-        } else if ($mode == 9) {
+        } else if ($mode == Mode::ChooseBottom) {
           array_push($deck, $buttonInput);
           WriteLog("Player " . $playerID . " put a card on the bottom of the deck.");
         }
@@ -100,7 +105,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         ContinueDecisionQueue($buttonInput);
       }
       break;
-    case 10: //Item ability
+    case Mode::PlayItemAbility:
       $index = $cardID; //Overridden to be index instead
       $items = &GetItems($playerID);
       if ($index >= count($items)) break; //Item doesn't exist
@@ -111,7 +116,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $set = CardSet($cardID);
       PlayCard($cardID, "PLAY", -1, $index, $items[$index + 4]);
       break;
-    case 11: //CHOOSEDECK
+    case Mode::ChooseCardFromDeck:
       if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
         $deck = &GetDeck($playerID);
         $index = $cardID;
@@ -121,7 +126,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         ContinueDecisionQueue($cardID);
       }
       break;
-    case 12: //HANDTOP
+    case Mode::HandToTop:
       if ($turn[0] == "HANDTOPBOTTOM") {
         $hand = &GetHand($playerID);
         $deck = &GetDeck($playerID);
@@ -133,7 +138,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("Player " . $playerID . " put a card on the top of the deck.");
       }
       break;
-    case 13: //HANDBOTTOM
+    case Mode::HandToBottom:
       if ($turn[0] == "HANDTOPBOTTOM") {
         $hand = &GetHand($playerID);
         $deck = &GetDeck($playerID);
@@ -145,7 +150,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("Player " . $playerID . " put a card on the bottom of the deck.");
       }
       break;
-    case 14: //Banish
+    case Mode::Banish:
       $index = $cardID;
       $banish = &GetBanish($playerID);
       $theirCharacter = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
@@ -155,21 +160,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
       break;
-    case 15:
-    case 16:
-    case 18: //CHOOSE (15 and 18 deprecated)
+    case Mode::Deprecated_15:
+    case Mode::Deprecated_18:
+    case Mode::Choose:
       if (count($decisionQueue) > 0) //TODO: Or check all the possibilities?
       {
         $index = $cardID;
         ContinueDecisionQueue($index);
       }
       break;
-    case 17: //BUTTONINPUT
+    case Mode::ButtonInput:
       if (($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER")) {
         ContinueDecisionQueue($buttonInput);
       }
       break;
-    case 19: //MULTICHOOSE X
+    case Mode::MultiChoose:
       if (substr($turn[0], 0, 11) != "MULTICHOOSE" && substr($turn[0], 0, 14) != "MAYMULTICHOOSE") break;
       $params = explode("-", $turn[2]);
       $maxSelect = intval($params[0]);
@@ -207,10 +212,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         ContinueDecisionQueue($chkInput);
       }
       break;
-    case 20: //YESNO
+    case Mode::YesNo:
       if ($turn[0] == "YESNO" && ($buttonInput == "YES" || $buttonInput == "NO")) ContinueDecisionQueue($buttonInput);
       break;
-    case 21: //Combat chain ability
+    case Mode::PlayCombatChainAbility:
       $index = $cardID; //Overridden to be index instead
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
@@ -218,7 +223,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "PLAY", -1);
       }
       break;
-    case 22: //Aura ability
+    case Mode::PlayAuraAbility:
       $index = $cardID; //Overridden to be index instead
       $auras = &GetAuras($playerID);
       if ($index >= count($auras)) break; //Item doesn't exist
@@ -228,7 +233,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_PlayIndex, $index);
       PlayCard($cardID, "PLAY", -1, $index, $auras[$index+6]);
       break;
-    case 23: //CHOOSECARD
+    case Mode::ChooseCard:
       if ($turn[0] == "CHOOSECARD") {
         $options = explode(",", $turn[2]);
         $found = -1;
@@ -244,7 +249,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         ContinueDecisionQueue($buttonInput);
       }
       break;
-    case 24: //Ally Ability
+    case Mode::PlayAllyAbility:
       $allies = &GetAllies($currentPlayer);
       $index = $cardID; //Overridden to be index instead
       if ($index >= count($allies)) break; //Ally doesn't exist
@@ -254,7 +259,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_PlayIndex, $index);
       PlayCard($cardID, "PLAY", -1, $index, $allies[$index+5]);
       break;
-    case 25: //Landmark Ability
+    case Mode::PlayLandmarkAbility:
       $index = $cardID;
       if ($index >= count($landmarks)) break; //Landmark doesn't exist
       $cardID = $landmarks[$index];
@@ -262,7 +267,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_PlayIndex, $index);
       PlayCard($cardID, "PLAY", -1);
       break;
-    case 26: //Change setting
+    case Mode::ChainSetting:
       include "MenuFiles/ParseGamefile.php";
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
@@ -271,7 +276,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       else $userID = $p2id;
       ChangeSetting($playerID, $params[0], $params[1], $userID);
       break;
-    case 27: //Play card from hand by index
+    case Mode::PlayFromHandByIndex:
       $found = $cardID;
       if ($found >= 0) {
         //Player actually has the card, now do the effect
@@ -285,29 +290,29 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "HAND");
       }
       break;
-    case 99: //Pass
+    case Mode::Pass:
       if (CanPassPhase($turn[0])) {
         PassInput(false);
       }
       break;
-    case 100: //Break Chain
+    case Mode::BreakCombatChain:
       if($currentPlayer == $mainPlayer) {
         ResetCombatChainState();
         ProcessDecisionQueue();
       }
       break;
-    case 101: //Pass block and Reactions
+    case Mode::PassBlocksAndReactions:
       ChangeSetting($playerID, $SET_PassDRStep, 1);
       if (CanPassPhase($turn[0])) {
         PassInput(false);
       }
       break;
-    case 102: //Toggle equipment Active
+    case Mode::ToggleEquipment:
       $index = $buttonInput;
       $char = &GetPlayerCharacter($playerID);
       $char[$index + 9] = ($char[$index + 9] == "1" ? "0" : "1");
       break;
-    case 103: //Toggle my permanent Active
+    case Mode::TogglePermanent:
       $input = explode("-", $buttonInput);
       $index = $input[1];
       switch($input[0])
@@ -318,7 +323,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
-    case 104: //Toggle other player permanent Active
+    case Mode::ToggleOpponentPermanent:
       $input = explode("-", $buttonInput);
       $index = $input[1];
       switch($input[0])
@@ -329,82 +334,82 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
       break;
-    case 10000: //Undo
+    case Mode::Undo:
       RevertGamestate();
       $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " undid their last action.");
       break;
-    case 10001:
+    case Mode::CancelBlock:
       RevertGamestate("preBlockBackup.txt");
       $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " cancel their blocks.");
       break;
-    case 10002:
+    case Mode::ManualAddActionPoint:
       WriteLog("Player " . $playerID . " manually add 1 action point.");
       ++$actionPoints;
       break;
-    case 10003: //Revert to prior turn
+    case Mode::RevertToPriorTurn:
       RevertGamestate($buttonInput);
       WriteLog("Player " . $playerID . " revert back to a prior turn.");
       break;
-    case 10004:
+    case Mode::ManualSubActionPoint:
       if ($actionPoints > 0) {
         WriteLog("Player " . $playerID . " manually subtract 1 action point.");
         --$actionPoints;
       }
       break;
-    case 10005:
+    case Mode::ManualSubHealthPoint:
       WriteLog("Player " . $playerID . " manually subtract 1 health point from themselves.");
       LoseHealth(1, $playerID);
       break;
-    case 10006:
+    case Mode::ManualAddHealthPoint:
       WriteLog("Player " . $playerID . " manually add 1 health point to themselves.");
       $health = &GetHealth($playerID);
       $health += 1;
       break;
-    case 10007:
-      WriteLog("Player " . $playerID . " manually add 1 health point to themselves.");
+    case Mode::ManualSubOpponentHealthPoint:
+      WriteLog("Player " . $playerID . " manually substract 1 health point their opponent.");
       LoseHealth(1, ($playerID == 1 ? 2 : 1));
       break;
-    case 10008:
+    case Mode::ManualAddOpponentHealthPoint:
       WriteLog("Player " . $playerID . " manually add 1 health point their opponent.");
       $health = &GetHealth($playerID == 1 ? 2 : 1);
       $health += 1;
       break;
-    case 10009:
+    case Mode::ManualDrawCard:
       WriteLog("Player " . $playerID . " manually draw a card for themselves.");
       Draw($playerID);
       break;
-    case 10010:
+    case Mode::ManualOpponentDrawCard:
       WriteLog("Player " . $playerID . " manually draw a card for their opponent.");
       Draw(($playerID == 1 ? 2 : 1));
       break;
-    case 10011:
+    case Mode::ManualAddCard:
       WriteLog("Player " . $playerID . " manually add a card to their hand.");
       $hand = &GetHand($playerID);
       array_push($hand, $cardID);
       break;
-    case 10012:
+    case Mode::ManualAddResource:
       WriteLog("Player " . $playerID . " manually add a resource to their pool.");
       $resources = &GetResources($playerID);
       $resources[0] += 1;
       break;
-    case 10013:
+    case Mode::ManualOpponentAddResource:
       WriteLog("Player " . $playerID . " manually add a resource to their opponent's pool.");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
       $resources[0] += 1;
       break;
-    case 10014:
+    case Mode::ManualOpponentSubResource:
       WriteLog("Player " . $playerID . " manually removed a resource from their opponent's pool.");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
       $resources[0] -= 1;
       break;
-    case 10015:
+    case Mode::ManualSubResource:
       WriteLog("Player " . $playerID . " manually removed a resource from their pool.");
       $resources = &GetResources($playerID);
       $resources[0] -= 1;
       break;
-    case 100000: //Quick Rematch
+    case Mode::QuickRematch:
       if($turn[0] != "OVER") break;
       $otherPlayer = ($playerID == 1 ? 2 : 1);
       $char = &GetPlayerCharacter($otherPlayer);
@@ -418,16 +423,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       ProcessDecisionQueue();
       break;
-    case 100001: //Main Menu
+    case Mode::MainMenu:
       header("Location: " . $redirectPath . "/MainMenu.php");
       exit;
-    case 100002: //Concede
+    case Mode::Concede:
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $conceded = true;
       if(!IsGameOver()) PlayerLoseHealth($playerID, GetHealth($playerID));
       break;
-    case 100003: //Report Bug
+    case Mode::ReportBug:
       $bugCount = 0;
       $folderName = "./BugReports/" . $gameName . "-" . $bugCount;
       while ($bugCount < 5 && file_exists($folderName)) {
@@ -443,28 +448,28 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
       WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
       break;
-    case 100004: //Full Rematch
+    case Mode::Rematch:
       if($turn[0] != "OVER") break;
       $otherPlayer = ($playerID == 1 ? 2 : 1);
       AddDecisionQueue("YESNO", $otherPlayer, "if you want a Rematch?");
       AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
       ProcessDecisionQueue();
       break;
-    case 100005: //Current player inactive
+    case Mode::CurrentPlayerInactive:
       $char = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
       if ($char[0] != "DUMMY") {
         $currentPlayerActivity = 2;
         WriteLog("The current player is inactive.");
       }
       break;
-    case 100006: //Current player active
+    case Mode::CurrentPlayerActive:
       $char = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
       if ($char[0] != "DUMMY") {
         $currentPlayerActivity = 0;
         WriteLog("The current player is active again.");
       }
       break;
-    case 100007: //Claim Victory when opponent is inactive
+    case Mode::ClaimVictory:
       if($currentPlayerActivity == 2)
       {
         include_once "./includes/dbh.inc.php";
@@ -474,7 +479,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("The opponent forfeit due to inactivity.");
       }
       break;
-    case 100008: // Green Rating Update players rating with 👍 Good (Green Rating)
+    case Mode::ThumpUp:
       if($playerID == 1 && $p1PlayerRating != 0) break;
       if($playerID == 2 && $p2PlayerRating != 0) break;
       include "MenuFiles/ParseGamefile.php";
@@ -482,7 +487,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($playerID == 1) $p1PlayerRating = 1;
       if ($playerID == 2) $p2PlayerRating = 1;
       break;
-    case 100009: // Red Rating - Update players rating 👎 Bad (Red Rating)
+    case Mode::ThumpDown:
       if($playerID == 1 && $p1PlayerRating != 0) break;
       if($playerID == 2 && $p2PlayerRating != 0) break;
       include "MenuFiles/ParseGamefile.php";
@@ -490,7 +495,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($playerID == 1) $p1PlayerRating = 2;
       if ($playerID == 2) $p2PlayerRating = 2;
       break;
-    case 100010: //Grant badge
+    case Mode::GrantBadge:
       include "MenuFiles/ParseGamefile.php";
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";

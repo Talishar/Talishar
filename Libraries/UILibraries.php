@@ -1,12 +1,14 @@
 <?php
 
+require_once "Types/Mode.php";
+
   function BackgroundColor($darkMode)
   {
     if($darkMode) return "rgba(20, 20, 20, 0.7)";
     else return "rgba(255, 255, 255, 0.7)";
   }
 
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="",$id="",$rotate=false)
+  function Card($cardNumber, $folder, $maxHeight, Mode $mode=Mode::None, $showHover=0, $overlay=0, $borderColor=0,$counters=0,$actionDataOverride="",$id="",$rotate=false)
   {//
     global $playerID, $gameName, $darkMode;
     if($darkMode == null) $darkMode = false;
@@ -24,7 +26,7 @@
     //Enforce 375x523 aspect ratio as exported (.71)
     $margin = "margin:0px;";
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:2px;" : "margin:5px;";
-    $rv = "<a style='" . $margin . " position:relative; display:inline-block;'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " href=\"./ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$action&cardID=" . $actionData . "\" " : "") . ">";
+    $rv = "<a style='" . $margin . " position:relative; display:inline-block;'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($mode != Mode::None ? " href=\"./ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&cardID=" . $actionData . "\" " : "") . ">";
     $border = $borderColor > 0 ? "border-radius:20px; border:3px solid " . BorderColorMap($borderColor) . ";" : "";
     if($rotate == false) { $height = $maxHeight; $width = ($maxHeight * .71); }
     else { $height = ($maxHeight * .71); $width = $maxHeight; }
@@ -48,31 +50,31 @@
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="")
+  function CreateButton($playerID, $caption, Mode $mode, $input, $size="", $image="", $tooltip="")
   {
     global $gameName;
     if($image != "")
     {
-      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">";
+      $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode->value&buttonInput=$input'\">";
     }
-    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode&buttonInput=$input'\">" . $caption . "</button>";
+    else $rv = "<button title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . "onclick=\"document.location.href = './ProcessInput.php?gameName=$gameName&playerID=$playerID&mode=$mode->value&buttonInput=$input'\">" . $caption . "</button>";
     return $rv;
   }
 
-  function ProcessInputLink($player, $mode, $input, $event='onmousedown')
+  function ProcessInputLink($player, Mode $mode, $input, $event='onmousedown')
   {
     global $gameName;
-    return " " . $event . "='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\");'";
+    return " " . $event . "='SubmitInput(\"" . $mode->value . "\", \"&buttonInput=" . $input . "\");'";
   }
 
-  function CreateForm($playerID, $caption, $mode, $count)
+  function CreateForm($playerID, $caption, Mode $mode, $count)
   {
     global $gameName;
     $rv = "<form action='./ProcessInput.php'>";
     $rv .= "<input type='submit' value='" . $caption . "'>";
     $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
     $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
-    $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
+    $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode->value . "'>";
     $rv .= "<input type='hidden' id='chkCount' name='chkCount' value='" . $count . "'>";
     return $rv;
   }
@@ -105,7 +107,7 @@
     if($canClose == 1) $rv .= "<div style='position:absolute; cursor:pointer; top:0px; right:0px; font-size:48px; color:red; border:2px solid black;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>X</div>";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
-      $rv .= Card($fromArr[$i], $path . "CardImages", 150, 0, 1);
+      $rv .= Card($fromArr[$i], $path . "CardImages", 150, Mode::None, 1);
     }
     $rv .= $customInput;
     $rv .= "</div>";
@@ -229,18 +231,18 @@
     $size = ($from == "HAND" ? $cardSize : 180);
     $banish = GetBanish($playerID);
     for($i=0; $i<count($banish); $i+=BanishPieces()) {
-      $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-      $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
+      $mode = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? Mode::Banish : Mode::None;
+      $border = CardBorderColor($banish[$i], "BANISH", $mode != Mode::None);
       $mod = explode("-", $banish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      if($mod == "INT") $rv .= Card($banish[$i], "CardImages", $size, Mode::None, 1, 1);//Display intimidated cards grayed out and unplayable
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
-        $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+        $rv .= Card($banish[$i], "CardImages", $size, $mode, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
         if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
-          $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));
+          $rv .= Card($banish[$i], "CardImages", $size, $mode, 1, 0, $border, 0, strval($i));
         else
-          $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 0, $border);
+          $rv .= Card($banish[$i], "CardImages", $size, Mode::None, 1, 0, $border);
       }
     }
     return $rv;

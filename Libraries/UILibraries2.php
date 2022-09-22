@@ -2,7 +2,8 @@
 
 use JetBrains\PhpStorm\Language;
 
-  require_once("CoreLibraries.php");
+require_once "Types/Mode.php";
+require_once "CoreLibraries.php";
 
   function BackgroundColor($darkMode)
   {
@@ -23,7 +24,7 @@ use JetBrains\PhpStorm\Language;
   }
 
   //0 Card number = card ID (e.g. WTR000 = Heart of Fyendal)
-  //1 action = (ProcessInput2 mode)
+  //1 mode = (ProcessInput2 mode)
   //2 overlay = 0 is none, 1 is grayed out/disabled
   //3 borderColor = Border Color
   //4 Counters = number of counters
@@ -39,15 +40,15 @@ use JetBrains\PhpStorm\Language;
   //14 onChain = 1 if card is on combat chain (mostly for equipment)
   //15 isFrozen = 1 if frozen
   //16 shows gem = (0, 1, 2?) (0 off, 1 inactive, 2 active at a guess?)
-  function ClientRenderedCard($cardNumber, $action=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="-", $lifeCounters=0, $defCounters=0, $atkCounters=0, $controller=0, $type="", $sType="", $restriction="", $isBroken=0, $onChain=0, $isFrozen=0, $gem=0)
+  function ClientRenderedCard($cardNumber, Mode $mode=Mode::None, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="-", $lifeCounters=0, $defCounters=0, $atkCounters=0, $controller=0, $type="", $sType="", $restriction="", $isBroken=0, $onChain=0, $isFrozen=0, $gem=0)
   {
-    $rv = $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $counters . " " . $actionDataOverride . " " . $lifeCounters . " " . $defCounters . " " . $atkCounters . " ";
+    $rv = $cardNumber . " " . $mode->value . " " . $overlay . " " . $borderColor . " " . $counters . " " . $actionDataOverride . " " . $lifeCounters . " " . $defCounters . " " . $atkCounters . " ";
     $rv .= $controller . " " . $type . " " . $sType . " " . $restriction . " " . $isBroken . " " . $onChain . " " . $isFrozen . " " . $gem;
     return $rv;
   }
 
   //Rotate is deprecated
-  function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="", $controller=0)
+  function Card($cardNumber, $folder, $maxHeight, Mode $mode=Mode::None, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="", $controller=0)
   {//
     global $playerID, $darkMode;
     if($darkMode == null) $darkMode = false;
@@ -81,7 +82,7 @@ use JetBrains\PhpStorm\Language;
     if($borderColor != -1) $margin = $borderColor > 0 ? "margin:0px;" : "margin:1px;";
     if($folder == "crops") $margin = "0px;";
 
-    $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
+    $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($mode != Mode::None ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($mode != Mode::None ? " onclick='SubmitInput(\"" . $mode . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
 
     if($borderColor > 0){
       $border = "border-radius:10px; border:2.5px solid " . BorderColorMap($borderColor) . ";";
@@ -173,7 +174,7 @@ use JetBrains\PhpStorm\Language;
     }
   }
 
-  function CreateButton($playerID, $caption, $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false, $fullReload=false, $prompt="")
+  function CreateButton($playerID, $caption, Mode $mode, $input, $size="", $image="", $tooltip="", $fullRefresh=false, $fullReload=false, $prompt="")
   {
     global $gameName, $authKey;
 
@@ -181,7 +182,7 @@ use JetBrains\PhpStorm\Language;
     if ($fullReload)
       $onClick = "document.location.href = \"./ProcessInput2.php?gameName=$gameName&playerID=$playerID&authKey=$authKey&mode=$mode&buttonInput=$input\";";
     else
-      $onClick = "SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");";
+      $onClick = "SubmitInput(\"" . $mode->value . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");";
 
     // If a prompt is given, surround the code with a "confirm()" call
     if ($prompt != "")
@@ -195,20 +196,20 @@ use JetBrains\PhpStorm\Language;
     return $rv;
   }
 
-  function ProcessInputLink($player, $mode, $input, $event='onmousedown', $fullRefresh=false)
+  function ProcessInputLink($player, Mode $mode, $input, $event='onmousedown', $fullRefresh=false)
   {
     global $gameName;
-    return " " . $event . "='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'";
+    return " " . $event . "='SubmitInput(\"" . $mode->value . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'";
   }
 
-  function CreateForm($playerID, $caption, $mode, $count)
+  function CreateForm($playerID, $caption, Mode $mode, $count)
   {
     global $gameName;
     $rv = "<form>";
-    $rv .= "<input type='button' onclick='chkSubmit(" . $mode . ", " . $count . ")' value='" . $caption . "'>";
+    $rv .= "<input type='button' onclick='chkSubmit(" . $mode->value . ", " . $count . ")' value='" . $caption . "'>";
     $rv .= "<input type='hidden' id='gameName' name='gameName' value='" . $gameName . "'>";
     $rv .= "<input type='hidden' id='playerID' name='playerID' value='" . $playerID . "'>";
-    $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode . "'>";
+    $rv .= "<input type='hidden' id='mode' name='mode' value='" . $mode->value . "'>";
     $rv .= "<input type='hidden' id='chkCount' name='chkCount' value='" . $count . "'>";
     return $rv;
   }
@@ -259,7 +260,7 @@ use JetBrains\PhpStorm\Language;
     if($additionalComments != "") $rv .= "<h" . ($big ? "3" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $additionalComments . "</h" . ($big ? "3" : "4") . ">";
     for($i=0; $i<count($fromArr); $i += $arrElements)
     {
-      $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
+      $rv .= Card($fromArr[$i], "concat", $cardSize, Mode::None, 1);
     }
     if(IsGameOver()) $style = "text-align: center;";
     else $style = "font-size: 18px; margin-left: 10px; line-height: 22px; align-items: center;";
@@ -386,18 +387,18 @@ use JetBrains\PhpStorm\Language;
     $size = ($from == "HAND" ? $cardSizeAura : 120);
     $banish = GetBanish($playerID);
     for($i=0; $i<count($banish); $i+=BanishPieces()) {
-      $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-      $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
+      $mode = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? Mode::Banish : Mode::None;
+      $border = CardBorderColor($banish[$i], "BANISH", $mode != Mode::None);
       $mod = explode("-", $banish[$i+1])[0];
-      if($mod == "INT") $rv .= Card($banish[$i], "concat", $size, 0, 1, 1);//Display intimidated cards grayed out and unplayable
+      if($mod == "INT") $rv .= Card($banish[$i], "concat", $size, Mode::None, 1, 1);//Display intimidated cards grayed out and unplayable
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
-        $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+        $rv .= Card($banish[$i], "concat", $size, $mode, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else// if($from != "HAND")
       {
         if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
-          $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));
+          $rv .= Card($banish[$i], "concat", $size, $mode, 1, 0, $border, 0, strval($i));
         else if($from != "HAND")
-          $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+          $rv .= Card($banish[$i], "concat", $size, Mode::None, 1, 0, $border);
       }
     }
     return $rv;
@@ -410,8 +411,8 @@ use JetBrains\PhpStorm\Language;
     $size = ($from == "HAND" ? $cardSizeAura : 120);
     $banish = GetBanish($playerID);
     for($i=0; $i<count($banish); $i+=BanishPieces()) {
-      $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-      $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
+      $mode = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? Mode::Banish : Mode::None;
+      $border = CardBorderColor($banish[$i], "BANISH", $mode != Mode::None);
       $mod = explode("-", $banish[$i+1])[0];
       if($mod == "INT")
       {
@@ -422,23 +423,23 @@ use JetBrains\PhpStorm\Language;
       {
         //$rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
         if($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], mode: $mode, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
       }
       else// if($from != "HAND")
       {
         if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
         {
           if($rv != "") $rv .= "|";
-          $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
+          $rv .= ClientRenderedCard(cardNumber: $banish[$i], mode: $mode, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
         }
         else if($from != "HAND")
-          $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+          $rv .= Card($banish[$i], "concat", $size, Mode::None, 1, 0, $border);
       }
     }
     return $rv;
   }
 
-  function CardBorderColor($cardID, $from, $isPlayable)
+  function CardBorderColor($cardID, $from, bool $isPlayable)
   {
     global $playerID, $currentPlayer, $turn;
     if($playerID != $currentPlayer) return 0;

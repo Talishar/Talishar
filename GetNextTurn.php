@@ -1127,7 +1127,7 @@ function PlayableCardBorderColor($cardID)
   return 0;
 }
 
-function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
+function ChoosePopup($zone, $options, Mode $mode, $caption = "", $zoneSize = 1)
 {
   global $cardSize;
   $content = "";
