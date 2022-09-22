@@ -37,9 +37,9 @@ while (!feof($bannedIPHandler)) {
 fclose($bannedIPHandler);
 
 if ($isOmegaEclipse) {
-  if ($format == "cc") $format = "shadowcc";
+  if ($format == "cc" || $format == "livinglegendscc") $format = "shadowcc";
   else if ($format == "compcc") $format = "shadowcompcc";
-  else if ($format == "blitz") $format = "shadowblitz";
+  else if ($format == "blitz" || $format == "compblitz") $format = "shadowblitz";
   else if ($format == "commoner") $format = "shadowcommoner";
 }
 

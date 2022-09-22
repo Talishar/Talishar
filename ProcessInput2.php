@@ -1231,6 +1231,8 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "EVR159":
       $numCopper = CountItem("CRU197", $currentPlayer);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       if ($numCopper > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numCopper + 1));

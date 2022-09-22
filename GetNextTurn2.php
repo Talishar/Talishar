@@ -467,7 +467,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
       $time = ($playerID == 1 ? $p1TotalTime : $p1TotalTime);
       $totalTime = $p1TotalTime + $p1TotalTime;
-      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $time % 60 . "s</span>";
+      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m - Game Time: " . intval($totalTime / 60) . "m</span>";
     }
     $content .= "</div>";
     $content .= CardStats($playerID);
@@ -826,7 +826,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   if (count($theirItems) > 0) {
     for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
-      if (IsTileable($theirItems[$i]) && $i > 0) continue;
+      if (IsTileable($theirItems[$i])) continue;
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirItems[$i], "concat", $cardSizeAura, 0, 1, $theirItems[$i + 2] != 2 ? 1 : 0, 0, $theirItems[$i + 1], "", "", false, 0, 0, 0, "ITEMS", controller:$otherPlayer) . "&nbsp");
       DisplayPriorityGem($theirItems[$i + 6], "ITEMS-" . $i, 1);
@@ -990,7 +990,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   if (count($myItems) > 0) {
     for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
-      if (IsTileable($myItems[$i]) && $i > 0) continue;
+      if (IsTileable($myItems[$i])) continue;
       $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
       $border = CardBorderColor($myItems[$i], "PLAY", $playable);
       echo ("<div style='position:relative; display: inline-block;'>");
@@ -1369,7 +1369,7 @@ function DisplayTiles($player)
   }
 
   $items = GetItems($player);
-  $copperCount = -1;
+  $copperCount = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     if ($items[$i] == "CRU197") ++$copperCount;
   }
