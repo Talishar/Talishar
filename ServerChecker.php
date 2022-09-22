@@ -72,7 +72,7 @@ if ($handle = opendir($path)) {
           $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
           $spectateLinks .= "</form>";
         }
-      } else if ($currentTime - $lastGamestateUpdate > 1800000) //~2 hours
+      } else if ($currentTime - $lastGamestateUpdate > 900000) //~1 hour
       {
         if ($autoDeleteGames) {
           deleteDirectory($folder);
@@ -92,7 +92,7 @@ if ($handle = opendir($path)) {
         include 'MenuFiles/ParseGamefile.php';
         $status = $gameStatus;
         UnlockGamefile();
-      } else if ($lastRefresh == "" || $currentTime - $lastRefresh > 1080000) //3 hours
+      } else if ($lastRefresh == "" || $currentTime - $lastRefresh > 900000) //1 hour
       {
         deleteDirectory($folder);
         DeleteCache($gameToken);
@@ -121,38 +121,38 @@ if ($handle = opendir($path)) {
       $link .= "</form>";
       if ($format == "blitz") {
         if (!$isOmegaEclipse) $blitzLinks .= $link;
-      } 
+      }
       else if ($format == "shadowblitz") {
         if ($isOmegaEclipse) $blitzLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      } 
+      }
       else if ($format == "compblitz") {
         if (!$isOmegaEclipse) $compBlitzLinks .= $link;
-      } 
+      }
       else if ($format == "cc") {
         if (!$isOmegaEclipse) $ccLinks .= $link;
-      } 
+      }
       else if ($format == "shadowcc") {
         if ($isOmegaEclipse) $ccLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      } 
+      }
       else if ($format == "compcc") {
         if (!$isOmegaEclipse) $compCCLinks .= $link;
-      } 
+      }
       else if ($format == "shadowcompcc") {
         if ($isOmegaEclipse) $ccLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      } 
+      }
       else if ($format == "livinglegendscc") {
         if (!$isOmegaEclipse) $otherFormatsLinks .= $link;
-      } 
+      }
       else if ($format == "commoner") {
         if (!$isOmegaEclipse) $otherFormatsLinks .= $link;
-      } 
+      }
       else if ($format == "shadowcommoner") {
         if ($isOmegaEclipse) $otherFormatsLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      } 
+      }
       else if ($format == "aggrocc") {
         if ($isOmegaEclipse) $otherFormatsLinks .= $link;
       }
