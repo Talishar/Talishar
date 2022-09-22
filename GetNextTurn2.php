@@ -457,21 +457,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
     if ($playerID != 3) {
       $content .= "<BR><span class='Rate-Span'>Rate your Opponent:&nbsp;";
-      if ($playerID == 1) {
-        if ($p1PlayerRating != 2) {
-          $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
-        }
-        if ($p1PlayerRating != 1) {
-          $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
-        }
+      $rating = ($playerID == 1 ? $p1PlayerRating : $p2PlayerRating);
+      if ($rating != 2) {
+        $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.");
+        $content .= ($rating != 1 ? "&nbsp;" : "</span>");
       }
-      else {
-        if ($p2PlayerRating != 2) {
-          $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.") . "&nbsp;";
-        }
-        if ($p2PlayerRating != 1) {
-          $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked with this player.") . "</span>";
-        }
+      if ($rating != 1) {
+        $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked playing with this player.") . "</span>";
       }
       $time = ($playerID == 1 ? $p1TotalTime : $p1TotalTime);
       $totalTime = $p1TotalTime + $p1TotalTime;
