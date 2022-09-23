@@ -261,6 +261,7 @@ function LoadFavoriteDecks($userID)
 
 //Challenge ID 1 = sigil of solace blue
 //Challenge ID 2 = Talishar no dash
+//Challenge ID 3 = Moon Wish
 function logCompletedGameStats($reportingServer = false) {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
@@ -303,10 +304,15 @@ function logCompletedGameStats($reportingServer = false) {
 
 	if(!$reportingServer)
 	{
-		if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
-		if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
-		if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, ($winner == 1 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 1 ? $loseHero[0] : $winHero[0]));
-		if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, ($winner == 2 ? $winnerDeck : $loserDeck), $gameResultID, ($winner == 2 ? $loseHero[0] : $winHero[0]));
+		$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
+		$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
+		$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
+		$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
+		if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
+		if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
+		if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
+		if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
+		if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero);
 	}
 	mysqli_close($conn);
 }
@@ -365,6 +371,30 @@ function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero)
 	$ch = curl_init($url);
 	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$headers = array(
+		"x-api-key: " . $FaBraryKey,
+		"Content-Type: application/json",
+	);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+	$result = curl_exec($ch);
+	curl_close($ch);
+}
+
+function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero)
+{
+	global $FaBraryKey, $gameName;
+	if(!str_contains($decklink, "fabrary.net")) return;
+
+	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/results";
+	$ch = curl_init($url);
+	$payloadArr = [];
+	$payloadArr['gameID'] = $gameID;
+	$payloadArr['gameName'] = $gameName;
+	$payloadArr['deck1'] = SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName);
+	$payloadArr['deck2'] = SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloadArr));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$headers = array(
 		"x-api-key: " . $FaBraryKey,
