@@ -382,7 +382,7 @@ function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero)
 	curl_close($ch);
 }
 
-function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero)
+function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p2Decklink, $p2Deck, $p2Hero)
 {
 	global $FaBraryKey, $gameName;
 	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/results";
@@ -390,8 +390,8 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p2DeckL
 	$payloadArr = [];
 	$payloadArr['gameID'] = $gameID;
 	$payloadArr['gameName'] = $gameName;
-	$payloadArr['deck1'] = SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName);
-	$payloadArr['deck2'] = SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName);
+	$payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName));
+	$payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName));
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$headers = array(
