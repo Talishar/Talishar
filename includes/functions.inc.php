@@ -385,8 +385,6 @@ function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero)
 function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero)
 {
 	global $FaBraryKey, $gameName;
-	if(!str_contains($decklink, "fabrary.net")) return;
-
 	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/results";
 	$ch = curl_init($url);
 	$payloadArr = [];
