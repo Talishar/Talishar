@@ -20,7 +20,7 @@ function GetRandom($low=-1, $high=-1)
 function SeedRandom()
 {
   global $randomSeeded, $currentTurn, $turn, $currentPlayer, $layers, $combatChain;
-  $seedString = $currentTurn . $turn . $currentPlayer;
+  $seedString = $currentTurn . implode("", $turn) . $currentPlayer;
   if(count($layers) > 0) for($i=0; $i<count($layers); ++$i) $seedString .= $layers[$i];
   if(count($combatChain) > 0) for($i=0; $i<count($combatChain); ++$i) $seedString .= $combatChain[$i];
 
