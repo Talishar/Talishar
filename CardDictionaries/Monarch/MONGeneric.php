@@ -198,11 +198,11 @@
     case "MON272": case "MON273": case "MON274":
       $ret = "";
       if(!IsAllyAttackTarget()) {
-        $ret .= "Their hand is:";
-        for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= $theirHand[$i]; }
-        $ret .= (count($theirHand) == 0 ? " Empty. " : ". ");
+        $ret .= "Their hand is: ";
+        for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= CardLink($theirHand[$i], $theirHand[$i]); }
+        $ret .= (count($theirHand) == 0 ? "Empty. " : ". ");
       }
-      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret .= "Frontline Scout gains go again."; }
+      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret .= CardLink($cardID, $cardID) . " gains go again."; }
       return $ret;
     case "MON278": case "MON279": case "MON280":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gains Dominate."; }
