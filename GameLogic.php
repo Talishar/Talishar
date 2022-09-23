@@ -4675,7 +4675,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $character[8] = 1;
       for ($i = CharacterPieces(); $i < count($character); $i += CharacterPieces()) {
-        if (CardType($character[$i]) == "E") $character[$i + 8] = 1;
+        if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) $character[$i + 8] = 1;
       }
       return $lastResult;
     case "MZSTARTTURNABILITY":

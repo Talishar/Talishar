@@ -842,7 +842,7 @@ function FrozenCount($player)
   $numFrozen = 0;
   $char = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($char); $i += CharacterPieces())
-    if ($char[$i + 8] == "1")
+    if ($char[$i + 8] == "1" && $char[$i + 1] != "0")
       ++$numFrozen;
   $allies = &GetAllies($player);
   for ($i = 0; $i < count($allies); $i += AllyPieces())
