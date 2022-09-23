@@ -30,7 +30,7 @@ $playerID = $_GET["playerID"];
 $authKey = $_GET["authKey"];
 
 //We should also have some information on the type of command
-$mode = $_GET["mode"];
+$mode = (int) $_GET["mode"];
 $buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : ""; //The player that is the target of the command - e.g. for changing health total
 $cardID = isset($_GET["cardID"]) ? $_GET["cardID"] : "";
 $chkCount = isset($_GET["chkCount"]) ? $_GET["chkCount"] : 0;
@@ -132,54 +132,6 @@ if ($MakeStartTurnBackup) MakeStartTurnBackup();
 GamestateUpdated($gameName);
 
 ExitProcessInput();
-
-//If true, allows for the case to be doable by any player when they don't have the priority.
-function IsModeAsync($mode)
-{
-  switch ($mode) {
-    case 26:
-      return true;
-    case 102:
-      return true;
-    case 103:
-      return true;
-    case 104:
-      return true;
-    case 10000:
-      return true;
-    case 10003:
-      return true;
-    case 100000:
-      return true;
-    case 100001:
-      return true;
-    case 100002:
-      return true;
-    case 100003:
-      return true;;
-    case 100004:
-      return true;
-    case 100007:
-      return true;
-    case 100008:
-      return true;
-    case 100009:
-      return true;
-    case 100010:
-      return true;
-  }
-  return false;
-}
-
-function IsModeAllowedForSpectators($mode)
-{
-  switch ($mode) {
-    case 100001:
-      return true;
-    default:
-      return false;
-  }
-}
 
 function ExitProcessInput()
 {
