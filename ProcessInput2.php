@@ -349,7 +349,7 @@ function ResolveCombatDamage($damageDone)
     MainCharacterHitEffects();
     ArsenalHitEffects();
     AuraHitEffects($combatChain[0]);
-    AttackDamageAbilities($damageDone);
+    AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
   } else {
     for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
       if ($combatChain[$i] == $mainPlayer) {
