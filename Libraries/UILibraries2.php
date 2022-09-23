@@ -6,8 +6,8 @@ use JetBrains\PhpStorm\Language;
 
   function BackgroundColor($darkMode)
   {
-    if($darkMode) return "rgba(74, 74, 74, 1)";
-    else return "rgba(235, 235, 235, 1)";
+    if($darkMode) return "rgba(74, 74, 74, 0.95)";
+    else return "rgba(235, 235, 235, 0.95)";
   }
 
   function PopupBorderColor($darkMode)
@@ -248,7 +248,7 @@ use JetBrains\PhpStorm\Language;
     $style = "";
     $overCC = 1000;
     $darkMode = IsDarkMode($playerID);
-    $top = "57%"; $left = "25%"; $width = "50%"; $height = "33%";
+    $top = "54%"; $left = "25%"; $width = "50%"; $height = "30%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
     if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
 
