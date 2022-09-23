@@ -765,10 +765,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   GetLayerTarget($cardID); //Layer target
   //CR 5.1.4b Declare target of attack
   if ($turn[0] == "M" && ($cardType == "AA" || $abilityType == "AA")) GetTargetOfAttack();
-  if ($turn[0] != "B" || $layers[0] != "") {
-  if (HasBoost($cardID)) Boost();
-  MainCharacterPlayCardAbilities($cardID, $from);
-  AuraPlayAbilities($cardID);
+  if ($turn[0] != "B" || (count($layers > 0) && $layers[0] != "")) {
+    if (HasBoost($cardID)) Boost();
+    MainCharacterPlayCardAbilities($cardID, $from);
+    AuraPlayAbilities($cardID);
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
   ProcessDecisionQueue();
