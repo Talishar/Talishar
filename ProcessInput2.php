@@ -672,6 +672,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
       if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
+      else $dynCost = "";
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
       if ($dynCost != "") {
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
