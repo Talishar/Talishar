@@ -45,7 +45,7 @@ copy("./Games/" . $gameName . "/startGamestate.txt", "./Games/" . $gameName . "/
 
 include "ParseGamestate.php";
 $otherPlayer = $currentPlayer == 1 ? 2 : 1;
-$skipWriteGamestate = true;
+$skipWriteGamestate = false;
 $mainPlayerGamestateStillBuilt = 0;
 $makeCheckpoint = 0;
 $makeBlockBackup = 0;
@@ -59,7 +59,7 @@ $animations = [];
 echo(count($commands) . "<BR>");
 for($k=0; $k<count($commands); ++$k)
 {
-  $skipWriteGamestate = true;
+  $skipWriteGamestate = false;
   $makeCheckpoint = 0;
   $makeBlockBackup = 0;
   $MakeStartTurnBackup = false;
@@ -73,19 +73,30 @@ for($k=0; $k<count($commands); ++$k)
   BuildMyGamestate($playerID);
   echo($command[0] . "&nbsp;" . $command[1] . "&nbsp;" . $command[2] . "&nbsp;" . $command[3] . "&nbsp;" . $command[4] . "<BR>");
 
+  $mode = $command[1];
   ProcessInput($command[0], $command[1], $command[2], $command[3], $command[4], $command[5], true);
 
   ProcessMacros();
   CacheCombatResult();
+
+  $defPlayer = $mainPlayer == 1 ? 2 : 1;
   DoGamestateUpdate();
+
+
+  if (!$skipWriteGamestate) {
+      UpdateGameState($playerID);
+      WriteGamestate();
+    }
 
   if ($makeCheckpoint) MakeGamestateBackup();
   if ($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
   if ($MakeStartTurnBackup) MakeStartTurnBackup();
+
+  if($mode == 10000) ParseGamestate();
 }
 
 
-include "WriteGamestate.php";
+//include "WriteGamestate.php";
 
 ?>
 

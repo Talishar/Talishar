@@ -18,7 +18,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo("Invalid Input<BR>");
+        echo($turn[0] . " Invalid Input<BR>");
       }
       break;
     case 3: //Play equipment ability
@@ -45,7 +45,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo("Invalid Input<BR>");
+        echo($turn[0] . " Invalid Input<BR>");
       }
       break;
     case 4: //Add something to your arsenal
@@ -59,7 +59,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo("Invalid Input<BR>");
+        echo($cardID . " " . $turn[0] . "<BR>");
+        echo($turn[0] . " Invalid Input<BR>");
       }
       break;
     case 5: //Card Played from Arsenal
@@ -74,7 +75,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo("Invalid Input<BR>");
+        echo($turn[0] . " Invalid Input<BR>");
       }
       break;
     case 6: //Pitch Deck
@@ -86,7 +87,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo("Invalid Input<BR>");
+        echo($turn[0] . " Invalid Input<BR>");
       }
       break;
     case 7: //Number input
@@ -95,7 +96,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo("Invalid Input<BR>");
+        echo($turn[0] . " Invalid Input<BR>");
       }
       break;
     case 8:
@@ -125,7 +126,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo("Invalid Input<BR>");
+        echo($turn[0] . " Invalid Input<BR>");
       }
       break;
     case 10: //Item ability
@@ -1820,6 +1821,260 @@ function ProcessAttackTarget()
     }
   }
   return false;
+}
+
+
+function ParseGamestate()
+{
+  global $gameName, $playerHealths;
+  global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
+  global $p1ClassState, $p1CharacterEffects, $p1Soul, $p1CardStats, $p1TurnStats, $p1Allies, $p1Permanents, $p1Settings;
+  global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
+  global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
+  global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
+  global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
+  global $layers, $layerPriority, $mainPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
+  global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime;
+  global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
+
+  $mainPlayerGamestateStillBuilt = 0;
+  $mpgBuiltFor = -1;
+  $myStateBuiltFor = -1;
+
+  $filename = "./Games/" . $gameName . "/gamestate.txt";
+
+  $fileTries = 0;
+  $targetTries = ($playerID == 1 ? 5 : 100);
+  $waitTime = ($playerID == 1 ? 100000 : 1000000);
+  while (!file_exists($filename) && $fileTries < $targetTries) {
+    usleep($waitTime); //100ms
+    ++$fileTries;
+  }
+  if ($fileTries == $targetTries) {
+    if ($playerID == 1) {
+      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
+      $errorHandler = fopen($errorFileName, "a");
+      date_default_timezone_set('America/Chicago');
+      $errorDate = date('m/d/Y h:i:s a');
+      $errorOutput = "Create game failsafe hit for game $gameName at $errorDate";
+      fwrite($errorHandler, $errorOutput . "\r\n");
+      fclose($errorHandler);
+      include "HostFiles/Redirector.php";
+      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
+    } else {
+      echo ("This game no longer exists on the server. Please go to the main menu and create a new game.");
+      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
+      $errorHandler = fopen($errorFileName, "a");
+      date_default_timezone_set('America/Chicago');
+      $errorDate = date('m/d/Y h:i:s a');
+      $errorOutput = "Final create game error for game $gameName at $errorDate (total failure)";
+      fwrite($errorHandler, $errorOutput . "\r\n");
+      fclose($errorHandler);
+    }
+    exit;
+  }
+
+  if (!file_exists($filename)) exit;
+  $handler = fopen($filename, "r");
+
+  if (!$handler) {
+    exit;
+  } //Game does not exist
+
+  $lockTries = 0;
+  while (!flock($handler, LOCK_SH) && $lockTries < 10) {
+    usleep(100000); //100ms
+    ++$lockTries;
+  }
+
+  if ($lockTries == 10) exit;
+
+  $playerHealths = GetArray($handler);
+
+  //Player 1
+  $p1Hand = GetArray($handler);
+  $p1Deck = GetArray($handler);
+  $p1CharEquip = GetArray($handler);
+  $p1Resources = GetArray($handler);
+  $p1Arsenal = GetArray($handler);
+  $p1Items = GetArray($handler);
+  $p1Auras = GetArray($handler);
+  $p1Discard = GetArray($handler);
+  $p1Pitch = GetArray($handler);
+  $p1Banish = GetArray($handler);
+  $p1ClassState = GetArray($handler);
+  $p1CharacterEffects = GetArray($handler);
+  $p1Soul = GetArray($handler);
+  $p1CardStats = GetArray($handler);
+  $p1TurnStats = GetArray($handler);
+  $p1Allies = GetArray($handler);
+  $p1Permanents = GetArray($handler);
+  $p1Settings = GetArray($handler);
+
+  //Player 2
+  $p2Hand = GetArray($handler);
+  $p2Deck = GetArray($handler);
+  $p2CharEquip = GetArray($handler);
+  $p2Resources = GetArray($handler);
+  $p2Arsenal = GetArray($handler);
+  $p2Items = GetArray($handler);
+  $p2Auras = GetArray($handler);
+  $p2Discard = GetArray($handler);
+  $p2Pitch = GetArray($handler);
+  $p2Banish = GetArray($handler);
+  $p2ClassState = GetArray($handler);
+  $p2CharacterEffects = GetArray($handler);
+  $p2Soul = GetArray($handler);
+  $p2CardStats = GetArray($handler);
+  $p2TurnStats = GetArray($handler);
+  $p2Allies = GetArray($handler);
+  $p2Permanents = GetArray($handler);
+  $p2Settings = GetArray($handler);
+
+  $landmarks = GetArray($handler);
+  $winner = trim(fgets($handler));
+  $firstPlayer = trim(fgets($handler));
+  $currentPlayer = trim(fgets($handler));
+  $currentTurn = trim(fgets($handler));
+  $turn = GetArray($handler);
+  $actionPoints = trim(fgets($handler));
+  $combatChain = GetArray($handler);
+  $combatChainState = GetArray($handler);
+  $currentTurnEffects = GetArray($handler);
+  $currentTurnEffectsFromCombat = GetArray($handler);
+  $nextTurnEffects = GetArray($handler);
+  $decisionQueue = GetArray($handler);
+  $dqVars = GetArray($handler);
+  $dqState = GetArray($handler);
+  $layers = GetArray($handler);
+  $layerPriority = GetArray($handler);
+  $mainPlayer = trim(fgets($handler));
+  $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $lastPlayed = GetArray($handler);
+  $numChainLinks = trim(fgets($handler));
+  $chainLinks = array();
+  for ($i = 0; $i < $numChainLinks; ++$i) {
+    $chainLink = GetArray($handler);
+    array_push($chainLinks, $chainLink);
+  }
+  $chainLinkSummary = GetArray($handler);
+  $p1Key = trim(fgets($handler));
+  $p2Key = trim(fgets($handler));
+  $permanentUniqueIDCounter = trim(fgets($handler));
+  $inGameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+  $animations = GetArray($handler); //Animations
+  $currentPlayerActivity = trim(fgets($handler)); //Current Player activity status -- 0 = active, 2 = inactive
+  $p1PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  $p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  $p1TotalTime = trim(fgets($handler));//Player 1 total time
+  $p2TotalTime = trim(fgets($handler));//Player 2 total time
+  $lastUpdateTime = trim(fgets($handler));//Last update time
+  fclose($handler);
+  BuildMyGamestate($playerID);
+}
+
+function WriteGamestate()
+{
+  global $gameName, $playerHealths;
+  global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
+  global $p1ClassState, $p1CharacterEffects, $p1Soul, $p1CardStats, $p1TurnStats, $p1Allies, $p1Permanents, $p1Settings;
+  global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
+  global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
+  global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
+  global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
+  global $layers, $layerPriority, $mainPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
+  global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime;
+  $filename = "./Games/" . $gameName . "/gamestate.txt";
+  $handler = fopen($filename, "w");
+
+  $lockTries = 0;
+  while (!flock($handler, LOCK_EX) && $lockTries < 10) {
+    usleep(100000); //50ms
+    ++$lockTries;
+  }
+
+  if ($lockTries == 10) { fclose($handler); exit; }
+
+  fwrite($handler, implode(" ", $playerHealths) . "\r\n");
+
+  //Player 1
+  fwrite($handler, implode(" ", $p1Hand) . "\r\n");
+  fwrite($handler, implode(" ", $p1Deck) . "\r\n");
+  fwrite($handler, implode(" ", $p1CharEquip) . "\r\n");
+  fwrite($handler, implode(" ", $p1Resources) . "\r\n");
+  fwrite($handler, implode(" ", $p1Arsenal) . "\r\n");
+  fwrite($handler, implode(" ", $p1Items) . "\r\n");
+  fwrite($handler, implode(" ", $p1Auras) . "\r\n");
+  fwrite($handler, implode(" ", $p1Discard) . "\r\n");
+  fwrite($handler, implode(" ", $p1Pitch) . "\r\n");
+  fwrite($handler, implode(" ", $p1Banish) . "\r\n");
+  fwrite($handler, implode(" ", $p1ClassState) . "\r\n");
+  fwrite($handler, implode(" ", $p1CharacterEffects) . "\r\n");
+  fwrite($handler, implode(" ", $p1Soul) . "\r\n");
+  fwrite($handler, implode(" ", $p1CardStats) . "\r\n");
+  fwrite($handler, implode(" ", $p1TurnStats) . "\r\n");
+  fwrite($handler, implode(" ", $p1Allies) . "\r\n");
+  fwrite($handler, implode(" ", $p1Permanents) . "\r\n");
+  fwrite($handler, implode(" ", $p1Settings) . "\r\n");
+
+  //Player 2
+  fwrite($handler, implode(" ", $p2Hand) . "\r\n");
+  fwrite($handler, implode(" ", $p2Deck) . "\r\n");
+  fwrite($handler, implode(" ", $p2CharEquip) . "\r\n");
+  fwrite($handler, implode(" ", $p2Resources) . "\r\n");
+  fwrite($handler, implode(" ", $p2Arsenal) . "\r\n");
+  fwrite($handler, implode(" ", $p2Items) . "\r\n");
+  fwrite($handler, implode(" ", $p2Auras) . "\r\n");
+  fwrite($handler, implode(" ", $p2Discard) . "\r\n");
+  fwrite($handler, implode(" ", $p2Pitch) . "\r\n");
+  fwrite($handler, implode(" ", $p2Banish) . "\r\n");
+  fwrite($handler, implode(" ", $p2ClassState) . "\r\n");
+  fwrite($handler, implode(" ", $p2CharacterEffects) . "\r\n");
+  fwrite($handler, implode(" ", $p2Soul) . "\r\n");
+  fwrite($handler, implode(" ", $p2CardStats) . "\r\n");
+  fwrite($handler, implode(" ", $p2TurnStats) . "\r\n");
+  fwrite($handler, implode(" ", $p2Allies) . "\r\n");
+  fwrite($handler, implode(" ", $p2Permanents) . "\r\n");
+  fwrite($handler, implode(" ", $p2Settings) . "\r\n");
+
+  fwrite($handler, implode(" ", $landmarks) . "\r\n");
+  fwrite($handler, $winner . "\r\n");
+  fwrite($handler, $firstPlayer . "\r\n");
+  fwrite($handler, $currentPlayer . "\r\n");
+  fwrite($handler, $currentTurn . "\r\n");
+  fwrite($handler, implode(" ", $turn) . "\r\n");
+  fwrite($handler, $actionPoints . "\r\n");
+  fwrite($handler, implode(" ", $combatChain) . "\r\n");
+  fwrite($handler, implode(" ", $combatChainState) . "\r\n");
+  fwrite($handler, implode(" ", $currentTurnEffects) . "\r\n");
+  fwrite($handler, implode(" ", $currentTurnEffectsFromCombat) . "\r\n");
+  fwrite($handler, implode(" ", $nextTurnEffects) . "\r\n");
+  fwrite($handler, implode(" ", $decisionQueue) . "\r\n");
+  fwrite($handler, implode(" ", $dqVars) . "\r\n");
+  fwrite($handler, implode(" ", $dqState) . "\r\n");
+  fwrite($handler, implode(" ", $layers) . "\r\n");
+  fwrite($handler, implode(" ", $layerPriority) . "\r\n");
+  fwrite($handler, $mainPlayer . "\r\n");
+  fwrite($handler, implode(" ", $lastPlayed) . "\r\n");
+  fwrite($handler, count($chainLinks) . "\r\n");
+  for ($i = 0; $i < count($chainLinks); ++$i) {
+    fwrite($handler, implode(" ", $chainLinks[$i]) . "\r\n");
+  }
+  fwrite($handler, implode(" ", $chainLinkSummary) . "\r\n");
+  fwrite($handler, $p1Key . "\r\n");
+  fwrite($handler, $p2Key . "\r\n");
+  fwrite($handler, $permanentUniqueIDCounter . "\r\n");
+  fwrite($handler, $inGameStatus . "\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+  fwrite($handler, implode(" ", $animations) . "\r\n"); //Animations
+  fwrite($handler, $currentPlayerActivity . "\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
+  fwrite($handler, $p1PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  fwrite($handler, $p2PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  fwrite($handler, $p1TotalTime . "\r\n"); //Player 1 total time
+  fwrite($handler, $p2TotalTime . "\r\n"); //Player 2 total time
+  fwrite($handler, $lastUpdateTime . "\r\n"); //Last update time
+  fclose($handler);
 }
 
 ?>
