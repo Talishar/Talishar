@@ -252,8 +252,8 @@
     $class = CardClass($cardID);
     switch($class)
     {
-      case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid);
-      case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid);
+      case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default: return UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }

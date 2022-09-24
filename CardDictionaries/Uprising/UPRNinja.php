@@ -163,7 +163,7 @@
     }
   }
 
-  function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid)
+  function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     switch($cardID)

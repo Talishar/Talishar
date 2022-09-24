@@ -56,7 +56,7 @@ include_once 'Header.php';
     </p>
   </div>
   <div class="articles">
-    <h2>Great Video on FaB Online</h2>
+    <h2>Great Video on Talishar</h2>
     <p style="text-align:center">🥳 What else to start the weekend than an amazing video by SloopdoopFaB! This thumbnail is beautiful.<BR><BR>
       🧑‍🏭 For our part, we are working hard on some background stuff. Handling bandwidth and server improvements.</p>
     <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/cEEnBRknTdk" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
