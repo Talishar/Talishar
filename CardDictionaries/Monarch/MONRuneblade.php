@@ -117,7 +117,7 @@
     }
   }
 
-  function MONRunebladePlayAbility($cardID, $from, $resourcesPaid)
+  function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_DynCostResolved;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);

@@ -53,11 +53,11 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   } else if ($set == "MON") {
     switch ($class) {
       case "BRUTE":
-        return MONBrutePlayAbility($cardID, $from, $resourcesPaid);
+        return MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "ILLUSIONIST":
-        return MONIllusionistPlayAbility($cardID, $from, $resourcesPaid);
+        return MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "RUNEBLADE":
-        return MONRunebladePlayAbility($cardID, $from, $resourcesPaid);
+        return MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "WARRIOR":
         return MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "GENERIC":

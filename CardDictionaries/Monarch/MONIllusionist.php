@@ -124,7 +124,7 @@
     }
   }
 
-  function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid)
+  function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);

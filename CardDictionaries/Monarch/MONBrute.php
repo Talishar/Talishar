@@ -121,7 +121,7 @@
     }
   }
 
-  function MONBrutePlayAbility($cardID, $from, $resourcesPaid)
+  function MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     $rv = "";
