@@ -392,6 +392,14 @@ header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerI
 function GetAltCardID($cardID)
 {
   switch ($cardID) {
+    case "OXO001":
+      return "WTR155";
+    case "OXO002":
+      return "WTR156";
+    case "OXO003":
+      return "WTR157";
+    case "OXO004":
+      return "WTR158";
     case "BOL002":
       return "MON405";
     case "BOL006":

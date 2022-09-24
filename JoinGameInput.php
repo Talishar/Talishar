@@ -454,6 +454,14 @@ header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerI
 function GetAltCardID($cardID)
 {
   switch ($cardID) {
+    case "OXO001":
+      return "WTR155";
+    case "OXO002":
+      return "WTR156";
+    case "OXO003":
+      return "WTR157";
+    case "OXO004":
+      return "WTR158";
     case "BOL002":
       return "MON405";
     case "BOL006":
@@ -564,6 +572,7 @@ function IsBanned($cardID, $format)
       //    ELE223: Duskblade
       //    ARC170: ARC171: ARC172: Plunder Run
       //    MON239: Stubby Hammerers
+      //    CRU141: Bloodsheath Skeleta
     case "cc": case "compcc":
       switch ($cardID) {
         case "MON001":
