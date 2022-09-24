@@ -68,9 +68,9 @@ if(isset($_SESSION['userid']))
 
 if (isset($_SESSION["isPatron"])) {
   if (isset($badges) && count($badges) > 0) {
-  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px);'>");
+  echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; bottom:20px; height: calc(90% - 220px); overflow-y: scroll;'>");
   } else {
-    echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; top:40px; height: calc(90% - 129px);'>");
+    echo ("<section class='profile-form' style='position:absolute; width: 32%; left:20px; top:40px; height: calc(90% - 129px); overflow-y: scroll;'>");
   }
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
@@ -197,7 +197,7 @@ if (isset($_SESSION["isPatron"])) {
       echo '</a>';
     }
 
-    echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; right:20px; top:40px; padding-bottom: -0px;'>");
+    echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; right:20px; top:40px; padding-bottom: -0px; overflow-y: scroll;'>");
     echo ("<h1>Favorite Decks</h1>");
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if (count($favoriteDecks) > 0) {
