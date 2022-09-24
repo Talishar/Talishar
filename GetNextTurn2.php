@@ -465,9 +465,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($rating != 1) {
         $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked playing with this player.") . "</span>";
       }
-      $time = ($playerID == 1 ? $p1TotalTime : $p1TotalTime);
-      $totalTime = $p1TotalTime + $p1TotalTime;
-      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m - Game Time: " . intval($totalTime / 60) . "m</span>";
+      $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
+      $totalTime = $p1TotalTime + $p2TotalTime;
+      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $totalTime % 60 . "s</span>";
     }
     $content .= "</div>";
     $content .= CardStats($playerID);
