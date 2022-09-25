@@ -658,7 +658,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
     {
       case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA") PlayAura("ELE111", $target); break;
       case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($target, 1); break;
-      case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($target); break;
+      case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($target); $remove = 1; break;
       case "UPR106": case "UPR107": case "UPR108":
         if((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") {
           PlayAura("ELE111", $target, $damage); $remove = 1;
@@ -726,12 +726,15 @@ function IsGameOver()
 
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
+  global $winner, $turn, $gameName, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID;
   if($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
-  WriteLog("Player " . $playerID . " wins!");
+  if ($playerID == 1 && $p1uid != "") WriteLog($p1uid . " wins!", $playerID);
+  elseif ($playerID == 2 && $p2uid != "") WriteLog($p2uid . " wins!", $playerID);
+  else WriteLog("Player " . $winner . " wins!");
+
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   try {
