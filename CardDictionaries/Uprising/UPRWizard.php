@@ -225,7 +225,7 @@
         if($cardID == "UPR127") $damage = 4;
         else if($cardID == "UPR128") $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "UPR130": case "UPR131": case "UPR132":
         if($cardID == "UPR130") $damage = 3;

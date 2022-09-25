@@ -4017,7 +4017,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
 
       if (SearchCurrentTurnEffects("DYN075", $otherPlayer) && $targetPlayer != $otherPlayer) { // TODO: Yoji cardID to be modified with set release
-        SearchCurrentTurnEffects("DYN075", $otherPlayer, true); 
+        SearchCurrentTurnEffects("DYN075", $otherPlayer, true);
         AddCurrentTurnEffect("DYN075-1", $otherPlayer);
         $targetPlayer = $otherPlayer;
       } elseif (SearchCurrentTurnEffects("DYN075", $player) && $targetPlayer != $player) { // TODO: Yoji cardID to be modified with set release
@@ -4025,7 +4025,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddCurrentTurnEffect("DYN075-1", $player);
         $targetPlayer = $player;
       }
-      
+
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
       $sourceType = CardType($source);
@@ -4329,9 +4329,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHOWSELECTEDTARGET":
       if (substr($lastResult, 0, 5) == "THEIR") {
         $otherP = ($player == 1 ? 2 : 1);
-        WriteLog(GetMZCardLink($otherP, $lastResult) . " was targetted");
+        WriteLog(GetMZCardLink($otherP, $lastResult) . " was targeted");
       } else {
-        WriteLog(GetMZCardLink($player, $lastResult) . " was targetted");
+        WriteLog(GetMZCardLink($player, $lastResult) . " was targeted");
       }
       return $lastResult;
     case "MULTIZONEFORMAT":
