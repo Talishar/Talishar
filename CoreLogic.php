@@ -379,9 +379,10 @@ function DoesArcaneDamage($cardID)
     case "ARC146": case "ARC147": case "ARC148":
     case "ARC149":
       return true;
-    case "CRU162": case "CRU171": case "CRU172":
-    case "CRU173": case "CRU174": case "CRU175":
-    case "CRU176":
+    case "CRU162": 
+    case "CRU168": case "CRU169": case "CRU170":
+    case "CRU171": case "CRU172": case "CRU173": 
+    case "CRU174": case "CRU175": case "CRU176":
       return true;
     case "EVR123": case "EVR124": case "EVR125":
     case "EVR126": case "EVR127": case "EVR134":

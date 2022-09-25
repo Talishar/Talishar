@@ -878,7 +878,7 @@
         AddDecisionQueue("KRAKENAETHERVEIN", $currentPlayer, "-");
         return "";
       case "EVR123":
-        DealArcane(4, 1, "PLAYCARD", $cardID);
+        DealArcane(4, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         if($currentPlayer != $mainPlayer)
         {
           AddDecisionQueue("AETHERWILDFIRE", $currentPlayer, "-");
@@ -891,14 +891,14 @@
           AddDecisionQueue("CHOOSETHEIRAURA", $currentPlayer, "<-", 1);
           AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
         }
-        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
+        AddDecisionQueue("SCOUR", $otherPlayer, $resourcesPaid);
         return "";
       case "EVR125": case "EVR126": case "EVR127":
         $oppTurn = $currentPlayer != $mainPlayer;
         if($cardID == "EVR125") $damage = ($oppTurn ? 6 : 4);
         if($cardID == "EVR126") $damage = ($oppTurn ? 5 : 3);
         if($cardID == "EVR127") $damage = ($oppTurn ? 4 : 2);
-        DealArcane($damage, 0, "PLAYCARD", $cardID);
+        DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
         return "";
       case "EVR128": case "EVR129": case "EVR130":
         if($cardID == "EVR128") $numReveal = 3;
@@ -911,7 +911,7 @@
         AddDecisionQueue("PRY", $currentPlayer, "<-", 1);
         return "Removes a card from target hero hand. Make sure you choose the right number of options.";
       case "EVR134": case "EVR135": case "EVR136":
-        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
         return "";
       case "EVR137":
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may choose an Illusionist Aura to destroy and replace.");

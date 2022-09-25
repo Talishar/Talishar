@@ -117,10 +117,10 @@
         return "Gain 3 resources.";
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
-        DealArcane($damage, 0, "PLAYCARD", $cardID);
+        DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
         return "Deals damage equal to the prior arcane damage this turn (" . $damage . ").";
       case "ARC119":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
@@ -141,10 +141,10 @@
         return "";
       case "ARC120":
         $damage = ArcaneDamage($cardID) +ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
-        DealArcane($damage, 1, "PLAYCARD", $cardID);//Basically this just applies the bonus twice
+        DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target);//Basically this just applies the bonus twice
         return "Deals " . $damage . " arcane damage.";
       case "ARC121":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_tutor_a_card?", 1);
@@ -164,7 +164,7 @@
         AddArcaneBonus(2, $currentPlayer);
         return "Gives the next card that deals arcane damage +2.";
       case "ARC126": case "ARC127": case "ARC128":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
         return "";
       case "ARC129": case "ARC130": case "ARC131":
@@ -175,7 +175,7 @@
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
         return "Gives your next arcane +$buff and lets you play your next Wizard non-attack action as though it were an instant.";
       case "ARC132": case "ARC133": case "ARC134":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD",$cardID, resolvedTarget: $target);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
         return "";
       case "ARC135": case "ARC136": case "ARC137":
@@ -203,7 +203,7 @@
         }
         return "Lets you rearrange the cards of your deck.";
       case "ARC138": case "ARC139": case "ARC140":
-        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID, 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
@@ -213,7 +213,7 @@
       case "ARC141": case "ARC142": case "ARC143":
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
-        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
+        DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
         return "";
       default: return "";
     }
@@ -302,9 +302,39 @@
   {
     switch($cardID)
     {
-      case "ARC119": return 1;
-      case "UPR127": return 2;
-      default: return -1;
+    case "ARC118": return 0;
+    case "ARC119": return 1;
+    case "ARC120": return 1;
+    case "ARC121": return 1;
+    case "ARC126": case "ARC127": case "ARC128": return 1;
+    case "ARC132": case "ARC133": case "ARC134": return 1;
+    case "ARC138": case "ARC139": case "ARC140": return 1;
+    case "ARC141": case "ARC142": case "ARC143": return 0;
+    case "ARC144": case "ARC145": case "ARC146": return 0;
+    case "ARC147": case "ARC148": case "ARC149": return 0;
+    case "CRU162": return 1;
+    case "CRU168": case "CRU169": case "CRU170": return 0;
+    case "CRU171": case "CRU172": case "CRU173": return 0;
+    case "CRU174": case "CRU175": case "CRU176": return 0;
+    case "EVR123": return 1;
+    case "EVR124": return 1;
+    case "EVR125": case "EVR126": case "EVR127": return 0;
+    case "EVR134": case "EVR135": case "EVR136": return 0;
+    case "UPR104": return 2;
+    case "UPR105": return 0;
+    case "UPR109": return 0;
+    case "UPR110": case "UPR111": case "UPR112": return 2;
+    case "UPR113": case "UPR114": case "UPR115": return 2;
+    case "UPR119": case "UPR120": case "UPR121": return 2;
+    case "UPR122": case "UPR123": case "UPR124": return 2;
+    case "UPR127": case "UPR128": case "UPR129": return 2;
+    case "UPR130": case "UPR131": case "UPR132": return 2;
+    case "UPR133": case "UPR134": case "UPR135": return 2;
+    case "UPR165": return 0;
+    case "UPR170": case "UPR171": case "UPR172": return 2;
+    case "UPR173": case "UPR174": case "UPR175": return 2;
+    case "UPR179": case "UPR180": case "UPR181": return 1;
+    default: return -1;
     }
   }
 

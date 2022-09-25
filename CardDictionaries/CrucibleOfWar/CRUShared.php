@@ -940,7 +940,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $rv = "Lets you play your next Wizard non-attack as an instant";
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
       if (GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2) {
-        DealArcane(3, 1, "PLAYCARD", $cardID); //TODO: All opponents
+        DealArcane(3, 1, "PLAYCARD", $cardID, resolvedTarget: $target); //TODO: All opponents
         $rv .= " and deal 3 arcane damage to each opposing hero";
       }
       return $rv . ".";
@@ -962,19 +962,19 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU168":
     case "CRU169":
     case "CRU170":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       Opt($cardID, 1);
       return "";
     case "CRU171":
     case "CRU172":
     case "CRU173":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       AddDecisionQueue("ADDARCANEBONUS", $currentPlayer, 1);
       return "";
     case "CRU174":
     case "CRU175":
     case "CRU176":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID);
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD",$cardID, resolvedTarget: $target);
       return "";
       //CRU Generics
     case "CRU181":

@@ -4647,7 +4647,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "SCOUR":
       WriteLog("Scour deals " . $parameter . " arcane damage.");
-      DealArcane($parameter, 0, "PLAYCARD", "EVR124", true);
+      DealArcane($parameter, 0, "PLAYCARD", "EVR124", true, resolvedTarget: $player);
       return "";
     case "KNICKKNACK":
       for ($i = 0; $i < ($dqVars[0] + 1); ++$i) {
