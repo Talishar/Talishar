@@ -1,8 +1,6 @@
 <?php
 include_once 'Header.php';
 
-echo("PATREON LOGIN");
-
 require_once './Assets/patreon-php-master/src/OAuth.php';
 require_once './Assets/patreon-php-master/src/API.php';
 require_once './Assets/patreon-php-master/src/PatreonLibraries.php';

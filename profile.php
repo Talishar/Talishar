@@ -182,8 +182,8 @@ if (isset($_SESSION["isPatron"])) {
 
     $href .= $state_parameters;
 
-    // Lets request identity of the user, and email.
-    $scope_parameters = '&scope=identity%20identity' . urlencode('[email]');
+    // Lets request identity of the user, and their pledges
+    $scope_parameters = '&scope=identity%20identity.memberships';
 
     $href .= $scope_parameters;
 
