@@ -296,7 +296,7 @@
     {
       $attackID = $combatChain[0];
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
-      if(ClassContains($attackID, "ILLUSIONIST", $defPlayer))
+      if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer))
       {
         GhostlyTouchPhantasmDestroy();
       }
