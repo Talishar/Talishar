@@ -233,7 +233,7 @@
   // 2: Any Target
   // 3: Their Hero + Their Allies
   // 4: My Hero only (For afflications)
-  function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false)
+  function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false, $resolvedTarget="")
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
@@ -243,28 +243,42 @@
       if(!$limitDuplicates)
       {
         PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
-        PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
+        PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);//If already selected for arcane multiselect (e.g. Singe/Azvolai)
         PrependDecisionQueue("PASSPARAMETER", $player, "-");
       }
       if(!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
-      PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      if($mayAbility) { PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
-      else { PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
-      PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
-      PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+      if($resolvedTarget != "")
+      {
+        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
+      }
+      else
+      {
+        PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        if($mayAbility) { PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
+        else { PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
+        PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
+        PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+      }
     }
     else
     {
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
-      if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
-      else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      if($resolvedTarget != "")
+      {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
+      }
+      else
+      {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
+        if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
+        else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      }
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       if(!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       if(!$limitDuplicates)
@@ -276,14 +290,32 @@
     }
   }
 
+
+  //target type return values
+  //-1: no target
+  // 0: My Hero + Their Hero
+  // 1: Their Hero only
+  // 2: Any Target
+  // 3: Their Hero + Their Allies
+  // 4: My Hero only (For afflictions)
+  function PlayRequiresTarget($cardID)
+  {
+    switch($cardID)
+    {
+      case "ARC119": return 1;
+      case "UPR127": return 2;
+      default: return -1;
+    }
+  }
+
   //Parameters:
   //Player = Player controlling the arcane effects
   //target =
   // 0: My Hero + Their Hero
   // 1: Their Hero only
   // 2: Any Target
-  // 3: Their Hero + Their Alliers
-  // 4: My Hero only (For afflications)
+  // 3: Their Hero + Their Allies
+  // 4: My Hero only (For afflictions)
   function GetArcaneTargetIndices($player, $target)
   {
     global $CS_ArcaneTargetsSelected;
@@ -335,8 +367,8 @@
       $effectArr = explode(",", $currentTurnEffects[$i]);
       switch($effectArr[0])
       {
-        case "EVR123": 
-          $cardType = CardType($source); 
+        case "EVR123":
+          $cardType = CardType($source);
           if($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1];
           break;
         default: break;
