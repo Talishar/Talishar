@@ -135,7 +135,7 @@
     switch($cardID)
     {
       case "UPR104":
-        DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
+        DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "Deals 3 arcane.";
       case "UPR105":
         if(DelimStringContains($additionalCosts, "ICE"))
@@ -144,7 +144,7 @@
           $damage = 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
         }
         else $damage = 5;
-        DealArcane($damage, 0, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "UPR106": case "UPR107": case "UPR108":
         $rv = "";
@@ -165,14 +165,14 @@
         $amountArcane = SearchCount(SearchAurasForCard("ELE111", $otherPlayer));
         if(DelimStringContains($additionalCosts, "ICE"))
         {
-          DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer);
+          DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         }
         return "";
       case "UPR110": case "UPR111": case "UPR112":
         if($cardID == "UPR110") $damage = 5;
         else if($cardID == "UPR111") $damage = 4;
         else $damage = 3;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         if(DelimStringContains($additionalCosts, "ICE"))
         {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
@@ -183,7 +183,7 @@
         if($cardID == "UPR113") $damage = 5;
         else if($cardID == "UPR114") $damage = 4;
         else $damage = 3;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "UPR116": case "UPR117": case "UPR118":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -210,13 +210,13 @@
         if($cardID == "UPR119") $damage = 3;
         else if($cardID == "UPR120") $damage = 2;
         else $damage = 1;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "Deals $damage arcane.";
       case "UPR122": case "UPR123": case "UPR124":
         if($cardID == "UPR122") $damage = 4;
         else if($cardID == "UPR123") $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"));
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "UPR125":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -231,18 +231,18 @@
         if($cardID == "UPR130") $damage = 3;
         else if($cardID == "UPR131") $damage = 2;
         else $damage = 1;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "Deals $damage arcane.";
       case "UPR133": case "UPR134": case "UPR135":
         if($cardID == "UPR133") $damage = 5;
         else if($cardID == "UPR134") $damage = 4;
         else $damage = 3;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "Deals $damage arcane.";
       case "UPR165":
         if($currentPlayer != $mainPlayer) $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 0, "ABILITY", $cardID);
+        DealArcane($damage, 0, "ABILITY", $cardID, resolvedTarget: $target);
         return "";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -264,14 +264,14 @@
         if($cardID == "UPR170") $damage = 4;
         else if($cardID == "UPR171") $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
         return "";
       case "UPR173": case "UPR174": case "UPR175":
         if($cardID == "UPR173") $damage = 3;
         else if($cardID == "UPR174") $damage = 2;
         else $damage = 1;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "UPR179": case "UPR180": case "UPR181":
         if($cardID == "UPR179") $maxAllies = 3;
@@ -281,7 +281,7 @@
         $allies = &GetAllies($otherPlayer);
         if(count($allies) < $maxAllies) $maxAllies = count($allies);
         $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer);
-        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
+        DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false, resolvedTarget: $target);
         for($i=1; $i<$maxAllies; ++$i)
         {
           DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, true);
