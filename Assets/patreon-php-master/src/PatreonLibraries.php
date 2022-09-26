@@ -22,6 +22,7 @@ function PatreonLogin($access_token)
 	if(isset($relationships)) $memberships = $relationships->memberships;
 
   $loginSuccessful = false;
+  if($patron_response->included == null) return;
 	for($i=0; $i<count($patron_response->included); ++$i)
 	{
 		$include = $patron_response->included[$i];
