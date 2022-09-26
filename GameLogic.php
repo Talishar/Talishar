@@ -2195,7 +2195,7 @@ function Draw($player, $mainPhase = true)
   if (CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   array_push($hand, array_shift($deck));
   WriteReplay($player, "Hide", "DECK", "HAND");
-  if ($mainPhase && SearchCharacterActive($otherPlayer, "EVR019")) PlayAura("WTR075", $otherPlayer);
+  if ($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if (SearchCharacterActive($player, "EVR020")) {
     //Check if it was played by the player with Eartlore Bounty
     $context = GetClassState($player, $CS_EffectContext);
