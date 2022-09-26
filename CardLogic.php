@@ -478,7 +478,7 @@ function ProcessLayer($player, $parameter)
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
-  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $CS_EffectContext;
 
   $resources = &GetResources($player);
   $items = &GetItems($player);
@@ -504,6 +504,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "WTR047":
+      SetClassState($player, $CS_EffectContext, $parameter);
       Draw($player);
       WriteLog(CardLink($parameter, $parameter) . " draw a card.");
       DestroyAuraUniqueID($player, $uniqueID);
