@@ -8,12 +8,15 @@ include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries2.php";
 
 if (isset($_POST['update_profile'])) {
+
+  //NOTE: This code has an SQL injection, this must be fixed prior to restoring this functionality
 /*
   $user_id = $_SESSION['userid'];
   $update_name = mysqli_real_escape_string($conn, $_POST['update_name']);
   $update_email = mysqli_real_escape_string($conn, $_POST['update_email']);
 
   if ($update_name != $_SESSION['useruid'] || $update_email != $_SESSION['useremail']) {
+    //NOTE: This code has an SQL injection, this must be fixed prior to restoring this functionality
     mysqli_query($conn, "UPDATE users SET usersUid = '$update_name', usersEmail = '$update_email' WHERE usersId = '$user_id'") or die('query failed');
     $_SESSION['useruid'] = $update_name;
     $_SESSION['useremail'] = $update_email;
