@@ -1,5 +1,7 @@
 <?php
 require "Header.php";
+
+if(!isset($_SESSION['userid'])) { header('Location: ./MainMenu.php'); die(); }
 ?>
 
 <?php
