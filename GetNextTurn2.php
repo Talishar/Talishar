@@ -738,17 +738,26 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Opponent hand
   $handContents = "";
-  echo ("<div style='position: fixed; top: 5px; left: calc(50% + 135px); height: 50px; display:inline;'><span style='margin-top: 5px; margin-right: 5px; height:100%; text-align: center; font-size:16px; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; vertical-align:top; display:inline-block; user-select: none;'>Opponent<br>Hand:</span>");
-  echo("<div id='theirHand' style='display:inline;'>");
+  $handLeft = "calc(50% - " . ((count($theirHand) * ($cardWidth + 15)) / 2) . "px)";
+  echo ("<div style='position: fixed; top: " . - ($cardWidth / 2 - 5) . "px; left:" . $handLeft . "; height: 50px; display:inline;'>");
+  echo ("<div id='theirHand' style='display:inline;'>");
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
     if($playerID == 3 && IsCasterMode()) $handContents .= ClientRenderedCard(cardNumber: $theirHand[$i], controller: ($playerID == 1 ? 2 : 1));
     else $handContents .= ClientRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1));
   }
-  echo($handContents . "</div>");
-  if (count($theirSoul) > 0) echo ("<div title='Click to view the cards in your opponent Soul.' style='padding-left:5px; cursor:pointer; position:relative; display:inline-block; height:50px; font-size:20; text-align:center;' onclick='ShowPopup(\"theirSoulPopup\");'><img style='height:50px; width:50px;' src='./Images/soulIcon.png'></img>
-  <div style='position:relative; top:-20px; font-size:18px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";
-  display:inline-block;'>" . count($theirSoul) . " cards</div></div>");
+  echo($handContents);
+  $banishUI = TheirBanishUIMinimal("HAND");
+  if ($handContents != "" && $banishUI != "") echo ("|");
+  echo ($banishUI); 
+  echo ("</div>");
+
+  if (count($theirSoul) > 0) {
+    echo ("<div title='Click to view the cards in your opponent Soul.' style='z-index: 10; top: " . $cardSize+65 . "px; right: 63%; cursor:pointer; position:relative; display:inline-block; height:35px; font-size:20; text-align:center;' 
+    onclick='ShowPopup(\"theirSoulPopup\");'>
+    <div style='position:relative; top:-10px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";
+    display:inline-block;'>Soul: " . count($theirSoul) . "</div></div>");
+  }
   echo ("</div>");
 
   //Show deck, discard, pitch, banish
@@ -898,7 +907,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Now display their arsenal
   if ($theirArsenal != "") {
     $arsenalLeft = (count($theirArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth / 2) + 4) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
-    echo ("<div title='Your opponent's Arsenal' style='z-index:-10; position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) - $cardSize + 70) . "px;'>"); //arsenal div
+    echo ("<div title='Your opponent's Arsenal' style='z-index:-10; position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) + 15) . "px;'>"); //arsenal div
 
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       echo ("<div style='position:relative; display:inline;'>");
@@ -934,12 +943,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
   echo($handContents);
-  if ($playerID != 3)
-  {
-    $banishUI = BanishUIMinimal("HAND");
-    if($handContents != "" && $banishUI != "") echo("|");
-    echo($banishUI);
-  }
+  $banishUI = BanishUIMinimal("HAND");
+  if($handContents != "" && $banishUI != "") echo("|");
+  echo($banishUI);
   echo ("</div>"); //End hand div
 
   //Now display my arsenal
