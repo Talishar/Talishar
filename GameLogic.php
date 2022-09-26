@@ -2017,7 +2017,10 @@ function OnBlockResolveEffects()
 {
   global $combatChain, $CS_DamageTaken, $defPlayer, $mainPlayer;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
-  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) ProcessPhantasmOnBlock($i); // Phantasm should trigger first until we can re-order triggers
+  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    if (SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
+    else ProcessPhantasmOnBlock($i); // Phantasm should trigger first until we can re-order triggers
+  }
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     switch ($combatChain[$i]) {
       case "EVR018":
@@ -3791,13 +3794,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$index + 4] = 1;
       return $lastResult;
     case "ARTOFWAR":
-      global $currentPlayer, $combatChain;
+      global $currentPlayer, $combatChain, $defPlayer;
       $params = explode(",", $lastResult);
       for ($i = 0; $i < count($params); ++$i) {
         switch ($params[$i]) {
           case "Buff_your_attack_action_cards_this_turn":
             WriteLog(CardLink("ARC160", "ARC160") . " gives attack action cards +1 power and defense this turn.");
             AddCurrentTurnEffect("ARC160-1", $currentPlayer);
+            if ($currentPlayer == $defPlayer) {
+              for ($j = CombatChainPieces(); $j <= count($combatChain); $j += CombatChainPieces()) {
+                if (CardType($combatChain[$j]) == "AA") CombatChainPowerModifier($j, 1);
+              }
+            }
             break;
           case "Your_next_attack_action_card_gains_go_again":
             WriteLog(CardLink("ARC160", "ARC160") . " gives the next attack action card this turn go again.");
