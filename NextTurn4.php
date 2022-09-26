@@ -402,9 +402,9 @@
       function GetCharacterTop(cardType, cardSubType) {
         switch (cardType) {
           case "C":
-            return "52px";
+            return (cardSize + 15) + "px";
           case "W":
-            return "52px"; //TODO: Second weapon
+            return (cardSize + 15) + "px";
             //case "C": return ($cardSize + 20) . "px";
             //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
           default:
@@ -612,7 +612,7 @@
               }
               //var animations = document.getElementById("animations").innerText;
               PopulateZone("myHand", cardSize);
-              PopulateZone("theirHand", 50, "WebpImages");
+              PopulateZone("theirHand", cardSize);
               PopulateZone("myChar", cardSize);
               PopulateZone("theirChar", cardSize);
               //if(animations != "") alert(animations);

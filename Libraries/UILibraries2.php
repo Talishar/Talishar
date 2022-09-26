@@ -250,7 +250,7 @@ use JetBrains\PhpStorm\Language;
     $darkMode = IsDarkMode($playerID);
     $top = "54%"; $left = "25%"; $width = "50%"; $height = "30%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
-    if($overCombatChain) { $top = "180px"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
+    if($overCombatChain) { $top = "220px"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:" . $overCC . "; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
@@ -437,6 +437,36 @@ use JetBrains\PhpStorm\Language;
     }
     return $rv;
   }
+
+function TheirBanishUIMinimal($from = "")
+{
+  global $turn, $currentPlayer, $playerID, $cardSize, $cardSizeAura;
+  $rv = "";
+  $size = ($from == "HAND" ? $cardSizeAura : 120);
+  $otherPlayer = ($playerID == 1 ? 2 : 1);
+  $banish = GetBanish($otherPlayer);
+  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+    $action = IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+    $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
+    $mod = explode("-", $banish[$i + 1])[0];
+    if ($mod == "INT") {
+      if ($rv != "") $rv .= "|";
+      $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
+    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
+      //$rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
+      if ($rv != "") $rv .= "|";
+      $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $otherPlayer);
+    } else // if($from != "HAND")
+    {
+      if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i])) {
+        if ($rv != "") $rv .= "|";
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $otherPlayer);
+      } else if ($from != "HAND")
+        $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+    }
+  }
+  return $rv;
+}
 
   function CardBorderColor($cardID, $from, $isPlayable)
   {
