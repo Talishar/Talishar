@@ -31,7 +31,11 @@ include_once "./includes/dbh.inc.php";
   }
 
   if (isset($access_token)){
-    PatreonLogin($access_token);
+    try {
+      PatreonLogin($access_token);
+    } catch (\Exception $e) {
+    }
+
   }
 
 
