@@ -770,7 +770,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</div>");
 
   if (count($theirSoul) > 0) {
-    echo ("<div title='Click to view the cards in your opponent Soul.' style='z-index: 10; top: " . $cardSize+65 . "px; right: 63%; cursor:pointer; position:relative; display:inline-block; height:35px; font-size:20; text-align:center;' 
+    echo ("<div title='Click to view the cards in your opponent Soul.' style='z-index: 10; top: " . $cardSize+65 . "px; right: 48%; cursor:pointer; position:relative; display:inline-block; height:35px; font-size:20; text-align:center;' 
     onclick='ShowPopup(\"theirSoulPopup\");'>
     <div style='position:relative; top:-10px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";
     display:inline-block;'>Soul: " . count($theirSoul) . "</div></div>");
