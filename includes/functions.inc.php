@@ -262,7 +262,7 @@ function LoadFavoriteDecks($userID)
 //Challenge ID 1 = sigil of solace blue
 //Challenge ID 2 = Talishar no dash
 //Challenge ID 3 = Moon Wish
-function logCompletedGameStats($reportingServer = false) {
+function logCompletedGameStats() {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
 	$loser = ($winner == 1 ? 2 : 1);
@@ -272,48 +272,38 @@ function logCompletedGameStats($reportingServer = false) {
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
 	$winHero = &GetPlayerCharacter($winner);
 	$loseHero = &GetPlayerCharacter($loser);
-	if($reportingServer) $conn = GetReportingDBConnection();
-	else $conn = GetDBConnection();
 
-	if(!AreStatsDisabled(1) && !AreStatsDisabled(2))
+	$conn = GetDBConnection();
+
+	if($p1id != "" && $p1id != "-")
 	{
-		if(!$reportingServer && $p1id != "" && $p1id != "-")
-		{
-			$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
-			$values .= ", " . $p1id;
-		}
-		if(!$reportingServer && $p2id != "" && $p2id != "-")
-		{
-			$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
-			$values .= ", " . $p2id;
-		}
-
-		$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
-		$stmt = mysqli_stmt_init($conn);
-		$gameResultID = 0;
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_bind_param($stmt, "sssssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck, GetHealth($winner), $firstPlayer);
-			mysqli_stmt_execute($stmt);
-			$gameResultID = mysqli_insert_id($conn);
-			mysqli_stmt_close($stmt);
-		}
+		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
+		$values .= ", " . $p1id;
+	}
+	if($p2id != "" && $p2id != "-")
+	{
+		$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
+		$values .= ", " . $p2id;
 	}
 
-	if(!$reportingServer && $p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, ($winner == 1 ? 1 : 0));
-	if(!$reportingServer && $p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, ($winner == 2 ? 1 : 0));
-
-	if(!$reportingServer)
-	{
-		$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
-		$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
-		$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
-		$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
-		if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
-		if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
-		if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
-		if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
-		if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero);
+	$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
+	$stmt = mysqli_stmt_init($conn);
+	$gameResultID = 0;
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "sssssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck, GetHealth($winner), $firstPlayer);
+		mysqli_stmt_execute($stmt);
+		$gameResultID = mysqli_insert_id($conn);
+		mysqli_stmt_close($stmt);
 	}
+
+	if($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, ($winner == 1 ? 1 : 0));
+	if($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, ($winner == 2 ? 1 : 0));
+
+	if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
+	if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
+	if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
+	if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
+	if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero);
 	mysqli_close($conn);
 }
 
