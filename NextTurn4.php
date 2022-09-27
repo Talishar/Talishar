@@ -420,7 +420,7 @@
           case "Legs":
             return (cardSize * 2 + 25) + "px";
           case "Off-Hand":
-            return "52px";
+            return (cardSize + 15) + "px";
         }
       }
 
