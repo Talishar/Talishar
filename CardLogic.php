@@ -533,6 +533,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         KatsuHit();
       break;
     case "WTR079":
+        WriteLog(CardLink($parameter, $parameter) . " drew a card.");
         MainDrawCard();
       break;
     case "WTR117":
