@@ -92,6 +92,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
   }
 
   h2 {
+    margin-top: 10px;
     text-align: center;
     width: 100%;
     text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
@@ -108,7 +109,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
   <div id="cardDetail" style="display:none; position:absolute;"></div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
     <?php
     $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
     echo ("<h2>$theirDisplayName Hero</h2>");
@@ -120,7 +121,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     ?>
   </div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <?php
     $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
@@ -132,6 +133,10 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
     echo ("<div style='padding-left:5%;'>");
     echo (Card($character[0], "concat", 250, 0, 1));
+    echo ("</div>");
+
+    echo ("<div style='text-align:center; margin-top: 2px;'>");
+    echo ("<a href='MainMenu.php'><button class='GameLobby_Button' style='display:inline; cursor:pointer;'>Leave Lobby</button></a>");
     echo ("</div>");
 
     $weapons = "";
