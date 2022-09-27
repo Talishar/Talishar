@@ -1048,7 +1048,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_NamesOfCardsPlayed;
+  global $CS_NamesOfCardsPlayed, $CS_LayerTarget;
 
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -1300,6 +1300,19 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return ($from == "PLAY" && count($hand) > 0);
     case "EVR179":
       return GetClassState($player, $CS_NumCardsPlayed) >= 1;
+    case "EVR180":
+      if (count($layers) > 0){
+        for ($i = 0; $i < count($layers); $i++) {
+          if (ArcaneDamage($layers[$i]) >= GetHealth($player) && $layers[$i+3] == "THEIRCHAR-0") return false; // TODO: Not 100% correct
+        }
+      }
+      if (count($combatChain) > 0) {
+        $attack = 0;
+        $defense = 0;
+        EvaluateCombatChain($attack, $defense);
+        if ($attack >= GetHealth($player)) return false;
+      }
+      return true;
     case "EVR053":
       return !HelmOfSharpEyePlayable();
     case "EVR181":
