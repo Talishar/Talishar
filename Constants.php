@@ -228,8 +228,8 @@ $CS_LastDynCost = 55;
 $CS_NumIllusionistActionCardAttacks = 56;
 $CS_ArcaneDamageDealt = 57;
 $CS_LayerPlayIndex = 58;
-$CS_NumCardsPlayed = 59;
-$CS_NamesOfCardsPlayed = 60;
+$CS_NumCardsPlayed = 59; //Amulet of Ignition
+$CS_NamesOfCardsPlayed = 60; //Amulet of Echoes
 
 
 

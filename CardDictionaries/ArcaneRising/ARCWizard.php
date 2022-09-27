@@ -409,30 +409,78 @@
 
   function ArcaneDamage($cardID)
   {
+    global $mainPlayer, $currentPlayer, $CS_ArcaneDamageTaken, $resourcesPaid;
+    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $oppTurn = $currentPlayer != $mainPlayer;
     switch($cardID)
     {
-      case "ARC119": return 3;
-      case "ARC120": return 4;
-      case "ARC121": return 3;
+      case "ARC118": return GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
       case "ARC147": return 5;
-      case "ARC126": case "ARC141": case "ARC148": return 4;
-      case "ARC127": case "ARC132": case "ARC138": case "ARC142": case "ARC144": case "ARC149": return 3;
+      case "ARC120": case "ARC126": case "ARC141": case "ARC148": return 4;
+      case "ARC119": case "ARC121": case "ARC127": case "ARC132": case "ARC138": case "ARC142": case "ARC144": case "ARC149": return 3;
       case "ARC128": case "ARC133": case "ARC139": case "ARC143": case "ARC145": return 2;
       case "ARC134": case "ARC140": case "ARC146": return 1;
       //CRU
       case "CRU171": return 4;
-      case "CRU168": case "CRU172": case "CRU174": return 3;
+      case "CRU162": case "CRU168": case "CRU172": case "CRU174": return 3;
       case "CRU169": case "CRU173": case "CRU175": return 2;
       case "CRU170": case "CRU176": return 1;
       //Everfest
+      case "EVR124": return $resourcesPaid;
+      if ($cardID == "EVR125") return $oppTurn ? 6 : 4;
+      if ($cardID == "EVR126") return $oppTurn ? 5 : 3;
+      if ($cardID == "EVR127") return $oppTurn ? 4 : 2;
       case "EVR134": return 5;
-      case "EVR135": return 4;
+      case "EVR123": case "EVR135": return 4;
       case "EVR136": return 3;
       //UPR
-      case "UPR179": case "UPR180": case "UPR181":return 1;
+      case "UPR105": return 5 + CountAura("ELE111", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
+      case "UPR133": case "UPR110": case "UPR113": return 5;
+      case "UPR170": case "UPR134": case "UPR127": case "UPR122": case "UPR111": case "UPR114": return 4;
+      case "UPR173": case "UPR171": case "UPR135": case "UPR130": case "UPR128": case "UPR123": case "UPR112": case "UPR115": case "UPR104": case "UPR119": return 3;
+      case "UPR174": case "UPR172": case "UPR131": case "UPR129": case "UPR124": case "UPR120": case "UPR131": case "UPR129": case "UPR124": case "UPR120": return 2;
+      case "UPR179": case "UPR180": case "UPR181": case "UPR172": case "UPR132": case "UPR121": case "UPR179": case "UPR180": case "UPR181": return 1;
       default: return 0;
     }
   }
+
+  function ActionsThatDoArcaneDamage($cardID)
+{
+  switch ($cardID) {
+    case "ARC118": 
+    case "ARC119": case "ARC120": case "ARC121": 
+    case "ARC126": case "ARC127": case "ARC128": 
+    case "ARC132": case "ARC133": case "ARC134": 
+    case "ARC138": case "ARC139": case "ARC140": 
+    case "ARC141": case "ARC142": case "ARC143": 
+    case "ARC144": case "ARC145": case "ARC146": 
+    case "ARC147": case "ARC148": case "ARC149":
+      return true;
+    case "CRU162": 
+    case "CRU168": case "CRU169": case "CRU170":
+    case "CRU171": case "CRU172": case "CRU173": 
+    case "CRU174": case "CRU175": case "CRU176":
+      return true;
+    case "EVR123": case "EVR124": 
+    case "EVR125": case "EVR126": case "EVR127": 
+    case "EVR134": case "EVR135": case "EVR136":
+      return true;
+    case "UPR104": case "UPR105": case "UPR109": 
+    case "UPR110": case "UPR111": case "UPR112": 
+    case "UPR113": case "UPR114": case "UPR115":
+    case "UPR119": case "UPR120": case "UPR121":
+    case "UPR122": case "UPR123": case "UPR124":
+    case "UPR127": case "UPR128": case "UPR129":
+    case "UPR130": case "UPR131": case "UPR132":
+    case "UPR133": case "UPR134": case "UPR135":
+    case "UPR170": case "UPR171": case "UPR172":
+    case "UPR173": case "UPR174": case "UPR175":
+    case "UPR179": case "UPR180": case "UPR181":
+      return true;
+    default:
+      return false;
+  }
+}
 
   function ArcaneBarrierChoices($playerID, $max)
   {

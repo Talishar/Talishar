@@ -1338,7 +1338,7 @@ function CurrentEffectPlayAbility($cardID)
           if ($currentTurnEffects[$i] == "DYN116") $amount = 3;
           else if ($currentTurnEffects[$i] == "DYN117") $amount = 2;
           else $amount = 1;
-          if (DoesArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
+          if (ActionsThatDoArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
           $remove = 1;
           break;
         default:

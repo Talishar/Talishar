@@ -1010,10 +1010,6 @@
           PummelHit($otherPlayer);
           PummelHit($otherPlayer);
         }
-        else
-        {
-          $rv = "Amulet of Echoes is a partially manually card. Only activate the ability when the target player has played 2 or more cards with the same name this turn.";
-        }
         return "";
       case "EVR178":
         if($from == "PLAY")
@@ -1025,7 +1021,6 @@
         }
         return "";
       case "EVR179":
-        $rv = "Amulet of Ignition is a partially manual card. Only use the abiliy when you have not played anything.";
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
@@ -1033,7 +1028,6 @@
         }
         return $rv;
       case "EVR180":
-        $rv = "Amulet of Intervention is a partially manual card. Only use the abiliy when you are the target of lethal damage.";
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
