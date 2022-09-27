@@ -405,7 +405,7 @@ use JetBrains\PhpStorm\Language;
 
   function BanishUIMinimal($from="")
   {
-    global $turn, $currentPlayer, $playerID, $cardSize, $cardSizeAura;
+    global $turn, $currentPlayer, $playerID, $cardSizeAura;
     $rv = "";
     $size = ($from == "HAND" ? $cardSizeAura : 120);
     $banish = GetBanish($playerID);
@@ -440,7 +440,7 @@ use JetBrains\PhpStorm\Language;
 
 function TheirBanishUIMinimal($from = "")
 {
-  global $turn, $currentPlayer, $playerID, $cardSize, $cardSizeAura;
+  global $turn, $playerID, $cardSizeAura, $TheirCardBack;
   $rv = "";
   $size = ($from == "HAND" ? $cardSizeAura : 120);
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -451,18 +451,16 @@ function TheirBanishUIMinimal($from = "")
     $mod = explode("-", $banish[$i + 1])[0];
     if ($mod == "INT") {
       if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
+      $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
     } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      //$rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $otherPlayer);
-    } else // if($from != "HAND")
-    {
+    } else {
       if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i])) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $otherPlayer);
       } else if ($from != "HAND")
-        $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+      $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
     }
   }
   return $rv;
@@ -557,11 +555,11 @@ function TheirBanishUIMinimal($from = "")
 
   function GetTheirBanishForDisplay()
   {
-    global $theirBanish, $CardBack;
+    global $theirBanish, $TheirCardBack;
     $banish = array();
     for($i=0; $i<count($theirBanish); $i+=BanishPieces())
     {
-      if($theirBanish[$i+1] == "INT") array_push($banish, $CardBack);
+      if($theirBanish[$i+1] == "INT") array_push($banish, $TheirCardBack);
       else array_push($banish, $theirBanish[$i]);
     }
     return $banish;
