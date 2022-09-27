@@ -1752,7 +1752,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;
       // If you didn't attack an aura with Spectra
-      if (!$chainClosed && $definedCardType == "AA") {
+      if (!$chainClosed && ($definedCardType == "AA" || $definedCardType == "W")) {
         ArsenalAttackAbilities();
         OnAttackEffects($cardID);
       }
