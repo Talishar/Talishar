@@ -48,7 +48,7 @@ use JetBrains\PhpStorm\Language;
 
   //Rotate is deprecated
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="", $controller=0)
-  {//
+  {
     global $playerID, $darkMode;
     if($darkMode == null) $darkMode = false;
     if($folder == "crops")

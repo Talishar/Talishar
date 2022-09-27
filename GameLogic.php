@@ -999,7 +999,6 @@ function RemoveCurrentEffect($player, $effectID)
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     if ($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i] == $effectID) {
-      $remove = 0;
       RemoveCurrentTurnEffect($i);
     }
   }
@@ -2000,10 +1999,12 @@ function OnAttackEffects($attack)
           }
           break;
         case "ELE092-DOM":
+          AddDecisionQueue("FLASHFREEZEDOMINATE", $mainPlayer, $currentTurnEffects[$i] . "ATK", 1);
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose to pay 2 to remove dominate from this attack", 1);
           AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
-          AddDecisionQueue("GREATERTHANPASS", $defPlayer, "0", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "ELE092-DOMATK", 1);
+          AddDecisionQueue("LESSTHANPASS", $defPlayer, "2", 1);
+          AddDecisionQueue("REMOVECURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK", 1);
           break;
         default:
           break;
@@ -3562,11 +3563,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$lastResult + 4] -= 1;
       WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative counter.");
       return $lastResult;
+    case "FLASHFREEZEDOMINATE":
+      AddCurrentTurnEffect($parameter, $player, "PLAY");
+      return "1";
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       return "1";
+    case "REMOVECURRENTEFFECT":
+      RemoveCurrentEffect($player, $parameter);
+      return "1";
     case "ADDCURRENTANDNEXTTURNEFFECT":
-      global $currentTurnEffects;
       AddCurrentTurnEffect($parameter, $player);
       AddNextTurnEffect($parameter, $player);
       return "1";
