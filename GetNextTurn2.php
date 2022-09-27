@@ -793,7 +793,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") . ";'>");
   $card = (count($theirBanish) > 0 ? ($theirBanish[count($theirBanish) - BanishPieces() + 1] == "INT" ? $TheirCardBack : $theirBanish[count($theirBanish) - BanishPieces()]) : $blankZone);
   echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller:$otherPlayer));
-  if (TalentContains($theirCharacter[0], "SHADOW")) {
+  if (TalentContains($theirCharacter[0], "SHADOW") || SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true) > 0)) {
     $theirBD = SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
     echo ("<img title='Blood Debt' style='position:absolute; top:20px; left:-45px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:41px; left:-44px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $theirBD . "</div></img>");
@@ -1108,7 +1108,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($myBanish) / BanishPieces() . "</div></img></span>");
 
-  if (TalentContains($myCharacter[0], "SHADOW")) {
+  if (TalentContains($myCharacter[0], "SHADOW") || SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true))) {
     $myBD = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
     echo ("<img title='Blood Debt' style='position:absolute; top:18px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'>
