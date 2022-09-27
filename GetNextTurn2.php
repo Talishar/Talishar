@@ -333,23 +333,38 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     foreach ($effectArr as $effectCount) {
       if ($effectCount > $max) $max = $effectCount;
     }
-    for ($i = 0; $i < $max; ++$i) {
+    if (IsTileable($key)) {
       $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
-      $effect .= Card($key, "crops", 65, 0, 1);
+      $effect .= Card($key, "crops", 65, 0, 1, counters:$max);
       $effect .= "</div>";
       $friendlyEffects .= $effect;
+    } else {
+      for ($i = 0; $i < $max; ++$i) {
+        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
+        $effect .= Card($key, "crops", 65, 0, 1);
+        $effect .= "</div>";
+        $friendlyEffects .= $effect;
+      }
     }
   }
+
   foreach ($opponentEffectsArr as $key => $effectArr) {
     $max = 0;
     foreach ($effectArr as $effectCount) {
       if ($effectCount > $max) $max = $effectCount;
     }
-    for ($i = 0; $i < $max; ++$i) {
+    if (IsTileable($key)) {
       $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
-      $effect .= Card($key, "crops", 65, 0, 1);
+      $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
       $effect .= "</div>";
       $opponentEffects .= $effect;
+    } else {
+      for ($i = 0; $i < $max; ++$i) {
+        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
+        $effect .= Card($key, "crops", 65, 0, 1);
+        $effect .= "</div>";
+        $opponentEffects .= $effect;
+      }
     }
   }
 
