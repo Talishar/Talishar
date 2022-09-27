@@ -488,6 +488,24 @@ function SearchAlliesForUniqueID($uniqueID, $player)
   return -1;
 }
 
+function SearchCurrentTurnEffectsForUniqueID($uniqueID)
+{
+  global $currentTurnEffects;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i + 2] == $uniqueID) return $i;
+  }
+  return -1;
+}
+
+function SearchUniqueIDForCurrentTurnEffects($index)
+{
+  global $currentTurnEffects;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i+2] == $index) return $currentTurnEffects[$i];
+  }
+  return -1;
+}
+
 function SearchItemsForCard($cardID, $player)
 {
   $items = &GetItems($player);
