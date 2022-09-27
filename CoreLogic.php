@@ -1386,6 +1386,7 @@ function AttackDestroyed($attackID)
             AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
             AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
             AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+            AddDecisionQueue("WRITELOG", $mainPlayer, "Player_" . $mainPlayer . "_gained_an_action_point_from_" . CardLink($character[$i], $character[$i]), 1);
             --$character[$i+5];
           }
           break;
