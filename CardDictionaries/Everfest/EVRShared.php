@@ -837,12 +837,13 @@
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "Let the opponent choose if they want to sink a card for a silver.";
       case "EVR087":
+        $arsenal = &GetArsenal($currentPlayer);
         if(ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
         return "";
       case "EVR089":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");
