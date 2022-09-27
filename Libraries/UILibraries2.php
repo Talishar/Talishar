@@ -131,7 +131,7 @@ use JetBrains\PhpStorm\Language;
 
   //-1 Defense & Endurance Counters style
   if($defCounters != 0) {
-    if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
+    if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "-45%"; }
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle; line-height:" . $imgCounterHeight . "px;
     font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>" . $defCounters . "
@@ -140,7 +140,7 @@ use JetBrains\PhpStorm\Language;
 
   //Health Counters style
   if($lifeCounters != 0){
-    if($defCounters == 0){ $left = "0px"; } else { $left = "-45%"; }
+    if($defCounters == 0 && $atkCounters == 0){ $left = "0px"; } else { $left = "45%"; }
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
     font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>" . $lifeCounters ."
@@ -149,7 +149,7 @@ use JetBrains\PhpStorm\Language;
 
   //Attack Counters style
   if($atkCounters != 0) {
-    if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "45%"; }
+    if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "-45%"; }
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
     font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>" . $atkCounters . "

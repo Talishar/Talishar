@@ -157,7 +157,7 @@
         }
         //-1 Defense & Endurance Counters style
         if (defCounters != 0 && isBroken != 1) {
-          var left = "45%";
+          var left = "-45%";
           if (lifeCounters == 0 && counters == 0) {
             left = "0px";
           }
@@ -167,8 +167,8 @@
 
         //Health Counters style
         if (lifeCounters != 0) {
-          var left = "-45%";
-          if (defCounters == 0) {
+          var left = "45%";
+          if (defCounters == 0 && atkCounters == 0) {
             left = "0px";
           }
           rv += "<div style=' position:absolute; margin: auto; top: 0; left:" + left + "; right: 0; bottom: 0;width:" + imgCounterHeight + "px; height:" + imgCounterHeight + "px; display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" + imgCounterHeight + "px;";
@@ -177,7 +177,7 @@
 
         //Attack Counters style
         if (atkCounters != 0) {
-          var left = "45%";
+          var left = "-45%";
           if (lifeCounters == 0 && counters == 0) {
             left = "0px";
           }
