@@ -1048,6 +1048,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
+  global $CS_NamesOfCardsPlayed;
 
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -1284,6 +1285,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR176":
       $hand = &GetHand($player);
       return $from == "PLAY" && count($hand) < 4;
+    case "EVR177":
+      $restricted = false;
+      if ($from == "PLAY") {
+        $cardNamesPlayed = explode(",", GetClassState($otherPlayer, $CS_NamesOfCardsPlayed));
+        foreach (array_count_values($cardNamesPlayed) as $name => $count) {
+          if ($count > 1) $dups[] = $name;
+        }
+        if (empty($dups)) $restricted = true;
+      }
+      return $restricted;
     case "EVR178":
       $hand = &GetHand($player);
       return ($from == "PLAY" && count($hand) > 0);
