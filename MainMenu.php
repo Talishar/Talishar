@@ -167,33 +167,9 @@ if (!empty($_SESSION['error'])) {
 
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
-      <h2>Commotion #3 has concluded!</h2>
-      <img style="width:95%; border-radius:2.5%;" src="./Images/challenges/moonwish.png" /><br>
-      <h2 style="margin-left:15px; margin-right:15px;">Results</h2>
-      <table style='margin-left: 20px; width:100%; text-align:center;'>
-        <tbody>
-          <tr>
-            <th>Wins</th>
-            <th>Player</th>
-          </tr>
-          <tr>
-            <td>52</td>
-            <td>monkas</td>
-          </tr>
-          <tr>
-            <td>31</td>
-            <td>exit_right</td>
-          </tr>
-          <tr>
-            <td>15</td>
-            <td>TheTablePitYT</td>
-          </tr>
-          <tr>
-            <td>14</td>
-            <td>AngelPillow</td>
-        </tbody>
-      </table>
-    </div>
+
+      <h2>Now supporting decks from FaB Meta!</h2>
+      <a href='https://www.fabmeta.net' target='_blank'><img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/logos/fabmeta_logo.svg" /></a><br><br>
 
     <!--
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
