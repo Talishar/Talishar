@@ -26,18 +26,30 @@ function PatreonLogin($access_token)
 
   $loginSuccessful = false;
   if($patron_response->included == null) return;
+  $yourPatronages = [];
 	for($i=0; $i<count($patron_response->included); ++$i)
 	{
 		$include = $patron_response->included[$i];
 		if($include->type == "campaign" && $include->id == "7198186")
 		{
 			$_SESSION["isPatron"] = true;
-			$loginSuccessful = true;
+			array_push($yourPatronages, "Talishar");
 		}
+    else if($include->type == "campaign" && $include->id == "7579026")
+    {
+    	$_SESSION["isPtPPatron"] = true;
+    	array_push($yourPatronages, "Push the Point");
+    }
 	}
 
-	if($loginSuccessful) echo("Patreon login successful!<BR>");
-	else echo("There was an issue logging in to patreon. Check if you're still a member and if so ask on discord for assistance.");
+  echo("<h1>Your patronages:</h1>");
+  for($i=0; $i<count($yourPatronages); ++$i)
+  {
+    echo("<h2>" . $yourPatronages[$i] . "</h2>");
+  }
+  echo("<h4>Not seeing something you expect to see?</h4>");
+  echo("<h4>1. Check your patreon page to make sure it's listed in your currently supported campaigns</h4>");
+  echo("<h4>2. Reach out on our discord server!</h4>");
 
 }
 
