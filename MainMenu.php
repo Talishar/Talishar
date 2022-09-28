@@ -171,7 +171,7 @@ if (!empty($_SESSION['error'])) {
       <h2>Now supporting decks from FaB Meta!</h2>
       <a href='https://www.fabmeta.net' target='_blank'><img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/logos/fabmeta_logo.svg" /></a><br><br>
 
-    <!--
+      <!--
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
     <div style="vertical-align:middle; position: relative;">
       <h2>Coax a Commotion #3!<br>[Ending Soon!]</h2>
@@ -182,19 +182,19 @@ if (!empty($_SESSION['error'])) {
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
 -->
 
-    <h3 style='text-align:center;'>________</h3>
+      <h3 style='text-align:center;'>________</h3>
 
-    <div style='vertical-align:middle; text-align:center;'>
-      <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play Talishar</h2>
-      <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
-      <!-- <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a> -->
-      <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
-      <br>
-      <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
+      <div style='vertical-align:middle; text-align:center;'>
+        <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play Talishar</h2>
+        <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
+        <!-- <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a> -->
+        <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
+        <br>
+        <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
+      </div>
+
     </div>
-
   </div>
-
   <?php
   include_once 'Footer.php';
   ?>
