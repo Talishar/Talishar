@@ -134,6 +134,13 @@ function IsCardBackRuneblood($player)
   return $settings[$SET_Cardback] == 8;
 }
 
+function IsCardBackPushThePoint($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 9;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -327,8 +334,11 @@ function GetSettingsUI($player)
   // 6 - Tan
   // 7 - Blue
   // 8 - Runeblood
+  // 9 - Push the Point
+   $rv .= "<h3>Card Backs</h3>";
+   $hasCardBacks = false;
    if (IsPatron($player)) {
-    $rv .= "<h3>Card Backs</h3>";
+    $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-1", "Black", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Black");
     $rv .= CreateRadioButton($SET_Cardback . "-2", "Cream", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Cream");
@@ -342,6 +352,12 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-8", "Runeblood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Runeblood");
     $rv .= "<BR>";
    }
+   if($_SESSION['isPtPPatron'])
+   {
+     $hasCardBacks = true;
+     $rv .= CreateRadioButton($SET_Cardback . "-9", "PushThePoint", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Push the Point");
+   }
+   if(!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
 
   /*
     $rv .= "<BR>";
