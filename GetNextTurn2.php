@@ -204,6 +204,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBBlue";
   } else if (IsCardBackRuneblood($playerID)) {
     $MyCardBack = "CBRuneblood";
+  } else if (IsCardBackPushThePoint($playerID)) {
+    $MyCardBack = "CBPushThePoint";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -224,6 +226,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBBlue";
   } else if (IsCardBackRuneblood($otherPlayer)) {
     $TheirCardBack = "CBRuneblood";
+  } else if (IsCardBackPushThePoint($playerID)) {
+    $TheirCardBack = "CBPushThePoint";
   }
 
 
@@ -766,11 +770,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo($handContents);
   $banishUI = TheirBanishUIMinimal("HAND");
   if ($handContents != "" && $banishUI != "") echo ("|");
-  echo ($banishUI); 
+  echo ($banishUI);
   echo ("</div>");
 
   if (count($theirSoul) > 0) {
-    echo ("<div title='Click to view the cards in your opponent Soul.' style='z-index: 10; top: " . $cardSize+65 . "px; right: 48%; cursor:pointer; position:relative; display:inline-block; height:35px; font-size:20; text-align:center;' 
+    echo ("<div title='Click to view the cards in your opponent Soul.' style='z-index: 10; top: " . $cardSize+65 . "px; right: 48%; cursor:pointer; position:relative; display:inline-block; height:35px; font-size:20; text-align:center;'
     onclick='ShowPopup(\"theirSoulPopup\");'>
     <div style='position:relative; top:-10px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";
     display:inline-block;'>Soul: " . count($theirSoul) . "</div></div>");
