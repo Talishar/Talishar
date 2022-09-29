@@ -205,6 +205,7 @@
       case "ELE160": case "ELE161": case "ELE162": return 3;
       case "ELE172": return -1;
       case "ELE173": return 0;
+      case "ELE174": return 0;
       case "ELE175": return 3;
       case "ELE176": return -1;
       case "ELE183": case "ELE184": case "ELE185": return -1;
@@ -401,7 +402,7 @@
         $amount = 3;
         if($cardID == "ELE184") $amount = 2;
         else if($cardID == "ELE185") $amount = 1;
-        // if (count($combatChain) != 0) { 
+        // if (count($combatChain) != 0) {
           CombatChainPowerModifier(intval(explode("-", $target)[1]), $amount);
         // }
         // elseif (count($layers) != 0) {
