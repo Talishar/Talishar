@@ -3989,7 +3989,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $damage;
     case "AFTERQUELL":
       $curMaxQuell = GetClassState($player, $CS_MaxQuellUsed);
-      WriteLog("Player $player prevented damage with Quell.");
+      WriteLog("Player $player prevented damage with Quell.", $player);
       if ($lastResult > $curMaxQuell) SetClassState($player, $CS_MaxQuellUsed, $lastResult);
       return $lastResult;
     case "SPELLVOIDCHOICES":
