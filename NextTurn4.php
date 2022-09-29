@@ -100,10 +100,10 @@
           showHover = 0;
           borderColor = 0;
         } else if (folder == "concat" && LanguageJP) { // Japanese
-          $folderPath = str_replace("concat", "concat/JP", $folderPath);
+          $folderPath = "concat/JP/";
           $fileExt = ".webp";
         } else if (folder == "WebpImages" && LanguageJP) { // Japanese
-          $folderPath = str_replace("WebpImages", "WebpImages/JP", $folderPath);
+          $folderPath = "WebpImages/JP";
           $fileExt = ".webp";
         } else if (folder == "concat") {
           fileExt = ".webp";
