@@ -93,6 +93,7 @@
         folderPath = folder;
 
         var LanguageJP = <?php echo ((IsLanguageJP($playerID) && TranslationExist('JP', $cardNumber) ? "true" : "false")); ?>;
+        var LanguageFR = <?php echo ((IsLanguageFR($playerID) && TranslationExist('FR', $cardNumber) ? "true" : "false")); ?>;
 
         if (cardNumber == "ENDTURN" || cardNumber == "RESUMETURN" || cardNumber == "PHANTASM" || cardNumber == "FINALIZECHAINLINK" || cardNumber == "DEFENDSTEP") {
           //folderPath = str_replace("CardImages", "Images", folderPath);
@@ -100,10 +101,16 @@
           showHover = 0;
           borderColor = 0;
         } else if (folder == "concat" && LanguageJP) { // Japanese
-          $folderPath = "concat/JP/";
+          $folderPath = "concat/JP";
           $fileExt = ".webp";
         } else if (folder == "WebpImages" && LanguageJP) { // Japanese
           $folderPath = "WebpImages/JP";
+          $fileExt = ".webp";
+        } else if (folder == "concat" && LanguageFR) { // French
+          $folderPath = "concat/FR";
+          $fileExt = ".webp";
+        } else if (folder == "WebpImages" && LanguageFR) { // French
+          $folderPath = "WebpImages/FR";
           $fileExt = ".webp";
         } else if (folder == "concat") {
           fileExt = ".webp";

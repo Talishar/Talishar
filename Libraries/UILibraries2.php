@@ -51,6 +51,7 @@ use JetBrains\PhpStorm\Language;
   {
     global $playerID, $darkMode;
     $LanguageJP = ((IsLanguageJP($playerID) && TranslationExist("JP", $cardNumber)) ? true : false);
+    $LanguageFR = ((IsLanguageFR($playerID) && TranslationExist("FR", $cardNumber)) ? true : false);
     if($darkMode == null) $darkMode = false;
     if($folder == "crops")
     {
@@ -71,6 +72,12 @@ use JetBrains\PhpStorm\Language;
     } 
     else if($folder == "WebpImages" && $LanguageJP) { // Japanese
       $folderPath = "WebpImages/JP";
+      $fileExt = ".webp";
+    } else if ($folder == "concat" && $LanguageJP) { // French
+    $folderPath = "concat/FR";
+    $fileExt = ".webp";
+    } else if ($folder == "WebpImages" && $LanguageJP) { // French
+      $folderPath = "WebpImages/FR";
       $fileExt = ".webp";
     }
     else if(mb_strpos($folder, "CardImages") !== false)
