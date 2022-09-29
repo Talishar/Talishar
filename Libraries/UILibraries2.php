@@ -50,6 +50,7 @@ use JetBrains\PhpStorm\Language;
   function Card($cardNumber, $folder, $maxHeight, $action=0, $showHover=0, $overlay=0, $borderColor=0, $counters=0, $actionDataOverride="", $id="", $rotate=false, $lifeCounters=0, $defCounters=0, $atkCounters=0, $from="", $controller=0)
   {
     global $playerID, $darkMode;
+    $LanguageJP = ((IsLanguageJP($playerID) && TranslationExist("JP", $cardNumber)) ? true : false);
     if($darkMode == null) $darkMode = false;
     if($folder == "crops")
     {
@@ -63,6 +64,14 @@ use JetBrains\PhpStorm\Language;
       $folderPath = str_replace("concat", "Images", $folderPath);
       $showHover = 0;
       $borderColor = 0;
+    } 
+    else if($folder == "concat" && $LanguageJP) { // Japanese
+      $folderPath = "concat/JP";
+      $fileExt = ".webp";
+    } 
+    else if($folder == "WebpImages" && $LanguageJP) { // Japanese
+      $folderPath = "WebpImages/JP";
+      $fileExt = ".webp";
     }
     else if(mb_strpos($folder, "CardImages") !== false)
     {

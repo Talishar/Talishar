@@ -102,6 +102,12 @@
           //folderPath = str_replace("concat", "Images", folderPath);
           showHover = 0;
           borderColor = 0;
+        } else if (folder == "concat" && LanguageJP) { // Japanese
+          folderPath = "concat/JP";
+          fileExt = ".webp";
+        } else if (folder == "WebpImages" && LanguageJP) { // Japanese
+          folderPath = "WebpImages/JP";
+          fileExt = ".webp";
         } else if (folder == "concat") {
           fileExt = ".webp";
         } else if (folder == "WebpImages") {
