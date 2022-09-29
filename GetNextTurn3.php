@@ -224,7 +224,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBBlue";
   } else if (IsCardBackRuneblood($otherPlayer)) {
     $TheirCardBack = "CBRuneblood";
-  } else if (IsCardBackPushThePoint($playerID)) {
+  } else if (IsCardBackPushThePoint($otherPlayer)) {
     $TheirCardBack = "CBPushThePoint";
   }
 
