@@ -141,6 +141,13 @@ function IsCardBackPushThePoint($player)
   return $settings[$SET_Cardback] == 9;
 }
 
+function IsCardBackGoAgainGaming($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 10;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -352,7 +359,7 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-8", "Runeblood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Runeblood");
     $rv .= "<BR>";
    }
-   
+
   $isPtPPatron = false;
   $isPtPPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Hamsack" || $_SESSION["useruid"] == "BigMedSi" || $_SESSION["useruid"] == "Tripp" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isPtPPatron'] || $isPtPPatron) {
@@ -360,6 +367,14 @@ function GetSettingsUI($player)
     if (!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-9", "PushThePoint", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Push the Point");
   }
+  $isGoAgainGamingPatron = false;
+  $isGoAgainGamingPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "GoAgainGamingAz" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isGoAgainGamingPatron'] || $isGoAgainGamingPatron) {
+    $hasCardBacks = true;
+    if (!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
+    $rv .= CreateRadioButton($SET_Cardback . "-10", "GoAgainGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Go Again Gaming");
+  }
+  
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
 
   /*

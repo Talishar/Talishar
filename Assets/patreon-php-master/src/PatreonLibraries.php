@@ -35,12 +35,17 @@ function PatreonLogin($access_token)
 			$_SESSION["isPatron"] = true;
 			array_push($yourPatronages, "Talishar");
 		}
-    else if($include->type == "campaign" && $include->id == "7579026")
+    if($include->type == "campaign" && $include->id == "7579026")
     {
     	$_SESSION["isPtPPatron"] = true;
     	array_push($yourPatronages, "Push the Point");
     }
+    if ($include->type == "campaign" && $include->id == "7329070") {
+      $_SESSION["isGoAgainGamingPatron"] = true;
+      array_push($yourPatronages, "Go Again Gaming");
+    }
 	}
+  
 
   echo("<h1>Your patronages:</h1>");
   for($i=0; $i<count($yourPatronages); ++$i)
