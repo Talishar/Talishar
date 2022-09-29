@@ -83,9 +83,9 @@ use JetBrains\PhpStorm\Language;
 
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
 
-    if($borderColor > 0){
+    if($borderColor > 0) {
       $border = "border-radius:10px; border:2.5px solid " . BorderColorMap($borderColor) . ";";
-    }elseif($folder == "concat"){
+    } else if($folder == "concat") {
       $border = "border-radius:8px; border:1.5px solid transparent;";
     } else {
       $border = "border: 1px solid transparent;";
@@ -440,27 +440,25 @@ use JetBrains\PhpStorm\Language;
 
 function TheirBanishUIMinimal($from = "")
 {
-  global $turn, $playerID, $cardSizeAura, $TheirCardBack;
+  global $playerID, $cardSizeAura, $TheirCardBack;
   $rv = "";
   $size = ($from == "HAND" ? $cardSizeAura : 120);
   $otherPlayer = ($playerID == 1 ? 2 : 1);
   $banish = GetBanish($otherPlayer);
   for ($i = 0; $i < count($banish); $i += BanishPieces()) {
-    $action = IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-    $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
     $mod = explode("-", $banish[$i + 1])[0];
     if ($mod == "INT") {
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
     } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
       if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $otherPlayer);
+      $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
     } else {
       if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i])) {
         if ($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $otherPlayer);
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
       } else if ($from != "HAND")
-      $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+      $rv .= Card($banish[$i], "concat", $size, 0, 1, 0);
     }
   }
   return $rv;
