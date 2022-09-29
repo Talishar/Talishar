@@ -1419,9 +1419,9 @@ if($set == "WTR"){
 		case "197": return "Regurgitating Slog";
 		case "198": return "Regurgitating Slog";
 		case "199": return "Regurgitating Slog";
-		case "200": return "‘Wounded Bull";
-		case "201": return "‘Wounded Bull";
-		case "202": return "‘Wounded Bull";
+		case "200": return "Wounded Bull";
+		case "201": return "Wounded Bull";
+		case "202": return "Wounded Bull";
 		case "203": return "Wounding Blow";
 		case "204": return "Wounding Blow";
 		case "205": return "Wounding Blow";
