@@ -352,13 +352,15 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-8", "Runeblood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Runeblood");
     $rv .= "<BR>";
    }
-   if($_SESSION['isPtPPatron'])
-   {
-     $hasCardBacks = true;
-     if(!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
-     $rv .= CreateRadioButton($SET_Cardback . "-9", "PushThePoint", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Push the Point");
-   }
-   if(!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
+   
+  $isPtPPatron = false;
+  $isPtPPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Hamsack" || $_SESSION["useruid"] == "BigMedSi" || $_SESSION["useruid"] == "Tripp" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isPtPPatron'] || $isPtPPatron) {
+    $hasCardBacks = true;
+    if (!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
+    $rv .= CreateRadioButton($SET_Cardback . "-9", "PushThePoint", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Push the Point");
+  }
+  if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
 
   /*
     $rv .= "<BR>";
