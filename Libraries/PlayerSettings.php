@@ -355,6 +355,7 @@ function GetSettingsUI($player)
    if($_SESSION['isPtPPatron'])
    {
      $hasCardBacks = true;
+     if(!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
      $rv .= CreateRadioButton($SET_Cardback . "-9", "PushThePoint", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Push the Point");
    }
    if(!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
