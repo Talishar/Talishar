@@ -695,6 +695,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "ELE174":
+      $otherPlayer = ($player == 1 ? 2 : 1);
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "destroy_mark_of_lightning_to_have_the_attack_deal_1_damage");
       AddDecisionQueue("NOPASS", $player, "-", 1);
