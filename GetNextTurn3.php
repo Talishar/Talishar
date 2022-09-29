@@ -204,6 +204,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBRuneblood";
   } else if (IsCardBackPushThePoint($playerID)) {
     $MyCardBack = "CBPushThePoint";
+  } else if (IsCardBackGoAgainGaming($playerID)) {
+    $MyCardBack = "CBGoAgainGaming";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -226,6 +228,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBRuneblood";
   } else if (IsCardBackPushThePoint($otherPlayer)) {
     $TheirCardBack = "CBPushThePoint";
+  } else if (IsCardBackGoAgainGaming($otherPlayer)) {
+    $TheirCardBack = "CBGoAgainGaming";
   }
 
 
