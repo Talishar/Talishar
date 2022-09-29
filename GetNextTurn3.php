@@ -96,7 +96,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($opponentDisconnected && !IsGameOver()) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
-    PlayerLoseHealth($otherPlayer, GetHealth($otherPlayer));
+    PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
   }
 
