@@ -148,6 +148,48 @@ function IsCardBackGoAgainGaming($player)
   return $settings[$SET_Cardback] == 10;
 }
 
+function IsCardBackGAGAzeleaCult($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 11;
+}
+
+function IsCardBackGAGAzelea($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 12;
+}
+
+function IsCardBackGAGAzeleaShot($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 13;
+}
+
+function IsCardBackGAGDorinthea($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 14;
+}
+
+function IsCardBackGAGDromai($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 15;
+}
+
+function IsCardBackGAGKassai($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 16;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -373,6 +415,12 @@ function GetSettingsUI($player)
     $hasCardBacks = true;
     if (!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-10", "GoAgainGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Go Again Gaming");
+    $rv .= CreateRadioButton($SET_Cardback . "-11", "GAGAzaleaCult", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Azalea Cult");
+    $rv .= CreateRadioButton($SET_Cardback . "-12", "GAGAzalea", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Azalea");
+    $rv .= CreateRadioButton($SET_Cardback . "-13", "GAGAzaleaShot", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Azalea Shot");
+    $rv .= CreateRadioButton($SET_Cardback . "-14", "GAGDorinthea", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Dorinthea");
+    $rv .= CreateRadioButton($SET_Cardback . "-15", "GAGDromai", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Droami");
+    $rv .= CreateRadioButton($SET_Cardback . "-16", "GAGKAssai", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Kassai");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";

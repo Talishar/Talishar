@@ -202,12 +202,24 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBParchment";
   } else if (IsCardBackBlue($playerID)) {
     $MyCardBack = "CBBlue";
-  } else if (IsCardBackRuneblood($playerID)) {
+  } else if (IsCardBackRuneblood($playerID)) { // Push The Point
     $MyCardBack = "CBRuneblood";
   } else if (IsCardBackPushThePoint($playerID)) {
     $MyCardBack = "CBPushThePoint";
-  } else if (IsCardBackGoAgainGaming($playerID)) {
+  } else if (IsCardBackGoAgainGaming($playerID)) { // Go Again Gaming
     $MyCardBack = "CBGoAgainGaming";
+  } else if (IsCardBackGAGAzeleaCult($playerID)) {
+    $MyCardBack = "CBGAG_AzeleaCult";
+  } else if (IsCardBackGAGAzelea($playerID)) {
+    $MyCardBack = "CBGAG_Azelea";
+  } else if (IsCardBackGAGAzeleaShot($playerID)) {
+    $MyCardBack = "CBGAG_AzeleaShot";
+  } else if (IsCardBackGAGDorinthea($playerID)) {
+    $MyCardBack = "CBGAG_Dorinthea";
+  } else if (IsCardBackGAGDromai($playerID)) {
+    $MyCardBack = "CBGAG_Dromai";
+  } else if (IsCardBackGAGKassai($playerID)) {
+    $MyCardBack = "CBGAG_Kassai";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -226,12 +238,24 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBParchment";
   } else if (IsCardBackBlue($otherPlayer)) {
     $TheirCardBack = "CBBlue";
-  } else if (IsCardBackRuneblood($otherPlayer)) {
+  } else if (IsCardBackRuneblood($otherPlayer)) { // Push The Point
     $TheirCardBack = "CBRuneblood";
   } else if (IsCardBackPushThePoint($otherPlayer)) {
     $TheirCardBack = "CBPushThePoint";
-  } else if (IsCardBackGoAgainGaming($otherPlayer)) {
+  } else if (IsCardBackGoAgainGaming($otherPlayer)) { // Go Again Gaming
     $TheirCardBack = "CBGoAgainGaming";
+  } else if (IsCardBackGAGAzeleaCult($otherPlayer)) {
+    $TheirCardBack = "CBGAG_AzeleaCult";
+  } else if (IsCardBackGAGAzelea($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Azelea";
+  } else if (IsCardBackGAGAzeleaShot($otherPlayer)) {
+    $TheirCardBack = "CBGAG_AzeleaShot";
+  } else if (IsCardBackGAGDorinthea($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Dorinthea";
+  } else if (IsCardBackGAGDromai($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Dromai";
+  } else if (IsCardBackGAGKassai($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Kassai";
   }
 
 
