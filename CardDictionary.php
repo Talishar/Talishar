@@ -1090,6 +1090,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "NINJA", $player) || CardType($combatChain[0]) != "AA";
     case "WTR116":
       return GetClassState($player, $CS_HitsWithWeapon) == 0;
+    case "WTR118":
+      if (count($combatChain) == 0) return true;
+      return CardType($combatChain[0]) != "W";
     case "WTR120": case "WTR121": case "WTR123":
     case "WTR124": case "WTR125":
     case "WTR135": case "WTR136": case "WTR137":
