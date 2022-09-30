@@ -218,6 +218,20 @@ function IsCardBackRZRVehya($player)
   return $settings[$SET_Cardback] == 20;
 }
 
+function IsCardBackFabrary1($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 21;
+}
+
+function IsCardBackFabrary2($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 22;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -458,6 +472,14 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-18", "RZR10k", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "RZR 10k");
     $rv .= CreateRadioButton($SET_Cardback . "-19", "RZRKadikosLibrary", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "RZR Kadikos Library");
     $rv .= CreateRadioButton($SET_Cardback . "-20", "RZRVehya", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "RZR Vehya");
+  }
+
+  $isFabraryPatron = false;
+  $isFabraryPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "phillip" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isFabraryPatron'] || $isFabraryPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-21", "Fabrary1", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Fabrary One");
+    $rv .= CreateRadioButton($SET_Cardback . "-22", "Fabrary2", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Fabrary Two");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";

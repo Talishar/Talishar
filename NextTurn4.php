@@ -402,9 +402,9 @@
       function GetCharacterTop(cardType, cardSubType) {
         switch (cardType) {
           case "C":
-            return (cardSize + 15) + "px";
+            return (cardSize * 2 + 25) + "px";
           case "W":
-            return (cardSize + 15) + "px";
+            return (cardSize * 2 + 25) + "px";
             //case "C": return ($cardSize + 20) . "px";
             //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
           default:
@@ -420,7 +420,7 @@
           case "Legs":
             return (cardSize * 2 + 25) + "px";
           case "Off-Hand":
-            return (cardSize + 15) + "px";
+            return (cardSize * 2 + 25) + "px";
         }
       }
 

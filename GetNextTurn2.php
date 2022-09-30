@@ -228,6 +228,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBRZR_KadikosLibrary";
   } else if (IsCardBackRZRVehya($playerID)) {
     $MyCardBack = "CBRZR_Vehya";
+  } else if (IsCardBackFabrary1($playerID)) {
+    $MyCardBack = "CBFabrary1";
+  } else if (IsCardBackFabrary2($playerID)) {
+    $MyCardBack = "CBFabrary2";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -272,8 +276,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBRZR_KadikosLibrary";
   } else if (IsCardBackRZRVehya($otherPlayer)) {
     $TheirCardBack = "CBRZR_Vehya";
+  } else if (IsCardBackFabrary1($otherPlayer)) {
+    $TheirCardBack = "CBFabrary1";
+  } else if (IsCardBackFabrary2($otherPlayer)) {
+    $TheirCardBack = "CBFabrary2";
   }
-
   //Display background
   if (IsDarkPlainMode($playerID))
     echo ("<div class='container;' style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='object-fit: cover; height:100%; width:100%;' src='./Images/darkplain.jpg'/>
@@ -438,7 +445,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo (CreatePopup("attackModifierPopup", [], 1, 0, "Attack Modifiers", 1, AttackModifiers($chainAttackModifiers)));
   }
 
-  echo ("<div style='position:absolute; left:240px; top:38%; z-index:0;'>");
+  echo ("<div style='position:absolute; left:240px; top:40vh; z-index:0;'>");
 
   //Display the combat chain
   if ($displayCombatChain) {
@@ -803,7 +810,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Opponent hand
   $handContents = "";
   $handLeft = "calc(50% - " . ((count($theirHand) * ($cardWidth + 15)) / 2) . "px)";
-  echo ("<div style='position: fixed; top: " . - ($cardWidth / 2 - 5) . "px; left:" . $handLeft . "; height: 50px; display:inline;'>");
+  echo ("<div style='position: fixed; top: 5px; left:" . $handLeft . "; height: 50px; display:inline;'>");
   echo ("<div id='theirHand' style='display:inline;'>");
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($handContents != "") $handContents .= "|";
@@ -973,7 +980,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Now display their arsenal
   if ($theirArsenal != "") {
     $arsenalLeft = (count($theirArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth / 2) + 4) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
-    echo ("<div title='Your opponent's Arsenal' style='z-index:-10; position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) + 15) . "px;'>"); //arsenal div
+    echo ("<div title='Your opponent's Arsenal' style='z-index:-10; position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) * 2 + 5) . "px;'>"); //arsenal div
 
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       echo ("<div style='position:relative; display:inline;'>");
