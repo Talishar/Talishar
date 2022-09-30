@@ -56,6 +56,10 @@ function PatreonLogin($access_token)
       $_SESSION["isManSantPatron"] = true;
       array_push($yourPatronages, "Man Sant");
     }
+    if ($include->type == "campaign" && $include->id == "6839952") {
+      $_SESSION["isAttackActionPodcastPatreon"] = true;
+      array_push($yourPatronages, "Attack Action Podcast");
+    }
 	}
   
 
