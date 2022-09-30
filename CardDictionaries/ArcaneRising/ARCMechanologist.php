@@ -233,13 +233,8 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       if ($boosted) Opt($cardID, 1);
       return "Gives your next Mechanologist attack action card this turn +" . EffectAttackModifier($cardID) . ($boosted ? " and let you opt 1" : "") . ".";
     case "ARC035":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $items = &GetItems($currentPlayer);
-      if ($index != -1) {
-        AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer, "PLAY");
-        $rv = "Will prevent some of the next combat damage you take this turn.";
-        DestroyMyItem($index);
-      }
+      AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer, "PLAY");
+      $rv = "Will prevent some of the next combat damage you take this turn.";
       return $rv;
     case "ARC037": //Optekal Monocle
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
