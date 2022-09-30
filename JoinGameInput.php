@@ -311,8 +311,8 @@ if ($decklink != "") {
   }
 
   if ($bannedCard != "") {
-    if ($format == "blitz" || $format = "compblitz") {
-      $_SESSION['error'] = 'Error: The following cards are not legal in the Blitz format: ' . $bannedCard;
+    if ($format == "blitz" || $format == "compblitz") {
+      $_SESSION['error'] = $format . 'Error: The following cards are not legal in the Blitz format: ' . $bannedCard;
     } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc") {
       $_SESSION['error'] = 'Error: The following cards are not legal in the Classic Constructed format: ' . $bannedCard;
     } elseif ($format == "commoner") {
