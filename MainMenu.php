@@ -190,6 +190,7 @@ if (!empty($_SESSION['error'])) {
         <!-- <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a> -->
         <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
         <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
+        <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
         <br>
         <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
       </div>
