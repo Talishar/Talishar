@@ -200,12 +200,32 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBParchment";
   } else if (IsCardBackBlue($playerID)) {
     $MyCardBack = "CBBlue";
-  } else if (IsCardBackRuneblood($playerID)) {
+  } else if (IsCardBackRuneblood($playerID)) { // Push The Point
     $MyCardBack = "CBRuneblood";
   } else if (IsCardBackPushThePoint($playerID)) {
     $MyCardBack = "CBPushThePoint";
-  } else if (IsCardBackGoAgainGaming($playerID)) {
+  } else if (IsCardBackGoAgainGaming($playerID)) { // Go Again Gaming
     $MyCardBack = "CBGoAgainGaming";
+  } else if (IsCardBackGAGAzaleaCult($playerID)) {
+    $MyCardBack = "CBGAG_AzaleaCult";
+  } else if (IsCardBackGAGAzalea($playerID)) {
+    $MyCardBack = "CBGAG_Azalea";
+  } else if (IsCardBackGAGAzaleaShot($playerID)) {
+    $MyCardBack = "CBGAG_AzaleaShot";
+  } else if (IsCardBackGAGDorinthea($playerID)) {
+    $MyCardBack = "CBGAG_Dorinthea";
+  } else if (IsCardBackGAGDromai($playerID)) {
+    $MyCardBack = "CBGAG_Dromai";
+  } else if (IsCardBackGAGKassai($playerID)) {
+    $MyCardBack = "CBGAG_Kassai";
+  } else if (IsCardBackRedZoneRogue($playerID)) {
+    $MyCardBack = "CBRedZoneRogue";
+  } else if (IsCardBackRZR10k($playerID)) {
+    $MyCardBack = "CBRZR_10k";
+  } else if (IsCardBackRZRKadikosLibrary($playerID)) {
+    $MyCardBack = "CBRZR_KadikosLibrary";
+  } else if (IsCardBackRZRVehya($playerID)) {
+    $MyCardBack = "CBRZR_Vehya";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -224,14 +244,33 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBParchment";
   } else if (IsCardBackBlue($otherPlayer)) {
     $TheirCardBack = "CBBlue";
-  } else if (IsCardBackRuneblood($otherPlayer)) {
+  } else if (IsCardBackRuneblood($otherPlayer)) { // Push The Point
     $TheirCardBack = "CBRuneblood";
   } else if (IsCardBackPushThePoint($otherPlayer)) {
     $TheirCardBack = "CBPushThePoint";
-  } else if (IsCardBackGoAgainGaming($otherPlayer)) {
+  } else if (IsCardBackGoAgainGaming($otherPlayer)) { // Go Again Gaming
     $TheirCardBack = "CBGoAgainGaming";
+  } else if (IsCardBackGAGAzaleaCult($otherPlayer)) {
+    $TheirCardBack = "CBGAG_AzaleaCult";
+  } else if (IsCardBackGAGAzalea($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Azalea";
+  } else if (IsCardBackGAGAzaleaShot($otherPlayer)) {
+    $TheirCardBack = "CBGAG_AzaleaShot";
+  } else if (IsCardBackGAGDorinthea($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Dorinthea";
+  } else if (IsCardBackGAGDromai($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Dromai";
+  } else if (IsCardBackGAGKassai($otherPlayer)) {
+    $TheirCardBack = "CBGAG_Kassai";
+  } else if (IsCardBackRedZoneRogue($otherPlayer)) {
+    $TheirCardBack = "CBRedZoneRogue";
+  } else if (IsCardBackRZR10k($otherPlayer)) {
+    $TheirCardBack = "CBRZR_10k";
+  } else if (IsCardBackRZRKadikosLibrary($otherPlayer)) {
+    $TheirCardBack = "CBRZR_KadikosLibrary";
+  } else if (IsCardBackRZRVehya($otherPlayer)) {
+    $TheirCardBack = "CBRZR_Vehya";
   }
-
 
   if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) {
     $passLabel = "End Turn";

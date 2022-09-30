@@ -148,21 +148,21 @@ function IsCardBackGoAgainGaming($player)
   return $settings[$SET_Cardback] == 10;
 }
 
-function IsCardBackGAGAzeleaCult($player)
+function IsCardBackGAGAzaleaCult($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 11;
 }
 
-function IsCardBackGAGAzelea($player)
+function IsCardBackGAGAzalea($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 12;
 }
 
-function IsCardBackGAGAzeleaShot($player)
+function IsCardBackGAGAzaleaShot($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
@@ -188,6 +188,34 @@ function IsCardBackGAGKassai($player)
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 16;
+}
+
+function IsCardBackRedZoneRogue($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 17;
+}
+
+function IsCardBackRZR10k($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 18;
+}
+
+function IsCardBackRZRKadikosLibrary($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 19;
+}
+
+function IsCardBackRZRVehya($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 20;
 }
 
 function IsManualMode($player)
@@ -386,9 +414,9 @@ function GetSettingsUI($player)
   // 9 - Push the Point
    $rv .= "<h3>Card Backs</h3>";
    $hasCardBacks = false;
+   $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
    if (IsPatron($player)) {
     $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-1", "Black", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Black");
     $rv .= CreateRadioButton($SET_Cardback . "-2", "Cream", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Cream");
     $rv .= "<BR>";
@@ -406,14 +434,13 @@ function GetSettingsUI($player)
   $isPtPPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Hamsack" || $_SESSION["useruid"] == "BigMedSi" || $_SESSION["useruid"] == "Tripp" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isPtPPatron'] || $isPtPPatron) {
     $hasCardBacks = true;
-    if (!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-9", "PushThePoint", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Push the Point");
   }
+
   $isGoAgainGamingPatron = false;
   $isGoAgainGamingPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "GoAgainGamingAz" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isGoAgainGamingPatron'] || $isGoAgainGamingPatron) {
     $hasCardBacks = true;
-    if (!IsPatron($player)) $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
     $rv .= CreateRadioButton($SET_Cardback . "-10", "GoAgainGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Go Again Gaming");
     $rv .= CreateRadioButton($SET_Cardback . "-11", "GAGAzaleaCult", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Azalea Cult");
     $rv .= CreateRadioButton($SET_Cardback . "-12", "GAGAzalea", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Azalea");
@@ -421,6 +448,16 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-14", "GAGDorinthea", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Dorinthea");
     $rv .= CreateRadioButton($SET_Cardback . "-15", "GAGDromai", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Droami");
     $rv .= CreateRadioButton($SET_Cardback . "-16", "GAGKAssai", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "GAG Kassai");
+  }
+
+  $isRedZoneRoguePatron = false;
+  $isRedZoneRoguePatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "RedZoneRogue" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isRedZoneRoguePatron'] || $isRedZoneRoguePatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-17", "RedZoneRogue", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Red Zone Rogue");
+    $rv .= CreateRadioButton($SET_Cardback . "-18", "RZR10k", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "RZR 10k");
+    $rv .= CreateRadioButton($SET_Cardback . "-19", "RZRKadikosLibrary", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "RZR Kadikos Library");
+    $rv .= CreateRadioButton($SET_Cardback . "-20", "RZRVehya", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "RZR Vehya");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
