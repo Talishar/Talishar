@@ -246,6 +246,13 @@ function IsCardBackAttackActionPodcast($player)
   return $settings[$SET_Cardback] == 24;
 }
 
+function IsCardBackArsenalPass($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 25;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -505,9 +512,16 @@ function GetSettingsUI($player)
 
   $isAttackActionPodcastPatreon = false;
   $isAttackActionPodcastPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "chonigman" || $_SESSION["useruid"] == "Ijaque" || $_SESSION["useruid"] == "PvtVoid");
-  if ($_SESSION['isManSantPatron'] || $isAttackActionPodcastPatreon) {
+  if ($_SESSION['isAttackActionPodcastPatreon'] || $isAttackActionPodcastPatreon) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-24", "AttackActionPodcast", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Attack Action Podcast");
+  }
+
+  $isArsenalPassPatreon = false;
+  $isArsenalPassPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Brendan" || $_SESSION["useruid"] == "TheClub" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isArsenalPassPatreon'] || $isArsenalPassPatreon) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-25", "ArsenalPass", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Arsenal Pass");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";

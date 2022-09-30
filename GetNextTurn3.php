@@ -234,8 +234,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBManSant";
   } else if (IsCardBackAttackActionPodcast($playerID)) {
     $MyCardBack = "CBAttackActionPodcast";
+  } else if (IsCardBackArsenalPass($playerID)) {
+    $MyCardBack = "CBArsenalPass";
   }
-
+  
   $otherPlayer = ($playerID == 1 ? 2 : 1);
   $TheirCardBack = "CardBack";
   if (IsCardBackBlack($otherPlayer)) {
@@ -286,6 +288,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBManSant";
   } else if (IsCardBackAttackActionPodcast($otherPlayer)) {
     $TheirCardBack = "CBAttackActionPodcast";
+  } else if (IsCardBackArsenalPass($otherPlayer)) {
+    $TheirCardBack = "CBArsenalPass";
   }
 
   if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) {

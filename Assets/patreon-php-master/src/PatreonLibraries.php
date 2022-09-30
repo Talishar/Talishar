@@ -60,9 +60,13 @@ function PatreonLogin($access_token)
       $_SESSION["isAttackActionPodcastPatreon"] = true;
       array_push($yourPatronages, "Attack Action Podcast");
     }
+    if ($include->type == "campaign" && $include->id == "7285727") {
+      $_SESSION["isArsenalPassPatreon"] = true;
+      array_push($yourPatronages, "Arsenal Pass");
+    }
 	}
-  
 
+  
   echo("<h1>Your patronages:</h1>");
   for($i=0; $i<count($yourPatronages); ++$i)
   {
