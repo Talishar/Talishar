@@ -250,7 +250,7 @@ use JetBrains\PhpStorm\Language;
     $darkMode = IsDarkMode($playerID);
     $top = "54%"; $left = "25%"; $width = "50%"; $height = "30%";
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
-    if($overCombatChain) { $top = "40vh"; $left = "320px"; $width = "auto"; $height = "auto"; $overCC = 100;}
+    if($overCombatChain) { $top = "220px"; $left = "305px"; $width = "auto"; $height = "auto"; $overCC = 100;}
 
     $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:" . $overCC . "; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
