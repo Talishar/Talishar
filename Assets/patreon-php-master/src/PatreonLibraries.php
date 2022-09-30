@@ -52,6 +52,10 @@ function PatreonLogin($access_token)
       $_SESSION["isFabraryPatron"] = true;
       array_push($yourPatronages, "Fabrary");
     }
+    if ($include->type == "campaign" && $include->id == "8955846") {
+      $_SESSION["isManSantPatron"] = true;
+      array_push($yourPatronages, "Man Sant");
+    }
 	}
   
 
