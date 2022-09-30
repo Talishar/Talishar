@@ -234,6 +234,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBFabrary2";
   } else if (IsCardBackManSant($playerID)) {
     $MyCardBack = "CBManSant";
+  } else if (IsCardBackAttackActionPodcast($playerID)) {
+    $MyCardBack = "CBAttackActionPodcast";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -284,6 +286,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBFabrary2";
   } else if (IsCardBackManSant($otherPlayer)) {
     $TheirCardBack = "CBManSant";
+  } else if (IsCardBackAttackActionPodcast($otherPlayer)) {
+    $TheirCardBack = "CBAttackActionPodcast";
   }
 
   //Display background
