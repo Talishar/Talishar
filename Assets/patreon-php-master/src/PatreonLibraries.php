@@ -48,6 +48,10 @@ function PatreonLogin($access_token)
       $_SESSION["isRedZoneRoguePatron"] = true;
       array_push($yourPatronages, "Red Zone Rogue");
     }
+    if ($include->type == "campaign" && $include->id == "8997252") {
+      $_SESSION["isFabraryPatron"] = true;
+      array_push($yourPatronages, "Fabrary");
+    }
 	}
   
 
