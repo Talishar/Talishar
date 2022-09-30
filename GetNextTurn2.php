@@ -293,7 +293,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   } else if (IsCardBackArsenalPass($otherPlayer)) {
     $TheirCardBack = "CBArsenalPass";
   }
-  
+
   //Display background
   if (IsDarkPlainMode($playerID))
     echo ("<div class='container;' style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='object-fit: cover; height:100%; width:100%;' src='./Images/darkplain.jpg'/>
@@ -836,12 +836,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ($banishUI);
   echo ("</div>");
 
-  if (count($theirSoul) > 0) {
-    echo ("<div title='Click to view the cards in your opponent Soul.' style='z-index: 10; top: 330px; right: 49%; cursor:pointer; position:relative; display:inline-block; height:35px; font-size:20; text-align:center;'
-    onclick='ShowPopup(\"theirSoulPopup\");'>
-    <div style='position:relative; top:-10px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";
-    display:inline-block;'>Soul: " . count($theirSoul) . "</div></div>");
-  }
+  if (count($theirSoul) > 0) echo ("<div id='theirSoulCount'>" . count($theirSoul) . "</div>");
   echo ("</div>");
 
   //Show deck, discard, pitch, banish
@@ -1152,7 +1147,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo("<div id='myChar' style='display:none;'>");
   echo($myCharData);
   echo ("</div>");
-  if(count($mySoul) > 0) echo("<div id='soulCount'>" . count($mySoul) . "</div>");
+  if(count($mySoul) > 0) echo("<div id='mySoulCount'>" . count($mySoul) . "</div>");
 
   echo ("</div>");
 

@@ -318,12 +318,19 @@
           }
           newHTML += "<span style='position:" + positionStyle + "; margin:1px;'>";
           if (type == "C") {
-            var soulCountEl = document.getElementById("soulCount");
-            if (!!soulCountEl && zone == "myChar") {
+            var mySoulCountEl = document.getElementById("mySoulCount");
+            if (!!mySoulCountEl && zone == "myChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
-              newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; user-select: none;top:-23px; left: 17px; font-size:20px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>Soul: " + soulCountEl.innerHTML + "</div>";
-              soulCountEl.innerHTML = "";
+              newHTML += "<div onclick='ShowPopup(\"mySoulPopup\");' style='cursor:pointer; position:absolute; user-select: none;top:-23px; left: 17px; font-size:20px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>Soul: " + mySoulCountEl.innerHTML + "</div>";
+              mySoulCountEl.innerHTML = "";
+            }
+            var theirSoulCountEl = document.getElementById("theirSoulCount");
+            if (!!theirSoulCountEl && zone == "theirChar") {
+              var fontColor = "#DDD";
+              var borderColor = "#1a1a1a";
+              newHTML += "<div onclick='ShowPopup(\"theirSoulPopup\");' style='cursor:pointer; position:absolute; user-select: none; bottom:-25px; left: 17px; font-size:20px; font-weight: 600; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + ";'>Soul: " + theirSoulCountEl.innerHTML + "</div>";
+              theirSoulCountEl.innerHTML = "";
             }
             <?php
             echo ("var p1uid = '" . ($p1uid == "-" ? "Player 1" : $p1uid) . "';");
