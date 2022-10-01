@@ -65,8 +65,11 @@ function PatreonLogin($access_token)
       $_SESSION["isTheTekloFoundryPatreon"] = true;
       array_push($yourPatronages, "The Teklo Foundry");
     }
+    if ($include->type == "campaign" && $include->id == "8736344") {
+      $_SESSION["isFleshAndCommonBloodPatreon"] = true;
+      array_push($yourPatronages, "Flesh and Common Blood");
+    }
 	}
-
   
   echo("<h1>Your patronages:</h1>");
   for($i=0; $i<count($yourPatronages); ++$i)

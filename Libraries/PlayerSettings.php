@@ -274,6 +274,13 @@ function IsCardBackDragonShieldProTeamWB($player)
   return $settings[$SET_Cardback] == 28;
 }
 
+function IsCardBackFleshAndCommonBlood($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 29;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -558,6 +565,13 @@ function GetSettingsUI($player)
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-27", "DragonShieldProTeam", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team");
     $rv .= CreateRadioButton($SET_Cardback . "-28", "DragonShieldProTeamWB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team WB");
+  }
+
+  $isFleshAndCommonBloodPatreon = false;
+  $isFleshAndCommonBloodPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Smithel" || $_SESSION["useruid"] == "PvtVoid");
+  if ($isFleshAndCommonBloodPatreon) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-29", "FleshAndCommonBlood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Flesh And Common Blood");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
