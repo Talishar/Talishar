@@ -23,7 +23,8 @@ CREATE TABLE `completedgame` (
   `Format` int(11) DEFAULT NULL,
   `GameID` int(22) NOT NULL,
   `WinnerDeck` varchar(1000) DEFAULT NULL,
-  `LoserDeck` varchar(1000) DEFAULT NULL
+  `LoserDeck` varchar(1000) DEFAULT NULL,
+  `lastAuthKey` varchar(128) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
