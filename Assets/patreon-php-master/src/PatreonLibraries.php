@@ -61,6 +61,10 @@ function PatreonLogin($access_token)
       $_SESSION["isArsenalPassPatreon"] = true;
       array_push($yourPatronages, "Arsenal Pass");
     }
+    if ($include->type == "campaign" && $include->id == "8635931") {
+      $_SESSION["isTheTekloFoundryPatreon"] = true;
+      array_push($yourPatronages, "The Teklo Foundry");
+    }
 	}
 
   

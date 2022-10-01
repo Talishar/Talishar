@@ -238,6 +238,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBAttackActionPodcast";
   } else if (IsCardBackArsenalPass($playerID)) {
     $MyCardBack = "CBArsenalPass";
+  } else if (IsCardBackTheTekloFroundry($playerID)) {
+    $MyCardBack = "CBTekloFoundry";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -292,6 +294,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBAttackActionPodcast";
   } else if (IsCardBackArsenalPass($otherPlayer)) {
     $TheirCardBack = "CBArsenalPass";
+  } else if (IsCardBackTheTekloFroundry($otherPlayer)) {
+    $TheirCardBack = "CBTekloFoundry";
   }
 
   //Display background
