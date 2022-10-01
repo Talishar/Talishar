@@ -299,6 +299,11 @@ function logCompletedGameStats() {
 	if($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, ($winner == 1 ? 1 : 0));
 	if($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, ($winner == 2 ? 1 : 0));
 
+	$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
+	$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
+	$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
+	$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
+
 	if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
 	if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
