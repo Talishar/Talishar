@@ -44,7 +44,7 @@
     if(($playerID == 1 || $playerID == 2) && $authKey == "")
     {
       $userId = ($playerID == 1 ? $p1id : $p2id);
-      if($userId != "") $authKey = GetBackupAuthkey($userId);
+      //if($userId != "") $authKey = GetBackupAuthkey($userId);
     }
 
     if ($currentPlayer == $playerID) {
