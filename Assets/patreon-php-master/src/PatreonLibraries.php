@@ -69,6 +69,10 @@ function PatreonLogin($access_token)
       $_SESSION["isFleshAndCommonBloodPatreon"] = true;
       array_push($yourPatronages, "Flesh and Common Blood");
     }
+    if ($include->type == "campaign" && $include->id == "7593240") {
+      $_SESSION["isSinOnStreamPatreon"] = true;
+      array_push($yourPatronages, "Sin On Stream");
+    }
 	}
   
   echo("<h1>Your patronages:</h1>");

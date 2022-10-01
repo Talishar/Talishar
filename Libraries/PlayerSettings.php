@@ -69,15 +69,9 @@ function IsPatron($player)
   return $settings[$SET_IsPatron] == "1";
 }
 
-// 0 - Default
-// 1 - Black
-// 2 - Cream
-// 3 - Golden
-// 4 - Grey
-// 5 - Red
-// 6 - Tan
-// 7 - Blue
-// 8 - Runeblood
+  /*================
+      Card Backs
+  =================*/
 function IsCardBackBlack($player)
 {
   global $SET_Cardback;
@@ -279,6 +273,13 @@ function IsCardBackFleshAndCommonBlood($player)
   global $SET_Cardback;
   $settings = GetSettings($player);
   return $settings[$SET_Cardback] == 29;
+}
+
+function IsCardBackSinOnStream($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 30;
 }
 
 function IsManualMode($player)
@@ -572,6 +573,13 @@ function GetSettingsUI($player)
   if ($isFleshAndCommonBloodPatreon) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-29", "FleshAndCommonBlood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Flesh And Common Blood");
+  }
+
+  $isSinOnStreamPatreon = false;
+  $isSinOnStreamPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "SinOnStream" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isSinOnStreamPatreon'] || $isSinOnStreamPatreon) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-30", "SinOnStream", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Sin On Stream");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";

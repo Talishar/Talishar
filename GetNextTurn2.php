@@ -246,6 +246,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBDragonShieldProTeamWB";
   } else if (IsCardBackFleshAndCommonBlood($playerID)) {
     $MyCardBack = "CBFleshAndCommonBlood";
+  } else if (IsCardBackSinOnStream($playerID)) {
+    $MyCardBack = "CBSinOnStream";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -308,6 +310,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBDragonShieldProTeamWB";
   } else if (IsCardBackFleshAndCommonBlood($otherPlayer)) {
     $TheirCardBack = "CBFleshAndCommonBlood";
+  } else if (IsCardBackSinOnStream($otherPlayer)) {
+    $TheirCardBack = "CBSinOnStream";
   }
 
   //Display background
