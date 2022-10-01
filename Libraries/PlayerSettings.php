@@ -260,6 +260,20 @@ function IsCardBackTheTekloFroundry($player)
   return $settings[$SET_Cardback] == 26;
 }
 
+function IsCardBackDragonShieldProTeam($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 27;
+}
+
+function IsCardBackDragonShieldProTeamWB($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 28;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -536,6 +550,14 @@ function GetSettingsUI($player)
   if ($_SESSION['isTheTekloFoundryPatreon'] || $isTheTekloFoundryPatreon) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-26", "TheTekloFoundry", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Teklo Foundry");
+  }
+
+  $isDragonShieldProTeam = false;
+  $isDragonShieldProTeam = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  if ($isDragonShieldProTeam) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-27", "DragonShieldProTeam", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team");
+    $rv .= CreateRadioButton($SET_Cardback . "-28", "DragonShieldProTeamWB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team WB");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
