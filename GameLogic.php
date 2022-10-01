@@ -4195,6 +4195,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return 1;
       }
       return $lastResult;
+    case "DREADBORE":
+      $arsenal = &GetArsenal($player);
+      AddCurrentTurnEffect($parameter, $player, "HAND", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+      return 1;
     case "AZALEA":
       $arsenal = &GetArsenal($player);
       AddCurrentTurnEffect($parameter, $player, "DECK", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
@@ -4239,14 +4243,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($totalAV >= 13) {
         AddCurrentTurnEffect("MON247", $player);
-        WriteLog("Rouse the Ancients got +7 and go again.");
+        WriteLog(CardLink("MON247", "MON274") . " got +7 and go again.");
       }
       return $lastResult;
     case "BEASTWITHIN":
       $deck = &GetDeck($player);
       if (count($deck) == 0) {
         LoseHealth(9999, $player);
-        WriteLog("Your deck has no cards, so Beast Within continues damaging you until you die.");
+        WriteLog("Your deck has no cards, so " . CardLink("CRU007", "CRU007") . " continues damaging you until you die.");
         return 1;
       }
       $card = array_shift($deck);
