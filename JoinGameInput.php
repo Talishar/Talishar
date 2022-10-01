@@ -4,6 +4,8 @@ include "WriteLog.php";
 include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
 include "APIKeys/APIKeys.php";
+include_once 'includes/functions.inc.php';
+include_once 'includes/dbh.inc.php';
 
 session_start();
 $gameName = $_GET["gameName"];
@@ -444,8 +446,16 @@ if($matchup == "")
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
-  if($playerID == 1) $_SESSION["p1AuthKey"] = $p1Key;
-  if($playerID == 2) $_SESSION["p2AuthKey"] = $p2Key;
+  if($playerID == 1)
+  {
+    $_SESSION["p1AuthKey"] = $p1Key;
+    if($p1id != "") BackupAuthkey($p1id, $p1Key);
+  }
+  else if($playerID == 2)
+  {
+    $_SESSION["p2AuthKey"] = $p2Key;
+    if($p2id != "") BackupAuthkey($p2id, $p2Key);
+  }
 }
 
 session_write_close();
@@ -602,10 +612,10 @@ function IsBanned($cardID, $format)
     case "commoner":
       switch ($cardID) {
         case "ELE186": //Ball Lightning
-        case "ELE187": 
+        case "ELE187":
         case "ELE188":
         case "MON266": //Belittle
-        case "MON267": 
+        case "MON267":
         case "MON268":
           return true;
         default:

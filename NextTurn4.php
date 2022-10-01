@@ -24,7 +24,7 @@
     session_start();
     if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
     else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
-    else $authKey = TryGet("authKey", 3);
+    else $authKey = TryGet("authKey", "");
     session_write_close();
 
 
@@ -38,6 +38,14 @@
     include "Libraries/StatFunctions.php";
     include "Libraries/PlayerSettings.php";
     include "MenuFiles/ParseGamefile.php";
+    include_once 'includes/functions.inc.php';
+    include_once 'includes/dbh.inc.php';
+
+    if(($playerID == 1 || $playerID == 2) && $authKey == "")
+    {
+      $userId = ($playerID == 1 ? $p1id : $p2id);
+      if($userId != "") $authKey = GetBackupAuthkey($userId);
+    }
 
     if ($currentPlayer == $playerID) {
       $icon = "ready.png";

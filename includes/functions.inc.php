@@ -641,3 +641,35 @@ function SendEmail($userEmail, $url) {
       echo 'Caught exception: '. $e->getMessage() ."\n";
   }
 }
+
+function BackupAuthkey($playerId, $authKey)
+{
+	if($playerId == "") return;
+	$conn = GetDBConnection();
+	$sql = "UPDATE users SET lastAuthKey=(?) WHERE usersId='$playerId'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $authKey);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
+function GetBackupAuthkey($playerId)
+{
+	if($playerId == "") return "";
+	$authKey = "";
+	$conn = GetDBConnection();
+	$sql = "SELECT lastAuthKey from users WHERE usersId='$playerId'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_array($data, MYSQLI_NUM);
+		$authKey = $row[0];
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	return $authKey;
+}
