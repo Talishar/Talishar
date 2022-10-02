@@ -428,11 +428,13 @@ function AuraTakeDamageAbilities($player, $damage, $type)
     }
     switch ($Auras[$i]) {
       case "ARC112":
-        if ($hasRunebloodBarrier && $preventable) {
-          $damage -= 1;
+        if ($hasRunebloodBarrier) {
+          if ($preventable) {
+            $damage -= 1;
+          }
           $remove = 1;
         }
-        break;;
+        break;
       case "ARC167":
         if ($preventable) $damage -= 4;
         $remove = 1;
