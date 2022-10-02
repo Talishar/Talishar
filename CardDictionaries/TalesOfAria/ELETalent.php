@@ -402,13 +402,12 @@
         $amount = 3;
         if($cardID == "ELE184") $amount = 2;
         else if($cardID == "ELE185") $amount = 1;
-        // if (count($combatChain) != 0) {
+        if (count($combatChain) != 0) {
           CombatChainPowerModifier(intval(explode("-", $target)[1]), $amount);
-        // }
-        // elseif (count($layers) != 0) {
-        //   $layerTarget = intval(explode("-", $target)[1]);
-        //   PrependDecisionQueue("LAYERATKMODIFIER", $currentPlayer, $layerTarget . "-" .$amount);
-        // }
+        }
+        else {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
         return "";
       case "ELE186": case "ELE187": case "ELE188":
         AddCurrentTurnEffect($cardID, $currentPlayer);

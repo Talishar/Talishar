@@ -1252,9 +1252,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if (CardType($combatChain[$i]) == "AA" && CardCost($combatChain[$i]) <= 1) return false;
       }
-      // for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-      //   if (CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false;
-      // }
+      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+        if (CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false;
+      }
       return true;
     case "ELE201":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;
