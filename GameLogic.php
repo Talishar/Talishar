@@ -4622,7 +4622,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "AETHERWILDFIRE":
-      AddCurrentTurnEffect("EVR123," . $lastResult, $player);
+      AddArcaneBonus($lastResult, $player);
       return $lastResult;
     case "CLEAREFFECTCONTEXT":
       SetClassState($currentPlayer, $CS_EffectContext, "-");
