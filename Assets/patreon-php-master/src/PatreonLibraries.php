@@ -77,6 +77,10 @@ function PatreonLogin($access_token)
       $_SESSION["isFreshAndBudsPatreon"] = true;
       array_push($yourPatronages, "Fresh and Buds");
     }
+    if ($include->type == "campaign" && $include->id == "6996822") {
+      $_SESSION["isSloopdoopPatron"] = true;
+      array_push($yourPatronages, "Sloopdoop");
+    }
 	}
   
   echo("<h1>Your patronages:</h1>");

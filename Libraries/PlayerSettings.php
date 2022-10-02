@@ -289,6 +289,13 @@ function IsCardBackFreshAndBuds($player)
   return $settings[$SET_Cardback] == 31;
 }
 
+function IsCardBackSloopdoop($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 32;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -593,9 +600,16 @@ function GetSettingsUI($player)
   $isFreshAndBudsPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "FreshLord" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isFreshAndBudsPatreon'] || $isFreshAndBudsPatreon) {
     $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-31", "FreshAndBudsPatreon", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Fresh and Buds");
+    $rv .= CreateRadioButton($SET_Cardback . "-31", "FreshAndBuds", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Fresh and Buds");
   }
-  
+
+  $isSloopdoopPatron = false;
+  $isSloopdoopPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Sloopdoop" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isSloopdoopPatron'] || $isSloopdoopPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-32", "Sloopdoop", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Sloopdoop");
+  }
+
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
 
   /*
