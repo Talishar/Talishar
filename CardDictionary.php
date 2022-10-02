@@ -1783,7 +1783,7 @@ function CharacterDefaultActiveState($cardID)
     case "ELE174": // Mark of Lightning
       return 1;
     case "ELE173": case "MON061": case "MON090":
-    case "MON188": case "MON302": case "MON400": // Spellvoid Equipments
+    case "MON188": case "MON400": // Spellvoid Equipments
     case "MON401": case "MON402":
       return 1;
     case "EVR037": // Mask of the Pouncing Lynx
@@ -1852,6 +1852,7 @@ function ItemDefaultHoldTriggerState($cardID)
   switch ($cardID) {
     case "ARC007": // Teklo Core
     case "ARC035": // Dissipation Shield
+    case "MON302": // Talisman of Dousing
     case "EVR069": // Dissolution Sphere
     case "EVR071": // Signal Jammer
       return 0;
