@@ -99,9 +99,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID) . ".");
-  global $combatChain, $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer;
+  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer;
 
-  $attackID = $combatChain[0];
   if (CardType($cardID) == "AA" && SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2)) return;
   if ($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) return;
   $set = CardSet($cardID);
@@ -2382,6 +2381,11 @@ function MainCharacterHitAbilities()
       case "CRU053":
         if (CardType($attackID) == "AA" && ClassContains($attackID, "NINJA", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
+        }
+        break;
+      case "ELE062": case "ELE063":
+        if (IsHeroAttackTarget() && CardType($attackID) == "AA" && !SearchAuras("ELE109", $mainPlayer)) {
+          PlayAura("ELE109", $mainPlayer);
         }
         break;
       case "EVR037":
