@@ -265,6 +265,7 @@ function LoadFavoriteDecks($userID)
 function logCompletedGameStats() {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
+	global $p1deckbuilderID, $p2deckbuilderID;
 	$loser = ($winner == 1 ? 2 : 1);
 	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
 	$values = "?, ?, ?, ?, ?, ?, ?";
@@ -304,8 +305,8 @@ function logCompletedGameStats() {
 	$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
 	$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
 
-	if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
-	if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
+	if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero, $p1deckbuilderID);
+	if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero, $p2deckbuilderID);
 	if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
 	if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero);
@@ -357,14 +358,14 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	curl_close($ch);
 }
 
-function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero)
+function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero, $deckbuilderID="")
 {
 	global $FaBraryKey, $gameName;
 	if(!str_contains($decklink, "fabrary.net")) return;
 
 	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/01G7FD2B3YQAMR8NJ4B3M58H96/results";
 	$ch = curl_init($url);
-	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
+	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName, $deckbuilderID);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$headers = array(
@@ -399,7 +400,7 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p2Deckl
 	curl_close($ch);
 }
 
-function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $opposingHero="", $gameName="")
+function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $opposingHero="", $gameName="", $deckbuilderID="")
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $firstPlayer;
 	$DeckLink = explode("/", $DeckLink);
@@ -415,6 +416,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $oppo
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
+	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
 	$deckAfterSB = explode(" ", $deckAfterSB);
 	$deduplicatedDeck = [];
