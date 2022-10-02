@@ -87,7 +87,7 @@
 
   function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
+    global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -107,7 +107,7 @@
         AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Kano", 1);
         return "";
       case "ARC115":
-        AddArcaneBonus(1, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives the next card that deals arcane damage +1.";
       case "ARC116":
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
