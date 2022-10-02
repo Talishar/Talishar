@@ -904,10 +904,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("BANISH", $currentPlayer, "TT", 1);
       return "Banishes a Runeblade attack action card, which can be played this turn.";
     case "CRU144":
-      PlayAura("ARC112", $currentPlayer);
-      PlayAura("ARC112", $currentPlayer);
-      PlayAura("ARC112", $currentPlayer);
-      PlayAura("ARC112", $currentPlayer);
+      PlayAura("ARC112", $currentPlayer, 4);
       return "Creates 4 Runechant.";
     case "CRU145":
     case "CRU146":
