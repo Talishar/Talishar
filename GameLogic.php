@@ -4255,7 +4255,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($totalAV >= 13) {
         AddCurrentTurnEffect("MON247", $player);
-        WriteLog(CardLink("MON247", "MON274") . " got +7 and go again.");
+        WriteLog(CardLink("MON247", "MON247") . " got +7 and go again.");
       }
       return $lastResult;
     case "BEASTWITHIN":
