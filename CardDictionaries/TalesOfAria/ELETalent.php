@@ -269,7 +269,13 @@
       case "ELE107": GainHealth(2, $currentPlayer); return "Rejuvenate gains 2 health.";
       case "ELE108": GainHealth(1, $currentPlayer); return "Rejuvenate gains 1 health.";
       case "ELE112":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if (count($combatChain) > 0) {
+          AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        } elseif (count($layers) > 0) {
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+        } else {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }        
         return "Gives your next Lightning, Ice, or Elemental attack this turn +4.";
       case "ELE113":
         for($i=0; $i<2; ++$i)
