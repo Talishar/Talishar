@@ -449,13 +449,14 @@ if($matchup == "")
   if($playerID == 1)
   {
     $_SESSION["p1AuthKey"] = $p1Key;
-    if($p1id != "") BackupAuthkey($p1id, $p1Key);
+    setcookie("lastAuthKey", $p1Key, time() + 86400, "/");
   }
   else if($playerID == 2)
   {
     $_SESSION["p2AuthKey"] = $p2Key;
-    if($p2id != "") BackupAuthkey($p2id, $p2Key);
+    setcookie("lastAuthKey", $p2Key, time() + 86400, "/");
   }
+
 }
 
 session_write_close();

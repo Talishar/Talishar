@@ -27,6 +27,10 @@
     else $authKey = TryGet("authKey", "");
     session_write_close();
 
+    if(($playerID == 1 || $playerID == 2) && $authKey == "")
+    {
+      if(isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+    }
 
     //First we need to parse the game state from the file
     include "WriteLog.php";
@@ -40,12 +44,6 @@
     include "MenuFiles/ParseGamefile.php";
     include_once 'includes/functions.inc.php';
     include_once 'includes/dbh.inc.php';
-
-    if(($playerID == 1 || $playerID == 2) && $authKey == "")
-    {
-      $userId = ($playerID == 1 ? $p1id : $p2id);
-      //if($userId != "") $authKey = GetBackupAuthkey($userId);
-    }
 
     if ($currentPlayer == $playerID) {
       $icon = "ready.png";
