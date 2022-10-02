@@ -337,6 +337,7 @@
   {
     if($fromDQ)
     {
+      PrependDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
       PrependDecisionQueue("DISCARDMYHAND", $player, "-", 1);
       PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
@@ -352,6 +353,7 @@
       AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
       AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
+      AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
     }
   }
 
