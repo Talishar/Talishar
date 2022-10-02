@@ -48,6 +48,7 @@ function ProcessMacros()
 
 function HasPlayableCard($player, $phase)
 {
+  global $combatChain;
   $restriction = "";
   $character = &GetPlayerCharacter($player);
   for($i=0; $i<count($character); $i+=CharacterPieces())
@@ -79,7 +80,11 @@ function HasPlayableCard($player, $phase)
   {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
-  //TODO: Combat chain? Landmarks? Allies?
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) 
+  {
+    if(IsPlayable($combatChain[$i], $phase, "CC", $i, $restriction, $player)) return true;
+  }
+  //TODO: Landmarks? Allies?
   return false;
 }
 
