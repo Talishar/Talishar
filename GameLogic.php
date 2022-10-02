@@ -718,7 +718,7 @@ function EffectHitEffect($cardID)
       }
       break;
     case "ELE066-HIT":
-      if (HasIncreasedAttack()) MainDrawCard();
+      AddLayer("TRIGGER", $mainPlayer, "ELE066");
       break;
     case "ELE092-BUFF":
       if (IsHeroAttackTarget()) {

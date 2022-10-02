@@ -686,6 +686,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       PlayAura("ELE110", $player);
       WriteLog(CardLink($parameter, $parameter) . " created an Embodiment of Lightning aura.");
       break;
+    case "ELE066":
+      if (HasIncreasedAttack()) MainDrawCard();
+      break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
