@@ -198,7 +198,7 @@
       case "ELE092-DOM": case "ELE092-DOMATK": case "ELE092-BUFF": return true;
       case "ELE097": case "ELE098": case "ELE099": return true;
       case "ELE103": case "ELE104": case "ELE105": return $combatChainState[$CCS_AttackFused] == 1;
-      case "ELE112": return TalentContainsAny($attackID, "ICE,LIGHTNING,ELEMENTAL",$mainPlayer);
+      case "ELE112": return TalentContainsAny($attackID, "ICE,LIGHTNING,ELEMENTAL", $mainPlayer);
       case "ELE122": case "ELE123": case "ELE124":
         return TalentContainsAny($attackID, "EARTH,ELEMENTAL",$mainPlayer) && CardType($attackID) == "AA";
       case "ELE137": case "ELE138": case "ELE139": return CardType($attackID) == "AA";

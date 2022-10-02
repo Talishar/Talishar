@@ -818,7 +818,7 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer;
+  global $combatChain, $mainPlayer, $currentTurnEffects;
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
     switch($combatChain[$i])
@@ -827,6 +827,18 @@ function ChainLinkResolvedEffects()
         if (!ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[$i], $mainPlayer, "CC");
         break;
       default: break;
+    }
+  }
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "ELE112-1":
+          RemoveCurrentEffect($mainPlayer, $currentTurnEffects[$i]);
+          AddCurrentTurnEffectFromCombat("ELE112", $mainPlayer);
+          break;
+        default:
+          break;
+      }
     }
   }
 }
