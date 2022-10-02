@@ -495,6 +495,8 @@
       case "CRU099": case "CRU101": return -1;
       case "CRU102": return 0;
       case "CRU104": case "CRU105": return -1;
+      // CRU Merchant
+      case "CRU118": return -1;
       //CRU Ranger
       case "CRU121": return -1;
       case "CRU122": return 2;
