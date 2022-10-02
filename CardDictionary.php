@@ -1045,7 +1045,7 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
 
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
-  global $playerID, $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
+  global $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_NamesOfCardsPlayed, $CS_LayerTarget;
@@ -1058,27 +1058,27 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $myItems = &GetItems($player);
   $mySoul = &GetSoul($player);
 
-  if (SearchCurrentTurnEffects("CRU032", $playerID) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {
+  if (SearchCurrentTurnEffects("CRU032", $player) && CardType($cardID) == "AA" && AttackValue($cardID) <= 3) {
     $restriction = "CRU032";
     return true;
   }
-  if (SearchCurrentTurnEffects("MON007", $playerID) && $from == "BANISH") {
+  if (SearchCurrentTurnEffects("MON007", $player) && $from == "BANISH") {
     $restriction = "MON007";
     return true;
   }
-  if (SearchCurrentTurnEffects("ELE036", $playerID) && CardType($cardID) == "E") {
+  if (SearchCurrentTurnEffects("ELE036", $player) && CardType($cardID) == "E") {
     $restriction = "ELE036";
     return true;
   }
-  if (SearchCurrentTurnEffects("ELE035-3", $playerID) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) {
+  if (SearchCurrentTurnEffects("ELE035-3", $player) && CardCost($cardID) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) {
     $restriction = "ELE035";
     return true;
   }
-  if (CardType($cardID) == "A" && $from != "PLAY" && GetClassState($playerID, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) {
+  if (CardType($cardID) == "A" && $from != "PLAY" && GetClassState($player, $CS_NumNonAttackCards) == 1 && (SearchItemsForCard("EVR071", 1) != "" || SearchItemsForCard("EVR071", 2) != "")) {
     $restriction = "EVR071";
     return true;
   }
-  if ($turn[0] != "B" && $turn[0] != "P" && $playerID != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) {
+  if ($turn[0] != "B" && $turn[0] != "P" && $player != $mainPlayer && SearchAlliesActive($mainPlayer, "UPR415")) {
     $restriction = "UPR415";
     return true;
   }
