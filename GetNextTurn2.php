@@ -250,6 +250,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBSinOnStream";
   } else if (IsCardBackFreshAndBuds($playerID)) {
     $MyCardBack = "CBFreshAndBuds";
+  } else if (IsCardBackSloopdoop($playerID)) {
+    $MyCardBack = "CBSloopdoop";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -316,6 +318,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBSinOnStream";
   } else if (IsCardBackFreshAndBuds($otherPlayer)) {
     $TheirCardBack = "CBFreshAndBuds";
+  } else if (IsCardBackSloopdoop($otherPlayer)) {
+    $TheirCardBack = "CBSloopdoop";
   }
   
   //Display background
