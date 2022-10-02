@@ -282,6 +282,13 @@ function IsCardBackSinOnStream($player)
   return $settings[$SET_Cardback] == 30;
 }
 
+function IsCardBackFreshAndBuds($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 31;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -580,6 +587,13 @@ function GetSettingsUI($player)
   if ($_SESSION['isSinOnStreamPatreon'] || $isSinOnStreamPatreon) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-30", "SinOnStream", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Sin On Stream");
+  }
+
+  $isFreshAndBudsPatreon = false;
+  $isFreshAndBudsPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "FreshLord" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isFreshAndBudsPatreon'] || $isFreshAndBudsPatreon) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-31", "FreshAndBudsPatreon", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Fresh and Buds");
   }
   
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";

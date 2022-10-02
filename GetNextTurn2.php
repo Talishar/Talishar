@@ -248,6 +248,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBFleshAndCommonBlood";
   } else if (IsCardBackSinOnStream($playerID)) {
     $MyCardBack = "CBSinOnStream";
+  } else if (IsCardBackFreshAndBuds($playerID)) {
+    $MyCardBack = "CBFreshAndBuds";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -312,8 +314,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBFleshAndCommonBlood";
   } else if (IsCardBackSinOnStream($otherPlayer)) {
     $TheirCardBack = "CBSinOnStream";
+  } else if (IsCardBackFreshAndBuds($otherPlayer)) {
+    $TheirCardBack = "CBFreshAndBuds";
   }
-
+  
   //Display background
   if (IsDarkPlainMode($playerID))
     echo ("<div class='container;' style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='object-fit: cover; height:100%; width:100%;' src='./Images/darkplain.jpg'/>
