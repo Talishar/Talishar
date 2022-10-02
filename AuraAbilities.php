@@ -73,7 +73,7 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   $goesWhere = GoesWhereAfterResolving($cardID);
   for ($i = 0; $i < SearchCount(SearchAurasForCard("MON012", $player)); ++$i) {
     if (TalentContains($cardID, "LIGHT", $player)) $goesWhere = "SOUL";
-    DealArcane(1, 0, "STATIC", "MON012", true, $player);
+    DealArcane(1, 0, "STATIC", "MON012", false, $player);
   }
   if (CardType($cardID) == "T" || $isToken) return; //Don't need to add to anywhere if it's a token
   switch ($goesWhere) {
