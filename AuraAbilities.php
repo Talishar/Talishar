@@ -3,6 +3,7 @@
 function PlayAura($cardID, $player, $number = 1, $isToken = false)
 {
   global $CS_NumAuras;
+  $otherPlayer = ($player == 1 ? 2 : 1);
   if (CardType($cardID) == "T") $isToken = true;
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
@@ -14,6 +15,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false)
     $index = SearchArsenalReadyCard($player, "MON404");
     if ($index > -1) TheLibrarianEffect($player, $index);
   }
+  $myHoldState = AuraDefaultHoldTriggerState($cardID);
+  if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $theirHoldState = AuraDefaultHoldTriggerState($cardID);
+  if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   for ($i = 0; $i < $number; ++$i) {
     array_push($auras, $cardID);
     array_push($auras, 2); //Status
@@ -22,8 +27,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false)
     array_push($auras, ($isToken ? 1 : 0)); //Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
     array_push($auras, GetUniqueId());
-    array_push($auras, AuraDefaultHoldTriggerState($cardID)); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
-    array_push($auras, AuraDefaultHoldTriggerState($cardID)); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($auras, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($auras, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
   elseif ($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);

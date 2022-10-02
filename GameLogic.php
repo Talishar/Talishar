@@ -2527,16 +2527,22 @@ function PutItemIntoPlay($item, $steamCounterModifier = 0)
 
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1)
 {
+  $otherPlayer = ($player == 1 ? 2 : 1);
   if (CardSubType($item) != "Item") return;
   $items = &GetItems($player);
+  $myHoldState = ItemDefaultHoldTriggerState($item);
+  if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $theirHoldState = ItemDefaultHoldTriggerState($item);
+  if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+
   for ($i = 0; $i < $number; ++$i) {
     array_push($items, $item); //Card ID
     array_push($items, ETASteamCounters($item) + SteamCounterLogic($item, $player) + $steamCounterModifier); //Counters
     array_push($items, 2); //Status
     array_push($items, ItemUses($item)); //Num Uses
     array_push($items, GetUniqueId()); //Unique ID
-    array_push($items, ItemDefaultHoldTriggerState($item));
-    array_push($items, ItemDefaultHoldTriggerState($item));
+    array_push($items, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($items, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
 }
 
