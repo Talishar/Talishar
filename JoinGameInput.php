@@ -24,8 +24,9 @@ $matchup = TryGet("matchup", "");
 
 if($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "")
 {
-  echo("That player has already joined the game.");
-  exit;
+  $_SESSION['error'] = '⚠️ Another player has already joined the game.';
+  header("Location: MainMenu.php");
+  die();
 }
 
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
@@ -90,7 +91,7 @@ if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
 if ($deck == "" && !IsDeckLinkValid($decklink)) {
-  echo '<b>' . "Deck URL is not valid: " . $decklink . '</b>';
+  echo '<b>' . "⚠️ Deck URL is not valid: " . $decklink . '</b>';
   exit;
 }
 //TODO: Validate $deck
@@ -143,7 +144,7 @@ if ($decklink != "") {
   curl_close($curl);
 
   if ($apiDeck === FALSE) {
-    echo  '<b>' . "FabDB API for this deck returns no data: " . implode("/", $decklink) . '</b>';
+    echo  '<b>' . "⚠️ FabDB API for this deck returns no data: " . implode("/", $decklink) . '</b>';
     WriteGameFile();
     exit;
   }
@@ -301,24 +302,24 @@ if ($decklink != "") {
       }
     }
   } else {
-    $_SESSION['error'] = 'Error: The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
 
   if ($unsupportedCards != "") {
-    $_SESSION['error'] = 'Error: The following cards are not yet supported: ' . $unsupportedCards;
+    $_SESSION['error'] = '⚠️ The following cards are not yet supported: ' . $unsupportedCards;
     header("Location: MainMenu.php");
     die();
   }
 
   if ($bannedCard != "") {
     if ($format == "blitz" || $format == "compblitz") {
-      $_SESSION['error'] = $format . 'Error: The following cards are not legal in the Blitz format: ' . $bannedCard;
+      $_SESSION['error'] = $format . '⚠️ The following cards are not legal in the Blitz format: ' . $bannedCard;
     } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc") {
-      $_SESSION['error'] = 'Error: The following cards are not legal in the Classic Constructed format: ' . $bannedCard;
+      $_SESSION['error'] = '⚠️ The following cards are not legal in the Classic Constructed format: ' . $bannedCard;
     } elseif ($format == "commoner") {
-      $_SESSION['error'] = 'Error: The following cards are not legal the Commoner format: ' . $bannedCard;
+      $_SESSION['error'] = '⚠️ The following cards are not legal the Commoner format: ' . $bannedCard;
     }
     header("Location: MainMenu.php");
     die();
@@ -326,14 +327,14 @@ if ($decklink != "") {
 
   if($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc"))
   {
-    $_SESSION['error'] = $format . 'Error: The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
 
   if(($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner"))
   {
-    $_SESSION['error'] = 'Error: The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = '⚠️ The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
