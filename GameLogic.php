@@ -3608,6 +3608,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "NOPASS":
       if ($lastResult == "NO") return "PASS";
       return 1;
+    case "NOFUSE":
+      if ($lastResult == "PASS") {
+        WriteLog("Nothing is revealed for " . CardLink($parameter, $parameter) . " fusion.");
+        return "PASS";
+      }
+      return $lastResult;
     case "NULLPASS":
       if ($lastResult == "") return "PASS";
       return $lastResult;
