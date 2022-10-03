@@ -618,7 +618,7 @@ function GetSettingsUI($player)
   }
 
   $isDMArmadaPatron = false;
-  $isDMArmadaPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DMArmada" || $_SESSION["useruid"] == "PvtVoid" || $_SESSION["useruid"] == "OotTheMonk");
+  $isDMArmadaPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DMArmada" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isDMArmadaPatron'] || $isDMArmadaPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-33", "DM Armada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DM Armada");
