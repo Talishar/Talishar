@@ -141,7 +141,7 @@
         return "";
       case "ARC120":
         $damage = ArcaneDamage($cardID) +ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
-        DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target);//Basically this just applies the bonus twice
+        DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2); //Basically this just applies the bonus twice
         return "Deals " . $damage . " arcane damage.";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -233,11 +233,11 @@
   // 2: Any Target
   // 3: Their Hero + Their Allies
   // 4: My Hero only (For afflications)
-  function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false, $resolvedTarget="")
+  function DealArcane($damage, $target=0, $type="PLAYCARD", $source="NA", $fromQueue=false, $player=0, $mayAbility=false, $limitDuplicates=false, $skipHitEffect=false, $resolvedTarget="", $nbArcaneInstance=1)
   {
     global $currentPlayer, $CS_ArcaneTargetsSelected;
     if($player == 0) $player = $currentPlayer;
-    if($damage > 0) $damage += CurrentEffectArcaneModifier($source, $player);
+    if($damage > 0) $damage += CurrentEffectArcaneModifier($source, $player) * $nbArcaneInstance;
     if($fromQueue)
     {
       if(!$limitDuplicates)
