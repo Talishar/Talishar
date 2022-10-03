@@ -649,7 +649,7 @@ function GetSettingsUI($player)
   /*
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");
-    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px");
+    else $rv .= CreateButton($player, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "18px");
     if(IsManualMode($player))
     {
       $rv .= "<h3>Manual Mode Options</h3>";
