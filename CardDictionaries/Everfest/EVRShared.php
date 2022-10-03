@@ -891,7 +891,7 @@
           AddDecisionQueue("CHOOSETHEIRAURA", $currentPlayer, "<-", 1);
           AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
         }
-        AddDecisionQueue("SCOUR", $otherPlayer, $resourcesPaid);
+        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
         return "";
       case "EVR125": case "EVR126": case "EVR127":
         $oppTurn = $currentPlayer != $mainPlayer;
