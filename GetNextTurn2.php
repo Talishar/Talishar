@@ -365,13 +365,43 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $left = 85;
     $top = 15;
   }
-  if (CanPassPhase($turn[0]) && $currentPlayer == $playerID) echo ("<div title='Space is the shortcut to pass.' " . ProcessInputLink($playerID, 99, 0) . " class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'>
-  <span style='position:absolute; left:" . $left . "px; top:" . $top . "px; color: " . $fontColor . "; font-family:Helvetica; font-size:". $fontSize ."px; font-weight: 550; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>" . $passLabel . "</span>
-  <span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color: " . $fontColor . "; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>[Space]</span></div>");
-  else {
-    echo ("<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'>");
-    echo ("<span style='position:absolute; left:" . $left . "px; top:" . $top . "px; color:gray; font-family:Helvetica; font-size:" . $fontSize . "px; font-weight: 550; text-shadow: 1px 0 0 " . $borderColor . ", 0 -1px 0 " . $borderColor . ", 0 1px 0 " . $borderColor . ", -1px 0 0 " . $borderColor . "; user-select: none;'>" . $passLabel . "</span>");
-    echo ("<span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color:gray; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>[Space]</span></div>");
+
+  if (CanPassPhase($turn[0]) && $currentPlayer == $playerID)
+  {
+    $prompt = "";
+    if (/* phase is arsenal and hand is not empty */)
+    {
+      // Prompt the player if they want to skip arsenal with cards in hand.
+      $prompt = "Do you want to skip arsenal ?";
+    }
+
+?>
+
+    <div title='Space is the shortcut to pass.' <?= ProcessInputLink($playerID, 99, 0, prompt: $prompt) ?> class='passButton' style='position:absolute; top:62px; left:-200px; z-index:-1; cursor:pointer; height:75px; width:225px;'>
+        <span style='position:absolute; left:<?= $left ?>px; top:<?= $top ?>px; color: <?= $fontColor ?>; font-family:Helvetica; font-size:<?= $fontSize ?>px; font-weight: 550; text-shadow: 2px 0 0 <?= $borderColor ?>, 0 -2px 0 <?= $borderColor ?>, 0 2px 0 <?= $borderColor ?>, -2px 0 0 <?= $borderColor ?>; user-select: none;'>
+            <?= $passLabel ?>
+        </span>
+        <span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color: <?= $fontColor ?>; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 <?= $borderColor ?>, 0 -2px 0 <?= $borderColor ?>, 0 2px 0 <?= $borderColor ?>, -2px 0 0 <?= $borderColor ?>; user-select: none;'>
+            [Space]
+        </span>
+    </div>
+
+<?php
+  }
+  else
+  {
+?>
+
+<div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'>
+    <span style='position:absolute; left:<?= $left ?>px; top:<?= $top ?>px; color:gray; font-family:Helvetica; font-size:<?= $fontSize ?>px; font-weight: 550; text-shadow: 1px 0 0 <?= $borderColor ?>, 0 -1px 0 <?= $borderColor ?>, 0 1px 0 <?= $borderColor ?>, -1px 0 0 <?= $borderColor ?>; user-select: none;'>
+        <?= $passLabel ?>
+    </span>
+    <span style='position:absolute; bottom:7px; left:57%; -ms-transform: translateX(-50%); transform: translateX(-50%); color:gray; font-family:Helvetica; font-size:14px; text-shadow: 2px 0 0 <?= $borderColor ?>, 0 -2px 0 <?= $borderColor ?>, 0 2px 0 <?= $borderColor ?>, -2px 0 0 <?= $borderColor ?>; user-select: none;'>
+        [Space]
+    </span>
+</div>
+
+<?php
   }
   echo ("<div style='position:absolute; top:117px; left:-153px; z-index:-4;'><img style='height:60px; width:170px;' src='./Images/p1APTracker.png' /><span style='position:absolute; margin-top:2px; left:85; top:20; z-index:10; color:#111; font-weight:600; font-size:30px; user-select: none;'>" . $actionPoints . "AP" . "</span>");
   echo (($manualMode ? "<span style='position:absolute; top:85%; right:7%; display: inline-block;';>" . CreateButton($playerID, "-1", 10004, 0, "24px") . CreateButton($playerID, "+1", 10002, 0, "24px") . "</span>" : ""));

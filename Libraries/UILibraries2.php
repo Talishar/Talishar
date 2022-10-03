@@ -195,10 +195,16 @@ use JetBrains\PhpStorm\Language;
     return $rv;
   }
 
-  function ProcessInputLink($player, $mode, $input, $event='onmousedown', $fullRefresh=false)
+  function ProcessInputLink($player, $mode, $input, $event='onmousedown', $fullRefresh=false, $prompt="")
   {
     global $gameName;
-    return " " . $event . "='SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");'";
+
+    $jsCode = "SubmitInput(\"" . $mode . "\", \"&buttonInput=" . $input . "\", " . $fullRefresh .");";
+    // If a prompt is given, surround the code with a "confirm()" call
+    if ($prompt != "")
+      $jsCode = "if (confirm(\"" . $prompt . "\")) { " . $jsCode . " }";
+
+    return " " . $event . "='" . $jsCode . "'";
   }
 
   function CreateForm($playerID, $caption, $mode, $count)
