@@ -1197,6 +1197,22 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   ProcessDecisionQueue();
 }
 
+function PlayCardSkipCosts($cardID, $from)
+{
+  global $currentPlayer, $layers, $turn;
+  $cardType = CardType($cardID);
+  if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack();
+  if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
+    if (HasBoost($cardID)) Boost();
+    GetLayerTarget($cardID); //Layer target
+    MainCharacterPlayCardAbilities($cardID, $from);
+    AuraPlayAbilities($cardID);
+  }
+  PlayCardEffect($cardID, $from, 0);
+  //AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . 0 . "||");
+  //ProcessDecisionQueue();
+}
+
 function GetLayerTarget($cardID)
 {
   global $currentPlayer;

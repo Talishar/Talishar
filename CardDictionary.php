@@ -1419,7 +1419,7 @@ function GoesOnCombatChain($phase, $cardID, $from)
   if (($phase == "A" || $phase == "D") && $cardType == "A") return false; //Non-attacks played as instants never go on combat chain
   if ($cardType == "AR") return true;
   if ($cardType == "DR") return true;
-  if ($phase == "M" && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
+  if (($phase == "M" || $phase == "ATTACKWITHIT") && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
   return false;
 }
 

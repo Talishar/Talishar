@@ -4546,7 +4546,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCombatChain($lastResult, $player, $parameter, 0);
       return $lastResult;
     case "ATTACKWITHIT":
-      PlayCard($lastResult, "DECK");
+      PlayCardSkipCosts($lastResult, "DECK");
       return $lastResult;
     case "EVENBIGGERTHANTHAT":
       $deck = &GetDeck($player);
