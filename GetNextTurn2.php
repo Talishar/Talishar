@@ -1438,7 +1438,7 @@ function IsTileable($cardID)
 
 function DisplayTiles($player)
 {
-  global $cardSizeAura, $playerID;
+  global $cardSizeAura, $playerID, $turn;
   $auras = GetAuras($player);
 
   $count = 0;
@@ -1495,10 +1495,24 @@ function DisplayTiles($player)
 
   $items = GetItems($player);
   $copperCount = 0;
+  $playable = false;
+  $actionIndex = -1;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == "CRU197") ++$copperCount;
+    if ($items[$i] == "CRU197")
+    {
+      ++$copperCount;
+      if($player == $playerID && $copperCount == 1)
+      {
+        $actionIndex = $i;
+        $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
+      }
+    }
   }
-  if ($copperCount > 0) echo (Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
+  if ($copperCount > 0)
+  {
+    $border = CardBorderColor("CRU197", "PLAY", $playable);
+    echo (Card("CRU197", "concat", $cardSizeAura, $player == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($copperCount > 1 ? $copperCount : 0), strval($actionIndex)) . "&nbsp");
+  }
 
   $permanents = GetPermanents($player);
   $ashCount = 0;
