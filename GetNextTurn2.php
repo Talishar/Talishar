@@ -1044,7 +1044,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   } else {
     //Empty Arsenal div
     echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); top:" . (intval(GetCharacterTop("C", "")) * 2 + 10) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
-    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $borderColor . ";'>Arsenal</div>");
     echo ("</div>"); 
   }
 
@@ -1105,7 +1105,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   } else {
     //Empty Arsenal div
     echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize + 20) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
-    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $borderColor . ";'>Arsenal</div>");
     echo ("</div>"); 
   }
 
