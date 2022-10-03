@@ -254,6 +254,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBSloopdoop";
   } else if (IsCardBackDMArmada($playerID)) {
     $MyCardBack = "CBDMArmada";
+  } else if (IsCardBackInstantSpeed($playerID)) {
+    $MyCardBack = "CBInstantSpeed";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -324,6 +326,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBSloopdoop";
   } else if (IsCardBackDMArmada($otherPlayer)) {
     $TheirCardBack = "CBDMArmada";
+  } else if (IsCardBackInstantSpeed($otherPlayer)) {
+    $TheirCardBack = "CBInstantSpeed";
   }
 
   //Display background

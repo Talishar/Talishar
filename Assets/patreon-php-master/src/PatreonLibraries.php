@@ -86,6 +86,10 @@ function PatreonLogin($access_token)
       $_SESSION["isDMArmadaPatron"] = true;
       array_push($yourPatronages, "DM Armada");
     }
+    if ($include->type == "campaign" && $include->id == "8306478") {
+      $_SESSION["isInstantSpeedPatron"] = true;
+      array_push($yourPatronages, "Instant Speed Podcast");
+    }
 	}
 
   echo("<h1>Your patronages:</h1>");
