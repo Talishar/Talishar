@@ -254,7 +254,7 @@ function IsCardBackTheTekloFroundry($player)
   return $settings[$SET_Cardback] == 26;
 }
 
-function IsCardBackDragonShieldProTeam($player)
+function IsCardBackPummelowanko($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
@@ -588,11 +588,17 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-26", "TheTekloFoundry", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Teklo Foundry");
   }
 
+  $isPummelowanko = false;
+  $isPummelowanko = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "MrShub" || $_SESSION["useruid"] == "duofanel" || $_SESSION["useruid"] == "PvtVoid");
+  if ($isPummelowanko) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-27", "Pummelowanko", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Pummelowanko");
+  }
+
   $isDragonShieldProTeam = false;
-  $isDragonShieldProTeam = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  $isDragonShieldProTeam = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TwitchTvFabschool" || $_SESSION["useruid"] == "MattRogers" || $_SESSION["useruid"] == "TariqPatel" || $_SESSION["useruid"] == "PvtVoid");
   if ($isDragonShieldProTeam) {
     $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-27", "DragonShieldProTeam", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team");
     $rv .= CreateRadioButton($SET_Cardback . "-28", "DragonShieldProTeamWB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team WB");
   }
 

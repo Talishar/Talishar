@@ -236,8 +236,26 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBAttackActionPodcast";
   } else if (IsCardBackArsenalPass($playerID)) {
     $MyCardBack = "CBArsenalPass";
+  } else if (IsCardBackTheTekloFroundry($playerID)) {
+    $MyCardBack = "CBTekloFoundry";
+  } else if (IsCardBackPummelowanko($playerID)) {
+    $MyCardBack = "CBPummelowanko";
+  } else if (IsCardBackDragonShieldProTeamWB($playerID)) {
+    $MyCardBack = "CBDragonShieldProTeamWB";
+  } else if (IsCardBackFleshAndCommonBlood($playerID)) {
+    $MyCardBack = "CBFleshAndCommonBlood";
+  } else if (IsCardBackSinOnStream($playerID)) {
+    $MyCardBack = "CBSinOnStream";
+  } else if (IsCardBackFreshAndBuds($playerID)) {
+    $MyCardBack = "CBFreshAndBuds";
+  } else if (IsCardBackSloopdoop($playerID)) {
+    $MyCardBack = "CBSloopdoop";
+  } else if (IsCardBackDMArmada($playerID)) {
+    $MyCardBack = "CBDMArmada";
+  } else if (IsCardBackInstantSpeed($playerID)) {
+    $MyCardBack = "CBInstantSpeed";
   }
-  
+
   $otherPlayer = ($playerID == 1 ? 2 : 1);
   $TheirCardBack = "CardBack";
   if (IsCardBackBlack($otherPlayer)) {
@@ -290,6 +308,24 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBAttackActionPodcast";
   } else if (IsCardBackArsenalPass($otherPlayer)) {
     $TheirCardBack = "CBArsenalPass";
+  } else if (IsCardBackTheTekloFroundry($otherPlayer)) {
+    $TheirCardBack = "CBTekloFoundry";
+  } else if (IsCardBackPummelowanko($otherPlayer)) {
+    $TheirCardBack = "CBPummelowanko";
+  } else if (IsCardBackDragonShieldProTeamWB($otherPlayer)) {
+    $TheirCardBack = "CBDragonShieldProTeamWB";
+  } else if (IsCardBackFleshAndCommonBlood($otherPlayer)) {
+    $TheirCardBack = "CBFleshAndCommonBlood";
+  } else if (IsCardBackSinOnStream($otherPlayer)) {
+    $TheirCardBack = "CBSinOnStream";
+  } else if (IsCardBackFreshAndBuds($otherPlayer)) {
+    $TheirCardBack = "CBFreshAndBuds";
+  } else if (IsCardBackSloopdoop($otherPlayer)) {
+    $TheirCardBack = "CBSloopdoop";
+  } else if (IsCardBackDMArmada($otherPlayer)) {
+    $TheirCardBack = "CBDMArmada";
+  } else if (IsCardBackInstantSpeed($otherPlayer)) {
+    $TheirCardBack = "CBInstantSpeed";
   }
 
   if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) {
