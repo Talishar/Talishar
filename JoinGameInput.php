@@ -513,9 +513,9 @@ function GetAltCardID($cardID)
     case "HER075": // TODO: Yoji cardID to be edited
       return "DYN075";
     case "LGS116": // TODO: Blessing of Aether cardID to be edited
-      return "DYN118";
+      return "DYN116";
     case "LGS117": // TODO: Blessing of Aether cardID to be edited
-      return "DYN118";
+      return "DYN117";
     case "LGS118": // TODO: Blessing of Aether cardID to be edited
       return "DYN118";
   }
