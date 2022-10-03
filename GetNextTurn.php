@@ -306,7 +306,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     */
     echo ("</span>");
   }
-  if (IsManualMode($playerID)) echo ("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true));
+  if (IsManualMode($playerID)) echo ("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "18px", "", "", true));
   echo ("</span>");
 
   //Deduplicate current turn effects

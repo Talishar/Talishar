@@ -410,7 +410,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     */
     echo ("</span>");
   }
-  if (IsManualMode($playerID)) echo ("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "24px", "", "", true));
+  if (IsManualMode($playerID)) echo ("&nbsp;" . CreateButton($playerID, "Turn Off Manual Mode", 26, $SET_ManualMode . "-0", "18px", "", "", true));
   echo ("</span>");
 
   //Deduplicate current turn effects
@@ -1028,7 +1028,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</div>");
 
   //Now display their arsenal
-  if ($theirArsenal != "") {
+  if (count($theirArsenal) > 0) {
     $arsenalLeft = (count($theirArsenal) == ArsenalPieces() ? "calc(50% - " . (intval($cardWidth / 2) + 4) . "px)" : "calc(50% - " . (intval($cardWidth) + 14) . "px)");
     echo ("<div title='Your opponent's Arsenal' style='z-index:-10; position: fixed; left:" . $arsenalLeft . "; top:" . (intval(GetCharacterTop("C", "")) * 2 + 5) . "px;'>"); //arsenal div
 
@@ -1041,7 +1041,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       echo ("</div>");
     }
     echo ("</div>");
+  } else {
+    //Empty Arsenal div
+    echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); top:" . (intval(GetCharacterTop("C", "")) * 2 + 10) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
+    echo ("</div>"); 
   }
+
   echo ("</div>");
 
   $restriction = "";
@@ -1096,6 +1102,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       echo ("</div>");
     }
     echo ("</div>"); //End arsenal div
+  } else {
+    //Empty Arsenal div
+    echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize + 20) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
+    echo ("</div>"); 
   }
 
   //Now display my Auras and items
