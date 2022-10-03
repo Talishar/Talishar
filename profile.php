@@ -194,7 +194,7 @@ if (isset($_SESSION["isPatron"])) {
 
     // Simply echoing it here. You can present the login link/button in any other way.
 
-    if (!isset($_SESSION["isPatron"])) {
+    if (!isset($_SESSION["patreonAuthenticated"])) {
       echo ("<BR>");
       echo ("<BR>");
       echo '<a class="containerPatreon" href="' . $href . '">';
