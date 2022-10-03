@@ -1493,6 +1493,7 @@ function DisplayTiles($player)
     echo ("</div>");
   }
 
+  //TODO: Factor this into a function so it doesn't become a mess of duplicated code when we add silver, gold, etc.
   $items = GetItems($player);
   $copperCount = 0;
   $playable = false;
