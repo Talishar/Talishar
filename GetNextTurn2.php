@@ -543,7 +543,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
-      echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i)));
+      echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i), controller:$combatChain[$i + 1]));
     }
   }
 
@@ -711,6 +711,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
         $counters = "Attacker";
       }
+
+      if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) { // $option[1] == nbPieces
+        $params = explode("|", $layers[SearchLayer($otherPlayer, subtype: "Ally") + 2]);
+        if ($option[1] == $params[2]) $counters = "Attacker";
+      }
+
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
       if ($option[0] == "MYARS") $counters = "Arsenal";
 
@@ -746,7 +752,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       } elseif ($option[0] == "MYAURAS") {
         $atkCounters = $myAuras[$option[1] + 3];
       }
-      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $enduranceCounters, $atkCounters);
+      $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $enduranceCounters, $atkCounters, controller: $playerBorderColor);
     }
     $content .= "</div>";
     echo CreatePopup("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, $content);
