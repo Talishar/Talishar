@@ -81,6 +81,11 @@ function PatreonLogin($access_token)
       $_SESSION["isSloopdoopPatron"] = true;
       array_push($yourPatronages, "Sloopdoop");
     }
+    if($include->type == "campaign" && $include->id == "7342687")
+    {
+      $_SESSION["isDMArmadaPatron"] = true;
+      array_push($yourPatronages, "DM Armada");
+    }
 	}
 
   echo("<h1>Your patronages:</h1>");

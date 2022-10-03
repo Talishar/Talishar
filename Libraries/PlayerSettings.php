@@ -296,6 +296,13 @@ function IsCardBackSloopdoop($player)
   return $settings[$SET_Cardback] == 32;
 }
 
+function IsCardBackDMArmada($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 33;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -608,6 +615,13 @@ function GetSettingsUI($player)
   if ($_SESSION['isSloopdoopPatron'] || $isSloopdoopPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-32", "Sloopdoop", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Sloopdoop");
+  }
+
+  $isDMArmadaPatron = false;
+  $isDMArmadaPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DMArmada" || $_SESSION["useruid"] == "PvtVoid" || $_SESSION["useruid"] == "OotTheMonk");
+  if ($_SESSION['isDMArmadaPatron'] || $isDMArmadaPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-33", "DM Armada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DM Armada");
   }
 
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
