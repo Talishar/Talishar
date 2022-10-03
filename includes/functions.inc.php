@@ -166,7 +166,12 @@ function loginUser($username, $pwd, $rememberMe) {
 		$_SESSION["greenThumb"] = $uidExists["greenThumbs"];
 		$_SESSION["redThumb"] = $uidExists["redThumbs"];
 
-		PatreonLogin($patreonAccessToken);
+		try {
+			PatreonLogin($patreonAccessToken);
+		} catch (\Exception $e) {
+
+		}
+
 
 		if($rememberMe)
 		{
@@ -202,7 +207,11 @@ function loginFromCookie()
 			$patreonAccessToken = $row[3];
 			$patreonRefreshToken = $row[4];
 			$_SESSION["userKarma"] = $row[5];
-			PatreonLogin($patreonAccessToken);
+			try {
+				PatreonLogin($patreonAccessToken);
+			} catch (\Exception $e) {
+
+			}
 		}
 		else {
 			unset($_SESSION["userid"]);

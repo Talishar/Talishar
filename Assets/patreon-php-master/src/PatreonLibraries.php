@@ -3,7 +3,7 @@
   use Patreon\API;
   use Patreon\OAuth;
 
-function PatreonLogin($access_token)
+function PatreonLogin($access_token, $silent=true)
 {
   if($access_token == "") return;
   if($access_token == "PERMANENT")
@@ -92,14 +92,17 @@ function PatreonLogin($access_token)
     }
 	}
 
-  echo("<h1>Your patronages:</h1>");
-  for($i=0; $i<count($yourPatronages); ++$i)
+  if(!$silent)
   {
-    echo("<h2>" . $yourPatronages[$i] . "</h2>");
+    echo("<h1>Your patronages:</h1>");
+    for($i=0; $i<count($yourPatronages); ++$i)
+    {
+      echo("<h2>" . $yourPatronages[$i] . "</h2>");
+    }
+    echo("<h4>Not seeing something you expect to see?</h4>");
+    echo("<h4>1. Check your patreon page to make sure it's listed in your currently supported campaigns</h4>");
+    echo("<h4>2. Reach out on our discord server!</h4>");
   }
-  echo("<h4>Not seeing something you expect to see?</h4>");
-  echo("<h4>1. Check your patreon page to make sure it's listed in your currently supported campaigns</h4>");
-  echo("<h4>2. Reach out on our discord server!</h4>");
 
 }
 
