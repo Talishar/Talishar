@@ -369,8 +369,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (CanPassPhase($turn[0]) && $currentPlayer == $playerID)
   {
     $prompt = "";
-    if (/* phase is arsenal and hand is not empty */)
-    {
+    if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID)) {
       // Prompt the player if they want to skip arsenal with cards in hand.
       $prompt = "Do you want to skip arsenal ?";
     }
@@ -387,9 +386,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     </div>
 
 <?php
-  }
-  else
-  {
+  } else {
 ?>
 
 <div title='Space is the shortcut to pass.' class='passInactive' style='position:absolute; top:62px; left:-200px; z-index:-1; height:75px; width:225px;'>
