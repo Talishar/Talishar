@@ -303,6 +303,13 @@ function IsCardBackDMArmada($player)
   return $settings[$SET_Cardback] == 33;
 }
 
+function IsCardBackInstantSpeed($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 34;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -622,6 +629,13 @@ function GetSettingsUI($player)
   if ($_SESSION['isDMArmadaPatron'] || $isDMArmadaPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-33", "DM Armada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DM Armada");
+  }
+
+  $isInstantSpeedPatron = false;
+  $isInstantSpeedPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Flake" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isInstantSpeedPatron'] || $isInstantSpeedPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-34", "Instant Speed", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Instant Speed Podcast");
   }
 
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
