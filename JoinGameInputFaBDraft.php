@@ -21,8 +21,9 @@ $set = TryGet("set");
 
 if(GetCachePiece($gameName, $playerID + 6) != "")
 {
-  echo("That player has already joined the game.");
-  exit;
+  $_SESSION['error'] = '⚠️ Another player has already joined the game.';
+  header("Location: MainMenu.php");
+  die();
 }
 
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
@@ -276,13 +277,13 @@ if ($decklink != "") {
       }
     }
   } else {
-    $_SESSION['error'] = 'Error: The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
+    $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
 
   if ($unsupportedCards != "") {
-    echo ("The following cards are not yet supported: " . $unsupportedCards);
+    echo ("⚠️ The following cards are not yet supported: " . $unsupportedCards);
   }
 
   //We have the decklist, now write to file
