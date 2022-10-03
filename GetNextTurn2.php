@@ -240,8 +240,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBArsenalPass";
   } else if (IsCardBackTheTekloFroundry($playerID)) {
     $MyCardBack = "CBTekloFoundry";
-  } else if (IsCardBackDragonShieldProTeam($playerID)) {
-    $MyCardBack = "CBDragonShieldProTeam";
+  } else if (IsCardBackPummelowanko($playerID)) {
+    $MyCardBack = "CBPummelowanko";
   } else if (IsCardBackDragonShieldProTeamWB($playerID)) {
     $MyCardBack = "CBDragonShieldProTeamWB";
   } else if (IsCardBackFleshAndCommonBlood($playerID)) {
@@ -312,8 +312,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBArsenalPass";
   } else if (IsCardBackTheTekloFroundry($otherPlayer)) {
     $TheirCardBack = "CBTekloFoundry";
-  } else if (IsCardBackDragonShieldProTeam($otherPlayer)) {
-    $TheirCardBack = "CBDragonShieldProTeam";
+  } else if (IsCardBackPummelowanko($otherPlayer)) {
+    $TheirCardBack = "CBPummelowanko";
   } else if (IsCardBackDragonShieldProTeamWB($otherPlayer)) {
     $TheirCardBack = "CBDragonShieldProTeamWB";
   } else if (IsCardBackFleshAndCommonBlood($otherPlayer)) {
