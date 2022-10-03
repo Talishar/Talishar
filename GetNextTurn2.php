@@ -888,37 +888,52 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Show deck, discard, pitch, banish
   //Display Their Discard
+  if (count($theirDiscard) > 0) {
   echo ("<div title='Click to view the cards in your opponent's Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") . ";' onclick='ShowPopup(\"theirDiscardPopup\");'>");
-  $card = (count($theirDiscard) > 0 ? $theirDiscard[count($theirDiscard) - 1] : $blankZone);
-  echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, count($theirDiscard), controller:$otherPlayer));
+  echo (Card($theirDiscard[count($theirDiscard) - 1], "concat", $cardSizeAura, 0, 0, 0, 0, count($theirDiscard), controller:$otherPlayer));
+  } else {
+    //Empty Discard div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("DISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Discard</div>");
+  }
   echo ("</div>");
 
   //Display Their Deck
+  if (count($theirDeck) > 0) {
   echo ("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; top:" . GetZoneTop("THEIRDECK") . ";'>");
+  echo (Card($TheirCardBack, "concat", $cardSizeAura, 0, 0, 0, 0, count($theirDeck)));
+  } else {
+    //Empty Deck div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; top:" . GetZoneTop("THEIRDECK") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Deck</div>");
+  }
   echo (($manualMode ? "<span style='position:absolute; left:50%; -ms-transform: translateX(-50%); transform: translateX(-50%);  bottom:0px; z-index:1000;'>" . CreateButton($playerID, "Draw", 10010, 0, "24px") . "</span>" : ""));
-  $deckImage = (count($theirDeck) > 0 ? $TheirCardBack : $blankZone);
-  echo (Card($deckImage, "concat", $cardSizeAura, 0, 0, 0, 0, count($theirDeck)));
   echo ("</div>");
 
   //Display Their Banish
+  if (count($theirBanish) > 0) {
   echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") . ";'>");
-  $card = (count($theirBanish) > 0 ? ($theirBanish[count($theirBanish) - BanishPieces() + 1] == "INT" ? $TheirCardBack : $theirBanish[count($theirBanish) - BanishPieces()]) : $blankZone);
+  $card = $theirBanish[count($theirBanish) - BanishPieces() + 1] == "INT" ? $TheirCardBack : $theirBanish[count($theirBanish) - BanishPieces()];
   echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller:$otherPlayer));
   if (TalentContains($theirCharacter[0], "SHADOW") || SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true) > 0)) {
     $theirBD = SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-    echo ("<img title='Blood Debt' style='position:absolute; top:20px; left:-45px; width:34px;' src='./Images/" . $bdImage . "'><div style='position:absolute; top:41px; left:-44px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $theirBD . "</div></img>");
-  }
-
+    echo ("<img title='Blood Debt' style='position:absolute; top:20px; left:-45px; width:34px;' src='./Images/" . $bdImage ."'><div style='position:absolute; top:41px; left:-44px; width:34px; font-size:24px; font-weight:550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>" . $theirBD . "</div></img>");
+  } 
   echo ("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'>
   <img style=' opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . "; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($theirBanish) / BanishPieces() . "</div></img></span>");
-
+  } else {
+    //Empty Banish div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Banish</div>");
+  }
   echo ("</div>");
 
   //Display Their Pitch
+  if (count($theirPitch) > 0) {
   echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") . ";'>");
   $card = (count($theirPitch) > 0 ? $theirPitch[count($theirPitch) - PitchPieces()] : $blankZone);
   echo (Card($card, "concat", $cardSizeAura, 0, 0, controller:$otherPlayer));
@@ -926,6 +941,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $theirResources[0] . "</div></img></span>");
+  } else {
+    //Empty Pitch div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    if ($theirResources[0] > 0) {
+      echo ("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block; z-index:5;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
+      <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px; text-align: center; transform: translate(-50%, -50%); line-height: 32px; position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $theirResources[0] . "</div></img></span>");
+    } else echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Pitch</div>");
+  }
   echo (($manualMode ? "<span style='position:absolute; top:7; right:0;'>" . CreateButton($playerID, "-1", 10014, 0, "24px") . CreateButton($playerID, "+1", 10013, 0, "24px") . "</span>" : ""));
   echo ("</div>");
 
@@ -1045,14 +1068,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($theirArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:10; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo ("</div>");
     }
-    echo ("</div>");
   } else {
     //Empty Arsenal div
     echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); top:" . (intval(GetCharacterTop("C", "")) * 2 + 10) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
     echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
-    echo ("</div>"); 
   }
-
+  echo ("</div>");
   echo ("</div>");
 
   $restriction = "";
@@ -1106,13 +1127,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($myArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:100; border-radius:5px; top:7px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo ("</div>");
     }
-    echo ("</div>"); //End arsenal div
   } else {
     //Empty Arsenal div
     echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize + 20) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
     echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
-    echo ("</div>"); 
   }
+  echo ("</div>"); //End arsenal div
 
   //Now display my Auras and items
   $permHeight = $cardSize * 2 + 85;
@@ -1211,57 +1231,83 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Show deck, discard, pitch, banish
   //Display My Discard
+  if (count($myDiscard) > 0) {
   echo ("<div title='Click to view the cards in your Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; bottom:" . GetZoneBottom("MYDISCARD") . ";' onclick='ShowPopup(\"myDiscardPopup\");'>");
-  $card = (count($myDiscard) > 0 ? $myDiscard[count($myDiscard) - 1] : $blankZone);
-  echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, count($myDiscard), controller:$playerID));
+  echo (Card($myDiscard[count($myDiscard) - 1], "concat", $cardSizeAura, 0, 0, 0, 0, count($myDiscard), controller:$playerID));
+  } else {
+    //Empty Discard div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("DISCARD") . "; bottom:" . GetZoneBottom("MYDISCARD") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Discard</div>");
+  }
   echo ("</div>");
 
   //Display My Deck
+  if (count($myDeck) > 0) {
   if($turn[0] == "OVER") echo ("<div title='Click to view the cards in your Deck.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") . "' onclick='ShowPopup(\"myDeckPopup\");'>");
   else echo ("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") . ";'>");
+  echo (Card($MyCardBack, "concat", $cardSizeAura, 0, 0, 0, 0, count($myDeck)));
+  } else {
+    //Empty Deck div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("DECK") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Deck</div>");
+  }
   echo (($manualMode ? "<span style='position:absolute; left:50%; -ms-transform: translateX(-50%); transform: translateX(-50%); bottom:0px; z-index:1000;'>" . CreateButton($playerID, "Draw", 10009, 0, "24px") . "</span>" : ""));
-  $deckImage = (count($myDeck) > 0 ? $MyCardBack : $blankZone);
-  echo (Card($deckImage, "concat", $cardSizeAura, 0, 0, 0, 0, count($myDeck)));
   echo ("</div>");
 
   //Display My Banish
+  if (count($myBanish) > 0) {
   echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; bottom:" . GetZoneBottom("MYBANISH") . ";'>");
-  $card = (count($myBanish) > 0 ? $myBanish[count($myBanish) - BanishPieces()] : $blankZone);
-  echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller:$playerID));
+  echo (Card($myBanish[count($myBanish) - BanishPieces()], "concat", $cardSizeAura, 0, 0, 0, 0, controller:$playerID));
   echo ("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;
   position:absolute; display:inline-block;'><img style='opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/banish.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height:" . $counterHeight . "; padding: 3px;
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($myBanish) / BanishPieces() . "</div></img></span>");
-
   if (TalentContains($myCharacter[0], "SHADOW") || SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true))) {
     $myBD = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-    echo ("<img title='Blood Debt' style='position:absolute; top:18px; left:-40px; width:34px;' src='./Images/" . $bdImage . "'>
-    <div style='position:absolute; top:38px; left:-39px; width:34px; font-size:24px; font-weight:500; text-align:center;'>" . $myBD . "</div></img>");
+    echo ("<img title='Blood Debt' style='position:absolute; top:18px; left:-40px; width:34px;' src='./Images/" . $bdImage ."'>
+    <div style='position:absolute; top:40px; left:-40px; width:34px; font-size:24px; font-weight:550; color: " . $fontColor ."; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>" . $myBD . "</div></img>");
+  }
+  } else {
+    //Empty Banish div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; bottom:" . GetZoneBottom("MYBANISH") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Banish</div>");
   }
 
   echo ("</div>");
 
   //Display My Pitch
+  if (count($myPitch) > 0) {
   echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") . ";'>");
-  $card = (count($myPitch) > 0 ? $myPitch[count($myPitch) - PitchPieces()] : $blankZone);
-  echo (Card($card, "concat", $cardSizeAura, 0, 0, controller:$playerID));
+  echo (Card($myPitch[count($myPitch) - PitchPieces()], "concat", $cardSizeAura, 0, 0, controller:$playerID));
   echo ("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
   <div style='margin: 0; top: 51%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
-  position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $myResources[0] . "</div></img></span>");
+  position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $myResources[0] . "</div></img></span>");  echo ("</div>");
+  } else {
+    //Empty Pitch div
+    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    if ($myResources[0] > 0) {
+      echo ("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block; z-index:5;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
+      <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px; text-align: center; transform: translate(-50%, -50%); line-height: 32px; position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $myResources[0] . "</div></img></span>");
+    } else echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Pitch</div>");
+  }
   echo (($manualMode ? "<span style='position:absolute; padding-bottom: 5px; bottom:0; right:0;'>" . CreateButton($playerID, "-1", 10015, 0, "24px") . CreateButton($playerID, "+1", 10012, 0, "24px") . "</span>" : ""));
   echo ("</div>");
-  echo ("</div>"); //End play area div
+  //End play area div
 
   //Display the log
   echo ("<div style='display:flex; flex-direction: column; position:fixed; width:" . $rightSideWidth . "px; top:5px; bottom:5px; right:10px;'>");
 
   echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr>");
-  if(IsPatron($playerID)) echo ("<td><div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:50px; height:50px;' src='./Images/stats.png' /></div></td>");
-  echo ("<td></td><td>");
-  echo ("<div class='MenuButtons' title='Click to view the menu. (Hotkey: M)' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:50px; height:50px;' src='./Images/menu.png' /></div>");
+  if(IsPatron($playerID)) {
+    echo ("<td><div class='MenuButtons' title='Click to view stats.' style='cursor:pointer;' onclick='ShowPopup(\"myStatsPopup\");'><img style='width:45px; height:45px;' src='./Images/stats.png' /></div></td>");
+    echo ("<td></td><td>");
+    echo ("<div class='MenuButtons' title='Click to view the menu. (Hotkey: M)' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:45px; height:45px;' src='./Images/menu.png' /></div>");
+  } else {
+    echo ("<td><div class='MenuButtons' title='Click to view the menu. (Hotkey: M)' style='cursor:pointer;' onclick='ShowPopup(\"menuPopup\");'><img style='width:45px; height:45px;' src='./Images/menu.png' /></div>");
+  }
   echo ("</td></tr></table></div></div>");
 
   echo ("<div style='flex-grow:0; flex-shrink:0; text-align:center; margin-top: 3px; width:100%; font-weight:bold; font-size:24; font-weight: 550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; user-select: none;'>Turn #" . $currentTurn . "</div>");
@@ -1403,11 +1449,11 @@ function GetZoneRight($zone)
   global $cardWidth, $rightSideWidth;
   switch ($zone) {
     case "DISCARD":
-      return intval($rightSideWidth * 1.08) . "px";
+      return intval($rightSideWidth * 1.09) . "px";
     case "DECK":
       return intval($rightSideWidth * 1.08) . "px";
     case "BANISH":
-      return intval($rightSideWidth * 1.08) . "px";
+      return intval($rightSideWidth * 1.09) . "px";
     case "PITCH":
       return (intval($rightSideWidth * 1.18) + $cardWidth) . "px";
   }
