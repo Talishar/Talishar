@@ -381,7 +381,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("<span style='position:fixed;  bottom:0px; left:14%; right:14%; z-index:10; display:inline-block; justity-content: center; font-size:30px; text-align:center;'>");
 
 
-  echo (($manualMode ? "<span style='position:relative; top: 5px; z-index:10; color: " . $fontColor . "; font-family:Helvetica; font-size:28px; font-weight: 550;text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Add to hand: </span><input id='manualAddCardToHand' type='text' /><input type='button' style='position:relative; top:0; left:0; bottom: 5px; box-shadow: none;' value='Add' onclick='AddCardToHand()' />&nbsp;" : ""));
+  echo (($manualMode ? "<span style='position:relative; top: 5px; z-index:10; color: " . $fontColor . "; font-family:Helvetica; font-size:18px; font-weight: 550;text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Add to hand: </span><input style='width: 100px;' id='manualAddCardToHand' type='text' /><input type='button' style='position:relative; font-size: 14px; top:0; left:0; bottom: 5px; box-shadow: none;' value='Add' onclick='AddCardToHand()' />&nbsp;" : ""));
 
   //Tell the player what to pick
   if ($turn[0] != "OVER") {
@@ -712,9 +712,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $counters = "Attacker";
       }
 
-      if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) { // $option[1] == nbPieces
-        $params = explode("|", $layers[SearchLayer($otherPlayer, subtype: "Ally") + 2]);
-        if ($option[1] == $params[2]) $counters = "Attacker";
+      if (count($layers) > 0) {
+        if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) { 
+          $index = SearchLayer($otherPlayer, subtype: "Ally");
+          if ($index != "") {
+            $params = explode("|", $layers[$index + 2]);
+            if ($option[1] == $params[2]) $counters = "Attacker";
+          }
+        }
       }
 
       //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
@@ -1044,7 +1049,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   } else {
     //Empty Arsenal div
     echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); top:" . (intval(GetCharacterTop("C", "")) * 2 + 10) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
-    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $borderColor . ";'>Arsenal</div>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
     echo ("</div>"); 
   }
 
@@ -1105,7 +1110,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   } else {
     //Empty Arsenal div
     echo ("<div style='position:fixed; left: calc(50% - " . (intval($cardWidth / 2)) . "px); bottom:" . (intval(GetCharacterBottom("C", "")) - $cardSize + 20) . "px; border-radius:5%; padding:" . $cardSizeAura/2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
-    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $borderColor . ";'>Arsenal</div>");
+    echo ("<div style='position:absolute; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: " . $fontColor . ";'>Arsenal</div>");
     echo ("</div>"); 
   }
 
