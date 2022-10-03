@@ -21,11 +21,11 @@ function PatreonLogin($access_token)
 	$relationships = $patron->relationships;
 	if(isset($relationships)) $memberships = $relationships->memberships;
 
-  $loginSuccessful = false;
   if($patron_response->included == null) return;
   $yourPatronages = [];
 	for($i=0; $i<count($patron_response->included); ++$i)
 	{
+    $_SESSION["patreonAuthenticated"] = true;
 		$include = $patron_response->included[$i];
 		if($include->type == "campaign" && $include->id == "7198186")
 		{
@@ -82,7 +82,7 @@ function PatreonLogin($access_token)
       array_push($yourPatronages, "Sloopdoop");
     }
 	}
-  
+
   echo("<h1>Your patronages:</h1>");
   for($i=0; $i<count($yourPatronages); ++$i)
   {
