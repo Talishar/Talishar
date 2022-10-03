@@ -1305,6 +1305,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR179":
       return GetClassState($player, $CS_NumCardsPlayed) >= 1;
     case "EVR180":
+      if ($from != "PLAY") return false;
       if (count($layers) > 0){
         for ($i = 0; $i < count($layers); $i++) {
           if (ArcaneDamage($layers[$i]) >= GetHealth($player) && $layers[$i+3] == "THEIRCHAR-0") return false; // TODO: Not 100% correct
