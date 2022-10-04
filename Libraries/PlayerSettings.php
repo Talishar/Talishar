@@ -26,6 +26,8 @@ $SET_MuteChat = 14; //Did this player mute chat
 $SET_DisableStats = 15; //Did this player disable stats
 $SET_CasterMode = 16; //Did this player enable caster mode
 
+$SET_Language = 1000; //What language is this player using?
+
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
@@ -72,277 +74,53 @@ function IsPatron($player)
   /*================
       Card Backs
   =================*/
-function IsCardBackBlack($player)
+function GetCardBack($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 1;
-}
-
-function IsCardBackCream($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 2;
-}
-
-function IsCardBackGold($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 3;
-}
-
-function IsCardBackGrey($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 4;
-}
-
-function IsCardBackRed($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 5;
-}
-
-function IsCardBackTan($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 6;
-}
-
-function IsCardBackBlue($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 7;
-}
-
-function IsCardBackRuneblood($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 8;
-}
-
-function IsCardBackPushThePoint($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 9;
-}
-
-function IsCardBackGoAgainGaming($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 10;
-}
-
-function IsCardBackGAGAzaleaCult($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 11;
-}
-
-function IsCardBackGAGAzalea($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 12;
-}
-
-function IsCardBackGAGAzaleaShot($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 13;
-}
-
-function IsCardBackGAGDorinthea($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 14;
-}
-
-function IsCardBackGAGDromai($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 15;
-}
-
-function IsCardBackGAGKassai($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 16;
-}
-
-function IsCardBackRedZoneRogue($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 17;
-}
-
-function IsCardBackRZR10k($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 18;
-}
-
-function IsCardBackRZRKadikosLibrary($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 19;
-}
-
-function IsCardBackRZRVehya($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 20;
-}
-
-function IsCardBackFabrary1($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 21;
-}
-
-function IsCardBackFabrary2($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 22;
-}
-
-function IsCardBackManSant($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 23;
-}
-
-function IsCardBackAttackActionPodcast($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 24;
-}
-
-function IsCardBackArsenalPass($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 25;
-}
-
-function IsCardBackTheTekloFroundry($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 26;
-}
-
-function IsCardBackPummelowanko($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 27;
-}
-
-function IsCardBackDragonShieldProTeamWB($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 28;
-}
-
-function IsCardBackFleshAndCommonBlood($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 29;
-}
-
-function IsCardBackSinOnStream($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 30;
-}
-
-function IsCardBackFreshAndBuds($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 31;
-}
-
-function IsCardBackSloopdoop($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 32;
-}
-
-function IsCardBackDMArmada($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 33;
-}
-
-function IsCardBackInstantSpeed($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 34;
-}
-
-function IsCardBackTheCardGuyz($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 35;
-}
-
-function IsCardBackHomeTownTCG($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 36;
-}
-
-function IsCardBackAscentGaming($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 37;
-}
-
-function IsCardBackFleshAndPod($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 38;
-}
-
-function IsCardBackKappolo($player)
-{
-  global $SET_Cardback;
-  $settings = GetSettings($player);
-  return $settings[$SET_Cardback] == 39;
+  switch($settings[$SET_Cardback])
+  {
+    case 1: return "CBBlack";
+    case 2: return "CBCreamWhite";
+    case 3: return "CBGold";
+    case 4: return "CBWhite";
+    case 5: return "CBRed";
+    case 6: return "CBParchment";
+    case 7: return "CBBlue";
+    case 8: return "CBRuneblood";
+    case 9: return "CBPushThePoint";
+    case 10: return "CBGoAgainGaming";
+    case 11: return "CBGAG_AzaleaCult";
+    case 12: return "CBGAG_Azalea";
+    case 13: return "CBGAG_AzaleaShot";
+    case 14: return "CBGAG_Dorinthea";
+    case 15: return "CBGAG_Dromai";
+    case 16: return "CBGAG_Kassai";
+    case 17: return "CBRedZoneRogue";
+    case 18: return "CBRZR_10k";
+    case 19: return "CBRZR_KadikosLibrary";
+    case 20: return "CBRZR_Vehya";
+    case 21: return "CBFabrary1";
+    case 22: return "CBFabrary2";
+    case 23: return "CBManSant";
+    case 24: return "CBAttackActionPodcast";
+    case 25: return "CBArsenalPass";
+    case 26: return "CBTekloFoundry";
+    case 27: return "CBPummelowanko";
+    case 28: return "CBDragonShieldProTeamWB";
+    case 29: return "CBFleshAndCommonBlood";
+    case 30: return "CBSinOnStream";
+    case 31: return "CBFreshAndBuds";
+    case 32: return "CBSloopdoop";
+    case 33: return "CBDMArmada";
+    case 34: return "CBInstantSpeed";
+    case 35: return "CBTheCardGuyz";
+    case 36: return "CBHomeTownTCG";
+    case 37: return "CBAscentGaming";
+    case 38: return "CBFleshAndPod";
+    case 39: return "CBKappolo";
+    default: return "CardBack";
+  }
 }
 
 function IsManualMode($player)

@@ -187,166 +187,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $fontColor = ($darkMode ? "#1a1a1a" : "#DDD");
 
   //Choose Cardback
-  $MyCardBack = "CardBack";
-  if (IsCardBackBlack($playerID)) {
-    $MyCardBack = "CBBlack";
-  } else if (IsCardBackCream($playerID)) {
-    $MyCardBack = "CBCreamWhite";
-  } else if (IsCardBackGold($playerID)) {
-    $MyCardBack = "CBGold";
-  } else if (IsCardBackGrey($playerID)) {
-    $MyCardBack = "CBWhite";
-  } else if (IsCardBackRed($playerID)) {
-    $MyCardBack = "CBRed";
-  } else if (IsCardBackTan($playerID)) {
-    $MyCardBack = "CBParchment";
-  } else if (IsCardBackBlue($playerID)) {
-    $MyCardBack = "CBBlue";
-  } else if (IsCardBackRuneblood($playerID)) { // Push The Point
-    $MyCardBack = "CBRuneblood";
-  } else if (IsCardBackPushThePoint($playerID)) {
-    $MyCardBack = "CBPushThePoint";
-  } else if (IsCardBackGoAgainGaming($playerID)) { // Go Again Gaming
-    $MyCardBack = "CBGoAgainGaming";
-  } else if (IsCardBackGAGAzaleaCult($playerID)) {
-    $MyCardBack = "CBGAG_AzaleaCult";
-  } else if (IsCardBackGAGAzalea($playerID)) {
-    $MyCardBack = "CBGAG_Azalea";
-  } else if (IsCardBackGAGAzaleaShot($playerID)) {
-    $MyCardBack = "CBGAG_AzaleaShot";
-  } else if (IsCardBackGAGDorinthea($playerID)) {
-    $MyCardBack = "CBGAG_Dorinthea";
-  } else if (IsCardBackGAGDromai($playerID)) {
-    $MyCardBack = "CBGAG_Dromai";
-  } else if (IsCardBackGAGKassai($playerID)) {
-    $MyCardBack = "CBGAG_Kassai";
-  } else if (IsCardBackRedZoneRogue($playerID)) {
-    $MyCardBack = "CBRedZoneRogue";
-  } else if (IsCardBackRZR10k($playerID)) {
-    $MyCardBack = "CBRZR_10k";
-  } else if (IsCardBackRZRKadikosLibrary($playerID)) {
-    $MyCardBack = "CBRZR_KadikosLibrary";
-  } else if (IsCardBackRZRVehya($playerID)) {
-    $MyCardBack = "CBRZR_Vehya";
-  } else if (IsCardBackFabrary1($playerID)) {
-    $MyCardBack = "CBFabrary1";
-  } else if (IsCardBackFabrary2($playerID)) {
-    $MyCardBack = "CBFabrary2";
-  } else if (IsCardBackManSant($playerID)) {
-    $MyCardBack = "CBManSant";
-  } else if (IsCardBackAttackActionPodcast($playerID)) {
-    $MyCardBack = "CBAttackActionPodcast";
-  } else if (IsCardBackArsenalPass($playerID)) {
-    $MyCardBack = "CBArsenalPass";
-  } else if (IsCardBackTheTekloFroundry($playerID)) {
-    $MyCardBack = "CBTekloFoundry";
-  } else if (IsCardBackPummelowanko($playerID)) {
-    $MyCardBack = "CBPummelowanko";
-  } else if (IsCardBackDragonShieldProTeamWB($playerID)) {
-    $MyCardBack = "CBDragonShieldProTeamWB";
-  } else if (IsCardBackFleshAndCommonBlood($playerID)) {
-    $MyCardBack = "CBFleshAndCommonBlood";
-  } else if (IsCardBackSinOnStream($playerID)) {
-    $MyCardBack = "CBSinOnStream";
-  } else if (IsCardBackFreshAndBuds($playerID)) {
-    $MyCardBack = "CBFreshAndBuds";
-  } else if (IsCardBackSloopdoop($playerID)) {
-    $MyCardBack = "CBSloopdoop";
-  } else if (IsCardBackDMArmada($playerID)) {
-    $MyCardBack = "CBDMArmada";
-  } else if (IsCardBackInstantSpeed($playerID)) {
-    $MyCardBack = "CBInstantSpeed";
-  } else if (IsCardBackTheCardGuyz($playerID)) {
-    $MyCardBack = "CBTheCardGuyz";
-  } else if (IsCardBackHomeTownTCG($playerID)) {
-    $MyCardBack = "CBHomeTownTCG";
-  } else if (IsCardBackAscentGaming($playerID)) {
-    $MyCardBack = "CBAscentGaming";
-  } else if (IsCardBackFleshAndPod($playerID)) {
-    $MyCardBack = "CBFleshAndPod";
-  } else if (IsCardBackKappolo($playerID)) {
-    $MyCardBack = "CBKappolo";
-  }
-
-  $otherPlayer = ($playerID == 1 ? 2 : 1);
-  $TheirCardBack = "CardBack";
-  if (IsCardBackBlack($otherPlayer)) {
-    $TheirCardBack = "CBBlack";
-  } else if (IsCardBackCream($otherPlayer)) {
-    $TheirCardBack = "CBCreamWhite";
-  } else if (IsCardBackGold($otherPlayer)) {
-    $TheirCardBack = "CBGold";
-  } else if (IsCardBackGrey($otherPlayer)) {
-    $TheirCardBack = "CBWhite";
-  } else if (IsCardBackRed($otherPlayer)) {
-    $TheirCardBack = "CBRed";
-  } else if (IsCardBackTan($otherPlayer)) {
-    $TheirCardBack = "CBParchment";
-  } else if (IsCardBackBlue($otherPlayer)) {
-    $TheirCardBack = "CBBlue";
-  } else if (IsCardBackRuneblood($otherPlayer)) { // Push The Point
-    $TheirCardBack = "CBRuneblood";
-  } else if (IsCardBackPushThePoint($otherPlayer)) {
-    $TheirCardBack = "CBPushThePoint";
-  } else if (IsCardBackGoAgainGaming($otherPlayer)) { // Go Again Gaming
-    $TheirCardBack = "CBGoAgainGaming";
-  } else if (IsCardBackGAGAzaleaCult($otherPlayer)) {
-    $TheirCardBack = "CBGAG_AzaleaCult";
-  } else if (IsCardBackGAGAzalea($otherPlayer)) {
-    $TheirCardBack = "CBGAG_Azalea";
-  } else if (IsCardBackGAGAzaleaShot($otherPlayer)) {
-    $TheirCardBack = "CBGAG_AzaleaShot";
-  } else if (IsCardBackGAGDorinthea($otherPlayer)) {
-    $TheirCardBack = "CBGAG_Dorinthea";
-  } else if (IsCardBackGAGDromai($otherPlayer)) {
-    $TheirCardBack = "CBGAG_Dromai";
-  } else if (IsCardBackGAGKassai($otherPlayer)) {
-    $TheirCardBack = "CBGAG_Kassai";
-  } else if (IsCardBackRedZoneRogue($otherPlayer)) {
-    $TheirCardBack = "CBRedZoneRogue";
-  } else if (IsCardBackRZR10k($otherPlayer)) {
-    $TheirCardBack = "CBRZR_10k";
-  } else if (IsCardBackRZRKadikosLibrary($otherPlayer)) {
-    $TheirCardBack = "CBRZR_KadikosLibrary";
-  } else if (IsCardBackRZRVehya($otherPlayer)) {
-    $TheirCardBack = "CBRZR_Vehya";
-  } else if (IsCardBackFabrary1($otherPlayer)) {
-    $TheirCardBack = "CBFabrary1";
-  } else if (IsCardBackFabrary2($otherPlayer)) {
-    $TheirCardBack = "CBFabrary2";
-  } else if (IsCardBackManSant($otherPlayer)) {
-    $TheirCardBack = "CBManSant";
-  } else if (IsCardBackAttackActionPodcast($otherPlayer)) {
-    $TheirCardBack = "CBAttackActionPodcast";
-  } else if (IsCardBackArsenalPass($otherPlayer)) {
-    $TheirCardBack = "CBArsenalPass";
-  } else if (IsCardBackTheTekloFroundry($otherPlayer)) {
-    $TheirCardBack = "CBTekloFoundry";
-  } else if (IsCardBackPummelowanko($otherPlayer)) {
-    $TheirCardBack = "CBPummelowanko";
-  } else if (IsCardBackDragonShieldProTeamWB($otherPlayer)) {
-    $TheirCardBack = "CBDragonShieldProTeamWB";
-  } else if (IsCardBackFleshAndCommonBlood($otherPlayer)) {
-    $TheirCardBack = "CBFleshAndCommonBlood";
-  } else if (IsCardBackSinOnStream($otherPlayer)) {
-    $TheirCardBack = "CBSinOnStream";
-  } else if (IsCardBackFreshAndBuds($otherPlayer)) {
-    $TheirCardBack = "CBFreshAndBuds";
-  } else if (IsCardBackSloopdoop($otherPlayer)) {
-    $TheirCardBack = "CBSloopdoop";
-  } else if (IsCardBackDMArmada($otherPlayer)) {
-    $TheirCardBack = "CBDMArmada";
-  } else if (IsCardBackTheCardGuyz($otherPlayer)) {
-    $TheirCardBack = "CBTheCardGuyz";
-  } else if (IsCardBackHomeTownTCG($otherPlayer)) {
-    $TheirCardBack = "CBHomeTownTCG";
-  } else if (IsCardBackAscentGaming($otherPlayer)) {
-    $TheirCardBack = "CBAscentGaming";
-  } else if (IsCardBackFleshAndPod($otherPlayer)) {
-    $TheirCardBack = "CBFleshAndPod";
-  } else if (IsCardBackKappolo($otherPlayer)) {
-    $TheirCardBack = "CBKappolo";
-  }
+  $MyCardBack = GetCardBack($playerID);
+  $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
 
   //Display background
   if (IsDarkPlainMode($playerID))
@@ -731,7 +573,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
 
       if (count($layers) > 0) {
-        if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) { 
+        if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
           $index = SearchLayer($otherPlayer, subtype: "Ally");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
@@ -937,7 +779,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $theirBD = SearchCount(SearchBanish(($playerID == 1 ? 2 : 1), "", "", -1, -1, "", "", true));
     $bdImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
     echo ("<img title='Blood Debt' style='position:absolute; top:20px; left:-45px; width:34px;' src='./Images/" . $bdImage ."'><div style='position:absolute; top:41px; left:-44px; width:34px; font-size:24px; font-weight:550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>" . $theirBD . "</div></img>");
-  } 
+  }
   echo ("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'>
   <img style=' opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . "; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
