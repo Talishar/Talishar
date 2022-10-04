@@ -405,7 +405,7 @@ use JetBrains\PhpStorm\Language;
 
   function BanishUIMinimal($from="")
   {
-    global $turn, $currentPlayer, $playerID, $cardSizeAura;
+    global $turn, $currentPlayer, $playerID, $cardSizeAura, $MyCardBack;
     $rv = "";
     $size = ($from == "HAND" ? $cardSizeAura : 120);
     $banish = GetBanish($playerID);
@@ -416,7 +416,8 @@ use JetBrains\PhpStorm\Language;
       if($mod == "INT")
       {
         if($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
+        if ($playerID == 3) ClientRenderedCard(cardNumber: $MyCardBack, overlay: 1, controller: $playerID);
+        else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
       }
       else if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
       {

@@ -1257,7 +1257,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display My Banish
   if (count($myBanish) > 0) {
   echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; bottom:" . GetZoneBottom("MYBANISH") . ";'>");
-  echo (Card($myBanish[count($myBanish) - BanishPieces()], "concat", $cardSizeAura, 0, 0, 0, 0, controller:$playerID));
+  if ($playerID == 3) $card = ($myBanish[count($myBanish) - BanishPieces() + 1] == "INT" ? $MyCardBack : $myBanish[count($myBanish) - BanishPieces()]);
+  else $card = $myBanish[count($myBanish) - BanishPieces()];
+  echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller:$playerID));
   echo ("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;
   position:absolute; display:inline-block;'><img style='opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/banish.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height:" . $counterHeight . "; padding: 3px;
