@@ -317,6 +317,13 @@ function IsCardBackTheCardGuyz($player)
   return $settings[$SET_Cardback] == 35;
 }
 
+function IsCardBackHomeTownTCG($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 36;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -656,6 +663,13 @@ function GetSettingsUI($player)
   if ($_SESSION['isTheCardGuyzPatron'] || $isTheCardGuyzPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-35", "TheCardGuyz", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Card Guyz");
+  }
+
+  $isHomeTownTCGPatron = false;
+  $isHomeTownTCGPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  if ($_SESSION['isTheCardGuyzPatron'] || $isHomeTownTCGPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-36", "HomeTownTCG", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "HomeTownTCG");
   }
 
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
