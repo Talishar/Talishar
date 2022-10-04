@@ -1297,7 +1297,7 @@ function CurrentEffectAttackAbility()
   $currentTurnEffects = array_values($currentTurnEffects); //In case any were removed
 }
 
-function CurrentEffectPlayAbility($cardID)
+function CurrentEffectPlayAbility($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
 
@@ -1338,7 +1338,7 @@ function CurrentEffectPlayAbility($cardID)
           else if ($currentTurnEffects[$i] == "DYN117") $amount = 2;
           else $amount = 1;
           if (ActionsThatDoArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
-          $remove = 1;
+          if ($from != "EQUIP") $remove = 1;
           break;
         default:
           break;

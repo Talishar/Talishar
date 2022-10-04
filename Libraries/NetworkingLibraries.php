@@ -1819,7 +1819,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   //Resolve Effects
   if (!$isBlock) {
     if ($from != "PLAY") {
-      CurrentEffectPlayAbility($cardID);
+      CurrentEffectPlayAbility($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
       CharacterPlayCardAbilities($cardID, $from);
     }
