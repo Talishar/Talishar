@@ -99,8 +99,12 @@ function PatreonLogin($access_token, $silent=true)
       array_push($yourPatronages, "HomeTownTCG");
     }
     if ($include->type == "campaign" && $include->id == "8338817") {
-      $_SESSION["isFleshAndPodPatreon"] = true;
+      $_SESSION["isFleshAndPodPatron"] = true;
       array_push($yourPatronages, "Flesh And Pod");
+    }
+    if ($include->type == "campaign" && $include->id == "9361474") {
+      $_SESSION["isKappoloPatron"] = true;
+      array_push($yourPatronages, "Kappolo");
     }
 	}
   

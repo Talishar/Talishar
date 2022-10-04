@@ -254,6 +254,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBDMArmada";
   } else if (IsCardBackInstantSpeed($playerID)) {
     $MyCardBack = "CBInstantSpeed";
+  } else if (IsCardBackTheCardGuyz($playerID)) {
+    $MyCardBack = "CBTheCardGuyz";
+  } else if (IsCardBackHomeTownTCG($playerID)) {
+    $MyCardBack = "CBHomeTownTCG";
+  } else if (IsCardBackAscentGaming($playerID)) {
+    $MyCardBack = "CBAscentGaming";
+  } else if (IsCardBackFleshAndPod($playerID)) {
+    $MyCardBack = "CBFleshAndPod";
+  } else if (IsCardBackKappolo($playerID)) {
+    $MyCardBack = "CBKappolo";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -324,8 +334,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBSloopdoop";
   } else if (IsCardBackDMArmada($otherPlayer)) {
     $TheirCardBack = "CBDMArmada";
-  } else if (IsCardBackInstantSpeed($otherPlayer)) {
-    $TheirCardBack = "CBInstantSpeed";
+  } else if (IsCardBackTheCardGuyz($otherPlayer)) {
+    $TheirCardBack = "CBTheCardGuyz";
+  } else if (IsCardBackHomeTownTCG($otherPlayer)) {
+    $TheirCardBack = "CBHomeTownTCG";
+  } else if (IsCardBackAscentGaming($otherPlayer)) {
+    $TheirCardBack = "CBAscentGaming";
+  } else if (IsCardBackFleshAndPod($otherPlayer)) {
+    $TheirCardBack = "CBFleshAndPod";
+  } else if (IsCardBackKappolo($otherPlayer)) {
+    $TheirCardBack = "CBKappolo";
   }
 
   if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) {

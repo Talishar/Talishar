@@ -338,6 +338,13 @@ function IsCardBackFleshAndPod($player)
   return $settings[$SET_Cardback] == 38;
 }
 
+function IsCardBackKappolo($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 39;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -693,11 +700,18 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-37", "AscentGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Ascent Gaming");
   }
 
-  $isFleshAndPodPatreon = false;
-  $isFleshAndPodPatreon = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
-  if ($_SESSION['isFleshAndPodPatreon'] || $isFleshAndPodPatreon) {
+  $isFleshAndPodPatron = false;
+  $isFleshAndPodPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  if ($_SESSION['isFleshAndPodPatron'] || $isFleshAndPodPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-38", "FleshAndPod", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Flesh And Pod");
+  }
+
+  $isKappoloPatron = false;
+  $isKappoloPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "kappolo" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isKappoloPatron'] || $isKappoloPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-39", "Kappolo", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Kappolo");
   }
 
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
