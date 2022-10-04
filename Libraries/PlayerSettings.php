@@ -701,7 +701,7 @@ function GetSettingsUI($player)
   }
 
   $isFleshAndPodPatron = false;
-  $isFleshAndPodPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  $isFleshAndPodPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "imjorman" || $_SESSION["useruid"] == "ADavis83" || $_SESSION["useruid"] == "loganpetersen" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isFleshAndPodPatron'] || $isFleshAndPodPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-38", "FleshAndPod", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Flesh And Pod");
