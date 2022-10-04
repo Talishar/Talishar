@@ -313,13 +313,21 @@ if ($decklink != "") {
     die();
   }
 
+
+  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc")) {
+    $_SESSION['error'] = '⚠️ Young heroes are not legal in Classic Constructed: \n\nYoung - ' . CardName($character);
+    header("Location: MainMenu.php");
+    die();
+  }
+
+
   if ($bannedCard != "") {
     if ($format == "blitz" || $format == "compblitz") {
-      $_SESSION['error'] = $format . '⚠️ The following cards are not legal in the Blitz format: ' . $bannedCard;
+      $_SESSION['error'] = $format . '⚠️ The following cards are not legal in the Blitz format: \n\n' . $bannedCard;
     } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc") {
-      $_SESSION['error'] = '⚠️ The following cards are not legal in the Classic Constructed format: ' . $bannedCard;
+      $_SESSION['error'] = '⚠️ The following cards are not legal in the Classic Constructed format: \n\n' . $bannedCard;
     } elseif ($format == "commoner") {
-      $_SESSION['error'] = '⚠️ The following cards are not legal the Commoner format: ' . $bannedCard;
+      $_SESSION['error'] = '⚠️ The following cards are not legal the Commoner format: \n\n' . $bannedCard;
     }
     header("Location: MainMenu.php");
     die();
@@ -526,20 +534,22 @@ function IsBanned($cardID, $format)
 {
   switch ($format) {
 
-      //    The following cards are banned in Blitz:
-      //    ARC076: Viserai
-      //    ARC077: Nebula Blade
-      //    ELE186: ELE187: ELE188: Awakening
-      //    ELE186: ELE187: ELE188: Ball Lightning
-      //    WTR164: WTR165: WTR166: Drone of Brutality
-      //    ELE223: Duskblade
-      //    WTR152: Heartened Cross Strap
-      //    CRU174: CRU175: CRU176: Snapback
-      //    ARC129: ARC130: ARC131: Stir the Aetherwind
-      //    MON239: Stubby Hammerers
-      //    ELE115: Crown of Seeds (Until Oldhim becomes Living Legend)
-      //    MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
-      //    MON231: Sonata Arcanix (Until the next banned and suspended announcement)
+      //  The following cards are banned in Blitz:
+      //  ARC076: Viserai
+      //  ARC077: Nebula Blade
+      //  ELE186: ELE187: ELE188: Awakening
+      //  ELE186: ELE187: ELE188: Ball Lightning
+      //  WTR164: WTR165: WTR166: Drone of Brutality
+      //  ELE223: Duskblade
+      //  WTR152: Heartened Cross Strap
+      //  CRU174: CRU175: CRU176: Snapback
+      //  ARC129: ARC130: ARC131: Stir the Aetherwind
+      //  MON239: Stubby Hammerers
+      //  ELE115: Crown of Seeds (Until Oldhim becomes Living Legend)
+      //  MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
+      //  CRU141: Bloodsheath Skeleta
+      //  EVR037: Mask of the Pouncing Lynx
+      //  ARC116: Storm Striders
     case "blitz": case "compblitz":
       switch ($cardID) {
         case "ARC076":
@@ -564,7 +574,9 @@ function IsBanned($cardID, $format)
         case "MON183":
         case "MON184":
         case "MON185":
-        case "MON231":
+        case "CRU141":
+        case "EVR037":
+        case "ARC116":
           return true;
         default:
           return false;
@@ -585,6 +597,7 @@ function IsBanned($cardID, $format)
       //    ARC170: ARC171: ARC172: Plunder Run
       //    MON239: Stubby Hammerers
       //    CRU141: Bloodsheath Skeleta
+      //    ELE114: Pulse of Isenloft
     case "cc": case "compcc":
       switch ($cardID) {
         case "MON001":
@@ -605,6 +618,7 @@ function IsBanned($cardID, $format)
         case "ARC172":
         case "MON239":
         case "CRU141":
+        case "ELE114":
           return true;
         default:
           return false;
