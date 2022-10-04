@@ -687,14 +687,14 @@ function GetSettingsUI($player)
   }
 
   $isHomeTownTCGPatron = false;
-  $isHomeTownTCGPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  $isHomeTownTCGPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "hometowntcg" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isTheCardGuyzPatron'] || $isHomeTownTCGPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-36", "HomeTownTCG", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "HomeTownTCG");
   }
 
   $isAscentGaming = false;
-  $isAscentGaming = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  $isAscentGaming = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "hometowntcg" || $_SESSION["useruid"] == "ProfessorKibosh" || $_SESSION["useruid"] == "criticalclover8" || $_SESSION["useruid"] == "bomberman" || $_SESSION["useruid"] == "woodjp64" || $_SESSION["useruid"] == "TealWater" || $_SESSION["useruid"] == "Bravosaur" || $_SESSION["useruid"] == "DaganTheZookeeper" || $_SESSION["useruid"] == "PvtVoid");
   if ($isAscentGaming) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-37", "AscentGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Ascent Gaming");
