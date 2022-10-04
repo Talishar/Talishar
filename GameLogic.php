@@ -3550,6 +3550,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHOWBANISHEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
       return $lastResult;
+    case "SHOWDISCARDEDCARD":
+      WriteLog(CardLink($lastResult, $lastResult) . " was discarded.");
+      return $lastResult;
     case "REVEALCARDS":
       $cards = (is_array($lastResult) ? implode(",", $lastResult) : $lastResult);
       $revealed = RevealCards($cards, $player);
