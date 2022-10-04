@@ -331,6 +331,13 @@ function IsCardBackAscentGaming($player)
   return $settings[$SET_Cardback] == 37;
 }
 
+function IsCardBackFleshAndPod($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 38;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -684,6 +691,13 @@ function GetSettingsUI($player)
   if ($isAscentGaming) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-37", "AscentGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Ascent Gaming");
+  }
+
+  $isFleshAndPodPatreon = false;
+  $isFleshAndPodPatreon = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  if ($_SESSION['isFleshAndPodPatreon'] || $isFleshAndPodPatreon) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-38", "FleshAndPod", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Flesh And Pod");
   }
 
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";

@@ -262,6 +262,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $MyCardBack = "CBHomeTownTCG";
   } else if (IsCardBackAscentGaming($playerID)) {
     $MyCardBack = "CBAscentGaming";
+  } else if (IsCardBackFleshAndPod($playerID)) {
+    $MyCardBack = "CBFleshAndPod";
   }
 
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -338,6 +340,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $TheirCardBack = "CBHomeTownTCG";
   } else if (IsCardBackAscentGaming($otherPlayer)) {
     $TheirCardBack = "CBAscentGaming";
+  } else if (IsCardBackFleshAndPod($otherPlayer)) {
+    $TheirCardBack = "CBFleshAndPod";
   }
 
   //Display background

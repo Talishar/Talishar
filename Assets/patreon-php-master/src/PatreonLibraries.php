@@ -98,7 +98,12 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isHomeTownTCGPatron"] = true;
       array_push($yourPatronages, "HomeTownTCG");
     }
+    if ($include->type == "campaign" && $include->id == "8338817") {
+      $_SESSION["isFleshAndPodPatreon"] = true;
+      array_push($yourPatronages, "Flesh And Pod");
+    }
 	}
+  
 
   if(!$silent)
   {
