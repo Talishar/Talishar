@@ -315,7 +315,7 @@ if ($decklink != "") {
   }
 
 
-  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc")) {
+  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
     $_SESSION['error'] = '⚠️ Young heroes are not legal in Classic Constructed: \n\nYoung - ' . CardName($character);
     header("Location: MainMenu.php");
     die();
