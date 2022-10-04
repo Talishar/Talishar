@@ -94,6 +94,10 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isTheCardGuyzPatron"] = true;
       array_push($yourPatronages, "The Card Guyz");
     }
+    if ($include->type == "campaign" && $include->id == "7009853") {
+      $_SESSION["isHomeTownTCGPatron"] = true;
+      array_push($yourPatronages, "HomeTownTCG");
+    }
 	}
 
   if(!$silent)
