@@ -2024,6 +2024,11 @@ function OnBlockResolveEffects()
     if (SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     else ProcessPhantasmOnBlock($i); // Phantasm should trigger first until we can re-order triggers
   }
+  switch ($combatChain[0]) {
+    case "CRU051": case "CRU052":
+      AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+      break;
+  }
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     switch ($combatChain[$i]) {
       case "EVR018":
