@@ -21,6 +21,7 @@ $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $set = TryGet("set");
 $matchup = TryGet("matchup", "");
+$starterDeck = false;
 
 if($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "")
 {
@@ -28,7 +29,7 @@ if($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "")
   header("Location: MainMenu.php");
   die();
 }
-
+if ($decklink == "") $starterDeck = true;
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
   switch ($decksToTry) {
     case '1':
@@ -321,9 +322,9 @@ if ($decklink != "") {
   }
 
 
-  if ($bannedCard != "") {
+  if ($bannedCard != "" && !$starterDeck) {
     if ($format == "blitz" || $format == "compblitz") {
-      $_SESSION['error'] = $format . '⚠️ The following cards are not legal in the Blitz format: \n\n' . $bannedCard;
+      $_SESSION['error'] = '⚠️ The following cards are not legal in the Blitz format: \n\n' . $bannedCard;
     } elseif ($format == "cc" || $format == "compcc" || $format == "livinglegendscc") {
       $_SESSION['error'] = '⚠️ The following cards are not legal in the Classic Constructed format: \n\n' . $bannedCard;
     } elseif ($format == "commoner") {
