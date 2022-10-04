@@ -2853,14 +2853,14 @@ function EquipPayAdditionalCosts($cardIndex, $from)
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
-  global $redirectPath, $playerID, $gameName, $p1Key;
+  global $redirectPath, $playerID, $gameName;
   global $currentPlayer, $combatChain, $defPlayer;
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $actionPoints, $CCS_ChainAttackBuff;
   global $defCharacter, $CS_NumCharged, $otherPlayer, $CCS_ChainLinkHitEffectsPrevented;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $CS_LayerTarget, $dqVars, $mainPlayer, $lastPlayed, $CS_EffectContext, $dqState, $CS_AbilityIndex, $CS_CharacterIndex;
   global $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $inGameStatus;
-  global $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $CCS_AttackTotalDamage;
+  global $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $chainLinkSummary, $chainLinks;
   $rv = "";
   switch ($phase) {
     case "FINDRESOURCECOST":
@@ -3825,6 +3825,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$lastResult]);
       $character[$index + 4] = 1;
+      return $lastResult;
+    case "PHANTASMALFOOTSTEPSDESTROYED":
+      $otherPlayer = $player == 1 ? 2 : 1;
+      $character = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, $combatChain[$lastResult]);
+      if (!ClassContains($combatChain[0], "ILLUSIONIST", $otherPlayer) && DoesBlockTriggerPhantasm(0)) {
+        $character[$index + 1] = 0;
+      }
       return $lastResult;
     case "ARTOFWAR":
       global $currentPlayer, $combatChain, $defPlayer;

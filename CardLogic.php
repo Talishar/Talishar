@@ -659,6 +659,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("PHANTASMALFOOTSTEPS", $player, "1", 1);
+      AddDecisionQueue("PHANTASMALFOOTSTEPSDESTROYED", $player, "-");
       break;
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);
