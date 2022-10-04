@@ -1593,7 +1593,10 @@ function NumEquipBlock()
   function CanRevealCards($player)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
-    if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") return false;
+    if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") {
+      WriteLog("Action prevented by " . CardLink("UPR138", "UPR138"));
+      return false;
+    }
     return true;
   }
 
