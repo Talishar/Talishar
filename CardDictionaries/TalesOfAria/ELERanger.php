@@ -173,7 +173,7 @@
         }
         $arsenal = [];
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "HAND", 1);
         return "";
