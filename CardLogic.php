@@ -812,7 +812,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       }
       break;
     case "UPR096":
-        if(GetClassState($player, $CS_NumRedPlayed) > 1)
+        if(GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player))
         {
           AddDecisionQueue("FINDINDICES", $player, "DECKCARD,UPR101");
           AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
