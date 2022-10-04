@@ -1757,7 +1757,7 @@ function IsCombatEffectPersistent($cardID)
 
 function BeginEndPhaseEffects()
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer, $CS_EffectContext;
   EndTurnBloodDebt(); //This has to be before resetting character, because of sleep dart effects
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch ($currentTurnEffects[$i]) {
@@ -1773,6 +1773,7 @@ function BeginEndPhaseEffects()
       case "UPR200":
       case "UPR201":
       case "UPR202":
+        SetClassState($currentTurnEffects[$i + 1], $CS_EffectContext, $currentTurnEffects[$i]);
         Draw($currentTurnEffects[$i + 1]);
         break;
       default:
