@@ -310,6 +310,13 @@ function IsCardBackInstantSpeed($player)
   return $settings[$SET_Cardback] == 34;
 }
 
+function IsCardBackTheCardGuyz($player)
+{
+  global $SET_Cardback;
+  $settings = GetSettings($player);
+  return $settings[$SET_Cardback] == 35;
+}
+
 function IsManualMode($player)
 {
   global $SET_ManualMode;
@@ -634,14 +641,21 @@ function GetSettingsUI($player)
   $isDMArmadaPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DMArmada" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isDMArmadaPatron'] || $isDMArmadaPatron) {
     $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-33", "DM Armada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DM Armada");
+    $rv .= CreateRadioButton($SET_Cardback . "-33", "DMArmada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DM Armada");
   }
 
   $isInstantSpeedPatron = false;
   $isInstantSpeedPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Flake" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isInstantSpeedPatron'] || $isInstantSpeedPatron) {
     $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-34", "Instant Speed", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Instant Speed Podcast");
+    $rv .= CreateRadioButton($SET_Cardback . "-34", "InstantSpeed", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Instant Speed Podcast");
+  }
+
+  $isTheCardGuyzPatron = false;
+  $isTheCardGuyzPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid";
+  if ($_SESSION['isTheCardGuyzPatron'] || $isTheCardGuyzPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-35", "TheCardGuyz", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Card Guyz");
   }
 
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";

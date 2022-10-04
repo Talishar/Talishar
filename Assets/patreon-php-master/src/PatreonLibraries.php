@@ -90,6 +90,10 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isInstantSpeedPatron"] = true;
       array_push($yourPatronages, "Instant Speed Podcast");
     }
+    if ($include->type == "campaign" && $include->id == "7733166") {
+      $_SESSION["isTheCardGuyzPatron"] = true;
+      array_push($yourPatronages, "The Card Guyz");
+    }
 	}
 
   if(!$silent)
