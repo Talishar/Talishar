@@ -540,20 +540,21 @@ function AuraPlayAbilities($attackID, $from="")
   global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
   $auras = &GetAuras($currentPlayer);
   $cardType = CardType($attackID);
+  $cardSubType = CardSubType($attackID);
   $numRunechants = CountAura("ARC112", $currentPlayer);
   if ($cardType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
       case "WTR225":
-        if ($cardType == "AA") {
+        if ($cardType == "AA" || $cardType == "W" || $cardSubType == "Aura") {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
         }
         break;
       case "ARC112":
-        if ($cardType == "AA") {
+        if ($cardType == "AA" || $cardType == "W") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
@@ -581,27 +582,14 @@ function AuraPlayAbilities($attackID, $from="")
 
 function AuraAttackAbilities($attackID)
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
+  global $combatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
-  $attackSubType = CardSubType($attackID);
   $numRunechants = CountAura("ARC112", $mainPlayer);
   if ($attackType == "W" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
-      case "WTR225":
-        if ($attackType == "W" || $attackSubType == "Aura") {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
-          GiveAttackGoAgain();
-          $remove = 1;
-        }
-        break;
-      case "ARC112":
-        if ($attackType == "W") {
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        }
-        break;
       case "ELE110":
         if ($attackType == "AA") {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
