@@ -16,6 +16,13 @@ function PatreonLogin($access_token, $silent=true)
 	$api_client->api_return_format = 'object';
 
 	$patron_response = $api_client->fetch_user();
+
+  if(is_string($patron_response))
+  {
+    if(!$isSilent) echo($patron_response);
+    return;
+  }
+
 	$patron = $patron_response->data;
 
 	$relationships = $patron->relationships;
@@ -107,7 +114,7 @@ function PatreonLogin($access_token, $silent=true)
       array_push($yourPatronages, "Kappolo");
     }
 	}
-  
+
 
   if(!$silent)
   {
