@@ -2,6 +2,7 @@
 
 include_once 'Header.php';
 include "HostFiles/Redirector.php";
+include_once "Libraries/HTTPLibraries.php";
 
 
 if (isset($_SESSION["userid"])) {
@@ -16,6 +17,12 @@ if (!empty($_SESSION['error'])) {
   unset($_SESSION['error']);
   echo "<script>alert('" . $error . "')</script>";
 }
+
+$language = TryGet("language", 1);
+$createGameText = ($language == 1 ? "Create Game" : "ゲームを作る");
+$languageText = ($language == 1 ? "Language" : "言語");
+$createNewGameText = ($language == 1 ? "Create New Game" : "新しいゲームを作成する");
+$starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ");
 
 ?>
 
@@ -38,7 +45,7 @@ if (!empty($_SESSION['error'])) {
 </div>
 
 <div class="CreateGame_Menu">
-  <h1 style="margin-top: 3px;">Create New Game</h1>
+  <h1 style="margin-top: 3px;"><?php echo($createNewGameText); ?></h1>
 
   <?php
   echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
@@ -56,7 +63,7 @@ if (!empty($_SESSION['error'])) {
     }
   }
   if (count($favoriteDecks) == 0) {
-    echo ("<div class='FavoriteDeckMainMenu'>CC Starter Decks: ");
+    echo ("<div class='FavoriteDeckMainMenu'>" . $starterDecksText . ": ");
     echo ("<select name='decksToTry' id='decksToTry'>");
     echo ("<option value='1'>Bravo CC Starter Deck</option>");
     echo ("<option value='2'>Rhinar CC Starter Deck</option>");
@@ -142,7 +149,7 @@ if (!empty($_SESSION['error'])) {
   <div style="text-align:center;">
 
     <label>
-      <input class="CreateGame_Button" type="submit" value="Create Game">
+      <input class="CreateGame_Button" type="submit" value="<?php echo($createGameText); ?>">
     </label>
 
   </div>
@@ -191,12 +198,22 @@ if (!empty($_SESSION['error'])) {
         <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
         <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
         <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
-        <br>
-        <p style="text-align: center; font-size:small; width:90%; padding-left:5%;">If you make a video in another language, let us know on Discord!</p>
+        <div class='LanguageSelector'><?php echo($languageText); ?>:
+        <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
+        <option value='1'<?php if($language == 1) echo(" selected"); ?>>English</option>
+        <option value='2'<?php if($language == 2) echo(" selected"); ?>>Japanese (日本語)</option>
+        </select></div>
       </div>
 
     </div>
   </div>
+
+  <script>
+    function changeLanguage()
+    {
+      window.location.search = '?language=' + document.getElementById('languageSelect').value;
+    }
+  </script>
   <?php
   include_once 'Footer.php';
   ?>

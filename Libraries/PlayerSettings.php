@@ -26,7 +26,7 @@ $SET_MuteChat = 14; //Did this player mute chat
 $SET_DisableStats = 15; //Did this player disable stats
 $SET_CasterMode = 16; //Did this player enable caster mode
 
-$SET_Language = 1000; //What language is this player using?
+$SET_Language = 17; //What language is this player using?
 
 function HoldPrioritySetting($player)
 {
@@ -225,8 +225,15 @@ function ChangeSetting($player, $setting, $value, $playerId="")
       return;
     }
     */
-  $settings = &GetSettings($player);
-  $settings[$setting] = $value;
+  if($player != "")
+  {
+    $settings = &GetSettings($player);
+    $settings[$setting] = $value;
+  }
+  else
+  {
+
+  }
   if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
 }
 
