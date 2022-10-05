@@ -318,7 +318,8 @@ function logCompletedGameStats() {
 	if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero, $p2deckbuilderID);
 	if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
-	if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero);
+	//if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p2DeckLink, $p2Deck, $p2Hero);
+
 	mysqli_close($conn);
 }
 
@@ -354,7 +355,8 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	$payloadArr["user"] = ($player == 1 ? $p1deckbuilderID : $p2deckbuilderID);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloadArr));
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
 
 	$headers = array(
 		"Authorization: Bearer " . $fabDBToken,
@@ -375,15 +377,16 @@ function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero, $
 	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/01G7FD2B3YQAMR8NJ4B3M58H96/results";
 	$ch = curl_init($url);
 	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName, $deckbuilderID);
+	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
 	$headers = array(
 		"x-api-key: " . $FaBraryKey,
 		"Content-Type: application/json",
 	);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-	$result = curl_exec($ch);
+	curl_exec($ch);
 	curl_close($ch);
 }
 
@@ -397,8 +400,10 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p2Deckl
 	$payloadArr['gameName'] = $gameName;
 	$payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName));
 	$payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName));
+	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
 	$headers = array(
 		"x-api-key: " . $FaBraryKey,
 		"Content-Type: application/json",
