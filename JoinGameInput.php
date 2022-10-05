@@ -334,7 +334,8 @@ if ($decklink != "") {
     die();
   }
 
-  if($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc"))
+  //if($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc"))
+  if($totalCards < 60  && ($format == "cc" || $format == "compcc"))
   {
     $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
