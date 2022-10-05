@@ -22,11 +22,15 @@ include_once "./includes/dbh.inc.php";
   	$oauth_client = new OAuth($client_id, $client_secret);
 
   	$tokens = $oauth_client->get_tokens($_GET['code'], $redirect_uri);
-  	$access_token = $tokens['access_token'];
-  	$refresh_token = $tokens['refresh_token'];
 
-  	// Here, you should save the access and refresh tokens for this user somewhere. Conceptually this is the point either you link an existing user of your app with his/her Patreon account, or, if the user is a new user, create an account for him or her in your app, log him/her in, and then link this new account with the Patreon account. More or less a social login logic applies here.
-    SavePatreonTokens($access_token, $refresh_token);
+    if(isset($tokens['access_token']) && isset($tokens['refresh_token']))
+    {
+    	$access_token = $tokens['access_token'];
+    	$refresh_token = $tokens['refresh_token'];
+
+    	// Here, you should save the access and refresh tokens for this user somewhere. Conceptually this is the point either you link an existing user of your app with his/her Patreon account, or, if the user is a new user, create an account for him or her in your app, log him/her in, and then link this new account with the Patreon account. More or less a social login logic applies here.
+      SavePatreonTokens($access_token, $refresh_token);
+    }
 
   }
 
