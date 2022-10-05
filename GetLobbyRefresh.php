@@ -2,6 +2,7 @@
 
 
 include 'Libraries/HTTPLibraries.php';
+include_once "Libraries/PlayerSettings.php";
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
