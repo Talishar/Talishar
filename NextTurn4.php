@@ -98,7 +98,8 @@
         fileExt = ".png";
         folderPath = folder;
 
-        var LanguageJP = <?php echo ((IsLanguageJP($playerID) && TranslationExist('JP', $cardNumber) ? "true" : "false")); ?>;
+        var LanguageJP = <?php echo ((IsLanguageJP($playerID) ? "true" : "false")); ?>;
+        LanguageJP = LanguageJP && TranslationExist('JP', cardNumber);
 
         if (cardNumber == "ENDTURN" || cardNumber == "RESUMETURN" || cardNumber == "PHANTASM" || cardNumber == "FINALIZECHAINLINK" || cardNumber == "DEFENDSTEP") {
           //folderPath = str_replace("CardImages", "Images", folderPath);
@@ -282,6 +283,33 @@
             return true;
           case "DYN234":
             return true;
+          default:
+            return false;
+        }
+      }
+
+      function TranslationExist(Language, cardID)
+      {
+        switch (Language) {
+          case "JP": //Japanese
+            switch (cardID) {
+              case "CRU046":
+              case "CRU050":
+              case "CRU063":
+              case "CRU069":
+              case "CRU072":
+              case "CRU073":
+              case "CRU074":
+              case "CRU186":
+              case "CRU187":
+              case "CRU194":
+              case "WTR100":
+              case "WTR191":
+                return true;
+              default:
+                return false;
+            }
+            break;
           default:
             return false;
         }
