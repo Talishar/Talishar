@@ -198,11 +198,14 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
         <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
         <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
         <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
+
+        <!--
         <div class='LanguageSelector'><?php echo($languageText); ?>:
         <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
         <option value='1'<?php if($language == 1) echo(" selected"); ?>>English</option>
         <option value='2'<?php if($language == 2) echo(" selected"); ?>>Japanese (日本語)</option>
         </select></div>
+      -->
       </div>
 
     </div>
