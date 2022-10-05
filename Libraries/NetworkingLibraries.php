@@ -1191,7 +1191,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (HasBoost($cardID)) Boost();
     GetLayerTarget($cardID); //Layer target
     MainCharacterPlayCardAbilities($cardID, $from);
-    AuraPlayAbilities($cardID);
+    AuraPlayAbilities($cardID, $from);
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
   ProcessDecisionQueue();
@@ -1206,7 +1206,7 @@ function PlayCardSkipCosts($cardID, $from)
     if (HasBoost($cardID)) Boost();
     GetLayerTarget($cardID); //Layer target
     MainCharacterPlayCardAbilities($cardID, $from);
-    AuraPlayAbilities($cardID);
+    AuraPlayAbilities($cardID, $from);
   }
   PlayCardEffect($cardID, $from, 0);
   //AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . 0 . "||");
