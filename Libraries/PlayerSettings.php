@@ -68,6 +68,13 @@ function IsPatron($player)
   return $settings[$SET_IsPatron] == "1";
 }
 
+function IsLanguageJP($player)
+{
+  global $SET_Language;
+  $settings = GetSettings($player);
+  return $settings[$SET_Language] == "2";
+}
+
   /*================
       Card Backs
   =================*/
@@ -245,7 +252,7 @@ function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
   global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat, $SET_DisableStats;
-  global $SET_CasterMode, $SET_Language;
+  global $SET_CasterMode;
   $rv = "";
   $settings = GetSettings($player);
   $currentValue = HoldPrioritySetting($player);
