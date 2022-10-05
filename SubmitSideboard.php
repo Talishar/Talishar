@@ -49,11 +49,13 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
+  /*
   if ($numEquip < 1) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. $numEquip equipment pieces are equipped.");
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
+  */
   $playerDeck = explode(",", $playerDeck);
   for ($i = count($playerDeck) - 1; $i >= 0; --$i) {
     $cardType = CardType($playerDeck[$i]);
