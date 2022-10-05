@@ -71,8 +71,15 @@ function IsPatron($player)
 function IsLanguageJP($player)
 {
   global $SET_Language;
-  $settings = GetSettings($player);
-  return $settings[$SET_Language] == "2";
+  if(function_exists("GetSettings"))
+  {
+    $settings = GetSettings($player);
+    return $settings[$SET_Language] == "2";
+  }
+  else if(isset($_SESSION['language'])){
+    return $_SESSION['language'] == "2";
+  }
+  return false;
 }
 
   /*================
@@ -175,6 +182,7 @@ function ShortcutAttackThreshold($player)
 
 function IsDynamicScalingEnabled($player)
 {
+  if(!function_exists("GetSettings")) return false;
   global $SET_EnableDynamicScaling;
   $settings = GetSettings($player);
   if ($settings == null) return false;

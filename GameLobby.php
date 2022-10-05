@@ -5,6 +5,7 @@ include "CardDictionary.php";
 include "HostFiles/Redirector.php";
 include "Libraries/UILibraries2.php";
 include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/PlayerSettings.php";
 ob_end_clean();
 
 session_start();
