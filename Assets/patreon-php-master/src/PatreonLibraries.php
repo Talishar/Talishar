@@ -19,7 +19,7 @@ function PatreonLogin($access_token, $silent=true)
 
   if(is_string($patron_response))
   {
-    if(!$isSilent) echo($patron_response);
+    if(!$silent) echo($patron_response);
     return;
   }
 
@@ -28,7 +28,7 @@ function PatreonLogin($access_token, $silent=true)
 	$relationships = $patron->relationships;
 	if(isset($relationships)) $memberships = $relationships->memberships;
 
-  if($patron_response->included == null) return;
+  if(!isset($patron_response->included)) return;
   $yourPatronages = [];
 	for($i=0; $i<count($patron_response->included); ++$i)
 	{
