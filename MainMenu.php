@@ -152,7 +152,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 
 
    <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc">
-   <label style='margin-left:-12px;' for="livinglegendscc">Living Legends CC ❓</label>
+   <label style='margin-left:-12px;' for="livinglegendscc">Open Format (No Restriction)</label>
   <br><br>
 
     <input type="radio" id="public" name="visibility" value="public" checked="checked">
