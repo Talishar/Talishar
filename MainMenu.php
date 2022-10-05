@@ -3,6 +3,7 @@
 include_once 'Header.php';
 include "HostFiles/Redirector.php";
 include_once "Libraries/HTTPLibraries.php";
+include_once "Libraries/PlayerSettings.php";
 
 
 if (isset($_SESSION["userid"])) {
@@ -19,6 +20,22 @@ if (!empty($_SESSION['error'])) {
 }
 
 $language = TryGet("language", 1);
+$settingArray = [];
+if(isset($_SESSION["userid"]))
+{
+  $savedSettings = LoadSavedSettings($_SESSION["userid"]);
+  for($i=0; $i<count($savedSettings); $i+=2)
+  {
+    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
+  }
+  if(isset($_GET['language']))
+  {
+    ChangeSetting("", $SET_Language, $language, $_SESSION["userid"]);
+  }
+  else if(isset($settingArray[$SET_Language])) $language = $settingArray[$SET_Language];
+}
+$_SESSION['language'] = $language;
+
 $createGameText = ($language == 1 ? "Create Game" : "ゲームを作る");
 $languageText = ($language == 1 ? "Language" : "言語");
 $createNewGameText = ($language == 1 ? "Create New Game" : "新しいゲームを作成する");
@@ -199,13 +216,11 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
         <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
         <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
 
-        <!--
         <div class='LanguageSelector'><?php echo($languageText); ?>:
         <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
         <option value='1'<?php if($language == 1) echo(" selected"); ?>>English</option>
         <option value='2'<?php if($language == 2) echo(" selected"); ?>>Japanese (日本語)</option>
         </select></div>
-      -->
       </div>
 
     </div>

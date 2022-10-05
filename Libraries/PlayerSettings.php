@@ -518,7 +518,7 @@ function GetSettingsUI($player)
 
 function SaveSettingInDatabase($setting)
 {
-  global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats;
+  global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   switch($setting)
   {
     case $SET_DarkMode:
@@ -526,6 +526,7 @@ function SaveSettingInDatabase($setting)
     case $SET_Mute:
     case $SET_Cardback:
     case $SET_DisableStats:
+    case $SET_Language:
       return true;
     default: return false;
   }
