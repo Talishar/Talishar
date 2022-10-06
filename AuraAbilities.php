@@ -541,14 +541,14 @@ function AuraPlayAbilities($attackID, $from="")
   $auras = &GetAuras($currentPlayer);
   $cardType = CardType($attackID);
   $cardSubType = CardSubType($attackID);
-  $cardAbilityType = GetAbilityType($attackID);
+  $cardAbilityType = GetAbilityType($attackID); 
   $numRunechants = CountAura("ARC112", $currentPlayer);
   if ($cardType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
       case "WTR225":
-        if ($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && $cardAbilityType == "AA")) {
+        if ($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
