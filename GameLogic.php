@@ -598,6 +598,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 function EffectHitEffect($cardID)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain;
+  if (CardType($cardID) == "AA" && SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2)) return;
   switch ($cardID) {
     case "WTR129":
     case "WTR130":
