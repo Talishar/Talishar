@@ -1760,8 +1760,13 @@ function DoesEffectGrantDominate($cardID)
 function CharacterNumUsesPerTurn($cardID)
 {
   switch ($cardID) {
+    case "WTR038": case "WTR039":
+      return 999;
     case "ELE034":
       return 2;
+    case "UPR183":
+    case "DYN001":
+      return 999;
     default:
       return 1;
   }
