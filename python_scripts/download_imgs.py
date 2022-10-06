@@ -22,9 +22,10 @@ urls = {
     # "https://fabtcg.com/resources/card-galleries/crucible-war-booster": "CRU",
     # "https://fabtcg.com/resources/card-galleries/monarch-booster-unlimited": "MON",
     # "https://fabtcg.com/resources/card-galleries/tales-aria-booster": "ELE",
-     "https://fabtcg.com/resources/card-galleries/everfest-booster": "EVR",
+    # "https://fabtcg.com/resources/card-galleries/everfest-booster": "EVR",
     # "https://fabtcg.com/resources/card-galleries/classic-battles-rhinar-vs-dorinthea" : "RVD",
-    # "https://fabtcg.com/resources/card-galleries/classic-battles-rhinar-vs-dorinthea" : "DVR"
+    # "https://fabtcg.com/resources/card-galleries/classic-battles-rhinar-vs-dorinthea" : "DVR",
+    "https://fabtcg.com/resources/card-galleries/history-pack-1-black-label-de-fr-sp-it/history-pack-1-black-label-french" : "HP1"
 
  } # important not to have a '/' at the end of the link
 for url, code in urls.items():
@@ -36,11 +37,11 @@ for url, code in urls.items():
     counter = 1
     exceptions = 0
     for line in open(filename):
-        if "https://storage.googleapis.com/fabmaster/media/images/" in line:
-            if "450" in line:
+        if "https://storage.googleapis.com/fabmaster/cardfaces/" in line:
+            if "2022-1HP" in line:
                 print("\c",line)
                 index0 = line.index("href=\"") +len("href=\"")
-                index1 = line.index("450.png")+ len("450.png")
+                index1 = line.index(".png")+ len(".png")
                 image_url = line[index0:index1]
                 print(index0, index1, image_url    )
 
