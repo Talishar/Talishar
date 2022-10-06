@@ -2023,7 +2023,8 @@ function OnBlockResolveEffects()
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
-    else ProcessPhantasmOnBlock($i); // Phantasm should trigger first until we can re-order triggers
+    if (SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
+    ProcessPhantasmOnBlock($i); // Phantasm should trigger first until we can re-order triggers
   }
   switch ($combatChain[0]) {
     case "CRU051": case "CRU052":
