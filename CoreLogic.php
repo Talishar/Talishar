@@ -1616,12 +1616,16 @@ function NumEquipBlock()
 
 function GetDamagePreventionIndices()
 {
-  global $currentPlayer;
+  global $combatChain, $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $rv = "";
 
   $rv = SearchLayerDQ($otherPlayer, "");
   $rv = SearchMultiZoneFormat(SearchLayer($otherPlayer), "LAYER");
+  if (count($combatChain) > 0 && CardType($combatChain[0]) != "W") {
+    if ($rv != "") $rv .= ",";
+    $rv .= "CC-0";
+  }
   if (SearchLayer($otherPlayer, "W") == "") {
     $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
     $rv = CombineSearches($rv, $theirWeapon);
