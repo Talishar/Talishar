@@ -603,29 +603,29 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
       else if ($option[0] == "LAYER") {
-        $playerBorderColor = $layers[$i * LayerPieces() + 1];
+        $playerBorderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
       }
 
-      if ($option[0] == "THEIRARS" && $theirArsenal[$option[1] + 1] == "DOWN") $card = $TheirCardBack;
+      if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") $card = $TheirCardBack;
 
       //Show Life and Def counters on allies in the popups
       if ($option[0] == "THEIRALLY") {
-        $lifeCounters = $theirAllies[$option[1] + 2];
-        $enduranceCounters = $theirAllies[$option[1] + 6];
-        if (SearchCurrentTurnEffectsForUniqueID($theirAllies[$i + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($theirAllies[$i + 5])) + AttackValue($theirAllies[$i]);
+        $lifeCounters = $theirAllies[$index + 2];
+        $enduranceCounters = $theirAllies[$index + 6];
+        if (SearchCurrentTurnEffectsForUniqueID($theirAllies[$index + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($theirAllies[$index + 5])) + AttackValue($theirAllies[$index]);
         else $attackCounters = 0;
       } elseif ($option[0] == "MYALLY") {
-        $lifeCounters = $myAllies[$option[1] + 2];
-        $enduranceCounters = $myAllies[$option[1] + 6];
-        if (SearchCurrentTurnEffectsForUniqueID($myAllies[$i + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($myAllies[$i + 5])) + AttackValue($myAllies[$i]);
+        $lifeCounters = $myAllies[$index + 2];
+        $enduranceCounters = $myAllies[$index + 6];
+        if (SearchCurrentTurnEffectsForUniqueID($myAllies[$index + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($myAllies[$index + 5])) + AttackValue($myAllies[$index]);
         else $attackCounters = 0;
       }
 
       //Show Atk counters on Auras in the popups
       if ($option[0] == "THEIRAURAS") {
-        $atkCounters = $theirAuras[$option[1] + 3];
+        $atkCounters = $theirAuras[$index + 3];
       } elseif ($option[0] == "MYAURAS") {
-        $atkCounters = $myAuras[$option[1] + 3];
+        $atkCounters = $myAuras[$index + 3];
       }
       $content .= Card($card, "concat", $cardSize, 16, 1, 0, $playerBorderColor, $counters, $options[$i], "", false, $lifeCounters, $enduranceCounters, $atkCounters, controller: $playerBorderColor);
     }
