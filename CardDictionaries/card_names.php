@@ -991,8 +991,12 @@ if ($set == "MON")
 		case "400": return "Spell Fray Cloak";
 		case "401": return "Spell Fray Gloves";
 		case "402": return "Spell Fray Leggings";
-
-		   }	}
+		case "404": return "The Librarian";
+		case "405": return "Minerva Themis";
+		case "406": return "Lady Barthimont";
+		case "407": return "Lord Sutcliffe";
+		}
+	}
 if($set == "UPR"){
   switch($num)
   {
