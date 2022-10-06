@@ -113,6 +113,10 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isKappoloPatron"] = true;
       array_push($yourPatronages, "Kappolo");
     }
+    if ($include->type == "campaign" && $include->id == "3828539") {
+      $_SESSION["isLibrariansOfSolanaPatron"] = true;
+      array_push($yourPatronages, "Librarians of Solana");
+    }
 	}
 
 

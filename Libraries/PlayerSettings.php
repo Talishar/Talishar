@@ -130,6 +130,7 @@ function GetCardBack($player)
     case 37: return "CBAscentGaming";
     case 38: return "CBFleshAndPod";
     case 39: return "CBKappolo";
+    case 40: return "CBLibrariansOfSolana";
     default: return "CardBack";
   }
 }
@@ -509,6 +510,13 @@ function GetSettingsUI($player)
   if ($_SESSION['isKappoloPatron'] || $isKappoloPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-39", "Kappolo", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Kappolo");
+  }
+
+  $isLibrariansOfSolanaPatron = false;
+  $isLibrariansOfSolanaPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Tee" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isLibrariansOfSolanaPatron'] || $isLibrariansOfSolanaPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-40", "LibrariansOfSolana", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Librarians of Solana");
   }
 
   if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
