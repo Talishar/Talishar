@@ -512,7 +512,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
         if($Items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
       }
     }
-  } else { // Clear Damage prevention as they are trying to prevent, but fails
+  } elseif ($damageThreatened > 0) { // Clear Damage prevention as they are trying to prevent, but fails
     ConsumeDamagePrevention($player);
     if ($type == "ARCANE") {
         $classState[$CS_ArcaneDamagePrevention] = 0;
