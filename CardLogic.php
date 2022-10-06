@@ -635,7 +635,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       }
       break;
-    case "CRU142": // TODO: Not 100% exact. It should create 2 separate triggers instead of 1.
+    case "CRU142":
       //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
       if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
       //When you attack with Dread Triptych, if you've dealt arcane damage this turn, create a Runechant token.
@@ -960,25 +960,6 @@ function TopDeckToArsenal($player)
   if (!ArsenalEmpty($player) || count($deck) == 0) return; //Already something there
   AddArsenal(array_shift($deck), $player, "DECK", "DOWN");
   WriteLog("The top card of player " . $player . "'s deck was put in their arsenal.");
-}
-
-function DefenderArsenalToBottomOfDeck()
-{
-  global $defPlayer;
-  ArsenalToBottomDeck($defPlayer);
-}
-
-function ArsenalToBottomDeck($player)
-{
-  //TODO: Allow to choose arsenal slot
-  $arsenal = &GetArsenal($player);
-  if (count($arsenal) == 0) return;
-  $index = 0;
-  AddBottomDeck($arsenal[$index], $player, "ARS");
-  for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
-    unset($arsenal[$i]);
-  }
-  $arsenal = array_values($arsenal);
 }
 
 function DestroyArsenal($player)

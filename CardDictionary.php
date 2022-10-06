@@ -943,7 +943,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($cardType == "") return false;
   if (RequiresDiscard($cardID) || $cardID == "WTR159") {
-    if ($from == "HAND" && count($myHand) < 2) return false; //TODO: Account for where it was from
+    if ($from == "HAND" && count($myHand) < 2) return false;
     else if (count($myHand) < 1) return false;
   }
   if ($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
@@ -1308,7 +1308,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from != "PLAY") return false;
       if (count($layers) > 0){
         for ($i = 0; $i < count($layers); $i++) {
-          if (ArcaneDamage($layers[$i]) >= GetHealth($player) && $layers[$i+3] == "THEIRCHAR-0") return false; // TODO: Not 100% correct
+          if (ArcaneDamage($layers[$i]) >= GetHealth($player) && $layers[$i+3] == "THEIRCHAR-0") return false;
         }
       }
       if (count($combatChain) > 0) {

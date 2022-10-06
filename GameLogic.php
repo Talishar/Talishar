@@ -191,7 +191,6 @@ function ProcessDealDamageEffect($cardID)
 
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
   switch ($source) {
     case "UPR104":
       if (MZIsPlayer($target) && $damage > 0) {
@@ -690,7 +689,11 @@ function EffectHitEffect($cardID)
     case "ELE020":
     case "ELE021":
       if (IsHeroAttackTarget()) {
-        ArsenalToBottomDeck($defPlayer);
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to put at the bottom of the deck", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZADDBOTDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
     case "ELE022":
