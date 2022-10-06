@@ -1746,6 +1746,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DVR008-1":
       return true;
+    case "UPR036": case "UPR037": case "UPR038": return true;
     case "UPR047":
       return true;
     case "UPR049":
