@@ -226,6 +226,25 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     </div>
   </div>
 
+  <div>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3460218951907688"
+         crossorigin="anonymous"></script>
+    <!-- MainMenuRight -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="<?php echo($adsenseClientId); ?>"
+         data-ad-slot="3547984570"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  </div>
+
+</div>
+
   <script>
     function changeLanguage()
     {
