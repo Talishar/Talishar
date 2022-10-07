@@ -1,8 +1,11 @@
 <?php
 include "HostFiles/Redirector.php";
 include_once 'Header.php';
+include_once 'APIKeys/APIKeys.php';
 ?>
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo($adsenseClientId); ?>"
+     crossorigin="anonymous"></script>
 <style>
   body {
     background-image: url('Images/Metrix.jpg');
