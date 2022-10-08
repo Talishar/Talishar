@@ -74,11 +74,12 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   if (isset($_SESSION["userid"])) {
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if (count($favoriteDecks) > 0) {
+      $selIndex = -1;
       if(isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
       echo ("<div class='FavoriteDeckMainMenu'>Favorite Decks: ");
       echo ("<select name='favoriteDecks' id='favoriteDecks'>");
       for ($i = 0; $i < count($favoriteDecks); $i += 3) {
-        echo ("<option value='" . $i . "<fav>" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "</option>");
+        echo ("<option value='" . $i . "<fav>" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
       }
       echo ("</select></div>");
     }
