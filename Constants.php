@@ -20,7 +20,7 @@ function DiscardPieces()
   return 1;
 }
 
-//0 - ID
+//0 - Card ID
 //1 - Status (2=ready, 1=unavailable, 0=destroyed)
 //2 - Num counters
 //3 - Num attack counters
@@ -35,6 +35,9 @@ function CharacterPieces()
   return 10;
 }
 
+//0 - Card ID
+//1 - Mods (INT == Intimidated)
+//2 - ??
 function BanishPieces()
 {
   return 3;
