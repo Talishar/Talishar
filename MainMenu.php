@@ -36,7 +36,8 @@ if(isset($_SESSION["userid"]))
   else if(isset($settingArray[$SET_Language])) $language = $settingArray[$SET_Language];
 }
 $_SESSION['language'] = $language;
-$isPatron = $_SESSION["isPatron"];
+if(isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
+else $isPatron = false;
 
 $createGameText = ($language == 1 ? "Create Game" : "ゲームを作る");
 $languageText = ($language == 1 ? "Language" : "言語");
