@@ -737,7 +737,7 @@
         {
           $ARs = SearchDeck($currentPlayer, "AR");
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
-          AddDecisionQueue("BANISH", $currentPlayer, "TCL");
+          AddDecisionQueue("BANISH", $currentPlayer, "TCL", 1);
           AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
