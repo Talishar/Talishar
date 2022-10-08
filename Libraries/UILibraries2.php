@@ -553,7 +553,7 @@ function TheirBanishUIMinimal($from = "")
 
   function PreviousTurnSelectionUI()
   {
-    global $currentTurn, $mainPlayer, $playerID, $firstPlayer, $gameName;
+    global $playerID, $gameName;
     $rv = "<h3>Revert to Start of Previous Turn</h3>"; // TODO: Revert Player 1 Turn 1 to the start of the game.
     $rv .= CreateButton($playerID, "This Turn", 10003, "beginTurnGamestate.txt", "20px") . "<BR>";
     $lastTurnFN = "lastTurnGamestate.txt";
@@ -561,9 +561,10 @@ function TheirBanishUIMinimal($from = "")
     return $rv;
   }
 
-  function GetTheirBanishForDisplay()
+  function GetTheirBanishForDisplay($playerID)
   {
-    global $theirBanish, $TheirCardBack;
+    global $theirBanish;
+    $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
     $banish = array();
     for($i=0; $i<count($theirBanish); $i+=BanishPieces())
     {
