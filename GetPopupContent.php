@@ -64,7 +64,7 @@ switch ($popupType) {
     echo (CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
     break;
   case "theirBanishPopup":
-    $theirBanishDisplay = GetTheirBanishForDisplay();
+    $theirBanishDisplay = GetTheirBanishForDisplay($playerID);
     echo (CreatePopup("theirBanishPopup", $theirBanishDisplay, 1, 0, "Opponent's Banish Zone"));
     break;
   case "theirPitchPopup":
