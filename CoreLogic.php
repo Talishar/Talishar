@@ -693,7 +693,7 @@ function PlayerWon($playerID)
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID;
   if($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
-  
+
   $winner = $playerID;
   if ($playerID == 1 && $p1uid != "") WriteLog($p1uid . " wins!", $playerID);
   elseif ($playerID == 2 && $p2uid != "") WriteLog($p2uid . " wins!", $playerID);
@@ -1622,11 +1622,11 @@ function GetDamagePreventionIndices()
 
   $rv = SearchLayerDQ($otherPlayer, "");
   $rv = SearchMultiZoneFormat(SearchLayer($otherPlayer), "LAYER");
-  if (count($combatChain) > 0 && CardType($combatChain[0]) != "W") {
+  if (count($combatChain) > 0) {
     if ($rv != "") $rv .= ",";
     $rv .= "CC-0";
   }
-  
+
   if (SearchLayer($otherPlayer, "W") == "" && IsCharacterAbilityActive($otherPlayer, 1)) {
     $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
     $rv = CombineSearches($rv, $theirWeapon);
