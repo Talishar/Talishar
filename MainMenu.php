@@ -4,6 +4,7 @@ include_once 'Header.php';
 include "HostFiles/Redirector.php";
 include_once "Libraries/HTTPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
+include_once "APIKeys/APIKeys.php";
 
 
 if (isset($_SESSION["userid"])) {
@@ -35,6 +36,7 @@ if(isset($_SESSION["userid"]))
   else if(isset($settingArray[$SET_Language])) $language = $settingArray[$SET_Language];
 }
 $_SESSION['language'] = $language;
+$isPatron = $_SESSION["isPatron"];
 
 $createGameText = ($language == 1 ? "Create Game" : "ゲームを作る");
 $languageText = ($language == 1 ? "Language" : "言語");
@@ -226,22 +228,26 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     </div>
   </div>
 
-  <div>
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3460218951907688"
-         crossorigin="anonymous"></script>
-    <!-- MainMenuRight -->
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="<?php echo($adsenseClientId); ?>"
-         data-ad-slot="3547984570"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-
-  </div>
+<?php
+  if(!$isPatron)
+  {
+    echo '<div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3460218951907688"
+           crossorigin="anonymous"></script>
+      <!-- MainMenuRight -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="' . $adsenseClientId . '"
+           data-ad-slot="3547984570"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>';
+  }
+?>
 
 </div>
 
