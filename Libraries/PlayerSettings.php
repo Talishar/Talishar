@@ -23,7 +23,12 @@ $SET_MuteChat = 14; //Did this player mute chat
 $SET_DisableStats = 15; //Did this player disable stats
 $SET_CasterMode = 16; //Did this player enable caster mode
 
+//Menu settings
 $SET_Language = 17; //What language is this player using?
+$SET_Format = 18; //What format did this player create a game for last?
+$SET_KarmaRestriction = 19; //What format did this player create a game for last?
+$SET_FavoriteDeckIndex = 20; //What deck did this player play a game with last
+$SET_GameVisibility = 21; //The visibility of the last game you created
 
 function HoldPrioritySetting($player)
 {
@@ -540,6 +545,7 @@ function GetSettingsUI($player)
 function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
+  global $SET_Format, $SET_KarmaRestriction, $SET_FavoriteDeckIndex, $SET_GameVisibility;
   switch($setting)
   {
     case $SET_DarkMode:
@@ -548,6 +554,10 @@ function SaveSettingInDatabase($setting)
     case $SET_Cardback:
     case $SET_DisableStats:
     case $SET_Language:
+    case $SET_Format:
+    case $SET_KarmaRestriction:
+    case $SET_FavoriteDeckIndex:
+    case $SET_GameVisibility:
       return true;
     default: return false;
   }

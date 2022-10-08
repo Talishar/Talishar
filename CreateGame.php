@@ -5,6 +5,7 @@ ob_start();
 include "HostFiles/Redirector.php";
 include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/PlayerSettings.php";
 ob_end_clean();
 
 $deck = TryGET("deck");
@@ -20,10 +21,32 @@ $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES)
 $karmaRestriction = TryGet("gameKarmaRestriction", "0");
 $deckbuilderID = TryGet("user", "");
 
+if($favoriteDeckLink != 0)
+{
+  $favDeckArr = explode("<fav>", $favoriteDeckLink);
+  if(count($favDeckArr) == 1) $favoriteDeckLink = $favDeckArr[0];
+  else {
+    $favoriteDeckIndex = $favDeckArr[0];
+    $favoriteDeckLink = $favDeckArr[1];
+  }
+}
+
 $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
 $attemptCount = 0;
 
 $isOmegaEclipse = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OmegaEclipse";
+
+if(isset($_SESSION["userid"]))
+{
+  //Save game creation settings
+  include_once 'includes/functions.inc.php';
+  include_once 'includes/dbh.inc.php';
+  if(isset($favoriteDeckIndex))
+  {
+    ChangeSetting("", $SET_FavoriteDeckIndex, $favoriteDeckIndex, $_SESSION["userid"]);
+  }
+}
+
 session_write_close();
 
 $bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
@@ -61,7 +84,7 @@ fclose($gcFile);
 
 if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true)) ){
 } else {
-  print_r("Encountered a problem creating a game. Please return to the main menu and try again"); 
+  print_r("Encountered a problem creating a game. Please return to the main menu and try again");
 }
 
 $p1Data = [1];
