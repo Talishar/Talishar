@@ -509,8 +509,15 @@ function ParseDraftFab($deck, $filename)
       default:
         for($j=0; $j<$quantity; ++$j)
         {
-          if($deckCards != "") $deckCards .= " ";
-          $deckCards .= $cardID;
+          if($card[1] == "S")
+          {
+            if($sideboardCards != "") $sideboardCards .= " ";
+            $sideboardCards .= $cardID;
+          }
+          else {
+            if($deckCards != "") $deckCards .= " ";
+            $deckCards .= $cardID;
+          }
         }
         break;
     }
