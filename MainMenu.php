@@ -190,13 +190,10 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <h1>Open Beta Test</h1>
   <p style='margin:10px; font-size:13px;'><b>Disclaimer: </b>Talishar is a fan-made project that is still under active development. There are still many bugs, although we try to improve it a little bit each day.</p>
 
-  <h3 style='text-align:center;'>________</h3>
+<!--  <h3 style='text-align:center;'>________</h3> -->
 
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
-
-      <h2>Now supporting decks from FaB Meta!</h2>
-      <a href='https://www.fabmeta.net' target='_blank'><img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/logos/fabmeta_logo.svg" /></a><br><br>
 
       <!--
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
