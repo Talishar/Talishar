@@ -397,7 +397,7 @@
         else if($cardID == "UPR198") $numCards = 3;
         else $numCards = 2;
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, $numCards . "-");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, $numCards . "-", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
