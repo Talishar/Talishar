@@ -22,6 +22,8 @@ if (!empty($_SESSION['error'])) {
 
 $language = TryGet("language", 1);
 $settingArray = [];
+$defaultFormat = 0;
+$defaultVisibility = 1;
 if(isset($_SESSION["userid"]))
 {
   $savedSettings = LoadSavedSettings($_SESSION["userid"]);
@@ -34,6 +36,8 @@ if(isset($_SESSION["userid"]))
     ChangeSetting("", $SET_Language, $language, $_SESSION["userid"]);
   }
   else if(isset($settingArray[$SET_Language])) $language = $settingArray[$SET_Language];
+  if(isset($settingArray[$SET_Format])) $defaultFormat = $settingArray[$SET_Format];
+  if(isset($settingArray[$SET_GameVisibility])) $defaultVisibility = $settingArray[$SET_GameVisibility];
 }
 $_SESSION['language'] = $language;
 if(isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
@@ -136,34 +140,34 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   }
   ?>
 
-    <input type="radio" id="blitz" name="format" value="blitz">
+    <input type="radio" id="blitz" name="format" value="blitz"<?php if($defaultFormat == 2) echo 'checked="checked"'; ?>>
     <label style='margin-left:-10px;' for="blitz">Blitz</label>
 
-  <input style='margin-left: 10px;' type="radio" id="compblitz" name="format" value="compblitz">
+  <input style='margin-left: 10px;' type="radio" id="compblitz" name="format" value="compblitz"<?php if($defaultFormat == 3) echo 'checked="checked"'; ?>>
   <label for="compblitz">Competitive Blitz</label>
   <br class="BRMobile">
 
-  <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" checked="checked">
+  <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc"<?php if($defaultFormat == 0) echo 'checked="checked"'; ?>>
   <label for="cc">CC</label>
   <br class="BRMobile">
 
-  <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc">
+  <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc"<?php if($defaultFormat == 1) echo 'checked="checked"'; ?>>
   <label for="compcc">Competitive CC</label>
   <br class="BRMobile">
 
   <br><br>
-    <input style='margin-left: 5px;' type="radio" id="commoner" name="format" value="commoner">
+    <input style='margin-left: 5px;' type="radio" id="commoner" name="format" value="commoner"<?php if($defaultFormat == 5) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="commoner">Commoner</label>
 
 
-   <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc">
+   <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc"<?php if($defaultFormat == 4) echo 'checked="checked"'; ?>>
    <label style='margin-left:-12px;' for="livinglegendscc">Open Format (No Restriction)</label>
   <br><br>
 
-    <input type="radio" id="public" name="visibility" value="public" checked="checked">
+    <input type="radio" id="public" name="visibility" value="public"<?php if($defaultVisibility == 1) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="public">Public</label>
 
-    <input type="radio" id="private" name="visibility" value="private">
+    <input type="radio" id="private" name="visibility" value="private"<?php if($defaultVisibility == 0) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="private">Private</label><br><br>
 
   <input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
@@ -197,8 +201,13 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
 
-      <h2>Now supporting decks from FaB Meta!</h2>
-      <a href='https://www.fabmeta.net' target='_blank'><img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/logos/fabmeta_logo.svg" /></a><br><br>
+<!--
+      <h2>Now supporting Draft FaB!</h2>
+      <a href='http://draftfab.com/' target='_blank'><img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/logos/draftfab.png" /></a><br><br>
+
+            <h3 style='text-align:center;'>________</h3>
+
+-->
 
       <!--
   <div style=" padding-top:10%; vertical-align:middle; position: relative;">
@@ -211,7 +220,6 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
 -->
 
-      <h3 style='text-align:center;'>________</h3>
 
       <div style='vertical-align:middle; text-align:center;'>
         <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play Talishar</h2>

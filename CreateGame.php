@@ -45,6 +45,8 @@ if(isset($_SESSION["userid"]))
   {
     ChangeSetting("", $SET_FavoriteDeckIndex, $favoriteDeckIndex, $_SESSION["userid"]);
   }
+  ChangeSetting("", $SET_Format, FormatCode($format), $_SESSION["userid"]);
+  ChangeSetting("", $SET_GameVisibility, ($visibility == "public" ? 1 : 0), $_SESSION["userid"]);
 }
 
 session_write_close();
