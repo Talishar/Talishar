@@ -77,7 +77,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
       echo ("<div class='FavoriteDeckMainMenu'>Favorite Decks: ");
       echo ("<select name='favoriteDecks' id='favoriteDecks'>");
       for ($i = 0; $i < count($favoriteDecks); $i += 3) {
-        echo ("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "</option>");
+        echo ("<option value='" . ($i/3) . "<fav>" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "</option>");
       }
       echo ("</select></div>");
     }
