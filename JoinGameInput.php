@@ -474,6 +474,7 @@ function ParseDraftFab($deck, $filename)
     $type = CardType($cardID);
     switch($type)
     {
+      case "T": break;
       case "C": $character = $cardID; break;
       case "W":
         if($weaponSideboard != "") $weaponSideboard .= " ";
