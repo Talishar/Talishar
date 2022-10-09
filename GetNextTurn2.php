@@ -1247,7 +1247,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   echo("<div style='display:none;' id='animations'>" . implode(" ", $animations) . "</div>");
-  echo("<div id='passConfirm'>" . ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID) ? "true" : "false") . "</div>");
+  echo("<div style='display:none;' id='passConfirm'>" . ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID) ? "true" : "false") . "</div>");
 }
 
 function PlayableCardBorderColor($cardID)
