@@ -1621,7 +1621,7 @@ function GetDamagePreventionIndices()
   $rv = "";
 
   $rv = SearchLayerDQ($otherPlayer, "");
-  $rv = SearchMultiZoneFormat(SearchLayer($otherPlayer), "LAYER");
+  $rv = SearchMultiZoneFormat($rv, "LAYER");
   if (count($combatChain) > 0) {
     if ($rv != "") $rv .= ",";
     $rv .= "CC-0";
