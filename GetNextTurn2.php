@@ -232,7 +232,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $prompt = "";
     if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID)) {
       // Prompt the player if they want to skip arsenal with cards in hand.
-      $prompt = "Do you want to skip arsenal ?";
+      $prompt = "Do you want to skip arsenal?";
     }
 
 ?>
@@ -632,7 +632,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "CC") $playerBorderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
       else if ($option[0] == "LAYER") {
         $playerBorderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
-      } 
+      }
 
       if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") $card = $TheirCardBack;
 
@@ -818,7 +818,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
     if (HasBloodDebt($theirBanish[$i]) && $theirBanish[$i + 1] != "INT") ++$theirBloodDeptCount;
   }
-  
+
   if (TalentContains($theirCharacter[0], "SHADOW") || $theirBloodDeptCount > 0) {
     $bloodDeptImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
     echo ("<img title='Blood Debt' style='position:absolute; top:20px; left:-45px; width:34px;' src='./Images/" . $bloodDeptImage ."'><div style='position:absolute; top:41px; left:-44px; width:34px; font-size:24px; font-weight:550; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "; text-align:center;'>" . $theirBloodDeptCount . "</div></img>");
