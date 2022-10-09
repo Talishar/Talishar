@@ -1,11 +1,8 @@
 <?php
 include_once 'Header.php';
-?>
-
-<?php
-
 include "HostFiles/Redirector.php";
 include "Libraries/HTTPLibraries.php";
+include_once "Libraries/PlayerSettings.php";
 
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
@@ -18,6 +15,17 @@ if($playerID == "1")
   echo("Player 1 should not use JoinGame.php");
   exit;
 }
+
+$settingArray = [];
+if(isset($_SESSION["userid"]))
+{
+  $savedSettings = LoadSavedSettings($_SESSION["userid"]);
+  for($i=0; $i<count($savedSettings); $i+=2)
+  {
+    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
+  }
+}
+
 ?>
 <style>
   body {
@@ -48,10 +56,12 @@ if($playerID == "1")
   if (isset($_SESSION["userid"])) {
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if (count($favoriteDecks) > 0) {
+      $selIndex = -1;
+      if(isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
       echo ("<div class='DeckToTry'>Favorite Decks: ");
       echo ("<select style='height:26px;' name='favoriteDecks' id='favoriteDecks'>");
       for ($i = 0; $i < count($favoriteDecks); $i += 3) {
-        echo ("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "</option>");
+        echo ("<option value='" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
       }
       echo ("</select></div><br>");
     }
