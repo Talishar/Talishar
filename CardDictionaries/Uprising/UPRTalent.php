@@ -50,6 +50,7 @@
       case "UPR215": case "UPR216": case "UPR217": return "A";
       case "UPR218": case "UPR219": case "UPR220": return "A";
       case "UPR221": case "UPR222": case "UPR223": return "I";
+      case "UPR225": return "T";
       default: return "";
     }
   }
