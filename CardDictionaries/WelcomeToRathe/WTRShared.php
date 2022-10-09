@@ -220,6 +220,7 @@
       case "WTR215": case "WTR216": case "WTR217": return "DR";
       case "WTR218": case "WTR219": case "WTR220": return "A";
       case "WTR221": case "WTR222": case "WTR223": return "A";
+      case "WTR224": return "R";
       case "WTR225": return "T";
       default: return "";
     }
@@ -356,6 +357,7 @@
       case "WTR215": case "WTR216": case "WTR217": return 0;
       case "WTR218": case "WTR219": case "WTR220": return 0;
       case "WTR221": case "WTR222": case "WTR223": return 3;
+      case "WTR224": return -1;
       default: return 0;
     }
   }
@@ -421,6 +423,7 @@
       case "WTR201": case "WTR204": case "WTR207": case "WTR210": case "WTR213": case "WTR216": case "WTR219": case "WTR222": return 2;
       case "WTR175": case "WTR178": case "WTR181": case "WTR184": case "WTR187": case "WTR190": case "WTR193": case "WTR196": case "WTR199": return 3;
       case "WTR202": case "WTR205": case "WTR208": case "WTR211": case "WTR214": case "WTR217": case "WTR220": case "WTR223": return 3;
+      case "WTR224": return 2;
       default: return 3;
     }
   }
@@ -489,6 +492,7 @@
       case "WTR217": return 2;
       case "WTR218": case "WTR219": case "WTR220": return 2;
       case "WTR221": case "WTR222": case "WTR223": return 2;
+      case "WTR224": return -1;
       default: return 3;
     }
   }
