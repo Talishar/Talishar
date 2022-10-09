@@ -103,7 +103,7 @@ if ($handle = opendir($path)) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
       if ($format == "commoner") $formatName = "Commoner ";
-      else if ($format == "livinglegendscc") $formatName = "Living Legends CC ";
+      else if ($format == "livinglegendscc") $formatName = "Open Format ";
       else if ($format == "aggrocc") $formatName = "Aggro CC ";
 
       $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
