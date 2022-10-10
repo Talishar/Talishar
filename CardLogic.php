@@ -870,6 +870,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "DYN094":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $index = GetItemIndex($parameter, $player);
+      AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($parameter, $parameter) . "_and_a_defending_equipment?");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("DESTROYITEM", $player, $index, 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
+      break;
     default:
       break;
   }

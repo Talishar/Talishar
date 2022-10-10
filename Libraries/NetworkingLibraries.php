@@ -770,6 +770,7 @@ function ResolveCombatDamage($damageDone)
     MainCharacterHitEffects();
     ArsenalHitEffects();
     AuraHitEffects($combatChain[0]);
+    ItemHitEffects($combatChain[0]);
     AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
   } else {
     for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
@@ -1237,7 +1238,7 @@ function GetLayerTarget($cardID)
     case "ELE183":
     case "ELE184":
     case "ELE185":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "CC:maxCost=1;type=AA"); // &LAYER:maxCost=1;type=AA
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA"); // &LAYER:maxCost=1;type=AA
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
       break;

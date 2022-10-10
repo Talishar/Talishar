@@ -372,7 +372,7 @@ function CardClass($cardID)
       else return "NONE";
     case "DVR":
       if ($number >= 2) return "WARRIOR";
-      else if ($number = 5) return "WARRIOR";
+      else if ($number == 5) return "WARRIOR";
       else if ($number >= 7 && $number <= 12) return "WARRIOR";
       else if ($number >= 15 && $number <= 18) return "WARRIOR";
       else if ($number >= 20 && $number <= 21) return "WARRIOR";
@@ -380,14 +380,14 @@ function CardClass($cardID)
     case "RVD":
       if ($number >= 3) return "BRUTE";
       else if ($number >= 7 && $number <= 17) return "BRUTE";
-      else if ($number = 21) return "BRUTE";
-      else if ($number = 23) return "BRUTE";
-      else if ($number = 25) return "BRUTE";
+      else if ($number == 21) return "BRUTE";
+      else if ($number == 23) return "BRUTE";
+      else if ($number == 25) return "BRUTE";
       else return "GENERIC";
     case "DYN":
-      if ($number = 30) return "WARRIOR,WIZARD";
-      if ($number = 68) return "WARRIOR";
-      if ($number = 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
+      if ($number == 30) return "WARRIOR,WIZARD";
+      if ($number == 68) return "WARRIOR";
+      if ($number == 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
 
       if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
 
@@ -1173,7 +1173,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $type != "AA";
     case "CRU189": case "CRU190": case "CRU191":
       if (count($combatChain) <= 2) return true;
-      $found = SearchCombatChain($player, "AA");
+      $found = SearchCombatChainLink($player, "AA");
       return $found == "" || $found == "0";
     case "MON000":
       return $from == "PLAY" && SearchCount(SearchHand($player, "", "", -1, -1, "", "", false, false, 2)) < 2;
@@ -1218,7 +1218,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "ARS" || ArsenalEmpty($player);
     case "ELE125": case "ELE126": case "ELE127":
       if (count($combatChain) <= 2) return true;
-      $found = CombineSearches(SearchCombatChain($defPlayer, "A", talent: "EARTH,ELEMENTAL"), SearchCombatChain($defPlayer, "AA", talent: "EARTH,ELEMENTAL"));
+      $found = CombineSearches(SearchCombatChainLink($defPlayer, "A", talent: "EARTH,ELEMENTAL"), SearchCombatChainLink($defPlayer, "AA", talent: "EARTH,ELEMENTAL"));
       return $found == "" || $found == "0";
     case "ELE140": case "ELE141": case "ELE142":
       return SowTomorrowIndices($player, $cardID) == "";
