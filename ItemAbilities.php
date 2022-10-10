@@ -109,3 +109,22 @@ function GetItemGemState($player, $cardID)
   }
   return $state;
 }
+
+function ItemHitEffects($attackID)
+{
+  global $mainPlayer;
+  $attackSubType = CardSubType($attackID);  
+  $items = &GetItems($mainPlayer);
+  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    switch ($items[$i]) {
+      case "DYN094":
+        if ($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i + 4]);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
