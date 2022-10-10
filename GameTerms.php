@@ -107,8 +107,13 @@ function TypeToPlay($phase)
   }
 }
 
-function PlayTerm($phase)
+function PlayTerm($phase, $from="")
 {
+  switch ($from) {
+    case "EQUIP": case "PLAY":
+      return "activated";
+    default: break;
+  }
   switch ($phase) {
     case "P":
       return "pitched";

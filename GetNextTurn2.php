@@ -164,7 +164,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cardSize = ($windowWidth != 0 ? intval($windowWidth / 13) : 120);
   //$cardSize = ($windowWidth != 0 ? intval($windowWidth / 16) : 120);
   if (!IsDynamicScalingEnabled($playerID)) $cardSize = 120; //Temporarily disable dynamic scaling
-  $rightSideWidth = (IsDynamicScalingEnabled($playerID) ? intval($windowWidth * 0.15) : 200);
+  $rightSideWidth = (IsDynamicScalingEnabled($playerID) ? intval($windowWidth * 0.15) : 210);
   $cardSizeAura = intval($cardSize * .8); //95;
   $cardSizeEquipment = intval($cardSize * .8);
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
@@ -211,7 +211,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     filter: url(data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>
     <img style='object-fit: cover; height:100%; width:100%;' src='./Images/findCenterBackground.jpg'/></div>");
 
-  echo ("<div style='position:absolute; right:" . intval($rightSideWidth * 1.1) . "px; top:calc(50% - 100px); height:200px; z-index:100;'>
+  echo ("<div style='position:absolute; right:" . intval($rightSideWidth * 1.05) . "px; top:calc(50% - 100px); height:200px; z-index:100;'>
       <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px; user-select: none;'>$myHealth</span>"); //Master pass button div
   echo (($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "-1", 10005, 0, "24px") . CreateButton($playerID, "+1", 10006, 0, "24px") . "</span>" : ""));
   echo ("<span style='position:absolute; text-align:center; width:27px; font-size: 24px; font-weight: 550; top:23px; left:28px; user-select: none;'>$theirHealth</span>");
@@ -1206,7 +1206,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //End play area div
 
   //Display the log
-  echo ("<div style='display:flex; flex-direction: column; position:fixed; width:" . $rightSideWidth . "px; top:5px; bottom:5px; right:10px;'>");
+  echo ("<div style='display:flex; flex-direction: column; position:fixed; width:" . $rightSideWidth . "px; top:5px; bottom:5px; right:5px;'>");
 
   echo ("<div style='flex-grow:0; flex-shrink:0; position:relative; height:50px;'><div style='position:absolute; right:50px;'><table><tr>");
   if (IsPatron($playerID)) {
@@ -1232,12 +1232,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</div>");
   echo ("<div style='position:relative; z-index:-1;'><img style='height:(" . intval($rightSideWidth / 2) . ")px; flex-grow:0; flex-shrink:0; width:100%;' src='./Images/phaseTracker2.png' />");
   $trackerColor = ($playerID == $currentPlayer ? "blue" : "red");
-  if ($turn[0] == "B") $trackerLeft = intval($rightSideWidth * .42);
-  else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth * .6);
-  else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) $trackerLeft = intval($rightSideWidth * .778);
-  else if (count($chainLinks) > 0) $trackerLeft = $trackerLeft = intval($rightSideWidth * .235);
-  else $trackerLeft = $trackerLeft = intval($rightSideWidth * .06);
-  echo ("<div style='position:absolute; z-index:0; top:44px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
+  if ($turn[0] == "B" || (count($layers) > 0 && $layers[0] == "DEFENDSTEP")) $trackerLeft = intval($rightSideWidth * .43);
+  else if ($turn[0] == "A" || $turn[0] == "D") $trackerLeft = intval($rightSideWidth * .61);
+  else if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && ($layers[0] == "ENDTURN" || $layers[0] == "FINALIZECHAINLINK"))) $trackerLeft = intval($rightSideWidth * .795);
+  else if (count($chainLinks) > 0) $trackerLeft = $trackerLeft = intval($rightSideWidth * .245);
+  else $trackerLeft = $trackerLeft = intval($rightSideWidth * .065);
+  echo ("<div style='position:absolute; z-index:0; top:47px; left:" . $trackerLeft . "px;'><img style='height:29px; width:30px;' src='./Images/" . $trackerColor . "PhaseMarker.png' /></div>");
   echo ("</div>");
 
   echo ("<div id='gamelog' style='flex-grow:1; top:3px; border: 3px solid " . $borderColor . "; border-radius: 5px; position:relative; background-color: " . $backgroundColor . "; overflow-y: scroll;'>");
@@ -1358,13 +1358,13 @@ function GetZoneRight($zone)
   global $cardWidth, $rightSideWidth;
   switch ($zone) {
     case "DISCARD":
-      return intval($rightSideWidth * 1.09) . "px";
+      return intval($rightSideWidth * 1.05) . "px";
     case "DECK":
-      return intval($rightSideWidth * 1.08) . "px";
+      return intval($rightSideWidth * 1.05) . "px";
     case "BANISH":
-      return intval($rightSideWidth * 1.09) . "px";
+      return intval($rightSideWidth * 1.05) . "px";
     case "PITCH":
-      return (intval($rightSideWidth * 1.18) + $cardWidth) . "px";
+      return (intval($rightSideWidth * 1.14) + $cardWidth) . "px";
   }
 }
 
