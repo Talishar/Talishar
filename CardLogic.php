@@ -1102,3 +1102,17 @@ function DestroyFrozenArsenal($player)
     }
   }
 }
+
+function isAttackGreaterThanTwiceBasePower()
+{
+  global $currentPlayer, $combatChainState, $CCS_CachedTotalAttack, $combatChain;
+  if (count($combatChain) > 0 && CardType($combatChain[0]) == "W" && $combatChainState[$CCS_CachedTotalAttack] > (AttackValue($combatChain[0]) * 2)) return true;
+  $character = &GetPlayerCharacter($currentPlayer);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if (cardType($character[$i]) != "W") continue;
+    $baseAttack = AttackValue($character[$i]);
+    $buffedAttack = $baseAttack + $character[$i + 3] + MainCharacterAttackModifiers($i, true) + AttackModifier($character[$i]);
+    if ($buffedAttack > $baseAttack * 2) return true;
+  }
+  return false;
+}

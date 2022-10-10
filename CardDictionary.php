@@ -386,6 +386,13 @@ function CardClass($cardID)
       else return "GENERIC";
     case "DYN":
       if ($number = 30) return "WARRIOR,WIZARD";
+      if ($number = 68) return "WARRIOR";
+      if ($number = 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
+
+      if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
+
+      if ($number >= 116 && $number <= 118) return "WIZARD"; // TODO: Blessing of Aether cardID to be edited
+      
       else return "GENERIC";
     default:
       return 0;
@@ -921,6 +928,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if (count($combatChain) > 0 && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) && $from == "HAND") {
     if (CachedDominateActive() && CachedNumBlockedFromHand() >= 1) return false;
+    if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1) return false;
     if (CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($combatChain[0]) == "AA") return false;
   }
   if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player))) return false;
@@ -1319,7 +1327,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       return true;
     case "EVR053":
-      return !HelmOfSharpEyePlayable();
+      return !isAttackGreaterThanTwiceBasePower();
     case "EVR181":
       return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || count($combatChain) == 0 || CardType($combatChain[0]) != "AA");
     case "DVR013":

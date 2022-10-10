@@ -4,6 +4,7 @@ function DYNAbilityCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 3;
+        case "DYN068": return 3;
         case "DYN075": return 3; // TODO: Yoji cardID to be modified with set release
         case "DYN242": return 1;
         case "DYN243": return 2;
@@ -18,6 +19,7 @@ function DYNAbilityType($cardID, $index = -1)
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch ($cardID) {
         case "DYN001": return "A";
+        case "DYN068": return "AA";
         case "DYN075": return "I"; // TODO: Yoji cardID to be modified with set release
         case "DYN242": case "DYN243": return "A";
         default:
@@ -86,6 +88,7 @@ function DYNCardType($cardID)
 {
     switch ($cardID) {
         case "DYN001": return "C";
+        case "DYN068": return "W";
         case "DYN075": return "C"; // TODO: Yoji cardID to be modified with set release
         case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return "E";
@@ -100,6 +103,7 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
     switch ($cardID) {
+        case "DYN068": return "Axe";
         case "DYN116": case "DYN117": case "DYN118": return "Aura"; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return "Head";
         case "DYN242": return "Item";
@@ -126,6 +130,7 @@ function DYNPitchValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 0;
+        case "DYN068": return 0;
         case "DYN075": return 0; // TODO: Yoji cardID to be modified with set release
         case "DYN234": return 0;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
@@ -142,6 +147,7 @@ function DYNBlockValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return -1;
+        case "DYN068": return -1;
         case "DYN075": return -1; // TODO: Yoji cardID to be modified with set release
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return -1;
@@ -154,7 +160,7 @@ function DYNBlockValue($cardID)
 function DYNAttackValue($cardID)
 {
     switch ($cardID) {
-
+        case "DYN068": return 3;
         default:
             return 0;
     }
