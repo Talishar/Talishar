@@ -541,9 +541,6 @@ function AuraPlayAbilities($attackID, $from="")
   $auras = &GetAuras($currentPlayer);
   $cardType = CardType($attackID);
   $cardSubType = CardSubType($attackID);
-  $cardAbilityType = GetAbilityType($attackID); 
-  $numRunechants = CountAura("ARC112", $currentPlayer);
-  if ($cardType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
@@ -555,7 +552,10 @@ function AuraPlayAbilities($attackID, $from="")
         }
         break;
       case "ARC112":
-        if ($cardType == "AA" || $cardType == "W") {
+        writelog(GetResolvedAbilityType($attackID) . " " . $attackID);
+        if ($cardType == "AA"|| ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
+          $numRunechants = CountAura("ARC112", $currentPlayer);
+          if ($cardType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
@@ -586,8 +586,6 @@ function AuraAttackAbilities($attackID)
   global $combatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
-  $numRunechants = CountAura("ARC112", $mainPlayer);
-  if ($attackType == "W" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
