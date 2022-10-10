@@ -321,6 +321,12 @@ if ($decklink != "") {
     die();
   }
 
+  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz")) {
+    $_SESSION['error'] = '⚠️ Old heroes are not legal in Blitz: \n\nOld - ' . CardName($character);
+    header("Location: MainMenu.php");
+    die();
+  }
+
 
   if ($bannedCard != "" && !$starterDeck) {
     if ($format == "blitz" || $format == "compblitz") {
