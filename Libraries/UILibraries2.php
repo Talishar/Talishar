@@ -133,9 +133,9 @@ use JetBrains\PhpStorm\Language;
   elseif($counters != 0) {
     if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "30%"; }
     $rv .= "<div style='margin: 0px; top: 50%; left:" . $left . ";
-    margin-right: -50%; border-radius: 50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 5px; border: 3px solid " . PopupBorderColor($darkMode) . "; text-align: center; line-height:" . $imgCounterHeight/1.4 . "px;
-    transform: translate(-50%, -50%); position:absolute; z-index: 10; background:" . BackgroundColor($darkMode) . ";
-    font-family: Helvetica; font-size:" . ($counterHeight-2) . "px; font-weight:550; color:".TextCounterColor($darkMode)."; text-shadow: 2px 0 0 ".PopupBorderColor($darkMode).", 0 -2px 0 ".PopupBorderColor($darkMode).", 0 2px 0 ".PopupBorderColor($darkMode).", -2px 0 0 ".PopupBorderColor($darkMode). "; user-select: none;'>" . $counters . "</div>";
+    margin-right: -50%; border-radius: 50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 5px; border: 3px solid #1a1a1a; text-align: center; line-height:" . $imgCounterHeight/1.4 . "px;
+    transform: translate(-50%, -50%); position:absolute; z-index: 10; background: rgba(235, 235, 235, 0.95);
+    font-family: Helvetica; font-size:" . ($counterHeight-2) . "px; font-weight:550; color: #EDEDED; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; user-select: none;'>" . $counters . "</div>";
   }
 
   //-1 Defense & Endurance Counters style
@@ -143,7 +143,7 @@ use JetBrains\PhpStorm\Language;
     if($lifeCounters == 0 && $counters == 0){ $left = "0px"; } else { $left = "-45%"; }
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
     display: flex;justify-content: center; z-index: 5; text-align: center;vertical-align: middle; line-height:" . $imgCounterHeight . "px;
-    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>" . $defCounters . "
+    font-size:" . ($imgCounterHeight-17) . "px; font-weight: 600; color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>" . $defCounters . "
     <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/Defense.png'></div>";
   }
 
