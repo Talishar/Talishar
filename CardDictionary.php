@@ -1392,6 +1392,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE196":
     case "ELE197":
       return SearchCurrentTurnEffects($cardID, $player);
+    case "DYN088":
+      $char = &GetPlayerCharacter($player);
+      return $char[$index + 2] < 2;
     default:
       return false;
   }

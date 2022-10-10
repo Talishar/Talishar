@@ -2666,8 +2666,8 @@ function isOverpowerActive ()
   global $combatChain;
   if (count($combatChain) == 0) return false;
   switch ($combatChain[0]) {
-    case "DYN068":
-      return isAttackGreaterThanTwiceBasePower();
+    case "DYN068": return isAttackGreaterThanTwiceBasePower();
+    case "DYN088": return true;
     default:
       break;
   }
@@ -2678,6 +2678,7 @@ function HasOverpower ($cardID)
 {
   switch ($cardID) {
     case "DYN068": return isAttackGreaterThanTwiceBasePower();
+    case "DYN088": return true;
     default: break;
   }
   return false;
@@ -2813,6 +2814,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
       break;
     case "UPR166":
+      $character[$cardIndex + 2] -= 2;
+      break;
+    case "DYN088":
       $character[$cardIndex + 2] -= 2;
       break;
     default:

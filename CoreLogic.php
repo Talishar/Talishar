@@ -382,7 +382,7 @@ function CharacterPlayCardAbilities($cardID, $from)
 
 function MainCharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards;
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i] == "ARC115" && SearchCurrentTurnEffects($character[$i], $currentPlayer) && ActionsThatDoArcaneDamage($cardID)) {
@@ -423,6 +423,20 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
+        break;
+      case "DYN088":
+        $numBoostPlayed = 0;
+        if (HasBoost($cardID))
+        {
+          $numBoostPlayed = GetClassState($currentPlayer, $CS_NumBoostPlayed) + 1;
+          SetClassState($currentPlayer, $CS_NumBoostPlayed, $numBoostPlayed);
+        }
+        if ($numBoostPlayed == 3)
+        {
+          $index = FindCharacterIndex($currentPlayer, "DYN088");
+          ++$character[$index + 2];
+        }
+
         break;
       default:
         break;
