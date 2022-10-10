@@ -1206,7 +1206,6 @@ if($set == "RVD"){
     case "025": return "Clearing Bellow";
     case "026": return "Dodge";
     case "027": return "Titanium Bauble";
-
     default: return "Name not populated - please report bug";
   }
 }
@@ -1214,10 +1213,22 @@ if ($set == "DYN") {
 	switch ($num) {
 		case "001": return "Emperor, Dracai of Aesir";
 
+		case "068": return "Merciless Battleaxe";
+
+		case "075": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
+
+		case "088": return "Hanabi Blaster";
+
+		case "094": return "Powder Keg";
+
+      	case "116": case "117": case "118": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
+
 		case "234": return "Crown of Dominion";
 
 		case "243": return "Imperial Warhorn";
 		case "243": return "Gold";
+
+		default: return "Name not populated - please report bug";
 	}
 }
 if($set == "WTR"){
