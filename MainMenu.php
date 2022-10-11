@@ -160,8 +160,8 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     <label style='margin-left:-12px;' for="commoner">Commoner</label>
 
 
-   <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc"<?php if($defaultFormat == 4) echo 'checked="checked"'; ?>>
-   <label style='margin-left:-12px;' for="livinglegendscc">Open Format (No Restriction)</label>
+    <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc"<?php if($defaultFormat == 4) echo 'checked="checked"'; ?>>
+    <label style='margin-left:-12px;' for="livinglegendscc">Open Format (No Restriction)</label>
   <br><br>
 
     <input type="radio" id="public" name="visibility" value="public"<?php if($defaultVisibility == 1) echo 'checked="checked"'; ?>>
