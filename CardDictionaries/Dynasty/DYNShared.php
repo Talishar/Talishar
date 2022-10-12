@@ -4,6 +4,7 @@ function DYNAbilityCost($cardID)
 {
     switch ($cardID) {
         case "DYN001": return 3;
+        case "DYN005": return 3;
         case "DYN068": return 3;
         case "DYN075": return 3; // TODO: Yoji cardID to be modified with set release
         case "DYN242": return 1;
@@ -18,6 +19,7 @@ function DYNAbilityType($cardID, $index = -1)
     global $currentPlayer, $mainPlayer, $defPlayer;
     switch ($cardID) {
         case "DYN001": return "A";
+        case "DYN005": return "AA";
         case "DYN068": return "AA";
         case "DYN088": return "AA";
         case "DYN075": return "I"; // TODO: Yoji cardID to be modified with set release
@@ -88,6 +90,7 @@ function DYNCardType($cardID)
 {
     switch ($cardID) {
         case "DYN001": return "C";
+        case "DYN005": return "W";
         case "DYN026": return "E";
         case "DYN039": case "DYN040": case "DYN041": return "A";
         case "DYN068": return "W";
@@ -108,6 +111,7 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
     switch ($cardID) {
+        case "DYN005": return "Rock";
         case "DYN026": return "Off-Hand";
         case "DYN068": return "Axe";
         case "DYN088": return "Gun";
@@ -136,6 +140,7 @@ function DYNCardCost($cardID)
 function DYNPitchValue($cardID)
 {
     switch ($cardID) {
+        case "DYN005": return 0;
         case "DYN039": return 1;
         case "DYN040": return 2;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
@@ -151,6 +156,7 @@ function DYNBlockValue($cardID)
 {
     switch ($cardID) {
         case "DYN001": return -1;
+        case "DYN005": return -1;
         case "DYN026": return 3;
         case "DYN068": return -1;
         case "DYN075": return -1; // TODO: Yoji cardID to be modified with set release
@@ -168,6 +174,7 @@ function DYNBlockValue($cardID)
 function DYNAttackValue($cardID)
 {
     switch ($cardID) {
+        case "DYN005": return 7;
         case "DYN068": return 3;
         case "DYN088": return 5;
         default:
@@ -180,7 +187,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     global $currentPlayer, $CS_PlayIndex;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch ($cardID) {
-        case "DYN001": 
+        case "DYN001":
             AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,ARC159");
             AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
             AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
@@ -204,7 +211,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         case "DYN171":
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
-        case "DYN242":   
+        case "DYN242":
             $rv = "";
             if($from == "PLAY"){
                 DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
@@ -235,7 +242,7 @@ function DYNHitEffect($cardID)
     }
 }
 
-function IsRoyal($player) 
+function IsRoyal($player)
 {
     $mainCharacter = &GetPlayerCharacter($player);
 
