@@ -386,7 +386,7 @@ function CardClass($cardID)
       else return "GENERIC";
     case "DYN":
       if ($number == 1) return "WARRIOR,WIZARD";
-      
+
       if ($number >= 26 && $number <= 41) return "GUARDIAN";
       if ($number == 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
 
@@ -1494,6 +1494,8 @@ function HasBladeBreak($cardID)
       return true;
     case "UPR182":
       return true;
+    case "DYN171":
+      return true;
     default:
       return false;
   }
@@ -2224,8 +2226,9 @@ function RequiresDieRoll($cardID, $from, $player)
   return false;
 }
 
-function SpellVoidAmount($cardID)
+function SpellVoidAmount($cardID, $player)
 {
+  if ($cardID == "ARC112" && SearchCurrentTurnEffects("DYN171", $player)) return 1;
   switch ($cardID) {
     case "ELE173":
       return 2;
