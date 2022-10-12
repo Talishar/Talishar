@@ -18,7 +18,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if($target != "-")
   {
     $targetArr = explode("-", $target);
-    if($targetArr[0] == "LAYER" && $targetArr[1] >= 0) $targetArr[1] = count($layers) - $targetArr[1];
+    //TODO: This -6 is not right
+    if($targetArr[0] == "LAYER" && $targetArr[1] >= 0) $targetArr[1] = count($layers) - 6;
     $target = $targetArr[0] . "-" . $targetArr[1];
   }
   if (($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
