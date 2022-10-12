@@ -2,7 +2,7 @@
 
   function CRUAbilityCost($cardID)
   {
-    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer;
+    global $CS_PlayIndex, $currentPlayer;
 
     switch($cardID)
     {
@@ -12,7 +12,7 @@
       case "CRU049": return 1;
       case "CRU050": case "CRU051": case "CRU052": return 1;
       case "CRU079": case "CRU080": return 1;
-      case "CRU101": $char = &GetPlayerCharacter($currentPlayer); return ($char[GetClassState($currentPlayer, $CS_CharacterIndex) + 2] > 0 ? 0 : 2);
+      case "CRU101": $char = &GetPlayerCharacter($currentPlayer); return ($char[GetClassState($currentPlayer, $CS_PlayIndex) + 2] > 0 ? 0 : 2);
       case "CRU105": $items = &GetItems($currentPlayer); return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "CRU118": return 3;
       case "CRU122": return 2;
@@ -26,7 +26,7 @@
 
   function CRUAbilityType($cardID, $index=-1)
   {
-    global $myCharacter, $myClassState, $CS_CharacterIndex;
+    global $myCharacter, $myClassState, $CS_PlayIndex;
     switch($cardID)
     {
       case "CRU004": case "CRU005": return "AA";
@@ -37,7 +37,7 @@
       case "CRU050": case "CRU051": case "CRU052": return "AA";
       case "CRU079": case "CRU080": return "AA";
       case "CRU081": return "A";
-      case "CRU101": if($index == -1) $index = $myClassState[$CS_CharacterIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
+      case "CRU101": if($index == -1) $index = $myClassState[$CS_PlayIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
       case "CRU102": return "A";
       case "CRU105": return "A";
       case "CRU118": return "A";
@@ -54,13 +54,13 @@
 
   function CRUAbilityHasGoAgain($cardID)
   {
-    global $myCharacter, $myClassState, $CS_CharacterIndex;
+    global $myCharacter, $myClassState, $CS_PlayIndex;
     switch($cardID)
     {
       case "CRU006": return true;
       case "CRU025": return true;
       case "CRU081": return true;
-      case "CRU101": return ($myCharacter[$myClassState[$CS_CharacterIndex] + 1] > 0 ? true : false);
+      case "CRU101": return ($myCharacter[$myClassState[$CS_PlayIndex] + 1] > 0 ? true : false);
       case "CRU102": return true;
       case "CRU105": return true;
       case "CRU118": return true;
