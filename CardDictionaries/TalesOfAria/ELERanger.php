@@ -336,25 +336,25 @@
 
   function PayOrDiscard($player, $amount, $fromDQ=true, $passable=false)
   {
-    if($fromDQ)
-    {
-      PrependDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
-      PrependDecisionQueue("DISCARDMYHAND", $player, "-", 1);
-      PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-      PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
-      PrependDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      PrependDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-      PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
-    }
-    else
-    {
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
-      AddDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
-      AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-      AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
-      AddDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
+    $targetHand = &GetHand($player);
+    if (count($targetHand) > 0) {
+      if ($fromDQ) {
+        PrependDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
+        PrependDecisionQueue("DISCARDMYHAND", $player, "-", 1);
+        PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
+        PrependDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        PrependDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
+        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
+      } else {
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
+        AddDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
+        AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
+        AddDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
+      }
     }
   }
 
