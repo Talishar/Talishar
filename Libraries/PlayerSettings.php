@@ -136,6 +136,7 @@ function GetCardBack($player)
     case 38: return "CBFleshAndPod";
     case 39: return "CBKappolo";
     case 40: return "CBLibrariansOfSolana";
+    case 41: return "CBTheMetrixMetagame";
     default: return "CardBack";
   }
 }
@@ -492,6 +493,13 @@ function GetSettingsUI($player)
   if ($_SESSION['isLibrariansOfSolanaPatron'] || $isLibrariansOfSolanaPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-40", "LibrariansOfSolana", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Librarians of Solana");
+  }
+
+  $isTheMetrixMetagamePatron = false;
+  $isTheMetrixMetagamePatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Wes" || $_SESSION["useruid"] == "Brandon" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isTheMetrixMetagamePatron'] || $isTheMetrixMetagamePatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-41", "TheMetrixMetagame", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Metrix Metagame");
   }
 
   $rv .= "<BR>";
