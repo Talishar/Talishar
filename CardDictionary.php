@@ -385,14 +385,24 @@ function CardClass($cardID)
       else if ($number == 25) return "BRUTE";
       else return "GENERIC";
     case "DYN":
-      if ($number == 30) return "WARRIOR,WIZARD";
-      if ($number == 68) return "WARRIOR";
+      if ($number == 1) return "WARRIOR,WIZARD";
+      
+      if ($number >= 26 && $number <= 41) return "GUARDIAN";
       if ($number == 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
+
+      if ($number == 68) return "WARRIOR";
 
       if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
 
+      if ($number == 151) return "RANGER";
+      if ($number == 171) return "RUNEBLADE";
+
+      if ($number >= 206 && $number <= 208) return "WIZARD";
       if ($number >= 116 && $number <= 118) return "WIZARD"; // TODO: Blessing of Aether cardID to be edited
-      
+
+
+
+
       else return "GENERIC";
     default:
       return 0;

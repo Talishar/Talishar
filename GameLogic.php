@@ -3565,7 +3565,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVENEGDEFCOUNTER":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 4] += 1;
-      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " lost a negative counter.");
+      WriteLog("A negative counter was removed from " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
     case "FLASHFREEZEDOMINATE":
       AddCurrentTurnEffect($parameter, $player, "PLAY");

@@ -88,6 +88,7 @@ function DYNCardType($cardID)
     switch ($cardID) {
         case "DYN001": return "C";
         case "DYN026": return "E";
+        case "DYN039": case "DYN040": case "DYN041": return "A";
         case "DYN068": return "W";
         case "DYN075": return "C"; // TODO: Yoji cardID to be modified with set release
         case "DYN088": return "W";
@@ -121,7 +122,7 @@ function DYNCardSubtype($cardID)
 function DYNCardCost($cardID)
 {
     switch ($cardID) {
-        case "DYN001": return 0;
+        case "DYN039": case "DYN040": case "DYN041": return 2;
         case "DYN116": case "DYN117": case "DYN118": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN242": return 2;
         case "DYN243": return 0;
@@ -132,6 +133,8 @@ function DYNCardCost($cardID)
 function DYNPitchValue($cardID)
 {
     switch ($cardID) {
+        case "DYN039": return 1;
+        case "DYN040": return 2;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN234": return 0;
@@ -170,8 +173,7 @@ function DYNAttackValue($cardID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-    global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_NumBoosted, $CCS_RequiredEquipmentBlock;
+    global $currentPlayer, $CS_PlayIndex;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch ($cardID) {
         case "DYN001": 
@@ -180,6 +182,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
             AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
             return "";
+        case "DYN039":
+        case "DYN040":
+        case "DYN041":
+            if ($cardID == "DYN039") $maxDef = 3;
+            else if ($cardID == "DYN040") $maxDef = 2;
+            else $maxDef = 1;
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;maxDef=" . $maxDef . ";class=GUARDIAN");
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Guardian Off-Hand to remove a -1 defense counter");
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
+            AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
+            return "Remove a -1 counter from a Guardian Off-hand with " . $maxDef . " or less base defense.";
         case "DYN075": // TODO: Yoji cardID to be modified with set release
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return ""; 
