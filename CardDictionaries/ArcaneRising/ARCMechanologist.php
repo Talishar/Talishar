@@ -120,7 +120,7 @@
 
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBoosted, $CS_CharacterIndex, $actionPoints, $combatChainState, $CS_PlayIndex;
+  global $currentPlayer, $CS_NumBoosted, $actionPoints, $combatChainState, $CS_PlayIndex;
   global $CCS_CurrentAttackGainedGoAgain, $combatChain, $CS_LastDynCost;
   $rv = "";
   switch ($cardID) {
@@ -129,7 +129,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       if($abilityType == "A")
       {
         $character = &GetPlayerCharacter($currentPlayer);
-        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
         $character[$index + 2] = 1;
       }
       return "";
