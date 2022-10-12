@@ -3562,6 +3562,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$lastResult + 4] -= 1;
       WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative counter.");
       return $lastResult;
+    case "REMOVENEGDEFCOUNTER":
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult + 4] += 1;
+      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " lost a negative counter.");
+      return $lastResult;
     case "FLASHFREEZEDOMINATE":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       return "1";
@@ -4943,6 +4948,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = $zone[$params[1]];
         case "THEIRCHAR":
           $rv = $zone[$params[1]];
+      }
+      return $rv;
+    case "MZGETCARDINDEX":
+      global $mainPlayer, $defplayer;
+      $rv = "-1";
+      $params = explode("-", $lastResult);
+      if (substr($params[0], 0, 5) == "THEIR") {
+        $zone = &GetMZZone($defplayer, $params[0]);
+      } else $zone = &GetMZZone($mainPlayer, $params[0]);
+      switch ($params[0]) {
+        case "MYCHAR":
+          $rv = $params[1];
+        case "THEIRCHAR":
+          $rv = $params[1];
       }
       return $rv;
     case "SIFT":

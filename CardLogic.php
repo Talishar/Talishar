@@ -1126,3 +1126,9 @@ function isAttackGreaterThanTwiceBasePower()
   }
   return false;
 }
+
+function HasNegativeCounters($array, $index)
+{
+  if ($array[$index + 4] < 0) return true;
+  return false;
+}
