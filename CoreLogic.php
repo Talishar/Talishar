@@ -1333,7 +1333,7 @@ function DoesAttackHaveGoAgain()
     case "EVR105":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138":
-      return FractalReplicationStats("Attack");
+      return FractalReplicationStats("GoAgain");
     case "UPR046":
     case "UPR063": case "UPR064": case "UPR065":
     case "UPR069": case "UPR070": case "UPR071":
