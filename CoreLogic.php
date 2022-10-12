@@ -489,6 +489,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
   $otherPlayer = $player == 1 ? 2 : 1;
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
+  if($source == "DYN005") return false;
   return true;
 }
 
