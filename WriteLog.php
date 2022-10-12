@@ -8,15 +8,6 @@ function WriteLog($text, $playerColor = 0)
   $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>;'>" : "") . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, $output . "\r\n");
   fclose($handler);
-  /*TODO: persistent chat
-  $handler = fopen("./Games/" . $gameName . "/p1gamelog.txt", "a");
-  fwrite($handler, $output . "\r\n");
-  fclose($handler);
-
-  $handler = fopen("./Games/" . $gameName . "/p2gamelog.txt", "a");
-  fwrite($handler, $output . "\r\n");
-  fclose($handler);
-  */
 }
 
 function ClearLog()

@@ -1631,6 +1631,18 @@ function NumEquipBlock()
     return true;
   }
 
+function IsSpecificAuraAttacking($player, $index)
+{
+  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  if (count($combatChain) == 0) return false;
+  if ($mainPlayer != $player) return false;
+  $weaponIndex = intval($combatChainState[$CCS_WeaponIndex]);
+  if ($weaponIndex == -1) return false;
+  if ($weaponIndex != $index) return false;
+  if (!DelimStringContains(CardSubtype($combatChain[0]), "Aura")) return false;
+  return true;
+}
+
   function CanRevealCards($player)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);

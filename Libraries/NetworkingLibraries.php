@@ -1755,7 +1755,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $chainClosed = false;
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if (GoesOnCombatChain($turn[0], $cardID, $from)) {
-    if($from == "PLAY" && $uniqueID != "-1" && $index == -1) { WriteLog(CardLink($cardID, $cardID) . " is no longer in play and so the effect does not resolve."); return; } // TODO for auras
+    if($from == "PLAY" && $uniqueID != "-1" && $index == -1) { WriteLog(CardLink($cardID, $cardID) . " is no longer in play and so the effect does not resolve."); return; }
     $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid);
     if ($index == 0) {
       $currentTurnEffectsFromCombat = [];

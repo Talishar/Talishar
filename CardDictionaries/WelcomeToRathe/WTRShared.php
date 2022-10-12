@@ -750,7 +750,7 @@
         if(CardType($combatChain[0]) != "W") return "Does nothing, because this is not a weapon attack.";
         return "Gives your weapon attack +" . AttackModifier($cardID) . ".";
       case "WTR126": case "WTR127": case "WTR128":
-        if(CardType($combatChain[0]) == "W")
+        if(CardType($combatChain[0]) == "W" || isAuraWeapon($combatChain[0], $mainPlayer, $combatChain[2]))
         {
           DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
           $rv .= "DID";
