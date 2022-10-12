@@ -606,13 +606,15 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   {
     case "MYCHAR": $source = &GetPlayerCharacter($player); break;
     case "MYITEMS": $source = &GetItems($player); break;
+    case "MYAURAS": $source = &GetAuras($player); break;
   }
   $cardID = $source[$index];
-  $spellVoidAmount = SpellVoidAmount($cardID);
+  $spellVoidAmount = SpellVoidAmount($cardID, $player);
   if($spellVoidAmount > 0)
   {
     if($zone == "MYCHAR") DestroyCharacter($player, $index);
     else if($zone == "MYITEMS") DestroyItemForPlayer($player, $index);
+    else if($zone == "MYAURAS") DestroyAura($player, $index);
     $prevented += $spellVoidAmount;
     WriteLog(CardLink($cardID, $cardID) . " was destroyed and prevented " . $spellVoidAmount . " arcane damage.");
   }

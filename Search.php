@@ -601,14 +601,18 @@ function SearchArcaneReplacement($player, $zone)
       $array = &GetItems($player);
       $count = ItemPieces();
       break;
+    case "MYAURAS":
+      $array = &GetAuras($player);
+      $count = AuraPieces();
+      break;
   }
   for ($i = 0; $i < count($array); $i += $count) {
     if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
     $cardID = $array[$i];
-    if (SpellVoidAmount($cardID) > 0 && IsCharacterActive($player, $i)) {
+    if (SpellVoidAmount($cardID, $player) > 0 && IsCharacterActive($player, $i)) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
-    } elseif (SpellVoidAmount($cardID) > 0 && $zone != "MYCHAR") {
+    } elseif (SpellVoidAmount($cardID, $player) > 0 && $zone != "MYCHAR") {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -884,9 +888,14 @@ function FrozenCount($player)
 function SearchSpellvoidIndices($player)
 {
   $search = SearchArcaneReplacement($player, "MYCHAR");
-  $indices = SearchMultizoneFormat($search, "MYCHAR"); //TODO: Add items, use FINDINDICES
+  $charIndices = SearchMultizoneFormat($search, "MYCHAR"); 
   $search = SearchArcaneReplacement($player, "MYITEMS");
-  $indices2 = SearchMultizoneFormat($search, "MYITEMS"); //TODO: Add items, use FINDINDICES
-  $indices = CombineSearches($indices, $indices2);
+  $itemsIndices = SearchMultizoneFormat($search, "MYITEMS");
+  $indices = CombineSearches($charIndices, $itemsIndices);
+
+  $search = SearchArcaneReplacement($player, "MYAURAS");
+  $auraIndices = SearchMultizoneFormat($search, "MYAURAS");
+  $indices = CombineSearches($indices, $auraIndices);
+
   return $indices;
 }

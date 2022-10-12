@@ -21,6 +21,7 @@ function DYNAbilityType($cardID, $index = -1)
         case "DYN068": return "AA";
         case "DYN088": return "AA";
         case "DYN075": return "I"; // TODO: Yoji cardID to be modified with set release
+        case "DYN171": return "I";
         case "DYN242": case "DYN243": return "A";
         default: return "";
     }
@@ -94,6 +95,7 @@ function DYNCardType($cardID)
         case "DYN088": return "W";
         case "DYN094": return "A";
         case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN171": return "E";
         case "DYN234": return "E";
         case "DYN242": return "A";
         case "DYN243": return "T";
@@ -111,6 +113,7 @@ function DYNCardSubtype($cardID)
         case "DYN088": return "Gun";
         case "DYN094": return "Item";
         case "DYN116": case "DYN117": case "DYN118": return "Aura"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN171": return "Head";
         case "DYN234": return "Head";
         case "DYN242": return "Item";
         case "DYN243": return "Item";
@@ -154,6 +157,7 @@ function DYNBlockValue($cardID)
         case "DYN088": return -1;
         case "DYN094": return -1;
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
+        case "DYN171": return 1;
         case "DYN234": return -1;
         case "DYN242": case "DYN243": return -1;
         default:
@@ -196,7 +200,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             return "Remove a -1 counter from a Guardian Off-hand with " . $maxDef . " or less base defense.";
         case "DYN075": // TODO: Yoji cardID to be modified with set release
             AddCurrentTurnEffect($cardID, $currentPlayer);
-            return ""; 
+            return "";
+        case "DYN171":
+            AddCurrentTurnEffect($cardID, $currentPlayer);
+            return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
         case "DYN242":   
             $rv = "";
             if($from == "PLAY"){
