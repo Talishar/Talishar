@@ -53,3 +53,9 @@ function ApplyEffectToEachWeapon($effectID)
     }
   }
 }
+
+function isAuraWeapon($cardID, $player, $from)
+{
+  if ((SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088")) && DelimStringContains(CardSubType($cardID), "Aura") && $from == "PLAY") return true;
+  else return false;
+}

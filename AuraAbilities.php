@@ -139,6 +139,9 @@ function DestroyAura($player, $index)
   $cardID = $auras[$index];
   $isToken = $auras[$index + 4] == 1;
   AuraDestroyed($player, $cardID, $isToken);
+  if (IsSpecificAuraAttacking($player, $index)) {
+    CloseCombatChain();
+  }
   for ($j = $index + AuraPieces() - 1; $j >= $index; --$j) {
     unset($auras[$j]);
   }
