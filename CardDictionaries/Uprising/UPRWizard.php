@@ -145,7 +145,7 @@
         }
         else $damage = 5;
         DealArcane($damage, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR106": case "UPR107": case "UPR108":
         $rv = "";
         if(DelimStringContains($additionalCosts, "ICE"))
@@ -178,13 +178,13 @@
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
           AddDecisionQueue("SUCCUMBTOWINTER", $currentPlayer, "-", 1);
         }
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR113": case "UPR114": case "UPR115":
         if($cardID == "UPR113") $damage = 5;
         else if($cardID == "UPR114") $damage = 4;
         else $damage = 3;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR116": case "UPR117": case "UPR118":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $hand = &GetHand($otherPlayer);
@@ -211,13 +211,13 @@
         else if($cardID == "UPR120") $damage = 2;
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
-        return "Deals $damage arcane.";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR122": case "UPR123": case "UPR124":
         if($cardID == "UPR122") $damage = 4;
         else if($cardID == "UPR123") $damage = 3;
         else $damage = 2;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR125":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -226,7 +226,7 @@
         else if($cardID == "UPR128") $damage = 3;
         else $damage = 2;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR130": case "UPR131": case "UPR132":
         if($cardID == "UPR130") $damage = 3;
         else if($cardID == "UPR131") $damage = 2;
@@ -243,7 +243,7 @@
         if($currentPlayer != $mainPlayer) $damage = 3;
         else $damage = 2;
         DealArcane($damage, 0, "ABILITY", $cardID, resolvedTarget: $target);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Discounts your next staff ability by 3.";
@@ -266,13 +266,13 @@
         else $damage = 2;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR173": case "UPR174": case "UPR175":
         if($cardID == "UPR173") $damage = 3;
         else if($cardID == "UPR174") $damage = 2;
         else $damage = 1;
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       case "UPR179": case "UPR180": case "UPR181":
         if($cardID == "UPR179") $maxAllies = 3;
         else if($cardID == "UPR180") $maxAllies = 2;
@@ -287,7 +287,7 @@
           DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, true);
         }
         DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
-        return "";
+        return "Deals " . $damage . " arcane damage.";
       default: return "";
     }
   }
