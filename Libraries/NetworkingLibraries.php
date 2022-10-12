@@ -1277,7 +1277,7 @@ function GetLayerTarget($cardID)
     //if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
     //else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
     AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-    AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
   }
 }
