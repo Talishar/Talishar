@@ -397,13 +397,10 @@ function ContinueDecisionQueue($lastResult = "")
       } else {
         //params 3 = ability index
         //params 4 = Unique ID
-        $layerTarget = GetClassState($currentPlayer, $CS_LayerTarget);
         $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
-        if ($layerTarget == "") $layerTarget = "-";
         if ($additionalCosts == "") $additionalCosts = "-";
         $layerIndex = count($layers) - GetClassState($currentPlayer, $CS_LayerPlayIndex);
         $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4];
-        $layers[$layerIndex + 3] = $layerTarget;
         $layers[$layerIndex + 4] = $additionalCosts;
         ProcessDecisionQueue();
         return;
