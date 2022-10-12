@@ -69,6 +69,18 @@ if(SearchCharacterForCard(2, "DYN234")) {
   AddDecisionQueue("STARTOFGAMEPUTPLAY", 2, "DYN243");
 }
 
+//Seasoned Saviour
+if (SearchCharacterForCard(1, "DYN026")) {
+  $index = FindCharacterIndex(1, "DYN026");
+  $p1Char[$index + 4] = -2;
+  WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
+}
+if (SearchCharacterForCard(2, "DYN026")) {
+  $index = FindCharacterIndex(2, "DYN026");
+  $p2Char[$index + 4] = -2;
+  WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
+}
+
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("SHUFFLEDECK", 2, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("DRAWTOINTELLECT", 1, "-"); //CR 2.0 4.1.9 Draw to Intellect
