@@ -1212,22 +1212,19 @@ if($set == "RVD"){
 if ($set == "DYN") {
 	switch ($num) {
 		case "001": return "Emperor, Dracai of Aesir";
-
+		case "026": return "Seasoned Saviour";
+		case "039": case "040": case "041": return "Reinforce Steel";
 		case "068": return "Merciless Battleaxe";
-
 		case "075": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
-
 		case "088": return "Hanabi Blaster";
-
 		case "094": return "Powder Keg";
-
       	case "116": case "117": case "118": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
-
+		case "151": return "Sandscour Greatbow";
+		case "171": return "Amethyst Tiara";
+		case "206": case "207": case "208": return "Sap";
 		case "234": return "Crown of Dominion";
-
 		case "243": return "Imperial Warhorn";
 		case "243": return "Gold";
-
 		default: return "Name not populated - please report bug";
 	}
 }
