@@ -1492,16 +1492,12 @@ function HasBladeBreak($cardID)
 function HasBattleworn($cardID)
 {
   switch ($cardID) {
-    case "WTR004":
-    case "WTR005":
-      return true;
-    case "WTR041":
-    case "WTR042":
+    case "WTR004": case "WTR005":
+    case "WTR041": case "WTR042":
       return true;
     case "WTR080":
       return true;
-    case "WTR116":
-    case "WTR117":
+    case "WTR116": case "WTR117":
       return true;
     case "ARC004":
       return true;
@@ -1511,8 +1507,7 @@ function HasBattleworn($cardID)
       return true;
     case "CRU053":
       return true;
-    case "MON107":
-    case "MON108":
+    case "MON107": case "MON108":
       return true;
     case "MON122":
       return true;
@@ -1523,6 +1518,8 @@ function HasBattleworn($cardID)
     case "EVR053":
       return true;
     case "DVR005":
+      return true;
+    case "DYN026":
       return true;
     default:
       return false;
