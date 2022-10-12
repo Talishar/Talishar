@@ -4017,6 +4017,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $damage -= $prevented;
         if ($damage < 0) $damage = 0;
         $dqVars[0] = $damage;
+        if($damage > 0) CheckSpellvoid($player, $damage);
       }
       return $prevented;
     case "DEALARCANE":
@@ -4067,13 +4068,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("TAKEARCANE", $target, $damage . "-" . $source . "-" . $player);
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
 
-      $spellvoidChoices = SearchSpellvoidIndices($target);
-      if ($spellvoidChoices != "") {
-        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
-        PrependDecisionQueue("SPELLVOIDCHOICES", $target, $damage, 1);
-        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $target, $spellvoidChoices);
-        PrependDecisionQueue("SETDQCONTEXT", $target, "Choose if you want to use a Spellvoid equipment");
-      }
+      CheckSpellvoid($target, $damage);
+      
       $quellChoices = QuellChoices($target, $damage);
       if ($quellChoices != "0") {
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
