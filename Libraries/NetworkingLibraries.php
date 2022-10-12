@@ -1226,40 +1226,40 @@ function GetLayerTarget($cardID)
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER,TYPE-I-MAXCOST-1");
       AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "LAYER", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "MON084":
     case "MON085":
     case "MON086":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "CCAA");
       AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "ELE183":
     case "ELE184":
     case "ELE185":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA"); // &LAYER:maxCost=1;type=AA
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "EVR033": case "EVR034": case "EVR035":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DMGPREVENTION");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Steadfast");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     case "UPR169":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LAYER,TYPE-A");
       AddDecisionQueue("MULTIZONEFORMAT", $currentPlayer, "LAYER", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "UPR221": case "UPR222": case "UPR223":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DMGPREVENTION");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Oasis Respite");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     default:

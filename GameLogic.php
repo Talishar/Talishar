@@ -12,13 +12,13 @@ include "MZLogic.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
-  global $currentPlayer;
+  global $currentPlayer, $layers;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if($target != "-")
   {
     $targetArr = explode("-", $target);
-    if($targetArr[0] == "LAYER" && $targetArr[1] > 0) $targetArr[1] -= 6;
+    if($targetArr[0] == "LAYER" && $targetArr[1] >= 0) $targetArr[1] = count($layers) - $targetArr[1];
     $target = $targetArr[0] . "-" . $targetArr[1];
   }
   if (($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
@@ -4069,7 +4069,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
 
       CheckSpellvoid($target, $damage);
-      
+
       $quellChoices = QuellChoices($target, $damage);
       if ($quellChoices != "0") {
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
@@ -4355,7 +4355,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $banish[$lastResult + 1] = $parameter;
       return $lastResult;
     case "SETLAYERTARGET":
-      SetClassState($player, $CS_LayerTarget, $lastResult);
+      global $layers;
+      for($i=0; $i<count($layers); $i+=LayerPieces())
+      {
+        if($layers[$i] == $parameter)
+        {
+          $layers[$i+3] = $lastResult;
+        }
+      }
       return $lastResult;
     case "SHOWSELECTEDTARGET":
       if (substr($lastResult, 0, 5) == "THEIR") {
