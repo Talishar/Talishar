@@ -272,7 +272,8 @@
         if (count($combatChain) > 0) {
           AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         } elseif (count($layers) > 0) {
-        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+          if (CardType($layers[0] == "AA") || GetAbilityType($layers[0] == "AA")) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+          else AddCurrentTurnEffect($cardID, $currentPlayer);
         } else {
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }        
