@@ -117,6 +117,10 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isLibrariansOfSolanaPatron"] = true;
       array_push($yourPatronages, "Librarians of Solana");
     }
+    if ($include->type == "campaign" && $include->id == "8951973") {
+      $_SESSION["isTheMetrixMetagamePatron"] = true;
+      array_push($yourPatronages, "The Metrix Metagame");
+    }
 	}
 
 
