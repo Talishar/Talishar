@@ -361,7 +361,7 @@
     if($numBD > 0)
     {
       LoseHealth($numBD, $mainPlayer);
-      WriteLog("Player $mainPlayer lost $numBD health from Blood Debt at end of turn.");
+      WriteLog("Player $mainPlayer lost $numBD health from Blood Debt at end of turn.", $mainPlayer);
     }
   }
 
