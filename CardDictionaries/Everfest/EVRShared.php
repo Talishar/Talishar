@@ -759,7 +759,9 @@
       case "EVR053":
         $deck = &GetDeck($currentPlayer);
         $card = array_shift($deck);
-        BanishCardForPlayer($card, $currentPlayer, "DECK", "TCC");
+        $mod = "-";
+        if (CardType($deck[0]) == "AR" || CardType($deck[0]) == "I") $mod = "TCC";
+        BanishCardForPlayer($card, $currentPlayer, "DECK", $mod);
         return "Banished a card. It is playable on this combat chain.";
       case "EVR054":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
