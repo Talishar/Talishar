@@ -140,7 +140,7 @@
         AddDecisionQueue("OK", $currentPlayer, "-", 1);
         return "";
       case "ARC120":
-        $damage = ArcaneDamage($cardID) +ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
+        $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
         DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2); //Basically this just applies the bonus twice
         return "Deals " . $damage . " arcane damage.";
       case "ARC121":
@@ -166,7 +166,7 @@
       case "ARC126": case "ARC127": case "ARC128":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
-        return "";
+        return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
       case "ARC129": case "ARC130": case "ARC131":
         if($cardID == "ARC129") $buff = 3;
         else if($cardID == "ARC130") $buff = 2;
@@ -177,7 +177,7 @@
       case "ARC132": case "ARC133": case "ARC134":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD",$cardID, resolvedTarget: $target);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
-        return "";
+        return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
       case "ARC135": case "ARC136": case "ARC137":
         if($cardID == "ARC135") $count = 5;
         else if($cardID == "ARC136") $count = 4;
@@ -214,7 +214,7 @@
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-        return "";
+        return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
       default: return "";
     }
 
@@ -440,6 +440,10 @@
       case "UPR173": case "UPR171": case "UPR135": case "UPR130": case "UPR128": case "UPR123": case "UPR112": case "UPR115": case "UPR104": case "UPR119": return 3;
       case "UPR174": case "UPR172": case "UPR131": case "UPR129": case "UPR124": case "UPR120": case "UPR131": case "UPR129": case "UPR124": case "UPR120": return 2;
       case "UPR179": case "UPR180": case "UPR181": case "UPR172": case "UPR132": case "UPR121": case "UPR179": case "UPR180": case "UPR181": return 1;
+      //DYN
+      case "DYN206": return 3;
+      case "DYN207": return 2;
+      case "DYN208": return 1;
       default: return 0;
     }
   }
@@ -476,6 +480,8 @@
     case "UPR170": case "UPR171": case "UPR172":
     case "UPR173": case "UPR174": case "UPR175":
     case "UPR179": case "UPR180": case "UPR181":
+      return true;
+    case "DYN206": case "DYN207": case "DYN208":
       return true;
     default:
       return false;

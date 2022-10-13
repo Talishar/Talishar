@@ -1212,7 +1212,7 @@ if($set == "RVD"){
 if ($set == "DYN") {
 	switch ($num) {
 		case "001": return "Emperor, Dracai of Aesir";
-    case "005": return "Rok";
+ 		case "005": return "Rok";
 		case "026": return "Seasoned Saviour";
 		case "039": case "040": case "041": return "Reinforce Steel";
 		case "068": return "Merciless Battleaxe";
