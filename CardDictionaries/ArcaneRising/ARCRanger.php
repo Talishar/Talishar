@@ -260,4 +260,17 @@
     AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
   }
 
+  function ReloadArrow($player = 0, $counters="")
+  {
+    global $currentPlayer;
+    if ($player == 0) $player = $currentPlayer;
+    if (ArsenalFull($player)) {
+      WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
+      return;
+    }
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
+    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND-" . $counters, 1);
+  }
 ?>

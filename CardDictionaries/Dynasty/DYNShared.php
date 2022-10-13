@@ -7,6 +7,7 @@ function DYNAbilityCost($cardID)
         case "DYN005": return 3;
         case "DYN068": return 3;
         case "DYN075": return 3; // TODO: Yoji cardID to be modified with set release
+        case "DYN151": return 1;
         case "DYN242": return 1;
         case "DYN243": return 2;
 
@@ -23,6 +24,7 @@ function DYNAbilityType($cardID, $index = -1)
         case "DYN068": return "AA";
         case "DYN088": return "AA";
         case "DYN075": return "I"; // TODO: Yoji cardID to be modified with set release
+        case "DYN151": return "A";
         case "DYN171": return "I";
         case "DYN242": case "DYN243": return "A";
         default: return "";
@@ -42,6 +44,7 @@ function DYNHasGoAgain($cardID)
 function DYNAbilityHasGoAgain($cardID)
 {
     switch ($cardID) {
+        case "DYN151": return true;
         case "DYN243": return true;
 
         default:
@@ -98,6 +101,7 @@ function DYNCardType($cardID)
         case "DYN088": return "W";
         case "DYN094": return "A";
         case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN151": return "W";
         case "DYN171": return "E";
         case "DYN234": return "E";
         case "DYN242": return "A";
@@ -117,6 +121,7 @@ function DYNCardSubtype($cardID)
         case "DYN088": return "Gun";
         case "DYN094": return "Item";
         case "DYN116": case "DYN117": case "DYN118": return "Aura"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN151": return "Bow";
         case "DYN171": return "Head";
         case "DYN234": return "Head";
         case "DYN242": return "Item";
@@ -163,6 +168,7 @@ function DYNBlockValue($cardID)
         case "DYN088": return -1;
         case "DYN094": return -1;
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
+        case "DYN151": return -1;
         case "DYN171": return 1;
         case "DYN234": return -1;
         case "DYN242": case "DYN243": return -1;
@@ -208,6 +214,31 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         case "DYN075": // TODO: Yoji cardID to be modified with set release
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return "";
+
+        case "DYN151":
+            $deck = GetDeck($currentPlayer);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+            AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
+
+            if (CardSubType($deck[0]) != "Arrow") 
+            {
+                AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
+                AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
+                AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows the top of your deck: <1>", 1);
+                AddDecisionQueue("OK", $currentPlayer, "-", 1);
+                AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO", 1);
+            }
+            else 
+            {
+                AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put <1> in your arsenal", 1);
+                AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_put_the_card_in_arsenal", 1);
+            }
+            AddDecisionQueue("SANDSCOURGREATBOW", $currentPlayer, "-");
+
+            return "";
+
         case "DYN171":
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";

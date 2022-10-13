@@ -3303,7 +3303,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PitchAbility($lastResult);
       return $lastResult;
     case "ADDARSENALFACEUP":
-      AddArsenal($lastResult, $player, $parameter, "UP");
+      $params = explode("-", $parameter);
+      if (count($params) > 1) AddArsenal($lastResult, $player, $params[0], "UP", $params[1]);
+      else AddArsenal($lastResult, $player, $params[0], "UP");
       return $lastResult;
     case "ADDARSENALFACEDOWN":
       AddArsenal($lastResult, $player, $parameter, "DOWN");
@@ -3601,6 +3603,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "NOPASS":
       if ($lastResult == "NO") return "PASS";
       return 1;
+    case "SANDSCOURGREATBOW":
+      if ($lastResult == "NO") {
+        ReloadArrow($player, "1"); // From Hand
+      } 
+      else { // From Top Deck
+        AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK-1", 1);
+        AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
+      }
+      return $lastResult;
     case "NOFUSE":
       if ($lastResult == "PASS") {
         WriteLog("Nothing is revealed for " . CardLink($parameter, $parameter) . " fusion.");
@@ -3612,7 +3626,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ELSE":
       if($lastResult == "PASS") return "0";
-      else return "PASS";
+      else if ($lastResult == "NO") return "NO";
+      else return $lastResult;
     case "LESSTHANPASS":
       if ($lastResult < $parameter) return "PASS";
       return $lastResult;
