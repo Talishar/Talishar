@@ -804,8 +804,8 @@
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
         return "Gives your current attack go again.";
       case "WTR159":
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-        AddDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
+        PrependDecisionQueue("ESTRIKE", $currentPlayer, "-", 1);
+        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         return "";
       case "WTR160":
         MyDrawCard();
