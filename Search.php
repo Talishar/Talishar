@@ -460,6 +460,7 @@ function SearchForUniqueID($uniqueID, $player)
   $index = SearchAurasForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchItemsForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchAlliesForUniqueID($uniqueID, $player);
+  if ($index == -1) $index = SearchArsenalForUniqueID($uniqueID, $player);
   return $index;
 }
 
@@ -468,6 +469,15 @@ function SearchAurasForUniqueID($uniqueID, $player)
   $auras = &GetAuras($player);
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     if ($auras[$i + 6] == $uniqueID) return $i;
+  }
+  return -1;
+}
+
+function SearchArsenalForUniqueID($uniqueID, $player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 5] == $uniqueID) return $i;
   }
   return -1;
 }
