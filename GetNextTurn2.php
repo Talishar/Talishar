@@ -600,7 +600,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "THEIRPITCH") $source = $theirPitch;
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
-
+      else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
+      
       $counters = 0;
       $lifeCounters = 0;
       $enduranceCounters = 0;
