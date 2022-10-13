@@ -163,6 +163,7 @@ function AllyAttackAbilities($attackID)
   global $mainPlayer, $CS_NumDragonAttacks;
   $allies = &GetAllies($mainPlayer);
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+    if ($attackID != $allies[$i]) continue;
     switch ($allies[$i]) {
       case "UPR406":
         if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
