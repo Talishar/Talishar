@@ -4354,6 +4354,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch($mzArr[0])
       {
         case "MYALLY": case "THEIRALLY": $uid = $zone[$mzArr[1]+5]; break;
+        case "MYAURAS": case "THEIRAURAS": $uid = $zone[$mzArr[1]+6]; break;
         default: break;
       }
       $combatChainState[$CCS_AttackTargetUID] = $uid;

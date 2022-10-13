@@ -453,6 +453,8 @@ function SearchZoneForUniqueID($uniqueID, $player, $zone)
   switch($zone)
   {
     case "MYALLY": case "THEIRALLY": return SearchAlliesForUniqueID($uniqueID, $player);
+    case "MYAURAS": case "THEIRAURAS": return SearchAurasForUniqueID($uniqueID, $player);
+    case "MYARS": case "THEIRARS": return SearchArsenalForUniqueID($uniqueID, $player);
     default: return -1;
   }
 }
