@@ -388,6 +388,7 @@ function CardClass($cardID)
       if ($number == 1) return "WARRIOR,WIZARD";
       if ($number == 5) return "BRUTE";
       if ($number >= 26 && $number <= 41) return "GUARDIAN";
+      if ($number == 45) return "NINJA";
       if ($number == 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
 
       if ($number == 68) return "WARRIOR";
@@ -1495,6 +1496,7 @@ function HasBladeBreak($cardID)
       return true;
     case "UPR182":
       return true;
+    case "DYN045":
     case "DYN171":
       return true;
     default:

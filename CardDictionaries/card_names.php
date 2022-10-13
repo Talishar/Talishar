@@ -1215,6 +1215,7 @@ if ($set == "DYN") {
  		case "005": return "Rok";
 		case "026": return "Seasoned Saviour";
 		case "039": case "040": case "041": return "Reinforce Steel";
+		case "045": return "Blazen Yoroi";
 		case "068": return "Merciless Battleaxe";
 		case "075": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
 		case "088": return "Hanabi Blaster";

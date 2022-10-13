@@ -95,6 +95,7 @@ function DYNCardType($cardID)
         case "DYN005": return "W";
         case "DYN026": return "E";
         case "DYN039": case "DYN040": case "DYN041": return "A";
+        case "DYN045": return "E";
         case "DYN068": return "W";
         case "DYN075": return "C"; // TODO: Yoji cardID to be modified with set release
         case "DYN088": return "W";
@@ -117,6 +118,7 @@ function DYNCardSubtype($cardID)
     switch ($cardID) {
         case "DYN005": return "Rock";
         case "DYN026": return "Off-Hand";
+        case "DYN045": return "Chest";
         case "DYN068": return "Axe";
         case "DYN088": return "Gun";
         case "DYN094": return "Item";
@@ -165,6 +167,7 @@ function DYNBlockValue($cardID)
         case "DYN001": return -1;
         case "DYN005": return -1;
         case "DYN026": return 3;
+        case "DYN045": return 1;
         case "DYN068": return -1;
         case "DYN075": return -1; // TODO: Yoji cardID to be modified with set release
         case "DYN088": return -1;
