@@ -220,22 +220,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return "";
         case "DYN151":
-            $deck = GetDeck($currentPlayer);
-            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            $deck = &GetDeck($currentPlayer);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
-            AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
-            AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
             if (CardSubType($deck[0]) != "Arrow") 
             {
-                AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-                AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
-                AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows the top of your deck: <1>", 1);
-                AddDecisionQueue("OK", $currentPlayer, "-", 1);
-                AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO", 1);
+                AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows you the top of your deck: <0>");
+                AddDecisionQueue("OK", $currentPlayer, "whether to put an arrow in arsenal", 1);
+                AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO");
             }
             else 
             {
-                AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put <1> in your arsenal", 1);
+                AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put <0> in your arsenal", 1);
                 AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_put_the_card_in_arsenal", 1);
             }
             AddDecisionQueue("SANDSCOURGREATBOW", $currentPlayer, "-");
