@@ -17,7 +17,6 @@ function DYNAbilityCost($cardID)
 
 function DYNAbilityType($cardID, $index = -1)
 {
-    global $currentPlayer, $mainPlayer, $defPlayer;
     switch ($cardID) {
         case "DYN001": return "A";
         case "DYN005": return "AA";
@@ -103,6 +102,7 @@ function DYNCardType($cardID)
         case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return "W";
         case "DYN171": return "E";
+        case "DYN206": case "DYN207": case "DYN208": return "A";
         case "DYN234": return "E";
         case "DYN242": return "A";
         case "DYN243": return "T";
@@ -150,6 +150,8 @@ function DYNPitchValue($cardID)
         case "DYN040": return 2;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
+        case "DYN206": return 1;
+        case "DYN207": return 2;
         case "DYN234": return 0;
         case "DYN242": return 1;
         case "DYN243": return 0;
@@ -214,14 +216,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         case "DYN075": // TODO: Yoji cardID to be modified with set release
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return "";
-
         case "DYN151":
             $deck = GetDeck($currentPlayer);
             AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
             AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
             AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
-
             if (CardSubType($deck[0]) != "Arrow") 
             {
                 AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
@@ -236,12 +236,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
                 AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_put_the_card_in_arsenal", 1);
             }
             AddDecisionQueue("SANDSCOURGREATBOW", $currentPlayer, "-");
-
             return "";
-
         case "DYN171":
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
+        case "DYN206": case "DYN207": case "DYN208":
+            DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+            return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
         case "DYN242":
             $rv = "";
             if($from == "PLAY"){
@@ -285,4 +286,13 @@ function IsRoyal($player)
         default: break;
     }
     return false;
+}
+
+function HasSurge($cardID)
+{
+    switch ($cardID) 
+    {
+        case "DYN206": case "DYN207": case "DYN208": return true;
+        default: return false;
+    }
 }

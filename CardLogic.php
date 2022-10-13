@@ -1129,3 +1129,13 @@ function HasNegativeCounters($array, $index)
   if ($array[$index + 4] < 0) return true;
   return false;
 }
+
+function HasEnergyCounters($array, $index)
+{
+  switch ($array[$index]) {
+    case "WTR150": case "UPR166":
+      return $array[$index + 2] > 0;
+    default:
+      return false;
+  }
+}

@@ -217,10 +217,20 @@ function ArcaneHitEffect($player, $source, $target, $damage)
     default:
       break;
   }
+
   if ($damage > 0 && SearchCurrentTurnEffects("UPR125", $player) && CardType($source) != "W") {
     AddDecisionQueue("DESTROYFROZENARSENAL", MZPlayerID($player, $target), "-");
     SearchCurrentTurnEffects("UPR125", $player, true); // Remove the effect
-    }
+  }
+
+  if (HasSurge($source) && $damage > ArcaneDamage($source)) {
+    AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose which permanent remove an energy counter");
+    AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
+    AddDecisionQueue("REMOVEENERGYCOUNTER", $target, "-", 1);
+    AddDecisionQueue("SURGELOG", $target, $source, 1);
+  }
 }
 
 function ProcessMissEffect($cardID)
@@ -3569,6 +3579,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 4] += 1;
       WriteLog("A negative counter was removed from " . CardLink($character[$lastResult], $character[$lastResult]));
+      return $lastResult;
+    case "REMOVEENERGYCOUNTER":
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult + 2] -= 1;
+      return $lastResult;
+    case "SURGELOG":
+      $character = &GetPlayerCharacter($player);
+      WriteLog(CardLink($parameter, $parameter) . " surge's ability removed 1 energy counter from " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
     case "FLASHFREEZEDOMINATE":
       AddCurrentTurnEffect($parameter, $player, "PLAY");
