@@ -131,7 +131,7 @@ use JetBrains\PhpStorm\Language;
   }
 
   //Aim Counters style
-  elseif ($counters != 0 && CardSubType($cardNumber) == "Arrow") {
+  elseif ($counters != 0 && CardSubType($cardNumber) == "Arrow" && $from == "ARS") {
    if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "0px"; } else { $left = "-45%"; }
    $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
    display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
