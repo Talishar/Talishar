@@ -386,7 +386,7 @@ function CardClass($cardID)
       else return "GENERIC";
     case "DYN":
       if ($number == 1) return "WARRIOR,WIZARD";
-
+      if ($number == 5) return "BRUTE";
       if ($number >= 26 && $number <= 41) return "GUARDIAN";
       if ($number == 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
 
