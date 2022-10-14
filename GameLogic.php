@@ -1161,8 +1161,10 @@ function CurrentEffectCostModifiers($cardID, $from)
           $costModifier += 1;
           break;
         case "EVR179":
-          if (IsStaticType(CardType($cardID), $from, $cardID)) $costModifier -= 1;
-          $remove = 1;
+          if (IsStaticType(CardType($cardID), $from, $cardID)) {
+            $costModifier -= 1;
+            $remove = 1;
+          }
           break;
         case "UPR000":
           if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP") {
