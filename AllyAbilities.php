@@ -21,11 +21,11 @@ function PlayAlly($cardID, $player, $subCards = "-")
 
 function DestroyAlly($player, $index, $skipDestroy = false)
 {
-  global $combatChain;
+  global $combatChain, $mainPlayer;
   $allies = &GetAllies($player);
   if (!$skipDestroy) {
     AllyDestroyedAbility($player, $index);
-    if (ClassContains($allies[$index], "ILLUSIONIST", $player) && SearchCharacterActive($player, "UPR152") && count($combatChain) > 0) {
+    if (ClassContains($allies[$index], "ILLUSIONIST", $player) && SearchCharacterActive($player, "UPR152") && count($combatChain) > 0 && $player == $mainPlayer) {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, 3, 1);
