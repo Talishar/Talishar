@@ -158,6 +158,7 @@ function AllyDamagePrevention($player, $index, $damage)
   }
 }
 
+//NOTE: This is for ally abilities that trigger when any ally attacks (for example miragai GRANTS an ability)
 function AllyAttackAbilities($attackID)
 {
   global $mainPlayer, $CS_NumDragonAttacks;
@@ -176,6 +177,7 @@ function AllyAttackAbilities($attackID)
   }
 }
 
+//NOTE: This is for the actual attack abilities that allies have
 function SpecificAllyAttackAbilities($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
