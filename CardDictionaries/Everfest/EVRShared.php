@@ -757,12 +757,18 @@
         AddDecisionQueue("TWINTWISTERS", $currentPlayer, $cardID);
         return "";
       case "EVR053":
+        $rv = "You have no cards in your deck.";
         $deck = &GetDeck($currentPlayer);
-        $card = array_shift($deck);
-        $mod = "-";
-        if (CardType($deck[0]) == "AR" || CardType($deck[0]) == "I") $mod = "TCC";
-        BanishCardForPlayer($card, $currentPlayer, "DECK", $mod);
-        return "Banished a card. It is playable on this combat chain.";
+        if(count($deck) > 0)
+        {
+          $card = array_shift($deck);
+          $mod = "-";
+          $cardType = CardType($card);
+          if ($cardType == "AR" || $cardType == "I" || $cardType == "AA") $mod = "TCC";
+          BanishCardForPlayer($card, $currentPlayer, "DECK", $mod);
+          $rv = "Banished a card. It is playable on this combat chain.";
+        }
+        return $rv;
       case "EVR054":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
