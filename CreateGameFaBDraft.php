@@ -32,7 +32,7 @@ fclose($gcFile);
 
 if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true)) ){
 } else {
-  print_r("Encountered a problem creating a game. Please return to the main menu and try again"); 
+  print_r("Encountered a problem creating a game. Please return to the main menu and try again");
 }
 
 $p1Data = [1];
@@ -68,6 +68,6 @@ fclose($handler);
 */
 
 $currentTime = round(microtime(true) * 1000);
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!"); //Initialize SHMOP cache for this game
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0"); //Initialize SHMOP cache for this game
 
 echo($gameName);
