@@ -295,6 +295,7 @@
     if(IsPhantasmStillActive())
     {
       $attackID = $combatChain[0];
+      WriteLog(CardLink($attackID, $attackID) . " is destroyed by phantasm.");
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer))
       {
