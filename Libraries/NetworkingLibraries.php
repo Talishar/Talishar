@@ -1065,7 +1065,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
-    else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
+    else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {
