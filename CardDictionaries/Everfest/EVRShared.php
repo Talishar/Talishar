@@ -149,7 +149,7 @@
       case "EVR150": return 4;
       case "EVR151": return 3;
       case "EVR152": return 2;
-      case "EVR160": return -1;
+      case "EVR160": return IsHeroAttackTarget() ? -1 : 0;
       case "EVR161-2": return 2;
       case "EVR170-2": return 3;
       case "EVR171-2": return 2;
