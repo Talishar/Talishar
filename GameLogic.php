@@ -3628,9 +3628,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "SANDSCOURGREATBOW":
       if ($lastResult == "NO") {
-        ReloadArrow($player, "1"); // From Hand
-      } 
-      else { // From Top Deck
+        ReloadArrow($player); // From Hand 
+      } else {                // From Top Deck
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
