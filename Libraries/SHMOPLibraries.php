@@ -60,9 +60,11 @@ function GetCachePiece($name, $piece)
 
 function GamestateUpdated($gameName)
 {
+  global $currentPlayer;
   SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
   $currentTime = round(microtime(true) * 1000);
   SetCachePiece($gameName, 6, $currentTime);
+  SetCachePiece($gameName, 9, $currentPlayer);
 }
 
 ?>
