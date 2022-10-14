@@ -660,20 +660,20 @@
                 <?php if (!IsMuted($playerID)) echo ("audio.play();");
                 ?>
               }
-              //var animations = document.getElementById("animations").innerText;
               PopulateZone("myHand", cardSize);
               PopulateZone("theirHand", cardSize);
               PopulateZone("myChar", cardSize);
               PopulateZone("theirChar", cardSize);
-              //if(animations != "") alert(animations);
             } else {
               CheckReloadNeeded(lastUpdate);
             }
           }
         };
         var dimensions = "&windowWidth=" + window.innerWidth + "&windowHeight=" + window.innerHeight;
-        if (lastUpdate == "NaN") window.location.replace("https://www.fleshandbloodonline.com/FaBOnline/MainMenu.php");
-        else xmlhttp.open("GET", "GetNextTurn2.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>" + dimensions, true);
+        var lcpEl = document.getElementById("lastCurrentPlayer");
+        var lastCurrentPlayer = "&lastCurrentPlayer=" + (!lcpEl ? "0" : lcpEl.innerHTML);
+        if (lastUpdate == "NaN") window.location.replace("https://www.talishar.net/game/MainMenu.php");
+        else xmlhttp.open("GET", "GetNextTurn2.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + lastCurrentPlayer + "&authKey=<?php echo ($authKey); ?>" + dimensions, true);
         xmlhttp.send();
       }
 

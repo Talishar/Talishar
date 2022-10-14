@@ -23,6 +23,7 @@ $authKey = TryGet("authKey", 3);
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
+$lastCurrentPlayer = intval(TryGet("lastCurrentPlayer", 0));
 
 if ($lastUpdate > 10000000) {
   $lastUpdate = 0;
@@ -52,10 +53,12 @@ if ($cacheVal > 10000000) {
   SetCachePiece($gameName, 1, 1);
   $lastUpdate = 0;
 }
-while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
+$lastCurrentCachePiece = intval(GetCachePiece($gameName, 9));
+while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentPlayer == $lastCurrentCachePiece) && $cacheVal <= $lastUpdate) {
   usleep(100000); //100 milliseconds
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
+  $lastCurrentCachePiece = intval(GetCachePiece($gameName, 9));
   if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 1, $currentTime);
     $otherP = ($playerID == 1 ? 2 : 1);
@@ -601,7 +604,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
-      
+
       $counters = 0;
       $lifeCounters = 0;
       $enduranceCounters = 0;
@@ -1249,7 +1252,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo ("</div>");
   }
 
-  echo ("<div style='display:none;' id='animations'>" . implode(" ", $animations) . "</div>");
+  echo ("<div style='display:none;' id='lastCurrentPlayer'>" . $currentPlayer . "</div>");
   echo ("<div style='display:none;' id='passConfirm'>" . ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID) ? "true" : "false") . "</div>");
 }
 
