@@ -443,7 +443,7 @@ function GetSettingsUI($player)
   $isDMArmadaPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DMArmada" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isDMArmadaPatron'] || $isDMArmadaPatron) {
     $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-33", "DMArmada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DM Armada");
+    $rv .= CreateRadioButton($SET_Cardback . "-33", "DMArmada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DMArmada");
   }
 
   $isInstantSpeedPatron = false;
