@@ -137,6 +137,7 @@ function GetCardBack($player)
     case 39: return "CBKappolo";
     case 40: return "CBLibrariansOfSolana";
     case 41: return "CBTheMetrixMetagame";
+    case 42: return "CBEternalOracles";
     default: return "CardBack";
   }
 }
@@ -413,7 +414,7 @@ function GetSettingsUI($player)
 
   $isFleshAndCommonBloodPatreon = false;
   $isFleshAndCommonBloodPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Smithel" || $_SESSION["useruid"] == "PvtVoid");
-  if ($isFleshAndCommonBloodPatreon) {
+  if ($_SESSION['isFleshAndCommonBloodPatreon'] || $isFleshAndCommonBloodPatreon) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-29", "FleshAndCommonBlood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Flesh And Common Blood");
   }
@@ -500,6 +501,13 @@ function GetSettingsUI($player)
   if ($_SESSION['isTheMetrixMetagamePatron'] || $isTheMetrixMetagamePatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-41", "TheMetrixMetagame", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Metrix Metagame");
+  }
+
+  $isEternalOracles = false;
+  $isEternalOracles = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DeadSummer" || $_SESSION["useruid"] == "PvtVoid");
+  if ($isEternalOracles) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-42", "EternalOracles", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Eternal Oracles");
   }
 
   $rv .= "<BR>";
