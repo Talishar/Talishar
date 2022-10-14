@@ -314,8 +314,6 @@ function logCompletedGameStats() {
 	$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
 	$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
 
-	if(!AreStatsDisabled(1)) SendFabraryResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero, $p1deckbuilderID);
-	if(!AreStatsDisabled(2)) SendFabraryResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero, $p2deckbuilderID);
 	if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
 	if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
@@ -366,27 +364,6 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 	$result = curl_exec($ch);
 	$information = curl_getinfo($ch);
-	curl_close($ch);
-}
-
-function SendFabraryResults($player, $decklink, $deck, $gameID, $opposingHero, $deckbuilderID="")
-{
-	global $FaBraryKey, $gameName;
-	if(!str_contains($decklink, "fabrary.net")) return;
-
-	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/01G7FD2B3YQAMR8NJ4B3M58H96/results";
-	$ch = curl_init($url);
-	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName, $deckbuilderID);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-
-	$headers = array(
-		"x-api-key: " . $FaBraryKey,
-		"Content-Type: application/json",
-	);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-	curl_exec($ch);
 	curl_close($ch);
 }
 
