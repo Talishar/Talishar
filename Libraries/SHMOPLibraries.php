@@ -18,8 +18,9 @@ function ReadCache($name)
   $id = shmop_open($name, "a", 0, 0);
   if($id == false)
   {
-    WriteCache($name, "");
-    $id = shmop_open($name, "a", 0, 0);
+    return "";
+    //WriteCache($name, "");
+    //$id = shmop_open($name, "a", 0, 0);
   }
   $data = shmop_read($id, 0, shmop_size($id));
   $data = preg_replace_callback( '!s:(\d+):"(.*?)";!', function($match) {
@@ -42,6 +43,7 @@ function SetCachePiece($name, $piece, $value)
 {
   $piece -= 1;
   $cacheVal = ReadCache($name);
+  if($cacheVal == "") return;
   $cacheArray = explode("!", $cacheVal);
   $cacheArray[$piece] = $value;
   WriteCache($name, implode("!", $cacheArray));
