@@ -144,7 +144,7 @@ function AllyDamagePrevention($player, $index, $damage)
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
   $canBePrevented = CanDamageBePrevented($player, $damage, "");
-  
+
   switch ($cardID) {
     case "UPR417":
       if ($allies[$index + 6] > 0) {
@@ -163,71 +163,7 @@ function AllyAttackAbilities($attackID)
   global $mainPlayer, $CS_NumDragonAttacks;
   $allies = &GetAllies($mainPlayer);
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
-    if ($attackID != $allies[$i]) continue;
     switch ($allies[$i]) {
-      case "UPR406":
-        if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
-          $deck = &GetDeck($mainPlayer);
-          $numRed = 0;
-          $redRevealed = "";
-          $cardsReveal = "";
-          for ($j = 0; $j < 3 && $j < count($deck); ++$j) {
-            if (PitchValue($deck[$j]) == 1) {
-              ++$numRed;
-              if ($redRevealed != "") $redRevealed .= ",";
-              $redRevealed .= $deck[$j];
-            }
-            if ($cardsReveal != "") $cardsReveal .= ",";
-            $cardsReveal .= $deck[$j];
-          }
-          RevealCards($cardsReveal); //CanReveal checked
-          if ($redRevealed) {
-            WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
-            DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
-          }
-        }
-        return "";
-      case "UPR407":
-        if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
-          $deck = &GetDeck($mainPlayer);
-          $numRed = 0;
-          $cardsReveal = "";
-          for ($j = 0; $j < 2 && $j < count($deck); ++$j) {
-            if (PitchValue($deck[$j]) == 1) {
-              ++$numRed;
-            }
-            if ($cardsReveal != "") $cardsReveal .= ",";
-            $cardsReveal .= $deck[$j];
-          }
-          RevealCards($cardsReveal); //CanReveal checked
-          if ($numRed > 0) {
-            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-            AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-            AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-            AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-            if ($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-            AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
-          }
-        }
-        return "";
-      case "UPR408":
-        if (IsHeroAttackTarget()) {
-          $deck = &GetDeck($mainPlayer);
-          if (count($deck) == 0) return "You have no cards in your deck.";
-          $wasRevealed = RevealCards($deck[0]);
-          if ($wasRevealed && PitchValue($deck[0]) == 1) {
-            $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-            AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-            AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-            AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
-          }
-        }
-        return "";
-      case "UPR409":
-        DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, true);
-        DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, false);
-        return "";
       case "UPR412":
         if ($allies[$i + 8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon") && GetClassState($mainPlayer, $CS_NumDragonAttacks) <= 1) {
           AddCurrentTurnEffect("UPR412", $mainPlayer);
@@ -246,6 +182,69 @@ function SpecificAllyAttackAbilities($attackID)
   $allies = &GetAllies($mainPlayer);
   $i = $combatChainState[$CCS_WeaponIndex];
   switch ($allies[$i]) {
+    case "UPR406":
+      if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
+        $deck = &GetDeck($mainPlayer);
+        $numRed = 0;
+        $redRevealed = "";
+        $cardsReveal = "";
+        for ($j = 0; $j < 3 && $j < count($deck); ++$j) {
+          if (PitchValue($deck[$j]) == 1) {
+            ++$numRed;
+            if ($redRevealed != "") $redRevealed .= ",";
+            $redRevealed .= $deck[$j];
+          }
+          if ($cardsReveal != "") $cardsReveal .= ",";
+          $cardsReveal .= $deck[$j];
+        }
+        RevealCards($cardsReveal); //CanReveal checked
+        if ($redRevealed) {
+          WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
+          DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
+        }
+      }
+      return "";
+    case "UPR407":
+      if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
+        $deck = &GetDeck($mainPlayer);
+        $numRed = 0;
+        $cardsReveal = "";
+        for ($j = 0; $j < 2 && $j < count($deck); ++$j) {
+          if (PitchValue($deck[$j]) == 1) {
+            ++$numRed;
+          }
+          if ($cardsReveal != "") $cardsReveal .= ",";
+          $cardsReveal .= $deck[$j];
+        }
+        RevealCards($cardsReveal); //CanReveal checked
+        if ($numRed > 0) {
+          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          if ($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+        }
+      }
+      return "";
+    case "UPR408":
+      if (IsHeroAttackTarget()) {
+        $deck = &GetDeck($mainPlayer);
+        if (count($deck) == 0) return "You have no cards in your deck.";
+        $wasRevealed = RevealCards($deck[0]);
+        if ($wasRevealed && PitchValue($deck[0]) == 1) {
+          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+        }
+      }
+      return "";
+    case "UPR409":
+      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, true);
+      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, false);
+      return "";
     case "UPR410":
       if ($attackID == $allies[$i] && $allies[$i + 8] > 0) {
         GainActionPoints(1);
