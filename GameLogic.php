@@ -5048,11 +5048,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       if ($params[0] == "THEIRALLY") {
         $allies = &GetAllies($otherPlayer);
-        WriteLog("Succumb to Winter destroyed your frozen ally.");
+        WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen ally.");
         if ($allies[$params[1] + 8] == "1") DestroyAlly($otherPlayer, $params[1]);
       } else {
         DestroyFrozenArsenal($otherPlayer);
-        WriteLog("Succumb to Winter destroyed your frozen arsenal card.");
+        WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen arsenal card.");
         break;
       }
       return $lastResult;

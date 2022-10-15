@@ -175,7 +175,7 @@
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         if(DelimStringContains($additionalCosts, "ICE"))
         {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target . "-" . $cardID, 1);
           AddDecisionQueue("SUCCUMBTOWINTER", $currentPlayer, "-", 1);
         }
         return "Deals " . $damage . " arcane damage.";
