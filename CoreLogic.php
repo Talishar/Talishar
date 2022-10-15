@@ -1297,8 +1297,8 @@ function RevealCards($cards, $player="")
 
 function DoesAttackHaveGoAgain()
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
-  global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards;
+  global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck, $CS_AnotherWeaponGainedGoAgain;
 
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
@@ -1366,6 +1366,10 @@ function DoesAttackHaveGoAgain()
       return NumPhoenixFlameChainLinks() >= 1;
     case "UPR092":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
+    case "DYN069": // TODO: Quicksilver Dagger CardID might change on set release
+      $anotherWeaponGainedGoAgain = GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain);
+      if (SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";
+      else return $anotherWeaponGainedGoAgain != "-" && $anotherWeaponGainedGoAgain != $combatChain[0];
     default: break;
   }
   return false;
@@ -1714,4 +1718,13 @@ function GetDamagePreventionIndices()
   $rv = CombineSearches($rv, $theirAuras);
 
   return $rv;
+}
+
+function SameWeaponEquippedTwice()
+{
+  global $mainPlayer;
+  $char = &GetPlayerCharacter($mainPlayer);
+  $weaponIndex = explode(",", SearchCharacter($mainPlayer, "W"));
+  if (count($weaponIndex) > 1 && $char[$weaponIndex[0]] == $char[$weaponIndex[1]]) return true;
+  return false;
 }

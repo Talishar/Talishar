@@ -391,7 +391,7 @@ function CardClass($cardID)
       if ($number == 45) return "NINJA";
       if ($number == 74) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
 
-      if ($number == 68) return "WARRIOR";
+      if ($number >= 68 && $number <= 69) return "WARRIOR";
 
       if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
 
@@ -2329,6 +2329,8 @@ function Is1H($cardID)
       return true;
     case "ELE003":
     case "ELE202":
+      return true;
+    case "DYN069":
       return true;
     default:
       return false;
