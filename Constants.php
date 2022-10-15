@@ -272,6 +272,7 @@ $CCS_IsBoosted = 29;
 $CCS_AttackTargetUID = 30;
 $CCS_CachedOverpowerActive = 31;
 $CSS_CachedNumActionBlocked = 32;
+$CCS_CachedNumDefendedFromHand = 33;
 
 function ResetCombatChainState()
 {
@@ -281,7 +282,7 @@ function ResetCombatChainState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $defPlayer, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
-  global $chainLinks, $chainLinkSummary;
+  global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand;
   if (count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -316,6 +317,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;
   $combatChainState[$CSS_CachedNumActionBlocked] = 0;
+  $combatChainState[$CCS_CachedNumDefendedFromHand] = 0;
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
     $defCharacter[$i + 6] = 0;
@@ -344,6 +346,7 @@ function ResetChainLinkState()
   global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
+  global $CCS_CachedNumDefendedFromHand;
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -370,6 +373,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;
   $combatChainState[$CSS_CachedNumActionBlocked] = 0;
+  $combatChainState[$CCS_CachedNumDefendedFromHand] = 0;
   UnsetChainLinkBanish();
 }
 

@@ -1936,7 +1936,9 @@ function HasReprise($cardID)
 //Is it active AS OF THIS MOMENT?
 function RepriseActive()
 {
-  return CachedNumBlockedFromHand() > 0;
+  global $currentPlayer, $mainPlayer;
+  if ($currentPlayer == $mainPlayer) return CachedNumDefendedFromHand() > 0;
+  else return false;
 }
 
 function HasCombo($cardID)
