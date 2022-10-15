@@ -4107,7 +4107,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
 
       CheckSpellvoid($target, $damage);
-
       $quellChoices = QuellChoices($target, $damage);
       if ($quellChoices != "0") {
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
