@@ -3835,7 +3835,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "IRONHIDE":
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
-      $character[$index + 4] = 2;
+      $character[$index + 4] += 2;
       return $lastResult;
     case "RAMPARTOFTHERAMSHEAD":
       $character = &GetPlayerCharacter($player);
@@ -3845,7 +3845,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PHANTASMALFOOTSTEPS":
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$lastResult]);
-      $character[$index + 4] = 1;
+      $character[$index + 4] += 1;
       return $lastResult;
     case "PHANTASMALFOOTSTEPSDESTROYED":
       $otherPlayer = $player == 1 ? 2 : 1;
