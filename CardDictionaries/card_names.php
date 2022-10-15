@@ -1569,8 +1569,8 @@ if($set == "WTR"){
               			else return "Shatter (yellow)";
               		case "055": if ($showPitch == false) return "Blood on Her Hands";
               			else return "Blood on Her Hands (yellow)";
-              		case "056": if ($showPitch == false) return "Qath of Steel";
-              			else return "Qath of Steel (red)";
+              		case "056": if ($showPitch == false) return "Oath of Steel";
+              			else return "Oath of Steel (red)";
               		case "057": if ($showPitch == false) return "Slice and Dice";
               			else return "Slice and Dice (red)";
               		case "058": if ($showPitch == false) return "Slice and Dice";
