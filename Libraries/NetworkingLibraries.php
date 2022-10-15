@@ -788,10 +788,9 @@ function ResolveCombatDamage($damageDone)
 
 function FinalizeChainLink($chainClosed = false)
 {
-  global $turn, $actionPoints, $combatChain, $mainPlayer, $playerID, $defHealth, $currentTurnEffects, $defCharacter, $mainDiscard, $defDiscard, $currentPlayer, $defPlayer;
-  global $combatChainState, $actionPoints, $CCS_LastAttack, $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow;
-  global $mainClassState, $defClassState, $CS_AtksWWeapon, $CS_DamagePrevention, $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves;
-  global $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
+  global $turn, $actionPoints, $combatChain, $mainPlayer, $currentTurnEffects, $currentPlayer, $combatChainState, $actionPoints, $CCS_LastAttack, $CCS_DamageDealt;
+  global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
+  global $CS_AnotherWeaponGainedGoAgain;
   UpdateGameState($currentPlayer);
   BuildMainPlayerGameState();
 
@@ -799,6 +798,7 @@ function FinalizeChainLink($chainClosed = false)
     WriteLog("The attack has go again, gaining an action point.");
     ++$actionPoints;
     if ($combatChain[0] == "DVR002" && SearchCharacterActive($mainPlayer, "DVR001")) DoriQuicksilverProdigyEffect();
+    if (CardType($combatChain[0]) == "W" && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
   }
 
   ChainLinkResolvedEffects();

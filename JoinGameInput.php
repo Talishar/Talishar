@@ -610,6 +610,8 @@ function GetAltCardID($cardID)
       return "WTR193";
     case "HER075": // TODO: Yoji cardID to be edited
       return "DYN075";
+    case "LGS112": // TODO: Quicksilver Dagger CardID might change on set release
+      return "DYN069"; 
     case "LGS116": // TODO: Blessing of Aether cardID to be edited
       return "DYN116";
     case "LGS117": // TODO: Blessing of Aether cardID to be edited

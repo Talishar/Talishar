@@ -235,6 +235,7 @@ $CS_NumCardsPlayed = 59; //Amulet of Ignition
 $CS_NamesOfCardsPlayed = 60; //Amulet of Echoes
 $CS_NumBoostPlayed = 61; //Hanabi Blaster
 $CS_PlayedAsInstant = 62; //If the card was played as an instant -- some things like banish we lose memory of as soon as it is removed from the zone
+$CS_AnotherWeaponGainedGoAgain = 63;
 
 
 
@@ -389,7 +390,7 @@ function ResetMainClassState()
   global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed;
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
-  global $CS_PlayedAsInstant;
+  global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -453,6 +454,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NamesOfCardsPlayed] = "-";
   $mainClassState[$CS_NumBoostPlayed] = 0;
   $mainClassState[$CS_PlayedAsInstant] = 0;
+  $mainClassState[$CS_AnotherWeaponGainedGoAgain] = "-";
 }
 
 function ResetCardPlayed($cardID)
