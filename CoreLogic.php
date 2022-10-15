@@ -643,7 +643,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
   global $currentTurnEffects;
-  if (CardType($source) == "AA" && SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2)) return;
+  if (CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
     if($currentTurnEffects[$i+1] == $target) continue;
