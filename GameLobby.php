@@ -525,8 +525,10 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     }
     echo ("<tr>");
     for ($i = 0; $i < count($weaponSB); ++$i) {
-      if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
-        $weaponSB[$i + 1] = ReverseArt($weaponSB[$i]);
+      if (isset($weaponSB[$i + 1])) {
+        if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
+          $weaponSB[$i + 1] = ReverseArt($weaponSB[$i]);
+        }
       }
       $id = $name . "-" . $count;
       echo ("<td>");
