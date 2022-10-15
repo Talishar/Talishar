@@ -136,7 +136,8 @@ function CombatChainPowerModifier($index, $amount)
 
 function CacheCombatResult()
 {
-  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
+  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_CachedOverpowerActive;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
@@ -145,6 +146,7 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedNumBlockedFromHand] = NumBlockedFromHand();
   $combatChainState[$CCS_CachedOverpowerActive] = (isOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionBlocked();
+  $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand(); //Reprise
 }
 
 function CachedTotalAttack()
@@ -171,10 +173,16 @@ function CachedOverpowerActive()
   return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
 }
 
-function CachedNumBlockedFromHand()
+function CachedNumBlockedFromHand() //Dominate
 {
   global $combatChainState, $CCS_CachedNumBlockedFromHand;
   return $combatChainState[$CCS_CachedNumBlockedFromHand];
+}
+
+function CachedNumDefendedFromHand() //Reprise
+{
+  global $combatChainState, $CCS_CachedNumDefendedFromHand;
+  return $combatChainState[$CCS_CachedNumDefendedFromHand];
 }
 
 function CachedNumActionBlocked()
@@ -929,9 +937,10 @@ function CombatChainClosedCharacterEffects()
   }
 }
 
-function NumBlockedFromHand()
+// CR 2.1 - 5.3.4c A card with the type defense reaction becomes a defending card and is moved onto the current chain link instead of being moved to the graveyard.
+function NumDefendedFromHand() //Reprise
 {
-  global $combatChain, $defPlayer, $layers;
+  global $combatChain, $defPlayer;
   $num = 0;
   for($i=0; $i<count($combatChain); $i += CombatChainPieces())
   {
@@ -941,17 +950,29 @@ function NumBlockedFromHand()
       if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
     }
   }
-  for($i=0; $i<count($layers); $i+=LayerPieces())
-  {
-    $params = explode("|", $layers[$i+2]);
-    if($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
+  return $num;
+}
+
+function NumBlockedFromHand() //Dominate
+{
+  global $combatChain, $defPlayer, $layers;
+  $num = 0;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) {
+      $type = CardType($combatChain[$i]);
+      if ($type != "I" && $combatChain[$i + 2] == "HAND") ++$num;
+    }
+  }
+  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    $params = explode("|", $layers[$i + 2]);
+    if ($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
   }
   return $num;
 }
 
 function NumActionBlocked()
 {
-  global $combatChain, $defPlayer, $layers;
+  global $combatChain, $defPlayer;
   $num = 0;
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
