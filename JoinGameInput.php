@@ -29,8 +29,8 @@ if($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "")
   header("Location: MainMenu.php");
   die();
 }
-if ($decklink == "") $starterDeck = true;
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
+  $starterDeck = true;
   switch ($decksToTry) {
     case '1':
       $decklink = "https://fabdb.net/decks/VGkQMojg";
@@ -327,6 +327,11 @@ if ($decklink != "") {
     die();
   }
 
+  if ($starterDeck && ($format == "compblitz" || $format == "compcc")) {
+    $_SESSION['error'] = 'ℹ️ You have enter a competitive game with a starter deck. \n\nTo play the competitive queue please provide a constructed deck or try the starter decks in the normal queue. \n\nThank you!';
+    header("Location: MainMenu.php");
+    die();
+  }
 
   if ($bannedCard != "" && !$starterDeck) {
     if ($format == "blitz" || $format == "compblitz") {
