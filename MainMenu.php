@@ -24,23 +24,19 @@ $language = TryGet("language", 1);
 $settingArray = [];
 $defaultFormat = 0;
 $defaultVisibility = 1;
-if(isset($_SESSION["userid"]))
-{
+if (isset($_SESSION["userid"])) {
   $savedSettings = LoadSavedSettings($_SESSION["userid"]);
-  for($i=0; $i<count($savedSettings); $i+=2)
-  {
-    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
+  for ($i = 0; $i < count($savedSettings); $i += 2) {
+    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i) + 1];
   }
-  if(isset($_GET['language']))
-  {
+  if (isset($_GET['language'])) {
     ChangeSetting("", $SET_Language, $language, $_SESSION["userid"]);
-  }
-  else if(isset($settingArray[$SET_Language])) $language = $settingArray[$SET_Language];
-  if(isset($settingArray[$SET_Format])) $defaultFormat = $settingArray[$SET_Format];
-  if(isset($settingArray[$SET_GameVisibility])) $defaultVisibility = $settingArray[$SET_GameVisibility];
+  } else if (isset($settingArray[$SET_Language])) $language = $settingArray[$SET_Language];
+  if (isset($settingArray[$SET_Format])) $defaultFormat = $settingArray[$SET_Format];
+  if (isset($settingArray[$SET_GameVisibility])) $defaultVisibility = $settingArray[$SET_GameVisibility];
 }
 $_SESSION['language'] = $language;
-if(isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
+if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
 else $isPatron = false;
 
 $createGameText = ($language == 1 ? "Create Game" : "ゲームを作る");
@@ -69,7 +65,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 </div>
 
 <div class="CreateGame_Menu">
-  <h1 style="margin-top: 3px;"><?php echo($createNewGameText); ?></h1>
+  <h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
 
   <?php
   echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
@@ -79,7 +75,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if (count($favoriteDecks) > 0) {
       $selIndex = -1;
-      if(isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
+      if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
       echo ("<div class='FavoriteDeckMainMenu'>Favorite Decks: ");
       echo ("<select name='favoriteDecks' id='favoriteDecks'>");
       for ($i = 0; $i < count($favoriteDecks); $i += 3) {
@@ -140,34 +136,34 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   }
   ?>
 
-    <input type="radio" id="blitz" name="format" value="blitz"<?php if($defaultFormat == 2) echo 'checked="checked"'; ?>>
+    <input type="radio" id="blitz" name="format" value="blitz" <?php if ($defaultFormat == 2) echo 'checked="checked"'; ?>>
     <label style='margin-left:-10px;' for="blitz">Blitz</label>
 
-  <input style='margin-left: 10px;' type="radio" id="compblitz" name="format" value="compblitz"<?php if($defaultFormat == 3) echo 'checked="checked"'; ?>>
+  <input style='margin-left: 10px;' type="radio" id="compblitz" name="format" value="compblitz" <?php if ($defaultFormat == 3) echo 'checked="checked"'; ?>>
   <label for="compblitz">Competitive Blitz</label>
   <br class="BRMobile">
 
-  <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc"<?php if($defaultFormat == 0) echo 'checked="checked"'; ?>>
+  <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" <?php if ($defaultFormat == 0) echo 'checked="checked"'; ?>>
   <label for="cc">CC</label>
   <br class="BRMobile">
 
-  <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc"<?php if($defaultFormat == 1) echo 'checked="checked"'; ?>>
+  <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc" <?php if ($defaultFormat == 1) echo 'checked="checked"'; ?>>
   <label for="compcc">Competitive CC</label>
   <br class="BRMobile">
 
   <br><br>
-    <input style='margin-left: 5px;' type="radio" id="commoner" name="format" value="commoner"<?php if($defaultFormat == 5) echo 'checked="checked"'; ?>>
+    <input style='margin-left: 5px;' type="radio" id="commoner" name="format" value="commoner" <?php if ($defaultFormat == 5) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="commoner">Commoner</label>
 
 
-    <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc"<?php if($defaultFormat == 4) echo 'checked="checked"'; ?>>
+    <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc" <?php if ($defaultFormat == 4) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="livinglegendscc">Open Format (No Restriction)</label>
   <br><br>
 
-    <input type="radio" id="public" name="visibility" value="public"<?php if($defaultVisibility == 1) echo 'checked="checked"'; ?>>
+    <input type="radio" id="public" name="visibility" value="public" <?php if ($defaultVisibility == 1) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="public">Public</label>
 
-    <input type="radio" id="private" name="visibility" value="private"<?php if($defaultVisibility == 0) echo 'checked="checked"'; ?>>
+    <input type="radio" id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="private">Private</label><br><br>
 
   <input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
@@ -175,7 +171,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <div style="text-align:center;">
 
     <label>
-      <input class="CreateGame_Button" type="submit" value="<?php echo($createGameText); ?>">
+      <input class="CreateGame_Button" type="submit" value="<?php echo ($createGameText); ?>">
     </label>
 
   </div>
@@ -204,7 +200,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
       <h2>Now supporting Draft FaB!</h2>
       <a href='http://draftfab.com/' target='_blank'><img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/logos/draftfab.png" /></a><br><br>
 
-            <h3 style='text-align:center;'>________</h3>
+      <h3 style='text-align:center;'>________</h3>
 
 
       <!--
@@ -226,21 +222,22 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
         <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
         <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
         <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
+        <a title='Brazil' href='https://youtu.be/dC9Ck9GDySo' target=' _blank'><img style='height:30px;' src='./Images/flags/brazil.png' /></a>
 
-        <div class='LanguageSelector'><?php echo($languageText); ?>:
-        <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
-        <option value='1'<?php if($language == 1) echo(" selected"); ?>>English</option>
-        <option value='2'<?php if($language == 2) echo(" selected"); ?>>Japanese (日本語)</option>
-        </select></div>
+        <div class='LanguageSelector'><?php echo ($languageText); ?>:
+          <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
+            <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
+            <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
+          </select>
+        </div>
       </div>
 
     </div>
   </div>
 
 
-<?php
-  if(!$isPatron)
-  {
+  <?php
+  if (!$isPatron) {
     echo '<div>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3460218951907688"
            crossorigin="anonymous"></script>
@@ -256,18 +253,17 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
       </script>
     </div>';
   }
-?>
-<BR>
-<div style='width:100%; text-align:center'><a href='./MenuFiles/PrivacyPolicy.php'>Privacy Policy</a></div>
+  ?>
+  <BR>
+  <div style='width:100%; text-align:center'><a href='./MenuFiles/PrivacyPolicy.php'>Privacy Policy</a></div>
 
 </div>
 
-  <script>
-    function changeLanguage()
-    {
-      window.location.search = '?language=' + document.getElementById('languageSelect').value;
-    }
-  </script>
-  <?php
-  include_once 'Footer.php';
-  ?>
+<script>
+  function changeLanguage() {
+    window.location.search = '?language=' + document.getElementById('languageSelect').value;
+  }
+</script>
+<?php
+include_once 'Footer.php';
+?>
