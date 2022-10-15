@@ -1323,7 +1323,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $hand = &GetHand($player);
       return ($from == "PLAY" && count($hand) > 0);
     case "EVR179":
-      return GetClassState($player, $CS_NumCardsPlayed) >= 1;
+      return ($from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1);
     case "EVR180":
       if ($from != "PLAY") return false;
       if (count($layers) > 0){
