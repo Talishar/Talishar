@@ -455,7 +455,7 @@ function GetSettingsUI($player)
   }
 
   $isTheCardGuyzPatron = false;
-  $isTheCardGuyzPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "AlexTheCardGuy" || $_SESSION["useruid"] == "RegularDegular" || $_SESSION["useruid"] == "joshlau7" || $_SESSION["useruid"] == "WillyB" || $_SESSION["useruid"] == "Spoofy" || $_SESSION["useruid"] == "PvtVoid");
+  $isTheCardGuyzPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "NamVoTCGz" || $_SESSION["useruid"] == "AlexTheCardGuy" || $_SESSION["useruid"] == "RegularDegular" || $_SESSION["useruid"] == "joshlau7" || $_SESSION["useruid"] == "WillyB" || $_SESSION["useruid"] == "Spoofy" || $_SESSION["useruid"] == "PvtVoid");
   if ($_SESSION['isTheCardGuyzPatron'] || $isTheCardGuyzPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-35", "TheCardGuyz", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Card Guyz");
