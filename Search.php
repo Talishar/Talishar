@@ -809,8 +809,10 @@ function SearchMultizone($player, $searches)
             break;
           case "hasNegCounters":
             $hasNegCounters = $condition[1];
+            break;
           case "hasEnergyCounters":
             $hasEnergyCounters = $condition[1];
+            break;
           default:
             break;
         }
