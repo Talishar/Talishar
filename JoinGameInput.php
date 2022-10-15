@@ -322,7 +322,7 @@ if ($decklink != "") {
   }
 
   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz")) {
-    $_SESSION['error'] = '⚠️ Old heroes are not legal in Blitz: \n\nOld - ' . CardName($character);
+    $_SESSION['error'] = '⚠️ Adult heroes are not legal in Blitz: \n\nAdult - ' . CardName($character);
     header("Location: MainMenu.php");
     die();
   }
