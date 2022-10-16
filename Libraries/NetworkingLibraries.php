@@ -319,6 +319,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "HAND");
       }
       break;
+    case 28: //PAY OR DISCARD
+      if ($turn[0] == "PAYORDISCARD" && ($buttonInput == "PAY" || $buttonInput == "DISCARD")) ContinueDecisionQueue($buttonInput);
+      break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
         PassInput(false);

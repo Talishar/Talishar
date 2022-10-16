@@ -76,6 +76,8 @@ function TypeToPlay($phase)
       return "cards from deck";
     case "YESNO":
       return str_replace("_", " ", $turn[2]);
+    case "PAYORDISCARD":
+      return str_replace("_", " ", $turn[2]);
     case "MULTICHOOSETEXT":
       return " options";
     case "MAYMULTICHOOSETEXT":
