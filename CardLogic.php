@@ -778,7 +778,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
-    case "RVD003": case "RVD015":
+    case "RVD015":
       $deck = &GetDeck($player);
       $rv = "";
       if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";

@@ -929,7 +929,17 @@ function CombatChainClosedCharacterEffects()
           }
           break;
         case "RVD003":
-          AddLayer("TRIGGER", $defPlayer, $chainLinks[$i][$j]);
+          Writelog("Processing " . Cardlink($chainLinks[$i][$j], $chainLinks[$i][$j]) . " trigger: ");
+          $deck = &GetDeck($defPlayer);
+          $rv = "";
+          if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+          $wasRevealed = RevealCards($deck[0]);
+          if ($wasRevealed) {
+            if (AttackValue($deck[0]) < 6) {
+              WriteLog("The card was put on the bottom of your deck.");
+              array_push($deck, array_shift($deck));
+            }
+          }
           break;
         default: break;
       }
