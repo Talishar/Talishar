@@ -4174,6 +4174,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
         PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
         PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to pitch", 1);
         PrependDecisionQueue("FINDINDICES", $player, "HAND", 1);
       }
       return $parameter;
