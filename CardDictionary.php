@@ -1420,6 +1420,7 @@ function IsDefenseReactionPlayable($cardID, $from)
   if ($combatChain[0] == "MON245") if (!ExudeConfidenceReactionsPlayable()) return false;
   if ($from == "HAND" && CardSubType($combatChain[0]) == "Arrow" && SearchCharacterForCard($mainPlayer, "EVR087")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
+  if (SearchCurrentTurnEffects("MON245", $mainPlayer)) return false;
   return true;
 }
 
