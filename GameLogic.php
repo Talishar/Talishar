@@ -3981,7 +3981,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $numMatch = ($numAA > $numNAA ? $numNAA : $numAA);
       if ($numMatch == 0) return "PASS";
-      return $numMatch . "-" . $AAIndices;
+      return $numMatch . "-" . $AAIndices . "-" . $numMatch;
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);

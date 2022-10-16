@@ -207,13 +207,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if(count($params) > 2) $minSelect = intval($params[2]);
       else $minSelect = -1;
       if (count($chkInput) > $maxSelect) {
-        WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " was allowed. Reverting gamestate prior to that effect.");
+        WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " is allowed. Reverting gamestate prior to that effect.");
         RevertGamestate();
         $skipWriteGamestate = true;
         break;
       }
       if ($minSelect != -1 && count($chkInput) < $minSelect && count($chkInput) < count($options)) {
-        WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " was allowed. Reverting gamestate prior to that effect.");
+        WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " is requested. Reverting gamestate prior to that effect.");
         RevertGamestate();
         $skipWriteGamestate = true;
         break;
@@ -1498,7 +1498,7 @@ function PayAdditionalCosts($cardID, $from)
       break;
     case "ARC160":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
-      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn,Your_next_attack_action_card_gains_go_again,Defend_with_attack_action_cards_from_arsenal,Banish_an_attack_action_card_to_draw_2_cards");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_your_attack_action_cards_this_turn,Your_next_attack_action_card_gains_go_again,Defend_with_attack_action_cards_from_arsenal,Banish_an_attack_action_card_to_draw_2_cards-2");
       AddDecisionQueue("SETCLASSSTATEMULTICHOOSETEXT", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWSELECTEDMODES", $currentPlayer, $cardID, 1);
       break;
