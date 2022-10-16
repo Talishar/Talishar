@@ -1225,6 +1225,7 @@ if ($set == "DYN") {
 		case "151": return "Sandscour Greatbow";
 		case "171": return "Amethyst Tiara";
 		case "206": case "207": case "208": return "Sap";
+        case "230": case "231": case "232": return "Water Glow Lanterns";
 		case "234": return "Crown of Dominion";
 		case "243": return "Imperial Warhorn";
 		case "243": return "Gold";

@@ -36,6 +36,7 @@ function DYNAbilityType($cardID, $index = -1)
 function DYNHasGoAgain($cardID)
 {
     switch ($cardID) {
+        case "DYN230": case "DYN231": case "DYN232": return  true;
         default: return false;
     }
 }
@@ -104,6 +105,7 @@ function DYNCardType($cardID)
         case "DYN151": return "W";
         case "DYN171": return "E";
         case "DYN206": case "DYN207": case "DYN208": return "A";
+        case "DYN230": case "DYN231": case "DYN232": return "A";
         case "DYN234": return "E";
         case "DYN242": return "A";
         case "DYN243": return "T";
@@ -153,11 +155,12 @@ function DYNPitchValue($cardID)
         case "DYN040": return 2;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
-        case "DYN206": return 1;
-        case "DYN207": return 2;
+        case "DYN206": case "DYN230": return 1;
+        case "DYN207": case "DYN231": return 2;
         case "DYN234": return 0;
         case "DYN242": return 1;
         case "DYN243": return 0;
+
         default: return 3;
     }
 }
@@ -177,6 +180,7 @@ function DYNBlockValue($cardID)
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return -1;
         case "DYN171": return 1;
+        case "DYN230": case "DYN231": case "DYN232": return 2;
         case "DYN234": return -1;
         case "DYN242": case "DYN243": return -1;
         default:
@@ -245,6 +249,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         case "DYN206": case "DYN207": case "DYN208":
             DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
             return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
+        case "DYN230": case "DYN231": case "DYN232":
+            if (CanRevealCards($currentPlayer)) {
+                $deck = GetDeck($currentPlayer);
+                if (count($deck) == 0) return "Your deck is empty. Nothing was revealed.";
+                if (PitchValue($deck[0]) == PitchValue($cardID)) {
+                    PlayAura("MON104", $currentPlayer, 1, true);
+                    return "Reveals " . CardLink($deck[0], $deck[0]) . " and creates a " . CardLink("MON104", "MON104");
+                } else {
+                    return "Reveals " . CardLink($deck[0], $deck[0]);
+                }
+            }
+            return "Reveal has been prevented.";
         case "DYN242":
             $rv = "";
             if($from == "PLAY"){
