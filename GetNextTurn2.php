@@ -570,7 +570,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $content .= "<table><tr><td>";
       $content .= Card($options[$i], "concat", $cardSize, 0, 1);
       $content .= "</td></tr><tr><td>";
-      if ($turn[0] == "CHOOSETOPOPPONENT") $content .= CreateButton($otherPlayer, "Top", 8, $options[$i], "20px");
+      if ($turn[0] == "CHOOSETOPOPPONENT") $content .= CreateButton($otherPlayer, "Top", 29, $options[$i], "20px");
       $content .= "</td></tr>";
       $content .= "</table>";
       $content .= "</td>";

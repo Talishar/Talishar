@@ -381,7 +381,6 @@ function ProcessCrushEffect($cardID)
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
         AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
         break;
-
       case "CRU027":
         AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPX,5");
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
@@ -392,7 +391,7 @@ function ProcessCrushEffect($cardID)
         AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
         AddDecisionQueue("SHOWBANISHEDCARD", $defPlayer, "-", 1);
-        AddDecisionQueue("REORDERTOPDECKOPPONENT", $mainPlayer, "<-", 1);
+        AddDecisionQueue("RIGHTEOUSCLEANSING", $mainPlayer, "<-", 1);
         break;
       case "CRU032":
       case "CRU033":
@@ -5168,12 +5167,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "DESTROYFROZENARSENAL":
         DestroyFrozenArsenal($player);
         return "";
-      case "REORDERTOPDECKOPPONENT":
+
+      case "RIGHTEOUSCLEANSING":
         $numBanished = explode(",", $parameter); //Banished card
+        $numToReorder = 5 - count($numBanished);
         $otherPlayer = ($player == 1 ? 2 : 1);
         $deck = &GetDeck($otherPlayer);
-
-        for ($i = 0; $i <= count($numBanished); ++$i) {
+        for ($i = 0; $i < $numToReorder; ++$i) {
           if (count($deck) > 0) {
             if ($cards != "") $cards .= ",";
             $card = array_shift($deck);
