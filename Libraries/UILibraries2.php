@@ -267,7 +267,7 @@ use JetBrains\PhpStorm\Language;
     return $rv;
   }
 
-  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1,$customInput="",$path="./", $big=false, $overCombatChain=false, $additionalComments="")
+  function CreatePopup($id, $fromArr, $canClose, $defaultState=0, $title="", $arrElements=1, $customInput="", $path="./", $big=false, $overCombatChain=false, $additionalComments="")
   {
     global $darkMode, $cardSize, $playerID;
     $style = "";
