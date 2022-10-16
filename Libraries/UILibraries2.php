@@ -529,9 +529,9 @@ function TheirBanishUIMinimal($from = "")
       case 2: $color = "GoldenRod"; $pitchText = " (2)"; break;
       case 1: $color = "#AF1518"; $pitchText = " (1)"; break;
       default: if($darkMode) {
-        $color = "GhostWhite"; break;
+        $color = "#1a1a1a"; break;
       } else {
-        $color = "#8c8c8c"; break;
+        $color = "#DDD"; break;
       }
     }
   }
