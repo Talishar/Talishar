@@ -730,10 +730,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "ELE222":
-      WriteLog("Deals 2 arcane damage to target hero.");
-      DealArcane(2, 0, "PLAYCARD", $parameter);
-      break;
     case "EVR018":
         PlayAura("ELE111", $player);
       break;
