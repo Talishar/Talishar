@@ -531,7 +531,7 @@ function TheirBanishUIMinimal($from = "")
       default: if($darkMode) {
         $color = "#1a1a1a"; break;
       } else {
-        $color = "#DDD"; break;
+        $color = "#1a1a1a"; break;
       }
     }
   }
