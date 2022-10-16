@@ -279,14 +279,16 @@
         }        
         return "Gives your next Lightning, Ice, or Elemental attack this turn +4.";
       case "ELE113":
-        for($i=0; $i<2; ++$i)
-        {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-          AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
-          AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
-          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-          AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
-        }
+        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
+        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHOWSELECTEDCARD", $currentPlayer, "-", 1);
         return "";
       case "ELE114":
         AddCurrentTurnEffect($cardID, $currentPlayer);
