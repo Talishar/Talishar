@@ -401,7 +401,7 @@ function CardClass($cardID)
       if ($number >= 206 && $number <= 208) return "WIZARD";
       if ($number >= 116 && $number <= 118) return "WIZARD"; // TODO: Blessing of Aether cardID to be edited
 
-
+      if ($number >= 230 && $number <= 232) return "ILLUSIONIST";
 
 
       else return "GENERIC";
