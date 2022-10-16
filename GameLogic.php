@@ -2862,11 +2862,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINDRESOURCECOST":
       switch ($parameter) {
         case "CRU126": case "CRU127": case "CRU128":
-          return ($lastResult == "YES" ? 1 : 0);
+          return (($lastResult == "YES" || $lastResult == "PAY") ? 1 : 0);
         case "ELE148": case "ELE149": case "ELE150":
-          return ($lastResult == "YES" ? 2 : 0);
+          return (($lastResult == "YES" || $lastResult == "PAY") ? 2 : 0);
         default:
-          return ($lastResult == "YES" ? $parameter : 0);
+          return (($lastResult == "YES" || $lastResult == "PAY") ? $parameter : 0);
       }
       return 0;
     case "FINDINDICES":
@@ -5113,16 +5113,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "") $lastResult = $parameter;
       switch ($lastResult) {
         case "Target_Opponent":
-          AddDecisionQueue("PAYORDISCARD", $otherPlayer, "1");
+          AddDecisionQueue("DQPAYORDISCARD", $otherPlayer, "1");
           break;
         case "Target_Yourself":
-          AddDecisionQueue("PAYORDISCARD", $player, "1");
+          AddDecisionQueue("DQPAYORDISCARD", $player, "1");
           break;
         default:
           break;
       }
       return "";
-    case "PAYORDISCARD":
+    case "DQPAYORDISCARD":
       PayOrDiscard($player, $parameter);
       return "";
     case "PRY":

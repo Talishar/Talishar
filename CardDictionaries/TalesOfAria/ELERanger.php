@@ -337,6 +337,7 @@
   function PayOrDiscard($player, $amount, $fromDQ=true, $passable=false)
   {
     $targetHand = &GetHand($player);
+    $otherPlayer = ($player == 1 ? 2 : 1);
     if (count($targetHand) > 0) {
       if ($fromDQ) {
         PrependDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
@@ -345,9 +346,11 @@
         PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
         PrependDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         PrependDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
+        PrependDecisionQueue("PAYORDISCARD", $player, "if_they_want_to_pay_or_discard_a_card", ($passable ? 1 : 0), 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " or discard a card");
       } else {
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " or discard a card");
+        AddDecisionQueue("PAYORDISCARD", $player, "if_they_want_to_pay_or_discard_a_card", ($passable ? 1 : 0), 1);
         AddDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
