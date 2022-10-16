@@ -322,6 +322,30 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 28: //PAY OR DISCARD
       if ($turn[0] == "PAYORDISCARD" && ($buttonInput == "PAY" || $buttonInput == "DISCARD")) ContinueDecisionQueue($buttonInput);
       break;
+    case 29: //CHOOSETOPOPPONENT
+      if ($turn[0] == "CHOOSETOPOPPONENT") {
+        $otherPlayer = ($playerID == 1 ? 2 : 1);
+        $options = explode(",", $turn[2]);
+        $found = -1;
+        for ($i = 0; $i < count($options); ++$i) {
+          if ($options[$i] == $buttonInput) {
+            $found = $i;
+            break;
+          }
+        }
+        if ($found == -1) break; //Invalid input
+        $deck = &GetDeck($otherPlayer);
+        if ($mode == 29) {
+          array_unshift($deck, $buttonInput);
+        } 
+        unset($options[$found]);
+        $options = array_values($options);
+        if (count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
+        ContinueDecisionQueue($buttonInput);
+      } else {
+        echo ($turn[0] . " Invalid Input<BR>");
+      }
+      break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
         PassInput(false);
