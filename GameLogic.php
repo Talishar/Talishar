@@ -381,13 +381,18 @@ function ProcessCrushEffect($cardID)
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
         AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
         break;
+
       case "CRU027":
         AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPX,5");
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
         AddDecisionQueue("COUNTPARAM", $defPlayer, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card(s) to banish", 1);
         AddDecisionQueue("MULTICHOOSETHEIRDECK", $mainPlayer, "<-", 1, 1);
         AddDecisionQueue("VALIDATEALLSAMENAME", $defPlayer, "DECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
+        AddDecisionQueue("SHOWBANISHEDCARD", $defPlayer, "-", 1);
+        AddDecisionQueue("REORDERTOPDECKOPPONENT", $mainPlayer, "<-", 1);
         break;
       case "CRU032":
       case "CRU033":
@@ -5162,6 +5167,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
       case "DESTROYFROZENARSENAL":
         DestroyFrozenArsenal($player);
+        return "";
+      case "REORDERTOPDECKOPPONENT":
+        $numBanished = explode(",", $parameter); //Banished card
+        $otherPlayer = ($player == 1 ? 2 : 1);
+        $deck = &GetDeck($otherPlayer);
+
+        for ($i = 0; $i <= count($numBanished); ++$i) {
+          if (count($deck) > 0) {
+            if ($cards != "") $cards .= ",";
+            $card = array_shift($deck);
+            $cards .= $card;
+          }
+        }
+        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $cards);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of your opponent deck");
         return "";
     default:
       return "NOTSTATIC";

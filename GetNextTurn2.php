@@ -553,6 +553,24 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo CreatePopup("OPT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
   }
 
+  if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing
+    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    $content = "<table><tr>";
+    $options = explode(",", $turn[2]);
+    for ($i = 0; $i < count($options); ++$i) {
+      $content .= "<td>";
+      $content .= "<table><tr><td>";
+      $content .= Card($options[$i], "concat", $cardSize, 0, 1);
+      $content .= "</td></tr><tr><td>";
+      if ($turn[0] == "CHOOSETOPOPPONENT") $content .= CreateButton($otherPlayer, "Top", 8, $options[$i], "20px");
+      $content .= "</td></tr>";
+      $content .= "</table>";
+      $content .= "</td>";
+    }
+    $content .= "</tr></table>";
+    echo CreatePopup("CHOOSETOPOPPONENT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, $content);
+  }
+
   if ($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID) {
     $content = "<table><tr>";
     for ($i = 0; $i < count($myHand); ++$i) {
