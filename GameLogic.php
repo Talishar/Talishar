@@ -5167,7 +5167,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "DESTROYFROZENARSENAL":
         DestroyFrozenArsenal($player);
         return "";
-
       case "RIGHTEOUSCLEANSING":
         $numBanished = explode(",", $parameter); //Banished card
         $numToReorder = 5 - count($numBanished);

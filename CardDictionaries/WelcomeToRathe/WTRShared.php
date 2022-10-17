@@ -621,15 +621,16 @@
         Intimidate();
         return "Intimidates.";
       case "WTR007":
+          $rv .= "Gives your Brute attacks +2 this turn";
         if(AttackValue($additionalCosts) >= 6)
         {
           MyDrawCard();
           MyDrawCard();
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          if(!CurrentEffectPreventsGoAgain()) ++$actionPoints;//TODO: This is not strictly accurate, but good enough for now
-          $rv .= "Gives your Brute attacks +2 this turn, draws 2 cards and gains go again.";
+          if(!CurrentEffectPreventsGoAgain()) ++$actionPoints; //TODO: This is not strictly accurate, but good enough for now
+          $rv .= ", draws 2 cards and gains go again";
         }
-        return $rv;
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return $rv . ".";
       case "WTR008":
         $damaged = false;
         if(AttackValue($additionalCosts) >= 6 && !IsAllyAttacking()) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
