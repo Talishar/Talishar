@@ -337,7 +337,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $deck = &GetDeck($otherPlayer);
         if ($mode == 29) {
           array_unshift($deck, $buttonInput);
-        } 
+        }
         unset($options[$found]);
         $options = array_values($options);
         if (count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
@@ -1536,6 +1536,15 @@ function PayAdditionalCosts($cardID, $from)
         PayAdditionalCosts($otherCharacter[0], $from);
       }
       break;
+    case "CRU101":
+      $abilityType = GetResolvedAbilityType($cardID);
+      if($abilityType == "AA")
+      {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_CharacterIndex);
+        $character[$index + 2] = 0;
+      }
+      break;
     case "MON001":
     case "MON002":
       BanishFromSoul($currentPlayer);
@@ -1775,7 +1784,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
   if($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
-  if($cardID == "ARC003") $index = FindCharacterIndex($currentPlayer, "ARC003"); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework
+  if($cardID == "ARC003" || $cardID == "CRU101") $index = FindCharacterIndex($currentPlayer, $cardID); //TODO: Fix this. This is an issue with the entire "multiple abilities" framework
   if ($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
 
   $definedCardType = CardType($cardID);

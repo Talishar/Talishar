@@ -12,7 +12,7 @@
       case "CRU049": return 1;
       case "CRU050": case "CRU051": case "CRU052": return 1;
       case "CRU079": case "CRU080": return 1;
-      case "CRU101": $char = &GetPlayerCharacter($currentPlayer); return ($char[GetClassState($currentPlayer, $CS_PlayIndex) + 2] > 0 ? 0 : 2);
+      case "CRU101": return (GetResolvedAbilityType($cardID) == "A" ? 1 : 0);
       case "CRU105": $items = &GetItems($currentPlayer); return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "CRU118": return 3;
       case "CRU122": return 2;
@@ -37,7 +37,7 @@
       case "CRU050": case "CRU051": case "CRU052": return "AA";
       case "CRU079": case "CRU080": return "AA";
       case "CRU081": return "A";
-      case "CRU101": if($index == -1) $index = $myClassState[$CS_PlayIndex]; return ($myCharacter[$index + 2] > 0 ? "AA" : "A");
+      case "CRU101": return "A";
       case "CRU102": return "A";
       case "CRU105": return "A";
       case "CRU118": return "A";
@@ -60,7 +60,7 @@
       case "CRU006": return true;
       case "CRU025": return true;
       case "CRU081": return true;
-      case "CRU101": return ($myCharacter[$myClassState[$CS_PlayIndex] + 1] > 0 ? true : false);
+      case "CRU101": return GetResolvedAbilityType($cardID) == "A";
       case "CRU102": return true;
       case "CRU105": return true;
       case "CRU118": return true;
@@ -772,9 +772,13 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "Gives your next weapon attack +" . EffectAttackModifier($cardID . "-1") . ($atkWWpn ? " and gives your next attack Dominate." : ".");
       //CRU Mechanologist
     case "CRU101":
-      $character = &GetPlayerCharacter($currentPlayer);
-      $index = FindCharacterIndex($currentPlayer, $cardID);
-      $character[$index + 2] = ($character[$index + 2] == 0 ? 1 : 0);
+      $abilityType = GetResolvedAbilityType($cardID);
+      if($abilityType == "A")
+      {
+        $character = &GetPlayerCharacter($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        $character[$index + 2] = 1;
+      }
       return "";
     case "CRU102":
       AddCurrentTurnEffect($cardID, $currentPlayer);
