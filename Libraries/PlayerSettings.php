@@ -138,6 +138,7 @@ function GetCardBack($player)
     case 40: return "CBLibrariansOfSolana";
     case 41: return "CBTheMetrixMetagame";
     case 42: return "CBEternalOracles";
+    case 43: return "CBTheTablePit";
     default: return "CardBack";
   }
 }
@@ -508,6 +509,13 @@ function GetSettingsUI($player)
   if ($isEternalOracles) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-42", "EternalOracles", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Eternal Oracles");
+  }
+
+  $isTheTablePit = false;
+  $isTheTablePit = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TheTablePitYT" || $_SESSION["useruid"] == "TunaTCG" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isTheTablePitPatron'] || $isTheTablePit) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-43", "TheTablePit", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Table Pit");
   }
 
   $rv .= "<BR>";

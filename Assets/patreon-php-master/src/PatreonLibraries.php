@@ -121,8 +121,11 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isTheMetrixMetagamePatron"] = true;
       array_push($yourPatronages, "The Metrix Metagame");
     }
+    if ($include->type == "campaign" && $include->id == "9370276") {
+      $_SESSION["isTheTablePitPatron"] = true;
+      array_push($yourPatronages, "The Table Pit");
+    }
 	}
-
 
   if(!$silent)
   {
