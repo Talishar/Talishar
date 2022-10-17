@@ -12,7 +12,7 @@
       case "CRU049": return 1;
       case "CRU050": case "CRU051": case "CRU052": return 1;
       case "CRU079": case "CRU080": return 1;
-      case "CRU101": return (GetResolvedAbilityType($cardID) == "A" ? 1 : 0);
+      case "CRU101": return (GetResolvedAbilityType($cardID) == "A" ? 2 : 0);
       case "CRU105": $items = &GetItems($currentPlayer); return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "CRU118": return 3;
       case "CRU122": return 2;
