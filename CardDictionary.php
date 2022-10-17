@@ -861,7 +861,7 @@ function GetAbilityType($cardID, $index = -1)
 function GetAbilityTypes($cardID)
 {
   switch ($cardID) {
-    case "ARC003":
+    case "ARC003": case "CRU101":
       return "A,AA";
     default:
       return "";
@@ -872,7 +872,7 @@ function GetAbilityNames($cardID, $index = -1)
 {
   global $currentPlayer;
   switch ($cardID) {
-    case "ARC003":
+    case "ARC003": case "CRU101":
       $character = &GetPlayerCharacter($currentPlayer);
       if ($index == -1) return "";
       $rv = "Add_a_steam_counter";
