@@ -96,7 +96,7 @@ if ($deckTestMode != "") {
   $opponentDeck = "Dummy.txt";
   switch($deckTestMode)
   {
-    case "Woottonhog": $opponentDeck = "./RogueLike/Encounters/Woottonhog.txt"; break;
+    case "Woottonhog": $opponentDeck = "./Roguelike/Encounters/Woottonhog.txt"; break;
     default: break;
   }
   copy($opponentDeck, "./Games/" . $gameName . "/p2Deck.txt");
