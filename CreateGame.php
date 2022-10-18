@@ -10,7 +10,7 @@ ob_end_clean();
 
 $deck = TryGET("deck");
 $decklink = TryGET("fabdb");
-$deckTestMode = TryGET("deckTestMode");
+$deckTestMode = TryGET("deckTestMode", "");
 $format = TryGET("format");
 $visibility = TryGET("visibility");
 $set = TryGET("set");
@@ -91,9 +91,15 @@ if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true))
 
 $p1Data = [1];
 $p2Data = [2];
-if ($deckTestMode == "deckTestMode") {
+if ($deckTestMode != "") {
   $gameStatus = 4; //ReadyToStart
-  copy("Dummy.txt", "./Games/" . $gameName . "/p2Deck.txt");
+  $opponentDeck = "Dummy.txt";
+  switch($deckTestMode)
+  {
+    case "Woottonhog": $opponentDeck = "./RogueLike/Encounters/Woottonhog.txt"; break;
+    default: break;
+  }
+  copy($opponentDeck, "./Games/" . $gameName . "/p2Deck.txt");
 } else {
   $gameStatus = 0; //Initial
 }
