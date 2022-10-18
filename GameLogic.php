@@ -4845,6 +4845,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
         }
       }
+      WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
       return $lastResult;
     case "MZREMOVE":
       $lastResultArr = explode(",", $lastResult);
