@@ -1,4 +1,4 @@
 PP Health
 PP Character
 PP Deck
-PP EncounterNumber
+PP Encounter

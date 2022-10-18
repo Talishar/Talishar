@@ -44,8 +44,8 @@
   //Display background
   echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='../Images/findCenterBackground.jpg' /></div>");
 
-  $encounterNumber = &GetZone($playerID, "EncounterNumber");
-  echo("<h1 style='width:85%; text-align: center'>Encounter #" . $encounterNumber[0] . "</h1>");
+  $encounter = &GetZone($playerID, "Encounter");
+  echo("<h1 style='width:85%; text-align: center'>Encounter #" . $encounter[0] . "</h1>");
 
 
   $deck = &GetZone($playerID, "Deck");
@@ -54,7 +54,7 @@
   echo("<div style='position:fixed; width:100%; top:35%; height:65%;'>");
   $header = "<h1><span title='Click to view your deck.' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>Click to see your deck</span></h1>";
   echo($header);
-  echo("<h2>" . EncounterDescription($encounterNumber[0]) . "</h2>");
+  echo("<h2>" . EncounterDescription($encounter[0]) . "</h2>");
   echo("<BR>");
 
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/RogueLike/PlayEncounter.php'>");
@@ -118,9 +118,9 @@
     }
   }
 
-  function EncounterDescription($encounterNumber)
+  function EncounterDescription($encounter)
   {
-    switch($encounterNumber)
+    switch($encounter)
     {
       case 1: return "You're attacked by a Woottonhog.";
       default: return "No encounter text.";
