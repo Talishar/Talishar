@@ -100,9 +100,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
 function ProcessHitEffect($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID) . ".");
-  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer;
+  global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer, $combatChain;
 
-  if (CardType($cardID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  if (CardType($combatChain[0]) && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   if ($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) return;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -331,8 +331,8 @@ function HasCrush($cardID)
 
 function ProcessCrushEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $defCharacter;
-  if (CardType($cardID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  global $mainPlayer, $defPlayer, $defCharacter, $combatChain;
+  if (CardType($combatChain[0]) && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   if (IsHeroAttackTarget()) {
     switch ($cardID) {
       case "WTR043":
@@ -612,7 +612,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 function EffectHitEffect($cardID)
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain;
-  if (CardType($cardID) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
+  if (CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   switch ($cardID) {
     case "WTR129":
     case "WTR130":
