@@ -464,7 +464,7 @@ function GetSettingsUI($player)
 
   $isHomeTownTCGPatron = false;
   $isHomeTownTCGPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "hometowntcg" || $_SESSION["useruid"] == "PvtVoid");
-  if ($_SESSION['isTheCardGuyzPatron'] || $isHomeTownTCGPatron) {
+  if ($_SESSION['isHomeTownTCGPatron'] || $isHomeTownTCGPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-36", "HomeTownTCG", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "HomeTownTCG");
   }
