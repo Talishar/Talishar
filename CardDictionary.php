@@ -27,6 +27,7 @@ include "CardDictionaries/card_names.php";
 include "CardDictionaries/ClassicBattles/DVRShared.php";
 include "CardDictionaries/ClassicBattles/RVDShared.php";
 include "CardDictionaries/Dynasty/DYNShared.php";
+include "CardDictionaries/Roguelike/ROGUEShared.php";
 
 
 function CardType($cardID)
@@ -90,6 +91,8 @@ function CardType($cardID)
     return RVDCardType($cardID);
   } else if ($set == "DYN") {
     return DYNCardType($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUECardType($cardID);
   }
   switch ($cardID) {
     case "DUMMY":
@@ -192,6 +195,8 @@ function CardSubType($cardID)
     return RVDCardSubtype($cardID);
   } else if ($set == "DYN") {
     return DYNCardSubtype($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUECardSubtype($cardID);
   }
   switch ($cardID) {
     default:
@@ -256,6 +261,7 @@ function CharacterHealth($cardID)
       return 15;
     case "DYN075": // TODO: Yoji cardID to be modified with set release
       return 22;
+    case "ROGUE001": return 6;
     default:
       return 20;
   }
@@ -274,6 +280,7 @@ function CharacterIntellect($cardID)
   switch ($cardID) {
     case "CRU099":
       return 3;
+    case "ROGUE001": return 3;
     default:
       return 4;
   }
@@ -417,6 +424,7 @@ function CardTalent($cardID)
   else if ($set == "ELE") return ELECardTalent($cardID);
   else if ($set == "UPR") return UPRCardTalent($cardID);
   else if ($set == "DYN") return DYNCardTalent($cardID);
+  else if ($set == "ROGUE") return ROGUECardTalent($cardID);
   return "NONE";
 }
 
@@ -488,6 +496,8 @@ function CardCost($cardID)
     return RVDCardCost($cardID);
   } else if ($set == "DYN") {
     return DYNCardCost($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUECardCost($cardID);
   }
   switch ($cardID) {
     default:
@@ -533,6 +543,8 @@ function AbilityCost($cardID)
     return RVDAbilityCost($cardID);
   } else if ($set == "DYN") {
     return DYNAbilityCost($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUEAbilityCost($cardID);
   }
   return CardCost($cardID);
 }
@@ -635,6 +647,8 @@ function PitchValue($cardID)
     return RVDPitchValue($cardID);
   } else if ($set == "DYN") {
     return DYNPitchValue($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUEPitchValue($cardID);
   }
   switch ($cardID) {
     default:
@@ -701,6 +715,8 @@ function BlockValue($cardID)
     return RVDBlockValue($cardID);
   } else if ($set == "DYN") {
     return DYNBlockValue($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUEBlockValue($cardID);
   }
   switch ($cardID) {
     default:
@@ -773,6 +789,8 @@ function AttackValue($cardID)
     return RVDAttackValue($cardID);
   } else if ($set == "DYN") {
     return DYNAttackValue($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUEAttackValue($cardID);
   }
   switch ($cardID) {
     default:
@@ -804,6 +822,8 @@ function HasGoAgain($cardID)
     return RVDHasGoAgain($cardID);
   } else if ($set == "DYN") {
     return DYNHasGoAgain($cardID);
+  } else if ($set == "ROGUE") {
+    return ROGUEHasGoAgain($cardID);
   }
   switch ($cardID) {
 
@@ -851,6 +871,8 @@ function GetAbilityType($cardID, $index = -1)
     return RVDAbilityType($cardID, $index);
   } else if ($set == "DYN") {
     return DYNAbilityType($cardID, $index);
+  } else if ($set == "ROGUE") {
+    return ROGUEAbilityType($cardID, $index);
   }
   switch ($cardID) {
     default:
