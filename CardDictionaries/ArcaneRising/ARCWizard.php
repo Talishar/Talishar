@@ -551,7 +551,7 @@
     $choiceArray = [];
     array_push($choiceArray, 0);
     if($barrierArray[1] > 0) array_push($choiceArray, 1);
-    if($barrierArray[2] > 0 || ($barrierArray[1] > 0 && $max > 1 && $total >= 2)) array_push($choiceArray, 2);
+    if($barrierArray[2] > 0 || ($barrierArray[1] > 1 && $max > 1 && $total >= 2)) array_push($choiceArray, 2);
     if($barrierArray[3] > 0 || ($max > 2 && $total >= 3)) array_push($choiceArray, 3);
     for($i=4; $i<=$max; ++$i)
     {
