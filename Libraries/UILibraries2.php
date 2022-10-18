@@ -277,15 +277,15 @@ use JetBrains\PhpStorm\Language;
     if($big) { $top = "5%"; $left = "5%";  $width = "80%"; $height = "90%"; $overCC = 1001;}
     if($overCombatChain) { $top = "220px"; $left = "305px"; $width = "auto"; $height = "auto"; $overCC = 100;}
 
-    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 2px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:" . $overCC . "; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
+    $rv = "<div id='" . $id . "' style='overflow-y: auto; background-color:" . BackgroundColor($darkMode) . "; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 7px; z-index:" . $overCC . "; position: absolute; top:" . $top . "; left:" . $left . "; width:" . $width . "; height:" . $height . ";"  . ($defaultState == 0 ? " display:none;" : "") . "'>";
 
-    if($title != "") $rv .= "<h" . ($big ? "1" : "3") . " style='margin-left: 10px; margin-top: 7px; margin-bottom: 7px; text-align: center; user-select: none;'>" . $title . "</h" . ($big ? "1" : "3") . ">";
-    if ($canClose == 1) $rv .= "<div style='position:absolute; top:0px; right:45px;'><div title='Click to close' style='position: fixed; cursor:pointer; font-size:50px;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div></div>";
-    if ($additionalComments != "") $rv .= "<h" . ($big ? "3" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $additionalComments . "</h" . ($big ? "3" : "4") . ">";
-
-    // This is the style for a search bar in the discard pop up. It looks pretty, but doesn't work at the moment
-    //if($search) $rv .= "<form'><input type='search' onkeyup='showResult(" . $id . "," . $fromArr . "," . $canClose . "," .  $defaultState . "," .  $title . ")' name='search' id='search' style='position:absolute; left: 5px; top:5px; width: 160px; border: 3px solid " . PopupBorderColor($darkMode) . "; border-radius: 5%;' placeholder='🔎 Search'></form>";
-    
+    if($title != "") $rv .= "<h" . ($big ? "1" : "3") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center; user-select: none;'>" . $title . "</h" . ($big ? "1" : "3") . ">";
+    if($canClose == 1) $rv .= "<div style='position:absolute; top:0px; right:45px;'><div title='Click to close' style='position: fixed; cursor:pointer; font-size:50px;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div></div>";
+    if($additionalComments != "") $rv .= "<h" . ($big ? "3" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $additionalComments . "</h" . ($big ? "3" : "4") . ">";
+    for($i=0; $i<count($fromArr); $i += $arrElements)
+    {
+      $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
+    }
     if(IsGameOver()) $style = "text-align: center;";
     else $style = "font-size: 18px; margin-left: 10px; line-height: 22px; align-items: center;";
     $rv .= "<div style='" . $style . "'>" . $customInput . "</div>";
@@ -464,31 +464,31 @@ use JetBrains\PhpStorm\Language;
     return $rv;
   }
 
-  function TheirBanishUIMinimal($from = "")
-  {
-    global $playerID, $cardSizeAura, $TheirCardBack;
-    $rv = "";
-    $size = ($from == "HAND" ? $cardSizeAura : 120);
-    $otherPlayer = ($playerID == 1 ? 2 : 1);
-    $banish = GetBanish($otherPlayer);
-    for ($i = 0; $i < count($banish); $i += BanishPieces()) {
-      $mod = explode("-", $banish[$i + 1])[0];
-      if ($mod == "INT") {
-        if ($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
-      } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
+function TheirBanishUIMinimal($from = "")
+{
+  global $playerID, $cardSizeAura, $TheirCardBack;
+  $rv = "";
+  $size = ($from == "HAND" ? $cardSizeAura : 120);
+  $otherPlayer = ($playerID == 1 ? 2 : 1);
+  $banish = GetBanish($otherPlayer);
+  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+    $mod = explode("-", $banish[$i + 1])[0];
+    if ($mod == "INT") {
+      if ($rv != "") $rv .= "|";
+      $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
+    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
+      if ($rv != "") $rv .= "|";
+      $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
+    } else {
+      if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i])) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
-      } else {
-        if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i])) {
-          if ($rv != "") $rv .= "|";
-          $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
-        } else if ($from != "HAND")
-        $rv .= Card($banish[$i], "concat", $size, 0, 1, 0);
-      }
+      } else if ($from != "HAND")
+      $rv .= Card($banish[$i], "concat", $size, 0, 1, 0);
     }
-    return $rv;
   }
+  return $rv;
+}
 
   function CardBorderColor($cardID, $from, $isPlayable)
   {
@@ -531,7 +531,7 @@ use JetBrains\PhpStorm\Language;
       default: if($darkMode) {
         $color = "#1a1a1a"; break;
       } else {
-        $color = "#DDD"; break;
+        $color = "#AAA"; break;
       }
     }
   }
