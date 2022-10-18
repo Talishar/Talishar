@@ -349,7 +349,7 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
