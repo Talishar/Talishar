@@ -399,6 +399,8 @@ if ($decklink != "") {
   }
   else if ($deckOptions[0] == "SEALED") {
     $deckFile = "./SealedFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
+  } else if($deckOptions[0] == "ROGUELIKE") {
+    $deckFile = "./Roguelike/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
   } else {
     //Draftfab
     $deckFile = "./Games/" . $gameName . "/p" . $playerID . "DraftDeck.txt";
@@ -611,7 +613,7 @@ function GetAltCardID($cardID)
     case "HER075": // TODO: Yoji cardID to be edited
       return "DYN075";
     case "LGS112": // TODO: Quicksilver Dagger CardID might change on set release
-      return "DYN069"; 
+      return "DYN069";
     case "LGS116": // TODO: Blessing of Aether cardID to be edited
       return "DYN116";
     case "LGS117": // TODO: Blessing of Aether cardID to be edited
