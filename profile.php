@@ -11,17 +11,32 @@ include_once "./Libraries/UILibraries2.php";
 
 if (isset($_POST['update_profile'])) {
 
-  //NOTE: This code has an SQL injection, this must be fixed prior to restoring this functionality
-/*
   $user_id = $_SESSION['userid'];
   $update_name = mysqli_real_escape_string($conn, $_POST['update_name']);
   $update_email = mysqli_real_escape_string($conn, $_POST['update_email']);
 
-  if ($update_name != $_SESSION['useruid'] || $update_email != $_SESSION['useremail']) {
-    //NOTE: This code has an SQL injection, this must be fixed prior to restoring this functionality
-    mysqli_query($conn, "UPDATE users SET usersUid = '$update_name', usersEmail = '$update_email' WHERE usersId = '$user_id'") or die('query failed');
-    $_SESSION['useruid'] = $update_name;
-    $_SESSION['useremail'] = $update_email;
+  if ($update_name != $_SESSION['useruid']){
+    $alreadyExistUsersUid = mysqli_query($conn, "SELECT usersUid FROM users WHERE usersUid='$update_name'");
+    $resultUsersUid = mysqli_fetch_array($alreadyExistUsersUid);
+    if (!empty($resultUsersUid)) {
+      $message[] = "This Username is already taken";
+    }
+    else {
+      mysqli_query($conn, "UPDATE users SET usersUid = '$update_name' WHERE usersId = '$user_id'") or die('query failed');
+      $_SESSION['useruid'] = $update_name;
+    }
+  }
+
+  if ($update_email != $_SESSION['useremail']){
+    $alreadyExistEmail = mysqli_query($conn, "SELECT usersEmail FROM users WHERE usersEmail='$update_email'");
+    $resultExistEmail = mysqli_fetch_array($alreadyExistEmail);
+    if (!empty($resultExistEmail)) {
+      $message[] = "This Email is already taken";
+    }
+    else {
+      mysqli_query($conn, "UPDATE users SET usersEmail = '$update_email' WHERE usersId = '$user_id'") or die('query failed');
+      $_SESSION['useremail'] = $update_email;
+    }
   }
 
   $old_pass = mysqli_real_escape_string($conn, $_POST['old_pass']);
@@ -45,7 +60,6 @@ if (isset($_POST['update_profile'])) {
     }
   }
   $message[] = "Profile saved!";
-  */
 }
 
 if(isset($_SESSION['userid']))
@@ -133,14 +147,14 @@ if (isset($_SESSION["isPatron"])) {
     echo ("</div></div><br>");
 
     ?>
-<!--
+
     <div>Username:</div>
     <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
     <div>Your email:</div>
     <input type="email" name="update_email" value="<?php echo $_SESSION['useremail']; ?>">
 
-    <div>Update your avatar :</div>
-            <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png">
+    <!-- <div>Update your avatar :</div>
+            <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png"> -->
 
     <input type="hidden" name="old_pass" value="<?php echo $_SESSION['userspwd']; ?>">
     <div>Old password:</div>
@@ -150,9 +164,10 @@ if (isset($_SESSION["isPatron"])) {
     <div>Confirm password:</div>
     <input type="password" name="confirm_pass" placeholder="Confirm New Password">
     <button type="submit" name="update_profile">UPDATE PROFILE</button>
- -->
     <?php
     if (isset($message)) {
+      echo ("<BR>");
+      echo ("<BR>");
       foreach ($message as $message) {
         echo '<p>' . $message . '</p>';
       }
