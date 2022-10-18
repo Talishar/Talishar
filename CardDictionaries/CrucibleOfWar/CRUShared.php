@@ -113,7 +113,7 @@
 
   function CRUCombatEffectActive($cardID, $attackID)
   {
-    global $combatChain, $currentPlayer, $combatChainState, $CCS_IsBoosted;
+    global $combatChain, $combatChainState, $mainPlayer, $CCS_IsBoosted;
     switch($cardID)
     {
       //Brute
@@ -121,8 +121,8 @@
       case "CRU013": case "CRU014": case "CRU015": return true;
       //Guardian
       case "CRU025": return HasCrush($attackID);
-      case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $currentPlayer);
-      case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $currentPlayer);
+      case "CRU029": case "CRU030": case "CRU031": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
+      case "CRU038": case "CRU039": case "CRU040": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
       //Ninja
       case "CRU046": return true;
       case "CRU047": return true;
@@ -140,7 +140,7 @@
       case "CRU094-1": case "CRU095-1": case "CRU096-1": return CardType($attackID) == "W";
       case "CRU094-2": case "CRU095-2": case "CRU096-2": return true;
       //Mechnologist
-      case "CRU105": return CardType($attackID) == "W" && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $currentPlayer);
+      case "CRU105": return CardType($attackID) == "W" && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "CRU106": case "CRU107": case "CRU108": return $combatChainState[$CCS_IsBoosted] == "1";
       case "CRU109": case "CRU110": case "CRU111": return $combatChainState[$CCS_IsBoosted] == "1";
       //Ranger
@@ -151,7 +151,7 @@
       case "CRU135": case "CRU136": case "CRU137": return CardSubtype($attackID) == "Arrow";
       case "CRU135-1": case "CRU136-1": case "CRU137-1": return CardSubtype($attackID) == "Arrow";
       //Runeblade
-      case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $currentPlayer);
+      case "CRU145": case "CRU146": case "CRU147": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
       default: return false;
     }
   }
