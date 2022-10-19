@@ -90,4 +90,5 @@ fwrite($handler, $p2PlayerRating . "\r\n"); //Player Rating - 0 = not rated, 1 =
 fwrite($handler, $p1TotalTime . "\r\n"); //Player 1 total time
 fwrite($handler, $p2TotalTime . "\r\n"); //Player 2 total time
 fwrite($handler, $lastUpdateTime . "\r\n"); //Last update time
+fwrite($handler, $roguelikeGameID . "\r\n"); //Last update time
 fclose($handler);
