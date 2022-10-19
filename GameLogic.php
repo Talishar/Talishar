@@ -2002,6 +2002,8 @@ function RemoveEffectsOnChainClose()
       case "ELE188":
         $remove = 1;
         break;
+      case "UPR049":
+        $remove = 1;
       default:
         break;
     }
