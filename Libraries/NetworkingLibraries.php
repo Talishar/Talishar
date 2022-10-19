@@ -3,6 +3,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating, $redirectPath, $CS_PlayedAsInstant;
+  global $roguelikeGameID;
   switch ($mode) {
     case 0: break; //Deprecated
     case 1: break; //Deprecated
@@ -573,6 +574,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         AwardBadge($userID, 3);
         WriteLog($myName . " gave a badge to " . $theirName);
       }
+      break;
+    case 100011: //Resume adventure (roguelike)
+      
       break;
     default:
       break;

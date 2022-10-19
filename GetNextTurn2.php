@@ -484,7 +484,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($turn[0] == "OVER") {
     if($roguelikeGameID != "")
     {
-      $content = CreateButton($playerID, "Continue Adventure", 1240135, 0, "24px", "", "", false, true);
+      $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
     }
     else
     {
