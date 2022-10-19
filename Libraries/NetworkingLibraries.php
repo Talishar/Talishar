@@ -576,7 +576,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 100011: //Resume adventure (roguelike)
-      
+      if($roguelikeGameID == "") break;
+      header("Location: " . $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1));
       break;
     default:
       break;
