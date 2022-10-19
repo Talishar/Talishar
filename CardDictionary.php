@@ -950,9 +950,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
-  if ($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index + 3] == "1") {
-    $restriction = "Frozen";
-    return false;
+  if (isset($myAllies[$index + 3])) {
+    if ($from == "PLAY" && $subtype == "Ally" && $phase != "B" && $myAllies[$index + 3] == "1") {
+      $restriction = "Frozen";
+      return false;
+    }
   }
   if ($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") {
     $restriction = "Frozen";
