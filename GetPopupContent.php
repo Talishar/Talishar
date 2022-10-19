@@ -46,10 +46,17 @@ switch ($popupType) {
     break;
   case "menuPopup":
     if (IsGameOver()) {
-      $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
-      if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
-      if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-      $content .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
+      if($roguelikeGameID != "")
+      {
+        $content = CreateButton($playerID, "Continue Adventure", 1240135, 0, "24px", "", "", false, true);
+      }
+      else
+      {
+        $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
+        if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
+        if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
+        $content .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
+      }
       $content .= "</div>";
       $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
       $totalTime = $p1TotalTime + $p2TotalTime;
