@@ -2057,7 +2057,9 @@ function OnBlockResolveEffects()
       AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
       break;
     case "ELE004":
-      AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+      if (SearchCurrentTurnEffects($combatChain[0], $defPlayer, true)) {
+        AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+      }
       break;
   }
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
