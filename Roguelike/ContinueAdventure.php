@@ -14,7 +14,8 @@
   include "DecisionQueue.php";
   include "../WriteLog.php";
 
-  
+  $health = &GetZone($playerID, "Health");
+  $health[0] = $remainingHealth;
 
   include "WriteGamestate.php";
 

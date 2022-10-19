@@ -47,6 +47,9 @@
   $encounter = &GetZone($playerID, "Encounter");
   echo("<h1 style='width:85%; text-align: center'>Encounter #" . $encounter[0] . "</h1>");
 
+  $health = &GetZone($playerID, "Health");
+  echo("<h2 style='width:85%; text-align: center'>Health Remaining: " . $health[0] . "</h2>");
+
 
   $deck = &GetZone($playerID, "Deck");
   echo(CreatePopup("myDeckPopup", $deck, 1, 0, "Your Deck", 1, "", "../"));
