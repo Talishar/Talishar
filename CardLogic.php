@@ -695,6 +695,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "ELE066":
       if (HasIncreasedAttack()) MainDrawCard();
       break;
+    case "ELE004":
+      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i] == $player) {
+        PlayAura("ELE111", $player);
+        }
+      }
+      break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
