@@ -6,9 +6,6 @@ function EncounterAI()
   $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "ROGUE001") ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
-    if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
-    else UpdateGameState(1);
-    BuildMyGamestate($currentPlayer);
     for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
     {
       if(count($decisionQueue) > 0)
