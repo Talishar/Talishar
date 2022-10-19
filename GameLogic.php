@@ -2054,6 +2054,9 @@ function OnBlockResolveEffects()
     case "CRU051": case "CRU052":
       AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
       break;
+    case "ELE004":
+      AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+      break;
   }
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     switch ($combatChain[$i]) {
@@ -2111,9 +2114,6 @@ function OnBlockEffects($index, $from)
             $combatChain[$index + 6] += 2;
           }
           $remove = 1;
-          break;
-        case "ELE004":
-          PlayAura("ELE111", $currentPlayer);
           break;
         default:
           break;

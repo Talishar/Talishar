@@ -268,7 +268,7 @@
     $set = CardSet($cardID);
     switch($cardID)
     {
-      case "ELE004": AddCurrentTurnEffect($cardID, $otherPlayer); break;
+      case "ELE004": AddCurrentTurnEffect($cardID, $player); break;
       case "ELE007": case "ELE008": case "ELE009":
         if (!IsAllyAttacking()) {
           PayOrDiscard($otherPlayer, 2, true);
