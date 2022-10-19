@@ -1719,8 +1719,7 @@ function GetDamagePreventionIndices()
     if ($rv != "") $rv .= ",";
     $rv .= "CC-0";
   }
-
-  if (SearchLayer($otherPlayer, "W") == "" && IsCharacterAbilityActive($otherPlayer, 1)) {
+  if (SearchLayer($otherPlayer, "W") == "" && CardType($combatChain[0]) != "W" && !IsCharacterAbilityActive($otherPlayer, 1)) {
     $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
     $rv = CombineSearches($rv, $theirWeapon);
   }
