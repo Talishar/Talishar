@@ -312,7 +312,7 @@ function IsGamePhase($phase)
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
-  global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
+  global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $defPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -321,29 +321,16 @@ function ContinueDecisionQueue($lastResult = "")
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
-      if ($currentPlayer == 1) {
-        if (ShouldHoldPriorityNow(1)) {
-          AddDecisionQueue("INSTANT", 1, "-");
+        if (ShouldHoldPriorityNow($mainPlayer)) {
+          AddDecisionQueue("INSTANT", $mainPlayer, "-");
           $priorityHeld = 1;
           $layerPriority[0] = 0;
         }
-        if (ShouldHoldPriorityNow(2)) {
-          AddDecisionQueue("INSTANT", 2, "-");
+        if (ShouldHoldPriorityNow($defPlayer)) {
+          AddDecisionQueue("INSTANT", $defPlayer, "-");
           $priorityHeld = 1;
           $layerPriority[1] = 0;
         }
-      } else {
-        if (ShouldHoldPriorityNow(2)) {
-          AddDecisionQueue("INSTANT", 2, "-");
-          $priorityHeld = 1;
-          $layerPriority[1] = 0;
-        }
-        if (ShouldHoldPriorityNow(1)) {
-          AddDecisionQueue("INSTANT", 1, "-");
-          $priorityHeld = 1;
-          $layerPriority[0] = 0;
-        }
-      }
       if ($priorityHeld) {
         ContinueDecisionQueue("");
       } else {
