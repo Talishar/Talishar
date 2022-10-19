@@ -461,11 +461,21 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
     }
     $content .= "<div style='margin-left:1px; margin-top:3px; margin-bottom:5px' display:inline;'>";
+    $nbTiles = 0;
     for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
       $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
       $layersColor = $layers[$i + 1] == $playerID ? 1 : 2;
       if ($playerID == 3) $layersColor = $layers[$i + 1] == $otherPlayer ? 2 : 1;
-      $content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layersColor, controller: $layers[$i + 1]);
+      if (IsTileable($layerName) && $nbTiles == 0) {
+        for ($j = 0; $j < count($layers); $j += LayerPieces()) {
+          $tilesName = ($layers[$j] == "LAYER" || $layers[$j] == "TRIGGER" ? $layers[$j + 2] : $layers[$j]);
+          if ($tilesName == $layerName) ++$nbTiles;
+        }
+        $content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layersColor, ($nbTiles == 1 ? 0 : $nbTiles), controller: $layers[$i + 1]);
+      } elseif (!IsTileable($layerName)) {
+        $nbTiles = 0;
+        $content .= Card($layerName, "concat", $cardSize, 0, 1, 0, $layersColor, controller: $layers[$i + 1]);
+      }
     }
     $content .= "</div>";
     echo CreatePopup("INSTANT", [], 0, 1, "", 1, $content, "./", false, true);
