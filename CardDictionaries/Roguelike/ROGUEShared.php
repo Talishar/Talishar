@@ -3,7 +3,7 @@
 function ROGUEAbilityCost($cardID)
 {
     switch ($cardID) {
-
+      case "ROGUE002": return 0;
         default: return 0;
     }
 }
@@ -11,7 +11,7 @@ function ROGUEAbilityCost($cardID)
 function ROGUEAbilityType($cardID, $index = -1)
 {
     switch ($cardID) {
-
+      case "ROGUE002": return "AA";
         default: return "";
     }
 }
