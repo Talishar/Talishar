@@ -52,12 +52,13 @@
 
 
   $deck = &GetZone($playerID, "Deck");
-  echo(CreatePopup("myDeckPopup", $deck, 1, 0, "Your Deck", 1, "", "../"));
+  echo(CreatePopup("myDeckPopup", $deck, 1, 0, "Your Deck (" . count($deck) . " cards)", 1, "", "../"));
 
+  $myDQ = &GetZone($playerID, "DecisionQueue");
   echo("<div style='position:fixed; width:100%; top:35%; height:65%;'>");
-  $header = "<h1><span title='Click to view your deck.' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>Click to see your deck</span></h1>";
+  $header = "<h1><span title='Click to view your deck (" . count($deck) . " cards)' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>Click to see your deck (" . count($deck) . " cards)</span></h1>";
   echo($header);
-  echo("<h2>" . EncounterDescription($encounter[0]) . "</h2>");
+  if(count($myDQ) == 0) echo("<h2>" . EncounterDescription($encounter[0], $encounter[1]) . "</h2>");
   echo("<BR>");
 
   echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/RogueLike/PlayEncounter.php'>");
@@ -65,7 +66,7 @@
   echo("<input type='hidden' id='playerID' name='playerID' value='$playerID' />");
   echo("<input type='submit' style='font-size:20px;' value='Play Encounter' />");
   echo("</form>");
-    /*
+
   if(count($myDQ) > 0 && $myDQ[0] == "CHOOSECARD")
   {
     echo("<div display:inline;'>");
@@ -76,7 +77,7 @@
     }
     echo("</div>");
   }
-  */
+
   echo("</div>");//End cards div
 
   echo("</div>");//End play area div
@@ -121,11 +122,15 @@
     }
   }
 
-  function EncounterDescription($encounter)
+  function EncounterDescription($encounter, $subphase)
   {
     switch($encounter)
     {
-      case 1: return "You're attacked by a Woottonhog.";
+      case 1:
+        if($subphase == "Fight") return "You're attacked by a Woottonhog.";
+        else if($subphase == "AfterFight") return "You defeated the Woottonhog.";
+      case 2:
+        return "You found a campfire. Choose what you want to do.";
       default: return "No encounter text.";
     }
   }

@@ -16,11 +16,25 @@
 
   $health = &GetZone($playerID, "Health");
   $health[0] = $remainingHealth;
+  $encounter = &GetZone($playerID, "Encounter");;
+  $encounter[1] = "AfterFight";
+
+  AddDecisionQueue("CHOOSECARD", $playerID, "MON110,WTR146,WTR135");
+  AddDecisionQueue("SETENCOUNTER", $playerID, GetNextEncounter($encounter[0]));
 
   include "WriteGamestate.php";
 
   header("Location: " . $redirectPath . "/Roguelike/NextEncounter.php?gameName=$gameName&playerID=" . $playerID);
 
   exit;
+
+  function GetNextEncounter($previousEncounter)
+  {
+    switch($previousEncounter)
+    {
+      case 1: return "2-PickMode";
+      default: return "";
+    }
+  }
 
 ?>
