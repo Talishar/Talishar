@@ -91,7 +91,7 @@ function CardType($cardID)
     return RVDCardType($cardID);
   } else if ($set == "DYN") {
     return DYNCardType($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUECardType($cardID);
   }
   switch ($cardID) {
@@ -195,7 +195,7 @@ function CardSubType($cardID)
     return RVDCardSubtype($cardID);
   } else if ($set == "DYN") {
     return DYNCardSubtype($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUECardSubtype($cardID);
   }
   switch ($cardID) {
@@ -424,7 +424,7 @@ function CardTalent($cardID)
   else if ($set == "ELE") return ELECardTalent($cardID);
   else if ($set == "UPR") return UPRCardTalent($cardID);
   else if ($set == "DYN") return DYNCardTalent($cardID);
-  else if ($set == "ROGUE") return ROGUECardTalent($cardID);
+  else if ($set == "ROG") return ROGUECardTalent($cardID);
   return "NONE";
 }
 
@@ -496,7 +496,7 @@ function CardCost($cardID)
     return RVDCardCost($cardID);
   } else if ($set == "DYN") {
     return DYNCardCost($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUECardCost($cardID);
   }
   switch ($cardID) {
@@ -543,7 +543,7 @@ function AbilityCost($cardID)
     return RVDAbilityCost($cardID);
   } else if ($set == "DYN") {
     return DYNAbilityCost($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUEAbilityCost($cardID);
   }
   return CardCost($cardID);
@@ -647,7 +647,7 @@ function PitchValue($cardID)
     return RVDPitchValue($cardID);
   } else if ($set == "DYN") {
     return DYNPitchValue($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUEPitchValue($cardID);
   }
   switch ($cardID) {
@@ -715,7 +715,7 @@ function BlockValue($cardID)
     return RVDBlockValue($cardID);
   } else if ($set == "DYN") {
     return DYNBlockValue($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUEBlockValue($cardID);
   }
   switch ($cardID) {
@@ -789,7 +789,7 @@ function AttackValue($cardID)
     return RVDAttackValue($cardID);
   } else if ($set == "DYN") {
     return DYNAttackValue($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUEAttackValue($cardID);
   }
   switch ($cardID) {
@@ -822,7 +822,7 @@ function HasGoAgain($cardID)
     return RVDHasGoAgain($cardID);
   } else if ($set == "DYN") {
     return DYNHasGoAgain($cardID);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUEHasGoAgain($cardID);
   }
   switch ($cardID) {
@@ -871,7 +871,7 @@ function GetAbilityType($cardID, $index = -1)
     return RVDAbilityType($cardID, $index);
   } else if ($set == "DYN") {
     return DYNAbilityType($cardID, $index);
-  } else if ($set == "ROGUE") {
+  } else if ($set == "ROG") {
     return ROGUEAbilityType($cardID, $index);
   }
   switch ($cardID) {
