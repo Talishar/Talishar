@@ -25,11 +25,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $cardID;
       $found = -1;
       $character = &GetPlayerCharacter($playerID);
-      if ($index != "") {
-        $cardID = $character[$index];
-        $found = HasCard($cardID);
-      }
-      if ($index != -1 && IsPlayable($character[$found], $turn[0], "CHAR", $index)) {
+      $cardID = $character[$index];
+      if ($index != -1 && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
         SetClassState($playerID, $CS_CharacterIndex, $index);
         SetClassState($playerID, $CS_PlayIndex, $index);
         $character = &GetPlayerCharacter($playerID);
