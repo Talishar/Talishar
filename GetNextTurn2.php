@@ -482,23 +482,31 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if ($turn[0] == "OVER") {
-    $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
-    if ($playerID == 1 && $theirCharacter[0] != "DUMMY") $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
-    if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-    if ($playerID != 3) {
-      $content .= "<BR><span class='Rate-Span'>Rate your Opponent:&nbsp;";
-      $rating = ($playerID == 1 ? $p1PlayerRating : $p2PlayerRating);
-      if ($rating != 2) {
-        $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.");
-        $content .= ($rating != 1 ? "&nbsp;" : "</span>");
-      }
-      if ($rating != 1) {
-        $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked playing with this player.") . "</span>";
-      }
-      $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
-      $totalTime = $p1TotalTime + $p2TotalTime;
-      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $totalTime % 60 . "s</span>";
+    if($roguelikeGameID != "")
+    {
+      $content = CreateButton($playerID, "Continue Adventure", 1240135, 0, "24px", "", "", false, true);
     }
+    else
+    {
+      $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
+      if ($playerID == 1 && $theirCharacter[0] != "DUMMY") $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
+      if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
+      if ($playerID != 3) {
+        $content .= "<BR><span class='Rate-Span'>Rate your Opponent:&nbsp;";
+        $rating = ($playerID == 1 ? $p1PlayerRating : $p2PlayerRating);
+        if ($rating != 2) {
+          $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.");
+          $content .= ($rating != 1 ? "&nbsp;" : "</span>");
+        }
+        if ($rating != 1) {
+          $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked playing with this player.") . "</span>";
+        }
+        $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
+        $totalTime = $p1TotalTime + $p2TotalTime;
+        $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $totalTime % 60 . "s</span>";
+      }
+    }
+
     $content .= "</div>";
     $content .= CardStats($playerID);
     echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
