@@ -6,7 +6,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   switch ($mode) {
     case 0: break; //Deprecated
     case 1: break; //Deprecated
-    case 2: //Play card from hand
+    case 2: //Play card from hand - DEPRECATED
+      WriteLog("This code has been deprecated and should never be called, please report bug.");
       $found = HasCard($cardID);
       if ($found >= 0 && IsPlayable($cardID, $turn[0], "HAND", $found)) {
         //Player actually has the card, now do the effect
