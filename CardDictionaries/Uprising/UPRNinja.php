@@ -179,7 +179,7 @@
         return "";
       case "UPR049":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Buffs your draconic attacks this turn.";
+        return "Buffs your draconic attacks this combat chain.";
       case "UPR050":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
         AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
