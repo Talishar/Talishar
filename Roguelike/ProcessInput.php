@@ -24,9 +24,8 @@
   include "../HostFiles/Redirector.php";
   include "DecisionQueue.php";
   include "../WriteLog.php";
-  include 'BoosterGenerator.php';
-  include 'DraftLogic.php';
-  include 'ELETierList.php';
+  include "../Libraries/UILibraries2.php";
+  include "../CardDictionary.php";
   $makeCheckpoint = 0;
 
   ProcessCommand($playerID, $mode, $cardID);
@@ -50,8 +49,11 @@
           unset($options[$found]);
           $options = array_values($options);
         }
+        $deck = &GetZone($playerID, "Deck");
+        array_push($deck, $cardID);
         ClearPhase($playerID);
-        ContinueDecisionQueue($playerID, $cardID . "-" . implode(",", $options));
+        WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
+        ContinueDecisionQueue($playerID, "");
         break;
       case 99: //Pass
         PassInput();
@@ -94,7 +96,7 @@
 
   if($makeCheckpoint) MakeGamestateBackup();
 
-  header("Location: " . $redirectPath . "/DraftFiles/NextPick.php?gameName=$gameName&playerID=" . $playerID);
+  header("Location: " . $redirectPath . "/Roguelike/NextEncounter.php?gameName=$gameName&playerID=" . $playerID);
 
   exit;
 

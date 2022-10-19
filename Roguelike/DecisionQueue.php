@@ -68,34 +68,11 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
     global $numPlayers;
     switch($phase)
     {
-      case "DRAFTPASS":
-        $results = explode("-", $lastResult);
-        $chosen = $results[0];
-        $remaining = $results[1];
-        $packData = &GetZone($player, "PackData");
-        ++$packData[1];
-        $chosenCards = &GetZone($player, "ChosenCards");
-        array_push($chosenCards, $chosen);
-        if($remaining != "")
-        {
-          $nextPlayer = ($parameter1 == "L" ? $player - 1 : $player + 1);
-          if($nextPlayer == 0) $nextPlayer = $numPlayers;
-          else if($nextPlayer > $numPlayers) $nextPlayer = 1;
-          AddDecisionQueue("CHOOSECARD", $nextPlayer, $remaining);
-          AddDecisionQueue("DRAFTPASS", $nextPlayer, $parameter1);
-        }
-        if($packData[0] < 3 && AllPlayersFinished())
-        {
-          for($i=1; $i<=$numPlayers; ++$i)
-          {
-            $packData = &GetZone($i, "PackData");
-            $booster = implode(",", explode(" ", GenerateELEBooster()));
-            AddDecisionQueue("CHOOSECARD", $i, $booster);
-            AddDecisionQueue("DRAFTPASS", $i, ($parameter1 == "L" ? "R" : "L"));
-            ++$packData[0];
-            $packData[1] = 1;
-          }
-        }
+      case "SETENCOUNTER":
+        $params = explode("-", $parameter1);
+        $encounter = &GetZone($player, "Encounter");
+        $encounter[0] = $params[0];
+        $encounter[1] = $params[1];
         return 1;
       default:
         return "NOTSTATIC";
