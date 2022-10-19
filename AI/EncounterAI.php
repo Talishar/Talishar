@@ -2,10 +2,13 @@
 
 function EncounterAI()
 {
-  global $currentPlayer, $p2CharEquip, $decisionQueue, $turn;
+  global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer, $mainPlayerGamestateStillBuilt;
   $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "ROGUE001") ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
+    if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
+    else UpdateGameState(1);
+    BuildMyGamestate($currentPlayer);
     for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
     {
       if(count($decisionQueue) > 0)
@@ -23,12 +26,22 @@ function EncounterAI()
         }
         else PassInput();
       }
+      else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
+      {
+        $character = &GetPlayerCharacter($currentPlayer);
+        if(count($character) > CharacterPieces() && CardType($character[CharacterPieces()]) == "W")
+        {
+          ProcessInput($currentPlayer, 3, "", CharacterPieces(), 0, "");
+          CacheCombatResult();
+        }
+        else PassInput();
+      }
       else
       {
         PassInput();
       }
       ProcessMacros();
-      $currentPlayerIsAI = ($currentPlayer == 2 && $p2CharEquip[0] == "ROGUE001") ? true : false;
+      $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
     }
   }
 }
