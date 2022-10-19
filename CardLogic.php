@@ -321,7 +321,7 @@ function ContinueDecisionQueue($lastResult = "")
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
-      if ($currentPlayer == 1) {
+      if ($mainPlayer == 1) {
         if (ShouldHoldPriorityNow(1)) {
           AddDecisionQueue("INSTANT", 1, "-");
           $priorityHeld = 1;
