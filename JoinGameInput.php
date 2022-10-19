@@ -620,6 +620,8 @@ function GetAltCardID($cardID)
       return "DYN117";
     case "LGS118": // TODO: Blessing of Aether cardID to be edited
       return "DYN118";
+    case "ARC218": case "UPR224": case "MON306": case "ELE237"://Cracked Baubles
+      return "WTR224";
   }
   return $cardID;
 }
