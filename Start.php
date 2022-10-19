@@ -80,6 +80,7 @@ fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive
 fwrite($handler, "0\r\n"); //Player 1 total time
 fwrite($handler, "0\r\n"); //Player 2 total time
 fwrite($handler, time() . "\r\n"); //Last update time
+fwrite($handler, $roguelikeGameID . "\r\n"); //Last update time
 fclose($handler);
 
 //Set up log file
