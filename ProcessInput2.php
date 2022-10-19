@@ -13,6 +13,7 @@ include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "AI/CombatDummy.php";
+include "AI/EncounterAI.php";
 include "AI/PlayerMacros.php";
 include "Libraries/HTTPLibraries.php";
 require_once("Libraries/CoreLibraries.php");
@@ -108,6 +109,7 @@ else if ($winner != 0 && $turn[0] != "YESNO") {
 }
 
 CombatDummyAI(); //Only does anything if applicable
+EncounterAI();
 CacheCombatResult();
 
 if(!IsGameOver())
