@@ -915,8 +915,9 @@ function FinalizeAction()
       }
     }
   } else if ($turn[0] == "A") {
-    $turn[0] = "D";
-    $currentPlayer = $defPlayer;
+    //This code would switch to the defense player after resolving an attack reaction if the rules ever change to that
+    //$turn[0] = "D";
+    //$currentPlayer = $defPlayer;
     $turn[2] = "";
   } else if ($turn[0] == "D") {
     $turn[0] = "A";
