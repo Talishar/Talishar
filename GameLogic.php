@@ -943,7 +943,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       return (CardCost($combatChain[0]) == 0 && CardType($combatChain[0]) == "AA" ? 2 : 0);
     case "DYN045":
       $blockModifier += (count($chainLinkSummary)/ChainLinksPieces() >= 4 ? 4 : 0);
-      break; 
+      break;
     default:
       break;
   }
@@ -2120,7 +2120,6 @@ function OnBlockEffects($index, $from)
           $remove = 1;
           break;
         case "ELE004":
-          writelog($cardType);
           if ($cardType == "DR") {
             PlayAura("ELE111", $currentPlayer);
           }
@@ -3642,7 +3641,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "SANDSCOURGREATBOW":
       if ($lastResult == "NO") {
-        ReloadArrow($player); // From Hand 
+        ReloadArrow($player); // From Hand
       } else {                // From Top Deck
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);

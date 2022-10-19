@@ -20,6 +20,7 @@ $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
 $karmaRestriction = TryGet("gameKarmaRestriction", "0");
 $deckbuilderID = TryGet("user", "");
+$roguelikeGameID = TryGet("roguelikeGameID", "");
 
 if($favoriteDeckLink != 0)
 {

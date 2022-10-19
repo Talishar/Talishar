@@ -50,7 +50,7 @@
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
 
-  header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=Woottonhog&deck=ROGUELIKE-" . $gameName);
+  header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=Woottonhog&roguelikeGameID=" . $gameName . "&deck=ROGUELIKE-" . $gameName);
 
 
 ?>

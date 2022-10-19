@@ -141,6 +141,7 @@ $p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = gr
 $p1TotalTime = trim(fgets($handler));//Player 1 total time
 $p2TotalTime = trim(fgets($handler));//Player 2 total time
 $lastUpdateTime = trim(fgets($handler));//Last update time
+$roguelikeGameID = trim(fgets($handler));//Roguelike game id
 fclose($handler);
 BuildMyGamestate($playerID);
 
