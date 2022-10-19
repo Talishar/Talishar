@@ -216,7 +216,7 @@
     switch($pitch)
     {
       case 1: return "red";
-      case 2: return "Gold";
+      case 2: return "GoldenRod";
       case 3: return "blue";
       default: return "LightSlateGrey";
     }
