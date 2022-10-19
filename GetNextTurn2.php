@@ -173,7 +173,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
   $cardWidth = intval($cardSize * 0.73);
   $cardHeight = $cardWidth;
-  $cardIconSize = intval($cardSize / 3); //40
+  $cardIconSize = intval($cardSize / 2.7); //40
   $cardIconLeft = intval($cardSize / 4); //30
   $cardIconTop = intval($cardSize / 4); //30
   $bigCardSize = intval($cardSize * 1.667); //200;
@@ -862,13 +862,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
     if (TalentContains($theirCharacter[0], "SHADOW") || $theirBloodDeptCount > 0) {
       $bloodDeptImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-      echo ("<img title='Blood Debt' style='position:absolute; top:20px; left:-45px; width:34px;' src='./Images/" . $bloodDeptImage . "'><div style='position:absolute; top:41px; left:-44px; width:34px; font-size:24px; font-weight:550; color: #DDD; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; text-align:center;'>" . $theirBloodDeptCount . "</div></img>");
+      echo ("<img title='Blood Debt' style='position:absolute; top:10px; left:102px; width:38px;' src='./Images/" . $bloodDeptImage . "'><div style='position:absolute; top:41px; left:104px; width:34px; font-size:22px; font-weight:550; color: #DDD; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; text-align:center;'>" . $theirBloodDeptCount . "</div></img>");
     }
     echo ("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'>
   <img style=' opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . "; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
-  <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
-  text-align: center; transform: translate(-50%, -50%); line-height: 32px;
-  position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($theirBanish) / BanishPieces() . "</div></img></span>");
+  <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 30px; height: 30px; padding: 3px;
+  transform: translate(-50%, -50%); line-height: 32px;
+  position:absolute; z-index: 5; font-size:24px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($theirBanish) / BanishPieces() . "</div></img></span>");
   } else {
     //Empty Banish div
     echo ("<div style='position:fixed; right:" . GetZoneRight("BANISH") . "; top:" . GetZoneTop("THEIRBANISH") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
@@ -878,16 +878,22 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Display Their Pitch
   if (count($theirPitch) > 0) {
-    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") . ";'>");
-    $card = (count($theirPitch) > 0 ? $theirPitch[count($theirPitch) - PitchPieces()] : $blankZone);
-    echo (Card($card, "concat", $cardSizeAura, 0, 0, controller: $otherPlayer));
+    $theirPitchCount = count($theirPitch) - 1;
+    for ($i = count($theirPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
+      echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") - $theirPitchCount * 20 . "px;'>");
+      echo (Card($theirPitch[$i], "concat", $cardSizeAura, 0, 1, controller: $playerID));
+      --$theirPitchCount;
+    }
+
+
+
     echo ("<span title='Click to see your opponent Pitch Zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $theirResources[0] . "</div></img></span>");
   } else {
     //Empty Pitch div
-    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") . "px; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
     if ($theirResources[0] > 0) {
       echo ("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block; z-index:5;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px; text-align: center; transform: translate(-50%, -50%); line-height: 32px; position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $theirResources[0] . "</div></img></span>");
@@ -1206,14 +1212,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo (Card($card, "concat", $cardSizeAura, 0, 0, 0, 0, controller: $playerID));
     echo ("<span title='Click to see your Banish Zone.' onclick='ShowPopup(\"myBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer;
   position:absolute; display:inline-block;'><img style='opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/banish.png'>
-  <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height:" . $counterHeight . "; padding: 3px;
+  <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; height:" . $counterHeight . "; padding: 3px;
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
   position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($myBanish) / BanishPieces() . "</div></img></span>");
     if (TalentContains($myCharacter[0], "SHADOW") || SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true))) {
       $myBloodDeptCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
       $bloodDeptImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
-      echo ("<img title='Blood Debt' style='position:absolute; top:18px; left:-40px; width:34px;' src='./Images/" . $bloodDeptImage . "'>
-    <div style='position:absolute; top:40px; left:-40px; width:34px; font-size:24px; font-weight:550; color: #DDD; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; text-align:center;'>" . $myBloodDeptCount . "</div></img>");
+      echo ("<img title='Blood Debt' style='position:absolute; top:14px; left:-40px; width:38px;' src='./Images/" . $bloodDeptImage . "'>
+    <div style='position:absolute; top:44px; left:-40px; width:34px; font-size:24px; font-weight:550; color: #DDD; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; text-align:center;'>" . $myBloodDeptCount . "</div></img>");
     }
   } else {
     //Empty Banish div
@@ -1225,8 +1231,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Display My Pitch
   if (count($myPitch) > 0) {
-    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") . ";'>");
-    echo (Card($myPitch[count($myPitch) - PitchPieces()], "concat", $cardSizeAura, 0, 0, controller: $playerID));
+    $myPitchCount = count($myPitch) - 1;
+    for ($i = count($myPitch) - PitchPieces(); $i >= 0 ; $i -= PitchPieces()) {
+      echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") + $myPitchCount * 20 . "px;'>");
+      echo (Card($myPitch[$i], "concat", $cardSizeAura, 0, 1, controller: $playerID));
+      --$myPitchCount;
+    }
     echo (($manualMode ? "<span style='position:absolute; padding-bottom: 5px; bottom:0; right:0;'>" . CreateButton($playerID, "-1", 10015, 0, "24px") . CreateButton($playerID, "+1", 10012, 0, "24px") . "</span>" : ""));
     echo ("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
   <div style='margin: 0; top: 51%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
@@ -1235,7 +1245,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo ("</div>");
   } else {
     //Empty Pitch div
-    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
+    echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") . "px; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
     echo (($manualMode ? "<span style='position:absolute; padding-bottom: 5px; bottom:0; right:0;'>" . CreateButton($playerID, "-1", 10015, 0, "24px") . CreateButton($playerID, "+1", 10012, 0, "24px") . "</span>" : ""));
     if ($myResources[0] > 0) {
       echo ("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block; z-index:5;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
@@ -1419,7 +1429,7 @@ function GetZoneBottom($zone)
     case "MYBANISH":
       return (5) . "px";
     case "MYPITCH":
-      return ($cardSize - 10) . "px";
+      return ($cardSize - 10);
   }
 }
 
@@ -1434,7 +1444,7 @@ function GetZoneTop($zone)
     case "THEIRBANISH":
       return (5) . "px";
     case "THEIRPITCH":
-      return ($cardSize - 10) . "px";
+      return ($cardSize - 10);
   }
 }
 

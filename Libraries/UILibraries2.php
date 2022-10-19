@@ -112,7 +112,7 @@ use JetBrains\PhpStorm\Language;
 
   // Counters Style
   $dynamicScaling = (function_exists("IsDynamicScalingEnabled") ? IsDynamicScalingEnabled($playerID) : false);
-  $counterHeight = $dynamicScaling ? intval($maxHeight / 3.3) : 30;
+  $counterHeight = $dynamicScaling ? intval($maxHeight / 3.3) : 28;
   $imgCounterHeight = $dynamicScaling ? intval($maxHeight / 2) : 44;
   //Attacker Label Style
   if($counters == "Attacker" || $counters == "Arsenal") {
