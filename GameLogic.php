@@ -2057,7 +2057,7 @@ function OnBlockResolveEffects()
       AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
       break;
     case "ELE004":
-      if (SearchCurrentTurnEffects($combatChain[0], $defPlayer, true)) {
+      if (SearchCurrentTurnEffects($combatChain[0], $defPlayer)) {
         AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
       }
       break;
@@ -2118,6 +2118,12 @@ function OnBlockEffects($index, $from)
             $combatChain[$index + 6] += 2;
           }
           $remove = 1;
+          break;
+        case "ELE004":
+          writelog($cardType);
+          if ($cardType == "DR") {
+            PlayAura("ELE111", $currentPlayer);
+          }
           break;
         default:
           break;
