@@ -108,9 +108,9 @@ else if ($winner != 0 && $turn[0] != "YESNO") {
   $currentPlayer = 1;
 }
 
+CacheCombatResult();
 CombatDummyAI(); //Only does anything if applicable
 EncounterAI();
-CacheCombatResult();
 
 if(!IsGameOver())
 {

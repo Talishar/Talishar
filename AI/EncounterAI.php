@@ -16,9 +16,10 @@ function EncounterAI()
       else if($turn[0] == "B")
       {
         $hand = &GetHand($currentPlayer);
-        if(count($hand) > 0)
+        if(count($hand) > 0 && (CachedTotalAttack() - CachedTotalBlock()) > 1)
         {
           ProcessInput($currentPlayer, 27, "", 0, 0, "");
+          CacheCombatResult();
         }
         else PassInput();
       }
