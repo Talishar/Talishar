@@ -526,11 +526,11 @@ function ParseDraftFab($deck, $filename)
           if($card[1] == "S")
           {
             if($sideboardCards != "") $sideboardCards .= " ";
-            $sideboardCards .= $cardID;
+            $sideboardCards .= GetAltCardID($cardID);
           }
           else {
             if($deckCards != "") $deckCards .= " ";
-            $deckCards .= $cardID;
+            $deckCards .= GetAltCardID($cardID);
           }
         }
         break;
