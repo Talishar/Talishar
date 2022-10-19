@@ -423,8 +423,12 @@ function GetAltCardID($cardID)
       return "WTR162";
     case "FAB023":
       return "MON135";
+    case "FAB024":
+      return "ARC200";
     case "FAB030":
       return "DYN030";
+    case "FAB057":
+      return "EVR063";
     case "DVR026":
       return "WTR182";
     case "RVD008":
@@ -435,6 +439,21 @@ function GetAltCardID($cardID)
       return "WTR192";
     case "UPR211":
       return "WTR193";
+    case "HER075": // TODO: Yoji cardID to be edited
+      return "DYN075";
+    case "LGS112": // TODO: Quicksilver Dagger CardID might change on set release
+      return "DYN069";
+    case "LGS116": // TODO: Blessing of Aether cardID to be edited
+      return "DYN116";
+    case "LGS117": // TODO: Blessing of Aether cardID to be edited
+      return "DYN117";
+    case "LGS118": // TODO: Blessing of Aether cardID to be edited
+      return "DYN118";
+    case "ARC218":
+    case "UPR224":
+    case "MON306":
+    case "ELE237": //Cracked Baubles
+      return "WTR224";
   }
   return $cardID;
 }
