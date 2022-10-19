@@ -118,7 +118,7 @@
       case "ARC118":
         $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
         DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-        return "Deals damage equal to the prior arcane damage this turn (" . $damage . ").";
+        return "";
       case "ARC119":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
@@ -142,7 +142,7 @@
       case "ARC120":
         $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer) * 2; // TODO: Not exactly right. Should be able to target 2 differents heroes.
         DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target, nbArcaneInstance: 2); //Basically this just applies the bonus twice
-        return "Deals " . $damage . " arcane damage.";
+        return "";
       case "ARC121":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
@@ -166,7 +166,7 @@
       case "ARC126": case "ARC127": case "ARC128":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
-        return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
+        return "";
       case "ARC129": case "ARC130": case "ARC131":
         if($cardID == "ARC129") $buff = 3;
         else if($cardID == "ARC130") $buff = 2;
@@ -177,7 +177,7 @@
       case "ARC132": case "ARC133": case "ARC134":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD",$cardID, resolvedTarget: $target);
         AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
-        return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
+        return "";
       case "ARC135": case "ARC136": case "ARC137":
         if($cardID == "ARC135") $count = 5;
         else if($cardID == "ARC136") $count = 4;
@@ -214,7 +214,7 @@
       case "ARC144": case "ARC145": case "ARC146":
       case "ARC147": case "ARC148": case "ARC149":
         DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-        return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
+        return "";
       default: return "";
     }
 
@@ -239,6 +239,7 @@
     if ($player == 0) $player = $currentPlayer;
     if ($damage > 0) {
       $damage += CurrentEffectArcaneModifier($source, $player) * $nbArcaneInstance;
+      if ($type != "PLAYCARD") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
       if ($fromQueue) {
         if (!$limitDuplicates) {
           PrependDecisionQueue("PASSPARAMETER", $player, "{0}");

@@ -938,13 +938,12 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       //CRU Wizard
     case "CRU160":
       DealArcane(2, 0, "PLAYCARD", $cardID);
-      return "Deals 2 arcane damage.";
+        return "";
     case "CRU162":
       $rv = "Lets you play your next Wizard non-attack as an instant";
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
       if (GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2) {
         DealArcane(3, 1, "PLAYCARD", $cardID, resolvedTarget: $target); //TODO: All opponents
-        $rv .= " and deal 3 arcane damage to each opposing hero";
       }
       return $rv . ".";
     case "CRU163":

@@ -248,7 +248,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
         case "DYN206": case "DYN207": case "DYN208":
             DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-            return "Deals " . ArcaneDamage($cardID) . " arcane damage.";
+            return "";
         case "DYN230": case "DYN231": case "DYN232":
             if (CanRevealCards($currentPlayer)) {
                 $deck = GetDeck($currentPlayer);
