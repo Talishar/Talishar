@@ -366,12 +366,27 @@ use JetBrains\PhpStorm\Language;
       $rv .= "Average Resources Used per turn: " . round($totalResourcesUsed/$numTurns, 2) . "<br>";
       $rv .= "Average Cards Left Over per turn: " . round($totalCardsLeft/$numTurns, 2) . "<br>";
       $rv .= "Average Value per turn (Damage threatened + block): " . round(($totalDamageThreatened + $totalBlocked)/$numTurns, 2) . "<br>";
-      //Cards per turn stats
-      $rv .= "<table style='font-size:16px; text-align:center; width:100%;'><tr><td>Turn Number</td><td>Cards Played</td><td>Cards Blocked</td><td>Cards Pitched</td><td>Resources Used</td><td>Cards Left</td></tr>";
-      for($i=0; $i<count($turnStats); $i+=TurnStatPieces())
-      {
-        $rv .= "<tr><td>" . (($i / TurnStatPieces()) + 1) . "</td><td>" . ($turnStats[$i+$TurnStats_CardsPlayedOffense] + $turnStats[$i+$TurnStats_CardsPlayedDefense]) . "</td><td>" . $turnStats[$i+$TurnStats_CardsBlocked] . "</td><td>" . $turnStats[$i+$TurnStats_CardsPitched] . "</td><td>" . $turnStats[$i+$TurnStats_ResourcesUsed] . "</td><td>" . $turnStats[$i+$TurnStats_CardsLeft] . "</td></tr>";
-      }
+    //Cards per turn stats
+
+    $rv .= "<table style='font-size:16px; text-align:center; width:100%;'><tr>";
+    $rv .= "<td>Turn Number</td>";
+    $rv .= "<td>Cards Played</td>";
+    $rv .= "<td>Cards Blocked</td>";
+    $rv .= "<td>Cards Pitched</td>";
+    $rv .= "<td>Resources Used</td>";
+    $rv .= "<td>Cards Left</td>";
+    $rv .= "<td>Damage Dealt</td></tr>";
+
+    for ($i = 0; $i < count($turnStats); $i += TurnStatPieces()) {
+      $rv .= "<tr><td>" . (($i / TurnStatPieces()) + 1) . "</td>";
+      $rv .= "<td>" . ($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]) . "</td>";
+      $rv .= "<td>" . $turnStats[$i + $TurnStats_CardsBlocked] . "</td>";
+      $rv .= "<td>" . $turnStats[$i + $TurnStats_CardsPitched] . "</td>";
+      $rv .= "<td>" . $turnStats[$i + $TurnStats_ResourcesUsed] . "</td>";
+      $rv .= "<td>" . $turnStats[$i + $TurnStats_CardsLeft] . "</td>";
+      $rv .= "<td>" . $turnStats[$i + $TurnStats_DamageDealt] . "</td>";
+      $rv .= "</tr>";
+    }
       $rv .= "</table>";
     }
     $rv .= "</div>";
