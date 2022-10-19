@@ -112,7 +112,7 @@ use JetBrains\PhpStorm\Language;
 
   // Counters Style
   $dynamicScaling = (function_exists("IsDynamicScalingEnabled") ? IsDynamicScalingEnabled($playerID) : false);
-  $counterHeight = $dynamicScaling ? intval($maxHeight / 3.3) : 28;
+  $counterHeight = $dynamicScaling ? intval($maxHeight / 3.3) : 30;
   $imgCounterHeight = $dynamicScaling ? intval($maxHeight / 2) : 44;
   //Attacker Label Style
   if($counters == "Attacker" || $counters == "Arsenal") {
@@ -142,9 +142,9 @@ use JetBrains\PhpStorm\Language;
   //Equipments, Hero and default counters style
   elseif($counters != 0) {
     if($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0){ $left = "50%"; } else { $left = "30%"; }
-    $rv .= "<div style='margin: 0px; top: 50%; left:" . $left . ";
-    margin-right: -50%; border-radius: 50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 5px; border: 3px solid #1a1a1a; text-align: center; line-height:" . $imgCounterHeight/1.4 . "px;
-    transform: translate(-50%, -50%); position:absolute; z-index: 10; background: rgba(235, 235, 235, 0.95);
+    $rv .= "<div style='margin: 0px; top: 52%; left:" . $left . ";
+    margin-right: -50%; border-radius: 50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 6px; border: 3px solid #1a1a1a; text-align: center; line-height:" . $imgCounterHeight/1.3 . "px;
+    transform: translate(-50%, -50%); position:absolute; z-index: 10; background: rgba(235, 235, 235, 0.9);
     font-family: Helvetica; font-size:" . ($counterHeight-2) . "px; font-weight:550; color: #EDEDED; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; user-select: none;'>" . $counters . "</div>";
   }
 
