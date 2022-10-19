@@ -351,7 +351,7 @@ function CardStats($player)
 {
   global $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched;
   global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
-  global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked;
+  global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $darkMode;
   if (AreStatsDisabled($player)) return "";
   $cardStats = &GetCardStats($player);
   $rv = "<div style='float:left; width:40%; height:85%;'>";
@@ -363,8 +363,15 @@ function CardStats($player)
   $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times Pitched</td>";
   $rv .= "</tr>";
   $BackgroundColor = "";
+  if($darkMode){
+    $lighterColor = "rgba(94, 94, 94, 0.95)";
+    $darkerColor = "rgba(74, 74, 74, 0.95)";;
+  } else {
+    $lighterColor = "rgba(215, 215, 215, 0.95)";
+    $darkerColor = "rgba(235, 235, 235, 0.95)";
+  }
   for ($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
-    $BackgroundColor = ($BackgroundColor == "rgba(215, 215, 215, 0.95)" ? "rgba(235, 235, 235, 0.95)" : "rgba(215, 215, 215, 0.95)");
+    $BackgroundColor = ($BackgroundColor == $lighterColor ? $darkerColor : $lighterColor);
     $pitch = PitchValue($cardStats[$i]);
     $timesPlayed = $cardStats[$i + $CardStats_TimesPlayed];
     $playStyle = "";
@@ -432,7 +439,7 @@ function CardStats($player)
     $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Damage Dealt</td></tr>";
 
     for ($i = 0; $i < count($turnStats); $i += TurnStatPieces()) {
-      $BackgroundColor = ($BackgroundColor == "rgba(215, 215, 215, 0.95)" ? "rgba(235, 235, 235, 0.95)" : "rgba(215, 215, 215, 0.95)");
+      $BackgroundColor = ($BackgroundColor == $lighterColor ? $darkerColor : $lighterColor);
       $rv .= "<tr style='background-color:" . $BackgroundColor . ";'>";
       $rv .= "<td>" . (($i / TurnStatPieces()) + 1) . "</td>";
       $rv .= "<td>" . ($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]) . "</td>";
