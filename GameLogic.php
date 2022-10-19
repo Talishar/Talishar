@@ -3990,7 +3990,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
       DealArcane($numArcane, 0, "PLAYCARD", "MON231", true);
-      WriteLog(CardLink("MON231", "MON231") . " deals " . $numArcane . " arcane damage.");
       return 1;
     case "SOULREAPING":
       $cards = explode(",", $lastResult);
@@ -4074,6 +4073,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $type = $parameters[2];
       if ($type == "PLAYCARD") {
         $damage += ConsumeArcaneBonus($player);
+        WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
       }
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);

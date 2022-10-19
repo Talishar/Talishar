@@ -201,7 +201,7 @@ function SpecificAllyAttackAbilities($attackID)
         }
         RevealCards($cardsReveal); //CanReveal checked
         if ($redRevealed) {
-          WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
+          //WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
           DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
         }
       }

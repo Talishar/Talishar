@@ -173,9 +173,8 @@
         if($from == "BANISH")
         {
           DealArcane(1, 0, "PLAYCARD", $cardID);
-          $rv = "Deals 1 arcane damage.";
         }
-        return $rv;
+        return "";
       case "MON183": case "MON184": case "MON185":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Deals 1 arcane damage to the next attack action card of certain cost.";
@@ -183,7 +182,7 @@
         if (!IsAllyAttackTarget()) {
           DealArcane(1, 0, "PLAYCARD", $cardID);
         }
-        return "Deals 1 arcane damage.";
+        return "";
       case "MON230":
         GainResources($currentPlayer, 2);
         return "Gain 2 resources.";
@@ -203,10 +202,10 @@
         return "";
       case "MON232": case "MON233": case "MON234":
         DealArcane(2, 0, "PLAYCARD", $cardID);
-        return "Deals 2 arcane damage.";
+        return "";
       case "MON235": case "MON236": case "MON237":
         DealArcane(1, 0, "PLAYCARD", $cardID);
-        return "Deals 1 arcane damage.";
+        return "";
       default: return "";
     }
   }
@@ -253,7 +252,6 @@
     if(($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 1) || $type == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
     {
       DealArcane(1, 0, "PLAYCARD", "MON157");
-      WriteLog(CardLink("MON157", "MON157") . " deals 1 arcane damage.");
     }
   }
 
