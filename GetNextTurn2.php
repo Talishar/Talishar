@@ -886,14 +886,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Display Their Pitch
   if (count($theirPitch) > 0) {
-    $theirPitchCount = count($theirPitch) - 1;
+    $theirPitchCount = 0;
     for ($i = count($theirPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
-      echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") - $theirPitchCount * 20 . "px;'>");
+      echo ("<div style='position:fixed; z-index:-" . $theirPitchCount . "; right:" . GetZoneRight("PITCH") . "; top:" . GetZoneTop("THEIRPITCH") - $theirPitchCount * 20 . "px;'>");
       echo (Card($theirPitch[$i], "concat", $cardSizeAura, 0, 1, controller: $playerID));
-      --$theirPitchCount;
+      ++$theirPitchCount;
     }
-
-
+    for ($i = 1; $i < $theirPitchCount; ++$i) echo ("</div>");
 
     echo ("<span title='Click to see your opponent Pitch Zone.' onclick='ShowPopup(\"theirPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
   <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
@@ -1075,7 +1074,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
         $counters = $myArsenal[$i + 3];
         echo ("<div style='position:relative; margin:1px;>");
-        echo (Card($myArsenal[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? 5 : 0, 1, $myArsenal[$i + 2] > 0 ? 0 : 1, $border, $counters, strval($i), from:"ARS", controller: $playerID));
+        echo (Card($myArsenal[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $playable ? 5 : 0, 1, $myArsenal[$i + 2] > 0 ? 0 : 1, $border, $counters, strval($i), from: "ARS", controller: $playerID));
         $iconHeight = $cardSize / 4;
         $iconLeft = $cardWidth / 2 - intval($iconHeight * .71 / 2) + 5;
         if ($myArsenal[$i + 1] == "UP") echo ("<img style='position:absolute; z-index: 5; left:" . $iconLeft . "px; bottom:3px; height:" . $iconHeight . "px; ' src='./Images/faceUp.png' title='This arsenal card is face up.'></img>");
@@ -1239,13 +1238,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Display My Pitch
   if (count($myPitch) > 0) {
-    $myPitchCount = count($myPitch) - 1;
-    for ($i = count($myPitch) - PitchPieces(); $i >= 0 ; $i -= PitchPieces()) {
-      echo ("<div style='position:fixed; right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") + $myPitchCount * 20 . "px;'>");
+    $myPitchCount = 0;
+    for ($i = count($myPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
+      echo ("<div style='position:fixed; z-index:-" . $myPitchCount . ";right:" . GetZoneRight("PITCH") . "; bottom:" . GetZoneBottom("MYPITCH") + $myPitchCount * 20 . "px;'>");
       echo (Card($myPitch[$i], "concat", $cardSizeAura, 0, 1, controller: $playerID));
-      --$myPitchCount;
+      ++$myPitchCount;
     }
-    echo (($manualMode ? "<span style='position:absolute; padding-bottom: 5px; bottom:0; right:0;'>" . CreateButton($playerID, "-1", 10015, 0, "24px") . CreateButton($playerID, "+1", 10012, 0, "24px") . "</span>" : ""));
+    for ($i = 1; $i < $myPitchCount; ++$i) echo ("</div>");
+    echo (($manualMode ? "<span style='position:absolute; padding-bottom: 5px; right: 0px; bottom: 0px;'>" . CreateButton($playerID, "-1", 10015, 0, "24px") . CreateButton($playerID, "+1", 10012, 0, "24px") . "</span>" : ""));
     echo ("<span title='Click to see your Pitch Zone.' onclick='ShowPopup(\"myPitchPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='./Images/Resource.png'>
   <div style='margin: 0; top: 51%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
   text-align: center; transform: translate(-50%, -50%); line-height: 32px;
