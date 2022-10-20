@@ -937,7 +937,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
       //CRU Wizard
     case "CRU160":
-      DealArcane(2, 0, "PLAYCARD", $cardID);
+      DealArcane(2, 0, "ABILITY", $cardID);
         return "";
     case "CRU162":
       $rv = "Lets you play your next Wizard non-attack as an instant";

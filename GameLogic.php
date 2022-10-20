@@ -4697,6 +4697,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "AETHERWILDFIRE":
       AddCurrentTurnEffect("EVR123," . $lastResult, $player);
       return $lastResult;
+    case "SURGENTAETHERTIDE":
+      AddCurrentTurnEffect("DYN192," . $lastResult, $player);
+      return $lastResult;
     case "CLEAREFFECTCONTEXT":
       SetClassState($currentPlayer, $CS_EffectContext, "-");
       return $lastResult;

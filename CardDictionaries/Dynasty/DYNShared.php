@@ -9,6 +9,7 @@ function DYNAbilityCost($cardID)
         case "DYN075": return 3; // TODO: Yoji cardID to be modified with set release
         case "DYN069": return 1; // TODO: Quicksilver Dagger CardID might change on set release
         case "DYN151": return 1;
+        case "DYN192": return 2;
         case "DYN242": return 1;
         case "DYN243": return 2;
 
@@ -27,6 +28,7 @@ function DYNAbilityType($cardID, $index = -1)
         case "DYN075": return "I"; // TODO: Yoji cardID to be modified with set release
         case "DYN151": return "A";
         case "DYN171": return "I";
+        case "DYN192": return "A";
         case "DYN242": case "DYN243": return "A";
         default: return "";
     }
@@ -45,6 +47,7 @@ function DYNAbilityHasGoAgain($cardID)
 {
     switch ($cardID) {
         case "DYN151": return true;
+        case "DYN192": return true;
         case "DYN243": return true;
 
         default: return false;
@@ -104,6 +107,7 @@ function DYNCardType($cardID)
         case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return "W";
         case "DYN171": return "E";
+        case "DYN192": return "W";
         case "DYN206": case "DYN207": case "DYN208": return "A";
         case "DYN230": case "DYN231": case "DYN232": return "A";
         case "DYN234": return "E";
@@ -128,6 +132,7 @@ function DYNCardSubtype($cardID)
         case "DYN116": case "DYN117": case "DYN118": return "Aura"; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return "Bow";
         case "DYN171": return "Head";
+        case "DYN192": return "Staff";
         case "DYN234": return "Head";
         case "DYN242": return "Item";
         case "DYN243": return "Item";
@@ -180,6 +185,7 @@ function DYNBlockValue($cardID)
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return -1;
         case "DYN171": return 1;
+        case "DYN192": return -1;
         case "DYN230": case "DYN231": case "DYN232": return 2;
         case "DYN234": return -1;
         case "DYN242": case "DYN243": return -1;
@@ -246,6 +252,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         case "DYN171":
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
+        case "DYN192":
+            DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
+            AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
+            return "";
         case "DYN206": case "DYN207": case "DYN208":
             DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
             return "";
