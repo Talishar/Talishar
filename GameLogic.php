@@ -412,7 +412,7 @@ function ProcessCrushEffect($cardID)
 //NOTE: This happens at combat resolution, so can't use the my/their directly
 function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
-  global $mainPlayer, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow;
+  global $mainPlayer, $mainPitch, $CS_Num6PowDisc, $combatChain, $combatChainState, $mainAuras, $CCS_NumHits, $CS_CardsBanished, $CCS_HitsInRow;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken;
   global $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CCS_NumChainLinks, $CS_NumAuras, $CS_AtksWWeapon;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
@@ -420,7 +420,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR003":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
     case "WTR040":
-      $mainPitch = GetPitch($mainPlayer);
       return CountPitch($mainPitch, 3) >= 2 ? 2 : 0;
     case "WTR080":
       return 1;
