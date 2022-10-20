@@ -335,7 +335,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     foreach ($effectArr as $effectCount) {
       if ($effectCount > $max) $max = $effectCount;
     }
-    if (IsTileable($key)) {
+    if (IsEffectTileable($key)) {
       $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
       $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
       $effect .= "</div>";
@@ -355,7 +355,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     foreach ($effectArr as $effectCount) {
       if ($effectCount > $max) $max = $effectCount;
     }
-    if (IsTileable($key)) {
+    if (IsEffectTileable($key)) {
       $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
       $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
       $effect .= "</div>";
@@ -1465,6 +1465,18 @@ function IsTileable($cardID)
     case "MON186":
     case "ELE111":
     case "UPR043":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function IsEffectTileable($cardID)
+{
+  switch ($cardID) {
+    case "WTR075":
+      return true;
+    case "ELE173":
       return true;
     default:
       return false;
