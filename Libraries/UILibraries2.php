@@ -155,10 +155,22 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
     } else {
       $left = "30%";
     }
-    $rv .= "<div style='margin: 0px; top: 52%; left:" . $left . ";
-    margin-right: -50%; border-radius: 50%; width:" . $counterHeight . "px; height:" . $counterHeight . "px; padding: 6px; border: 3px solid #1a1a1a; text-align: center; line-height:" . $imgCounterHeight / 1.3 . "px;
-    transform: translate(-50%, -50%); position:absolute; z-index: 10; background: rgba(235, 235, 235, 0.9);
-    font-family: Helvetica; font-size:" . ($counterHeight - 2) . "px; font-weight:550; color: #EDEDED; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; user-select: none;'>" . $counters . "</div>";
+    $rv .= "<div style='margin: 0px; 
+    top: 52%; left:" . $left . ";
+    margin-right: -50%; 
+    border-radius: 50%; 
+    width:" . $counterHeight . "px; 
+    height:" . $counterHeight . "px; 
+    padding: 6px; 
+    border: 3px solid #1a1a1a; 
+    text-align: center; 
+    transform: translate(-50%, -50%); 
+    position:absolute; z-index: 10; 
+    background: rgba(235, 235, 235, 0.9);
+    line-height: 1.2;
+    font-family: Helvetica; font-size:" . ($counterHeight - 2) . "px; font-weight:550; color: #EDEDED; 
+    text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; 
+    user-select: none;'>" . $counters . "</div>";
   }
 
   //-1 Defense & Endurance Counters style
