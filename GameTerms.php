@@ -46,6 +46,8 @@ function TypeToPlay($phase)
       return "a card from deck";  
     case "HANDTOPBOTTOM":
       return "a card from hand";
+    case "CHOOSEBOTTOM":
+      return "a card to put on the bottom of your deck";
     case "CHOOSECOMBATCHAIN":
       return "a card from the chain link";
     case "CHOOSECHARACTER":
