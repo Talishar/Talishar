@@ -1224,6 +1224,7 @@ if ($set == "DYN") {
       	case "116": case "117": case "118": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
 		case "151": return "Sandscour Greatbow";
 		case "171": return "Amethyst Tiara";
+		case "192": return "Surgent Aethertide";
 		case "206": case "207": case "208": return "Sap";
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		case "234": return "Crown of Dominion";

@@ -399,6 +399,12 @@
           $cardType = CardType($source);
           if($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1];
           break;
+        case "DYN192":
+          if (ActionsThatDoArcaneDamage($source)) {
+            $modifier += $effectArr[1];
+            RemoveCurrentEffect($player, $currentTurnEffects[$i]);
+          }
+          break;
         default: break;
       }
     }
