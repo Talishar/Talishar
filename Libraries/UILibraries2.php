@@ -353,14 +353,15 @@ function CardStats($player)
   global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $firstPlayer;
   global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $darkMode;
   if (AreStatsDisabled($player)) return "";
+  $otherPlayer = ($player == 1 ? 2 : 1);
   $cardStats = &GetCardStats($player);
-  $rv = "<div style='float:left; width:40%; height:85%;'>";
+  $rv = "<div style='float:left; width:49%; height:85%;'>";
   $rv .= "<h2 style='text-align:center'>Card Play Stats</h2>";
-  $rv .= "<table style='text-align:center; margin-left:10px; margin-top:10px; border-spacing: 0; border-collapse: collapse; font-size: 1em; line-height: 24px;'><tr>";
+  $rv .= "<table style='text-align:center; margin-left:10px; margin-top:10px; width:100%; border-spacing: 0; border-collapse: collapse; font-size: 1em; line-height: 24px;'><tr>";
   $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Card ID</td>";
-  $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times Played</td> ";
-  $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times Blocked</td>";
-  $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times Pitched</td>";
+  $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times<br>Played</td> ";
+  $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times<br>Blocked</td>";
+  $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times<br>Pitched</td>";
   $rv .= "</tr>";
   $BackgroundColor = "";
   if($darkMode){
@@ -396,7 +397,8 @@ function CardStats($player)
   $rv .= "</table>";
   $rv .= "</div>";
   $turnStats = &GetTurnStats($player);
-  $rv .= "<div style='float:right; width:50%; height:85%;';>";
+  $otherPlayerTurnStats = &GetTurnStats($otherPlayer);
+  $rv .= "<div style='float:right; width:49%; height:85%;';>";
   $rv .= "<h2 style='text-align:center'>Turn Stats</h2>";
   if ($player == $firstPlayer) $rv .= "<i>First turn omitted for first player</i><br>";
   //Damage stats
@@ -429,14 +431,16 @@ function CardStats($player)
     $rv .= "Average Value per turn (Damage threatened + block): " . round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2) . "<br>";
     
     //Cards per turn stats
-    $rv .= "<table style='text-align:center; margin-right:10px; margin-top:10px; border-spacing: 0; border-collapse: collapse; font-size: 1em; line-height: 24px; font-weight:'><tr>";
-    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Turn Number</td>";
-    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards Played</td>";
-    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards Blocked</td>";
-    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards Pitched</td>";
-    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Resources Used</td>";
-    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards Left</td>";
-    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Damage Dealt</td></tr>";
+    $rv .= "<table style='text-align:center; margin-right:10px; width: 100%; margin-top:10px; border-spacing: 0; border-collapse: collapse; font-size: 1em; line-height: 24px; font-weight:'><tr>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Turn<br>Number</td>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards<br>Played</td>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards<br>Blocked</td>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards<br>Pitched</td>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Resources<br>Used</td>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Cards<br>Left</td>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Damage<br>Dealt</td>";
+    $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Damage<br>Taken</td>";
+    $rv .= "</tr>";
 
     for ($i = 0; $i < count($turnStats); $i += TurnStatPieces()) {
       $BackgroundColor = ($BackgroundColor == $lighterColor ? $darkerColor : $lighterColor);
@@ -448,6 +452,7 @@ function CardStats($player)
       $rv .= "<td>" . $turnStats[$i + $TurnStats_ResourcesUsed] . "</td>";
       $rv .= "<td>" . $turnStats[$i + $TurnStats_CardsLeft] . "</td>";
       $rv .= "<td>" . $turnStats[$i + $TurnStats_DamageDealt] . "</td>";
+      $rv .= "<td>" . $otherPlayerTurnStats[$i + $TurnStats_DamageDealt] . "</td>";
       $rv .= "</tr>";
     }
     $rv .= "</table>";
