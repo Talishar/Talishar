@@ -683,21 +683,25 @@ function EffectHitEffect($cardID)
     case "ELE005":
       if (IsHeroAttackTarget()) {
         $hand = &GetHand($defPlayer);
+        $cards = "";
         if (!empty($hand)) // Discard 1st card at random
         {
           $ind = GetRandom() % count($hand);
-          $card = $hand[$ind];
+          $card1 = $hand[$ind];
           unset($hand[$ind]);
           $hand = array_values($hand);
-          AddBottomDeck($card, $defPlayer, "HAND");
         }
         if (!empty($hand)) // Discard 2nd card at random
         {
           $ind = GetRandom() % count($hand);
-          $card = $hand[$ind];
+          $card2 = $hand[$ind];
           unset($hand[$ind]);
           $hand = array_values($hand);
-          AddBottomDeck($card, $defPlayer, "HAND");
+        }
+        if ($card1 != "") $cards .= $card1;
+        if ($card2 != "") $cards .= "," . $card2;
+        if ($cards != "") {
+          AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
         }
       }
       break;
