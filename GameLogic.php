@@ -1792,7 +1792,7 @@ function BeginEndPhaseEffects()
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     switch ($currentTurnEffects[$i]) {
       case "ELE215-1":
-        WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " discarded your hand and arsenal.");
+        WriteLog(CardLink("ELE215", "ELE215") . " discarded your hand and arsenal.");
         DestroyArsenal($currentTurnEffects[$i + 1]);
         DiscardHand($currentTurnEffects[$i + 1]);
         break;
