@@ -125,9 +125,9 @@
     switch($cardID)
     {
       case "MON153": case "MON154":
-        PlayAura("MON186", $currentPlayer);
+        PlayAura("MON186", $currentPlayer, 1, true);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Creates a Soul Shackle and gives your next Runeblade or Shadow action this turn go again.";
+        return "Creates a " . CardLink("MON186", "MON186") . " and gives your next Runeblade or Shadow action this turn go again.";
       case "MON158":
         AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
         AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
