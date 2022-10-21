@@ -88,7 +88,7 @@
     }
   }
   else {
-    echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/RogueLike/PlayEncounter.php'>");
+    echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/Roguelike/PlayEncounter.php'>");
     echo("<input type='hidden' id='gameName' name='gameName' value='$gameName' />");
     echo("<input type='hidden' id='playerID' name='playerID' value='$playerID' />");
     echo("<input type='submit' style='font-size:20px;' value='Play Encounter' />");
