@@ -28,10 +28,10 @@
   include "../CardDictionary.php";
   $makeCheckpoint = 0;
 
-  ProcessCommand($playerID, $mode, $cardID);
+  ProcessCommand($playerID, $mode, $cardID, $buttonInput);
 
   //Now we can process the command
-  function ProcessCommand($playerID, $mode, $cardID)
+  function ProcessCommand($playerID, $mode, $cardID, $buttonInput)
   {
     switch($mode) {
       case 1: //CHOOSECARD
@@ -54,6 +54,10 @@
         ClearPhase($playerID);
         WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
         ContinueDecisionQueue($playerID, "");
+        break;
+      case 2: //BUTTONINPUT
+        ClearPhase($playerID);
+        ContinueDecisionQueue($playerID, $buttonInput);
         break;
       case 99: //Pass
         PassInput();

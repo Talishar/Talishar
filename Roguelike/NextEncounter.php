@@ -58,24 +58,41 @@
   echo("<div style='position:fixed; width:100%; top:35%; height:65%;'>");
   $header = "<h1><span title='Click to view your deck (" . count($deck) . " cards)' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>Click to see your deck (" . count($deck) . " cards)</span></h1>";
   echo($header);
-  if(count($myDQ) == 0) echo("<h2>" . EncounterDescription($encounter[0], $encounter[1]) . "</h2>");
+  echo("<h2>" . EncounterDescription($encounter[0], $encounter[1]) . "</h2>");
   echo("<BR>");
 
-  echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/RogueLike/PlayEncounter.php'>");
-  echo("<input type='hidden' id='gameName' name='gameName' value='$gameName' />");
-  echo("<input type='hidden' id='playerID' name='playerID' value='$playerID' />");
-  echo("<input type='submit' style='font-size:20px;' value='Play Encounter' />");
-  echo("</form>");
-
-  if(count($myDQ) > 0 && $myDQ[0] == "CHOOSECARD")
+  if(count($myDQ) > 0)
   {
-    echo("<div display:inline;'>");
-    $options = explode(",", $myDQ[1]);
-    for($i=0; $i<count($options); ++$i)
+    if($myDQ[0] == "CHOOSECARD")
     {
-      echo(Card($options[$i], "../CardImages", 200, 1, 1, 0, 0, 0, strval($options[$i])));
+      echo("<div display:inline;'>");
+      $options = explode(",", $myDQ[1]);
+      for($i=0; $i<count($options); ++$i)
+      {
+        echo(Card($options[$i], "../CardImages", 200, 1, 1, 0, 0, 0, strval($options[$i])));
+      }
+      echo("</div>");
     }
-    echo("</div>");
+    else if($myDQ[0] == "BUTTONINPUT")
+    {
+      $content = "<div display:inline;'>";
+      $options = explode(",", $myDQ[1]);
+      for ($i = 0; $i < count($options); ++$i) {
+        $content .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 2, strval($options[$i]), "24px");
+      }
+      $content .= "</div>";
+      echo CreatePopup("BUTTONINPUT", [], 0, 1, "Choose a button", 1, $content);
+    }
+    else {
+      echo("Bug. This phase not implemented: " . $myDQ[0]);
+    }
+  }
+  else {
+    echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/RogueLike/PlayEncounter.php'>");
+    echo("<input type='hidden' id='gameName' name='gameName' value='$gameName' />");
+    echo("<input type='hidden' id='playerID' name='playerID' value='$playerID' />");
+    echo("<input type='submit' style='font-size:20px;' value='Play Encounter' />");
+    echo("</form>");
   }
 
   echo("</div>");//End cards div
