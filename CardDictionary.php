@@ -1305,7 +1305,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;
     case "ELE224":
       if ($player == $mainPlayer) return GetClassState($player, $CS_NumAttacks) == 0; // Attacked
-      else return GetClassState($player, $CS_NumAttackCards) == 0; // Blocked/Played
+      return GetClassState($player, $CS_NumAttackCards) == 0; // Blocked/Played
     case "ELE225":
       return count($combatChain) == 0 || CardType($combatChain[0]) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
     case "ELE233":
