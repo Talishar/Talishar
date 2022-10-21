@@ -174,8 +174,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cardWidth = intval($cardSize * 0.73);
   $cardHeight = $cardWidth;
   $cardIconSize = intval($cardSize / 2.7); //40
-  $cardIconLeft = intval($cardSize / 4); //30
-  $cardIconTop = intval($cardSize / 4); //30
+  $cardIconLeft = intval($cardSize / 4.2); //30
+  $cardIconTop = intval($cardSize / 4.2); //30
   $bigCardSize = intval($cardSize * 1.667); //200;
   $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
   $permWidth = "calc(50% - " . ($cardWidth * 2 + 30 + $permLeft) . "px)";
@@ -872,7 +872,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $bloodDeptImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
       echo ("<div style='position:absolute; top:28%; left:104px; width:34px; font-size:24px; font-weight:550; color: #DDD; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; text-align:center; padding-top:15px;'>" . $theirBloodDeptCount . "<img title='Blood Debt' style='position:absolute; z-index:-5; top: 40%; left: 50%; transform: translate(-50%, -50%); width:36px;' src='./Images/" . $bloodDeptImage . "'></img></div>");
     }
-    echo ("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop . "px; cursor:pointer; position:absolute; display:inline-block;'>
+    echo ("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop+2 . "px; cursor:pointer; position:absolute; display:inline-block;'>
       <img style=' opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . "; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
       <div style='text-align:center; margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 30px; height: 30px; padding: 3px; transform: translate(-50%, -50%); line-height: 1.2;
       position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($theirBanish) / BanishPieces());
@@ -1022,7 +1022,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($playerID == 3 && IsCasterMode()) echo (Card($theirArsenal[$i], "concat", $cardSizeAura, 0, 1, $theirArsenal[$i + 2] == 0 ? 1 : 0, 0, $theirArsenal[$i + 3], controller: $otherPlayer));
       else if ($theirArsenal[$i + 1] == "UP") echo (Card($theirArsenal[$i], "concat", $cardSizeAura, 0, 1, $theirArsenal[$i + 2] == 0 ? 1 : 0, 0, $theirArsenal[$i + 3], controller: $otherPlayer));
       else echo (Card($TheirCardBack, "concat", $cardSizeAura, 0, 0));
-      if ($theirArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:10; border-radius:5px; top:-76px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
+      if ($theirArsenal[$i + 4] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:10; border-radius:5px; top:-80px; left:7px; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo ("</div>");
     }
   } else {
