@@ -54,10 +54,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
     $subsequent = $decisionQueue[4];
     $makeCheckpoint = $decisionQueue[5];
     $return = "PASS";
+    ClearPhase($player);
     if($subsequent != 1 || is_array($lastResult) || strval($lastResult) != "PASS") $return = DecisionQueueStaticEffect($phase, $player, ($parameter1 == "<-" ? $lastResult : $parameter1), $parameter2, $parameter3, $lastResult);
-    if(strval($return) != "NOTSTATIC") ClearPhase($player);
+    //if(strval($return) != "NOTSTATIC") ClearPhase($player);
+    if(strval($return) == "NOTSTATIC") PrependDecisionQueue($phase, $player, $parameter1, $parameter2, $parameter3, $subsequent, $makeCheckpoint);
     if($parameter1 == "<-" && !is_array($lastResult) && $lastResult == "-1") $return = "PASS";//Collapse the rest of the queue if this decision point has invalid parameters
-    if(is_array($return) || strval($return) != "NOTSTATIC")
+    if(strval($return) != "NOTSTATIC")
     {
       ContinueDecisionQueue($player, $return);
     }
@@ -73,9 +75,45 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $encounter = &GetZone($player, "Encounter");
         $encounter[0] = $params[0];
         $encounter[1] = $params[1];
+        InitializeEncounter($player, $encounter[0], $encounter[1]);
+        return 1;
+      case "CAMPFIRE":
+        switch($lastResult)
+        {
+          case "Rest":
+            $health = &GetZone($player, "Health");
+            $gain = (20 - $health[0] > 10 ? 10 : 20 - $health[0]);
+            if($gain < 0) $gain = 0;
+            $health[0] += $gain;
+            WriteLog("You rested and gained " . $gain . " life.");
+            break;
+          case "Learn":
+            WriteLog("You studied and learned a powerful specialization.");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR119,DVR008,WTR121");
+            break;
+          case "Reflect":
+            WriteLog("You reflected on the trials of the day, and may remove a card.");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, "-");
+            PrependDecisionQueue("CHOOSEDECKCARD", $player, "-");
+            break;
+          default: break;
+        }
         return 1;
       default:
         return "NOTSTATIC";
+    }
+  }
+
+  function InitializeEncounter($player, $encounter, $subphase)
+  {
+    switch($encounter)
+    {
+      case 2:
+        AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
+        AddDecisionQueue("CAMPFIRE", $player, "-");
+        AddDecisionQueue("SETENCOUNTER", $player, "3-BeforeFight");
+        break;
+      default: break;
     }
   }
 
