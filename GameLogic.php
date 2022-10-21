@@ -1327,7 +1327,7 @@ function CurrentEffectAttackAbility()
 
 function CurrentEffectPlayAbility($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
+  global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost, $CCS_CurrentAttackGainedGoAgain;
 
   //Check for dynamic costs
   if (DynamicCost($cardID) != "") {
@@ -1361,6 +1361,13 @@ function CurrentEffectPlayAbility($cardID, $from)
             $remove = 1;
           }
           break;
+        case "MON153":
+        case "MON154":
+          if (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) {
+            GiveAttackGoAgain();
+            $remove = 1;
+          }
+          break;
         case "DYN116": case "DYN117": case "DYN118": // TODO: Blessing of Aether cardID to be edited
           if ($currentTurnEffects[$i] == "DYN116") $amount = 3;
           else if ($currentTurnEffects[$i] == "DYN117") $amount = 2;
@@ -1378,7 +1385,7 @@ function CurrentEffectPlayAbility($cardID, $from)
   return false;
 }
 
-function CurrentEffectGrantsNonAttackActionGoAgain($action)
+function CurrentEffectGrantsNonAttackActionGoAgain($cardID)
 {
   global $currentTurnEffects, $currentPlayer;
   $hasGoAgain = false;
@@ -1388,25 +1395,25 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
       switch ($currentTurnEffects[$i]) {
         case "MON153":
         case "MON154":
-          if (ClassContains($action, "RUNEBLADE", $currentPlayer) || TalentContains($action, "SHADOW", $currentPlayer)) {
+          if (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) {
             $hasGoAgain = true;
             $remove = 1;
           }
           break;
         case "ELE177":
-          if (CardCost($action) >= 0) {
+          if (CardCost($cardID) >= 0) {
             $hasGoAgain = true;
             $remove = 1;
           }
           break;
         case "ELE178":
-          if (CardCost($action) >= 1) {
+          if (CardCost($cardID) >= 1) {
             $hasGoAgain = true;
             $remove = 1;
           }
           break;
         case "ELE179":
-          if (CardCost($action) >= 2) {
+          if (CardCost($cardID) >= 2) {
             $hasGoAgain = true;
             $remove = 1;
           }
@@ -1426,7 +1433,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($action)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CCS_CurrentAttackGainedGoAgain;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       switch ($currentTurnEffects[$i]) {
@@ -1453,9 +1460,6 @@ function CurrentEffectGrantsGoAgain()
         case "CRU145":
         case "CRU146":
         case "CRU147":
-          return true;
-        case "MON153":
-        case "MON154":
           return true;
         case "MON165":
         case "MON166":
