@@ -421,35 +421,35 @@ function GetSettingsUI($player)
   }
 
   $isSinOnStreamPatreon = false;
-  $isSinOnStreamPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "SinOnStream");
+  $isSinOnStreamPatreon = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "SinOnStream";
   if ($_SESSION['isSinOnStreamPatreon'] || $isSinOnStreamPatreon) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-30", "SinOnStream", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Sin On Stream");
   }
 
   $isFreshAndBudsPatreon = false;
-  $isFreshAndBudsPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "FreshLord");
+  $isFreshAndBudsPatreon = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "FreshLord";
   if ($_SESSION['isFreshAndBudsPatreon'] || $isFreshAndBudsPatreon) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-31", "FreshAndBuds", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Fresh and Buds");
   }
 
   $isSloopdoopPatron = false;
-  $isSloopdoopPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Sloopdoop");
+  $isSloopdoopPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "Sloopdoop";
   if ($_SESSION['isSloopdoopPatron'] || $isSloopdoopPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-32", "Sloopdoop", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Sloopdoop");
   }
 
   $isDMArmadaPatron = false;
-  $isDMArmadaPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DMArmada");
+  $isDMArmadaPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "DMArmada";
   if ($_SESSION['isDMArmadaPatron'] || $isDMArmadaPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-33", "DMArmada", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "DMArmada");
   }
 
   $isInstantSpeedPatron = false;
-  $isInstantSpeedPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Flake");
+  $isInstantSpeedPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "Flake";
   if ($_SESSION['isInstantSpeedPatron'] || $isInstantSpeedPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-34", "InstantSpeed", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Instant Speed Podcast");
@@ -463,7 +463,7 @@ function GetSettingsUI($player)
   }
 
   $isHomeTownTCGPatron = false;
-  $isHomeTownTCGPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "hometowntcg");
+  $isHomeTownTCGPatron = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "hometowntcg";
   if ($_SESSION['isHomeTownTCGPatron'] || $isHomeTownTCGPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-36", "HomeTownTCG", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "HomeTownTCG");
@@ -518,6 +518,8 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-43", "TheTablePit", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Table Pit");
   }
 
+  if (!$hasCardBacks) $rv .= "<br><br><h4>Become a patron to customize your card backs!</h4>";
+
   $rv .= "<BR>";
   if ($settings[$SET_ManualMode] == 0) $rv .= CreateCheckbox($SET_ManualMode . "-1", "Manual Mode", 26, false, "Manual Mode");
   else $rv .= CreateCheckbox($SET_ManualMode . "-0", "Manual Mode", 26, true, "Manual Mode");
@@ -548,8 +550,6 @@ function GetSettingsUI($player)
   if ($settings[$SET_CasterMode] == 0) $rv .= CreateCheckbox($SET_CasterMode . "-1", "Caster Mode", 26, false, "Caster Mode", true);
   else $rv .= CreateCheckbox($SET_CasterMode . "-0", "Caster Mode", 26, true, "Caster Mode", true);
   $rv .= "<BR>";
-
-  if (!$hasCardBacks) $rv .= "<h4>Become a patron to customize your card backs!</h4>";
 
   /*
     $rv .= "<BR>";
