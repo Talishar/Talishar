@@ -252,7 +252,7 @@ function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "
   if ($image != "")
     $rv = "<img style='cursor:pointer;' src='" . $image . "' onclick='" . $onClick . "'>";
   else
-    $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size;' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
+    $rv = "<button class='button' title='$tooltip' " . ($size != "" ? "style='font-size:$size; width:' " : "") . " onclick='" . $onClick . "'>" . $caption . "</button>";
 
   return $rv;
 }
