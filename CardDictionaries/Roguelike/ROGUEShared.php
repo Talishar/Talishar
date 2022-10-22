@@ -4,7 +4,8 @@ function ROGUEAbilityCost($cardID)
 {
     switch ($cardID) {
       case "ROGUE002": return 0;
-        default: return 0;
+      case "ROGUE005": return 0;
+      default: return 0;
     }
 }
 
@@ -12,7 +13,8 @@ function ROGUEAbilityType($cardID, $index = -1)
 {
     switch ($cardID) {
       case "ROGUE002": return "AA";
-        default: return "";
+      case "ROGUE005": return "AA";
+      default: return "";
     }
 }
 
@@ -75,6 +77,8 @@ function ROGUECardType($cardID)
       case "ROGUE001": return "C";
       case "ROGUE002": return "W";
       case "ROGUE003": return "C";
+      case "ROGUE004": return "C";
+      case "ROGUE005": return "W";
       default:
         return "";
     }
@@ -86,6 +90,8 @@ function ROGUECardSubtype($cardID)
       case "ROGUE001": return "Hog";
       case "ROGUE002": return "Natural";
       case "ROGUE001": return "Monster";
+      case "ROGUE001": return "Bear";
+      case "ROGUE002": return "Natural";
       default: return "";
     }
 }
@@ -104,6 +110,8 @@ function ROGUEPitchValue($cardID)
       case "ROGUE001": return -1;
       case "ROGUE002": return -1;
       case "ROGUE003": return -1;
+      case "ROGUE004": return -1;
+      case "ROGUE005": return -1;
       default: return 3;
     }
 }
@@ -114,6 +122,8 @@ function ROGUEBlockValue($cardID)
       case "ROGUE001": return -1;
       case "ROGUE002": return -1;
       case "ROGUE003": return -1;
+      case "ROGUE004": return -1;
+      case "ROGUE005": return -1;
       default:
         return 3;
     }
@@ -123,6 +133,7 @@ function ROGUEAttackValue($cardID)
 {
     switch ($cardID) {
       case "ROGUE002": return 2;
+      case "ROGUE005": return 4;
       default:
         return 0;
     }

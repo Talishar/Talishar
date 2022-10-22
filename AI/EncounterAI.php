@@ -51,11 +51,7 @@ function EncounterAI()
 
 function IsEncounterAI($enemyHero)
 {
-  switch($enemyHero)
-  {
-    case "ROGUE001": case "ROGUE003": return true;
-    default: return false;
-  }
+  return str_contains($enemyHero, "ROGUE");
 }
 
 ?>
