@@ -215,9 +215,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     <img style='object-fit: cover; height:100%; width:100%;' src='./Images/findCenterBackground.jpg'/></div>");
 
   echo ("<div style='position:absolute; right:" . intval($rightSideWidth * 1.05) . "px; top:calc(50% - 100px); height:200px; z-index:100;'>
-      <span style='position:absolute; text-align:center; width:27px; font-weight: 550; font-size: 24px; top:149px; left:28px; user-select: none;'>$myHealth</span>"); //Master pass button div
+      <span style='position:absolute; text-align:center; width:100%; font-weight: 550; font-size: 140%; top:152px; user-select: none;'>$myHealth</span>"); //Master pass button div
   echo (($manualMode ? "<span style='position:absolute; top:120px; left:65px;'>" . CreateButton($playerID, "+1", 10006, 0, "20px") . CreateButton($playerID, "-1", 10007, 0, "20px") . "</span>" : ""));
-  echo ("<span style='position:absolute; text-align:center; width:27px; font-size: 24px; font-weight: 550; top:23px; left:28px; user-select: none;'>$theirHealth</span>");
+  echo ("<span style='position:absolute; text-align:center; width:100%; font-size: 140%; font-weight: 550; top:32px; user-select: none;'>$theirHealth</span>");
   echo (($manualMode ? "<span style='position:absolute; top:0px; left:65px;'>" . CreateButton($playerID, "+1", 10008, 0, "20px") . CreateButton($playerID, "-1", 10007, 0, "20px") . "</span>" : ""));
   if (IsDarkMode($playerID)) echo ("<img style='height:200px;' src='./Images/DuoLifeDark.png' />");
   else echo ("<img style='height:200px;' src='./Images/DuoLife.png' />");
