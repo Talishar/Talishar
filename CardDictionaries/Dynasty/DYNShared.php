@@ -38,6 +38,7 @@ function DYNAbilityType($cardID, $index = -1)
 function DYNHasGoAgain($cardID)
 {
     switch ($cardID) {
+        case "DYN188": case "DYN189": case "DYN190": return  true;
         case "DYN230": case "DYN231": case "DYN232": return  true;
         default: return false;
     }
@@ -107,6 +108,7 @@ function DYNCardType($cardID)
         case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return "W";
         case "DYN171": return "E";
+        case "DYN188": case "DYN189": case "DYN190": return "A";
         case "DYN192": return "W";
         case "DYN206": case "DYN207": case "DYN208": return "A";
         case "DYN230": case "DYN231": case "DYN232": return "A";
@@ -147,7 +149,6 @@ function DYNCardCost($cardID)
         case "DYN039": case "DYN040": case "DYN041": return 2;
         case "DYN116": case "DYN117": case "DYN118": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN242": return 2;
-        case "DYN243": return 0;
         default: return 0;
     }
 }
@@ -160,8 +161,8 @@ function DYNPitchValue($cardID)
         case "DYN040": return 2;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
-        case "DYN206": case "DYN230": return 1;
-        case "DYN207": case "DYN231": return 2;
+        case "DYN188": case "DYN206": case "DYN230": return 1;
+        case "DYN189": case "DYN207": case "DYN231": return 2;
         case "DYN234": return 0;
         case "DYN242": return 1;
         case "DYN243": return 0;
@@ -185,6 +186,7 @@ function DYNBlockValue($cardID)
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return -1;
         case "DYN171": return 1;
+        case "DYN188": case "DYN189": case "DYN190": return 2;
         case "DYN192": return -1;
         case "DYN230": case "DYN231": case "DYN232": return 2;
         case "DYN234": return -1;
@@ -252,6 +254,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         case "DYN171":
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
+        case "DYN188": case "DYN189": case "DYN190":
+            if (CanRevealCards($currentPlayer)) {
+                $deck = GetDeck($currentPlayer);
+                if (count($deck) == 0) return "Your deck is empty. Nothing was revealed.";
+                if (PitchValue($deck[0]) == PitchValue($cardID)) {
+                    PlayAura("ARC112", $currentPlayer, 1, true);
+                    return "Reveals " . CardLink($deck[0], $deck[0]) . " and creates a " . CardLink("ARC112", "ARC112");
+                } else {
+                    return "Reveals " . CardLink($deck[0], $deck[0]);
+                }
+            }
+            return "Reveal has been prevented.";
         case "DYN192":
             DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
             AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
