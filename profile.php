@@ -216,8 +216,9 @@ if (isset($_SESSION["isPatron"])) {
       echo ("<img class='imgPatreon' src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
       echo '</a>';
     }
+    echo ("</section>");
 
-    echo ("<section class='profile-form' style='position:fixed; display:block; width: 32%; right:20px; top:40px; padding-bottom: -0px; overflow-y: scroll;'>");
+    echo ("<section class='profile-form' style='position:absolute; width: 32%; right:20px; top:40px; height: 90vh; overflow-y: scroll;'>");
     echo ("<h1>Favorite Decks</h1>");
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if (count($favoriteDecks) > 0) {
