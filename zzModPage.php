@@ -72,4 +72,13 @@ fclose($banfileHandler);
   <input type="text" id="playerNumberToBan" name="playerNumberToBan" value="">
   <input type="submit" value="Ban">
 </form>
+
+<br>
+
+<form action='./CloseGame.php'>
+  <label for="gameToClose" style='font-weight:bolder; margin-left:10px;'>Game to close:</label>
+  <input type="text" id="gameToClose" name="gameToClose" value="">
+  <input type="submit" value="Close Game">
+</form>
+
 </div>
