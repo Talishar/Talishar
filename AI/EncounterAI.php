@@ -3,7 +3,7 @@
 function EncounterAI()
 {
   global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer, $mainPlayerGamestateStillBuilt;
-  $currentPlayerIsAI = ($currentPlayer == 2 && ($p2CharEquip[0] == "ROGUE001" || $p2CharEquip[0] == "ROGUE003")) ? true : false;
+  $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
     for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
@@ -46,6 +46,15 @@ function EncounterAI()
       ProcessMacros();
       $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
     }
+  }
+}
+
+function IsEncounterAI($enemyHero)
+{
+  switch($enemyHero)
+  {
+    case "ROGUE001": case "ROGUE003": return true;
+    default: return false;
   }
 }
 
