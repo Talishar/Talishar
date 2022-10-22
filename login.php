@@ -29,9 +29,6 @@ if (isset($_SESSION['useruid'])) {
     -->
     </form>
   </div>
-</section>
-
-<section class="signup-form">
   <div class="signup-form-form">
     <form action="ResetPassword.php" method="post" style='overflow:hidden;'>
           <button type="submit" name="reset-password">FORGOT PASSWORD</button>
