@@ -32,7 +32,8 @@
   {
     switch($previousEncounter)
     {
-      case 1: return "2-PickMode";
+      case 1: return "4-PickMode";
+      case 3: return "2-PickMode";
       default: return "";
     }
   }

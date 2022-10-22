@@ -98,6 +98,19 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           default: break;
         }
+      case "BATTLEFIELD":
+        switch($lastResult)
+        {
+          case "Loot":
+            WriteLog("You've found some equipment to salvage.");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR155");
+            break;
+          case "Pay_Respects":
+            WriteLog("You've found a new sense of peace and reflection.");
+            PrependDecisionQueue("CHOOSECARD", $player, "WTR163");
+            break;
+          default: break;
+        }
         return 1;
       default:
         return "NOTSTATIC";
@@ -111,6 +124,11 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       case 2:
         AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
         AddDecisionQueue("CAMPFIRE", $player, "-");
+        AddDecisionQueue("SETENCOUNTER", $player, "5-BeforeFight");
+        break;
+      case 4:
+        AddDecisionQueue("BUTTONINPUT", $player, "Loot,Pay_Respects");
+        AddDecisionQueue("BATTLEFIELD", $player, "-");
         AddDecisionQueue("SETENCOUNTER", $player, "3-BeforeFight");
         break;
       default: break;
