@@ -113,7 +113,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
   <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
     <?php
     $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
-    echo ("<h2 style='font-size:100%;'>$theirDisplayName Hero</h2>");
+    echo ("<h2>$theirDisplayName Hero</h2>");
 
     $otherHero = "CardBack";
     echo ("<div id='oppHero' style='padding-left:5%;'>");
@@ -126,7 +126,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
     <?php
     $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
-    echo ("<h2 style='font-size:100%;'>$displayName Hero</h2>");
+    echo ("<h2>$displayName Hero</h2>");
 
     $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $handler = fopen($deckFile, "r");

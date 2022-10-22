@@ -348,7 +348,7 @@ button {
   margin-top: 6px;
   color: var(--light-color);
   font-weight: bold;
-  font-size: 95%;
+  font-size: 24px;
 }
 
 .profile-form form {
