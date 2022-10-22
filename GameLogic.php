@@ -805,6 +805,7 @@ function EffectHitEffect($cardID)
     case "ELE215":
       if (IsHeroAttackTarget()) {
         AddNextTurnEffect($cardID . "-1", $defPlayer);
+        AddCurrentTurnEffectFromCombat("ELE215", $defPlayer); //Doesn't do anything just show it in the effects
       }
       break;
     case "EVR047-1":
