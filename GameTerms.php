@@ -116,7 +116,7 @@ function TypeToPlay($phase)
 function PlayTerm($phase, $from="", $cardID="")
 {
   if ($cardID != "") {
-    if (IsStaticType(CardType($cardID), $from, $cardID)) return "activated";
+    if (IsStaticType(CardType($cardID), $from, $cardID) && $phase != "B") return "activated";
   }
   switch ($phase) {
     case "P":
