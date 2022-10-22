@@ -1054,7 +1054,8 @@ function FinalizeTurn()
   $currentTurnEffects = $nextTurnEffects;
   $nextTurnEffects = [];
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    WriteLog("Start of turn effect for " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " is now active.");
+    $effectCardID = explode("-", $currentTurnEffects[$i]);
+    WriteLog("Start of turn effect for " . CardLink($effectCardID[0], $effectCardID[0]) . " is now active.");
   }
   $defPlayer = $mainPlayer;
   $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
