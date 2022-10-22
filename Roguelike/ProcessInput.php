@@ -49,8 +49,15 @@
           unset($options[$found]);
           $options = array_values($options);
         }
-        $deck = &GetZone($playerID, "Deck");
-        array_push($deck, $cardID);
+        if(CardType($cardID) == "E")
+        {
+          $char = &GetZone($playerID, "Character");
+          array_push($char, $cardID);
+        }
+        else {
+          $deck = &GetZone($playerID, "Deck");
+          array_push($deck, $cardID);
+        }
         ClearPhase($playerID);
         WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
         ContinueDecisionQueue($playerID, "");

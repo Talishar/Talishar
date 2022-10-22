@@ -30,6 +30,23 @@
   $weapon1 = $charZone[1];
   $deckCards = implode(" ", $cards);
 
+  for($i=1; $i<count($charZone); ++$i)
+  {
+    $subtype = CardSubType($charZone[$i]);
+    switch($subtype)
+    {
+      case "Head":
+        if($head == "") $head = $charZone[$i];
+        else
+        {
+          if($headSideboard != "") $headSideboard .= " ";
+          $headSideboard .= $charZone[$i];
+        }
+        break;
+      default: break;
+    }
+  }
+
     $filename = "./Games/" . $gameName . "/LimitedDeck.txt";
     $deckFile = fopen($filename, "w");
     $charString = $character;
