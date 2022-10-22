@@ -27,8 +27,9 @@
     else $authKey = TryGet("authKey", "");
     session_write_close();
 
-    if (($playerID == 1 || $playerID == 2) && $authKey == "") {
-      if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+    if(($playerID == 1 || $playerID == 2) && $authKey == "")
+    {
+      if(isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
     }
 
     //First we need to parse the game state from the file
@@ -75,9 +76,7 @@
       //var cardSize = 96;
 
       function Hotkeys(event) {
-        if (event.keyCode === 32) {
-          if (document.getElementById("passConfirm").innerText == "false" || confirm("Do you want to skip arsenal?")) SubmitInput(99, "");
-        } //Space = pass
+        if (event.keyCode === 32) { if(document.getElementById("passConfirm").innerText == "false" || confirm("Do you want to skip arsenal?")) SubmitInput(99, ""); } //Space = pass
         if (event.keyCode === 117) SubmitInput(10000, ""); //U = undo
         if (event.keyCode === 104) SubmitInput(3, "&cardID=0"); //H = hero ability
         if (event.keyCode === 109) ShowPopup("menuPopup"); //M = open menu
@@ -289,7 +288,8 @@
         }
       }
 
-      function TranslationExist(Language, cardID) {
+      function TranslationExist(Language, cardID)
+      {
         switch (Language) {
           case "JP": //Japanese
             switch (cardID) {
@@ -359,8 +359,8 @@
               positionStyle = "fixed; left:" + charLeft + "; top:" + charTop;
             }
           }
+          newHTML += "<span style='position:" + positionStyle + "; margin:1px;'>";
           if (type == "C") {
-            newHTML += "<span style='position:" + positionStyle + "; margin:1px;'>";
             var mySoulCountEl = document.getElementById("mySoulCount");
             if (!!mySoulCountEl && zone == "myChar") {
               var fontColor = "#DDD";
@@ -384,20 +384,18 @@
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var myName = document.getElementById("myUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; text-align: center; line-height: 14px; min-width:81px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 95%; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; user-select: none;'>" + <?php echo ($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; width: 81px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; user-select: none;'>" + <?php echo ($playerID == 1 ? "p1uid" : "p2uid"); ?> + "</div>";
             } else if (zone == "theirChar") {
               var fontColor = "#DDD";
               var borderColor = "#1a1a1a";
               var backgroundColor = "#DDD";
               //var theirName = document.getElementById("theirUsername").innerHTML;
-              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; text-align: center; line-height: 14px; min-width:81px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 95%; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; user-select: none;'>" + <?php echo ($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
+              newHTML += "<div style='cursor:default; margin: 0px; top: 85%; left: 50%; margin-right: -50%; border-radius: 8px; width: 81px; text-align: center; line-height: 14px; height: 12px; padding: 5px; border: 3px solid " + borderColor + "; transform: translate(-50%, -50%); position: absolute; z-index: 10; background: " + backgroundColor + "; font-size: 16px; font-weight: 650; color: " + fontColor + "; text-shadow: 2px 0 0 " + borderColor + ", 0 -2px 0 " + borderColor + ", 0 2px 0 " + borderColor + ", -2px 0 0 " + borderColor + "; user-select: none;'>" + <?php echo ($playerID == 1 ? "p2uid" : "p1uid"); ?> + "</div>";
             }
 
-          } else {
-            newHTML += "<span style='position:" + positionStyle + "; z-index: -5; margin:1px;'>";
           }
           var restriction = cardArr[12];
-          if (!!restriction || typeof restriction != "string") restriction = "";
+          if(!!restriction || typeof restriction != "string") restriction = "";
           restriction = restriction.replace(/_/g, ' ');
           newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], cardArr[4], cardArr[5], "", false, cardArr[6], cardArr[7], cardArr[8], cardArr[9], restriction, cardArr[13], cardArr[14], cardArr[15], cardArr[16]);
           newHTML += "</span>";
