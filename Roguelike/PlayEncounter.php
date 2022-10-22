@@ -16,6 +16,7 @@
 
   $charZone = &GetZone($playerID, "Character");
   $cards = &GetZone($playerID, "Deck");
+  $encounter = &GetZone($playerID, "Encounter");
 
   $deckCards = "";
   $sideboardCards = "";
@@ -50,7 +51,18 @@
     fwrite($deckFile, $sideboardCards);
     fclose($deckFile);
 
-  header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=Woottonhog&roguelikeGameID=" . $gameName . "&deck=ROGUELIKE-" . $gameName);
+  $encounterName = GetEncounterName($encounter[0]);
 
+  header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=" . $encounterName . "&roguelikeGameID=" . $gameName . "&deck=ROGUELIKE-" . $gameName);
+
+  function GetEncounterName($encounterId)
+  {
+    switch($encounterId)
+    {
+      case 1: return "Woottonhog";
+      case 3: return "RavenousRabble";
+      default: return "Woottonhog";
+    }
+  }
 
 ?>

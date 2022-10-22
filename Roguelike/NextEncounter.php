@@ -148,6 +148,9 @@
         else if($subphase == "AfterFight") return "You defeated the Woottonhog.";
       case 2:
         return "You found a campfire. Choose what you want to do.";
+      case 3:
+        if($subphase == "BeforeFight") return "You're attacked by a Ravenous Rabble.";
+        else if($subphase == "AfterFight") return "You defeated the Ravenous Rabble.";
       default: return "No encounter text.";
     }
   }

@@ -282,6 +282,7 @@ function CharacterIntellect($cardID)
     case "CRU099":
       return 3;
     case "ROGUE001": return 3;
+    case "ROGUE003": return 3;
     default:
       return 4;
   }
