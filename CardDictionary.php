@@ -263,6 +263,7 @@ function CharacterHealth($cardID)
       return 22;
     case "ROGUE001": return 6;
     case "ROGUE003": return 10;
+    case "ROGUE004": return 10;
     default:
       return 20;
   }
@@ -283,6 +284,7 @@ function CharacterIntellect($cardID)
       return 3;
     case "ROGUE001": return 3;
     case "ROGUE003": return 3;
+    case "ROGUE004": return 3;
     default:
       return 4;
   }
@@ -405,7 +407,7 @@ function CardClass($cardID)
       if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
 
       if ($number == 151) return "RANGER";
-      
+
       if ($number >= 171 && $number <= 190) return "RUNEBLADE";
 
       if ($number >= 192 && $number <= 208) return "WIZARD";
