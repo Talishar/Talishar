@@ -42,8 +42,7 @@ function ROGUEEffectAttackModifier($cardID)
     if (count($params) > 1) $parameter = $params[1];
     switch ($cardID) {
 
-        default:
-            return 0;
+      default: return 0;
     }
 }
 
@@ -75,6 +74,7 @@ function ROGUECardType($cardID)
     switch ($cardID) {
       case "ROGUE001": return "C";
       case "ROGUE002": return "W";
+      case "ROGUE003": return "C";
       default:
         return "";
     }
@@ -85,6 +85,7 @@ function ROGUECardSubtype($cardID)
     switch ($cardID) {
       case "ROGUE001": return "Hog";
       case "ROGUE002": return "Natural";
+      case "ROGUE001": return "Monster";
       default: return "";
     }
 }
@@ -102,6 +103,7 @@ function ROGUEPitchValue($cardID)
     switch ($cardID) {
       case "ROGUE001": return -1;
       case "ROGUE002": return -1;
+      case "ROGUE003": return -1;
       default: return 3;
     }
 }
@@ -111,6 +113,7 @@ function ROGUEBlockValue($cardID)
     switch ($cardID) {
       case "ROGUE001": return -1;
       case "ROGUE002": return -1;
+      case "ROGUE003": return -1;
       default:
         return 3;
     }
