@@ -958,10 +958,11 @@
         Draw(2);
         if($currentPlayer != $mainPlayer)
         {
-          AddCurrentTurnEffect($cardID, $otherPlayer);//If played as an instant, needs to apply to the current turn
+          AddCurrentTurnEffect($cardID, $otherPlayer); //If played as an instant, needs to apply to the current turn
         }
         else
         {
+          AddCurrentTurnEffect($cardID . "-1", $currentPlayer); //Doesn't do anything just show it in the effects
           AddNextTurnEffect($cardID, $otherPlayer);
         }
         return "Draws a card for each player and gave attacks targeting you -1.";
