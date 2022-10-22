@@ -501,33 +501,9 @@ function PitchColor($pitch)
   }
 }
 
-function BanishUI($from = "")
-{
-  global $turn, $currentPlayer, $playerID, $cardSize, $cardSizeAura;
-  $rv = "";
-  $size = ($from == "HAND" ? $cardSizeAura : 120);
-  $banish = GetBanish($playerID);
-  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
-    $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-    $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
-    $mod = explode("-", $banish[$i + 1])[0];
-    if ($mod == "INT") $rv .= Card($banish[$i], "concat", $size, 0, 1, 1); //Display intimidated cards grayed out and unplayable
-    else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
-      $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i)); //Display banished cards that are playable
-    else // if($from != "HAND")
-    {
-      if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
-        $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));
-      else if ($from != "HAND")
-        $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
-    }
-  }
-  return $rv;
-}
-
 function BanishUIMinimal($from = "")
 {
-  global $turn, $currentPlayer, $playerID, $cardSizeAura, $MyCardBack;
+  global $turn, $currentPlayer, $playerID, $cardSizeAura, $MyCardBack, $mainPlayer;
   $rv = "";
   $size = ($from == "HAND" ? $cardSizeAura : 120);
   $banish = GetBanish($playerID);
@@ -545,7 +521,7 @@ function BanishUIMinimal($from = "")
       $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
     } else // if($from != "HAND")
     {
-      if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i])) {
+      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $playerID == $mainPlayer)) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
       } else if ($from != "HAND")
@@ -557,7 +533,7 @@ function BanishUIMinimal($from = "")
 
 function TheirBanishUIMinimal($from = "")
 {
-  global $playerID, $cardSizeAura, $TheirCardBack;
+  global $playerID, $cardSizeAura, $TheirCardBack, $turn, $mainPlayer;
   $rv = "";
   $size = ($from == "HAND" ? $cardSizeAura : 120);
   $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -571,7 +547,7 @@ function TheirBanishUIMinimal($from = "")
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
     } else {
-      if (PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i])) {
+      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $otherPlayer == $mainPlayer)) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
       } else if ($from != "HAND")
