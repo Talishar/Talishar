@@ -262,6 +262,7 @@ function CharacterHealth($cardID)
     case "DYN075": // TODO: Yoji cardID to be modified with set release
       return 22;
     case "ROGUE001": return 6;
+    case "ROGUE003": return 10;
     default:
       return 20;
   }
