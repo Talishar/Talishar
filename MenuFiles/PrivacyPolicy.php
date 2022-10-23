@@ -16,3 +16,6 @@ Google uses cookies to help serve the ads it displays on Talishar. When you visi
 Third party vendors, including Google, use cookies to serve ads based on your prior visits to Talishar or other websites.
 Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to Talishar and/or other sites on the Internet.
 Users may opt out of personalized advertising by visiting <a href='https://www.google.com/settings/ads'>Ads Settings</a>.
+
+<h1>Sources</h1>
+<a href="https://www.freepik.com/free-photo/wooden-texture_1000699.htm#query=wood%20texture&position=6&from_view=keyword">Wooden Table Texture Image by lyashenko</a> on Freepik
