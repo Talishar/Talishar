@@ -71,7 +71,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   } else if (mb_strpos($folder, "CardImages") !== false) {
     $folderPath = str_replace("CardImages", "WebpImages", $folder);
     $fileExt = ".webp";
-  } else if ($folder == "concat") {
+  } else if ($folder == "concat" || $folder == "../concat") {
     if (DelimStringContains(CardSubType($cardNumber), "Landmark")) $rotate = true;
     $fileExt = ".webp";
   }
@@ -86,7 +86,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
 
   if ($borderColor > 0) {
     $border = "border-radius:10px; border:2.5px solid " . BorderColorMap($borderColor) . ";";
-  } else if ($folder == "concat") {
+  } else if ($folder == "concat" || $folder == "../concat") {
     $border = "border-radius:8px; border:1.5px solid transparent;";
   } else {
     $border = "border: 1px solid transparent;";
@@ -95,7 +95,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   if ($folder == "crops") {
     $height = $maxHeight;
     $width = ($height * 1.29);
-  } else if ($folder == "concat") {
+  } else if ($folder == "concat" || $folder == "../concat") {
     $height = $maxHeight;
     $width = $maxHeight;
   } else if ($rotate == false) {
@@ -155,21 +155,21 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
     } else {
       $left = "30%";
     }
-    $rv .= "<div style='margin: 0px; 
+    $rv .= "<div style='margin: 0px;
     top: 52%; left:" . $left . ";
-    margin-right: -50%; 
-    border-radius: 50%; 
-    width:" . $counterHeight . "px; 
-    height:" . $counterHeight . "px; 
-    padding: 6px; 
-    border: 3px solid #1a1a1a; 
-    text-align: center; 
-    transform: translate(-50%, -50%); 
-    position:absolute; z-index: 10; 
+    margin-right: -50%;
+    border-radius: 50%;
+    width:" . $counterHeight . "px;
+    height:" . $counterHeight . "px;
+    padding: 6px;
+    border: 3px solid #1a1a1a;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    position:absolute; z-index: 10;
     background: rgba(235, 235, 235, 0.9);
     line-height: 1.2;
-    font-family: Helvetica; font-size:" . ($counterHeight - 2) . "px; font-weight:550; color: #EDEDED; 
-    text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; 
+    font-family: Helvetica; font-size:" . ($counterHeight - 2) . "px; font-weight:550; color: #EDEDED;
+    text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
     user-select: none;'>" . $counters . "</div>";
   }
 
@@ -341,7 +341,7 @@ function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $
   if ($canClose == 1) $rv .= "<div style='position:absolute; top:0px; right:45px;'><div title='Click to close' style='position: fixed; cursor:pointer; font-size:50px;' onclick='(function(){ document.getElementById(\"" . $id . "\").style.display = \"none\";})();'>&#10006;</div></div>";
   if ($additionalComments != "") $rv .= "<h" . ($big ? "3" : "4") . " style='margin-left: 10px; margin-top: 5px; margin-bottom: 10px; text-align: center;'>" . $additionalComments . "</h" . ($big ? "3" : "4") . ">";
   for ($i = 0; $i < count($fromArr); $i += $arrElements) {
-    $rv .= Card($fromArr[$i], "concat", $cardSize, 0, 1);
+    $rv .= Card($fromArr[$i], $path . "concat", $cardSize, 0, 1);
   }
   if (IsGameOver()) $style = "text-align: center;";
   else $style = "font-size: 18px; margin-left: 10px; line-height: 22px; align-items: center;";
@@ -441,7 +441,7 @@ function CardStats($player)
     $rv .= "Average Resources Used per turn: " . round($totalResourcesUsed / $numTurns, 2) . "<br>";
     $rv .= "Average Cards Left Over per turn: " . round($totalCardsLeft / $numTurns, 2) . "<br>";
     $rv .= "Average Value per turn (Damage threatened + block): " . round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2) . "<br>";
-    
+
     //Cards per turn stats
     $rv .= "<table style='text-align:center; margin-right:10px; width: 100%; margin-top:10px; border-spacing: 0; border-collapse: collapse; font-size: 1em; line-height: 24px; font-weight:'><tr>";
     $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Turn<br>Number</td>";

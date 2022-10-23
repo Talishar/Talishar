@@ -12,8 +12,9 @@
   include "ZoneGetters.php";
   include "ParseGamestate.php";
   include "EncounterDictionary.php";
+  include "../CardDictionary.php";
   include "../HostFiles/Redirector.php";
-  include "../Libraries/UILibraries.php";
+  include "../Libraries/UILibraries2.php";
   include "../WriteLog.php";
 /*
   if($currentPlayer == $playerID) $icon = "ready.png";
@@ -31,10 +32,14 @@
 
 </head>
 
-<body onload='OnLoadCallback(<?php echo(filemtime("./Games/" . $gameName . "/gamelog.txt")); ?>)'>
+<body style='z-index:-200;'>
 
 <?php
 
+$cardSize = 200;
+$cardIconSize = intval($cardSize / 2.7); //40
+$cardIconLeft = intval($cardSize / 4.2); //30
+$cardIconTop = intval($cardSize / 4.2); //30
 
   //Include js files
   echo("<script src=\"../jsInclude.js\"></script>");
@@ -42,23 +47,35 @@
   //Display hidden elements
   echo("<div id=\"cardDetail\" style=\"z-index:1000; display:none; position:absolute;\"></div>");
 
-  //Display background
-  echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; background-color:rgb(111, 78, 55); width:100%; height:100%;'><center><img style='height:100%;' src='../Images/map_of_rathe.jpg' /></center></div>");
 
   $encounter = &GetZone($playerID, "Encounter");
-  echo("<h1 style='width:85%; text-align: center'>Encounter #" . $encounter[0] . "</h1>");
+
 
   $health = &GetZone($playerID, "Health");
-  echo("<h2 style='width:85%; text-align: center'>Health Remaining: " . $health[0] . "</h2>");
-
 
   $deck = &GetZone($playerID, "Deck");
-  echo(CreatePopup("myDeckPopup", $deck, 1, 0, "Your Deck (" . count($deck) . " cards)", 1, "", "../"));
+  echo(CreatePopup("myDeckPopup", $deck, 1, 0, "Your Deck (" . count($deck) . " cards)", 1, "", "../", true));
+
+  $character = &GetZone($playerID, "Character");
+
+  //Display background
+  echo("<div style='position:absolute; left:0px; top:0px; background-image:url(\"../Images/wooden-texture.jpg\"); width:100%; height:100%;'><div style='padding-top:1%;'><center><img style='left:20%; height:96%;' src='../Images/map_of_rathe.jpg' /></center></div>");
+
+  //Display left sidebar
+  echo("<div style='position:absolute; z-index:100; border: 3px solid gold; border-radius:5px; left:10px; top:10px; height:calc(100% - 26px); width:14%; background-color:rgba(235, 213, 179, .85);'>");
+  echo("<h2 style='width:85%; text-align: center'>Encounter #" . $encounter[0] . "</h2>");
+
+  echo ("<div style='height:100px; width:100%; z-index:-200;'><span title='Your remaining life' style='left: 5%; position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='../Images/Life.png'>
+<div style='margin: 0; top: 51%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
+text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
+position:absolute; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health[0] . "</div></img></span></div>");
+
+  echo("<center>" . Card($character[0], "../concat", $cardSize, 0, 1) . "</center>");
+  echo("<BR>");
+
+  echo("<center><div style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>" . Card("CardBack", "../concat", $cardSize, 0, 1, 0, 0, count($deck)) . "</div></center>");
 
   $myDQ = &GetZone($playerID, "DecisionQueue");
-  echo("<div style='position:fixed; width:100%; top:35%; height:65%;'>");
-  $header = "<h1><span title='Click to view your deck (" . count($deck) . " cards)' style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>Click to see your deck (" . count($deck) . " cards)</span></h1>";
-  echo($header);
   echo("<h2>" . EncounterDescription($encounter[0], $encounter[1]) . "</h2>");
   echo("<BR>");
 
@@ -97,6 +114,11 @@
   }
 
   echo("</div>");//End cards div
+
+
+  echo("</div>");//End left sidebar div
+
+  echo("</div>");//End background
 
   echo("</div>");//End play area div
 
@@ -139,6 +161,10 @@
       default: return 1;
     }
   }
+
+  function IsDarkMode() { return false; } // This must exist for UILibraries2
+  function IsLanguageJP() { return false; } // This must exist for UILibraries2
+  function IsGameOver() { return false; } // This must exist for UILibraries2
 
 ?>
 </body>
