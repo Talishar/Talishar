@@ -16,7 +16,7 @@
 
   $health = &GetZone($playerID, "Health");
   $health[0] = $remainingHealth;
-  $encounter = &GetZone($playerID, "Encounter");;
+  $encounter = &GetZone($playerID, "Encounter");
   $encounter[1] = "AfterFight";
 
   AddDecisionQueue("CHOOSECARD", $playerID, "MON110,WTR146,WTR135");
@@ -34,6 +34,7 @@
     {
       case 1: return "4-PickMode";
       case 3: return "2-PickMode";
+      case 5: return "6-PickMode";
       default: return "";
     }
   }

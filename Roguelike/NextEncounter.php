@@ -11,6 +11,7 @@
   //First we need to parse the game state from the file
   include "ZoneGetters.php";
   include "ParseGamestate.php";
+  include "EncounterDictionary.php";
   include "../HostFiles/Redirector.php";
   include "../Libraries/UILibraries.php";
   include "../WriteLog.php";
@@ -42,7 +43,7 @@
   echo("<div id=\"cardDetail\" style=\"z-index:1000; display:none; position:absolute;\"></div>");
 
   //Display background
-  echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; width:100%; height:100%;'><img style='height:100%; width:100%;' src='../Images/findCenterBackground.jpg' /></div>");
+  echo("<div style='position:absolute; z-index:-100; left:0px; top:0px; background-color:rgb(111, 78, 55); width:100%; height:100%;'><center><img style='height:100%;' src='../Images/map_of_rathe.jpg' /></center></div>");
 
   $encounter = &GetZone($playerID, "Encounter");
   echo("<h1 style='width:85%; text-align: center'>Encounter #" . $encounter[0] . "</h1>");
@@ -139,25 +140,5 @@
     }
   }
 
-  function EncounterDescription($encounter, $subphase)
-  {
-    switch($encounter)
-    {
-      case 1:
-        if($subphase == "Fight") return "You're attacked by a Woottonhog.";
-        else if($subphase == "AfterFight") return "You defeated the Woottonhog.";
-      case 2:
-        return "You found a campfire. Choose what you want to do.";
-      case 3:
-        if($subphase == "BeforeFight") return "You're attacked by a Ravenous Rabble.";
-        else if($subphase == "AfterFight") return "You defeated the Ravenous Rabble.";
-      case 4:
-        return "You found a battlefield. Choose what you want to do.";
-      case 5:
-        if($subphase == "BeforeFight") return "You're attacked by a Barraging Brawnhide.";
-        else if($subphase == "AfterFight") return "You defeated the Barraging Brawnhide.";
-      default: return "No encounter text.";
-    }
-  }
 ?>
 </body>
