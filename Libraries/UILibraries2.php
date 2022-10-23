@@ -71,7 +71,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   } else if (mb_strpos($folder, "CardImages") !== false) {
     $folderPath = str_replace("CardImages", "WebpImages", $folder);
     $fileExt = ".webp";
-  } else if ($folder == "concat" || $folder == "../concat") {
+  } else if ($folder == "concat" || $folder == "./concat" || $folder == "../concat") {
     if (DelimStringContains(CardSubType($cardNumber), "Landmark")) $rotate = true;
     $fileExt = ".webp";
   }
@@ -86,7 +86,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
 
   if ($borderColor > 0) {
     $border = "border-radius:10px; border:2.5px solid " . BorderColorMap($borderColor) . ";";
-  } else if ($folder == "concat" || $folder == "../concat") {
+  } else if ($folder == "concat" || $folder == "./concat" || $folder == "../concat") {
     $border = "border-radius:8px; border:1.5px solid transparent;";
   } else {
     $border = "border: 1px solid transparent;";
@@ -95,7 +95,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   if ($folder == "crops") {
     $height = $maxHeight;
     $width = ($height * 1.29);
-  } else if ($folder == "concat" || $folder == "../concat") {
+  } else if ($folder == "concat" || $folder == "./concat" || $folder == "../concat") {
     $height = $maxHeight;
     $width = $maxHeight;
   } else if ($rotate == false) {
@@ -108,7 +108,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
 
   if ($controller != 0 && IsPatron($controller) && CardHasAltArt($cardNumber)) $folderPath = "PatreonImages/" . $folderPath;
 
-  $rv .= "<img " . ($id != "" ? "id='" . $id . "-img' " : "") . "style='" . $border . " height:" . $height . "; width:" . $width . "px; position:relative;' src='./" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
+  $rv .= "<img " . ($id != "" ? "id='" . $id . "-img' " : "") . "style='" . $border . " height:" . $height . "; width:" . $width . "px; position:relative;' src='" . $folderPath . "/" . $cardNumber . $fileExt . "' />";
   $rv .= "<div " . ($id != "" ? "id='" . $id . "-ovr' " : "") . "style='visibility:" . ($overlay == 1 ? "visible" : "hidden") . "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
 
   // Counters Style
