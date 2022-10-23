@@ -420,7 +420,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR003":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
     case "WTR040":
-      return CountPitch($mainPitch, 3) >= 2 ? 2 : 0;
+      $pitch = &GetPitch($mainPlayer);
+      return CountPitch($pitch, 3) >= 2 ? 2 : 0;
     case "WTR080":
       return 1;
     case "WTR081":
@@ -572,7 +573,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "ELE136":
       return $from == "ARS" ? 1 : 0;
     case "ELE202":
-      return CountPitch($mainPitch, 3) >= 1 ? 1 : 0;
+      $pitch = &GetPitch($mainPlayer);
+      return CountPitch($pitch, 3) >= 1 ? 1 : 0;
     case "EVR038":
       return (ComboActive() ? 3 : 0);
     case "EVR040":
