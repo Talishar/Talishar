@@ -83,13 +83,16 @@ $cardIconTop = intval($cardSize / 4.2); //30
   {
     if($myDQ[0] == "CHOOSECARD")
     {
-      echo("<div display:inline;'>");
       $options = explode(",", $myDQ[1]);
+      echo("<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>");
+      echo("<h2>Choose a card</h2>");
+      echo("<div style='display:inline;'>");
       for($i=0; $i<count($options); ++$i)
       {
-        echo(Card($options[$i], "../CardImages", 200, 1, 1, 0, 0, 0, strval($options[$i])));
+        echo(Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i])));
       }
       echo("</div>");
+      echo ("<div>");
     }
     else if($myDQ[0] == "BUTTONINPUT")
     {
@@ -168,6 +171,9 @@ $cardIconTop = intval($cardSize / 4.2); //30
 ?>
 </body>
 </div>
+
+
+<!----- Footer ----->
 <div style="height:11px; bottom:8px; left:20px; width: auto;
         position:absolute;
         color:white;
