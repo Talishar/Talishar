@@ -59,16 +59,16 @@ $cardIconTop = intval($cardSize / 4.2); //30
   $character = &GetZone($playerID, "Character");
 
   //Display background
-  echo("<div style='position:absolute; left:0px; top:0px; background-image:url(\"../Images/wooden-texture.jpg\"); width:100%; height:100%;'><div style='padding-top:1%;'><center><img style='left:20%; height:96%;' src='../Images/map_of_rathe.jpg' /></center></div>");
+  echo("<div style='position:absolute; left:0px; top:0px; background-image:url(\"../Images/wooden-texture.jpg\"); width:100%; height:100%;'><div style='margin-left:1.5%; margin-top:1%; text-align:center;'><img style='height:94%; border: 3px solid black; border-radius: 5px;' src='../Images/map_of_rathe.jpg' /></div>");
 
   //Display left sidebar
-  echo("<div style='position:absolute; z-index:100; border: 3px solid gold; border-radius:5px; left:10px; top:10px; height:calc(100% - 26px); width:14%; background-color:rgba(235, 213, 179, .85);'>");
-  echo("<h2 style='width:85%; text-align: center'>Encounter #" . $encounter[0] . "</h2>");
+  echo("<div style='position:absolute; text-align: center; z-index:100; border: 3px solid black; border-radius:5px; left:10px; top:17px; height:calc(95% - 26px); width:14%; background-color:rgba(235, 213, 179, .85);'>");
+  echo("<h2 style='width:100%;'>Encounter #" . $encounter[0] . "</h2>");
 
-  echo ("<div style='height:100px; width:100%; z-index:-200;'><span title='Your remaining life' style='left: 5%; position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . ";' src='../Images/Life.png'>
-<div style='margin: 0; top: 51%; left: 50%; margin-right: -50%; width: 28px; height: 28px; padding: 3px;
-text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
-position:absolute; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health[0] . "</div></img></span></div>");
+  echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, -50%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Life.png'>
+      <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
+      text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
+      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health[0] . "</div></img></span></div>");
 
   echo("<center>" . Card($character[0], "../concat", $cardSize, 0, 1) . "</center>");
   echo("<BR>");
@@ -115,7 +115,6 @@ position:absolute; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3
 
   echo("</div>");//End cards div
 
-
   echo("</div>");//End left sidebar div
 
   echo("</div>");//End background
@@ -123,12 +122,12 @@ position:absolute; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3
   echo("</div>");//End play area div
 
   //Display the log
-  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.8); position:fixed; display:inline; width:12%; height: 40%; top:10px; right:10px; overflow-y: scroll;'>");
+  echo("<div id='gamelog' style='background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px; position:fixed; display:inline; width:12%; height: 92%; top:2%; right:1%; overflow-y: scroll;'>");
 
   EchoLog($gameName, $playerID);
   echo("</div>");
 
-  echo("<div id='chatbox' style='position:fixed; display:inline; width:200px; height: 50px; top:42%; right:10px;'>");
+  echo("<div id='chatbox' style='position:fixed; display:inline; width:200px; height: 50px; right:10px;'>");
   //echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
   //echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
@@ -168,3 +167,19 @@ position:absolute; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3
 
 ?>
 </body>
+</div>
+<div style="height:11px; bottom:8px; left:20px; width: auto;
+        position:absolute;
+        color:white;
+        font-size: .7em;
+        font-style: italic; opacity: 0.8;
+        font-weight: normal;
+        text-indent: 1px;
+        background-color:rgba(74, 74, 74, 0.9);
+        border-radius: 2px;
+        text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
+        ">Talishar is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™,
+  and set names are trademarks of Legend Story Studios.
+  Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.
+  Card Images © Legend Story Studios
+</div>
