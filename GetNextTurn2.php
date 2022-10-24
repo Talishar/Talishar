@@ -410,8 +410,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if (DoesAttackHaveGoAgain()) echo ("<td><img title='This attack has go again.' style='height:30px; width:30px; display:inline-block;' src='./Images/goAgain.png' /></td>");
     if (CachedDominateActive()) echo ("<td><img style='height:40px; display:inline-block;' src='./Images/dominate.png' /></td>");
     if (CachedOverpowerActive()) echo ("<td><img style='height:40px; display:inline-block;' src='./Images/overpower.png' /></td>");
-    if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock()) echo ("<td style='padding-left:5px; font-size:18px; font-weight:650; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "';>Block With " . $combatChainState[$CCS_RequiredEquipmentBlock] . " Equipment Required</td>");
-
     //if($lastPlayed[3] == "FUSED") echo("<td><img title='This card was fused.' style='height:30px; width:30px; display:inline-block;' src='./Images/fuse2.png' /></td>");
   }
   echo ("<td>");
@@ -438,7 +436,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     echo ("<div title='Break the Combat Chain' " . ProcessInputLink($playerID, 100, 0) . " class='breakChain' style='height:30px; width:60px; position:relative; display:inline-block;'></div>");
   }
   echo ("</td>");
+  if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock()) echo ("<td style='padding-left:5px; font-size:18px; font-weight:650; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . "';>Block With " . $combatChainState[$CCS_RequiredEquipmentBlock] . " Equipment Required</td>");
   echo ("</tr></table>");
+
   if ($displayCombatChain) {
     for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
