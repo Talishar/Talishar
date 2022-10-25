@@ -49,12 +49,8 @@ if ($isGamePlayer) {
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
-if ($cacheVal > 10000000) {
-  SetCachePiece($gameName, 1, 1);
-  $lastUpdate = 0;
-}
 $lastCurrentCachePiece = intval(GetCachePiece($gameName, 9));
-while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentPlayer == $lastCurrentCachePiece) && $cacheVal <= $lastUpdate) {
+while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece == 0 || $lastCurrentPlayer == $lastCurrentCachePiece) && $cacheVal <= $lastUpdate) {
   usleep(100000); //100 milliseconds
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
