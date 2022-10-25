@@ -644,7 +644,7 @@
         xmlhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             if (this.responseText == "NaN") {} //Do nothing, game is invalid
-            if (this.responseText.split("REMATCH")[0] == "1234") {
+            else if (this.responseText.split("REMATCH")[0] == "1234") {
               location.replace('GameLobby.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&authKey=<?php echo ($authKey); ?>');
             } else if (parseInt(this.responseText) != 0) {
               HideCardDetail();
