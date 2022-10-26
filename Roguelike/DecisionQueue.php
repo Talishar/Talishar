@@ -1,5 +1,7 @@
 <?php
 
+include "EncounterDictionary.php";
+
 function ClearPhase($player)
 {
   $decisionQueue = &GetZone($player, "DecisionQueue");
@@ -71,6 +73,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
     switch($phase)
     {
       case "SETENCOUNTER":
+        WriteLog($parameter1);
         $params = explode("-", $parameter1);
         $encounter = &GetZone($player, "Encounter");
         $encounter[0] = $params[0];
@@ -124,12 +127,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       case 2:
         AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
         AddDecisionQueue("CAMPFIRE", $player, "-");
-        AddDecisionQueue("SETENCOUNTER", $player, "5-BeforeFight");
+        AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
         break;
       case 4:
         AddDecisionQueue("BUTTONINPUT", $player, "Loot,Pay_Respects");
         AddDecisionQueue("BATTLEFIELD", $player, "-");
-        AddDecisionQueue("SETENCOUNTER", $player, "3-BeforeFight");
+        AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
         break;
       default: break;
     }

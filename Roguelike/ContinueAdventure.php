@@ -28,15 +28,5 @@
 
   exit;
 
-  function GetNextEncounter($previousEncounter)
-  {
-    switch($previousEncounter)
-    {
-      case 1: return "4-PickMode";
-      case 3: return "2-PickMode";
-      case 5: return "6-PickMode";
-      default: return "";
-    }
-  }
 
 ?>
