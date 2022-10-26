@@ -6,7 +6,7 @@ function EncounterAI()
   $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
-    for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
+    for($i=0; $i<=10 && $currentPlayerIsAI; ++$i)
     {
       if(count($decisionQueue) > 0)
       {
@@ -45,6 +45,14 @@ function EncounterAI()
       }
       ProcessMacros();
       $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
+      if($i == 10 && $currentPlayerIsAI)
+      {
+        for($i=0; $i<=10 && $currentPlayerIsAI; ++$i)
+        {
+          PassInput();
+          $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
+        }
+      }
     }
   }
 }

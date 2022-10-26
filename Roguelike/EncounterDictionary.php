@@ -72,9 +72,9 @@ function GetNextEncounter($previousEncounter)
   switch($previousEncounter)
   {
     case 1: return "6-PickMode";
-    case 2: return "7-BeforeFight";
+    case 2: return "3-BeforeFight";
     case 3: return "4-PickMode";
-    case 4: return "3-BeforeFight";
+    case 4: return "7-BeforeFight";
     case 5: return "2-PickMode";
     case 6: return "5-BeforeFight";
     default: return "";
