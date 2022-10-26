@@ -30,6 +30,8 @@
   }
 </style>
 
+<link rel="shortcut icon" type="image/png" href="../Images/TeenyCoin.png" />
+
 </head>
 
 <body style='z-index:-200;'>
