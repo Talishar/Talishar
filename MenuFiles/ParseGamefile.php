@@ -52,6 +52,7 @@
   $p1deckbuilderID = trim(fgets($gameFileHandler));
   $p2deckbuilderID = trim(fgets($gameFileHandler));
   $roguelikeGameID = trim(fgets($gameFileHandler));
+  $p1StartingHealth = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

@@ -17,6 +17,7 @@
   $charZone = &GetZone($playerID, "Character");
   $cards = &GetZone($playerID, "Deck");
   $encounter = &GetZone($playerID, "Encounter");
+  $health = &GetZone($playerID, "Health");
 
   $deckCards = "";
   $sideboardCards = "";
@@ -70,7 +71,7 @@
 
   $encounterName = GetEncounterName($encounter[0]);
 
-  header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=" . $encounterName . "&roguelikeGameID=" . $gameName . "&deck=ROGUELIKE-" . $gameName);
+  header("Location: " . $redirectPath . "/CreateGame.php?deckTestMode=" . $encounterName . "&roguelikeGameID=" . $gameName . "&deck=ROGUELIKE-" . $gameName. "&startingHealth=" . $health[0]);
 
   function GetEncounterName($encounterId)
   {
