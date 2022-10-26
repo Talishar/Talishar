@@ -159,6 +159,7 @@ function DYNPitchValue($cardID)
         case "DYN005": return 0;
         case "DYN039": return 1;
         case "DYN040": return 2;
+        case "DYN069": return 0; // TODO: Quicksilver Dagger CardID might change on set release
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN188": case "DYN206": case "DYN230": return 1;
