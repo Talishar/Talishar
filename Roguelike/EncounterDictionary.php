@@ -17,7 +17,33 @@ function EncounterDescription($encounter, $subphase)
     case 5:
       if($subphase == "BeforeFight") return "You're attacked by a Barraging Brawnhide.";
       else if($subphase == "AfterFight") return "You defeated the Barraging Brawnhide.";
+    case 6:
+      return "You found a library. Choose what you want to do.";
     default: return "No encounter text.";
+  }
+}
+
+
+function InitializeEncounter($player, $encounter, $subphase)
+{
+  switch($encounter)
+  {
+    case 2:
+      AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
+      AddDecisionQueue("CAMPFIRE", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 4:
+      AddDecisionQueue("BUTTONINPUT", $player, "Loot,Pay_Respects");
+      AddDecisionQueue("BATTLEFIELD", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 6:
+      AddDecisionQueue("BUTTONINPUT", $player, "Search,Leave");
+      AddDecisionQueue("LIBRARY", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    default: break;
   }
 }
 
@@ -35,6 +61,8 @@ function EncounterImage($encounter, $subphase)
       return "WTR194_cropped.png";
     case 5:
       return "WTR178_cropped.png";
+    case 6:
+      return "UPR199_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
@@ -43,11 +71,12 @@ function GetNextEncounter($previousEncounter)
 {
   switch($previousEncounter)
   {
-    case 1: return "4-PickMode";
-    case 2: return "5-BeforeFight";
-    case 3: return "2-PickMode";
+    case 1: return "6-PickMode";
+    case 2: return "7-BeforeFight";
+    case 3: return "4-PickMode";
     case 4: return "3-BeforeFight";
-    case 5: return "6-PickMode";
+    case 5: return "2-PickMode";
+    case 6: return "5-BeforeFight";
     default: return "";
   }
 }

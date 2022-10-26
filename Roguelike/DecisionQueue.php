@@ -114,27 +114,20 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           default: break;
         }
+      case "LIBRARY":
+        switch($lastResult)
+        {
+          case "Search":
+            WriteLog("You searched the library and found an interesting book about fighting techniques.");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4));
+            break;
+          case "Leave":
+            break;
+        }
         return 1;
       default:
         return "NOTSTATIC";
-    }
-  }
-
-  function InitializeEncounter($player, $encounter, $subphase)
-  {
-    switch($encounter)
-    {
-      case 2:
-        AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
-        AddDecisionQueue("CAMPFIRE", $player, "-");
-        AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
-        break;
-      case 4:
-        AddDecisionQueue("BUTTONINPUT", $player, "Loot,Pay_Respects");
-        AddDecisionQueue("BATTLEFIELD", $player, "-");
-        AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
-        break;
-      default: break;
     }
   }
 
