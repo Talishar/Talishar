@@ -43,9 +43,18 @@ $cardIconTop = intval($cardSize / 4.2); //30
 
   //Include js files
   echo("<script src=\"../jsInclude.js\"></script>");
+  echo("<script>SubmitInput = function(mode, params, fullRefresh = false){   var ajaxLink =
+      'ProcessInput.php?gameName=' + document.getElementById('gameName').value;
+    ajaxLink += '&playerID=' + document.getElementById('playerID').value;
+    ajaxLink += '&authKey=' + document.getElementById('authKey').value;
+    ajaxLink += '&mode=' + mode;
+    ajaxLink += params;
+    document.location = ajaxLink;
+  }</script>");
 
   //Display hidden elements
   echo("<div id=\"cardDetail\" style=\"z-index:1000; display:none; position:absolute;\"></div>");
+  echo("<div id=\"authKey\" style=\"display:none;\"></div>");
 
 
   $encounter = &GetZone($playerID, "Encounter");
@@ -76,49 +85,58 @@ $cardIconTop = intval($cardSize / 4.2); //30
   echo("<center><div style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>" . Card("CardBack", "../concat", $cardSize, 0, 1, 0, 0, count($deck)) . "</div></center>");
 
   $myDQ = &GetZone($playerID, "DecisionQueue");
-  echo("<h2>" . EncounterDescription($encounter[0], $encounter[1]) . "</h2>");
-  echo("<BR>");
 
+  $encounterContent = "";
   if(count($myDQ) > 0)
   {
     if($myDQ[0] == "CHOOSECARD")
     {
       $options = explode(",", $myDQ[1]);
-      echo("<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>");
-      echo("<h2>Choose a card</h2>");
-      echo("<div style='display:inline;'>");
+      //$encounterContent .= "<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>";
+      $encounterContent .= "<h2>Choose a card</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
       for($i=0; $i<count($options); ++$i)
       {
-        echo(Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i])));
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
       }
-      echo("</div>");
-      echo ("<div>");
+      $encounterContent .= "</div>";
+      //$encounterContent .= "<div>";
     }
     else if($myDQ[0] == "BUTTONINPUT")
     {
-      $content = "<div display:inline;'>";
+      $encounterContent = "<div display:inline;'>";
       $options = explode(",", $myDQ[1]);
       for ($i = 0; $i < count($options); ++$i) {
-        $content .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 2, strval($options[$i]), "24px");
+        $encounterContent .= CreateButton($playerID, str_replace("_", " ", $options[$i]), 2, strval($options[$i]), "24px");
       }
-      $content .= "</div>";
-      echo CreatePopup("BUTTONINPUT", [], 0, 1, "Choose a button", 1, $content);
+      $encounterContent .= "</div>";
+      $encounterContent .= "<BR>";
+      //echo CreatePopup("BUTTONINPUT", [], 0, 1, "Choose a button", 1, $content);
     }
     else {
-      echo("Bug. This phase not implemented: " . $myDQ[0]);
+      $encounterContent .= "Bug. This phase not implemented: " . $myDQ[0];
     }
   }
   else {
-    echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/Roguelike/PlayEncounter.php'>");
-    echo("<input type='hidden' id='gameName' name='gameName' value='$gameName' />");
-    echo("<input type='hidden' id='playerID' name='playerID' value='$playerID' />");
-    echo("<input type='submit' style='font-size:20px;' value='Play Encounter' />");
-    echo("</form>");
+    $encounterContent .= "<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/Roguelike/PlayEncounter.php'>";
+    $encounterContent .= "<input type='hidden' id='gameName' name='gameName' value='$gameName' />";
+    $encounterContent .= "<input type='hidden' id='playerID' name='playerID' value='$playerID' />";
+    $encounterContent .= "<input type='submit' style='font-size:20px;' value='Play Encounter' />";
+    $encounterContent .= "</form>";
   }
 
   echo("</div>");//End cards div
 
   echo("</div>");//End left sidebar div
+
+  $content = "<div style='width:800px;'>";
+  $content .= "<center><img src='../crops/" . EncounterImage($encounter[0], $encounter[1]) . "' /></center>";
+  $content .= "<BR>";
+  $content .= "</div>";
+  $content .= "<center>" . $encounterContent . "</center>";
+  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription($encounter[0], $encounter[1]), 1, $content, overCombatChain:true);
+  //EncounterImage($encounter[0], $encounter[1]);
+
 
   echo("</div>");//End background
 
