@@ -39,7 +39,6 @@ function EncounterImage($encounter, $subphase)
   }
 }
 
-
 function GetNextEncounter($previousEncounter)
 {
   switch($previousEncounter)
@@ -51,6 +50,49 @@ function GetNextEncounter($previousEncounter)
     case 5: return "6-PickMode";
     default: return "";
   }
+}
+
+function GetRandomCards($number)
+{
+  $rv = "";
+  for($i=0; $i<$number; ++$i)
+  {
+    if($rv != "") $rv .= ",";
+    $rv .= RandomWarriorCommon();
+  }
+  return $rv;
+}
+
+function RandomWarriorCommon()
+{
+  $number = rand(0,38);
+  if($number <= 17)
+  {
+    $rv = "WTR";
+    $number = 132 + $number;
+    $rv .= $number;
+  }
+  else if($number <= 26)
+  {
+    $rv = "CRU";
+    $number = 88 + $number - 18;
+    if($number < 100) $number = "0" . $number;
+    $rv .= $number;
+  }
+  else if($number <= 29)
+  {
+    $rv = "MON";
+    $number = 116 + $number - 27;
+    $rv .= $number;
+  }
+  else if($number <= 38)
+  {
+    $rv = "EVR";
+    $number = 60 + $number - 30;
+    if($number < 100) $number = "0" . $number;
+    $rv .= $number;
+  }
+  return $rv;
 }
 
 ?>
