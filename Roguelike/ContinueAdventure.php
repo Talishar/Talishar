@@ -19,7 +19,7 @@
   $encounter = &GetZone($playerID, "Encounter");
   $encounter[1] = "AfterFight";
 
-  AddDecisionQueue("CHOOSECARD", $playerID, "MON110,WTR146,WTR135");
+  AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));
   AddDecisionQueue("SETENCOUNTER", $playerID, GetNextEncounter($encounter[0]));
 
   include "WriteGamestate.php";
