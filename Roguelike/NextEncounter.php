@@ -89,8 +89,6 @@ $cardIconTop = intval($cardSize / 4.2); //30
   $myDQ = &GetZone($playerID, "DecisionQueue");
 
   $encounterContent = "";
-  $overCombatChain = true;
-  $bigPopup = false;
   if(count($myDQ) > 0)
   {
     if($myDQ[0] == "CHOOSECARD")
@@ -104,8 +102,6 @@ $cardIconTop = intval($cardSize / 4.2); //30
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
       }
       $encounterContent .= "</div>";
-      $bigPopup = true;
-      $overCombatChain = false;
       //$encounterContent .= "<div>";
     }
     else if($myDQ[0] == "BUTTONINPUT")
@@ -140,7 +136,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
   $content .= "<BR>";
   $content .= "</div>";
   $content .= "<center>" . $encounterContent . "</center>";
-  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription($encounter[0], $encounter[1]), 1, $content, overCombatChain:$overCombatChain, big:$bigPopup);
+  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription($encounter[0], $encounter[1]), 1, $content, size:2);
   //EncounterImage($encounter[0], $encounter[1]);
 
 

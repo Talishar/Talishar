@@ -310,7 +310,7 @@ function CreateRadioButton($input, $value, $immediateSubmitMode, $currentInput, 
   return $rv;
 }
 
-function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "")
+function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "", $size=0)
 {
   global $darkMode, $cardSize, $playerID;
   $style = "";
@@ -320,6 +320,14 @@ function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $
   $left = "25%";
   $width = "50%";
   $height = "30%";
+  if($size == 2)
+  {
+    $top = "10%";
+    $left = "25%";
+    $width = "50%";
+    $height = "80%";
+    $overCC = 1001;
+  }
   if ($big) {
     $top = "5%";
     $left = "5%";
