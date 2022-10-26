@@ -39,22 +39,5 @@ function EncounterImage($encounter, $subphase)
   }
 }
 
-function InitializeEncounter($player, $encounter, $subphase)
-{
-  switch($encounter)
-  {
-    case 2:
-      AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
-      AddDecisionQueue("CAMPFIRE", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, "5-BeforeFight");
-      break;
-    case 4:
-      AddDecisionQueue("BUTTONINPUT", $player, "Loot,Pay_Respects");
-      AddDecisionQueue("BATTLEFIELD", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, "3-BeforeFight");
-      break;
-    default: break;
-  }
-}
 
 ?>
