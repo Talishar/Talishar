@@ -101,6 +101,7 @@ if ($deckTestMode != "") {
     case "Woottonhog": $opponentDeck = "./Roguelike/Encounters/Woottonhog.txt"; break;
     case "RavenousRabble": $opponentDeck = "./Roguelike/Encounters/RavenousRabble.txt"; break;
     case "BarragingBrawnhide": $opponentDeck = "./Roguelike/Encounters/BarragingBrawnhide.txt"; break;
+    case "ShockStriker": $opponentDeck = "./Roguelike/Encounters/ShockStriker.txt"; break;
     default: break;
   }
   copy($opponentDeck, "./Games/" . $gameName . "/p2Deck.txt");

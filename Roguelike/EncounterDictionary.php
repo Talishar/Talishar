@@ -19,6 +19,9 @@ function EncounterDescription($encounter, $subphase)
       else if($subphase == "AfterFight") return "You defeated the Barraging Brawnhide.";
     case 6:
       return "You found a library. Choose what you want to do.";
+    case 7:
+      if($subphase == "BeforeFight") return "You're attacked by a Shock Striker.";
+      else if($subphase == "AfterFight") return "You defeated the Shock Striker.";
     default: return "No encounter text.";
   }
 }
@@ -63,6 +66,8 @@ function EncounterImage($encounter, $subphase)
       return "WTR178_cropped.png";
     case 6:
       return "UPR199_cropped.png";
+    case 7:
+      return "ELE197_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
@@ -77,6 +82,7 @@ function GetNextEncounter($previousEncounter)
     case 4: return "3-BeforeFight";
     case 5: return "4-PickMode";
     case 6: return "5-BeforeFight";
+    case 7: return "8-PickMode";
     default: return "";
   }
 }
