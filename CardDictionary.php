@@ -1698,7 +1698,7 @@ function AbilityHasGoAgain($cardID)
     return UPRAbilityHasGoAgain($cardID);
   } else if ($set == "DYN") {
     return DYNAbilityHasGoAgain($cardID);
-  } else {
+  } else if ($set == "ROG") {
     return ROGUEAbilityHasGoAgain($cardID);
   }
   switch ($cardID) {
