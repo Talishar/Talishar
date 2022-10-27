@@ -89,6 +89,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     return RVDPlayAbility($cardID, $from, $resourcesPaid);
   } else if ($set == "DYN") {
     return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  } else {
+    return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
   $rv = "";
   switch ($cardID) {

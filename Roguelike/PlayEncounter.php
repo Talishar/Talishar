@@ -80,6 +80,7 @@
       case 1: return "Woottonhog";
       case 3: return "RavenousRabble";
       case 5: return "BarragingBrawnhide";
+      case 7: return "ShockStriker";
       default: return "Woottonhog";
     }
   }
