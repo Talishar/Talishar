@@ -22,6 +22,11 @@ function EncounterDescription($encounter, $subphase)
     case 7:
       if($subphase == "BeforeFight") return "You're attacked by a Shock Striker.";
       else if($subphase == "AfterFight") return "You defeated the Shock Striker.";
+    case 8:
+      return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
+    case 9:
+      if($subphase == "BeforeFight") return "You're attacked by a group of bandits.";
+      else if($subphase == "AfterFight") return "You defeated the group of bandits.";
     default: return "No encounter text.";
   }
 }
@@ -46,6 +51,11 @@ function InitializeEncounter($player, $encounter, $subphase)
       AddDecisionQueue("LIBRARY", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
+    case 8:
+      AddDecisionQueue("BUTTONINPUT", $player, "Enter_Stream,Leave");
+      AddDecisionQueue("VOLTHAVEN", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
     default: break;
   }
 }
@@ -68,6 +78,10 @@ function EncounterImage($encounter, $subphase)
       return "UPR199_cropped.png";
     case 7:
       return "ELE197_cropped.png";
+    case 8:
+      return "ELE112_cropped.png";
+    case 9:
+      return "MON269_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
@@ -83,6 +97,7 @@ function GetNextEncounter($previousEncounter)
     case 5: return "4-PickMode";
     case 6: return "5-BeforeFight";
     case 7: return "8-PickMode";
+    case 8: return "9-BeforeFight";
     default: return "";
   }
 }

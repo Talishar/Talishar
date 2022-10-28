@@ -126,6 +126,27 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
         return 1;
+      case "VOLTHAVEN":
+        switch($lastResult)
+        {
+          case "Enter_Stream":
+            $health = &GetZone($player, "Health");
+            if(rand(0,9) < 3)
+            {
+              $health[0] -= 3;
+              if($health[0] < 0) $health[0] = 1;
+              WriteLog("You mistimed your jump and got zapped by the energy.");
+            }
+            else {
+              $health[0] += 5;
+              if($health[0] > 20) $health[0] = 20;
+              WriteLog("You timed your jump perfectly and feel reinvigorated by the stream of energy.");
+            }
+            break;
+          case "Leave":
+            break;
+        }
+        return 1;
       default:
         return "NOTSTATIC";
     }
