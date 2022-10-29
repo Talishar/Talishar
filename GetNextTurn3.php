@@ -183,7 +183,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Their Health
   $response->opponentHealth = $theirHealth;
   //Their soul count
-  $response->opponentSoulCount = $theirSoul;
+  $response->opponentSoulCount = count($theirSoul);
 
   //Display their discard, pitch, deck, and banish
   $response->opponentDiscardCount = count($theirDiscard);
@@ -253,7 +253,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //My Health
   $response->playerHealth = $myHealth;
   //My soul count
-  $response->playerSoul = $mySoul;
+  $response->playerSoulCount = count($mySoul);
 
   $response->playerDiscardCount = count($myDiscard);
   $response->playerDiscardCard = JSONRenderedCard(count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
