@@ -69,9 +69,13 @@ $card = (object) [
   'isFrozen' => $isFrozen,
   'gem' => $gem,
 ];
+
+// To reduce space/size strip out all values that are null.
+// On the FE repopulate the null values with the defaults like the binary blob.
 $card = (object) array_filter((array) $card, function ($val) {
     return !is_null($val);
 });
+
 return $card;
 }
 
