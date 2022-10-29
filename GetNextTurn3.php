@@ -131,6 +131,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     exit;
   }
 
+  $response->lastUpdate = $cacheVal;
+
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if ($playerID != 3 && $authKey != $targetAuth) {
     $response->errorMessage = "999999ENDTIMESTAMP";
