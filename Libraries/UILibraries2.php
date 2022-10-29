@@ -46,6 +46,35 @@ function ClientRenderedCard($cardNumber, $action = 0, $overlay = 0, $borderColor
   return $rv;
 }
 
+function JSONRenderedCard($cardNumber, $action=NULL, $overlay=NULL, $borderColor=NULL, $counters=NULL, 
+$actionDataOverride=NULL, $lifeCounters=NULL, $defCounters=NULL, $atkCounters=NULL, $controller=NULL, 
+$type=NULL, $sType=NULL, $restriction=NULL, $isBroken=NULL, $onChain=NULL, $isFrozen=NULL, $gem=NULL)
+{
+$card = (object) [
+  'cardNumber' => $cardNumber,
+  'action' => $action,
+  'overlay' => $overlay,
+  'borderColor' => $borderColor,
+  'counters' => $counters,
+  'actionDataOverride' => $actionDataOverride,
+  'lifeCounters' => $lifeCounters,
+  'defCounters' => $defCounters,
+  'atkCounters' => $atkCounters,
+  'controller' => $controller,
+  'type' => $type,
+  'sType' => $sType,
+  'restriction' => $restriction,
+  'isBroken' => $isBroken,
+  'onChain' => $onChain,
+  'isFrozen' => $isFrozen,
+  'gem' => $gem,
+];
+$card = (object) array_filter((array) $card, function ($val) {
+    return !is_null($val);
+});
+return $card;
+}
+
 //Rotate is deprecated
 function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $overlay = 0, $borderColor = 0, $counters = 0, $actionDataOverride = "", $id = "", $rotate = false, $lifeCounters = 0, $defCounters = 0, $atkCounters = 0, $from = "", $controller = 0)
 {

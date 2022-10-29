@@ -60,3 +60,23 @@ function EchoLog($gameName, $playerID)
     fclose($handler);
   }
 }
+
+function JSONLog($gameName, $playerID)
+{
+  $response = "";
+  $filename = "./Games/" . $gameName . "/gamelog.txt";
+  $filesize = filesize($filename);
+  if ($filesize > 0) {
+    $handler = fopen($filename, "r");
+    $line = str_replace("\r\n", "<br>", fread($handler, $filesize));
+    //$line = str_replace("<PLAYER1COLOR>", $playerID==1 ? "Blue" : "Red", $line);
+    //$line = str_replace("<PLAYER2COLOR>", $playerID==2 ? "Blue" : "Red", $line);
+    $red = "#cb0202";
+    $blue = "#128ee5";
+    $line = str_replace("<PLAYER1COLOR>", $playerID == 1 || $playerID == 3 ? $blue : $red, $line);
+    $line = str_replace("<PLAYER2COLOR>", $playerID == 2 ? $blue : $red, $line);
+    $response = $line;
+    fclose($handler);
+  }
+  return $response;
+}
