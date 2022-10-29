@@ -334,7 +334,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
         if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
         $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-        $myArse .= JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
+        array_push($myArse, JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction));
       }
     }
    }
