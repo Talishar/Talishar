@@ -1,16 +1,26 @@
 <?php
 
 include 'Libraries/HTTPLibraries.php';
+include "HostFiles/Redirector.php";
+include "Libraries/SHMOPLibraries.php";
+include "WriteLog.php";
+
+header("Access-Control-Allow-Origin: https://talishar.net");
+header('Content-Type: application/json; charset=utf-8');
+$response = new stdClass();
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
+  $response->errorMessage = ("Invalid game name.");
+  echo(json_encode($response));
   exit;
 }
+
 $playerID = TryGet("playerID", 3);
 if(!is_numeric($playerID)) {
-  echo ("Invalid player ID.");
+  $response->errorMessage = ("Invalid player ID.");
+  echo(json_encode($response));
   exit;
 }
 
@@ -22,13 +32,6 @@ $windowHeight = intval(TryGet("windowHeight", 0));
 if ($lastUpdate > 10000000) {
   $lastUpdate = 0;
 }
-
-include "HostFiles/Redirector.php";
-include "Libraries/SHMOPLibraries.php";
-include "WriteLog.php";
-
-header("Access-Control-Allow-Origin: https://talishar.net");
-header('Content-Type: application/json; charset=utf-8');
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
@@ -94,6 +97,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   include "Libraries/UILibraries2.php";
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
+
   if ($opponentDisconnected && !IsGameOver()) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
@@ -129,24 +133,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 2, $currentTime);
     SetCachePiece($gameName, 3, $currentTime);
-    echo ("1234REMATCH");
+    $response->errorMessage = "1234REMATCH";
+    echo(json_encode($response));
     exit;
   }
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if ($playerID != 3 && $authKey != $targetAuth) {
-    echo ("999999ENDTIMESTAMP");
+    $response->errorMessage = "999999ENDTIMESTAMP";
+    echo(json_encode($response));
     exit;
-  }
-
-  // echo (GetCachePiece($gameName, 1) . "ENDTIMESTAMP");
-
-  if ($currentPlayer == $playerID) {
-    $icon = "ready.png";
-    $readyText = "You are the player with priority.";
-  } else {
-    $icon = "notReady.png";
-    $readyText = "The other player has priority.";
   }
 
   if (count($turn) == 0) {
@@ -155,64 +151,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     exit();
   }
 
-  if($windowWidth/16 > $windowHeight/9) $windowWidth = $windowHeight/9*16;
-
-  $cardSize = ($windowWidth != 0 ? intval($windowWidth / 13) : 120);
-  //$cardSize = ($windowWidth != 0 ? intval($windowWidth / 16) : 120);
-  if (!IsDynamicScalingEnabled($playerID)) $cardSize = 120; //Temporarily disable dynamic scaling
-  $rightSideWidth = (IsDynamicScalingEnabled($playerID) ? intval($windowWidth * 0.15) : 200);
-  $cardSizeAura = intval($cardSize * .8); //95;
-  $cardSizeEquipment = intval($cardSize * .8);
-  $cardEquipmentWidth = intval($cardSizeEquipment * 0.71);
-  $cardWidth = intval($cardSize * 0.72);
-  $cardHeight = $cardWidth;
-  $cardIconSize = intval($cardSize / 3); //40
-  $cardIconLeft = intval($cardSize / 4); //30
-  $cardIconTop = intval($cardSize / 4); //30
-  $bigCardSize = intval($cardSize * 1.667); //200;
-  $permLeft = intval(GetCharacterLeft("E", "Arms")) + $cardWidth + 20;
-  $permWidth = "calc(50% - " . ($cardWidth * 2 + 30 + $permLeft) . "px)";
-  $permHeight = $cardSize * 2 + 20;
-  $counterHeight = IsDynamicScalingEnabled($playerID) ? intval($cardSize / 4.6) : 28;
-
-  $darkMode = IsDarkMode($playerID);
-  $manualMode = IsManualMode($playerID);
-
-  if ($darkMode) $backgroundColor = "rgba(74, 74, 74, 0.9)";
-  else $backgroundColor = "rgba(235, 235, 235, 0.9)";
-
-  $blankZone = ($darkMode ? "blankZoneDark" : "blankZone");
-  $borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
-  $fontColor = ($darkMode ? "#1a1a1a" : "#DDD");
+  $blankZone = 'blankZone';
 
   //Choose Cardback
   $MyCardBack = GetCardBack($playerID);
   $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
   $otherPlayer = ($playerID == 1 ? 2 : 1);
 
-  if ($turn[0] == "PDECK" || $turn[0] == "ARS" || (count($layers) > 0 && $layers[0] == "ENDTURN")) {
-    $passLabel = "End Turn";
-    $fontSize = 30;
-    $left = 65;
-    $top = 20;
-  } else {
-    $passLabel = "Pass";
-    $fontSize = 36;
-    $left = 85;
-    $top = 15;
-  }
-
-  $response = new stdClass();
-
   //Display combat chain
   $combatChainContents = array();
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    //$action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
-    //$actionDisabled = 0;
-    //echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i)));
     array_push($combatChainContents, JSONRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i+1]));
   }
-  $response->combatChain = $combatChainContents;
+  $response->activeChainLink = $combatChainContents;
 
   //Display layer
   $layerContents = array();
@@ -238,6 +189,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentDiscardCount = count($theirDiscard);
   $response->opponentDiscardCard = JSONRenderedCard(count($theirDiscard) > 0 ? $theirDiscard[0] : $blankZone);
 
+  // TODO: Might need to put pitch as an array so FE can "stack" them like in the current UI
   $response->opponentPitchCount = count($theirPitch);
   $response->opponentPitchCard = JSONRenderedCard((count($theirPitch) > 0 ? $theirPitch[0] : $blankZone));
 
@@ -290,8 +242,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerHand = $myHandContents;
 
-  // Need to fudge for banish UI stuff
-
+  // TODO: Need to fudge for banish UI stuff (or should this be done on the FE?)
   // if ($playerID != 3)
   // {
   //   $banishUI = BanishUIMinimal("HAND");
@@ -307,6 +258,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerDiscardCount = count($myDiscard);
   $response->playerDiscardCard = JSONRenderedCard(count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
 
+  // TODO: Might need to put pitch as an array so FE can "stack" them like in the current UI
   $response->playerPitchCount = count($myPitch);
   $response->playerPitchCard = JSONRenderedCard((count($myPitch) > 0 ? $myPitch[0] : $blankZone));
 
@@ -373,17 +325,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $myArse = array();
    if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
-    if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
-      array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
-    } else {
-      if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
-      else $playable = false;
-      $border = CardBorderColor($myHand[$i], "HAND", $playable);
-      $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
-      if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-      $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-      $myArse .= JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
-    }
+      if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
+        array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
+      } else {
+        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+        else $playable = false;
+        $border = CardBorderColor($myHand[$i], "HAND", $playable);
+        $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
+        if($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+        $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
+        $myArse .= JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction);
+      }
     }
    }
    $response->playerArse = $myArse;
@@ -394,7 +346,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $damage = $chainLinkSummary[$i * ChainLinkSummaryPieces()];
     array_push($chainLinkOutput, $damage > 0 ? "hit" : "no-hit");
    }
-   $response->chainLinkOutput = $chainLinkOutput;
+   $response->combatChainLinks = $chainLinkOutput;
 
    // their allies
    $theirAlliesOutput = array();
@@ -478,6 +430,53 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
    //Now the log!
    $response->chatLog = JSONLog($gameName, $playerID);
+
+  // opponent name
+   $response->opponentName = "Big Dum Dum";
+
+   // my name
+   $response->playerName = "Our heroic main player";
+
+   // TODO: Array of opponent effects
+   // opponent effects (array of JSONRenderedCard)
+   $opponentEffects = array();
+   array_push($opponentEffects, JSONRenderedCard('WTR001'));
+   $response->opponentEffects = $opponentEffects;
+
+   // TODO: Array of player effects
+   // my effects (array of JSONRenderedCard)
+   $playerEffects = array();
+   array_push($playerEffects, JSONRenderedCard('UPR073'));
+   $response->playerEffects = $playerEffects;
+
+   // TODO: determine the turnPhase and what corresponds to what.
+   // phase of the turn (for the tracker widget)
+   $response->turnPhase = 1;
+
+   // do we have priority?
+   $response->havePriority = $currentPlayer == $playerID ? true : false;
+
+   // TODO: communicate this to the player
+   $activePlayerMustMakeAChoice = false;
+   // the player has a window and needs to decide something.
+   if ($activePlayerMustMakeAChoice) {
+    $selectionWindow = new stdClass();
+    $selectionWindow->text = "You played an art of war you must select a bunch of stuff";
+    $selectionWindow->isMultipleSelection = true;
+    // this array could contain an array of strings. or an array of JSONCardObjects I guess.
+    $selectionWindow->options = array('+1{{atk}} and +1{{def}} until end of turn', 'banish a card draw 2', 'play a defending card from Arsenal (aka you\'re losing)', 'Next attack you play gains **go again**');
+    $response->selectionWindow = $selectionWindow;
+   }
+   $response->youMustMakeAChoice = $activePlayerMustMakeAChoice;
+
+   // TODO: opponent APs
+   $response->opponentAP = 0;
+
+   // TODO: player APs
+   $response->playerAP = 0;
+
+   // TODO: last played Card
+   $response->lastPlayedCard = NULL;
 
    echo json_encode($response);
    exit;
