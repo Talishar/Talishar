@@ -29,10 +29,6 @@ $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
 
-if ($lastUpdate > 10000000) {
-  $lastUpdate = 0;
-}
-
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
 
@@ -49,12 +45,9 @@ if ($isGamePlayer) {
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
-if ($cacheVal > 10000000) {
-  SetCachePiece($gameName, 1, 1);
-  $lastUpdate = 0;
-}
+
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
-  usleep(50000); //50 milliseconds
+  usleep(100000); //100 milliseconds
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
   if ($isGamePlayer) {
