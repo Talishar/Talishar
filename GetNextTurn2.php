@@ -25,10 +25,6 @@ $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
 $lastCurrentPlayer = intval(TryGet("lastCurrentPlayer", 0));
 
-if ($lastUpdate > 10000000) {
-  $lastUpdate = 0;
-}
-
 include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
@@ -140,7 +136,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     exit;
   }
 
-  echo (GetCachePiece($gameName, 1) . "ENDTIMESTAMP");
+  echo ($cacheVal . "ENDTIMESTAMP");
 
   if ($currentPlayer == $playerID) {
     $icon = "ready.png";
