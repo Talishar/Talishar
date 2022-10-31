@@ -982,6 +982,7 @@
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("SHOWSELECTEDHANDCARD", $otherPlayer, "-", 1);
         for($i=0; $i<$times; ++$i)
         {
           AddDecisionQueue("PICKACARD", $currentPlayer, "-", 1);
