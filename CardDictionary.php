@@ -2371,6 +2371,8 @@ function Is1H($cardID)
     case "ELE202":
       return true;
     case "DYN069":
+    case "DYN115":
+    case "DYN116":
       return true;
     default:
       return false;

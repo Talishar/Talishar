@@ -78,7 +78,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     $params = explode(",", $cardID);
     $cardID = $params[0];
     switch ($cardID) {
-      case "DYN115": return true;
+      case "DYN115": case "DYN116": return true;
         default:
             return false;
     }
@@ -366,20 +366,19 @@ function DYNHitEffect($cardID)
         $deck = &GetDeck($defPlayer);
         if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
         $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $otherPlayer, "DECK", "-", $mainPlayer);
+        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
       }
       break;
     case "DYN122":
     if (IsHeroAttackTarget()) {
-        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-        $deck = &GetDeck($otherPlayer);
+        $deck = &GetDeck($defPlayer);
         if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
         $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $otherPlayer, "DECK", "-", $mainPlayer);
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA," . $mainPlayer, 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $defPlayer, "HAND,NA," . $mainPlayer, 1);
       }
       break;
     case "DYN124": case "DYN125": case "DYN126":
@@ -390,7 +389,7 @@ function DYNHitEffect($cardID)
         $deck = &GetDeck($defPlayer);
         if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
         $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $otherPlayer, "DECK", "-", $mainPlayer);
+        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
       }
       break;
     default: break;
@@ -436,7 +435,7 @@ function ContractType($cardID)
 function ContractCompleted($player, $cardID)
 {
   global $CS_NumContractsCompleted;
-  WriteLog("Player " . $banishedBy . " completed the contract for " . CardLink($cardID, $cardID) . ".");
+  WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID) . ".");
   IncrementClassState($player, $CS_NumContractsCompleted);
   switch($cardID)
   {
