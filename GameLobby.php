@@ -554,6 +554,8 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
         return true;
       case "CRU079":
         return true;
+      case "DYN115":
+        return true;
       default:
         return false;
         break;
@@ -571,6 +573,8 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
         return "CRU052";
       case "CRU079":
         return "CRU080";
+      case "DYN115":
+        return "DYN116";
       default:
         break;
     }

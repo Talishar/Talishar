@@ -898,7 +898,7 @@ function EffectBlockModifier($cardID)
       return 1;
     case "ELE143":
       return 1;
-    case "DYN115":
+    case "DYN115": case "DYN116":
       $rv = 0;
       for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
       {
