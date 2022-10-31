@@ -906,7 +906,7 @@ function EffectBlockModifier($cardID)
       {
         if($combatChain[$i+1] != $defPlayer) continue;
         $cardType = CardType($combatChain[$i]);
-        if($cardType == "A") $rv -= 1;
+        if($cardType == "AA") $rv -= 1;
       }
       return $rv;
     default:
@@ -1937,7 +1937,7 @@ function CharacterStartTurnAbility($index)
     case "DYN118":
       if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2)
       {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silver to re-equip Mask of Perdition?");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip Mask of Perdition?");
         AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
