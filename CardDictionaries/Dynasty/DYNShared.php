@@ -369,6 +369,11 @@ function DYNHitEffect($cardID)
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
       }
       break;
+    case "DYN121":
+      if (IsHeroAttackTarget() && IsRoyal($defPlayer)){
+        PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
+      }
+      break;
     case "DYN122":
     if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
