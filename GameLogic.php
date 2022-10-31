@@ -892,11 +892,21 @@ function EffectAttackModifier($cardID)
 
 function EffectBlockModifier($cardID)
 {
+  global $combatChain, $defPlayer;
   switch ($cardID) {
     case "ELE000-2":
       return 1;
     case "ELE143":
       return 1;
+    case "DYN115":
+      $rv = 0;
+      for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+      {
+        if($combatChain[$i+1] != $defPlayer) continue;
+        $cardType = CardType($combatChain[$i]);
+        if($cardType != "DR" && $cardType != "I") $rv -= 1;
+      }
+      return $rv;
     default:
       return 0;
   }

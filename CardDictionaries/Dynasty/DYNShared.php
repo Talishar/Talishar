@@ -42,6 +42,7 @@ function DYNAbilityType($cardID, $index = -1)
 function DYNHasGoAgain($cardID)
 {
     switch ($cardID) {
+        case "DYN115": case "DYN116": return true;
         case "DYN188": case "DYN189": case "DYN190": return  true;
         case "DYN230": case "DYN231": case "DYN232": return  true;
         default: return false;
@@ -51,7 +52,6 @@ function DYNHasGoAgain($cardID)
 function DYNAbilityHasGoAgain($cardID)
 {
     switch ($cardID) {
-        case "DYN115": case "DYN116": return true;
         case "DYN151": return true;
         case "DYN192": return true;
         case "DYN243": return true;
@@ -359,7 +359,7 @@ function DYNHitEffect($cardID)
   global $mainPlayer, $defPlayer;
   switch ($cardID) {
     case "DYN115": case "DYN116":
-      AddCurrentTurnEffect($defPlayer, "DYN115");
+      AddCurrentTurnEffectFromCombat("DYN115", $defPlayer);
       break;
     case "DYN118":
       if (IsHeroAttackTarget()) {
