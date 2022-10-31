@@ -1937,22 +1937,12 @@ function CharacterStartTurnAbility($index)
         AddCurrentTurnEffect("EVR019", $mainPlayer);
       }
       break;
-    case "DYN117":
-      if ($mainCharacter[$index + 1] == 0 && CountItem("EVR195", $mainPlayer) >= 2) {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?");
-        AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
-        AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYCHAR-" . $index, 1);
-        AddDecisionQueue("MZUNDESTROY", $mainPlayer, "-", 1);
-      }
-      break;
-    case "DYN118":
-      if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2)
-      {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?");
-        AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
+    case "DYN117": case "DYN118":
+      if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2) {
+        AddDecisionQueue("COUNTSILVERS", $mainPlayer, "");
+        AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?", 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "if_they_want_to_pay_and_equip_" . CardLink($mainCharacter[$index], $mainCharacter[$index]), 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
@@ -5270,6 +5260,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $cards);
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of your opponent deck");
         return "";
+      case "COUNTSILVERS":
+        return CountItem("EVR195", $player);
     default:
       return "NOTSTATIC";
   }
