@@ -3611,8 +3611,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($rv != "") $rv .= ",";
         $rv .= $deck[$i];
       }
-      return $rv == "" ? "PASS" : $rv;;
+      return $rv == "" ? "PASS" : $rv;
     case "SHOWSELECTEDCARD":
+      WriteLog($lastResult);
       WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
       return $lastResult;
     case "SHOWSELECTEDMODE":
@@ -3632,6 +3633,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SHOWDISCARDEDCARD":
       WriteLog(CardLink($lastResult, $lastResult) . " was discarded.");
+      return $lastResult;
+    case "SHOWSELECTEDHANDCARD":
+      $hand = &GetHand($player);
+      WriteLog(CardLink($hand[$lastResult], $hand[$lastResult]) . " was selected.");
       return $lastResult;
     case "REVEALCARDS":
       $cards = (is_array($lastResult) ? implode(",", $lastResult) : $lastResult);
