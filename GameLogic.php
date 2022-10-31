@@ -3326,6 +3326,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINBUFFDEFENSE":
       $combatChain[$lastResult + 6] += $parameter;
       return $lastResult;
+    case "COMBATCHAINDEBUFFDEFENSE":
+      $combatChain[$lastResult + 6] -= $parameter;
+      return $lastResult;
     case "REMOVEMYDISCARD":
       $discard = &GetDiscard($player);
       $cardID = $discard[$lastResult];
@@ -5262,6 +5265,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "";
       case "COUNTSILVERS":
         return CountItem("EVR195", $player);
+      case "SHRED":
+
+        return "";
     default:
       return "NOTSTATIC";
   }

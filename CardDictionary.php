@@ -1446,9 +1446,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $char = &GetPlayerCharacter($player);
       return $char[$index + 2] < 2;
     case "DYN117":
-      return count($combatChain) == 0 || CardClass($combatChain[0]) != "ASSASSIN" || CardType($combatChain[0]) != "AA";
+      return count($combatChain) == 0 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || CardType($combatChain[0]) != "AA";
     case "DYN118": 
-      return count($combatChain) == 0 || CardClass($combatChain[0]) != "ASSASSIN" || CardType($combatChain[0]) != "AA";
+      return count($combatChain) == 0 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || CardType($combatChain[0]) != "AA";
+    case "DYN130": case "DYN131": case "DYN132":
+      return count($combatChain) <= 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer);
     default:
       return false;
   }

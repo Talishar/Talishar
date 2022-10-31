@@ -121,6 +121,7 @@ function DYNCardType($cardID)
         case "DYN122": return "AA";
         case "DYN123": return "A";
         case "DYN124": case "DYN125": case "DYN126": return "AA";
+        case "DYN130": case "DYN130": case "DYN130": return "AR";
         case "DYN133": case "DYN134": case "DYN135": return "AA";
         case "DYN142": case "DYN143": case "DYN144": return "AA";
         case "DYN145": case "DYN146": case "DYN147": return "AA";
@@ -194,8 +195,8 @@ function DYNPitchValue($cardID)
         case "DYN417": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 0;
         case "DYN118": return 0;
-        case "DYN124": case "DYN133": case "DYN142": case "DYN145": return 1;
-        case "DYN125": case "DYN134": case "DYN143": case "DYN146": return 2;
+        case "DYN124": case "DYN130": case "DYN133": case "DYN142": case "DYN145": return 1;
+        case "DYN125": case "DYN131": case "DYN134": case "DYN143": case "DYN146": return 2;
         case "DYN188": case "DYN206": case "DYN230": return 1;
         case "DYN189": case "DYN207": case "DYN231": return 2;
         case "DYN234": return 0;
@@ -230,8 +231,7 @@ function DYNBlockValue($cardID)
         case "DYN230": case "DYN231": case "DYN232": return 2;
         case "DYN234": return -1;
         case "DYN242": case "DYN243": return -1;
-        default:
-            return 3;
+        default: return 3;
     }
 }
 
@@ -250,8 +250,7 @@ function DYNAttackValue($cardID)
         case "DYN124": case "DYN134": case "DYN142": case "DYN145": return 4;
         case "DYN125": case "DYN135": case "DYN143": case "DYN146": return 3;
         case "DYN126": case "DYN144": case "DYN147": return 2;
-        default:
-            return 0;
+        default: return 0;
     }
 }
 
@@ -287,6 +286,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
           }
           return "";
+        case "DYN130": case "DYN131": case "DYN132":
+          if ($cardID == "DYN130") $amount = 4;
+          else if ($cardID == "DYN131") $amount = 3;
+          else $amount = 2;
+          $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "E,C");
+          AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $currentPlayer, $options);
+          AddDecisionQueue("COMBATCHAINDEBUFFDEFENSE", $currentPlayer, $amount, 1);
+          return CardLink($cardID, $cardID) . " reduce the defense of target defending card by " . $amount;
         case "DYN151":
             $deck = &GetDeck($currentPlayer);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
