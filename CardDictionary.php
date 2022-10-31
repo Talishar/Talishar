@@ -410,7 +410,7 @@ function CardClass($cardID)
 
       if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
 
-      if($number >= 113 && $number <= 123) return "ASSASSIN";
+      if($number >= 113 && $number <= 147) return "ASSASSIN";
 
       if ($number == 151) return "RANGER";
 
@@ -1443,7 +1443,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DYN088":
       $char = &GetPlayerCharacter($player);
       return $char[$index + 2] < 2;
-    case "DYN118": count($combatChain) == 0 || CardClass($combatChain[0]) != "ASSASSIN";
+    case "DYN118": 
+      return count($combatChain) == 0 || CardClass($combatChain[0]) != "ASSASSIN" || CardType($combatChain[0]) != "AA";
     default:
       return false;
   }
