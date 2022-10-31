@@ -327,8 +327,16 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $defPlayer;
   switch ($cardID) {
+    case "DYN118":
+      if (IsHeroAttackTarget()) {
+      $deck = &GetDeck($defPlayer);
+      if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
+      $cardToBanish = array_shift($deck);
+      BanishCardForPlayer($cardToBanish, $otherPlayer, "DECK", "-", $mainPlayer);
+      }
+      break;
     case "DYN122":
     if (IsHeroAttackTarget()) {
         $otherPlayer = ($mainPlayer == 1 ? 2 : 1);

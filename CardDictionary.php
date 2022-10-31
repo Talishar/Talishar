@@ -409,6 +409,8 @@ function CardClass($cardID)
 
       if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
 
+      if($number >= 113 && $number <= 123) return "ASSASSIN";
+
       if ($number == 151) return "RANGER";
 
       if ($number >= 171 && $number <= 190) return "RUNEBLADE";
