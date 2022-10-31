@@ -611,15 +611,15 @@ function GetAltCardID($cardID)
     case "UPR211":
       return "WTR193";
     case "HER075": // TODO: Yoji cardID to be edited
-      return "DYN075";
+      return "DYN475";
     case "LGS112": // TODO: Quicksilver Dagger CardID might change on set release
-      return "DYN069";
+      return "DYN469";
     case "LGS116": // TODO: Blessing of Aether cardID to be edited
-      return "DYN116";
+      return "DYN416";
     case "LGS117": // TODO: Blessing of Aether cardID to be edited
-      return "DYN117";
+      return "DYN417";
     case "LGS118": // TODO: Blessing of Aether cardID to be edited
-      return "DYN118";
+      return "DYN418";
     case "ARC218": case "UPR224": case "MON306": case "ELE237"://Cracked Baubles
       return "WTR224";
   }

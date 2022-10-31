@@ -1290,7 +1290,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source)
           }
           break;
         case "DYN075": // TODO: Yoji cardID to be modified with set release
-          if ($currentTurnEffects[$i] == "DYN075-1") {
+          if ($currentTurnEffects[$i] == "DYN475-1") {
             $prevention += 1;
             $remove = 1;
           }
@@ -1385,9 +1385,9 @@ function CurrentEffectPlayAbility($cardID, $from)
             $remove = 1;
           }
           break;
-        case "DYN116": case "DYN117": case "DYN118": // TODO: Blessing of Aether cardID to be edited
-          if ($currentTurnEffects[$i] == "DYN116") $amount = 3;
-          else if ($currentTurnEffects[$i] == "DYN117") $amount = 2;
+        case "DYN416": case "DYN417": case "DYN418": // TODO: Blessing of Aether cardID to be edited
+          if ($currentTurnEffects[$i] == "DYN416") $amount = 3;
+          else if ($currentTurnEffects[$i] == "DYN417") $amount = 2;
           else $amount = 1;
           if (ActionsThatDoArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
           if ($from != "EQUIP") $remove = 1;
@@ -4142,13 +4142,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "";
       }
 
-      if (SearchCurrentTurnEffects("DYN075", $otherPlayer) && $targetPlayer != $otherPlayer) { // TODO: Yoji cardID to be modified with set release
-        SearchCurrentTurnEffects("DYN075", $otherPlayer, true);
-        AddCurrentTurnEffect("DYN075-1", $otherPlayer);
+      if (SearchCurrentTurnEffects("DYN475", $otherPlayer) && $targetPlayer != $otherPlayer) { // TODO: Yoji cardID to be modified with set release
+        SearchCurrentTurnEffects("DYN475", $otherPlayer, true);
+        AddCurrentTurnEffect("DYN475-1", $otherPlayer);
         $targetPlayer = $otherPlayer;
-      } elseif (SearchCurrentTurnEffects("DYN075", $player) && $targetPlayer != $player) { // TODO: Yoji cardID to be modified with set release
-        SearchCurrentTurnEffects("DYN075", $player, true);
-        AddCurrentTurnEffect("DYN075-1", $player);
+      } elseif (SearchCurrentTurnEffects("DYN475", $player) && $targetPlayer != $player) { // TODO: Yoji cardID to be modified with set release
+        SearchCurrentTurnEffects("DYN475", $player, true);
+        AddCurrentTurnEffect("DYN475-1", $player);
         $targetPlayer = $player;
       }
 
