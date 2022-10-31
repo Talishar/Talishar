@@ -3,17 +3,19 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $p1Permanents, $layers, $combatChain;
+  global $layers, $combatChain;
   $rv = "";
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
   else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
   else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
+  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
+  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
   else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
   else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
   else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
-  else if($zone == "LAYER") return $layers;
-  else if($zone == "CC") return $combatChain;
+  else if ($zone == "LAYER") return $layers;
+  else if ($zone == "CC") return $combatChain;
   return $rv;
 }
 

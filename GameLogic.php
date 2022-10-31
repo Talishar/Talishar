@@ -4929,15 +4929,32 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       $otherPlayer = ($player == 1 ? 2 : 1);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
+        WriteLog($lastResultArr[$i]);
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
           case "MYDISCARD":
             $zone = &GetMZZone($player, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
             break;
           case "THEIRDISCARD":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
-            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
+            break;
+          case "MYHAND":
+            $zone = &GetMZZone($player, $mzIndex[0]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
+            break;
+          case "THEIRHAND":
+            $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
+            break;
+          case "MYARS":
+            $zone = &GetMZZone($player, $mzIndex[0]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
+            break;
+          case "THEIRARS":
+            $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
             break;
           default:
             break;

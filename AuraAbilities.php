@@ -311,7 +311,7 @@ function AuraBeginEndPhaseAbilities()
             AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;", 1);
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more " . $plurial . " to banish for Burn Them All", 1);
             AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
+            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $mainPlayer, 1);
             AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
             AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
             --$leftToBanish;
