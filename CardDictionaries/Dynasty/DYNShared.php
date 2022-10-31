@@ -123,9 +123,10 @@ function DYNCardType($cardID)
         case "DYN123": return "A";
         case "DYN124": case "DYN125": case "DYN126": return "AA";
         case "DYN127": case "DYN128": case "DYN129": return "AA";
-        case "DYN130": case "DYN130": case "DYN130": return "AR";
+        case "DYN130": case "DYN131": case "DYN132": return "AR";
         case "DYN133": case "DYN134": case "DYN135": return "AA";
         case "DYN136": case "DYN137": case "DYN138": return "AA";
+        case "DYN139": case "DYN140": case "DYN141": return "AA";
         case "DYN142": case "DYN143": case "DYN144": return "AA";
         case "DYN145": case "DYN146": case "DYN147": return "AA";
         case "DYN151": return "W";
@@ -179,6 +180,7 @@ function DYNCardCost($cardID)
         case "DYN124": case "DYN125": case "DYN126": return 0;
         case "DYN127": case "DYN128": case "DYN129": return 1;
         case "DYN133": case "DYN134": case "DYN135": return 1;
+        case "DYN139": case "DYN140": case "DYN141": return 1;
         case "DYN142": case "DYN143": case "DYN144": return 0;
         case "DYN145": case "DYN146": case "DYN147": return 0;
         case "DYN242": return 2;
@@ -200,8 +202,8 @@ function DYNPitchValue($cardID)
         case "DYN117": return 0;
         case "DYN118": return 0;
         case "DYN120": return 1;
-        case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN142": case "DYN145": return 1;
-        case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN143": case "DYN146": return 2;
+        case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN139": case "DYN142": case "DYN145": return 1;
+        case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": return 2;
         case "DYN188": case "DYN206": case "DYN230": return 1;
         case "DYN189": case "DYN207": case "DYN231": return 2;
         case "DYN234": return 0;
@@ -252,10 +254,10 @@ function DYNAttackValue($cardID)
         case "DYN121": return 3;
         case "DYN122": return 4;
         //Assassin
-        case "DYN127": case "DYN133": return 5;
-        case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN142": case "DYN145": return 4;
-        case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN143": case "DYN146": return 3;
-        case "DYN126": case "DYN144": case "DYN147": return 2;
+        case "DYN127": case "DYN133": case "DYN139": return 5;
+        case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
+        case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN139": case "DYN143": case "DYN146": return 3;
+        case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
         default: return 0;
     }
 }
@@ -436,6 +438,7 @@ function DYNHitEffect($cardID)
     case "DYN127": case "DYN128": case "DYN129":
     case "DYN133": case "DYN134": case "DYN135":
     case "DYN136": case "DYN137": case "DYN138":
+    case "DYN139": case "DYN140": case "DYN141": 
     case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
       if (IsHeroAttackTarget()) {
@@ -482,6 +485,7 @@ function ContractType($cardID)
     case "DYN127": case "DYN128": case "DYN129": return "COST2ORMORE";
     case "DYN133": case "DYN134": case "DYN135": return "AA";
     case "DYN136": case "DYN137": case "DYN138": return "BLOCK2ORLESS";
+    case "DYN139": case "DYN140": case "DYN141": return "REACTIONS";
     case "DYN142": case "DYN143": case "DYN144": return "GOAGAIN";
     case "DYN145": case "DYN146": case "DYN147": return "NAA";
     default: return "";
@@ -500,6 +504,7 @@ function ContractCompleted($player, $cardID)
     case "DYN127": case "DYN128": case "DYN129":
     case "DYN133": case "DYN134": case "DYN135":
     case "DYN136": case "DYN137": case "DYN137":
+    case "DYN139": case "DYN140": case "DYN141":
     case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
       PutItemIntoPlayForPlayer("EVR195", $player);
@@ -543,6 +548,9 @@ function CheckContracts($banishedBy, $cardBanished)
       case "BLOCK2ORLESS":
         if(BlockValue($cardBanished) <= 2) $contractCompleted = true;
         break;
+      case "REACTIONS":
+        if (CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") $contractCompleted = true;
+        break;
       default: break;
     }
     if($contractCompleted) ContractCompleted($banishedBy, $combatChain[$i]);
@@ -580,6 +588,9 @@ function CheckContracts($banishedBy, $cardBanished)
           break;
         case "BLOCK2ORLESS":
           if (BlockValue($cardBanished) <= 2) $contractCompleted = true;
+          break;
+        case "REACTIONS":
+          if (CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") $contractCompleted = true;
           break;
         default:
           break;

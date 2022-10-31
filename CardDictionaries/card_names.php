@@ -1235,6 +1235,7 @@ if ($set == "DYN") {
 		case "130": case "131": case "132": return "Shred";
 		case "133": case "134": case "135": return "Annihilate the Armed";
 		case "136": case "137": case "138": return "Fleed the Frail";
+		case "139": case "140": case "141": return "Nix the Nimble";
 		case "142": case "143": case "144": return "Sack the Shifty";
 		case "145": case "146": case "147": return "Slay the Scholars";
 		case "151": return "Sandscour Greatbow";
