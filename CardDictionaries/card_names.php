@@ -1217,21 +1217,21 @@ if ($set == "DYN") {
 		case "039": case "040": case "041": return "Reinforce Steel";
 		case "045": return "Blazen Yoroi";
 		case "068": return "Merciless Battleaxe";
-        case "069": return "Quicksilver Dagger"; // TODO: Quicksilver Dagger CardID might change on set release
-		case "075": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
+        case "469": return "Quicksilver Dagger"; // TODO: Quicksilver Dagger CardID might change on set release
+		case "475": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
 		case "088": return "Hanabi Blaster";
 		case "094": return "Powder Keg";
-    case "113": return "Arakni, Hunter";
-    case "118": return "Mask of Perdition";
-    case "121": return "Regicide";
-    case "122": return "Surgical Extraction";
-    case "123": return "Pay Day";
-    case "115": case "116": return "Spider's Bite";
-      	case "116": case "117": case "118": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
-    case "124": case "125": case "126": return "Plunder the Poor";
-    case "133": case "134": case "135": return "Annihilate the Armed";
-    case "142": case "143": case "144": return "Sack the Shifty";
-    case "145": case "146": case "147": return "Slay the Scholars";
+		case "113": return "Arakni, Hunter";
+		case "118": return "Mask of Perdition";
+		case "121": return "Regicide";
+		case "122": return "Surgical Extraction";
+		case "123": return "Pay Day";
+		case "115": case "116": return "Spider's Bite";
+      	case "416": case "417": case "418": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
+		case "124": case "125": case "126": return "Plunder the Poor";
+		case "133": case "134": case "135": return "Annihilate the Armed";
+		case "142": case "143": case "144": return "Sack the Shifty";
+		case "145": case "146": case "147": return "Slay the Scholars";
 		case "151": return "Sandscour Greatbow";
 		case "171": return "Amethyst Tiara";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
@@ -1856,5 +1856,3 @@ if($set == "WTR"){
 			}
         return "";
 	}
-
-?>

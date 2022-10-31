@@ -496,9 +496,9 @@ function HasIncreasedAttack()
 function DamageTrigger($player, $damage, $type, $source="NA")
 {
   $otherPlayer = $player == 1 ? 2 : 1;
-  if (SearchCurrentTurnEffects("DYN075", $otherPlayer) && $player != $otherPlayer) { // TODO: Yoji cardID to be modified with set release
-    SearchCurrentTurnEffects("DYN075", $otherPlayer, true);
-    AddCurrentTurnEffect("DYN075-1", $otherPlayer);
+  if (SearchCurrentTurnEffects("DYN475", $otherPlayer) && $player != $otherPlayer) { // TODO: Yoji cardID to be modified with set release
+    SearchCurrentTurnEffects("DYN475", $otherPlayer, true);
+    AddCurrentTurnEffect("DYN475-1", $otherPlayer);
     $player = $otherPlayer;
   }
   AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type);
@@ -1391,7 +1391,7 @@ function DoesAttackHaveGoAgain()
       return NumPhoenixFlameChainLinks() >= 1;
     case "UPR092":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
-    case "DYN069": // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN469": // TODO: Quicksilver Dagger CardID might change on set release
       $anotherWeaponGainedGoAgain = GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain);
       if (SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";
       else return $anotherWeaponGainedGoAgain != "-" && $anotherWeaponGainedGoAgain != $combatChain[0];
