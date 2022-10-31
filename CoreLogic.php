@@ -457,7 +457,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
           AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDBOTTOMMYDECK", $otherPlayer, "-", 1);
         }
         break;
       default:
