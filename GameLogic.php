@@ -607,6 +607,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (RuptureActive() ? 3 : 0);
     case "UPR101":
       return (NumDraconicChainLinks() >= 2 ? 1 : 0);
+    case "DYN115": case "DYN116":
+      return NumEquipBlock() > 0 ? 1 : 0;
     default:
       return 0;
   }
@@ -904,7 +906,7 @@ function EffectBlockModifier($cardID)
       {
         if($combatChain[$i+1] != $defPlayer) continue;
         $cardType = CardType($combatChain[$i]);
-        if($cardType != "DR" && $cardType != "I") $rv -= 1;
+        if($cardType == "A") $rv -= 1;
       }
       return $rv;
     default:
