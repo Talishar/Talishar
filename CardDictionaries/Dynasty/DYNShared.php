@@ -227,7 +227,7 @@ function DYNBlockValue($cardID)
         case "DYN088": return -1;
         case "DYN094": return -1;
         case "DYN113": return -1;
-        case "DYN115": case "DYN116": return 0;
+        case "DYN115": case "DYN116": return -1;
         case "DYN117": return 1;
         case "DYN118": return 1;
         case "DYN416": case "DYN417": case "DYN418": return 2; // TODO: Blessing of Aether cardID to be edited
