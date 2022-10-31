@@ -628,7 +628,7 @@ function CardBorderColor($cardID, $from, $isPlayable)
   if ($playerID != $currentPlayer) return 0;
   if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
   if ($from == "BANISH") {
-    if ($isPlayable || PlayableFromBanish($cardID)) return 7;
+    if ($isPlayable && PlayableFromBanish($cardID)) return 7;
     if (HasBloodDebt($cardID)) return 2;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
     if ($isPlayable && ComboActive($cardID)) return 5;
