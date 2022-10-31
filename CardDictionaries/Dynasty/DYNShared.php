@@ -505,6 +505,7 @@ function CheckContracts($banishedBy, $cardBanished)
     for($j=0; $j < count($chainLinks[$i]); $j += ChainLinksPieces())
     {
       if ($chainLinks[$i][$j + 1] != $banishedBy) continue;
+      if ($chainLinks[$i][$j + 2] == 0) continue; //Skip if the card isn't on the chain anymore
       $contractType = ContractType($chainLinks[$i][$j]);
       $contractCompleted = false;
       switch ($contractType) {
