@@ -1906,7 +1906,7 @@ function CharacterStartTurnAbility($index)
   global $mainPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
 
-  if ($mainCharacter[$index + 1] == 0 && $mainCharacter[$index] != "DYN118") return; //Do not process ability if it is destroyed
+  if ($mainCharacter[$index + 1] == 0 && !CharacterTriggerInGraveyard($mainCharacter[$index])) return; //Do not process ability if it is destroyed
   switch ($mainCharacter[$index]) {
     case "WTR150":
       if ($mainCharacter[$index + 2] < 3) ++$mainCharacter[$index + 2];
@@ -1937,10 +1937,21 @@ function CharacterStartTurnAbility($index)
         AddCurrentTurnEffect("EVR019", $mainPlayer);
       }
       break;
+    case "DYN117":
+      if ($mainCharacter[$index + 1] == 0 && CountItem("EVR195", $mainPlayer) >= 2) {
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?");
+        AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYCHAR-" . $index, 1);
+        AddDecisionQueue("MZUNDESTROY", $mainPlayer, "-", 1);
+      }
+      break;
     case "DYN118":
       if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2)
       {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip Mask of Perdition?");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?");
         AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
@@ -2893,6 +2904,8 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DYN088":
       $character[$cardIndex + 2] -= 2;
       break;
+    case "DYN117":
+      DestroyCharacter($currentPlayer, $cardIndex);
     case "DYN118":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
@@ -3844,7 +3857,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $character = &GetPlayerCharacter($player);
         DestroyCharacter($player, $parameter);
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        WriteLog("Refraction Bolters was destroyed and gave the current attack go again.");
+        WriteLog(CardLink("WTR117", "WTR117") . " was destroyed and gave the current attack go again.");
       }
       return $lastResult;
     case "TOMEOFAETHERWIND":
@@ -5284,4 +5297,14 @@ function ImperialWarHorn($player, $term)
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a landmark to destroy", 1);
   AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
+}
+
+function CharacterTriggerInGraveyard($cardID)
+{
+  switch ($cardID) {
+    case "DYN117": case "DYN118":
+      return true;
+    default:
+      return false;
+  }
 }

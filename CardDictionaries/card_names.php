@@ -1222,6 +1222,7 @@ if ($set == "DYN") {
 		case "088": return "Hanabi Blaster";
 		case "094": return "Powder Keg";
 		case "113": return "Arakni, Hunter";
+		case "117": return "Blacktek Whisperers";
 		case "118": return "Mask of Perdition";
 		case "121": return "Regicide";
 		case "122": return "Surgical Extraction";
