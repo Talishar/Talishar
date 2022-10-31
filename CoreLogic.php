@@ -1490,6 +1490,14 @@ function CloseCombatChain($chainClosed="true")
   $combatChainState[$CCS_AttackTarget] = "NA";
 }
 
+function UndestroyCharacter($player, $index)
+{
+  $char = &GetPlayerCharacter($player);
+  $char[$index+1] = 2;
+  $char[$index+4] = 0;
+  //TODO: Remove graveyard
+}
+
 function DestroyCharacter($player, $index)
 {
   $char = &GetPlayerCharacter($player);

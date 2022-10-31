@@ -1891,7 +1891,7 @@ function CharacterStartTurnAbility($index)
   global $mainPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
 
-  if ($mainCharacter[$index + 1] == 0) return; //Do not process ability if it is destroyed
+  if ($mainCharacter[$index + 1] == 0 && $mainCharacter[$index] != "DYN118") return; //Do not process ability if it is destroyed
   switch ($mainCharacter[$index]) {
     case "WTR150":
       if ($mainCharacter[$index + 2] < 3) ++$mainCharacter[$index + 2];
@@ -1920,6 +1920,18 @@ function CharacterStartTurnAbility($index)
       if (CountAura("WTR075", $mainPlayer) >= 3 && $mainCharacter[$index + 1] == 2) {
         WriteLog(CardLink($mainCharacter[$index], $mainCharacter[$index]) . " gives your Crush attacks Dominate this turn.");
         AddCurrentTurnEffect("EVR019", $mainPlayer);
+      }
+      break;
+    case "DYN118":
+      if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2)
+      {
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silver to re-equip Mask of Perdition?");
+        AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
+        AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYCHAR-" . $index, 1);
+        AddDecisionQueue("MZUNDESTROY", $mainPlayer, "-", 1);
       }
       break;
     default:
@@ -4854,7 +4866,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-
+    case "MZUNDESTROY":
+      $lastResultArr = explode(",", $lastResult);
+      $params = explode(",", $parameter);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      for ($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch ($mzIndex[0]) {
+          case "MYCHAR":
+            UndestroyCharacter($player, $mzIndex[1]);
+            break;
+          default: break;
+        }
+      }
+      break;
     case "MZBANISH":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);
