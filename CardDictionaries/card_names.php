@@ -1221,7 +1221,7 @@ if ($set == "DYN") {
 		case "475": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
 		case "088": return "Hanabi Blaster";
 		case "094": return "Powder Keg";
-		case "113": return "Arakni, Hunter";
+		case "113": return "Arakni, Huntsman";
 		case "115": case "116": return "Spider's Bite";
 		case "117": return "Blacktek Whisperers";
 		case "118": return "Mask of Perdition";
@@ -1234,7 +1234,7 @@ if ($set == "DYN") {
 		case "127": case "128": case "129": return "Rob the Rich";
 		case "130": case "131": case "132": return "Shred";
 		case "133": case "134": case "135": return "Annihilate the Armed";
-		case "136": case "137": case "138": return "Fleed the Frail";
+		case "136": case "137": case "138": return "Fleece the Frail";
 		case "139": case "140": case "141": return "Nix the Nimble";
 		case "142": case "143": case "144": return "Sack the Shifty";
 		case "145": case "146": case "147": return "Slay the Scholars";
