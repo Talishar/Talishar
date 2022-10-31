@@ -2346,6 +2346,8 @@ function IsSpecialization($cardID)
     case "UPR109":
     case "UPR126":
       return true;
+    case "DYN121":
+      return true;
     default:
       return false;
   }
