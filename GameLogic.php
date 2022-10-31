@@ -4934,7 +4934,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       $otherPlayer = ($player == 1 ? 2 : 1);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
-        WriteLog($lastResultArr[$i]);
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
           case "MYDISCARD":

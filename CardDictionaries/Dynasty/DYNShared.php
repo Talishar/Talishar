@@ -301,7 +301,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
           AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $currentPlayer, $options);
           AddDecisionQueue("COMBATCHAINDEBUFFDEFENSE", $currentPlayer, $amount, 1);
-          return CardLink($cardID, $cardID) . " reduce the defense of target defending card by " . $amount;
+          return "Reduce the defense of target defending card by " . $amount;
         case "DYN151":
             $deck = &GetDeck($currentPlayer);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
