@@ -9,6 +9,7 @@ function DYNAbilityCost($cardID)
         case "DYN475": return 3; // TODO: Yoji cardID to be modified with set release
         case "DYN469": return 1; // TODO: Quicksilver Dagger CardID might change on set release
         case "DYN115": case "DYN116": return 2;
+        case "DYN117": return 0;
         case "DYN118": return 0;
         case "DYN151": return 1;
         case "DYN192": return 2;
@@ -29,6 +30,7 @@ function DYNAbilityType($cardID, $index = -1)
         case "DYN088": return "AA";
         case "DYN475": return "I"; // TODO: Yoji cardID to be modified with set release
         case "DYN115": case "DYN116": return "AA";
+        case "DYN117": return "AR";
         case "DYN118": return "AR";
         case "DYN151": return "A";
         case "DYN171": return "I";
@@ -113,6 +115,7 @@ function DYNCardType($cardID)
         case "DYN113": return "C";
         case "DYN115": case "DYN116": return "W";
         case "DYN416": case "DYN417": case "DYN418": return "A"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN117": return "E";
         case "DYN118": return "E";
         case "DYN121": return "AA";
         case "DYN122": return "AA";
@@ -148,6 +151,7 @@ function DYNCardSubtype($cardID)
         case "DYN094": return "Item";
         case "DYN115": case "DYN116": return "Dagger";
         case "DYN416": case "DYN417": case "DYN418": return "Aura"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN117": return "Legs";
         case "DYN118": return "Head";
         case "DYN151": return "Bow";
         case "DYN171": return "Head";
@@ -188,6 +192,7 @@ function DYNPitchValue($cardID)
         case "DYN115": case "DYN116": return 0;
         case "DYN416": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN417": return 2; // TODO: Blessing of Aether cardID to be edited
+        case "DYN117": return 0;
         case "DYN118": return 0;
         case "DYN124": case "DYN133": case "DYN142": case "DYN145": return 1;
         case "DYN125": case "DYN134": case "DYN143": case "DYN146": return 2;
@@ -215,6 +220,7 @@ function DYNBlockValue($cardID)
         case "DYN094": return -1;
         case "DYN113": return -1;
         case "DYN115": case "DYN116": return 0;
+        case "DYN117": return 1;
         case "DYN118": return 1;
         case "DYN416": case "DYN417": case "DYN418": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return -1;
@@ -356,13 +362,19 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
   switch ($cardID) {
     case "DYN115":
       AddCurrentTurnEffectFromCombat("DYN115", $defPlayer);
       break;
     case "DYN116":
       AddCurrentTurnEffectFromCombat("DYN116", $defPlayer);
+      break;
+    case "DYN117":
+      if (IsHeroAttackTarget()) {
+        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+        WriteLog(CardLink($cardID, $cardID) . " gives the current Assassin attack go again.");
+      }
       break;
     case "DYN118":
       if (IsHeroAttackTarget()) {
