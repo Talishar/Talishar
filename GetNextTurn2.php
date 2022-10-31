@@ -1541,10 +1541,10 @@ function DisplayTiles($player)
   }
   if ($ashCount > 0) echo (Card("UPR043", "concat", $cardSizeAura, 0, 1, 0, 0, ($ashCount > 1 ? $ashCount : 0)) . "&nbsp");
 
-  DisplayPlayableTiles($player);
+  DisplayPlayableTiles($player, $playerID);
 }
 
-function DisplayPlayableTiles($player) {
+function DisplayPlayableTiles($player, $playerID) {
   global $turn, $cardSizeAura;
 
   $items = GetItems($player);
@@ -1556,7 +1556,7 @@ function DisplayPlayableTiles($player) {
     for ($i = 0; $i < count($items); $i += ItemPieces()) {
       if ($items[$i] == "CRU197") {
         ++$copperCount;
-        if ($player == $player && $copperCount == 1) {
+        if ($player == $playerID && $copperCount == 1) {
           $actionIndex = $i;
           $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
         }
@@ -1564,7 +1564,7 @@ function DisplayPlayableTiles($player) {
     }
     if ($copperCount > 0) {
       $border = CardBorderColor("CRU197", "PLAY", $playable);
-      echo (Card("CRU197", "concat", $cardSizeAura, $player == $player && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($copperCount > 1 ? $copperCount : 0), strval($actionIndex)) . "&nbsp");
+      echo (Card("CRU197", "concat", $cardSizeAura, $player == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($copperCount > 1 ? $copperCount : 0), strval($actionIndex)) . "&nbsp");
     }
   }
   if (CountItem("EVR195", $player) > 0) {
@@ -1574,7 +1574,7 @@ function DisplayPlayableTiles($player) {
     for ($i = 0; $i < count($items); $i += ItemPieces()) {
       if ($items[$i] == "EVR195") {
         ++$silverCount;
-        if ($player == $player && $silverCount == 1) {
+        if ($player == $playerID && $silverCount == 1) {
           $actionIndex = $i;
           $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
         }
@@ -1582,7 +1582,7 @@ function DisplayPlayableTiles($player) {
     }
     if ($silverCount > 0) {
       $border = CardBorderColor("EVR195", "PLAY", $playable);
-      echo (Card("EVR195", "concat", $cardSizeAura, $player == $player && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($silverCount > 1 ? $silverCount : 0), strval($actionIndex)) . "&nbsp");
+      echo (Card("EVR195", "concat", $cardSizeAura, $player == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($silverCount > 1 ? $silverCount : 0), strval($actionIndex)) . "&nbsp");
     }
   }
   if (CountItem("DYN243", $player) > 0) {
