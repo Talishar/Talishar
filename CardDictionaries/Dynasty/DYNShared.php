@@ -117,6 +117,7 @@ function DYNCardType($cardID)
         case "DYN416": case "DYN417": case "DYN418": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return "E";
         case "DYN118": return "E";
+        case "DYN120": return "AA";
         case "DYN121": return "AA";
         case "DYN122": return "AA";
         case "DYN123": return "A";
@@ -198,6 +199,7 @@ function DYNPitchValue($cardID)
         case "DYN417": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 0;
         case "DYN118": return 0;
+        case "DYN120": return 1;
         case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN142": case "DYN145": return 1;
         case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN143": case "DYN146": return 2;
         case "DYN188": case "DYN206": case "DYN230": return 1;
@@ -246,6 +248,7 @@ function DYNAttackValue($cardID)
         case "DYN469": return 1; // TODO: Quicksilver Dagger CardID might change on set release
         case "DYN088": return 5;
         case "DYN115": case "DYN116": return 1;
+        case "DYN120": return 4;
         case "DYN121": return 3;
         case "DYN122": return 4;
         //Assassin
@@ -399,6 +402,19 @@ function DYNHitEffect($cardID)
         PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
       }
       break;
+    case "DYN120":
+      if (IsHeroAttackTarget()) {
+        $deck = &GetDeck($defPlayer);
+        if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
+        $cardToBanish = array_shift($deck);
+        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        AddDecisionQueue("MZBANISH", $mainPlayer, "ARS,-". $mainPlayer, 1);
+      }
+      break;
     case "DYN122":
     if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
@@ -455,6 +471,7 @@ function ContractType($cardID)
 {
   switch($cardID)
   {
+    case "DYN120": return "REDPITCH";
     case "DYN122": return "BLUEPITCH";
     case "DYN124": case "DYN125": case "DYN126": return "COST1ORLESS";
     case "DYN127": case "DYN128": case "DYN129": return "COST2ORMORE";
@@ -473,7 +490,7 @@ function ContractCompleted($player, $cardID)
   IncrementClassState($player, $CS_NumContractsCompleted);
   switch($cardID)
   {
-    case "DYN122":
+    case "DYN120": case "DYN122":
     case "DYN124": case "DYN125": case "DYN126":
     case "DYN127": case "DYN128": case "DYN129":
     case "DYN133": case "DYN134": case "DYN135":
@@ -497,6 +514,9 @@ function CheckContracts($banishedBy, $cardBanished)
     $contractCompleted = false;
     switch($contractType)
     {
+      case "REDPITCH":
+        if (PitchValue($cardBanished) == 1) $contractCompleted = true;
+        break;
       case "BLUEPITCH":
         if(PitchValue($cardBanished) == 3) $contractCompleted = true;
         break;
@@ -530,7 +550,11 @@ function CheckContracts($banishedBy, $cardBanished)
       if ($chainLinks[$i][$j + 2] == 0) continue; //Skip if the card isn't on the chain anymore
       $contractType = ContractType($chainLinks[$i][$j]);
       $contractCompleted = false;
-      switch ($contractType) {
+      switch ($contractType) 
+      {
+        case "REDPITCH":
+          if (PitchValue($cardBanished) == 1) $contractCompleted = true;
+          break;
         case "BLUEPITCH":
           if (PitchValue($cardBanished) == 3) $contractCompleted = true;
           break;

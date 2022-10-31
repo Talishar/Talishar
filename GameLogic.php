@@ -3407,6 +3407,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $arsenal = array_values($arsenal);
       return $cardToReturn;
+    case "MULTIREMOVEARSENAL":
+      $cards = "";
+      $arsenal = &GetArsenal($player);
+      if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      for ($i = 0; $i < count($lastResult); ++$i) {
+        if ($cards != "") $cards .= ",";
+        $cards .= $arsenal[$lastResult[$i]];
+        unset($arsenal[$lastResult[$i]]);
+      }
+      $arsenal = array_values($arsenal);
+      return $cards;
     case "FULLARSENALTODECK":
       $arsenal = &GetArsenal($player);
       $deck = &GetDeck($player);
@@ -3693,6 +3704,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "NOPASS":
       if ($lastResult == "NO") return "PASS";
+      return 1;
+    case "NOPASSARAKNI":
+      if ($lastResult == "NO") {
+        writelog(CardLink($parameter, $parameter) . " looked at the top of the deck and left the card there.", $player);
+        return "PASS";
+      }
+      writelog(CardLink($parameter, $parameter) . " put a card at the bottom of the deck.", $player);
       return 1;
     case "SANDSCOURGREATBOW":
       if ($lastResult == "NO") {

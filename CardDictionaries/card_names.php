@@ -1225,6 +1225,7 @@ if ($set == "DYN") {
 		case "115": case "116": return "Spider's Bite";
 		case "117": return "Blacktek Whisperers";
 		case "118": return "Mask of Perdition";
+		case "120": return "Leave No Witnesses";
 		case "121": return "Regicide";
 		case "122": return "Surgical Extraction";
 		case "123": return "Pay Day";
