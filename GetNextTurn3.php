@@ -432,21 +432,63 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
    // my name
    $response->playerName = "Our heroic main player";
 
-   // TODO: Array of opponent effects
+  //Deduplicate current turn effects
+  $playerEffectsArr = [];
+  $opponentEffectsArr = [];
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    $cardID = explode("-", $currentTurnEffects[$i])[0];
+    $cardID = explode(",", $cardID)[0];
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $arr = &$playerEffectsArr;
+    else $arr = &$opponentEffectsArr;
+    if (!array_key_exists($cardID, $arr)) {
+      $arr[$cardID] = [];
+    }
+    if (!array_key_exists($currentTurnEffects[$i], $arr[$cardID])) $arr[$cardID][$currentTurnEffects[$i]] = 1;
+    else ++$arr[$cardID][$currentTurnEffects[$i]];
+  }
+
+   // Array of opponent effects
    // opponent effects (array of JSONRenderedCard)
    $opponentEffects = array();
-   array_push($opponentEffects, JSONRenderedCard('WTR001'));
+     foreach ($opponentEffectsArr as $key => $effectArr) {
+    $max = 0;
+    foreach ($effectArr as $effectCount) {
+      if ($effectCount > $max) $max = $effectCount;
+    }
+    if (IsEffectTileable($key)) {
+      array_push($opponentEffects, JSONRenderedCard($key, counters: $max));
+    } else {
+      for ($i = 0; $i < $max; ++$i) {
+        array_push($opponentEffects, JSONRenderedCard($key));
+      }
+    }
+  }
    $response->opponentEffects = $opponentEffects;
 
-   // TODO: Array of player effects
+   // Array of player effects
    // my effects (array of JSONRenderedCard)
    $playerEffects = array();
-   array_push($playerEffects, JSONRenderedCard('UPR073'));
+    foreach ($playerEffectsArr as $key => $effectArr) {
+      $max = 0;
+      foreach ($effectArr as $effectCount) {
+        if ($effectCount > $max) $max = $effectCount;
+      }
+      if (IsEffectTileable($key)) {
+        array_push($playerEffects, JSONRenderedCard($key, counters: $max));
+      } else {
+        for ($i = 0; $i < $max; ++$i) {
+          array_push($playerEffects, JSONRenderedCard($key));
+        }
+      }
+    }
    $response->playerEffects = $playerEffects;
 
    // TODO: determine the turnPhase and what corresponds to what.
    // phase of the turn (for the tracker widget)
-   $response->turnPhase = 1;
+   $turnPhase = new stdClass();
+   $turnPhase->turnPhase = $turn[0];
+   $turnPhase->layer = $layers[0];
+   $response->turnPhase = $turnPhase;
 
    // do we have priority?
    $response->havePriority = $currentPlayer == $playerID ? true : false;
