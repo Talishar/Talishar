@@ -358,8 +358,11 @@ function DYNHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer;
   switch ($cardID) {
-    case "DYN115": case "DYN116":
+    case "DYN115":
       AddCurrentTurnEffectFromCombat("DYN115", $defPlayer);
+      break;
+    case "DYN116":
+      AddCurrentTurnEffectFromCombat("DYN116", $defPlayer);
       break;
     case "DYN118":
       if (IsHeroAttackTarget()) {
