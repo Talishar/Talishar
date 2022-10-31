@@ -65,6 +65,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         else
         {
           $totalDefense += EffectBlockModifier($currentTurnEffects[$i], "", 0);
+          if ($totalDefense < 0) $totalDefense = 0;
         }
       }
     }

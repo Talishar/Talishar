@@ -906,7 +906,8 @@ function EffectBlockModifier($cardID)
       {
         if($combatChain[$i+1] != $defPlayer) continue;
         $cardType = CardType($combatChain[$i]);
-        if($cardType == "AA") $rv -= 1;
+        $cardBlock = BlockValue($combatChain[$i]);
+        if($cardType == "AA" && $cardBlock-1 >= 0) $rv -= 1; // Check for rare case of cards with 0 defense
       }
       return $rv;
     default:
@@ -1800,6 +1801,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "UPR049":
       return true;
+    case "DYN115": case "DYN116":
+      return NumCardsBlocking() == 0 && NumAttacksBlocking() == 0;
     default:
       return false;
   }
