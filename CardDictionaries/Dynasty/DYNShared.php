@@ -256,7 +256,7 @@ function DYNAttackValue($cardID)
         //Assassin
         case "DYN127": case "DYN133": case "DYN139": return 5;
         case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
-        case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN139": case "DYN143": case "DYN146": return 3;
+        case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
         case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
         default: return 0;
     }
