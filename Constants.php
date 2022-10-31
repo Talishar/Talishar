@@ -236,7 +236,7 @@ $CS_NamesOfCardsPlayed = 60; //Amulet of Echoes
 $CS_NumBoostPlayed = 61; //Hanabi Blaster
 $CS_PlayedAsInstant = 62; //If the card was played as an instant -- some things like banish we lose memory of as soon as it is removed from the zone
 $CS_AnotherWeaponGainedGoAgain = 63;
-
+$CS_NumContractsCompleted = 64;
 
 
 //Combat Chain State (State for the current combat chain)
