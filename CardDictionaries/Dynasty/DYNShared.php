@@ -228,7 +228,7 @@ function DYNAttackValue($cardID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-    global $currentPlayer, $CS_PlayIndex;
+    global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch ($cardID) {
         case "DYN001":
@@ -252,6 +252,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         case "DYN075": // TODO: Yoji cardID to be modified with set release
             AddCurrentTurnEffect($cardID, $currentPlayer);
             return "";
+        case "DYN123":
+          if(GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0)
+          {
+            PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
+          }
+          return "";
         case "DYN151":
             $deck = &GetDeck($currentPlayer);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
@@ -388,7 +394,9 @@ function ContractType($cardID)
 
 function ContractCompleted($player, $cardID)
 {
+  global $CS_NumContractsCompleted;
   WriteLog("Player " . $banishedBy . " completed the contract for " . CardLink($cardID, $cardID) . ".");
+  IncrementClassState($player, $CS_NumContractsCompleted);
   switch($cardID)
   {
     case "DYN122":
