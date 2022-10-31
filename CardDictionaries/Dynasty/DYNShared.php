@@ -452,7 +452,8 @@ function ContractCompleted($player, $cardID)
 
 function CheckContracts($banishedBy, $cardBanished)
 {
-  global $combatChain;
+  global $combatChain, $chainLinks;
+  //Current Chainlink
   for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
   {
     if($combatChain[$i+1] != $banishedBy) continue;
@@ -478,5 +479,34 @@ function CheckContracts($banishedBy, $cardBanished)
       default: break;
     }
     if($contractCompleted) ContractCompleted($banishedBy, $combatChain[$i]);
+  }
+  //Chain Links
+  for ($i = 0; $i < count($chainLinks); ++$i) {
+    for($j=0; $j < count($chainLinks[$i]); $j += ChainLinksPieces())
+    {
+      if ($chainLinks[$i][$j + 1] != $banishedBy) continue;
+      $contractType = ContractType($chainLinks[$i][$j]);
+      $contractCompleted = false;
+      switch ($contractType) {
+        case "BLUEPITCH":
+          if (PitchValue($cardBanished) == 3) $contractCompleted = true;
+          break;
+        case "COST1ORLESS":
+          if (CardCost($cardBanished) <= 1) $contractCompleted = true;
+          break;
+        case "AA":
+          if (CardType($cardBanished) == "AA") $contractCompleted = true;
+          break;
+        case "GOAGAIN":
+          if (HasGoAgain($cardBanished)) $contractCompleted = true;
+          break;
+        case "NAA":
+          if (CardType($cardBanished) == "A") $contractCompleted = true;
+          break;
+        default:
+          break;
+      }
+      if ($contractCompleted) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
+    }
   }
 }
