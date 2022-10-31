@@ -3248,9 +3248,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIBANISH":
       $cards = explode(",", $lastResult);
       $params = explode(",", $parameter);
+      if(count($params) < 3) array_push($params, "");
       $mzIndices = "";
       for ($i = 0; $i < count($cards); ++$i) {
-        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1]);
+        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1], $params[2]);
         if ($mzIndices != "") $mzIndices .= ",";
         $mzIndices .= "BANISH-" . $index;
       }

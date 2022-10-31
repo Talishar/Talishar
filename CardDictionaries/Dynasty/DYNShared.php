@@ -8,6 +8,7 @@ function DYNAbilityCost($cardID)
         case "DYN068": return 3;
         case "DYN075": return 3; // TODO: Yoji cardID to be modified with set release
         case "DYN069": return 1; // TODO: Quicksilver Dagger CardID might change on set release
+        case "DYN118": return 0;
         case "DYN151": return 1;
         case "DYN192": return 2;
         case "DYN242": return 1;
@@ -26,6 +27,7 @@ function DYNAbilityType($cardID, $index = -1)
         case "DYN069": return "AA"; // TODO: Quicksilver Dagger CardID might change on set release
         case "DYN088": return "AA";
         case "DYN075": return "I"; // TODO: Yoji cardID to be modified with set release
+        case "DYN118": return "AR";
         case "DYN151": return "A";
         case "DYN171": return "I";
         case "DYN192": return "A";
@@ -105,7 +107,12 @@ function DYNCardType($cardID)
         case "DYN075": return "C"; // TODO: Yoji cardID to be modified with set release
         case "DYN088": return "W";
         case "DYN094": return "A";
-        case "DYN116": case "DYN117": case "DYN118": return "A"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN113": return "C";
+        case "DYN116": case "DYN117": return "A"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN118": return "E";
+        case "DYN121": return "AA";
+        case "DYN122": return "AA";
+        case "DYN123": return "A";
         case "DYN151": return "W";
         case "DYN171": return "E";
         case "DYN188": case "DYN189": case "DYN190": return "A";
@@ -131,7 +138,8 @@ function DYNCardSubtype($cardID)
         case "DYN069": return "Dagger"; // TODO: Quicksilver Dagger CardID might change on set release
         case "DYN088": return "Gun";
         case "DYN094": return "Item";
-        case "DYN116": case "DYN117": case "DYN118": return "Aura"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN116": case "DYN117": return "Aura"; // TODO: Blessing of Aether cardID to be edited
+        case "DYN118": return "Head";
         case "DYN151": return "Bow";
         case "DYN171": return "Head";
         case "DYN192": return "Staff";
@@ -147,7 +155,10 @@ function DYNCardCost($cardID)
 {
     switch ($cardID) {
         case "DYN039": case "DYN040": case "DYN041": return 2;
-        case "DYN116": case "DYN117": case "DYN118": return 1; // TODO: Blessing of Aether cardID to be edited
+        case "DYN116": case "DYN117": return 1; // TODO: Blessing of Aether cardID to be edited
+        case "DYN121": return 0;
+        case "DYN122": return 2;
+        case "DYN123": return 0;
         case "DYN242": return 2;
         default: return 0;
     }
@@ -160,8 +171,10 @@ function DYNPitchValue($cardID)
         case "DYN039": return 1;
         case "DYN040": return 2;
         case "DYN069": return 0; // TODO: Quicksilver Dagger CardID might change on set release
+        case "DYN113": return 0;
         case "DYN116": return 1; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 2; // TODO: Blessing of Aether cardID to be edited
+        case "DYN118": return 0;
         case "DYN188": case "DYN206": case "DYN230": return 1;
         case "DYN189": case "DYN207": case "DYN231": return 2;
         case "DYN234": return 0;
@@ -184,6 +197,8 @@ function DYNBlockValue($cardID)
         case "DYN075": return -1; // TODO: Yoji cardID to be modified with set release
         case "DYN088": return -1;
         case "DYN094": return -1;
+        case "DYN113": return 0;
+        case "DYN118": return 1;
         case "DYN116": case "DYN117": case "DYN118": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN151": return -1;
         case "DYN171": return 1;
@@ -204,6 +219,8 @@ function DYNAttackValue($cardID)
         case "DYN068": return 3;
         case "DYN069": return 1; // TODO: Quicksilver Dagger CardID might change on set release
         case "DYN088": return 5;
+        case "DYN121": return 3;
+        case "DYN122": return 4;
         default:
             return 0;
     }
@@ -239,13 +256,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
             $deck = &GetDeck($currentPlayer);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
             AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-            if (CardSubType($deck[0]) != "Arrow") 
+            if (CardSubType($deck[0]) != "Arrow")
             {
                 AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows you the top of your deck: <0>");
                 AddDecisionQueue("OK", $currentPlayer, "whether to put an arrow in arsenal", 1);
                 AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO");
             }
-            else 
+            else
             {
                 AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put <0> in your arsenal", 1);
                 AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_put_the_card_in_arsenal", 1);
@@ -310,10 +327,23 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID)
 {
-    switch ($cardID) {
-
-        default: break;
-    }
+  global $mainPlayer;
+  switch ($cardID) {
+    case "DYN122":
+    if (IsHeroAttackTarget()) {
+        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+        $deck = &GetDeck($otherPlayer);
+        if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
+        $cardToBanish = array_shift($deck);
+        BanishCardForPlayer($cardToBanish, $otherPlayer, "DECK", "-", $mainPlayer);
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA," . $mainPlayer, 1);
+      }
+      break;
+    default: break;
+  }
 }
 
 function IsRoyal($player)
@@ -332,9 +362,49 @@ function IsRoyal($player)
 
 function HasSurge($cardID)
 {
-    switch ($cardID) 
+    switch ($cardID)
     {
         case "DYN206": case "DYN207": case "DYN208": return true;
         default: return false;
     }
+}
+
+function ContractType($cardID)
+{
+  switch($cardID)
+  {
+    case "DYN122": return "BLUEPITCH";
+    default: return "";
+  }
+}
+
+function ContractCompleted($player, $cardID)
+{
+  WriteLog("Player " . $banishedBy . " completed the contract for " . CardLink($cardID, $cardID) . ".");
+  switch($cardID)
+  {
+    case "DYN122":
+      PutItemIntoPlayForPlayer("EVR195", $player);
+      break;
+    default: break;
+  }
+}
+
+function CheckContracts($banishedBy, $cardBanished)
+{
+  global $combatChain;
+  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  {
+    if($combatChain[$i+1] != $banishedBy) continue;
+    $contractType = ContractType($combatChain[$i]);
+    $contractCompleted = false;
+    switch($contractType)
+    {
+      case "BLUEPITCH":
+        if(PitchValue($cardBanished) == 3) $contractCompleted = true;
+        break;
+      default: break;
+    }
+    if($contractCompleted) ContractCompleted($banishedBy, $combatChain[$i]);
+  }
 }

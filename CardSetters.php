@@ -1,21 +1,21 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $modifier = "-")
+function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banishedBy = "")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from);
-    else return BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from);
+    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from, $banishedBy);
+    else return BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from, $banishedBy);
   } else {
-    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from);
-    else return BanishCard($theirBanish, $theirClassState, $cardID, $modifier, $player, $from);
+    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from, $banishedBy);
+    else return BanishCard($theirBanish, $theirClassState, $cardID, $modifier, $player, $from, $banishedBy);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "")
+function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "", $banishedBy = "")
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
@@ -48,6 +48,9 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
+
+  if($banishedBy != "") CheckContracts($banishedBy, $cardID);
+
   return $rv;
 }
 

@@ -261,6 +261,7 @@ function CharacterHealth($cardID)
       return 15;
     case "DYN075": // TODO: Yoji cardID to be modified with set release
       return 22;
+    case "DYN113": return 40;
     case "ROGUE001": return 6;
     case "ROGUE003": return 10;
     case "ROGUE004": return 10;
@@ -1567,6 +1568,8 @@ function HasBattleworn($cardID)
     case "DVR005":
       return true;
     case "DYN026":
+      return true;;
+    case "DYN118":
       return true;
     default:
       return false;
