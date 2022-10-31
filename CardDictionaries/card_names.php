@@ -1227,6 +1227,10 @@ if ($set == "DYN") {
     case "122": return "Surgical Extraction";
     case "123": return "Pay Day";
       	case "116": case "117": case "118": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
+    case "124": case "125": case "126": return "Plunder the Poor";
+    case "133": case "134": case "135": return "Annihilate the Armed";
+    case "142": case "143": case "144": return "Sack the Shifty";
+    case "145": case "146": case "147": return "Slay the Scholars";
 		case "151": return "Sandscour Greatbow";
 		case "171": return "Amethyst Tiara";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
