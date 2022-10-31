@@ -377,6 +377,15 @@ function SearchPitchForCard($playerID, $cardID)
   return -1;
 }
 
+function SearchBanishForCard($playerID, $cardID)
+{
+  $banish = GetBanish($playerID);
+  for ($i = 0; $i < count($banish); ++$i) {
+    if ($banish[$i] == $cardID) return $i;
+  }
+  return -1;
+}
+
 function SearchHighestAttackDefended()
 {
   global $combatChain, $defPlayer;

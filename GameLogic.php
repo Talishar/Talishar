@@ -2312,12 +2312,17 @@ function MainDrawCard()
 
 function CombatChainCloseAbilities($player, $cardID, $chainLink)
 {
-  global $chainLinkSummary;
+  global $chainLinkSummary, $mainPlayer;
   switch ($cardID) {
     case "UPR189":
       if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) {
         Draw($player);
         WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+      }
+      break;
+    case "DYN121":
+      if ($player == $mainPlayer) {
+        PlayerLoseHealth($mainPlayer, GetHealth($mainPlayer));
       }
       break;
     default:
