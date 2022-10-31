@@ -1457,6 +1457,7 @@ function IsTileable($cardID)
     case "CRU197":
     case "MON186":
     case "ELE111":
+    case "EVR195":
     case "UPR043":
       return true;
     default:
@@ -1533,31 +1534,75 @@ function DisplayTiles($player)
     echo ("</div>");
   }
 
-  //TODO: Factor this into a function so it doesn't become a mess of duplicated code when we add silver, gold, etc.
-  $items = GetItems($player);
-  $copperCount = 0;
-  $playable = false;
-  $actionIndex = -1;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == "CRU197") {
-      ++$copperCount;
-      if ($player == $playerID && $copperCount == 1) {
-        $actionIndex = $i;
-        $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
-      }
-    }
-  }
-  if ($copperCount > 0) {
-    $border = CardBorderColor("CRU197", "PLAY", $playable);
-    echo (Card("CRU197", "concat", $cardSizeAura, $player == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($copperCount > 1 ? $copperCount : 0), strval($actionIndex)) . "&nbsp");
-  }
-
   $permanents = GetPermanents($player);
   $ashCount = 0;
   for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
     if ($permanents[$i] == "UPR043") ++$ashCount;
   }
   if ($ashCount > 0) echo (Card("UPR043", "concat", $cardSizeAura, 0, 1, 0, 0, ($ashCount > 1 ? $ashCount : 0)) . "&nbsp");
+
+  DisplayPlayableTiles($player);
+}
+
+function DisplayPlayableTiles($player) {
+  global $turn, $cardSizeAura;
+
+  $items = GetItems($player);
+
+  if (CountItem("CRU197", $player) > 0) {
+    $copperCount = 0;
+    $playable = false;
+    $actionIndex = -1;
+    for ($i = 0; $i < count($items); $i += ItemPieces()) {
+      if ($items[$i] == "CRU197") {
+        ++$copperCount;
+        if ($player == $player && $copperCount == 1) {
+          $actionIndex = $i;
+          $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
+        }
+      }
+    }
+    if ($copperCount > 0) {
+      $border = CardBorderColor("CRU197", "PLAY", $playable);
+      echo (Card("CRU197", "concat", $cardSizeAura, $player == $player && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($copperCount > 1 ? $copperCount : 0), strval($actionIndex)) . "&nbsp");
+    }
+  }
+  if (CountItem("EVR195", $player) > 0) {
+    $silverCount = 0;
+    $playable = false;
+    $actionIndex = -1;
+    for ($i = 0; $i < count($items); $i += ItemPieces()) {
+      if ($items[$i] == "EVR195") {
+        ++$silverCount;
+        if ($player == $player && $silverCount == 1) {
+          $actionIndex = $i;
+          $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
+        }
+      }
+    }
+    if ($silverCount > 0) {
+      $border = CardBorderColor("EVR195", "PLAY", $playable);
+      echo (Card("EVR195", "concat", $cardSizeAura, $player == $player && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($silverCount > 1 ? $silverCount : 0), strval($actionIndex)) . "&nbsp");
+    }
+  }
+  if (CountItem("DYN243", $player) > 0) {
+    $goldCount = 0;
+    $playable = false;
+    $actionIndex = -1;
+    for ($i = 0; $i < count($items); $i += ItemPieces()) {
+      if ($items[$i] == "DYN243") {
+        ++$goldCount;
+        if ($player == $player && $goldCount == 1) {
+          $actionIndex = $i;
+          $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
+        }
+      }
+    }
+    if ($goldCount > 0) {
+      $border = CardBorderColor("DYN243", "PLAY", $playable);
+      echo (Card("DYN243", "concat", $cardSizeAura, $player == $player && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($goldCount > 1 ? $goldCount : 0), strval($actionIndex)) . "&nbsp");
+    }
+  }
 }
 
 function GetPhaseHelptext()
