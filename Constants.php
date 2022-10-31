@@ -390,7 +390,7 @@ function ResetMainClassState()
   global $CS_HighestRoll, $CS_EffectContext, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed;
   global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
   global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
-  global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain;
+  global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -455,6 +455,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumBoostPlayed] = 0;
   $mainClassState[$CS_PlayedAsInstant] = 0;
   $mainClassState[$CS_AnotherWeaponGainedGoAgain] = "-";
+  $mainClassState[$CS_NumContractsCompleted] = 0;
 }
 
 function ResetCardPlayed($cardID)
