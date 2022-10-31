@@ -411,8 +411,8 @@ function DYNHitEffect($cardID)
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $mainPlayer, "ARS,-," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        AddDecisionQueue("MZBANISH", $mainPlayer, "ARS,-". $mainPlayer, 1);
       }
       break;
     case "DYN122":
@@ -421,10 +421,11 @@ function DYNHitEffect($cardID)
         if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-        AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", $defPlayer, "HAND,NA," . $mainPlayer, 1);
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
     case "DYN124": case "DYN125": case "DYN126":
