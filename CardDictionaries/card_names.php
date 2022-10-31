@@ -1221,6 +1221,11 @@ if ($set == "DYN") {
 		case "075": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
 		case "088": return "Hanabi Blaster";
 		case "094": return "Powder Keg";
+    case "113": return "Arakni, Hunter";
+    case "118": return "Mask of Perdition";
+    case "121": return "Regicide";
+    case "122": return "Surgical Extraction";
+    case "123": return "Pay Day";
       	case "116": case "117": case "118": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
 		case "151": return "Sandscour Greatbow";
 		case "171": return "Amethyst Tiara";
