@@ -92,7 +92,7 @@ function DYNCardTalent($cardID) // TODO
   $number = intval(substr($cardID, 3));
   if ($number <= 0) return "";
   else if ($number >= 1 && $number <= 2) return "ROYAL,DRACONIC";
-  //   else if($number >= 3 && $number <= 124) return "";
+  else if ($number >= 3 && $number <= 4) return "DRACONIC";
   //   else if($number >= 125 && $number <= 150) return "";
   //   else if($number >= 406 && $number <= 417 ) return "";
   //   else if($number >= 439 && $number <= 441) return "";
@@ -103,6 +103,8 @@ function DYNCardType($cardID)
 {
   switch ($cardID) {
     case "DYN001": return "C";
+    case "DYN003": return "A";
+    case "DYN004": return "A";
     case "DYN005": return "W";
     case "DYN026": return "E";
     case "DYN039": case "DYN040": case "DYN041": return "A";
@@ -156,6 +158,8 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
   switch ($cardID) {
+    case "DYN003": return "Ash";
+    case "DYN004": return "Ash";
     case "DYN005": return "Rock";
     case "DYN026": return "Off-Hand";
     case "DYN045": return "Chest";
@@ -213,6 +217,8 @@ function DYNCardCost($cardID)
 function DYNPitchValue($cardID)
 {
   switch ($cardID) {
+    case "DYN003": return 1;
+    case "DYN004": return 1;
     case "DYN005": return 0;
     case "DYN039": return 1;
     case "DYN040": return 2;
@@ -314,6 +320,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      return "";
+    case "DYN003":
+      PutPermanentIntoPlay($currentPlayer, $cardID);
+      return "";
+    case "DYN004":
+      PutPermanentIntoPlay($currentPlayer, $cardID);
       return "";
     case "DYN025":
       AddCurrentTurnEffect($cardID, $currentPlayer);
