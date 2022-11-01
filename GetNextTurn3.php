@@ -512,17 +512,24 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->youMustMakeAChoice = $activePlayerMustMakeAChoice;
 
-  // TODO: opponent APs
-  $response->opponentAP = 0;
-
-  // TODO: player APs
-  $response->playerAP = 0;
+  // opponent and player Action Points
+  if ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer)) {
+    $response->opponentAP = $actionPoints;
+    $response->playerAP = 0;
+  } else {
+    $response->opponentAP = 0;
+    $response->playerAP = $actionPoints;
+  }
 
   // Last played Card
   $response->lastPlayedCard = (count($lastPlayed) == 0) ?
     JSONRenderedCard($MyCardBack) :
     JSONRenderedCard($lastPlayed[0], controller: $lastPlayed[1]);
 
+  // is the player the active player (is it their turn?)
+  $response->amIActivePlayer = $mainPlayer == $playerID ? true : false;
+
+  // encode and send it out
   echo json_encode($response);
   exit;
 }
