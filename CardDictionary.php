@@ -1447,10 +1447,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $char[$index + 2] < 2;
     case "DYN117":
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || CardType($combatChain[0]) != "AA";
-    case "DYN118": 
+    case "DYN118":
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || CardType($combatChain[0]) != "AA";
     case "DYN130": case "DYN131": case "DYN132":
       return count($combatChain) <= 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer);
+    case "DYN148": case "DYN149": case "DYN150":
+      return count($combatChain) <= 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || ContractType($combatChain[0]) == "";
     default:
       return false;
   }
