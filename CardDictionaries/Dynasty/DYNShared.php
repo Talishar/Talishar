@@ -306,6 +306,17 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $currentPlayer, $options);
           AddDecisionQueue("COMBATCHAINDEBUFFDEFENSE", $currentPlayer, $amount, 1);
           return "Reduce the defense of target defending card by " . $amount;
+        case "DYN148": case "DYN149": case "DYN150":
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0> with Cut to the Chase", 1);
+          AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_sink_the_opponent's_card", 1);
+          AddDecisionQueue("NOPASSARAKNI", $currentPlayer, $characterID, 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
+          AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
+          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+          return "";
         case "DYN151":
             $deck = &GetDeck($currentPlayer);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
