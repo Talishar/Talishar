@@ -37,6 +37,7 @@ function DYNAbilityType($cardID, $index = -1)
       case "DYN192": return "A";
       case "DYN242": case "DYN243": return "A";
       default: return "";
+  }
 }
 
 // Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
@@ -665,5 +666,4 @@ function CheckContracts($banishedBy, $cardBanished)
       if ($contractCompleted) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
       }
     }
-  }
 }
