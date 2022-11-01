@@ -644,6 +644,9 @@ function CheckContracts($banishedBy, $cardBanished)
         case "REDPITCH":
           if (PitchValue($cardBanished) == 1) $contractCompleted = true;
           break;
+        case "YELLOWPITCH":
+          if (PitchValue($cardBanished) == 2) $contractCompleted = true;
+          break;
         case "BLUEPITCH":
           if (PitchValue($cardBanished) == 3) $contractCompleted = true;
           break;
