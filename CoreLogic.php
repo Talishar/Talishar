@@ -590,6 +590,12 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
       PlayAura("ELE109", $otherPlayer);
     }
     if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
+    WriteLog(SearchCurrentTurnEffects("DYN173", $mainPlayer));
+    if($source == "DYN173" && SearchCurrentTurnEffects("DYN173", $mainPlayer, true)) {
+      WriteLog("Player " . $mainPlayer . " draw a card and Player " . $otherPlayer . " must discard a card.");
+      MainDrawCard();
+      PummelHit();
+    }
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   return $damage;
