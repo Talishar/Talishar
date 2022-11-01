@@ -69,6 +69,7 @@ function DYNEffectAttackModifier($cardID)
   $cardID = $params[0];
   if (count($params) > 1) $parameter = $params[1];
   switch ($cardID) {
+    case "DYN007": return 6;
     default:
       return 0;
   }
@@ -79,9 +80,8 @@ function DYNCombatEffectActive($cardID, $attackID)
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch ($cardID) {
-    case "DYN115":
-    case "DYN116":
-      return true;
+    case "DYN007": return true;
+    case "DYN115": case "DYN116": return true;
     default:
       return false;
   }
@@ -108,6 +108,7 @@ function DYNCardType($cardID)
     case "DYN004": return "A";
     //Brute
     case "DYN005": return "W";
+    case "DYN007": return "AA";
     case "DYN009": return "A";
     case "DYN026": return "E";
     case "DYN039": case "DYN040": case "DYN041": return "A";
@@ -200,6 +201,7 @@ function DYNCardCost($cardID)
 {
   switch ($cardID) {
     //Brute
+    case "DYN007": return 3;
     case "DYN009": return 1;
     case "DYN039": case "DYN040": case "DYN041": return 2;
     case "DYN072": return 1;
@@ -232,6 +234,7 @@ function DYNPitchValue($cardID)
     case "DYN004": return 1;
     //Brute
     case "DYN005": return 0;
+    case "DYN007": return 1;
     case "DYN009": return 2;
     case "DYN039": return 1;
     case "DYN040": return 2;
@@ -305,6 +308,7 @@ function DYNAttackValue($cardID)
 {
   switch ($cardID) {
     case "DYN005": return 7;
+    case "DYN007": return 6;
     case "DYN068": return 3;
     case "DYN069": case "DYN070": return 1;
     case "DYN088": return 5;
@@ -337,6 +341,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      return "";
+    case "DYN007":
+      if (AttackValue($additionalCosts) >= 6) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
       return "";
     case "DYN009":
       AddCurrentTurnEffect($cardID, $currentPlayer);
