@@ -1293,8 +1293,8 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source)
             if($currentTurnEffects[$i+3] <= 0) $remove = 1;
           }
           break;
-        case "DYN075": // TODO: Yoji cardID to be modified with set release
-          if ($currentTurnEffects[$i] == "DYN475-1") {
+        case "DYN025":
+          if ($currentTurnEffects[$i] == "DYN025-1") {
             $prevention += 1;
             $remove = 1;
           }
@@ -1389,9 +1389,9 @@ function CurrentEffectPlayAbility($cardID, $from)
             $remove = 1;
           }
           break;
-        case "DYN416": case "DYN417": case "DYN418": // TODO: Blessing of Aether cardID to be edited
-          if ($currentTurnEffects[$i] == "DYN416") $amount = 3;
-          else if ($currentTurnEffects[$i] == "DYN417") $amount = 2;
+        case "DYN200": case "DYN201": case "DYN202":
+          if ($currentTurnEffects[$i] == "DYN200") $amount = 3;
+          else if ($currentTurnEffects[$i] == "DYN201") $amount = 2;
           else $amount = 1;
           if (ActionsThatDoArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
           if ($from != "EQUIP") $remove = 1;
@@ -4215,13 +4215,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "";
       }
 
-      if (SearchCurrentTurnEffects("DYN475", $otherPlayer) && $targetPlayer != $otherPlayer) { // TODO: Yoji cardID to be modified with set release
-        SearchCurrentTurnEffects("DYN475", $otherPlayer, true);
-        AddCurrentTurnEffect("DYN475-1", $otherPlayer);
+      if (SearchCurrentTurnEffects("DYN025", $otherPlayer) && $targetPlayer != $otherPlayer) { 
+        SearchCurrentTurnEffects("DYN025", $otherPlayer, true);
+        AddCurrentTurnEffect("DYN025-1", $otherPlayer);
         $targetPlayer = $otherPlayer;
-      } elseif (SearchCurrentTurnEffects("DYN475", $player) && $targetPlayer != $player) { // TODO: Yoji cardID to be modified with set release
-        SearchCurrentTurnEffects("DYN475", $player, true);
-        AddCurrentTurnEffect("DYN475-1", $player);
+      } elseif (SearchCurrentTurnEffects("DYN025", $player) && $targetPlayer != $player) { 
+        SearchCurrentTurnEffects("DYN025", $player, true);
+        AddCurrentTurnEffect("DYN025-1", $player);
         $targetPlayer = $player;
       }
 
