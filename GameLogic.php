@@ -1944,6 +1944,7 @@ function CharacterStartTurnAbility($index)
       break;
     case "DYN117": case "DYN118":
       if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2) {
+        $discardIndex = SearchDiscardForCard($mainPlayer, $mainCharacter[$index]);
         AddDecisionQueue("COUNTSILVERS", $mainPlayer, "");
         AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?", 1);
@@ -1953,6 +1954,8 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYCHAR-" . $index, 1);
         AddDecisionQueue("MZUNDESTROY", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
+        AddDecisionQueue("MULTIZONEREMOVE", $mainPlayer, "-", 1);
       }
       break;
     default:
@@ -2901,6 +2904,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "DYN117":
       DestroyCharacter($currentPlayer, $cardIndex);
+      break;
     case "DYN118":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
