@@ -1804,6 +1804,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "UPR049":
       return true;
+    case "DYN072":
+      return true;
     case "DYN115": case "DYN116":
       return NumCardsBlocking() == 0 && NumAttacksBlocking() == 0;
     default:
@@ -3688,6 +3690,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 4] -= 1;
       WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative counter.");
+      return $lastResult;
+    case "ADDEQUIPCOUNTER":
+      $character = &GetPlayerCharacter($player);
+      $character[$lastResult + 3] += 1;
+      WriteLog("A counter was added to " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
     case "REMOVENEGDEFCOUNTER":
       $character = &GetPlayerCharacter($player);
