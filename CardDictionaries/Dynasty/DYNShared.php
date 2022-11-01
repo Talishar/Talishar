@@ -145,6 +145,7 @@ function DYNCardType($cardID)
     //Ranger
     case "DYN151": return "W";
     case "DYN152": return "E";
+    case "DYN153": return "AA";
     case "DYN162": case "DYN163": case "DYN164": return "A";
     //Runeblade
     case "DYN171": return "E";
@@ -188,6 +189,7 @@ function DYNCardSubtype($cardID)
     //Ranger
     case "DYN151": return "Bow";
     case "DYN152": return "Arms";
+    case "DYN153": return "Arrow";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
     //Runeblade
     case "DYN171": return "Head";
@@ -221,6 +223,8 @@ function DYNCardCost($cardID)
     case "DYN142": case "DYN143": case "DYN144": return 0;
     case "DYN145": case "DYN146": case "DYN147": return 0;
     case "DYN148": case "DYN149": case "DYN150": return 0;
+    //Arrow
+    case "DYN153": return 1;
     case "DYN162": case "DYN163": case "DYN164": return 1;
     //Runeblade
     case "DYN173": return 3;
@@ -260,6 +264,8 @@ function DYNPitchValue($cardID)
     case "DYN120": return 1;
     case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN139": case "DYN142": case "DYN145": case "DYN148": return 1;
     case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
+    //Ranger
+    case "DYN153": return 1;
     case "DYN162": return 1;
     case "DYN163": return 2;
     //Runeblade
@@ -330,6 +336,7 @@ function DYNAttackValue($cardID)
     case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
     case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
     //Ranger
+    case "DYN153": return 5;
     case "DYN162": return 5;
     case "DYN163": return 4;
     case "DYN164": return 3;
@@ -636,6 +643,9 @@ function DYNHitEffect($cardID)
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
       }
+      break;
+    case "DYN153":
+      AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     default: break;
   }
