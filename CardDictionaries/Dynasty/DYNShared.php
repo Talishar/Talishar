@@ -117,6 +117,7 @@ function DYNCardType($cardID)
         case "DYN416": case "DYN417": case "DYN418": return "A"; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return "E";
         case "DYN118": return "E";
+        case "DYN119": return "AA";
         case "DYN120": return "AA";
         case "DYN121": return "AA";
         case "DYN122": return "AA";
@@ -129,6 +130,7 @@ function DYNCardType($cardID)
         case "DYN139": case "DYN140": case "DYN141": return "AA";
         case "DYN142": case "DYN143": case "DYN144": return "AA";
         case "DYN145": case "DYN146": case "DYN147": return "AA";
+        case "DYN148": case "DYN149": case "DYN150": return "AR";
         case "DYN151": return "W";
         case "DYN171": return "E";
         case "DYN188": case "DYN189": case "DYN190": return "A";
@@ -174,6 +176,7 @@ function DYNCardCost($cardID)
     switch ($cardID) {
         case "DYN039": case "DYN040": case "DYN041": return 2;
         case "DYN416": case "DYN417": case "DYN418": return 1; // TODO: Blessing of Aether cardID to be edited
+        case "DYN119": return 1;
         case "DYN121": return 0;
         case "DYN122": return 2;
         case "DYN123": return 0;
@@ -183,6 +186,7 @@ function DYNCardCost($cardID)
         case "DYN139": case "DYN140": case "DYN141": return 1;
         case "DYN142": case "DYN143": case "DYN144": return 0;
         case "DYN145": case "DYN146": case "DYN147": return 0;
+        case "DYN148": case "DYN149": case "DYN150": return 0;
         case "DYN242": return 2;
         default: return 0;
     }
@@ -201,15 +205,15 @@ function DYNPitchValue($cardID)
         case "DYN417": return 2; // TODO: Blessing of Aether cardID to be edited
         case "DYN117": return 0;
         case "DYN118": return 0;
+        case "DYN119": return 2;
         case "DYN120": return 1;
-        case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN139": case "DYN142": case "DYN145": return 1;
-        case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": return 2;
+        case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN139": case "DYN142": case "DYN145": case "DYN148": return 1;
+        case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
         case "DYN188": case "DYN206": case "DYN230": return 1;
         case "DYN189": case "DYN207": case "DYN231": return 2;
         case "DYN234": return 0;
         case "DYN242": return 1;
         case "DYN243": return 0;
-
         default: return 3;
     }
 }
@@ -255,7 +259,7 @@ function DYNAttackValue($cardID)
         case "DYN122": return 4;
         //Assassin
         case "DYN127": case "DYN133": case "DYN139": return 5;
-        case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
+        case "DYN119": case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
         case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
         case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
         default: return 0;
@@ -377,7 +381,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_DamageDealt;
   switch ($cardID) {
     case "DYN115":
       if (IsHeroAttackTarget()) {
@@ -401,6 +405,18 @@ function DYNHitEffect($cardID)
         if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+      }
+      break;
+    case "DYN119":
+      if (IsHeroAttackTarget()) {
+        $deck = &GetDeck($defPlayer);
+        if(count($deck) == 0) WriteLog("The opponent is already... depleted.");
+        for($i=0; $i<$combatChainState[$CCS_DamageDealt]; ++$i)
+        {
+          if(count($deck) == 0) break;
+          $cardToBanish = array_shift($deck);
+          BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        }
       }
       break;
     case "DYN121":
@@ -438,7 +454,7 @@ function DYNHitEffect($cardID)
     case "DYN127": case "DYN128": case "DYN129":
     case "DYN133": case "DYN134": case "DYN135":
     case "DYN136": case "DYN137": case "DYN138":
-    case "DYN139": case "DYN140": case "DYN141": 
+    case "DYN139": case "DYN140": case "DYN141":
     case "DYN142": case "DYN143": case "DYN144":
     case "DYN145": case "DYN146": case "DYN147":
       if (IsHeroAttackTarget()) {
@@ -479,6 +495,7 @@ function ContractType($cardID)
 {
   switch($cardID)
   {
+    case "DYN119": return "YELLOWPITCH";
     case "DYN120": return "REDPITCH";
     case "DYN122": return "BLUEPITCH";
     case "DYN124": case "DYN125": case "DYN126": return "COST1ORLESS";
@@ -499,7 +516,7 @@ function ContractCompleted($player, $cardID)
   IncrementClassState($player, $CS_NumContractsCompleted);
   switch($cardID)
   {
-    case "DYN120": case "DYN122":
+    case "DYN119": case "DYN120": case "DYN122":
     case "DYN124": case "DYN125": case "DYN126":
     case "DYN127": case "DYN128": case "DYN129":
     case "DYN133": case "DYN134": case "DYN135":
@@ -526,6 +543,9 @@ function CheckContracts($banishedBy, $cardBanished)
     {
       case "REDPITCH":
         if (PitchValue($cardBanished) == 1) $contractCompleted = true;
+        break;
+      case "YELLOWPITCH":
+        if (PitchValue($cardBanished) == 2) $contractCompleted = true;
         break;
       case "BLUEPITCH":
         if(PitchValue($cardBanished) == 3) $contractCompleted = true;
@@ -563,7 +583,7 @@ function CheckContracts($banishedBy, $cardBanished)
       if ($chainLinks[$i][$j + 2] == 0) continue; //Skip if the card isn't on the chain anymore
       $contractType = ContractType($chainLinks[$i][$j]);
       $contractCompleted = false;
-      switch ($contractType) 
+      switch ($contractType)
       {
         case "REDPITCH":
           if (PitchValue($cardBanished) == 1) $contractCompleted = true;
