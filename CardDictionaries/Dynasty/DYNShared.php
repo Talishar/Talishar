@@ -588,11 +588,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $rv = "";
       if ($attackActionPitched) {
         // Player
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ:MYALLY");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("DESTROYALLY", $currentPlayer, "-", 1);
         // Opponent
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ:THEIRALLY");
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,THEIRALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
         AddDecisionQueue("DESTROYALLY", $otherPlayer, "-", 1);
 
@@ -600,11 +600,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       if ($naaPitched) {
         // Player
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ:MYAURAS");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("DESTROYAURA", $currentPlayer, "-", 1);
         // Opponent
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ:THEIRAURAS");
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,THEIRAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
         AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
 
