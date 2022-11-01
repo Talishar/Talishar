@@ -109,6 +109,7 @@ function DYNCardType($cardID)
     //Brute
     case "DYN005": return "W";
     case "DYN007": return "AA";
+    case "DYN008": return "AA";
     case "DYN009": return "A";
     case "DYN026": return "E";
     case "DYN039": case "DYN040": case "DYN041": return "A";
@@ -208,6 +209,7 @@ function DYNCardCost($cardID)
   switch ($cardID) {
     //Brute
     case "DYN007": return 3;
+    case "DYN008": return 2;
     case "DYN009": return 1;
     case "DYN039": case "DYN040": case "DYN041": return 2;
     case "DYN072": return 1;
@@ -243,6 +245,7 @@ function DYNPitchValue($cardID)
     //Brute
     case "DYN005": return 0;
     case "DYN007": return 1;
+    case "DYN008": return 1;
     case "DYN009": return 2;
     case "DYN039": return 1;
     case "DYN040": return 2;
@@ -321,8 +324,10 @@ function DYNBlockValue($cardID)
 function DYNAttackValue($cardID)
 {
   switch ($cardID) {
+    //Brute
     case "DYN005": return 7;
     case "DYN007": return 6;
+    case "DYN008": return 6;
     case "DYN068": return 3;
     case "DYN069": case "DYN070": return 1;
     case "DYN088": return 5;

@@ -1091,6 +1091,11 @@ function CardDiscarded($player, $discarded, $source = "")
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
+  if($discarded == "DYN008")
+  {
+    WriteLog("Gained a resource from Skull Crack.");
+    GainResources($player, 1);
+  }
 }
 
 function Intimidate()
