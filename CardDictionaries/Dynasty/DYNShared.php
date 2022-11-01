@@ -134,7 +134,9 @@ function DYNCardType($cardID)
     case "DYN142": case "DYN143": case "DYN144": return "AA";
     case "DYN145": case "DYN146": case "DYN147": return "AA";
     case "DYN148": case "DYN149": case "DYN150": return "AR";
+    //Ranger
     case "DYN151": return "W";
+    case "DYN152": return "E";
     case "DYN162": case "DYN163": case "DYN164": return "A";
     case "DYN171": return "E";
     case "DYN172": return "W";
@@ -164,10 +166,13 @@ function DYNCardSubtype($cardID)
     case "DYN088": return "Gun";
     case "DYN094": return "Item";
     case "DYN110": case "DYN111": case "DYN112": return "Item";
+    //Assassin
     case "DYN115": case "DYN116": return "Dagger";
     case "DYN117": return "Legs";
     case "DYN118": return "Head";
+    //Ranger
     case "DYN151": return "Bow";
+    case "DYN152": return "Arms";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
     case "DYN171": return "Head";
     case "DYN172": return "Book";
@@ -260,7 +265,9 @@ function DYNBlockValue($cardID)
     case "DYN117": return 1;
     case "DYN118": return 1;
     case "DYN200": case "DYN201": case "DYN202": return 2;
+    //Ranger
     case "DYN151": return -1;
+    case "DYN152": return 1;
     case "DYN171": return 1;
     case "DYN172": return -1;
     case "DYN174": return 2;

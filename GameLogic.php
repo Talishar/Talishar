@@ -2147,6 +2147,9 @@ function OnBlockResolveEffects()
       case "UPR203": case "UPR204": case "UPR205":
         AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
         break;
+      case "DYN152":
+        AddLayer("TRIGGER", $defPlayer, $combatChain[$i]);
+        break;
       default:
         break;
     }
