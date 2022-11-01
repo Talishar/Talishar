@@ -1258,7 +1258,7 @@ if ($set == "DYN") {
 		case "206": case "207": case "208": return "Sap";
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		case "234": return "Crown of Dominion";
-		case "243": return "Imperial Warhorn";
+		case "242": return "Imperial Warhorn";
 		case "243": return "Gold";
 		default: return "Name not populated - please report bug";
 	}

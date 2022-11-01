@@ -1459,6 +1459,7 @@ function IsTileable($cardID)
     case "ELE111":
     case "EVR195":
     case "UPR043":
+    case "DYN243":
       return true;
     default:
       return false;
