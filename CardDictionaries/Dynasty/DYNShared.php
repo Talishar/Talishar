@@ -45,6 +45,7 @@ function DYNAbilityType($cardID, $index = -1)
 function DYNHasGoAgain($cardID)
 {
   switch ($cardID) {
+    case "DYN009": return true;
     case "DYN115": case "DYN116": return true;
     case "DYN188": case "DYN189": case "DYN190": return  true;
     case "DYN230": case "DYN231": case "DYN232": return  true;
@@ -105,7 +106,9 @@ function DYNCardType($cardID)
     case "DYN001": return "C";
     case "DYN003": return "A";
     case "DYN004": return "A";
+    //Brute
     case "DYN005": return "W";
+    case "DYN009": return "A";
     case "DYN026": return "E";
     case "DYN039": case "DYN040": case "DYN041": return "A";
     case "DYN045": return "E";
@@ -162,6 +165,7 @@ function DYNCardSubtype($cardID)
   switch ($cardID) {
     case "DYN003": return "Ash";
     case "DYN004": return "Ash";
+    //Brute
     case "DYN005": return "Rock";
     case "DYN026": return "Off-Hand";
     case "DYN045": return "Chest";
@@ -195,6 +199,8 @@ function DYNCardSubtype($cardID)
 function DYNCardCost($cardID)
 {
   switch ($cardID) {
+    //Brute
+    case "DYN009": return 1;
     case "DYN039": case "DYN040": case "DYN041": return 2;
     case "DYN072": return 1;
     case "DYN110": case "DYN111": case "DYN112": return 1;
@@ -224,7 +230,9 @@ function DYNPitchValue($cardID)
   switch ($cardID) {
     case "DYN003": return 1;
     case "DYN004": return 1;
+    //Brute
     case "DYN005": return 0;
+    case "DYN009": return 2;
     case "DYN039": return 1;
     case "DYN040": return 2;
     case "DYN069": case "DYN070": return 0;
@@ -329,6 +337,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      return "";
+    case "DYN009":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN003":
       PutPermanentIntoPlay($currentPlayer, $cardID);
