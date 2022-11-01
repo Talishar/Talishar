@@ -3,105 +3,59 @@
 function DYNAbilityCost($cardID)
 {
   switch ($cardID) {
-    case "DYN001":
-      return 3;
-    case "DYN005":
-      return 3;
-    case "DYN068":
-      return 3;
-    case "DYN475":
-      return 3; // TODO: Yoji cardID to be modified with set release
-    case "DYN469":
-      return 1; // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN115":
-    case "DYN116":
-      return 2;
-    case "DYN117":
-      return 0;
-    case "DYN118":
-      return 0;
-    case "DYN151":
-      return 1;
-    case "DYN192":
-      return 2;
-    case "DYN242":
-      return 1;
-    case "DYN243":
-      return 2;
+    case "DYN001": return 3;
+    case "DYN005": return 3;
+    case "DYN068": return 3;
+    case "DYN475": return 3; // TODO: Yoji cardID to be modified with set release
+    case "DYN469": return 1; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN115": case "DYN116": return 2;
+    case "DYN117": return 0;
+    case "DYN118": return 0;
+    case "DYN151": return 1;
+    case "DYN192": return 2;
+    case "DYN242": return 1;
+    case "DYN243": return 2;
 
-    default:
-      return 0;
-  }
+    default: return 0;
+  } 
 }
 
 function DYNAbilityType($cardID, $index = -1)
 {
   switch ($cardID) {
-    case "DYN001":
-      return "A";
-    case "DYN005":
-      return "AA";
-    case "DYN068":
-      return "AA";
-    case "DYN469":
-      return "AA"; // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN088":
-      return "AA";
-    case "DYN475":
-      return "I"; // TODO: Yoji cardID to be modified with set release
-    case "DYN115":
-    case "DYN116":
-      return "AA";
-    case "DYN117":
-      return "AR";
-    case "DYN118":
-      return "AR";
-    case "DYN151":
-      return "A";
-    case "DYN171":
-      return "I";
-    case "DYN192":
-      return "A";
-    case "DYN242":
-    case "DYN243":
-      return "A";
-    default:
-      return "";
-  }
+      case "DYN001": return "A";
+      case "DYN005": return "AA";
+      case "DYN068": return "AA";
+      case "DYN469": return "AA"; // TODO: Quicksilver Dagger CardID might change on set release
+      case "DYN088": return "AA";
+      case "DYN475": return "I"; // TODO: Yoji cardID to be modified with set release
+      case "DYN115": case "DYN116": return "AA";
+      case "DYN117": return "AR";
+      case "DYN118": return "AR";
+      case "DYN151": return "A";
+      case "DYN171": return "I";
+      case "DYN192": return "A";
+      case "DYN242": case "DYN243": return "A";
+      default: return "";
 }
 
 // Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
 function DYNHasGoAgain($cardID)
 {
   switch ($cardID) {
-    case "DYN115":
-    case "DYN116":
-      return true;
-    case "DYN188":
-    case "DYN189":
-    case "DYN190":
-      return  true;
-    case "DYN230":
-    case "DYN231":
-    case "DYN232":
-      return  true;
-    default:
-      return false;
-  }
+    case "DYN115": case "DYN116": return true;
+    case "DYN188": case "DYN189": case "DYN190": return  true;
+    case "DYN230": case "DYN231": case "DYN232": return  true;
+    default: return false;
+}
 }
 
 function DYNAbilityHasGoAgain($cardID)
 {
   switch ($cardID) {
-    case "DYN151":
-      return true;
-    case "DYN192":
-      return true;
-    case "DYN243":
-      return true;
-
-    default:
-      return false;
+    case "DYN151": return true;
+    case "DYN192": return true;
+    case "DYN243": return true;
   }
 }
 
@@ -112,7 +66,6 @@ function DYNEffectAttackModifier($cardID)
   $cardID = $params[0];
   if (count($params) > 1) $parameter = $params[1];
   switch ($cardID) {
-
     default:
       return 0;
   }
@@ -147,114 +100,45 @@ function DYNCardTalent($cardID) // TODO
 function DYNCardType($cardID)
 {
   switch ($cardID) {
-    case "DYN001":
-      return "C";
-    case "DYN005":
-      return "W";
-    case "DYN026":
-      return "E";
-    case "DYN039":
-    case "DYN040":
-    case "DYN041":
-      return "A";
-    case "DYN045":
-      return "E";
-    case "DYN068":
-      return "W";
-    case "DYN469":
-      return "W"; // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN475":
-      return "C"; // TODO: Yoji cardID to be modified with set release
-    case "DYN088":
-      return "W";
-    case "DYN094":
-      return "A";
-    case "DYN113":
-      return "C";
-    case "DYN115":
-    case "DYN116":
-      return "W";
-    case "DYN416":
-    case "DYN417":
-    case "DYN418":
-      return "A"; // TODO: Blessing of Aether cardID to be edited
-    case "DYN117":
-      return "E";
-    case "DYN118":
-      return "E";
-    case "DYN119":
-      return "AA";
-    case "DYN120":
-      return "AA";
-    case "DYN121":
-      return "AA";
-    case "DYN122":
-      return "AA";
-    case "DYN123":
-      return "A";
-    case "DYN124":
-    case "DYN125":
-    case "DYN126":
-      return "AA";
-    case "DYN127":
-    case "DYN128":
-    case "DYN129":
-      return "AA";
-    case "DYN130":
-    case "DYN131":
-    case "DYN132":
-      return "AR";
-    case "DYN133":
-    case "DYN134":
-    case "DYN135":
-      return "AA";
-    case "DYN136":
-    case "DYN137":
-    case "DYN138":
-      return "AA";
-    case "DYN139":
-    case "DYN140":
-    case "DYN141":
-      return "AA";
-    case "DYN142":
-    case "DYN143":
-    case "DYN144":
-      return "AA";
-    case "DYN145":
-    case "DYN146":
-    case "DYN147":
-      return "AA";
-    case "DYN148":
-    case "DYN149":
-    case "DYN150":
-      return "AR";
-    case "DYN151":
-      return "W";
-    case "DYN171":
-      return "E";
-    case "DYN174":
-      return "A";
-    case "DYN188":
-    case "DYN189":
-    case "DYN190":
-      return "A";
-    case "DYN192":
-      return "W";
-    case "DYN206":
-    case "DYN207":
-    case "DYN208":
-      return "A";
-    case "DYN230":
-    case "DYN231":
-    case "DYN232":
-      return "A";
-    case "DYN234":
-      return "E";
-    case "DYN242":
-      return "A";
-    case "DYN243":
-      return "T";
-
+    case "DYN001": return "C";
+    case "DYN005": return "W";
+    case "DYN026": return "E";
+    case "DYN039": case "DYN040": case "DYN041": return "A";
+    case "DYN045": return "E";
+    case "DYN068": return "W";
+    case "DYN469": return "W"; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN475": return "C"; // TODO: Yoji cardID to be modified with set release
+    case "DYN088": return "W";
+    case "DYN094": return "A";
+    case "DYN113": return "C";
+    case "DYN115": case "DYN116": return "W";
+    case "DYN416": case "DYN417": case "DYN418": return "A"; // TODO: Blessing of Aether cardID to be edited
+    case "DYN117": return "E";
+    case "DYN118": return "E";
+    case "DYN119": return "AA";
+    case "DYN120": return "AA";
+    case "DYN121": return "AA";
+    case "DYN122": return "AA";
+    case "DYN123": return "A";
+    case "DYN124": case "DYN125": case "DYN126": return "AA";
+    case "DYN127": case "DYN128": case "DYN129": return "AA";
+    case "DYN130": case "DYN131": case "DYN132": return "AR";
+    case "DYN133": case "DYN134": case "DYN135": return "AA";
+    case "DYN136": case "DYN137": case "DYN138": return "AA";
+    case "DYN139": case "DYN140": case "DYN141": return "AA";
+    case "DYN142": case "DYN143": case "DYN144": return "AA";
+    case "DYN145": case "DYN146": case "DYN147": return "AA";
+    case "DYN148": case "DYN149": case "DYN150": return "AR";
+    case "DYN151": return "W";
+    case "DYN171": return "E";
+    case "DYN174": return "A";
+    case "DYN188": case "DYN189": case "DYN190": return "A";
+    case "DYN192": return "W";
+    case "DYN206": case "DYN207": case "DYN208": return "A";
+    case "DYN230": case "DYN231": case "DYN232": return "A";
+    case "DYN234": return "E";
+    case "DYN242": return "A";
+    case "DYN243": return "T";
     default:
       return "";
   }
@@ -263,43 +147,23 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
   switch ($cardID) {
-    case "DYN005":
-      return "Rock";
-    case "DYN026":
-      return "Off-Hand";
-    case "DYN045":
-      return "Chest";
-    case "DYN068":
-      return "Axe";
-    case "DYN469":
-      return "Dagger"; // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN088":
-      return "Gun";
-    case "DYN094":
-      return "Item";
-    case "DYN115":
-    case "DYN116":
-      return "Dagger";
-    case "DYN416":
-    case "DYN417":
-    case "DYN418":
-      return "Aura"; // TODO: Blessing of Aether cardID to be edited
-    case "DYN117":
-      return "Legs";
-    case "DYN118":
-      return "Head";
-    case "DYN151":
-      return "Bow";
-    case "DYN171":
-      return "Head";
-    case "DYN192":
-      return "Staff";
-    case "DYN234":
-      return "Head";
-    case "DYN242":
-      return "Item";
-    case "DYN243":
-      return "Item";
+      case "DYN005": return "Rock";
+      case "DYN026": return "Off-Hand";
+      case "DYN045": return "Chest";
+      case "DYN068": return "Axe";
+      case "DYN469": return "Dagger"; // TODO: Quicksilver Dagger CardID might change on set release
+      case "DYN088": return "Gun";
+      case "DYN094": return "Item";
+      case "DYN115": case "DYN116": return "Dagger";
+      case "DYN416": case "DYN417": case "DYN418": return "Aura"; // TODO: Blessing of Aether cardID to be edited
+      case "DYN117": return "Legs";
+      case "DYN118": return "Head";
+      case "DYN151": return "Bow";
+      case "DYN171": return "Head";
+      case "DYN192": return "Staff";
+      case "DYN234": return "Head";
+      case "DYN242": return "Item";
+      case "DYN243": return "Item";
 
     default:
       return "";
@@ -309,200 +173,98 @@ function DYNCardSubtype($cardID)
 function DYNCardCost($cardID)
 {
   switch ($cardID) {
-    case "DYN039":
-    case "DYN040":
-    case "DYN041":
-      return 2;
-    case "DYN416":
-    case "DYN417":
-    case "DYN418":
-      return 1; // TODO: Blessing of Aether cardID to be edited
-    case "DYN119":
-      return 1;
-    case "DYN121":
-      return 0;
-    case "DYN122":
-      return 2;
-    case "DYN123":
-      return 0;
-    case "DYN124":
-    case "DYN125":
-    case "DYN126":
-      return 0;
-    case "DYN127":
-    case "DYN128":
-    case "DYN129":
-      return 1;
-    case "DYN133":
-    case "DYN134":
-    case "DYN135":
-      return 1;
-    case "DYN139":
-    case "DYN140":
-    case "DYN141":
-      return 1;
-    case "DYN142":
-    case "DYN143":
-    case "DYN144":
-      return 0;
-    case "DYN145":
-    case "DYN146":
-    case "DYN147":
-      return 0;
-    case "DYN148":
-    case "DYN149":
-    case "DYN150":
-      return 0;
-    case "DYN174":
-      return 3;
-    case "DYN242":
-      return 2;
-    default:
-      return 0;
+      case "DYN039": case "DYN040": case "DYN041": return 2;
+      case "DYN416": case "DYN417": case "DYN418": return 1; // TODO: Blessing of Aether cardID to be edited
+      case "DYN119": return 1;
+      case "DYN121": return 0;
+      case "DYN122": return 2;
+      case "DYN123": return 0;
+      case "DYN124": case "DYN125": case "DYN126": return 0;
+      case "DYN127": case "DYN128": case "DYN129": return 1;
+      case "DYN133": case "DYN134": case "DYN135": return 1;
+      case "DYN139": case "DYN140": case "DYN141": return 1;
+      case "DYN142": case "DYN143": case "DYN144": return 0;
+      case "DYN145": case "DYN146": case "DYN147": return 0;
+      case "DYN148": case "DYN149": case "DYN150": return 0;
+      case "DYN174": return 3;
+      case "DYN242": return 2;
+      default: return 0;
   }
 }
 
 function DYNPitchValue($cardID)
 {
   switch ($cardID) {
-    case "DYN005":
-      return 0;
-    case "DYN039":
-      return 1;
-    case "DYN040":
-      return 2;
-    case "DYN069":
-      return 0; // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN116":
-      return 1; // TODO: Blessing of Aether cardID to be edited
-    case "DYN117":
-      return 2; // TODO: Blessing of Aether cardID to be edited
-    case "DYN188":
-    case "DYN206":
-    case "DYN230":
-      return 1;
-    case "DYN189":
-    case "DYN207":
-    case "DYN231":
-      return 2;
-    case "DYN234":
-      return 0;
-    case "DYN242":
-      return 1;
-    case "DYN243":
-      return 0;
-    default:
-      return 3;
+    case "DYN005": return 0;
+    case "DYN039": return 1;
+    case "DYN040": return 2;
+    case "DYN469": return 0; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN113": return 0;
+    case "DYN115": case "DYN116": return 0;
+    case "DYN416": return 1; // TODO: Blessing of Aether cardID to be edited
+    case "DYN417": return 2; // TODO: Blessing of Aether cardID to be edited
+    case "DYN117": return 0;
+    case "DYN118": return 0;
+    case "DYN119": return 2;
+    case "DYN120": return 1;
+    case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN139": case "DYN142": case "DYN145": case "DYN148": return 1;
+    case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
+    case "DYN188": case "DYN206": case "DYN230": return 1;
+    case "DYN189": case "DYN207": case "DYN231": return 2;
+    case "DYN174": return 1;
+    case "DYN234": return 0;
+    case "DYN242": return 1;
+    case "DYN243": return 0;
+    default: return 3;
   }
 }
 
 function DYNBlockValue($cardID)
 {
   switch ($cardID) {
-    case "DYN001":
-      return -1;
-    case "DYN005":
-      return -1;
-    case "DYN026":
-      return 3;
-    case "DYN045":
-      return 1;
-    case "DYN068":
-      return -1;
-    case "DYN469":
-      return -1; // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN475":
-      return -1; // TODO: Yoji cardID to be modified with set release
-    case "DYN088":
-      return -1;
-    case "DYN094":
-      return -1;
-    case "DYN113":
-      return -1;
-    case "DYN115":
-    case "DYN116":
-      return -1;
-    case "DYN117":
-      return 1;
-    case "DYN118":
-      return 1;
-    case "DYN416":
-    case "DYN417":
-    case "DYN418":
-      return 2; // TODO: Blessing of Aether cardID to be edited
-    case "DYN151":
-      return -1;
-    case "DYN171":
-      return 1;
-    case "DYN188":
-    case "DYN189":
-    case "DYN190":
-      return 2;
-    case "DYN192":
-      return -1;
-    case "DYN230":
-    case "DYN231":
-    case "DYN232":
-      return 2;
-    case "DYN234":
-      return -1;
-    case "DYN242":
-    case "DYN243":
-      return -1;
-    default:
-      return 3;
-  }
+    case "DYN001": return -1;
+    case "DYN005": return -1;
+    case "DYN026": return 3;
+    case "DYN045": return 1;
+    case "DYN068": return -1;
+    case "DYN469": return -1; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN475": return -1; // TODO: Yoji cardID to be modified with set release
+    case "DYN088": return -1;
+    case "DYN094": return -1;
+    case "DYN113": return -1;
+    case "DYN115": case "DYN116": return -1;
+    case "DYN117": return 1;
+    case "DYN118": return 1;
+    case "DYN416": case "DYN417": case "DYN418": return 2; // TODO: Blessing of Aether cardID to be edited
+    case "DYN151": return -1;
+    case "DYN171": return 1;
+    case "DYN174": return 2;
+    case "DYN188": case "DYN189": case "DYN190": return 2;
+    case "DYN192": return -1;
+    case "DYN230": case "DYN231": case "DYN232": return 2;
+    case "DYN234": return -1;
+    case "DYN242": case "DYN243": return -1;
+    default: return 3;
+}
 }
 
 function DYNAttackValue($cardID)
 {
   switch ($cardID) {
-    case "DYN005":
-      return 7;
-    case "DYN068":
-      return 3;
-    case "DYN469":
-      return 1; // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN088":
-      return 5;
-    case "DYN115":
-    case "DYN116":
-      return 1;
-    case "DYN120":
-      return 4;
-    case "DYN121":
-      return 3;
-    case "DYN122":
-      return 4;
-      //Assassin
-    case "DYN127":
-    case "DYN133":
-    case "DYN139":
-      return 5;
-    case "DYN119":
-    case "DYN124":
-    case "DYN128":
-    case "DYN134":
-    case "DYN136":
-    case "DYN140":
-    case "DYN142":
-    case "DYN145":
-      return 4;
-    case "DYN125":
-    case "DYN129":
-    case "DYN135":
-    case "DYN137":
-    case "DYN141":
-    case "DYN143":
-    case "DYN146":
-      return 3;
-    case "DYN126":
-    case "DYN144":
-    case "DYN147":
-    case "DYN138":
-      return 2;
-    default:
-      return 0;
+    case "DYN005": return 7;
+    case "DYN068": return 3;
+    case "DYN469": return 1; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN088": return 5;
+    case "DYN115": case "DYN116": return 1;
+    case "DYN120": return 4;
+    case "DYN121": return 3;
+    case "DYN122": return 4;
+    //Assassin
+    case "DYN127": case "DYN133": case "DYN139": return 5;
+    case "DYN119": case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
+    case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
+    case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
+    default: return 0;
   }
 }
 
@@ -740,27 +502,13 @@ function DYNHitEffect($cardID)
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
-    case "DYN124":
-    case "DYN125":
-    case "DYN126":
-    case "DYN127":
-    case "DYN128":
-    case "DYN129":
-    case "DYN133":
-    case "DYN134":
-    case "DYN135":
-    case "DYN136":
-    case "DYN137":
-    case "DYN138":
-    case "DYN139":
-    case "DYN140":
-    case "DYN141":
-    case "DYN142":
-    case "DYN143":
-    case "DYN144":
-    case "DYN145":
-    case "DYN146":
-    case "DYN147":
+    case "DYN124": case "DYN125": case "DYN126":
+    case "DYN127": case "DYN128": case "DYN129":
+    case "DYN133": case "DYN134": case "DYN135":
+    case "DYN136": case "DYN137": case "DYN138":
+    case "DYN139": case "DYN140": case "DYN141":
+    case "DYN142": case "DYN143": case "DYN144":
+    case "DYN145": case "DYN146": case "DYN147":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
         if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
@@ -768,8 +516,7 @@ function DYNHitEffect($cardID)
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
       }
       break;
-    default:
-      break;
+    default: break;
   }
 }
 
@@ -780,10 +527,8 @@ function IsRoyal($player)
   if (SearchCharacterForCard($player, "DYN234")) return true;
 
   switch ($mainCharacter[0]) {
-    case "DYN001":
-      return true;
-    default:
-      break;
+    case "DYN001": return true;
+    default: break;
   }
   return false;
 }
@@ -791,54 +536,26 @@ function IsRoyal($player)
 function HasSurge($cardID)
 {
   switch ($cardID) {
-    case "DYN206":
-    case "DYN207":
-    case "DYN208":
-      return true;
-    default:
-      return false;
+    case "DYN206": case "DYN207": case "DYN208": return true;
+    default: return false;
   }
 }
 
 function ContractType($cardID)
 {
-  switch ($cardID) {
-    case "DYN119":
-      return "YELLOWPITCH";
-    case "DYN120":
-      return "REDPITCH";
-    case "DYN122":
-      return "BLUEPITCH";
-    case "DYN124":
-    case "DYN125":
-    case "DYN126":
-      return "COST1ORLESS";
-    case "DYN127":
-    case "DYN128":
-    case "DYN129":
-      return "COST2ORMORE";
-    case "DYN133":
-    case "DYN134":
-    case "DYN135":
-      return "AA";
-    case "DYN136":
-    case "DYN137":
-    case "DYN138":
-      return "BLOCK2ORLESS";
-    case "DYN139":
-    case "DYN140":
-    case "DYN141":
-      return "REACTIONS";
-    case "DYN142":
-    case "DYN143":
-    case "DYN144":
-      return "GOAGAIN";
-    case "DYN145":
-    case "DYN146":
-    case "DYN147":
-      return "NAA";
-    default:
-      return "";
+  switch($cardID)
+  {
+    case "DYN119": return "YELLOWPITCH";
+    case "DYN120": return "REDPITCH";
+    case "DYN122": return "BLUEPITCH";
+    case "DYN124": case "DYN125": case "DYN126": return "COST1ORLESS";
+    case "DYN127": case "DYN128": case "DYN129": return "COST2ORMORE";
+    case "DYN133": case "DYN134": case "DYN135": return "AA";
+    case "DYN136": case "DYN137": case "DYN138": return "BLOCK2ORLESS";
+    case "DYN139": case "DYN140": case "DYN141": return "REACTIONS";
+    case "DYN142": case "DYN143": case "DYN144": return "GOAGAIN";
+    case "DYN145": case "DYN146": case "DYN147": return "NAA";
+    default: return "";
   }
 }
 
@@ -847,35 +564,19 @@ function ContractCompleted($player, $cardID)
   global $CS_NumContractsCompleted;
   WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID) . ".");
   IncrementClassState($player, $CS_NumContractsCompleted);
-  switch ($cardID) {
-    case "DYN119":
-    case "DYN120":
-    case "DYN122":
-    case "DYN124":
-    case "DYN125":
-    case "DYN126":
-    case "DYN127":
-    case "DYN128":
-    case "DYN129":
-    case "DYN133":
-    case "DYN134":
-    case "DYN135":
-    case "DYN136":
-    case "DYN137":
-    case "DYN137":
-    case "DYN139":
-    case "DYN140":
-    case "DYN141":
-    case "DYN142":
-    case "DYN143":
-    case "DYN144":
-    case "DYN145":
-    case "DYN146":
-    case "DYN147":
+  switch($cardID)
+  {
+    case "DYN119": case "DYN120": case "DYN122":
+    case "DYN124": case "DYN125": case "DYN126":
+    case "DYN127": case "DYN128": case "DYN129":
+    case "DYN133": case "DYN134": case "DYN135":
+    case "DYN136": case "DYN137": case "DYN137":
+    case "DYN139": case "DYN140": case "DYN141":
+    case "DYN142": case "DYN143": case "DYN144":
+    case "DYN145": case "DYN146": case "DYN147":
       PutItemIntoPlayForPlayer("EVR195", $player);
       break;
-    default:
-      break;
+    default: break;
   }
 }
 
@@ -960,8 +661,9 @@ function CheckContracts($banishedBy, $cardBanished)
           break;
         default:
           break;
-      }
+        }
       if ($contractCompleted) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
+      }
     }
   }
 }
