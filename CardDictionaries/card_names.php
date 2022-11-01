@@ -1225,6 +1225,7 @@ if ($set == "DYN") {
 		case "115": case "116": return "Spider's Bite";
 		case "117": return "Blacktek Whisperers";
 		case "118": return "Mask of Perdition";
+		case "119": return "Eradicate";
 		case "120": return "Leave No Witnesses";
 		case "121": return "Regicide";
 		case "122": return "Surgical Extraction";
@@ -1238,6 +1239,7 @@ if ($set == "DYN") {
 		case "139": case "140": case "141": return "Nix the Nimble";
 		case "142": case "143": case "144": return "Sack the Shifty";
 		case "145": case "146": case "147": return "Slay the Scholars";
+    case "148": case "149": case "150": return "Cut to the Chase";
 		case "151": return "Sandscour Greatbow";
 		case "171": return "Amethyst Tiara";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
