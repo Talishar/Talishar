@@ -2285,7 +2285,7 @@ function Draw($player, $mainPhase = true)
       return "";
     }
   }
-  if ($mainPhase && SearchAurasForCard("UPR138", $otherPlayer) != "") {
+  if ($mainPhase && (SearchAurasForCard("UPR138", $otherPlayer) != "" || SearchAurasForCard("UPR138", $player) != "")) {
     WriteLog("Draw prevented by " . CardLink("UPR138", "UPR138"));
     return "";
   }
