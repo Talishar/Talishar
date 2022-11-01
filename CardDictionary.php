@@ -259,9 +259,10 @@ function CharacterHealth($cardID)
       return 18;
     case "DYN001":
       return 15;
-    case "DYN475": // TODO: Yoji cardID to be modified with set release
+    case "DYN025":
       return 22;
     case "DYN113": return 40;
+    case "DYN114": return 20;
     case "ROGUE001": return 6;
     case "ROGUE003": return 10;
     case "ROGUE004": return 10;
@@ -401,12 +402,10 @@ function CardClass($cardID)
     case "DYN":
       if ($number == 1) return "WARRIOR,WIZARD";
       if ($number == 5) return "BRUTE";
-      if ($number >= 26 && $number <= 41) return "GUARDIAN";
+      if ($number >= 25 && $number <= 41) return "GUARDIAN";
       if ($number == 45) return "NINJA";
-      if ($number == 474) return "GUARDIAN"; // TODO: Yoji cardID to be modified with set release
-      if ($number == 469) return "WARRIOR"; // TODO: Quicksilver Dagger cardID to be modified with set release
 
-      if ($number >= 68 && $number <= 69) return "WARRIOR";
+      if ($number >= 68 && $number <= 70) return "WARRIOR";
 
       if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
 
@@ -417,10 +416,8 @@ function CardClass($cardID)
       if ($number >= 171 && $number <= 190) return "RUNEBLADE";
 
       if ($number >= 192 && $number <= 208) return "WIZARD";
-      if ($number >= 416 && $number <= 418) return "WIZARD"; // TODO: Blessing of Aether cardID to be edited
 
       if ($number >= 230 && $number <= 232) return "ILLUSIONIST";
-
 
       else return "GENERIC";
     default:
@@ -2382,9 +2379,8 @@ function Is1H($cardID)
     case "ELE003":
     case "ELE202":
       return true;
-    case "DYN469": // TODO: Quicksilver Dagger CardID might change on set release
-    case "DYN115":
-    case "DYN116":
+    case "DYN069": case "DYN070":
+    case "DYN115": case "DYN116":
       return true;
     default:
       return false;

@@ -261,16 +261,16 @@ function AuraStartTurnAbilities()
       case "UPR190":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      case "UPR218": case "UPR219": case "UPR220":
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case "DYN416": case "DYN417": case "DYN418": // TODO: Blessing of Aether cardID to be edited // No priority. Start Phase trigger.
+      case "DYN200": case "DYN201": case "DYN202":
         if ($auras[$i] == "DYN416") $amount = 3;
         else if ($auras[$i] == "DYN417") $amount = 2;
         else $amount = 1;
         WriteLog(CardLink($auras[$i], $auras[$i]) . " gives plus " . $amount . " damage to your next card if it deals arcane damage.");
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "UPR218": case "UPR219": case "UPR220":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
         break;

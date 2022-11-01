@@ -1213,13 +1213,13 @@ if ($set == "DYN") {
 	switch ($num) {
 		case "001": return "Emperor, Dracai of Aesir";
  		case "005": return "Rok";
+		 case "025": return "Yoji, Royal Protector";
 		case "026": return "Seasoned Saviour";
 		case "039": case "040": case "041": return "Reinforce Steel";
 		case "045": return "Blazen Yoroi";
 		case "068": return "Merciless Battleaxe";
-        case "469": return "Quicksilver Dagger"; // TODO: Quicksilver Dagger CardID might change on set release
+        case "069": case "070": return "Quicksilver Dagger";
 		case "072": return "Ironsong Pride";
-		case "475": return "Yoji, Royal Protector"; // TODO: Yoji cardID to be modified with set release
 		case "088": return "Hanabi Blaster";
 		case "094": return "Powder Keg";
 		case "113": return "Arakni, Huntsman";
@@ -1231,7 +1231,6 @@ if ($set == "DYN") {
 		case "121": return "Regicide";
 		case "122": return "Surgical Extraction";
 		case "123": return "Pay Day";
-      	case "416": case "417": case "418": return "Blessing of Aether"; // TODO: Blessing of Aether cardID to be edited.
 		case "124": case "125": case "126": return "Plunder the Poor";
 		case "127": case "128": case "129": return "Rob the Rich";
 		case "130": case "131": case "132": return "Shred";
@@ -1247,6 +1246,7 @@ if ($set == "DYN") {
 		case "174": return "Diabolic Ultimatum";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		case "192": return "Surgent Aethertide";
+		case "200": case "201": case "202": return "Blessing of Aether";
 		case "206": case "207": case "208": return "Sap";
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		case "234": return "Crown of Dominion";
