@@ -1102,7 +1102,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_NamesOfCardsPlayed, $CS_LayerTarget;
+  global $CS_NamesOfCardsPlayed, $CS_Num6PowDisc;
 
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -1438,6 +1438,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE197":
       return SearchCurrentTurnEffects($cardID, $player);
     case "DYN005": return count(GetHand($player)) != 0;
+    case "DYN007":
+      return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     case "DYN088":
       $char = &GetPlayerCharacter($player);
       return $char[$index + 2] < 2;
@@ -1644,6 +1646,7 @@ function RequiresDiscard($cardID)
     case "CRU019":
     case "CRU020":
     case "CRU021":
+    case "DYN007":
       return true;
     default:
       return false;
