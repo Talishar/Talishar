@@ -244,7 +244,7 @@ function DYNBlockValue($cardID)
     case "DYN234": return -1;
     case "DYN242": case "DYN243": return -1;
     default: return 3;
-}
+  }
 }
 
 function DYNAttackValue($cardID)
@@ -662,4 +662,4 @@ function CheckContracts($banishedBy, $cardBanished)
       if ($contractCompleted) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
       }
     }
-  }
+}
