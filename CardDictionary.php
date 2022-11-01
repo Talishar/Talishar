@@ -401,17 +401,16 @@ function CardClass($cardID)
       else return "GENERIC";
     case "DYN":
       if ($number == 1) return "WARRIOR,WIZARD";
-      if ($number == 5) return "BRUTE";
+      if ($number >= 3 && $number <= 4) return "ILLUSIONIST";
+      if ($number >= 5 && $number <= 20) return "BRUTE";
       if ($number >= 25 && $number <= 41) return "GUARDIAN";
       if ($number == 45) return "NINJA";
 
       if ($number >= 68 && $number <= 70) return "WARRIOR";
 
-      if ($number >= 88 && $number <= 94) return "MECHANOLOGIST";
-
-      if($number >= 113 && $number <= 147) return "ASSASSIN";
-
-      if ($number == 151) return "RANGER";
+      if ($number >= 88 && $number <= 112) return "MECHANOLOGIST";
+      if ($number >= 113 && $number <= 147) return "ASSASSIN";
+      if ($number >= 151 && $number <= 169) return "RANGER";
 
       if ($number >= 171 && $number <= 190) return "RUNEBLADE";
 
@@ -1425,7 +1424,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $myAsh = &GetPermanents($player);
       $ash = 0;
       for ($i = 0; $i < count($myAsh); ++$i) {
-        if ($myAsh[$i] == "UPR043") {
+        if (CardSubType($myAsh[$i]) == "Ash") {
           ++$ash;
         }
       }
