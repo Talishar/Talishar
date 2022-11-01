@@ -1221,6 +1221,7 @@ if ($set == "DYN") {
 		case "026": return "Seasoned Saviour";
 		case "039": case "040": case "041": return "Reinforce Steel";
 		case "045": return "Blazen Yoroi";
+    case "066": return "Spirit of Eirina";
 		case "068": return "Merciless Battleaxe";
         case "069": case "070": return "Quicksilver Dagger";
 		case "072": return "Ironsong Pride";

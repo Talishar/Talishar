@@ -213,14 +213,21 @@ function AddSoul($cardID, $player, $from)
   WriteReplay($player, $cardID, $from, "SOUL");
   global $CS_NumAddedToSoul;
   global $myStateBuiltFor;
-  if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
-    else AddSpecificSoul($cardID, $defSoul, $from);
-  } else {
-    if ($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
-    else AddSpecificSoul($cardID, $theirSoul, $from);
+  if($cardID == "DYN066")
+  {
+    WriteLog("The spirit of Eirina is inside you.");
+    PutItemIntoPlayForPlayer($cardID, $player);
   }
-  IncrementClassState($player, $CS_NumAddedToSoul);
+  else {
+    if ($mainPlayerGamestateStillBuilt) {
+      if ($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
+      else AddSpecificSoul($cardID, $defSoul, $from);
+    } else {
+      if ($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
+      else AddSpecificSoul($cardID, $theirSoul, $from);
+    }
+    IncrementClassState($player, $CS_NumAddedToSoul);
+  }
 }
 
 function AddSpecificSoul($cardID, &$soul, $from)
