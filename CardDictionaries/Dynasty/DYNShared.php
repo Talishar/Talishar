@@ -354,31 +354,29 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $naaPitched = 0;
       for ($i = 0; $i < count($pitchArr); ++$i) {
         if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
-        if (CardType($pitchArr[$i] == "AA")) $attackActionPitched = 1;
+        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
       }
       $rv = "";
       if ($attackActionPitched) {
+        // Opponent
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,MYALLY");
+        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
+        AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
         // Player
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
-        AddDecisionQueue("DESTROYALLY", $currentPlayer, "-", 1);
-        // Opponent
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,THEIRALLY");
-        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
-        AddDecisionQueue("DESTROYALLY", $otherPlayer, "-", 1);
-
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         $rv .= "each hero chose and destroyed an ally they control.";
       }
       if ($naaPitched) {
+        // Opponent
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,MYAURAS");
+        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
+        AddDecisionQueue("MZDESTROY", $otherPlayer, "-", 1);
         // Player
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
-        AddDecisionQueue("DESTROYAURA", $currentPlayer, "-", 1);
-        // Opponent
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ,THEIRAURAS");
-        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
-        AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
-
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         $rv .= "each hero chose and destroyed an aura they control.";
       }
       return $rv;
