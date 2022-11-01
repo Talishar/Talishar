@@ -1674,6 +1674,12 @@ function ETASteamCounters($cardID)
       return 1;
     case "EVR072":
       return 3;
+    case "DYN110":
+      return 3;
+    case "DYN111":
+      return 2;
+    case "DYN112":
+      return 1;
     default:
       return 0;
   }
