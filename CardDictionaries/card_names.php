@@ -1240,9 +1240,10 @@ if ($set == "DYN") {
 		case "139": case "140": case "141": return "Nix the Nimble";
 		case "142": case "143": case "144": return "Sack the Shifty";
 		case "145": case "146": case "147": return "Slay the Scholars";
-    case "148": case "149": case "150": return "Cut to the Chase";
+    	case "148": case "149": case "150": return "Cut to the Chase";
 		case "151": return "Sandscour Greatbow";
 		case "171": return "Amethyst Tiara";
+		case "172": return "Annals of Sutcliffe";
 		case "174": return "Diabolic Ultimatum";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		case "192": return "Surgent Aethertide";
