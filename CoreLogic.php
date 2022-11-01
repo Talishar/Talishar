@@ -201,6 +201,7 @@ function StartTurnAbilities()
     CharacterStartTurnAbility($i);
   }
   DefCharacterStartTurnAbilities();
+  ArsenalStartTurnAbilities();
   AuraStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer);
   $mainItems = &GetItems($mainPlayer);
@@ -216,7 +217,6 @@ function StartTurnAbilities()
     $defItems[$i+2] = "2";
     $defItems[$i+3] = ItemUses($defItems[$i]);
   }
-  ArsenalStartTurnAbilities();
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
   {
