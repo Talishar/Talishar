@@ -3575,6 +3575,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYAURA":
       DestroyAura($player, $lastResult);
       break;
+    case "DESTROYALLY":
+      DestroyAlly($player, $lastResult);
+      break;
     case "DESTROYCHANNEL":
       $auras = &GetAuras($mainPlayer);
       if ($dqVars[0] > 0) {
