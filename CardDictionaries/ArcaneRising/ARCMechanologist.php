@@ -309,7 +309,8 @@ function ItemBoostEffects()
   $items = &GetItems($currentPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     switch ($items[$i]) {
-      case "ARC036":
+      case "ARC036": 
+      case "DYN110": case "DYN111": case "DYN112":
         if ($items[$i + 2] == 2) {
           --$items[$i + 1];
           $items[$i + 2] = 1;
