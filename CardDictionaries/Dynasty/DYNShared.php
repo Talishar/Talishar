@@ -37,8 +37,8 @@ function DYNAbilityType($cardID, $index = -1)
       case "DYN192": return "A";
       case "DYN242": case "DYN243": return "A";
       default: return "";
+  }
 }
-
 // Natural go again or ability go again. Attacks that gain go again should be in CoreLogic (due to hypothermia)
 function DYNHasGoAgain($cardID)
 {
@@ -47,7 +47,7 @@ function DYNHasGoAgain($cardID)
     case "DYN188": case "DYN189": case "DYN190": return  true;
     case "DYN230": case "DYN231": case "DYN232": return  true;
     default: return false;
-}
+  }
 }
 
 function DYNAbilityHasGoAgain($cardID)
@@ -139,8 +139,7 @@ function DYNCardType($cardID)
     case "DYN234": return "E";
     case "DYN242": return "A";
     case "DYN243": return "T";
-    default:
-      return "";
+    default: return "";
   }
 }
 
@@ -309,18 +308,16 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $currentPlayer, $options);
       AddDecisionQueue("COMBATCHAINDEBUFFDEFENSE", $currentPlayer, $amount, 1);
       return "Reduce the defense of target defending card by " . $amount;
-    case "DYN148":
-    case "DYN149":
-    case "DYN150":
+    case "DYN148": case "DYN149": case "DYN150":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0> with Cut to the Chase", 1);
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_sink_the_opponent's_card", 1);
-      AddDecisionQueue("NOPASSARAKNI", $currentPlayer, $characterID, 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDBOTTOMMYDECK", $otherPlayer, "-", 1);
       return "";
     case "DYN151":
       $deck = &GetDeck($currentPlayer);
@@ -666,4 +663,3 @@ function CheckContracts($banishedBy, $cardBanished)
       }
     }
   }
-}
