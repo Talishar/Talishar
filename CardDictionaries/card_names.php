@@ -1248,6 +1248,7 @@ if ($set == "DYN") {
 		case "162": case "163": case "164": return "Hemorrhage Bore";
 		case "171": return "Amethyst Tiara";
 		case "172": return "Annals of Sutcliffe";
+		case "173": return "Cryptic Crossing";
 		case "174": return "Diabolic Ultimatum";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		case "192": return "Surgent Aethertide";

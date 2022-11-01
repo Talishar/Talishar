@@ -140,8 +140,10 @@ function DYNCardType($cardID)
     case "DYN151": return "W";
     case "DYN152": return "E";
     case "DYN162": case "DYN163": case "DYN164": return "A";
+    //Runeblade
     case "DYN171": return "E";
     case "DYN172": return "W";
+    case "DYN173": return "AA";
     case "DYN174": return "A";
     case "DYN188": case "DYN189": case "DYN190": return "A";
     case "DYN192": return "W";
@@ -178,6 +180,7 @@ function DYNCardSubtype($cardID)
     case "DYN151": return "Bow";
     case "DYN152": return "Arms";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
+    //Runeblade
     case "DYN171": return "Head";
     case "DYN172": return "Book";
     case "DYN192": return "Staff";
@@ -207,6 +210,8 @@ function DYNCardCost($cardID)
     case "DYN145": case "DYN146": case "DYN147": return 0;
     case "DYN148": case "DYN149": case "DYN150": return 0;
     case "DYN162": case "DYN163": case "DYN164": return 1;
+    //Runeblade
+    case "DYN173": return 3;
     case "DYN174": return 3;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     case "DYN242": return 2;
@@ -240,6 +245,8 @@ function DYNPitchValue($cardID)
     case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
     case "DYN162": return 1;
     case "DYN163": return 2;
+    //Runeblade
+    case "DYN173": return 2;
     case "DYN174": return 1;
     case "DYN188": case "DYN206": case "DYN230": return 1;
     case "DYN189": case "DYN207": case "DYN231": return 2;
@@ -297,15 +304,17 @@ function DYNAttackValue($cardID)
     case "DYN120": return 4;
     case "DYN121": return 3;
     case "DYN122": return 4;
-    // Assassin
+    //Assassin
     case "DYN127": case "DYN133": case "DYN139": return 5;
     case "DYN119": case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
     case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
     case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
-      // Ranger
+    //Ranger
     case "DYN162": return 5;
     case "DYN163": return 4;
     case "DYN164": return 3;
+    //Runeblade
+    case "DYN173": return 6;
     default: return 0;
   }
 }
@@ -412,6 +421,19 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv .= " and creates a Runechant token";
       }
       return $rv . ".";
+    case "DYN173":
+      $pitchArr = explode(",", $additionalCosts);
+      $attackActionPitched = 0;
+      $naaPitched = 0;
+      for ($i = 0; $i < count($pitchArr); ++$i) {
+        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
+        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      }
+      if ($naaPitched && $attackActionPitched && IsHeroAttackTarget()) {
+        AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+        return "On-damage the defending hero discard a card and you draw a card";
+      }
+      return "";
     case "DYN174":
       $pitchArr = explode(",", $additionalCosts);
       $attackActionPitched = 0;
