@@ -5,9 +5,9 @@ function DYNAbilityCost($cardID)
   switch ($cardID) {
     case "DYN001": return 3;
     case "DYN005": return 3;
-    case "DYN025": return 3; 
+    case "DYN025": return 3;
     case "DYN068": return 3;
-    case "DYN069": case "DYN070": return 1; 
+    case "DYN069": case "DYN070": return 1;
     case "DYN115": case "DYN116": return 2;
     case "DYN117": return 0;
     case "DYN118": return 0;
@@ -18,7 +18,7 @@ function DYNAbilityCost($cardID)
     case "DYN243": return 2;
 
     default: return 0;
-  } 
+  }
 }
 
 function DYNAbilityType($cardID, $index = -1)
@@ -27,7 +27,7 @@ function DYNAbilityType($cardID, $index = -1)
     case "DYN001": return "A";
     case "DYN005": return "AA";
     case "DYN068": return "AA";
-    case "DYN069": case "DYN070": return "AA"; 
+    case "DYN069": case "DYN070": return "AA";
     case "DYN088": return "AA";
     case "DYN025": return "I";
     case "DYN115": case "DYN116": return "AA";
@@ -113,10 +113,12 @@ function DYNCardType($cardID)
     case "DYN026": return "E";
     case "DYN039": case "DYN040": case "DYN041": return "A";
     case "DYN045": return "E";
+    //Warrior
+    case "DYN066": return "A";
     case "DYN068": return "W";
-    case "DYN069": case "DYN070": return "W"; 
+    case "DYN069": case "DYN070": return "W";
     case "DYN072": return "I";
-    case "DYN025": return "C"; 
+    case "DYN025": return "C";
     case "DYN088": return "W";
     case "DYN094": return "A";
     //Mechanologist
@@ -170,6 +172,8 @@ function DYNCardSubtype($cardID)
     case "DYN005": return "Rock";
     case "DYN026": return "Off-Hand";
     case "DYN045": return "Chest";
+    //Warrior
+    case "DYN066": return "Item";
     case "DYN068": return "Axe";
     case "DYN069": case "DYN070": return "Dagger";
     case "DYN072": return "Aura";
@@ -238,6 +242,8 @@ function DYNPitchValue($cardID)
     case "DYN009": return 2;
     case "DYN039": return 1;
     case "DYN040": return 2;
+    //Warrior
+    case "DYN066": return 2;
     case "DYN069": case "DYN070": return 0;
     case "DYN072": return 1;
     //Mechanologist
@@ -273,9 +279,11 @@ function DYNBlockValue($cardID)
   switch ($cardID) {
     case "DYN001": return -1;
     case "DYN005": return -1;
-    case "DYN025": return -1; 
+    case "DYN025": return -1;
     case "DYN026": return 3;
     case "DYN045": return 1;
+    //Warrior
+    case "DYN066": return -1;
     case "DYN068": return -1;
     case "DYN069": case "DYN070": return -1;
     case "DYN072": return -1;
