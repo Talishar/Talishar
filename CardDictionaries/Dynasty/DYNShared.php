@@ -107,6 +107,7 @@ function DYNCardType($cardID)
     case "DYN045": return "E";
     case "DYN068": return "W";
     case "DYN469": return "W"; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN072": return "I";
     case "DYN475": return "C"; // TODO: Yoji cardID to be modified with set release
     case "DYN088": return "W";
     case "DYN094": return "A";
@@ -151,6 +152,7 @@ function DYNCardSubtype($cardID)
       case "DYN045": return "Chest";
       case "DYN068": return "Axe";
       case "DYN469": return "Dagger"; // TODO: Quicksilver Dagger CardID might change on set release
+      case "DYN072": return "Aura";
       case "DYN088": return "Gun";
       case "DYN094": return "Item";
       case "DYN115": case "DYN116": return "Dagger";
@@ -173,6 +175,7 @@ function DYNCardCost($cardID)
 {
   switch ($cardID) {
       case "DYN039": case "DYN040": case "DYN041": return 2;
+      case "DYN072": return 1;
       case "DYN416": case "DYN417": case "DYN418": return 1; // TODO: Blessing of Aether cardID to be edited
       case "DYN119": return 1;
       case "DYN121": return 0;
@@ -198,6 +201,7 @@ function DYNPitchValue($cardID)
     case "DYN039": return 1;
     case "DYN040": return 2;
     case "DYN469": return 0; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN072": return 1;
     case "DYN113": return 0;
     case "DYN115": case "DYN116": return 0;
     case "DYN416": return 1; // TODO: Blessing of Aether cardID to be edited
@@ -227,6 +231,7 @@ function DYNBlockValue($cardID)
     case "DYN045": return 1;
     case "DYN068": return -1;
     case "DYN469": return -1; // TODO: Quicksilver Dagger CardID might change on set release
+    case "DYN072": return -1;
     case "DYN475": return -1; // TODO: Yoji cardID to be modified with set release
     case "DYN088": return -1;
     case "DYN094": return -1;
@@ -290,6 +295,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
       AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
       return "Remove a -1 counter from a Guardian Off-hand with " . $maxDef . " or less base defense.";
+    case "DYN072":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W;subtype=Sword");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Sword gain a +1 counter");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDEQUIPCOUNTER", $currentPlayer, "-", 1);
+      return "Add a +1 counter from a sword you control.";
     case "DYN475": // TODO: Yoji cardID to be modified with set release
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

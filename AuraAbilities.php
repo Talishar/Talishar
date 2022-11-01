@@ -71,6 +71,14 @@ function AuraDestroyed($player, $cardID, $isToken = false)
           PlayAura("MON104", $player);
         }
         break;
+      case "DYN072":
+        if ($auras[$i] == $cardID) {
+          $char = &GetPlayerCharacter($player);
+          for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+            if (CardSubType($char[$j]) == "Sword") $char[$j + 3] = 0;
+          }
+        }
+        break;
       default:
         break;
     }
@@ -384,7 +392,7 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $mainClassState, $CS_NumNonAttackCards, $mainPlayer;
+  global $CS_NumNonAttackCards, $mainPlayer;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -401,6 +409,11 @@ function AuraEndTurnAbilities()
         break;
       case "UPR139":
         $remove = 1;
+        break;
+      case "DYN072":
+        if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) {
+          $remove = 1;
+        }
         break;
       default:
         break;
@@ -632,6 +645,7 @@ function AuraHitEffects($attackID)
 {
   global $mainPlayer;
   $attackType = CardType($attackID);
+  $attackSubType = CardSubType($attackID);
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -655,6 +669,11 @@ function AuraHitEffects($attackID)
           WriteLog(CardLink($auras[$i], $auras[$i]) . " created 1 runechants.");
           PlayAura("ARC112", $mainPlayer, 1);
           $remove = 1;
+        }
+        break;
+      case "DYN072":
+        if ($attackSubType == "Sword") {
+          AddCurrentTurnEffectFromCombat($auras[$i], $mainPlayer);
         }
         break;
       default:
