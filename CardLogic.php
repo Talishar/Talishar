@@ -870,6 +870,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "DYN009":
+      $deck = &GetDeck($player);
+      $rv = "";
+      if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+      $wasRevealed = RevealCards($deck[0]);
+      if ($wasRevealed) {
+        if (AttackValue($deck[0]) >= 6) {
+          MyDrawCard();
+          WriteLog(CardLink($parameter, $parameter) . " draw a card.");
+        }
+      }
+      break;
     case "DYN094":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $index = GetItemIndex($parameter, $player);
@@ -1068,6 +1080,10 @@ function CardDiscarded($player, $discarded, $source = "")
     $character = &GetPlayerCharacter($player);
     if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001" || SearchCurrentTurnEffects("WTR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("WTR002-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("RVD001-SHIYANA", $mainPlayer)) && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
+    }
+    if (SearchCurrentTurnEffects("DYN009", $player)) {
+      BanishCardForPlayer($discarded, $player, "GY", "-", $player);
+      AddLayer("TRIGGER", $player, "DYN009");
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
