@@ -3330,6 +3330,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChain[$lastResult + 6] += $parameter;
       return $lastResult;
     case "COMBATCHAINDEBUFFDEFENSE":
+      global $currentTurnEffects;
+      $totalDefense = 0;
+      $defense = BlockValue($combatChain[$lastResult]);
+      if ($defense > 0) $totalDefense += $defense;
+      if (CardType($combatChain[$lastResult]) == "E") {
+        $index = FindDefCharacter($combatChain[$lastResult]);
+        $defense += $defCharacter[$index + 4];
+      }
+      else {
+        for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+            if ($currentTurnEffects[$i + 1] != $mainPlayer) {
+              $totalDefense += EffectBlockModifier($currentTurnEffects[$i], "", 0);
+              if ($totalDefense < 0) $totalDefense = 0;
+            }
+          }
+        }
+      }
+      if ($parameter > $totalDefense) $parameter = $totalDefense;
       $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
     case "REMOVEMYDISCARD":
