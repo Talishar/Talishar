@@ -1241,6 +1241,7 @@ if ($set == "DYN") {
 		case "145": case "146": case "147": return "Slay the Scholars";
     	case "148": case "149": case "150": return "Cut to the Chase";
 		case "151": return "Sandscour Greatbow";
+		case "162": case "163": case "164": return "Hemorrhage Bore";
 		case "171": return "Amethyst Tiara";
 		case "172": return "Annals of Sutcliffe";
 		case "174": return "Diabolic Ultimatum";
