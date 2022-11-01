@@ -880,6 +880,31 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
       break;
+    case "DYN152":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $deck = &GetDeck($player);
+      if (count($deck) == 0) WriteLog("Your deck is empty. No card is revealed.");
+      $wasRevealed = RevealCards($deck[0]);
+      if ($wasRevealed) {
+        if (CardSubType($deck[0]) == "Arrow") {
+          if (IsAllyAttacking()) {
+            $allyIndex = "THEIRALLY-" . GetAllyIndex($combatChain[0], $otherPlayer);
+            AddDecisionQueue("PASSPARAMETER", $player, $allyIndex, 1);
+          }
+          else {
+            AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=C", 1);
+          }
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target to deal 1 damage.");
+          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZDAMAGE", $player, "1,DAMAGE," . $parameter, 1);
+          WriteLog(CardLink($parameter, $parameter) . " deals 1 damage.");
+        }
+        else {
+          WriteLog("The card was put on the bottom of your deck.");
+          array_push($deck, array_shift($deck));
+        }
+      }
+      break;
     default:
       break;
   }
