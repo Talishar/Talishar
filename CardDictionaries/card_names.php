@@ -1220,6 +1220,8 @@ if ($set == "DYN") {
 		case "009": return "Berserk";
 		case "025": return "Yoji, Royal Protector";
 		case "026": return "Seasoned Saviour";
+    //Guardian
+    case "028": return "Buckle";
 		case "039": case "040": case "041": return "Reinforce Steel";
 		case "045": return "Blazen Yoroi";
     case "066": return "Spirit of Eirina";
