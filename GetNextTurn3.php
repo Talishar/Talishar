@@ -161,12 +161,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->activeChainLink = $combatChainContents;
 
   //Display layer
+  $layerObject = new stdClass;
   $layerContents = array();
   for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
     $layerName = ($layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" ? $layers[$i + 2] : $layers[$i]);
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));
   }
-  $response->layerContents = $layerContents;
+  $target = GetAttackTarget();
+  $playerObject->target = $target;
+  $layerObject->layerContents = $layerContents;
+  $response->layerDisplay = $layerObject;
 
   //Opponent Hand
   $handContents = array();
