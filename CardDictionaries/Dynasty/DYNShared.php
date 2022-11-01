@@ -587,26 +587,24 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       $rv = "";
       if ($attackActionPitched) {
-        // Each hero chooses and destroys an ally they control.
         // Player
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ:MYALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("DESTROYALLY", $currentPlayer, "-", 1);
         // Opponent
-        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "THEIRALLY");
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ:THEIRALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
         AddDecisionQueue("DESTROYALLY", $otherPlayer, "-", 1);
 
         $rv .= "each hero chose and destroyed an ally they control.";
       }
       if ($naaPitched) {
-        // Each hero chooses and destroys an aura they control.
         // Player
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ:MYAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("DESTROYAURA", $currentPlayer, "-", 1);
         // Opponent
-        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "THEIRAURAS");
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "SEARCHMZ:THEIRAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-");
         AddDecisionQueue("DESTROYAURA", $otherPlayer, "-", 1);
 
