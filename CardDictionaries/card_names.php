@@ -1216,6 +1216,7 @@ if ($set == "DYN") {
 		case "004": return "Dust from the Shadow Crypts";
  		case "005": return "Rok";
 		case "007": return "Savage Beatdown";
+    case "008": return "Skull Crack";
 		case "009": return "Berserk";
 		case "025": return "Yoji, Royal Protector";
 		case "026": return "Seasoned Saviour";
