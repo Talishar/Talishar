@@ -175,6 +175,7 @@ if ($decklink != "") {
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
+  $dynastyCard = ""; // To be deleted after release of Dynatsy
   $totalCards = 0;
 
   if (is_countable($cards)) {
@@ -195,6 +196,7 @@ if ($decklink != "") {
       }
       $id = GetAltCardID($id);
       $cardType = CardType($id);
+      $cardSet = substr($id, 0, 3);
 
       if (IsBanned($id, $format)) {
         if ($bannedCard != "") $bannedCard .= ", ";
@@ -301,6 +303,10 @@ if ($decklink != "") {
         }
         $totalCards += $numMainBoard + $numSideboard;
       }
+      if ($cardSet == "DYN") {
+        if ($dynastyCard != "") $dynastyCard .= ", ";
+        $dynastyCard .= CardName($id);
+      }
     }
   } else {
     $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
@@ -308,12 +314,17 @@ if ($decklink != "") {
     die();
   }
 
+  if ($dynastyCard != "" && ($format == "compblitz" || $format == "compcc")) {
+      $_SESSION['error'] = '⚠️ The Dynatsy cards are not allowed in the competitive queues until release. \n\n Thank you for your understanding and patience!';
+      header("Location: MainMenu.php");
+      die();
+  }
+
   if ($unsupportedCards != "") {
     $_SESSION['error'] = '⚠️ The following cards are not yet supported: ' . $unsupportedCards;
     header("Location: MainMenu.php");
     die();
   }
-
 
   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
     $_SESSION['error'] = '⚠️ Young heroes are not legal in Classic Constructed: \n\nYoung - ' . CardName($character);
@@ -359,7 +370,6 @@ if ($decklink != "") {
     header("Location: MainMenu.php");
     die();
   }
-
 
   //We have the decklist, now write to file
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
