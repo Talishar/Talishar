@@ -38,10 +38,21 @@ function DestroyAlly($player, $index, $skipDestroy = false)
   if (IsSpecificAllyAttacking($player, $index)) {
     CloseCombatChain();
   }
+  //Dragon Allies
   if (CardType($allies[$index]) != "T" && DelimStringContains(CardSubType($allies[$index]), "Dragon")) {
     $set = substr($allies[$index], 0, 3);
     $number = intval(substr($allies[$index], -3));
     $number -= 400;
+    $id = $number;
+    if ($number < 100) $id = "0" . $id;
+    if ($number < 10) $id = "0" . $id;
+    $id = $set . $id;
+    AddGraveyard($id, $player, "PLAY");
+  }
+  //Non-token ashes
+  if (CardType($allies[$index + 4]) != "T" && DelimStringContains(CardSubType($allies[$index + 4]), "Ash")) {
+    $set = substr($allies[$index + 4], 0, 3);
+    $number = intval(substr($allies[$index + 4], -3));
     $id = $number;
     if ($number < 100) $id = "0" . $id;
     if ($number < 10) $id = "0" . $id;
