@@ -1224,7 +1224,10 @@ if ($set == "DYN") {
     	//Guardian
     	case "028": return "Buckle";
 		case "039": case "040": case "041": return "Reinforce Steel";
+		//Ninja
 		case "045": return "Blazen Yoroi";
+		case "065": return "Crouching Tiger";
+		//Warrior
     	case "066": return "Spirit of Eirina";
 		case "068": return "Merciless Battleaxe";
         case "069": case "070": return "Quicksilver Dagger";

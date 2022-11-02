@@ -403,13 +403,16 @@ function CardClass($cardID)
       if ($number == 1) return "WARRIOR,WIZARD";
       if ($number >= 3 && $number <= 4) return "ILLUSIONIST";
       if ($number >= 5 && $number <= 20) return "BRUTE";
+
       if ($number >= 25 && $number <= 41) return "GUARDIAN";
-      if ($number == 45) return "NINJA";
+
+      if ($number >= 45 && $number <= 65) return "NINJA";
 
       if ($number >= 68 && $number <= 70) return "WARRIOR";
 
       if ($number >= 88 && $number <= 112) return "MECHANOLOGIST";
       if ($number >= 113 && $number <= 147) return "ASSASSIN";
+      
       if ($number >= 151 && $number <= 169) return "RANGER";
 
       if ($number >= 171 && $number <= 190) return "RUNEBLADE";
@@ -1033,6 +1036,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "")
   if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   if (DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
+  if (HasEphemeral($cardID)) return "-";
   switch ($cardID) {
     case "WTR163":
       return "BANISH";
