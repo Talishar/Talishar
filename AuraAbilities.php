@@ -261,6 +261,11 @@ function AuraStartTurnAbilities()
       case "UPR190":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "DYN048":
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " create a " . CardLink("DYN065", "DYN065") . " in your hand.");
+        AddPlayerHand("DYN065", $mainPlayer, "-");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
       case "DYN098":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;

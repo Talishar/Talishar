@@ -127,8 +127,9 @@ function DYNCardType($cardID)
     //Guardian
     case "DYN028": return "A";
     case "DYN039": case "DYN040": case "DYN041": return "A";
-    case "DYN045": return "E";
     //Ninja
+    case "DYN045": return "E";
+    case "DYN048": return "A";
     case "DYN065": return "AA";
     //Warrior
     case "DYN066": return "A";
@@ -195,7 +196,9 @@ function DYNCardSubtype($cardID)
     //Brute
     case "DYN005": return "Rock";
     case "DYN026": return "Off-Hand";
+    //Ninja
     case "DYN045": return "Chest";
+    case "DYN048": return "Aura";
     //Warrior
     case "DYN066": return "Item";
     case "DYN068": return "Axe";
