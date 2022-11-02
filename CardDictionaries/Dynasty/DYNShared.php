@@ -112,6 +112,7 @@ function DYNCardType($cardID)
 {
   switch ($cardID) {
     case "DYN001": return "C";
+    case "DYN002": return "A";
     case "DYN003": return "A";
     case "DYN004": return "A";
     //Brute
@@ -183,6 +184,7 @@ function DYNCardType($cardID)
 function DYNCardSubtype($cardID)
 {
   switch ($cardID) {
+    case "DYN002": return "Ash";
     case "DYN003": return "Ash";
     case "DYN004": return "Ash";
     //Brute
@@ -264,6 +266,7 @@ function DYNCardCost($cardID)
 function DYNPitchValue($cardID)
 {
   switch ($cardID) {
+    case "DYN002": return 1;
     case "DYN003": return 1;
     case "DYN004": return 1;
     //Brute
@@ -405,6 +408,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN009":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DYN002":
+      PutPermanentIntoPlay($currentPlayer, $cardID);
       return "";
     case "DYN003":
       PutPermanentIntoPlay($currentPlayer, $cardID);

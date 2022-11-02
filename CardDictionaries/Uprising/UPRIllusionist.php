@@ -371,9 +371,14 @@ function UPRIllusionistDealDamageEffect($cardID)
   function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
   {
     AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into) . " or skip with the Pass button", 1);
-    if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
-    else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
+    if ($optional) {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into) . " or skip with the Pass button", 1);
+      AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
+    }
+    else {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
+      AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
+    }
     AddDecisionQueue("TRANSFORM", $player, $into, 1);
   }
 
