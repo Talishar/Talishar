@@ -52,6 +52,7 @@ function DYNHasGoAgain($cardID)
     case "DYN009": return true;
     case "DYN028": return true;
     //Ninja
+    case "DYN050": case "DYN051": case "DYN052": return true;
     case "DYN062": case "DYN063": case "DYN064": return true;
     case "DYN065": return true;
     //Assassin
@@ -138,6 +139,7 @@ function DYNCardType($cardID)
     case "DYN045": return "E";
     case "DYN047": return "AA";
     case "DYN048": return "A";
+    case "DYN050": case "DYN051": case "DYN052": return "AA";
     case "DYN062": case "DYN063": case "DYN064": return "A";
     case "DYN065": return "AA";
     //Warrior
@@ -257,6 +259,9 @@ function DYNCardCost($cardID)
     case "DYN009": return 1;
     case "DYN028": return 3;
     case "DYN039": case "DYN040": case "DYN041": return 2;
+    //Ninja
+    case "DYN050": case "DYN051": case "DYN052": return 1;
+    
     case "DYN072": return 1;
     //Mechanologist
     case "DYN090": return 1;
@@ -306,8 +311,8 @@ function DYNPitchValue($cardID)
     case "DYN040": return 2;
       //Ninja
     case "DYN047": return 1;
-    case "DYN062": return 1;
-    case "DYN063": return 2;
+    case "DYN050": case "DYN062": return 1;
+    case "DYN051": case "DYN063": return 2;
     case "DYN065": return 0;
     //Warrior
     case "DYN066": return 2;
@@ -359,6 +364,7 @@ function DYNBlockValue($cardID)
     case "DYN026": return 3;
     case "DYN045": return 1;
     //Ninja
+    case "DYN050": case "DYN051": case "DYN052": return 2;
     case "DYN062": case "DYN063": case "DYN064": return 2;
     case "DYN065": return -1;
     //Warrior
@@ -404,9 +410,10 @@ function DYNAttackValue($cardID)
     case "DYN005": return 7;
     case "DYN007": return 6;
     case "DYN008": return 6;
-    //Ninja
-    case "DYN047": return 2;
-    case "DYN068": return 3;
+      //Ninja
+    case "DYN050": return 4;
+    case "DYN051": case "DYN068": return 3;
+    case "DYN047": case "DYN052": return 2;
     case "DYN069": case "DYN070": return 1;
     //Mechanologist
     case "DYN088": return 5;
@@ -737,6 +744,9 @@ function DYNHitEffect($cardID)
           BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
         }
       }
+      break;
+    case "DYN050": case "DYN051": case "DYN052":
+      BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
       break;
     case "DYN115":
       if (IsHeroAttackTarget()) {
