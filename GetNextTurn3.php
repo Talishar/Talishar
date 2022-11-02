@@ -146,6 +146,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     exit();
   }
 
+  // send initial on-load information if our first time connecting.
+
+  if ($lastUpdate == 0) {
+    include "MenuFiles/ParseGamefile.php";
+    $initialLoad = new stdClass();
+    $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
+    $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
+    $initialLoad->roguelikeGameID = $roguelikeGameID;
+    $response->initialLoad = $initialLoad;
+  }
+
   $blankZone = 'blankZone';
 
   //Choose Cardback
@@ -153,12 +164,37 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
   $otherPlayer = ($playerID == 1 ? 2 : 1);
 
-  //Display combat chain
-  $combatChainContents = array();
+  //Display active chain link
+  $activeChainLink = new stdClass();
+  $combatChainReactions = array();
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    array_push($combatChainContents, JSONRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i + 1]));
+    if ($i == 0) {
+      $activeChainLink->attackingCard = JSONRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i + 1]);
+      continue;
+    }
+    array_push($combatChainReactions, JSONRenderedCard(cardNumber: $combatChain[$i], controller: $combatChain[$i + 1]));
   }
-  $response->activeChainLink = $combatChainContents;
+  $activeChainLink->reactions = $combatChainReactions;
+  $activeChainLink->attackTarget = GetAttackTarget();
+  $activeChainLink->damagePrevention = GetDamagePrevention($defPlayer);
+  $activeChainLink->goAgain = DoesAttackHaveGoAgain();
+  $activeChainLink->dominate = CachedDominateActive();
+  $activeChainLink->overpower = CachedOverpowerActive();
+  $activeChainLink->fused = false;
+
+  // current chain link attack
+  $totalAttack = 0;
+  $totalDefense = 0;
+  if (count($combatChain) > 0) {
+    $chainAttackModifiers = [];
+    EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
+  }
+  $activeChainLink->totalAttack = $totalAttack;
+
+  // current chain link defence
+  $activeChainLink->totalDefence = $totalDefense;
+
+  $response->activeChainLink = $activeChainLink;
 
   //Display layer
   $layerObject = new stdClass;
@@ -168,7 +204,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));
   }
   $target = GetAttackTarget();
-  $playerObject->target = $target;
+  $layerObject->target = $target;
   $layerObject->layerContents = $layerContents;
   $response->layerDisplay = $layerObject;
 
@@ -185,18 +221,33 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentSoulCount = count($theirSoul);
 
   //Display their discard, pitch, deck, and banish
-  $response->opponentDiscardCount = count($theirDiscard);
-  $response->opponentDiscardCard = JSONRenderedCard(count($theirDiscard) > 0 ? $theirDiscard[0] : $blankZone);
+  // $response->opponentDiscardCount = count($theirDiscard);
+  // $response->opponentDiscardCard = JSONRenderedCard(count($theirDiscard) > 0 ? $theirDiscard[0] : $blankZone);
+  $opponentDiscardArray = array();
+  for ($i = 0; $i < count($theirDiscard); $i += DiscardPieces()) {
+    array_push($opponentDiscardArray, JSONRenderedCard($theirDiscard[$i]));
+  }
+  $response->opponentDiscard = $opponentDiscardArray;
 
   // TODO: Might need to put pitch as an array so FE can "stack" them like in the current UI
-  $response->opponentPitchCount = count($theirPitch);
-  $response->opponentPitchCard = JSONRenderedCard((count($theirPitch) > 0 ? $theirPitch[0] : $blankZone));
+  $response->opponentPitchCount = $theirResources[0];
+  // $response->opponentPitchCard = JSONRenderedCard((count($theirPitch) > 0 ? $theirPitch[0] : $blankZone));
+  $opponentPitchArr = array();
+  for ($i = 0; $i < count($theirPitch); $i += PitchPieces()) {
+    array_push($opponentPitchArr, JSONRenderedCard($theirPitch[$i]));
+  }
+  $response->opponentPitch = $opponentPitchArr;
 
   $response->opponentDeckCount = count($theirDeck);
   $response->opponentDeckCard = JSONRenderedCard(count($theirDeck) > 0 ? $TheirCardBack : $blankZone);
 
-  $response->opponentBanishCount = count($theirBanish);
-  $response->opponentBanishCard = JSONRenderedCard((count($theirBanish) > 0 ? ($theirBanish[1] == "INT" ? $TheirCardBack : $theirBanish[0]) : $blankZone));
+  // $response->opponentBanishCount = count($theirBanish);
+  // $response->opponentBanishCard = JSONRenderedCard((count($theirBanish) > 0 ? ($theirBanish[1] == "INT" ? $TheirCardBack : $theirBanish[0]) : $blankZone));
+  $opponentBanishArr = array();
+  for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
+    array_push($opponentBanishArr, JSONRenderedCard($theirBanish[$i]));
+  }
+  $response->opponentBanish = $opponentBanishArr;
 
   //Now display their character and equipment
   $numWeapons = 0;
@@ -254,18 +305,35 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //My soul count
   $response->playerSoulCount = count($mySoul);
 
-  $response->playerDiscardCount = count($myDiscard);
-  $response->playerDiscardCard = JSONRenderedCard(count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
+  // $response->playerDiscardCount = count($myDiscard);
+  // $response->playerDiscardCard = JSONRenderedCard(count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
+  $playerDiscardArr = array();
+  for ($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
+    array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i]));
+  }
+  $response->playerDiscard = $playerDiscardArr;
 
   // TODO: Might need to put pitch as an array so FE can "stack" them like in the current UI
-  $response->playerPitchCount = count($myPitch);
-  $response->playerPitchCard = JSONRenderedCard((count($myPitch) > 0 ? $myPitch[0] : $blankZone));
+  $response->playerPitchCount = $myResources[0];
+  // $response->playerPitchCard = JSONRenderedCard((count($myPitch) > 0 ? $myPitch[0] : $blankZone));
+  $playerPitchArr = array();
+  for ($i = 0; $i < count($myPitch); $i += PitchPieces()) {
+    array_push($playerPitchArr, JSONRenderedCard($myPitch[$i]));
+  }
+  $response->playerPitch = $playerPitchArr;
 
   $response->playerDeckCount = count($myDeck);
   $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
 
-  $response->playerBanishCount = count($myBanish);
-  $response->playerBanishCard = JSONRenderedCard((count($myBanish) > 0 ? $myBanish[0] : $blankZone));
+  // $response->playerBanishCount = count($myBanish);
+  // $response->playerBanishCard = JSONRenderedCard((count($myBanish) > 0 ? $myBanish[0] : $blankZone));
+
+  // TODO: Highlight those that are playable or not
+  $playerBanishArr = array();
+  for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
+    array_push($playerBanishArr, JSONRenderedCard($myBanish[$i]));
+  }
+  $response->playerBanish = $playerBanishArr;
 
   //Now display my character and equipment
   $numWeapons = 0;
@@ -295,18 +363,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($myCharData, JSONRenderedCard($myCharacter[$i], $currentPlayer == $playerID && $playable ? 3 : 0, $myCharacter[$i + 1] != 2 ? 1 : 0, $border, $myCharacter[$i + 1] != 0 ? $counters : 0, strval($i), 0, $myCharacter[$i + 4], $atkCounters, $playerID, $type, $sType, $restriction, $myCharacter[$i + 1] == 0, $myCharacter[$i + 6] == 1, $myCharacter[$i + 8] == 1, $gem));
   }
   $response->playerEquipment = $myCharData;
-
-  // current chain link attack
-  $totalAttack = 0;
-  $totalDefense = 0;
-  if (count($combatChain) > 0) {
-    $chainAttackModifiers = [];
-    EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
-  }
-  $response->totalAttack = $totalAttack;
-
-  // current chain link defence
-  $response->totalDefence = $totalDefense;
 
   // what's up their arse
   $theirArse = array();
@@ -430,12 +486,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // TODO: Not have as HTML, have custom string so cards can be parsed the other end safely.
   $response->chatLog = JSONLog($gameName, $playerID);
 
-  // TODO: opponent name
-  $response->opponentName = "Big Dum Dum";
-
-  // TODO: my name
-  $response->playerName = "Our heroic main player";
-
   // Deduplicate current turn effects
   $playerEffectsArr = [];
   $opponentEffectsArr = [];
@@ -514,11 +564,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // opponent and player Action Points
   if ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer)) {
-    $response->opponentAP = $actionPoints;
-    $response->playerAP = 0;
-  } else {
+
     $response->opponentAP = 0;
     $response->playerAP = $actionPoints;
+  } else {
+    $response->opponentAP = $actionPoints;
+    $response->playerAP = 0;
   }
 
   // Last played Card
@@ -527,7 +578,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     JSONRenderedCard($lastPlayed[0], controller: $lastPlayed[1]);
 
   // is the player the active player (is it their turn?)
-  $response->amIActivePlayer = $mainPlayer == $playerID ? true : false;
+  $response->amIActivePlayer = ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer))  ? true : false;
+
+  //Turn number
+  $response->turnNo = $currentTurn;
 
   // encode and send it out
   echo json_encode($response);
