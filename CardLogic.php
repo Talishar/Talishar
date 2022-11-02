@@ -897,7 +897,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
       //AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero to copy");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
       break;
     case "DYN152":
       $otherPlayer = ($player == 1 ? 2 : 1);
