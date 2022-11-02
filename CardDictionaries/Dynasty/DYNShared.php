@@ -51,6 +51,9 @@ function DYNHasGoAgain($cardID)
   switch ($cardID) {
     case "DYN009": return true;
     case "DYN028": return true;
+    //Ninja
+    case "DYN065": return true;
+    //
     case "DYN115": case "DYN116": return true;
     case "DYN188": case "DYN189": case "DYN190": return  true;
     case "DYN230": case "DYN231": case "DYN232": return  true;
@@ -125,6 +128,8 @@ function DYNCardType($cardID)
     case "DYN028": return "A";
     case "DYN039": case "DYN040": case "DYN041": return "A";
     case "DYN045": return "E";
+    //Ninja
+    case "DYN065": return "AA";
     //Warrior
     case "DYN066": return "A";
     case "DYN068": return "W";
@@ -278,6 +283,8 @@ function DYNPitchValue($cardID)
     case "DYN028": return 3;
     case "DYN039": return 1;
     case "DYN040": return 2;
+    //Ninja
+    case "DYN065": return 0;
     //Warrior
     case "DYN066": return 2;
     case "DYN069": case "DYN070": return 0;
@@ -325,6 +332,8 @@ function DYNBlockValue($cardID)
     case "DYN025": return -1;
     case "DYN026": return 3;
     case "DYN045": return 1;
+    //Ninja
+    case "DYN065": return -1;
     //Warrior
     case "DYN066": return -1;
     case "DYN068": return -1;
@@ -773,6 +782,14 @@ function HasSurge($cardID)
 {
   switch ($cardID) {
     case "DYN206": case "DYN207": case "DYN208": return true;
+    default: return false;
+  }
+}
+
+function HasEphemeral($cardID)
+{
+  switch ($cardID) {
+    case "DYN065": return true;    
     default: return false;
   }
 }
