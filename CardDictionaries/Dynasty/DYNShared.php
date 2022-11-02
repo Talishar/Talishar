@@ -52,6 +52,7 @@ function DYNHasGoAgain($cardID)
     case "DYN009": return true;
     case "DYN028": return true;
     //Ninja
+    case "DYN049": return true;
     case "DYN050": case "DYN051": case "DYN052": return true;
     case "DYN062": case "DYN063": case "DYN064": return true;
     case "DYN065": return true;
@@ -86,6 +87,7 @@ function DYNEffectAttackModifier($cardID)
   switch ($cardID) {
     case "DYN007": return 6;
     case "DYN028": return 1;
+    case "DYN049": return 1;
     case "DYN155": return 3;
     default:
       return 0;
@@ -99,6 +101,7 @@ function DYNCombatEffectActive($cardID, $attackID)
   switch ($cardID) {
     case "DYN007": return true;
     case "DYN028": return CardClass($attackID) == "GUARDIAN";
+    case "DYN049": return $attackID == "DYN065";
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
     default:
@@ -140,6 +143,7 @@ function DYNCardType($cardID)
     case "DYN045": return "E";
     case "DYN047": return "AA";
     case "DYN048": return "A";
+    case "DYN049": return "A";
     case "DYN050": case "DYN051": case "DYN052": return "AA";
     case "DYN056": case "DYN057": case "DYN058": return "AA";
     case "DYN062": case "DYN063": case "DYN064": return "A";
@@ -314,6 +318,7 @@ function DYNPitchValue($cardID)
     case "DYN040": return 2;
       //Ninja
     case "DYN047": return 1;
+    case "DYN049": return 0;
     case "DYN050": case "DYN056": case "DYN062": return 1;
     case "DYN051": case "DYN057": case "DYN063": return 2;
     case "DYN065": return 0;
@@ -488,6 +493,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
       AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
       return "Remove a -1 counter from a Guardian Off-hand with " . $maxDef . " or less base defense.";
+    case "DYN049":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddPlayerHand("DYN065", $currentPlayer, "-");
+      return "Create a " . CardLink("DYN065","DYN065") . " in your hand and give them +1 this turn.";
     case "DYN062": case "DYN063": case "DYN064":
       if ($cardID == "DYN062") $amount = 3;
       else if ($cardID == "DYN063") $amount = 2;
