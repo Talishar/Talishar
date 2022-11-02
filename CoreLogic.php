@@ -1185,7 +1185,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
-
+  if($cardID == "MON034" && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
     if(ClassContains($cardID, "WIZARD", $currentPlayer) && $cardType == "A") return true;
@@ -1397,7 +1397,7 @@ function DoesAttackHaveGoAgain()
       return NumPhoenixFlameChainLinks() >= 1;
     case "UPR092":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
-    case "DYN069": case "DYN070": 
+    case "DYN069": case "DYN070":
       $anotherWeaponGainedGoAgain = GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain);
       if (SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";
       else return $anotherWeaponGainedGoAgain != "-" && $anotherWeaponGainedGoAgain != $combatChain[0];

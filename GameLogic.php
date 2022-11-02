@@ -859,6 +859,11 @@ function EffectHitEffect($cardID)
         ++$char[$combatChainState[$CCS_WeaponIndex] + 3];
       }
       break;
+    case "DYN028":
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+      AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+      break;
     default:
       break;
   }
@@ -1835,6 +1840,20 @@ function BeginEndPhaseEffects()
       case "UPR202":
         SetClassState($currentTurnEffects[$i + 1], $CS_EffectContext, $currentTurnEffects[$i]);
         Draw($currentTurnEffects[$i + 1]);
+        break;
+      case "DYN153":
+        $deck = &GetDeck($mainPlayer);
+        if(count($deck) == 0)
+        {
+          WriteLog("Your Heat Seeker fizzled out.");
+          break;
+        }
+        if(!ArsenalFull($mainPlayer))
+        {
+          $card = array_shift($deck);
+          WriteLog("Heat Seeker added " . CardLink($card, $card) . " to your arsenal.");
+          AddArsenal($card, $mainPlayer, "DECK", "UP");
+        }
         break;
       default:
         break;
@@ -4220,11 +4239,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "";
       }
 
-      if (SearchCurrentTurnEffects("DYN025", $otherPlayer) && $targetPlayer != $otherPlayer) { 
+      if (SearchCurrentTurnEffects("DYN025", $otherPlayer) && $targetPlayer != $otherPlayer) {
         SearchCurrentTurnEffects("DYN025", $otherPlayer, true);
         AddCurrentTurnEffect("DYN025-1", $otherPlayer);
         $targetPlayer = $otherPlayer;
-      } elseif (SearchCurrentTurnEffects("DYN025", $player) && $targetPlayer != $player) { 
+      } elseif (SearchCurrentTurnEffects("DYN025", $player) && $targetPlayer != $player) {
         SearchCurrentTurnEffects("DYN025", $player, true);
         AddCurrentTurnEffect("DYN025-1", $player);
         $targetPlayer = $player;
@@ -5348,6 +5367,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "SHRED":
 
         return "";
+      case "BLOCKVALUE":
+        return BlockValue($lastResult);
     default:
       return "NOTSTATIC";
   }

@@ -892,6 +892,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
       break;
+    case "DYN098":
+      DestroyAuraUniqueID($player, $uniqueID);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
+      //AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero to copy");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
+      break;
     case "DYN152":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $deck = &GetDeck($player);
@@ -1090,6 +1097,11 @@ function CardDiscarded($player, $discarded, $source = "")
   if ($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
+  }
+  if($discarded == "DYN008")
+  {
+    WriteLog("Gained a resource from Skull Crack.");
+    GainResources($player, 1);
   }
 }
 

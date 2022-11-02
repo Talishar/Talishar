@@ -261,6 +261,9 @@ function AuraStartTurnAbilities()
       case "UPR190":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "DYN098":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "DYN200": case "DYN201": case "DYN202":
         if ($auras[$i] == "DYN416") $amount = 3;
         else if ($auras[$i] == "DYN417") $amount = 2;
@@ -413,6 +416,13 @@ function AuraEndTurnAbilities()
       case "DYN072":
         if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) {
           $remove = 1;
+        }
+        break;
+      case "DYN175":
+        if($auras[$i+2] == 0) $remove = 1;
+        else {
+          --$auras[$i+2];
+          DealArcane(2, 2, "PLAYCARD", "DYN175", false, $mainPlayer);
         }
         break;
       default:
@@ -734,9 +744,15 @@ function NumNonTokenAura($player)
 function DestroyAllThisAura($player, $cardID)
 {
   $auras = &GetAuras($player);
+  $count = 0;
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    if ($auras[$i] == $cardID) DestroyAura($player, $i);
+    if ($auras[$i] == $cardID)
+    {
+      DestroyAura($player, $i);
+      ++$count;
+    }
   }
+  return $count;
 }
 
 function GetAuraGemState($player, $cardID)
