@@ -1391,6 +1391,8 @@ function DoesAttackHaveGoAgain()
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
     case "DYN047":
       return (ComboActive($combatChain[0]));
+    case "DYN056": case "DYN057": case "DYN058":
+      return (ComboActive($combatChain[0]));
     case "DYN069": case "DYN070":
       $anotherWeaponGainedGoAgain = GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain);
       if (SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";

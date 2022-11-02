@@ -2045,6 +2045,7 @@ function HasCombo($cardID)
     case "EVR043":
       return true;
     case "DYN047":
+    case "DYN056": case "DYN057": case "DYN058":
       return true;
   }
   return false;
@@ -2109,6 +2110,9 @@ function ComboActive($cardID = "")
     case "EVR043":
       return $LA == "EVR041" || $LA == "EVR042" || $LA == "EVR043";
     case "DYN047":
+    case "DYN056":
+    case "DYN057":
+    case "DYN058":
       return $LA == "DYN065";
   }
   return false;
