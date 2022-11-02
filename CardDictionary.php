@@ -1832,6 +1832,8 @@ function DoesEffectGrantDominate($cardID)
       return true;
     case "UPR091":
       return true;
+    case "DYN028":
+      return true;
     default:
       return false;
   }

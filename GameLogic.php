@@ -859,6 +859,11 @@ function EffectHitEffect($cardID)
         ++$char[$combatChainState[$CCS_WeaponIndex] + 3];
       }
       break;
+    case "DYN028":
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+      AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+      break;
     default:
       break;
   }

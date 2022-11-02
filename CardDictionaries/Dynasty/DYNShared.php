@@ -46,6 +46,7 @@ function DYNHasGoAgain($cardID)
 {
   switch ($cardID) {
     case "DYN009": return true;
+    case "DYN028": return true;
     case "DYN115": case "DYN116": return true;
     case "DYN188": case "DYN189": case "DYN190": return  true;
     case "DYN230": case "DYN231": case "DYN232": return  true;
@@ -70,6 +71,7 @@ function DYNEffectAttackModifier($cardID)
   if (count($params) > 1) $parameter = $params[1];
   switch ($cardID) {
     case "DYN007": return 6;
+    case "DYN028": return 1;
     default:
       return 0;
   }
@@ -81,6 +83,7 @@ function DYNCombatEffectActive($cardID, $attackID)
   $cardID = $params[0];
   switch ($cardID) {
     case "DYN007": return true;
+    case "DYN028": return CardClass($attackID) == "GUARDIAN";
     case "DYN115": case "DYN116": return true;
     default:
       return false;
@@ -112,6 +115,8 @@ function DYNCardType($cardID)
     case "DYN008": return "AA";
     case "DYN009": return "A";
     case "DYN026": return "E";
+    //Guardian
+    case "DYN028": return "A";
     case "DYN039": case "DYN040": case "DYN041": return "A";
     case "DYN045": return "E";
     //Warrior
@@ -211,6 +216,7 @@ function DYNCardCost($cardID)
     case "DYN007": return 3;
     case "DYN008": return 2;
     case "DYN009": return 1;
+    case "DYN028": return 3;
     case "DYN039": case "DYN040": case "DYN041": return 2;
     case "DYN072": return 1;
     case "DYN110": case "DYN111": case "DYN112": return 1;
@@ -247,6 +253,8 @@ function DYNPitchValue($cardID)
     case "DYN007": return 1;
     case "DYN008": return 1;
     case "DYN009": return 2;
+    //Guardian
+    case "DYN028": return 3;
     case "DYN039": return 1;
     case "DYN040": return 2;
     //Warrior
@@ -377,6 +385,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PutPermanentIntoPlay($currentPlayer, $cardID);
       return "";
     case "DYN025":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DYN028":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN039":
