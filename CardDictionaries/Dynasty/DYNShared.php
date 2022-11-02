@@ -159,6 +159,7 @@ function DYNCardType($cardID)
     case "DYN172": return "W";
     case "DYN173": return "AA";
     case "DYN174": return "A";
+    case "DYN175": return "A";
     case "DYN188": case "DYN189": case "DYN190": return "A";
     case "DYN192": return "W";
     case "DYN200": case "DYN201": case "DYN202": return "A";
@@ -201,6 +202,7 @@ function DYNCardSubtype($cardID)
     //Runeblade
     case "DYN171": return "Head";
     case "DYN172": return "Book";
+    case "DYN175": return "Aura";
     case "DYN192": return "Staff";
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
     case "DYN234": return "Head";
@@ -240,6 +242,7 @@ function DYNCardCost($cardID)
     //Runeblade
     case "DYN173": return 3;
     case "DYN174": return 3;
+    case "DYN175": return 3;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     case "DYN242": return 2;
     default: return 0;
@@ -286,6 +289,7 @@ function DYNPitchValue($cardID)
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
+    case "DYN175": return 3;
     case "DYN188": case "DYN206": case "DYN230": return 1;
     case "DYN189": case "DYN207": case "DYN231": return 2;
     case "DYN234": return 0;
@@ -324,6 +328,7 @@ function DYNBlockValue($cardID)
     case "DYN171": return 1;
     case "DYN172": return -1;
     case "DYN174": return 2;
+    case "DYN175": return 3;
     case "DYN188": case "DYN189": case "DYN190": return 2;
     case "DYN192": return -1;
     case "DYN230": case "DYN231": case "DYN232": return 2;
@@ -546,6 +551,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv .= "each hero chose and destroyed an aura they control.";
       }
       return $rv;
+    case "DYN175":
+      $numRunechants = DestroyAllThisAura($currentPlayer, "ARC112");
+      $auras = &GetAuras($currentPlayer);
+      $index = count($auras) - AuraPieces();//Get index of last played aura i.e. this
+      $auras[$index+2] = $numRunechants;
+      return "";
     case "DYN188":
     case "DYN189":
     case "DYN190":

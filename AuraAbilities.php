@@ -415,6 +415,13 @@ function AuraEndTurnAbilities()
           $remove = 1;
         }
         break;
+      case "DYN175":
+        if($auras[$i+2] == 0) $remove = 1;
+        else {
+          --$auras[$i+2];
+          DealArcane(2, 2, "PLAYCARD", "DYN175", false, $mainPlayer);
+        }
+        break;
       default:
         break;
     }
@@ -734,9 +741,15 @@ function NumNonTokenAura($player)
 function DestroyAllThisAura($player, $cardID)
 {
   $auras = &GetAuras($player);
+  $count = 0;
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    if ($auras[$i] == $cardID) DestroyAura($player, $i);
+    if ($auras[$i] == $cardID)
+    {
+      DestroyAura($player, $i);
+      ++$count;
+    }
   }
+  return $count;
 }
 
 function GetAuraGemState($player, $cardID)
