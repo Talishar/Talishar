@@ -1546,6 +1546,7 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "UPR094":
           return true;
+        case "DYN076": case "DYN077": case "DYN078": return true;
         default:
           break;
       }

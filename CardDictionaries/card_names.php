@@ -1235,16 +1235,19 @@ if ($set == "DYN") {
 		case "062": case "063": case "064": return "Predatory Streak";
 		case "065": return "Crouching Tiger";
 		//Warrior
-    	case "066": return "Spirit of Eirina";
+    case "066": return "Spirit of Eirina";
 		case "067": return "Jubeel, Spellbane";
 		case "068": return "Merciless Battleaxe";
-        case "069": case "070": return "Quicksilver Dagger";
+    case "069": case "070": return "Quicksilver Dagger";
 		case "072": return "Ironsong Pride";
+    case "076": case "077": case "078": return "Precision Press";
+    //Mechanologist
 		case "088": return "Hanabi Blaster";
-    	case "090": return "Pulsewave Harpoon";
+    case "090": return "Pulsewave Harpoon";
 		case "094": return "Powder Keg";
-    	case "098": return "Blessing of Ingenuity";
+    case "098": return "Blessing of Ingenuity";
 		case "110": case "111": case "112": return "Hyper Drive";
+    //Assassin
 		case "113": return "Arakni, Huntsman";
 		case "115": case "116": return "Spider's Bite";
 		case "117": return "Blacktek Whisperers";
