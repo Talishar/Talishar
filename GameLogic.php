@@ -5367,6 +5367,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "SHRED":
 
         return "";
+      case "BLOCKVALUE":
+        return BlockValue($lastResult);
     default:
       return "NOTSTATIC";
   }

@@ -125,9 +125,10 @@ function DYNCardType($cardID)
     case "DYN069": case "DYN070": return "W";
     case "DYN072": return "I";
     case "DYN025": return "C";
-    case "DYN088": return "W";
-    case "DYN094": return "A";
     //Mechanologist
+    case "DYN088": return "W";
+    case "DYN090": return "AA";
+    case "DYN094": return "A";
     case "DYN110": case "DYN111": case "DYN112": return "A";
     //Assassin
     case "DYN113": case "DYN114": return "C";
@@ -219,6 +220,8 @@ function DYNCardCost($cardID)
     case "DYN028": return 3;
     case "DYN039": case "DYN040": case "DYN041": return 2;
     case "DYN072": return 1;
+    //Mechanologist
+    case "DYN090": return 1;
     case "DYN110": case "DYN111": case "DYN112": return 1;
     case "DYN119": return 1;
     case "DYN121": return 0;
@@ -262,6 +265,7 @@ function DYNPitchValue($cardID)
     case "DYN069": case "DYN070": return 0;
     case "DYN072": return 1;
     //Mechanologist
+    case "DYN090": return 1;
     case "DYN110": return 1;
     case "DYN111": return 2;
     //Assassin
@@ -338,7 +342,9 @@ function DYNAttackValue($cardID)
     case "DYN008": return 6;
     case "DYN068": return 3;
     case "DYN069": case "DYN070": return 1;
+    //Mechanologist
     case "DYN088": return 5;
+    case "DYN090": return 4;
     case "DYN115": case "DYN116": return 1;
     case "DYN120": return 4;
     case "DYN121": return 3;
@@ -361,7 +367,7 @@ function DYNAttackValue($cardID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "DYN001":
@@ -409,6 +415,29 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDEQUIPCOUNTER", $currentPlayer, "-", 1);
       return "Add a +1 counter from a sword you control.";
+    case "DYN090":
+      if(IsHeroAttackTarget())
+      {
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $combatChainState[$CCS_NumBoosted]);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} card(s)", 1);
+        AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
+        AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
+        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        AddDecisionQueue("HANDCARD", $otherPlayer, "-");
+        AddDecisionQueue("BLOCKVALUE", $currentPlayer, "-");
+        AddDecisionQueue("GREATERTHANPASS", $currentPlayer, $combatChainState[$CCS_NumBoosted], 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+        AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
+      }
+      return "";
     case "DYN123":
       if (GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0) {
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);

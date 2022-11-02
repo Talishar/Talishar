@@ -1229,6 +1229,7 @@ if ($set == "DYN") {
         case "069": case "070": return "Quicksilver Dagger";
 		case "072": return "Ironsong Pride";
 		case "088": return "Hanabi Blaster";
+    case "090": return "Pulsewave Harpoon";
 		case "094": return "Powder Keg";
 		case "110": case "111": case "112": return "Hyper Drive";
 		case "113": return "Arakni, Huntsman";
