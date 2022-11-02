@@ -1829,7 +1829,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN009":
       return true;
-    case "DYN049": 
+    case "DYN049":
       return true;
     case "DYN072":
       return true;
@@ -5248,12 +5248,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(substr($params[0], 0, 5) == "THEIR"){
         $zone = &GetMZZone($defplayer, $params[0]);
       } else $zone = &GetMZZone($mainPlayer, $params[0]);
-      switch ($params[0]) {
-        case "MYCHAR":
-          $rv = $zone[$params[1]];
-        case "THEIRCHAR":
-          $rv = $zone[$params[1]];
-      }
+      $rv = $zone[$params[1]];
       return $rv;
     case "MZGETCARDINDEX":
       global $mainPlayer, $defplayer;
