@@ -1236,6 +1236,7 @@ if ($set == "DYN") {
 		case "065": return "Crouching Tiger";
 		//Warrior
     	case "066": return "Spirit of Eirina";
+		case "067": return "Jubeel, Spellbane";
 		case "068": return "Merciless Battleaxe";
         case "069": case "070": return "Quicksilver Dagger";
 		case "072": return "Ironsong Pride";

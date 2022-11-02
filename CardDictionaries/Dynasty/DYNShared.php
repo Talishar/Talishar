@@ -6,6 +6,8 @@ function DYNAbilityCost($cardID)
     case "DYN001": return 3;
     case "DYN005": return 3;
     case "DYN025": return 3;
+    //Warrior
+    case "DYN067": return 1;
     case "DYN068": return 3;
     case "DYN069": case "DYN070": return 1;
     case "DYN115": case "DYN116": return 2;
@@ -28,6 +30,8 @@ function DYNAbilityType($cardID, $index = -1)
   switch ($cardID) {
     case "DYN001": return "A";
     case "DYN005": return "AA";
+    //Warrior
+    case "DYN067": return "AA";
     case "DYN068": return "AA";
     case "DYN069": case "DYN070": return "AA";
     case "DYN088": return "AA";
@@ -150,6 +154,7 @@ function DYNCardType($cardID)
     case "DYN065": return "AA";
     //Warrior
     case "DYN066": return "A";
+    case "DYN067": return "W";
     case "DYN068": return "W";
     case "DYN069": case "DYN070": return "W";
     case "DYN072": return "I";
@@ -221,6 +226,7 @@ function DYNCardSubtype($cardID)
     case "DYN048": return "Aura";
     //Warrior
     case "DYN066": return "Item";
+    case "DYN067": return "Sword";
     case "DYN068": return "Axe";
     case "DYN069": case "DYN070": return "Dagger";
     case "DYN072": return "Aura";
@@ -323,6 +329,7 @@ function DYNPitchValue($cardID)
     case "DYN051": case "DYN057": case "DYN063": return 2;
     case "DYN065": return 0;
     //Warrior
+    case "DYN067": return 0;
     case "DYN066": return 2;
     case "DYN069": case "DYN070": return 0;
     case "DYN072": return 1;
@@ -377,6 +384,7 @@ function DYNBlockValue($cardID)
     case "DYN065": return -1;
     //Warrior
     case "DYN066": return -1;
+    case "DYN067": return -1;
     case "DYN068": return -1;
     case "DYN069": case "DYN070": return -1;
     case "DYN072": return -1;
@@ -423,7 +431,10 @@ function DYNAttackValue($cardID)
     case "DYN050": return 4;
     case "DYN051": case "DYN056": case "DYN068": return 3;
     case "DYN047": case "DYN052": case "DYN057": return 2;
-    case "DYN058": case "DYN069": case "DYN070": return 1;
+    case "DYN058": return 1;
+    //Warrior
+    case "DYN067": return 3;
+    case "DYN069": case "DYN070": return 1;
     //Mechanologist
     case "DYN088": return 5;
     case "DYN090": return 4;
@@ -760,6 +771,11 @@ function DYNHitEffect($cardID)
       break;
     case "DYN050": case "DYN051": case "DYN052":
       BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+      break;
+    case "DYN067":
+      if (IsHeroAttackTarget() && !SearchAuras("MON104", $mainPlayer)) { //MON104 to be changed to Spellbane Aegis on release
+        PlayAura("MON104", $mainPlayer); //MON104 to be changed to Spellbane Aegis on release
+      }
       break;
     case "DYN115":
       if (IsHeroAttackTarget()) {
