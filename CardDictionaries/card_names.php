@@ -1212,26 +1212,27 @@ if($set == "RVD"){
 if ($set == "DYN") {
 	switch ($num) {
 		case "001": return "Emperor, Dracai of Aesir";
+		case "002": return "Dust from the Golden Plains";
 		case "003": return "Dust from the Red Desert";
 		case "004": return "Dust from the Shadow Crypts";
  		case "005": return "Rok";
 		case "007": return "Savage Beatdown";
-    case "008": return "Skull Crack";
+    	case "008": return "Skull Crack";
 		case "009": return "Berserk";
 		case "025": return "Yoji, Royal Protector";
 		case "026": return "Seasoned Saviour";
-    //Guardian
-    case "028": return "Buckle";
+    	//Guardian
+    	case "028": return "Buckle";
 		case "039": case "040": case "041": return "Reinforce Steel";
 		case "045": return "Blazen Yoroi";
-    case "066": return "Spirit of Eirina";
+    	case "066": return "Spirit of Eirina";
 		case "068": return "Merciless Battleaxe";
         case "069": case "070": return "Quicksilver Dagger";
 		case "072": return "Ironsong Pride";
 		case "088": return "Hanabi Blaster";
-    case "090": return "Pulsewave Harpoon";
+    	case "090": return "Pulsewave Harpoon";
 		case "094": return "Powder Keg";
-    case "098": return "Blessing of Ingenuity";
+    	case "098": return "Blessing of Ingenuity";
 		case "110": case "111": case "112": return "Hyper Drive";
 		case "113": return "Arakni, Huntsman";
 		case "115": case "116": return "Spider's Bite";
@@ -1253,21 +1254,21 @@ if ($set == "DYN") {
     	case "148": case "149": case "150": return "Cut to the Chase";
 		case "151": return "Sandscour Greatbow";
 		case "152": return "Hornet's Sting";
-    case "153": return "Heat Seeker";
+    	case "153": return "Heat Seeker";
 		case "162": case "163": case "164": return "Hemorrhage Bore";
 		case "171": return "Amethyst Tiara";
 		case "172": return "Annals of Sutcliffe";
 		case "173": return "Cryptic Crossing";
 		case "174": return "Diabolic Ultimatum";
-    case "175": return "Looming Doom";
+    	case "175": return "Looming Doom";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		case "192": return "Surgent Aethertide";
 		case "200": case "201": case "202": return "Blessing of Aether";
 		case "206": case "207": case "208": return "Sap";
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		case "234": return "Crown of Dominion";
-    case "240": return "Imperial Edict";
-    case "241": return "Imperial Ledger";
+    	case "240": return "Imperial Edict";
+    	case "241": return "Imperial Ledger";
 		case "242": return "Imperial Warhorn";
 		case "243": return "Gold";
 		default: return "Name not populated - please report bug";

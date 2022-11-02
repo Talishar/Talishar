@@ -237,8 +237,9 @@
     {
       $allies = &GetAllies($mainPlayer);
       if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
-      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR003") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR416") return true;
-      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR004") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR413") return true;
+      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN002") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR415") return true;
+      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR416") return true;
+      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR413") return true;
     }
     return HasPhantasm($combatChain[0]);//TODO: Incorporate things that can gain or lose phantasm
   }
