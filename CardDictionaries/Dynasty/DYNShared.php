@@ -14,6 +14,8 @@ function DYNAbilityCost($cardID)
     case "DYN151": return 1;
     case "DYN172": return 3;
     case "DYN192": return 2;
+    case "DYN240": return 0;
+    case "DYN241": return 0;
     case "DYN242": return 1;
     case "DYN243": return 2;
 
@@ -37,6 +39,8 @@ function DYNAbilityType($cardID, $index = -1)
     case "DYN171": return "I";
     case "DYN172": return "A";
     case "DYN192": return "A";
+    case "DYN240": return "A";
+    case "DYN241": return "A";
     case "DYN242": case "DYN243": return "A";
     default: return "";
   }
@@ -59,6 +63,7 @@ function DYNAbilityHasGoAgain($cardID)
   switch ($cardID) {
     case "DYN151": return true;
     case "DYN192": return true;
+    case "DYN240": return true;
     case "DYN243": return true;
   }
 }
@@ -166,6 +171,8 @@ function DYNCardType($cardID)
     case "DYN206": case "DYN207": case "DYN208": return "A";
     case "DYN230": case "DYN231": case "DYN232": return "A";
     case "DYN234": return "E";
+    case "DYN240": return "A";
+    case "DYN241": return "A";
     case "DYN242": return "A";
     case "DYN243": return "T";
     default: return "";
@@ -206,6 +213,8 @@ function DYNCardSubtype($cardID)
     case "DYN192": return "Staff";
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
     case "DYN234": return "Head";
+    case "DYN240": return "Item";
+    case "DYN241": return "Item";
     case "DYN242": return "Item";
     case "DYN243": return "Item";
     default:return "";
@@ -293,6 +302,8 @@ function DYNPitchValue($cardID)
     case "DYN188": case "DYN206": case "DYN230": return 1;
     case "DYN189": case "DYN207": case "DYN231": return 2;
     case "DYN234": return 0;
+    case "DYN240": return 1;
+    case "DYN241": return 1;
     case "DYN242": return 1;
     case "DYN243": return 0;
     default: return 3;
@@ -333,6 +344,8 @@ function DYNBlockValue($cardID)
     case "DYN192": return -1;
     case "DYN230": case "DYN231": case "DYN232": return 2;
     case "DYN234": return -1;
+    case "DYN240": return -1;
+    case "DYN241": return -1;
     case "DYN242": case "DYN243": return -1;
     default: return 3;
   }
@@ -594,6 +607,20 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
       return "Reveal has been prevented.";
+    case "DYN240":
+      $rv = "";
+      if ($from == "PLAY") {
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        $rv = "Imperial Edict is a partially manual card. Name the card in chat and enforce play restriction.";
+        if(IsRoyal($currentPlayer))
+        {
+          $rv .= " Imperial Edict revealed the opponent's hand.";
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
+        }
+      }
+      return $rv;
     case "DYN242":
       $rv = "";
       if ($from == "PLAY") {
