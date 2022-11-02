@@ -261,6 +261,9 @@ function AuraStartTurnAbilities()
       case "UPR190":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "DYN098":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "DYN200": case "DYN201": case "DYN202":
         if ($auras[$i] == "DYN416") $amount = 3;
         else if ($auras[$i] == "DYN417") $amount = 2;
