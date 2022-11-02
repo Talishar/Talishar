@@ -136,6 +136,7 @@ function DYNCardType($cardID)
     case "DYN039": case "DYN040": case "DYN041": return "A";
     //Ninja
     case "DYN045": return "E";
+    case "DYN047": return "AA";
     case "DYN048": return "A";
     case "DYN062": case "DYN063": case "DYN064": return "A";
     case "DYN065": return "AA";
@@ -304,6 +305,7 @@ function DYNPitchValue($cardID)
     case "DYN039": return 1;
     case "DYN040": return 2;
       //Ninja
+    case "DYN047": return 1;
     case "DYN062": return 1;
     case "DYN063": return 2;
     case "DYN065": return 0;
@@ -402,6 +404,8 @@ function DYNAttackValue($cardID)
     case "DYN005": return 7;
     case "DYN007": return 6;
     case "DYN008": return 6;
+    //Ninja
+    case "DYN047": return 2;
     case "DYN068": return 3;
     case "DYN069": case "DYN070": return 1;
     //Mechanologist
@@ -719,7 +723,21 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 function DYNHitEffect($cardID)
 {
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_DamageDealt;
+  global $chainLinks, $combatChain;
   switch ($cardID) {
+    case "DYN047":
+      if (ComboActive())
+      {
+        $numLinks = 0;
+        for ($i = 0; $i < count($chainLinks); ++$i) {
+          if ($chainLinks[$i][0] == "DYN065") ++$numLinks;
+        }
+        if (count($combatChain) > 0 && $combatChain[0] == "DYN065") ++$numLinks;
+        for ($i=0; $i < $numLinks; $i++) {
+          BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+        }
+      }
+      break;
     case "DYN115":
       if (IsHeroAttackTarget()) {
         AddCurrentTurnEffectFromCombat("DYN115", $defPlayer);
