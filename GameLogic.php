@@ -1829,6 +1829,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN009":
       return true;
+    case "DYN049": 
+      return true;
     case "DYN072":
       return true;
     case "DYN115": case "DYN116":
