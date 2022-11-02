@@ -621,6 +621,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
       return $rv;
+    case "DYN241":
+      $rv = "";
+      if ($from == "PLAY") {
+        DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
+        $item = (IsRoyal($currentPlayer) ? "DYN243": "CRU197");
+        PutItemIntoPlayForPlayer($item, $currentPlayer);
+        $rv = "Imperial Ledger shuffled itself and created a " . CardLink($item, $item) . ".";
+        $deck = &GetDeck($currentPlayer);
+        array_push($deck, "DYN241");
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      }
+      return $rv;
     case "DYN242":
       $rv = "";
       if ($from == "PLAY") {
