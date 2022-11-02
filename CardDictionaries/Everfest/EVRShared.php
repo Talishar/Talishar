@@ -764,9 +764,9 @@
           $card = array_shift($deck);
           $mod = "-";
           $cardType = CardType($card);
-          if ($cardType == "AR" || $cardType == "I" || $cardType == "AA") $mod = "TCC";
+          if ($cardType == "AR" || $cardType == "I" || $cardType == "AA" || CanPlayAsInstant($card)) $mod = "TCC";
           BanishCardForPlayer($card, $currentPlayer, "DECK", $mod);
-          $rv = "Banished a card. It is playable on this combat chain.";
+          $rv = CardLink($card, $card) . " was banished. It is playable on this combat chain.";
         }
         return $rv;
       case "EVR054":

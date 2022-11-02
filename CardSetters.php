@@ -222,7 +222,7 @@ function AddSoul($cardID, $player, $from)
   global $myStateBuiltFor;
   if($cardID == "DYN066")
   {
-    WriteLog("The spirit of Eirina is inside you.");
+    WriteLog("The spirit of Eirina is inside you, always.");
     PutItemIntoPlayForPlayer($cardID, $player);
   }
   else {
