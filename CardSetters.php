@@ -139,6 +139,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters="0")
 {
   global $mainPlayer;
   $arsenal = &GetArsenal($player);
+  $cardSubType = CardSubType($cardID);
   WriteReplay($player, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
@@ -169,6 +170,10 @@ function AddArsenal($cardID, $player, $from, $facing, $counters="0")
       default:
         break;
     }
+  }
+  if ($counters > 0 && $cardSubType == "Arrow")
+  {
+    AddCurrentTurnEffect($cardID . "-AIM", $player, $from, $arsenal[count($arsenal) - ArsenalPieces() + 5]);
   }
 }
 

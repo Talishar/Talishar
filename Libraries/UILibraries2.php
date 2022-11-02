@@ -172,16 +172,16 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
    <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/SteamCounters.png'></div>";
   }
 
-  //Aim Counters style
-  elseif ($counters != 0 && CardSubType($cardNumber) == "Arrow" && $from == "ARS") {
-    if ($lifeCounters == 0 && $defCounters == 0 && $atkCounters == 0) {
+  //Aim Counters style  
+  elseif ((($counters != 0 && $from == "ARS") || $atkCounters != 0) && CardSubType($cardNumber) == "Arrow") {
+    if ($lifeCounters == 0 && $defCounters == 0) {
       $left = "0px";
     } else {
       $left = "-45%";
     }
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
    display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
-   font-size:" . ($imgCounterHeight - 20) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>" . $counters . "
+   font-size:" . ($imgCounterHeight - 20) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>
    <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/hit.png'></div>";
   }
 
@@ -237,7 +237,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   }
 
   //Attack Counters style
-  if ($atkCounters != 0) {
+  if ($atkCounters != 0 && CardSubType($cardNumber) != "Arrow" ) {
     if ($lifeCounters == 0 && $counters == 0) {
       $left = "0px";
     } else {

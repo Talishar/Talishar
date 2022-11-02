@@ -100,7 +100,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 }
 
 
-function DYNCardTalent($cardID) // TODO
+function DYNCardTalent($cardID)
 {
   $number = intval(substr($cardID, 3));
   if ($number <= 0) return "";
@@ -168,7 +168,7 @@ function DYNCardType($cardID)
     case "DYN151": return "W";
     case "DYN152": return "E";
     case "DYN153": return "AA";
-    case "DYN162": case "DYN163": case "DYN164": return "A";
+    case "DYN162": case "DYN163": case "DYN164": return "AA";
     //Runeblade
     case "DYN171": return "E";
     case "DYN172": return "W";
@@ -320,6 +320,7 @@ function DYNPitchValue($cardID)
     case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN139": case "DYN142": case "DYN145": case "DYN148": return 1;
     case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
     //Ranger
+    case "DYN153": return 0;
     case "DYN153": return 1;
     case "DYN162": return 1;
     case "DYN163": return 2;
@@ -533,6 +534,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $deck = &GetDeck($currentPlayer);
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      if(ArsenalFull($currentPlayer)) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows you the top of your deck: <0>");
+        AddDecisionQueue("OK", $currentPlayer, "whether to put an arrow in arsenal", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "NO");
+        return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
+      }
       if (CardSubType($deck[0]) != "Arrow") {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sandscour Greatbow shows you the top of your deck: <0>");
         AddDecisionQueue("OK", $currentPlayer, "whether to put an arrow in arsenal", 1);
@@ -542,9 +549,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_put_the_card_in_arsenal", 1);
       }
       AddDecisionQueue("SANDSCOURGREATBOW", $currentPlayer, "-");
-      return "";
-    case "DYN162": case "DYN163": case "DYN164":
-      // todo:!!
       return "";
     case "DYN171":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -787,6 +791,15 @@ function DYNHitEffect($cardID)
     case "DYN153":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
+    case "DYN162": case "DYN163": case "DYN164":
+      if (SearchCurrentTurnEffects($cardID . "-AIM", $mainPlayer, true) && IsHeroAttackTarget()) {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to Destroy", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZADDGRAVEYARD", $mainPlayer, "ARS,-," . $mainPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
     default: break;
   }
 }
@@ -816,6 +829,22 @@ function HasEphemeral($cardID)
 {
   switch ($cardID) {
     case "DYN065": return true;    
+    default: return false;
+  }
+}
+
+function HasPierce($cardID)
+{
+  switch ($cardID) {
+    default: return -1;
+  }
+}
+
+function HasAimCounters($cardID)
+{
+  switch ($cardID) {
+    case "DYN155": return true;
+    case "DYN162": case "DYN163": case "DYN164": return true;
     default: return false;
   }
 }

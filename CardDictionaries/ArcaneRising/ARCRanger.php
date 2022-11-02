@@ -260,7 +260,7 @@
     AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
   }
 
-  function ReloadArrow($player = 0, $counters="")
+  function ReloadArrow($player = 0, $counters="0")
   {
     global $currentPlayer;
     if ($player == 0) $player = $currentPlayer;
