@@ -134,6 +134,7 @@ function DYNCardType($cardID)
     case "DYN088": return "W";
     case "DYN090": return "AA";
     case "DYN094": return "A";
+    case "DYN098": return "A";
     case "DYN110": case "DYN111": case "DYN112": return "A";
     //Assassin
     case "DYN113": case "DYN114": return "C";
@@ -196,6 +197,7 @@ function DYNCardSubtype($cardID)
     //Mechanologist
     case "DYN088": return "Gun";
     case "DYN094": return "Item";
+    case "DYN098": return "Aura";
     case "DYN110": case "DYN111": case "DYN112": return "Item";
     //Assassin
     case "DYN115": case "DYN116": return "Dagger";
@@ -233,6 +235,7 @@ function DYNCardCost($cardID)
     case "DYN072": return 1;
     //Mechanologist
     case "DYN090": return 1;
+    case "DYN098": return 1;
     case "DYN110": case "DYN111": case "DYN112": return 1;
     case "DYN119": return 1;
     case "DYN121": return 0;
@@ -278,6 +281,7 @@ function DYNPitchValue($cardID)
     case "DYN072": return 1;
     //Mechanologist
     case "DYN090": return 1;
+    case "DYN098": return 1;
     case "DYN110": return 1;
     case "DYN111": return 2;
     //Assassin

@@ -386,6 +386,20 @@ function SearchBanishForCard($playerID, $cardID)
   return -1;
 }
 
+function SearchBanishForCardMulti($playerID, $card1, $card2="", $card3="")
+{
+  $cardList = "";
+  $banish = GetBanish($playerID);
+  for ($i = 0; $i < count($banish); ++$i) {
+    if ($banish[$i] == $card1 || $banish[$i] == $card2 || $banish[$i] == $card3)
+    {
+      if($cardList != "") $cardList .= ",";
+      $cardList .= $i;
+    }
+  }
+  return $cardList;
+}
+
 function SearchHighestAttackDefended()
 {
   global $combatChain, $defPlayer;
@@ -771,6 +785,7 @@ function SearchMultizone($player, $searches)
     $hasEnergyCounters = false;
     $searchArr = explode(":", $unionSearches[$i]);
     $zone = $searchArr[0];
+    $isCardID = false;
     if (count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
@@ -822,6 +837,28 @@ function SearchMultizone($player, $searches)
           case "hasEnergyCounters":
             $hasEnergyCounters = $condition[1];
             break;
+          case "cardID":
+            $cards = explode(",", $condition[1]);
+            switch($zone)
+            {
+              case "MYDISCARD":
+                if(count($cards) == 1) $searchResult = SearchDiscardForCard($player, $cards[0]);
+                else if(count($cards) == 2) $searchResult = SearchDiscardForCard($player, $cards[0], $cards[1]);
+                else if(count($cards) == 3) $searchResult = SearchDiscardForCard($player, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                break;
+              case "MYBANISH":
+                if(count($cards) == 1) $searchResult = SearchBanishForCardMulti($player, $cards[0]);
+                else if(count($cards) == 2) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1]);
+                else if(count($cards) == 3) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Banish multizone search only supports 3 cards -- report bug.");
+                break;
+              default: break;
+            }
+            $searchResult = SearchMultiZoneFormat($searchResult, $zone);
+            $rv = CombineSearches($rv, $searchResult);
+            $isCardID = true;
+            break;
           default:
             break;
         }
@@ -829,54 +866,61 @@ function SearchMultizone($player, $searches)
     }
     $searchPlayer = (substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
     $searchResult = "";
-    switch ($zone) {
-      case "MYHAND":
-      case "THEIRHAND":
-        $searchResult = SearchHand($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYDISCARD":
-      case "THEIRDISCARD":
-        $searchResult = SearchDiscard($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYARS":
-      case "THEIRARS":
-        $searchResult = SearchArsenal($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYAURAS":
-      case "THEIRAURAS":
-        $searchResult = SearchAura($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYCHAR":
-      case "THEIRCHAR":
-        $searchResult = SearchCharacter($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYITEMS":
-      case "THEIRITEMS":
-        $searchResult = SearchItems($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYALLY":
-      case "THEIRALLY":
-        $searchResult = SearchAllies($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYPERM":
-      case "THEIRPERM":
-        $searchResult = SearchPermanents($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "MYPITCH":
-      case "THEIRPITCH":
-        $searchResult = SearchPitch($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "COMBATCHAINLINK":
-        $searchResult = SearchCombatChainLink($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "LAYER":
-        $searchResult = SearchLayer($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      case "LANDMARK":
-        $searchResult = SearchLandmarks($searchPlayer, $type, $subtype,$maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
-        break;
-      default:
-        break;
+    if(!$isCardID)
+    {
+      switch ($zone) {
+        case "MYHAND":
+        case "THEIRHAND":
+          $searchResult = SearchHand($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYDISCARD":
+        case "THEIRDISCARD":
+          $searchResult = SearchDiscard($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYARS":
+        case "THEIRARS":
+          $searchResult = SearchArsenal($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYAURAS":
+        case "THEIRAURAS":
+          $searchResult = SearchAura($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYCHAR":
+        case "THEIRCHAR":
+          $searchResult = SearchCharacter($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYITEMS":
+        case "THEIRITEMS":
+          $searchResult = SearchItems($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYALLY":
+        case "THEIRALLY":
+          $searchResult = SearchAllies($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYPERM":
+        case "THEIRPERM":
+          $searchResult = SearchPermanents($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYBANISH":
+        case "THEIRBANISH":
+          $searchResult = SearchBanish($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "MYPITCH":
+        case "THEIRPITCH":
+          $searchResult = SearchPitch($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "COMBATCHAINLINK":
+          $searchResult = SearchCombatChainLink($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "LAYER":
+          $searchResult = SearchLayer($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        case "LANDMARK":
+          $searchResult = SearchLandmarks($searchPlayer, $type, $subtype,$maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters);
+          break;
+        default:
+          break;
+      }
     }
     $searchResult = SearchMultiZoneFormat($searchResult, $zone);
     $rv = CombineSearches($rv, $searchResult);
@@ -916,7 +960,7 @@ function FrozenCount($player)
 function SearchSpellvoidIndices($player)
 {
   $search = SearchArcaneReplacement($player, "MYCHAR");
-  $charIndices = SearchMultizoneFormat($search, "MYCHAR"); 
+  $charIndices = SearchMultizoneFormat($search, "MYCHAR");
   $search = SearchArcaneReplacement($player, "MYITEMS");
   $itemsIndices = SearchMultizoneFormat($search, "MYITEMS");
   $indices = CombineSearches($charIndices, $itemsIndices);
