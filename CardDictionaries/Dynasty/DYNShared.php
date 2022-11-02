@@ -120,6 +120,7 @@ function DYNCardTalent($cardID)
   if ($number <= 0) return "";
   else if ($number >= 1 && $number <= 2) return "ROYAL,DRACONIC";
   else if ($number >= 3 && $number <= 4) return "DRACONIC";
+  else if($number == 66) return "LIGHT";
   //   else if($number >= 125 && $number <= 150) return "";
   //   else if($number >= 406 && $number <= 417 ) return "";
   //   else if($number >= 439 && $number <= 441) return "";
@@ -274,7 +275,7 @@ function DYNCardCost($cardID)
     case "DYN039": case "DYN040": case "DYN041": return 2;
     //Ninja
     case "DYN050": case "DYN051": case "DYN052": return 1;
-    
+
     case "DYN072": return 1;
     //Mechanologist
     case "DYN090": return 1;
@@ -512,7 +513,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if ($cardID == "DYN062") $amount = 3;
       else if ($cardID == "DYN063") $amount = 2;
       else $amount = 1;
-      for ($i=0; $i < $amount; $i++) { 
+      for ($i=0; $i < $amount; $i++) {
         BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       }
       return "Create " . $amount . " Crouching Tigers.";
@@ -897,7 +898,7 @@ function HasSurge($cardID)
 function HasEphemeral($cardID)
 {
   switch ($cardID) {
-    case "DYN065": return true;    
+    case "DYN065": return true;
     default: return false;
   }
 }
