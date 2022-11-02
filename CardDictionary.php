@@ -412,14 +412,14 @@ function CardClass($cardID)
 
       if ($number >= 88 && $number <= 112) return "MECHANOLOGIST";
       if ($number >= 113 && $number <= 147) return "ASSASSIN";
-      
+
       if ($number >= 151 && $number <= 169) return "RANGER";
 
       if ($number >= 171 && $number <= 190) return "RUNEBLADE";
 
       if ($number >= 192 && $number <= 208) return "WIZARD";
 
-      if ($number >= 230 && $number <= 232) return "ILLUSIONIST";
+      if ($number >= 215 && $number <= 232) return "ILLUSIONIST";
 
       else return "GENERIC";
     default:
@@ -1934,6 +1934,8 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Fog Down
     case "UPR218": case "UPR219": case "UPR220":
       return 0; //Sigil of Protection
+    case "DYN217":
+      return 0; //Tome of Aoe
     default:
       return 2;
   }

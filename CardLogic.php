@@ -935,6 +935,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
+      case "DYN217":
+        MyDrawCard();
+        DestroyAuraUniqueID($player, $uniqueID);
+        WriteLog(CardLink($parameter, $parameter) . " draw a card and is destroyed.");
+        break;
     default:
       break;
   }
