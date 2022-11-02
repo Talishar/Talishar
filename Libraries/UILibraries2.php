@@ -554,8 +554,8 @@ function BanishUI($from = "")
   $banish = GetBanish($playerID);
   for ($i = 0; $i < count($banish); $i += BanishPieces()) {
     $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-    $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
     $mod = explode("-", $banish[$i + 1])[0];
+    $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
     if ($mod == "INT") $rv .= Card($banish[$i], "concat", $size, 0, 1, 1); //Display intimidated cards grayed out and unplayable
     else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119")
       $rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i)); //Display banished cards that are playable
@@ -578,17 +578,16 @@ function BanishUIMinimal($from = "")
   $banish = GetBanish($playerID);
   for ($i = 0; $i < count($banish); $i += BanishPieces()) {
     $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
-    $border = CardBorderColor($banish[$i], "BANISH", $action > 0);
     $mod = explode("-", $banish[$i + 1])[0];
+    $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
     if ($mod == "INT") {
       if ($rv != "") $rv .= "|";
       if ($playerID == 3) ClientRenderedCard(cardNumber: $MyCardBack, overlay: 1, controller: $playerID);
       else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
     } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      //$rv .= Card($banish[$i], "concat", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-    } else // if($from != "HAND")
+    } else 
     {
       if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $playerID == $mainPlayer)) {
         if ($rv != "") $rv .= "|";
@@ -626,13 +625,13 @@ function TheirBanishUIMinimal($from = "")
   return $rv;
 }
 
-function CardBorderColor($cardID, $from, $isPlayable)
+function CardBorderColor($cardID, $from, $isPlayable, $mod="-")
 {
   global $playerID, $currentPlayer, $turn;
   if ($playerID != $currentPlayer) return 0;
   if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
   if ($from == "BANISH") {
-    if ($isPlayable && PlayableFromBanish($cardID)) return 7;
+    if (($isPlayable || PlayableFromBanish($cardID)) && (($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119"))) return 7;
     if (HasBloodDebt($cardID)) return 2;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 5;
     if ($isPlayable && ComboActive($cardID)) return 5;

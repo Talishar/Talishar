@@ -52,8 +52,9 @@ function DYNHasGoAgain($cardID)
     case "DYN009": return true;
     case "DYN028": return true;
     //Ninja
+    case "DYN062": case "DYN063": case "DYN064": return true;
     case "DYN065": return true;
-    //
+    //Assassin
     case "DYN115": case "DYN116": return true;
     case "DYN188": case "DYN189": case "DYN190": return  true;
     case "DYN230": case "DYN231": case "DYN232": return  true;
@@ -130,6 +131,7 @@ function DYNCardType($cardID)
     //Ninja
     case "DYN045": return "E";
     case "DYN048": return "A";
+    case "DYN062": case "DYN063": case "DYN064": return "A";
     case "DYN065": return "AA";
     //Warrior
     case "DYN066": return "A";
@@ -293,7 +295,9 @@ function DYNPitchValue($cardID)
     case "DYN028": return 3;
     case "DYN039": return 1;
     case "DYN040": return 2;
-    //Ninja
+      //Ninja
+    case "DYN062": return 1;
+    case "DYN063": return 2;
     case "DYN065": return 0;
     //Warrior
     case "DYN066": return 2;
@@ -343,6 +347,7 @@ function DYNBlockValue($cardID)
     case "DYN026": return 3;
     case "DYN045": return 1;
     //Ninja
+    case "DYN062": case "DYN063": case "DYN064": return 2;
     case "DYN065": return -1;
     //Warrior
     case "DYN066": return -1;
@@ -458,6 +463,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
       AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
       return "Remove a -1 counter from a Guardian Off-hand with " . $maxDef . " or less base defense.";
+    case "DYN062": case "DYN063": case "DYN064":
+      if ($cardID == "DYN062") $amount = 3;
+      else if ($cardID == "DYN063") $amount = 2;
+      else $amount = 1;
+      for ($i=0; $i < $amount; $i++) { 
+        BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
+      }
+      return "Create " . $amount . " Crouching Tigers.";
     case "DYN072":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W;subtype=Sword");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Sword gain a +1 counter");

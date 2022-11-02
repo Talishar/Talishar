@@ -1227,6 +1227,7 @@ if ($set == "DYN") {
 		//Ninja
 		case "045": return "Blazen Yoroi";
 		case "048": return "Mindstate of Tiger";
+		case "062": case "063": case "064": return "Predatory Streak";
 		case "065": return "Crouching Tiger";
 		//Warrior
     	case "066": return "Spirit of Eirina";
