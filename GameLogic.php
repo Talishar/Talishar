@@ -607,6 +607,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (RuptureActive() ? 3 : 0);
     case "UPR101":
       return (NumDraconicChainLinks() >= 2 ? 1 : 0);
+    case "DYN047":
+      return (ComboActive() ? 2 : 0);
     case "DYN115": case "DYN116":
       return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN148": return 3;
