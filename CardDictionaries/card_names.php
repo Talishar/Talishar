@@ -1269,6 +1269,8 @@ if ($set == "DYN") {
 		case "192": return "Surgent Aethertide";
 		case "200": case "201": case "202": return "Blessing of Aether";
 		case "206": case "207": case "208": return "Sap";
+		//Illusionist
+		case "217": return "Tome of Aeo";
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		case "234": return "Crown of Dominion";
     	case "240": return "Imperial Edict";

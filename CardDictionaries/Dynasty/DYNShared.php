@@ -179,6 +179,8 @@ function DYNCardType($cardID)
     case "DYN206": case "DYN207": case "DYN208": return "A";
     case "DYN230": case "DYN231": case "DYN232": return "A";
     case "DYN234": return "E";
+    //Illusionist
+    case "DYN217": return "A";
     case "DYN240": return "A";
     case "DYN241": return "A";
     case "DYN242": return "A";
@@ -224,6 +226,9 @@ function DYNCardSubtype($cardID)
     case "DYN175": return "Aura";
     case "DYN192": return "Staff";
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
+    //Illusionist
+    case "DYN217": return "Aura";
+    //Generic
     case "DYN234": return "Head";
     case "DYN240": return "Item";
     case "DYN241": return "Item";
@@ -266,6 +271,8 @@ function DYNCardCost($cardID)
     case "DYN174": return 3;
     case "DYN175": return 3;
     case "DYN200": case "DYN201": case "DYN202": return 1;
+    //Illusionist
+    case "DYN217": return 1;
     case "DYN242": return 2;
     default: return 0;
   }
@@ -361,7 +368,10 @@ function DYNBlockValue($cardID)
     case "DYN175": return 3;
     case "DYN188": case "DYN189": case "DYN190": return 2;
     case "DYN192": return -1;
+    //Illusionist
+    case "DYN217": return 2;
     case "DYN230": case "DYN231": case "DYN232": return 2;
+    //Generic
     case "DYN234": return -1;
     case "DYN240": return -1;
     case "DYN241": return -1;

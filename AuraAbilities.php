@@ -261,6 +261,9 @@ function AuraStartTurnAbilities()
       case "UPR190":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "UPR218": case "UPR219": case "UPR220":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "DYN048":
         WriteLog(CardLink($auras[$i], $auras[$i]) . " create a " . CardLink("DYN065", "DYN065") . " in your hand.");
         AddPlayerHand("DYN065", $mainPlayer, "-");
@@ -277,7 +280,7 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
-      case "UPR218": case "UPR219": case "UPR220":
+      case "DYN217":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
@@ -510,6 +513,10 @@ function AuraTakeDamageAbilities($player, $damage, $type)
       case "UPR220":
         if ($preventable) $damage -= 2;
         $remove = 1;
+        break;
+      case "DYN217":
+        if ($preventable) $damage -= 1;
+        $remove = 1;        
         break;
       default:
         break;
