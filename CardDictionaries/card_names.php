@@ -1229,6 +1229,7 @@ if ($set == "DYN") {
 		case "047": return "Tiger Swipe";
 		case "048": return "Mindstate of Tiger";
 		case "050": case "051": case "052": return "Flex Claws";
+		case "056": case "057": case "058": return "Pouncing Qi";
 		case "062": case "063": case "064": return "Predatory Streak";
 		case "065": return "Crouching Tiger";
 		//Warrior
