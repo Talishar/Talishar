@@ -1632,6 +1632,11 @@ function CurrentEffectEndTurnAbilities()
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
+    $cardID = substr($currentTurnEffects[$i], 0, 6);
+    if (HasAimCounters($cardID) && SearchCurrentTurnEffects($cardID . "-AIM", $currentTurnEffects[$i + 1])) {
+      $arsenal = GetArsenal($currentTurnEffects[$i+1]);
+      AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i+1], $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+    }
     switch ($currentTurnEffects[$i]) {
       case "MON069":
       case "MON070":
@@ -5143,6 +5148,50 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "THEIRHAND":
             $hand = &GetHand($otherPlayer);
             AddTopDeck($hand[$mzIndex[1]], $otherPlayer, $params[0]);
+            break;
+          default:
+            break;
+        }
+      }
+      return $lastResult;
+    case "MZADDGRAVEYARD":
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $params = explode(",", $parameter);
+      for ($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch ($mzIndex[0]) {
+          case "MYDISCARD":
+            $deck = &GetDeck($player);
+            AddGraveyard($deck[$mzIndex[1]], $player, $params[0]);
+            break;
+          case "THEIRDISCARD":
+            $deck = &GetDeck($otherPlayer);
+            AddGraveyard($deck[$mzIndex[1]], $otherPlayer, $params[0]);
+            break;
+          case "MYARS":
+            $arsenal = &GetArsenal($player);
+            AddGraveyard($arsenal[$mzIndex[1]], $player, $params[0]);
+            break;
+          case "THEIRARS":
+            $arsenal = &GetArsenal($otherPlayer);
+            AddGraveyard($arsenal[$mzIndex[1]], $otherPlayer, $params[0]);
+            break;
+          case "MYPITCH":
+            $pitch = &GetPitch($player);
+            AddGraveyard($pitch[$mzIndex[1]], $player, $params[0]);
+            break;
+          case "THEIRDISCARD":
+            $pitch = &GetPitch($otherPlayer);
+            AddGraveyard($pitch[$mzIndex[1]], $otherPlayer, $params[0]);
+            break;
+          case "MYHAND":
+            $hand = &GetHand($player);
+            AddGraveyard($hand[$mzIndex[1]], $player, $params[0]);
+            break;
+          case "THEIRHAND":
+            $hand = &GetHand($otherPlayer);
+            AddGraveyard($hand[$mzIndex[1]], $otherPlayer, $params[0]);
             break;
           default:
             break;
