@@ -135,11 +135,13 @@ function AddResourceCost($player, $amount)
   $resources[1] += $amount;
 }
 
-function AddArsenal($cardID, $player, $from, $facing, $counters="0")
+function AddArsenal($cardID, $player, $from, $facing, $counters=0)
 {
   global $mainPlayer;
   $arsenal = &GetArsenal($player);
+  $character = &GetPlayerCharacter($player);
   $cardSubType = CardSubType($cardID);
+  if ($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
   WriteReplay($player, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);

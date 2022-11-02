@@ -864,6 +864,15 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
       break;
+    case "DYN155":
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects($combatChain[0] . "-AIM", $mainPlayer)) {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $defPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
     default:
       break;
   }
@@ -5004,26 +5013,32 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "MYDISCARD":
             $zone = &GetMZZone($player, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
+            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "THEIRDISCARD":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
+            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "MYHAND":
             $zone = &GetMZZone($player, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
+            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "THEIRHAND":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
+            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "MYARS":
             $zone = &GetMZZone($player, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
+            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
             break;
           case "THEIRARS":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
+            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
             break;
           default:
             break;
@@ -5154,7 +5169,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
-    case "MZADDGRAVEYARD":
+    case "MZDISCARD":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode(",", $parameter);
@@ -5164,34 +5179,42 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "MYDISCARD":
             $deck = &GetDeck($player);
             AddGraveyard($deck[$mzIndex[1]], $player, $params[0]);
+            WriteLog(CardLink($deck[$mzIndex[1]], $deck[$mzIndex[1]]) . " was discarded");
             break;
           case "THEIRDISCARD":
             $deck = &GetDeck($otherPlayer);
             AddGraveyard($deck[$mzIndex[1]], $otherPlayer, $params[0]);
+            WriteLog(CardLink($deck[$mzIndex[1]], $deck[$mzIndex[1]]) . " was discarded");
             break;
           case "MYARS":
             $arsenal = &GetArsenal($player);
             AddGraveyard($arsenal[$mzIndex[1]], $player, $params[0]);
+            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " was discarded");
             break;
           case "THEIRARS":
             $arsenal = &GetArsenal($otherPlayer);
             AddGraveyard($arsenal[$mzIndex[1]], $otherPlayer, $params[0]);
+            WriteLog(CardLink($arsenal[$mzIndex[1]], $arsenal[$mzIndex[1]]) . " was discarded");
             break;
           case "MYPITCH":
             $pitch = &GetPitch($player);
             AddGraveyard($pitch[$mzIndex[1]], $player, $params[0]);
+            WriteLog(CardLink($pitch[$mzIndex[1]], $pitch[$mzIndex[1]]) . " was discarded");
             break;
           case "THEIRDISCARD":
             $pitch = &GetPitch($otherPlayer);
             AddGraveyard($pitch[$mzIndex[1]], $otherPlayer, $params[0]);
+            WriteLog(CardLink($pitch[$mzIndex[1]], $pitch[$mzIndex[1]]) . " was discarded");
             break;
           case "MYHAND":
             $hand = &GetHand($player);
             AddGraveyard($hand[$mzIndex[1]], $player, $params[0]);
+            WriteLog(CardLink($hand[$mzIndex[1]], $hand[$mzIndex[1]]) . " was discarded");
             break;
           case "THEIRHAND":
             $hand = &GetHand($otherPlayer);
             AddGraveyard($hand[$mzIndex[1]], $otherPlayer, $params[0]);
+            WriteLog(CardLink($hand[$mzIndex[1]], $hand[$mzIndex[1]]) . " was discarded");
             break;
           default:
             break;

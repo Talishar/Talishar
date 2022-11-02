@@ -1260,6 +1260,7 @@ if ($set == "DYN") {
 		case "151": return "Sandscour Greatbow";
 		case "152": return "Hornet's Sting";
     	case "153": return "Heat Seeker";
+		case "155": return "Dead Eye";
 		case "162": case "163": case "164": return "Hemorrhage Bore";
 		case "171": return "Amethyst Tiara";
 		case "172": return "Annals of Sutcliffe";

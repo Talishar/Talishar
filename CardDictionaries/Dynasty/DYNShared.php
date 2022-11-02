@@ -56,7 +56,11 @@ function DYNHasGoAgain($cardID)
     case "DYN065": return true;
     //Assassin
     case "DYN115": case "DYN116": return true;
+    //Ranger
+    case "DYN155": return true;
+    //
     case "DYN188": case "DYN189": case "DYN190": return  true;
+    //
     case "DYN230": case "DYN231": case "DYN232": return  true;
     default: return false;
   }
@@ -81,6 +85,7 @@ function DYNEffectAttackModifier($cardID)
   switch ($cardID) {
     case "DYN007": return 6;
     case "DYN028": return 1;
+    case "DYN155": return 3;
     default:
       return 0;
   }
@@ -94,6 +99,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN007": return true;
     case "DYN028": return CardClass($attackID) == "GUARDIAN";
     case "DYN115": case "DYN116": return true;
+    case "DYN155": return CardSubType($attackID) == "Arrow";
     default:
       return false;
   }
@@ -168,6 +174,7 @@ function DYNCardType($cardID)
     case "DYN151": return "W";
     case "DYN152": return "E";
     case "DYN153": return "AA";
+    case "DYN155": return "A";
     case "DYN162": case "DYN163": case "DYN164": return "AA";
     //Runeblade
     case "DYN171": return "E";
@@ -265,8 +272,9 @@ function DYNCardCost($cardID)
     case "DYN142": case "DYN143": case "DYN144": return 0;
     case "DYN145": case "DYN146": case "DYN147": return 0;
     case "DYN148": case "DYN149": case "DYN150": return 0;
-    //Arrow
+    //Ranger
     case "DYN153": return 1;
+    case "DYN155": return 1;
     case "DYN162": case "DYN163": case "DYN164": return 1;
     //Runeblade
     case "DYN173": return 3;
@@ -320,8 +328,9 @@ function DYNPitchValue($cardID)
     case "DYN124": case "DYN127": case "DYN130": case "DYN133": case "DYN136": case "DYN139": case "DYN142": case "DYN145": case "DYN148": return 1;
     case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
     //Ranger
-    case "DYN153": return 0;
+    case "DYN151": return 0;
     case "DYN153": return 1;
+    case "DYN155": return 1;
     case "DYN162": return 1;
     case "DYN163": return 2;
     //Runeblade
@@ -550,6 +559,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       AddDecisionQueue("SANDSCOURGREATBOW", $currentPlayer, "-");
       return "";
+    case "DYN155":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "Gives your next Arrow attack action card +" . EffectAttackModifier($cardID);
     case "DYN171":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
@@ -796,7 +808,7 @@ function DYNHitEffect($cardID)
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to Destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZADDGRAVEYARD", $mainPlayer, "ARS,-," . $mainPlayer, 1);
+        AddDecisionQueue("MZDISCARD", $mainPlayer, "ARS,-," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
