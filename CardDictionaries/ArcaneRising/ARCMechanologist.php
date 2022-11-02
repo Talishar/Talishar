@@ -285,6 +285,7 @@ function HasBoost($cardID)
     case "CRU109": case "CRU110": case "CRU111":
     case "EVR073": case "EVR074": case "EVR075":
     case "EVR079": case "EVR080": case "EVR081":
+    case "DYN090":
       return true;
     default:
       return false;
@@ -309,7 +310,7 @@ function ItemBoostEffects()
   $items = &GetItems($currentPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     switch ($items[$i]) {
-      case "ARC036": 
+      case "ARC036":
       case "DYN110": case "DYN111": case "DYN112":
         if ($items[$i + 2] == 2) {
           --$items[$i + 1];
