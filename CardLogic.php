@@ -911,10 +911,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "DYN098":
       DestroyAuraUniqueID($player, $uniqueID);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
-      //AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero to copy");
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
+      for($i=0; $i<3; ++$i)
+      {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to put into play");
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("MZGETCARDID", $player, "-", 1);
+        AddDecisionQueue("PUTPLAY", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "{0}", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      }
       break;
     case "DYN113": case "DYN114":
         $otherPlayer = ($player == 1 ? 2 : 1);
