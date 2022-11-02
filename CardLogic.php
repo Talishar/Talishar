@@ -899,6 +899,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
       break;
+    case "DYN113": case "DYN114":
+        $otherPlayer = ($player == 1 ? 2 : 1);
+        AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want sink <0> with Arakni", 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_sink_the_opponent's_card", 1);
+        AddDecisionQueue("NOPASSARAKNI", $player, $parameter, 1);
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
+        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      break;
     case "DYN152":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $deck = &GetDeck($player);
