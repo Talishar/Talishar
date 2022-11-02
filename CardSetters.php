@@ -350,7 +350,7 @@ function AddGraveyard($cardID, $player, $from)
     BanishCardForPlayer($cardID, $player, $from, "NA");
     return;
   } else if ($cardID == "CRU007" && $from != "CC") {
-    AddDecisionQueue("BEASTWITHIN", $player, "-");
+    AddLayer("TRIGGER", $player, $cardID); 
   }
   if ($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166") {
     AddBottomDeck($cardID, $player, $from);

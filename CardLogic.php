@@ -578,6 +578,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     case "CRU000":
       PlayAura("ARC112", $player);
       break;
+    case "CRU007":
+      AddDecisionQueue("BEASTWITHIN", $player, "-");
+      break;
     case "CRU008":
       Intimidate();
       break;
@@ -870,6 +873,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "DYN008":
+      WriteLog("Gained a resource from " . CardLink($parameter, $parameter));
+      GainResources($player, 1);
+      break;
     case "DYN009":
       $deck = &GetDeck($player);
       $rv = "";
@@ -881,6 +888,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
           WriteLog(CardLink($parameter, $parameter) . " draw a card.");
         }
       }
+      break;
+		case "DYN010": case "DYN011": case "DYN012":
+      $discard = &GetDiscard($player);
+      $found = -1;
+      for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
+        if ($discard[$i] == $parameter) $found = $i;
+      }
+      RemoveGraveyard($player, $found);
+      AddBottomDeck($parameter, $player, "GY");
+      WriteLog(CardLink($parameter, $parameter) . " was put at the bottom of the deck");
       break;
     case "DYN094":
       $otherPlayer = ($player == 1 ? 2 : 1);
@@ -1114,10 +1131,11 @@ function CardDiscarded($player, $discarded, $source = "")
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
-  if($discarded == "DYN008")
-  {
-    WriteLog("Gained a resource from Skull Crack.");
-    GainResources($player, 1);
+  if($discarded == "DYN008") {
+    AddLayer("TRIGGER", $player, $discarded);
+  }
+  if($discarded == "DYN010" || $discarded == "DYN011" || $discarded == "DYN012"){
+    AddLayer("TRIGGER", $player, $discarded);
   }
 }
 

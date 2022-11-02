@@ -4477,13 +4477,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $card = array_shift($deck);
       LoseHealth(1, $player);
       if (AttackValue($card) >= 6) {
-        WriteLog("Beast Within banished " . CardLink($card, $card) . " and was added to hand.");
+        WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and was added to hand.");
         BanishCardForPlayer($card, $player, "DECK", "-");
         $banish = &GetBanish($player);
         RemoveBanish($player, count($banish) - BanishPieces());
         AddPlayerHand($card, $player, "BANISH");
       } else {
-        WriteLog("Beast Within banished " . CardLink($card, $card) . ".");
+        WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . ".");
         BanishCardForPlayer($card, $player, "DECK", "-");
         PrependDecisionQueue("BEASTWITHIN", $player, "-");
       }
