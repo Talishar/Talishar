@@ -2351,6 +2351,9 @@ function Draw($player, $mainPhase = true)
       if ($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
+  if ($mainPhase && SearchCurrentTurnEffects("DYN196", $player)) {
+    DealArcane(1, 2, "TRIGGER", "DYN196");
+  }
   return $hand[count($hand) - 1];
 }
 
