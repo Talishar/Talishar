@@ -354,7 +354,10 @@ function AddGraveyard($cardID, $player, $from)
   }
   if ($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166") {
     AddBottomDeck($cardID, $player, $from);
-  } else {
+  } elseif (HasEphemeral($cardID)) {
+    return;
+  }
+  else {
     IncrementClassState($player, $CS_CardsEnteredGY);
     if ($mainPlayerGamestateStillBuilt) {
       if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
