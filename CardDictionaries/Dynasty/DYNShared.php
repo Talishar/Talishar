@@ -229,6 +229,7 @@ function DYNCardType($cardID)
     case "DYN173": return "AA";
     case "DYN174": return "A";
     case "DYN175": return "A";
+		case "DYN179": case "DYN180": case "DYN181": return "A";
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
     case "DYN192": return "W";
@@ -291,6 +292,8 @@ function DYNCardSubtype($cardID)
     case "DYN171": return "Head";
     case "DYN172": return "Book";
     case "DYN175": return "Aura";
+		case "DYN179": case "DYN180": case "DYN181": return "Aura";
+    //Wizard
     case "DYN192": return "Staff";
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
     //Illusionist
@@ -351,6 +354,7 @@ function DYNCardCost($cardID)
     case "DYN173": return 3;
     case "DYN174": return 3;
     case "DYN175": return 3;
+		case "DYN179": case "DYN180": case "DYN181": return 1;
     //Wizard
     case "DYN196": return 3;
     case "DYN200": case "DYN201": case "DYN202": return 1;
@@ -418,8 +422,8 @@ function DYNPitchValue($cardID)
     case "DYN173": return 2;
     case "DYN174": return 1;
     case "DYN175": return 3;
-    case "DYN188": case "DYN230": return 1;
-    case "DYN189": case "DYN231": return 2;
+    case "DYN179": case "DYN188": case "DYN230": return 1;
+    case "DYN180": case "DYN189": case "DYN231": return 2;
     //Wizard
     case "DYN206": return 1;
     case "DYN207": return 2;
@@ -468,10 +472,12 @@ function DYNBlockValue($cardID)
     //Ranger
     case "DYN151": return -1;
     case "DYN152": return 1;
+    //Runeblade
     case "DYN171": return 1;
     case "DYN172": return -1;
     case "DYN174": return 2;
     case "DYN175": return 3;
+		case "DYN179": case "DYN180": case "DYN181": return 2;
     case "DYN188": case "DYN189": case "DYN190": return 2;
     //Wizard
     case "DYN192": return -1;
@@ -484,9 +490,9 @@ function DYNBlockValue($cardID)
     case "DYN240": return -1;
     case "DYN241": return -1;
     case "DYN242": case "DYN243": return -1;
-    case "DYN492a": return 0;
+    case "DYN492a": return -1;
     case "DYN492b": return 5;
-    case "DYN492c": return 0;
+    case "DYN492c": return -1;
     default: return 3;
   }
 }
