@@ -1008,13 +1008,6 @@ function HasEphemeral($cardID)
   }
 }
 
-function HasPierce($cardID)
-{
-  switch ($cardID) {
-    default: return -1;
-  }
-}
-
 function HasAimCounters($cardID)
 {
   switch ($cardID) {
