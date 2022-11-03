@@ -1278,16 +1278,19 @@ if ($set == "DYN") {
 		case "142": case "143": case "144": return "Sack the Shifty";
 		case "145": case "146": case "147": return "Slay the Scholars";
     	case "148": case "149": case "150": return "Cut to the Chase";
+		//Ranger
 		case "151": return "Sandscour Greatbow";
 		case "152": return "Hornet's Sting";
     	case "153": return "Heat Seeker";
 		case "155": return "Dead Eye";
 		case "162": case "163": case "164": return "Hemorrhage Bore";
+		//Runeblade
 		case "171": return "Amethyst Tiara";
 		case "172": return "Annals of Sutcliffe";
 		case "173": return "Cryptic Crossing";
 		case "174": return "Diabolic Ultimatum";
     	case "175": return "Looming Doom";
+		case "179": case "180": case "181": return "Blessing of Occult";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		//Wizard
 		case "192": return "Surgent Aethertide";
