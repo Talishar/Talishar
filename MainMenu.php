@@ -239,17 +239,17 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <?php
   if (!$isPatron) {
     echo '<div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3460218951907688"
-           crossorigin="anonymous"></script>
-      <!-- MainMenuRight -->
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2488963730697692"
+          crossorigin="anonymous"></script>
+      <!-- Unit1 -->
       <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="' . $adsenseClientId . '"
-           data-ad-slot="3547984570"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
+          style="display:block"
+          data-ad-client="ca-pub-2488963730697692"
+          data-ad-slot="4077285387"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
       <script>
-           (adsbygoogle = window.adsbygoogle || []).push({});
+          (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     </div>';
   }
