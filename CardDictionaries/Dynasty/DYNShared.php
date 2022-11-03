@@ -101,6 +101,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN076": return NumEquipBlock() > 0 ? 3 : 0;
     case "DYN077": return NumEquipBlock() > 0 ? 2 : 0;
     case "DYN078": return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN089-UNDER": return 1;
     case "DYN091": return 3;
     case "DYN155": return 3;
     default:
@@ -110,7 +111,7 @@ function DYNEffectAttackModifier($cardID)
 
 function DYNCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $CCS_IsBoosted;
+  global $combatChainState, $CCS_IsBoosted, $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch ($cardID) {
@@ -120,6 +121,10 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN076": case "DYN077": case "DYN078":
       $subtype = CardSubType($attackID);
       return $subtype == "Sword" || $subtype == "Dagger";
+    case "DYN089-UNDER":
+      $character = &GetPlayerCharacter($mainPlayer);  
+      $index = FindCharacterIndex($mainPlayer, "DYN492a"); // Todo: not great for future implementations. Need to check if it's still under
+      return $character[$index + 2] >= 1;
     case "DYN091": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
@@ -630,7 +635,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $numHypers += CountItem("DYN112", $currentPlayer);
       if($numHypers < 3) return "You do not meet the Hyper Driver requirement.";
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
-      for($i=count($char)-1; $i>=CharacterPieces(); --$i) unset($char[$i]);
+      for($i=count($char)-1; $i>=CharacterPieces(); --$i) {
+        if ($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
+        unset($char[$i]);
+      }
       $char = array_values($char);
       $items = &GetItems($currentPlayer);
       for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
