@@ -1612,6 +1612,8 @@ function HasTemper($cardID)
       return true;
     case "UPR084":
       return true;
+    case "DYN492b":
+      return true;
     default:
       return false;
   }
