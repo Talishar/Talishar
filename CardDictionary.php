@@ -1549,7 +1549,6 @@ function HasBladeBreak($cardID)
     case "UPR182":
       return true;
     case "DYN045":
-    case "DYN089":
     case "DYN152":
     case "DYN171":
       return true;
@@ -1589,6 +1588,7 @@ function HasBattleworn($cardID)
     case "DVR005":
       return true;
     case "DYN026":
+    case "DYN089":
     case "DYN117":
     case "DYN118":
       return true;
