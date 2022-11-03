@@ -1008,15 +1008,6 @@ function HasEphemeral($cardID)
   }
 }
 
-function HasAimCounters($cardID)
-{
-  switch ($cardID) {
-    case "DYN155": return true;
-    case "DYN162": case "DYN163": case "DYN164": return true;
-    default: return false;
-  }
-}
-
 function ContractType($cardID)
 {
   switch($cardID)

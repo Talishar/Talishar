@@ -869,7 +869,7 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
       break;
     case "DYN155":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects($combatChain[0] . "-AIM", $mainPlayer)) {
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects($combatChain[0] . "-AIM", $mainPlayer, true)) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -1647,7 +1647,7 @@ function CurrentEffectEndTurnAbilities()
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
     $cardID = substr($currentTurnEffects[$i], 0, 6);
-    if (HasAimCounters($cardID) && SearchCurrentTurnEffects($cardID . "-AIM", $currentTurnEffects[$i + 1])) {
+    if (SearchCurrentTurnEffects($cardID . "-AIM", $currentTurnEffects[$i + 1])) {
       $arsenal = GetArsenal($currentTurnEffects[$i+1]);
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i+1], $arsenal[count($arsenal) - ArsenalPieces() + 5]);
     }
