@@ -198,6 +198,9 @@ function DYNCardType($cardID)
     case "DYN098": return "A";
     case "DYN107": case "DYN108": case "DYN109": return "AA";
     case "DYN110": case "DYN111": case "DYN112": return "A";
+    case "DYN492a": return "W";
+    case "DYN492b": return "E";
+    case "DYN492c": return "T";
     //Assassin
     case "DYN113": case "DYN114": return "C";
     case "DYN115": case "DYN116": return "W";
@@ -233,6 +236,7 @@ function DYNCardType($cardID)
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
     case "DYN192": return "W";
+		case "DYN195": return "A";
     case "DYN196": return "I";
     case "DYN200": case "DYN201": case "DYN202": return "A";
     case "DYN206": case "DYN207": case "DYN208": return "A";
@@ -245,9 +249,6 @@ function DYNCardType($cardID)
     case "DYN242": return "A";
     case "DYN243": return "T";
     case "DYN244": return "T";
-    case "DYN492a": return "W";
-    case "DYN492b": return "E";
-    case "DYN492c": return "T";
     default: return "";
   }
 }
@@ -358,6 +359,7 @@ function DYNCardCost($cardID)
     case "DYN175": return 3;
 		case "DYN179": case "DYN180": case "DYN181": return 1;
     //Wizard
+		case "DYN195": return 2;
     case "DYN196": return 3;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     //Illusionist
@@ -430,6 +432,7 @@ function DYNPitchValue($cardID)
     case "DYN179": case "DYN188": case "DYN230": return 1;
     case "DYN180": case "DYN189": case "DYN231": return 2;
     //Wizard
+		case "DYN195": return 1;
     case "DYN206": return 1;
     case "DYN207": return 2;
     //
@@ -819,6 +822,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
       return "";
+    case "DYN195":
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
     case "DYN196":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -1037,6 +1043,7 @@ function IsRoyal($player)
 function HasSurge($cardID)
 {
   switch ($cardID) {
+		case "DYN195": return true;
     case "DYN206": case "DYN207": case "DYN208": return true;
     default: return false;
   }

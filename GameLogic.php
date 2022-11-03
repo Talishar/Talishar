@@ -226,12 +226,26 @@ function ArcaneHitEffect($player, $source, $target, $damage)
   }
 
   if (HasSurge($source) && $damage > ArcaneDamage($source)) {
-    AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose which permanent remove an energy counter");
-    AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-    AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
-    AddDecisionQueue("REMOVEENERGYCOUNTER", $target, "-", 1);
-    AddDecisionQueue("SURGELOG", $target, $source, 1);
+    DoSurgeEffect($source, $player, $target);
+  }
+}
+
+function DoSurgeEffect($cardID, $player, $target)
+{
+  switch ($cardID) {
+    case "DYN195":
+      PlayAura("DYN244", $player);
+      WriteLog(CardLink($cardID, $cardID) . " surge's ability create a " . CardLink("DYN244", "DYN244") . " token.");
+      break;
+    case "DYN206": case "DYN207": case "DYN208":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which permanent remove an energy counter");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
+      AddDecisionQueue("REMOVEENERGYCOUNTER", $target, "-", 1);
+      AddDecisionQueue("SURGEENERGYLOSSLOG", $target, $cardID, 1);
+      break;
+    default: break;
   }
 }
 
@@ -3798,7 +3812,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 2] -= 1;
       return $lastResult;
-    case "SURGELOG":
+    case "SURGEENERGYLOSSLOG":
       $character = &GetPlayerCharacter($player);
       WriteLog(CardLink($parameter, $parameter) . " surge's ability removed 1 energy counter from " . CardLink($character[$lastResult], $character[$lastResult]));
       return $lastResult;
