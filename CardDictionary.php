@@ -1859,6 +1859,8 @@ function CharacterNumUsesPerTurn($cardID)
     case "UPR183":
     case "DYN001":
       return 999;
+    case "DYN492a":
+      return 999;
     default:
       return 1;
   }
