@@ -1244,8 +1244,10 @@ if ($set == "DYN") {
     case "079": case "080": case "081": return "Puncture";
     //Mechanologist
 		case "088": return "Hanabi Blaster";
+		case "089": return "Galvanic Bender";
     case "090": return "Pulsewave Harpoon";
     case "091": return "Bios Update";
+    case "092": return "Construct Nitro Mechanoid";
 		case "094": return "Powder Keg";
     case "098": return "Blessing of Ingenuity";
     case "107": case "108": case "109": return "Urgent Delivery";
@@ -1291,6 +1293,9 @@ if ($set == "DYN") {
     	case "241": return "Imperial Ledger";
 		case "242": return "Imperial Warhorn";
 		case "243": return "Gold";
+    case "492a": return "Nitro Mechanoid";
+    case "492b": return "Nitro Mechanoid";
+    case "492c": return "Nitro Mechanoid";
 		default: return "Name not populated - please report bug";
 	}
 }
