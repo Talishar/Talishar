@@ -1048,7 +1048,7 @@ function DYNHitEffect($cardID)
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "DYN162": case "DYN163": case "DYN164":
-      if (SearchCurrentTurnEffects($cardID . "-AIM", $mainPlayer, true) && IsHeroAttackTarget()) {
+      if (SearchCurrentTurnEffects("AIM", $mainPlayer, true) && IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to Destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);

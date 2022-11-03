@@ -436,7 +436,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $action = $currentPlayer == $playerID && $turn[0] != "P" && $currentPlayer == $combatChain[$i + 1] && AbilityPlayableFromCombatChain($combatChain[$i]) && IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
       $actionDisabled = 0;
       $aimCounters = 0;
-      if (SearchCurrentTurnEffects($combatChain[$i] . "-AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $aimCounters = 1;
+      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $aimCounters = 1;
       echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i), atkCounters:$aimCounters, controller: $combatChain[$i + 1]));
     }
   }

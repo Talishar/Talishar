@@ -894,7 +894,7 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
       break;
     case "DYN155":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects($combatChain[0] . "-AIM", $mainPlayer, true)) {
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer, true)) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -1672,10 +1672,6 @@ function CurrentEffectEndTurnAbilities()
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
     $cardID = substr($currentTurnEffects[$i], 0, 6);
-    if (SearchCurrentTurnEffects($cardID . "-AIM", $currentTurnEffects[$i + 1])) {
-      $arsenal = GetArsenal($currentTurnEffects[$i+1]);
-      AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i+1], $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-    }
     if (SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]); // Todo: Need to check in the future if it's still under
     }
@@ -1701,6 +1697,7 @@ function IsCombatEffectActive($cardID)
 {
   global $combatChain, $currentPlayer;
   if (count($combatChain) == 0) return;
+  if($cardID == "AIM") return true;
   $attackID = $combatChain[0];
   if ($cardID == "CRU097") {
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
