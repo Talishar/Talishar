@@ -282,13 +282,9 @@ function AuraStartTurnAbilities()
         else if ($auras[$i] == "DYN054") $amount = 2;
         else $amount = 1;
         WriteLog(CardLink($auras[$i], $auras[$i]) ." creates a " . CardLink("DYN065", "DYN065") . " and give it +" . $amount);
-        BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer); 
-        $discard = &GetDiscard($mainPlayer);
-        $found = -1;
-        for ($j = count($discard); $j < 0 && $found == -1; $j -= DiscardPieces()) {
-          if ($discard[$j] == "DYN065") $found = $j;
-        }
-        AddDecisionQueue("MZGETUNIQUEID", $mainPlayer, "BANISH-" . $j);
+        $index = BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+        $banish = &GetBanish($mainPlayer);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish[$index+2]);
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . "," . "BANISH");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
@@ -551,7 +547,7 @@ function AuraTakeDamageAbilities($player, $damage, $type)
         break;
       case "DYN217":
         if ($preventable) $damage -= 1;
-        $remove = 1;        
+        $remove = 1;
         break;
       default:
         break;
