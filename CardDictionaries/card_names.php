@@ -1224,6 +1224,7 @@ if ($set == "DYN") {
 		case "026": return "Seasoned Saviour";
     	//Guardian
     	case "028": return "Buckle";
+		case "033": case "034": case "035": return "Blessing of Patience";
 		case "039": case "040": case "041": return "Reinforce Steel";
 		//Ninja
 		case "045": return "Blazen Yoroi";
