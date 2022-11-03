@@ -4091,7 +4091,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       ItemBoostEffects();
       $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
       $cardID = $deck[0];
-      BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
+      if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091", $player)) PutItemIntoPlay($cardID);
+      else BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
       unset($deck[0]);
       $deck = array_values($deck);
       $grantsGA = ClassContains($cardID, "MECHANOLOGIST", $currentPlayer);
