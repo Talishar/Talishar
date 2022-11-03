@@ -1245,6 +1245,7 @@ if ($set == "DYN") {
     //Mechanologist
 		case "088": return "Hanabi Blaster";
     case "090": return "Pulsewave Harpoon";
+    case "091": return "Bios Update";
 		case "094": return "Powder Keg";
     case "098": return "Blessing of Ingenuity";
     case "107": case "108": case "109": return "Urgent Delivery";

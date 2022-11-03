@@ -62,6 +62,8 @@ function DYNHasGoAgain($cardID)
     case "DYN065": return true;
     //Warrior
     case "DYN076": case "DYN077": case "DYN078": return true;
+    //Mechanologist
+    case "DYN091": return true;
     //Assassin
     case "DYN115": case "DYN116": return true;
     //Ranger
@@ -97,6 +99,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN076": return NumEquipBlock() > 0 ? 3 : 0;
     case "DYN077": return NumEquipBlock() > 0 ? 2 : 0;
     case "DYN078": return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN091": return 3;
     case "DYN155": return 3;
     default:
       return 0;
@@ -105,6 +108,7 @@ function DYNEffectAttackModifier($cardID)
 
 function DYNCombatEffectActive($cardID, $attackID)
 {
+  global $combatChainState, $CCS_IsBoosted;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   switch ($cardID) {
@@ -114,6 +118,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN076": case "DYN077": case "DYN078":
       $subtype = CardSubType($attackID);
       return $subtype == "Sword" || $subtype == "Dagger";
+    case "DYN091": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
     default:
@@ -173,6 +178,7 @@ function DYNCardType($cardID)
     //Mechanologist
     case "DYN088": return "W";
     case "DYN090": return "AA";
+    case "DYN091": return "A";
     case "DYN094": return "A";
     case "DYN098": return "A";
     case "DYN107": case "DYN108": case "DYN109": return "AA";
@@ -291,6 +297,7 @@ function DYNCardCost($cardID)
     case "DYN079": case "DYN080": case "DYN081": return 1;
     //Mechanologist
     case "DYN090": return 1;
+    case "DYN091": return 0;
     case "DYN098": return 1;
     case "DYN107": case "DYN108": case "DYN109": return 0;
     case "DYN110": case "DYN111": case "DYN112": return 1;
@@ -352,6 +359,7 @@ function DYNPitchValue($cardID)
     case "DYN078": case "DYN081": return 3;
     //Mechanologist
     case "DYN090": return 1;
+    case "DYN091": return 1;
     case "DYN098": return 1;
     case "DYN107": case "DYN110": return 1;
     case "DYN108": case "DYN111": return 2;
@@ -572,6 +580,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
       }
       return "";
+    case "DYN091":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "The next card you boost gets +3 attack and if you banish an item you play it.";
     case "DYN123":
       if (GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0) {
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
