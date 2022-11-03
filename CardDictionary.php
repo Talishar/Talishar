@@ -1036,7 +1036,6 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "")
   if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   if (DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") return "-";
-  if (HasEphemeral($cardID)) return "-";
   switch ($cardID) {
     case "WTR163":
       return "BANISH";
