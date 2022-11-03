@@ -1300,11 +1300,13 @@ if ($set == "DYN") {
 		//Illusionist
 		case "217": return "Tome of Aeo";
         case "230": case "231": case "232": return "Water Glow Lanterns";
+		//Generic
 		case "234": return "Crown of Dominion";
     	case "240": return "Imperial Edict";
     	case "241": return "Imperial Ledger";
 		case "242": return "Imperial Warhorn";
 		case "243": return "Gold";
+		case "244": return "Ponder";
 		default: return "Name not populated - please report bug";
 	}
 }
