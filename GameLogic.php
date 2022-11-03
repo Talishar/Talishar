@@ -2813,6 +2813,7 @@ function isOverpowerActive ()
   switch ($combatChain[0]) {
     case "DYN068": return isAttackGreaterThanTwiceBasePower();
     case "DYN088": return true;
+    case "DYN492a": return true;
     default:
       break;
   }
@@ -2824,6 +2825,7 @@ function HasOverpower ($cardID)
   switch ($cardID) {
     case "DYN068": return isAttackGreaterThanTwiceBasePower();
     case "DYN088": return true;
+    case "DYN492a": return true;
     default: break;
   }
   return false;
