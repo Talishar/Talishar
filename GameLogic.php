@@ -1651,6 +1651,9 @@ function CurrentEffectEndTurnAbilities()
       $arsenal = GetArsenal($currentTurnEffects[$i+1]);
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i+1], $arsenal[count($arsenal) - ArsenalPieces() + 5]);
     }
+    if (SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
+      AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]); // Todo: Need to check in the future if it's still under
+    }
     switch ($currentTurnEffects[$i]) {
       case "MON069":
       case "MON070":
@@ -1833,6 +1836,8 @@ function IsCombatEffectPersistent($cardID)
     case "DYN049":
       return true;
     case "DYN072":
+      return true;
+    case "DYN089-UNDER":
       return true;
     case "DYN115": case "DYN116":
       return NumCardsBlocking() == 0 && NumAttacksBlocking() == 0;
@@ -2669,17 +2674,27 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
 {
   $char = &GetPlayerCharacter($player);
   $index = count($char);
-  array_push($char, $cardID);
-  array_push($char, 2);
-  array_push($char, 0);
-  array_push($char, 0);
-  array_push($char, 0);
-  array_push($char, 1);
-  array_push($char, 0);
-  array_push($char, 0);
-  array_push($char, 0);
-  array_push($char, 2);
+  array_push($char, $cardID); //0 - Card ID
+  array_push($char, 2); //1 - Status (2=ready, 1=unavailable, 0=destroyed)
+  array_push($char, CharacterCounters($cardID)); //2 - Num counters
+  array_push($char, 0); //3 - Num attack counters
+  array_push($char, 0); //4 - Num defense counters
+  array_push($char, 1); //5 - Num uses
+  array_push($char, 0); //6 - On chain (1 = yes, 0 = no)
+  array_push($char, 0); //7 - Flagged for destruction (1 = yes, 0 = no)
+  array_push($char, 0); //8 - Frozen (1 = yes, 0 = no)
+  array_push($char, 2); //9 - Is Active (2 = always active, 1 = yes, 0 = no)
   return $index;
+}
+
+function CharacterCounters ($cardID) 
+{
+  switch ($cardID) {
+    case "DYN492a":
+      return 8;
+    default:
+      return 0;
+  }
 }
 
 function PutItemIntoPlay($item, $steamCounterModifier = 0)
@@ -2971,6 +2986,11 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "DYN118":
       DestroyCharacter($currentPlayer, $cardIndex);
+      break;
+    case "DYN492a":
+      --$character[$cardIndex + 2];
+      WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself."); 
+      BanishCardForPlayer("DYN492a", $currentPlayer, "-"); // TODO: Temporary until we can actually banish the cards that were put under
       break;
     default:
       --$character[$cardIndex + 5];
