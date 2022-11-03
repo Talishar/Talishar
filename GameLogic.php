@@ -2665,6 +2665,23 @@ function CombatChainPlayAbility($cardID)
   }
 }
 
+function PutCharacterIntoPlayForPlayer($cardID, $player)
+{
+  $char = &GetPlayerCharacter($player);
+  $index = count($char);
+  array_push($char, $cardID);
+  array_push($char, 2);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 1);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 0);
+  array_push($char, 2);
+  return $index;
+}
+
 function PutItemIntoPlay($item, $steamCounterModifier = 0)
 {
   global $currentPlayer;

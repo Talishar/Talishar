@@ -20,7 +20,7 @@ function DYNAbilityCost($cardID)
     case "DYN241": return 0;
     case "DYN242": return 1;
     case "DYN243": return 2;
-
+    case "DYN492a": return 0;
     default: return 0;
   }
 }
@@ -46,6 +46,7 @@ function DYNAbilityType($cardID, $index = -1)
     case "DYN240": return "A";
     case "DYN241": return "A";
     case "DYN242": case "DYN243": return "A";
+    case "DYN492a": return "AA";
     default: return "";
   }
 }
@@ -64,6 +65,7 @@ function DYNHasGoAgain($cardID)
     case "DYN076": case "DYN077": case "DYN078": return true;
     //Mechanologist
     case "DYN091": return true;
+    case "DYN092": return true;
     //Assassin
     case "DYN115": case "DYN116": return true;
     //Ranger
@@ -177,8 +179,10 @@ function DYNCardType($cardID)
     case "DYN079": case "DYN080": case "DYN081": return "AR";
     //Mechanologist
     case "DYN088": return "W";
+    case "DYN089": return "E";
     case "DYN090": return "AA";
     case "DYN091": return "A";
+    case "DYN092": return "A";
     case "DYN094": return "A";
     case "DYN098": return "A";
     case "DYN107": case "DYN108": case "DYN109": return "AA";
@@ -226,6 +230,9 @@ function DYNCardType($cardID)
     case "DYN241": return "A";
     case "DYN242": return "A";
     case "DYN243": return "T";
+    case "DYN492a": return "W";
+    case "DYN492b": return "E";
+    case "DYN492c": return "T";
     default: return "";
   }
 }
@@ -250,6 +257,8 @@ function DYNCardSubtype($cardID)
     case "DYN072": return "Aura";
     //Mechanologist
     case "DYN088": return "Gun";
+    case "DYN089": return "Arms";
+    case "DYN092": return "Construct";
     case "DYN094": return "Item";
     case "DYN098": return "Aura";
     case "DYN110": case "DYN111": case "DYN112": return "Item";
@@ -276,6 +285,8 @@ function DYNCardSubtype($cardID)
     case "DYN241": return "Item";
     case "DYN242": return "Item";
     case "DYN243": return "Item";
+    case "DYN492b": return "Chest";
+    case "DYN492c": return "Item";
     default:return "";
   }
 }
@@ -298,6 +309,7 @@ function DYNCardCost($cardID)
     //Mechanologist
     case "DYN090": return 1;
     case "DYN091": return 0;
+    case "DYN092": return 4;
     case "DYN098": return 1;
     case "DYN107": case "DYN108": case "DYN109": return 0;
     case "DYN110": case "DYN111": case "DYN112": return 1;
@@ -345,7 +357,7 @@ function DYNPitchValue($cardID)
     case "DYN040": return 2;
       //Ninja
     case "DYN047": return 1;
-    case "DYN049": return 0;
+    case "DYN049": return 2;
     case "DYN050": case "DYN056": case "DYN062": return 1;
     case "DYN051": case "DYN057": case "DYN063": return 2;
     case "DYN065": return 0;
@@ -358,8 +370,10 @@ function DYNPitchValue($cardID)
     case "DYN077": case "DYN080": return 2;
     case "DYN078": case "DYN081": return 3;
     //Mechanologist
+    case "DYN089": return 0;
     case "DYN090": return 1;
     case "DYN091": return 1;
+    case "DYN092": return 2;
     case "DYN098": return 1;
     case "DYN107": case "DYN110": return 1;
     case "DYN108": case "DYN111": return 2;
@@ -377,7 +391,7 @@ function DYNPitchValue($cardID)
     //Ranger
     case "DYN151": return 0;
     case "DYN153": return 1;
-    case "DYN155": return 1;
+    case "DYN155": return 2;
     case "DYN162": return 1;
     case "DYN163": return 2;
     //Runeblade
@@ -391,6 +405,9 @@ function DYNPitchValue($cardID)
     case "DYN241": return 1;
     case "DYN242": return 1;
     case "DYN243": return 0;
+    case "DYN492a": return 0;
+    case "DYN492b": return 0;
+    case "DYN492c": return 0;
     default: return 3;
   }
 }
@@ -414,6 +431,7 @@ function DYNBlockValue($cardID)
     case "DYN069": case "DYN070": return -1;
     case "DYN072": return -1;
     case "DYN088": return -1;
+    case "DYN089": return 1;
     case "DYN094": return -1;
     //Mechanologist
     case "DYN110": case "DYN111": case "DYN112": return -1;
@@ -440,6 +458,9 @@ function DYNBlockValue($cardID)
     case "DYN240": return -1;
     case "DYN241": return -1;
     case "DYN242": case "DYN243": return -1;
+    case "DYN492a": return 0;
+    case "DYN492b": return 5;
+    case "DYN492c": return 0;
     default: return 3;
   }
 }
@@ -485,6 +506,7 @@ function DYNAttackValue($cardID)
     case "DYN164": return 3;
     //Runeblade
     case "DYN173": return 6;
+    case "DYN492a": return 5;
     default: return 0;
   }
 }
@@ -583,6 +605,43 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN091":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "The next card you boost gets +3 attack and if you banish an item you play it.";
+    case "DYN092":
+      $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false; $numHypers = 0;
+      $char = &GetPlayerCharacter($currentPlayer);
+      for($i=0; $i<count($char); $i+=CharacterPieces())
+      {
+        if($char[$i+1] == 0) continue;//If it's destroyed
+        if(CardClass($char[$i]) != "MECHANOLOGIST") continue;
+        if(CardType($char[$i]) == "W") $hasWeapon = true;
+        else {
+          $subtype = CardSubType($char[$i]);
+          switch($subtype)
+          {
+            case "Head": $hasHead = true; break;
+            case "Chest": $hasChest = true; break;
+            case "Arms": $hasArms = true; break;
+            case "Legs": $hasLegs = true; break;
+          }
+        }
+      }
+      if(!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement.";
+      $numHypers = CountItem("ARC036", $currentPlayer);
+      $numHypers += CountItem("DYN111", $currentPlayer);
+      $numHypers += CountItem("DYN112", $currentPlayer);
+      if($numHypers < 3) return "You do not meet the Hyper Driver requirement.";
+      //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
+      for($i=count($char)-1; $i>=CharacterPieces(); --$i) unset($char[$i]);
+      $char = array_values($char);
+      $items = &GetItems($currentPlayer);
+      for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+      {
+        if($items[$i] == "ARC036" || $items[$i] == "DYN111" || $items[$i] == "DYN112") DestroyItemForPlayer($currentPlayer, $i);
+      }
+      //Now add the new stuff
+      PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);//Weapon
+      PutCharacterIntoPlayForPlayer("DYN492b", $currentPlayer);//Armor
+      PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
+      return "";
     case "DYN123":
       if (GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0) {
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
