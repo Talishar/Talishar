@@ -116,7 +116,7 @@ function DYNCombatEffectActive($cardID, $attackID)
   $cardID = $params[0];
   switch ($cardID) {
     case "DYN007": return true;
-    case "DYN028": return CardClass($attackID) == "GUARDIAN";
+    case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
     case "DYN049": return $attackID == "DYN065";
     case "DYN076": case "DYN077": case "DYN078":
       $subtype = CardSubType($attackID);
@@ -626,7 +626,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       for($i=0; $i<count($char); $i+=CharacterPieces())
       {
         if($char[$i+1] == 0) continue;//If it's destroyed
-        if(CardClass($char[$i]) != "MECHANOLOGIST") continue;
+        if(!ClassContains($char[$i], "MECHANOLOGIST", $currentPlayer)) continue;
         if(CardType($char[$i]) == "W") $hasWeapon = true;
         else {
           $subtype = CardSubType($char[$i]);
