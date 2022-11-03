@@ -182,7 +182,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
     $rv .= "<div style=' position:absolute; margin: auto; top: 0; left:" . $left . "; right: 0; bottom: 0; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px;
    display: flex; justify-content: center; z-index: 5; text-align: center; vertical-align: middle; line-height:" . $imgCounterHeight . "px;
    font-size:" . ($imgCounterHeight - 20) . "px; font-weight: 600;  color: #EEE; text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000; user-select: none;'>
-   <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/hit.png'></div>";
+   <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/aimCounters.png'></div>";
   }
 
   //Equipments, Hero and default counters style
