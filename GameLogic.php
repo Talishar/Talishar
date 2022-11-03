@@ -1835,6 +1835,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN049":
       return true;
+    case "DYN053": case "DYN054": case "DYN055": 
+      return true;
     case "DYN072":
       return true;
     case "DYN089-UNDER":
@@ -3814,7 +3816,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddNextTurnEffect($parameter, $player);
       return "1";
     case "ADDLIMITEDCURRENTEFFECT":
+      WriteLog($parameter);
       $params = explode(",", $parameter);
+      WriteLog($params[0]);
       AddCurrentTurnEffect($params[0], $player, $params[1], $lastResult);
       return "";
     case "OPTX":
