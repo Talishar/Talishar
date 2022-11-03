@@ -126,7 +126,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       $subtype = CardSubType($attackID);
       return $subtype == "Sword" || $subtype == "Dagger";
     case "DYN089-UNDER":
-      $character = &GetPlayerCharacter($mainPlayer);  
+      $character = &GetPlayerCharacter($mainPlayer);
       $index = FindCharacterIndex($mainPlayer, "DYN492a"); // Todo: not great for future implementations. Need to check if it's still under
       return $character[$index + 2] >= 1;
     case "DYN091": return $combatChainState[$CCS_IsBoosted];
@@ -194,6 +194,7 @@ function DYNCardType($cardID)
     case "DYN090": return "AA";
     case "DYN091": return "A";
     case "DYN092": return "A";
+    case "DYN093": return "A";
     case "DYN094": return "A";
     case "DYN098": return "A";
     case "DYN107": case "DYN108": case "DYN109": return "AA";
@@ -279,6 +280,7 @@ function DYNCardSubtype($cardID)
     case "DYN088": return "Gun";
     case "DYN089": return "Arms";
     case "DYN092": return "Construct";
+    case "DYN093": return "Item";
     case "DYN094": return "Item";
     case "DYN098": return "Aura";
     case "DYN110": case "DYN111": case "DYN112": return "Item";
@@ -336,6 +338,7 @@ function DYNCardCost($cardID)
     case "DYN090": return 1;
     case "DYN091": return 0;
     case "DYN092": return 4;
+    case "DYN093": return 2;
     case "DYN098": return 1;
     case "DYN107": case "DYN108": case "DYN109": return 0;
     case "DYN110": case "DYN111": case "DYN112": return 1;
@@ -404,6 +407,7 @@ function DYNPitchValue($cardID)
     case "DYN090": return 1;
     case "DYN091": return 1;
     case "DYN092": return 2;
+    case "DYN093": return 1;
     case "DYN098": return 1;
     case "DYN107": case "DYN110": return 1;
     case "DYN108": case "DYN111": return 2;
@@ -466,13 +470,13 @@ function DYNBlockValue($cardID)
     case "DYN068": return -1;
     case "DYN069": case "DYN070": return -1;
     case "DYN072": return -1;
+    //Mechanologist
     case "DYN088": return -1;
     case "DYN089": return 1;
+    case "DYN093": return -1;
     case "DYN094": return -1;
-    //Mechanologist
     case "DYN110": case "DYN111": case "DYN112": return -1;
     case "DYN492a": return -1;    case "DYN244": return "T";
-
     case "DYN492b": return 5;
     case "DYN492c": return -1;
     //Assassin
