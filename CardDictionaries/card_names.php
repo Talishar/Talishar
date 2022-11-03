@@ -1235,23 +1235,28 @@ if ($set == "DYN") {
 		case "062": case "063": case "064": return "Predatory Streak";
 		case "065": return "Crouching Tiger";
 		//Warrior
-    case "066": return "Spirit of Eirina";
+		case "066": return "Spirit of Eirina";
 		case "067": return "Jubeel, Spellbane";
 		case "068": return "Merciless Battleaxe";
-    case "069": case "070": return "Quicksilver Dagger";
+		case "069": case "070": return "Quicksilver Dagger";
 		case "072": return "Ironsong Pride";
-    case "076": case "077": case "078": return "Precision Press";
-    case "079": case "080": case "081": return "Puncture";
+		case "076": case "077": case "078": return "Precision Press";
+		case "079": case "080": case "081": return "Puncture";
     //Mechanologist
 		case "088": return "Hanabi Blaster";
 		case "089": return "Galvanic Bender";
-    case "090": return "Pulsewave Harpoon";
-    case "091": return "Bios Update";
-    case "092": return "Construct Nitro Mechanoid";
+		case "090": return "Pulsewave Harpoon";
+		case "091": return "Bios Update";
+		case "092": return "Construct Nitro Mechanoid";
 		case "094": return "Powder Keg";
-    case "098": return "Blessing of Ingenuity";
-    case "107": case "108": case "109": return "Urgent Delivery";
+		case "098": return "Blessing of Ingenuity";
+		case "107": case "108": case "109": return "Urgent Delivery";
 		case "110": case "111": case "112": return "Hyper Drive";
+		case "492": return "Nitro Mechanoid";
+		case "492a": return "Nitro Mechanoid";
+		case "492b": return "Nitro Mechanoid";
+		case "492c": return "Nitro Mechanoid";
+
     //Assassin
 		case "113": return "Arakni, Huntsman";
 		case "115": case "116": return "Spider's Bite";
@@ -1293,9 +1298,6 @@ if ($set == "DYN") {
     	case "241": return "Imperial Ledger";
 		case "242": return "Imperial Warhorn";
 		case "243": return "Gold";
-    case "492a": return "Nitro Mechanoid";
-    case "492b": return "Nitro Mechanoid";
-    case "492c": return "Nitro Mechanoid";
 		default: return "Name not populated - please report bug";
 	}
 }
