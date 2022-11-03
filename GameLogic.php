@@ -1854,7 +1854,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN049":
       return true;
-    case "DYN053": case "DYN054": case "DYN055": 
+    case "DYN053": case "DYN054": case "DYN055":
       return true;
     case "DYN072":
       return true;
@@ -2711,7 +2711,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   return $index;
 }
 
-function CharacterCounters ($cardID) 
+function CharacterCounters ($cardID)
 {
   switch ($cardID) {
     case "DYN492a":
@@ -2736,10 +2736,10 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
   $theirHoldState = ItemDefaultHoldTriggerState($item);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
-
   for ($i = 0; $i < $number; ++$i) {
+    $steamCounters = SteamCounterLogic($item, $player) + $steamCounterModifier;
     array_push($items, $item); //Card ID
-    array_push($items, ETASteamCounters($item) + SteamCounterLogic($item, $player) + $steamCounterModifier); //Counters
+    array_push($items, $steamCounters); //Counters
     array_push($items, 2); //Status
     array_push($items, ItemUses($item)); //Num Uses
     array_push($items, GetUniqueId()); //Unique ID
@@ -2761,12 +2761,28 @@ function ItemUses($cardID)
 function SteamCounterLogic($item, $playerID)
 {
   global $CS_NumBoosted;
+  $counters = ETASteamCounters($item);
   switch ($item) {
     case "CRU104":
-      return GetClassState($playerID, $CS_NumBoosted);
+      $counters += GetClassState($playerID, $CS_NumBoosted);
+      break;
     default:
-      return 0;
+      break;
   }
+  if(ClassContains($item, "MECHANOLOGIST", $playerID))
+  {
+    $items = &GetItems($playerID);
+    for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+    {
+      if($items[$i] == "DYN093" && $items[$i+5] == "1")//Use gem to toggle Plasma Mainline
+      {
+        ++$counters;
+        --$items[$i+1];
+        if($items[$i+1] == 0) DestroyItemForPlayer($playerID, $i);
+      }
+    }
+  }
+  return $counters;
 }
 
 function IsDominateActive()
@@ -3013,7 +3029,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "DYN492a":
       --$character[$cardIndex + 2];
-      WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself."); 
+      WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself.");
       BanishCardForPlayer("DYN492a", $currentPlayer, "-"); // TODO: Temporary until we can actually banish the cards that were put under
       break;
     default:
