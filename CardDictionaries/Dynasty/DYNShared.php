@@ -169,6 +169,7 @@ function DYNCardType($cardID)
     case "DYN069": case "DYN070": return "W";
     case "DYN072": return "I";
     case "DYN076": case "DYN077": case "DYN078": return "A";
+    case "DYN079": case "DYN080": case "DYN081": return "AR";
     //Mechanologist
     case "DYN088": return "W";
     case "DYN090": return "AA";
@@ -284,9 +285,9 @@ function DYNCardCost($cardID)
     case "DYN039": case "DYN040": case "DYN041": return 2;
     //Ninja
     case "DYN050": case "DYN051": case "DYN052": return 1;
-
     case "DYN072": return 1;
     case "DYN076": case "DYN077": case "DYN078": return 1;
+    case "DYN079": case "DYN080": case "DYN081": return 1;
     //Mechanologist
     case "DYN090": return 1;
     case "DYN098": return 1;
@@ -344,9 +345,9 @@ function DYNPitchValue($cardID)
     case "DYN066": return 2;
     case "DYN069": case "DYN070": return 0;
     case "DYN072": return 1;
-    case "DYN076": return 1;
-    case "DYN077": return 2;
-    case "DYN078": return 3;
+    case "DYN076": case "DYN079": return 1;
+    case "DYN077": case "DYN080": return 2;
+    case "DYN078": case "DYN081": return 3;
     //Mechanologist
     case "DYN090": return 1;
     case "DYN098": return 1;
@@ -449,6 +450,9 @@ function DYNAttackValue($cardID)
     //Warrior
     case "DYN067": return 3;
     case "DYN069": case "DYN070": return 1;
+    case "DYN079": return 3 + (NumEquipBlock() > 0 ? 1 : 0);
+    case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
+    case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
     //Mechanologist
     case "DYN088": return 5;
     case "DYN090": return 4;
