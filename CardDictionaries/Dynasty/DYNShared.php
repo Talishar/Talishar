@@ -62,6 +62,7 @@ function DYNHasGoAgain($cardID)
     case "DYN062": case "DYN063": case "DYN064": return true;
     case "DYN065": return true;
     //Warrior
+    case "DYN071": return true;
     case "DYN076": case "DYN077": case "DYN078": return true;
     //Mechanologist
     case "DYN091": return true;
@@ -101,6 +102,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN053": return 3;
     case "DYN054": return 2;
     case "DYN055": return 1;
+    case "DYN071": return 4;
     case "DYN076": return NumEquipBlock() > 0 ? 3 : 0;
     case "DYN077": return NumEquipBlock() > 0 ? 2 : 0;
     case "DYN078": return NumEquipBlock() > 0 ? 1 : 0;
@@ -122,6 +124,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
     case "DYN049": return $attackID == "DYN065";
     case "DYN053": case "DYN054": case "DYN055": return $attackID == "DYN065";
+    case "DYN071": return CardSubType($attackID) == "Axe";
     case "DYN076": case "DYN077": case "DYN078":
       $subtype = CardSubType($attackID);
       return $subtype == "Sword" || $subtype == "Dagger";
@@ -185,6 +188,7 @@ function DYNCardType($cardID)
     case "DYN067": return "W";
     case "DYN068": return "W";
     case "DYN069": case "DYN070": return "W";
+    case "DYN071": return "A";
     case "DYN072": return "I";
     case "DYN076": case "DYN077": case "DYN078": return "A";
     case "DYN079": case "DYN080": case "DYN081": return "AR";
@@ -333,6 +337,7 @@ function DYNCardCost($cardID)
     //Ninja
     case "DYN050": case "DYN051": case "DYN052": return 1;
     case "DYN053": case "DYN054": case "DYN055": return 1;
+    case "DYN071": return 1;
     case "DYN072": return 1;
     case "DYN076": case "DYN077": case "DYN078": return 1;
     case "DYN079": case "DYN080": case "DYN081": return 1;
@@ -401,6 +406,7 @@ function DYNPitchValue($cardID)
     case "DYN067": return 0;
     case "DYN066": return 2;
     case "DYN069": case "DYN070": return 0;
+    case "DYN071": return 1;
     case "DYN072": return 1;
     case "DYN076": case "DYN079": return 1;
     case "DYN077": case "DYN080": return 2;
@@ -619,6 +625,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       }
       return "Create " . $amount . " Crouching Tigers.";
+    case "DYN071":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DYN072":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W;subtype=Sword");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Sword gain a +1 counter");
