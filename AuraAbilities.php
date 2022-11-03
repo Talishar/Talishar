@@ -264,6 +264,14 @@ function AuraStartTurnAbilities()
       case "UPR218": case "UPR219": case "UPR220":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "DYN033": case "DYN034": case "DYN035":
+        if ($auras[$i] == "DYN033") $amount = 3;
+        else if ($auras[$i] == "DYN034") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " give " . $amount . " health to target hero.");
+        GainHealth($amount, $mainPlayer);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
       case "DYN048":
         WriteLog(CardLink($auras[$i], $auras[$i]) . " create a " . CardLink("DYN065", "DYN065") . " in your hand.");
         AddPlayerHand("DYN065", $mainPlayer, "-");
