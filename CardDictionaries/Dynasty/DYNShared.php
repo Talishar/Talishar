@@ -74,6 +74,7 @@ function DYNHasGoAgain($cardID)
     //Runeblade
     case "DYN188": case "DYN189": case "DYN190": return  true;
     //Illusionist
+    case "DYN212": return true;
     case "DYN230": case "DYN231": case "DYN232": return  true;
     default: return false;
   }
@@ -247,6 +248,7 @@ function DYNCardType($cardID)
     case "DYN200": case "DYN201": case "DYN202": return "A";
     case "DYN206": case "DYN207": case "DYN208": return "A";
     //Illusionist
+    case "DYN212": return "A";
     case "DYN217": return "A";
     case "DYN218": case "DYN219": case "DYN220": return "A";
     case "DYN230": case "DYN231": case "DYN232": return "A";
@@ -256,6 +258,7 @@ function DYNCardType($cardID)
     case "DYN242": return "A";
     case "DYN243": return "T";
     case "DYN244": return "T";
+    case "DYN612": return "-";
     default: return "";
   }
 }
@@ -309,6 +312,7 @@ function DYNCardSubtype($cardID)
     case "DYN192": return "Staff";
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
     //Illusionist
+    case "DYN212": return "Invocation";
     case "DYN217": return "Aura";
     case "DYN218": case "DYN219": case "DYN220": return "Aura";
     //Generic
@@ -318,6 +322,7 @@ function DYNCardSubtype($cardID)
     case "DYN242": return "Item";
     case "DYN243": return "Item";
     case "DYN244": return "Aura";
+    case "DYN612": return "Angel,Ally";
     default:return "";
   }
 }
@@ -375,6 +380,7 @@ function DYNCardCost($cardID)
     case "DYN197": case "DYN198": case "DYN199": return 1;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     //Illusionist
+    case "DYN212": return 2;
     case "DYN217": return 1;
     case "DYN218": case "DYN219": case "DYN220": return 1;
     case "DYN242": return 2;
@@ -451,6 +457,7 @@ function DYNPitchValue($cardID)
     case "DYN197": case "DYN206": return 1;
     case "DYN198": case "DYN207": return 2;
     //Illusionist
+    case "DYN212": return 2;
     case "DYN218": return 1;
     case "DYN219": return 2;
     case "DYN234": return 0;
@@ -459,6 +466,7 @@ function DYNPitchValue($cardID)
     case "DYN242": return 1;
     case "DYN243": return 0;
     case "DYN244": return 0;
+    case "DYN612": return 0;
     default: return 3;
   }
 }
@@ -518,6 +526,7 @@ function DYNBlockValue($cardID)
     case "DYN240": return -1;
     case "DYN241": return -1;
     case "DYN242": case "DYN243": case "DYN244": return -1;
+    case "DYN612": return -1;
     default: return 3;
   }
 }
@@ -564,6 +573,7 @@ function DYNAttackValue($cardID)
     //Runeblade
     case "DYN173": return 6;
     case "DYN492a": return 5;
+    case "DYN612": return 4;
     default: return 0;
   }
 }
@@ -854,6 +864,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN206": case "DYN207": case "DYN208":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "DYN212":
+      //Do invocation
       return "";
     case "DYN230": case "DYN231": case "DYN232":
       if (CanRevealCards($currentPlayer)) {
