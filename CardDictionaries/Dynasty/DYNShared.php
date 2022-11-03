@@ -130,9 +130,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       $subtype = CardSubType($attackID);
       return $subtype == "Sword" || $subtype == "Dagger";
     case "DYN089-UNDER":
-      $character = &GetPlayerCharacter($mainPlayer);
-      $index = FindCharacterIndex($mainPlayer, "DYN492a"); // Todo: not great for future implementations. Need to check if it's still under
-      return $character[$index + 2] >= 1;
+      return $attackID == "DYN492a";
     case "DYN091": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
