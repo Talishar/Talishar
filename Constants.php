@@ -37,7 +37,7 @@ function CharacterPieces()
 
 //0 - Card ID
 //1 - Mods (INT == Intimidated)
-//2 - ??
+//2 - Unique ID?
 function BanishPieces()
 {
   return 3;

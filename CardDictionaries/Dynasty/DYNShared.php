@@ -98,6 +98,9 @@ function DYNEffectAttackModifier($cardID)
     case "DYN007": return 6;
     case "DYN028": return 1;
     case "DYN049": return 1;
+    case "DYN053": return 3;
+    case "DYN054": return 2;
+    case "DYN055": return 1;
     case "DYN076": return NumEquipBlock() > 0 ? 3 : 0;
     case "DYN077": return NumEquipBlock() > 0 ? 2 : 0;
     case "DYN078": return NumEquipBlock() > 0 ? 1 : 0;
@@ -118,6 +121,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN007": return true;
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
     case "DYN049": return $attackID == "DYN065";
+    case "DYN053": case "DYN054": case "DYN055": return $attackID == "DYN065";
     case "DYN076": case "DYN077": case "DYN078":
       $subtype = CardSubType($attackID);
       return $subtype == "Sword" || $subtype == "Dagger";
@@ -172,6 +176,7 @@ function DYNCardType($cardID)
     case "DYN048": return "A";
     case "DYN049": return "A";
     case "DYN050": case "DYN051": case "DYN052": return "AA";
+    case "DYN053": case "DYN054": case "DYN055": return "A";
     case "DYN056": case "DYN057": case "DYN058": return "AA";
     case "DYN062": case "DYN063": case "DYN064": return "A";
     case "DYN065": return "AA";
@@ -259,6 +264,7 @@ function DYNCardSubtype($cardID)
     //Ninja
     case "DYN045": return "Chest";
     case "DYN048": return "Aura";
+    case "DYN053": case "DYN054": case "DYN055": return "Aura";
     //Warrior
     case "DYN066": return "Item";
     case "DYN067": return "Sword";
@@ -315,6 +321,7 @@ function DYNCardCost($cardID)
     case "DYN039": case "DYN040": case "DYN041": return 2;
     //Ninja
     case "DYN050": case "DYN051": case "DYN052": return 1;
+    case "DYN053": case "DYN054": case "DYN055": return 1;
     case "DYN072": return 1;
     case "DYN076": case "DYN077": case "DYN078": return 1;
     case "DYN079": case "DYN080": case "DYN081": return 1;
@@ -371,8 +378,8 @@ function DYNPitchValue($cardID)
     //Ninja
     case "DYN047": return 1;
     case "DYN049": return 2;
-    case "DYN050": case "DYN056": case "DYN062": return 1;
-    case "DYN051": case "DYN057": case "DYN063": return 2;
+    case "DYN050": case "DYN053": case "DYN056": case "DYN062": return 1;
+    case "DYN051": case "DYN054": case "DYN057": case "DYN063": return 2;
     case "DYN065": return 0;
     //Warrior
     case "DYN067": return 0;

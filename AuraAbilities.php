@@ -277,6 +277,21 @@ function AuraStartTurnAbilities()
         AddPlayerHand("DYN065", $mainPlayer, "-");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
+      case "DYN053": case "DYN054": case "DYN055":
+        if ($auras[$i] == "DYN053") $amount = 3;
+        else if ($auras[$i] == "DYN054") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) ." creates a " . CardLink("DYN065", "DYN065") . " and give it +" . $amount);
+        BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer); 
+        $discard = &GetDiscard($mainPlayer);
+        $found = -1;
+        for ($j = count($discard); $j < 0 && $found == -1; $j -= DiscardPieces()) {
+          if ($discard[$j] == "DYN065") $found = $j;
+        }
+        AddDecisionQueue("MZGETUNIQUEID", $mainPlayer, "BANISH-" . $j);
+        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . "," . "BANISH");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
       case "DYN098":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
