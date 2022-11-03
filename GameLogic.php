@@ -643,7 +643,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 //Return 1 if the effect should be removed
 function EffectHitEffect($cardID)
 {
-  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain;
+  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_DamageDealt;
   if (CardType($combatChain[0]) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   switch ($cardID) {
     case "WTR129":
@@ -886,6 +886,12 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("FINDINDICES", $mainPlayer, "CRU026");
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $mainPlayer, "-", 1);
+      break;
+    case "DYN071":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal " . $combatChainState[$CCS_DamageDealt] . " damage.");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
       break;
     case "DYN155":
       if (IsHeroAttackTarget() && SearchCurrentTurnEffects($combatChain[0] . "-AIM", $mainPlayer, true)) {

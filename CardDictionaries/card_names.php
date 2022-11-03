@@ -1241,6 +1241,7 @@ if ($set == "DYN") {
 		case "067": return "Jubeel, Spellbane";
 		case "068": return "Merciless Battleaxe";
 		case "069": case "070": return "Quicksilver Dagger";
+    case "071": return "Cleave";
 		case "072": return "Ironsong Pride";
 		case "076": case "077": case "078": return "Precision Press";
 		case "079": case "080": case "081": return "Puncture";
