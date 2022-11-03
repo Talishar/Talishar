@@ -175,6 +175,7 @@ function DYNCardType($cardID)
     case "DYN090": return "AA";
     case "DYN094": return "A";
     case "DYN098": return "A";
+    case "DYN107": case "DYN108": case "DYN109": return "AA";
     case "DYN110": case "DYN111": case "DYN112": return "A";
     //Assassin
     case "DYN113": case "DYN114": return "C";
@@ -291,6 +292,7 @@ function DYNCardCost($cardID)
     //Mechanologist
     case "DYN090": return 1;
     case "DYN098": return 1;
+    case "DYN107": case "DYN108": case "DYN109": return 0;
     case "DYN110": case "DYN111": case "DYN112": return 1;
     case "DYN119": return 1;
     case "DYN121": return 0;
@@ -351,8 +353,8 @@ function DYNPitchValue($cardID)
     //Mechanologist
     case "DYN090": return 1;
     case "DYN098": return 1;
-    case "DYN110": return 1;
-    case "DYN111": return 2;
+    case "DYN107": case "DYN110": return 1;
+    case "DYN108": case "DYN111": return 2;
     //Assassin
     case "DYN113": case "DYN114": return 0;
     case "DYN115": case "DYN116": return 0;
@@ -456,6 +458,9 @@ function DYNAttackValue($cardID)
     //Mechanologist
     case "DYN088": return 5;
     case "DYN090": return 4;
+    case "DYN107": return 4;
+    case "DYN108": return 3;
+    case "DYN109": return 2;
     case "DYN115": case "DYN116": return 1;
     case "DYN120": return 4;
     case "DYN121": return 3;
@@ -774,7 +779,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_DamageDealt;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_DamageDealt, $CCS_NumBoosted;
   global $chainLinks, $combatChain;
   switch ($cardID) {
     case "DYN047":
@@ -797,6 +802,16 @@ function DYNHitEffect($cardID)
       if (IsHeroAttackTarget() && !SearchAuras("MON104", $mainPlayer)) { //MON104 to be changed to Spellbane Aegis on release
         PlayAura("MON104", $mainPlayer); //MON104 to be changed to Spellbane Aegis on release
       }
+      break;
+    case "DYN107": case "DYN108": case "DYN109":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted]);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+      AddDecisionQueue("MZGETCARDID", $mainPlayer, "-", 1);
+      AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       break;
     case "DYN115":
       if (IsHeroAttackTarget()) {

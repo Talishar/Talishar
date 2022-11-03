@@ -1247,6 +1247,7 @@ if ($set == "DYN") {
     case "090": return "Pulsewave Harpoon";
 		case "094": return "Powder Keg";
     case "098": return "Blessing of Ingenuity";
+    case "107": case "108": case "109": return "Urgent Delivery";
 		case "110": case "111": case "112": return "Hyper Drive";
     //Assassin
 		case "113": return "Arakni, Huntsman";
