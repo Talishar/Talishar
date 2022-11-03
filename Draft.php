@@ -8,8 +8,8 @@ else $isPatron = false;
 
 if (!$isPatron) {
 
-  echo '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' . $adsenseClientId . '"
-       crossorigin="anonymous"></script>';
+  echo '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2488963730697692" crossorigin="anonymous">
+  </script>';
 }
 
 ?>
