@@ -69,6 +69,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $cardToPlay = $arsenal[$index];
         if (!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break; //Card not playable
         $uniqueID = $arsenal[$index + 5];
+        if($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") AddCurrentTurnEffect("AIM", $playerID);
         RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
       }

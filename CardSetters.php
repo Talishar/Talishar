@@ -173,10 +173,6 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
         break;
     }
   }
-  if ($counters > 0 && $cardSubType == "Arrow")
-  {
-    AddCurrentTurnEffect($cardID . "-AIM", $player, $from, $arsenal[count($arsenal) - ArsenalPieces() + 5]);
-  }
 }
 
 function ArsenalEndTurn($player)
@@ -350,7 +346,7 @@ function AddGraveyard($cardID, $player, $from)
     BanishCardForPlayer($cardID, $player, $from, "NA");
     return;
   } else if ($cardID == "CRU007" && $from != "CC") {
-    AddLayer("TRIGGER", $player, $cardID); 
+    AddLayer("TRIGGER", $player, $cardID);
   }
   if ($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166") {
     AddBottomDeck($cardID, $player, $from);
