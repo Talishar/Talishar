@@ -147,7 +147,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   // send initial on-load information if our first time connecting.
-
   if ($lastUpdate == 0) {
     include "MenuFiles/ParseGamefile.php";
     $initialLoad = new stdClass();
@@ -221,17 +220,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentSoulCount = count($theirSoul);
 
   //Display their discard, pitch, deck, and banish
-  // $response->opponentDiscardCount = count($theirDiscard);
-  // $response->opponentDiscardCard = JSONRenderedCard(count($theirDiscard) > 0 ? $theirDiscard[0] : $blankZone);
   $opponentDiscardArray = array();
   for ($i = 0; $i < count($theirDiscard); $i += DiscardPieces()) {
     array_push($opponentDiscardArray, JSONRenderedCard($theirDiscard[$i]));
   }
   $response->opponentDiscard = $opponentDiscardArray;
 
-  // TODO: Might need to put pitch as an array so FE can "stack" them like in the current UI
   $response->opponentPitchCount = $theirResources[0];
-  // $response->opponentPitchCard = JSONRenderedCard((count($theirPitch) > 0 ? $theirPitch[0] : $blankZone));
   $opponentPitchArr = array();
   for ($i = 0; $i < count($theirPitch); $i += PitchPieces()) {
     array_push($opponentPitchArr, JSONRenderedCard($theirPitch[$i]));
@@ -241,8 +236,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentDeckCount = count($theirDeck);
   $response->opponentDeckCard = JSONRenderedCard(count($theirDeck) > 0 ? $TheirCardBack : $blankZone);
 
-  // $response->opponentBanishCount = count($theirBanish);
-  // $response->opponentBanishCard = JSONRenderedCard((count($theirBanish) > 0 ? ($theirBanish[1] == "INT" ? $TheirCardBack : $theirBanish[0]) : $blankZone));
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
     array_push($opponentBanishArr, JSONRenderedCard($theirBanish[$i]));
@@ -305,8 +298,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //My soul count
   $response->playerSoulCount = count($mySoul);
 
-  // $response->playerDiscardCount = count($myDiscard);
-  // $response->playerDiscardCard = JSONRenderedCard(count($myDiscard) > 0 ? $myDiscard[0] : $blankZone);
   $playerDiscardArr = array();
   for ($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
     array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i]));
@@ -315,7 +306,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // TODO: Might need to put pitch as an array so FE can "stack" them like in the current UI
   $response->playerPitchCount = $myResources[0];
-  // $response->playerPitchCard = JSONRenderedCard((count($myPitch) > 0 ? $myPitch[0] : $blankZone));
   $playerPitchArr = array();
   for ($i = 0; $i < count($myPitch); $i += PitchPieces()) {
     array_push($playerPitchArr, JSONRenderedCard($myPitch[$i]));
@@ -324,9 +314,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $response->playerDeckCount = count($myDeck);
   $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
-
-  // $response->playerBanishCount = count($myBanish);
-  // $response->playerBanishCard = JSONRenderedCard((count($myBanish) > 0 ? $myBanish[0] : $blankZone));
 
   // TODO: Highlight those that are playable or not
   $playerBanishArr = array();
@@ -502,7 +489,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   // Array of opponent effects
-  // opponent effects (array of JSONRenderedCard)
   $opponentEffects = array();
   foreach ($opponentEffectsArr as $key => $effectArr) {
     $max = 0;
@@ -520,7 +506,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentEffects = $opponentEffects;
 
   // Array of player effects
-  // my effects (array of JSONRenderedCard)
   $playerEffects = array();
   foreach ($playerEffectsArr as $key => $effectArr) {
     $max = 0;
@@ -538,7 +523,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerEffects = $playerEffects;
 
   // TODO: determine the turnPhase and what corresponds to what.
-  // phase of the turn (for the tracker widget)
+  // Phase of the turn (for the tracker widget)
   $turnPhase = new stdClass();
   $turnPhase->turnPhase = $turn[0];
   if (count($layers) > 0) {
@@ -564,7 +549,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // opponent and player Action Points
   if ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer)) {
-
     $response->opponentAP = 0;
     $response->playerAP = $actionPoints;
   } else {
