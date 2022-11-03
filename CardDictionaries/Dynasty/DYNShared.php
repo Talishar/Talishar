@@ -244,6 +244,7 @@ function DYNCardType($cardID)
     case "DYN241": return "A";
     case "DYN242": return "A";
     case "DYN243": return "T";
+    case "DYN244": return "T";
     case "DYN492a": return "W";
     case "DYN492b": return "E";
     case "DYN492c": return "T";
@@ -279,6 +280,8 @@ function DYNCardSubtype($cardID)
     case "DYN094": return "Item";
     case "DYN098": return "Aura";
     case "DYN110": case "DYN111": case "DYN112": return "Item";
+    case "DYN492b": return "Chest";
+    case "DYN492c": return "Item";
     //Assassin
     case "DYN115": case "DYN116": return "Dagger";
     case "DYN117": return "Legs";
@@ -304,8 +307,7 @@ function DYNCardSubtype($cardID)
     case "DYN241": return "Item";
     case "DYN242": return "Item";
     case "DYN243": return "Item";
-    case "DYN492b": return "Chest";
-    case "DYN492c": return "Item";
+    case "DYN244": return "Aura";
     default:return "";
   }
 }
@@ -401,6 +403,9 @@ function DYNPitchValue($cardID)
     case "DYN098": return 1;
     case "DYN107": case "DYN110": return 1;
     case "DYN108": case "DYN111": return 2;
+    case "DYN492a": return 0;
+    case "DYN492b": return 0;
+    case "DYN492c": return 0;
     //Assassin
     case "DYN113": case "DYN114": return 0;
     case "DYN115": case "DYN116": return 0;
@@ -433,9 +438,7 @@ function DYNPitchValue($cardID)
     case "DYN241": return 1;
     case "DYN242": return 1;
     case "DYN243": return 0;
-    case "DYN492a": return 0;
-    case "DYN492b": return 0;
-    case "DYN492c": return 0;
+    case "DYN244": return 0;
     default: return 3;
   }
 }
@@ -463,6 +466,10 @@ function DYNBlockValue($cardID)
     case "DYN094": return -1;
     //Mechanologist
     case "DYN110": case "DYN111": case "DYN112": return -1;
+    case "DYN492a": return -1;    case "DYN244": return "T";
+
+    case "DYN492b": return 5;
+    case "DYN492c": return -1;
     //Assassin
     case "DYN113": case "DYN114": return -1;
     case "DYN115": case "DYN116": return -1;
@@ -489,10 +496,7 @@ function DYNBlockValue($cardID)
     case "DYN234": return -1;
     case "DYN240": return -1;
     case "DYN241": return -1;
-    case "DYN242": case "DYN243": return -1;
-    case "DYN492a": return -1;
-    case "DYN492b": return 5;
-    case "DYN492c": return -1;
+    case "DYN242": case "DYN243": case "DYN244": return -1;
     default: return 3;
   }
 }

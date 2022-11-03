@@ -390,6 +390,10 @@ function AuraBeginEndPhaseAbilities()
         FrostHexEndTurnAbility($mainPlayer);
         $remove = 1;
         break;
+      case "DYN244":
+        MyDrawCard();
+        $remove = 1;
+        break;
       default:
         break;
     }
