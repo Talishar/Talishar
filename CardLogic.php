@@ -1129,6 +1129,12 @@ function CardDiscarded($player, $discarded, $source = "")
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     }
     if (SearchCurrentTurnEffects("DYN009", $player)) {
+      $discard = &GetDiscard($player);
+      $found = -1;
+      for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
+        if ($discard[$i] == $discarded) $found = $i;
+      }
+      RemoveGraveyard($player, $found);
       BanishCardForPlayer($discarded, $player, "GY", "-", $player);
       AddLayer("TRIGGER", $player, "DYN009");
     }
