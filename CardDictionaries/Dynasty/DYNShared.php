@@ -70,9 +70,9 @@ function DYNHasGoAgain($cardID)
     case "DYN115": case "DYN116": return true;
     //Ranger
     case "DYN155": return true;
-    //
+    //Runeblade
     case "DYN188": case "DYN189": case "DYN190": return  true;
-    //
+    //Illusionist
     case "DYN230": case "DYN231": case "DYN232": return  true;
     default: return false;
   }
@@ -224,7 +224,9 @@ function DYNCardType($cardID)
     case "DYN174": return "A";
     case "DYN175": return "A";
     case "DYN188": case "DYN189": case "DYN190": return "A";
+    //Wizard
     case "DYN192": return "W";
+    case "DYN196": return "I";
     case "DYN200": case "DYN201": case "DYN202": return "A";
     case "DYN206": case "DYN207": case "DYN208": return "A";
     case "DYN230": case "DYN231": case "DYN232": return "A";
@@ -337,6 +339,8 @@ function DYNCardCost($cardID)
     case "DYN173": return 3;
     case "DYN174": return 3;
     case "DYN175": return 3;
+    //Wizard
+    case "DYN196": return 3;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     //Illusionist
     case "DYN217": return 1;
@@ -403,8 +407,12 @@ function DYNPitchValue($cardID)
     case "DYN173": return 2;
     case "DYN174": return 1;
     case "DYN175": return 3;
-    case "DYN188": case "DYN206": case "DYN230": return 1;
-    case "DYN189": case "DYN207": case "DYN231": return 2;
+    case "DYN188": case "DYN230": return 1;
+    case "DYN189": case "DYN231": return 2;
+    //Wizard
+    case "DYN206": return 1;
+    case "DYN207": return 2;
+    //
     case "DYN234": return 0;
     case "DYN240": return 1;
     case "DYN241": return 1;
@@ -454,7 +462,9 @@ function DYNBlockValue($cardID)
     case "DYN174": return 2;
     case "DYN175": return 3;
     case "DYN188": case "DYN189": case "DYN190": return 2;
+    //Wizard
     case "DYN192": return -1;
+    case "DYN196": return -1;
     //Illusionist
     case "DYN217": return 2;
     case "DYN230": case "DYN231": case "DYN232": return 2;
@@ -787,6 +797,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN192":
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
+      return "";
+    case "DYN196":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN206":
     case "DYN207":

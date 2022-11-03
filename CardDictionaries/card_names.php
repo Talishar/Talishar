@@ -1242,7 +1242,7 @@ if ($set == "DYN") {
 		case "072": return "Ironsong Pride";
 		case "076": case "077": case "078": return "Precision Press";
 		case "079": case "080": case "081": return "Puncture";
-    //Mechanologist
+    	//Mechanologist
 		case "088": return "Hanabi Blaster";
 		case "089": return "Galvanic Bender";
 		case "090": return "Pulsewave Harpoon";
@@ -1257,7 +1257,7 @@ if ($set == "DYN") {
 		case "492b": return "Nitro Mechanoid";
 		case "492c": return "Nitro Mechanoid";
 
-    //Assassin
+    	//Assassin
 		case "113": return "Arakni, Huntsman";
 		case "115": case "116": return "Spider's Bite";
 		case "117": return "Blacktek Whisperers";
@@ -1287,7 +1287,9 @@ if ($set == "DYN") {
 		case "174": return "Diabolic Ultimatum";
     	case "175": return "Looming Doom";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
+		//Wizard
 		case "192": return "Surgent Aethertide";
+		case "196": return "Brainstorm";
 		case "200": case "201": case "202": return "Blessing of Aether";
 		case "206": case "207": case "208": return "Sap";
 		//Illusionist
