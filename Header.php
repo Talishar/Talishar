@@ -38,8 +38,7 @@ if (isset($_SESSION["useruid"])) {
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style4.css">
   <link rel="shortcut icon" type="image/png" href="./Images/TeenyCoin.png" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2488963730697692" crossorigin="anonymous">
-  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783" crossorigin="anonymous"></script>
 </head>
 
 <body>

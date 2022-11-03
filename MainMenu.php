@@ -239,7 +239,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <?php
   if (!$isPatron) {
     echo '<div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2488963730697692"
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783"
           crossorigin="anonymous"></script>
       <!-- Unit1 -->
       <ins class="adsbygoogle"
