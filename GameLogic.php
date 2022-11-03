@@ -237,6 +237,11 @@ function DoSurgeEffect($cardID, $player, $target)
       PlayAura("DYN244", $player);
       WriteLog(CardLink($cardID, $cardID) . " surge's ability create a " . CardLink("DYN244", "DYN244") . " token.");
       break;
+    case "DYN197": case "DYN198": case "DYN199":
+      if (CurrentEffectPreventsGoAgain()) break;
+      WriteLog(CardLink($cardID, $cardID) . " gained go again due to its surge's ability");
+      GainActionPoints();
+      break;
     case "DYN206": case "DYN207": case "DYN208":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which permanent remove an energy counter");

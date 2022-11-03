@@ -446,8 +446,9 @@
       case "UPR179": case "UPR180": case "UPR181": case "UPR172": case "UPR132": case "UPR121": case "UPR179": case "UPR180": case "UPR181": return 1;
       //DYN
 		  case "DYN195": return 5;
-      case "DYN206": return 3;
-      case "DYN207": return 2;
+      case "DYN197": return 4;
+      case "DYN198": case "DYN206": return 3;
+      case "DYN199": case "DYN207": return 2;
       case "DYN208": return 1;
       default: return 0;
     }
@@ -487,6 +488,7 @@
     case "UPR179": case "UPR180": case "UPR181":
       return true;
     case "DYN195":
+    case "DYN197": case "DYN198": case "DYN199":
     case "DYN206": case "DYN207": case "DYN208":
       return true;
     default:

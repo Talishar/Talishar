@@ -238,12 +238,13 @@ function DYNCardType($cardID)
     case "DYN192": return "W";
 		case "DYN195": return "A";
     case "DYN196": return "I";
+    case "DYN197": case "DYN198": case "DYN199": return "A";
     case "DYN200": case "DYN201": case "DYN202": return "A";
     case "DYN206": case "DYN207": case "DYN208": return "A";
-    case "DYN230": case "DYN231": case "DYN232": return "A";
-    case "DYN234": return "E";
     //Illusionist
     case "DYN217": return "A";
+    case "DYN230": case "DYN231": case "DYN232": return "A";
+    case "DYN234": return "E";
     case "DYN240": return "A";
     case "DYN241": return "A";
     case "DYN242": return "A";
@@ -361,6 +362,7 @@ function DYNCardCost($cardID)
     //Wizard
 		case "DYN195": return 2;
     case "DYN196": return 3;
+    case "DYN197": case "DYN198": case "DYN199": return 1;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     //Illusionist
     case "DYN217": return 1;
@@ -432,9 +434,9 @@ function DYNPitchValue($cardID)
     case "DYN179": case "DYN188": case "DYN230": return 1;
     case "DYN180": case "DYN189": case "DYN231": return 2;
     //Wizard
-		case "DYN195": return 1;
-    case "DYN206": return 1;
-    case "DYN207": return 2;
+    case "DYN195": return 1;
+    case "DYN197": case "DYN206": return 1;
+    case "DYN198": case "DYN207": return 2;
     //
     case "DYN234": return 0;
     case "DYN240": return 1;
@@ -828,14 +830,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN196":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "DYN206":
-    case "DYN207":
-    case "DYN208":
+    case "DYN197": case "DYN198": case "DYN199":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
-    case "DYN230":
-    case "DYN231":
-    case "DYN232":
+    case "DYN206": case "DYN207": case "DYN208":
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "DYN230": case "DYN231": case "DYN232":
       if (CanRevealCards($currentPlayer)) {
         $deck = GetDeck($currentPlayer);
         if (count($deck) == 0) return "Your deck is empty. Nothing was revealed.";
@@ -1044,6 +1045,7 @@ function HasSurge($cardID)
 {
   switch ($cardID) {
 		case "DYN195": return true;
+    case "DYN197": case "DYN198": case "DYN199": return true;
     case "DYN206": case "DYN207": case "DYN208": return true;
     default: return false;
   }

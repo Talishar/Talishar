@@ -1296,6 +1296,7 @@ if ($set == "DYN") {
 		case "192": return "Surgent Aethertide";
 		case "195": return "Swell Tidings";
 		case "196": return "Brainstorm";
+		case "197": case "198": case "199": return "Aether Quickening";
 		case "200": case "201": case "202": return "Blessing of Aether";
 		case "206": case "207": case "208": return "Sap";
 		//Illusionist
