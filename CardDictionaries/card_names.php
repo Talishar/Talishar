@@ -1302,6 +1302,7 @@ if ($set == "DYN") {
 		case "206": case "207": case "208": return "Sap";
 		//Illusionist
 		case "217": return "Tome of Aeo";
+    case "218": return "Blessing of Spirits";
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		//Generic
 		case "234": return "Crown of Dominion";

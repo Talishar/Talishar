@@ -300,11 +300,19 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "DYN200": case "DYN201": case "DYN202":
-        if ($auras[$i] == "DYN416") $amount = 3;
-        else if ($auras[$i] == "DYN417") $amount = 2;
+        if ($auras[$i] == "DYN200") $amount = 3;
+        else if ($auras[$i] == "DYN201") $amount = 2;
         else $amount = 1;
         WriteLog(CardLink($auras[$i], $auras[$i]) . " gives plus " . $amount . " damage to your next card if it deals arcane damage.");
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN218": case "DYN219": case "DYN220":
+        if ($auras[$i] == "DYN218") $amount = 3;
+        else if ($auras[$i] == "DYN219") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " creates " . $amount . " spectral shield tokens.");
+        PlayAura("MON104", $mainPlayer, $amount);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "DYN217":
@@ -546,6 +554,10 @@ function AuraTakeDamageAbilities($player, $damage, $type)
         $remove = 1;
         break;
       case "DYN217":
+        if ($preventable) $damage -= 1;
+        $remove = 1;
+        break;
+      case "UPR218": case "UPR219": case "UPR220":
         if ($preventable) $damage -= 1;
         $remove = 1;
         break;
