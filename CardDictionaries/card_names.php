@@ -1260,7 +1260,7 @@ if ($set == "DYN") {
 		case "092": return "Construct Nitro Mechanoid";
     	case "093": return "Plasma Mainline";
 		case "094": return "Powder Keg";
-		case "098": return "Blessing of Ingenuity";
+		case "098": case "099": case "100": return "Blessing of Ingenuity";
 		case "101": case "102": case "103": return "Crankshaft";
 		case "104": case "105": case "106": return "Jump Start";
 		case "107": case "108": case "109": return "Urgent Delivery";
