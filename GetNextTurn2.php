@@ -1091,7 +1091,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $permHeight = $cardSize * 2;
   $permTop = intval(GetCharacterBottom("C", "")) - ($cardSize - 14); // - 332;
   $myPermWidth = "calc(50% - 30vw)";
-  echo ("<div style='overflow-y:scroll; position: fixed; bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $myPermWidth . "; max-height:" . $permHeight . "px;'>");
+  echo ("<div style='overflow-y:auto; position: fixed; bottom:" . $permTop . "px; left:" . $permLeft . "px; width:" . $myPermWidth . "; max-height:" . $permHeight . "px;'>");
   DisplayTiles($playerID);
   if (count($myAuras) > 0) {
     for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
