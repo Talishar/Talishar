@@ -68,6 +68,7 @@ function DYNHasGoAgain($cardID)
     case "DYN071": return true;
     case "DYN076": case "DYN077": case "DYN078": return true;
 		case "DYN082": case "DYN083": case "DYN084": return true;
+		case "DYN085": case "DYN086": case "DYN087": return true;
     //Mechanologist
     case "DYN091": return true;
     case "DYN092": return true;
@@ -125,6 +126,9 @@ function DYNEffectAttackModifier($cardID)
     case "DYN082": return 6;
     case "DYN083": return 5;
     case "DYN084": return 4;
+    case "DYN085": return NumEquipBlock() > 0 ? 3 : 0;
+    case "DYN086": return NumEquipBlock() > 0 ? 2 : 0;
+    case "DYN087": return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN089-UNDER": return 1;
     case "DYN091": return 3;
     case "DYN155": return 3;
@@ -155,6 +159,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       $subtype = CardSubType($attackID);
       return $subtype == "Sword" || $subtype == "Dagger";
     case "DYN082": case "DYN083": case "DYN084": return CardSubType($attackID) == "Axe";
+		case "DYN085": case "DYN086": case "DYN087": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
     case "DYN089-UNDER":
       return $attackID == "DYN492a";
     case "DYN091": return $combatChainState[$CCS_IsBoosted];
@@ -225,6 +230,7 @@ function DYNCardType($cardID)
     case "DYN076": case "DYN077": case "DYN078": return "A";
     case "DYN079": case "DYN080": case "DYN081": return "AR";
 		case "DYN082": case "DYN083": case "DYN084": return "A";
+		case "DYN085": case "DYN086": case "DYN087": return "A";
     //Mechanologist
     case "DYN088": return "W";
     case "DYN089": return "E";
@@ -475,8 +481,8 @@ function DYNPitchValue($cardID)
     case "DYN065": return 0;
     //Warrior
     case "DYN067": case "DYN069": case "DYN070": return 0;
-    case "DYN071": case "DYN072": case "DYN073": case "DYN076": case "DYN079": case "DYN082": return 1;
-    case "DYN066": case "DYN074": case "DYN077": case "DYN080": case "DYN083": return 2;
+    case "DYN071": case "DYN072": case "DYN073": case "DYN076": case "DYN079": case "DYN082": case "DYN085": return 1;
+    case "DYN066": case "DYN074": case "DYN077": case "DYN080": case "DYN083": case "DYN086": return 2;
     //Mechanologist
     case "DYN089": return 0;
     case "DYN090": return 1;
@@ -757,6 +763,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else $amount = 1;
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Your next axe attack this turn gains +" . $amount;
+		case "DYN085": case "DYN086": case "DYN087":
+      if ($cardID == "DYN085") $amount = 3;
+      else if ($cardID == "DYN086") $amount = 2;
+      else $amount = 1;
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "Your sword and dagger attacks have piercing " . $amount . " this turn.";
     case "DYN090":
       if(IsHeroAttackTarget())
       {
