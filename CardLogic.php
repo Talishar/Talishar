@@ -873,6 +873,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
+    case "DYN006":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("CHARREADYORPASS", $player, $index);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Beaten_Trackers_to_gain_an_action_point", 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
+      AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+      break;
     case "DYN008":
       WriteLog("Gained a resource from " . CardLink($parameter, $parameter));
       GainResources($player, 1);
@@ -1127,6 +1136,10 @@ function CardDiscarded($player, $discarded, $source = "")
     $character = &GetPlayerCharacter($player);
     if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001" || SearchCurrentTurnEffects("WTR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("WTR002-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("RVD001-SHIYANA", $mainPlayer)) && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
+    }
+    $index = FindCharacterIndex($player, "DYN006");
+    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
+      AddLayer("TRIGGER", $player, $character[$index]);
     }
     if (SearchCurrentTurnEffects("DYN009", $player)) {
       $discard = &GetDiscard($player);

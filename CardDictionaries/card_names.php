@@ -1217,6 +1217,7 @@ if ($set == "DYN") {
 		case "004": return "Dust from the Shadow Crypts";
 		//Brute
  		case "005": return "Rok";
+ 		case "006": return "Beaten Trackers";
 		case "007": return "Savage Beatdown";
     	case "008": return "Skull Crack";
 		case "009": return "Berserk";

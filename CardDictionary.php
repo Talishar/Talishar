@@ -401,26 +401,17 @@ function CardClass($cardID)
       else return "GENERIC";
     case "DYN":
       if ($number == 1) return "WARRIOR,WIZARD";
-      if ($number >= 3 && $number <= 4) return "ILLUSIONIST";
-      if ($number >= 5 && $number <= 20) return "BRUTE";
-
-      if ($number >= 25 && $number <= 41) return "GUARDIAN";
-
+      if ($number >= 2 && $number <= 4) return "ILLUSIONIST";
+      if ($number >= 5 && $number <= 24) return "BRUTE";
+      if ($number >= 25 && $number <= 44) return "GUARDIAN";
       if ($number >= 45 && $number <= 65) return "NINJA";
-
-      if ($number >= 68 && $number <= 70) return "WARRIOR";
-
+      if ($number >= 66 && $number <= 87) return "WARRIOR";
       if ($number >= 88 && $number <= 112) return "MECHANOLOGIST";
-      if ($number >= 113 && $number <= 147) return "ASSASSIN";
-
-      if ($number >= 151 && $number <= 169) return "RANGER";
-
-      if ($number >= 171 && $number <= 190) return "RUNEBLADE";
-
-      if ($number >= 192 && $number <= 208) return "WIZARD";
-
-      if ($number >= 215 && $number <= 232) return "ILLUSIONIST";
-
+      if ($number >= 113 && $number <= 150) return "ASSASSIN";
+      if ($number >= 151 && $number <= 170) return "RANGER";
+      if ($number >= 171 && $number <= 191) return "RUNEBLADE";
+      if ($number >= 192 && $number <= 211) return "WIZARD";
+      if ($number >= 212 && $number <= 233) return "ILLUSIONIST";
       else return "GENERIC";
     default:
       return 0;
@@ -1591,6 +1582,7 @@ function HasBattleworn($cardID)
       return true;
     case "DVR005":
       return true;
+    case "DYN006":
     case "DYN026":
     case "DYN089":
     case "DYN117":
@@ -1892,7 +1884,7 @@ function CharacterDefaultActiveState($cardID)
     case "CRU161": // Metacarpus Node
       return 1;
     case "MON122": // Hooves of the Shadowbeast
-      return 0;
+      return 1;
     case "ELE174": // Mark of Lightning
       return 1;
     case "ELE173": case "MON061": case "MON090":
@@ -1906,6 +1898,8 @@ function CharacterDefaultActiveState($cardID)
     case "UPR004": case "UPR047": case "UPR125":
     case "UPR184": case "UPR185": case "UPR186": // Quell
       return 0;
+    case "DYN006": // Beaten Trackers
+      return 1;
     default:
       return 2;
   }

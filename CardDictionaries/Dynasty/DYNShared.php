@@ -153,10 +153,7 @@ function DYNCardTalent($cardID)
   if ($number <= 0) return "";
   else if ($number >= 1 && $number <= 2) return "ROYAL,DRACONIC";
   else if ($number >= 3 && $number <= 4) return "DRACONIC";
-  else if($number == 66) return "LIGHT";
-  //   else if($number >= 125 && $number <= 150) return "";
-  //   else if($number >= 406 && $number <= 417 ) return "";
-  //   else if($number >= 439 && $number <= 441) return "";
+  else if ($number == 66 || $number == 212 || $number == 612) return "LIGHT";
   else return "NONE";
 }
 
@@ -169,6 +166,7 @@ function DYNCardType($cardID)
     case "DYN004": return "A";
     //Brute
     case "DYN005": return "W";
+    case "DYN006": return "E";
     case "DYN007": return "AA";
     case "DYN008": return "AA";
     case "DYN009": return "A";
@@ -285,6 +283,7 @@ function DYNCardSubtype($cardID)
     case "DYN004": return "Ash";
     //Brute
     case "DYN005": return "Rock";
+    case "DYN006": return "Legs";
     case "DYN026": return "Off-Hand";
     //Guardian
     case "DYN033": case "DYN034": case "DYN035": return "Aura";
@@ -498,6 +497,7 @@ function DYNBlockValue($cardID)
   switch ($cardID) {
     case "DYN001": return -1;
     case "DYN005": return -1;
+    case "DYN006": return 1;
     case "DYN025": return -1;
     case "DYN026": return 3;
     //Guardian
