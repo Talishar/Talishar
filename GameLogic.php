@@ -3473,12 +3473,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
           if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
             if ($currentTurnEffects[$i + 1] != $mainPlayer) {
-              $totalDefense += EffectBlockModifier($currentTurnEffects[$i], "", 0);
+              $rv = 0;
+              switch ($currentTurnEffects[$i]) {
+                case "ELE000-2": $rv -= 1;
+                case "ELE143": $rv -= 1;
+                case "DYN115": case "DYN116": if (CardType($combatChain[$lastResult]) == "AA") $rv -= 1;
+                default: break;
+              }
+              $totalDefense += $rv;
               if ($totalDefense < 0) $totalDefense = 0;
+              //WriteLog("TDef: " . $totalDefense);
             }
           }
         }
       }
+      //WriteLog($parameter . " " . $totalDefense);
       if ($parameter > $totalDefense) $parameter = $totalDefense;
       $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
