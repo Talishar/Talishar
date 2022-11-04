@@ -1225,6 +1225,7 @@ if ($set == "DYN") {
 		case "013": case "014": case "015": return "Blessing of Savagery";
 		case "016": case "017": case "018": return "Madcap Charger";
 		case "019": case "020": case "021": return "Madcap Muscle";
+		case "022": case "021": case "023": return "Rumble Grunting";
 		case "025": return "Yoji, Royal Protector";
 		case "026": return "Seasoned Saviour";
     	//Guardian
