@@ -1222,7 +1222,7 @@ if ($set == "DYN") {
     	case "008": return "Skull Crack";
 		case "009": return "Berserk";
 		case "010": case "011": case "012": return "Reincarnate";
-
+		case "013": case "014": case "015": return "Blessing of Savagery";
 		case "016": case "017": case "018": return "Madcap Charger";
 		case "019": case "020": case "021": return "Madcap Muscle";
 		case "025": return "Yoji, Royal Protector";

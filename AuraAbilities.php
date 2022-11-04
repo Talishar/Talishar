@@ -264,6 +264,14 @@ function AuraStartTurnAbilities()
       case "UPR218": case "UPR219": case "UPR220":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "DYN013": case "DYN014": case "DYN015":
+        if ($auras[$i] == "DYN013") $amount = 3;
+        else if ($auras[$i] == "DYN014") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " give +" . $amount . "power to your next 6 or more base power attack.");
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "ARENA");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
       case "DYN033": case "DYN034": case "DYN035":
         if ($auras[$i] == "DYN033") $amount = 3;
         else if ($auras[$i] == "DYN034") $amount = 2;
