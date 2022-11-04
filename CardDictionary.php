@@ -1898,6 +1898,8 @@ function CharacterDefaultActiveState($cardID)
     case "ELE173": case "MON061": case "MON090":
     case "MON188": case "MON400": // Spellvoid Equipments
     case "MON401": case "MON402":
+    case "DYN236": case "DYN237":
+    case "DYN238": case "DYN239":
       return 1;
     case "EVR037": // Mask of the Pouncing Lynx
       return 1;
@@ -2345,6 +2347,13 @@ function SpellVoidAmount($cardID, $player)
     case "MON401":
       return 1;
     case "MON402":
+      return 1;
+    case "DYN236": 
+		case "DYN237": 
+		case "DYN238":
+		case "DYN239":
+      return 1;
+		case "DYN246": 
       return 1;
   }
   return 0;

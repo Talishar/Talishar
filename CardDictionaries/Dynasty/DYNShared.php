@@ -262,11 +262,16 @@ function DYNCardType($cardID)
     case "DYN218": case "DYN219": case "DYN220": return "A";
     case "DYN230": case "DYN231": case "DYN232": return "A";
     case "DYN234": return "E";
+    case "DYN236": return "E";
+		case "DYN237": return "E";
+		case "DYN238": return "E";
+		case "DYN239": return "E";
     case "DYN240": return "A";
     case "DYN241": return "A";
     case "DYN242": return "A";
     case "DYN243": return "T";
     case "DYN244": return "T";
+		case "DYN246": return "T";
     case "DYN612": return "-";
     default: return "";
   }
@@ -326,11 +331,16 @@ function DYNCardSubtype($cardID)
     case "DYN218": case "DYN219": case "DYN220": return "Aura";
     //Generic
     case "DYN234": return "Head";
+    case "DYN236": return "Head";
+		case "DYN237": return "Chest";
+		case "DYN238": return "Gloves";
+		case "DYN239": return "Legs";
     case "DYN240": return "Item";
     case "DYN241": return "Item";
     case "DYN242": return "Item";
     case "DYN243": return "Item";
     case "DYN244": return "Aura";
+		case "DYN246": return "Aura";
     case "DYN612": return "Angel,Ally";
     default:return "";
   }
@@ -540,9 +550,14 @@ function DYNBlockValue($cardID)
     case "DYN230": case "DYN231": case "DYN232": return 2;
     //Generic
     case "DYN234": return -1;
+    case "DYN236": return 0;
+		case "DYN237": return 0;
+		case "DYN238": return 0;
+		case "DYN239": return 0;
     case "DYN240": return -1;
     case "DYN241": return -1;
     case "DYN242": case "DYN243": case "DYN244": return -1;
+		case "DYN246": return -1;
     case "DYN612": return -1;
     default: return 3;
   }
@@ -989,8 +1004,8 @@ function DYNHitEffect($cardID)
       BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
       break;
     case "DYN067":
-      if (IsHeroAttackTarget() && !SearchAuras("MON104", $mainPlayer)) { //MON104 to be changed to Spellbane Aegis on release
-        PlayAura("MON104", $mainPlayer); //MON104 to be changed to Spellbane Aegis on release
+      if (IsHeroAttackTarget() && !SearchAuras("DYN246", $mainPlayer)) { 
+        PlayAura("DYN246", $mainPlayer); 
       }
       break;
     case "DYN107": case "DYN108": case "DYN109":
