@@ -308,7 +308,6 @@ function HasTakenDamage($player)
 
 function ArsenalHasFaceDownCard($player)
 {
-  global $CS_ArsenalFacing;
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($arsenal[$i + 1] == "DOWN") return true;
@@ -318,10 +317,18 @@ function ArsenalHasFaceDownCard($player)
 
 function ArsenalHasFaceUpCard($player)
 {
-  global $CS_ArsenalFacing;
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($arsenal[$i + 1] == "UP") return true;
+  }
+  return false;
+}
+
+function ArsenalHasFaceUpArrowCard($player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "UP") return true;
   }
   return false;
 }

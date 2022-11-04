@@ -435,6 +435,19 @@ function GetArsenalFaceDownIndices($player)
   return $indices;
 }
 
+function GetArsenalFaceUpIndices($player)
+{
+  $arsenal = &GetArsenal($player);
+  $indices = "";
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 1] == "UP") {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function GetEquipmentIndices($player, $maxBlock = -1, $onCombatChain = false)
 {
   $character = &GetPlayerCharacter($player);
