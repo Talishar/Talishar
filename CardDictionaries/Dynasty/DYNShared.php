@@ -171,6 +171,7 @@ function DYNCardType($cardID)
     //Guardian
     case "DYN028": return "A";
     case "DYN033": case "DYN034": case "DYN035": return "A";
+		case "DYN036": case "DYN037": case "DYN038": return "DR";
     case "DYN039": case "DYN040": case "DYN041": return "A";
     //Ninja
     case "DYN045": return "E";
@@ -336,6 +337,7 @@ function DYNCardCost($cardID)
     case "DYN028": return 3;
     //Guardian
     case "DYN033": case "DYN034": case "DYN035": return 1;
+		case "DYN036": case "DYN037": case "DYN038": return 6;
     case "DYN039": case "DYN040": case "DYN041": return 2;
     //Ninja
     case "DYN050": case "DYN051": case "DYN052": return 1;
@@ -398,8 +400,8 @@ function DYNPitchValue($cardID)
     case "DYN008":  case "DYN010": return 1;
     case "DYN009":  case "DYN011": return 2;
     //Guardian
-    case "DYN033": case "DYN039": return 1;
-    case "DYN034": case "DYN040": return 2;
+    case "DYN033": case "DYN036": case "DYN039": return 1;
+    case "DYN034": case "DYN037": case "DYN040": return 2;
     //Ninja
     case "DYN047": return 1;
     case "DYN049": return 2;
@@ -476,8 +478,12 @@ function DYNBlockValue($cardID)
     case "DYN005": return -1;
     case "DYN025": return -1;
     case "DYN026": return 3;
-    case "DYN045": return 1;
+    //Guardian
+		case "DYN036": return 7;
+    case "DYN037": return 6;
+    case "DYN038": return 5;
     //Ninja
+    case "DYN045": return 1;
     case "DYN050": case "DYN051": case "DYN052": return 2;
     case "DYN062": case "DYN063": case "DYN064": return 2;
     case "DYN065": return -1;
@@ -621,7 +627,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
       AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
-      return "Remove a -1 counter from a Guardian Off-hand with " . $maxDef . " or less base defense.";
+      return "Remove a -1 counter from a Guardian Off-Hand with " . $maxDef . " or less base defense.";
     case "DYN049":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddPlayerHand("DYN065", $currentPlayer, "-");

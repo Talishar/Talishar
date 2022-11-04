@@ -523,7 +523,7 @@ function ParseDraftFab($deck, $filename)
             if($legsSideboard != "") $legsSideboard .= " ";
             $legsSideboard .= $cardID;
             break;
-          case "Off-hand":
+          case "Off-Hand":
             if($offhandSideboard != "") $offhandSideboard .= " ";
             $offhandSideboard .= $cardID;
             break;
