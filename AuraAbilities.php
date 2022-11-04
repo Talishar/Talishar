@@ -296,8 +296,21 @@ function AuraStartTurnAbilities()
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . "," . "BANISH");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
-      case "DYN098":
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+      case "DYN098": case "DYN099": case "DYN100":
+        if ($auras[$i] == "DYN098") $amount = 3;
+        else if ($auras[$i] == "DYN099") $amount = 2;
+        else $amount = 1;
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        for ($i = 0; $i < $amount; ++$i) {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+          AddDecisionQueue("MZGETCARDID", $mainPlayer, "-", 1);
+          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
+          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        }
         break;
 		  case "DYN179": case "DYN180": case "DYN181":
         if ($auras[$i] == "DYN179") $amount = 3;

@@ -220,7 +220,7 @@ function DYNCardType($cardID)
     case "DYN092": return "A";
     case "DYN093": return "A";
     case "DYN094": return "A";
-    case "DYN098": return "A";
+    case "DYN098": case "DYN099": case "DYN100": return "A";
 		case "DYN101": case "DYN102": case "DYN103": return "AA";
 		case "DYN104": case "DYN105": case "DYN106": return "AA";
     case "DYN107": case "DYN108": case "DYN109": return "AA";
@@ -319,7 +319,7 @@ function DYNCardSubtype($cardID)
     case "DYN092": return "Construct";
     case "DYN093": return "Item";
     case "DYN094": return "Item";
-    case "DYN098": return "Aura";
+    case "DYN098": case "DYN099": case "DYN100": return "Aura";
     case "DYN110": case "DYN111": case "DYN112": return "Item";
     case "DYN492b": return "Chest";
     case "DYN492c": return "Item";
@@ -390,7 +390,7 @@ function DYNCardCost($cardID)
     case "DYN091": return 0;
     case "DYN092": return 4;
     case "DYN093": return 2;
-    case "DYN098": return 1;
+    case "DYN098": case "DYN099": case "DYN100": return 1;
 		case "DYN101": case "DYN102": case "DYN103": return 2;
 		case "DYN104": case "DYN105": case "DYN106":
       $numHypers = 0;
@@ -469,9 +469,8 @@ function DYNPitchValue($cardID)
     case "DYN091": return 1;
     case "DYN092": return 2;
     case "DYN093": return 1;
-    case "DYN098": return 1;
-    case "DYN101": case "DYN104": case "DYN107": case "DYN110": return 1;
-    case "DYN102": case "DYN105": case "DYN108": case "DYN111": return 2;
+    case "DYN098": case "DYN101": case "DYN104": case "DYN107": case "DYN110": return 1;
+    case "DYN099": case "DYN102": case "DYN105": case "DYN108": case "DYN111": return 2;
     case "DYN492a": return 0;
     case "DYN492b": return 0;
     case "DYN492c": return 0;
