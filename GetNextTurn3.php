@@ -629,7 +629,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
       if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
     }
-    $playerInput->popup = CreatePopupAPI("OPT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
+    $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
   }
 
   if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID
@@ -644,7 +644,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $turn[0] == "CHOOSETOPOPPONENT"
       ) array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $options[$i], "20px"));
     }
-    $playerInput->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
+    $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
   }
 
   if ($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID) {
@@ -657,7 +657,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 12, $i, "20px"));
       array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 13, $i, "20px"));
     }
-    $playerInput->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $cardsArray);
+    $playerInputPopup->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $cardsArray);
   }
 
   if (($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {
@@ -751,11 +751,71 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
       array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $playerBorderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $playerBorderColor));
     }
-    $playerInput->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, cardsArray: $cardsMultiZone);
+    $playerInputPopup->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, cardsArray: $cardsMultiZone);
   }
 
   if (($turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK") && $turn[1] == $playerID) {
-    $playerInput->popup = ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
+  }
+
+  if ($turn[0] == "CHOOSEBANISH" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2], 16, "Choose a card from your banish", BanishPieces());
+  }
+
+  if (($turn[0] == "MAYCHOOSEARSENAL" || $turn[0] == "CHOOSEARSENAL" || $turn[0] == "CHOOSEARSENALCANCEL") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2], 16, "Choose a card from your arsenal", ArsenalPieces());
+  }
+
+  if (($turn[0] == "CHOOSEPERMANENT" || $turn[0] == "MAYCHOOSEPERMANENT") && $turn[1] == $playerID) {
+    $myPermanents = &GetPermanents($playerID);
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($myPermanents, $turn[2], 16, GetPhaseHelptext(), PermanentPieces());
+  }
+
+  if (($turn[0] == "CHOOSETHEIRHAND") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent hand");
+  }
+
+  if (($turn[0] == "CHOOSETHEIRAURA") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($theirAuras, $turn[2], 16, "Choose one of your opponent auras");
+  }
+
+  if (($turn[0] == "CHOOSEDISCARD" || $turn[0] == "MAYCHOOSEDISCARD" || $turn[0] == "CHOOSEDISCARDCANCEL") && $turn[1] == $playerID) {
+    $caption = "Choose a card from your discard";
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2], 16, $caption);
+  }
+
+  if (($turn[0] == "MAYCHOOSETHEIRDISCARD") && $turn[1] == $playerID
+  ) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($theirDiscard, $turn[2], 16, "Choose a card from your opponent discard");
+  }
+
+  if (($turn[0] == "CHOOSECOMBATCHAIN" || $turn[0] == "MAYCHOOSECOMBATCHAIN") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($combatChain, $turn[2], 16, "Choose a card from the combat chain", CombatChainPieces());
+  }
+
+  if ($turn[0] == "CHOOSECHARACTER" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2], 16, "Choose a card from your character/equipment", CharacterPieces());
+  }
+
+  if ($turn[0] == "CHOOSETHEIRCHARACTER" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2], 16, "Choose a card from your opponent character/equipment", CharacterPieces());
+  }
+
+  if ($turn[0] == "CHOOSETHEIRITEM" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($theirItems, $turn[2], 16, "Choose one of your opponent items", ItemPieces());
   }
 
   $playerInputPopup->buttons = $playerInputButtons;
