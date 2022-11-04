@@ -1253,6 +1253,7 @@ if ($set == "DYN") {
 		case "069": case "070": return "Quicksilver Dagger";
     	case "071": return "Cleave";
 		case "072": return "Ironsong Pride";
+		case "073": case "074": case "075": return "Blessing of Steel";
 		case "076": case "077": case "078": return "Precision Press";
 		case "079": case "080": case "081": return "Puncture";
     	//Mechanologist
