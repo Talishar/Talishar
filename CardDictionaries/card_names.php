@@ -1231,6 +1231,7 @@ if ($set == "DYN") {
     	//Guardian
 		case "027": return "Steelbraid Buckler";
     	case "028": return "Buckle";
+		case "030": case "031": case "032": return "Shield Bash";
 		case "033": case "034": case "035": return "Blessing of Patience";
 		case "036": case "037": case "038": return "Shield Wall";
 		case "039": case "040": case "041": return "Reinforce Steel";
