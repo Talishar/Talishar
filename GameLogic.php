@@ -5591,6 +5591,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "PASSTAKEDAMAGE":
+      if($lastResult == "PASS") DamageTrigger($player, $parameter, "DAMAGE");
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

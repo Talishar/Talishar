@@ -191,6 +191,7 @@ function DYNCardType($cardID)
     //Guardian
     case "DYN027": return "E";
     case "DYN028": return "A";
+    case "DYN030": case "DYN031": case "DYN032": return "DR";
     case "DYN033": case "DYN034": case "DYN035": return "A";
 		case "DYN036": case "DYN037": case "DYN038": return "DR";
     case "DYN039": case "DYN040": case "DYN041": return "A";
@@ -377,6 +378,7 @@ function DYNCardCost($cardID)
     case "DYN019": case "DYN020": case "DYN021": return 3;
     case "DYN028": return 3;
     //Guardian
+    case "DYN030": case "DYN031": case "DYN032": return 3;
     case "DYN033": case "DYN034": case "DYN035": return 1;
 		case "DYN036": case "DYN037": case "DYN038": return 6;
     case "DYN039": case "DYN040": case "DYN041": return 2;
@@ -448,8 +450,8 @@ function DYNPitchValue($cardID)
     case "DYN008":  case "DYN010": case "DYN013": case "DYN016": case "DYN019": case "DYN022": return 1;
     case "DYN009":  case "DYN011": case "DYN014": case "DYN017": case "DYN020": case "DYN021": return 2;
     //Guardian
-    case "DYN033": case "DYN036": case "DYN039": return 1;
-    case "DYN034": case "DYN037": case "DYN040": return 2;
+    case "DYN030": case "DYN033": case "DYN036": case "DYN039": return 1;
+    case "DYN031": case "DYN034": case "DYN037": case "DYN040": return 2;
     //Ninja
     case "DYN047": return 1;
     case "DYN049": return 2;
@@ -529,8 +531,9 @@ function DYNBlockValue($cardID)
     //Guardian
     case "DYN027": return 2;
 		case "DYN036": return 7;
-    case "DYN037": return 6;
-    case "DYN038": return 5;
+    case "DYN030": case "DYN037": return 6;
+    case "DYN031": case "DYN038": return 5;
+    case "DYN032": return 4;
     //Ninja
     case "DYN045": return 1;
     case "DYN050": case "DYN051": case "DYN052": return 2;
@@ -639,7 +642,7 @@ function DYNAttackValue($cardID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CCS_CurrentAttackGainedGoAgain;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CCS_CurrentAttackGainedGoAgain, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch ($cardID) {
@@ -688,6 +691,19 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN028":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "DYN030": case "DYN031": case "DYN032":
+      if(!IsAllyAttacking()){
+        $index = SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN");
+        if ($index != ""){
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Discard a card or PASS and take 1 damage");
+          AddDecisionQueue("MAYCHOOSEHAND", $otherPlayer, "<-", 1);
+          AddDecisionQueue("REMOVEMYHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("DISCARDCARD", $otherPlayer, "HAND", 1);
+          AddDecisionQueue("PASSTAKEDAMAGE", $otherPlayer, 1);
+        }
+      }
       return "";
     case "DYN039":
     case "DYN040":

@@ -2024,7 +2024,7 @@ function RepriseActive()
 {
   global $currentPlayer, $mainPlayer;
   if ($currentPlayer == $mainPlayer) return CachedNumDefendedFromHand() > 0;
-  else return false;
+  else return 0;
 }
 
 function HasCombo($cardID)
