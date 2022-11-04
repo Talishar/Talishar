@@ -369,13 +369,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
         array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
       } else {
-        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         else $playable = false;
-        $border = CardBorderColor($myHand[$i], "HAND", $playable);
-        $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
+        $border = CardBorderColor($myArsenal[$i], "HAND", $playable);
+        $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
         $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-        array_push($myArse, JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction));
+        array_push($myArse, JSONRenderedCard(cardNumber: $myArsenal[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction));
       }
     }
   }
@@ -534,19 +534,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // Do we have priority?
   $response->havePriority = $currentPlayer == $playerID ? true : false;
 
-  // TODO: communicate this to the player
-  $activePlayerMustMakeAChoice = false;
-  // the player has a window and needs to decide something.
-  if ($activePlayerMustMakeAChoice) {
-    $selectionWindow = new stdClass();
-    $selectionWindow->text = "You played an art of war you must select a bunch of stuff";
-    $selectionWindow->isMultipleSelection = true;
-    // this array could contain an array of strings. or an array of JSONCardObjects I guess.
-    $selectionWindow->options = array('+1{{atk}} and +1{{def}} until end of turn', 'banish a card draw 2', 'play a defending card from Arsenal (aka you\'re losing)', 'Next attack you play gains **go again**');
-    $response->selectionWindow = $selectionWindow;
-  }
-  $response->youMustMakeAChoice = $activePlayerMustMakeAChoice;
-
   // opponent and player Action Points
   if ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer)) {
     $response->opponentAP = 0;
@@ -567,6 +554,49 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Turn number
   $response->turnNo = $currentTurn;
 
+  // ******************************
+  // * PLAYER MUST CHOOSE A THING *
+  // ******************************
+
+  $playerInputPopup = new stdClass();
+  $playerInputButtons = array();
+  $playerInputPopup->active = false;
+
+  // Arcane damage popup
+  if (($turn[0] == "CHOOSEARCANE")) {
+    // do nothing
+  }
+
+  // Do arcane separately
+  if (($turn[0] == "BUTTONINPUT" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $options = explode(",", $turn[2]);
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
+    }
+    $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, GetPhaseHelptext(), 1, "");
+  }
+
+  if ($turn[0] == "YESNO" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
+    array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    else $caption = "Choose " . TypeToPlay($turn[0]);
+    $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, $caption, 1, "");
+  }
+
+  if ($turn[0] == "PDECK" && $currentPlayer == $playerID) {
+    $pitchingCards = array();
+    for ($i = 0; $i < count($myPitch); $i += 1) {
+      array_push($pitchingCards, JSONRenderedCard($myPitch[$i], "concat", $cardSize, 6, 1));
+    }
+    echo CreatePopup("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, $content);
+  }
+
+
+  $playerInputPopup->buttons = $playerInputButtons;
+  $response->playerInputPopUp = $playerInputPopup;
   // encode and send it out
   echo json_encode($response);
   exit;
