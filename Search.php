@@ -400,6 +400,19 @@ function SearchBanishForCardMulti($playerID, $card1, $card2="", $card3="")
   return $cardList;
 }
 
+function SearchItemsForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
+{
+  $cardList = "";
+  $items = GetItems($playerID);
+  for ($i = 0; $i < count($items); ++$i) {
+    if ($items[$i] == $card1 || $items[$i] == $card2 || $items[$i] == $card3) {
+      if ($cardList != "") $cardList .= ",";
+      $cardList .= $i;
+    }
+  }
+  return $cardList;
+}
+
 function SearchHighestAttackDefended()
 {
   global $combatChain, $defPlayer;
@@ -865,6 +878,12 @@ function SearchMultizone($player, $searches)
                 else if(count($cards) == 2) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1]);
                 else if(count($cards) == 3) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1], $cards[2]);
                 else WriteLog("Banish multizone search only supports 3 cards -- report bug.");
+                break;
+              case "MYITEMS":
+                if (count($cards) == 1) $searchResult = SearchItemsForCardMulti($player, $cards[0]);
+                else if (count($cards) == 2) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1]);
+                else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1], $cards[2]);
+                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
                 break;
               default: break;
             }

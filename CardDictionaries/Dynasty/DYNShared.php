@@ -221,6 +221,7 @@ function DYNCardType($cardID)
     case "DYN093": return "A";
     case "DYN094": return "A";
     case "DYN098": return "A";
+		case "DYN101": case "DYN102": case "DYN103": return "AA";
 		case "DYN104": case "DYN105": case "DYN106": return "AA";
     case "DYN107": case "DYN108": case "DYN109": return "AA";
     case "DYN110": case "DYN111": case "DYN112": return "A";
@@ -390,6 +391,7 @@ function DYNCardCost($cardID)
     case "DYN092": return 4;
     case "DYN093": return 2;
     case "DYN098": return 1;
+		case "DYN101": case "DYN102": case "DYN103": return 2;
 		case "DYN104": case "DYN105": case "DYN106":
       $numHypers = 0;
       $numHypers += CountItem("ARC036", $currentPlayer);
@@ -468,8 +470,8 @@ function DYNPitchValue($cardID)
     case "DYN092": return 2;
     case "DYN093": return 1;
     case "DYN098": return 1;
-    case "DYN104": case "DYN107": case "DYN110": return 1;
-    case "DYN105": case "DYN108": case "DYN111": return 2;
+    case "DYN101": case "DYN104": case "DYN107": case "DYN110": return 1;
+    case "DYN102": case "DYN105": case "DYN108": case "DYN111": return 2;
     case "DYN492a": return 0;
     case "DYN492b": return 0;
     case "DYN492c": return 0;
@@ -606,10 +608,10 @@ function DYNAttackValue($cardID)
     case "DYN079": return 3 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
-      //Mechanologist
-    case "DYN088": case "DYN104": return 5;
-    case "DYN090": case "DYN105": case "DYN107": return 4;
-    case "DYN108": case "DYN106": return 3;
+    //Mechanologist
+    case "DYN088": case "DYN101": case "DYN104": return 5;
+    case "DYN090": case "DYN102": case "DYN105": case "DYN107": return 4;
+    case "DYN103": case "DYN106": case "DYN108": return 3;
     case "DYN109": return 2;
     //Assassin
     case "DYN115": case "DYN116": return 1;

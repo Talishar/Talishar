@@ -286,6 +286,7 @@ function HasBoost($cardID)
     case "EVR073": case "EVR074": case "EVR075":
     case "EVR079": case "EVR080": case "EVR081":
     case "DYN090":
+		case "DYN101": case "DYN102": case "DYN103":
 		case "DYN104": case "DYN105": case "DYN106":
       return true;
     default:
@@ -313,12 +314,7 @@ function ItemBoostEffects()
     switch ($items[$i]) {
       case "ARC036":
       case "DYN110": case "DYN111": case "DYN112":
-        if ($items[$i + 2] == 2) {
-          --$items[$i + 1];
-          $items[$i + 2] = 1;
-          GainResources($currentPlayer, 1);
-          if ($items[$i + 1] <= 0) DestroyMyItem($i);
-        }
+        AddLayer("TRIGGER", $currentPlayer, $items[$i], $i);
         break;
       case "EVR072":
         if ($items[$i + 2] == 2) {

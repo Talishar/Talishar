@@ -25,6 +25,10 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
   }
+  if (($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
+    WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
+    AddLayer("TRIGGER", $player, $cardID);
+  }
   //Do effects that change where it goes, or banish it if not
   if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
     PutItemIntoPlay($cardID);

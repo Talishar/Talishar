@@ -918,18 +918,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       AddDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
       break;
-    case "DYN098":
-      DestroyAuraUniqueID($player, $uniqueID);
-      for($i=0; $i<3; ++$i)
-      {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to put into play");
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("MZGETCARDID", $player, "-", 1);
-        AddDecisionQueue("PUTPLAY", $player, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, "{0}", 1);
-        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+		case "DYN101": case "DYN102": case "DYN103":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:cardID=ARC036;cardID=DYN111;cardID=DYN112");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to put a steam counter on");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      break;
+    case "ARC036": case "DYN110":
+    case "DYN111": case "DYN112":
+      if ($items[$target + 2] == 2) {
+        --$items[$target + 1];
+        $items[$target + 2] = 1;
+        GainResources($player, 1);
+        if ($items[$target + 1] <= 0) DestroyMyItem($target);
       }
       break;
     case "DYN113": case "DYN114":
