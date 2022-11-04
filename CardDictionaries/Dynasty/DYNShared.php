@@ -659,12 +659,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} card(s)", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
         AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
+        AddDecisionQueue("REVEALHANDCARDSRETURNLASTRESULT", $otherPlayer, "<-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card", 1);
+        AddDecisionQueue("PULSECHECKVALIDCARDS", $otherPlayer, $combatChainState[$CCS_NumBoosted], 1);
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("HANDCARD", $otherPlayer, "-");
         AddDecisionQueue("BLOCKVALUE", $currentPlayer, "-");
-        AddDecisionQueue("GREATERTHANPASS", $currentPlayer, $combatChainState[$CCS_NumBoosted], 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDCARDTOCHAIN", $otherPlayer, "HAND", 1);
