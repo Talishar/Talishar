@@ -1312,11 +1312,16 @@ if ($set == "DYN") {
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		//Generic
 		case "234": return "Crown of Dominion";
+		case "236": return "Spell Fray Tiara";
+		case "237": return "Spell Fray Cloack";
+		case "238": return "Spell Fray Gloves";
+		case "239": return "Spell Fray Leggings";
     	case "240": return "Imperial Edict";
     	case "241": return "Imperial Ledger";
 		case "242": return "Imperial Warhorn";
 		case "243": return "Gold";
 		case "244": return "Ponder";
+		case "246": return "Spellbane Aegis";
 		default: return "Name not populated - please report bug";
 	}
 }
