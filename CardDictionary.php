@@ -1434,6 +1434,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DYN005": return count(GetHand($player)) != 0;
     case "DYN007":
       return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
+    case "DYN022": case "DYN021": case "DYN023":
+      return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     case "DYN088":
       $char = &GetPlayerCharacter($player);
       return $char[$index + 2] < 2;
