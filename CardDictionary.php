@@ -1663,6 +1663,9 @@ function RequiresDiscard($cardID)
     case "DYN016":
     case "DYN017":
     case "DYN018":
+    case "DYN019":
+    case "DYN020":
+    case "DYN021":
       return true;
     default:
       return false;
