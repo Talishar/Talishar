@@ -3466,8 +3466,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $defense = BlockValue($combatChain[$lastResult]);
       if ($defense > 0) $totalDefense += $defense;
       if (CardType($combatChain[$lastResult]) == "E") {
-        $index = FindDefCharacter($combatChain[$lastResult]);
-        $defense += $defCharacter[$index + 4];
+        $character = &GetPlayerCharacter($defPlayer);
+        $index = FindCharacterIndex($defPlayer, $combatChain[$lastResult]);
+        $totalDefense += $character[$index + 4];
       }
       else {
         for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
@@ -3482,12 +3483,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               }
               $totalDefense += $rv;
               if ($totalDefense < 0) $totalDefense = 0;
-              //WriteLog("TDef: " . $totalDefense);
             }
           }
         }
       }
-      //WriteLog($parameter . " " . $totalDefense);
+      //WriteLog($parameter . " " . $totalDefense); //Uncomment to test Shred
       if ($parameter > $totalDefense) $parameter = $totalDefense;
       $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
