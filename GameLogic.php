@@ -5574,6 +5574,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return ($newIndices != "" ? $newIndices : "PASS");
+    case "MZADDSTEAMCOUNTER":
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $params = explode(",", $parameter);
+      for ($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch ($mzIndex[0]) {
+          case "MYITEMS":
+            $items = &GetItems($player);
+            $items[$mzIndex[1] + 1 ] += 1;
+            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " gained a steam counter.");
+            break;
+          default:
+            break;
+        }
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
