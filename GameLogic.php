@@ -2012,8 +2012,8 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "DYN117": case "DYN118":
-      if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2) {
-        $discardIndex = SearchDiscardForCard($mainPlayer, $mainCharacter[$index]);
+      $discardIndex = SearchDiscardForCard($mainPlayer, $mainCharacter[$index]);
+      if($mainCharacter[$index+1] == 0 && CountItem("EVR195", $mainPlayer) >= 2 && $discardIndex != "") {
         AddDecisionQueue("COUNTSILVERS", $mainPlayer, "");
         AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to pay 2 silvers to equip " . CardLink($mainCharacter[$index], $mainCharacter[$index]) . "?", 1);
