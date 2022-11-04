@@ -630,6 +630,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (ComboActive() ? 2 : 0);
     case "DYN056": case "DYN057": case "DYN058":
       return (ComboActive() ? 1 : 0);
+    case "DYN059": case "DYN060": case "DYN061": 
+      return (ComboActive() ? 4 : 0);
     case "DYN115": case "DYN116":
       return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN148": return 3;

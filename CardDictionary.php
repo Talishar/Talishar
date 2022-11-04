@@ -2068,6 +2068,7 @@ function HasCombo($cardID)
       return true;
     case "DYN047":
     case "DYN056": case "DYN057": case "DYN058":
+    case "DYN059": case "DYN060": case "DYN061":
       return true;
   }
   return false;
@@ -2132,9 +2133,8 @@ function ComboActive($cardID = "")
     case "EVR043":
       return $LA == "EVR041" || $LA == "EVR042" || $LA == "EVR043";
     case "DYN047":
-    case "DYN056":
-    case "DYN057":
-    case "DYN058":
+    case "DYN056": case "DYN057": case "DYN058":
+    case "DYN059": case "DYN060": case "DYN061":
       return $LA == "DYN065";
   }
   return false;
