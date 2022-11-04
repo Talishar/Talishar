@@ -221,6 +221,7 @@ function DYNCardType($cardID)
     case "DYN093": return "A";
     case "DYN094": return "A";
     case "DYN098": return "A";
+		case "DYN104": case "DYN105": case "DYN106": return "AA";
     case "DYN107": case "DYN108": case "DYN109": return "AA";
     case "DYN110": case "DYN111": case "DYN112": return "A";
     case "DYN492a": return "W";
@@ -361,6 +362,7 @@ function DYNCardSubtype($cardID)
 
 function DYNCardCost($cardID)
 {
+  global $currentPlayer;
   switch ($cardID) {
     //Brute
     case "DYN007": return 3;
@@ -388,6 +390,12 @@ function DYNCardCost($cardID)
     case "DYN092": return 4;
     case "DYN093": return 2;
     case "DYN098": return 1;
+		case "DYN104": case "DYN105": case "DYN106":
+      $numHypers = 0;
+      $numHypers += CountItem("ARC036", $currentPlayer);
+      $numHypers += CountItem("DYN111", $currentPlayer);
+      $numHypers += CountItem("DYN112", $currentPlayer);
+      return $numHypers > 0 ? 1 : 2;
     case "DYN107": case "DYN108": case "DYN109": return 0;
     case "DYN110": case "DYN111": case "DYN112": return 1;
     case "DYN119": return 1;
@@ -460,8 +468,8 @@ function DYNPitchValue($cardID)
     case "DYN092": return 2;
     case "DYN093": return 1;
     case "DYN098": return 1;
-    case "DYN107": case "DYN110": return 1;
-    case "DYN108": case "DYN111": return 2;
+    case "DYN104": case "DYN107": case "DYN110": return 1;
+    case "DYN105": case "DYN108": case "DYN111": return 2;
     case "DYN492a": return 0;
     case "DYN492b": return 0;
     case "DYN492c": return 0;
@@ -598,17 +606,16 @@ function DYNAttackValue($cardID)
     case "DYN079": return 3 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
-    //Mechanologist
-    case "DYN088": return 5;
-    case "DYN090": return 4;
-    case "DYN107": return 4;
-    case "DYN108": return 3;
+      //Mechanologist
+    case "DYN088": case "DYN104": return 5;
+    case "DYN090": case "DYN105": case "DYN107": return 4;
+    case "DYN108": case "DYN106": return 3;
     case "DYN109": return 2;
+    //Assassin
     case "DYN115": case "DYN116": return 1;
     case "DYN120": return 4;
     case "DYN121": return 3;
     case "DYN122": return 4;
-    //Assassin
     case "DYN127": case "DYN133": case "DYN139": return 5;
     case "DYN119": case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
     case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
