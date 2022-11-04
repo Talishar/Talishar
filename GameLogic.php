@@ -1012,6 +1012,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "DYN045":
       $blockModifier += (count($chainLinkSummary)/ChainLinksPieces() >= 4 ? 4 : 0);
       break;
+    case "DYN036": case "DYN037": case "DYN038":
+      $blockModifier += SearchCharacter($defPlayer, subtype: "Off-Hand", class: "GUARDIAN") != "" ? 4 : 0;
+      break;
     default:
       break;
   }
@@ -5352,20 +5355,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "-1";
     case "MZGETCARDID":
-      global $mainPlayer, $defplayer;
+      global $mainPlayer, $defPlayer;
       $rv = "-1";
       $params = explode("-", $lastResult);
       if(substr($params[0], 0, 5) == "THEIR"){
-        $zone = &GetMZZone($defplayer, $params[0]);
+        $zone = &GetMZZone($defPlayer, $params[0]);
       } else $zone = &GetMZZone($mainPlayer, $params[0]);
       $rv = $zone[$params[1]];
       return $rv;
     case "MZGETCARDINDEX":
-      global $mainPlayer, $defplayer;
+      global $mainPlayer, $defPlayer;
       $rv = "-1";
       $params = explode("-", $lastResult);
       if (substr($params[0], 0, 5) == "THEIR") {
-        $zone = &GetMZZone($defplayer, $params[0]);
+        $zone = &GetMZZone($defPlayer, $params[0]);
       } else $zone = &GetMZZone($mainPlayer, $params[0]);
       switch ($params[0]) {
         case "MYCHAR":

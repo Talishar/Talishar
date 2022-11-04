@@ -1225,6 +1225,7 @@ if ($set == "DYN") {
     	//Guardian
     	case "028": return "Buckle";
 		case "033": case "034": case "035": return "Blessing of Patience";
+		case "036": case "037": case "038": return "Shield Wall";
 		case "039": case "040": case "041": return "Reinforce Steel";
 		//Ninja
 		case "045": return "Blazen Yoroi";
@@ -1241,7 +1242,7 @@ if ($set == "DYN") {
 		case "067": return "Jubeel, Spellbane";
 		case "068": return "Merciless Battleaxe";
 		case "069": case "070": return "Quicksilver Dagger";
-    case "071": return "Cleave";
+    	case "071": return "Cleave";
 		case "072": return "Ironsong Pride";
 		case "076": case "077": case "078": return "Precision Press";
 		case "079": case "080": case "081": return "Puncture";
@@ -1251,7 +1252,7 @@ if ($set == "DYN") {
 		case "090": return "Pulsewave Harpoon";
 		case "091": return "Bios Update";
 		case "092": return "Construct Nitro Mechanoid";
-    case "093": return "Plasma Mainline";
+    	case "093": return "Plasma Mainline";
 		case "094": return "Powder Keg";
 		case "098": return "Blessing of Ingenuity";
 		case "107": case "108": case "109": return "Urgent Delivery";
@@ -1260,7 +1261,6 @@ if ($set == "DYN") {
 		case "492a": return "Nitro Mechanoid";
 		case "492b": return "Nitro Mechanoid";
 		case "492c": return "Nitro Mechanoid";
-
     	//Assassin
 		case "113": return "Arakni, Huntsman";
 		case "115": case "116": return "Spider's Bite";
@@ -1303,7 +1303,7 @@ if ($set == "DYN") {
 		case "206": case "207": case "208": return "Sap";
 		//Illusionist
 		case "217": return "Tome of Aeo";
-    case "218": return "Blessing of Spirits";
+    	case "218": return "Blessing of Spirits";
         case "230": case "231": case "232": return "Water Glow Lanterns";
 		//Generic
 		case "234": return "Crown of Dominion";
