@@ -1229,6 +1229,7 @@ if ($set == "DYN") {
 		case "025": return "Yoji, Royal Protector";
 		case "026": return "Seasoned Saviour";
     	//Guardian
+		case "027": return "Steelbraid Buckler";
     	case "028": return "Buckle";
 		case "033": case "034": case "035": return "Blessing of Patience";
 		case "036": case "037": case "038": return "Shield Wall";
