@@ -3193,6 +3193,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ARSENALDOWN":
           $rv = GetArsenalFaceDownIndices($player);
           break;
+        case "ARSENALUP":
+          $rv = GetArsenalFaceUpIndices($player);
+          break;
         case "ITEMS":
           $rv = GetIndices(count(GetItems($player)), 0, ItemPieces());
           break;
@@ -3874,11 +3877,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddNextTurnEffect($parameter, $player);
       return "1";
     case "ADDLIMITEDCURRENTEFFECT":
-      WriteLog($parameter);
       $params = explode(",", $parameter);
-      WriteLog($params[0]);
       AddCurrentTurnEffect($params[0], $player, $params[1], $lastResult);
-      return "";
+      return $lastResult;
+    case "ADDARSENALUNIQUEIDCURRENTEFFECT":
+      $arsenal = &GetArsenal($player);
+      $params = explode(",", $parameter);
+      AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[$lastResult + 5]);
+      return $lastResult;
+    case "ADDAIMCOUNTER":
+      $arsenal = &GetArsenal($player);
+      $arsenal[$lastResult + 3] += 1;
+      return $lastResult;
     case "OPTX":
       Opt("NA", $parameter);
       return $lastResult;

@@ -71,6 +71,7 @@ function DYNHasGoAgain($cardID)
     case "DYN115": case "DYN116": return true;
     //Ranger
     case "DYN155": return true;
+		case "DYN168": case "DYN169": case "DYN170": return true;
     //Runeblade
     case "DYN188": case "DYN189": case "DYN190": return  true;
     //Illusionist
@@ -111,6 +112,9 @@ function DYNEffectAttackModifier($cardID)
     case "DYN089-UNDER": return 1;
     case "DYN091": return 3;
     case "DYN155": return 3;
+    case "DYN168": return 3;
+    case "DYN169": return 2;
+    case "DYN170": return 1;
     default:
       return 0;
   }
@@ -136,6 +140,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN091": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
+		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
     default:
       return false;
   }
@@ -235,6 +240,7 @@ function DYNCardType($cardID)
     case "DYN153": return "AA";
     case "DYN155": return "A";
     case "DYN162": case "DYN163": case "DYN164": return "AA";
+		case "DYN168": case "DYN169": case "DYN170": return "A";
     //Runeblade
     case "DYN171": return "E";
     case "DYN172": return "W";
@@ -450,8 +456,8 @@ function DYNPitchValue($cardID)
     case "DYN151": return 0;
     case "DYN153": return 1;
     case "DYN155": return 2;
-    case "DYN162": return 1;
-    case "DYN163": return 2;
+    case "DYN162": case "DYN168": return 1;
+    case "DYN163": case "DYN169": return 2;
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
@@ -517,6 +523,7 @@ function DYNBlockValue($cardID)
     //Ranger
     case "DYN151": return -1;
     case "DYN152": return 1;
+		case "DYN168": case "DYN169": case "DYN170": return 2;
     //Runeblade
     case "DYN171": return 1;
     case "DYN172": return -1;
@@ -792,6 +799,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN155":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next Arrow attack action card +" . EffectAttackModifier($cardID);
+    case "DYN168": case "DYN169": case "DYN170":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALUP");
+      AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDAIMCOUNTER", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDARSENALUNIQUEIDCURRENTEFFECT", $currentPlayer, $cardID . "," . "HAND", 1);
+      return "";
     case "DYN171":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return CardLink("ARC112", "ARC112") . "s you control have spellvoid 1 this turn.";
