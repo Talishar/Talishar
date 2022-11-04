@@ -296,6 +296,14 @@ function AuraStartTurnAbilities()
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . "," . "BANISH");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
+      case "DYN073": case "DYN074": case "DYN075":
+        if ($auras[$i] == "DYN073") $amount = 3;
+        else if ($auras[$i] == "DYN074") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " give +" . $amount . "power to your weapon next attack.");
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "ARENA");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
       case "DYN098": case "DYN099": case "DYN100":
         if ($auras[$i] == "DYN098") $amount = 3;
         else if ($auras[$i] == "DYN099") $amount = 2;
