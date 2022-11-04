@@ -1040,6 +1040,7 @@ function DYNHitEffect($cardID)
         if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
       }
       break;
     case "DYN153":
@@ -1162,7 +1163,7 @@ function CheckContracts($banishedBy, $cardBanished)
         if (CardType($cardBanished) == "A") $contractCompleted = true;
         break;
       case "BLOCK2ORLESS":
-        if (BlockValue($cardBanished) <= 2) $contractCompleted = true;
+        if (BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0) $contractCompleted = true;
         break;
       case "REACTIONS":
         if (CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") $contractCompleted = true;
@@ -1205,7 +1206,7 @@ function CheckContracts($banishedBy, $cardBanished)
           if (CardType($cardBanished) == "A") $contractCompleted = true;
           break;
         case "BLOCK2ORLESS":
-          if (BlockValue($cardBanished) <= 2) $contractCompleted = true;
+          if (BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0) $contractCompleted = true;
           break;
         case "REACTIONS":
           if (CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR") $contractCompleted = true;
