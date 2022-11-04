@@ -660,6 +660,103 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInput->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $cardsArray);
   }
 
+  if (($turn[0] == "MAYCHOOSEMULTIZONE" || $turn[0] == "CHOOSEMULTIZONE") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $options = explode(",", $turn[2]);
+    $otherPlayer = $playerID == 2 ? 1 : 2;
+    $theirAllies = &GetAllies($otherPlayer);
+    $myAllies = &GetAllies($playerID);
+    $cardsMultiZone = array();
+    for ($i = 0; $i < count($options); ++$i) {
+      $option = explode("-", $options[$i]);
+      if ($option[0] == "MYAURAS") $source = $myAuras;
+      else if ($option[0] == "THEIRAURAS") $source = $theirAuras;
+      else if ($option[0] == "MYCHAR") $source = $myCharacter;
+      else if ($option[0] == "THEIRCHAR") $source = $theirCharacter;
+      else if ($option[0] == "MYITEMS") $source = $myItems;
+      else if ($option[0] == "THEIRITEMS") $source = $theirItems;
+      else if ($option[0] == "LAYER") $source = $layers;
+      else if ($option[0] == "MYHAND") $source = $myHand;
+      else if ($option[0] == "THEIRHAND") $source = $theirHand;
+      else if ($option[0] == "MYDISCARD") $source = $myDiscard;
+      else if ($option[0] == "THEIRDISCARD") $source = $theirDiscard;
+      else if ($option[0] == "MYALLY") $source = $myAllies;
+      else if ($option[0] == "THEIRALLY") $source = $theirAllies;
+      else if ($option[0] == "MYARS") $source = $myArsenal;
+      else if ($option[0] == "THEIRARS") $source = $theirArsenal;
+      else if ($option[0] == "MYPERM") $source = $myPermanents;
+      else if ($option[0] == "THEIRPERM") $source = $theirPermanents;
+      else if ($option[0] == "MYPITCH") $source = $myPitch;
+      else if ($option[0] == "THEIRPITCH") $source = $theirPitch;
+      else if ($option[0] == "LANDMARK") $source = $landmarks;
+      else if ($option[0] == "CC") $source = $combatChain;
+      else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
+
+      $counters = 0;
+      $lifeCounters = 0;
+      $enduranceCounters = 0;
+      $atkCounters = 0;
+
+      if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
+        $counters = "Attacker";
+      }
+
+      if (count($layers) > 0) {
+        if (
+          $option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer
+        ) {
+          $index = SearchLayer($otherPlayer, subtype: "Ally");
+          if ($index != "") {
+            $params = explode("|", $layers[$index + 2]);
+            if ($option[1] == $params[2]) $counters = "Attacker";
+          }
+        }
+      }
+
+      //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
+      if ($option[0] == "MYARS") $counters = "Arsenal";
+
+      $index = intval($option[1]);
+      $card = $source[$index];
+      if ($option[0] == "LAYER" && $card == "TRIGGER") $card = $source[$index + 2];
+      $playerBorderColor = 0;
+
+      if (substr($option[0], 0, 2) == "MY") $playerBorderColor = 1;
+      else if (substr($option[0], 0, 5) == "THEIR") $playerBorderColor = 2;
+      else if ($option[0] == "CC") $playerBorderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
+      else if ($option[0] == "LAYER") {
+        $playerBorderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
+      }
+
+      if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") $card = $TheirCardBack;
+
+      //Show Life and Def counters on allies in the popups
+      if ($option[0] == "THEIRALLY") {
+        $lifeCounters = $theirAllies[$index + 2];
+        $enduranceCounters = $theirAllies[$index + 6];
+        if (SearchCurrentTurnEffectsForUniqueID($theirAllies[$index + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($theirAllies[$index + 5])) + AttackValue($theirAllies[$index]);
+        else $attackCounters = 0;
+      } elseif ($option[0] == "MYALLY") {
+        $lifeCounters = $myAllies[$index + 2];
+        $enduranceCounters = $myAllies[$index + 6];
+        if (SearchCurrentTurnEffectsForUniqueID($myAllies[$index + 5]) != -1) $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($myAllies[$index + 5])) + AttackValue($myAllies[$index]);
+        else $attackCounters = 0;
+      }
+
+      //Show Atk counters on Auras in the popups
+      if ($option[0] == "THEIRAURAS") {
+        $atkCounters = $theirAuras[$index + 3];
+      } elseif ($option[0] == "MYAURAS") {
+        $atkCounters = $myAuras[$index + 3];
+      }
+      array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $playerBorderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $playerBorderColor));
+    }
+    $playerInput->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, cardsArray: $cardsMultiZone);
+  }
+
+  if (($turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK") && $turn[1] == $playerID) {
+    $playerInput->popup = ChoosePopup($myDeck, $turn[2], 11, "Choose a card from your deck");
+  }
 
   $playerInputPopup->buttons = $playerInputButtons;
   $response->playerInputPopUp = $playerInputPopup;
@@ -676,19 +773,14 @@ function PlayableCardBorderColor($cardID)
 
 function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1)
 {
-  global $cardSize;
-  $content = "";
   $options = explode(",", $options);
+  $cardList = array();
 
-  $content .= "<table style='border-spacing:0; border-collapse: collapse;'><tr>";
   for ($i = 0; $i < count($options); ++$i) {
-    $content .= "<td style='display: inline-block;'>";
-    $content .= "<div class='container'>";
-    $content .= "<label class='multichoose'>" . Card($zone[$options[$i]], "concat", $cardSize, $mode, 1, 0, 0, 0, strval($options[$i])) . "</label>";
-    $content .= "<div class='overlay'><div class='text'>Select</div></div></div></td>";
+    array_push($cardList, JSONRenderedCard($zone[$options[$i]], action: $mode, actionDataOverride: strval($options[$i])));
   }
-  $content .= "</tr></table>";
-  echo CreatePopup("CHOOSEZONE", [], 0, 1, $caption, 1, $content);
+
+  return CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", cardsArray: $cardList);
 }
 
 function GetCharacterLeft($cardType, $cardSubType)
