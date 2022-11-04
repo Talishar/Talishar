@@ -49,7 +49,8 @@
         return count($combatChain) > 0 && ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer) && CardSubType($combatChain[0]) == "Pistol" && $items[$index + 1] > 0 ? "AR" : "A";
       case "ARC017":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return ($items[$index + 1] > 0 ? "I" : "A");
+        if (isset($items[$index + 1])) return ($items[$index + 1] > 0 ? "I" : "A");
+        else return "A";
       case "ARC018":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
         return (count($combatChain) > 0 && $items[$index + 1] > 0 ? "AR" : "A");
