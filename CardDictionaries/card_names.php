@@ -1257,6 +1257,7 @@ if ($set == "DYN") {
 		case "076": case "077": case "078": return "Precision Press";
 		case "079": case "080": case "081": return "Puncture";
 		case "082": case "083": case "084": return "Felling Swing";
+		case "085": case "086": case "087": return "Visit the Imperial Forge";
     	//Mechanologist
 		case "088": return "Hanabi Blaster";
 		case "089": return "Galvanic Bender";
