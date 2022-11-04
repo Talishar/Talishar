@@ -279,7 +279,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
       $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0);
       if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-      $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
+      $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : $myHand[$i]);
       array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction));
     }
   }
@@ -529,6 +529,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if (count($layers) > 0) {
     $turnPhase->layer = $layers[0];
   }
+  $isItMeOrThem = $currentPlayer == $playerID ? "Choose " : "Your opponent choosing ";
+  $turnPhase->caption = $isItMeOrThem . TypeToPlay($turn[0]);
   $response->turnPhase = $turnPhase;
 
   // Do we have priority?
@@ -554,6 +556,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Turn number
   $response->turnNo = $currentTurn;
 
+  // Reminder text box highlight thing
+
+
   // ******************************
   // * PLAYER MUST CHOOSE A THING *
   // ******************************
@@ -562,7 +567,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerInputButtons = array();
   $playerInputPopup->active = false;
 
-  // Arcane damage popup
+  // TODO: Arcane damage popup
   if (($turn[0] == "CHOOSEARCANE")) {
     // do nothing
   }
@@ -587,11 +592,72 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if ($turn[0] == "PDECK" && $currentPlayer == $playerID) {
+    $playerInputPopup->active = true;
     $pitchingCards = array();
     for ($i = 0; $i < count($myPitch); $i += 1) {
-      array_push($pitchingCards, JSONRenderedCard($myPitch[$i], "concat", $cardSize, 6, 1));
+      array_push($pitchingCards, JSONRenderedCard($myPitch[$i], action: 6, actionDataOverride: $myPitch[$i]));
     }
-    echo CreatePopup("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, $content);
+    $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, cardsArray: $pitchingCards);
+  }
+
+  if ($turn[0] == "PAYORDISCARD" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    array_push($playerInputButtons, CreateButtonAPI($playerID, "Pay", 28, "PAY", "20px"));
+    array_push($playerInputButtons, CreateButtonAPI($playerID, "Discard", 28, "DISCARD", "20px"));
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    else $caption = "Choose " . TypeToPlay($turn[0]);
+    $playerInputPopup->popup = CreatePopupAPI("PAYORDISCARD", [], 0, 1, $caption, 1, "");
+  }
+
+  if ($turn[0] == "OK" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText()));
+    else $caption = "Choose " . TypeToPlay($turn[0]);
+    $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, $caption, 1, "");
+  }
+
+  if (($turn[0] == "OPT" || $turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $options = explode(",", $turn[2]);
+    $optCards = array();
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($optCards, JSONRenderedCard($options[$i], action: 0));
+      if (
+        $turn[0] == "CHOOSETOP" || $turn[0] == "OPT"
+      ) array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSEBOTTOM" || $turn[0] == "OPT") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
+    }
+    $playerInput->popup = CreatePopupAPI("OPT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
+  }
+
+  if (($turn[0] == "CHOOSETOPOPPONENT") && $turn[1] == $playerID
+  ) { //Use when you have to reorder the top of your opponent library e.g. Righteous Cleansing
+    $playerInputPopup->active = true;
+    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    $options = explode(",", $turn[2]);
+    $optCards = array();
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($optCards, JSONRenderedCard($options[$i], action: 0));
+      if (
+        $turn[0] == "CHOOSETOPOPPONENT"
+      ) array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $options[$i], "20px"));
+    }
+    $playerInput->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $optCards);
+  }
+
+  if ($turn[0] == "HANDTOPBOTTOM" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $cardsArray = array();
+    for ($i = 0; $i < count($myHand); ++$i) {
+      array_push($cardsArray, JSONRenderedCard($myHand[$i], action: 0));
+    }
+    for ($i = 0; $i < count($myHand); ++$i) {
+      array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 12, $i, "20px"));
+      array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 13, $i, "20px"));
+    }
+    $playerInput->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, "Choose " . TypeToPlay($turn[0]), 1, "", cardsArray: $cardsArray);
   }
 
 
