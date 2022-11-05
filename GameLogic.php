@@ -909,7 +909,6 @@ function EffectHitEffect($cardID)
       break;
     case "DYN155":
       if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer)) {
-        WriteLog("HERE");
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -3830,7 +3829,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $rv == "" ? "PASS" : $rv;
     case "SHOWSELECTEDCARD":
-      WriteLog($lastResult);
       WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
       return $lastResult;
     case "SHOWSELECTEDMODE":

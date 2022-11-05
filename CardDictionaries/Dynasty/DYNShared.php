@@ -919,7 +919,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
         AddDecisionQueue("COMBATCHAINDEBUFFDEFENSE", $currentPlayer, $amount, 1);
       }
-      return "Reduce the defense of target defending card by " . $amount;
+      return "Reduce the defense of target defending card by " . $amount . ".";
     case "DYN148": case "DYN149": case "DYN150":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
