@@ -1301,6 +1301,7 @@ if ($set == "DYN") {
 		case "152": return "Hornet's Sting";
     	case "153": return "Heat Seeker";
 		case "155": return "Dead Eye";
+		case "156": case "157": case "158": return "Drill Shot";
 		case "162": case "163": case "164": return "Hemorrhage Bore";
 		case "168": case "169": case "170": return "Point the Tip";
 		//Runeblade

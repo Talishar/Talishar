@@ -98,7 +98,7 @@ function DYNAbilityHasGoAgain($cardID)
 
 function DYNEffectAttackModifier($cardID)
 {
-  global $combatChainState, $CCS_LinkBaseAttack;
+  global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   if (count($params) > 1) $parameter = $params[1];
@@ -132,6 +132,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN089-UNDER": return 1;
     case "DYN091-1": return 3;
     case "DYN155": return 3;
+    case "DYN156": case "DYN157": case "DYN158": return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN168": return 3;
     case "DYN169": return 2;
     case "DYN170": return 1;
@@ -165,6 +166,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
+    case "DYN156": case "DYN157": case "DYN158": return SearchCurrentTurnEffects("AIM", $mainPlayer);
 		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
     default:
       return false;
@@ -272,6 +274,7 @@ function DYNCardType($cardID)
     case "DYN152": return "E";
     case "DYN153": return "AA";
     case "DYN155": return "A";
+    case "DYN156": case "DYN157": case "DYN158": return "AA";
     case "DYN162": case "DYN163": case "DYN164": return "AA";
 		case "DYN168": case "DYN169": case "DYN170": return "A";
     //Runeblade
@@ -355,6 +358,7 @@ function DYNCardSubtype($cardID)
     case "DYN151": return "Bow";
     case "DYN152": return "Arms";
     case "DYN153": return "Arrow";
+    case "DYN156": case "DYN157": case "DYN158": return "Arrow";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
     //Runeblade
     case "DYN171": return "Head";
@@ -512,8 +516,8 @@ function DYNPitchValue($cardID)
     case "DYN151": return 0;
     case "DYN153": return 1;
     case "DYN155": return 2;
-    case "DYN162": case "DYN168": return 1;
-    case "DYN163": case "DYN169": return 2;
+    case "DYN156": case "DYN162": case "DYN168": return 1;
+    case "DYN157": case "DYN163": case "DYN169": return 2;
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
@@ -647,10 +651,10 @@ function DYNAttackValue($cardID)
     case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
     case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
     //Ranger
-    case "DYN153": return 5;
-    case "DYN162": return 5;
-    case "DYN163": return 4;
-    case "DYN164": return 3;
+    case "DYN153": case "DYN162": return 5;
+    case "DYN156": case "DYN163": return 4;
+    case "DYN157": case "DYN164": return 3;
+    case "DYN158": return 2;
     //Runeblade
     case "DYN173": return 6;
     case "DYN492a": return 5;
@@ -892,6 +896,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN155":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next Arrow attack action card +" . EffectAttackModifier($cardID);
+    case "DYN156": case "DYN157": case "DYN158": 
+      if (SearchCurrentTurnEffects("AIM", $currentPlayer)){
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      return "has piercing 1.";
     case "DYN168": case "DYN169": case "DYN170":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALUP");
       AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
@@ -1185,6 +1194,13 @@ function DYNHitEffect($cardID)
       break;
     case "DYN153":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
+      break;
+    case "DYN156": case "DYN157": case "DYN158": 
+      if (IsHeroAttackTarget()){
+        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+      }
       break;
     case "DYN162": case "DYN163": case "DYN164":
       if (SearchCurrentTurnEffects("AIM", $mainPlayer, true) && IsHeroAttackTarget()) {
