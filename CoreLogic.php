@@ -1054,6 +1054,24 @@ function PlayerHasLessHealth($player)
   return GetHealth($player) < GetHealth($otherPlayer);
 }
 
+function PlayerHasFewerEquipment($player)
+{
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $thisChar = &GetPlayerCharacter($player);
+  $thatChar = &GetPlayerCharacter($otherPlayer);
+  $thisEquip = 0;
+  $thatEquip = 0;
+  for($i=0; $i<count($thisChar); $i+=CharacterPieces())
+  {
+    if($thisChar[$i+1] != 0 && CardType($thisChar[$i]) == "E") ++$thisEquip;
+  }
+  for($i=0; $i<count($thatChar); $i+=CharacterPieces())
+  {
+    if($thatChar[$i+1] != 0 && CardType($thatChar[$i]) == "E") ++$thatEquip;
+  }
+  return $thisEquip < $thatEquip;
+}
+
 function GetIndices($count, $add=0, $pieces=1)
 {
   $indices = "";

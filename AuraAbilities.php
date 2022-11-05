@@ -272,6 +272,29 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "ARENA");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
+      case "DYN029":
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        $hand = &GetHand($mainPlayer);
+        if(count($hand) == 0)
+        {
+          Draw($mainPlayer, false);
+          WriteLog("Drew a card from Never Yield.");
+        }
+        if(PlayerHasLessHealth($mainPlayer))
+        {
+          GainHealth(2, $mainPlayer);
+          WriteLog("Gained 2 health from Never Yield.");
+        }
+        if(PlayerHasFewerEquipment($mainPlayer))
+        {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which equipment to remove a -1 defense counter", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZGETCARDINDEX", $mainPlayer, "-", 1);
+          AddDecisionQueue("REMOVENEGDEFCOUNTER", $mainPlayer, "-", 1);
+          WriteLog("Removed a -1 counter from Never Yield.");
+        }
+        break;
       case "DYN033": case "DYN034": case "DYN035":
         if ($auras[$i] == "DYN033") $amount = 3;
         else if ($auras[$i] == "DYN034") $amount = 2;
