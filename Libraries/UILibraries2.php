@@ -46,37 +46,54 @@ function ClientRenderedCard($cardNumber, $action = 0, $overlay = 0, $borderColor
   return $rv;
 }
 
-function JSONRenderedCard($cardNumber, $action=NULL, $overlay=NULL, $borderColor=NULL, $counters=NULL, 
-$actionDataOverride=NULL, $lifeCounters=NULL, $defCounters=NULL, $atkCounters=NULL, $controller=NULL, 
-$type=NULL, $sType=NULL, $restriction=NULL, $isBroken=NULL, $onChain=NULL, $isFrozen=NULL, $gem=NULL)
-{
-$card = (object) [
-  'cardNumber' => $cardNumber,
-  'action' => $action,
-  'overlay' => $overlay,
-  'borderColor' => $borderColor,
-  'counters' => $counters,
-  'actionDataOverride' => $actionDataOverride,
-  'lifeCounters' => $lifeCounters,
-  'defCounters' => $defCounters,
-  'atkCounters' => $atkCounters,
-  'controller' => $controller,
-  'type' => $type,
-  'sType' => $sType,
-  'restriction' => $restriction,
-  'isBroken' => $isBroken,
-  'onChain' => $onChain,
-  'isFrozen' => $isFrozen,
-  'gem' => $gem,
-];
+function JSONRenderedCard(
+  $cardNumber,
+  $action = NULL,
+  $overlay = NULL,
+  $borderColor = NULL,
+  $counters = NULL,
+  $actionDataOverride = NULL,
+  $lifeCounters = NULL,
+  $defCounters = NULL,
+  $atkCounters = NULL,
+  $controller = NULL,
+  $type = NULL,
+  $sType = NULL,
+  $restriction = NULL,
+  $isBroken = NULL,
+  $onChain = NULL,
+  $isFrozen = NULL,
+  $gem = NULL,
+  $modeOverride = NULL,
+) {
+  $card = (object) [
+    'cardNumber' => $cardNumber,
+    'action' => $action,
+    'overlay' => $overlay,
+    'borderColor' => $borderColor,
+    'counters' => $counters,
+    'actionDataOverride' => $actionDataOverride,
+    'lifeCounters' => $lifeCounters,
+    'defCounters' => $defCounters,
+    'atkCounters' => $atkCounters,
+    'controller' => $controller,
+    'type' => $type,
+    'sType' => $sType,
+    'restriction' => $restriction,
+    'isBroken' => $isBroken,
+    'onChain' => $onChain,
+    'isFrozen' => $isFrozen,
+    'gem' => $gem,
+    'modeOverride' => $modeOverride,
+  ];
 
-// To reduce space/size strip out all values that are null.
-// On the FE repopulate the null values with the defaults like the binary blob.
-$card = (object) array_filter((array) $card, function ($val) {
+  // To reduce space/size strip out all values that are null.
+  // On the FE repopulate the null values with the defaults like the binary blob.
+  $card = (object) array_filter((array) $card, function ($val) {
     return !is_null($val);
-});
+  });
 
-return $card;
+  return $card;
 }
 
 //Rotate is deprecated
@@ -294,6 +311,22 @@ function CreateButton($playerID, $caption, $mode, $input, $size = "", $image = "
   return $rv;
 }
 
+function CreateButtonAPI($playerID, $caption, $mode, $input, $size = null, $image = null, $tooltip = null, $fullRefresh = false, $fullReload = false, $prompt = null)
+{
+  $button = new stdClass();
+  $button->mode = $mode;
+  $button->buttonInput = $input;
+  $button->fullRefresh = $fullRefresh;
+  $button->prompt = $prompt;
+  $button->imgURL = $image;
+  $button->tooltip = $tooltip;
+  $button->caption = $caption;
+  $button->sizeOverride = $size;
+  $button->fullReload = $fullReload;
+  return $button;
+}
+
+
 function ProcessInputLink($player, $mode, $input, $event = 'onmousedown', $fullRefresh = false, $prompt = "")
 {
   global $gameName;
@@ -347,7 +380,7 @@ function CreateRadioButton($input, $value, $immediateSubmitMode, $currentInput, 
   return $rv;
 }
 
-function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "", $size=0)
+function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "", $size = 0)
 {
   global $darkMode, $cardSize, $playerID;
   $style = "";
@@ -357,8 +390,7 @@ function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $
   $left = "25%";
   $width = "50%";
   $height = "30%";
-  if($size == 2)
-  {
+  if ($size == 2) {
     $top = "10%";
     $left = "25%";
     $width = "50%";
@@ -395,6 +427,29 @@ function CreatePopup($id, $fromArr, $canClose, $defaultState = 0, $title = "", $
   return $rv;
 }
 
+function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = "", $arrElements = 1, $customInput = "", $path = "./", $big = false, $overCombatChain = false, $additionalComments = "", $size = 0, $cardsArray = [])
+{
+  $result = new stdClass();
+  $result->size = $size;
+  $result->big = $big;
+  $result->overCombatChain = $overCombatChain;
+  $result->id = $id;
+  $result->title = $title;
+  $result->canClose = $canClose;
+  $result->additionalComments = $additionalComments;
+  $cards = array();
+  for ($i = 0; $i < count($fromArr); $i += $arrElements) {
+    array_push($cards, JSONRenderedCard($fromArr[$i]));
+  }
+  if (count($cardsArray) > 0) {
+    $cards = $cardsArray;
+  }
+  $result->cards = $cards;
+  $result->customInput = $customInput;
+  return $result;
+}
+
+
 function CardStatsUI($player)
 {
   global $darkMode;
@@ -421,7 +476,7 @@ function CardStats($player)
   $rv .= "<td style='border-bottom: 1px solid black; border-top: 1px solid black;'>Times<br>Pitched</td>";
   $rv .= "</tr>";
   $BackgroundColor = "";
-  if($darkMode){
+  if ($darkMode) {
     $lighterColor = "rgba(94, 94, 94, 0.95)";
     $darkerColor = "rgba(74, 74, 74, 0.95)";;
   } else {

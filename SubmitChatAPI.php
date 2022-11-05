@@ -10,7 +10,7 @@ if (!IsGameNameValid($gameName)) {
 }
 $authKey = TryGet("authKey", "");
 $playerID = $_GET["playerID"];
-$chatText = htmlspecialchars($_GET["chatText"]);
+$chatText = htmlspecialchars($_POST["chatText"]);
 
 if ($playerID != 1 && $playerID != 2) {
   echo 'naughty';
@@ -38,11 +38,11 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
 }
 
-if (isset($_SESSION["isPatron"])) $displayName = "<img title='Patron' style='margin-bottom:-2px; margin-right:-4px; height:18px;' src='./Images/patronHeart.webp' /> " . $displayName;
+if (isset($_SESSION["isPatron"])) $displayName = $displayName . "|P";
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
-$output = "<span style='font-weight:bold; color:<PLAYER" . $playerID . "COLOR>;'>" . $displayName . ": </span>" . $chatText;
+$output = "{{P" . $playerID . "|" . $displayName . "}}" . $chatText;
 fwrite($handler, $output . "\r\n");
 fclose($handler);
 
