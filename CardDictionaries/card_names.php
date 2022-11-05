@@ -1235,7 +1235,6 @@ if ($set == "DYN") {
 		case "033": case "034": case "035": return "Blessing of Patience";
 		case "036": case "037": case "038": return "Shield Wall";
 		case "039": case "040": case "041": return "Reinforce Steel";
-		case "042": case "043": case "044": return "Withstand";
 		//Ninja
 		case "045": return "Blazen Yoroi";
 		case "047": return "Tiger Swipe";
