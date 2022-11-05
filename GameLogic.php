@@ -2916,11 +2916,12 @@ function HasDominate ($cardID)
 
 function isOverpowerActive ()
 {
-  global $combatChain;
+  global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
   switch ($combatChain[0]) {
     case "DYN068": return isAttackGreaterThanTwiceBasePower();
     case "DYN088": return true;
+    case "DYN227": case "DYN228": case "DYN229": SearchCurrentTurnEffects("DYN227", $mainPlayer);
     case "DYN492a": return true;
     default:
       break;

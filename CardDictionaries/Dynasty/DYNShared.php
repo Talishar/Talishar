@@ -328,6 +328,7 @@ function DYNCardType($cardID)
     case "DYN217": return "A";
     case "DYN218": case "DYN219": case "DYN220": return "A";
     case "DYN224": case "DYN225": case "DYN226": return "AA";
+    case "DYN227": case "DYN228": case "DYN229": return "AA";
     case "DYN230": case "DYN231": case "DYN232": return "A";
     case "DYN234": return "E";
     case "DYN235": return "E";
@@ -509,6 +510,7 @@ function DYNCardCost($cardID)
     case "DYN212": return 2;
     case "DYN217": return 1;
     case "DYN218": case "DYN219": case "DYN220": return 1;
+    case "DYN227": case "DYN228": case "DYN229": return 3;
     //Generic
     case "DYN240": return 1;
     case "DYN242": return 2;
@@ -583,6 +585,8 @@ function DYNPitchValue($cardID)
     case "DYN219": return 2;
     case "DYN224": return 1;
     case "DYN225": return 2;
+    case "DYN227": return 1;
+    case "DYN228": return 2;
     case "DYN234": return 0;
     case "DYN235": return 0;
     case "DYN240": return 1;
@@ -725,6 +729,9 @@ function DYNAttackValue($cardID)
     case "DYN224": return 4;
     case "DYN225": return 3;
     case "DYN226": return 2;
+    case "DYN227": return 8;
+    case "DYN228": return 7;
+    case "DYN229": return 6;
     case "DYN612": return 4;
     default: return 0;
   }
@@ -1152,6 +1159,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       {
         GiveAttackGoAgain();
         return "Spectral Prowler gains go again.";
+      }
+      return "";
+    case "DYN227": case "DYN228": case "DYN229":
+      if(SearchAuras("MON104", $currentPlayer))
+      {
+        AddCurrentTurnEffect("DYN227", $currentPlayer);
+        return "Spectral Rider gains Overpower.";
       }
       return "";
     case "DYN230": case "DYN231": case "DYN232":
