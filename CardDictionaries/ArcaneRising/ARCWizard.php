@@ -332,7 +332,13 @@
     case "UPR170": case "UPR171": case "UPR172": return 2;
     case "UPR173": case "UPR174": case "UPR175": return 2;
     case "UPR179": case "UPR180": case "UPR181": return 1;
-    default: return -1;
+    //Dynasty
+    case "DYN195": return 0;
+    case "DYN195": return 0;
+    case "DYN196": return 0;
+    case "DYN197": case "DYN198": case "DYN199": return 0;
+    case "DYN203": case "DYN204": case "DYN205": return 0;
+    case "DYN206": case "DYN207": case "DYN208": return 0;
     }
   }
 
@@ -445,6 +451,7 @@
       case "UPR174": case "UPR172": case "UPR131": case "UPR129": case "UPR124": case "UPR120": case "UPR131": case "UPR129": case "UPR124": case "UPR120": return 2;
       case "UPR179": case "UPR180": case "UPR181": case "UPR172": case "UPR132": case "UPR121": case "UPR179": case "UPR180": case "UPR181": return 1;
       //DYN
+      case "DYN194": return 2;
 		  case "DYN195": return 5;
       case "DYN197": return 4;
       case "DYN198": case "DYN203": case "DYN206": return 3;
@@ -487,6 +494,7 @@
     case "UPR173": case "UPR174": case "UPR175":
     case "UPR179": case "UPR180": case "UPR181":
       return true;
+    case "DYN194":
     case "DYN195":
     case "DYN197": case "DYN198": case "DYN199":
     case "DYN203": case "DYN204": case "DYN205":

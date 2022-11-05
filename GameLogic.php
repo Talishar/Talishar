@@ -233,6 +233,17 @@ function ArcaneHitEffect($player, $source, $target, $damage)
 function DoSurgeEffect($cardID, $player, $target)
 {
   switch ($cardID) {
+    case "DYN194":
+      $targetPlayer = MZPlayerID($player, $target);
+      $hand = &GetHand($targetPlayer);
+      $numToDraw = count($hand) - 1;
+      if($numToDraw < 0) $numToDraw = 0;
+      $deck = &GetDeck($targetPlayer);
+      while(count($hand) > 0) array_push($deck, array_shift($hand));
+      for($i=0; $i<$numToDraw; ++$i) array_push($hand, array_shift($deck));
+      WriteLog("Mind Warp warps the target's mind.");
+      AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
+      break;
     case "DYN195":
       PlayAura("DYN244", $player);
       WriteLog(CardLink($cardID, $cardID) . " surge's ability create a " . CardLink("DYN244", "DYN244") . " token.");
