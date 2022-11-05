@@ -166,6 +166,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       return $attackID == "DYN492a";
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
+    case "DYN154": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
     case "DYN156": case "DYN157": case "DYN158": return true;
 		case "DYN165": case "DYN166": case "DYN167": return true;
@@ -275,6 +276,7 @@ function DYNCardType($cardID)
     case "DYN151": return "W";
     case "DYN152": return "E";
     case "DYN153": return "AA";
+    case "DYN154": return "AA";
     case "DYN155": return "A";
     case "DYN156": case "DYN157": case "DYN158": return "AA";
 		case "DYN159": case "DYN160": case "DYN161": return "A";
@@ -362,6 +364,7 @@ function DYNCardSubtype($cardID)
     case "DYN151": return "Bow";
     case "DYN152": return "Arms";
     case "DYN153": return "Arrow";
+    case "DYN154": return "Arrow";
     case "DYN156": case "DYN157": case "DYN158": return "Arrow";
 		case "DYN159": case "DYN160": case "DYN161": return "Aura";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
@@ -521,7 +524,7 @@ function DYNPitchValue($cardID)
     case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
     //Ranger
     case "DYN151": return 0;
-    case "DYN153": return 1;
+    case "DYN153": case "DYN154": return 1;
     case "DYN155": return 2;
     case "DYN156": case "DYN159": case "DYN162": case "DYN165": case "DYN168": return 1;
     case "DYN157": case "DYN160": case "DYN163": case "DYN166": case "DYN169": return 2;
@@ -657,9 +660,9 @@ function DYNAttackValue($cardID)
     case "DYN119": case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
     case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
     case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
-    //Ranger
+    //Ranger    
     case "DYN153": case "DYN162": return 5;
-    case "DYN156": case "DYN163": return 4;
+    case "DYN154": case "DYN156": case "DYN163": return 4;
     case "DYN157": case "DYN164": case "DYN165": return 3;
     case "DYN158": case "DYN166": return 2;
     case "DYN167": return 1;
@@ -1209,6 +1212,12 @@ function DYNHitEffect($cardID)
       break;
     case "DYN153":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
+      break;
+    case "DYN154":
+      if (SearchCurrentTurnEffects("AIM", $mainPlayer, true) && IsHeroAttackTarget()) {
+        AddNextTurnEffect($cardID, $defPlayer);
+        AddCurrentTurnEffectFromCombat($cardID . "-1", $defPlayer); //Doesn't do anything just show it in the effects
+      }
       break;
     case "DYN156": case "DYN157": case "DYN158": 
       if (IsHeroAttackTarget()){

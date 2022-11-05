@@ -1300,6 +1300,7 @@ if ($set == "DYN") {
 		case "151": return "Sandscour Greatbow";
 		case "152": return "Hornet's Sting";
     	case "153": return "Heat Seeker";
+		case "154": return "Immobilizing Shot";
 		case "155": return "Dead Eye";
 		case "156": case "157": case "158": return "Drill Shot";
 		case "159": case "160": case "161": return "Blessing of Focus";
