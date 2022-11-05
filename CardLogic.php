@@ -1113,7 +1113,7 @@ function OptMain($amount)
   PlayerOpt($mainPlayer, $amount);
 }
 
-function PlayerOpt($player, $amount)
+function PlayerOpt($player, $amount, $optKeyword = true)
 {
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPX," . $amount);
   AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
