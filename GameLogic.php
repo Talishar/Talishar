@@ -1911,16 +1911,16 @@ function BeginEndPhaseEffects()
         break;
       case "DYN153":
         $deck = &GetDeck($mainPlayer);
-        if(count($deck) == 0)
-        {
+        if(count($deck) == 0) {
           WriteLog("Your Heat Seeker fizzled out.");
           break;
         }
-        if(!ArsenalFull($mainPlayer))
-        {
+        if(!ArsenalFull($mainPlayer)) {
           $card = array_shift($deck);
           WriteLog("Heat Seeker added " . CardLink($card, $card) . " to your arsenal.");
           AddArsenal($card, $mainPlayer, "DECK", "UP");
+        } else {
+          WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
         }
         break;
       default:
@@ -4914,6 +4914,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
         PlayAura("WTR225", $player);
       }
+      return $lastResult;
+    case "BLESSINGOFFOCUS":
+      $deck = &GetDeck($mainPlayer);
+      if (RevealCards($deck[0], $mainPlayer) && CardSubType($deck[0]) == "Arrow") {
+        if (!ArsenalFull($mainPlayer)) AddArsenal($deck[0], $mainPlayer, "DECK", "UP", 1);
+        else WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
+      }  
       return $lastResult;
     case "KRAKENAETHERVEIN":
       if ($lastResult > 0) {

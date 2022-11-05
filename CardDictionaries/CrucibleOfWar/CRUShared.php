@@ -841,7 +841,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
       //CRU Ranger
     case "CRU121":
-      if (ArsenalFull($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
+      if (ArsenalFull($currentPlayer)) return "Your arsenal is full, so you cannot put an arrow in your arsenal.";
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
       AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
