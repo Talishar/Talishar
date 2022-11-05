@@ -275,6 +275,7 @@ function DYNCardType($cardID)
     case "DYN153": return "AA";
     case "DYN155": return "A";
     case "DYN156": case "DYN157": case "DYN158": return "AA";
+		case "DYN159": case "DYN160": case "DYN161": return "A";
     case "DYN162": case "DYN163": case "DYN164": return "AA";
 		case "DYN168": case "DYN169": case "DYN170": return "A";
     //Runeblade
@@ -359,6 +360,7 @@ function DYNCardSubtype($cardID)
     case "DYN152": return "Arms";
     case "DYN153": return "Arrow";
     case "DYN156": case "DYN157": case "DYN158": return "Arrow";
+		case "DYN159": case "DYN160": case "DYN161": return "Aura";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
     //Runeblade
     case "DYN171": return "Head";
@@ -448,6 +450,7 @@ function DYNCardCost($cardID)
     //Ranger
     case "DYN153": return 1;
     case "DYN155": return 1;
+		case "DYN159": case "DYN160": case "DYN161": return 1;
     case "DYN162": case "DYN163": case "DYN164": return 1;
     //Runeblade
     case "DYN173": return 3;
@@ -516,8 +519,8 @@ function DYNPitchValue($cardID)
     case "DYN151": return 0;
     case "DYN153": return 1;
     case "DYN155": return 2;
-    case "DYN156": case "DYN162": case "DYN168": return 1;
-    case "DYN157": case "DYN163": case "DYN169": return 2;
+    case "DYN156": case "DYN159": case "DYN162": case "DYN168": return 1;
+    case "DYN157": case "DYN160": case "DYN163": case "DYN169": return 2;
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;

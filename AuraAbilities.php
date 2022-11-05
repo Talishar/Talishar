@@ -320,6 +320,14 @@ function AuraStartTurnAbilities()
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         }
         break;
+      case "DYN159": case "DYN160": case "DYN161":
+        if ($auras[$i] == "DYN159") $amount = 3;
+        else if ($auras[$i] == "DYN160") $amount = 2;
+        else $amount = 1;
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        Opt($auras[$i], $amount);
+        AddDecisionQueue("BLESSINGOFFOCUS", $mainPlayer, "-", 1);
+        break;
 		  case "DYN179": case "DYN180": case "DYN181":
         if ($auras[$i] == "DYN179") $amount = 3;
         else if ($auras[$i] == "DYN180") $amount = 2;
