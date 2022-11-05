@@ -325,6 +325,7 @@ function DYNCardType($cardID)
     case "DYN214": return "E";
     case "DYN217": return "A";
     case "DYN218": case "DYN219": case "DYN220": return "A";
+    case "DYN224": case "DYN225": case "DYN226": return "AA";
     case "DYN230": case "DYN231": case "DYN232": return "A";
     case "DYN234": return "E";
     case "DYN236": return "E";
@@ -576,6 +577,8 @@ function DYNPitchValue($cardID)
     case "DYN214": return 0;
     case "DYN218": return 1;
     case "DYN219": return 2;
+    case "DYN224": return 1;
+    case "DYN225": return 2;
     case "DYN234": return 0;
     case "DYN240": return 1;
     case "DYN241": return 1;
@@ -713,6 +716,9 @@ function DYNAttackValue($cardID)
     case "DYN177": case "DYN183": return 3;
     case "DYN178": case "DYN184": return 2;
     //Illusionist
+    case "DYN224": return 4;
+    case "DYN225": return 3;
+    case "DYN226": return 2;
     case "DYN612": return 4;
     default: return 0;
   }
@@ -1134,6 +1140,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN212":
       //Do invocation
+      return "";
+    case "DYN224": case "DYN225": case "DYN226":
+      if(SearchAuras("MON104", $currentPlayer))
+      {
+        GiveAttackGoAgain();
+        return "Spectral Prowler gains go again.";
+      }
       return "";
     case "DYN230": case "DYN231": case "DYN232":
       if (CanRevealCards($currentPlayer)) {
