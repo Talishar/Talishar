@@ -1434,7 +1434,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DYN005": return count(GetHand($player)) != 0;
     case "DYN007":
       return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
-    case "DYN022": case "DYN021": case "DYN023":
+    case "DYN022": case "DYN023": case "DYN024":
       return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     case "DYN088":
       $char = &GetPlayerCharacter($player);
@@ -2345,12 +2345,12 @@ function SpellVoidAmount($cardID, $player)
       return 1;
     case "MON402":
       return 1;
-    case "DYN236": 
-		case "DYN237": 
+    case "DYN236":
+		case "DYN237":
 		case "DYN238":
 		case "DYN239":
       return 1;
-		case "DYN246": 
+		case "DYN246":
       return 1;
   }
   return 0;

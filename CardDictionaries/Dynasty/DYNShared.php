@@ -56,7 +56,7 @@ function DYNHasGoAgain($cardID)
   switch ($cardID) {
     //Brute
     case "DYN009": return true;
-    case "DYN022": case "DYN021": case "DYN023": return true;
+    case "DYN022": case "DYN023": case "DYN024": return true;
     //Guardian
     case "DYN028": return true;
     //Ninja
@@ -109,8 +109,8 @@ function DYNEffectAttackModifier($cardID)
     case "DYN015": return 1;
     case "DYN019": case "DYN020": case "DYN021": return 3;
     case "DYN022": return 4;
-    case "DYN021": return 3;
-    case "DYN023": return 2;
+    case "DYN023": return 3;
+    case "DYN024": return 2;
     case "DYN028": return 1;
     case "DYN049": return 1;
     case "DYN053": return 3;
@@ -149,7 +149,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN007": return true;
     case "DYN013": case "DYN014": case "DYN015": return AttackValue($attackID) >= 6;
     case "DYN019": case "DYN020": case "DYN021": return true;
-    case "DYN022": case "DYN021": case "DYN023": return ClassContains($attackID, "BRUTE", $mainPlayer);
+    case "DYN022": case "DYN023": case "DYN024": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
     case "DYN049": return $attackID == "DYN065";
     case "DYN053": case "DYN054": case "DYN055": return $attackID == "DYN065";
@@ -198,7 +198,7 @@ function DYNCardType($cardID)
     case "DYN013": case "DYN014": case "DYN015": return "A";
     case "DYN016": case "DYN017": case "DYN018": return "AA";
     case "DYN019": case "DYN020": case "DYN021": return "AA";
-    case "DYN022": case "DYN021": case "DYN023": return "A";
+    case "DYN022": case "DYN023": case "DYN024": return "A";
     case "DYN025": return "C";
     case "DYN026": return "E";
     //Guardian
@@ -474,7 +474,7 @@ function DYNPitchValue($cardID)
     case "DYN005": return 0;
     case "DYN007": return 1;
     case "DYN008":  case "DYN010": case "DYN013": case "DYN016": case "DYN019": case "DYN022": return 1;
-    case "DYN009":  case "DYN011": case "DYN014": case "DYN017": case "DYN020": case "DYN021": return 2;
+    case "DYN009":  case "DYN011": case "DYN014": case "DYN017": case "DYN020": case "DYN023": return 2;
     //Guardian
     case "DYN030": case "DYN033": case "DYN036": case "DYN039": return 1;
     case "DYN031": case "DYN034": case "DYN037": case "DYN040": return 2;
@@ -703,7 +703,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv .= "Discarded a 6 power card and gains +" . EffectAttackModifier($cardID);
       }
       return $rv;
-    case "DYN022": case "DYN021": case "DYN023":
+    case "DYN022": case "DYN023": case "DYN024":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $rv .= "Your next Brute attack this turn gains +" . EffectAttackModifier($cardID);
       return $rv;
