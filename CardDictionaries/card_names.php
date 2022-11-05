@@ -1313,6 +1313,7 @@ if ($set == "DYN") {
 		case "173": return "Cryptic Crossing";
 		case "174": return "Diabolic Ultimatum";
     	case "175": return "Looming Doom";
+    	case "176": case "177": case "178": return "Deathly Duet";
 		case "179": case "180": case "181": return "Blessing of Occult";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		//Wizard
