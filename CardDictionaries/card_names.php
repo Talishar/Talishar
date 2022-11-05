@@ -1334,8 +1334,9 @@ if ($set == "DYN") {
 		//Illusionist
 		case "214": return "Wave of Reality";
 		case "217": return "Tome of Aeo";
-    	case "218": return "Blessing of Spirits";
-        case "230": case "231": case "232": return "Water Glow Lanterns";
+    case "218": return "Blessing of Spirits";
+    case "224": case "225": case "226": return "Spectral Prowler";
+    case "230": case "231": case "232": return "Water Glow Lanterns";
 		//Generic
 		case "234": return "Crown of Dominion";
 		case "236": return "Spell Fray Tiara";
