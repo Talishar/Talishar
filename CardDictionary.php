@@ -2474,6 +2474,7 @@ function CardCaresAboutPitch($cardID)
       return true;
     case "DYN172": case "DYN173": case "DYN174":
     case "DYN176": case "DYN177": case "DYN178":
+		case "DYN182": case "DYN183": case "DYN184": 
       return true;
     default:
       return false;
