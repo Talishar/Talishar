@@ -5,6 +5,7 @@ include 'CardDictionary.php';
 $set = "DYN";
 $count = 0;
 for ($number = 0; $number < 246; ++$number) {
+  if($number == 65) continue;//Tiger (ignore no attack)
   if($number == 191) continue;//Runechant
   if($number == 233) continue;
   if($number == 245) continue;
