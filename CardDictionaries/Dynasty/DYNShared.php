@@ -17,6 +17,7 @@ function DYNAbilityCost($cardID)
     case "DYN151": return 1;
     case "DYN172": return 3;
     case "DYN192": return 2;
+    case "DYN193": return 3;
     case "DYN240": return 0;
     case "DYN241": return 0;
     case "DYN242": return 1;
@@ -45,6 +46,7 @@ function DYNAbilityType($cardID, $index = -1)
     case "DYN171": return "I";
     case "DYN172": return "A";
     case "DYN192": return "A";
+    case "DYN193": return "A";
     case "DYN240": return "A";
     case "DYN241": return "A";
     case "DYN242": case "DYN243": return "A";
@@ -308,6 +310,7 @@ function DYNCardType($cardID)
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
     case "DYN192": return "W";
+    case "DYN193": return "W";
 		case "DYN194": return "A";
 		case "DYN195": return "A";
     case "DYN196": return "I";
@@ -392,6 +395,7 @@ function DYNCardSubtype($cardID)
 		case "DYN179": case "DYN180": case "DYN181": return "Aura";
     //Wizard
     case "DYN192": return "Staff";
+    case "DYN193": return "Orb";
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
     //Illusionist
     case "DYN212": return "Invocation";
@@ -557,6 +561,7 @@ function DYNPitchValue($cardID)
     case "DYN176": case "DYN179": case "DYN182": case "DYN185": case "DYN188": case "DYN230": return 1;
     case "DYN177": case "DYN180": case "DYN183": case "DYN186": case "DYN189": case "DYN231": return 2;
     //Wizard
+    case "DYN193": return 0;
 		case "DYN194": return 2;
     case "DYN195": return 1;
     case "DYN197": case "DYN203": case "DYN206": return 1;
@@ -632,6 +637,7 @@ function DYNBlockValue($cardID)
     case "DYN188": case "DYN189": case "DYN190": return 2;
     //Wizard
     case "DYN192": return -1;
+    case "DYN193": return -1;
     case "DYN196": return -1;
     //Illusionist
     case "DYN217": return 2;
@@ -1093,6 +1099,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
       return "";
+    case "DYN193":
+      PlayerOpt($currentPlayer, 1, false);
+      PlayAura("DYN244", $currentPlayer);
+      return "Seerstone let you Opt 1 and create a Ponder token.";
   	case "DYN194":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";

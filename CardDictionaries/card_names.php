@@ -1322,6 +1322,7 @@ if ($set == "DYN") {
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		//Wizard
 		case "192": return "Surgent Aethertide";
+		case "193": return "Seerstone";
     case "194": return "Mind Warp";
 		case "195": return "Swell Tidings";
 		case "196": return "Brainstorm";
