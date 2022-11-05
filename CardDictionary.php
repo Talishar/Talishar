@@ -1588,6 +1588,7 @@ function HasBattleworn($cardID)
       return true;
     case "DYN006":
     case "DYN026":
+    case "DYN046":
     case "DYN089":
     case "DYN117":
     case "DYN118":
@@ -2474,8 +2475,8 @@ function CardCaresAboutPitch($cardID)
       return true;
     case "DYN172": case "DYN173": case "DYN174":
     case "DYN176": case "DYN177": case "DYN178":
-		case "DYN182": case "DYN183": case "DYN184": 
-		case "DYN185": case "DYN186": case "DYN187": 
+		case "DYN182": case "DYN183": case "DYN184":
+		case "DYN185": case "DYN186": case "DYN187":
       return true;
     default:
       return false;
