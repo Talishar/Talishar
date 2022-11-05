@@ -1330,6 +1330,7 @@ if ($set == "DYN") {
 		case "200": case "201": case "202": return "Blessing of Aether";
     case "203": case "204": case "205": return "Prognosticate";
 		case "206": case "207": case "208": return "Sap";
+		case "209": case "210": case "211": return "Tempest Aurora";
 		//Illusionist
 		case "217": return "Tome of Aeo";
     	case "218": return "Blessing of Spirits";
