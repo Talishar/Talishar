@@ -18,6 +18,7 @@ function DYNAbilityCost($cardID)
     case "DYN172": return 3;
     case "DYN192": return 2;
     case "DYN193": return 3;
+    case "DYN235": return 1;
     case "DYN240": return 0;
     case "DYN241": return 0;
     case "DYN242": return 1;
@@ -47,6 +48,7 @@ function DYNAbilityType($cardID, $index = -1)
     case "DYN172": return "A";
     case "DYN192": return "A";
     case "DYN193": return "A";
+    case "DYN235": return "I";
     case "DYN240": return "A";
     case "DYN241": return "A";
     case "DYN242": case "DYN243": return "A";
@@ -328,6 +330,7 @@ function DYNCardType($cardID)
     case "DYN224": case "DYN225": case "DYN226": return "AA";
     case "DYN230": case "DYN231": case "DYN232": return "A";
     case "DYN234": return "E";
+    case "DYN235": return "E";
     case "DYN236": return "E";
 		case "DYN237": return "E";
 		case "DYN238": return "E";
@@ -408,6 +411,7 @@ function DYNCardSubtype($cardID)
     case "DYN218": case "DYN219": case "DYN220": return "Aura";
     //Generic
     case "DYN234": return "Head";
+    case "DYN235": return "Off-Hand";
     case "DYN236": return "Head";
 		case "DYN237": return "Chest";
 		case "DYN238": return "Gloves";
@@ -580,6 +584,7 @@ function DYNPitchValue($cardID)
     case "DYN224": return 1;
     case "DYN225": return 2;
     case "DYN234": return 0;
+    case "DYN235": return 0;
     case "DYN240": return 1;
     case "DYN241": return 1;
     case "DYN242": return 1;
@@ -656,6 +661,7 @@ function DYNBlockValue($cardID)
     case "DYN230": case "DYN231": case "DYN232": return 2;
     //Generic
     case "DYN234": return -1;
+    case "DYN235": return -1;
     case "DYN236": return 0;
 		case "DYN237": return 0;
 		case "DYN238": return 0;
@@ -1160,6 +1166,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
       return "Reveal has been prevented.";
+    case "DYN235":
+      MayBottomDeckDraw();
+      return "Ornate Tessen let you sink a card.";
     case "DYN240":
       $rv = "";
       if ($from == "PLAY") {

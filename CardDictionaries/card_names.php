@@ -1339,6 +1339,7 @@ if ($set == "DYN") {
     case "230": case "231": case "232": return "Water Glow Lanterns";
 		//Generic
 		case "234": return "Crown of Dominion";
+    case "235": return "Ornate Tessen";
 		case "236": return "Spell Fray Tiara";
 		case "237": return "Spell Fray Cloack";
 		case "238": return "Spell Fray Gloves";
