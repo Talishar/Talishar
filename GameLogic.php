@@ -242,6 +242,9 @@ function DoSurgeEffect($cardID, $player, $target)
       WriteLog(CardLink($cardID, $cardID) . " gained go again due to its surge's ability");
       GainActionPoints();
       break;
+    case "DYN203": case "DYN204": case "DYN205":
+      PlayerOpt($player, 1);
+      break;
     case "DYN206": case "DYN207": case "DYN208":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasEnergyCounters=true");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which permanent remove an energy counter");
@@ -630,7 +633,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (ComboActive() ? 2 : 0);
     case "DYN056": case "DYN057": case "DYN058":
       return (ComboActive() ? 1 : 0);
-    case "DYN059": case "DYN060": case "DYN061": 
+    case "DYN059": case "DYN060": case "DYN061":
       return (ComboActive() ? 4 : 0);
     case "DYN115": case "DYN116":
       return NumEquipBlock() > 0 ? 1 : 0;
@@ -5567,7 +5570,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       case "PULSECHECKVALIDCARDS":
       $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $hand = &GetHand($player);
-      $newIndices = "";     
+      $newIndices = "";
       for ($i = 0; $i < count($indices); ++$i) {
         if (BlockValue($hand[$indices[$i]]) > -1 && BlockValue($hand[$indices[$i]]) <= $parameter && (CardType($hand[$indices[$i]]) == "A" || CardType($hand[$indices[$i]]) == "AA"))
         {
