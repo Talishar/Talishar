@@ -78,10 +78,11 @@ function DYNHasGoAgain($cardID)
     case "DYN155": return true;
 		case "DYN168": case "DYN169": case "DYN170": return true;
     //Runeblade
-    case "DYN188": case "DYN189": case "DYN190": return  true;
+		case "DYN185": case "DYN186": case "DYN187": return true;
+    case "DYN188": case "DYN189": case "DYN190": return true;
     //Illusionist
     case "DYN212": return true;
-    case "DYN230": case "DYN231": case "DYN232": return  true;
+    case "DYN230": case "DYN231": case "DYN232": return true;
     default: return false;
   }
 }
@@ -138,6 +139,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN169": return 2;
     case "DYN170": return 1;
     case "DYN176": case "DYN177": case "DYN178": return 2;
+		case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return 1;
     default:
       return 0;
   }
@@ -173,6 +175,8 @@ function DYNCombatEffectActive($cardID, $attackID)
 		case "DYN165": case "DYN166": case "DYN167": return true;
 		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
     case "DYN176": case "DYN177": case "DYN178": return true;
+		case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return ClassContains($attackID, "RUNEBLADE", $mainPlayer);
+		case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT": return true;
     default:
       return false;
   }
@@ -294,6 +298,7 @@ function DYNCardType($cardID)
     case "DYN176": case "DYN177": case "DYN178": return "AA";
 		case "DYN179": case "DYN180": case "DYN181": return "A";
 		case "DYN182": case "DYN183": case "DYN184": return "AA";
+		case "DYN185": case "DYN186": case "DYN187": return "A";
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
     case "DYN192": return "W";
@@ -470,6 +475,7 @@ function DYNCardCost($cardID)
     case "DYN176": case "DYN177": case "DYN178": return 2;
 		case "DYN179": case "DYN180": case "DYN181": return 1;
 		case "DYN182": case "DYN183": case "DYN184": return 1;
+		case "DYN185": case "DYN186": case "DYN187": return 1;
     //Wizard
 		case "DYN194": return 0;
 		case "DYN195": return 2;
@@ -481,6 +487,8 @@ function DYNCardCost($cardID)
     case "DYN212": return 2;
     case "DYN217": return 1;
     case "DYN218": case "DYN219": case "DYN220": return 1;
+    //Generic
+    case "DYN240": return 1;
     case "DYN242": return 2;
     default: return 0;
   }
@@ -537,8 +545,8 @@ function DYNPitchValue($cardID)
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
-    case "DYN176": case "DYN179": case "DYN182": case "DYN188": case "DYN230": return 1;
-    case "DYN177": case "DYN180": case "DYN183": case "DYN189": case "DYN231": return 2;
+    case "DYN176": case "DYN179": case "DYN182": case "DYN185": case "DYN188": case "DYN230": return 1;
+    case "DYN177": case "DYN180": case "DYN183": case "DYN186": case "DYN189": case "DYN231": return 2;
     //Wizard
 		case "DYN194": return 2;
     case "DYN195": return 1;
@@ -609,6 +617,7 @@ function DYNBlockValue($cardID)
     case "DYN174": return 2;
     case "DYN175": return 3;
 		case "DYN179": case "DYN180": case "DYN181": return 2;
+		case "DYN185": case "DYN186": case "DYN187": return 2;
     case "DYN188": case "DYN189": case "DYN190": return 2;
     //Wizard
     case "DYN192": return -1;
@@ -871,9 +880,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
       }
       return "";
-    case "DYN130":
-    case "DYN131":
-    case "DYN132":
+    case "DYN130": case "DYN131": case "DYN132":
       if ($cardID == "DYN130") $amount = 4;
       else if ($cardID == "DYN131") $amount = 3;
       else $amount = 2;
@@ -1005,7 +1012,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $index = count($auras) - AuraPieces();//Get index of last played aura i.e. this
       $auras[$index+2] = $numRunechants;
       return "";
-
     case "DYN176": case "DYN177": case "DYN178":
       $pitchArr = explode(",", $additionalCosts);
       $attackActionPitched = 0;
@@ -1027,7 +1033,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return $rv;
 		case "DYN182": case "DYN183": case "DYN184":
       $pitchArr = explode(",", $additionalCosts);
-      $attackActionPitched = 0;
       $naaPitched = 0;
       for ($i = 0; $i < count($pitchArr); ++$i) {
         if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
@@ -1036,6 +1041,22 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         DealArcane(1, 2, "PLAYCARD", $cardID);
       }
       return "";
+		case "DYN185": case "DYN186": case "DYN187":
+      if ($cardID == "DYN185") $amount = 3;
+      else if ($cardID == "DYN186") $amount = 2;
+      else $amount = 1;
+      $pitchArr = explode(",", $additionalCosts);
+      $attackActionPitched = 0;
+      $rv = "The next Runeblade attack action card you play creates " . $amount . " Runechant on-hit";
+      for ($i = 0; $i < count($pitchArr); ++$i) {
+        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      }
+      AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
+      if ($attackActionPitched) {
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        $rv .= " and gain +1 power";
+      }
+      return $rv . ".";
     case "DYN188": case "DYN189": case "DYN190":
       if (CanRevealCards($currentPlayer)) {
         $deck = GetDeck($currentPlayer);
