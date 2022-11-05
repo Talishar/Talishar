@@ -133,6 +133,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN091-1": return 3;
     case "DYN155": return 3;
     case "DYN156": case "DYN157": case "DYN158": return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN165": case "DYN166": case "DYN167": return 2;
     case "DYN168": return 3;
     case "DYN169": return 2;
     case "DYN170": return 1;
@@ -166,7 +167,8 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
-    case "DYN156": case "DYN157": case "DYN158": return SearchCurrentTurnEffects("AIM", $mainPlayer);
+    case "DYN156": case "DYN157": case "DYN158": return true;
+		case "DYN165": case "DYN166": case "DYN167": return true;
 		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
     default:
       return false;
@@ -277,6 +279,7 @@ function DYNCardType($cardID)
     case "DYN156": case "DYN157": case "DYN158": return "AA";
 		case "DYN159": case "DYN160": case "DYN161": return "A";
     case "DYN162": case "DYN163": case "DYN164": return "AA";
+    case "DYN165": case "DYN166": case "DYN167": return "AA";
 		case "DYN168": case "DYN169": case "DYN170": return "A";
     //Runeblade
     case "DYN171": return "E";
@@ -362,6 +365,7 @@ function DYNCardSubtype($cardID)
     case "DYN156": case "DYN157": case "DYN158": return "Arrow";
 		case "DYN159": case "DYN160": case "DYN161": return "Aura";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
+    case "DYN165": case "DYN166": case "DYN167": return "Arrow";
     //Runeblade
     case "DYN171": return "Head";
     case "DYN172": return "Book";
@@ -519,8 +523,8 @@ function DYNPitchValue($cardID)
     case "DYN151": return 0;
     case "DYN153": return 1;
     case "DYN155": return 2;
-    case "DYN156": case "DYN159": case "DYN162": case "DYN168": return 1;
-    case "DYN157": case "DYN160": case "DYN163": case "DYN169": return 2;
+    case "DYN156": case "DYN159": case "DYN162": case "DYN165": case "DYN168": return 1;
+    case "DYN157": case "DYN160": case "DYN163": case "DYN166": case "DYN169": return 2;
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
@@ -656,8 +660,9 @@ function DYNAttackValue($cardID)
     //Ranger
     case "DYN153": case "DYN162": return 5;
     case "DYN156": case "DYN163": return 4;
-    case "DYN157": case "DYN164": return 3;
-    case "DYN158": return 2;
+    case "DYN157": case "DYN164": case "DYN165": return 3;
+    case "DYN158": case "DYN166": return 2;
+    case "DYN167": return 1;
     //Runeblade
     case "DYN173": return 6;
     case "DYN492a": return 5;
@@ -902,8 +907,15 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN156": case "DYN157": case "DYN158": 
       if (SearchCurrentTurnEffects("AIM", $currentPlayer)){
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "has piercing 1.";
       }
-      return "has piercing 1.";
+      return "";
+    case "DYN165": case "DYN166": case "DYN167":
+      if (SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "has +2.";
+      }
+      return "";
     case "DYN168": case "DYN169": case "DYN170":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALUP");
       AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);

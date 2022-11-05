@@ -1304,6 +1304,7 @@ if ($set == "DYN") {
 		case "156": case "157": case "158": return "Drill Shot";
 		case "159": case "160": case "161": return "Blessing of Focus";
 		case "162": case "163": case "164": return "Hemorrhage Bore";
+		case "165": case "166": case "167": return "Long Shot";
 		case "168": case "169": case "170": return "Point the Tip";
 		//Runeblade
 		case "171": return "Amethyst Tiara";
