@@ -3081,6 +3081,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DYN118":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "DYN235":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
     case "DYN492a":
       --$character[$cardIndex + 2];
       WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself.");
