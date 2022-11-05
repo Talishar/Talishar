@@ -7,6 +7,7 @@ include "ItemAbilities.php";
 include "AllyAbilities.php";
 include "PermanentAbilities.php";
 include "LandmarkAbilities.php";
+include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
 
@@ -2482,6 +2483,9 @@ function CharacterDestroyEffect($cardID, $player)
   switch ($cardID) {
     case "ELE213":
       DestroyArsenal($player);
+      break;
+    case "DYN214":
+      PlayAura("MON104", $player);
       break;
     default:
       break;

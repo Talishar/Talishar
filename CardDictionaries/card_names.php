@@ -1332,6 +1332,7 @@ if ($set == "DYN") {
 		case "206": case "207": case "208": return "Sap";
 		case "209": case "210": case "211": return "Tempest Aurora";
 		//Illusionist
+		case "214": return "Wave of Reality";
 		case "217": return "Tome of Aeo";
     	case "218": return "Blessing of Spirits";
         case "230": case "231": case "232": return "Water Glow Lanterns";
