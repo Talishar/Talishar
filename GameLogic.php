@@ -682,7 +682,9 @@ function EffectHitEffect($cardID)
         PummelHit();
       }
       break;
-    case "CRU145": case "CRU146": case "CRU147":
+    case "CRU145":
+    case "CRU146":
+    case "CRU147":
       if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)){
         if ($cardID == "CRU145") $amount = 3;
         else if ($cardID == "CRU146") $amount = 2;
@@ -908,21 +910,12 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
       break;
     case "DYN155":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer)) {
-        WriteLog("HERE");
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer, true)) {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $defPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      }
-      break;
-    case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT":
-      if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)) {
-        if ($cardID == "DYN185-HIT") $amount = 3;
-        else if ($cardID == "DYN186-HIT") $amount = 2;
-        else $amount = 1;
-        PlayAura("ARC112", $mainPlayer, $amount, true);
       }
       break;
     default:
@@ -991,7 +984,6 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
-  if ($cardType == "E" && ($combatChain[0] == "DYN095" || $combatChain[0] == "DYN096" || $combatChain[0] == "DYN097")) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
     if ($defAuras[$i] == "WTR072" && CardCost($cardID) >= 3) $blockModifier += 4;
@@ -1890,8 +1882,6 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN115": case "DYN116":
       return NumCardsBlocking() == 0 && NumAttacksBlocking() == 0;
-    case "DYN154":
-      return true;
     default:
       return false;
   }
@@ -1920,16 +1910,16 @@ function BeginEndPhaseEffects()
         break;
       case "DYN153":
         $deck = &GetDeck($mainPlayer);
-        if(count($deck) == 0) {
+        if(count($deck) == 0)
+        {
           WriteLog("Your Heat Seeker fizzled out.");
           break;
         }
-        if(!ArsenalFull($mainPlayer)) {
+        if(!ArsenalFull($mainPlayer))
+        {
           $card = array_shift($deck);
           WriteLog("Heat Seeker added " . CardLink($card, $card) . " to your arsenal.");
           AddArsenal($card, $mainPlayer, "DECK", "UP");
-        } else {
-          WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
         }
         break;
       default:
@@ -2272,6 +2262,16 @@ function OnBlockEffects($index, $from)
         case "ELE004":
           if ($cardType == "DR") {
             PlayAura("ELE111", $currentPlayer);
+          }
+          break;
+        case "DYN042": case "DYN043": case "DYN044":
+          if(ClassContains($combatChain[$index], "GUARDIAN", $currentPlayer) && CardSubType($combatChain[$index]) == "Off-Hand")
+          {
+            if($currentTurnEffects[$i] == "DYN042") $amount = 6;
+            else if($currentTurnEffects[$i] == "DYN043") $amount = 5;
+            else $amount = 4;
+            $combatChain[$index + 6] += $amount;
+            $remove = 1;
           }
           break;
         default:
@@ -4238,7 +4238,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       ItemBoostEffects();
       $actionPoints += CountCurrentTurnEffects("ARC006", $currentPlayer);
       $cardID = $deck[0];
-      if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091-2", $player, true)) PutItemIntoPlay($cardID);
+      if(CardSubType($cardID) == "Item" && SearchCurrentTurnEffects("DYN091", $player)) PutItemIntoPlay($cardID);
       else BanishCardForPlayer($cardID, $currentPlayer, "DECK", "BOOST");
       unset($deck[0]);
       $deck = array_values($deck);
@@ -4923,13 +4923,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
         PlayAura("WTR225", $player);
       }
-      return $lastResult;
-    case "BLESSINGOFFOCUS":
-      $deck = &GetDeck($mainPlayer);
-      if (RevealCards($deck[0], $mainPlayer) && CardSubType($deck[0]) == "Arrow") {
-        if (!ArsenalFull($mainPlayer)) AddArsenal($deck[0], $mainPlayer, "DECK", "UP", 1);
-        else WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
-      }  
       return $lastResult;
     case "KRAKENAETHERVEIN":
       if ($lastResult > 0) {
