@@ -283,6 +283,7 @@ function DYNCardType($cardID)
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
     case "DYN192": return "W";
+		case "DYN194": return "A";
 		case "DYN195": return "A";
     case "DYN196": return "I";
     case "DYN197": case "DYN198": case "DYN199": return "A";
@@ -447,6 +448,7 @@ function DYNCardCost($cardID)
     case "DYN175": return 3;
 		case "DYN179": case "DYN180": case "DYN181": return 1;
     //Wizard
+		case "DYN194": return 0;
 		case "DYN195": return 2;
     case "DYN196": return 3;
     case "DYN197": case "DYN198": case "DYN199": return 1;
@@ -519,6 +521,7 @@ function DYNPitchValue($cardID)
     case "DYN179": case "DYN188": case "DYN230": return 1;
     case "DYN180": case "DYN189": case "DYN231": return 2;
     //Wizard
+		case "DYN194": return 2;
     case "DYN195": return 1;
     case "DYN197": case "DYN203": case "DYN206": return 1;
     case "DYN198": case "DYN204": case "DYN207": return 2;
@@ -982,6 +985,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
       return "";
+  	case "DYN194":
+      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
     case "DYN195":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
@@ -1209,6 +1215,7 @@ function IsRoyal($player)
 function HasSurge($cardID)
 {
   switch ($cardID) {
+		case "DYN194": return true;
 		case "DYN195": return true;
     case "DYN197": case "DYN198": case "DYN199": return true;
     case "DYN203": case "DYN204": case "DYN205": return true;
