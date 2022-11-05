@@ -293,6 +293,7 @@ function DYNCardType($cardID)
     case "DYN175": return "A";
     case "DYN176": case "DYN177": case "DYN178": return "AA";
 		case "DYN179": case "DYN180": case "DYN181": return "A";
+		case "DYN182": case "DYN183": case "DYN184": return "AA";
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
     case "DYN192": return "W";
@@ -468,6 +469,7 @@ function DYNCardCost($cardID)
     case "DYN175": return 3;
     case "DYN176": case "DYN177": case "DYN178": return 2;
 		case "DYN179": case "DYN180": case "DYN181": return 1;
+		case "DYN182": case "DYN183": case "DYN184": return 1;
     //Wizard
 		case "DYN194": return 0;
 		case "DYN195": return 2;
@@ -535,8 +537,8 @@ function DYNPitchValue($cardID)
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
-    case "DYN176": case "DYN179": case "DYN188": case "DYN230": return 1;
-    case "DYN177": case "DYN180": case "DYN189": case "DYN231": return 2;
+    case "DYN176": case "DYN179": case "DYN182": case "DYN188": case "DYN230": return 1;
+    case "DYN177": case "DYN180": case "DYN183": case "DYN189": case "DYN231": return 2;
     //Wizard
 		case "DYN194": return 2;
     case "DYN195": return 1;
@@ -673,9 +675,9 @@ function DYNAttackValue($cardID)
     case "DYN167": return 1;
     //Runeblade
     case "DYN173": return 6;
-    case "DYN176": return 4;
-    case "DYN177": return 3;
-    case "DYN178": return 2;
+    case "DYN176": case "DYN182": return 4;
+    case "DYN177": case "DYN183": return 3;
+    case "DYN178": case "DYN184": return 2;
     //Illusionist
     case "DYN612": return 4;
     default: return 0;
@@ -1023,6 +1025,17 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv .= "creates 2 Runechant.";
       }
       return $rv;
+		case "DYN182": case "DYN183": case "DYN184":
+      $pitchArr = explode(",", $additionalCosts);
+      $attackActionPitched = 0;
+      $naaPitched = 0;
+      for ($i = 0; $i < count($pitchArr); ++$i) {
+        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
+      }
+      if ($naaPitched) {
+        DealArcane(1, 2, "PLAYCARD", $cardID);
+      }
+      return "";
     case "DYN188": case "DYN189": case "DYN190":
       if (CanRevealCards($currentPlayer)) {
         $deck = GetDeck($currentPlayer);
