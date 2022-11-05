@@ -908,8 +908,9 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
       break;
     case "DYN155":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer, true)) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer)) {
+        WriteLog("HERE");
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $defPlayer, 1);
