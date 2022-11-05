@@ -2472,9 +2472,8 @@ function CardCaresAboutPitch($cardID)
     case "ELE002":
     case "ELE003":
       return true;
-    case "DYN172":
-    case "DYN173":
-    case "DYN174":
+    case "DYN172": case "DYN173": case "DYN174":
+    case "DYN176": case "DYN177": case "DYN178":
       return true;
     default:
       return false;

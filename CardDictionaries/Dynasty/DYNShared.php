@@ -137,6 +137,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN168": return 3;
     case "DYN169": return 2;
     case "DYN170": return 1;
+    case "DYN176": case "DYN177": case "DYN178": return 2;
     default:
       return 0;
   }
@@ -171,6 +172,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN156": case "DYN157": case "DYN158": return true;
 		case "DYN165": case "DYN166": case "DYN167": return true;
 		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
+    case "DYN176": case "DYN177": case "DYN178": return true;
     default:
       return false;
   }
@@ -289,6 +291,7 @@ function DYNCardType($cardID)
     case "DYN173": return "AA";
     case "DYN174": return "A";
     case "DYN175": return "A";
+    case "DYN176": case "DYN177": case "DYN178": return "AA";
 		case "DYN179": case "DYN180": case "DYN181": return "A";
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
@@ -463,6 +466,7 @@ function DYNCardCost($cardID)
     case "DYN173": return 3;
     case "DYN174": return 3;
     case "DYN175": return 3;
+    case "DYN176": case "DYN177": case "DYN178": return 2;
 		case "DYN179": case "DYN180": case "DYN181": return 1;
     //Wizard
 		case "DYN194": return 0;
@@ -531,8 +535,8 @@ function DYNPitchValue($cardID)
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
-    case "DYN179": case "DYN188": case "DYN230": return 1;
-    case "DYN180": case "DYN189": case "DYN231": return 2;
+    case "DYN176": case "DYN179": case "DYN188": case "DYN230": return 1;
+    case "DYN177": case "DYN180": case "DYN189": case "DYN231": return 2;
     //Wizard
 		case "DYN194": return 2;
     case "DYN195": return 1;
@@ -651,6 +655,7 @@ function DYNAttackValue($cardID)
     case "DYN090": case "DYN096": case "DYN102": case "DYN105": case "DYN107": return 4;
     case "DYN097": case "DYN103": case "DYN106": case "DYN108": return 3;
     case "DYN109": return 2;
+    case "DYN492a": return 5;
     //Assassin
     case "DYN115": case "DYN116": return 1;
     case "DYN120": return 4;
@@ -668,7 +673,10 @@ function DYNAttackValue($cardID)
     case "DYN167": return 1;
     //Runeblade
     case "DYN173": return 6;
-    case "DYN492a": return 5;
+    case "DYN176": return 4;
+    case "DYN177": return 3;
+    case "DYN178": return 2;
+    //Illusionist
     case "DYN612": return 4;
     default: return 0;
   }
@@ -974,7 +982,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        $rv .= "each hero chose and destroyed an ally they control.";
+        $rv .= "Each hero chose and destroyed an ally they control.";
       }
       if ($naaPitched) {
         // Opponent
@@ -985,7 +993,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        $rv .= "each hero chose and destroyed an aura they control.";
+        if ($rv != "") $rv .= " ";
+        $rv .= "Each hero chose and destroyed an aura they control.";
       }
       return $rv;
     case "DYN175":
@@ -994,9 +1003,27 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $index = count($auras) - AuraPieces();//Get index of last played aura i.e. this
       $auras[$index+2] = $numRunechants;
       return "";
-    case "DYN188":
-    case "DYN189":
-    case "DYN190":
+
+    case "DYN176": case "DYN177": case "DYN178":
+      $pitchArr = explode(",", $additionalCosts);
+      $attackActionPitched = 0;
+      $naaPitched = 0;
+      $rv = "";
+      for ($i = 0; $i < count($pitchArr); ++$i) {
+        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
+        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      }
+      if ($attackActionPitched) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        $rv .= "Gain +2 power";
+      }
+      if ($naaPitched) {
+        PlayAura("ARC112", $currentPlayer, 2, true);
+        if ($rv != "") $rv .= " and ";
+        $rv .= "creates 2 Runechant.";
+      }
+      return $rv;
+    case "DYN188": case "DYN189": case "DYN190":
       if (CanRevealCards($currentPlayer)) {
         $deck = GetDeck($currentPlayer);
         if (count($deck) == 0) return "Your deck is empty. Nothing was revealed.";
