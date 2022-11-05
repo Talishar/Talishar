@@ -407,6 +407,7 @@ function DYNCardCost($cardID)
     case "DYN053": case "DYN054": case "DYN055": return 1;
     case "DYN059": case "DYN060": case "DYN061": return 2;
     //Warrior
+    case "DYN071": return 1;
     case "DYN072": return 1;
     case "DYN073": case "DYN074": case "DYN075": return 1;
     case "DYN076": case "DYN077": case "DYN078": return 1;
