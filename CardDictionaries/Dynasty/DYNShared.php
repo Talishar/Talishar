@@ -84,6 +84,7 @@ function DYNHasGoAgain($cardID)
     //Runeblade
 		case "DYN185": case "DYN186": case "DYN187": return true;
     case "DYN188": case "DYN189": case "DYN190": return true;
+    case "DYN209": case "DYN210": case "DYN211": return true;
     //Illusionist
     case "DYN212": return true;
     case "DYN230": case "DYN231": case "DYN232": return true;
@@ -318,6 +319,7 @@ function DYNCardType($cardID)
     case "DYN200": case "DYN201": case "DYN202": return "A";
     case "DYN203": case "DYN204": case "DYN205": return "A";
     case "DYN206": case "DYN207": case "DYN208": return "A";
+    case "DYN209": case "DYN210": case "DYN211": return "A";
     //Illusionist
     case "DYN212": return "A";
     case "DYN217": return "A";
@@ -495,6 +497,7 @@ function DYNCardCost($cardID)
     case "DYN197": case "DYN198": case "DYN199": return 1;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     case "DYN203": case "DYN204": case "DYN205": return 0;
+    case "DYN209": case "DYN210": case "DYN211": return 0;
     //Illusionist
     case "DYN212": return 2;
     case "DYN217": return 1;
@@ -564,8 +567,8 @@ function DYNPitchValue($cardID)
     case "DYN193": return 0;
 		case "DYN194": return 2;
     case "DYN195": return 1;
-    case "DYN197": case "DYN203": case "DYN206": return 1;
-    case "DYN198": case "DYN204": case "DYN207": return 2;
+    case "DYN197": case "DYN203": case "DYN206": case "DYN209": return 1;
+    case "DYN198": case "DYN204": case "DYN207": case "DYN210": return 2;
     //Illusionist
     case "DYN212": return 2;
     case "DYN218": return 1;
@@ -639,6 +642,7 @@ function DYNBlockValue($cardID)
     case "DYN192": return -1;
     case "DYN193": return -1;
     case "DYN196": return -1;
+    case "DYN209": case "DYN210": case "DYN211": return 2;
     //Illusionist
     case "DYN217": return 2;
     case "DYN218": case "DYN219": case "DYN220": return 2;
@@ -1120,6 +1124,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN206": case "DYN207": case "DYN208":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      return "";
+    case "DYN209": case "DYN210": case "DYN211":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN212":
       //Do invocation

@@ -1466,6 +1466,16 @@ function CurrentEffectPlayAbility($cardID, $from)
           if (ActionsThatDoArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
           if ($from != "EQUIP") $remove = 1;
           break;
+        case "DYN209": case "DYN210": case "DYN211":
+          if ($currentTurnEffects[$i] == "DYN209") $maxCost = 2;
+          else if ($currentTurnEffects[$i] == "DYN210") $maxCost = 1;
+          else $maxCost = 0;
+          if (ActionsThatDoArcaneDamage($cardID) && CardCost($cardID) <= $maxCost)
+          {
+            AddArcaneBonus(1, $currentPlayer);
+            $remove = 1;
+          }
+          break;
         default:
           break;
       }
