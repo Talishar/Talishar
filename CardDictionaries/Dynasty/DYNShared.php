@@ -322,6 +322,7 @@ function DYNCardType($cardID)
     case "DYN209": case "DYN210": case "DYN211": return "A";
     //Illusionist
     case "DYN212": return "A";
+    case "DYN214": return "E";
     case "DYN217": return "A";
     case "DYN218": case "DYN219": case "DYN220": return "A";
     case "DYN230": case "DYN231": case "DYN232": return "A";
@@ -401,6 +402,7 @@ function DYNCardSubtype($cardID)
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
     //Illusionist
     case "DYN212": return "Invocation";
+    case "DYN214": return "Arms";
     case "DYN217": return "Aura";
     case "DYN218": case "DYN219": case "DYN220": return "Aura";
     //Generic
@@ -571,6 +573,7 @@ function DYNPitchValue($cardID)
     case "DYN198": case "DYN204": case "DYN207": case "DYN210": return 2;
     //Illusionist
     case "DYN212": return 2;
+    case "DYN214": return 0;
     case "DYN218": return 1;
     case "DYN219": return 2;
     case "DYN234": return 0;
@@ -644,6 +647,7 @@ function DYNBlockValue($cardID)
     case "DYN196": return -1;
     case "DYN209": case "DYN210": case "DYN211": return 2;
     //Illusionist
+    case "DYN214": return -1;
     case "DYN217": return 2;
     case "DYN218": case "DYN219": case "DYN220": return 2;
     case "DYN230": case "DYN231": case "DYN232": return 2;
