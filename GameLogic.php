@@ -1883,6 +1883,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN115": case "DYN116":
       return NumCardsBlocking() == 0 && NumAttacksBlocking() == 0;
+    case "DYN154":
+      return true;
     default:
       return false;
   }
