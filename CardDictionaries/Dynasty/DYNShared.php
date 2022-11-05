@@ -130,7 +130,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN086": return NumEquipBlock() > 0 ? 2 : 0;
     case "DYN087": return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN089-UNDER": return 1;
-    case "DYN091": return 3;
+    case "DYN091-1": return 3;
     case "DYN155": return 3;
     case "DYN168": return 3;
     case "DYN169": return 2;
@@ -162,7 +162,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 		case "DYN085": case "DYN086": case "DYN087": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
     case "DYN089-UNDER":
       return $attackID == "DYN492a";
-    case "DYN091": return $combatChainState[$CCS_IsBoosted];
+    case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
 		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
@@ -800,7 +800,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "DYN091":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+      AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
       return "The next card you boost gets +3 attack and if you banish an item you play it.";
     case "DYN092":
       $hasHead = false; $hasChest = false; $hasArms = false; $hasLegs = false; $hasWeapon = false; $numHypers = 0;
