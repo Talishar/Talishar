@@ -551,7 +551,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     JSONRenderedCard($lastPlayed[0], controller: $lastPlayed[1]);
 
   // is the player the active player (is it their turn?)
-  $response->amIActivePlayer = ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer))  ? true : false;
+  $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
 
   //Turn number
   $response->turnNo = $currentTurn;
