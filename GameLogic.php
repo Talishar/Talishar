@@ -2274,6 +2274,16 @@ function OnBlockEffects($index, $from)
             PlayAura("ELE111", $currentPlayer);
           }
           break;
+        case "DYN042": case "DYN043": case "DYN044":
+          if(ClassContains($combatChain[$index], "GUARDIAN", $currentPlayer) && CardSubType($combatChain[$index]) == "Off-Hand")
+          {
+            if($currentTurnEffects[$i] == "DYN042") $amount = 6;
+            else if($currentTurnEffects[$i] == "DYN043") $amount = 5;
+            else $amount = 4;
+            $combatChain[$index + 6] += $amount;
+            $remove = 1;
+          }
+          break;
         default:
           break;
       }
@@ -4929,7 +4939,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (RevealCards($deck[0], $mainPlayer) && CardSubType($deck[0]) == "Arrow") {
         if (!ArsenalFull($mainPlayer)) AddArsenal($deck[0], $mainPlayer, "DECK", "UP", 1);
         else WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
-      }  
+      }
       return $lastResult;
     case "KRAKENAETHERVEIN":
       if ($lastResult > 0) {

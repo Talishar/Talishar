@@ -219,6 +219,7 @@ function DYNCardType($cardID)
     case "DYN033": case "DYN034": case "DYN035": return "A";
 		case "DYN036": case "DYN037": case "DYN038": return "DR";
     case "DYN039": case "DYN040": case "DYN041": return "A";
+    case "DYN042": case "DYN043": case "DYN044": return "I";
     //Ninja
     case "DYN045": return "E";
     case "DYN047": return "AA";
@@ -425,6 +426,7 @@ function DYNCardCost($cardID)
     case "DYN033": case "DYN034": case "DYN035": return 1;
 		case "DYN036": case "DYN037": case "DYN038": return 6;
     case "DYN039": case "DYN040": case "DYN041": return 2;
+    case "DYN042": case "DYN043": case "DYN044": return 2;
     //Ninja
     case "DYN050": case "DYN051": case "DYN052": return 1;
     case "DYN053": case "DYN054": case "DYN055": return 1;
@@ -506,8 +508,8 @@ function DYNPitchValue($cardID)
     case "DYN008":  case "DYN010": case "DYN013": case "DYN016": case "DYN019": case "DYN022": return 1;
     case "DYN009":  case "DYN011": case "DYN014": case "DYN017": case "DYN020": case "DYN023": return 2;
     //Guardian
-    case "DYN030": case "DYN033": case "DYN036": case "DYN039": return 1;
-    case "DYN031": case "DYN034": case "DYN037": case "DYN040": return 2;
+    case "DYN030": case "DYN033": case "DYN036": case "DYN039": case "DYN042": return 1;
+    case "DYN031": case "DYN034": case "DYN037": case "DYN040": case "DYN043": return 2;
     //Ninja
     case "DYN047": return 1;
     case "DYN049": return 2;
@@ -581,6 +583,7 @@ function DYNBlockValue($cardID)
     case "DYN030": case "DYN037": return 6;
     case "DYN031": case "DYN038": return 5;
     case "DYN032": return 4;
+    case "DYN042": case "DYN043": case "DYN044": return -1;
     //Ninja
     case "DYN045": return 1;
     case "DYN050": case "DYN051": case "DYN052": return 2;
@@ -676,7 +679,7 @@ function DYNAttackValue($cardID)
     case "DYN119": case "DYN124": case "DYN128": case "DYN134": case "DYN136": case "DYN140": case "DYN142": case "DYN145": return 4;
     case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
     case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
-    //Ranger    
+    //Ranger
     case "DYN153": case "DYN162": return 5;
     case "DYN154": case "DYN156": case "DYN163": return 4;
     case "DYN157": case "DYN164": case "DYN165": return 3;
@@ -770,6 +773,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
       AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
       return "Remove a -1 counter from a Guardian Off-Hand with " . $maxDef . " or less base defense.";
+    case "DYN042": case "DYN043": case "DYN044":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;class=GUARDIAN");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Guardian Off-Hand to buff", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      return "The next time you block with target guardian off-hand, it blocks for extra.";
     case "DYN049":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddPlayerHand("DYN065", $currentPlayer, "-");
@@ -924,7 +933,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN155":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next Arrow attack action card +" . EffectAttackModifier($cardID);
-    case "DYN156": case "DYN157": case "DYN158": 
+    case "DYN156": case "DYN157": case "DYN158":
       if (SearchCurrentTurnEffects("AIM", $currentPlayer)){
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "has piercing 1.";
@@ -1280,7 +1289,7 @@ function DYNHitEffect($cardID)
         AddCurrentTurnEffectFromCombat($cardID . "-1", $defPlayer); //Doesn't do anything just show it in the effects
       }
       break;
-    case "DYN156": case "DYN157": case "DYN158": 
+    case "DYN156": case "DYN157": case "DYN158":
       if (IsHeroAttackTarget()){
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
