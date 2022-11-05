@@ -682,9 +682,7 @@ function EffectHitEffect($cardID)
         PummelHit();
       }
       break;
-    case "CRU145":
-    case "CRU146":
-    case "CRU147":
+    case "CRU145": case "CRU146": case "CRU147":
       if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)){
         if ($cardID == "CRU145") $amount = 3;
         else if ($cardID == "CRU146") $amount = 2;
@@ -916,6 +914,14 @@ function EffectHitEffect($cardID)
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $defPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
+    case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT":
+      if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)) {
+        if ($cardID == "DYN185-HIT") $amount = 3;
+        else if ($cardID == "DYN186-HIT") $amount = 2;
+        else $amount = 1;
+        PlayAura("ARC112", $mainPlayer, $amount, true);
       }
       break;
     default:

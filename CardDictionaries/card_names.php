@@ -1316,6 +1316,7 @@ if ($set == "DYN") {
     	case "176": case "177": case "178": return "Deathly Duet";
 		case "179": case "180": case "181": return "Blessing of Occult";
 		case "182": case "183": case "184": return "Aether Slash";
+		case "185": case "186": case "187": return "Runic Reaping";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		//Wizard
 		case "192": return "Surgent Aethertide";
