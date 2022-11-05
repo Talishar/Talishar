@@ -197,7 +197,6 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
 
-      <h2>Now supporting Draft FaB!</h2>
       <a href='./zzSetChecker.php' target='_blank'>Click here to see unsupported cards</a><br><br>
 
       <h3 style='text-align:center;'>________</h3>
