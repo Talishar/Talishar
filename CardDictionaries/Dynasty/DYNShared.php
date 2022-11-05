@@ -6,6 +6,7 @@ function DYNAbilityCost($cardID)
     case "DYN001": return 3;
     case "DYN005": return 3;
     case "DYN025": return 3;
+    case "DYN046": return 0;
     //Warrior
     case "DYN067": return 1;
     case "DYN068": return 3;
@@ -30,6 +31,7 @@ function DYNAbilityType($cardID, $index = -1)
   switch ($cardID) {
     case "DYN001": return "A";
     case "DYN005": return "AA";
+    case "DYN046": return "I";
     //Warrior
     case "DYN067": return "AA";
     case "DYN068": return "AA";
@@ -113,6 +115,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN023": return 3;
     case "DYN024": return 2;
     case "DYN028": return 1;
+    case "DYN046": return 2;
     case "DYN049": return 1;
     case "DYN053": return 3;
     case "DYN054": return 2;
@@ -156,6 +159,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN019": case "DYN020": case "DYN021": return true;
     case "DYN022": case "DYN023": case "DYN024": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
+    case "DYN046": return $attackID == "DYN065";
     case "DYN049": return $attackID == "DYN065";
     case "DYN053": case "DYN054": case "DYN055": return $attackID == "DYN065";
     case "DYN071": return CardSubType($attackID) == "Axe";
@@ -222,6 +226,7 @@ function DYNCardType($cardID)
     case "DYN042": case "DYN043": case "DYN044": return "I";
     //Ninja
     case "DYN045": return "E";
+    case "DYN046": return "E";
     case "DYN047": return "AA";
     case "DYN048": return "A";
     case "DYN049": return "A";
@@ -347,6 +352,7 @@ function DYNCardSubtype($cardID)
     case "DYN033": case "DYN034": case "DYN035": return "Aura";
     //Ninja
     case "DYN045": return "Chest";
+    case "DYN046": return "Arms";
     case "DYN048": return "Aura";
     case "DYN053": case "DYN054": case "DYN055": return "Aura";
     //Warrior
@@ -511,6 +517,7 @@ function DYNPitchValue($cardID)
     case "DYN030": case "DYN033": case "DYN036": case "DYN039": case "DYN042": return 1;
     case "DYN031": case "DYN034": case "DYN037": case "DYN040": case "DYN043": return 2;
     //Ninja
+    case "DYN046": return 0;
     case "DYN047": return 1;
     case "DYN049": return 2;
     case "DYN050": case "DYN053": case "DYN056": case "DYN059": case "DYN062": return 1;
@@ -586,6 +593,7 @@ function DYNBlockValue($cardID)
     case "DYN042": case "DYN043": case "DYN044": return -1;
     //Ninja
     case "DYN045": return 1;
+    case "DYN046": return 1;
     case "DYN050": case "DYN051": case "DYN052": return 2;
     case "DYN062": case "DYN063": case "DYN064": return 2;
     case "DYN065": return -1;
@@ -779,6 +787,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       return "The next time you block with target guardian off-hand, it blocks for extra.";
+    case "DYN046":
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      return "Tearing Shuko gives your next Crouching Tiger +2.";
     case "DYN049":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddPlayerHand("DYN065", $currentPlayer, "-");

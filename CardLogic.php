@@ -73,6 +73,13 @@ function BottomDeckMultizoneDraw($player, $zone1, $zone2)
   AddDecisionQueue("DRAW", $player, "-", 1);
 }
 
+function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
+{
+  global $combatChain;
+  if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
+  else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
+}
+
 function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $currentTurnEffects, $combatChain;
