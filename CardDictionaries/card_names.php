@@ -1277,6 +1277,7 @@ if ($set == "DYN") {
 		case "492c": return "Nitro Mechanoid";
     	//Assassin
 		case "113": return "Arakni, Huntsman";
+		case "114": return "Arakni";
 		case "115": case "116": return "Spider's Bite";
 		case "117": return "Blacktek Whisperers";
 		case "118": return "Mask of Perdition";

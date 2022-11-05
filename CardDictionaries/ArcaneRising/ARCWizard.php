@@ -339,6 +339,9 @@
     case "DYN197": case "DYN198": case "DYN199": return 0;
     case "DYN203": case "DYN204": case "DYN205": return 0;
     case "DYN206": case "DYN207": case "DYN208": return 0;
+
+    default:
+      return -1;
     }
   }
 
