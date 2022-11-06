@@ -1238,13 +1238,26 @@ function DestroyFrozenArsenal($player)
 
 function isAttackGreaterThanTwiceBasePower()
 {
-  global $currentPlayer, $combatChainState, $CCS_CachedTotalAttack, $combatChain;
+  global $currentPlayer, $combatChainState, $CCS_CachedTotalAttack, $combatChain, $currentTurnEffects;
   if (count($combatChain) > 0 && CardType($combatChain[0]) == "W" && $combatChainState[$CCS_CachedTotalAttack] > (AttackValue($combatChain[0]) * 2)) return true;
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if (cardType($character[$i]) != "W") continue;
+    $attackType = CardType($character[$i]);
     $baseAttack = AttackValue($character[$i]);
     $buffedAttack = $baseAttack + $character[$i + 3] + MainCharacterAttackModifiers($i, true) + AttackModifier($character[$i]);
+    for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnPieces()) {
+      if (IsCombatEffectActive($currentTurnEffects[$j]) && !IsCombatEffectLimited($j)) {
+        if ($currentTurnEffects[$j + 1] == $currentPlayer) {
+          $attack = EffectAttackModifier($currentTurnEffects[$j]);
+          $canGainAttack = !SearchCurrentTurnEffects("CRU035", $currentPlayer) || $attackType != "AA";
+          $snagActive = SearchCurrentTurnEffects("CRU182", $currentPlayer) && $attackType == "AA";
+          if (($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$j] == $character[$i])) {
+            $buffedAttack += $attack;
+          }
+        }
+      }
+    }
     if ($buffedAttack > $baseAttack * 2) return true;
   }
   return false;
