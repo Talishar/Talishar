@@ -321,7 +321,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerDeckCount = count($myDeck);
   $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
 
-  // TODO: Highlight those that are playable or not
   $banish = GetBanish($playerID);
   $playerBanishArr = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
