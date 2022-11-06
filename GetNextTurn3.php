@@ -141,9 +141,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if ($playerID != 3 && $authKey != $targetAuth) {
-    $response->cookieGot = $_COOKIE["lastAuthKey"];
-    $response->receivedAuthKey = $authKey;
-    $response->targetAuth = $targetAuth;
     $response->errorMessage = "999999ENDTIMESTAMP";
     echo (json_encode($response));
     exit;
