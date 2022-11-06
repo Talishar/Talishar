@@ -1095,6 +1095,14 @@ function SelfCostModifier($cardID)
     case "MON085":
     case "MON086":
       return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
+    case "DYN104":
+    case "DYN105":
+    case "DYN106":
+      $numHypers = 0;
+      $numHypers += CountItem("ARC036", $currentPlayer);
+      $numHypers += CountItem("DYN111", $currentPlayer);
+      $numHypers += CountItem("DYN112", $currentPlayer);
+      return $numHypers > 0 ? -1 : 0;
     default:
       return 0;
   }

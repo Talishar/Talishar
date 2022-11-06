@@ -470,12 +470,7 @@ function DYNCardCost($cardID)
     case "DYN095": case "DYN096": case "DYN097": return 2;
     case "DYN098": case "DYN099": case "DYN100": return 1;
 		case "DYN101": case "DYN102": case "DYN103": return 2;
-		case "DYN104": case "DYN105": case "DYN106":
-      $numHypers = 0;
-      $numHypers += CountItem("ARC036", $currentPlayer);
-      $numHypers += CountItem("DYN111", $currentPlayer);
-      $numHypers += CountItem("DYN112", $currentPlayer);
-      return $numHypers > 0 ? 1 : 2;
+		case "DYN104": case "DYN105": case "DYN106": return 2;
     case "DYN107": case "DYN108": case "DYN109": return 0;
     case "DYN110": case "DYN111": case "DYN112": return 1;
     case "DYN119": return 1;
