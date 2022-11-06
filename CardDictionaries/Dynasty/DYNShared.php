@@ -176,7 +176,9 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN082": case "DYN083": case "DYN084": return CardSubType($attackID) == "Axe";
 		case "DYN085": case "DYN086": case "DYN087": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
     case "DYN089-UNDER":
-      return $attackID == "DYN492a";
+      $character = &GetPlayerCharacter($mainPlayer);
+      $index = FindCharacterIndex($mainPlayer, "DYN492a"); 
+      return $attackID == "DYN492a" && $character[$index + 2] >= 1;
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
     case "DYN154": return true;
