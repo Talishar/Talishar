@@ -933,11 +933,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "ARC036": case "DYN110":
     case "DYN111": case "DYN112":
-      if ($items[$target + 2] == 2) {
-        --$items[$target + 1];
-        $items[$target + 2] = 1;
+      $index = GetItemIndex($parameter, $player);
+      if ($items[$index + 2] == 2) {
+        --$items[$index + 1];
+        $items[$index + 2] = 1;
         GainResources($player, 1);
-        if ($items[$target + 1] <= 0) DestroyMyItem($target);
+        if ($items[$index + 1] <= 0) DestroyMyItem($index);
       }
       break;
     case "DYN113": case "DYN114":
