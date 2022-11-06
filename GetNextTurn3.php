@@ -26,10 +26,14 @@ if (!is_numeric($playerID)) {
   exit;
 }
 
-$authKey = TryGet("authKey", 3);
+$authKey = TryGet("authKey");
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
+
+if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
@@ -815,7 +819,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2], 16, "Choose a card from your opponent character/equipment", CharacterPieces());
   }
 
-  if ($turn[0] == "CHOOSETHEIRITEM" && $turn[1] == $playerID) {
+  if ($turn[0] == "f" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $playerInputPopup->popup = ChoosePopup($theirItems, $turn[2], 16, "Choose one of your opponent items", ItemPieces());
   }
