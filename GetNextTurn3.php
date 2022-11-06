@@ -26,7 +26,7 @@ if (!is_numeric($playerID)) {
   exit;
 }
 
-$authKey = TryGet("authKey");
+$authKey = TryGet("authKey", "");
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
@@ -141,6 +141,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
   if ($playerID != 3 && $authKey != $targetAuth) {
+    $response->receivedAuthKey = $authKey;
+    $response->targetAuth = $targetAuth;
     $response->errorMessage = "999999ENDTIMESTAMP";
     echo (json_encode($response));
     exit;
