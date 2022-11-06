@@ -315,7 +315,7 @@ function ItemBoostEffects()
     switch ($items[$i]) {
       case "ARC036":
       case "DYN110": case "DYN111": case "DYN112":
-        AddLayer("TRIGGER", $currentPlayer, $items[$i], $i);
+        AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
         break;
       case "EVR072":
         if ($items[$i + 2] == 2) {
