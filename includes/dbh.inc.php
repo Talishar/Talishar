@@ -10,10 +10,17 @@ $reportingDBUsername = "root";
 $reportingDBPassword = "";
 $reportingDBName = "fabonline";
 
+if ($dBPassword == "") {
+	$dBPassword = getenv("DB_PW");
+	if ($reportingDBPassword == "") {
+		$reportingDBPassword = $dBPassword;
+	}
+}
+
 $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
 
 if (!$conn) {
-	die("Connection failed: ".mysqli_connect_error());
+	die("Connection failed: " . mysqli_connect_error());
 }
 
 function GetDBConnection()
@@ -27,5 +34,3 @@ function GetReportingDBConnection()
 	global $reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName;
 	return mysqli_connect($reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName);
 }
-
-?>
