@@ -167,6 +167,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN046": return $attackID == "DYN065";
     case "DYN049": return $attackID == "DYN065";
     case "DYN053": case "DYN054": case "DYN055": return $attackID == "DYN065";
+    case "DYN068": return true;
     case "DYN071": return CardSubType($attackID) == "Axe";
     case "DYN073": case "DYN074": case "DYN075": return CardType($attackID) == "W";
     case "DYN076": case "DYN077": case "DYN078":
@@ -838,6 +839,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       }
       return "Create " . $amount . " Crouching Tigers.";
+    case "DYN068":
+      if (isAttackGreaterThanTwiceBasePower()) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return CardLink($cardID, $cardID) . " attack is more than twice it's base power and gains overpower.";
+      }
+      return "";
     case "DYN071":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
