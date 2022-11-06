@@ -10,8 +10,6 @@ $reportingDBUsername = "root";
 $reportingDBPassword = "";
 $reportingDBName = "fabonline";
 
-$dBPassword = apache_getenv('DB_PW');
-
 $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
 
 if (!$conn) {
