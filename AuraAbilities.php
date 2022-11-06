@@ -502,7 +502,7 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $CS_NumNonAttackCards, $mainPlayer;
+  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithWeapon;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -521,7 +521,7 @@ function AuraEndTurnAbilities()
         $remove = 1;
         break;
       case "DYN072":
-        if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) {
+        if (GetClassState($mainPlayer, $CS_HitsWithWeapon) <= 0) {
           $remove = 1;
         }
         break;
@@ -794,11 +794,6 @@ function AuraHitEffects($attackID)
           WriteLog(CardLink($auras[$i], $auras[$i]) . " created 1 runechants.");
           PlayAura("ARC112", $mainPlayer, 1);
           $remove = 1;
-        }
-        break;
-      case "DYN072":
-        if ($attackSubType == "Sword") {
-          AddCurrentTurnEffectFromCombat($auras[$i], $mainPlayer);
         }
         break;
       default:
