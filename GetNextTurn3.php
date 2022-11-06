@@ -322,9 +322,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
 
   // TODO: Highlight those that are playable or not
+  $banish = GetBanish($playerID);
   $playerBanishArr = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
-    array_push($playerBanishArr, JSONRenderedCard($myBanish[$i]));
+    $action
+      = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+    $mod = explode("-", $banish[$i + 1])[0];
+    $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
+    array_push($playerBanishArr, JSONRenderedCard($myBanish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerBanish = $playerBanishArr;
 
