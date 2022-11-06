@@ -58,6 +58,10 @@ $randomSeeded = false;
 
 SetHeaders();
 
+if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
+
 if ($playerID != 3 && $authKey != $targetAuth) exit;
 if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
 if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
