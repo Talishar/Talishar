@@ -924,9 +924,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       $char = array_values($char);
       $items = &GetItems($currentPlayer);
-      for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+      $hyperToDestroy = 3;
+      for($i=count($items)-ItemPieces(); $i>=0 && $hyperToDestroy>0; $i-=ItemPieces())
       {
         if($items[$i] == "ARC036" || $items[$i] == "DYN111" || $items[$i] == "DYN112") DestroyItemForPlayer($currentPlayer, $i);
+        $hyperToDestroy--;
       }
       //Now add the new stuff
       PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);//Weapon
