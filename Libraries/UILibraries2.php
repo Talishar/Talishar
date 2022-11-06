@@ -367,6 +367,23 @@ function CreateCheckbox($input, $value, $immediateSubmitMode = -1, $defaultCheck
   return $rv;
 }
 
+function CreateCheckboxAPI($input, $value, $immediateSubmitMode = -1, $defaultChecked = false, $label = "&nbsp;", $fullRefresh = false)
+{
+  $option = new stdClass();
+  global $playerID;
+  $submitLink = "";
+  $check = "";
+  if ($immediateSubmitMode != -1) $submitLink = ProcessInputLink($playerID, $immediateSubmitMode, $input, "onchange", $fullRefresh);
+  if ($defaultChecked) $check = " checked='checked'";
+  $option->submitLink = $submitLink;
+  $option->input = $input;
+  $option->value = $value;
+  $option->check = $check;
+  $option->label = $label;
+  return $option;
+}
+
+
 function CreateRadioButton($input, $value, $immediateSubmitMode, $currentInput, $label = "&nbsp;")
 {
   global $playerID;

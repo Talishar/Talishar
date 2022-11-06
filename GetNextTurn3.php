@@ -824,6 +824,50 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = ChoosePopup($theirItems, $turn[2], 16, "Choose one of your opponent items", ItemPieces());
   }
 
+  if (($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK") && $currentPlayer == $playerID) {
+    $playerInputPopup->active = true;
+    $formOptions = new stdClass();
+    $CardsArray = array();
+
+    $content = "";
+    $params = explode("-", $turn[2]);
+    $options = explode(",", $params[1]);
+
+    $title = "Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".");
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText())); //TODO: What does this line do?
+
+    $formOptions->playerID = $playerID;
+    $formOptions->caption = "Submit";
+    $formOptions->mode = 19;
+    $formOptions->maxNo = count($options);
+    $playerInputPopup->formOptions = $formOptions;
+
+    $choiceOptions = "checkbox";
+    $playerInputPopup->choiceOptions = $choiceOptions;
+
+    if ($turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT") {
+      $multiChooseText = array();
+
+      for ($i = 0; $i < count($options); ++$i) {
+        array_push($multiChooseText, CreateCheckboxAPI($i, strval($options[$i]), -1, false, implode(" ", explode("_", strval($options[$i])))));
+      }
+      $caption = "Choose up to $params[0]card" . ($params[0] > 1 ? "s." : ".");
+      $playerInputPopup->popup =  CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+      $playerInputPopup->multiChooseText = $multiChooseText;
+    } else {
+      for ($i = 0; $i < count($options); ++$i) {
+        if ($turn[0] == "MULTICHOOSEDISCARD") array_push($cardsArray, JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i));
+        else if ($turn[0] == "MULTICHOOSETHEIRDISCARD") array_push($cardsArray, JSONRenderedCard($theirDiscard[$options[$i]], actionDataOverride: $i));
+        else if (
+          $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND"
+        ) array_push($cardsArray, JSONRenderedCard($myHand[$options[$i]], actionDataOverride: $i));
+        else if ($turn[0] == "MULTICHOOSEDECK") array_push($cardsArray, JSONRenderedCard($myDeck[$options[$i]], actionDataOverride: $i));
+        else if ($turn[0] == "MULTICHOOSETHEIRDECK") array_push($cardsArray, JSONRenderedCard($theirDeck[$options[$i]], actionDataOverride: $i));
+      }
+      $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+    }
+  }
+
   $playerInputPopup->buttons = $playerInputButtons;
   $response->playerInputPopUp = $playerInputPopup;
   // encode and send it out
