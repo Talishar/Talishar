@@ -11,6 +11,8 @@ if (!IsGameNameValid($gameName)) {
 $playerID = $_GET["playerID"];
 $chatText = htmlspecialchars($_GET["chatText"]);
 
+SetHeaders();
+
 session_start();
 $uid = "-";
 if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];

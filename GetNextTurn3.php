@@ -5,7 +5,9 @@ include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 
-header("Access-Control-Allow-Origin: https://talishar.net");
+// array holding allowed Origin domains
+SetHeaders();
+
 header('Content-Type: application/json; charset=utf-8');
 $response = new stdClass();
 

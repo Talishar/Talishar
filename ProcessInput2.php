@@ -56,10 +56,11 @@ $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
+SetHeaders();
+
 if ($playerID != 3 && $authKey != $targetAuth) exit;
 if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
-if (!IsModeAsync($mode) && $currentPlayer != $playerID)
-{
+if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
   $currentTime = round(microtime(true) * 1000);
   SetCachePiece($gameName, 2, $currentTime);
   SetCachePiece($gameName, 3, $currentTime);
@@ -70,8 +71,7 @@ $afterResolveEffects = [];
 
 $animations = [];
 
-if((IsPatron(1) || IsPatron(2)))
-{
+if ((IsPatron(1) || IsPatron(2))) {
   $commandFile = fopen("./Games/" . $gameName . "/commandfile.txt", "a");
   fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
@@ -81,8 +81,7 @@ if((IsPatron(1) || IsPatron(2)))
 ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput);
 
 ProcessMacros();
-if($inGameStatus == $GameStatus_Rematch)
-{
+if ($inGameStatus == $GameStatus_Rematch) {
   $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
   if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
   $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
@@ -101,8 +100,7 @@ if($inGameStatus == $GameStatus_Rematch)
   SetCachePiece($gameName, 3, $currentTime);
   GamestateUpdated($gameName);
   exit;
-}
-else if ($winner != 0 && $turn[0] != "YESNO") {
+} else if ($winner != 0 && $turn[0] != "YESNO") {
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   $currentPlayer = 1;
@@ -112,10 +110,9 @@ CacheCombatResult();
 CombatDummyAI(); //Only does anything if applicable
 EncounterAI();
 
-if(!IsGameOver())
-{
-  if($playerID == 1) $p1TotalTime += time() - intval($lastUpdateTime);
-  else if($playerID == 2) $p2TotalTime += time() - intval($lastUpdateTime);
+if (!IsGameOver()) {
+  if ($playerID == 1) $p1TotalTime += time() - intval($lastUpdateTime);
+  else if ($playerID == 2) $p2TotalTime += time() - intval($lastUpdateTime);
   $lastUpdateTime = time();
 }
 
