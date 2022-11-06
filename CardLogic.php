@@ -933,7 +933,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "ARC036": case "DYN110":
     case "DYN111": case "DYN112":
-      $index = GetItemIndex($parameter, $player);
+      $index = SearchItemsForUniqueID($uniqueID, $player);
       if ($items[$index + 2] == 2) {
         --$items[$index + 1];
         $items[$index + 2] = 1;
