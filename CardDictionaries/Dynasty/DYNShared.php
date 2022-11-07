@@ -273,7 +273,7 @@ function DYNCardType($cardID)
     case "DYN110": case "DYN111": case "DYN112": return "A";
     case "DYN492a": return "W";
     case "DYN492b": return "E";
-    case "DYN492c": return "T";
+    case "DYN492c": return "I";
     //Assassin
     case "DYN113": case "DYN114": return "C";
     case "DYN115": case "DYN116": return "W";
