@@ -136,7 +136,6 @@ function AuraPlayCounters($cardID)
 
 function DestroyAuraUniqueID($player, $uniqueID)
 {
-  $auras = &GetAuras($player);
   $index = SearchAurasForUniqueID($uniqueID, $player);
   if($index != -1) DestroyAura($player, $index);
 }
@@ -154,6 +153,7 @@ function DestroyAura($player, $index)
     unset($auras[$j]);
   }
   $auras = array_values($auras);
+  return $cardID;
 }
 
 function AuraCostModifier()
@@ -272,6 +272,29 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "ARENA");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
+      case "DYN029":
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        $hand = &GetHand($mainPlayer);
+        if(count($hand) == 0)
+        {
+          Draw($mainPlayer, false);
+          WriteLog("Drew a card from Never Yield.");
+        }
+        if(PlayerHasLessHealth($mainPlayer))
+        {
+          GainHealth(2, $mainPlayer);
+          WriteLog("Gained 2 health from Never Yield.");
+        }
+        if(PlayerHasFewerEquipment($mainPlayer))
+        {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which equipment to remove a -1 defense counter", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZGETCARDINDEX", $mainPlayer, "-", 1);
+          AddDecisionQueue("REMOVENEGDEFCOUNTER", $mainPlayer, "-", 1);
+          WriteLog("Removed a -1 counter from Never Yield.");
+        }
+        break;
       case "DYN033": case "DYN034": case "DYN035":
         if ($auras[$i] == "DYN033") $amount = 3;
         else if ($auras[$i] == "DYN034") $amount = 2;
@@ -319,6 +342,14 @@ function AuraStartTurnAbilities()
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         }
+        break;
+      case "DYN159": case "DYN160": case "DYN161":
+        if ($auras[$i] == "DYN159") $amount = 3;
+        else if ($auras[$i] == "DYN160") $amount = 2;
+        else $amount = 1;
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        Opt($auras[$i], $amount);
+        AddDecisionQueue("BLESSINGOFFOCUS", $mainPlayer, "-", 1);
         break;
 		  case "DYN179": case "DYN180": case "DYN181":
         if ($auras[$i] == "DYN179") $amount = 3;
@@ -471,7 +502,7 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $CS_NumNonAttackCards, $mainPlayer;
+  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithWeapon;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -490,7 +521,7 @@ function AuraEndTurnAbilities()
         $remove = 1;
         break;
       case "DYN072":
-        if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) {
+        if (GetClassState($mainPlayer, $CS_HitsWithWeapon) <= 0) {
           $remove = 1;
         }
         break;
@@ -522,18 +553,18 @@ function AuraEndTurnCleanup()
 
 function AuraTakeDamageAbilities($player, $damage, $type)
 {
-  $Auras = &GetAuras($player);
+  $auras = &GetAuras($player);
   $hasRunebloodBarrier = CountAura("CRU144", $player) > 0;
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
-  for ($i = count($Auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     if ($damage <= 0) {
       $damage = 0;
       break;
     }
-    switch ($Auras[$i]) {
+    switch ($auras[$i]) {
       case "ARC112":
         if ($hasRunebloodBarrier) {
           if ($preventable) {
@@ -593,7 +624,15 @@ function AuraTakeDamageAbilities($player, $damage, $type)
       default:
         break;
     }
-    if ($remove == 1) DestroyAura($player, $i);
+    if ($remove == 1) {
+      DestroyAura($player, $i);
+      if (HasWard($auras[$i]) && SearchCharacterActive($player, "DYN213") && CardType($auras[$i]) != "T") {
+        $char = &GetPlayerCharacter($player);
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        AddLayer("TRIGGER", $player, "DYN213");
+      }
+    }
   }
   return $damage;
 }
@@ -763,11 +802,6 @@ function AuraHitEffects($attackID)
           WriteLog(CardLink($auras[$i], $auras[$i]) . " created 1 runechants.");
           PlayAura("ARC112", $mainPlayer, 1);
           $remove = 1;
-        }
-        break;
-      case "DYN072":
-        if ($attackSubType == "Sword") {
-          AddCurrentTurnEffectFromCombat($auras[$i], $mainPlayer);
         }
         break;
       default:

@@ -5,8 +5,11 @@ include 'CardDictionary.php';
 $set = "DYN";
 $count = 0;
 for ($number = 0; $number < 246; ++$number) {
-  if($number == 245) continue;
+  if($number == 65) continue;//Tiger (ignore no attack)
+  if($number == 191) continue;//Runechant
+  if($number == 216) continue;//Spectral Procession (ignore no attack)
   if($number == 233) continue;
+  if($number == 245) continue;
   $card = strval($number);
   if ($number < 10) $card = "0" . $card;
   if ($number < 100) $card = "0" . $card;

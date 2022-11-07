@@ -107,7 +107,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   }
   $fileExt = ".png";
   $folderPath = $folder;
-  if ($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM" || $cardNumber == "FINALIZECHAINLINK" || $cardNumber == "DEFENDSTEP") {
+  if ($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM" || $cardNumber == "FINALIZECHAINLINK" || $cardNumber == "DEFENDSTEP" || $cardNumber == "AIM_cropped") {
     $folderPath = str_replace("CardImages", "Images", $folderPath);
     $folderPath = str_replace("concat", "Images", $folderPath);
     $showHover = 0;

@@ -7,6 +7,7 @@ include "ItemAbilities.php";
 include "AllyAbilities.php";
 include "PermanentAbilities.php";
 include "LandmarkAbilities.php";
+include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
 
@@ -682,9 +683,7 @@ function EffectHitEffect($cardID)
         PummelHit();
       }
       break;
-    case "CRU145":
-    case "CRU146":
-    case "CRU147":
+    case "CRU145": case "CRU146": case "CRU147":
       if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)){
         if ($cardID == "CRU145") $amount = 3;
         else if ($cardID == "CRU146") $amount = 2;
@@ -910,12 +909,20 @@ function EffectHitEffect($cardID)
       AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
       break;
     case "DYN155":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer, true)) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects("AIM", $mainPlayer)) {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,-," . $defPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      }
+      break;
+    case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT":
+      if (ClassContains($combatChain[0], "RUNEBLADE", $mainPlayer)) {
+        if ($cardID == "DYN185-HIT") $amount = 3;
+        else if ($cardID == "DYN186-HIT") $amount = 2;
+        else $amount = 1;
+        PlayAura("ARC112", $mainPlayer, $amount, true);
       }
       break;
     default:
@@ -984,6 +991,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
+  if ($cardType == "E" && ($combatChain[0] == "DYN095" || $combatChain[0] == "DYN096" || $combatChain[0] == "DYN097")) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
     if ($defAuras[$i] == "WTR072" && CardCost($cardID) >= 3) $blockModifier += 4;
@@ -1087,6 +1095,14 @@ function SelfCostModifier($cardID)
     case "MON085":
     case "MON086":
       return TalentContains($combatChain[GetClassState($currentPlayer, $CS_LayerTarget)], "SHADOW") ? -1 : 0;
+    case "DYN104":
+    case "DYN105":
+    case "DYN106":
+      $numHypers = 0;
+      $numHypers += CountItem("ARC036", $currentPlayer);
+      $numHypers += CountItem("DYN111", $currentPlayer);
+      $numHypers += CountItem("DYN112", $currentPlayer);
+      return $numHypers > 0 ? -1 : 0;
     default:
       return 0;
   }
@@ -1457,6 +1473,16 @@ function CurrentEffectPlayAbility($cardID, $from)
           else $amount = 1;
           if (ActionsThatDoArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
           if ($from != "EQUIP") $remove = 1;
+          break;
+        case "DYN209": case "DYN210": case "DYN211":
+          if ($currentTurnEffects[$i] == "DYN209") $maxCost = 2;
+          else if ($currentTurnEffects[$i] == "DYN210") $maxCost = 1;
+          else $maxCost = 0;
+          if (ActionsThatDoArcaneDamage($cardID) && CardCost($cardID) <= $maxCost)
+          {
+            AddArcaneBonus(1, $currentPlayer);
+            $remove = 1;
+          }
           break;
         default:
           break;
@@ -1876,12 +1902,12 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN049":
       return true;
-    case "DYN072":
-      return true;
     case "DYN089-UNDER":
       return true;
     case "DYN115": case "DYN116":
-      return NumCardsBlocking() == 0 && NumAttacksBlocking() == 0;
+      return NumCardsBlocking() != 0 && NumAttacksBlocking() == 0;
+    case "DYN154":
+      return true;
     default:
       return false;
   }
@@ -1910,16 +1936,16 @@ function BeginEndPhaseEffects()
         break;
       case "DYN153":
         $deck = &GetDeck($mainPlayer);
-        if(count($deck) == 0)
-        {
+        if(count($deck) == 0) {
           WriteLog("Your Heat Seeker fizzled out.");
           break;
         }
-        if(!ArsenalFull($mainPlayer))
-        {
+        if(!ArsenalFull($mainPlayer)) {
           $card = array_shift($deck);
           WriteLog("Heat Seeker added " . CardLink($card, $card) . " to your arsenal.");
           AddArsenal($card, $mainPlayer, "DECK", "UP");
+        } else {
+          WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
         }
         break;
       default:
@@ -2097,12 +2123,10 @@ function PitchAbility($cardID)
   }
   switch ($cardID) {
     case "WTR000":
-      if (IHaveLessHealth()) {
-        if (GainHealth(1, $currentPlayer)) WriteLog(CardLink($cardID, $cardID) . " gained 1 health.");
-      }
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "ARC000":
-      Opt($cardID, 2);
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "CRU000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
@@ -2262,6 +2286,16 @@ function OnBlockEffects($index, $from)
         case "ELE004":
           if ($cardType == "DR") {
             PlayAura("ELE111", $currentPlayer);
+          }
+          break;
+        case "DYN042": case "DYN043": case "DYN044":
+          if(ClassContains($combatChain[$index], "GUARDIAN", $currentPlayer) && CardSubType($combatChain[$index]) == "Off-Hand")
+          {
+            if($currentTurnEffects[$i] == "DYN042") $amount = 6;
+            else if($currentTurnEffects[$i] == "DYN043") $amount = 5;
+            else $amount = 4;
+            $combatChain[$index + 6] += $amount;
+            $remove = 1;
           }
           break;
         default:
@@ -2452,6 +2486,9 @@ function CharacterDestroyEffect($cardID, $player)
   switch ($cardID) {
     case "ELE213":
       DestroyArsenal($player);
+      break;
+    case "DYN214":
+      PlayAura("MON104", $player);
       break;
     default:
       break;
@@ -2757,12 +2794,13 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   $theirHoldState = ItemDefaultHoldTriggerState($item);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   for ($i = 0; $i < $number; ++$i) {
-    $steamCounters = SteamCounterLogic($item, $player) + $steamCounterModifier;
+    $uniqueID = GetUniqueId();
+    $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
     array_push($items, $item); //Card ID
     array_push($items, $steamCounters); //Counters
     array_push($items, 2); //Status
     array_push($items, ItemUses($item)); //Num Uses
-    array_push($items, GetUniqueId()); //Unique ID
+    array_push($items, $uniqueID); //Unique ID
     array_push($items, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     array_push($items, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
@@ -2778,7 +2816,7 @@ function ItemUses($cardID)
   }
 }
 
-function SteamCounterLogic($item, $playerID)
+function SteamCounterLogic($item, $playerID, $uniqueID)
 {
   global $CS_NumBoosted;
   $counters = ETASteamCounters($item);
@@ -2794,11 +2832,9 @@ function SteamCounterLogic($item, $playerID)
     $items = &GetItems($playerID);
     for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
     {
-      if($items[$i] == "DYN093" && $items[$i+5] == "1")//Use gem to toggle Plasma Mainline
+      if($items[$i] == "DYN093")
       {
-        ++$counters;
-        --$items[$i+1];
-        if($items[$i+1] == 0) DestroyItemForPlayer($playerID, $i);
+        AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i + 4]);
       }
     }
   }
@@ -2881,13 +2917,14 @@ function HasDominate ($cardID)
   return false;
 }
 
-function isOverpowerActive ()
+function isOverpowerActive()
 {
-  global $combatChain;
+  global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
   switch ($combatChain[0]) {
-    case "DYN068": return isAttackGreaterThanTwiceBasePower();
+    case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer); 
     case "DYN088": return true;
+    case "DYN227": case "DYN228": case "DYN229": SearchCurrentTurnEffects("DYN227", $mainPlayer);
     case "DYN492a": return true;
     default:
       break;
@@ -2898,7 +2935,7 @@ function isOverpowerActive ()
 function HasOverpower ($cardID)
 {
   switch ($cardID) {
-    case "DYN068": return isAttackGreaterThanTwiceBasePower();
+    case "DYN068": return true;
     case "DYN088": return true;
     case "DYN492a": return true;
     default: break;
@@ -3047,6 +3084,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DYN118":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "DYN235":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
     case "DYN492a":
       --$character[$cardIndex + 2];
       WriteLog(CardLink($cardID, $cardID) . " banished a card from under itself.");
@@ -3171,7 +3211,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = SearchDeckForCard($player, $subparam);
           break;
         case "PERMSUBTYPE":
-          $rv = SearchPermanents($player, "", $subparam);
+          if ($subparam == "Aura") $rv = SearchAura($player, "", $subparam);
+          else $rv = SearchPermanents($player, "", $subparam);
           break;
         case "SEARCHMZ":
           $rv = SearchMZ($player, $subparam);
@@ -3411,6 +3452,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "QUELL":
           $rv = QuellIndices($player);
           break;
+        case "SOUL":
+          $rv = SearchSoul($player, talent:"LIGHT");
+          break;
         default:
           $rv = "";
           break;
@@ -3475,6 +3519,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         unset($combatChain[$lastResult + $i]);
       }
       $combatChain = array_values($combatChain);
+      return $cardID;
+    case "REMOVESOUL":
+      $soul = &GetSoul($player);
+      $cardID = $soul[$lastResult];
+      unset($soul[$lastResult]);
+      $soul = array_values($soul);
       return $cardID;
     case "COMBATCHAINBUFFPOWER":
       CombatChainPowerModifier($lastResult, $parameter);
@@ -3800,7 +3850,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $rv == "" ? "PASS" : $rv;
     case "SHOWSELECTEDCARD":
-      WriteLog($lastResult);
       WriteLog(CardLink($lastResult, $lastResult) . " was selected.");
       return $lastResult;
     case "SHOWSELECTEDMODE":
@@ -4367,6 +4416,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dqVars[0] = $damage;
         if($damage > 0) CheckSpellvoid($player, $damage);
       }
+      PrependDecisionQueue("INCDQVAR", $player, "1", 1);
       return $prevented;
     case "DEALARCANE":
       $dqState[7] = $lastResult;
@@ -4914,6 +4964,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayAura("WTR225", $player);
       }
       return $lastResult;
+    case "BLESSINGOFFOCUS":
+      $deck = &GetDeck($mainPlayer);
+      if (RevealCards($deck[0], $mainPlayer) && CardSubType($deck[0]) == "Arrow") {
+        if (!ArsenalFull($mainPlayer)) AddArsenal($deck[0], $mainPlayer, "DECK", "UP", 1);
+        else WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
+      }
+      return $lastResult;
     case "KRAKENAETHERVEIN":
       if ($lastResult > 0) {
         for ($i = 0; $i < $lastResult; ++$i) Draw($player);
@@ -5370,6 +5427,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "TRANSFORMPERMANENT":
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
+    case "TRANSFORMAURA":
+      return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);
     case "MZGETUNIQUEID":
       $params = explode("-", $lastResult);
       $zone = &GetMZZone($player, $params[0]);
@@ -5609,6 +5668,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PASSTAKEDAMAGE":
       if($lastResult == "PASS") DamageTrigger($player, $parameter, "DAMAGE");
+      return $lastResult;
+    case "PLASMAMAINLINE":
+      $items = &GetItems($player);
+      $params = explode(",", $parameter);
+      $plasmaIndex = SearchItemsForUniqueID($params[0], $player);
+      $targetIndex = SearchItemsForUniqueID($params[1], $player);
+      ++$items[$targetIndex + 1];
+      --$items[$plasmaIndex + 1];
+      if ($items[$plasmaIndex + 1] == 0) DestroyItemForPlayer($player, $plasmaIndex);
+      return $lastResult;
+    case "SURAYA":
+      DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
     default:
       return "NOTSTATIC";

@@ -929,7 +929,7 @@ function GetResolvedAbilityType($cardID)
 
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "")
 {
-  global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax;
+  global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
   global $combatChain;
   if ($player == "") $player = $currentPlayer;
@@ -965,7 +965,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if (count($combatChain) > 0 && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) && $from == "HAND") {
     if (CachedDominateActive() && CachedNumBlockedFromHand() >= 1) return false;
-    if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1) return false;
+    if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1 && ($cardType == "A" || $cardType == "AA")) return false;
     if (CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "CRU047") || SearchCurrentTurnEffects("CRU047-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "CRU047") || SearchCharacterActive($mainPlayer, "CRU097")) && CardType($combatChain[0]) == "AA") return false;
   }
   if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player))) return false;
@@ -998,6 +998,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if (($phase == "D" || $phase == "INSTANT") && $subtype == "Trap" && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
+  if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
+  if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
   if (count($combatChain) > 0) if ($combatChain[0] == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
   if (SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
   if ((((PlayableFromBanish($cardID) || $from != "BANISH") && $cardType == "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
@@ -1448,11 +1450,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DYN118":
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || CardType($combatChain[0]) != "AA";
     case "DYN130": case "DYN131": case "DYN132":
-      return count($combatChain) <= 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer);
+      return NumCardsBlocking() < 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer);
     case "DYN148": case "DYN149": case "DYN150":
       return count($combatChain) <= 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || ContractType($combatChain[0]) == "";
     case "DYN168": case "DYN169": case "DYN170":
       return !ArsenalHasFaceUpArrowCard($mainPlayer);
+    case "DYN212":
+      return CountAura("MON104", $currentPlayer) < 1;
     case "DYN492a":
       $character = &GetPlayerCharacter($currentPlayer);
       return $character[$index + 2] <= 0;
@@ -1586,6 +1590,7 @@ function HasBattleworn($cardID)
       return true;
     case "DYN006":
     case "DYN026":
+    case "DYN046":
     case "DYN089":
     case "DYN117":
     case "DYN118":
@@ -1970,8 +1975,6 @@ function ItemDefaultHoldTriggerState($cardID)
     case "EVR069": // Dissolution Sphere
     case "EVR071": // Signal Jammer
       return 0;
-    case "DYN093":
-      return 1;
     default:
       return 2;
   }
@@ -2470,9 +2473,10 @@ function CardCaresAboutPitch($cardID)
     case "ELE002":
     case "ELE003":
       return true;
-    case "DYN172":
-    case "DYN173":
-    case "DYN174":
+    case "DYN172": case "DYN173": case "DYN174":
+    case "DYN176": case "DYN177": case "DYN178":
+		case "DYN182": case "DYN183": case "DYN184":
+		case "DYN185": case "DYN186": case "DYN187":
       return true;
     default:
       return false;
@@ -2515,6 +2519,22 @@ function isIyslander($character)
     case 'EVR120':
     case 'UPR102':
     case 'UPR103':
+      return true;
+    default:
+      return false;
+  }
+}
+
+function HasWard($cardID)
+{
+  switch ($cardID) {
+    case "MON103":
+    case "UPR039": case "UPR040": case "UPR041":
+    case "UPR218": case "UPR219": case "UPR220":
+    case "DYN214": case "DYN215": case "DYN217": 
+    case "DYN218": case "DYN219": case "DYN220":
+    case "DYN221": case "DYN222": case "DYN223":
+    case "DYN612":
       return true;
     default:
       return false;
