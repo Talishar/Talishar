@@ -2,7 +2,6 @@
 
 function PlayAlly($cardID, $player, $subCards = "-")
 {
-  WriteLog($subCards);
   $allies = &GetAllies($player);
   array_push($allies, $cardID);
   array_push($allies, 2);
