@@ -1138,7 +1138,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN193":
       PlayerOpt($currentPlayer, 1, false);
       PlayAura("DYN244", $currentPlayer);
-      return "Seerstone let you Opt 1 and create a Ponder token.";
+      return CardLink($cardID, $cardID) . " let you Opt 1 and create a Ponder token.";
   	case "DYN194":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
@@ -1167,14 +1167,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(SearchAuras("MON104", $currentPlayer))
       {
         GiveAttackGoAgain();
-        return "Spectral Prowler gains go again.";
+        return CardLink($cardID, $cardID) . " gains go again.";
       }
       return "";
     case "DYN227": case "DYN228": case "DYN229":
       if(SearchAuras("MON104", $currentPlayer))
       {
         AddCurrentTurnEffect("DYN227", $currentPlayer);
-        return "Spectral Rider gains Overpower.";
+        return CardLink($cardID, $cardID) . " gains Overpower.";
       }
       return "";
     case "DYN230": case "DYN231": case "DYN232":
@@ -1191,15 +1191,15 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "Reveal has been prevented.";
     case "DYN235":
       MayBottomDeckDraw();
-      return "Ornate Tessen let you sink a card.";
+      return CardLink($cardID, $cardID) . " let you sink a card.";
     case "DYN240":
       $rv = "";
       if ($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = "Imperial Edict is a partially manual card. Name the card in chat and enforce play restriction.";
+        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
         if(IsRoyal($currentPlayer))
         {
-          $rv .= " Imperial Edict revealed the opponent's hand.";
+          $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand.";
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
@@ -1212,7 +1212,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         $item = (IsRoyal($currentPlayer) ? "DYN243": "CRU197");
         PutItemIntoPlayForPlayer($item, $currentPlayer);
-        $rv = "Imperial Ledger shuffled itself and created a " . CardLink($item, $item) . ".";
+        $rv = CardLink($cardID, $cardID) . " shuffled itself and created a " . CardLink($item, $item) . ".";
         $deck = &GetDeck($currentPlayer);
         array_push($deck, "DYN241");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
