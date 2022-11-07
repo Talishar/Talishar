@@ -24,7 +24,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       $items = &GetItems($currentPlayer);
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       if ($from == "PLAY" && $items[$index + 1] > 0 && count($combatChain) > 0) {
-        $items[$index + 1] = 0;
+        $items[$index + 1] -= 1;
         $items[$index + 2] = 1;
         $paidSteamCounter = "PAID";
       }
