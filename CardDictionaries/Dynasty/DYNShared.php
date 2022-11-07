@@ -179,7 +179,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 		case "DYN085": case "DYN086": case "DYN087": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
     case "DYN089-UNDER":
       $character = &GetPlayerCharacter($mainPlayer);
-      $index = FindCharacterIndex($mainPlayer, "DYN492a"); 
+      $index = FindCharacterIndex($mainPlayer, "DYN492a");
       return $attackID == "DYN492a" && $character[$index + 2] >= 1;
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
     case "DYN115": case "DYN116": return true;
@@ -336,6 +336,7 @@ function DYNCardType($cardID)
     case "DYN216": return "AA";
     case "DYN217": return "A";
     case "DYN218": case "DYN219": case "DYN220": return "A";
+    case "DYN221": case "DYN222": case "DYN223": return "A";
     case "DYN224": case "DYN225": case "DYN226": return "AA";
     case "DYN227": case "DYN228": case "DYN229": return "AA";
     case "DYN230": case "DYN231": case "DYN232": return "A";
@@ -421,6 +422,7 @@ function DYNCardSubtype($cardID)
     case "DYN214": return "Arms";
     case "DYN217": return "Aura";
     case "DYN218": case "DYN219": case "DYN220": return "Aura";
+    case "DYN221": case "DYN222": case "DYN223": return "Aura";
     //Generic
     case "DYN234": return "Head";
     case "DYN235": return "Off-Hand";
@@ -518,6 +520,7 @@ function DYNCardCost($cardID)
     case "DYN215": return 1;
     case "DYN217": return 1;
     case "DYN218": case "DYN219": case "DYN220": return 1;
+    case "DYN221": case "DYN222": case "DYN223": return 1;
     case "DYN227": case "DYN228": case "DYN229": return 3;
     //Generic
     case "DYN240": return 1;
@@ -594,6 +597,8 @@ function DYNPitchValue($cardID)
     case "DYN216": return 1;
     case "DYN218": return 1;
     case "DYN219": return 2;
+    case "DYN221": return 1;
+    case "DYN222": return 2;
     case "DYN224": return 1;
     case "DYN225": return 2;
     case "DYN227": return 1;
@@ -675,6 +680,7 @@ function DYNBlockValue($cardID)
     case "DYN214": return -1;
     case "DYN217": return 2;
     case "DYN218": case "DYN219": case "DYN220": return 2;
+    case "DYN221": case "DYN222": case "DYN223": return 2;
     case "DYN230": case "DYN231": case "DYN232": return 2;
     //Generic
     case "DYN234": return -1;
@@ -1181,6 +1187,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN215":
       // TODO: Make named attack Illusionist
       return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
+    case "DYN221": case "DYN222": case "DYN223":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $auras = &GetAuras($currentPlayer);
+      $uniqueID = $auras[count($auras) - AuraPieces() + 6];
+      if($cardID == "DYN221") $maxCost = 3;
+      else if($cardID == "DYN222") $maxCost = 2;
+      else $maxCost = 1;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost); // &LAYER:maxCost=1;type=AA
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS,DYN221-" . $uniqueID . "," . $currentPlayer, 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      return "";
     case "DYN224": case "DYN225": case "DYN226":
       if(SearchAuras("MON104", $currentPlayer))
       {

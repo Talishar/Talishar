@@ -60,6 +60,8 @@ function PlayMyAura($cardID)
   PlayAura($cardID, $currentPlayer, 1);
 }
 
+//Scope = Private
+//Call DestroyAura to destroy an aura
 function AuraDestroyed($player, $cardID, $isToken = false)
 {
   $auras = &GetAuras($player);
@@ -107,13 +109,30 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   }
 }
 
-function PlayTheirAura($cardID)
+function AuraLeavesPlay($player, $index)
 {
-  global $theirAuras;
-  array_push($theirAuras, $cardID);
-  array_push($theirAuras, 2);
-  array_push($theirAuras, AuraPlayCounters($cardID));
-  array_push($theirAuras, 0);
+  $auras = &GetAuras($player);
+  $cardID = $auras[$index];
+  $uniqueID = $auras[$index + 6];
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  switch($cardID)
+  {
+    case "DYN221": case "DYN222": case "DYN223":
+      $theirBanish = &GetBanish($otherPlayer);
+      $banishIndex = -1;
+      for($i=0; $i<count($theirBanish); $i+=BanishPieces())
+      {
+        if($theirBanish[$i+1] == "DYN221-" . $uniqueID) $banishIndex = $i;
+      }
+      if($banishIndex > -1)
+      {
+        $banishCard = $theirBanish[$banishIndex];
+        RemoveBanish($otherPlayer, $banishIndex);
+        PlayAura($banishCard, $otherPlayer);
+      }
+      break;
+    default: break;
+  }
 }
 
 function AuraPlayCounters($cardID)
@@ -146,6 +165,7 @@ function DestroyAura($player, $index)
   $cardID = $auras[$index];
   $isToken = $auras[$index + 4] == 1;
   AuraDestroyed($player, $cardID, $isToken);
+  AuraLeavesPlay($player, $index);
   if (IsSpecificAuraAttacking($player, $index)) {
     CloseCombatChain();
   }
@@ -617,7 +637,11 @@ function AuraTakeDamageAbilities($player, $damage, $type)
         if ($preventable) $damage -= 1;
         $remove = 1;
         break;
-      case "UPR218": case "UPR219": case "UPR220":
+      case "DYN218": case "DYN219": case "DYN220":
+        if ($preventable) $damage -= 1;
+        $remove = 1;
+        break;
+      case "DYN221": case "DYN222": case "DYN223":
         if ($preventable) $damage -= 1;
         $remove = 1;
         break;

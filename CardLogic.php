@@ -1246,6 +1246,17 @@ function RemoveFromArsenal($player, $index)
   return $cardID;
 }
 
+function RemoveAura($player, $index)
+{
+  $auras = &GetAuras($player);
+  $cardID = $auras[$index];
+  for ($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
+    unset($auras[$i]);
+  }
+  $auras = array_values($auras);
+  return $cardID;
+}
+
 function DestroyFrozenArsenal($player)
 {
   $arsenal = &GetArsenal($player);

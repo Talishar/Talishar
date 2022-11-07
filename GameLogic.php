@@ -2922,7 +2922,7 @@ function isOverpowerActive()
   global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
   switch ($combatChain[0]) {
-    case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer); 
+    case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);
     case "DYN088": return true;
     case "DYN227": case "DYN228": case "DYN229": SearchCurrentTurnEffects("DYN227", $mainPlayer);
     case "DYN492a": return true;
@@ -5242,6 +5242,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
             WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
             break;
+          case "THEIRAURAS":
+            $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
+            BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
+            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
+            break;
           default:
             break;
         }
@@ -5277,6 +5282,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
           case "THEIRHAND":
             RemoveCard($otherPlayer, $mzIndex[1]);
+            break;
+          case "THEIRAURAS":
+            RemoveAura($otherPlayer, $mzIndex[1]);
             break;
           default:
             break;
