@@ -5,7 +5,9 @@ include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 
-header("Access-Control-Allow-Origin: https://talishar.net");
+// array holding allowed Origin domains
+SetHeaders();
+
 header('Content-Type: application/json; charset=utf-8');
 $response = new stdClass();
 
@@ -24,10 +26,14 @@ if (!is_numeric($playerID)) {
   exit;
 }
 
-$authKey = TryGet("authKey", 3);
+$authKey = TryGet("authKey", "");
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 $windowWidth = intval(TryGet("windowWidth", 0));
 $windowHeight = intval(TryGet("windowHeight", 0));
+
+if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
@@ -315,10 +321,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerDeckCount = count($myDeck);
   $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
 
-  // TODO: Highlight those that are playable or not
+  $banish = GetBanish($playerID);
   $playerBanishArr = array();
   for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
-    array_push($playerBanishArr, JSONRenderedCard($myBanish[$i]));
+    $action
+      = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+    $mod = explode("-", $banish[$i + 1])[0];
+    $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
+    array_push($playerBanishArr, JSONRenderedCard($myBanish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerBanish = $playerBanishArr;
 
@@ -551,7 +561,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     JSONRenderedCard($lastPlayed[0], controller: $lastPlayed[1]);
 
   // is the player the active player (is it their turn?)
-  $response->amIActivePlayer = ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer))  ? true : false;
+  $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
 
   //Turn number
   $response->turnNo = $currentTurn;
@@ -821,6 +831,50 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($turn[0] == "CHOOSETHEIRITEM" && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $playerInputPopup->popup = ChoosePopup($theirItems, $turn[2], 16, "Choose one of your opponent items", ItemPieces());
+  }
+
+  if (($turn[0] == "MULTICHOOSETHEIRDISCARD" || $turn[0] == "MULTICHOOSEDISCARD" || $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND" || $turn[0] == "MULTICHOOSEDECK" || $turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT" || $turn[0] == "MULTICHOOSETHEIRDECK") && $currentPlayer == $playerID) {
+    $playerInputPopup->active = true;
+    $formOptions = new stdClass();
+    $CardsArray = array();
+
+    $content = "";
+    $params = explode("-", $turn[2]);
+    $options = explode(",", $params[1]);
+
+    $title = "Choose up to " . $params[0] . " card" . ($params[0] > 1 ? "s." : ".");
+    if (GetDQHelpText() != "-") $caption = implode(" ", explode("_", GetDQHelpText())); //TODO: What does this line do?
+
+    $formOptions->playerID = $playerID;
+    $formOptions->caption = "Submit";
+    $formOptions->mode = 19;
+    $formOptions->maxNo = count($options);
+    $playerInputPopup->formOptions = $formOptions;
+
+    $choiceOptions = "checkbox";
+    $playerInputPopup->choiceOptions = $choiceOptions;
+
+    if ($turn[0] == "MULTICHOOSETEXT" || $turn[0] == "MAYMULTICHOOSETEXT") {
+      $multiChooseText = array();
+
+      for ($i = 0; $i < count($options); ++$i) {
+        array_push($multiChooseText, CreateCheckboxAPI($i, strval($options[$i]), -1, false, implode(" ", explode("_", strval($options[$i])))));
+      }
+      $caption = "Choose up to $params[0]card" . ($params[0] > 1 ? "s." : ".");
+      $playerInputPopup->popup =  CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+      $playerInputPopup->multiChooseText = $multiChooseText;
+    } else {
+      for ($i = 0; $i < count($options); ++$i) {
+        if ($turn[0] == "MULTICHOOSEDISCARD") array_push($cardsArray, JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i));
+        else if ($turn[0] == "MULTICHOOSETHEIRDISCARD") array_push($cardsArray, JSONRenderedCard($theirDiscard[$options[$i]], actionDataOverride: $i));
+        else if (
+          $turn[0] == "MULTICHOOSEHAND" || $turn[0] == "MAYMULTICHOOSEHAND"
+        ) array_push($cardsArray, JSONRenderedCard($myHand[$options[$i]], actionDataOverride: $i));
+        else if ($turn[0] == "MULTICHOOSEDECK") array_push($cardsArray, JSONRenderedCard($myDeck[$options[$i]], actionDataOverride: $i));
+        else if ($turn[0] == "MULTICHOOSETHEIRDECK") array_push($cardsArray, JSONRenderedCard($theirDeck[$options[$i]], actionDataOverride: $i));
+      }
+      $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+    }
   }
 
   if (($turn[0] == "CHOOSEMYSOUL" || $turn[0] == "MAYCHOOSEMYSOUL") && $turn[1] == $playerID) {

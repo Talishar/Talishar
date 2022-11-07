@@ -23,8 +23,7 @@ $set = TryGet("set");
 $matchup = TryGet("matchup", "");
 $starterDeck = false;
 
-if($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "")
-{
+if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
   $_SESSION['error'] = '⚠️ Another player has already joined the game.';
   header("Location: MainMenu.php");
   die();
@@ -113,8 +112,8 @@ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
 }
 
 if ($decklink != "") {
-  if($playerID == 1) $p1DeckLink = $decklink;
-  else if($playerID == 2) $p2DeckLink = $decklink;
+  if ($playerID == 1) $p1DeckLink = $decklink;
+  else if ($playerID == 2) $p2DeckLink = $decklink;
   $curl = curl_init();
   $isFaBDB = str_contains($decklink, "fabdb");
   $isFaBMeta = str_contains($decklink, "fabmeta");
@@ -122,7 +121,7 @@ if ($decklink != "") {
     $decklinkArr = explode("/", $decklink);
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
-  } else if(str_contains($decklink, "fabrary")) {
+  } else if (str_contains($decklink, "fabrary")) {
     $headers = array(
       "x-api-key: " . $FaBraryKey,
       "Content-Type: application/json",
@@ -131,9 +130,8 @@ if ($decklink != "") {
     $decklinkArr = explode("/", $decklink);
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/" . $slug;
-    if($matchup != "") $apiLink .= "?matchupId=" . $matchup;
-  }
-  else {
+    if ($matchup != "") $apiLink .= "?matchupId=" . $matchup;
+  } else {
     $decklinkArr = explode("/", $decklink);
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://api.fabmeta.net/deck/" . $slug;
@@ -151,10 +149,9 @@ if ($decklink != "") {
   }
   $deckObj = json_decode($apiDeck);
   $deckName = $deckObj->{'name'};
-  if(isset($deckObj->{'matchups'}))
-  {
-    if($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
-    else if($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
+  if (isset($deckObj->{'matchups'})) {
+    if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
+    else if ($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
   }
   $cards = $deckObj->{'cards'};
   $deckCards = "";
@@ -188,10 +185,9 @@ if ($decklink != "") {
         $sku = $printing->{'sku'};
         $id = $sku->{'sku'};
         $id = explode("-", $id)[0];
-      } else if($isFaBMeta) {
+      } else if ($isFaBMeta) {
         $id = $cards[$i]->{'identifier'};
-      }
-      else {
+      } else {
         $id = $cards[$i]->{'cardIdentifier'};
       }
       $id = GetAltCardID($id);
@@ -315,9 +311,9 @@ if ($decklink != "") {
   }
 
   if ($dynastyCard != "" && ($format == "compblitz" || $format == "compcc")) {
-      $_SESSION['error'] = '⚠️ The Dynatsy cards are not allowed in the competitive queues until release. \n\n Thank you for your understanding and patience!';
-      header("Location: MainMenu.php");
-      die();
+    $_SESSION['error'] = '⚠️ The Dynatsy cards are not allowed in the competitive queues until release. \n\n Thank you for your understanding and patience!';
+    header("Location: MainMenu.php");
+    die();
   }
 
   if ($unsupportedCards != "") {
@@ -357,15 +353,13 @@ if ($decklink != "") {
   }
 
   //if($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc"))
-  if($totalCards < 60  && ($format == "cc" || $format == "compcc"))
-  {
+  if ($totalCards < 60  && ($format == "cc" || $format == "compcc")) {
     $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
   }
 
-  if(($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner"))
-  {
+  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
     $_SESSION['error'] = '⚠️ The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
@@ -406,10 +400,9 @@ if ($decklink != "") {
   if ($deckOptions[0] == "DRAFT") {
     if ($set == "WTR") $deckFile = "./WTRDraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
     else $deckFile = "./DraftFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
-  }
-  else if ($deckOptions[0] == "SEALED") {
+  } else if ($deckOptions[0] == "SEALED") {
     $deckFile = "./SealedFiles/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
-  } else if($deckOptions[0] == "ROGUELIKE") {
+  } else if ($deckOptions[0] == "ROGUELIKE") {
     $deckFile = "./Roguelike/Games/" . $deckOptions[1] . "/LimitedDeck.txt";
   } else {
     //Draftfab
@@ -420,8 +413,7 @@ if ($decklink != "") {
   copy($deckFile, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 }
 
-if($matchup == "")
-{
+if ($matchup == "") {
   if ($playerID == 2) {
 
     $gameStatus = $MGS_Player2Joined;
@@ -443,20 +435,17 @@ if($matchup == "")
     $joinerIP = $_SERVER['REMOTE_ADDR'];
   }
 
-  if($playerID == 1)
-  {
+  if ($playerID == 1) {
     $p1uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 1");
     $p1id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
     $p1IsPatron = (isset($_SESSION["isPatron"]) ? "1" : "");
-  }
-  else if($playerID == 2)
-  {
+  } else if ($playerID == 2) {
     $p2uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
     $p2id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
     $p2IsPatron = (isset($_SESSION["isPatron"]) ? "1" : "");
   }
 
-  if($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());
+  if ($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());
 
   WriteGameFile();
   SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
@@ -466,17 +455,13 @@ if($matchup == "")
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
-  if($playerID == 1)
-  {
+  if ($playerID == 1) {
     $_SESSION["p1AuthKey"] = $p1Key;
-    setcookie("lastAuthKey", $p1Key, time() + 86400, "/");
-  }
-  else if($playerID == 2)
-  {
+    setcookie("lastAuthKey", $p1Key, time() + 86400, "/", "talishar.net");
+  } else if ($playerID == 2) {
     $_SESSION["p2AuthKey"] = $p2Key;
-    setcookie("lastAuthKey", $p2Key, time() + 86400, "/");
+    setcookie("lastAuthKey", $p2Key, time() + 86400, "/", "talishar.net");
   }
-
 }
 
 session_write_close();
@@ -485,61 +470,66 @@ header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerI
 
 function ParseDraftFab($deck, $filename)
 {
-  $character = "DYN001"; $deckCards = "";
-  $headSideboard = ""; $chestSideboard = ""; $armsSideboard = ""; $legsSideboard = ""; $offhandSideboard = ""; $weaponSideboard = ""; $sideboardCards = "";
+  $character = "DYN001";
+  $deckCards = "";
+  $headSideboard = "";
+  $chestSideboard = "";
+  $armsSideboard = "";
+  $legsSideboard = "";
+  $offhandSideboard = "";
+  $weaponSideboard = "";
+  $sideboardCards = "";
 
   $cards = explode(",", $deck);
-  for($i=0; $i<count($cards); ++$i)
-  {
+  for ($i = 0; $i < count($cards); ++$i) {
     $card = explode(":", $cards[$i]);
     $cardID = $card[0];
     $quantity = $card[2];
     $type = CardType($cardID);
-    switch($type)
-    {
-      case "T": break;
-      case "C": $character = $cardID; break;
+    switch ($type) {
+      case "T":
+        break;
+      case "C":
+        $character = $cardID;
+        break;
       case "W":
-        if($weaponSideboard != "") $weaponSideboard .= " ";
+        if ($weaponSideboard != "") $weaponSideboard .= " ";
         $weaponSideboard .= $cardID;
         break;
       case "E":
         $subType = CardSubType($cardID);
-        switch($subType)
-        {
+        switch ($subType) {
           case "Head":
-            if($headSideboard != "") $headSideboard .= " ";
+            if ($headSideboard != "") $headSideboard .= " ";
             $headSideboard .= $cardID;
             break;
           case "Chest":
-            if($chestSideboard != "") $chestSideboard .= " ";
+            if ($chestSideboard != "") $chestSideboard .= " ";
             $chestSideboard .= $cardID;
             break;
           case "Arms":
-            if($armsSideboard != "") $armsSideboard .= " ";
+            if ($armsSideboard != "") $armsSideboard .= " ";
             $armsSideboard .= $cardID;
             break;
           case "Legs":
-            if($legsSideboard != "") $legsSideboard .= " ";
+            if ($legsSideboard != "") $legsSideboard .= " ";
             $legsSideboard .= $cardID;
             break;
           case "Off-Hand":
-            if($offhandSideboard != "") $offhandSideboard .= " ";
+            if ($offhandSideboard != "") $offhandSideboard .= " ";
             $offhandSideboard .= $cardID;
             break;
-          default: break;
+          default:
+            break;
         }
         break;
       default:
-        for($j=0; $j<$quantity; ++$j)
-        {
-          if($card[1] == "S")
-          {
-            if($sideboardCards != "") $sideboardCards .= " ";
+        for ($j = 0; $j < $quantity; ++$j) {
+          if ($card[1] == "S") {
+            if ($sideboardCards != "") $sideboardCards .= " ";
             $sideboardCards .= GetAltCardID($cardID);
-          }
-          else {
-            if($deckCards != "") $deckCards .= " ";
+          } else {
+            if ($deckCards != "") $deckCards .= " ";
             $deckCards .= GetAltCardID($cardID);
           }
         }
@@ -622,7 +612,7 @@ function GetAltCardID($cardID)
       return "WTR193";
     case "HER075":
       return "DYN025";
-    case "LGS112": 
+    case "LGS112":
       return "DYN070";
     case "LGS116":
       return "DYN200";
@@ -630,7 +620,10 @@ function GetAltCardID($cardID)
       return "DYN201";
     case "LGS118":
       return "DYN202";
-    case "ARC218": case "UPR224": case "MON306": case "ELE237"://Cracked Baubles
+    case "ARC218":
+    case "UPR224":
+    case "MON306":
+    case "ELE237": //Cracked Baubles
       return "WTR224";
   }
   return $cardID;
@@ -656,7 +649,8 @@ function IsBanned($cardID, $format)
       //  CRU141: Bloodsheath Skeleta
       //  EVR037: Mask of the Pouncing Lynx
       //  ARC116: Storm Striders
-    case "blitz": case "compblitz":
+    case "blitz":
+    case "compblitz":
       switch ($cardID) {
         case "ARC076":
         case "ARC077":
@@ -704,7 +698,8 @@ function IsBanned($cardID, $format)
       //    MON239: Stubby Hammerers
       //    CRU141: Bloodsheath Skeleta
       //    ELE114: Pulse of Isenloft
-    case "cc": case "compcc":
+    case "cc":
+    case "compcc":
       switch ($cardID) {
         case "MON001":
         case "MON003":

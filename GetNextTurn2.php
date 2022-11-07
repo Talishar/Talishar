@@ -29,6 +29,8 @@ include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 
+SetHeaders();
+
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
 
@@ -437,7 +439,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $actionDisabled = 0;
       $aimCounters = 0;
       if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $aimCounters = 1;
-      echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i), atkCounters:$aimCounters, controller: $combatChain[$i + 1]));
+      echo (Card($combatChain[$i], "concat", $cardSize, $action, 1, $actionDisabled, $combatChain[$i + 1] == $playerID ? 1 : 2, 0, strval($i), atkCounters: $aimCounters, controller: $combatChain[$i + 1]));
     }
   }
 
@@ -476,12 +478,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   if ($turn[0] == "OVER") {
-    if($roguelikeGameID != "")
-    {
+    if ($roguelikeGameID != "") {
       $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
-    }
-    else
-    {
+    } else {
       $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
       if ($playerID == 1 && $theirCharacter[0] != "DUMMY") $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
       if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
@@ -874,7 +873,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $bloodDeptImage = IsImmuneToBloodDebt(($playerID == 1 ? 2 : 1)) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
       echo ("<div style='position:absolute; top:28%; left:104px; width:34px; font-size:24px; font-weight:550; color: #DDD; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; text-align:center; padding-top:15px;'>" . $theirBloodDeptCount . "<img title='Blood Debt' style='position:absolute; z-index:-5; top: 40%; left: 50%; transform: translate(-50%, -50%); width:36px;' src='./Images/" . $bloodDeptImage . "'></img></div>");
     }
-    echo ("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop+2 . "px; cursor:pointer; position:absolute; display:inline-block;'>
+    echo ("<span title='Click to see your opponent Banish Zone.' onclick='ShowPopup(\"theirBanishPopup\");' style='left:" . $cardIconLeft . "px; top:" . $cardIconTop + 2 . "px; cursor:pointer; position:absolute; display:inline-block;'>
       <img style=' opacity:0.9; height:" . $cardIconSize . "; width:" . $cardIconSize . "; display: block; margin-left: auto; margin-right: auto;' src='./Images/banish.png'>
       <div style='text-align:center; margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 30px; height: 30px; padding: 3px; transform: translate(-50%, -50%); line-height: 1.2;
       position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($theirBanish) / BanishPieces());
@@ -1136,8 +1135,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i + 1] == 2;
       $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
       echo ("<div style='position:relative; display: inline-block;'>");
-      if ($subcard != "-" && $subcard != "UPR043") echo (Card($subcard, "concat", $cardSizeAura, showHover:true, from:"SUBCARD", controller: $playerID));
-      echo (Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i + 1] != 2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $enduranceCounters, $attackCounters, ($subcard != "-" && $subcard != "UPR043") ? "HASSUBCARD" : "",controller: $playerID) . "&nbsp");
+      if ($subcard != "-" && $subcard != "UPR043") echo (Card($subcard, "concat", $cardSizeAura, showHover: true, from: "SUBCARD", controller: $playerID));
+      echo (Card($myAllies[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 24 : 0, 1, $myAllies[$i + 1] != 2 ? 1 : 0, $border, 0, strval($i), "", False, $lifeCounters, $enduranceCounters, $attackCounters, ($subcard != "-" && $subcard != "UPR043") ? "HASSUBCARD" : "", controller: $playerID) . "&nbsp");
       if ($myAllies[$i + 3] == 1) echo ("<img title='Frozen' style='position:absolute; z-index:1001; top: " . ($subcard == "-" || $subcard == "UPR043" ? "6px" : "24px") . "; left: 6px; cursor:pointer; height:" . $cardHeight . "; width:" . $cardWidth . ";' src='./Images/frozenOverlay.png' />");
       echo ("</div>");
     }
@@ -1228,7 +1227,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; height:" . $counterHeight . "; padding: 3px;
       text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
       position:absolute; z-index: 5; font-size:26px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . count($myBanish) / BanishPieces());
-    echo("</img></div></span>");
+    echo ("</img></div></span>");
     if (TalentContains($myCharacter[0], "SHADOW") || SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true))) {
       $myBloodDeptCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
       $bloodDeptImage = IsImmuneToBloodDebt($playerID) ? "bloodDebtImmune2.png" : "bloodDebt2.png";
@@ -1559,7 +1558,8 @@ function DisplayTiles($player)
   DisplayPlayableTiles($player, $playerID);
 }
 
-function DisplayPlayableTiles($player, $playerID) {
+function DisplayPlayableTiles($player, $playerID)
+{
   global $turn, $cardSizeAura;
 
   $items = GetItems($player);

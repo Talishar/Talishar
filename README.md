@@ -1,5 +1,8 @@
 # FaBOnline
-Automated online client for the Flesh and Blood card game
+
+Automated online client for the Flesh and Blood card game.
+
+Small change to readme.
 
 ## Dev Resources
 
