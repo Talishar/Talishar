@@ -4409,6 +4409,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dqVars[0] = $damage;
         if($damage > 0) CheckSpellvoid($player, $damage);
       }
+      PrependDecisionQueue("INCDQVAR", $player, "1", 1);
       return $prevented;
     case "DEALARCANE":
       $dqState[7] = $lastResult;
