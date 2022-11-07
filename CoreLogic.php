@@ -1775,6 +1775,10 @@ function GetDamagePreventionIndices()
   $rv = CombineSearches($rv, $theirAllies);
   $theirAuras = SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS");
   $rv = CombineSearches($rv, $theirAuras);
+  if (ArsenalHasFaceUpCard($otherPlayer)) {
+    $theirArsenal = SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS");
+    $rv = CombineSearches($rv, $theirArsenal);
+  }
 
   return $rv;
 }
