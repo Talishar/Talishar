@@ -10,12 +10,12 @@ function PutPermanentIntoPlay($player, $cardID)
 function RemovePermanent($player, $index)
 {
   $permanents = &GetPermanents($player);
-  $permID = $permanents[$index];
+  $cardID = $permanents[$index];
   for ($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
     unset($permanents[$j]);
   }
   $permanents = array_values($permanents);
-  return $permID;
+  return $cardID;
 }
 
 function DestroyPermanent($player, $index)
@@ -121,6 +121,11 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
     }
     if ($remove == 1) {
       DestroyPermanent($player, $i);
+      if (HasWard($permanents[$i]) && SearchCharacterActive($player, "DYN213") && CardType($permanents[$i]) != "T") {
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        AddLayer("TRIGGER", $player, "DYN213");
+      }
     }
   }
   if ($damage <= 0) $damage = 0;

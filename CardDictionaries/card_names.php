@@ -1228,15 +1228,18 @@ if ($set == "DYN") {
 		case "022": case "021": case "023": return "Rumble Grunting";
 		case "025": return "Yoji, Royal Protector";
 		case "026": return "Seasoned Saviour";
-    	//Guardian
+    //Guardian
 		case "027": return "Steelbraid Buckler";
-    	case "028": return "Buckle";
+		case "028": return "Buckle";
+		case "029": return "Never Yield";
 		case "030": case "031": case "032": return "Shield Bash";
 		case "033": case "034": case "035": return "Blessing of Patience";
 		case "036": case "037": case "038": return "Shield Wall";
 		case "039": case "040": case "041": return "Reinforce Steel";
+		case "042": case "043": case "044": return "Withstand";
 		//Ninja
 		case "045": return "Blazen Yoroi";
+		case "046": return "Tearing Shuko";
 		case "047": return "Tiger Swipe";
 		case "048": return "Mindstate of Tiger";
 		case "049": return "Roar of the Tiger";
@@ -1266,6 +1269,7 @@ if ($set == "DYN") {
 		case "092": return "Construct Nitro Mechanoid";
     	case "093": return "Plasma Mainline";
 		case "094": return "Powder Keg";
+		case "095": case "096": case "097": return "Scramble Pulse";
 		case "098": case "099": case "100": return "Blessing of Ingenuity";
 		case "101": case "102": case "103": return "Crankshaft";
 		case "104": case "105": case "106": return "Jump Start";
@@ -1299,8 +1303,12 @@ if ($set == "DYN") {
 		case "151": return "Sandscour Greatbow";
 		case "152": return "Hornet's Sting";
     	case "153": return "Heat Seeker";
+		case "154": return "Immobilizing Shot";
 		case "155": return "Dead Eye";
+		case "156": case "157": case "158": return "Drill Shot";
+		case "159": case "160": case "161": return "Blessing of Focus";
 		case "162": case "163": case "164": return "Hemorrhage Bore";
+		case "165": case "166": case "167": return "Long Shot";
 		case "168": case "169": case "170": return "Point the Tip";
 		//Runeblade
 		case "171": return "Amethyst Tiara";
@@ -1308,23 +1316,37 @@ if ($set == "DYN") {
 		case "173": return "Cryptic Crossing";
 		case "174": return "Diabolic Ultimatum";
     	case "175": return "Looming Doom";
+    	case "176": case "177": case "178": return "Deathly Duet";
 		case "179": case "180": case "181": return "Blessing of Occult";
+		case "182": case "183": case "184": return "Aether Slash";
+		case "185": case "186": case "187": return "Runic Reaping";
 		case "188": case "189": case "190": return "Sky Fire Lanterns";
 		//Wizard
 		case "192": return "Surgent Aethertide";
-    case "194": return "Mind Warp";
+		case "193": return "Seerstone";
+    	case "194": return "Mind Warp";
 		case "195": return "Swell Tidings";
 		case "196": return "Brainstorm";
 		case "197": case "198": case "199": return "Aether Quickening";
 		case "200": case "201": case "202": return "Blessing of Aether";
-    case "203": case "204": case "205": return "Prognosticate";
+		case "203": case "204": case "205": return "Prognosticate";
 		case "206": case "207": case "208": return "Sap";
+		case "209": case "210": case "211": return "Tempest Aurora";
 		//Illusionist
+		case "212": return "Invoke Suraya";
+		case "213": return "Celestial Kimono";
+		case "214": return "Wave of Reality";
+		case "215": return "Phantasmal Symbiosis";
+		case "216": return "Spectral Procession";
 		case "217": return "Tome of Aeo";
-    	case "218": return "Blessing of Spirits";
-        case "230": case "231": case "232": return "Water Glow Lanterns";
+		case "218": return "Blessing of Spirits";
+		case "224": case "225": case "226": return "Spectral Prowler";
+		case "227": case "228": case "229": return "Spectral Rider";
+		case "230": case "231": case "232": return "Water Glow Lanterns";
+		case "612": return "Suraya, Archangel of Knowledge";
 		//Generic
 		case "234": return "Crown of Dominion";
+		case "235": return "Ornate Tessen";
 		case "236": return "Spell Fray Tiara";
 		case "237": return "Spell Fray Cloack";
 		case "238": return "Spell Fray Gloves";

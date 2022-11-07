@@ -47,7 +47,7 @@ function TypeToPlay($phase)
     case "HANDTOPBOTTOM":
       return "a card from hand";
     case "CHOOSEBOTTOM":
-      return "a card to put on the bottom of your deck";
+      return "a card to put on the bottom of the deck";
     case "CHOOSECOMBATCHAIN":
       return "a card from the chain link";
     case "CHOOSECHARACTER":
@@ -106,10 +106,14 @@ function TypeToPlay($phase)
       return "who will be the first player";
     case "MAYCHOOSETHEIRDISCARD":
       return "a card from their graveyard";
+    case "CHOOSEMYAURA":
+      return " an aura";
     case "CHOOSETHEIRAURA":
       return "one of their auras";
     case "DYNPITCH":
       return "how much you want to pay";
+    case "CHOOSEMYSOUL": case "MAYCHOOSEMYSOUL":
+      return "a card from soul";
   }
 }
 

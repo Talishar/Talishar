@@ -73,6 +73,13 @@ function BottomDeckMultizoneDraw($player, $zone1, $zone2)
   AddDecisionQueue("DRAW", $player, "-", 1);
 }
 
+function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
+{
+  global $combatChain;
+  if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
+  else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
+}
+
 function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $currentTurnEffects, $combatChain;
@@ -492,6 +499,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   }
 
   switch ($parameter) {
+    case "WTR000":
+      if (IHaveLessHealth()) {
+        if (GainHealth(1, $player)) WriteLog(CardLink($parameter, $parameter) . " gained 1 health.");
+      }
+      break;
     case "WTR001": case "WTR002": case "RVD001":
       WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
       Intimidate();
@@ -537,6 +549,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
       AddDecisionQueue("REFRACTIONBOLTERS", $player, $index, 1);
+      break;
+    case "ARC000":
+      Opt($parameter, 2);
       break;
     case "ARC007":
       $index = SearchItemsForUniqueID($uniqueID, $player);
@@ -634,6 +649,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("APPENDLASTRESULT", $player, "-SHIYANA", 1);
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       }
+      break;
+    case "CRU099":
+      PutItemIntoPlay($target);
       break;
     case "CRU142":
       //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
@@ -908,6 +926,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddBottomDeck($parameter, $player, "GY");
       WriteLog(CardLink($parameter, $parameter) . " was put at the bottom of the deck");
       break;
+    case "DYN093":
+      $targetIndex = SearchItemsForUniqueID($target, $player);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($items[$targetIndex], $items[$targetIndex]));
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PLASMAMAINLINE", $player, $uniqueID . "," . $target, 1);
+      break;
     case "DYN094":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $index = GetItemIndex($parameter, $player);
@@ -926,11 +950,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       break;
     case "ARC036": case "DYN110":
     case "DYN111": case "DYN112":
-      if ($items[$target + 2] == 2) {
-        --$items[$target + 1];
-        $items[$target + 2] = 1;
+      $index = SearchItemsForUniqueID($uniqueID, $player);
+      if ($items[$index + 2] == 2) {
+        --$items[$index + 1];
+        $items[$index + 2] = 1;
         GainResources($player, 1);
-        if ($items[$target + 1] <= 0) DestroyMyItem($target);
+        if ($items[$index + 1] <= 0) DestroyMyItem($index);
       }
       break;
     case "DYN113": case "DYN114":
@@ -969,6 +994,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
+      case "DYN213":
+        GainResources($player, 1);
+        break;
       case "DYN217":
         MyDrawCard();
         DestroyAuraUniqueID($player, $uniqueID);
@@ -1106,7 +1134,7 @@ function OptMain($amount)
   PlayerOpt($mainPlayer, $amount);
 }
 
-function PlayerOpt($player, $amount)
+function PlayerOpt($player, $amount, $optKeyword = true)
 {
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPX," . $amount);
   AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
@@ -1230,13 +1258,26 @@ function DestroyFrozenArsenal($player)
 
 function isAttackGreaterThanTwiceBasePower()
 {
-  global $currentPlayer, $combatChainState, $CCS_CachedTotalAttack, $combatChain;
+  global $currentPlayer, $combatChainState, $CCS_CachedTotalAttack, $combatChain, $currentTurnEffects;
   if (count($combatChain) > 0 && CardType($combatChain[0]) == "W" && $combatChainState[$CCS_CachedTotalAttack] > (AttackValue($combatChain[0]) * 2)) return true;
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if (cardType($character[$i]) != "W") continue;
+    $attackType = CardType($character[$i]);
     $baseAttack = AttackValue($character[$i]);
     $buffedAttack = $baseAttack + $character[$i + 3] + MainCharacterAttackModifiers($i, true) + AttackModifier($character[$i]);
+    for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnPieces()) {
+      if (IsCombatEffectActive($currentTurnEffects[$j]) && !IsCombatEffectLimited($j)) {
+        if ($currentTurnEffects[$j + 1] == $currentPlayer) {
+          $attack = EffectAttackModifier($currentTurnEffects[$j]);
+          $canGainAttack = !SearchCurrentTurnEffects("CRU035", $currentPlayer) || $attackType != "AA";
+          $snagActive = SearchCurrentTurnEffects("CRU182", $currentPlayer) && $attackType == "AA";
+          if (($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$j] == $character[$i])) {
+            $buffedAttack += $attack;
+          }
+        }
+      }
+    }
     if ($buffedAttack > $baseAttack * 2) return true;
   }
   return false;

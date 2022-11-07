@@ -724,6 +724,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent hand");
   }
 
+  if (($turn[0] == "CHOOSEMYAURA") && $turn[1] == $playerID) {
+    ChoosePopup($myAuras, $turn[2], 16, "Choose one of your auras");
+  }
+
   if (($turn[0] == "CHOOSETHEIRAURA") && $turn[1] == $playerID) {
     ChoosePopup($theirAuras, $turn[2], 16, "Choose one of your opponent auras");
   }
@@ -752,6 +756,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($turn[0] == "CHOOSETHEIRITEM" && $turn[1] == $playerID) {
     ChoosePopup($theirItems, $turn[2], 16, "Choose one of your opponent items", ItemPieces());
+  }
+
+  if (($turn[0] == "CHOOSEMYSOUL" || $turn[0] == "MAYCHOOSEMYSOUL") && $turn[1] == $playerID) {
+    ChoosePopup($mySoul, $turn[2], 16, "Choose a card from your soul", SoulPieces());
   }
 
   if ($turn[0] == "PDECK" && $currentPlayer == $playerID) {
@@ -1599,7 +1607,7 @@ function DisplayPlayableTiles($player, $playerID)
     for ($i = 0; $i < count($items); $i += ItemPieces()) {
       if ($items[$i] == "DYN243") {
         ++$goldCount;
-        if ($player == $player && $goldCount == 1) {
+        if ($player == $playerID && $goldCount == 1) {
           $actionIndex = $i;
           $playable = IsPlayable($items[$i], $turn[0], "PLAY", $i);
         }
@@ -1607,7 +1615,7 @@ function DisplayPlayableTiles($player, $playerID)
     }
     if ($goldCount > 0) {
       $border = CardBorderColor("DYN243", "PLAY", $playable);
-      echo (Card("DYN243", "concat", $cardSizeAura, $player == $player && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($goldCount > 1 ? $goldCount : 0), strval($actionIndex)) . "&nbsp");
+      echo (Card("DYN243", "concat", $cardSizeAura, $player == $playerID && $turn[0] != "P" && $playable ? 10 : 0, 1, 0, $border, ($goldCount > 1 ? $goldCount : 0), strval($actionIndex)) . "&nbsp");
     }
   }
 }
