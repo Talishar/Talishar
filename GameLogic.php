@@ -3211,7 +3211,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = SearchDeckForCard($player, $subparam);
           break;
         case "PERMSUBTYPE":
-          $rv = SearchPermanents($player, "", $subparam);
+          if ($subparam == "Aura") $rv = SearchAura($player, "", $subparam);
+          else $rv = SearchPermanents($player, "", $subparam);
           break;
         case "SEARCHMZ":
           $rv = SearchMZ($player, $subparam);
@@ -3451,6 +3452,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "QUELL":
           $rv = QuellIndices($player);
           break;
+        case "SOUL":
+          $rv = SearchSoul($player, talent:"LIGHT");
+          break;
         default:
           $rv = "";
           break;
@@ -3515,6 +3519,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         unset($combatChain[$lastResult + $i]);
       }
       $combatChain = array_values($combatChain);
+      return $cardID;
+    case "REMOVESOUL":
+      $soul = &GetSoul($player);
+      $cardID = $soul[$lastResult];
+      unset($soul[$lastResult]);
+      $soul = array_values($soul);
       return $cardID;
     case "COMBATCHAINBUFFPOWER":
       CombatChainPowerModifier($lastResult, $parameter);
@@ -5417,6 +5427,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "ALLY-" . ResolveTransform($player, $lastResult, $parameter);
     case "TRANSFORMPERMANENT":
       return "PERMANENT-" . ResolveTransformPermanent($player, $lastResult, $parameter);
+    case "TRANSFORMAURA":
+      return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);
     case "MZGETUNIQUEID":
       $params = explode("-", $lastResult);
       $zone = &GetMZZone($player, $params[0]);
@@ -5665,6 +5677,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       ++$items[$targetIndex + 1];
       --$items[$plasmaIndex + 1];
       if ($items[$plasmaIndex + 1] == 0) DestroyItemForPlayer($player, $plasmaIndex);
+      return $lastResult;
+    case "SURAYA":
+      DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
     default:
       return "NOTSTATIC";

@@ -24,6 +24,7 @@ function DYNAbilityCost($cardID)
     case "DYN242": return 1;
     case "DYN243": return 2;
     case "DYN492a": return 0;
+    case "DYN612": return 2;
     default: return 0;
   }
 }
@@ -53,6 +54,7 @@ function DYNAbilityType($cardID, $index = -1)
     case "DYN241": return "A";
     case "DYN242": case "DYN243": return "A";
     case "DYN492a": return "AA";
+    case "DYN612": return "AA";
     default: return "";
   }
 }
@@ -1174,7 +1176,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN212":
-      //Do invocation
+      Transform($currentPlayer, "MON104", "DYN612");
       return "";
     case "DYN215":
       // TODO: Make named attack Illusionist
@@ -1251,6 +1253,17 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         Draw($currentPlayer);
       }
       return $rv;
+    case "DYN612":
+      $mySoul = &GetSoul($currentPlayer);
+      if (count($mySoul) > 0){
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SOUL");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish");
+        AddDecisionQueue("MAYCHOOSEMYSOUL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVESOUL", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "SOUL,-", 1);
+        AddDecisionQueue("SURAYA", $currentPlayer, $cardID, 1);
+      }
+      return "";
     default:
       return "";
   }

@@ -1333,6 +1333,7 @@ if ($set == "DYN") {
 		case "206": case "207": case "208": return "Sap";
 		case "209": case "210": case "211": return "Tempest Aurora";
 		//Illusionist
+		case "212": return "Invoke Suraya";
 		case "213": return "Celestial Kimono";
 		case "214": return "Wave of Reality";
 		case "215": return "Phantasmal Symbiosis";
@@ -1342,6 +1343,7 @@ if ($set == "DYN") {
 		case "224": case "225": case "226": return "Spectral Prowler";
 		case "227": case "228": case "229": return "Spectral Rider";
 		case "230": case "231": case "232": return "Water Glow Lanterns";
+		case "612": return "Suraya, Archangel of Knowledge";
 		//Generic
 		case "234": return "Crown of Dominion";
 		case "235": return "Ornate Tessen";
