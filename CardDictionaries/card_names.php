@@ -1230,8 +1230,8 @@ if ($set == "DYN") {
 		case "026": return "Seasoned Saviour";
     //Guardian
 		case "027": return "Steelbraid Buckler";
-    case "028": return "Buckle";
-    case "029": return "Never Yield";
+		case "028": return "Buckle";
+		case "029": return "Never Yield";
 		case "030": case "031": case "032": return "Shield Bash";
 		case "033": case "034": case "035": return "Blessing of Patience";
 		case "036": case "037": case "038": return "Shield Wall";
@@ -1324,24 +1324,26 @@ if ($set == "DYN") {
 		//Wizard
 		case "192": return "Surgent Aethertide";
 		case "193": return "Seerstone";
-    case "194": return "Mind Warp";
+    	case "194": return "Mind Warp";
 		case "195": return "Swell Tidings";
 		case "196": return "Brainstorm";
 		case "197": case "198": case "199": return "Aether Quickening";
 		case "200": case "201": case "202": return "Blessing of Aether";
-    case "203": case "204": case "205": return "Prognosticate";
+		case "203": case "204": case "205": return "Prognosticate";
 		case "206": case "207": case "208": return "Sap";
 		case "209": case "210": case "211": return "Tempest Aurora";
 		//Illusionist
 		case "214": return "Wave of Reality";
+		case "215": return "Phantasmal Symbiosis";
+		case "216": return "Spectral Procession";
 		case "217": return "Tome of Aeo";
-    case "218": return "Blessing of Spirits";
-    case "224": case "225": case "226": return "Spectral Prowler";
-    case "227": case "228": case "229": return "Spectral Rider";
-    case "230": case "231": case "232": return "Water Glow Lanterns";
+		case "218": return "Blessing of Spirits";
+		case "224": case "225": case "226": return "Spectral Prowler";
+		case "227": case "228": case "229": return "Spectral Rider";
+		case "230": case "231": case "232": return "Water Glow Lanterns";
 		//Generic
 		case "234": return "Crown of Dominion";
-    case "235": return "Ornate Tessen";
+		case "235": return "Ornate Tessen";
 		case "236": return "Spell Fray Tiara";
 		case "237": return "Spell Fray Cloack";
 		case "238": return "Spell Fray Gloves";

@@ -106,7 +106,7 @@ function DYNAbilityHasGoAgain($cardID)
 
 function DYNEffectAttackModifier($cardID)
 {
-  global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
+  global $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   if (count($params) > 1) $parameter = $params[1];
@@ -329,6 +329,8 @@ function DYNCardType($cardID)
     //Illusionist
     case "DYN212": return "A";
     case "DYN214": return "E";
+    case "DYN215": return "AA";
+    case "DYN216": return "AA";
     case "DYN217": return "A";
     case "DYN218": case "DYN219": case "DYN220": return "A";
     case "DYN224": case "DYN225": case "DYN226": return "AA";
@@ -509,6 +511,7 @@ function DYNCardCost($cardID)
     case "DYN209": case "DYN210": case "DYN211": return 0;
     //Illusionist
     case "DYN212": return 2;
+    case "DYN215": return 1;
     case "DYN217": return 1;
     case "DYN218": case "DYN219": case "DYN220": return 1;
     case "DYN227": case "DYN228": case "DYN229": return 3;
@@ -582,12 +585,15 @@ function DYNPitchValue($cardID)
     //Illusionist
     case "DYN212": return 2;
     case "DYN214": return 0;
+    case "DYN215": return 2;
+    case "DYN216": return 1;
     case "DYN218": return 1;
     case "DYN219": return 2;
     case "DYN224": return 1;
     case "DYN225": return 2;
     case "DYN227": return 1;
     case "DYN228": return 2;
+    //Generic
     case "DYN234": return 0;
     case "DYN235": return 0;
     case "DYN240": return 1;
@@ -682,6 +688,7 @@ function DYNBlockValue($cardID)
 
 function DYNAttackValue($cardID)
 {
+  global $currentPlayer;
   switch ($cardID) {
     //Brute
     case "DYN005": case "DYN010": return 7;
@@ -727,6 +734,8 @@ function DYNAttackValue($cardID)
     case "DYN177": case "DYN183": return 3;
     case "DYN178": case "DYN184": return 2;
     //Illusionist
+    case "DYN215": return 6;
+    case "DYN216": return CountAura("MON104", $currentPlayer);
     case "DYN224": return 4;
     case "DYN225": return 3;
     case "DYN226": return 2;
@@ -1163,6 +1172,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN212":
       //Do invocation
       return "";
+    case "DYN215":
+      // TODO: Make named attack Illusionist
+      return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
     case "DYN224": case "DYN225": case "DYN226":
       if(SearchAuras("MON104", $currentPlayer))
       {
