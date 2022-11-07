@@ -553,18 +553,18 @@ function AuraEndTurnCleanup()
 
 function AuraTakeDamageAbilities($player, $damage, $type)
 {
-  $Auras = &GetAuras($player);
+  $auras = &GetAuras($player);
   $hasRunebloodBarrier = CountAura("CRU144", $player) > 0;
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
-  for ($i = count($Auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     if ($damage <= 0) {
       $damage = 0;
       break;
     }
-    switch ($Auras[$i]) {
+    switch ($auras[$i]) {
       case "ARC112":
         if ($hasRunebloodBarrier) {
           if ($preventable) {
@@ -624,7 +624,15 @@ function AuraTakeDamageAbilities($player, $damage, $type)
       default:
         break;
     }
-    if ($remove == 1) DestroyAura($player, $i);
+    if ($remove == 1) {
+      DestroyAura($player, $i);
+      if (HasWard($auras[$i]) && SearchCharacterActive($player, "DYN213") && CardType($auras[$i]) != "T") {
+        $char = &GetPlayerCharacter($player);
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        AddLayer("TRIGGER", $player, "DYN213");
+      }
+    }
   }
   return $damage;
 }
