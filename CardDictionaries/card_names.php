@@ -1340,6 +1340,7 @@ if ($set == "DYN") {
 		case "216": return "Spectral Procession";
 		case "217": return "Tome of Aeo";
 		case "218": return "Blessing of Spirits";
+		case "221": case "222": case "223": return "Tranquil Passing";
 		case "224": case "225": case "226": return "Spectral Prowler";
 		case "227": case "228": case "229": return "Spectral Rider";
 		case "230": case "231": case "232": return "Water Glow Lanterns";
