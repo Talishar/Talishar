@@ -499,6 +499,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
   }
 
   switch ($parameter) {
+    case "WTR000":
+      if (IHaveLessHealth()) {
+        if (GainHealth(1, $player)) WriteLog(CardLink($parameter, $parameter) . " gained 1 health.");
+      }
+      break;
     case "WTR001": case "WTR002": case "RVD001":
       WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
       Intimidate();
@@ -544,6 +549,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
       AddDecisionQueue("REFRACTIONBOLTERS", $player, $index, 1);
+      break;
+    case "ARC000":
+      Opt($parameter, 2);
       break;
     case "ARC007":
       $index = SearchItemsForUniqueID($uniqueID, $player);
