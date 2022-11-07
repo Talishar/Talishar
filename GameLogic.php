@@ -2796,12 +2796,13 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   $theirHoldState = ItemDefaultHoldTriggerState($item);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   for ($i = 0; $i < $number; ++$i) {
-    $steamCounters = SteamCounterLogic($item, $player) + $steamCounterModifier;
+    $uniqueID = GetUniqueId();
+    $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
     array_push($items, $item); //Card ID
     array_push($items, $steamCounters); //Counters
     array_push($items, 2); //Status
     array_push($items, ItemUses($item)); //Num Uses
-    array_push($items, GetUniqueId()); //Unique ID
+    array_push($items, $uniqueID); //Unique ID
     array_push($items, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     array_push($items, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
@@ -2817,7 +2818,7 @@ function ItemUses($cardID)
   }
 }
 
-function SteamCounterLogic($item, $playerID)
+function SteamCounterLogic($item, $playerID, $uniqueID)
 {
   global $CS_NumBoosted;
   $counters = ETASteamCounters($item);
@@ -2833,11 +2834,9 @@ function SteamCounterLogic($item, $playerID)
     $items = &GetItems($playerID);
     for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
     {
-      if($items[$i] == "DYN093" && $items[$i+5] == "1")//Use gem to toggle Plasma Mainline
+      if($items[$i] == "DYN093")
       {
-        ++$counters;
-        --$items[$i+1];
-        if($items[$i+1] == 0) DestroyItemForPlayer($playerID, $i);
+        AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i + 4]);
       }
     }
   }
@@ -5659,6 +5658,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PASSTAKEDAMAGE":
       if($lastResult == "PASS") DamageTrigger($player, $parameter, "DAMAGE");
+      return $lastResult;
+    case "PLASMAMAINLINE":
+      $items = &GetItems($player);
+      $params = explode(",", $parameter);
+      $plasmaIndex = SearchItemsForUniqueID($params[0], $player);
+      $targetIndex = SearchItemsForUniqueID($params[1], $player);
+      ++$items[$targetIndex + 1];
+      --$items[$plasmaIndex + 1];
+      if ($items[$plasmaIndex + 1] == 0) DestroyItemForPlayer($player, $plasmaIndex);
       return $lastResult;
     default:
       return "NOTSTATIC";

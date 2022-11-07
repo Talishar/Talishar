@@ -1973,8 +1973,6 @@ function ItemDefaultHoldTriggerState($cardID)
     case "EVR069": // Dissolution Sphere
     case "EVR071": // Signal Jammer
       return 0;
-    case "DYN093":
-      return 1;
     default:
       return 2;
   }
