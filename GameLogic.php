@@ -2123,12 +2123,10 @@ function PitchAbility($cardID)
   }
   switch ($cardID) {
     case "WTR000":
-      if (IHaveLessHealth()) {
-        if (GainHealth(1, $currentPlayer)) WriteLog(CardLink($cardID, $cardID) . " gained 1 health.");
-      }
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "ARC000":
-      Opt($cardID, 2);
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "CRU000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
