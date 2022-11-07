@@ -642,6 +642,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
       }
       break;
+    case "CRU099":
+      PutItemIntoPlay($target);
+      break;
     case "CRU142":
       //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
       if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
