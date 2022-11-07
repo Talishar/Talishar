@@ -586,7 +586,6 @@
   {
     $spellvoidChoices = SearchSpellvoidIndices($player);
     if ($spellvoidChoices != "") {
-      PrependDecisionQueue("INCDQVAR", $player, "1", 1);
       PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $spellvoidChoices);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to use a Spellvoid equipment");
