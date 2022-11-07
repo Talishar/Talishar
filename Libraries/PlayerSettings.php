@@ -400,7 +400,7 @@ function GetSettingsUI($player)
   }
 
   $isPummelowanko = false;
-  $isPummelowanko = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "MrShub" || $_SESSION["useruid"] == "duofanel" || $_SESSION["useruid"] == "Matiisen" ||  $_SESSION["useruid"] == "Pepowski" ||  $_SESSION["useruid"] == "Seba_stian" ||  $_SESSION["useruid"] == "NatAlien" ||  $_SESSION["useruid"] == "dvooyas");
+  $isPummelowanko = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "MrShub" || $_SESSION["useruid"] == "duofanel" || $_SESSION["useruid"] == "Matiisen" ||  $_SESSION["useruid"] == "Pepowski" ||  $_SESSION["useruid"] == "Seba_stian" ||  $_SESSION["useruid"] == "NatAlien" ||  $_SESSION["useruid"] == "dvooyas" || $_SESSION["useruid"] == "Lukashu" || $_SESSION["useruid"] == "Qwak" || $_SESSION["useruid"] == "NatAlien");
   if ($isPummelowanko) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-27", "Pummelowanko", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Pummelowanko");
