@@ -134,8 +134,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   if ($folder == "crops") $margin = "0px;";
   if ($from == "SUBCARD") {
     $rv = "<a style='" . $margin . " position:absolute; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
-  }
-  else {
+  } else {
     $rv = "<a style='" . $margin . " position:relative; display:inline-block;" . ($action > 0 ? "cursor:pointer;" : "") . "'" . ($showHover > 0 ? " onmouseover='ShowCardDetail(event, this)' onmouseout='HideCardDetail()'" : "") . ($action > 0 ? " onclick='SubmitInput(\"" . $action . "\", \"&cardID=" . $actionData . "\");'" : "") . ">";
   }
   if ($borderColor > 0) {
@@ -254,7 +253,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   }
 
   //Attack Counters style
-  if ($atkCounters != 0 && CardSubType($cardNumber) != "Arrow" ) {
+  if ($atkCounters != 0 && CardSubType($cardNumber) != "Arrow") {
     if ($lifeCounters == 0 && $counters == 0) {
       $left = "0px";
     } else {
@@ -367,6 +366,23 @@ function CreateCheckbox($input, $value, $immediateSubmitMode = -1, $defaultCheck
   $rv .= "<label for='chk" . $input . "'>" . $label . "</label>";
   return $rv;
 }
+
+function CreateCheckboxAPI($input, $value, $immediateSubmitMode = -1, $defaultChecked = false, $label = "&nbsp;", $fullRefresh = false)
+{
+  $option = new stdClass();
+  global $playerID;
+  $submitLink = "";
+  $check = "";
+  if ($immediateSubmitMode != -1) $submitLink = ProcessInputLink($playerID, $immediateSubmitMode, $input, "onchange", $fullRefresh);
+  if ($defaultChecked) $check = " checked='checked'";
+  $option->submitLink = $submitLink;
+  $option->input = $input;
+  $option->value = $value;
+  $option->check = $check;
+  $option->label = $label;
+  return $option;
+}
+
 
 function CreateRadioButton($input, $value, $immediateSubmitMode, $currentInput, $label = "&nbsp;")
 {
@@ -642,8 +658,7 @@ function BanishUIMinimal($from = "")
     } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-    } else 
-    {
+    } else {
       if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $playerID == $mainPlayer)) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
@@ -680,7 +695,7 @@ function TheirBanishUIMinimal($from = "")
   return $rv;
 }
 
-function CardBorderColor($cardID, $from, $isPlayable, $mod="-")
+function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
 {
   global $playerID, $currentPlayer, $turn;
   if ($playerID != $currentPlayer) return 0;
@@ -753,6 +768,7 @@ function MainMenuUI()
   $rv .= PreviousTurnSelectionUI() . "<BR>";
   $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
   $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
+  $rv .= "<div><a href='https://beta.talishar.net/ReactClient/?gameName=$gameName&playerID=$playerID' target='_blank'>Use beta client in new window. </a></div><br>";
   if (isset($_SESSION["userid"])) {
     $userID = $_SESSION["userid"];
     $badges = GetMyAwardableBadges($userID);
