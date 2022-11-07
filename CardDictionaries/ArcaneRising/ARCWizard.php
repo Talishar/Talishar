@@ -333,7 +333,7 @@
     case "UPR173": case "UPR174": case "UPR175": return 2;
     case "UPR179": case "UPR180": case "UPR181": return 1;
     //Dynasty
-    case "DYN195": return 0;
+    case "DYN194": return 0;
     case "DYN195": return 0;
     case "DYN196": return 0;
     case "DYN197": case "DYN198": case "DYN199": return 0;
@@ -497,8 +497,7 @@
     case "UPR173": case "UPR174": case "UPR175":
     case "UPR179": case "UPR180": case "UPR181":
       return true;
-    case "DYN194":
-    case "DYN195":
+    case "DYN194": case "DYN195":
     case "DYN197": case "DYN198": case "DYN199":
     case "DYN203": case "DYN204": case "DYN205":
     case "DYN206": case "DYN207": case "DYN208":
