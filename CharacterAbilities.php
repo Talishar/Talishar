@@ -15,10 +15,21 @@ function CharacterTakeDamageAbilities($player, $damage, $type)
           $remove = 1;
         }
         break;
+      case "DYN213":          // HAS TO BE LAST - Until we can order triggers
+        if ($damage > 0) {
+          if ($preventable) $damage -= 1;
+          $remove = 1;
+        }
+        break;
       default:
         break;
     }
     if ($remove == 1) {
+      if (HasWard($char[$i]) && SearchCharacterActive($player, "DYN213") && CardType($char[$i]) != "T") {
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        AddLayer("TRIGGER", $player, "DYN213");
+      }
       DestroyCharacter($player, $i);
     }
   }

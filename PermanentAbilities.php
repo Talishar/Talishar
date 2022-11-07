@@ -121,6 +121,11 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
     }
     if ($remove == 1) {
       DestroyPermanent($player, $i);
+      if (HasWard($permanents[$i]) && SearchCharacterActive($player, "DYN213") && CardType($permanents[$i]) != "T") {
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        AddLayer("TRIGGER", $player, "DYN213");
+      }
     }
   }
   if ($damage <= 0) $damage = 0;

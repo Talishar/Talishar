@@ -1333,6 +1333,7 @@ if ($set == "DYN") {
 		case "206": case "207": case "208": return "Sap";
 		case "209": case "210": case "211": return "Tempest Aurora";
 		//Illusionist
+		case "213": return "Celestial Kimono";
 		case "214": return "Wave of Reality";
 		case "215": return "Phantasmal Symbiosis";
 		case "216": return "Spectral Procession";
