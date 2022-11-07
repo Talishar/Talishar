@@ -2,6 +2,7 @@
 
 function PlayAlly($cardID, $player, $subCards = "-")
 {
+  WriteLog($subCards);
   $allies = &GetAllies($player);
   array_push($allies, $cardID);
   array_push($allies, 2);
@@ -96,6 +97,8 @@ function AllyHealth($cardID)
       return 1;
     case "UPR417":
       return 3;
+    case "DYN612":
+      return 4;
     default:
       return 1;
   }

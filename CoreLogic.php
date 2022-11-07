@@ -589,6 +589,10 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
       MainDrawCard();
       PummelHit();
     }
+    if ($source == "DYN612") {
+      GainHealth($damage, $mainPlayer);
+      WriteLog("Player " . $mainPlayer . " gains " . $damage . " life.", $mainPlayer);
+    }
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   return $damage;
@@ -709,7 +713,7 @@ function GainHealth($amount, $player)
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
-  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog("Dread Scythe prevented you from gaining health."); return; }
+  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {
     if($health > $otherHealth) return false;
@@ -1616,6 +1620,7 @@ function NumEquipBlock()
       case "MULTICHOOSEDECK": return 0;
       case "CHOOSEPERMANENT": return 0;
       case "MULTICHOOSETEXT": return 0;
+      case "CHOOSEMYSOUL": return 0;
       case "OVER": return 0;
       default: return 1;
     }

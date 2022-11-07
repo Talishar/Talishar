@@ -10,12 +10,12 @@ function PutPermanentIntoPlay($player, $cardID)
 function RemovePermanent($player, $index)
 {
   $permanents = &GetPermanents($player);
-  $permID = $permanents[$index];
+  $cardID = $permanents[$index];
   for ($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
     unset($permanents[$j]);
   }
   $permanents = array_values($permanents);
-  return $permID;
+  return $cardID;
 }
 
 function DestroyPermanent($player, $index)

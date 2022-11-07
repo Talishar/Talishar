@@ -136,7 +136,6 @@ function AuraPlayCounters($cardID)
 
 function DestroyAuraUniqueID($player, $uniqueID)
 {
-  $auras = &GetAuras($player);
   $index = SearchAurasForUniqueID($uniqueID, $player);
   if($index != -1) DestroyAura($player, $index);
 }
@@ -154,6 +153,7 @@ function DestroyAura($player, $index)
     unset($auras[$j]);
   }
   $auras = array_values($auras);
+  return $cardID;
 }
 
 function AuraCostModifier()

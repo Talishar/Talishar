@@ -245,7 +245,7 @@ function AddSpecificSoul($cardID, &$soul, $from)
 
 function BanishFromSoul($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
 

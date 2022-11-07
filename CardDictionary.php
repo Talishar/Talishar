@@ -1455,6 +1455,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return count($combatChain) <= 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || ContractType($combatChain[0]) == "";
     case "DYN168": case "DYN169": case "DYN170":
       return !ArsenalHasFaceUpArrowCard($mainPlayer);
+    case "DYN212":
+      return CountAura("MON104", $currentPlayer) < 1;
     case "DYN492a":
       $character = &GetPlayerCharacter($currentPlayer);
       return $character[$index + 2] <= 0;
