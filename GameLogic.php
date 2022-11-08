@@ -986,13 +986,14 @@ function EffectBlockModifier($cardID)
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $defAuras, $defAuras, $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $combatChain, $chainLinkSummary;
+  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $combatChain, $chainLinkSummary;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if ($cardType == "E" && ($combatChain[0] == "DYN095" || $combatChain[0] == "DYN096" || $combatChain[0] == "DYN097")) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
+  $defAuras = &GetAuras($defPlayer);
   for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
     if ($defAuras[$i] == "WTR072" && CardCost($cardID) >= 3) $blockModifier += 4;
     if ($defAuras[$i] == "WTR073" && CardCost($cardID) >= 3) $blockModifier += 3;
@@ -1904,10 +1905,6 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN089-UNDER":
       return true;
-    case "DYN115": case "DYN116":
-      if (NumCardsBlocking() == 0) return true;
-      else if(NumAttacksBlocking() == 0) return true;
-      return false;
     case "DYN154":
       return true;
     default:
@@ -3535,34 +3532,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChain[$lastResult + 6] += $parameter;
       return $lastResult;
     case "COMBATCHAINDEBUFFDEFENSE":
-      global $currentTurnEffects;
-      $totalDefense = 0;
-      $defense = BlockValue($combatChain[$lastResult]);
-      if ($defense > 0) $totalDefense += $defense;
-      if (CardType($combatChain[$lastResult]) == "E") {
-        $character = &GetPlayerCharacter($defPlayer);
-        $index = FindCharacterIndex($defPlayer, $combatChain[$lastResult]);
-        $totalDefense += $character[$index + 4];
-      }
-      else {
-        for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-            if ($currentTurnEffects[$i + 1] != $mainPlayer) {
-              $rv = 0;
-              switch ($currentTurnEffects[$i]) {
-                case "ELE000-2": $rv -= 1;
-                case "ELE143": $rv -= 1;
-                case "DYN115": case "DYN116": if (CardType($combatChain[$lastResult]) == "AA") $rv -= 1;
-                default: break;
-              }
-              $totalDefense += $rv;
-              if ($totalDefense < 0) $totalDefense = 0;
-            }
-          }
-        }
-      }
-      //WriteLog($parameter . " " . $totalDefense); //Uncomment to test Shred
-      if ($parameter > $totalDefense) $parameter = $totalDefense;
+      $defense = BlockingCardDefense($lastResult);
+      if ($parameter > $defense) $parameter = $defense;
       $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
     case "REMOVEMYDISCARD":

@@ -37,12 +37,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       }
       else
       {
-        $defense = BlockValue($combatChain[$i-1]) + BlockModifier($combatChain[$i-1], $from, $resourcesPaid) + $combatChain[$i + 5];
-        if(CardType($combatChain[$i-1]) == "E")
-        {
-          $index = FindDefCharacter($combatChain[$i-1]);
-          $defense += $defCharacter[$index+4];
-        }
+        $defense = BlockingCardDefense($i-1);
         if($defense > 0) $totalDefense += $defense;
       }
     }
@@ -110,6 +105,21 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
+}
+
+function BlockingCardDefense($index)
+{
+  global $combatChain, $defPlayer;
+  $from = $combatChain[$index+1];
+  $resourcesPaid = $combatChain[$index+3];
+  $defense = BlockValue($combatChain[$index]) + BlockModifier($combatChain[$index], $from, $resourcesPaid) + $combatChain[$index + 6];
+  if(CardType($combatChain[$index]) == "E")
+  {
+    $defCharacter = &GetPlayerCharacter($defPlayer);
+    $charIndex = FindDefCharacter($combatChain[$index]);
+    $defense += $defCharacter[$charIndex+4];
+  }
+  return $defense;
 }
 
 function AddCombatChain($cardID, $player, $from, $resourcesPaid)
