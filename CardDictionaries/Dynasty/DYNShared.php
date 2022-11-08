@@ -6,6 +6,7 @@ function DYNAbilityCost($cardID)
     case "DYN001": return 3;
     case "DYN005": return 3;
     case "DYN025": return 3;
+    case "DYN046": return 0;
     //Warrior
     case "DYN067": return 1;
     case "DYN068": return 3;
@@ -16,11 +17,14 @@ function DYNAbilityCost($cardID)
     case "DYN151": return 1;
     case "DYN172": return 3;
     case "DYN192": return 2;
+    case "DYN193": return 3;
+    case "DYN235": return 1;
     case "DYN240": return 0;
     case "DYN241": return 0;
     case "DYN242": return 1;
     case "DYN243": return 2;
     case "DYN492a": return 0;
+    case "DYN612": return 2;
     default: return 0;
   }
 }
@@ -30,6 +34,7 @@ function DYNAbilityType($cardID, $index = -1)
   switch ($cardID) {
     case "DYN001": return "A";
     case "DYN005": return "AA";
+    case "DYN046": return "I";
     //Warrior
     case "DYN067": return "AA";
     case "DYN068": return "AA";
@@ -43,10 +48,13 @@ function DYNAbilityType($cardID, $index = -1)
     case "DYN171": return "I";
     case "DYN172": return "A";
     case "DYN192": return "A";
+    case "DYN193": return "A";
+    case "DYN235": return "I";
     case "DYN240": return "A";
     case "DYN241": return "A";
     case "DYN242": case "DYN243": return "A";
     case "DYN492a": return "AA";
+    case "DYN612": return "AA";
     default: return "";
   }
 }
@@ -78,10 +86,12 @@ function DYNHasGoAgain($cardID)
     case "DYN155": return true;
 		case "DYN168": case "DYN169": case "DYN170": return true;
     //Runeblade
-    case "DYN188": case "DYN189": case "DYN190": return  true;
+		case "DYN185": case "DYN186": case "DYN187": return true;
+    case "DYN188": case "DYN189": case "DYN190": return true;
+    case "DYN209": case "DYN210": case "DYN211": return true;
     //Illusionist
     case "DYN212": return true;
-    case "DYN230": case "DYN231": case "DYN232": return  true;
+    case "DYN230": case "DYN231": case "DYN232": return true;
     default: return false;
   }
 }
@@ -98,7 +108,7 @@ function DYNAbilityHasGoAgain($cardID)
 
 function DYNEffectAttackModifier($cardID)
 {
-  global $combatChainState, $CCS_LinkBaseAttack;
+  global $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
   if (count($params) > 1) $parameter = $params[1];
@@ -112,6 +122,7 @@ function DYNEffectAttackModifier($cardID)
     case "DYN023": return 3;
     case "DYN024": return 2;
     case "DYN028": return 1;
+    case "DYN046": return 2;
     case "DYN049": return 1;
     case "DYN053": return 3;
     case "DYN054": return 2;
@@ -132,9 +143,13 @@ function DYNEffectAttackModifier($cardID)
     case "DYN089-UNDER": return 1;
     case "DYN091-1": return 3;
     case "DYN155": return 3;
+    case "DYN156": case "DYN157": case "DYN158": return NumEquipBlock() > 0 ? 1 : 0;
+    case "DYN165": case "DYN166": case "DYN167": return 2;
     case "DYN168": return 3;
     case "DYN169": return 2;
     case "DYN170": return 1;
+    case "DYN176": case "DYN177": case "DYN178": return 2;
+		case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return 1;
     default:
       return 0;
   }
@@ -151,8 +166,10 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN019": case "DYN020": case "DYN021": return true;
     case "DYN022": case "DYN023": case "DYN024": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "DYN028": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
+    case "DYN046": return $attackID == "DYN065";
     case "DYN049": return $attackID == "DYN065";
     case "DYN053": case "DYN054": case "DYN055": return $attackID == "DYN065";
+    case "DYN068": return true;
     case "DYN071": return CardSubType($attackID) == "Axe";
     case "DYN073": case "DYN074": case "DYN075": return CardType($attackID) == "W";
     case "DYN076": case "DYN077": case "DYN078":
@@ -161,11 +178,19 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN082": case "DYN083": case "DYN084": return CardSubType($attackID) == "Axe";
 		case "DYN085": case "DYN086": case "DYN087": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
     case "DYN089-UNDER":
-      return $attackID == "DYN492a";
+      $character = &GetPlayerCharacter($mainPlayer);
+      $index = FindCharacterIndex($mainPlayer, "DYN492a");
+      return $attackID == "DYN492a" && $character[$index + 2] >= 1;
     case "DYN091-1": return $combatChainState[$CCS_IsBoosted];
-    case "DYN115": case "DYN116": return true;
+    case "DYN115": case "DYN116": return NumAttacksBlocking() > 0;
+    case "DYN154": return true;
     case "DYN155": return CardSubType($attackID) == "Arrow";
+    case "DYN156": case "DYN157": case "DYN158": return true;
+		case "DYN165": case "DYN166": case "DYN167": return true;
 		case "DYN168": case "DYN169": case "DYN170": return CardSubType($attackID) == "Arrow";
+    case "DYN176": case "DYN177": case "DYN178": return true;
+		case "DYN185-BUFF": case "DYN186-BUFF": case "DYN187-BUFF": return ClassContains($attackID, "RUNEBLADE", $mainPlayer);
+		case "DYN185-HIT": case "DYN186-HIT": case "DYN187-HIT": return true;
     default:
       return false;
   }
@@ -204,12 +229,15 @@ function DYNCardType($cardID)
     //Guardian
     case "DYN027": return "E";
     case "DYN028": return "A";
+    case "DYN029": return "A";
     case "DYN030": case "DYN031": case "DYN032": return "DR";
     case "DYN033": case "DYN034": case "DYN035": return "A";
 		case "DYN036": case "DYN037": case "DYN038": return "DR";
     case "DYN039": case "DYN040": case "DYN041": return "A";
+    case "DYN042": case "DYN043": case "DYN044": return "I";
     //Ninja
     case "DYN045": return "E";
+    case "DYN046": return "E";
     case "DYN047": return "AA";
     case "DYN048": return "A";
     case "DYN049": return "A";
@@ -239,6 +267,7 @@ function DYNCardType($cardID)
     case "DYN092": return "A";
     case "DYN093": return "A";
     case "DYN094": return "A";
+    case "DYN095": case "DYN096": case "DYN097": return "AA";
     case "DYN098": case "DYN099": case "DYN100": return "A";
 		case "DYN101": case "DYN102": case "DYN103": return "AA";
 		case "DYN104": case "DYN105": case "DYN106": return "AA";
@@ -246,7 +275,7 @@ function DYNCardType($cardID)
     case "DYN110": case "DYN111": case "DYN112": return "A";
     case "DYN492a": return "W";
     case "DYN492b": return "E";
-    case "DYN492c": return "T";
+    case "DYN492c": return "I";
     //Assassin
     case "DYN113": case "DYN114": return "C";
     case "DYN115": case "DYN116": return "W";
@@ -270,8 +299,12 @@ function DYNCardType($cardID)
     case "DYN151": return "W";
     case "DYN152": return "E";
     case "DYN153": return "AA";
+    case "DYN154": return "AA";
     case "DYN155": return "A";
+    case "DYN156": case "DYN157": case "DYN158": return "AA";
+		case "DYN159": case "DYN160": case "DYN161": return "A";
     case "DYN162": case "DYN163": case "DYN164": return "AA";
+    case "DYN165": case "DYN166": case "DYN167": return "AA";
 		case "DYN168": case "DYN169": case "DYN170": return "A";
     //Runeblade
     case "DYN171": return "E";
@@ -279,10 +312,14 @@ function DYNCardType($cardID)
     case "DYN173": return "AA";
     case "DYN174": return "A";
     case "DYN175": return "A";
+    case "DYN176": case "DYN177": case "DYN178": return "AA";
 		case "DYN179": case "DYN180": case "DYN181": return "A";
+		case "DYN182": case "DYN183": case "DYN184": return "AA";
+		case "DYN185": case "DYN186": case "DYN187": return "A";
     case "DYN188": case "DYN189": case "DYN190": return "A";
     //Wizard
     case "DYN192": return "W";
+    case "DYN193": return "W";
 		case "DYN194": return "A";
 		case "DYN195": return "A";
     case "DYN196": return "I";
@@ -290,12 +327,21 @@ function DYNCardType($cardID)
     case "DYN200": case "DYN201": case "DYN202": return "A";
     case "DYN203": case "DYN204": case "DYN205": return "A";
     case "DYN206": case "DYN207": case "DYN208": return "A";
+    case "DYN209": case "DYN210": case "DYN211": return "A";
     //Illusionist
     case "DYN212": return "A";
+    case "DYN213": return "E";
+    case "DYN214": return "E";
+    case "DYN215": return "AA";
+    case "DYN216": return "AA";
     case "DYN217": return "A";
     case "DYN218": case "DYN219": case "DYN220": return "A";
+    case "DYN221": case "DYN222": case "DYN223": return "A";
+    case "DYN224": case "DYN225": case "DYN226": return "AA";
+    case "DYN227": case "DYN228": case "DYN229": return "AA";
     case "DYN230": case "DYN231": case "DYN232": return "A";
     case "DYN234": return "E";
+    case "DYN235": return "E";
     case "DYN236": return "E";
 		case "DYN237": return "E";
 		case "DYN238": return "E";
@@ -324,9 +370,11 @@ function DYNCardSubtype($cardID)
     case "DYN026": return "Off-Hand";
     //Guardian
     case "DYN027": return "Off-Hand";
+    case "DYN029": return "Aura";
     case "DYN033": case "DYN034": case "DYN035": return "Aura";
     //Ninja
     case "DYN045": return "Chest";
+    case "DYN046": return "Arms";
     case "DYN048": return "Aura";
     case "DYN053": case "DYN054": case "DYN055": return "Aura";
     //Warrior
@@ -354,7 +402,11 @@ function DYNCardSubtype($cardID)
     case "DYN151": return "Bow";
     case "DYN152": return "Arms";
     case "DYN153": return "Arrow";
+    case "DYN154": return "Arrow";
+    case "DYN156": case "DYN157": case "DYN158": return "Arrow";
+		case "DYN159": case "DYN160": case "DYN161": return "Aura";
     case "DYN162": case "DYN163": case "DYN164": return "Arrow";
+    case "DYN165": case "DYN166": case "DYN167": return "Arrow";
     //Runeblade
     case "DYN171": return "Head";
     case "DYN172": return "Book";
@@ -362,13 +414,18 @@ function DYNCardSubtype($cardID)
 		case "DYN179": case "DYN180": case "DYN181": return "Aura";
     //Wizard
     case "DYN192": return "Staff";
+    case "DYN193": return "Orb";
     case "DYN200": case "DYN201": case "DYN202": return "Aura";
     //Illusionist
     case "DYN212": return "Invocation";
+    case "DYN213": return "Chest";
+    case "DYN214": return "Arms";
     case "DYN217": return "Aura";
     case "DYN218": case "DYN219": case "DYN220": return "Aura";
+    case "DYN221": case "DYN222": case "DYN223": return "Aura";
     //Generic
     case "DYN234": return "Head";
+    case "DYN235": return "Off-Hand";
     case "DYN236": return "Head";
 		case "DYN237": return "Chest";
 		case "DYN238": return "Gloves";
@@ -397,11 +454,13 @@ function DYNCardCost($cardID)
     case "DYN016": case "DYN017": case "DYN018": return 1;
     case "DYN019": case "DYN020": case "DYN021": return 3;
     case "DYN028": return 3;
+    case "DYN029": return 3;
     //Guardian
     case "DYN030": case "DYN031": case "DYN032": return 3;
     case "DYN033": case "DYN034": case "DYN035": return 1;
 		case "DYN036": case "DYN037": case "DYN038": return 6;
     case "DYN039": case "DYN040": case "DYN041": return 2;
+    case "DYN042": case "DYN043": case "DYN044": return 2;
     //Ninja
     case "DYN050": case "DYN051": case "DYN052": return 1;
     case "DYN053": case "DYN054": case "DYN055": return 1;
@@ -418,14 +477,10 @@ function DYNCardCost($cardID)
     case "DYN091": return 0;
     case "DYN092": return 4;
     case "DYN093": return 2;
+    case "DYN095": case "DYN096": case "DYN097": return 2;
     case "DYN098": case "DYN099": case "DYN100": return 1;
 		case "DYN101": case "DYN102": case "DYN103": return 2;
-		case "DYN104": case "DYN105": case "DYN106":
-      $numHypers = 0;
-      $numHypers += CountItem("ARC036", $currentPlayer);
-      $numHypers += CountItem("DYN111", $currentPlayer);
-      $numHypers += CountItem("DYN112", $currentPlayer);
-      return $numHypers > 0 ? 1 : 2;
+		case "DYN104": case "DYN105": case "DYN106": return 2;
     case "DYN107": case "DYN108": case "DYN109": return 0;
     case "DYN110": case "DYN111": case "DYN112": return 1;
     case "DYN119": return 1;
@@ -442,12 +497,16 @@ function DYNCardCost($cardID)
     //Ranger
     case "DYN153": return 1;
     case "DYN155": return 1;
+		case "DYN159": case "DYN160": case "DYN161": return 1;
     case "DYN162": case "DYN163": case "DYN164": return 1;
     //Runeblade
     case "DYN173": return 3;
     case "DYN174": return 3;
     case "DYN175": return 3;
+    case "DYN176": case "DYN177": case "DYN178": return 2;
 		case "DYN179": case "DYN180": case "DYN181": return 1;
+		case "DYN182": case "DYN183": case "DYN184": return 1;
+		case "DYN185": case "DYN186": case "DYN187": return 1;
     //Wizard
 		case "DYN194": return 0;
 		case "DYN195": return 2;
@@ -455,10 +514,16 @@ function DYNCardCost($cardID)
     case "DYN197": case "DYN198": case "DYN199": return 1;
     case "DYN200": case "DYN201": case "DYN202": return 1;
     case "DYN203": case "DYN204": case "DYN205": return 0;
+    case "DYN209": case "DYN210": case "DYN211": return 0;
     //Illusionist
     case "DYN212": return 2;
+    case "DYN215": return 1;
     case "DYN217": return 1;
     case "DYN218": case "DYN219": case "DYN220": return 1;
+    case "DYN221": case "DYN222": case "DYN223": return 1;
+    case "DYN227": case "DYN228": case "DYN229": return 3;
+    //Generic
+    case "DYN240": return 1;
     case "DYN242": return 2;
     default: return 0;
   }
@@ -476,9 +541,10 @@ function DYNPitchValue($cardID)
     case "DYN008":  case "DYN010": case "DYN013": case "DYN016": case "DYN019": case "DYN022": return 1;
     case "DYN009":  case "DYN011": case "DYN014": case "DYN017": case "DYN020": case "DYN023": return 2;
     //Guardian
-    case "DYN030": case "DYN033": case "DYN036": case "DYN039": return 1;
-    case "DYN031": case "DYN034": case "DYN037": case "DYN040": return 2;
+    case "DYN030": case "DYN033": case "DYN036": case "DYN039": case "DYN042": return 1;
+    case "DYN031": case "DYN034": case "DYN037": case "DYN040": case "DYN043": return 2;
     //Ninja
+    case "DYN046": return 0;
     case "DYN047": return 1;
     case "DYN049": return 2;
     case "DYN050": case "DYN053": case "DYN056": case "DYN059": case "DYN062": return 1;
@@ -490,12 +556,8 @@ function DYNPitchValue($cardID)
     case "DYN066": case "DYN074": case "DYN077": case "DYN080": case "DYN083": case "DYN086": return 2;
     //Mechanologist
     case "DYN089": return 0;
-    case "DYN090": return 1;
-    case "DYN091": return 1;
-    case "DYN092": return 2;
-    case "DYN093": return 1;
-    case "DYN098": case "DYN101": case "DYN104": case "DYN107": case "DYN110": return 1;
-    case "DYN099": case "DYN102": case "DYN105": case "DYN108": case "DYN111": return 2;
+    case "DYN090": case "DYN091": case "DYN093": case "DYN095": case "DYN098": case "DYN101": case "DYN104": case "DYN107": case "DYN110": return 1;
+    case "DYN092": case "DYN096": case "DYN099": case "DYN102": case "DYN105": case "DYN108": case "DYN111": return 2;
     case "DYN492a": return 0;
     case "DYN492b": return 0;
     case "DYN492c": return 0;
@@ -512,25 +574,38 @@ function DYNPitchValue($cardID)
     case "DYN125": case "DYN128": case "DYN131": case "DYN134": case "DYN137": case "DYN140": case "DYN143": case "DYN146": case "DYN149": return 2;
     //Ranger
     case "DYN151": return 0;
-    case "DYN153": return 1;
+    case "DYN153": case "DYN154": return 1;
     case "DYN155": return 2;
-    case "DYN162": case "DYN168": return 1;
-    case "DYN163": case "DYN169": return 2;
+    case "DYN156": case "DYN159": case "DYN162": case "DYN165": case "DYN168": return 1;
+    case "DYN157": case "DYN160": case "DYN163": case "DYN166": case "DYN169": return 2;
     //Runeblade
     case "DYN173": return 2;
     case "DYN174": return 1;
-    case "DYN179": case "DYN188": case "DYN230": return 1;
-    case "DYN180": case "DYN189": case "DYN231": return 2;
+    case "DYN176": case "DYN179": case "DYN182": case "DYN185": case "DYN188": case "DYN230": return 1;
+    case "DYN177": case "DYN180": case "DYN183": case "DYN186": case "DYN189": case "DYN231": return 2;
     //Wizard
+    case "DYN193": return 0;
 		case "DYN194": return 2;
     case "DYN195": return 1;
-    case "DYN197": case "DYN203": case "DYN206": return 1;
-    case "DYN198": case "DYN204": case "DYN207": return 2;
+    case "DYN197": case "DYN203": case "DYN206": case "DYN209": return 1;
+    case "DYN198": case "DYN204": case "DYN207": case "DYN210": return 2;
     //Illusionist
     case "DYN212": return 2;
+    case "DYN213": return 0;
+    case "DYN214": return 0;
+    case "DYN215": return 2;
+    case "DYN216": return 1;
     case "DYN218": return 1;
     case "DYN219": return 2;
+    case "DYN221": return 1;
+    case "DYN222": return 2;
+    case "DYN224": return 1;
+    case "DYN225": return 2;
+    case "DYN227": return 1;
+    case "DYN228": return 2;
+    //Generic
     case "DYN234": return 0;
+    case "DYN235": return 0;
     case "DYN240": return 1;
     case "DYN241": return 1;
     case "DYN242": return 1;
@@ -555,8 +630,10 @@ function DYNBlockValue($cardID)
     case "DYN030": case "DYN037": return 6;
     case "DYN031": case "DYN038": return 5;
     case "DYN032": return 4;
+    case "DYN042": case "DYN043": case "DYN044": return -1;
     //Ninja
     case "DYN045": return 1;
+    case "DYN046": return 1;
     case "DYN050": case "DYN051": case "DYN052": return 2;
     case "DYN062": case "DYN063": case "DYN064": return 2;
     case "DYN065": return -1;
@@ -591,16 +668,23 @@ function DYNBlockValue($cardID)
     case "DYN174": return 2;
     case "DYN175": return 3;
 		case "DYN179": case "DYN180": case "DYN181": return 2;
+		case "DYN185": case "DYN186": case "DYN187": return 2;
     case "DYN188": case "DYN189": case "DYN190": return 2;
     //Wizard
     case "DYN192": return -1;
+    case "DYN193": return -1;
     case "DYN196": return -1;
+    case "DYN209": case "DYN210": case "DYN211": return 2;
     //Illusionist
+    case "DYN213": return -1;
+    case "DYN214": return -1;
     case "DYN217": return 2;
     case "DYN218": case "DYN219": case "DYN220": return 2;
+    case "DYN221": case "DYN222": case "DYN223": return 2;
     case "DYN230": case "DYN231": case "DYN232": return 2;
     //Generic
     case "DYN234": return -1;
+    case "DYN235": return -1;
     case "DYN236": return 0;
 		case "DYN237": return 0;
 		case "DYN238": return 0;
@@ -616,6 +700,7 @@ function DYNBlockValue($cardID)
 
 function DYNAttackValue($cardID)
 {
+  global $currentPlayer;
   switch ($cardID) {
     //Brute
     case "DYN005": case "DYN010": return 7;
@@ -635,10 +720,11 @@ function DYNAttackValue($cardID)
     case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
     //Mechanologist
-    case "DYN088": case "DYN101": case "DYN104": return 5;
-    case "DYN090": case "DYN102": case "DYN105": case "DYN107": return 4;
-    case "DYN103": case "DYN106": case "DYN108": return 3;
+    case "DYN088": case "DYN095": case "DYN101": case "DYN104": return 5;
+    case "DYN090": case "DYN096": case "DYN102": case "DYN105": case "DYN107": return 4;
+    case "DYN097": case "DYN103": case "DYN106": case "DYN108": return 3;
     case "DYN109": return 2;
+    case "DYN492a": return 5;
     //Assassin
     case "DYN115": case "DYN116": return 1;
     case "DYN120": return 4;
@@ -649,13 +735,25 @@ function DYNAttackValue($cardID)
     case "DYN125": case "DYN129": case "DYN135": case "DYN137": case "DYN141": case "DYN143": case "DYN146": return 3;
     case "DYN126": case "DYN144": case "DYN147": case "DYN138": return 2;
     //Ranger
-    case "DYN153": return 5;
-    case "DYN162": return 5;
-    case "DYN163": return 4;
-    case "DYN164": return 3;
+    case "DYN153": case "DYN162": return 5;
+    case "DYN154": case "DYN156": case "DYN163": return 4;
+    case "DYN157": case "DYN164": case "DYN165": return 3;
+    case "DYN158": case "DYN166": return 2;
+    case "DYN167": return 1;
     //Runeblade
     case "DYN173": return 6;
-    case "DYN492a": return 5;
+    case "DYN176": case "DYN182": return 4;
+    case "DYN177": case "DYN183": return 3;
+    case "DYN178": case "DYN184": return 2;
+    //Illusionist
+    case "DYN215": return 6;
+    case "DYN216": return CountAura("MON104", $currentPlayer);
+    case "DYN224": return 4;
+    case "DYN225": return 3;
+    case "DYN226": return 2;
+    case "DYN227": return 8;
+    case "DYN228": return 7;
+    case "DYN229": return 6;
     case "DYN612": return 4;
     default: return 0;
   }
@@ -738,6 +836,15 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZGETCARDINDEX", $currentPlayer, "-", 1);
       AddDecisionQueue("REMOVENEGDEFCOUNTER", $currentPlayer, "-", 1);
       return "Remove a -1 counter from a Guardian Off-Hand with " . $maxDef . " or less base defense.";
+    case "DYN042": case "DYN043": case "DYN044":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;class=GUARDIAN");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Guardian Off-Hand to buff", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      return "The next time you block with target guardian off-hand, it blocks for extra.";
+    case "DYN046":
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      return "Tearing Shuko gives your next Crouching Tiger +2.";
     case "DYN049":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddPlayerHand("DYN065", $currentPlayer, "-");
@@ -750,6 +857,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         BanishCardForPlayer("DYN065", $currentPlayer, "-", "TT", $currentPlayer);
       }
       return "Create " . $amount . " Crouching Tigers.";
+    case "DYN068":
+      if (isAttackGreaterThanTwiceBasePower()) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return CardLink($cardID, $cardID) . " attack is more than twice it's base power and gains overpower.";
+      }
+      return "";
     case "DYN071":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -834,9 +947,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       $char = array_values($char);
       $items = &GetItems($currentPlayer);
-      for($i=count($items)-ItemPieces(); $i>=0; $i-=ItemPieces())
+      $hyperToDestroy = 3;
+      for($i=count($items)-ItemPieces(); $i>=0 && $hyperToDestroy>0; $i-=ItemPieces())
       {
         if($items[$i] == "ARC036" || $items[$i] == "DYN111" || $items[$i] == "DYN112") DestroyItemForPlayer($currentPlayer, $i);
+        $hyperToDestroy--;
       }
       //Now add the new stuff
       PutCharacterIntoPlayForPlayer("DYN492a", $currentPlayer);//Weapon
@@ -848,9 +963,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         PutItemIntoPlayForPlayer("EVR195", $currentPlayer, 0, 4);
       }
       return "";
-    case "DYN130":
-    case "DYN131":
-    case "DYN132":
+    case "DYN130": case "DYN131": case "DYN132":
       if ($cardID == "DYN130") $amount = 4;
       else if ($cardID == "DYN131") $amount = 3;
       else $amount = 2;
@@ -859,7 +972,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
         AddDecisionQueue("COMBATCHAINDEBUFFDEFENSE", $currentPlayer, $amount, 1);
       }
-      return "Reduce the defense of target defending card by " . $amount;
+      return "Reduce the defense of target defending card by " . $amount . ".";
     case "DYN148": case "DYN149": case "DYN150":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
@@ -894,6 +1007,18 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN155":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Gives your next Arrow attack action card +" . EffectAttackModifier($cardID);
+    case "DYN156": case "DYN157": case "DYN158":
+      if (SearchCurrentTurnEffects("AIM", $currentPlayer)){
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "has piercing 1.";
+      }
+      return "";
+    case "DYN165": case "DYN166": case "DYN167":
+      if (SearchCurrentTurnEffects("AIM", $currentPlayer)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "has +2.";
+      }
+      return "";
     case "DYN168": case "DYN169": case "DYN170":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENALUP");
       AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
@@ -949,7 +1074,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYALLY");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        $rv .= "each hero chose and destroyed an ally they control.";
+        $rv .= "Each hero chose and destroyed an ally they control.";
       }
       if ($naaPitched) {
         // Opponent
@@ -960,7 +1085,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        $rv .= "each hero chose and destroyed an aura they control.";
+        if ($rv != "") $rv .= " ";
+        $rv .= "Each hero chose and destroyed an aura they control.";
       }
       return $rv;
     case "DYN175":
@@ -969,9 +1095,52 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $index = count($auras) - AuraPieces();//Get index of last played aura i.e. this
       $auras[$index+2] = $numRunechants;
       return "";
-    case "DYN188":
-    case "DYN189":
-    case "DYN190":
+    case "DYN176": case "DYN177": case "DYN178":
+      $pitchArr = explode(",", $additionalCosts);
+      $attackActionPitched = 0;
+      $naaPitched = 0;
+      $rv = "";
+      for ($i = 0; $i < count($pitchArr); ++$i) {
+        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
+        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      }
+      if ($attackActionPitched) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        $rv .= "Gain +2 power";
+      }
+      if ($naaPitched) {
+        PlayAura("ARC112", $currentPlayer, 2, true);
+        if ($rv != "") $rv .= " and ";
+        $rv .= "creates 2 Runechant.";
+      }
+      return $rv;
+		case "DYN182": case "DYN183": case "DYN184":
+      $pitchArr = explode(",", $additionalCosts);
+      $naaPitched = 0;
+      for ($i = 0; $i < count($pitchArr); ++$i) {
+        if (CardType($pitchArr[$i]) == "A") $naaPitched = 1;
+      }
+      if ($naaPitched) {
+        DealArcane(1, 2, "PLAYCARD", $cardID);
+      }
+      return "";
+		case "DYN185": case "DYN186": case "DYN187":
+      if ($cardID == "DYN185") $amount = 3;
+      else if ($cardID == "DYN186") $amount = 2;
+      else $amount = 1;
+      $pitchArr = explode(",", $additionalCosts);
+      $attackActionPitched = 0;
+      $rv = "The next Runeblade attack action card you play creates " . $amount . " Runechant on-hit";
+      for ($i = 0; $i < count($pitchArr); ++$i) {
+        if (CardType($pitchArr[$i]) == "AA") $attackActionPitched = 1;
+      }
+      AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
+      if ($attackActionPitched) {
+        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
+        $rv .= " and gain +1 power";
+      }
+      return $rv . ".";
+    case "DYN188": case "DYN189": case "DYN190":
       if (CanRevealCards($currentPlayer)) {
         $deck = GetDeck($currentPlayer);
         if (count($deck) == 0) return "Your deck is empty. Nothing was revealed.";
@@ -987,6 +1156,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("SURGENTAETHERTIDE", $currentPlayer, "-");
       return "";
+    case "DYN193":
+      PlayerOpt($currentPlayer, 1, false);
+      PlayAura("DYN244", $currentPlayer);
+      return CardLink($cardID, $cardID) . " let you Opt 1 and create a Ponder token.";
   	case "DYN194":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
@@ -1005,8 +1178,40 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN206": case "DYN207": case "DYN208":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
+    case "DYN209": case "DYN210": case "DYN211":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DYN212":
-      //Do invocation
+      Transform($currentPlayer, "MON104", "DYN612");
+      return "";
+    case "DYN215":
+      // TODO: Make named attack Illusionist
+      return CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
+    case "DYN221": case "DYN222": case "DYN223":
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $auras = &GetAuras($currentPlayer);
+      $uniqueID = $auras[count($auras) - AuraPieces() + 6];
+      if($cardID == "DYN221") $maxCost = 3;
+      else if($cardID == "DYN222") $maxCost = 2;
+      else $maxCost = 1;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost); // &LAYER:maxCost=1;type=AA
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS,DYN221-" . $uniqueID . "," . $currentPlayer, 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      return "";
+    case "DYN224": case "DYN225": case "DYN226":
+      if(SearchAuras("MON104", $currentPlayer))
+      {
+        GiveAttackGoAgain();
+        return CardLink($cardID, $cardID) . " gains go again.";
+      }
+      return "";
+    case "DYN227": case "DYN228": case "DYN229":
+      if(SearchAuras("MON104", $currentPlayer))
+      {
+        AddCurrentTurnEffect("DYN227", $currentPlayer);
+        return CardLink($cardID, $cardID) . " gains Overpower.";
+      }
       return "";
     case "DYN230": case "DYN231": case "DYN232":
       if (CanRevealCards($currentPlayer)) {
@@ -1020,14 +1225,17 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
       return "Reveal has been prevented.";
+    case "DYN235":
+      MayBottomDeckDraw();
+      return CardLink($cardID, $cardID) . " let you sink a card.";
     case "DYN240":
       $rv = "";
       if ($from == "PLAY") {
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
-        $rv = "Imperial Edict is a partially manual card. Name the card in chat and enforce play restriction.";
+        $rv = CardLink($cardID, $cardID) . " is a partially manual card. Name the card in chat and enforce play restriction.";
         if(IsRoyal($currentPlayer))
         {
-          $rv .= " Imperial Edict revealed the opponent's hand.";
+          $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand.";
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
@@ -1040,7 +1248,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
         $item = (IsRoyal($currentPlayer) ? "DYN243": "CRU197");
         PutItemIntoPlayForPlayer($item, $currentPlayer);
-        $rv = "Imperial Ledger shuffled itself and created a " . CardLink($item, $item) . ".";
+        $rv = CardLink($cardID, $cardID) . " shuffled itself and created a " . CardLink($item, $item) . ".";
         $deck = &GetDeck($currentPlayer);
         array_push($deck, "DYN241");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
@@ -1063,6 +1271,17 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         Draw($currentPlayer);
       }
       return $rv;
+    case "DYN612":
+      $mySoul = &GetSoul($currentPlayer);
+      if (count($mySoul) > 0){
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SOUL");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish");
+        AddDecisionQueue("MAYCHOOSEMYSOUL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVESOUL", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIBANISH", $currentPlayer, "SOUL,-", 1);
+        AddDecisionQueue("SURAYA", $currentPlayer, $cardID, 1);
+      }
+      return "";
     default:
       return "";
   }
@@ -1106,12 +1325,12 @@ function DYNHitEffect($cardID)
       break;
     case "DYN115":
       if (IsHeroAttackTarget()) {
-        AddCurrentTurnEffectFromCombat("DYN115", $defPlayer);
+        AddCurrentTurnEffectFromCombat($cardID, $defPlayer);
       }
       break;
     case "DYN116":
       if (IsHeroAttackTarget()) {
-        AddCurrentTurnEffectFromCombat("DYN115", $defPlayer);
+        AddCurrentTurnEffectFromCombat($cardID, $defPlayer);
       }
       break;
     case "DYN117":
@@ -1123,7 +1342,7 @@ function DYNHitEffect($cardID)
     case "DYN118":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
+        if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
       }
@@ -1131,12 +1350,16 @@ function DYNHitEffect($cardID)
     case "DYN119":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
+        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
+        $cardsName = "";
         for ($i = 0; $i < $combatChainState[$CCS_DamageDealt]; ++$i) {
           if (count($deck) == 0) break;
           $cardToBanish = array_shift($deck);
           BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+          if ($cardsName != "") $cardsName .= ", ";
+          $cardsName .= CardLink($cardToBanish, $cardToBanish);
         }
+        if ($cardsName != "") WriteLog(CardLink($cardID, $cardID) . " Banished the following cards: " . $cardsName);
       }
       break;
     case "DYN121":
@@ -1147,7 +1370,7 @@ function DYNHitEffect($cardID)
     case "DYN120":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
+        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
@@ -1160,9 +1383,11 @@ function DYNHitEffect($cardID)
     case "DYN122":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
-        $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
+        else {
+          $cardToBanish = array_shift($deck);
+          BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        }
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -1179,7 +1404,7 @@ function DYNHitEffect($cardID)
     case "DYN145": case "DYN146": case "DYN147":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent is already... depleted.");
+        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
         WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
@@ -1188,8 +1413,21 @@ function DYNHitEffect($cardID)
     case "DYN153":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
+    case "DYN154":
+      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && IsHeroAttackTarget()) {
+        AddNextTurnEffect($cardID, $defPlayer);
+        AddCurrentTurnEffectFromCombat($cardID . "-1", $defPlayer); //Doesn't do anything just show it in the effects
+      }
+      break;
+    case "DYN156": case "DYN157": case "DYN158":
+      if (IsHeroAttackTarget()){
+        AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ADDNEGDEFCOUNTER", $defPlayer, "-", 1);
+      }
+      break;
     case "DYN162": case "DYN163": case "DYN164":
-      if (SearchCurrentTurnEffects("AIM", $mainPlayer, true) && IsHeroAttackTarget()) {
+      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && IsHeroAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to Destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);

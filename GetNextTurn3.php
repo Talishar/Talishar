@@ -790,6 +790,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = ChoosePopup($theirHand, $turn[2], 16, "Choose a card from your opponent hand");
   }
 
+  if (($turn[0] == "CHOOSEMYAURA") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2], 16, "Choose one of your auras");
+  }
+
   if (($turn[0] == "CHOOSETHEIRAURA") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $playerInputPopup->popup = ChoosePopup($theirAuras, $turn[2], 16, "Choose one of your opponent auras");
@@ -872,6 +877,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
 
+  if (($turn[0] == "CHOOSEMYSOUL" || $turn[0] == "MAYCHOOSEMYSOUL") && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $playerInputPopup->popup = ChoosePopup($mySoul, $turn[2], 16, "Choose one of your soul", SoulPieces());
+  }
+  
   $playerInputPopup->buttons = $playerInputButtons;
   $response->playerInputPopUp = $playerInputPopup;
   // encode and send it out
