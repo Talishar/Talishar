@@ -756,7 +756,7 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
 
 function MainMenuUI()
 {
-  global $playerID, $gameName, $redirectPath;
+  global $playerID, $gameName, $redirectPath, $authKey;
   $rv = "<table class='table-MainMenu'><tr><td class='table-td-MainMenu'>";
   $rv .= GetSettingsUI($playerID) . "<BR>";
   $rv .= "</td><td style='width:45%;  margin-top: 10px; vertical-align:top;'>";
@@ -768,7 +768,7 @@ function MainMenuUI()
   $rv .= PreviousTurnSelectionUI() . "<BR>";
   $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
   $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
-  $rv .= "<div><a href='https://beta.talishar.net/ReactClient/?gameName=$gameName&playerID=$playerID' target='_blank'>Use beta client in new window. </a></div><br>";
+  $rv .= "<div><a href='https://beta.talishar.net/ReactClient/?gameName=$gameName&playerID=$playerID&authKey=$authKey' target='_blank'>Use beta client in new window.</a></div><br>";
   if (isset($_SESSION["userid"])) {
     $userID = $_SESSION["userid"];
     $badges = GetMyAwardableBadges($userID);
