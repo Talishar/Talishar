@@ -370,16 +370,25 @@ function UPRIllusionistDealDamageEffect($cardID)
 
   function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
   {
-    AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
-    if ($optional) {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into) . " or skip with the Pass button", 1);
-      AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
+    if ($materialType == "Ash") {
+      AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
+      if ($optional) {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into) . " or skip with the Pass button", 1);
+        AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
+      }
+      else {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
+        AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
+      }
+      AddDecisionQueue("TRANSFORM", $player, $into, 1);
     }
     else {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
-      AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
+      $subType = CardSubType($materialType);
+      AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $subType, ($subsequent ? 1 : 0));
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a " . CardLink($materialType, $materialType) . " to transform into " . CardLink($into, $into), 1);
+      AddDecisionQueue("CHOOSEMY" . strtoupper($subType), $player, "<-", 1);
+      AddDecisionQueue("TRANSFORM" . strtoupper($subType), $player, $into, 1);
     }
-    AddDecisionQueue("TRANSFORM", $player, $into, 1);
   }
 
   function ResolveTransform($player, $materialIndex, $into)
@@ -399,8 +408,14 @@ function UPRIllusionistDealDamageEffect($cardID)
 
   function ResolveTransformPermanent($player, $materialIndex, $into)
   {
-    $materialType = RemovePermanent($player, $materialIndex);
+    RemovePermanent($player, $materialIndex);
     return PutPermanentIntoPlay($player, $into);
+  }
+
+  function ResolveTransformAura($player, $materialIndex, $into)
+  {
+    $materialType = DestroyAura($player, $materialIndex);
+    return PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
   }
 
   function GhostlyTouchPhantasmDestroy()

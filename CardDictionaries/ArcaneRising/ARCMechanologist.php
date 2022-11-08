@@ -286,6 +286,7 @@ function HasBoost($cardID)
     case "EVR073": case "EVR074": case "EVR075":
     case "EVR079": case "EVR080": case "EVR081":
     case "DYN090":
+    case "DYN095": case "DYN096": case "DYN097": 
 		case "DYN101": case "DYN102": case "DYN103":
 		case "DYN104": case "DYN105": case "DYN106":
       return true;
@@ -302,7 +303,10 @@ function Boost()
   AddDecisionQueue("BOOST", $currentPlayer, "-", 1);
   if (SearchCurrentTurnEffects("CRU102", $currentPlayer)) {
     AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-    HandToTopDeck($currentPlayer);
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+    AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
   }
 }
 
@@ -314,7 +318,9 @@ function ItemBoostEffects()
     switch ($items[$i]) {
       case "ARC036":
       case "DYN110": case "DYN111": case "DYN112":
-        AddLayer("TRIGGER", $currentPlayer, $items[$i], $i);
+        if ($items[$i + 2] == 2) {
+          AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
+        }
         break;
       case "EVR072":
         if ($items[$i + 2] == 2) {

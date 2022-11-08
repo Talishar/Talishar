@@ -171,6 +171,12 @@ function DecisionQueuePieces()
   return 5;
 }
 
+//0 - Card ID
+function SoulPieces()
+{
+  return 1;
+}
+
 //Class State (one for each player)
 $CS_Num6PowDisc = 0;
 $CS_NumBoosted = 1;

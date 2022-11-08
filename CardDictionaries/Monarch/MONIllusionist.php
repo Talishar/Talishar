@@ -221,6 +221,10 @@
       case "UPR027": case "UPR028": case "UPR029": return true;
       case "UPR153": return true;
       case "UPR551": return true;
+      case "DYN215": case "DYN216":
+      case "DYN224": case "DYN225": case "DYN226": 
+      case "DYN227": case "DYN228": case "DYN229": 
+        return true;
       default: return false;
     }
   }

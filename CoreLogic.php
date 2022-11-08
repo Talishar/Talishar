@@ -37,12 +37,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       }
       else
       {
-        $defense = BlockValue($combatChain[$i-1]) + BlockModifier($combatChain[$i-1], $from, $resourcesPaid) + $combatChain[$i + 5];
-        if(CardType($combatChain[$i-1]) == "E")
-        {
-          $index = FindDefCharacter($combatChain[$i-1]);
-          $defense += $defCharacter[$index+4];
-        }
+        $defense = BlockingCardDefense($i-1);
         if($defense > 0) $totalDefense += $defense;
       }
     }
@@ -110,6 +105,21 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
+}
+
+function BlockingCardDefense($index)
+{
+  global $combatChain, $defPlayer;
+  $from = $combatChain[$index+1];
+  $resourcesPaid = $combatChain[$index+3];
+  $defense = BlockValue($combatChain[$index]) + BlockModifier($combatChain[$index], $from, $resourcesPaid) + $combatChain[$index + 6];
+  if(CardType($combatChain[$index]) == "E")
+  {
+    $defCharacter = &GetPlayerCharacter($defPlayer);
+    $charIndex = FindDefCharacter($combatChain[$index]);
+    $defense += $defCharacter[$charIndex+4];
+  }
+  return $defense;
 }
 
 function AddCombatChain($cardID, $player, $from, $resourcesPaid)
@@ -572,6 +582,8 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
+  $damage = AllyTakeDamageAbilities($player, $damage, $type);
+  $damage = CharacterTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   if($damage > 0 && $source != "NA")
   {
@@ -586,6 +598,10 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
       WriteLog("Player " . $mainPlayer . " draw a card and Player " . $otherPlayer . " must discard a card.");
       MainDrawCard();
       PummelHit();
+    }
+    if ($source == "DYN612") {
+      GainHealth($damage, $mainPlayer);
+      WriteLog("Player " . $mainPlayer . " gains " . $damage . " life.", $mainPlayer);
     }
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
@@ -707,7 +723,7 @@ function GainHealth($amount, $player)
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
-  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog("Dread Scythe prevented you from gaining health."); return; }
+  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {
     if($health > $otherHealth) return false;
@@ -1051,6 +1067,24 @@ function PlayerHasLessHealth($player)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   return GetHealth($player) < GetHealth($otherPlayer);
+}
+
+function PlayerHasFewerEquipment($player)
+{
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $thisChar = &GetPlayerCharacter($player);
+  $thatChar = &GetPlayerCharacter($otherPlayer);
+  $thisEquip = 0;
+  $thatEquip = 0;
+  for($i=0; $i<count($thisChar); $i+=CharacterPieces())
+  {
+    if($thisChar[$i+1] != 0 && CardType($thisChar[$i]) == "E") ++$thisEquip;
+  }
+  for($i=0; $i<count($thatChar); $i+=CharacterPieces())
+  {
+    if($thatChar[$i+1] != 0 && CardType($thatChar[$i]) == "E") ++$thatEquip;
+  }
+  return $thisEquip < $thatEquip;
 }
 
 function GetIndices($count, $add=0, $pieces=1)
@@ -1596,6 +1630,7 @@ function NumEquipBlock()
       case "MULTICHOOSEDECK": return 0;
       case "CHOOSEPERMANENT": return 0;
       case "MULTICHOOSETEXT": return 0;
+      case "CHOOSEMYSOUL": return 0;
       case "OVER": return 0;
       default: return 1;
     }
@@ -1750,6 +1785,10 @@ function GetDamagePreventionIndices()
   $rv = CombineSearches($rv, $theirAllies);
   $theirAuras = SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS");
   $rv = CombineSearches($rv, $theirAuras);
+  if (ArsenalHasFaceUpCard($otherPlayer)) {
+    $theirArsenal = SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS");
+    $rv = CombineSearches($rv, $theirArsenal);
+  }
 
   return $rv;
 }

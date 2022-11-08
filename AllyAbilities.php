@@ -96,6 +96,8 @@ function AllyHealth($cardID)
       return 1;
     case "UPR417":
       return 3;
+    case "DYN612":
+      return 4;
     default:
       return 1;
   }
@@ -283,6 +285,37 @@ function AllyDamageTakenAbilities($player, $i)
     default:
       break;
   }
+}
+
+function AllyTakeDamageAbilities($player, $damage, $type)
+{
+  $allies = &GetAllies($player);
+  $otherPlayer = $player == 1 ? 1 : 2;
+  //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
+  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
+  for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
+    $remove = 0;
+    switch ($allies[$i]) {
+      case "DYN612":
+        if ($damage > 0) {
+          if ($preventable) $damage -= 4;
+          $remove = 1;
+        }
+        break;
+      default:
+        break;
+    }
+    if ($remove == 1) {
+      DestroyPermanent($player, $i);
+      if (HasWard($allies[$i]) && SearchCharacterActive($player, "DYN213") && CardType($allies[$i]) != "T") {
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        AddLayer("TRIGGER", $player, "DYN213");
+      }
+    }
+  }
+  if ($damage <= 0) $damage = 0;
+  return $damage;
 }
 
 function AllyBeginEndTurnEffects()

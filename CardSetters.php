@@ -31,7 +31,8 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   }
   //Do effects that change where it goes, or banish it if not
   if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
-    PutItemIntoPlay($cardID);
+    $character = &GetPlayerCharacter($player);
+    AddLayer("TRIGGER", $player, $character[0], $cardID);
   } else {
     $rv = count($banish);
     array_push($banish, $cardID);
@@ -244,7 +245,7 @@ function AddSpecificSoul($cardID, &$soul, $from)
 
 function BanishFromSoul($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
 
