@@ -197,9 +197,9 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
 
-      <a href='./zzSetChecker.php' target='_blank'>Click here to see unsupported cards</a><br><br>
+      <!-- <a href='./zzSetChecker.php' target='_blank'>Click here to see unsupported cards</a><br><br>
 
-      <h3 style='text-align:center;'>________</h3>
+      <h3 style='text-align:center;'>________</h3> -->
 
 
       <!--
@@ -240,11 +240,11 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     echo '<div>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783"
           crossorigin="anonymous"></script>
-      <!-- Unit1 -->
+      <!-- MainMenu -->
       <ins class="adsbygoogle"
           style="display:block"
-          data-ad-client="ca-pub-2488963730697692"
-          data-ad-slot="4077285387"
+          data-ad-client="ca-pub-8442966023291783"
+          data-ad-slot="5060625180"
           data-ad-format="auto"
           data-full-width-responsive="true"></ins>
       <script>
