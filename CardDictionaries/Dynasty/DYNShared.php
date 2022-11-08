@@ -1350,7 +1350,7 @@ function DYNHitEffect($cardID)
     case "DYN119":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
+        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardsName = "";
         for ($i = 0; $i < $combatChainState[$CCS_DamageDealt]; ++$i) {
           if (count($deck) == 0) break;
@@ -1370,7 +1370,7 @@ function DYNHitEffect($cardID)
     case "DYN120":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
+        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
@@ -1384,8 +1384,10 @@ function DYNHitEffect($cardID)
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
         if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
-        $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        else {
+          $cardToBanish = array_shift($deck);
+          BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        }
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -1402,7 +1404,7 @@ function DYNHitEffect($cardID)
     case "DYN145": case "DYN146": case "DYN147":
       if (IsHeroAttackTarget()) {
         $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
+        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
         WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
