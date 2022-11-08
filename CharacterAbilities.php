@@ -7,6 +7,7 @@ function CharacterTakeDamageAbilities($player, $damage, $type)
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
+    if($char[$i+1] == 0) continue;
     $remove = 0;
     switch ($char[$i]) {
       case "DYN214":
