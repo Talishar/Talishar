@@ -532,6 +532,7 @@ function DYNCardCost($cardID)
 function DYNPitchValue($cardID)
 {
   switch ($cardID) {
+    case "DYN001": return 0;
     case "DYN002": return 1;
     case "DYN003": return 1;
     case "DYN004": return 1;
