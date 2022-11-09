@@ -233,6 +233,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
 
 function DoSurgeEffect($cardID, $player, $target)
 {
+  global $mainPlayer;
   switch ($cardID) {
     case "DYN194":
       $targetPlayer = MZPlayerID($player, $target);
@@ -250,7 +251,7 @@ function DoSurgeEffect($cardID, $player, $target)
       WriteLog(CardLink($cardID, $cardID) . " surge's ability create a " . CardLink("DYN244", "DYN244") . " token.");
       break;
     case "DYN197": case "DYN198": case "DYN199":
-      if (CurrentEffectPreventsGoAgain()) break;
+      if (CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
       WriteLog(CardLink($cardID, $cardID) . " gained go again due to its surge's ability");
       GainActionPoints();
       break;
