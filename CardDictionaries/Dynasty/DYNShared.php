@@ -861,7 +861,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "DYN068":
       if (isAttackGreaterThanTwiceBasePower()) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return CardLink($cardID, $cardID) . " attack is more than twice it's base power and gains overpower.";
+        return " Attack is more than twice it's base power and gains overpower.";
       }
       return "";
     case "DYN071":
@@ -1374,6 +1374,7 @@ function DYNHitEffect($cardID)
         if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
