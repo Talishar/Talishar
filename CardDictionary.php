@@ -2531,6 +2531,7 @@ function HasWard($cardID)
     case "MON103":
     case "UPR039": case "UPR040": case "UPR041":
     case "UPR218": case "UPR219": case "UPR220":
+    case "DYN213":
     case "DYN214": case "DYN215": case "DYN217": 
     case "DYN218": case "DYN219": case "DYN220":
     case "DYN221": case "DYN222": case "DYN223":

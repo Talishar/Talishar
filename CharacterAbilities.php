@@ -26,10 +26,10 @@ function CharacterTakeDamageAbilities($player, $damage, $type)
         break;
     }
     if ($remove == 1) {
-      if (HasWard($char[$i]) && SearchCharacterActive($player, "DYN213") && CardType($char[$i]) != "T") {
+      if (HasWard($char[$i]) && (SearchCharacterActive($player, "DYN213") || $char[$i] == "DYN213") && CardType($char[$i]) != "T") {
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
-        AddLayer("TRIGGER", $player, "DYN213");
+        AddCurrentTurnEffect("DYN213", $player);
       }
       DestroyCharacter($player, $i);
     }

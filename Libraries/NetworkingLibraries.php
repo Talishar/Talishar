@@ -790,6 +790,7 @@ function ResolveCombatDamage($damageDone)
       }
     }
     for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+      if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
       if (IsCombatEffectActive($currentTurnEffects[$i])) {
         if ($currentTurnEffects[$i + 1] == $mainPlayer) {
           $shouldRemove = EffectHitEffect($currentTurnEffects[$i]);
