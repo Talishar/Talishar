@@ -520,7 +520,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "WTR176":
     case "WTR177":
     case "WTR178":
-      return NumCardsBlocking() < 2 ? 1 : 0;
+      return NumCardsNonEquipBlocking() < 2 ? 1 : 0;
     case "WTR206":
       return 4;
     case "WTR207":
@@ -592,11 +592,11 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "MON284":
     case "MON285":
     case "MON286":
-      return NumCardsBlocking() < 2 ? 1 : 0;
+      return NumCardsNonEquipBlocking() < 2 ? 1 : 0;
     case "MON287":
     case "MON288":
     case "MON289":
-      return NumCardsBlocking();
+      return NumCardsNonEquipBlocking();
     case "MON290":
     case "MON291":
     case "MON292":
