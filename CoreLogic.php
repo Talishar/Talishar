@@ -377,6 +377,13 @@ function CharacterPlayCardAbilities($cardID, $from)
   {
     if($character[$i+1] != 2) continue;
     $characterID = $character[$i];
+    if ($i == 0 && $character[0] == "CRU097") {
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
     switch($characterID)
     {
       case "UPR158":
@@ -418,28 +425,27 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       }
     }
     switch ($characterID) {
-      case "CRU161":
-        if (ActionsThatDoArcaneDamage($cardID) && SearchCharacterActive($currentPlayer, "CRU161") && IsCharacterActive($currentPlayer, FindCharacterIndex($currentPlayer, "CRU161")))
-        {
-          AddLayer("TRIGGER", $currentPlayer, "CRU161");
-        }
-        break;
-      case "EVR120":
-      case "UPR102":
-      case "UPR103":
-        if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
-          AddLayer("TRIGGER", $currentPlayer, $characterID);
-        }
-        break;
       case "ARC075":
       case "ARC076":
         if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
+      case "CRU161":
+        if (ActionsThatDoArcaneDamage($cardID) && SearchCharacterActive($currentPlayer, "CRU161") && IsCharacterActive($currentPlayer, FindCharacterIndex($currentPlayer, "CRU161"))) {
+          AddLayer("TRIGGER", $currentPlayer, "CRU161");
+        }
+        break;
       case "ELE062":
       case "ELE063":
         if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
+        }
+        break;
+      case "EVR120":
+      case "UPR102":
+      case "UPR103":
+        if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
