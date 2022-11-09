@@ -3982,6 +3982,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($lastResult == "PASS") return "0";
       else if ($lastResult == "NO") return "NO";
       else return $lastResult;
+    case "FINDCURRENTEFFECTPASS":
+      if (SearchCurrentTurnEffects($parameter, $player)) return "PASS";
+      return $lastResult;
     case "LESSTHANPASS":
       if ($lastResult < $parameter) return "PASS";
       return $lastResult;
