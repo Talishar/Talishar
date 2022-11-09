@@ -2428,7 +2428,8 @@ function Draw($player, $mainPhase = true)
     }
   }
   if ($mainPhase && SearchCurrentTurnEffects("DYN196", $player)) {
-    DealArcane(1, 2, "TRIGGER", "DYN196");
+    $character = &GetPlayerCharacter($player);
+    DealArcane(1, 2, "TRIGGER", $character[0]);
   }
   return $hand[count($hand) - 1];
 }
