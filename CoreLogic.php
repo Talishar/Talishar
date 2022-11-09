@@ -896,15 +896,9 @@ function FindDefCharacter($cardID)
 function ChainLinkResolvedEffects()
 {
   global $combatChain, $mainPlayer, $currentTurnEffects;
-  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable())
   {
-    switch($combatChain[$i])
-    {
-      case "MON245":
-        if (!ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[$i], $mainPlayer, "CC");
-        break;
-      default: break;
-    }
+    AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
