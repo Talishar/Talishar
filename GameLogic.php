@@ -5035,10 +5035,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = &GetDeck($player); // TODO: Once per turn restriction
       switch ($lastResult) {
         case "Opt":
+          WriteLog("Player " . $player . " Opt 1 with " . Cardlink("EVR070","EVR070") . ".");
           Opt("EVR070", 1);
           break;
         case "Draw_then_top_deck":
           if (count($deck) > 0) {
+            WriteLog("Player " . $player . " draw a card then put a card on top of their deck with " . Cardlink("EVR070", "EVR070") . ".");
             Draw($player);
             HandToTopDeck($player);
           }
@@ -5047,6 +5049,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if (count($deck) > 0) {
             $card = array_shift($deck);
             BanishCardForPlayer($card, $player, "DECK", "-");
+            WriteLog("Player " . $player . " banish the top card of their deck with " . Cardlink("EVR070", "EVR070") . ".");
             WriteLog(CardLink($card, $card) . " was banished.");
           }
           break;
