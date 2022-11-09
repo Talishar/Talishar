@@ -690,6 +690,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "THEIRHAND") $source = $theirHand;
       else if ($option[0] == "MYDISCARD") $source = $myDiscard;
       else if ($option[0] == "THEIRDISCARD") $source = $theirDiscard;
+      else if ($option[0] == "MYBANISH") $source = $myBanish;
+      else if ($option[0] == "THEIRBANISH") $source = $theirBanish;
       else if ($option[0] == "MYALLY") $source = $myAllies;
       else if ($option[0] == "THEIRALLY") $source = $theirAllies;
       else if ($option[0] == "MYARS") $source = $myArsenal;
