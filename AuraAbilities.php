@@ -352,6 +352,9 @@ function AuraStartTurnAbilities()
         else if ($auras[$i] == "DYN099") $amount = 2;
         else $amount = 1;
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "ARC036", "DYN111", "DYN112"), SearchBanishForCardMulti($mainPlayer, "ARC036", "DYN111", "DYN112"));
+        $countHyper = count(explode(",", $searchHyper));
+        if ($amount > $countHyper) $amount = $countHyper;
         for ($i = 0; $i < $amount; ++$i) {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");

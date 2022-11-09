@@ -5239,6 +5239,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "THEIRDISCARD":
             RemoveGraveyard($otherPlayer, $mzIndex[1]);
             break;
+          case "MYBANISH":
+            RemoveBanish($player, $mzIndex[1]);
+            break;
+          case "THEIRBANISH":
+            RemoveBanish($otherPlayer, $mzIndex[1]);
+            break;
           case "MYARS":
             RemoveFromArsenal($player, $mzIndex[1]);
             break;
