@@ -1027,7 +1027,6 @@ function NumActionBlocked()
   return $num;
 }
 
-//CR 2.0 7.4.2c Defense Reaction abilities do not count as defending cards
 function NumCardsBlocking()
 {
   global $combatChain, $defPlayer;
@@ -1037,7 +1036,20 @@ function NumCardsBlocking()
     if($combatChain[$i+1] == $defPlayer)
     {
       $type = CardType($combatChain[$i]);
-      if($type != "E" && $type != "I" && $type != "C") ++$num;
+      if($type != "I" && $type != "C") ++$num;
+    }
+  }
+  return $num;
+}
+
+function NumCardsNonEquipBlocking()
+{
+  global $combatChain, $defPlayer;
+  $num = 0;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) {
+      $type = CardType($combatChain[$i]);
+      if ($type != "E" && $type != "I" && $type != "C") ++$num;
     }
   }
   return $num;
@@ -1397,7 +1409,7 @@ function DoesAttackHaveGoAgain()
     case "ARC197": case "ARC198": case "ARC199":
       return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
     case "CRU010": case "CRU011": case "CRU012":
-      if(NumCardsBlocking() < 2) return true;
+      if(NumCardsNonEquipBlocking() < 2) return true;
     case "CRU057": case "CRU058": case "CRU059":
     case "CRU060": case "CRU061": case "CRU062":
       return ComboActive($combatChain[0]);
@@ -1408,7 +1420,7 @@ function DoesAttackHaveGoAgain()
     case "MON199": case "MON220":
       return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
     case "MON223": case "MON224": case "MON225":
-      return NumCardsBlocking() < 2;
+      return NumCardsNonEquipBlocking() < 2;
     case "MON248": case "MON249": case "MON250":
       return SearchHighestAttackDefended() < $attackValue;
     case "MON293": case "MON294": case "MON295":
