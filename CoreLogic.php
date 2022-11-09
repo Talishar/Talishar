@@ -1801,7 +1801,8 @@ function GetDamagePreventionIndices()
     $theirArsenal = SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS");
     $rv = CombineSearches($rv, $theirArsenal);
   }
-
+  $theirHero = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR");
+  $rv = CombineSearches($rv, $theirHero);
   return $rv;
 }
 
