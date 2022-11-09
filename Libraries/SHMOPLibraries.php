@@ -15,6 +15,7 @@ function WriteCache($name, $data)
 
 function ReadCache($name)
 {
+  if($name == 0) return "";
   $id = shmop_open($name, "a", 0, 0);
   if($id == false)
   {
