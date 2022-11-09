@@ -5189,37 +5189,30 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "MYDISCARD":
             $zone = &GetMZZone($player, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
-            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "THEIRDISCARD":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "MYHAND":
             $zone = &GetMZZone($player, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
-            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "THEIRHAND":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
             break;
           case "MYARS":
             $zone = &GetMZZone($player, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $player, $params[0], $params[1], $params[2]);
-            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
             break;
           case "THEIRARS":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
             break;
           case "THEIRAURAS":
             $zone = &GetMZZone($otherPlayer, $mzIndex[0]);
             BanishCardForPlayer($zone[$mzIndex[1]], $otherPlayer, $params[0], $params[1], $params[2]);
-            WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished");
             break;
           default:
             break;
