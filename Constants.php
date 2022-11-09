@@ -341,7 +341,6 @@ function ResetCombatChainState()
   UnsetCombatChainBanish();
   RemoveEffectsOnChainClose();
   CombatChainClosedCharacterEffects();
-  CurrentEffectChainClosedEffects();
   $chainLinks = [];
   $chainLinkSummary = [];
 }

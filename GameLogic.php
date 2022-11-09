@@ -1143,26 +1143,6 @@ function RemoveCurrentEffects($player, $effectID) //Remove all instance on 1 eff
   $currentTurnEffects = array_values($currentTurnEffects);
 }
 
-function CurrentEffectChainClosedEffects()
-{
-  global $currentTurnEffects;
-  $costModifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
-    $remove = 0;
-    switch ($currentTurnEffects[$i]) {
-      case "CRU106":
-      case "CRU107":
-      case "CRU108":
-        $remove = 1;
-        break;
-      default:
-        break;
-    }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
-  }
-  return $costModifier;
-}
-
 function CurrentEffectBaseAttackSet($cardID)
 {
   global $currentPlayer, $currentTurnEffects;
@@ -1918,6 +1898,15 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN089-UNDER":
       return true;
+    case "DYN119": case "DYN120": case "DYN122":
+    case "DYN124": case "DYN125": case "DYN126":
+    case "DYN127": case "DYN128": case "DYN129":
+    case "DYN133": case "DYN134": case "DYN135":
+    case "DYN136": case "DYN137": case "DYN138":  //Contracts visualization
+    case "DYN139": case "DYN140": case "DYN141":
+    case "DYN142": case "DYN143": case "DYN144":
+    case "DYN145": case "DYN146": case "DYN147":
+      return true;
     case "DYN154":
       return true;
     default:
@@ -2162,6 +2151,11 @@ function RemoveEffectsOnChainClose()
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
     switch ($currentTurnEffects[$i]) {
+      case "CRU106":
+      case "CRU107":
+      case "CRU108":
+        $remove = 1;
+        break;
       case "MON245":
         $remove = 1;
         break;
@@ -2177,6 +2171,16 @@ function RemoveEffectsOnChainClose()
         break;
       case "UPR049":
         $remove = 1;
+      case "DYN119": case "DYN120": case "DYN122":
+      case "DYN124": case "DYN125": case "DYN126":
+      case "DYN127": case "DYN128": case "DYN129":
+      case "DYN133": case "DYN134": case "DYN135":
+      case "DYN136": case "DYN137": case "DYN138":  //Contracts visualization
+      case "DYN139": case "DYN140": case "DYN141":
+      case "DYN142": case "DYN143": case "DYN144":
+      case "DYN145": case "DYN146": case "DYN147":
+        $remove = 1;
+        break;
       default:
         break;
     }
