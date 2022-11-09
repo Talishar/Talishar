@@ -124,7 +124,7 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
       if (HasWard($permanents[$i]) && SearchCharacterActive($player, "DYN213") && CardType($permanents[$i]) != "T") {
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
-        AddLayer("TRIGGER", $player, "DYN213");
+        AddCurrentTurnEffect("DYN213", $player);
       }
     }
   }
