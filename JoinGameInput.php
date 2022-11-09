@@ -625,8 +625,8 @@ function GetAltCardID($cardID)
     case "MON306":
     case "ELE237": //Cracked Baubles
       return "WTR224";
-    case "DYN000":
-      return "ARC159";
+    // case "DYN000":
+    //   return "ARC159";
   }
   return $cardID;
 }
