@@ -110,7 +110,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
 function BlockingCardDefense($index)
 {
   global $combatChain, $defPlayer;
-  $from = $combatChain[$index+1];
+  $from = $combatChain[$index+2];
   $resourcesPaid = $combatChain[$index+3];
   $defense = BlockValue($combatChain[$index]) + BlockModifier($combatChain[$index], $from, $resourcesPaid) + $combatChain[$index + 6];
   if(CardType($combatChain[$index]) == "E")
