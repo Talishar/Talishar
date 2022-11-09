@@ -477,6 +477,13 @@ function AuraBeginEndPhaseAbilities()
         FrostHexEndTurnAbility($mainPlayer);
         $remove = 1;
         break;
+      case "DYN175":
+        if ($auras[$i + 2] == 0) $remove = 1;
+        else {
+          --$auras[$i + 2];
+          DealArcane(2, 2, "PLAYCARD", "DYN175", false, $mainPlayer);
+        }
+        break;
       case "DYN244":
         MyDrawCard();
         $remove = 1;
@@ -546,13 +553,6 @@ function AuraEndTurnAbilities()
       case "DYN072":
         if (GetClassState($mainPlayer, $CS_HitsWithWeapon) <= 0) {
           $remove = 1;
-        }
-        break;
-      case "DYN175":
-        if($auras[$i+2] == 0) $remove = 1;
-        else {
-          --$auras[$i+2];
-          DealArcane(2, 2, "PLAYCARD", "DYN175", false, $mainPlayer);
         }
         break;
       default:
