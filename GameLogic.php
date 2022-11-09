@@ -1126,6 +1126,7 @@ function RemoveCurrentEffect($player, $effectID)
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     if ($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i] == $effectID) {
       RemoveCurrentTurnEffect($i);
+      break;
     }
   }
   $currentTurnEffects = array_values($currentTurnEffects);
