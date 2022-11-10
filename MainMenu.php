@@ -41,7 +41,7 @@ else $isPatron = false;
 
 $createGameText = ($language == 1 ? "Create Game" : "ゲームを作る");
 $languageText = ($language == 1 ? "Language" : "言語");
-$createNewGameText = ($language == 1 ? "Create New Beta Game" : "新しいゲームを作成する");
+$createNewGameText = ($language == 1 ? "Create New Game" : "新しいゲームを作成する");
 $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ");
 
 ?>
