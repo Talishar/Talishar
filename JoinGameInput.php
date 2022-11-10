@@ -172,7 +172,6 @@ if ($decklink != "") {
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
-  $dynastyCard = ""; // To be deleted after release of Dynatsy
   $totalCards = 0;
 
   if (is_countable($cards)) {
@@ -299,19 +298,10 @@ if ($decklink != "") {
         }
         $totalCards += $numMainBoard + $numSideboard;
       }
-      if ($cardSet == "DYN") {
-        if ($dynastyCard != "") $dynastyCard .= ", ";
-        $dynastyCard .= CardName($id);
-      }
+
     }
   } else {
     $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if ($dynastyCard != "" && ($format == "compblitz" || $format == "compcc")) {
-    $_SESSION['error'] = '⚠️ The Dynatsy cards are not allowed in the competitive queues until release. \n\n Thank you for your understanding and patience!';
     header("Location: MainMenu.php");
     die();
   }
@@ -650,7 +640,6 @@ function IsBanned($cardID, $format)
       //  MON183: MON184: MON185: Seeds of Agony (Until Chane becomes Living Legend)
       //  CRU141: Bloodsheath Skeleta
       //  EVR037: Mask of the Pouncing Lynx
-      //  ARC116: Storm Striders
     case "blitz":
     case "compblitz":
       switch ($cardID) {
@@ -678,7 +667,9 @@ function IsBanned($cardID, $format)
         case "MON185":
         case "CRU141":
         case "EVR037":
-        case "ARC116":
+        case "EVR123": // Aether Wildfire
+        case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
+        case "UPR139": // Hypothermia
           return true;
         default:
           return false;
