@@ -4712,7 +4712,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("FINDINDICES", $player, $indicesParam);
       return 1;
     case "GENESIS":
-      if (TalentContains($lastResult, "LIGHT", $player)) Draw($player);
+      if (TalentContains($lastResult, "LIGHT", $player)) Draw($player, false);
       if (ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
       return 1;
     case "GIVEACTIONGOAGAIN":
