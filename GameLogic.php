@@ -3107,6 +3107,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "DYN118":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
+    case "DYN171":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      break;
     case "DYN235":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
