@@ -993,6 +993,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if ($cardType == "E" && ($combatChain[0] == "DYN095" || $combatChain[0] == "DYN096" || $combatChain[0] == "DYN097")) $blockModifier -= 1;
+
+
+  if ($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   $defAuras = &GetAuras($defPlayer);
   for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
@@ -2170,6 +2173,8 @@ function RemoveEffectsOnChainClose()
         $remove = 1;
         break;
       case "UPR049":
+        $remove = 1;
+      case "DYN095": case "DYN096": case "DYN097": 
         $remove = 1;
       case "DYN119": case "DYN120": case "DYN122":
       case "DYN124": case "DYN125": case "DYN126":
