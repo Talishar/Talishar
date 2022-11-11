@@ -994,8 +994,6 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if ($cardType == "E" && ($combatChain[0] == "DYN095" || $combatChain[0] == "DYN096" || $combatChain[0] == "DYN097")) $blockModifier -= 1;
-
-
   if ($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   $defAuras = &GetAuras($defPlayer);
@@ -3570,7 +3568,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
       }
-      WriteLog($parameter . " " . $defense);
       if ($parameter > $defense) $parameter = $defense;
       $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
