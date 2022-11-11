@@ -931,7 +931,7 @@ function CombatChainClosedCharacterEffects()
         if(HasTemper($chainLinks[$i][$j]))
         {
           $character[$charIndex+4] -= 1;//Add -1 block counter
-          if((BlockValue($character[$charIndex]) + $character[$charIndex + 4]) <= 0)
+          if((BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0)) <= 0)
           {
             DestroyCharacter($defPlayer, $charIndex);
             //Mechanoid Check
