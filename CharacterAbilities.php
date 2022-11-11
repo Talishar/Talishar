@@ -29,7 +29,7 @@ function CharacterTakeDamageAbilities($player, $damage, $type)
       if (HasWard($char[$i]) && (SearchCharacterActive($player, "DYN213") || $char[$i] == "DYN213") && CardType($char[$i]) != "T") {
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
-        AddCurrentTurnEffect("DYN213", $player);
+        GainResources($player, 1);
       }
       DestroyCharacter($player, $i);
     }
