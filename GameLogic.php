@@ -234,9 +234,9 @@ function ArcaneHitEffect($player, $source, $target, $damage)
 function DoSurgeEffect($cardID, $player, $target)
 {
   global $mainPlayer;
+  $targetPlayer = MZPlayerID($player, $target);
   switch ($cardID) {
     case "DYN194":
-      $targetPlayer = MZPlayerID($player, $target);
       $hand = &GetHand($targetPlayer);
       $numToDraw = count($hand) - 1;
       if($numToDraw < 0) $numToDraw = 0;
@@ -263,8 +263,8 @@ function DoSurgeEffect($cardID, $player, $target)
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which permanent remove an energy counter");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZGETCARDINDEX", $player, "-", 1);
-      AddDecisionQueue("REMOVEENERGYCOUNTER", $target, "-", 1);
-      AddDecisionQueue("SURGEENERGYLOSSLOG", $target, $cardID, 1);
+      AddDecisionQueue("REMOVEENERGYCOUNTER", $targetPlayer, "-", 1);
+      AddDecisionQueue("SURGEENERGYLOSSLOG", $player, $cardID, 1);
       break;
     default: break;
   }
