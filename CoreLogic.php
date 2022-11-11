@@ -934,6 +934,13 @@ function CombatChainClosedCharacterEffects()
           if((BlockValue($character[$charIndex]) + $character[$charIndex + 4]) <= 0)
           {
             DestroyCharacter($defPlayer, $charIndex);
+            //Mechanoid Check
+            if ($character[$charIndex] == "DYN492b") {
+              $indexWeapon = FindCharacterIndex($defPlayer, "DYN492a"); // Weapon
+              DestroyCharacter($defPlayer, $indexWeapon);
+              $indexItem = GetItemIndex("DYN492c", $defPlayer);
+              DestroyItemForPlayer($defPlayer, $indexItem);
+            }
           }
         }
         if(HasBattleworn($chainLinks[$i][$j]))
