@@ -310,7 +310,7 @@ function AllyTakeDamageAbilities($player, $damage, $type)
       if (HasWard($allies[$i]) && SearchCharacterActive($player, "DYN213") && CardType($allies[$i]) != "T") {
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
-        AddCurrentTurnEffect("DYN213", $player);
+        GainResources($player, 1);
       }
     }
   }

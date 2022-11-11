@@ -90,6 +90,14 @@ function AuraDestroyed($player, $cardID, $isToken = false)
     if (TalentContains($cardID, "LIGHT", $player)) $goesWhere = "SOUL";
     DealArcane(1, 0, "STATIC", "MON012", false, $player);
   }
+
+  if (HasWard($cardID) && SearchCharacterActive($player, "DYN213") && !$isToken) {
+    $char = &GetPlayerCharacter($player);
+    $index = FindCharacterIndex($player, "DYN213");
+    $char[$index + 1] = 1;
+    GainResources($player, 1);
+  }
+
   if (CardType($cardID) == "T" || $isToken) return; //Don't need to add to anywhere if it's a token
   switch ($goesWhere) {
     case "GY":
@@ -156,15 +164,16 @@ function AuraPlayCounters($cardID)
 function DestroyAuraUniqueID($player, $uniqueID)
 {
   $index = SearchAurasForUniqueID($uniqueID, $player);
-  if($index != -1) DestroyAura($player, $index);
+  if($index != -1) DestroyAura($player, $index, $uniqueID);
 }
 
-function DestroyAura($player, $index)
+function DestroyAura($player, $index, $uniqueID="")
 {
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   $isToken = $auras[$index + 4] == 1;
   AuraDestroyed($player, $cardID, $isToken);
+  if ($uniqueID != "") $index = SearchAurasForUniqueID($uniqueID, $player);
   AuraLeavesPlay($player, $index);
   if (IsSpecificAuraAttacking($player, $index)) {
     CloseCombatChain();
@@ -653,12 +662,6 @@ function AuraTakeDamageAbilities($player, $damage, $type)
     }
     if ($remove == 1) {
       DestroyAura($player, $i);
-      if (HasWard($auras[$i]) && SearchCharacterActive($player, "DYN213") && CardType($auras[$i]) != "T") {
-        $char = &GetPlayerCharacter($player);
-        $index = FindCharacterIndex($player, "DYN213");
-        $char[$index + 1] = 1;
-        AddCurrentTurnEffect("DYN213", $player);
-      }
     }
   }
   return $damage;

@@ -994,9 +994,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
-      case "DYN213":
-        GainResources($player, 1);
-        break;
       case "DYN217":
         MyDrawCard();
         DestroyAuraUniqueID($player, $uniqueID);
