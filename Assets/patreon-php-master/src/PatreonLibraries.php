@@ -125,6 +125,10 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isTheTablePitPatron"] = true;
       array_push($yourPatronages, "The Table Pit");
     }
+    if ($include->type == "campaign" && $include->id == "9404423") {
+      $_SESSION["isTCGTedPatron"] = true;
+      array_push($yourPatronages, "TCG Ted");
+    }
 	}
 
   if(!$silent)

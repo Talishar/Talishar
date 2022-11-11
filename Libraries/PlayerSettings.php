@@ -139,6 +139,7 @@ function GetCardBack($player)
     case 41: return "CBTheMetrixMetagame";
     case 42: return "CBEternalOracles";
     case 43: return "CBTheTablePit";
+    case 44: return "CBTCGTed";
     default: return "CardBack";
   }
 }
@@ -511,11 +512,18 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-42", "EternalOracles", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Eternal Oracles");
   }
 
-  $isTheTablePit = false;
-  $isTheTablePit = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TheTablePitYT" || $_SESSION["useruid"] == "TunaTCG");
-  if ($_SESSION['isTheTablePitPatron'] || $isTheTablePit) {
+  $isTheTablePitPatron = false;
+  $isTheTablePitPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TheTablePitYT" || $_SESSION["useruid"] == "TunaTCG");
+  if ($_SESSION['isTheTablePitPatron'] || $isTheTablePitPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-43", "TheTablePit", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Table Pit");
+  }
+
+  $isTCGTedPatron = false;
+  $isTCGTedPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TCGTed" || $_SESSION["useruid"] == "PvtVoid");
+  if ($_SESSION['isTCGTedPatron'] || $isTCGTedPatron) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-44", "TCGTed", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "TCG Ted");
   }
 
   if (!$hasCardBacks) $rv .= "<br><br><h4>Become a patron to customize your card backs!</h4>";
