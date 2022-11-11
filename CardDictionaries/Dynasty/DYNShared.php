@@ -959,6 +959,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PutCharacterIntoPlayForPlayer("DYN492b", $currentPlayer);//Armor
       PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
       return "";
+    case "DYN095": case "DYN096": case "DYN097": 
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     case "DYN119": case "DYN120": case "DYN122":
     case "DYN124": case "DYN125": case "DYN126":
     case "DYN127": case "DYN128": case "DYN129":

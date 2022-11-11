@@ -714,6 +714,19 @@ function SearchChainLinks($minPower = -1, $maxPower = -1, $cardType = "")
   return $links;
 }
 
+function SearchChainLinksForCard($cardID)
+{
+  global $chainLinks;
+  $cardList = "";
+  for ($i = 0; $i < count($chainLinks); $i += ChainLinksPieces()) {
+    if ($chainLinks[$i][0] == $cardID) {
+      if ($cardList != "") $cardList .= ",";
+      $cardList .= $i;
+    }
+  }
+  return $cardList;
+}
+
 function GetMZCardLink($player, $MZ)
 {
   $params = explode("-", $MZ);
