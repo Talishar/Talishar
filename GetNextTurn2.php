@@ -939,6 +939,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($theirAuras[$i], "concat", $cardSizeAura, 0, 1, $theirAuras[$i + 1] != 2 ? 1 : 0, 0, $counters, "", "", False, 0, 0, $atkCounters, controller: $otherPlayer) . "&nbsp");
       DisplayPriorityGem($theirAuras[$i + 8], "AURAS-" . $i, 1);
+      if ($theirAuras[$i + 4] == 1 && CardType($theirAuras[$i]) != "T") echo ("<img title='Token Copy' style='position:absolute; display: inline-block; z-index:1001; top: 0px; left:" . $cardWidth / 2 - 45 . "px; width:" . $cardWidth + 15 . "px; height:30px; cursor:pointer;' src='./Images/tokenCopy.png' />");
       echo ("</div>");
     }
   }
@@ -1112,6 +1113,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($myAuras[$i], "concat", $cardSizeAura, $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0, 1, $myAuras[$i + 1] != 2 ? 1 : 0, $border, $counters, strval($i), "", False, 0, 0, $atkCounters, controller: $playerID) . "&nbsp");
       DisplayPriorityGem($myAuras[$i + 7], "AURAS-" . $i);
+      if ($myAuras[$i + 4] == 1 && CardType($myAuras[$i]) != "T") echo ("<img title='Token Copy' style='position:absolute; display: inline-block; z-index:1001; top: 0px; left:" . $cardWidth / 2 - 45 . "px; width:" . $cardWidth + 15 . "px; height:30px; cursor:pointer;' src='./Images/tokenCopy.png' />");
       echo ("</div>");
     }
   }
