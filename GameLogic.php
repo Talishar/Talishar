@@ -4948,6 +4948,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($dqVars[$parameter] == "1") return "PASS";
       return "PROCEED";
     case "LORDSUTCLIFFE":
+      if ($lastResult == "PASS") return $lastResult;
       LordSutcliffeAfterDQ($player, $parameter);
       return $lastResult;
     // case "APPROVEMANUALMODE":
