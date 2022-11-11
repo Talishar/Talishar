@@ -5335,12 +5335,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
           case "MYDISCARD":
-            $deck = &GetDeck($player);
-            AddBottomDeck($deck[$mzIndex[1]], $player, $params[0]);
+            $discard = &GetDiscard($player);
+            AddBottomDeck($discard[$mzIndex[1]], $player, $params[0]);
             break;
           case "THEIRDISCARD":
-            $deck = &GetDeck($otherPlayer);
-            AddBottomDeck($deck[$mzIndex[1]], $otherPlayer, $params[0]);
+            $discard = &GetDiscard($otherPlayer);
+            AddBottomDeck($discard[$mzIndex[1]], $otherPlayer, $params[0]);
             break;
           case "MYARS":
             $arsenal = &GetArsenal($player);
