@@ -213,6 +213,13 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
 -->
 
+<div style="vertical-align:middle; position: relative;">
+  <h2>Promise of Plenty</h2>
+  <h4>Check out what Nate and Keith think about Dynasty on the latest Promise of Plenty podcast!</h4><br>
+  <a href='https://www.youtube.com/watch?v=3u68BYd9EbI&t=4s' target='_blank'>
+  <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/logos/PromiseOfPlenty.webp" /></a>
+</div>
+
 
       <div style='vertical-align:middle; text-align:center;'>
         <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play Talishar</h2>
@@ -236,6 +243,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 
 
   <?php
+  /*
   if (!$isPatron) {
     echo '<div>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783"
@@ -252,6 +260,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
       </script>
     </div>';
   }
+  */
   ?>
   <BR>
   <div style='width:100%; text-align:center'><a href='./MenuFiles/PrivacyPolicy.php'>Privacy Policy</a></div>
