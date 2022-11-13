@@ -19,14 +19,14 @@ if (isset($_SESSION['useruid'])) {
       <label style='display:inline;' for="rememberMe">Remember Me</label>
       <input style='display:inline; width:16px;' type="checkbox" id="rememberMe" name="rememberMe" value="rememberMe">
       <button type="submit" name="submit">SUBMIT</button>
-      <!--
+
       <div class="centeredGoogle">
         <div id="g_id_onload" data-client_id="1089547347578-lqbvoqb0u3grqi89ibjmti2bc9lq37pr.apps.googleusercontent.com" data-login_uri="/FaBOnline/includes/login-google.inc.php" data-auto_prompt="false">
         </div>
         <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left">
         </div>
       </div>
-    -->
+
     </form>
   </div>
   <div class="signup-form-form">
