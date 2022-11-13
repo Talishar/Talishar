@@ -2173,7 +2173,7 @@ function RemoveEffectsOnChainClose()
         break;
       case "UPR049":
         $remove = 1;
-      case "DYN095": case "DYN096": case "DYN097": 
+      case "DYN095": case "DYN096": case "DYN097":
         $remove = 1;
       case "DYN119": case "DYN120": case "DYN122":
       case "DYN124": case "DYN125": case "DYN126":
@@ -4013,11 +4013,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "NO") {
         ReloadArrow($player); // From Hand
       } else {                // From Top Deck
-        AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
-        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK-1", 1);
-        AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
+        AddDecisionQueue("PARAMDELIMTOARRAY", $player, "0", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
+        AddDecisionQueue("NULLPASS", $player, "-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK-1", 1);
+        AddDecisionQueue("ALLCARDSUBTYPEORPASS", $player, "Arrow", 1);
       }
       return $lastResult;
     case "NOFUSE":
