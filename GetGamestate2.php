@@ -1,5 +1,7 @@
 <?php
 
+exit;
+
 include "Libraries/HTTPLibraries.php";
 
 $gameName = $_GET["gameName"];
@@ -148,7 +150,7 @@ function OutputPlayerData($player)
   echo ("Banish" . $banishOut . "<BR>");
   echo (implode(" ", $classState) . "<BR>");
   echo (implode(" ", $characterEffects) . "<BR>");
-  if ($currentPlayer == $player && $playerID == $player && count($turn) > 0 && ($turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK")) {
+  if ($currentPlayer == $player && $playerID == $player && count($turn) > 0 && ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK")) {
     $dispDeck = "";
     $indices = explode(",", $turn[2]);
     for ($i = 0; $i < count($indices); ++$i) {

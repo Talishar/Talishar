@@ -52,6 +52,7 @@ body {
   border: 1px solid #1a1a1a;
   border-radius: 5px;
   line-height: 1.5rem;
+  text-align: center;
 }
 
 .articles:empty {
@@ -84,5 +85,16 @@ body {
   color: black;
   text-shadow: none;
   text-align: left;
-  text-indent: 3rem;
+}
+
+.articles a {
+  font-family: 'Helvetica', sans-serif;
+    font-weight: 600;
+    color: black;
+    text-align: center;
+    text-shadow: none;
+  }
+
+.blog-iframe {
+  border: 3px solid black;
 }

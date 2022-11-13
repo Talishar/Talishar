@@ -1,8 +1,18 @@
 <?php
 include "HostFiles/Redirector.php";
 include_once 'Header.php';
-?>
+include_once 'APIKeys/APIKeys.php';
 
+if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
+else $isPatron = false;
+
+if (!$isPatron) {
+
+  echo '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783" crossorigin="anonymous">
+  </script>';
+}
+
+?>
 <style>
   body {
     background-image: url('Images/Metrix.jpg');

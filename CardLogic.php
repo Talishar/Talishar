@@ -22,18 +22,6 @@ function HandToTopDeck($player)
   AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
 }
 
-function RandomHandBottomDeck($player)
-{
-  $hand = &GetHand($player);
-  if (count($hand) == 0) return;
-  $index = rand() % count($hand);
-  $discarded = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
-  $deck = &GetDeck($player);
-  array_push($deck, $discarded);
-}
-
 function BottomDeck()
 {
   global $currentPlayer;
@@ -83,6 +71,13 @@ function BottomDeckMultizoneDraw($player, $zone1, $zone2)
 {
   BottomDeckMultizone($player, $zone1, $zone2);
   AddDecisionQueue("DRAW", $player, "-", 1);
+}
+
+function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
+{
+  global $combatChain;
+  if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
+  else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
 }
 
 function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
@@ -165,6 +160,12 @@ function CurrentTurnEffectPieces()
 function CurrentTurnEffectUses($cardID)
 {
   switch ($cardID) {
+    case "EVR033":
+      return 6;
+    case "EVR034":
+      return 5;
+    case "EVR035":
+      return 4;
     case "UPR000":
       return 3;
     case "UPR088":
@@ -220,6 +221,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $parameter);
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
+  return count($layers);//How far it is from the end
 }
 
 function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
@@ -318,7 +320,7 @@ function IsGamePhase($phase)
 function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
-  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $lastPlayed, $CS_LastDynCost;
+  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -326,7 +328,7 @@ function ContinueDecisionQueue($lastResult = "")
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
-      if ($currentPlayer == 1) {
+      if ($mainPlayer == 1) {
         if (ShouldHoldPriorityNow(1)) {
           AddDecisionQueue("INSTANT", 1, "-");
           $priorityHeld = 1;
@@ -378,12 +380,13 @@ function ContinueDecisionQueue($lastResult = "")
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
         else if ($cardID == "LAYER") ProcessLayer($player, $parameter);
         else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
+        else if ($cardID == "DEFENDSTEP") { $turn[0] = "A"; $currentPlayer = $mainPlayer; }
         else if ($cardID == "TRIGGER") {
-          ProcessTrigger($player, $parameter, $uniqueID);
+          ProcessTrigger($player, $parameter, $uniqueID, $target);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, $params[2]); //This is like a parameter to PlayCardEffect and other functions
-          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3]);
+          PlayCardEffect($cardID, $params[0], $params[1], $target, $additionalCosts, $params[3], $params[2]);
           ClearDieRoll($player);
         }
       }
@@ -401,11 +404,11 @@ function ContinueDecisionQueue($lastResult = "")
       } else {
         //params 3 = ability index
         //params 4 = Unique ID
-        $layerTarget = GetClassState($currentPlayer, $CS_LayerTarget);
         $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
-        if ($layerTarget == "") $layerTarget = "-";
         if ($additionalCosts == "") $additionalCosts = "-";
-        AddLayer($params[0], $currentPlayer, $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4], $layerTarget, $additionalCosts);
+        $layerIndex = count($layers) - GetClassState($currentPlayer, $CS_LayerPlayIndex);
+        $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4];
+        $layers[$layerIndex + 4] = $additionalCosts;
         ProcessDecisionQueue();
         return;
       }
@@ -419,7 +422,6 @@ function ContinueDecisionQueue($lastResult = "")
         $otherPlayer = $currentPlayer == 1 ? 2 : 1;
         BuildMyGamestate($currentPlayer);
       }
-      SetClassState($currentPlayer, $CS_LastDynCost, $lastResult);
       PlayCard($params[0], $params[1], $lastResult, $params[2]);
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
@@ -447,6 +449,7 @@ function ContinueDecisionQueue($lastResult = "")
   if (count($dqVars) > 0) {
     if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
     if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
+    if (str_contains($parameter, "{1}")) $parameter = str_replace("{1}", $dqVars[1], $parameter);
   }
   if (count($dqVars) > 1) $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
   $subsequent = array_shift($decisionQueue);
@@ -477,28 +480,78 @@ function ProcessLayer($player, $parameter)
   }
 }
 
-function ProcessTrigger($player, $parameter, $uniqueID)
+function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 {
-  global $combatChain;
+  global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $CS_EffectContext;
 
   $resources = &GetResources($player);
   $items = &GetItems($player);
   $character = &GetPlayerCharacter($player);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $auras = &GetAuras($player);
+
+  if(CardType($parameter) == "C")
+  {
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    $otherCharacter = &GetPlayerCharacter($otherPlayer);
+    if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
+      $parameter = $otherCharacter[0];
+    }
+  }
 
   switch ($parameter) {
+    case "WTR000":
+      if (IHaveLessHealth()) {
+        if (GainHealth(1, $player)) WriteLog(CardLink($parameter, $parameter) . " gained 1 health.");
+      }
+      break;
     case "WTR001": case "WTR002": case "RVD001":
       WriteLog(CardLink($parameter, $parameter) . " Intimidates.");
       Intimidate();
+      break;
+    case "WTR046":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "WTR047":
+      SetClassState($player, $CS_EffectContext, $parameter);
+      Draw($player);
+      WriteLog(CardLink($parameter, $parameter) . " draw a card.");
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "WTR054": case "WTR055": case "WTR056":
+      if($parameter == "WTR054") $amount = 3;
+      else if($parameter == "WTR055") $amount = 2;
+      else $amount = 1;
+      BlessingOfDeliveranceDestroy($amount);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "WTR069": case "WTR070": case "WTR071":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "WTR072": case "WTR073": case "WTR074":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "WTR075":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "WTR076": case "WTR077":
+        KatsuHit();
+      break;
+    case "WTR079":
+        WriteLog(CardLink($parameter, $parameter) . " drew a card.");
+        MainDrawCard();
+      break;
     case "WTR117":
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Refraction_Bolters_to_give_your_attack_Go_Again");
       AddDecisionQueue("REFRACTIONBOLTERS", $player, $index, 1);
+      break;
+    case "ARC000":
+      Opt($parameter, 2);
       break;
     case "ARC007":
       $index = SearchItemsForUniqueID($uniqueID, $player);
@@ -513,6 +566,10 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyMainItem($index);
       break;
+    case "ARC075":
+    case "ARC076":
+      ViseraiPlayCard($target);
+      break;
     case "ARC112":
       DealArcane(1, 1, "RUNECHANT", "ARC112", player:$player);
       DestroyAuraUniqueID($player, $uniqueID);
@@ -524,10 +581,45 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       break;
     case "ARC162":
       DestroyAuraUniqueID($player, $uniqueID);
-      WriteLog(CardLink($parameter, $parameter) . " was destroyed at the beginning of your action phase.");
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "ARC185": case "ARC186": case "ARC187":
+      AddDecisionQueue("FINDINDICES", $player, $parameter);
+      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("ADDMYHAND", $player, "-", 1);
+      AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       break;
     case "CRU000":
       PlayAura("ARC112", $player);
+      break;
+    case "CRU007":
+      AddDecisionQueue("BEASTWITHIN", $player, "-");
+      break;
+    case "CRU008":
+      Intimidate();
+      break;
+    case "CRU028":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "CRU029": case "CRU030": case "CRU031":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "CRU038": case "CRU039": case "CRU040":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . " and dominate.");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "CRU051": case "CRU052":
+      EvaluateCombatChain($totalAttack, $totalBlock);
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+          DestroyCurrentWeapon();
+        }
+      }
       break;
     case "CRU053":
       $index = FindCharacterIndex($player, $parameter);
@@ -536,6 +628,56 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
+      break;
+    case "CRU075":
+      $index = SearchAurasForUniqueID($uniqueID, $player);
+      if ($auras[$index + 2] == 0) {
+        DestroyAuraUniqueID($player, $uniqueID);
+      } else {
+        --$auras[$index + 2];
+      }
+      break;
+    case "CRU097":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayerMainCharacter = &GetPlayerCharacter($otherPlayer);
+      $index = FindCharacterIndex($player, $parameter);
+      if ($character[$index] != $otherPlayerMainCharacter[$index]) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose which hero to copy");
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZGETCARDID", $player, "-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $player, "-SHIYANA", 1);
+        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $player, "<-", 1);
+      }
+      break;
+    case "CRU099":
+      PutItemIntoPlay($target);
+      break;
+    case "CRU142":
+      //When you attack with Dread Triptych, if you've played a 'non-attack' action card this turn, create a Runechant token.
+      if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("ARC112", $player);
+      //When you attack with Dread Triptych, if you've dealt arcane damage this turn, create a Runechant token.
+      if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("ARC112", $player);
+      break;
+    case "CRU144":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "CRU161":
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
+      AddDecisionQueue("NOPASS", $player, "-", 1, 1); //Create cancel point
+      AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
+      AddDecisionQueue("BUFFARCANE", $player, "1", 1);
+      AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
+      break;
+    case "MON089": // Phantasmal Footsteps
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("PHANTASMALFOOTSTEPS", $player, "1", 1);
+      AddDecisionQueue("PHANTASMALFOOTSTEPSDESTROYED", $player, "-");
       break;
     case "MON122":
       $index = FindCharacterIndex($player, $parameter);
@@ -546,13 +688,51 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
       break;
+    case "MON186":
+      SoulShackleStartTurn($player);
+      break;
+    case "MON241": case "MON242": case "MON243":
+    case "MON244": case "RVD005": case "RVD006":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("IRONHIDE", $player, $target, 1);
+      break;
+    case "ELE025": case "ELE026": case "ELE027":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "ELE028": case "ELE029": case "ELE030":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "ELE062": case "ELE063":
+      PlayAura("ELE110", $player);
+      WriteLog(CardLink($parameter, $parameter) . " created an Embodiment of Lightning aura.");
+      break;
+    case "ELE066":
+      if (HasIncreasedAttack()) MainDrawCard();
+      break;
+    case "ELE004":
+      for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i] == $player) {
+        PlayAura("ELE111", $player);
+        }
+      }
+      break;
     case "ELE109":
       DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "ELE111":
       DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
       break;
     case "ELE174":
+      $otherPlayer = ($player == 1 ? 2 : 1);
       $index = FindCharacterIndex($player, $parameter);
       AddDecisionQueue("YESNO", $player, "destroy_mark_of_lightning_to_have_the_attack_deal_1_damage");
       AddDecisionQueue("NOPASS", $player, "-", 1);
@@ -560,8 +740,26 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("DEALDAMAGE", $otherPlayer, 1 . "-" . $combatChain[0] . "-" . "COMBAT", 1);
       break;
+    case "ELE175":
+      AddDecisionQueue("YESNO", $player, "do_you_want_to_pay_1_to_give_your_action_go_again", 0, 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("GIVEACTIONGOAGAIN", $player, $target, 1);
+      break;
+    case "ELE203": // Rampart of the Ram's Head
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("RAMPARTOFTHERAMSHEAD", $player, $target, 1);
+      break;
+    case "ELE206": case "ELE207": case "ELE208":
+      WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "EVR018":
-      PlayAura("ELE111", $player);
+        PlayAura("ELE111", $player);
       break;
     case "EVR037":
       $index = FindCharacterIndex($player, $parameter);
@@ -570,7 +768,7 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("FINDINDICES", $player, "MASKPOUNCINGLYNX", 1);
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
       AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
@@ -587,20 +785,220 @@ function ProcessTrigger($player, $parameter, $uniqueID)
       --$items[$index + 1];
       if ($items[$index + 1] < 0) DestroyMainItem($index);
       break;
-    case "EVR107":
-    case "EVR108":
-    case "EVR109":
+    case "EVR107": case "EVR108": case "EVR109":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if ($index == -1) break;
       $auras = &GetAuras($player);
       if ($auras[$index + 2] == 0) {
-        WriteLog("Runeblood Invocation is destroyed.");
-        DestroyAura($player, $index);
+        WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+        DestroyAuraUniqueID($player, $uniqueID);
       } else {
         --$auras[$index + 2];
         PlayAura("ARC112", $player);
       }
       break;
+    case "EVR120": case "UPR102": case "UPR103":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      PlayAura("ELE111", $otherPlayer);
+      WriteLog(CardLink($parameter, $parameter) . " created a Frostbite for playing an ice card.");
+      break;
+    case "EVR131": case "EVR132": case "EVR133":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "RVD015":
+      $deck = &GetDeck($player);
+      $rv = "";
+      if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+      $wasRevealed = RevealCards($deck[0]);
+      if ($wasRevealed) {
+        if (AttackValue($deck[0]) < 6) {
+          WriteLog("The card was put on the bottom of your deck.");
+          array_push($deck, array_shift($deck));
+        }
+      }
+      break;
+    case "UPR095":
+      if (GetClassState($player, $CS_DamageTaken) > 0) {
+        $discard = &GetDiscard($player);
+        $found = -1;
+        for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
+          if ($discard[$i] == "UPR101") $found = $i;
+        }
+        if ($found == -1) WriteLog("No Phoenix Flames in discard.");
+        else {
+          RemoveGraveyard($player, $found);
+          AddPlayerHand("UPR101", $player, "GY");
+        }
+      }
+      break;
+    case "UPR096":
+        if(GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player))
+        {
+          AddDecisionQueue("FINDINDICES", $player, "DECKCARD,UPR101");
+          AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+          AddDecisionQueue("ADDMYHAND", $player, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        }
+        return "";
+    case "UPR140":
+      $index = SearchAurasForUniqueID($uniqueID, $player);
+      if ($index == -1) break;
+      $auras = &GetAuras($player);
+      --$auras[$index + 2];
+      PayOrDiscard($target, 2, true);
+      if ($auras[$index + 2] == 0) {
+        WriteLog(CardLink($auras[$index], $auras[$index]) . " is destroyed.");
+        DestroyAura($player, $index);
+      }
+      break;
+    case "UPR141": case "UPR142": case "UPR143":
+      if ($parameter == "UPR141") $numFrost = 4;
+      else if ($parameter == "UPR142") $numFrost = 3;
+      else $numFrost = 2;
+      PlayAura("ELE111", $target, $numFrost);
+      break;
+    case "UPR182":
+      BottomDeckMultizoneDraw($player, "MYHAND", "MYARS");
+      break;
+    case "UPR190":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "UPR191": case "UPR192": case "UPR193": // Flex
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,2");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "2", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINBUFFPOWER", $player, "2", 1);
+      break;
+    case "UPR194": case "UPR195": case "UPR196":
+      if (PlayerHasLessHealth($player)) {
+        GainHealth(1, $player);
+        WriteLog(CardLink($parameter, $parameter) . " gives 1 health.");
+      }
+      break;
+    case "UPR203": case "UPR204": case "UPR205":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
+      AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINBUFFDEFENSE", $player, "2", 1);
+      break;
+    case "UPR218": case "UPR219": case "UPR220":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog(CardLink($parameter, $parameter) . " is destroyed.");
+      break;
+    case "DYN006":
+      $index = FindCharacterIndex($player, $parameter);
+      AddDecisionQueue("CHARREADYORPASS", $player, $index);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_Beaten_Trackers_to_gain_an_action_point", 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
+      AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+      break;
+    case "DYN008":
+      WriteLog("Gained a resource from " . CardLink($parameter, $parameter));
+      GainResources($player, 1);
+      break;
+    case "DYN009":
+      $deck = &GetDeck($player);
+      $rv = "";
+      if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+      $wasRevealed = RevealCards($deck[0]);
+      if ($wasRevealed) {
+        if (AttackValue($deck[0]) >= 6) {
+          MyDrawCard();
+          WriteLog(CardLink($parameter, $parameter) . " draw a card.");
+        }
+      }
+      break;
+		case "DYN010": case "DYN011": case "DYN012":
+      $discard = &GetDiscard($player);
+      $found = -1;
+      for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
+        if ($discard[$i] == $parameter) $found = $i;
+      }
+      RemoveGraveyard($player, $found);
+      AddBottomDeck($parameter, $player, "GY");
+      WriteLog(CardLink($parameter, $parameter) . " was put at the bottom of the deck");
+      break;
+    case "DYN093":
+      $targetIndex = SearchItemsForUniqueID($target, $player);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($items[$targetIndex], $items[$targetIndex]));
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PLASMAMAINLINE", $player, $uniqueID . "," . $target, 1);
+      break;
+    case "DYN094":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $index = GetItemIndex($parameter, $player);
+      AddDecisionQueue("YESNO", $player, "Do_you_want_to_destroy_" . CardLink($parameter, $parameter) . "_and_a_defending_equipment?");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("DESTROYITEM", $player, $index, 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIPONCC", 1);
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("DESTROYTHEIRCHARACTER", $player, "-", 1);
+      break;
+		case "DYN101": case "DYN102": case "DYN103":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:cardID=ARC036;cardID=DYN111;cardID=DYN112");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to put a steam counter on", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDSTEAMCOUNTER", $player, "-", 1);
+      break;
+    case "ARC036": case "DYN110":
+    case "DYN111": case "DYN112":
+      $index = SearchItemsForUniqueID($uniqueID, $player);
+      if ($items[$index + 2] == 2) {
+        --$items[$index + 1];
+        $items[$index + 2] = 1;
+        GainResources($player, 1);
+        if ($items[$index + 1] <= 0) DestroyMyItem($index);
+      }
+      break;
+    case "DYN113": case "DYN114":
+        $otherPlayer = ($player == 1 ? 2 : 1);
+        AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want sink <0> with Arakni", 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_sink_the_opponent's_card", 1);
+        AddDecisionQueue("NOPASSARAKNI", $player, $parameter, 1);
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
+        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+      break;
+    case "DYN152":
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $deck = &GetDeck($player);
+      if (count($deck) == 0) WriteLog("Your deck is empty. No card is revealed.");
+      $wasRevealed = RevealCards($deck[0]);
+      if ($wasRevealed) {
+        if (CardSubType($deck[0]) == "Arrow") {
+          if (IsAllyAttacking()) {
+            $allyIndex = "THEIRALLY-" . GetAllyIndex($combatChain[0], $otherPlayer);
+            AddDecisionQueue("PASSPARAMETER", $player, $allyIndex, 1);
+          }
+          else {
+            AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=C", 1);
+          }
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target to deal 1 damage.");
+          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZDAMAGE", $player, "1,DAMAGE," . $parameter, 1);
+          WriteLog(CardLink($parameter, $parameter) . " deals 1 damage.");
+        }
+        else {
+          WriteLog("The card was put on the bottom of your deck.");
+          array_push($deck, array_shift($deck));
+        }
+      }
+      break;
+      case "DYN217":
+        MyDrawCard();
+        DestroyAuraUniqueID($player, $uniqueID);
+        WriteLog(CardLink($parameter, $parameter) . " draw a card and is destroyed.");
+        break;
     default:
       break;
   }
@@ -636,8 +1034,9 @@ function FinalizeAction()
       }
     }
   } else if ($turn[0] == "A") {
-    $turn[0] = "D";
-    $currentPlayer = $defPlayer;
+    //This code would switch to the defense player after resolving an attack reaction if the rules ever change to that
+    //$turn[0] = "D";
+    //$currentPlayer = $defPlayer;
     $turn[2] = "";
   } else if ($turn[0] == "D") {
     $turn[0] = "A";
@@ -693,25 +1092,6 @@ function TopDeckToArsenal($player)
   WriteLog("The top card of player " . $player . "'s deck was put in their arsenal.");
 }
 
-function DefenderArsenalToBottomOfDeck()
-{
-  global $defPlayer;
-  ArsenalToBottomDeck($defPlayer);
-}
-
-function ArsenalToBottomDeck($player)
-{
-  //TODO: Allow to choose arsenal slot
-  $arsenal = &GetArsenal($player);
-  if (count($arsenal) == 0) return;
-  $index = 0;
-  AddBottomDeck($arsenal[$index], $player, "ARS");
-  for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
-    unset($arsenal[$i]);
-  }
-  $arsenal = array_values($arsenal);
-}
-
 function DestroyArsenal($player)
 {
   $arsenal = &GetArsenal($player);
@@ -751,7 +1131,7 @@ function OptMain($amount)
   PlayerOpt($mainPlayer, $amount);
 }
 
-function PlayerOpt($player, $amount)
+function PlayerOpt($player, $amount, $optKeyword = true)
 {
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPX," . $amount);
   AddDecisionQueue("MULTIREMOVEDECK", $player, "-", 1);
@@ -764,7 +1144,7 @@ function DiscardRandom($player = "", $source = "")
   if ($player == "") $player = $currentPlayer;
   $hand = &GetHand($player);
   if (count($hand) == 0) return "";
-  $index = rand() % count($hand);
+  $index = GetRandom() % count($hand);
   $discarded = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
@@ -780,27 +1160,36 @@ function CardDiscarded($player, $discarded, $source = "")
   global $CS_Num6PowDisc, $mainPlayer;
   if (AttackValue($discarded) >= 6) {
     $character = &GetPlayerCharacter($player);
-    if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001") && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
+    if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001" || SearchCurrentTurnEffects("WTR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("WTR002-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("RVD001-SHIYANA", $mainPlayer)) && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
+    }
+    $index = FindCharacterIndex($player, "DYN006");
+    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
+      AddLayer("TRIGGER", $player, $character[$index]);
+    }
+    if (SearchCurrentTurnEffects("DYN009", $player)) {
+      $discard = &GetDiscard($player);
+      $found = -1;
+      for ($i = 0; $i < count($discard) && $found == -1; $i += DiscardPieces()) {
+        if ($discard[$i] == $discarded) $found = $i;
+      }
+      RemoveGraveyard($player, $found);
+      BanishCardForPlayer($discarded, $player, "GY", "-", $player);
+      AddLayer("TRIGGER", $player, "DYN009");
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
   if ($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
-    WriteLog("Massacre Intimidated because it was discarded by a Brute attack action card..");
-    Intimidate();
+    WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
+    AddLayer("TRIGGER", $mainPlayer, $discarded);
+  }
+  if($discarded == "DYN008") {
+    AddLayer("TRIGGER", $player, $discarded);
+  }
+  if($discarded == "DYN010" || $discarded == "DYN011" || $discarded == "DYN012"){
+    AddLayer("TRIGGER", $player, $discarded);
   }
 }
-
-function DefDiscardRandom()
-{
-  global $defPlayer;
-  $hand = &GetHand($defPlayer);
-  if (count($hand) == 0) return;
-  $index = rand() % count($hand);
-  AddGraveyard($hand[$index], $defPlayer, "HAND");
-  unset($hand[$index]);
-  $hand = array_values($hand);
-};
 
 function Intimidate()
 {
@@ -811,7 +1200,7 @@ function Intimidate()
     WriteLog("Intimidate did nothing because there are no cards in hand.");
     return;
   } //Nothing to do if they have no hand
-  $index = rand() % count($hand);
+  $index = GetRandom() % count($hand);
   BanishCardForPlayer($hand[$index], $defPlayer, "HAND", "INT");
   unset($hand[$index]);
   $hand = array_values($hand);
@@ -854,6 +1243,17 @@ function RemoveFromArsenal($player, $index)
   return $cardID;
 }
 
+function RemoveAura($player, $index)
+{
+  $auras = &GetAuras($player);
+  $cardID = $auras[$index];
+  for ($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
+    unset($auras[$i]);
+  }
+  $auras = array_values($auras);
+  return $cardID;
+}
+
 function DestroyFrozenArsenal($player)
 {
   $arsenal = &GetArsenal($player);
@@ -861,5 +1261,48 @@ function DestroyFrozenArsenal($player)
     if ($arsenal[$i + 4] == "1") {
       DestroyArsenal($player);
     }
+  }
+}
+
+function isAttackGreaterThanTwiceBasePower()
+{
+  global $currentPlayer, $combatChainState, $CCS_CachedTotalAttack, $combatChain, $currentTurnEffects;
+  if (count($combatChain) > 0 && CardType($combatChain[0]) == "W" && $combatChainState[$CCS_CachedTotalAttack] > (AttackValue($combatChain[0]) * 2)) return true;
+  $character = &GetPlayerCharacter($currentPlayer);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if (cardType($character[$i]) != "W") continue;
+    $attackType = CardType($character[$i]);
+    $baseAttack = AttackValue($character[$i]);
+    $buffedAttack = $baseAttack + $character[$i + 3] + MainCharacterAttackModifiers($i, true) + AttackModifier($character[$i]);
+    for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnPieces()) {
+      if (IsCombatEffectActive($currentTurnEffects[$j]) && !IsCombatEffectLimited($j)) {
+        if ($currentTurnEffects[$j + 1] == $currentPlayer) {
+          $attack = EffectAttackModifier($currentTurnEffects[$j]);
+          $canGainAttack = !SearchCurrentTurnEffects("CRU035", $currentPlayer) || $attackType != "AA";
+          $snagActive = SearchCurrentTurnEffects("CRU182", $currentPlayer) && $attackType == "AA";
+          if (($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$j] == $character[$i])) {
+            $buffedAttack += $attack;
+          }
+        }
+      }
+    }
+    if ($buffedAttack > $baseAttack * 2) return true;
+  }
+  return false;
+}
+
+function HasNegativeCounters($array, $index)
+{
+  if ($array[$index + 4] < 0) return true;
+  return false;
+}
+
+function HasEnergyCounters($array, $index)
+{
+  switch ($array[$index]) {
+    case "WTR150": case "UPR166":
+      return $array[$index + 2] > 0;
+    default:
+      return false;
   }
 }

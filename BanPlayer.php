@@ -11,13 +11,14 @@ if (!isset($_SESSION["useruid"])) {
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "PvtVoid") {
+if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "PvtVoid" && $useruid != "Star_Seraph") {
   echo ("You must log in to use this page.");
   exit;
 }
 
 $playerToBan = TryGET("playerToBan", "");
 $ipToBan = TryGET("ipToBan", "");
+$playerNumberToBan = TryGET("playerNumberToBan", "");
 
 if ($playerToBan != "") {
   file_put_contents('./HostFiles/bannedPlayers.txt', $playerToBan . "\r\n", FILE_APPEND | LOCK_EX);
@@ -25,7 +26,8 @@ if ($playerToBan != "") {
 if ($ipToBan != "") {
   $gameName = $ipToBan;
   include './MenuFiles/ParseGamefile.php';
-  file_put_contents('./HostFiles/bannedIPs.txt', $hostIP . "\r\n", FILE_APPEND | LOCK_EX);
+  $ipToBan = ($playerNumberToBan == "1" ? $hostIP : $joinerIP);
+  file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
 }
 
 

@@ -1,5 +1,7 @@
 <?php
 
+use SendGrid\Mail\Mail;
+
 // Check for empty input signup
 function emptyInputSignup($username, $email, $pwd, $pwdRepeat) {
 	if (empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat)) {
@@ -13,7 +15,7 @@ function emptyInputSignup($username, $email, $pwd, $pwdRepeat) {
 
 // Check invalid username
 function invalidUid($username) {
-	if (!preg_match("/^[a-zA-Z0-9]*$/", $username)) {
+	if(!ctype_alnum($username)) {
 		$result = true;
 	}
 	else {
@@ -102,8 +104,9 @@ function getUInfo($conn, $username) {
 }
 
 // Insert new user into database
-function createUser($conn, $username, $email, $pwd) {
-	$conn = GetDBConnection();
+function createUser($conn, $username, $email, $pwd, $reportingServer=false) {
+	if($reportingServer) $conn = GetReportingDBConnection();
+	else $conn = GetDBConnection();
   $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);
@@ -175,12 +178,21 @@ function loginUser($username, $pwd, $rememberMe) {
 	}
 	elseif ($checkPwd === true) {
 		if(session_status() !== PHP_SESSION_ACTIVE) session_start();
-		$_SESSION["userid"] = $uidExists["usersID"];
+		$_SESSION["userid"] = $uidExists["usersId"];
 		$_SESSION["useruid"] = $uidExists["usersUid"];
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
 		$patreonAccessToken = $uidExists["patreonAccessToken"];
-		PatreonLogin($patreonAccessToken);
+		$_SESSION["userKarma"] = $uidExists["usersKarma"];
+		$_SESSION["greenThumb"] = $uidExists["greenThumbs"];
+		$_SESSION["redThumb"] = $uidExists["redThumbs"];
+
+		try {
+			PatreonLogin($patreonAccessToken);
+		} catch (\Exception $e) {
+
+		}
+
 
 		if($rememberMe)
 		{
@@ -188,6 +200,7 @@ function loginUser($username, $pwd, $rememberMe) {
 			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
 			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
+		session_write_close();
 
 		mysqli_close($conn);
 		header("location: ../MainMenu.php?error=none");
@@ -244,13 +257,14 @@ function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken FROM users WHERE rememberMeToken='$token'";
+	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, usersKarma FROM users WHERE rememberMeToken='$token'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		$row = mysqli_fetch_array($data, MYSQLI_NUM);
 		mysqli_stmt_close($stmt);
+		if(session_status() !== PHP_SESSION_ACTIVE) session_start();
 		if($row != null && count($row) > 0)
 		{
 			$_SESSION["userid"] = $row[0];
@@ -258,13 +272,20 @@ function loginFromCookie()
 			$_SESSION["useremail"] = $row[2];
 			$patreonAccessToken = $row[3];
 			$patreonRefreshToken = $row[4];
-			PatreonLogin($patreonAccessToken);
+			$_SESSION["userKarma"] = $row[5];
+			try {
+				PatreonLogin($patreonAccessToken);
+			} catch (\Exception $e) {
+
+			}
 		}
 		else {
 			unset($_SESSION["userid"]);
 			unset($_SESSION["useruid"]);
 			unset($_SESSION["useremail"]);
+			unset($_SESSION["userKarma"]);
 		}
+		session_write_close();
 	}
 	mysqli_close($conn);
 }
@@ -282,6 +303,8 @@ function storeRememberMeCookie($conn, $uuid, $cookie)
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 {
 	$conn = GetDBConnection();
+	$deckName = implode("", explode("\"", $deckName));
+	$deckName = implode("", explode("'", $deckName));
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero) VALUES (" . $values. ");";
 	$stmt = mysqli_stmt_init($conn);
@@ -294,8 +317,9 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 
 function LoadFavoriteDecks($userID)
 {
+	if($userID == "") return "";
 	$conn = GetDBConnection();
-	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=$userID";
+	$sql = "SELECT decklink, name, hero from favoritedeck where usersId='$userID'";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -310,14 +334,23 @@ function LoadFavoriteDecks($userID)
 	return $output;
 }
 
+//Challenge ID 1 = sigil of solace blue
+//Challenge ID 2 = Talishar no dash
+//Challenge ID 3 = Moon Wish
 function logCompletedGameStats() {
 	global $winner, $currentTurn, $gameName;//gameName is assumed by ParseGamefile.php
-	global $p1id, $p2id;
+	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
+	global $p1deckbuilderID, $p2deckbuilderID;
 	$loser = ($winner == 1 ? 2 : 1);
-	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck";
-	$values = "?, ?, ?, ?, ?";
+	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
+	$values = "?, ?, ?, ?, ?, ?, ?";
 	$winnerDeck = file_get_contents("./Games/" . $gameName . "/p" . $winner . "Deck.txt");
 	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
+	$winHero = &GetPlayerCharacter($winner);
+	$loseHero = &GetPlayerCharacter($loser);
+
+	$conn = GetDBConnection();
+
 	if($p1id != "" && $p1id != "-")
 	{
 		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
@@ -329,19 +362,214 @@ function logCompletedGameStats() {
 		$values .= ", " . $p2id;
 	}
 
-	$conn = GetDBConnection();
+	$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
+	$stmt = mysqli_stmt_init($conn);
+	$gameResultID = 0;
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "sssssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck, GetHealth($winner), $firstPlayer);
+		mysqli_stmt_execute($stmt);
+		$gameResultID = mysqli_insert_id($conn);
+		mysqli_stmt_close($stmt);
+	}
 
-  $sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
+	if($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, ($winner == 1 ? 1 : 0));
+	if($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, ($winner == 2 ? 1 : 0));
+
+	$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
+	$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
+	$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
+	$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
+
+	if(!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
+	if(!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
+	if(!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+
+	mysqli_close($conn);
+}
+
+function LogChallengeResult($conn, $gameResultID, $playerID, $result)
+{
+	WriteLog("Writing challenge result for player " . $playerID);
+	$challengeId = 3;
+	$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
-		$winHero = &GetPlayerCharacter($winner);
-		$loseHero = &GetPlayerCharacter($loser);
-		mysqli_stmt_bind_param($stmt, "sssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck);
+		mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $playerID, $result);//Challenge ID 1 = sigil of solace blue
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
-	mysqli_close($conn);
+}
 
+
+function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
+{
+	global $fabDBToken, $fabDBSecret, $gameName, $p1deckbuilderID, $p2deckbuilderID;
+	if(!str_contains($decklink, "fabdb.net")) return;
+
+	$linkArr = explode("/", $decklink);
+	$slug = array_pop($linkArr);
+
+	$url = "https://api.fabdb.net/game/results/" . $slug;
+	$ch = curl_init($url);
+	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
+	$payloadArr = json_decode($payload, true);
+	$payloadArr["time"] = microtime();
+	$payloadArr["hash"] = hash("sha512", $fabDBSecret . $payloadArr["time"]);
+	$payloadArr["player"] = $player;
+	$payloadArr["user"] = ($player == 1 ? $p1deckbuilderID : $p2deckbuilderID);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloadArr));
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+
+	$headers = array(
+		"Authorization: Bearer " . $fabDBToken,
+	);
+
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+	$result = curl_exec($ch);
+	$information = curl_getinfo($ch);
+	curl_close($ch);
+}
+
+function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID)
+{
+	global $FaBraryKey, $gameName;
+	$url = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/results";
+	$ch = curl_init($url);
+	$payloadArr = [];
+	$payloadArr['gameID'] = $gameID;
+	$payloadArr['gameName'] = $gameName;
+	$payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID));
+	$payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+	$headers = array(
+		"x-api-key: " . $FaBraryKey,
+		"Content-Type: application/json",
+	);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+	$result = curl_exec($ch);
+	curl_close($ch);
+}
+
+function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $opposingHero="", $gameName="", $deckbuilderID="")
+{
+	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $firstPlayer;
+	$DeckLink = explode("/", $DeckLink);
+	$DeckLink = $DeckLink[count($DeckLink)-1];
+	$deckAfterSB = explode("\r\n", $deckAfterSB);
+	if(count($deckAfterSB) == 1) return;
+	$deckAfterSB = $deckAfterSB[1];
+	$deck = [];
+	if($gameID != "") $deck["gameId"] = $gameID;
+	if($gameName != "") $deck["gameName"] = $gameName;
+	$deck["deckId"] = $DeckLink;
+	$deck["turns"] = intval($currentTurn);
+	$deck["result"] = ($player == $winner ? 1 : 0);
+	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
+	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
+	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
+	$deck["cardResults"] = [];
+	$deckAfterSB = explode(" ", $deckAfterSB);
+	$deduplicatedDeck = [];
+	for($i=0; $i<count($deckAfterSB); ++$i)
+	{
+		if($i > 0 && $deckAfterSB[$i] == $deckAfterSB[$i-1]) continue;//Don't send duplicates
+		array_push($deduplicatedDeck, $deckAfterSB[$i]);
+	}
+	for($i=0; $i<count($deduplicatedDeck); ++$i)
+	{
+		$deck["cardResults"][$i] = [];
+		$deck["cardResults"][$i]["cardId"] = $deduplicatedDeck[$i];
+		$deck["cardResults"][$i]["played"] = 0;
+		$deck["cardResults"][$i]["blocked"] = 0;
+		$deck["cardResults"][$i]["pitched"] = 0;
+	}
+	$cardStats = &GetCardStats($player);
+	for($i=0; $i<count($cardStats); $i+=CardStatPieces())
+	{
+		for($j=0; $j<count($deck["cardResults"]); ++$j)
+		{
+			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i])
+			{
+				$deck["cardResults"][$j]["played"] = $cardStats[$i+$CardStats_TimesPlayed];
+				$deck["cardResults"][$j]["blocked"] = $cardStats[$i+$CardStats_TimesBlocked];
+				$deck["cardResults"][$j]["pitched"] = $cardStats[$i+$CardStats_TimesPitched];
+				break;
+			}
+		}
+	}
+	return json_encode($deck);
+}
+
+function UpdateKarma($p1value=0, $p2value=0)
+{
+	global $p1id, $p2id;
+
+	$conn = GetDBConnection();
+	$stmt = "";
+	if($p1id != "" && $p1id != "-")
+	{
+		/*
+		if($p1value < 0) {
+			$sql = "SELECT usersKarma FROM users WHERE usersid='$p1id'";
+			$result = mysqli_query($conn, $sql);
+			$result = $result->fetch_array();
+			$p1karma = intval($result[0]);
+			if ($p1karma <= 10) $p1value = $p1value - ($p1karma + $p1value);
+		}
+		*/
+		$sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+		}
+	}
+	if($p2id != "" && $p2id != "-")
+	{
+		/*
+		if ($p2value < 0) {
+			$sql = "SELECT usersKarma FROM users WHERE usersid='$p2id'";
+			$result = mysqli_query($conn, $sql);
+			$result = $result->fetch_array();
+			$p2karma = intval($result[0]);
+			if ($p2karma <= 10) $p2value = $p2value - ($p2karma + $p2value);
+		}
+		*/
+		$sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'"; // SET field = IF (condition, new value, field)
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+		}
+	}
+	if($stmt != ""){
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
+function AddRating($player, $rating)
+{
+	global $p1id, $p2id;
+
+	$dbID = ($player == 1 ? $p1id : $p2id);
+
+	if($dbID != "" && $dbID != "-")
+	{
+		$conn = GetDBConnection();
+		$sql = "UPDATE users SET " . $rating . "Thumbs=" . $rating . "Thumbs+1 WHERE usersid='$dbID'";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_execute($stmt);
+			mysqli_stmt_close($stmt);
+		}
+		mysqli_close($conn);
+	}
 }
 
 function SavePatreonTokens($accessToken, $refreshToken)
@@ -356,4 +584,124 @@ function SavePatreonTokens($accessToken, $refreshToken)
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
+}
+
+function LoadBadges($userID)
+{
+	if($userID == "") return "";
+	$conn = GetDBConnection();
+	$sql = "SELECT pb.playerId,pb.badgeId,pb.intVariable,bs.topText,bs.bottomText,bs.image,bs.link FROM playerbadge pb join badges bs on bs.badgeId = pb.badgeId WHERE pb.playerId = '$userID';";
+	$stmt = mysqli_stmt_init($conn);
+	$output = [];
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+	  while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+			for($i=0;$i<7;++$i) array_push($output, $row[$i]);
+		}
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	return $output;
+}
+
+function GetMyAwardableBadges($userID)
+{
+	if($userID == "") return "";
+	$output = [];
+	$conn = GetDBConnection();
+	$sql = "select * from userassignablebadge where playerId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $userID);
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+	  while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+			array_push($output, $row[0]);
+		}
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	return $output;
+}
+
+function AwardBadge($userID, $badgeID)
+{
+	if($userID == "") return "";
+	$conn = GetDBConnection();
+	$sql = "insert into playerbadge (playerId, badgeId, intVariable) values (?, ?, 1) ON DUPLICATE KEY UPDATE intVariable = intVariable + 1;";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $userID, $badgeID);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
+function SaveSetting($playerId, $settingNumber, $value)
+{
+	if($playerId == "") return;
+	$conn = GetDBConnection();
+	$sql = "insert into savedsettings (playerId, settingNumber, settingValue) values (?, ?, ?) ON DUPLICATE KEY UPDATE settingValue = VALUES(settingValue);";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "sss", $playerId, $settingNumber, $value);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+}
+
+function LoadSavedSettings($playerId)
+{
+	if($playerId == "") return [];
+	$output = [];
+	$conn = GetDBConnection();
+	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $playerId);
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+			array_push($output, $row[0]);
+			array_push($output, $row[1]);
+		}
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	return $output;
+}
+
+function SendEmail($userEmail, $url) {
+  include "../APIKeys/APIKeys.php";
+  require '../vendor/autoload.php';
+
+  $email = new Mail();
+  $email->setFrom("no-reply@fleshandbloodonline.com", "No-Reply");
+  $email->setSubject("Talishar Password Reset");
+  $email->addTo($userEmail);
+  $email->addContent(
+      "text/html",
+      "
+        <p>
+          We recieved a password reset request. The link to reset your password is below.
+          If you did not make this request, you can ignore this email
+        </p>
+        <p>
+          Here is your password reset link: </br>
+          <a href=$url>Password Reset</a>
+        </p>
+      "
+  );
+  $sendgrid = new \SendGrid($sendgridKey);
+  try {
+      $response = $sendgrid->send($email);
+      print $response->statusCode() . "\n";
+      print_r($response->headers());
+      print $response->body() . "\n";
+  } catch (Exception $e) {
+      echo 'Caught exception: '. $e->getMessage() ."\n";
+  }
 }

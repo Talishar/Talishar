@@ -135,7 +135,7 @@ function RVDPlayAbility($cardID)
       return "Gain 1 resource.";
 
     case "RVD013":
-      WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+      WriteLog(CardLink($cardID, $cardID) . " draw a card.");
       MyDrawCard();
       $card = DiscardRandom();
       $rv = "Discarded " . CardLink($card, $card);
@@ -159,11 +159,11 @@ function ChiefRukutanAbility($player, $index)
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index + 3];
   if ($arsenal[$index + 3] == 2) {
-    $log .= " and searchs for an Alpha Rampage card";
+    $log .= " and searches for an Alpha Rampage card";
     RemoveArsenal($player, $index);
     BanishCardForPlayer("RVD007", $player, "ARS", "-");
     AddDecisionQueue("FINDINDICES", $player, "DECKCARD,WTR006");
-    AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+    AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
     AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
     AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
   }

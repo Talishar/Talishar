@@ -124,7 +124,7 @@
     }
   }
 
-  function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid)
+  function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -137,12 +137,16 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Makes your next Illusionist attack action card you play lose Phantasm.";
       case "MON091":
+        $rv = "";
+      if (!IsAllyAttackTarget()) {
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
         AddDecisionQueue("DRAW", $otherPlayer, "-", 1);
-        return "Lets you put a card from your opponent's hand on the bottom of their deck.";
+        $rv .= "Lets you put a card from your opponent's hand on the bottom of their deck.";
+      }
+      return $rv;
       case "MON092": PlayAura("MON104", $currentPlayer);
       case "MON093": PlayAura("MON104", $currentPlayer);
       case "MON094": PlayAura("MON104", $currentPlayer);
@@ -165,8 +169,10 @@
         MainDrawCard();
         break;
       case "MON007":
-        AddCurrentTurnEffect($cardID, $defPlayer);
-        AddNextTurnEffect($cardID, $defPlayer);
+        if (!IsAllyAttackTarget()) {
+          AddCurrentTurnEffect($cardID, $defPlayer);
+          AddNextTurnEffect($cardID, $defPlayer);
+        }
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
         break;
       case "MON008": case "MON009": case "MON010": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
@@ -215,6 +221,10 @@
       case "UPR027": case "UPR028": case "UPR029": return true;
       case "UPR153": return true;
       case "UPR551": return true;
+      case "DYN215": case "DYN216":
+      case "DYN224": case "DYN225": case "DYN226": 
+      case "DYN227": case "DYN228": case "DYN229": 
+        return true;
       default: return false;
     }
   }
@@ -223,7 +233,7 @@
   {
     global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     if(count($combatChain) == 0) return false;
-    if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
+    if((SearchCurrentTurnEffects("MON090", $mainPlayer) && CardType($combatChain[0] == "A")) || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("UPR155", "UPR156", "UPR157", $mainPlayer)) return true;
@@ -231,6 +241,9 @@
     {
       $allies = &GetAllies($mainPlayer);
       if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
+      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN002") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR415") return true;
+      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR416") return true;
+      elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR413") return true;
     }
     return HasPhantasm($combatChain[0]);//TODO: Incorporate things that can gain or lose phantasm
   }
@@ -247,8 +260,8 @@
   function DoesBlockTriggerPhantasm($index)
   {
     global $combatChain, $mainPlayer, $defPlayer;
-    if(CardType($combatChain[$index]) != "AA") return;
-    if(ClassContains($combatChain[$index], "ILLUSIONIST", $defPlayer)) return;
+    if(CardType($combatChain[$index]) != "AA") return false;
+    if(ClassContains($combatChain[$index], "ILLUSIONIST", $defPlayer)) return false;
     $attackID = $combatChain[0];
     $av = AttackValue($combatChain[$index]);
     $origAV = $av;
@@ -262,7 +275,15 @@
   {
     global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     if(count($combatChain) == 0) return false;
+    $blockGreaterThan6 = false;
+    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+    {
+      if(DoesBlockTriggerPhantasm($i)) $blockGreaterThan6 = true;
+    }
+    if(!$blockGreaterThan6) return false;
     if(SearchCurrentTurnEffects("MON090", $mainPlayer) || SearchCurrentTurnEffects("EVR142", $mainPlayer) || SearchCurrentTurnEffects("UPR154", $mainPlayer) || SearchCurrentTurnEffects("UPR412", $mainPlayer)) { return false; }
+    return true;
+    /*
     if(SearchCurrentTurnEffectsForCycle("EVR150", "EVR151", "EVR152", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("MON095", "MON096", "MON097", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("UPR155", "UPR156", "UPR157", $mainPlayer)) return true;
@@ -271,21 +292,19 @@
       $allies = &GetAllies($mainPlayer);
       if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "UPR043")) return true;
     }
-    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
-    {
-      if(DoesBlockTriggerPhantasm($i)) return true;
-    }
     return false;
+    */
   }
 
   function PhantasmLayer()
   {
-    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn;
+    global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers;
     if(IsPhantasmStillActive())
     {
       $attackID = $combatChain[0];
+      WriteLog(CardLink($attackID, $attackID) . " is destroyed by phantasm.");
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($combatChain[0]), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
-      if(ClassContains($attackID, "ILLUSIONIST", $defPlayer))
+      if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer))
       {
         GhostlyTouchPhantasmDestroy();
       }
@@ -300,6 +319,7 @@
     else {
       $turn[0] = "A";
       $currentPlayer = $mainPlayer;
+      for($i=0; $i<LayerPieces(); ++$i) array_shift($layers);//Get rid of defense step layer
     }
   }
 
@@ -335,14 +355,14 @@
     --$arsenal[$index+2];
     ++$arsenal[$index+3];
     Draw($player);
-    $log = CardLink("MON404","MON404") . " drew a card";
+    $log = CardLink("MON404","MON404") . " draw a card";
     if($arsenal[$index+3] == 3)
     {
       $log .= " and searched for a specialization card";
       RemoveArsenal($player, $index);
       BanishCardForPlayer("MON404", $player, "ARS", "-");
       AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
     }

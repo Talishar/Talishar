@@ -1,11 +1,3 @@
-<head>
-  <meta charset="utf-8">
-  <title>Flesh and Blood Online</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/style2.css">
-</head>
-
 <?php
 ob_start();
 include "WriteLog.php";
@@ -13,13 +5,18 @@ include "CardDictionary.php";
 include "HostFiles/Redirector.php";
 include "Libraries/UILibraries2.php";
 include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/PlayerSettings.php";
 ob_end_clean();
 
 session_start();
 
 $gameName = $_GET["gameName"];
 $playerID = $_GET["playerID"];
-$authKey = $_GET["authKey"];
+if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+else if (isset($_GET["authKey"])) $authKey = $_GET["authKey"];
+
+session_write_close();
 
 if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
   header("Location: " . $redirectPath . "/MainMenu.php"); //If the game file happened to get deleted from inactivity, redirect back to the main menu instead of erroring out
@@ -41,7 +38,8 @@ $theirName = ($playerID == 1 ? $p2uid : $p1uid);
 
 if ($gameStatus == $MGS_GameStarted) {
   $authKey = ($playerID == 1 ? $p1Key : $p2Key);
-  header("Location: " . $redirectPath . "/NextTurn3.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  //header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
   exit;
 }
 
@@ -55,9 +53,17 @@ echo '<title>Game Lobby</title> <meta http-equiv="content-type" content="text/ht
 echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
 ?>
 
+<head>
+  <meta charset="utf-8">
+  <title>Talishar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style4.css">
+</head>
+
 <script>
   function copyText() {
-    gameLink = document.getElementById("gameLink");
+    var gameLink = document.getElementById("gameLink");
     gameLink.select();
     gameLink.setSelectionRange(0, 99999);
 
@@ -80,13 +86,14 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
   }
 
   h1 {
-    margin-top: 6px;
+    margin-top: 10px;
     text-align: center;
     width: 100%;
     text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
   }
 
   h2 {
+    margin-top: 10px;
     text-align: center;
     width: 100%;
     text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
@@ -103,23 +110,19 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
   <div id="cardDetail" style="display:none; position:absolute;"></div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:350px;
-background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid #1a1a1a;
-border-radius: 5px;">
+  <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
     <?php
     $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
     echo ("<h2>$theirDisplayName Hero</h2>");
 
-    $otherHero = "cardBack";
+    $otherHero = "CardBack";
     echo ("<div id='oppHero' style='padding-left:5%;'>");
     echo (Card($otherHero, "concat", 250, 0, 0));
     echo ("</div>");
     ?>
   </div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:350px; background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <?php
     $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
@@ -131,6 +134,10 @@ border: 2px solid #1a1a1a; border-radius: 5px;">
 
     echo ("<div style='padding-left:5%;'>");
     echo (Card($character[0], "concat", 250, 0, 1));
+    echo ("</div>");
+
+    echo ("<div style='text-align:center; margin-top: 2px;'>");
+    echo ("<a href='MainMenu.php'><button class='GameLobby_Button' style='display:inline; cursor:pointer;'>Leave Lobby</button></a>");
     echo ("</div>");
 
     $weapons = "";
@@ -177,16 +184,36 @@ border: 2px solid #1a1a1a; border-radius: 5px;">
     ?>
   </div>
 
-  <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:290px; height:73px;
-background-color:rgba(74, 74, 74, 0.9);
-border: 2px solid #1a1a1a;
-border-radius: 5px;" onclick="TabClick('EQUIP');">
+  <div id="matchupTab" style="position:absolute; z-index:1; top:20px; right:10px; width:160px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+    <h1>Matchups</h1>
+  </div>
+  <div id="matchups" style="position:absolute; text-align: center; z-index:1; top:95px; right:10px; bottom:3%; width:160px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+
+    <?php
+
+    $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
+    $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
+    if ($matchups != NULL) {
+      for ($i = 0; $i < count($matchups); ++$i) {
+        echo ("<div style='cursor:pointer; padding:5px; font-size:24px;'>");
+        $matchuplink = $redirectPath . "/JoinGameInput.php?gameName=" . $gameName . "&playerID=" . $playerID . "&fabdb=" . $decklink . "&matchup=" . $matchups[$i]->{"matchupId"};
+        echo ("<a href='" . $matchuplink . "'>");
+        echo ("<input type='button' value='" . $matchups[$i]->{"name"} . "' />");
+        echo ("</a>");
+        echo ("</div>");
+      }
+    }
+
+    ?>
+
+  </div>
+
+  <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:280px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
 
     <h1>Your Equipment</h1>
   </div>
 
-  <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:20px; bottom:3%;
-background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
@@ -215,21 +242,19 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     </div>
   </div>
 
-  <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:933px; width:290px; height:73px;
-background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
+  <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:922px; width:280px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
 
     <?php
     echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
     ?>
   </div>
 
-  <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:639px; right:20px; bottom:3%;
-background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
+  <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
 
     <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
     <?php
-    $cardSize = 145;
+    $cardSize = 110;
     $count = 0;
     sort($deck);
     for ($i = 0; $i < count($deck); ++$i) {
@@ -307,8 +332,8 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
       var deckDisplay = document.getElementById("deckDisplay");
       equipDisplay.style.display = tab == "EQUIP" ? "block" : "none";
       deckDisplay.style.display = tab == "DECK" ? "block" : "none";
-      equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(74, 74, 74, 0.8)" : "rgba(196, 196, 196, 0.7)";
-      deckTab.style.backgroundColor = tab == "DECK" ? "rgba(74, 74, 74, 0.8)" : "rgba(196, 196, 196, 0.7)";
+      equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
+      deckTab.style.backgroundColor = tab == "DECK" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
     }
 
     function CardClick(id) {
@@ -423,7 +448,7 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
           }
         }
       };
-      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate, true);
+      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>", true);
       xmlhttp.send();
     }
 
@@ -447,7 +472,7 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
 
   function DisplayEquipRow($equip, $equipSB, $name)
   {
-    $cardSize = 145;
+    $cardSize = 110;
     $count = 0;
     if ($equip != "" || count($equipSB) > 0) echo ("<tr>");
     if ($equip != "") {
@@ -474,7 +499,7 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
 
   function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
   {
-    $cardSize = 145;
+    $cardSize = 110;
     $count = 0;
     if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr>");
     if ($weapon1 != "") {
@@ -487,6 +512,9 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
       ++$count;
     }
     if ($weapon2 != "") {
+      if (HasReverseArt($weapon1) && $weapon2 == $weapon1) {
+        $weapon2 = ReverseArt($weapon1);
+      }
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
@@ -497,6 +525,11 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     }
     echo ("<tr>");
     for ($i = 0; $i < count($weaponSB); ++$i) {
+      if (isset($weaponSB[$i + 1])) {
+        if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
+          $weaponSB[$i + 1] = ReverseArt($weaponSB[$i]);
+        }
+      }
       $id = $name . "-" . $count;
       echo ("<td>");
       echo ("<div onclick='CardClick(\"" . $id . "\")'>");
@@ -510,6 +543,46 @@ background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius
     if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</tr>");
   }
 
+  function HasReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return true;
+      case "CRU004":
+        return true;
+      case "CRU051":
+        return true;
+      case "CRU079":
+        return true;
+      case "DYN069":
+        return true;
+      case "DYN115":
+        return true;
+      default:
+        return false;
+        break;
+    }
+  }
+
+  function ReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return "CRU049";
+      case "CRU004":
+        return "CRU005";
+      case "CRU051":
+        return "CRU052";
+      case "CRU079":
+        return "CRU080";
+      case "DYN069":
+        return "DYN070";
+      case "DYN115":
+        return "DYN116";
+      default:
+        break;
+    }
+  }
   ?>
 
   <?php

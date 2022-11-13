@@ -30,20 +30,46 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
 {
   $char = explode(",", $playerCharacter);
   $numHands = 0;
+  $numEquip = 0;
   for ($i = 0; $i < count($char); ++$i) {
     if (CardSubType($char[$i]) == "Off-Hand") ++$numHands;
     else if (CardType($char[$i]) == "W") {
       if (Is1H($char[$i])) ++$numHands;
       else $numHands += 2;
     }
+    else if (CardType($char[$i]) == "E") ++$numEquip;
   }
-  if ($numHands > 2) {
-    WriteLog("Unable to submit player " . $playerID . "'s deck. $numHands of weapons currently equipped.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  if ($numHands < 1) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. " . $numHands . " weapon currently equipped.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
+  if ($numHands > 2) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. " . $numHands . " weapons currently equipped.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    exit;
+  }
+
   $playerDeck = explode(",", $playerDeck);
-  for ($i = count($playerDeck) - 1; $i >= 0; --$i) {
+  $deckCount = count($playerDeck);
+  if ($deckCount < 60 && ($format == "cc" || $format == "compcc")) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    exit;
+  }
+  if ($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    exit;
+  }
+  /*
+  if ($numEquip < 1) {
+    WriteLog("Unable to submit player " . $playerID . "'s deck. $numEquip equipment pieces are equipped.");
+    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    exit;
+  }
+  */
+  for ($i = $deckCount - 1; $i >= 0; --$i) {
     $cardType = CardType($playerDeck[$i]);
     if ($cardType == "" || $cardType == "C" || $cardType == "E" || $cardType == "W") unset($playerDeck[$i]);
   }
@@ -64,7 +90,7 @@ WriteGameFile();
 GamestateUpdated($gameName);
 
 if ($playerID == 1) {
-  header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID&authKey=$p1Key");
+  header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
 } else {
-  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID&authKey=$authKey");
+  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
 }

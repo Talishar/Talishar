@@ -11,13 +11,13 @@
       case "ARC004": return 1;
       case "ARC010":
         $abilityType = GetResolvedAbilityType($cardID);
-          return count($combatChain) > 0 ? 0 : 1;
+        return count($combatChain) > 0 ? 0 : 1;
       case "ARC017":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "ARC018":
-        $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
+        $abilityType = GetResolvedAbilityType($cardID);
+        return count($combatChain) > 0 ? 0 : 1;
       case "ARC040": return 1;
       case "ARC077": return 2;
       case "ARC078": return 2 + NumRunechants($currentPlayer);
@@ -49,10 +49,11 @@
         return count($combatChain) > 0 && ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer) && CardSubType($combatChain[0]) == "Pistol" && $items[$index + 1] > 0 ? "AR" : "A";
       case "ARC017":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return ($items[$index + 1] > 0 ? "I" : "A");
+        if (isset($items[$index + 1])) return ($items[$index + 1] > 0 ? "I" : "A");
+        else return "A";
       case "ARC018":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return ($items[$index + 1] > 0 ? "AR" : "A");
+        return (count($combatChain) > 0 && $items[$index + 1] > 0 ? "AR" : "A");
       case "ARC019": return "A";
       case "ARC035": return "I";
       case "ARC037": return "A";
@@ -70,6 +71,7 @@
 
   function ARCHasGoAgain($cardID)
   {
+    global $currentPlayer, $CS_NumMoonWishPlayed;
     switch($cardID)
     {
       case "ARC006": return true;
@@ -92,7 +94,9 @@
       case "ARC203": case "ARC204": case "ARC205": return true;
       case "ARC206": case "ARC207": case "ARC208": return true;
       case "ARC209": case "ARC210": case "ARC211": return true;
+      case "ARC212": case "ARC213": case "ARC214": return GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0;
       case "ARC215": case "ARC216": case "ARC217": return true;
+      
       default: return false;
     }
   }
@@ -108,6 +112,9 @@
       case "ARC004": return true;
       case "ARC010":
         return count($combatChain) == 0;
+      case "ARC017":
+        $items = &GetItems($currentPlayer);
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
       case "ARC018":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? true : false);
@@ -152,14 +159,14 @@
 
 function ARCCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $CCS_AttackPlayedFrom, $currentPlayer;
+  global $combatChainState, $CCS_AttackPlayedFrom, $mainPlayer;
   switch ($cardID) {
     case "ARC011": case "ARC012": case "ARC013":
       return true;
     case "ARC019":
       return CardType($attackID) == "AA";
     case "ARC032": case "ARC033": case "ARC034":
-      return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $currentPlayer);
+      return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
     case "ARC038": case "ARC039":
       return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS"; //TODO: This is only close
     case "ARC042":
@@ -167,11 +174,11 @@ function ARCCombatEffectActive($cardID, $attackID)
     case "ARC047":
       return CardSubType($attackID) == "Arrow";
     case "ARC054": case "ARC055": case "ARC056":
-      return ClassContains($attackID, "RANGER", $currentPlayer) && CardType($attackID) == "AA";
+      return ClassContains($attackID, "RANGER", $mainPlayer) && CardType($attackID) == "AA";
     case "ARC057": case "ARC058": case "ARC059":
       return $cardID == $attackID;
     case "ARC091": case "ARC092": case "ARC093":
-      return ClassContains($attackID, "RUNEBLADE", $currentPlayer);
+      return ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "ARC153-1": case "ARC153-2": case "ARC153-3":
     case "ARC160-1": case "ARC160-3":
     case "ARC170-1": case "ARC171-1": case "ARC172-1":

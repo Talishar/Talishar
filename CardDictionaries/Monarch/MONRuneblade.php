@@ -25,7 +25,7 @@
       case "MON231": return "A";
       case "MON232": case "MON233": case "MON234": return "AA";
       case "MON235": case "MON236": case "MON237": return "AA";
-      case "MON406": return "M";
+      case "MON406": case "MON407": return "M";
       default: return "";
     }
   }
@@ -78,7 +78,7 @@
       case "MON231": case "MON232": case "MON235": return 1;
       case "MON233": case "MON236": return 2;
       case "MON234": case "MON237": return 3;
-      case "MON406": return 0;
+      case "MON407": return 0;
       default: return 0;
     }
   }
@@ -117,7 +117,7 @@
     }
   }
 
-  function MONRunebladePlayAbility($cardID, $from, $resourcesPaid)
+  function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_DynCostResolved;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -125,9 +125,9 @@
     switch($cardID)
     {
       case "MON153": case "MON154":
-        PlayAura("MON186", $currentPlayer);
+        PlayAura("MON186", $currentPlayer, 1, true);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Creates a Soul Shackle and gives your next Runeblade or Shadow action this turn go again.";
+        return "Creates a " . CardLink("MON186", "MON186") . " and gives your next Runeblade or Shadow action this turn go again.";
       case "MON158":
         AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
         AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
@@ -173,22 +173,23 @@
         if($from == "BANISH")
         {
           DealArcane(1, 0, "PLAYCARD", $cardID);
-          $rv = "Deals 1 arcane damage.";
         }
-        return $rv;
+        return "";
       case "MON183": case "MON184": case "MON185":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Deals 1 arcane damage to the next attack action card of certain cost.";
       case "MON229":
-        DealArcane(1, 0, "PLAYCARD", $cardID);
-        return "Deals 1 arcane damage.";
+        if (!IsAllyAttackTarget()) {
+          DealArcane(1, 0, "PLAYCARD", $cardID);
+        }
+        return "";
       case "MON230":
         GainResources($currentPlayer, 2);
         return "Gain 2 resources.";
       case "MON231":
         $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
         $numRevealed = 3 + $xVal;
-        WriteLog("Was played with X of " . $xVal . " and reveals " . $numRevealed . " cards.");
+        WriteLog(CardLink($cardID, $cardID) . " reveals " . $numRevealed . " cards.");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -201,10 +202,10 @@
         return "";
       case "MON232": case "MON233": case "MON234":
         DealArcane(2, 0, "PLAYCARD", $cardID);
-        return "Deals 2 arcane damage.";
+        return "";
       case "MON235": case "MON236": case "MON237":
         DealArcane(1, 0, "PLAYCARD", $cardID);
-        return "Deals 1 arcane damage.";
+        return "";
       default: return "";
     }
   }
@@ -251,7 +252,6 @@
     if(($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 1) || $type == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
     {
       DealArcane(1, 0, "PLAYCARD", "MON157");
-      WriteLog(CardLink("MON157", "MON157") . " deals 1 arcane damage.");
     }
   }
 
@@ -259,33 +259,30 @@
   {
     global $currentPlayer;
     WriteLog(CardLink("MON407", "MON407") . " deals 1 arcane damage to each player.");
-    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
-    AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
     DealArcane(1, 0, "ABILITY", "MON407", false, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
-    AddDecisionQueue("INCDQVAR", $currentPlayer, "0", 1);
+    AddDecisionQueue("LORDSUTCLIFFE", $currentPlayer, $index, 1);
     DealArcane(1, 0, "ABILITY", "MON407", false, 2);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
-    AddDecisionQueue("INCDQVAR", $currentPlayer, "0", 1);
-    AddDecisionQueue("LORDSUTCLIFFE", $currentPlayer, $index . "-{0}");
+    AddDecisionQueue("LORDSUTCLIFFE", $currentPlayer, $index, 1);
   }
 
   function LordSutcliffeAfterDQ($player, $parameter)
   {
-    $params = explode("-", $parameter);
-    $index = $params[0];
-    $amount = $params[1];
+    $index = $parameter;
     $arsenal = &GetArsenal($player);
-    $arsenal[$index+3] += $amount;
-    if($arsenal[$index+3] >= 3)
-    {
-      WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card.");
-      RemoveArsenal($player, $index);
-      BanishCardForPlayer("MON407", $player, "ARS", "-");
-      AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
-      AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+    if (!ArsenalEmpty($player)) {
+      $arsenal[$index+3] += 1;
+      if($arsenal[$index+3] >= 3)
+      {
+        WriteLog(CardLink("MON407", "MON407") . " searched for a specialization card.");
+        RemoveArsenal($player, $index);
+        BanishCardForPlayer("MON407", $player, "ARS", "-");
+        AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
+        AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+        AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      }
     }
   }
 

@@ -18,7 +18,12 @@ include "./Libraries/UILibraries2.php";
 include "./Libraries/StatFunctions.php";
 include "./Libraries/PlayerSettings.php";
 include "./GameTerms.php";
+include "./HostFiles/Redirector.php";
+include_once "./includes/dbh.inc.php";
+include_once "./includes/functions.inc.php";
 ob_end_clean();
+
+session_start();
 
 $cardSize = 120;
 $params = explode("-", $popupType);
@@ -33,15 +38,30 @@ switch ($popupType) {
   case "myBanishPopup":
     echo (CreatePopup("myBanishPopup", [], 1, 0, "Your Banish", 1, BanishUI()));
     break;
+  case "myDeckPopup":
+    echo (CreatePopup("myDeckPopup", $myDeck, 1, 0, "Your Deck (In order from top to bottom"));
+    break;
   case "myStatsPopup":
     echo (CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
     break;
   case "menuPopup":
-    if ($turn[0] == "OVER") {
-      $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
-      if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
-      if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
-      $content .= "</div>" . CardStats($playerID);
+    if (IsGameOver()) {
+      if($roguelikeGameID != "")
+      {
+        $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
+      }
+      else
+      {
+        $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
+        if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
+        if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
+        $content .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
+      }
+      $content .= "</div>";
+      $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
+      $totalTime = $p1TotalTime + $p2TotalTime;
+      $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $totalTime % 60 . "s</span>";
+      $content .= CardStats($playerID);
       echo CreatePopup("OVER", [], 1, 1, "Player " . $winner . " Won! ", 1, $content, "./", true);
     } else {
       echo (CreatePopup("menuPopup", [], 1, 0, "Main Menu", 1, MainMenuUI(), "./", true));
@@ -51,7 +71,7 @@ switch ($popupType) {
     echo (CreatePopup("mySoulPopup", $mySoul, 1, 0, "My Soul"));
     break;
   case "theirBanishPopup":
-    $theirBanishDisplay = GetTheirBanishForDisplay();
+    $theirBanishDisplay = GetTheirBanishForDisplay($playerID);
     echo (CreatePopup("theirBanishPopup", $theirBanishDisplay, 1, 0, "Opponent's Banish Zone"));
     break;
   case "theirPitchPopup":

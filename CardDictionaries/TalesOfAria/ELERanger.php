@@ -140,7 +140,8 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Dominate", 1);
         AddDecisionQueue("SHIVER", $currentPlayer, "-", 1);
         return "";
       case "ELE034":
@@ -149,7 +150,8 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
         AddDecisionQueue("VOLTAIRE", $currentPlayer, "-", 1);
         return "";
       case "ELE035":
@@ -171,7 +173,7 @@
         }
         $arsenal = [];
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "HAND", 1);
         return "";
@@ -215,16 +217,38 @@
     $elementArray = explode(",", $elements);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
+
+    // First fuse ask to fuse all elements
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
-      AddDecisionQueue("FINDINDICES", $player, "HAND" . $element);
+      // If there's multiple elements and it's an AND fusion, subsequent elements
+      // depends on the previous ones being fulfilled.
+      $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
+      AddDecisionQueue("FINDINDICES", $player, "HAND" . $element, $subsequent);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to fuse", 1);
       AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+      AddDecisionQueue("NOFUSE", $player, $cardID); //
       AddDecisionQueue("REVEALHANDCARDS", $player, "<-", 1);
-      AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
-      if($i > 0) $elementText .= " and ";
+      if ($isAndOrFuse)
+      {
+        AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
+        if($i > 0) $elementText .= " and/or ";
+      }
+      else
+      {
+        if($i > 0) $elementText .= " and ";
+      }
       $elementText .= $element;
     }
+
+    // Then if all elements have been fused allow the fusion
+    if (!$isAndOrFuse)
+    {
+      $elements = implode(",", $elementArray);
+      AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
+    }
+
     WriteLog("You may fuse " . $elementText . " for " . CardLink($cardID, $cardID) . ".");
   }
 
@@ -245,7 +269,11 @@
     switch($cardID)
     {
       case "ELE004": AddCurrentTurnEffect($cardID, $otherPlayer); break;
-      case "ELE007": case "ELE008": case "ELE009": PayOrDiscard($otherPlayer, 2, true); break;
+      case "ELE007": case "ELE008": case "ELE009":
+        if (!IsAllyAttacking()) {
+          PayOrDiscard($otherPlayer, 2, true);
+        }
+        break;
       case "ELE010": case "ELE011": case "ELE012":
         $index = GetClassState($player, $CS_PlayCCIndex);
         $combatChain[$index + 6] += 2;
@@ -308,23 +336,28 @@
 
   function PayOrDiscard($player, $amount, $fromDQ=true, $passable=false)
   {
-    if($fromDQ)
-    {
-      PrependDecisionQueue("DISCARDMYHAND", $player, "-", 1);
-      PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-      PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
-      PrependDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      PrependDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-      PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
-    }
-    else
-    {
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding_a_card", ($passable ? 1 : 0), 1);
-      AddDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
-      AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-      AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
+    $targetHand = &GetHand($player);
+    $otherPlayer = ($player == 1 ? 2 : 1);
+    if (count($targetHand) > 0) {
+      if ($fromDQ) {
+        PrependDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
+        PrependDecisionQueue("DISCARDMYHAND", $player, "-", 1);
+        PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
+        PrependDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        PrependDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
+        PrependDecisionQueue("PAYORDISCARD", $player, "if_they_want_to_pay_or_discard_a_card", ($passable ? 1 : 0), 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " or discard a card");
+      } else {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay " . $amount . " or discard a card");
+        AddDecisionQueue("PAYORDISCARD", $player, "if_they_want_to_pay_or_discard_a_card", ($passable ? 1 : 0), 1);
+        AddDecisionQueue("FINDRESOURCECOST", $player, $amount, 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("FINDINDICES", $player, "HANDIFZERO", 1);
+        AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+        AddDecisionQueue("DISCARDMYHAND", $player, "-", 1);
+        AddDecisionQueue("SHOWDISCARDEDCARD", $player, "-", 1);
+      }
     }
   }
 
@@ -400,10 +433,7 @@
             if($element == "ICE")
             {
               $otherPlayer = ($player == 1 ? 2 : 1);
-              if($currentTurnEffects[$i] == "UPR141") $numFrost = 4;
-              else if($currentTurnEffects[$i] == "UPR142") $numFrost = 3;
-              else $numFrost = 2;
-              PlayAura("ELE111", $otherPlayer, $numFrost);
+              AddLayer("TRIGGER", $player, $currentTurnEffects[$i], $otherPlayer);
               $remove = 1;
             }
             break;
@@ -418,6 +448,7 @@
   function AuraFuseEffects($player, $element)
   {
     $auras = &GetAuras($player);
+    $otherPlayer = $player == 1 ? 2 : 1;
     for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces())
     {
       switch($auras[$i])
@@ -425,9 +456,10 @@
         case "UPR140":
           if($element == "ICE")
           {
-            PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
-            --$auras[$i+2];
-            if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
+            // PayOrDiscard(($player == 1 ? 2 : 1), 2, true);
+            // --$auras[$i+2];
+            // if($auras[$i+2] == 0) { WriteLog(CardLink($auras[$i], $auras[$i])." was destroyed."); DestroyAura($player, $i); }
+            AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
           }
           break;
         default: break;

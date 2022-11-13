@@ -122,7 +122,6 @@
   function DVRPlayAbility($cardID)
   {
     global $currentPlayer;
-    $rv = "";
     switch($cardID)
     {
     case "DVR004":
@@ -201,11 +200,11 @@ function HalaGoldenhelmAbility($player, $index)
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index + 3];
   if ($arsenal[$index + 3] >= 2) {
-    $log .= " and searchs for a Glistening Steelblade card.";
+    $log .= " and searches for a Glistening Steelblade card.";
     RemoveArsenal($player, $index);
     BanishCardForPlayer("DVR007", $player, "ARS", "-");
     AddDecisionQueue("FINDINDICES", $player, "DECKCARD,DVR008");
-    AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+    AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
     AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
     AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
   }

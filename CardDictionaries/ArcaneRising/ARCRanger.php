@@ -112,7 +112,7 @@
     }
   }
 
-  function ARCRangerPlayAbility($cardID, $from, $resourcesPaid)
+  function ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
     switch($cardID)
@@ -128,7 +128,7 @@
         AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "DECK", 1);
         AddDecisionQueue("ALLCARDSUBTYPEORPASS", $currentPlayer, "Arrow", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("AZALEA", $currentPlayer, $cardID, 1);
         return "";
       case "ARC040":
         if(!ArsenalEmpty($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
@@ -139,11 +139,7 @@
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "ARC041":
-        if(ArsenalHasFaceDownCard($currentPlayer))
-        {
-          SetArsenalFacing("UP", $currentPlayer);
           Opt($cardID, 1);
-        }
         return "";
       case "ARC042":
         if(!ArsenalEmpty($currentPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal.";
@@ -151,7 +147,7 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "ARC042", 1);
+        AddDecisionQueue("BULLEYESBRACERS", $currentPlayer, $cardID, 1);
         return "";
       case "ARC044":
         MyDrawCard();
@@ -161,7 +157,7 @@
         return "Draws 3 cards and restrict you to playing cards from arsenal this turn.";
       case "ARC046":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDECKARROW");
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -264,4 +260,17 @@
     AddDecisionQueue("ADDARSENALFACEDOWN", $player, "HAND", 1);
   }
 
+  function ReloadArrow($player = 0, $counters="0")
+  {
+    global $currentPlayer;
+    if ($player == 0) $player = $currentPlayer;
+    if (ArsenalFull($player)) {
+      WriteLog("Your arsenal is full, so you cannot put an arrow in your arsenal.");
+      return;
+    }
+    AddDecisionQueue("FINDINDICES", $currentPlayer, "MYHANDARROW");
+    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
+    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("ADDARSENALFACEUP", $currentPlayer, "HAND-" . $counters, 1);
+  }
 ?>

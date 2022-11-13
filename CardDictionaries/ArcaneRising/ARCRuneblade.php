@@ -113,7 +113,7 @@
     }
   }
 
-  function ARCRunebladePlayAbility($cardID, $from, $resourcesPaid)
+  function ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
     switch($cardID)
@@ -135,6 +135,7 @@
         return "Gives you an extra runechant whenever you create 1 or more.";
       case "ARC083":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDACTION");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard (or pass)", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND", 1);
@@ -179,7 +180,7 @@
 
   function ARCRunebladeHitEffect($cardID)
   {
-    global $combatChainState, $mainPlayer, $CCS_AttackTotalDamage;
+    global $combatChainState, $mainPlayer, $CCS_DamageDealt;
     switch($cardID)
     {
       case "ARC077":
@@ -187,7 +188,7 @@
         WriteLog(CardLink($cardID, $cardID) . " creates a runechant.");
         break;
       case "ARC080":
-        $damageDone = $combatChainState[$CCS_AttackTotalDamage];
+        $damageDone = $combatChainState[$CCS_DamageDealt];
         PlayAura("ARC112", $mainPlayer, $damageDone);
         break;
       default: break;

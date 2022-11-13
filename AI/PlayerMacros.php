@@ -4,7 +4,7 @@ function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue;
   $somethingChanged = true;
-  if($turn[0] != "OVER")
+  if(!IsGameOver())
   {
     for($i=0; $i<100 && $somethingChanged; ++$i)
     {
@@ -17,6 +17,7 @@ function ProcessMacros()
       else if($turn[0] == "CHOOSEMULTIZONE" && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSEARSENAL" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSECHARACTER" && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if($turn[0] == "CHOOSECOMBATCHAIN" && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
       {
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
@@ -27,6 +28,7 @@ function ProcessMacros()
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
           if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+          else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[5] != "-")//Means there is a unique ID
           {
             $subtype = CardSubType($layers[2]);
@@ -47,6 +49,7 @@ function ProcessMacros()
 
 function HasPlayableCard($player, $phase)
 {
+  global $combatChain;
   $restriction = "";
   $character = &GetPlayerCharacter($player);
   for($i=0; $i<count($character); $i+=CharacterPieces())
@@ -78,7 +81,11 @@ function HasPlayableCard($player, $phase)
   {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
-  //TODO: Combat chain? Landmarks? Allies?
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) 
+  {
+    if(IsPlayable($combatChain[$i], $phase, "CC", $i, $restriction, $player)) return true;
+  }
+  //TODO: Landmarks? Allies?
   return false;
 }
 

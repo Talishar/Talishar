@@ -112,25 +112,23 @@
     }
   }
 
-  function MONWarriorPlayAbility($cardID, $from, $resourcesPaid)
+  function MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
+    $rv = "";
     switch($cardID)
     {
       case "MON029": case "MON030":
-        if(HasIncreasedAttack()) { GiveAttackGoAgain(); $rv = "Gives the current attack go again."; }
-        else { $rv = "Does not give the current attack go again."; }
-        return $rv;
+        GiveAttackGoAgain();
+        return "Gives the current attack go again.";
       case "MON033":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-1");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEMYSOUL", $currentPlayer, "-", 1);
-        AddDecisionQueue("BEACONOFVICTORY", $currentPlayer, "-", 1);
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0)
+        $addCostValue = (int) $additionalCosts;
+        AddDecisionQueue("BEACONOFVICTORY-2", $currentPlayer, $addCostValue, 1);
+        if(GetClassState($currentPlayer, $CS_NumCharged) > 0 && DelimStringContains($additionalCosts, "BEACONOFVICTORY"))
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "MON033-2", 1);
-          AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
           AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
@@ -206,13 +204,13 @@
     $deck = &GetDeck($mainPlayer);
     if(count($deck) == 0) return;
     $cardID = array_shift($deck);
-    WriteLog("Processing ". CardLink("MON034", "MON034") ."'s hit effect:");
+    WriteLog(CardLink("MON034", "MON034") ."'s hit effect:");
     if(!RevealCards($cardID, $mainPlayer)) return;
     if(TalentContains($cardID, "LIGHT", $mainPlayer))
     {
       AddSoul($cardID, $mainPlayer, "DECK");
       GainHealth(1, $mainPlayer);
-      WriteLog("The revealed card is Light, so it is added to soul and the main player gains 1 health.");
+      WriteLog("It's a Light card, so it goes in the soul and gain 1 health.");
     }
     else
     {
@@ -234,6 +232,7 @@
     $hand = &GetHand($currentPlayer);
     if(count($hand) == 0) { WriteLog("No cards in hand to charge."); return; }
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to charge", 1);
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
@@ -251,6 +250,7 @@
     PrependDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
     PrependDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     PrependDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
+    PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to charge", 1);
     PrependDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
   }
 
@@ -270,7 +270,7 @@
       RemoveArsenal($player, $index);
       BanishCardForPlayer("MON405", $player, "ARS", "-");
       AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-      AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
     }

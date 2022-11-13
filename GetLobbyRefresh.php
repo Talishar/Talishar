@@ -2,6 +2,7 @@
 
 
 include 'Libraries/HTTPLibraries.php';
+include_once "Libraries/PlayerSettings.php";
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -11,7 +12,11 @@ if (!IsGameNameValid($gameName)) {
 }
 $playerID = TryGet("playerID", 3);
 $lastUpdate = TryGet("lastUpdate", 0);
+$authKey = TryGet("authKey", 0);
 
+if(!file_exists("./Games/" . $gameName . "/")) { header('HTTP/1.0 403 Forbidden'); exit; }
+
+if($lastUpdate == "NaN") $lastUpdate = 0;
 if ($lastUpdate > 10000000) $lastUpdate = 0;
 
 
@@ -47,6 +52,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       WriteLog("Player $otherP has disconnected.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
+      SetCachePiece($gameName, $otherP + 6, "");
       $kickPlayerTwo = true;
     }
   }
@@ -54,6 +60,12 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
 include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
+
+$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+if ($authKey != $targetAuth) {
+  echo ("Invalid Auth Key");
+  exit;
+}
 
 if ($kickPlayerTwo) {
   if (file_exists("./Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
@@ -87,13 +99,13 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   // Chat Log
   echo ("<br>");
-  echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:115px; left:3%; width:94%; bottom:9%; font-weight:550; overflow-y: auto;'>");
+  echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:115px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
   echo ("</div>");
 
   echo ("<div id='playAudio' style='display:none;'>" . ($playerID == 1 && $gameStatus == $MGS_ChooseFirstPlayer ? 1 : 0) . "</div>");
 
-  $otherHero = "cardBack";
+  $otherHero = "CardBack";
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $deckFile = "./Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
   if (file_exists($deckFile)) {

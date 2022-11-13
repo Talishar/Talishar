@@ -10,7 +10,7 @@
         background-color:rgba(74, 74, 74, 0.9);
         border-radius: 2px;
         text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;
-        ">FaB Online is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™,
+        ">Talishar is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™,
       and set names are trademarks of Legend Story Studios.
       Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.
       Card Images © Legend Story Studios

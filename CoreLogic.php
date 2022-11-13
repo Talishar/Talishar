@@ -10,8 +10,8 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
     UpdateGameState($playerID);
     BuildMainPlayerGameState();
     $attackType = CardType($combatChain[0]);
-    $CanGainAttack = !SearchCurrentTurnEffects("CRU035", $mainPlayer) || $attackType != "AA";
-    $SnagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
+    $canGainAttack = !SearchCurrentTurnEffects("CRU035", $mainPlayer) || $attackType != "AA";
+    $snagActive = SearchCurrentTurnEffects("CRU182", $mainPlayer) && $attackType == "AA";
     for($i=1; $i<count($combatChain); $i+=CombatChainPieces())
     {
       $from = $combatChain[$i+1];
@@ -21,14 +21,14 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       {
         if($i == 1) $attack = $combatChainState[$CCS_LinkBaseAttack];
         else $attack = AttackValue($combatChain[$i-1]);
-        if($CanGainAttack || $i == 1 || $attack < 0)
+        if($canGainAttack || $i == 1 || $attack < 0)
         {
           array_push($attackModifiers, $combatChain[$i-1]);
           array_push($attackModifiers, $attack);
           $totalAttack += $attack;
         }
         $attack = AttackModifier($combatChain[$i-1], $combatChain[$i+1], $combatChain[$i+2], $combatChain[$i+3]) + $combatChain[$i + 4];
-        if(($CanGainAttack && !$SnagActive) || $attack < 0)
+        if(($canGainAttack && !$snagActive) || $attack < 0)
         {
           array_push($attackModifiers, $combatChain[$i-1]);
           array_push($attackModifiers, $attack);
@@ -37,12 +37,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       }
       else
       {
-        $defense = BlockValue($combatChain[$i-1]) + BlockModifier($combatChain[$i-1], $from, $resourcesPaid) + $combatChain[$i + 5];
-        if(CardType($combatChain[$i-1]) == "E")
-        {
-          $index = FindDefCharacter($combatChain[$i-1]);
-          $defense += $defCharacter[$index+4] + DefCharacterBlockModifier($index);
-        }
+        $defense = BlockingCardDefense($i-1);
         if($defense > 0) $totalDefense += $defense;
       }
     }
@@ -55,7 +50,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         if($currentTurnEffects[$i+1] == $mainPlayer)
         {
           $attack = EffectAttackModifier($currentTurnEffects[$i]);
-          if($CanGainAttack || $attack < 0)
+          if(($canGainAttack || $attack < 0) && !($snagActive && $currentTurnEffects[$i] == $combatChain[0]))
           {
             array_push($attackModifiers, $currentTurnEffects[$i]);
             array_push($attackModifiers, $attack);
@@ -65,6 +60,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         else
         {
           $totalDefense += EffectBlockModifier($currentTurnEffects[$i], "", 0);
+          if ($totalDefense < 0) $totalDefense = 0;
         }
       }
     }
@@ -74,7 +70,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       $attack = 0;
       if($attackType == "W") $attack = $mainCharacter[$combatChainState[$CCS_WeaponIndex]+3];
       else if(DelimStringContains(CardSubtype($combatChain[0]), "Aura")) $attack = $mainAuras[$combatChainState[$CCS_WeaponIndex]+3];
-      if($CanGainAttack || $attack < 0)
+      if($canGainAttack || $attack < 0)
       {
         array_push($attackModifiers, "+1 Attack Counters");
         array_push($attackModifiers, $attack);
@@ -82,33 +78,48 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       }
     }
     $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
-    if($CanGainAttack || $attack < 0)
+    if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Character/Equipment");
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
     $attack = AuraAttackModifiers(0);//TODO: If there are both negatives and positives here, this might mess up?...
-    if($CanGainAttack || $attack < 0)
+    if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Aura Ability");
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
     $attack = ArsenalAttackModifier();
-    if($CanGainAttack || $attack < 0)
+    if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Arsenal Ability");
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
     $attack = $combatChainState[$CCS_ChainAttackBuff];
-    if($CanGainAttack || $attack < 0)
+    if($canGainAttack || $attack < 0) // TODO: Doesn't take Snag in consideration
     {
-      array_push($attackModifiers, "Whole combat chain buff");
+      array_push($attackModifiers, "Whole Combat Chain Buff");
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
+}
+
+function BlockingCardDefense($index)
+{
+  global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
+  $from = $combatChain[$index+2];
+  $resourcesPaid = $combatChain[$index+3];
+  $defense = BlockValue($combatChain[$index]) + BlockModifier($combatChain[$index], $from, $resourcesPaid) + $combatChain[$index + 6];
+  if(CardType($combatChain[$index]) == "E")
+  {
+    $defCharacter = &GetPlayerCharacter($defPlayer);
+    $charIndex = FindDefCharacter($combatChain[$index]);
+    $defense += $defCharacter[$charIndex+4];
+  } 
+  return $defense;
 }
 
 function AddCombatChain($cardID, $player, $from, $resourcesPaid)
@@ -136,13 +147,17 @@ function CombatChainPowerModifier($index, $amount)
 
 function CacheCombatResult()
 {
-  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand;
+  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedNumBlockedFromHand, $CCS_CachedOverpowerActive;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand;
   if(count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
-  $combatChainState[$CCS_CachedNumBlockedFromHand] = NumBlockedFromHand();
+  if ($combatChainState[$CCS_CachedNumBlockedFromHand] == 0) $combatChainState[$CCS_CachedNumBlockedFromHand] = NumBlockedFromHand();
+  $combatChainState[$CCS_CachedOverpowerActive] = (isOverpowerActive() ? "1" : "0");
+  $combatChainState[$CSS_CachedNumActionBlocked] = NumActionBlocked();
+  $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand(); //Reprise
 }
 
 function CachedTotalAttack()
@@ -163,10 +178,28 @@ function CachedDominateActive()
   return ($combatChainState[$CCS_CachedDominateActive] == "1" ? true : false);
 }
 
-function CachedNumBlockedFromHand()
+function CachedOverpowerActive()
+{
+  global $combatChainState, $CCS_CachedOverpowerActive;
+  return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
+}
+
+function CachedNumBlockedFromHand() //Dominate
 {
   global $combatChainState, $CCS_CachedNumBlockedFromHand;
   return $combatChainState[$CCS_CachedNumBlockedFromHand];
+}
+
+function CachedNumDefendedFromHand() //Reprise
+{
+  global $combatChainState, $CCS_CachedNumDefendedFromHand;
+  return $combatChainState[$CCS_CachedNumDefendedFromHand];
+}
+
+function CachedNumActionBlocked()
+{
+  global $combatChainState, $CSS_CachedNumActionBlocked;
+  return $combatChainState[$CSS_CachedNumActionBlocked];
 }
 
 function StartTurnAbilities()
@@ -178,22 +211,22 @@ function StartTurnAbilities()
     CharacterStartTurnAbility($i);
   }
   DefCharacterStartTurnAbilities();
+  ArsenalStartTurnAbilities();
   AuraStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer);
   $mainItems = &GetItems($mainPlayer);
   for($i=count($mainItems)-ItemPieces(); $i>= 0; $i-=ItemPieces())
   {
-    if($mainItems[$i+2] == 1) $mainItems[$i+2] = 2;
+    $mainItems[$i+2] = "2";
     $mainItems[$i+3] = ItemUses($mainItems[$i]);
     ItemStartTurnAbility($i);
   }
   $defItems = &GetItems($defPlayer);
   for($i=0; $i<count($defItems); $i+=ItemPieces())
   {
-    if($defItems[$i+2] == 1) $defItems[$i+2] = 2;
+    $defItems[$i+2] = "2";
     $defItems[$i+3] = ItemUses($defItems[$i]);
   }
-  ArsenalStartTurnAbilities();
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i=0; $i<count($defCharacter); $i+=CharacterPieces())
   {
@@ -338,36 +371,101 @@ function ArsenalHitEffects()
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumLess3PowAAPlayed;
+  global $currentPlayer, $CS_NumLess3PowAAPlayed, $CS_NumAttacks;
   $character = &GetPlayerCharacter($currentPlayer);
   for($i=0; $i<count($character); $i+=CharacterPieces())
   {
     if($character[$i+1] != 2) continue;
-    switch($character[$i])
+    $characterID = $character[$i];
+    if ($i == 0 && $character[0] == "CRU097") {
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
+    switch($characterID)
     {
-      case "EVR120": case "UPR102": case "UPR103":
-        if($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID))
-        {
-          PlayAura("ELE111", $mainPlayer);
-          WriteLog("Iyslander created a Frostbite for playing an ice card.");
-        }
-        break;
-      case "ARC075": case "ARC076":
-        if(!IsStaticType(CardType($cardID), $from, $cardID)) ViseraiPlayCard($cardID);
-        break;
-      case "ELE062": case "ELE063":
-        if(CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2)
-        {
-          PlayAura("ELE110", $currentPlayer);
-          WriteLog("Briar created an Embodiment of Lightning aura.");
-        }
-        break;
       case "UPR158":
         if(GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && AttackValue($cardID) <= 2)
         {
-          AddCurrentTurnEffect($character[$i], $currentPlayer);
-          WriteLog("Tiger Strike Shuko gives the attack +1 and makes the damage unable to be prevented.");
+          AddCurrentTurnEffect($characterID, $currentPlayer);
+          WriteLog(CardLink($characterID, $characterID) . " gives the attack +1 and makes the damage unable to be prevented.");
           $character[$i+1] = 1;
+        }
+        break;
+      case "CRU046":
+        if (GetClassState($currentPlayer, $CS_NumAttacks) == 2) {
+          AddCurrentTurnEffect($characterID, $currentPlayer);
+          $character[$i + 1] = 1;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function MainCharacterPlayCardAbilities($cardID, $from)
+{
+  global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed;
+  $character = &GetPlayerCharacter($currentPlayer);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if ($character[$i] == "ARC115" && SearchCurrentTurnEffects($character[$i], $currentPlayer) && ActionsThatDoArcaneDamage($cardID)) {
+      AddArcaneBonus(1, $currentPlayer);
+      RemoveCurrentEffect($currentPlayer, $character[$i]);
+    }
+    if ($character[$i + 1] != 2) continue;
+    $characterID = $character[$i];
+    if ($i == 0 && $character[0] == "CRU097") {
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
+        $characterID = $otherCharacter[0];
+      }
+    }
+    switch ($characterID) {
+      case "ARC075":
+      case "ARC076":
+        if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
+          AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
+        }
+        break;
+      case "CRU161":
+        if (ActionsThatDoArcaneDamage($cardID) && SearchCharacterActive($currentPlayer, "CRU161") && IsCharacterActive($currentPlayer, FindCharacterIndex($currentPlayer, "CRU161"))) {
+          AddLayer("TRIGGER", $currentPlayer, "CRU161");
+        }
+        break;
+      case "ELE062":
+      case "ELE063":
+        if (CardType($cardID) == "A" && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 2 && $from != "PLAY") {
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
+        }
+        break;
+      case "EVR120":
+      case "UPR102":
+      case "UPR103":
+        if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
+        }
+        break;
+      case "DYN088":
+        $numBoostPlayed = 0;
+        if (HasBoost($cardID))
+        {
+          $numBoostPlayed = GetClassState($currentPlayer, $CS_NumBoostPlayed) + 1;
+          SetClassState($currentPlayer, $CS_NumBoostPlayed, $numBoostPlayed);
+        }
+        if ($numBoostPlayed == 3)
+        {
+          $index = FindCharacterIndex($currentPlayer, "DYN088");
+          ++$character[$index + 2];
+        }
+        break;
+      case "DYN113": case "DYN114":
+        if(ContractType($cardID) != "")
+        {
+          AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       default:
@@ -406,7 +504,13 @@ function HasIncreasedAttack()
 
 function DamageTrigger($player, $damage, $type, $source="NA")
 {
-  AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type, 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if (SearchCurrentTurnEffects("DYN025", $otherPlayer) && $player != $otherPlayer) {
+    SearchCurrentTurnEffects("DYN025", $otherPlayer, true);
+    AddCurrentTurnEffect("DYN025-1", $otherPlayer);
+    $player = $otherPlayer;
+  }
+  AddDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type);
   return $damage;
 }
 
@@ -415,13 +519,14 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
   $otherPlayer = $player == 1 ? 2 : 1;
   if($type == "ARCANE" && SearchCurrentTurnEffects("EVR105", $player)) return false;
   if(SearchCurrentTurnEffects("UPR158", $otherPlayer)) return false;
+  if($source == "DYN005") return false;
   return true;
 }
 
 function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $combatChainState, $combatChain, $mainPlayer;
-  global $CCS_AttackFused, $CS_ArcaneDamagePrevention;
+  global $CCS_AttackFused, $CS_ArcaneDamagePrevention, $currentPlayer;
 
   $classState = &GetPlayerClassState($player);
   $Items = &GetItems($player);
@@ -466,22 +571,46 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
         if($Items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
       }
     }
+  } elseif ($damageThreatened > 0) { // Clear Damage prevention as they are trying to prevent, but fails
+    ConsumeDamagePrevention($player);
+    if ($type == "ARCANE") {
+        $classState[$CS_ArcaneDamagePrevention] = 0;
+    }
+    $classState[$CS_DamagePrevention] = 0;
+    CurrentEffectDamagePrevention($player, $type, $damage, $source);
+    for ($i = count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces()) {
+      if ($Items[$i] == "CRU104") {
+        $Items[$i + 1] = 0;
+        DestroyItemForPlayer($player, $i);
+        }
+    }
   }
   $damage = $damage > 0 ? $damage : 0;
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
+  $damage = AllyTakeDamageAbilities($player, $damage, $type);
+  $damage = CharacterTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   if($damage > 0 && $source != "NA")
   {
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063") && IsHeroAttackTarget() && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) PlayAura("ELE109", $otherPlayer);
-    if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused])
-    { AddCurrentTurnEffect($source, $mainPlayer); }
+    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer))
+    && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
+      PlayAura("ELE109", $otherPlayer);
+    }
+    if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
+    if($source == "DYN173" && SearchCurrentTurnEffects("DYN173", $mainPlayer, true)) {
+      WriteLog("Player " . $mainPlayer . " draw a card and Player " . $otherPlayer . " must discard a card.");
+      MainDrawCard();
+      PummelHit();
+    }
+    if ($source == "DYN612") {
+      GainHealth($damage, $mainPlayer);
+      WriteLog("Player " . $mainPlayer . " gains " . $damage . " life.", $mainPlayer);
+    }
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
-  //Now prepend orderable replacement effects
-  if($type == "ARCANE") PrependArcaneDamageReplacement($player, $damage);
   return $damage;
 }
 
@@ -495,7 +624,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   {
     AuraDamageTakenAbilities($Auras, $damage);
     ItemDamageTakenAbilities($player, $damage);
-    if(SearchAuras("MON013", $otherPlayer) && IsHeroAttackTarget()) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost 1 health from Ode to Wrath."); }
+    // The second condition after the OR is for when Merciful is destroyed, the target is lost for some reason
+    if(SearchAuras("MON013", $otherPlayer) && (IsHeroAttackTarget() || !IsAllyAttackTarget() && $source == "MON012")) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;
     if($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if($source == "MON229") AddNextTurnEffect("MON229", $player);
@@ -509,21 +639,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
   return $damage;
 }
 
-function PrependArcaneDamageReplacement($player, $damage)
-{
-  $character = &GetPlayerCharacter($player);
-  $search = SearchArcaneReplacement($player, "MYCHAR");
-  $indices = SearchMultizoneFormat($search, "MYCHAR");//TODO: Add items, use FINDINDICES
-  $search = SearchArcaneReplacement($player, "MYITEMS");
-  $indices2 = SearchMultizoneFormat($search, "MYITEMS");//TODO: Add items, use FINDINDICES
-  $indices = CombineSearches($indices, $indices2);
-  if($indices != "")
-  {
-    PrependDecisionQueue("ONARCANEDAMAGEPREVENTED", $player, $damage);
-    PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, 1);
-  }
-}
-
 function ArcaneDamagePrevented($player, $cardMZIndex)
 {
   $prevented = 0;
@@ -534,13 +649,15 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   {
     case "MYCHAR": $source = &GetPlayerCharacter($player); break;
     case "MYITEMS": $source = &GetItems($player); break;
+    case "MYAURAS": $source = &GetAuras($player); break;
   }
   $cardID = $source[$index];
-  $spellVoidAmount = SpellVoidAmount($cardID);
+  $spellVoidAmount = SpellVoidAmount($cardID, $player);
   if($spellVoidAmount > 0)
   {
     if($zone == "MYCHAR") DestroyCharacter($player, $index);
     else if($zone == "MYITEMS") DestroyItemForPlayer($player, $index);
+    else if($zone == "MYAURAS") DestroyAura($player, $index);
     $prevented += $spellVoidAmount;
     WriteLog(CardLink($cardID, $cardID) . " was destroyed and prevented " . $spellVoidAmount . " arcane damage.");
   }
@@ -565,19 +682,23 @@ function CurrentEffectDamageModifiers($player, $source, $type)
   return $modifier;
 }
 
-function CurrentEffectDamageEffects($player, $source, $type, $damage)
+function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
   global $currentTurnEffects;
+  if (CardType($source) == "AA" && (SearchAuras("CRU028", 1) || SearchAuras("CRU028", 2))) return;
   for($i=count($currentTurnEffects)-CurrentTurnPieces(); $i >= 0; $i-=CurrentTurnPieces())
   {
-    if($currentTurnEffects[$i+1] == $player) continue;
+    if($currentTurnEffects[$i+1] == $target) continue;
     $remove = 0;
     switch($currentTurnEffects[$i])
     {
-      case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA") PlayAura("ELE111", $player); break;
-      case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($player, 1); break;
-      case "ELE064": if(IsHeroAttackTarget()) BlossomingSpellbladeDamageEffect($player); break;
-      case "UPR106": case "UPR107": case "UPR108": if((IsHeroAttackTarget() || IsHeroAttackTarget() == "") && $type == "ARCANE") { PlayAura("ELE111", $player, $damage); $remove = 1; } break;
+      case "ELE044": case "ELE045": case "ELE046": if(IsHeroAttackTarget() && CardType($source) == "AA") PlayAura("ELE111", $target); break;
+      case "ELE050": case "ELE051": case "ELE052": if(IsHeroAttackTarget() && CardType($source) == "AA") PayOrDiscard($target, 1); break;
+      case "ELE064": if(IsHeroAttackTarget() && $source == "ELE064") BlossomingSpellbladeDamageEffect($target); break;
+      case "UPR106": case "UPR107": case "UPR108":
+        if((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "ELE111")) && $type == "ARCANE") {
+          PlayAura("ELE111", $target, $damage); $remove = 1;
+        } break;
       default: break;
     }
     if($remove == 1) RemoveCurrentTurnEffect($i);
@@ -608,7 +729,7 @@ function GainHealth($amount, $player)
   $otherPlayer = ($player == 1 ? 2 : 1);
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
-  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog("Dread Scythe prevented you from gaining health."); return; }
+  if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {
     if($health > $otherHealth) return false;
@@ -633,14 +754,38 @@ function PlayerGainHealth($amount, &$health)
   $health += $amount;
 }
 
+function IsGameOver()
+{
+  global $inGameStatus, $GameStatus_Over;
+  return $inGameStatus == $GameStatus_Over;
+}
+
 function PlayerWon($playerID)
 {
-  global $winner, $turn, $gameName, $p1id, $p2id;
-	include_once "./MenuFiles/ParseGamefile.php";
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $GLO_Player1Disconnected, $GLO_Player2Disconnected, $conceded, $currentTurn;
+  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID;
+  if($turn[0] == "OVER") return;
+  include_once "./MenuFiles/ParseGamefile.php";
+
   $winner = $playerID;
-  WriteLog("Player " . $playerID . " wins!");
+  if ($playerID == 1 && $p1uid != "") WriteLog($p1uid . " wins!", $playerID);
+  elseif ($playerID == 2 && $p2uid != "") WriteLog($p2uid . " wins!", $playerID);
+  else WriteLog("Player " . $winner . " wins!");
+
+  $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
-  logCompletedGameStats();
+  try {
+    logCompletedGameStats();
+  } catch (Exception $e) {
+
+  }
+
+  if(!$conceded || $currentTurn >= 3) {
+    // Give players negative karma if they left the game in progress.
+    if($GLO_Player1Disconnected != 0 && $GLO_Player1Disconnected != "") UpdateKarma($GLO_Player1Disconnected, 1);
+    else if($GLO_Player2Disconnected != 0 && $GLO_Player2Disconnected != "") UpdateKarma(1, $GLO_Player2Disconnected);
+    else UpdateKarma(1, 1); // Give both players +1 karma for finishing the game.
+  }
 }
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
@@ -649,7 +794,8 @@ function UnsetBanishModifier($player, $modifier, $newMod="DECK")
   $banish = &GetBanish($mainPlayer);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
-    if($banish[$i+1] == $modifier) $banish[$i+1] = $newMod;
+    $cardModifier = explode("-", $banish[$i+1])[0];
+    if($cardModifier == $modifier) $banish[$i+1] = $newMod;
   }
 }
 
@@ -678,6 +824,8 @@ function UnsetTurnBanish()
   UnsetBanishModifier(1, "INST");
   UnsetBanishModifier(2, "TT");
   UnsetBanishModifier(2, "INST");
+  UnsetBanishModifier(1, "ARC119");
+  UnsetBanishModifier(2, "ARC119");
   UnsetCombatChainBanish();
   ReplaceBanishModifier(1, "NT", "TT");
   ReplaceBanishModifier(2, "NT", "TT");
@@ -747,13 +895,21 @@ function FindDefCharacter($cardID)
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain;
-  for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+  global $combatChain, $mainPlayer, $currentTurnEffects;
+  if($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable())
   {
-    switch($combatChain[$i])
-    {
-      case "MON245": break;
-      default: break;
+    AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
+  }
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch ($currentTurnEffects[$i]) {
+        case "ELE112-1":
+          RemoveCurrentEffect($mainPlayer, $currentTurnEffects[$i]);
+          AddCurrentTurnEffectFromCombat("ELE112", $mainPlayer);
+          break;
+        default:
+          break;
+      }
     }
   }
 }
@@ -775,9 +931,16 @@ function CombatChainClosedCharacterEffects()
         if(HasTemper($chainLinks[$i][$j]))
         {
           $character[$charIndex+4] -= 1;//Add -1 block counter
-          if((BlockValue($character[$charIndex]) + $character[$charIndex + 4]) <= 0)
+          if((BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0)) <= 0)
           {
             DestroyCharacter($defPlayer, $charIndex);
+            //Mechanoid Check
+            if ($character[$charIndex] == "DYN492b") {
+              $indexWeapon = FindCharacterIndex($defPlayer, "DYN492a"); // Weapon
+              DestroyCharacter($defPlayer, $indexWeapon);
+              $indexItem = GetItemIndex("DYN492c", $defPlayer);
+              DestroyItemForPlayer($defPlayer, $indexItem);
+            }
           }
         }
         if(HasBattleworn($chainLinks[$i][$j]))
@@ -788,14 +951,29 @@ function CombatChainClosedCharacterEffects()
         {
           DestroyCharacter($defPlayer, $charIndex);
         }
+        else if (HasDynamicBlock($chainLinks[$i][$j])) {
+          if ($character[$charIndex + 4] != 0) DestroyCharacter($defPlayer, $charIndex);
+        }
       }
       switch($chainLinks[$i][$j])
       {
         case "MON089":
-          WriteLog($chainLinkSummary[$i * ChainLinkSummaryPieces() + 2] . " " . $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1]);
-          if($chainLinkSummary[$i * ChainLinkSummaryPieces() + 2] != "ILLUSIONIST" && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6)
+          if(!DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST") && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6)
           {
             $character[FindCharacterIndex($defPlayer, "MON089")+1] = 0;
+          }
+          break;
+        case "RVD003":
+          Writelog("Processing " . Cardlink($chainLinks[$i][$j], $chainLinks[$i][$j]) . " trigger: ");
+          $deck = &GetDeck($defPlayer);
+          $rv = "";
+          if (count($deck) == 0) $rv .= "Your deck is empty. No card is revealed.";
+          $wasRevealed = RevealCards($deck[0]);
+          if ($wasRevealed) {
+            if (AttackValue($deck[0]) < 6) {
+              WriteLog("The card was put on the bottom of your deck.");
+              array_push($deck, array_shift($deck));
+            }
           }
           break;
         default: break;
@@ -804,9 +982,10 @@ function CombatChainClosedCharacterEffects()
   }
 }
 
-function NumBlockedFromHand()
+// CR 2.1 - 5.3.4c A card with the type defense reaction becomes a defending card and is moved onto the current chain link instead of being moved to the graveyard.
+function NumDefendedFromHand() //Reprise
 {
-  global $combatChain, $defPlayer, $layers;
+  global $combatChain, $defPlayer;
   $num = 0;
   for($i=0; $i<count($combatChain); $i += CombatChainPieces())
   {
@@ -816,15 +995,39 @@ function NumBlockedFromHand()
       if($type != "I" && $combatChain[$i+2] == "HAND") ++$num;
     }
   }
-  for($i=0; $i<count($layers); $i+=LayerPieces())
-  {
-    $params = explode("|", $layers[$i+2]);
-    if($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
+  return $num;
+}
+
+function NumBlockedFromHand() //Dominate
+{
+  global $combatChain, $defPlayer, $layers;
+  $num = 0;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) {
+      $type = CardType($combatChain[$i]);
+      if ($type != "I" && $combatChain[$i + 2] == "HAND") ++$num;
+    }
+  }
+  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    $params = explode("|", $layers[$i + 2]);
+    if ($params[0] == "HAND" && CardType($layers[$i]) == "DR") ++$num;
   }
   return $num;
 }
 
-//CR 2.0 7.4.2c Defense Reaction abilities do not count as defending cards
+function NumActionBlocked()
+{
+  global $combatChain, $defPlayer;
+  $num = 0;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) {
+      $type = CardType($combatChain[$i]);
+      if ($type == "A" || $type == "AA") ++$num;
+    }
+  }
+  return $num;
+}
+
 function NumCardsBlocking()
 {
   global $combatChain, $defPlayer;
@@ -834,7 +1037,20 @@ function NumCardsBlocking()
     if($combatChain[$i+1] == $defPlayer)
     {
       $type = CardType($combatChain[$i]);
-      if($type != "E" && $type != "I" && $type != "C") ++$num;
+      if($type != "I" && $type != "C") ++$num;
+    }
+  }
+  return $num;
+}
+
+function NumCardsNonEquipBlocking()
+{
+  global $combatChain, $defPlayer;
+  $num = 0;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) {
+      $type = CardType($combatChain[$i]);
+      if ($type != "E" && $type != "I" && $type != "C") ++$num;
     }
   }
   return $num;
@@ -870,6 +1086,24 @@ function PlayerHasLessHealth($player)
 {
   $otherPlayer = ($player == 1 ? 2 : 1);
   return GetHealth($player) < GetHealth($otherPlayer);
+}
+
+function PlayerHasFewerEquipment($player)
+{
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  $thisChar = &GetPlayerCharacter($player);
+  $thatChar = &GetPlayerCharacter($otherPlayer);
+  $thisEquip = 0;
+  $thatEquip = 0;
+  for($i=0; $i<count($thisChar); $i+=CharacterPieces())
+  {
+    if($thisChar[$i+1] != 0 && CardType($thisChar[$i]) == "E") ++$thisEquip;
+  }
+  for($i=0; $i<count($thatChar); $i+=CharacterPieces())
+  {
+    if($thatChar[$i+1] != 0 && CardType($thatChar[$i]) == "E") ++$thatEquip;
+  }
+  return $thisEquip < $thatEquip;
 }
 
 function GetIndices($count, $add=0, $pieces=1)
@@ -909,7 +1143,7 @@ function RollDie($player, $fromDQ=false, $subsequent=false)
   $highRoll = 0;
   for($i=0; $i<$numRolls; ++$i)
   {
-    $roll = random_int(1, 6);
+    $roll = GetRandom(1, 6);
     WriteLog($roll . " was rolled.");
     if($roll > $highRoll) $highRoll = $roll;
   }
@@ -992,9 +1226,11 @@ function ClearDieRoll($player)
 function CanPlayAsInstant($cardID, $index=-1, $from="")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer;
+  global $mainPlayer, $CS_PlayedAsInstant;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  if($cardID == "MON034" && SearchItemsForCard("DYN066", $currentPlayer) != "") return true;
   if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant))
   {
     if(ClassContains($cardID, "WIZARD", $currentPlayer) && $cardType == "A") return true;
@@ -1014,13 +1250,17 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   {
     $banish = GetBanish($currentPlayer);
     $mod = explode("-", $banish[$index+1])[0];
-    if($mod == "INST" || $mod == "ARC119") return true;
+    if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
   }
+  if(GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }
   if($cardID == "CRU143") { return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0; }
-  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103"))) return true;
-  if($cardType == "AR" && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
-  if($cardType == "DR" && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
+  if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && isIyslander($otherCharacter[0])))) return true;
+  $isStaticType = IsStaticType($cardType, $from, $cardID);
+  $abilityType = "-";
+  if($isStaticType) $abilityType = GetAbilityType($cardID, $index);
+  if(($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
+  if(($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;
 }
 
@@ -1030,12 +1270,12 @@ function ClassOverride($cardID, $player="")
   $cardClass = CardClass($cardID);
   if ($cardClass == "NONE") $cardClass = "";
   $otherPlayer = ($player == 1 ? 2 : 1);
-  $mainCharacter = &GetPlayerCharacter($otherPlayer);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
 
-  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
-  if(SearchCurrentTurnEffects("CRU097", $player)) {
+  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";//Erase Face
+  if(SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
     if ($cardClass != "") $cardClass .= ",";
-    $cardClass .= CardClass($mainCharacter[0]) . ",SHAPESHIFTER";
+    $cardClass .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
   }
 
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
@@ -1069,12 +1309,15 @@ function ClassContains($cardID, $class, $player="")
 function TalentOverride($cardID, $player="")
 {
   global $currentTurnEffects;
-  if(SearchCurrentTurnEffects("UPR187", $player)) return "NONE";
   $cardTalent = CardTalent($cardID);
+
+  // CR 2.2.1 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not remove properties, or parts of properties, that were added by another effect.
+  if(SearchCurrentTurnEffects("UPR187", $player)) $cardTalent = "NONE";
+
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnEffectPieces())
   {
-    if($currentTurnEffects[$i+1] != $player) continue;
     $toAdd = "";
+    if($currentTurnEffects[$i+1] != $player) continue;
     switch($currentTurnEffects[$i])
     {
       case "UPR060": case "UPR061": case "UPR062": $toAdd = "DRACONIC";
@@ -1124,14 +1367,14 @@ function RevealCards($cards, $player="")
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";
   WriteLog($string);
-  if($player != "" && SearchLandmarks("ELE000")) KorshemRevealAbility($player);
+  if($player != "" && SearchLandmark("ELE000")) KorshemRevealAbility($player);
   return true;
 }
 
 function DoesAttackHaveGoAgain()
 {
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
-  global $CS_NumAuras, $CS_ArcaneDamageTaken;
+  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_NumRedPlayed, $CS_NumNonAttackCards;
+  global $CS_NumAuras, $CS_ArcaneDamageTaken, $myDeck, $CS_AnotherWeaponGainedGoAgain;
 
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
@@ -1148,20 +1391,26 @@ function DoesAttackHaveGoAgain()
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
     if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
-  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002"))) return true;
+  if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
 
   // Unnatural Go Again - Important for Hypotermia
   $mainPitch = &GetPitch($mainPlayer);
   switch ($combatChain[0])
   {
-    case "WTR162":
-      return GetDieRoll($mainPlayer) <= 4;
+    case "WTR083": case "WTR084":
+      return ComboActive($combatChain[0]);
+    case "WTR095": case "WTR096": case "WTR097":
+      return ComboActive($combatChain[0]);
+    case "WTR104": case "WTR105": case "WTR106":
+      return ComboActive($combatChain[0]);
+    case "WTR110": case "WTR111": case "WTR112":
+      return ComboActive($combatChain[0]);
+    case "WTR161":
+      return count($myDeck) == 0;
     case "ARC197": case "ARC198": case "ARC199":
       return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
-    case "ARC212": case "ARC213": case "ARC214":
-      return GetClassState($mainPlayer, $CS_NumMoonWishPlayed) > 0;
     case "CRU010": case "CRU011": case "CRU012":
-      if(NumCardsBlocking() < 2) return true;
+      if(NumCardsNonEquipBlocking() < 2) return true;
     case "CRU057": case "CRU058": case "CRU059":
     case "CRU060": case "CRU061": case "CRU062":
       return ComboActive($combatChain[0]);
@@ -1170,9 +1419,9 @@ function DoesAttackHaveGoAgain()
     case "MON180": case "MON181": case "MON182":
       return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "MON199": case "MON220":
-      return count(GetSoul($defPlayer)) > 0;
+      return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
     case "MON223": case "MON224": case "MON225":
-      return NumCardsBlocking() < 2;
+      return NumCardsNonEquipBlocking() < 2;
     case "MON248": case "MON249": case "MON250":
       return SearchHighestAttackDefended() < $attackValue;
     case "MON293": case "MON294": case "MON295":
@@ -1184,15 +1433,23 @@ function DoesAttackHaveGoAgain()
     case "EVR105":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "EVR138":
-      return FractalReplicationStats("Attack");
+      return FractalReplicationStats("GoAgain");
     case "UPR046":
     case "UPR063": case "UPR064": case "UPR065":
     case "UPR069": case "UPR070": case "UPR071":
       return NumDraconicChainLinks() >= 2;
-    case "UPR048": 
+    case "UPR048":
       return NumPhoenixFlameChainLinks() >= 1;
     case "UPR092":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
+    case "DYN047":
+      return (ComboActive($combatChain[0]));
+    case "DYN056": case "DYN057": case "DYN058":
+      return (ComboActive($combatChain[0]));
+    case "DYN069": case "DYN070":
+      $anotherWeaponGainedGoAgain = GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain);
+      if (SameWeaponEquippedTwice()) return $anotherWeaponGainedGoAgain != "-";
+      else return $anotherWeaponGainedGoAgain != "-" && $anotherWeaponGainedGoAgain != $combatChain[0];
     default: break;
   }
   return false;
@@ -1245,6 +1502,7 @@ function AttackDestroyed($attackID)
             AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
             AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
             AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+            AddDecisionQueue("WRITELOG", $mainPlayer, "Player_" . $mainPlayer . "_gained_an_action_point_from_" . CardLink($character[$i], $character[$i]), 1);
             --$character[$i+5];
           }
           break;
@@ -1279,11 +1537,20 @@ function AttackDestroyedEffects($attackID)
 
 function CloseCombatChain($chainClosed="true")
 {
-  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget;
+  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
+  $layers = [];//In case there's another combat chain related layer like defense step
   AddLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";
+}
+
+function UndestroyCharacter($player, $index)
+{
+  $char = &GetPlayerCharacter($player);
+  $char[$index+1] = 2;
+  $char[$index+4] = 0;
+  //TODO: Remove graveyard
 }
 
 function DestroyCharacter($player, $index)
@@ -1381,8 +1648,9 @@ function NumEquipBlock()
       case "CHOOSEFIRSTPLAYER": return 0;
       case "MULTICHOOSEDECK": return 0;
       case "CHOOSEPERMANENT": return 0;
-      case "OVER": return 0;
       case "MULTICHOOSETEXT": return 0;
+      case "CHOOSEMYSOUL": return 0;
+      case "OVER": return 0;
       default: return 1;
     }
   }
@@ -1451,15 +1719,13 @@ function NumEquipBlock()
 
   function IsHeroAttackTarget()
   {
-    global $combatChainState, $CCS_AttackTarget;
-    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+    $target = explode("-", GetAttackTarget());
     return $target[0] == "THEIRCHAR";
   }
 
   function IsAllyAttackTarget()
   {
-    global $combatChainState, $CCS_AttackTarget;
-    $target = explode("-", $combatChainState[$CCS_AttackTarget]);
+    $target = explode("-", GetAttackTarget());
     return $target[0] == "THEIRALLY";
   }
 
@@ -1482,10 +1748,25 @@ function NumEquipBlock()
     return true;
   }
 
+function IsSpecificAuraAttacking($player, $index)
+{
+  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  if (count($combatChain) == 0) return false;
+  if ($mainPlayer != $player) return false;
+  $weaponIndex = intval($combatChainState[$CCS_WeaponIndex]);
+  if ($weaponIndex == -1) return false;
+  if ($weaponIndex != $index) return false;
+  if (!DelimStringContains(CardSubtype($combatChain[0]), "Aura")) return false;
+  return true;
+}
+
   function CanRevealCards($player)
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
-    if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") return false;
+    if(SearchAurasForCard("UPR138", $player) != "" || SearchAurasForCard("UPR138", $otherPlayer) != "") {
+      WriteLog("Action prevented by " . CardLink("UPR138", "UPR138"));
+      return false;
+    }
     return true;
   }
 
@@ -1502,3 +1783,41 @@ function NumEquipBlock()
     }
     return "-";
   }
+
+function GetDamagePreventionIndices()
+{
+  global $combatChain, $currentPlayer;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $rv = "";
+
+  $rv = SearchLayerDQ($otherPlayer, "");
+  $rv = SearchMultiZoneFormat($rv, "LAYER");
+  if (count($combatChain) > 0) {
+    if ($rv != "") $rv .= ",";
+    $rv .= "CC-0";
+  }
+  if (SearchLayer($otherPlayer, "W") == "" && CardType($combatChain[0]) != "W" && !IsCharacterAbilityActive($otherPlayer, 1)) {
+    $theirWeapon = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR");
+    $rv = CombineSearches($rv, $theirWeapon);
+  }
+  $theirAllies = SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY");
+  $rv = CombineSearches($rv, $theirAllies);
+  $theirAuras = SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS");
+  $rv = CombineSearches($rv, $theirAuras);
+  if (ArsenalHasFaceUpCard($otherPlayer)) {
+    $theirArsenal = SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS");
+    $rv = CombineSearches($rv, $theirArsenal);
+  }
+  $theirHero = SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR");
+  $rv = CombineSearches($rv, $theirHero);
+  return $rv;
+}
+
+function SameWeaponEquippedTwice()
+{
+  global $mainPlayer;
+  $char = &GetPlayerCharacter($mainPlayer);
+  $weaponIndex = explode(",", SearchCharacter($mainPlayer, "W"));
+  if (count($weaponIndex) > 1 && $char[$weaponIndex[0]] == $char[$weaponIndex[1]]) return true;
+  return false;
+}

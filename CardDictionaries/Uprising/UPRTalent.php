@@ -50,6 +50,7 @@
       case "UPR215": case "UPR216": case "UPR217": return "A";
       case "UPR218": case "UPR219": case "UPR220": return "A";
       case "UPR221": case "UPR222": case "UPR223": return "I";
+      case "UPR225": return "T";
       default: return "";
     }
   }
@@ -301,7 +302,7 @@
           }
           else return "Cannot reveal cards";
         }
-        return "Red Hot lets you reveal and do damage.";
+        return CardLink($cardID, $cardID) . " lets you reveal and deal damage.";
       case "UPR091":
         if(RuptureActive())
         {
@@ -312,13 +313,7 @@
         if($additionalCosts != "-") { AddCurrentTurnEffect($cardID, $currentPlayer); WriteLog("Gains +2 and go again from banishing."); }
         return "";
       case "UPR096":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
-        {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,UPR101");
-          AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        }
+        AddLayer("TRIGGER", $currentPlayer, $cardID);
         return "";
       case "UPR097":
         if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1)
@@ -341,14 +336,20 @@
         }
         return $rv;
       case "UPR136":
-        PayOrDiscard(($currentPlayer == 1 ? 2 : 1), 1);
-        return "Makes the other player pay 1 or discard a card.";
+        if (ShouldAutotargetOpponent($currentPlayer)) {
+          AddDecisionQueue("CORONETPEAK", $currentPlayer, "Target_Opponent", 1);
+        } else {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+          AddDecisionQueue("CORONETPEAK", $currentPlayer, "<-", 1);
+        }
+        return "Makes target hero pay 1 or discard a card.";
       case "UPR137":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,THEIRALLY");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
@@ -366,6 +367,8 @@
         if($cardID == "UPR147") $cost = 3;
         else if($cardID == "UPR148") $cost = 2;
         else $cost = 1;
+        $theirAllies = &GetAllies($otherPlayer);
+      if (!ArsenalEmpty($otherPlayer) || count($theirAllies) > 0) {        
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -374,6 +377,7 @@
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        }
         if($from == "ARS") MyDrawCard();
         return "";
       case "UPR183":
@@ -397,7 +401,7 @@
         else if($cardID == "UPR198") $numCards = 3;
         else $numCards = 2;
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, $numCards . "-");
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, $numCards . "-", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
@@ -429,11 +433,11 @@
         GainHealth($amount, $currentPlayer);
         return "Gain $amount health.";
       case "UPR221": case "UPR222": case "UPR223":
-        AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetDefaultLayerTarget());
+        if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);
-          WriteLog("Gain 1 health from Oasis Respite.");
+          WriteLog("Gain 1 health from " . CardLink($cardID, $cardID) . ".");
         }
         return "Prevents damage this turn.";
       default: return "";

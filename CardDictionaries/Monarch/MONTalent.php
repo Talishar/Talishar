@@ -169,7 +169,7 @@
     }
   }
 
-  function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-")
+  function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts = "")
   {
     global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -299,8 +299,10 @@
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
-        AddDecisionQueue("PASSPARAMETER", $otherPlayer, "1", 1);
-        AddDecisionQueue("MULTIREMOVEMYSOUL", $otherPlayer, "-", 1);
+        if (!IsAllyAttackTarget()) {
+          AddDecisionQueue("PASSPARAMETER", $otherPlayer, "1", 1);
+          AddDecisionQueue("MULTIREMOVEMYSOUL", $otherPlayer, "-", 1);
+        }
         return "";
       default: return "";
     }
@@ -335,13 +337,14 @@
   function ShadowPuppetryHitEffect()
   {
     global $mainPlayer;
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK");
-    AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
-    AddDecisionQueue("REVEALCARDS", $mainPlayer, "-", 1);
+    AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+    AddDecisionQueue("DECKCARDS", $mainPlayer, "0", 1);
+    AddDecisionQueue("SETDQVAR", $mainPlayer, "1", 1);
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <1> with Shadow Puppetry", 1);
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_the_card", 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK", 1);
-    AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
+    AddDecisionQueue("PARAMDELIMTOARRAY", $mainPlayer, "0", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "0", 1);
     AddDecisionQueue("MULTIBANISH", $mainPlayer, "DECK,-", 1);
     AddDecisionQueue("SHOWBANISHEDCARD", $mainPlayer, "-", 1);
   }
@@ -358,7 +361,7 @@
     if($numBD > 0)
     {
       LoseHealth($numBD, $mainPlayer);
-      WriteLog("Player $mainPlayer lost $numBD health from Blood Debt at end of turn.");
+      WriteLog("Player $mainPlayer lost $numBD health from Blood Debt at end of turn.", $mainPlayer);
     }
   }
 
@@ -366,7 +369,7 @@
   {
     global $CS_Num6PowBan;
       $character = &GetPlayerCharacter($player);
-      if($character[1] == 2 && ($character[0] == "MON119" || $character[0] == "MON120") && GetClassState($player, $CS_Num6PowBan) > 0)
+      if($character[1] == 2 && ($character[0] == "MON119" || $character[0] == "MON120" || SearchCurrentTurnEffects("MON119-SHIYANA", $player) || SearchCurrentTurnEffects("MON120-SHIYANA", $player)) && GetClassState($player, $CS_Num6PowBan) > 0)
       {
         return true;
       }

@@ -158,7 +158,7 @@
   }
 
 
-  function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $additionalCosts)
+  function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
     global $actionPoints, $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;
     $rv = "";
@@ -169,26 +169,26 @@
     case "MON239": AddCurrentTurnEffect($cardID, $currentPlayer); return "Gives your attack action cards with less than 3 power +1 power this turn.";
     case "MON240": $actionPoints += 2; return "Gain 2 action points.";
     case "MON245":
-      if($from == "PLAY")
-      {
+      if($from == "PLAY") {
         $combatChain[5] += 2;
+        return " gains 2 power";
       }
-      return CardLink($cardID, $cardID) . " is a partially manual card. Restrict play of instants and defense reactions manually. Use the Revert Gamestate button under the Stats menu if necessary.";
+      return " restrict play of instants and defense reactions";
     case "MON251": case "MON252": case "MON253":
-      AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
+      if ($additionalCosts != "-") AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, "-", 1);
       return "";
     case "MON260": case "MON261": case "MON262":
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "2_Attack,Go_again");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("CAPTAINSCALL", $currentPlayer, $cardID, 1);
       return "";
     case "MON263": case "MON264": case "MON265":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power."; }
       return $rv;
     case "MON266": case "MON267": case "MON268":
-      if(DelimStringContains($additionalCosts, "BELITTLE"))
+      if(DelimStringContains($additionalCosts, "BELITTLE") && CanRevealCards($currentPlayer))
       {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MON266-2");
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
@@ -196,10 +196,13 @@
       }
       return "";
     case "MON272": case "MON273": case "MON274":
-      $ret = "Their hand is:";
-      for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= $theirHand[$i]; }
-      $ret .= (count($theirHand) == 0 ? " Empty." : ".");
-      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret .= " Frontline Scout gains go again."; }
+      $ret = "";
+      if(!IsAllyAttackTarget()) {
+        $ret .= "Their hand is: ";
+        for($i=0; $i<count($theirHand); ++$i) { if($i>0) $ret .= ", "; $ret .= CardLink($theirHand[$i], $theirHand[$i]); }
+        $ret .= (count($theirHand) == 0 ? "Empty. " : ". ");
+      }
+      if($from == "ARS") { $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1; $ret .= CardLink($cardID, $cardID) . " gains go again."; }
       return $ret;
     case "MON278": case "MON279": case "MON280":
       if(IHaveLessHealth()) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gains Dominate."; }
@@ -247,7 +250,7 @@
     $found = false;
     for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
     {
-      if($combatChain[$i+1] == $defPlayer && AttackValue($combatChain[$i]) >= CachedTotalAttack()) $found = true;
+      if(!IsAllyAttackTarget() && $combatChain[$i+1] == $defPlayer && AttackValue($combatChain[$i]) >= CachedTotalAttack()) $found = true;
     }
     return $found;
   }

@@ -26,9 +26,9 @@
   fclose($gcFile);
 
   //Create directory
-  if (!file_exists("Games/" . $gameName))
-  {
-    mkdir("Games/" . $gameName, 0700, true);
+  if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true)) ){
+  } else {
+    print_r("Encountered a problem creating a game. Please return to the main menu and try again"); 
   }
 
   //Read game state metadata info

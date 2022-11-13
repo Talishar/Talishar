@@ -3,14 +3,22 @@
 function PlayAura($cardID, $player, $number = 1, $isToken = false)
 {
   global $CS_NumAuras;
+  $otherPlayer = ($player == 1 ? 2 : 1);
   if (CardType($cardID) == "T") $isToken = true;
-  if (DelimStringContains(CardSubType($cardID), "Affliction")) $player = ($player == 1 ? 2 : 1);
+  if (DelimStringContains(CardSubType($cardID), "Affliction")) {
+    $otherPlayer = $player;
+    $player = ($player == 1 ? 2 : 1);
+  }
   $auras = &GetAuras($player);
   if ($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if ($cardID == "MON104") {
     $index = SearchArsenalReadyCard($player, "MON404");
     if ($index > -1) TheLibrarianEffect($player, $index);
   }
+  $myHoldState = AuraDefaultHoldTriggerState($cardID);
+  if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $theirHoldState = AuraDefaultHoldTriggerState($cardID);
+  if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   for ($i = 0; $i < $number; ++$i) {
     array_push($auras, $cardID);
     array_push($auras, 2); //Status
@@ -19,10 +27,11 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false)
     array_push($auras, ($isToken ? 1 : 0)); //Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
     array_push($auras, GetUniqueId());
-    array_push($auras, AuraDefaultHoldTriggerState($cardID)); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
-    array_push($auras, AuraDefaultHoldTriggerState($cardID)); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($auras, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    array_push($auras, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
   }
-  IncrementClassState($player, $CS_NumAuras, $number);
+  if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
+  elseif ($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
 }
 
 function AuraNumUses($cardID)
@@ -51,6 +60,8 @@ function PlayMyAura($cardID)
   PlayAura($cardID, $currentPlayer, 1);
 }
 
+//Scope = Private
+//Call DestroyAura to destroy an aura
 function AuraDestroyed($player, $cardID, $isToken = false)
 {
   $auras = &GetAuras($player);
@@ -62,6 +73,14 @@ function AuraDestroyed($player, $cardID, $isToken = false)
           PlayAura("MON104", $player);
         }
         break;
+      case "DYN072":
+        if ($auras[$i] == $cardID) {
+          $char = &GetPlayerCharacter($player);
+          for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+            if (CardSubType($char[$j]) == "Sword") $char[$j + 3] = 0;
+          }
+        }
+        break;
       default:
         break;
     }
@@ -69,8 +88,16 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   $goesWhere = GoesWhereAfterResolving($cardID);
   for ($i = 0; $i < SearchCount(SearchAurasForCard("MON012", $player)); ++$i) {
     if (TalentContains($cardID, "LIGHT", $player)) $goesWhere = "SOUL";
-    DealArcane(1, 0, "STATIC", "MON012", true, $player);
+    DealArcane(1, 0, "STATIC", "MON012", false, $player);
   }
+
+  if (HasWard($cardID) && SearchCharacterActive($player, "DYN213") && !$isToken) {
+    $char = &GetPlayerCharacter($player);
+    $index = FindCharacterIndex($player, "DYN213");
+    $char[$index + 1] = 1;
+    GainResources($player, 1);
+  }
+
   if (CardType($cardID) == "T" || $isToken) return; //Don't need to add to anywhere if it's a token
   switch ($goesWhere) {
     case "GY":
@@ -90,13 +117,30 @@ function AuraDestroyed($player, $cardID, $isToken = false)
   }
 }
 
-function PlayTheirAura($cardID)
+function AuraLeavesPlay($player, $index)
 {
-  global $theirAuras;
-  array_push($theirAuras, $cardID);
-  array_push($theirAuras, 2);
-  array_push($theirAuras, AuraPlayCounters($cardID));
-  array_push($theirAuras, 0);
+  $auras = &GetAuras($player);
+  $cardID = $auras[$index];
+  $uniqueID = $auras[$index + 6];
+  $otherPlayer = ($player == 1 ? 2 : 1);
+  switch($cardID)
+  {
+    case "DYN221": case "DYN222": case "DYN223":
+      $theirBanish = &GetBanish($otherPlayer);
+      $banishIndex = -1;
+      for($i=0; $i<count($theirBanish); $i+=BanishPieces())
+      {
+        if($theirBanish[$i+1] == "DYN221-" . $uniqueID) $banishIndex = $i;
+      }
+      if($banishIndex > -1)
+      {
+        $banishCard = $theirBanish[$banishIndex];
+        RemoveBanish($otherPlayer, $banishIndex);
+        PlayAura($banishCard, $otherPlayer);
+      }
+      break;
+    default: break;
+  }
 }
 
 function AuraPlayCounters($cardID)
@@ -119,21 +163,26 @@ function AuraPlayCounters($cardID)
 
 function DestroyAuraUniqueID($player, $uniqueID)
 {
-  $auras = &GetAuras($player);
   $index = SearchAurasForUniqueID($uniqueID, $player);
-  DestroyAura($player, $index);
+  if($index != -1) DestroyAura($player, $index, $uniqueID);
 }
 
-function DestroyAura($player, $index)
+function DestroyAura($player, $index, $uniqueID="")
 {
   $auras = &GetAuras($player);
   $cardID = $auras[$index];
   $isToken = $auras[$index + 4] == 1;
   AuraDestroyed($player, $cardID, $isToken);
+  if ($uniqueID != "") $index = SearchAurasForUniqueID($uniqueID, $player);
+  AuraLeavesPlay($player, $index);
+  if (IsSpecificAuraAttacking($player, $index)) {
+    CloseCombatChain();
+  }
   for ($j = $index + AuraPieces() - 1; $j >= $index; --$j) {
     unset($auras[$j]);
   }
   $auras = array_values($auras);
+  return $cardID;
 }
 
 function AuraCostModifier()
@@ -166,71 +215,31 @@ function AuraCostModifier()
   return $modifier;
 }
 
-//NOTE: This happens at start of turn, so can't use the my/their directly
-function AuraDestroyAbility($cardID)
-{
-  global $mainPlayer;
-  switch ($cardID) {
-    case "WTR046":
-      return "Forged for War was destroyed at the beginning of your action phase.";
-    case "WTR047":
-      MainDrawCard();
-      return "Show Time! drew a card.";
-    case "WTR054":
-      return BlessingOfDeliveranceDestroy(3);
-    case "WTR055":
-      return BlessingOfDeliveranceDestroy(2);
-    case "WTR056":
-      return BlessingOfDeliveranceDestroy(1);
-    case "WTR069":
-    case "WTR070":
-    case "WTR071":
-      return EmergingPowerDestroy($cardID);
-    case "WTR072":
-    case "WTR073":
-    case "WTR074":
-      return "Stonewall Confidence was destroyed at the beginning of your action phase.";
-    case "CRU028":
-      return "Stamp Authority is destroyed at the beginning of your action phase.";
-    case "CRU029":
-    case "CRU030":
-    case "CRU031":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Towering Titan gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . ".";
-    case "CRU038":
-    case "CRU039":
-    case "CRU040":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Emerging Dominance gives your next Guardian Attack Action +" . EffectAttackModifier($cardID) . " and dominate.";
-    case "CRU144":
-      return "Runeblood Barrier is destroyed at the beginning of your action phase.";
-    case "ELE025":
-    case "ELE026":
-    case "ELE027":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Emerging Avalanche gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
-    case "ELE028":
-    case "ELE029":
-    case "ELE030":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Strength of Sequoia gives your next Attack Action +" . EffectAttackModifier($cardID) . ".";
-    case "ELE206":
-    case "ELE207":
-    case "ELE208":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
-      return "Embolden gives your next Guardian Attack Action card +" . EffectAttackModifier($cardID) . ".";
-    default:
-      return "";
-  }
-}
 
+// Start of Start Phase with Start of Turn Abilities. No players gain priority // CR 2.1 - 4.2.1. Players do not get priority during the Start Phase.
+// Start of Action Phase give players priority // CR 2.1 - 4.3.1. The “beginning of the action phase” event occurs and abilities that trigger at the beginning of the action phase are triggered.
 function AuraStartTurnAbilities()
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_EffectContext;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    $dest = AuraDestroyAbility($auras[$i]);
+    SetClassState($mainPlayer, $CS_EffectContext, $auras[$i]);
     switch ($auras[$i]) {
+      case "WTR046":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "WTR047":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "WTR054": case "WTR055": case "WTR056":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "WTR069": case "WTR070": case "WTR071":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "WTR072": case "WTR073": case "WTR074":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
       case "WTR075":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
@@ -238,44 +247,173 @@ function AuraStartTurnAbilities()
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "MON186":
-        SoulShackleStartTurn($mainPlayer);
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "MON006":
-        GenesisStartTurnAbility();
+        GenesisStartTurnAbility(); // No priority. Start Phase trigger.
+        break;
+      case "CRU028":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+      case "CRU029": case "CRU030": case "CRU031":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "CRU038": case "CRU039": case "CRU040":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "CRU075":
-        if ($auras[$i + 2] == 0) {
-          $dest = "Zen State is destroyed.";
-        } else {
-          --$auras[$i + 2];
-        }
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "CRU144":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "ELE025": case "ELE026": case "ELE027":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "ELE028": case "ELE029": case "ELE030":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "ELE206":
+      case "ELE207":
+      case "ELE208":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "ELE109":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      case "EVR107":
-      case "EVR108":
-      case "EVR109":
+      case "EVR107": case "EVR108": case "EVR109":
         WriteLog(CardLink($auras[$i], $auras[$i]) . " trigger creates a layer.");
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      case "EVR131":
-      case "EVR132":
-      case "EVR133":
-        $dest = "Pyroglyphic Protection is destroyed.";
+      case "EVR131": case "EVR132": case "EVR133":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "UPR190":
-        $dest = "Fog Down is destroyed.";
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
-      case "UPR218":
-      case "UPR219":
-      case "UPR220":
-        $dest = "Sigil of Protection is destroyed.";
+      case "UPR218": case "UPR219": case "UPR220":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      case "DYN013": case "DYN014": case "DYN015":
+        if ($auras[$i] == "DYN013") $amount = 3;
+        else if ($auras[$i] == "DYN014") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " give +" . $amount . "power to your next 6 or more base power attack.");
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "ARENA");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN029":
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        $hand = &GetHand($mainPlayer);
+        if(count($hand) == 0)
+        {
+          Draw($mainPlayer, false);
+          WriteLog("Drew a card from Never Yield.");
+        }
+        if(PlayerHasLessHealth($mainPlayer))
+        {
+          GainHealth(2, $mainPlayer);
+          WriteLog("Gained 2 health from Never Yield.");
+        }
+        if(PlayerHasFewerEquipment($mainPlayer))
+        {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which equipment to remove a -1 defense counter", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZGETCARDINDEX", $mainPlayer, "-", 1);
+          AddDecisionQueue("REMOVENEGDEFCOUNTER", $mainPlayer, "-", 1);
+          WriteLog("Removed a -1 counter from Never Yield.");
+        }
+        break;
+      case "DYN033": case "DYN034": case "DYN035":
+        if ($auras[$i] == "DYN033") $amount = 3;
+        else if ($auras[$i] == "DYN034") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " give " . $amount . " health to target hero.");
+        GainHealth($amount, $mainPlayer);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN048":
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " create a " . CardLink("DYN065", "DYN065") . " in your hand.");
+        AddPlayerHand("DYN065", $mainPlayer, "-");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN053": case "DYN054": case "DYN055":
+        if ($auras[$i] == "DYN053") $amount = 3;
+        else if ($auras[$i] == "DYN054") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) ." creates a " . CardLink("DYN065", "DYN065") . " and give it +" . $amount);
+        $index = BanishCardForPlayer("DYN065", $mainPlayer, "-", "TT", $mainPlayer);
+        $banish = &GetBanish($mainPlayer);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish[$index+2]);
+        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . "," . "BANISH");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN073": case "DYN074": case "DYN075":
+        if ($auras[$i] == "DYN073") $amount = 3;
+        else if ($auras[$i] == "DYN074") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " give +" . $amount . "power to your weapon next attack.");
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "ARENA");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN098": case "DYN099": case "DYN100":
+        if ($auras[$i] == "DYN098") $amount = 3;
+        else if ($auras[$i] == "DYN099") $amount = 2;
+        else $amount = 1;
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "ARC036", "DYN111", "DYN112"), SearchBanishForCardMulti($mainPlayer, "ARC036", "DYN111", "DYN112"));
+        $countHyper = count(explode(",", $searchHyper));
+        if ($amount > $countHyper) $amount = $countHyper;
+        for ($i = 0; $i < $amount; ++$i) {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=ARC036;cardID=DYN111;cardID=DYN112&MYBANISH:cardID=ARC036;cardID=DYN111;cardID=DYN112");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+          AddDecisionQueue("MZGETCARDID", $mainPlayer, "-", 1);
+          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
+          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        }
+        break;
+      case "DYN159": case "DYN160": case "DYN161":
+        if ($auras[$i] == "DYN159") $amount = 3;
+        else if ($auras[$i] == "DYN160") $amount = 2;
+        else $amount = 1;
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        Opt($auras[$i], $amount);
+        AddDecisionQueue("BLESSINGOFFOCUS", $mainPlayer, "-", 1);
+        break;
+		  case "DYN179": case "DYN180": case "DYN181":
+        if ($auras[$i] == "DYN179") $amount = 3;
+        else if ($auras[$i] == "DYN180") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " create " . $amount . " Runechant.");
+        PlayAura("ARC112", $mainPlayer, $amount, true);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN200": case "DYN201": case "DYN202":
+        if ($auras[$i] == "DYN200") $amount = 3;
+        else if ($auras[$i] == "DYN201") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " gives plus " . $amount . " damage to your next card if it deals arcane damage.");
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN218": case "DYN219": case "DYN220":
+        if ($auras[$i] == "DYN218") $amount = 3;
+        else if ($auras[$i] == "DYN219") $amount = 2;
+        else $amount = 1;
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " creates " . $amount . " spectral shield tokens.");
+        PlayAura("MON104", $mainPlayer, $amount);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "DYN217":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
         break;
     }
-    if ($dest != "") DestroyAura($mainPlayer, $i);
+    SetClassState($mainPlayer, $CS_EffectContext, "-");
   }
 }
 
@@ -319,7 +457,7 @@ function AuraBeginEndPhaseAbilities()
             AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:pitch=1;", 1);
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose " . $leftToBanish . " more " . $plurial . " to banish for Burn Them All", 1);
             AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-", 1);
+            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $mainPlayer, 1);
             AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
             AddDecisionQueue("DECDQVAR", $mainPlayer, "0", 1);
             --$leftToBanish;
@@ -346,6 +484,17 @@ function AuraBeginEndPhaseAbilities()
         break;
       case "ELE111":
         FrostHexEndTurnAbility($mainPlayer);
+        $remove = 1;
+        break;
+      case "DYN175":
+        if ($auras[$i + 2] == 0) $remove = 1;
+        else {
+          --$auras[$i + 2];
+          DealArcane(2, 2, "PLAYCARD", "DYN175", false, $mainPlayer);
+        }
+        break;
+      case "DYN244":
+        MyDrawCard();
         $remove = 1;
         break;
       default:
@@ -392,7 +541,7 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $mainClassState, $CS_NumNonAttackCards, $mainPlayer;
+  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithWeapon;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -409,6 +558,11 @@ function AuraEndTurnAbilities()
         break;
       case "UPR139":
         $remove = 1;
+        break;
+      case "DYN072":
+        if (GetClassState($mainPlayer, $CS_HitsWithWeapon) <= 0) {
+          $remove = 1;
+        }
         break;
       default:
         break;
@@ -431,24 +585,26 @@ function AuraEndTurnCleanup()
 
 function AuraTakeDamageAbilities($player, $damage, $type)
 {
-  $Auras = &GetAuras($player);
+  $auras = &GetAuras($player);
   $hasRunebloodBarrier = CountAura("CRU144", $player) > 0;
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
-  for ($i = count($Auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     if ($damage <= 0) {
       $damage = 0;
       break;
     }
-    switch ($Auras[$i]) {
+    switch ($auras[$i]) {
       case "ARC112":
-        if ($hasRunebloodBarrier && $preventable) {
-          $damage -= 1;
+        if ($hasRunebloodBarrier) {
+          if ($preventable) {
+            $damage -= 1;
+          }
           $remove = 1;
         }
-        break;;
+        break;
       case "ARC167":
         if ($preventable) $damage -= 4;
         $remove = 1;
@@ -489,10 +645,24 @@ function AuraTakeDamageAbilities($player, $damage, $type)
         if ($preventable) $damage -= 2;
         $remove = 1;
         break;
+      case "DYN217":
+        if ($preventable) $damage -= 1;
+        $remove = 1;
+        break;
+      case "DYN218": case "DYN219": case "DYN220":
+        if ($preventable) $damage -= 1;
+        $remove = 1;
+        break;
+      case "DYN221": case "DYN222": case "DYN223":
+        if ($preventable) $damage -= 1;
+        $remove = 1;
+        break;
       default:
         break;
     }
-    if ($remove == 1) DestroyAura($player, $i);
+    if ($remove == 1) {
+      DestroyAura($player, $i);
+    }
   }
   return $damage;
 }
@@ -544,53 +714,62 @@ function AuraLoseHealthAbilities($player, $amount)
   return $amount;
 }
 
-function AuraPlayAbilities($cardID, $from)
+function AuraPlayAbilities($attackID, $from="")
 {
   global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
   $auras = &GetAuras($currentPlayer);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    switch ($auras[$i]) {
-      case "MON157":
-        DimenxxionalCrossroadsPassive($cardID, $from);
-        break;
-      case "EVR143":
-        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
-          WriteLog("Pierce Reality gives the attack +2.");
-          --$auras[$i + 5];
-          AddCurrentTurnEffect("EVR143", $currentPlayer, true);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-}
-
-function AuraAttackAbilities($attackID)
-{
-  global $combatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
-  $auras = &GetAuras($mainPlayer);
-  $attackType = CardType($attackID);
-  $numRunechants = CountAura("ARC112", $mainPlayer);
-  if ($numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
+  $cardType = CardType($attackID);
+  $cardSubType = CardSubType($attackID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
       case "WTR225":
-        if ($attackType == "AA" || $attackType == "W") {
-          WriteLog("Quicken grants go again.");
+        if ($cardType == "AA" || ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
         }
         break;
       case "ARC112":
-        if ($attackType == "AA" || $attackType == "W") {
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        if ($cardType == "AA"|| ($cardSubType == "Aura" && $from == "PLAY") || ($cardType == "W" && GetResolvedAbilityType($attackID) == "AA")) {
+          $numRunechants = CountAura("ARC112", $currentPlayer);
+          if ($cardType == "AA" && $numRunechants > 0) WriteLog($numRunechants . " total Runechant tokens trigger incoming arcane damage.");
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
+      case "MON157":
+        DimenxxionalCrossroadsPassive($attackID, $from);
+        break;
+      case "EVR143":
+        if ($auras[$i + 5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2.");
+          --$auras[$i + 5];
+          AddCurrentTurnEffect("EVR143", $currentPlayer, true);
+        }
+        break;
+      case "ELE175":
+        if ($cardType == "A" || $cardType == "AA") {
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
+        }
+        break;
+      default:
+        break;
+    }
+  if ($remove == 1) DestroyAura($currentPlayer, $i);
+  }
+}
+
+function AuraAttackAbilities($attackID)
+{
+  global $combatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
+  $auras = &GetAuras($mainPlayer);
+  $attackType = CardType($attackID);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $remove = 0;
+    switch ($auras[$i]) {
       case "ELE110":
         if ($attackType == "AA") {
-          WriteLog("Embodiment of Lightning grants go again.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " grants go again.");
           GiveAttackGoAgain();
           $remove = 1;
         }
@@ -599,15 +778,15 @@ function AuraAttackAbilities($attackID)
         if ($attackType == "AA") DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
         break;
       case "EVR140":
-        if ($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
-          WriteLog("Shimmers of Silver puts a +1 counter.");
+        if ($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " puts a +1 counter.");
           --$auras[$i + 5];
           ++$auras[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
         }
         break;
       case "EVR142":
         if ($auras[$i + 5] > 0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
-          WriteLog("Passing Mirage makes your first illusionist attack each turn lose Phantasm.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " makes your first illusionist attack each turn lose Phantasm.");
           --$auras[$i + 5];
           AddCurrentTurnEffect("EVR142", $mainPlayer, true);
         }
@@ -629,27 +808,28 @@ function AuraHitEffects($attackID)
 {
   global $mainPlayer;
   $attackType = CardType($attackID);
+  $attackSubType = CardSubType($attackID);
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
       case "ARC106":
         if ($attackType == "AA") {
-          WriteLog("Bloodspill Invocation created 3 runechants.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " created 3 runechants.");
           PlayAura("ARC112", $mainPlayer, 3);
           $remove = 1;
         }
         break;
       case "ARC107":
         if ($attackType == "AA") {
-          WriteLog("Bloodspill Invocation created 2 runechants.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " created 2 runechants.");
           PlayAura("ARC112", $mainPlayer, 2);
           $remove = 1;
         }
         break;
       case "ARC108":
         if ($attackType == "AA") {
-          WriteLog("Bloodspill Invocation created 1 runechants.");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " created 1 runechants.");
           PlayAura("ARC112", $mainPlayer, 1);
           $remove = 1;
         }
@@ -712,9 +892,15 @@ function NumNonTokenAura($player)
 function DestroyAllThisAura($player, $cardID)
 {
   $auras = &GetAuras($player);
+  $count = 0;
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    if ($auras[$i] == $cardID) DestroyAura($player, $i);
+    if ($auras[$i] == $cardID)
+    {
+      DestroyAura($player, $i);
+      ++$count;
+    }
   }
+  return $count;
 }
 
 function GetAuraGemState($player, $cardID)

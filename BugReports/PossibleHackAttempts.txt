@@ -1,0 +1,6 @@
+Hack Attempt? 09/02/2022 03:47:12 am Request: /FaBOnline/NextTurn4.php?gameName=768&playerID=1 Game name: 768 IP: ::1 Target IP: 127.0.0.1 PlayerID: 1
+Hack Attempt? 09/02/2022 03:47:26 am Request: /FaBOnline/GetNextTurn2.php?gameName=768&playerID=1&lastUpdate=999999&authKey=3&windowWidth=1600&windowHeight=848 Game name: 768 IP: ::1 Target IP: 127.0.0.1 PlayerID: 1
+Hack Attempt? 09/02/2022 03:48:25 am Request: /FaBOnline/NextTurn4.php?gameName=768&playerID=1 Game name: 768 IP: ::1 Target IP: 127.0.0.1 PlayerID: 1
+Hack Attempt? 09/02/2022 03:49:26 am Request: /FaBOnline/NextTurn4.php?gameName=768&playerID=1 Game name: 768 IP: ::1 Target IP: 127.0.0.1 PlayerID: 1
+Hack Attempt? 09/02/2022 03:49:32 am Request: /FaBOnline/NextTurn4.php?gameName=768&playerID=1 Game name: 768 IP: ::1 Target IP: 127.0.0.1 PlayerID: 1
+Hack Attempt? 09/02/2022 03:49:56 am Request: /FaBOnline/NextTurn4.php?gameName=768&playerID=1 Game name: 768 IP: ::1 Target IP: 127.0.0.1 PlayerID: 1

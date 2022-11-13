@@ -1,21 +1,21 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $modifier = "-")
+function BanishCardForPlayer($cardID, $player, $from, $modifier = "-", $banishedBy = "")
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from);
-    else return BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from);
+    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $modifier, $player, $from, $banishedBy);
+    else return BanishCard($defBanish, $defClassState, $cardID, $modifier, $player, $from, $banishedBy);
   } else {
-    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from);
-    else return BanishCard($theirBanish, $theirClassState, $cardID, $modifier, $player, $from);
+    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $modifier, $player, $from, $banishedBy);
+    else return BanishCard($theirBanish, $theirClassState, $cardID, $modifier, $player, $from, $banishedBy);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "")
+function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $from = "", $banishedBy = "")
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
@@ -25,9 +25,14 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
   }
+  if (($modifier == "BOOST" && $from == "DECK") && ($cardID == "DYN101" || $cardID == "DYN102" || $cardID == "DYN103")) {
+    WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
+    AddLayer("TRIGGER", $player, $cardID);
+  }
   //Do effects that change where it goes, or banish it if not
-  if ($from == "DECK" && SearchCharacterActive($player, "CRU099") && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
-    PutItemIntoPlay($cardID);
+  if ($from == "DECK" && (SearchCharacterActive($player, "CRU099") || SearchCurrentTurnEffects("CRU099-SHIYANA", $player)) && CardSubType($cardID) == "Item" && CardCost($cardID) <= 2) {
+    $character = &GetPlayerCharacter($player);
+    AddLayer("TRIGGER", $player, $character[0], $cardID);
   } else {
     $rv = count($banish);
     array_push($banish, $cardID);
@@ -36,18 +41,21 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   }
   ++$classState[$CS_CardsBanished];
   if (AttackValue($cardID) >= 6) {
+    $character = &GetPlayerCharacter($player);
     if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer) {
-      $character = &GetPlayerCharacter($player);
-      if (($character[0] == "MON119" || $character[0] == "MON120") && $character[1] == 2) { // Levia
+      if (($character[0] == "MON119" || $character[0] == "MON120" || SearchCurrentTurnEffects("MON119-SHIYANA", $player) || SearchCurrentTurnEffects("MON120-SHIYANA", $player)) && $character[1] == 2) { // Levia
         WriteLog(CardLink($character[0], $character[0]) . " Banished a card with 6+ power, and won't lose health from Blood Debt this turn.");
       }
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "MON122");
-    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index)) {
+    if ($index >= 0 && IsEquipUsable($player, $index) && IsCharacterActive($player, $index) && $player == $mainPlayer) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
+
+  if($banishedBy != "") CheckContracts($banishedBy, $cardID);
+
   return $rv;
 }
 
@@ -77,6 +85,13 @@ function AddBottomDeck($cardID, $player, $from)
   $deck = &GetDeck($player);
   WriteReplay($player, $cardID, $from, "BOTTOM");
   array_push($deck, $cardID);
+}
+
+function AddTopDeck($cardID, $player, $from)
+{
+  $deck = &GetDeck($player);
+  WriteReplay($player, $cardID, $from, "TOP");
+  array_unshift($deck, $cardID);
 }
 
 function RemoveTopMyDeck()
@@ -125,15 +140,18 @@ function AddResourceCost($player, $amount)
   $resources[1] += $amount;
 }
 
-function AddArsenal($cardID, $player, $from, $facing)
+function AddArsenal($cardID, $player, $from, $facing, $counters=0)
 {
   global $mainPlayer;
   $arsenal = &GetArsenal($player);
+  $character = &GetPlayerCharacter($player);
+  $cardSubType = CardSubType($cardID);
+  if ($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
   WriteReplay($player, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
   array_push($arsenal, ArsenalNumUsesPerTurn($cardID)); //Num uses
-  array_push($arsenal, "0"); //Counters
+  array_push($arsenal, $counters); //Counters
   array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
   array_push($arsenal, GetUniqueId()); //Unique ID
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -203,14 +221,21 @@ function AddSoul($cardID, $player, $from)
   WriteReplay($player, $cardID, $from, "SOUL");
   global $CS_NumAddedToSoul;
   global $myStateBuiltFor;
-  if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
-    else AddSpecificSoul($cardID, $defSoul, $from);
-  } else {
-    if ($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
-    else AddSpecificSoul($cardID, $theirSoul, $from);
+  if($cardID == "DYN066")
+  {
+    WriteLog("The spirit of Eirina is inside you, always.");
+    PutItemIntoPlayForPlayer($cardID, $player);
   }
-  IncrementClassState($player, $CS_NumAddedToSoul);
+  else {
+    if ($mainPlayerGamestateStillBuilt) {
+      if ($player == $mainPlayer) AddSpecificSoul($cardID, $mainSoul, $from);
+      else AddSpecificSoul($cardID, $defSoul, $from);
+    } else {
+      if ($player == $myStateBuiltFor) AddSpecificSoul($cardID, $mySoul, $from);
+      else AddSpecificSoul($cardID, $theirSoul, $from);
+    }
+    IncrementClassState($player, $CS_NumAddedToSoul);
+  }
 }
 
 function AddSpecificSoul($cardID, &$soul, $from)
@@ -220,7 +245,7 @@ function AddSpecificSoul($cardID, &$soul, $from)
 
 function BanishFromSoul($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
 
@@ -326,11 +351,14 @@ function AddGraveyard($cardID, $player, $from)
     BanishCardForPlayer($cardID, $player, $from, "NA");
     return;
   } else if ($cardID == "CRU007" && $from != "CC") {
-    AddDecisionQueue("BEASTWITHIN", $player, "-");
+    AddLayer("TRIGGER", $player, $cardID);
   }
   if ($cardID == "WTR164" || $cardID == "WTR165" || $cardID == "WTR166") {
     AddBottomDeck($cardID, $player, $from);
-  } else {
+  } elseif (HasEphemeral($cardID)) {
+    return;
+  }
+  else {
     IncrementClassState($player, $CS_CardsEnteredGY);
     if ($mainPlayerGamestateStillBuilt) {
       if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
@@ -395,15 +423,17 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
   $index = $params[1];
   $cardID = $layers[$index];
   $player = $layers[$index + 1];
-  for ($i = $index + LayerPieces(); $i >= $index; --$i) {
+  for ($i = $index + LayerPieces()-1; $i >= $index; --$i) {
     unset($layers[$i]);
   }
   $layers = array_values($layers);
   switch ($goesWhere) {
     case "GY":
-      AddGraveyard($player, $cardID, "LAYER");
+      AddGraveyard($cardID, $player, "LAYER");
+      break;
     case "HAND":
       AddPlayerHand($cardID, $player, "LAYER");
+      break;
     default:
       break;
   }

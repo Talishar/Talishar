@@ -13,7 +13,7 @@ function PlayAlly($cardID, $player, $subCards = "-")
   array_push($allies, 0); //Life Counters
   array_push($allies, 1); //Ability/effect uses
   if ($cardID == "UPR414") {
-    WriteLog("Ouvia lets you transform an ashling.");
+    WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
     Transform($player, "Ash", "UPR042", true);
   }
   return count($allies) - AllyPieces();
@@ -21,17 +21,38 @@ function PlayAlly($cardID, $player, $subCards = "-")
 
 function DestroyAlly($player, $index, $skipDestroy = false)
 {
+  global $combatChain, $mainPlayer;
   $allies = &GetAllies($player);
   if (!$skipDestroy) {
     AllyDestroyedAbility($player, $index);
+    if (ClassContains($allies[$index], "ILLUSIONIST", $player) && SearchCharacterActive($player, "UPR152") && count($combatChain) > 0 && $player == $mainPlayer) {
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, 3, 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("GAINACTIONPOINTS", $player, "1", 1);
+      AddDecisionQueue("FINDINDICES", $player, "EQUIPCARD,UPR152", 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+    }
   }
   if (IsSpecificAllyAttacking($player, $index)) {
     CloseCombatChain();
   }
+  //Dragon Allies
   if (CardType($allies[$index]) != "T" && DelimStringContains(CardSubType($allies[$index]), "Dragon")) {
     $set = substr($allies[$index], 0, 3);
     $number = intval(substr($allies[$index], -3));
     $number -= 400;
+    $id = $number;
+    if ($number < 100) $id = "0" . $id;
+    if ($number < 10) $id = "0" . $id;
+    $id = $set . $id;
+    AddGraveyard($id, $player, "PLAY");
+  }
+  //Non-token ashes
+  if (CardType($allies[$index + 4]) != "T" && DelimStringContains(CardSubType($allies[$index + 4]), "Ash")) {
+    $set = substr($allies[$index + 4], 0, 3);
+    $number = intval(substr($allies[$index + 4], -3));
     $id = $number;
     if ($number < 100) $id = "0" . $id;
     if ($number < 10) $id = "0" . $id;
@@ -75,6 +96,8 @@ function AllyHealth($cardID)
       return 1;
     case "UPR417":
       return 3;
+    case "DYN612":
+      return 4;
     default:
       return 1;
   }
@@ -89,7 +112,7 @@ function AllyDestroyedAbility($player, $index)
     case "UPR410":
       if ($player == $mainPlayer && $allies[$index + 8] > 0) {
         GainActionPoints(1);
-        WriteLog("Cromai leaves the arena. Gain 1 action point.");
+        WriteLog(CardLink($cardID, $cardID) . " leaves the arena. Gain 1 action point.");
         --$allies[$index + 8];
       }
       break;
@@ -110,7 +133,7 @@ function AllyStartTurnAbilities($player)
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     switch ($allies[$i]) {
       case "UPR414":
-        WriteLog("Ouvia lets you transform an ashling.");
+        WriteLog(CardLink($allies[$i], $allies[$i]) . " lets you transform up to 1 ash into an Ashwing.");
         Transform($player, "Ash", "UPR042", true);
         break;
       default:
@@ -133,11 +156,13 @@ function AllyDamagePrevention($player, $index, $damage)
 {
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
+  $canBePrevented = CanDamageBePrevented($player, $damage, "");
+
   switch ($cardID) {
     case "UPR417":
       if ($allies[$index + 6] > 0) {
         if ($damage > 0) --$allies[$index + 6];
-        $damage -= 3;
+        if ($canBePrevented) $damage -= 3;
         if ($damage < 0) $damage = 0;
       }
       return $damage;
@@ -146,6 +171,7 @@ function AllyDamagePrevention($player, $index, $damage)
   }
 }
 
+//NOTE: This is for ally abilities that trigger when any ally attacks (for example miragai GRANTS an ability)
 function AllyAttackAbilities($attackID)
 {
   global $mainPlayer, $CS_NumDragonAttacks;
@@ -164,16 +190,80 @@ function AllyAttackAbilities($attackID)
   }
 }
 
+//NOTE: This is for the actual attack abilities that allies have
 function SpecificAllyAttackAbilities($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $allies = &GetAllies($mainPlayer);
   $i = $combatChainState[$CCS_WeaponIndex];
   switch ($allies[$i]) {
+    case "UPR406":
+      if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
+        $deck = &GetDeck($mainPlayer);
+        $numRed = 0;
+        $redRevealed = "";
+        $cardsReveal = "";
+        for ($j = 0; $j < 3 && $j < count($deck); ++$j) {
+          if (PitchValue($deck[$j]) == 1) {
+            ++$numRed;
+            if ($redRevealed != "") $redRevealed .= ",";
+            $redRevealed .= $deck[$j];
+          }
+          if ($cardsReveal != "") $cardsReveal .= ",";
+          $cardsReveal .= $deck[$j];
+        }
+        RevealCards($cardsReveal); //CanReveal checked
+        if ($redRevealed) {
+          //WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
+          DealArcane($numRed * 2, 2, "ABILITY", $allies[$i], false, $mainPlayer);
+        }
+      }
+      return "";
+    case "UPR407":
+      if (IsHeroAttackTarget() && CanRevealCards($mainPlayer)) {
+        $deck = &GetDeck($mainPlayer);
+        $numRed = 0;
+        $cardsReveal = "";
+        for ($j = 0; $j < 2 && $j < count($deck); ++$j) {
+          if (PitchValue($deck[$j]) == 1) {
+            ++$numRed;
+          }
+          if ($cardsReveal != "") $cardsReveal .= ",";
+          $cardsReveal .= $deck[$j];
+        }
+        RevealCards($cardsReveal); //CanReveal checked
+        if ($numRed > 0) {
+          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          if ($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
+          AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+        }
+      }
+      return "";
+    case "UPR408":
+      if (IsHeroAttackTarget()) {
+        $deck = &GetDeck($mainPlayer);
+        if (count($deck) == 0) return "You have no cards in your deck.";
+        $wasRevealed = RevealCards($deck[0]);
+        if ($wasRevealed && PitchValue($deck[0]) == 1) {
+          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("CHOOSETHEIRHAND", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+          AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
+        }
+      }
+      return "";
+    case "UPR409":
+      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, true);
+      DealArcane(1, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, true, false);
+      return "";
     case "UPR410":
       if ($attackID == $allies[$i] && $allies[$i + 8] > 0) {
         GainActionPoints(1);
-        WriteLog("Cromai Attacks: Gain 1 action point.");
+        WriteLog(CardLink($allies[$i], $allies[$i]) . " Attacks: Gain 1 action point.");
         --$allies[$i + 8];
       }
       break;
@@ -182,22 +272,53 @@ function SpecificAllyAttackAbilities($attackID)
   }
 }
 
-function AllyDamageTakenAbilities($player, $index)
+function AllyDamageTakenAbilities($player, $i)
 {
   $allies = &GetAllies($player);
-  switch ($allies[$index]) {
+  switch ($allies[$i]) {
     case "UPR413":
-      $allies[$index + 2] -= 1;
-      $allies[$index + 7] -= 1;
+      $allies[$i + 2] -= 1;
+      $allies[$i + 7] -= 1;
       PutPermanentIntoPlay($player, "UPR043");
-      WriteLog("Nekria got a -1 health counter and created an ash token.");
+      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 health counter and created an ash token.");
       break;
     default:
       break;
   }
 }
 
-function AllyBeginEndPhaseEffects()
+function AllyTakeDamageAbilities($player, $damage, $type)
+{
+  $allies = &GetAllies($player);
+  $otherPlayer = $player == 1 ? 1 : 2;
+  //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
+  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
+  for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
+    $remove = 0;
+    switch ($allies[$i]) {
+      case "DYN612":
+        if ($damage > 0) {
+          if ($preventable) $damage -= 4;
+          $remove = 1;
+        }
+        break;
+      default:
+        break;
+    }
+    if ($remove == 1) {
+      DestroyAlly($player, $i);
+      if (HasWard($allies[$i]) && SearchCharacterActive($player, "DYN213") && CardType($allies[$i]) != "T") {
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        GainResources($player, 1);
+      }
+    }
+  }
+  if ($damage <= 0) $damage = 0;
+  return $damage;
+}
+
+function AllyBeginEndTurnEffects()
 {
   global $mainPlayer, $defPlayer;
   //CR 2.0 4.4.3a Reset health for all allies

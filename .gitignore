@@ -1,5 +1,6 @@
 /CardImages/
 /Games/
+/Roguelike/Games/
 /HostFiles/Redirector.php
 HostFiles/GameIDCounter.txt
 HostFiles/GameIDCounter.txt
@@ -33,3 +34,6 @@ WTRDraftFiles/HostFiles/Counter.txt
 .DS_Store
 CardDictionaries/.DS_Store
 Images/.DS_Store
+vendor
+.DS_Store
+CardDictionaries/.DS_Store

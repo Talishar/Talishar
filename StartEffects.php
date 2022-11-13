@@ -12,6 +12,7 @@ $p1H = &GetHealth(1);
 $p2H = &GetHealth(2);
 $p1H = CharacterHealth($p1Char[0]);
 $p2H = CharacterHealth($p2Char[0]);
+if($p1StartingHealth != "") $p1H = $p1StartingHealth;
 StartReplay();
 
 $mainPlayer = $firstPlayer;
@@ -28,15 +29,23 @@ if ($p2Char[0] == "DUMMY") {
 //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
 //Dash
 if ($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002") {
-  $items = SearchDeck(1, "", "Item", 2);
+  $items = SearchDeck(1, "", "Item", 2, -1, "MECHANOLOGIST");
   AddDecisionQueue("CHOOSEDECK", 1, $items);
-  AddDecisionQueue("PUTPLAY", 1, "0");
+  AddDecisionQueue("SETDQVAR", 1, "0");
 }
 if ($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002") {
-  $items = SearchDeck(2, "", "Item", 2);
+  $items = SearchDeck(2, "", "Item", 2, -1, "MECHANOLOGIST");
   AddDecisionQueue("CHOOSEDECK", 2, $items);
-  AddDecisionQueue("PUTPLAY", 2, "0");
+  AddDecisionQueue("SETDQVAR", 2, "1");
 }
+// Syncronous item put in play so there's no advantage in the mirror match-ups
+if ($p1Char[0] == "ARC001" || $p1Char[0] == "ARC002") {
+  AddDecisionQueue("PUTPLAYITEMDQVAR", 1, "0");
+}
+if ($p2Char[0] == "ARC001" || $p2Char[0] == "ARC002") {
+  AddDecisionQueue("PUTPLAYITEMDQVAR", 2, "1");
+}
+
 //Fai
 if ($p1Char[0] == "UPR044" || $p1Char[0] == "UPR045") {
   $cards = SearchDeckForCard(1, "UPR101");
@@ -52,8 +61,29 @@ if ($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045") {
     AddDecisionQueue("ADDDISCARD", 2, "DECK", 1);
   }
 }
-AddDecisionQueue("SHUFFLEDECK", 1, "-"); //CR 2.0 4.1.7 Shuffle Deck
-AddDecisionQueue("SHUFFLEDECK", 2, "-"); //CR 2.0 4.1.7 Shuffle Deck
+
+//Crown of Dominion
+if(SearchCharacterForCard(1, "DYN234")) {
+  AddDecisionQueue("STARTOFGAMEPUTPLAY", 1, "DYN243");
+}
+if(SearchCharacterForCard(2, "DYN234")) {
+  AddDecisionQueue("STARTOFGAMEPUTPLAY", 2, "DYN243");
+}
+
+//Seasoned Saviour
+if (SearchCharacterForCard(1, "DYN026")) {
+  $index = FindCharacterIndex(1, "DYN026");
+  $p1Char[$index + 4] = -2;
+  WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
+}
+if (SearchCharacterForCard(2, "DYN026")) {
+  $index = FindCharacterIndex(2, "DYN026");
+  $p2Char[$index + 4] = -2;
+  WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
+}
+
+AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
+AddDecisionQueue("SHUFFLEDECK", 2, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("DRAWTOINTELLECT", 1, "-"); //CR 2.0 4.1.9 Draw to Intellect
 AddDecisionQueue("DRAWTOINTELLECT", 2, "-"); //CR 2.0 4.1.9 Draw to Intellect
 AddDecisionQueue("STARTGAME", $mainPlayer, "-"); //CR ?? Start Game
@@ -63,8 +93,6 @@ ProcessDecisionQueue();
 
 DoGamestateUpdate();
 include "WriteGamestate.php";
-
-MakeStartTurnBackup();
 
 ?>
 

@@ -19,8 +19,9 @@ if (isset($_POST["submit"])) {
     header("location: ../Signup.php?error=emptyinput");
 		exit();
   }
+
 	// Proper username chosen
-  if (invalidUid($uid) !== false) {
+  if (invalidUid($username) !== false) {
     header("location: ../Signup.php?error=invaliduid");
 		exit();
   }
@@ -44,6 +45,7 @@ if (isset($_POST["submit"])) {
 
   // Now we insert the user into the database
   createUser($conn, $username, $email, $pwd);
+  createUser($conn, $username, $email, $pwd, true);
 
 } else {
 	header("location: ../Signup.php");

@@ -1,11 +1,8 @@
 <?php
 include_once 'Header.php';
-?>
-
-<?php
-
 include "HostFiles/Redirector.php";
 include "Libraries/HTTPLibraries.php";
+include_once "Libraries/PlayerSettings.php";
 
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
@@ -13,6 +10,22 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 $playerID = $_GET["playerID"];
+if($playerID == "1")
+{
+  echo("Player 1 should not use JoinGame.php");
+  exit;
+}
+
+$settingArray = [];
+if(isset($_SESSION["userid"]))
+{
+  $savedSettings = LoadSavedSettings($_SESSION["userid"]);
+  for($i=0; $i<count($savedSettings); $i+=2)
+  {
+    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
+  }
+}
+
 ?>
 <style>
   body {
@@ -43,10 +56,12 @@ $playerID = $_GET["playerID"];
   if (isset($_SESSION["userid"])) {
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if (count($favoriteDecks) > 0) {
+      $selIndex = -1;
+      if(isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
       echo ("<div class='DeckToTry'>Favorite Decks: ");
-      echo ("<select style='height:26px;' name='favoriteDecks' id='favoriteDecks'>");
+      echo ("<select style='height:26px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
       for ($i = 0; $i < count($favoriteDecks); $i += 3) {
-        echo ("<option value='" . $favoriteDecks[$i] . "'>" . $favoriteDecks[$i + 1] . "</option>");
+        echo ("<option value='" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
       }
       echo ("</select></div><br>");
     }
@@ -54,23 +69,23 @@ $playerID = $_GET["playerID"];
   if (count($favoriteDecks) == 0) {
     echo ("<div class='DeckToTry'>CC Starter Decks: ");
     echo ("<select name='decksToTry' id='decksToTry'>");
-    echo ("<option value='1'>Bravo Starter Deck</option>");
-    echo ("<option value='2'>Rhinar Starter Deck</option>");
-    echo ("<option value='3'>Katsu Starter Deck</option>");
-    echo ("<option value='4'>Dorinthea Starter Deck</option>");
-    echo ("<option value='5'>Dash Starter Deck</option>");
-    echo ("<option value='6'>Viserai Starter Deck</option>");
-    echo ("<option value='7'>Kano Starter Deck</option>");
-    echo ("<option value='8'>Azalea Starter Deck</option>");
-    echo ("<option value='9'>Prism Starter Deck</option>");
-    echo ("<option value='10'>Levia Starter Deck</option>");
-    echo ("<option value='11'>Boltyn Starter Deck</option>");
-    echo ("<option value='12'>Chane Starter Deck</option>");
-    echo ("<option value='13'>Oldhim Starter Deck</option>");
-    echo ("<option value='14'>Briar Starter Deck</option>");
-    echo ("<option value='15'>Lexi Starter Deck</option>");
-    echo ("<option value='16'>Fai Starter Deck</option>");
-    echo ("<option value='17'>Dromai Starter Deck</option>");
+    echo ("<option value='1'>Bravo CC Starter Deck</option>");
+    echo ("<option value='2'>Rhinar CC Starter Deck</option>");
+    echo ("<option value='3'>Katsu CC Starter Deck</option>");
+    echo ("<option value='4'>Dorinthea CC Starter Deck</option>");
+    echo ("<option value='5'>Dash CC Starter Deck</option>");
+    echo ("<option value='6'>Viserai CC Starter Deck</option>");
+    echo ("<option value='7'>Kano CC Starter Deck</option>");
+    echo ("<option value='8'>Azalea CC Starter Deck</option>");
+    echo ("<option value='9'>Prism Blitz Starter Deck</option>");
+    echo ("<option value='10'>Levia Blitz Starter Deck</option>");
+    echo ("<option value='11'>Boltyn Blitz Starter Deck</option>");
+    echo ("<option value='12'>Chane Blitz Starter Deck</option>");
+    echo ("<option value='13'>Oldhim BlitzStarter Deck</option>");
+    echo ("<option value='14'>Briar Blitz Starter Deck</option>");
+    echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
+    echo ("<option value='16'>Fai Blitz Starter Deck</option>");
+    echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
     echo ("</select></div><br>");
   }
 

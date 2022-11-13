@@ -1,4 +1,5 @@
 <?php
+include 'functions.inc.php';
 
 // First we check if the form was submitted.
 if (isset($_POST['reset-request-submit'])) {
@@ -6,7 +7,7 @@ if (isset($_POST['reset-request-submit'])) {
   $selector = bin2hex(random_bytes(8));
   $token = random_bytes(32);
 
-  $url = "www.fleshandbloodonline.com/FaBOnline/CreateNewPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
+  $url = "https://www.talishar.net/game/CreateNewPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
   // $url = "www.localhost/FaBOnline/CreateNewPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
 
   $expires = date("U") + 1800;
@@ -41,23 +42,23 @@ if (isset($_POST['reset-request-submit'])) {
   mysqli_stmt_close($stmt);
   mysqli_close($conn);
 
-  $to = $userEmail;
+  // $to = $userEmail;
 
-  $subject = 'Reset your password for Flesh and Blood Online';
+  // $subject = 'Reset your password for Flesh and Blood Online';
 
-  // Message
-  $message = '<p>We recieved a password reset request. The link to reset your password is below. ';
-  $message .= 'If you did not make this request, you can ignore this email</p>';
-  $message .= '<p>Here is your password reset link: </br>';
-  $message .= '<a href="' . $url . '">' . $url . '</a></p>';
+  // // Message
+  // $message = '<p>We recieved a password reset request. The link to reset your password is below. ';
+  // $message .= 'If you did not make this request, you can ignore this email</p>';
+  // $message .= '<p>Here is your password reset link: </br>';
+  // $message .= '<a href="' . $url . '">' . $url . '</a></p>';
 
-  // Headers
-  $headers = "From: Fleshandbloodonline <Fleshandbloodonline@gmail.com>\r\n";
-  $headers .= "Reply-To: Fleshandbloodonline@gmail.com\r\n";
-  $headers .= "Content-type: text/html\r\n";
+  // // Headers
+  // $headers = "From: Talishar <fleshandbloodonline@gmail.com>\r\n";
+  // $headers .= "Reply-To: fleshandbloodonline@gmail.com\r\n";
+  // $headers .= "Content-type: text/html\r\n";
 
   // Send e-mail
-  mail($to, $subject, $message, $headers);
+  sendEmail($userEmail, $url);
 
   // Finally we send them back to a page telling them to check their e-mail.
   header("Location: ../ResetPassword.php?reset=success");

@@ -3,6 +3,7 @@
 function CardName($cardID)
 {
     $arr = str_split($cardID, 3);
+    if(count($arr) < 2) return "";
     $set = $arr[0];
     $num = $arr[1];
 
@@ -10,7 +11,6 @@ $showPitch = false;
 
 if ($set == "ARC")
 	{  switch($num)	   {
-
 		case "000": return "Eye of Ophidia";
 		case "001": return "Dash, Inventor Extraordinaire";
 		case "002": return "Dash";
@@ -417,7 +417,7 @@ if ($set == "CRU")
 		case "179": return "Gambler's Gloves";
 		case "180": return "Coax a Commotion";
 		case "181": return "Gorganian Tome";
-		case "182": return "Shag";
+		case "182": return "Snag";
 		case "183": return "Promise of Plenty";
 		case "184": return "Promise of Plenty";
 		case "185": return "Promise of Plenty";
@@ -548,7 +548,7 @@ if ($set == "ELE")
 		case "107": return "Rejuvenate";
 		case "108": return "Rejuvenate";
 		case "109": return "Embodiment of Earth";
-		case "110": return "mbodiment of Lightnin";
+		case "110": return "Embodiment of Lightning";
 		case "111": return "Frostbite";
 		case "112": return "Pulse of Volthaven";
 		case "113": return "Pulse of Candlehold";
@@ -991,8 +991,12 @@ if ($set == "MON")
 		case "400": return "Spell Fray Cloak";
 		case "401": return "Spell Fray Gloves";
 		case "402": return "Spell Fray Leggings";
-
-		   }	}
+		case "404": return "The Librarian";
+		case "405": return "Minerva Themis";
+		case "406": return "Lady Barthimont";
+		case "407": return "Lord Sutcliffe";
+		}
+	}
 if($set == "UPR"){
   switch($num)
   {
@@ -1202,9 +1206,160 @@ if($set == "RVD"){
     case "025": return "Clearing Bellow";
     case "026": return "Dodge";
     case "027": return "Titanium Bauble";
-
     default: return "Name not populated - please report bug";
   }
+}
+if ($set == "DYN") {
+	switch ($num) {
+		case "001": return "Emperor, Dracai of Aesir";
+		case "002": return "Dust from the Golden Plains";
+		case "003": return "Dust from the Red Desert";
+		case "004": return "Dust from the Shadow Crypts";
+		//Brute
+ 		case "005": return "Rok";
+ 		case "006": return "Beaten Trackers";
+		case "007": return "Savage Beatdown";
+    	case "008": return "Skull Crack";
+		case "009": return "Berserk";
+		case "010": case "011": case "012": return "Reincarnate";
+		case "013": case "014": case "015": return "Blessing of Savagery";
+		case "016": case "017": case "018": return "Madcap Charger";
+		case "019": case "020": case "021": return "Madcap Muscle";
+		case "022": case "023": case "024": return "Rumble Grunting";
+		case "025": return "Yoji, Royal Protector";
+		case "026": return "Seasoned Saviour";
+    //Guardian
+		case "027": return "Steelbraid Buckler";
+		case "028": return "Buckle";
+		case "029": return "Never Yield";
+		case "030": case "031": case "032": return "Shield Bash";
+		case "033": case "034": case "035": return "Blessing of Patience";
+		case "036": case "037": case "038": return "Shield Wall";
+		case "039": case "040": case "041": return "Reinforce Steel";
+		case "042": case "043": case "044": return "Withstand";
+		//Ninja
+		case "045": return "Blazen Yoroi";
+		case "046": return "Tearing Shuko";
+		case "047": return "Tiger Swipe";
+		case "048": return "Mindstate of Tiger";
+		case "049": return "Roar of the Tiger";
+		case "050": case "051": case "052": return "Flex Claws";
+		case "053": case "054": case "055": return "Blessing of Qi";
+		case "056": case "057": case "058": return "Pouncing Qi";
+		case "059": case "060": case "061": return "Qi Unleashed";
+		case "062": case "063": case "064": return "Predatory Streak";
+		case "065": return "Crouching Tiger";
+		//Warrior
+		case "066": return "Spirit of Eirina";
+		case "067": return "Jubeel, Spellbane";
+		case "068": return "Merciless Battleaxe";
+		case "069": case "070": return "Quicksilver Dagger";
+    	case "071": return "Cleave";
+		case "072": return "Ironsong Pride";
+		case "073": case "074": case "075": return "Blessing of Steel";
+		case "076": case "077": case "078": return "Precision Press";
+		case "079": case "080": case "081": return "Puncture";
+		case "082": case "083": case "084": return "Felling Swing";
+		case "085": case "086": case "087": return "Visit the Imperial Forge";
+    	//Mechanologist
+		case "088": return "Hanabi Blaster";
+		case "089": return "Galvanic Bender";
+		case "090": return "Pulsewave Harpoon";
+		case "091": return "Bios Update";
+		case "092": return "Construct Nitro Mechanoid";
+    	case "093": return "Plasma Mainline";
+		case "094": return "Powder Keg";
+		case "095": case "096": case "097": return "Scramble Pulse";
+		case "098": case "099": case "100": return "Blessing of Ingenuity";
+		case "101": case "102": case "103": return "Crankshaft";
+		case "104": case "105": case "106": return "Jump Start";
+		case "107": case "108": case "109": return "Urgent Delivery";
+		case "110": case "111": case "112": return "Hyper Drive";
+		case "492": return "Nitro Mechanoid";
+		case "492a": return "Nitro Mechanoid";
+		case "492b": return "Nitro Mechanoid";
+		case "492c": return "Nitro Mechanoid";
+    	//Assassin
+		case "113": return "Arakni, Huntsman";
+		case "114": return "Arakni";
+		case "115": case "116": return "Spider's Bite";
+		case "117": return "Blacktek Whisperers";
+		case "118": return "Mask of Perdition";
+		case "119": return "Eradicate";
+		case "120": return "Leave No Witnesses";
+		case "121": return "Regicide";
+		case "122": return "Surgical Extraction";
+		case "123": return "Pay Day";
+		case "124": case "125": case "126": return "Plunder the Poor";
+		case "127": case "128": case "129": return "Rob the Rich";
+		case "130": case "131": case "132": return "Shred";
+		case "133": case "134": case "135": return "Annihilate the Armed";
+		case "136": case "137": case "138": return "Fleece the Frail";
+		case "139": case "140": case "141": return "Nix the Nimble";
+		case "142": case "143": case "144": return "Sack the Shifty";
+		case "145": case "146": case "147": return "Slay the Scholars";
+    	case "148": case "149": case "150": return "Cut to the Chase";
+		//Ranger
+		case "151": return "Sandscour Greatbow";
+		case "152": return "Hornet's Sting";
+    	case "153": return "Heat Seeker";
+		case "154": return "Immobilizing Shot";
+		case "155": return "Dead Eye";
+		case "156": case "157": case "158": return "Drill Shot";
+		case "159": case "160": case "161": return "Blessing of Focus";
+		case "162": case "163": case "164": return "Hemorrhage Bore";
+		case "165": case "166": case "167": return "Long Shot";
+		case "168": case "169": case "170": return "Point the Tip";
+		//Runeblade
+		case "171": return "Amethyst Tiara";
+		case "172": return "Annals of Sutcliffe";
+		case "173": return "Cryptic Crossing";
+		case "174": return "Diabolic Ultimatum";
+    	case "175": return "Looming Doom";
+    	case "176": case "177": case "178": return "Deathly Duet";
+		case "179": case "180": case "181": return "Blessing of Occult";
+		case "182": case "183": case "184": return "Aether Slash";
+		case "185": case "186": case "187": return "Runic Reaping";
+		case "188": case "189": case "190": return "Sky Fire Lanterns";
+		//Wizard
+		case "192": return "Surgent Aethertide";
+		case "193": return "Seerstone";
+    	case "194": return "Mind Warp";
+		case "195": return "Swell Tidings";
+		case "196": return "Brainstorm";
+		case "197": case "198": case "199": return "Aether Quickening";
+		case "200": case "201": case "202": return "Blessing of Aether";
+		case "203": case "204": case "205": return "Prognosticate";
+		case "206": case "207": case "208": return "Sap";
+		case "209": case "210": case "211": return "Tempest Aurora";
+		//Illusionist
+		case "212": return "Invoke Suraya";
+		case "213": return "Celestial Kimono";
+		case "214": return "Wave of Reality";
+		case "215": return "Phantasmal Symbiosis";
+		case "216": return "Spectral Procession";
+		case "217": return "Tome of Aeo";
+		case "218": return "Blessing of Spirits";
+		case "221": case "222": case "223": return "Tranquil Passing";
+		case "224": case "225": case "226": return "Spectral Prowler";
+		case "227": case "228": case "229": return "Spectral Rider";
+		case "230": case "231": case "232": return "Water Glow Lanterns";
+		case "612": return "Suraya, Archangel of Knowledge";
+		//Generic
+		case "234": return "Crown of Dominion";
+		case "235": return "Ornate Tessen";
+		case "236": return "Spell Fray Tiara";
+		case "237": return "Spell Fray Cloack";
+		case "238": return "Spell Fray Gloves";
+		case "239": return "Spell Fray Leggings";
+    	case "240": return "Imperial Edict";
+    	case "241": return "Imperial Ledger";
+		case "242": return "Imperial Warhorn";
+		case "243": return "Gold";
+		case "244": return "Ponder";
+		case "246": return "Spellbane Aegis";
+		default: return "Name not populated - please report bug";
+	}
 }
 if($set == "WTR"){
   switch($num)
@@ -1409,9 +1564,9 @@ if($set == "WTR"){
 		case "197": return "Regurgitating Slog";
 		case "198": return "Regurgitating Slog";
 		case "199": return "Regurgitating Slog";
-		case "200": return "‘Wounded Bull";
-		case "201": return "‘Wounded Bull";
-		case "202": return "‘Wounded Bull";
+		case "200": return "Wounded Bull";
+		case "201": return "Wounded Bull";
+		case "202": return "Wounded Bull";
 		case "203": return "Wounding Blow";
 		case "204": return "Wounding Blow";
 		case "205": return "Wounding Blow";
@@ -1435,12 +1590,10 @@ if($set == "WTR"){
 		case "223": return "Sloggism";
 		case "224": return "Cracked Bauble";
 		case "225": return "Quicken";
-
-		   }	}
-
-
-              else if ($set == "EVR")
-              	{  switch($num)	   {
+		   }
+		}
+		 else if ($set == "EVR")
+        		{  switch($num)	   {
 
               		case "000": if ($showPitch == false) return "Grandeur of Valahai";
               			else return "Grandeur of Valahai (blue)";
@@ -1546,8 +1699,8 @@ if($set == "WTR"){
               			else return "Shatter (yellow)";
               		case "055": if ($showPitch == false) return "Blood on Her Hands";
               			else return "Blood on Her Hands (yellow)";
-              		case "056": if ($showPitch == false) return "Qath of Steel";
-              			else return "Qath of Steel (red)";
+              		case "056": if ($showPitch == false) return "Oath of Steel";
+              			else return "Oath of Steel (red)";
               		case "057": if ($showPitch == false) return "Slice and Dice";
               			else return "Slice and Dice (red)";
               		case "058": if ($showPitch == false) return "Slice and Dice";
@@ -1816,9 +1969,7 @@ if($set == "WTR"){
               		case "196": return "Quicken";
               		case "197": return "Frostbite";
               		case "198": return "Frostbite";
-
-               } }
-
-        return "";    }
-
-?>
+               }
+			}
+        return "";
+	}

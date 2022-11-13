@@ -16,7 +16,7 @@
         } else {
           $cost = 3;
         }
-        return ($cost < 0 ? 0 : $cost);
+        return $cost;
       case "UPR046": return 2;
       case "UPR084": return 1;
       case "UPR136": return 3;
@@ -252,8 +252,8 @@
     $class = CardClass($cardID);
     switch($class)
     {
-      case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid);
-      case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid);
+      case "ILLUSIONIST": return UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      case "NINJA": return UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       case "WIZARD": return UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       default: return UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
     }
@@ -270,6 +270,17 @@
       default: return UPRTalentHitEffect($cardID);
     }
   }
+
+function UPRDealDamageEffect($cardID)
+{
+  $class = CardClass($cardID);
+  switch ($class) {
+    case "ILLUSIONIST":
+      return UPRIllusionistDealDamageEffect($cardID);
+    default:
+      return UPRTalentHitEffect($cardID);
+  }
+}
 
   function QuellAmount($cardID)
   {

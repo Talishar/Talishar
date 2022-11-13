@@ -121,7 +121,7 @@
     }
   }
 
-  function MONBrutePlayAbility($cardID, $from, $resourcesPaid)
+  function MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     $rv = "";
@@ -133,18 +133,18 @@
         DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
         return "Does $damage damage to yourself.";
       case "MON125":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
         if(AttackValue($card) >= 6)
         {
           AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-          AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
           AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,NA", 1);
-          $rv .= "and banished a card with Blood Debt your Deck.";
+          $rv .= " and banished a card with Blood Debt your Deck.";
         }
         return $rv;
       case "MON126": case "MON127": case "MON128":
@@ -166,7 +166,7 @@
         }
         return $rv;
       case "MON138": case "MON139": case "MON140":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
@@ -175,7 +175,7 @@
           AddDecisionQueue("FINDINDICES", $currentPlayer, "SEARCHMZ,MYDISCARD|THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-", 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         }
         return $rv;
@@ -190,7 +190,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next Brute or Shadow attack action card +" . EffectAttackModifier($cardID) . ".";
       case "MON221":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
@@ -202,7 +202,7 @@
         $rv .= ".";
         return $rv;
       case "MON222":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         $rv = "Discarded " . CardLink($card, $card);
@@ -214,7 +214,7 @@
         $rv .= ".";
         return $rv;
       case "MON223": case "MON224": case "MON225":
-        WriteLog(CardLink($cardID, $cardID) . " drew a card.");
+        WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         MyDrawCard();
         $card = DiscardRandom();
         if(AttackValue($card) >= 6)
@@ -246,7 +246,7 @@
     $BanishedIncludes6 = false;
     for($i = 0; $i < 3; $i++)
     {
-      $index = rand() % count($discard);
+      $index = GetRandom() % count($discard);
       if(AttackValue($discard[$index]) >= 6) $BanishedIncludes6 = true;
       BanishCardForPlayer($discard[$index], $currentPlayer, "DISCARD", "NA");
       unset($discard[$index]);
@@ -273,7 +273,7 @@
         RemoveArsenal($player, $index);
         BanishCardForPlayer("MON406", $player, "ARS", "-");
         AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
-        AddDecisionQueue("CHOOSEDECK", $player, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       }

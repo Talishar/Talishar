@@ -147,6 +147,9 @@
       case "ELE180": return 3;
       case "ELE181": return 2;
       case "ELE182": return 1;
+      case "ELE183": return 3;
+      case "ELE184": return 2;
+      case "ELE185": return 1;
       case "ELE205": return 1;
       case "ELE206": return 5;
       case "ELE207": return 4;
@@ -176,8 +179,8 @@
       case "ELE025": case "ELE026": case "ELE027": return CardType($attackID) == "AA";
       case "ELE028": case "ELE029": case "ELE030": return CardType($attackID) == "AA";
       case "ELE031-1": return true;
-      case "ELE033-1": case "ELE033-2": return CardSubtype($attackID) == "Arrow";//TODO+1 not strictly accurate because of multiple arsenal slots
-      case "ELE034-1": case "ELE034-2": return CardSubtype($attackID) == "Arrow";//TODO+1 not strictly accurate because of multiple arsenal slots
+      case "ELE033-1": case "ELE033-2": return CardSubtype($attackID) == "Arrow";
+      case "ELE034-1": case "ELE034-2": return CardSubtype($attackID) == "Arrow";
       case "ELE035-2": return true;
       case "ELE037-1": case "ELE037-2": return CardSubtype($attackID) == "Arrow";
       case "ELE044": case "ELE045": case "ELE046": return true;
@@ -185,6 +188,7 @@
       case "ELE050": case "ELE051": case "ELE052": return true;
       case "ELE056": case "ELE057": case "ELE058": return true;
       case "ELE059": case "ELE060": case "ELE061": return true;
+      case "ELE064": return true;
       case "ELE066": return true;
       case "ELE066-HIT": return cardType($attackID) == "AA";
       case "ELE067": case "ELE068": case "ELE069": return true;
@@ -194,7 +198,7 @@
       case "ELE092-DOM": case "ELE092-DOMATK": case "ELE092-BUFF": return true;
       case "ELE097": case "ELE098": case "ELE099": return true;
       case "ELE103": case "ELE104": case "ELE105": return $combatChainState[$CCS_AttackFused] == 1;
-      case "ELE112": return TalentContainsAny($attackID, "ICE,LIGHTNING,ELEMENTAL",$mainPlayer);
+      case "ELE112": return TalentContainsAny($attackID, "ICE,LIGHTNING,ELEMENTAL", $mainPlayer);
       case "ELE122": case "ELE123": case "ELE124":
         return TalentContainsAny($attackID, "EARTH,ELEMENTAL",$mainPlayer) && CardType($attackID) == "AA";
       case "ELE137": case "ELE138": case "ELE139": return CardType($attackID) == "AA";
@@ -211,9 +215,10 @@
       case "ELE178": return CardCost($attackID) >= 1;
       case "ELE179": return CardCost($attackID) >= 2;
       case "ELE180": case "ELE181": case "ELE182": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer);
+      case "ELE183": case "ELE184": case "ELE185": return true;
       case "ELE195": case "ELE196": case "ELE197": return true;
       case "ELE198": case "ELE199": case "ELE200": return CardType($attackID) == "AA";
-      case "ELE201": return CardType($attackID) == "AA";
+      case "ELE201": return CardType($attackID) == "AA" || CardType($attackID) == "A";
       case "ELE205": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
       case "ELE206": case "ELE207": case "ELE208": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";
       case "ELE215": return CardSubtype($attackID) == "Arrow";

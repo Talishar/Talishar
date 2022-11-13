@@ -43,6 +43,16 @@
   $p2IsPatron = trim(fgets($gameFileHandler));
   $p1DeckLink = trim(fgets($gameFileHandler));
   $p2DeckLink = trim(fgets($gameFileHandler));
+  $p1IsChallengeActive = trim(fgets($gameFileHandler));
+  $p2IsChallengeActive = trim(fgets($gameFileHandler));
+  $joinerIP = trim(fgets($gameFileHandler));
+  $karmaRestriction = trim(fgets($gameFileHandler));
+  $p1Matchups = json_decode(trim(fgets($gameFileHandler)));
+  $p2Matchups = json_decode(trim(fgets($gameFileHandler)));
+  $p1deckbuilderID = trim(fgets($gameFileHandler));
+  $p2deckbuilderID = trim(fgets($gameFileHandler));
+  $roguelikeGameID = trim(fgets($gameFileHandler));
+  $p1StartingHealth = trim(fgets($gameFileHandler));
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;
@@ -59,5 +69,19 @@
       fclose($gameFileHandler);
     }
   }
-
+/*
+  if(isset($playerID) && $gameStatus == $MGS_GameStarted)
+  {
+    $ipTarget = ($playerID == 1 ? $hostIP : $joinerIP);
+    if($ipTarget != "" && $_SERVER['REMOTE_ADDR'] != $ipTarget)
+    {
+      $hackFileName = "./BugReports/PossibleHackAttempts.txt";
+      $hackHandler = fopen($hackFileName, "a");
+      date_default_timezone_set('America/Chicago');
+      $errorDate = date('m/d/Y h:i:s a');
+      fwrite($hackHandler, "Hack Attempt? $errorDate Request: " . $_SERVER['REQUEST_URI'] . " Game name: $gameName IP: " . $_SERVER['REMOTE_ADDR'] . " Target IP: $ipTarget PlayerID: $playerID" . "\r\n");
+      fclose($hackHandler);
+    }
+  }
+*/
 ?>

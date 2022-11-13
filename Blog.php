@@ -4,14 +4,90 @@ include_once 'Header.php';
 
 <head>
   <meta charset="utf-8">
-  <title>Flesh and Blood Online</title>
+  <title>Talishar</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/blog.css">
-  <link rel="shortcut icon" type="image/png" href="./Images/favicon3.png" />
+  <link rel="shortcut icon" type="image/png" href="./Images/hit.png" />
 </head>
-
 <div class="grid-even-collum">
+  <div class="articles">
+    <h2>Interview with <a class="talishar.net" href="https://twitter.com/TheCombatChain">The Combat Chain</a>!</h2>
+    <p> Do you want to heard more about Talishar? Go listen to our last interview.
+    <br>We answer a lot of question and share our thoughts about the future of the platform! ❤️</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/dXEkeUbZxvc" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="articles">
+    <h2>Welcome Talishar.net 🍾</h2>
+    <h3>Good morning #fabtcg player!<br>
+      We are happy to present you
+      <a class="talishar.net" href="http://Talishar.net">Talishar.net</a> 🎉
+    </h3>
+    <p>
+      <br><br>We are slowly working our way through a rebranding. It's important for us that the players know we are a fan-made platform and not associated with LSS.
+      LSS didn't contact us or asked us to make this change. It is our own decision and based on feedback we've received.
+      We hope to stay engaged in the community and provide a tool for the players so they can make the most of the limited time when they play in person locally.❤️
+      <br>We will soon start redirecting people to this new website. Normally the process should be done smoothly.
+      <br><br>Thank you everyone and don't hesitate if you have any questions or feedback!
+    </p>
+  </div>
+  <div class="articles">
+    <h2>Interview with Push the Point!</h2>
+    <p style="text-align:center">The first of many, we hope! Thank you to Hamish for been such a nice host and inviting us on his platform.
+      Go watch the video and let us know what you've thoughts about it!</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/lORS6mU0uLM" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="articles">
+    <h2>21st August 2022</h2>
+    <h3>🧑‍🏭 Hello #fabtcg players! Weekend's update just for you!</h3>
+    <p><br>- Better side boarding handling. People cant start a game without a weapon/equipment. It was happening by mistake sometimes.
+      <br>- Add confirmation that you rated a player.
+      <br>- Fix karma limit to 0. The lower limit wasn't coded.
+      <br>- Improve sink below + pummel logs. We now show in the chat log that a card has been sink or which card was discarded.
+      <br>- Fix situations where Zen Token wasn't working as expected.
+      <br>- Fix Valda/Shiyana not been affected by sleep dart.
+      <br>- We added the newer English "Learn to Play" video on the main menu by @TowerNumberNine.
+      <br>- Added badges to the winners of the commotion #1 challenge.
+      <br>- Improved the highlighted tab in the sideboard.
+      <br>- Fix Sonic Boom not showing the top card if unplayable.
+      <br>- Fix the same frostbites getting destroyed multiple times, messing with the auras layout.
+      <br>- Fix Spark of Genius dynamic cost getting messed up by CLF/Frostbites. It wasn't allowing you to search for a specific item.
+      <br><br>Thank you all for your bug reports, ideas and feedback! ❤️
+    </p>
+  </div>
+  <div class="articles">
+    <h2>Great Video on Talishar</h2>
+    <p style="text-align:center">🥳 What else to start the weekend than an amazing video by SloopdoopFaB! This thumbnail is beautiful.<BR><BR>
+      🧑‍🏭 For our part, we are working hard on some background stuff. Handling bandwidth and server improvements.</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/cEEnBRknTdk" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="articles">
+    <h2>Blitz Hero Stats Update</h2>
+    <p style="text-align:center">🎥 Watch Kugane Gaming second analyze of Talishar heroes stats! This time it is full Blitz ahead! Enjoy!</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/odiNVmtfIsk" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="articles">
+    <h2>Reputation System</h2>
+    <h3>👨‍💻Happy Sunday players!
+      <br><br>We heard you! We worked this weekend on a better way to deal with leavers with a reputation system.
+    </h3>
+    <p><br>The system is a quick way to check if a player has a good reputation on Talishar (does not quit games, is friendly, plays fair).
+      <br>Depending on your Karma score, you may also be allowed or not allowed to use some features or to join a given game.
+      <br><br>Your initial Karma score is 75☯ Then:
+      <br>&emsp;• Each time you finish a game, you get +1☯.
+      <br>&emsp;• If you quit a game in progress, you lose -10☯.
+      <br>&emsp;• If you receive too many 'Red thumbs-down' from other players when compared to the amount of 'Green thumbs-up' received, your karma will be reduced each time you receive a Red Thumb.
+      In this case, the best is to have a good behavior to get Green thumb and restore your ratio and reputation.
+      <br><br>It also includes a new setting for game creation that allows you to restrict your game to people with decent/good karma.
+      <br><br>We hope that this will improve your experience on the platform!
+      <br>Thank you! ❤️
+    </p>
+  </div>
+  <div class="articles">
+    <h2>CC Hero Stats Update</h2>
+    <p style="text-align:center">🎥 Watch Kugane Gaming analyze Talishar hero stats! It is interesting, and we are happy to start providing those stats for the #fabtcg community.</p>
+    <br><iframe class="blog-iframe" width="100%" height="315" src="https://www.youtube.com/embed/jk14zEIGER8" title="YouTube video player" frameborder="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
   <div class="articles">
     <h2>9th August 2022</h2>
     <h3>🎊 Patreons Update!<br>
@@ -91,7 +167,7 @@ include_once 'Header.php';
       <br>- Added information about which card got banished.
   </div>
   <div class="articles">
-    <h2>FaB Online Roadmap</h2>
+    <h2>Talishar Roadmap</h2>
     <h3>📝 We recently wrote a roadmap and thought it would be nice to share it with you to give you an idea of what we have planned for the long-term.
       We are overwhelmed by the recent boom that created our Twitter accounts. So many news bugs and features are coming our way. Thank you!</h3>
     <p><br>1. The top priority is fixing the major outstanding bugs/missing gameplay engine features.

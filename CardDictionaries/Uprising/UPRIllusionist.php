@@ -307,76 +307,6 @@
       case "UPR155": case "UPR156": case "UPR157":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Makes your next attack action card Illusionist, modify its base attack and gain Phantasm.";
-      case "UPR406":
-        if(IsHeroAttackTarget() && CanRevealCards($currentPlayer)) {
-          $deck = &GetDeck($currentPlayer);
-          $numRed = 0;
-          $redRevealed = "";
-          $cardsReveal = "";
-          for($i=0; $i<3 && $i < count($deck); ++$i)
-          {
-            if(PitchValue($deck[$i]) == 1)
-            {
-              ++$numRed;
-              if($redRevealed != "") $redRevealed .= ",";
-              $redRevealed .= $deck[$i];
-            }
-            if($cardsReveal != "") $cardsReveal .= ",";
-            $cardsReveal .= $deck[$i];
-          }
-          RevealCards($cardsReveal);//CanReveal checked
-          if($redRevealed)
-          {
-            WriteLog($numRed . " red cards were revealed. It deals damage equal to twice the number.");
-            DealArcane($numRed * 2, 2, "ABILITY", $cardID, false, $currentPlayer);
-          }
-        }
-        return "";
-      case "UPR407":
-        if(IsHeroAttackTarget() && CanRevealCards($currentPlayer)) {
-          $deck = &GetDeck($currentPlayer);
-          $numRed = 0;
-          $cardsReveal = "";
-          for($i=0; $i<2 && $i < count($deck); ++$i)
-          {
-            if(PitchValue($deck[$i]) == 1)
-            {
-              ++$numRed;
-            }
-            if($cardsReveal != "") $cardsReveal .= ",";
-            $cardsReveal .= $deck[$i];
-          }
-          RevealCards($cardsReveal);//CanReveal checked
-          if($numRed > 0)
-          {
-            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-            AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-            AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
-            AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-            if($numRed == 2) AddDecisionQueue("ADDNEGDEFCOUNTER", $otherPlayer, "-", 1);
-            AddDecisionQueue("DESTROYEQUIPDEF0", $currentPlayer, "-", 1);
-          }
-        }
-        return "";
-      case "UPR408":
-        if(IsHeroAttackTarget()) {
-          $deck = &GetDeck($currentPlayer);
-          if(count($deck) == 0) return "You have no cards in your deck.";
-          $wasRevealed = RevealCards($deck[0]);
-          if($wasRevealed && PitchValue($deck[0]) == 1)
-          {
-            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-            AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-            AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-            AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-            AddDecisionQueue("MULTIBANISH", $otherPlayer, "HAND,NA", 1);
-          }
-        }
-        return "";
-      case "UPR409":
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true, true);
-        DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer, true, false);
-        return "";
       default: return "";
     }
   }
@@ -397,7 +327,7 @@
           if(count($items) == 0)
           {
             Draw($mainPlayer);
-            WriteLog("Kyloria drew a card.");
+            WriteLog(CardLink($cardID,$cardID) . " draw a card.");
           }
           else
           {
@@ -414,20 +344,51 @@
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
         PutPermanentIntoPlay($mainPlayer, "UPR043");
-        WriteLog("Nekria got a -1 health counter and created an ash token.");
+        WriteLog(CardLink($cardID,$cardID) . " got a -1 health counter and created an ash token.");
         break;
       case "UPR416": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
       default: break;
     }
   }
 
+function UPRIllusionistDealDamageEffect($cardID)
+{
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  switch ($cardID) {
+    case "UPR413":
+      $index = $combatChainState[$CCS_WeaponIndex];
+      $allies = &GetAllies($mainPlayer);
+      $allies[$index + 2] -= 1;
+      $allies[$index + 7] -= 1;
+      PutPermanentIntoPlay($mainPlayer, "UPR043");
+      WriteLog(CardLink($cardID, $cardID) . " got a -1 health counter and created an ash token.");
+      break;
+    default:
+      break;
+  }
+}
+
   function Transform($player, $materialType, $into, $optional=false, $subsequent=false)
   {
-    AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform", 1);
-    if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
-    else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
-    AddDecisionQueue("TRANSFORM", $player, $into, 1);
+    if ($materialType == "Ash") {
+      AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
+      if ($optional) {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into) . " or skip with the Pass button", 1);
+        AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
+      }
+      else {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
+        AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
+      }
+      AddDecisionQueue("TRANSFORM", $player, $into, 1);
+    }
+    else {
+      $subType = CardSubType($materialType);
+      AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $subType, ($subsequent ? 1 : 0));
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a " . CardLink($materialType, $materialType) . " to transform into " . CardLink($into, $into), 1);
+      AddDecisionQueue("CHOOSEMY" . strtoupper($subType), $player, "<-", 1);
+      AddDecisionQueue("TRANSFORM" . strtoupper($subType), $player, $into, 1);
+    }
   }
 
   function ResolveTransform($player, $materialIndex, $into)
@@ -447,8 +408,14 @@
 
   function ResolveTransformPermanent($player, $materialIndex, $into)
   {
-    $materialType = RemovePermanent($player, $materialIndex);
+    RemovePermanent($player, $materialIndex);
     return PutPermanentIntoPlay($player, $into);
+  }
+
+  function ResolveTransformAura($player, $materialIndex, $into)
+  {
+    $materialType = DestroyAura($player, $materialIndex);
+    return PlayAlly($into, $player, $materialType);//Right now transform only happens into allies
   }
 
   function GhostlyTouchPhantasmDestroy()

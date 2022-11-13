@@ -1,7 +1,5 @@
 <?php
 
-if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
-
 if (!function_exists("GetArray")) {
   function GetArray($handler)
   {
@@ -34,7 +32,7 @@ if ($fileTries == $targetTries) {
     fwrite($errorHandler, $errorOutput . "\r\n");
     fclose($errorHandler);
     include "HostFiles/Redirector.php";
-    header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1&authKey=$p1Key");
+    header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
   } else {
     echo ("This game no longer exists on the server. Please go to the main menu and create a new game.");
     $errorFileName = "./BugReports/CreateGameFailsafe.txt";
@@ -63,47 +61,47 @@ while (!flock($handler, LOCK_SH) && $lockTries < 10) {
 
 if ($lockTries == 10) exit;
 
-$playerHealths = GetArray($handler);
+$playerHealths = GetArray($handler); // 1
 
 //Player 1
-$p1Hand = GetArray($handler);
-$p1Deck = GetArray($handler);
-$p1CharEquip = GetArray($handler);
-$p1Resources = GetArray($handler);
-$p1Arsenal = GetArray($handler);
-$p1Items = GetArray($handler);
-$p1Auras = GetArray($handler);
-$p1Discard = GetArray($handler);
-$p1Pitch = GetArray($handler);
-$p1Banish = GetArray($handler);
-$p1ClassState = GetArray($handler);
-$p1CharacterEffects = GetArray($handler);
-$p1Soul = GetArray($handler);
-$p1CardStats = GetArray($handler);
-$p1TurnStats = GetArray($handler);
-$p1Allies = GetArray($handler);
-$p1Permanents = GetArray($handler);
-$p1Settings = GetArray($handler);
+$p1Hand = GetArray($handler); // 2
+$p1Deck = GetArray($handler); // 3
+$p1CharEquip = GetArray($handler); // 4
+$p1Resources = GetArray($handler); // 5
+$p1Arsenal = GetArray($handler); // 6
+$p1Items = GetArray($handler); // 7
+$p1Auras = GetArray($handler); // 8
+$p1Discard = GetArray($handler); // 9
+$p1Pitch = GetArray($handler); // 10
+$p1Banish = GetArray($handler); // 11
+$p1ClassState = GetArray($handler); // 12
+$p1CharacterEffects = GetArray($handler); // 13
+$p1Soul = GetArray($handler); // 14
+$p1CardStats = GetArray($handler); // 15
+$p1TurnStats = GetArray($handler); // 16
+$p1Allies = GetArray($handler); // 17
+$p1Permanents = GetArray($handler); // 18
+$p1Settings = GetArray($handler); // 19
 
 //Player 2
-$p2Hand = GetArray($handler);
-$p2Deck = GetArray($handler);
-$p2CharEquip = GetArray($handler);
-$p2Resources = GetArray($handler);
-$p2Arsenal = GetArray($handler);
-$p2Items = GetArray($handler);
-$p2Auras = GetArray($handler);
-$p2Discard = GetArray($handler);
-$p2Pitch = GetArray($handler);
-$p2Banish = GetArray($handler);
-$p2ClassState = GetArray($handler);
-$p2CharacterEffects = GetArray($handler);
-$p2Soul = GetArray($handler);
-$p2CardStats = GetArray($handler);
-$p2TurnStats = GetArray($handler);
-$p2Allies = GetArray($handler);
-$p2Permanents = GetArray($handler);
-$p2Settings = GetArray($handler);
+$p2Hand = GetArray($handler); // 20
+$p2Deck = GetArray($handler); // 21
+$p2CharEquip = GetArray($handler); // 22
+$p2Resources = GetArray($handler); // 23
+$p2Arsenal = GetArray($handler); // 24
+$p2Items = GetArray($handler); // 25
+$p2Auras = GetArray($handler); // 26
+$p2Discard = GetArray($handler); // 27
+$p2Pitch = GetArray($handler); // 28
+$p2Banish = GetArray($handler); // 29
+$p2ClassState = GetArray($handler); // 30
+$p2CharacterEffects = GetArray($handler); // 31
+$p2Soul = GetArray($handler); // 32
+$p2CardStats = GetArray($handler); // 33
+$p2TurnStats = GetArray($handler); // 34
+$p2Allies = GetArray($handler); // 35
+$p2Permanents = GetArray($handler); // 36
+$p2Settings = GetArray($handler); // 37
 
 $landmarks = GetArray($handler);
 $winner = trim(fgets($handler));
@@ -135,8 +133,15 @@ $chainLinkSummary = GetArray($handler);
 $p1Key = trim(fgets($handler));
 $p2Key = trim(fgets($handler));
 $permanentUniqueIDCounter = trim(fgets($handler));
-$gameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+$inGameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 $animations = GetArray($handler); //Animations
+$currentPlayerActivity = trim(fgets($handler)); //Current Player activity status -- 0 = active, 2 = inactive
+$p1PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$p1TotalTime = trim(fgets($handler)); //Player 1 total time
+$p2TotalTime = trim(fgets($handler)); //Player 2 total time
+$lastUpdateTime = trim(fgets($handler)); //Last update time
+$roguelikeGameID = trim(fgets($handler)); //Roguelike game id
 fclose($handler);
 BuildMyGamestate($playerID);
 
@@ -403,15 +408,13 @@ function RevertGamestate($filename = "gamestateBackup.txt")
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $gameName;
-  $filename = "p" . $mainPlayer . "turn" . $currentTurn . "Gamestate.txt";
-  MakeGamestateBackup($filename);
-  if ($currentTurn > 5) {
-    $delTurn = $currentTurn - 5;
-    for ($i = 1; $i <= 2; ++$i) {
-      $fn = "./Games/" . $gameName . "/" . "p" . $i . "turn" . $delTurn . "Gamestate.txt";
-      if (file_exists($fn)) {
-        unlink($fn);
-      }
-    }
+  $filepath = "./Games/" . $gameName . "/";
+  $lastTurnFN = $filepath . "lastTurnGamestate.txt";
+  $thisTurnFN = $filepath . "beginTurnGamestate.txt";
+  if (file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
+  copy($filepath . "gamestate.txt", $thisTurnFN);
+  $startGameFN = $filepath . "startGamestate.txt";
+  if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 1 && !file_exists($startGameFN)) {
+    copy($filepath . "gamestate.txt", $startGameFN);
   }
 }

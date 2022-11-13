@@ -143,7 +143,7 @@
           IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
           $rv .= "Prevent the next 2 damage that would be dealt to Oldhim this turn. ";
         }
-        if($icePitched)
+        if($icePitched && !IsAllyAttacking())
         {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
@@ -177,7 +177,7 @@
         if(DelimStringContains($additionalCosts, "EARTH")) AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-");
         AddDecisionQueue("AWAKENINGTOKENS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);

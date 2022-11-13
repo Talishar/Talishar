@@ -10,12 +10,12 @@ function PutPermanentIntoPlay($player, $cardID)
 function RemovePermanent($player, $index)
 {
   $permanents = &GetPermanents($player);
-  $permID = $permanents[$index];
+  $cardID = $permanents[$index];
   for ($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
     unset($permanents[$j]);
   }
   $permanents = array_values($permanents);
-  return $permID;
+  return $cardID;
 }
 
 function DestroyPermanent($player, $index)
@@ -59,11 +59,13 @@ function PermanentDestroyed($player, $cardID, $isToken = false)
 function PermanentBeginEndPhaseEffects()
 {
   global $mainPlayer, $defPlayer;
+
   $permanents = &GetPermanents($mainPlayer);
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
-      case "UPR439": case "UPR440":case "UPR441":
+      case "UPR439": case "UPR440": case "UPR441":
+        PutPermanentIntoPlay($mainPlayer, "UPR043");
         $remove = 1;
         break;
       default:
@@ -76,7 +78,8 @@ function PermanentBeginEndPhaseEffects()
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
-      case "UPR439": case "UPR440":case "UPR441":
+      case "UPR439": case "UPR440": case "UPR441":
+        PutPermanentIntoPlay($defPlayer, "UPR043");
         $remove = 1;
         break;
       default:
@@ -94,30 +97,38 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
-    if ($damage <= 0) {
-      $damage = 0;
-      break;
-    }
     switch ($permanents[$i]) {
       case "UPR439":
-        if ($preventable) $damage -= 4;
-        $remove = 1;
+        if ($damage > 0) {
+          if ($preventable) $damage -= 4;
+          $remove = 1;
+        }
         break;
       case "UPR440":
-        if ($preventable) $damage -= 3;
-        $remove = 1;
+        if ($damage > 0) {
+          if ($preventable) $damage -= 3;
+          $remove = 1;
+        }
         break;
       case "UPR441":
-        if ($preventable) $damage -= 2;
-        $remove = 1;
+        if ($damage > 0) {
+          if ($preventable) $damage -= 2;
+          $remove = 1;
+        }
         break;
       default:
         break;
     }
     if ($remove == 1) {
       DestroyPermanent($player, $i);
+      if (HasWard($permanents[$i]) && SearchCharacterActive($player, "DYN213") && CardType($permanents[$i]) != "T") {
+        $index = FindCharacterIndex($player, "DYN213");
+        $char[$index + 1] = 1;
+        GainResources($player, 1);
+      }
     }
   }
+  if ($damage <= 0) $damage = 0;
   return $damage;
 }
 

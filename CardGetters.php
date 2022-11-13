@@ -3,15 +3,19 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $p1Permanents;
+  global $layers, $combatChain;
   $rv = "";
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
   else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
   else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
+  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
+  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
   else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
   else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
   else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
+  else if ($zone == "LAYER") return $layers;
+  else if ($zone == "CC") return $combatChain;
   return $rv;
 }
 
@@ -304,7 +308,6 @@ function HasTakenDamage($player)
 
 function ArsenalHasFaceDownCard($player)
 {
-  global $CS_ArsenalFacing;
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($arsenal[$i + 1] == "DOWN") return true;
@@ -314,10 +317,18 @@ function ArsenalHasFaceDownCard($player)
 
 function ArsenalHasFaceUpCard($player)
 {
-  global $CS_ArsenalFacing;
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($arsenal[$i + 1] == "UP") return true;
+  }
+  return false;
+}
+
+function ArsenalHasFaceUpArrowCard($player)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "UP") return true;
   }
   return false;
 }

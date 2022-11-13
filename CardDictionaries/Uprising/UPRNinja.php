@@ -163,14 +163,14 @@
     }
   }
 
-  function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid)
+  function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
     switch($cardID)
     {
       case "UPR044": case "UPR045":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "GYCARD,UPR101");
-        AddDecisionQueue("MAYCHOOSEDISCARD", $currentPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEDISCARD", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDHAND", $currentPlayer, "-", 1);
         return "";
@@ -179,11 +179,12 @@
         return "";
       case "UPR049":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Buffs your draconic attacks this turn.";
+        return "Buffs your draconic attacks this combat chain.";
       case "UPR050":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
         AddDecisionQueue("CCFILTERTYPE", $currentPlayer, "E");
         AddDecisionQueue("CCFILTERPLAYER", $currentPlayer, $currentPlayer);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", ($currentPlayer == 1 ? 2 : 1), "CC,-", 1);
@@ -236,6 +237,7 @@
       case "UPR081": case "UPR082": case "UPR083":
         $numDraconicLinks = NumDraconicChainLinks();
         AddDecisionQueue("FINDINDICES", $mainPlayer, "HANDAAMAXCOST," . ($numDraconicLinks > 0 ? $numDraconicLinks - 1 : -2));
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $mainPlayer, "HAND,TT", 1);
