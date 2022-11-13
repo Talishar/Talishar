@@ -306,7 +306,7 @@ function AllyTakeDamageAbilities($player, $damage, $type)
         break;
     }
     if ($remove == 1) {
-      DestroyPermanent($player, $i);
+      DestroyAlly($player, $i);
       if (HasWard($allies[$i]) && SearchCharacterActive($player, "DYN213") && CardType($allies[$i]) != "T") {
         $index = FindCharacterIndex($player, "DYN213");
         $char[$index + 1] = 1;
