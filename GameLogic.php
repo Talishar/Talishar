@@ -2946,7 +2946,7 @@ function isOverpowerActive()
   switch ($combatChain[0]) {
     case "DYN068": return SearchCurrentTurnEffects("DYN068", $mainPlayer);
     case "DYN088": return true;
-    case "DYN227": case "DYN228": case "DYN229": SearchCurrentTurnEffects("DYN227", $mainPlayer);
+    case "DYN227": case "DYN228": case "DYN229": return SearchCurrentTurnEffects("DYN227", $mainPlayer);
     case "DYN492a": return true;
     default:
       break;
