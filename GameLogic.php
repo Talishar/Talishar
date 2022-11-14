@@ -981,6 +981,13 @@ function EffectBlockModifier($cardID, $from="", $resourcesPaid=0)
         if($cardType == "AA" && $cardBlock-1 >= 0) $rv -= 1; // Check for rare case of cards with 0 defense
       }
       return $rv;
+    case "ELE203":
+      for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+      {
+        if($combatChain[$i+1] != $defPlayer) continue;
+        if($combatChain[$i] == "ELE203") return 1;
+      }
+      return 0;
     default:
       return 0;
   }
@@ -1865,6 +1872,8 @@ function IsCombatEffectPersistent($cardID)
     case "ELE199":
     case "ELE200":
       return true;
+    case "ELE203":
+      return true;
     case "EVR001":
       return true;
     case "EVR019":
@@ -2545,14 +2554,6 @@ function MainCharacterEndTurnAbilities()
       case "MON107":
         if ($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
         break;
-      case "ELE203":
-        $numBuff = CountCurrentTurnEffects($characterID, $mainPlayer);
-        if ($numBuff > 0) {
-          for ($j=0; $j < $numBuff; $j++) {
-            $mainCharacter[$i + 4] -= 1;
-          }
-        }
-        break;
       case "ELE223":
         if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i + 3] = 0;
         break;
@@ -2571,14 +2572,6 @@ function MainCharacterEndTurnAbilities()
       case "MON089":
         if (CountCurrentTurnEffects($defCharacter[$i], $defPlayer) > 0) {
           $defCharacter[$i + 4] -= 1;
-        }
-        break;
-      case "ELE203":
-        $numBuff = CountCurrentTurnEffects($defCharacter[$i], $defPlayer);
-        if ($numBuff > 0) {
-          for ($j = 0; $j < $numBuff; $j++) {
-            $defCharacter[$i + 4] -= 1;
-          }
         }
         break;
       default:
@@ -4222,12 +4215,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
       $character[$index + 4] += 2;
-      return $lastResult;
-    case "RAMPARTOFTHERAMSHEAD":
-      $character = &GetPlayerCharacter($player);
-      $index = FindCharacterIndex($player, $combatChain[$parameter]);
-      $character[$index + 4] += $lastResult;
-      AddCurrentTurnEffect("ELE203", $player);
       return $lastResult;
     case "PHANTASMALFOOTSTEPS":
       $character = &GetPlayerCharacter($player);
