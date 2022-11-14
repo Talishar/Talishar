@@ -970,9 +970,13 @@ function EffectBlockModifier($cardID, $from="", $resourcesPaid=0)
       for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
       {
         if($combatChain[$i+1] != $defPlayer) continue;
-        if($combatChain[$i] == $cardID) return 1;
+        $char = &GetPlayerCharacter($defPlayer);
+        $index = FindCharacterIndex($defPlayer, $cardID);
+        $rv = $char[$index + 4];
+        if($combatChain[$i] == $cardID) $rv += 1;
       }
-      return 0;
+      if ($rv < 0) $rv = 0;
+      return $rv;
     case "ELE000-2":
       return 1;
     case "ELE143":
