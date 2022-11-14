@@ -962,7 +962,7 @@ function EffectAttackModifier($cardID)
   }
 }
 
-function EffectBlockModifier($cardID, $from="", $resourcesPaid=0)
+function EffectBlockModifier($cardID, $from="", $resourcesPaid=0, $target="")
 {
   global $combatChain, $defPlayer;
   switch ($cardID) {
@@ -982,7 +982,7 @@ function EffectBlockModifier($cardID, $from="", $resourcesPaid=0)
     case "ELE143":
       return 1;
     case "DYN115": case "DYN116":
-      if ($from == "COMBATCHAINDEBUFFDEFENSE") return 1;
+      if ($from == "COMBATCHAINDEBUFFDEFENSE" && CardType($target) == "AA") return 1;
       $rv = 0;
       for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
       {
@@ -3574,11 +3574,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINDEBUFFDEFENSE":
       global $currentTurnEffects, $mainPlayer;
       $defense = BlockingCardDefense($lastResult);
+      WriteLog($defense);
       //Now check current turn effects
       for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
         if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-          if ($currentTurnEffects[$i + 1] != $mainPlayer) {
-            $defense -= EffectBlockModifier($currentTurnEffects[$i], "COMBATCHAINDEBUFFDEFENSE");
+          if ($currentTurnEffects[$i + 1] != $mainPlayer && CardType($lastResult) ) {
+            $defense -= EffectBlockModifier($currentTurnEffects[$i], "COMBATCHAINDEBUFFDEFENSE", target:$lastResult);
             if ($defense < 0) $defense = 0;
           }
         }
