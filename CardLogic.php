@@ -676,7 +676,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-      AddDecisionQueue("PHANTASMALFOOTSTEPS", $player, "1", 1);
+      if(!SearchCurrentTurnEffects("MON089", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "MON089", 1);
       AddDecisionQueue("PHANTASMALFOOTSTEPSDESTROYED", $player, "-");
       break;
     case "MON122":

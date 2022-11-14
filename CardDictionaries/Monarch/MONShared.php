@@ -176,6 +176,7 @@
       case "MON034": return CardType($attackID) == "W";
       case "MON081": case "MON082": case "MON083": return CardType($attackID) == "AA";
       case "MON087": $theirChar = GetPlayerCharacter($defPlayer); return TalentContains($theirChar[0], "SHADOW");
+      case "MON089": return true;
       case "MON090": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && CardType($attackID) == "AA";
       case "MON095": case "MON096": case "MON097": return CardType($attackID) == "AA";
       case "MON108": return CardType($attackID) == "W";
