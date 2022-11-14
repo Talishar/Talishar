@@ -1723,7 +1723,7 @@ function CurrentEffectIntellectModifier()
 
 function CurrentEffectEndTurnAbilities()
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $mainPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
     $remove = 0;
     $cardID = substr($currentTurnEffects[$i], 0, 6);
@@ -1735,11 +1735,13 @@ function CurrentEffectEndTurnAbilities()
       case "MON070":
       case "MON071":
       case "EVR056": //Oath of Steel does the same thing
-        $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);
-        for ($j = 0; $j < count($char); $j += CharacterPieces()) {
-          if (CardType($char[$j]) == "W") $char[$j + 3] = 0; //Glisten clears out all +1 power counters
+        if ($mainPlayer == $currentTurnEffects[$i + 1]) { //Only at the end of YOUR end phase
+          $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);
+          for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+            if (CardType($char[$j]) == "W") $char[$j + 3] = 0; //Glisten clears out all +1 power counters
+          }
+          $remove = 1;
         }
-        $remove = 1;
         break;
       default:
         break;
