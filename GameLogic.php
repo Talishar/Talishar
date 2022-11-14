@@ -3946,6 +3946,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCURRENTEFFECT":
       AddCurrentTurnEffect($parameter, $player);
       return "1";
+    case "IFPAIDADDCURRENTEFFECT":
+      if ($lastResult > 0) AddCurrentTurnEffect($parameter, $player);
+      return "1";
     case "REMOVECURRENTEFFECT":
       RemoveCurrentEffect($player, $parameter);
       return "1";
