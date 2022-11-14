@@ -393,7 +393,7 @@ function CardClass($cardID)
       else if ($number >= 20 && $number <= 21) return "WARRIOR";
       else return "GENERIC";
     case "RVD":
-      if ($number >= 3) return "BRUTE";
+      if ($number <= 3) return "BRUTE";
       else if ($number >= 7 && $number <= 17) return "BRUTE";
       else if ($number == 21) return "BRUTE";
       else if ($number == 23) return "BRUTE";
@@ -2532,7 +2532,7 @@ function HasWard($cardID)
     case "UPR039": case "UPR040": case "UPR041":
     case "UPR218": case "UPR219": case "UPR220":
     case "DYN213":
-    case "DYN214": case "DYN215": case "DYN217": 
+    case "DYN214": case "DYN215": case "DYN217":
     case "DYN218": case "DYN219": case "DYN220":
     case "DYN221": case "DYN222": case "DYN223":
     case "DYN612":
