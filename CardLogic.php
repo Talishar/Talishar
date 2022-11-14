@@ -751,7 +751,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, "ELE203", 1);
+      AddDecisionQueue("IFPAIDADDCURRENTEFFECT", $player, "ELE203", 1);
       break;
     case "ELE206": case "ELE207": case "ELE208":
       WriteLog(CardLink($parameter, $parameter) . " gives the next Guardian attack action card this turn +" . EffectAttackModifier($parameter) . ".");
