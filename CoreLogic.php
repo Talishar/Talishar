@@ -1613,11 +1613,11 @@ function HaveUnblockedEquip($player)
 
 function NumEquipBlock()
 {
-  global $combatChain;
+  global $combatChain, $defPlayer;
   $numEquipBlock = 0;
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
-    if(CardType($combatChain[$i]) == "E") ++$numEquipBlock;
+    if(CardType($combatChain[$i]) == "E" && $combatChain[$i + 1] == $defPlayer) ++$numEquipBlock;
   }
   return $numEquipBlock;
 }
