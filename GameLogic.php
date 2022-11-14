@@ -2182,6 +2182,11 @@ function RemoveEffectsOnChainClose()
       case "CRU108":
         $remove = 1;
         break;
+      case "CRU109":
+      case "CRU110":
+      case "CRU111":
+         $remove = 1;
+          break;
       case "MON245":
         $remove = 1;
         break;
