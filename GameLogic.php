@@ -966,6 +966,13 @@ function EffectBlockModifier($cardID, $from="", $resourcesPaid=0)
 {
   global $combatChain, $defPlayer;
   switch ($cardID) {
+    case "MON089":
+      for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+      {
+        if($combatChain[$i+1] != $defPlayer) continue;
+        if($combatChain[$i] == $cardID) return 1;
+      }
+      return 0;
     case "ELE000-2":
       return 1;
     case "ELE143":
@@ -1820,6 +1827,8 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "MON087":
       return true;
+    case "MON089":
+      return true;
     case "MON108":
       return true;
     case "MON109":
@@ -2547,10 +2556,6 @@ function MainCharacterEndTurnAbilities()
       case "CRU077":
         KassaiEndTurnAbility();
         break;
-      case "MON089":
-        if (CountCurrentTurnEffects($characterID, $mainPlayer) > 0) {
-          $mainCharacter[$i + 4] -= 1;
-        }
       case "MON107":
         if ($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
         break;
@@ -2561,17 +2566,6 @@ function MainCharacterEndTurnAbilities()
         if (GetClassState($mainPlayer, $CS_ArcaneDamageDealt) < $mainCharacter[$i + 2]) {
           DestroyCharacter($mainPlayer, $i);
           $mainCharacter[$i + 2] = 0;
-        }
-        break;
-      default:
-        break;
-    }
-  }
-  for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
-    switch ($defCharacter[$i]) {
-      case "MON089":
-        if (CountCurrentTurnEffects($defCharacter[$i], $defPlayer) > 0) {
-          $defCharacter[$i + 4] -= 1;
         }
         break;
       default:
@@ -4215,13 +4209,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
       $character[$index + 4] += 2;
-      return $lastResult;
-    case "PHANTASMALFOOTSTEPS":
-      $character = &GetPlayerCharacter($player);
-      $index = FindCharacterIndex($player, $combatChain[$lastResult]);
-      if ($character[$index + 4] <= 0) $character[$index + 4] += 1;
-      else $character[$index + 4] == 1;
-      AddCurrentTurnEffect("MON089", $player);
       return $lastResult;
     case "PHANTASMALFOOTSTEPSDESTROYED":
       $otherPlayer = $player == 1 ? 2 : 1;
