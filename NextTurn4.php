@@ -156,7 +156,7 @@
         //TODO: counters
         var darkMode = false;
         counterHeight = 28;
-        imgCounterHeight = 44;
+        imgCounterHeight = 42;
         //Attacker Label Style
         if (counters == "Attacker" || counters == "Arsenal") {
           rv += "<div style='margin: 0px; top: 80%; left: 50%; margin-right: -50%; border-radius: 7px; width: fit-content; text-align: center; line-height: 16px; height: 16px; padding: 5px; border: 3px solid " + PopupBorderColor(darkMode) + ";";
@@ -164,7 +164,7 @@
         }
         //Equipments, Hero and default counters style
         else if (counters != 0) {
-          var left = "30%";
+          var left = "72%";
           if (lifeCounters == 0 && defCounters == 0 && atkCounters == 0) {
             left = "50%";
           }
@@ -173,7 +173,7 @@
         }
         //-1 Defense & Endurance Counters style
         if (defCounters != 0 && isBroken != 1) {
-          var left = "-45%";
+          var left = "-42%";
           if (lifeCounters == 0 && counters == 0) {
             left = "0px";
           }
