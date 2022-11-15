@@ -577,7 +577,7 @@ function GetSettingsUI($player)
 function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
-  global $SET_Format, $SET_KarmaRestriction, $SET_FavoriteDeckIndex, $SET_GameVisibility;
+  global $SET_Format, $SET_KarmaRestriction, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   switch($setting)
   {
     case $SET_DarkMode:
@@ -590,6 +590,8 @@ function SaveSettingInDatabase($setting)
     case $SET_KarmaRestriction:
     case $SET_FavoriteDeckIndex:
     case $SET_GameVisibility:
+    case $SET_AlwaysHoldPriority:
+    case $SET_ManualMode:
       return true;
     default: return false;
   }
