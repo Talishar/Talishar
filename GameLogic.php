@@ -4129,7 +4129,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "1";
     case "LORDOFWIND":
-      $number = count(explode(",", $lastResult));
+      $number = 0;
+       if ($lastResult != "") {
+        $number = count(explode(",", $lastResult));
+       }
       AddResourceCost($player, $number);
       return $number;
     case "REFRACTIONBOLTERS":
