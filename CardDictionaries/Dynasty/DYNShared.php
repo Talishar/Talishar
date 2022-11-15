@@ -1359,6 +1359,7 @@ function DYNHitEffect($cardID)
         if (count($deck) == 0) WriteLog("The opponent deck is already... depleted.");
         $cardToBanish = array_shift($deck);
         BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
       }
       break;
     case "DYN119":
