@@ -152,9 +152,12 @@ function LandmarkPieces()
 //0 - Card ID
 //1 - Player ID
 //2 - Still on chain? 1 = yes, 0 = no
+//3 - From
+//4 - Attack Modifier
+//5 - Defense Modifier
 function ChainLinksPieces()
 {
-  return 3;
+  return 6;
 }
 
 //0 - Damage Dealt
