@@ -315,10 +315,10 @@ function ChainLinkBeginResolutionEffects()
 
 function CombatChainResolutionEffects()
 {
-  global $combatChain;
+  global $combatChain, $defPlayer;
   for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
   {
-    switch($combatChain[0])
+    switch($combatChain[$i])
     {
       case "CRU051": case "CRU052":
         EvaluateCombatChain($totalAttack, $totalBlock);

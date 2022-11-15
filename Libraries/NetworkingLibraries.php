@@ -869,6 +869,9 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i - 1]); //Card ID
     array_push($chainLinks[$CLIndex], $combatChain[$i]); //Player ID
     array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[$i + 1] != "PLAY" ? "1" : "0")); //Still on chain? 1 = yes, 0 = no
+    array_push($chainLinks[$CLIndex], $combatChain[$i + 1]); //From
+    array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Attack Modifier
+    array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
   }
 
   array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
