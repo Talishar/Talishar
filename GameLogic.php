@@ -3574,7 +3574,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINDEBUFFDEFENSE":
       global $currentTurnEffects, $mainPlayer;
       $defense = BlockingCardDefense($lastResult);
-      WriteLog($defense);
       //Now check current turn effects
       for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
         if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
