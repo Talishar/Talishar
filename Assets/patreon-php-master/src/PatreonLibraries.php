@@ -38,7 +38,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
     {
       echo($include->id . " ");
       if($include->attributes && isset($include->attributes->patron_status)) echo($include->attributes->patron_status . " " . $include->relationships->campaign->data->id);
-      else if(isset($include->attributes->patron_status)) echo($include->attributes->creation_name);
+      else if(isset($include->attributes->creation_name)) echo($include->attributes->creation_name);
       echo("<BR>");
     }
     //TODO: filter out inactive patrons
