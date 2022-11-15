@@ -37,8 +37,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       }
       else
       {
-        $defense = BlockingCardDefense($i-1);
-        if($defense > 0) $totalDefense += $defense;
+        $totalDefense += BlockingCardDefense($i-1);
       }
     }
 
@@ -56,11 +55,6 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
             array_push($attackModifiers, $attack);
             $totalAttack += $attack;
           }
-        }
-        else
-        {
-          $totalDefense += EffectBlockModifier($currentTurnEffects[$i], "", 0);
-          if ($totalDefense < 0) $totalDefense = 0;
         }
       }
     }
@@ -112,13 +106,21 @@ function BlockingCardDefense($index)
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects;
   $from = $combatChain[$index+2];
   $resourcesPaid = $combatChain[$index+3];
-  $defense = BlockValue($combatChain[$index]) + BlockModifier($combatChain[$index], $from, $resourcesPaid) + $combatChain[$index + 6];
+  $defense = BlockValue($combatChain[$index]) + BlockModifier($combatChain[$index], "", -1) + $combatChain[$index + 6];
   if(CardType($combatChain[$index]) == "E")
   {
     $defCharacter = &GetPlayerCharacter($defPlayer);
     $charIndex = FindDefCharacter($combatChain[$index]);
     $defense += $defCharacter[$charIndex+4];
-  } 
+  }
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+    if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+      if ($currentTurnEffects[$i + 1] == $defPlayer) {
+        $defense += EffectBlockModifier($currentTurnEffects[$i], index:$index);
+      }
+    }
+  }
+  if($defense < 0) $defense = 0;
   return $defense;
 }
 
