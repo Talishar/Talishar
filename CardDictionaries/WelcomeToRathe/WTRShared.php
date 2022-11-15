@@ -99,7 +99,7 @@
       case "WTR032": case "WTR033": case "WTR034": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "WTR035": case "WTR036": case "WTR037": return ClassContains($attackID, "BRUTE", $mainPlayer);
       //Guardian
-      case "WTR038": case "WTR039": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;//TODO: Make last the whole turn
+      case "WTR038": case "WTR039": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;
       case "WTR066": case "WTR067": case "WTR068": return true;
       case "WTR069": case "WTR070": case "WTR071": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
       //Warrior
@@ -626,7 +626,7 @@
         {
           MyDrawCard();
           MyDrawCard();
-          if(!CurrentEffectPreventsGoAgain()) ++$actionPoints; //TODO: This is not strictly accurate, but good enough for now
+          if(!CurrentEffectPreventsGoAgain()) ++$actionPoints;
           $rv .= ", draws 2 cards and gains go again";
         }
         AddCurrentTurnEffect($cardID, $currentPlayer);

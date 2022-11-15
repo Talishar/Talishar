@@ -188,7 +188,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 15:
     case 16:
     case 18: //CHOOSE (15 and 18 deprecated)
-      if (count($decisionQueue) > 0) //TODO: Or check all the possibilities?
+      if (count($decisionQueue) > 0) 
       {
         $index = $cardID;
         ContinueDecisionQueue($index);

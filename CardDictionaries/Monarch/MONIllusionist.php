@@ -245,7 +245,7 @@
       elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN003") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR416") return true;
       elseif (DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "DYN004") && $allies[$combatChainState[$CCS_WeaponIndex]] != "UPR413") return true;
     }
-    return HasPhantasm($combatChain[0]);//TODO: Incorporate things that can gain or lose phantasm
+    return HasPhantasm($combatChain[0]);
   }
 
   function ProcessPhantasmOnBlock($index)

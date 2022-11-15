@@ -352,7 +352,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
 
-  //TODO: Make this better by refactoring the above to a function
   if (GetClassState($playerID, $CS_NextArcaneBonus) > 0) $friendlyEffects .= "<div title='Next arcane bonus: " . GetClassState($playerID, $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid blue;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   if (GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) > 0) $opponentEffects .= "<div title='Next arcane bonus: " . GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid red;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   echo ("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
@@ -593,11 +592,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($option[0] == "THEIRALLY") {
         $lifeCounters = $theirAllies[$option[1] + 2];
         $enduranceCounters = $theirAllies[$option[1] + 6];
-        // TODO: $atkCounters to be added for Skittering Sands
       } elseif ($option[0] == "MYALLY") {
         $lifeCounters = $myAllies[$option[1] + 2];
         $enduranceCounters = $myAllies[$option[1] + 6];
-        // TODO: $atkCounters to be added for Skittering Sands
       }
 
       //Show Atk counters on Auras in the popups
@@ -1149,9 +1146,8 @@ function GetCharacterLeft($cardType, $cardSubType)
   switch ($cardType) {
     case "C":
       return "calc(50% - " . ($cardWidth / 2 + 5) . "px)";
-      //case "W": return "calc(50% " . ($cardSubType == "" ? "- " : "+ ") . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
     case "W":
-      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)"; //TODO: Second weapon
+      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)";
     default:
       break;
   }
@@ -1176,7 +1172,7 @@ function GetCharacterBottom($cardType, $cardSubType)
     case "C":
       return ($cardSize * 2 - 25) . "px";
     case "W":
-      return ($cardSize * 2 - 25) . "px"; //TODO: Second weapon
+      return ($cardSize * 2 - 25) . "px";
     default:
       break;
   }
@@ -1201,9 +1197,7 @@ function GetCharacterTop($cardType, $cardSubType)
     case "C":
       return "52px";
     case "W":
-      return "52px"; //TODO: Second weapon
-      //case "C": return ($cardSize + 20) . "px";
-      //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
+      return "52px"; 
     default:
       break;
   }

@@ -168,9 +168,9 @@ function ARCCombatEffectActive($cardID, $attackID)
     case "ARC032": case "ARC033": case "ARC034":
       return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
     case "ARC038": case "ARC039":
-      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS"; //TODO: This is only close
+      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
     case "ARC042":
-      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS"; //TODO: This is only close
+      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS"; 
     case "ARC047":
       return CardSubType($attackID) == "Arrow";
     case "ARC054": case "ARC055": case "ARC056":
