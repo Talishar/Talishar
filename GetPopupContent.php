@@ -95,13 +95,17 @@ function ChainLinkPopup($link)
   global $chainLinks, $cardSize, $playerID, $mainPlayer, $defPlayer;
   $rv = "";
   for ($i = 0; $i < count($chainLinks[$link]); $i += ChainLinksPieces()) {
-    if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR") {
-      $attackValue = AttackValue($chainLinks[$link][$i]);
-    } elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || CardType($chainLinks[$link][$i]) == "I")) {
+    if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR") 
+    {
+      $attackValue = AttackValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
+    } 
+    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || CardType($chainLinks[$link][$i]) == "I")) 
+    {
       $attackValue = AttackModifier($chainLinks[$link][$i]);
-    } else $attackValue = 0;
+    } 
+    else $attackValue = 0;
 
-    if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = BlockValue($chainLinks[$link][$i]);
+    if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = BlockValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 5];
     else $blockValue = 0;
 
     $rv .= Card($chainLinks[$link][$i], "concat", $cardSize, 0, 1, 0, ($chainLinks[$link][$i + 1] == $playerID ? 1 : 2), 0, "", "", false, 0, $blockValue, $attackValue);
