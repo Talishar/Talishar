@@ -66,6 +66,7 @@ if (isset($_SESSION["useruid"])) {
 
       <ul>
         <li><a href="MainMenu.php">Home Page</a></li>
+        <li><a href="https://fabtcg.com/events">Find Local Events</a></li>
         <li><a href="Draft.php">Limited</a></li>
         <?php
         if (isset($_SESSION["useruid"])) {
