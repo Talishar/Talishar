@@ -3,7 +3,7 @@
   use Patreon\API;
   use Patreon\OAuth;
 
-function PatreonLogin($access_token, $silent=true)
+function PatreonLogin($access_token, $silent=true, $debugMode=false)
 {
   if($access_token == "") return;
   if($access_token == "PERMANENT")
@@ -34,6 +34,14 @@ function PatreonLogin($access_token, $silent=true)
 	{
     $_SESSION["patreonAuthenticated"] = true;
 		$include = $patron_response->included[$i];
+    if($debugMode)
+    {
+      echo($include->id . " ");
+      if($include->attributes && isset($include->attributes->patron_status)) echo($include->attributes->patron_status . " " . $include->relationships->campaign->data->id);
+      else if(isset($include->attributes->patron_status)) echo($include->attributes->creation_name);
+      echo("<BR>");
+    }
+    //TODO: filter out inactive patrons
 		if($include->type == "campaign" && $include->id == "7198186")
 		{
 			$_SESSION["isPatron"] = true;
@@ -88,7 +96,7 @@ function PatreonLogin($access_token, $silent=true)
       $_SESSION["isSloopdoopPatron"] = true;
       array_push($yourPatronages, "Sloopdoop");
     }
-    if($include->type == "campaign" && $include->id == "7342687")
+    if($include->type == "campaign" && $include->id == "1919413")
     {
       $_SESSION["isDMArmadaPatron"] = true;
       array_push($yourPatronages, "DM Armada");
