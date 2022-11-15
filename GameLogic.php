@@ -4618,7 +4618,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return 1;
     case "DIMENXXIONALGATEWAY":
-      if (ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true); //TODO: Not totally correct
+      if (ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", "MON161", true);
       if (TalentContains($lastResult, "SHADOW", $player)) {
         PrependDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
         PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);

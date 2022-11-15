@@ -941,7 +941,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $rv = "Lets you play your next Wizard non-attack as an instant";
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
       if (GetClassState($currentPlayer, $CS_NumWizardNonAttack) >= 2) {
-        DealArcane(3, 1, "PLAYCARD", $cardID, resolvedTarget: $target); //TODO: All opponents
+        DealArcane(3, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
       }
       return $rv . ".";
     case "CRU163":

@@ -57,16 +57,6 @@ $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "w");
 fclose($handler);
 
-/*
-//TODO: Persistent chat
-$filename = "./Games/" . $gameName . "/p1gamelog.txt";
-$handler = fopen($filename, "w");
-fclose($handler);
-$filename = "./Games/" . $gameName . "/p2gamelog.txt";
-$handler = fopen($filename, "w");
-fclose($handler);
-*/
-
 $currentTime = round(microtime(true) * 1000);
 WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0"); //Initialize SHMOP cache for this game
 

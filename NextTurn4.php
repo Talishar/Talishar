@@ -153,7 +153,7 @@
         rv += "<img " + (id != "" ? "id='" + id + "-img' " : "") + "style='" + border + " height:" + height + "; width:" + width + "px; position:relative;' src='./" + folderPath + "/" + cardNumber + fileExt + "' />";
         rv += "<div " + (id != "" ? "id='" + id + "-ovr' " : "") + "style='visibility:" + (overlay == 1 ? "visible" : "hidden") + "; width:100%; height:100%; top:0px; left:0px; border-radius:10px; position:absolute; background: rgba(0, 0, 0, 0.5); z-index: 1;'></div>";
 
-        //TODO: counters
+        //TODO: Steam counters missing
         var darkMode = false;
         counterHeight = 28;
         imgCounterHeight = 42;
@@ -409,7 +409,7 @@
           case "C":
             return "calc(50% - " + (cardSize / 2) + "px)";
           case "W":
-            return "calc(50% - " + (cardSize / 2 + cardSize + 10) + "px)"; //TODO: Second weapon
+            return "calc(50% - " + (cardSize / 2 + cardSize + 10) + "px)";
           default:
             break;
         }
@@ -432,7 +432,7 @@
           case "C":
             return (cardSize * 2 + 25) + "px";
           case "W":
-            return (cardSize * 2 + 25) + "px"; //TODO: Second weapon
+            return (cardSize * 2 + 25) + "px";
           default:
             break;
         }
@@ -456,8 +456,6 @@
             return (cardSize * 2 + 25) + "px";
           case "W":
             return (cardSize * 2 + 25) + "px";
-            //case "C": return ($cardSize + 20) . "px";
-            //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
           default:
             break;
         }

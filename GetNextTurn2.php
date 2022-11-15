@@ -1349,9 +1349,8 @@ function GetCharacterLeft($cardType, $cardSubType)
   switch ($cardType) {
     case "C":
       return "calc(50% - " . ($cardWidth / 2 + 5) . "px)";
-      //case "W": return "calc(50% " . ($cardSubType == "" ? "- " : "+ ") . ($cardWidth/2 + $cardWidth + 10) . "px)";//TODO: Second weapon
     case "W":
-      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)"; //TODO: Second weapon
+      return "calc(50% - " . ($cardWidth / 2 + $cardWidth + 25) . "px)";
     default:
       break;
   }
@@ -1376,7 +1375,7 @@ function GetCharacterBottom($cardType, $cardSubType)
     case "C":
       return ($cardSize * 2 - 25) . "px";
     case "W":
-      return ($cardSize * 2 - 25) . "px"; //TODO: Second weapon
+      return ($cardSize * 2 - 25) . "px"; 
     default:
       break;
   }
@@ -1401,9 +1400,7 @@ function GetCharacterTop($cardType, $cardSubType)
     case "C":
       return "52px";
     case "W":
-      return "52px"; //TODO: Second weapon
-      //case "C": return ($cardSize + 20) . "px";
-      //case "W": return ($cardSize + 20) . "px";//TODO: Second weapon
+      return "52px"; 
     default:
       break;
   }

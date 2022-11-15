@@ -71,14 +71,14 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
         $totalAttack += $attack;
       }
     }
-    $attack = MainCharacterAttackModifiers();//TODO: If there are both negatives and positives here, this might mess up?...
+    $attack = MainCharacterAttackModifiers();
     if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Character/Equipment");
       array_push($attackModifiers, $attack);
       $totalAttack += $attack;
     }
-    $attack = AuraAttackModifiers(0);//TODO: If there are both negatives and positives here, this might mess up?...
+    $attack = AuraAttackModifiers(0);
     if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Aura Ability");
@@ -93,7 +93,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers=[]
       $totalAttack += $attack;
     }
     $attack = $combatChainState[$CCS_ChainAttackBuff];
-    if($canGainAttack || $attack < 0) // TODO: Doesn't take Snag in consideration
+    if($canGainAttack || $attack < 0)
     {
       array_push($attackModifiers, "Whole Combat Chain Buff");
       array_push($attackModifiers, $attack);
@@ -1552,7 +1552,6 @@ function UndestroyCharacter($player, $index)
   $char = &GetPlayerCharacter($player);
   $char[$index+1] = 2;
   $char[$index+4] = 0;
-  //TODO: Remove graveyard
 }
 
 function DestroyCharacter($player, $index)

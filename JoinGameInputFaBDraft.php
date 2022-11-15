@@ -91,7 +91,6 @@ if ($deck == "" && !IsDeckLinkValid($decklink)) {
   echo '<b>' . "Deck URL is not valid: " . $decklink . '</b>';
   exit;
 }
-//TODO: Validate $deck
 
 include "HostFiles/Redirector.php";
 include "CardDictionary.php";

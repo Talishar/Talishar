@@ -168,7 +168,7 @@
         $totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
         $totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
         $totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
-        $totalDefensiveCards += ($turnStats[$i+$TurnStats_CardsPlayedDefense] + $turnStats[$i+$TurnStats_CardsBlocked]);//TODO: Separate out pitch for offense and defense
+        $totalDefensiveCards += ($turnStats[$i+$TurnStats_CardsPlayedDefense] + $turnStats[$i+$TurnStats_CardsBlocked]);
         $totalBlocked += $turnStats[$i+$TurnStats_DamageBlocked];
         ++$numTurns;
       }
