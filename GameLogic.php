@@ -962,39 +962,23 @@ function EffectAttackModifier($cardID)
   }
 }
 
-function EffectBlockModifier($cardID, $from="", $resourcesPaid=0, $index=-1)
+function EffectBlockModifier($cardID, $index)
 {
   global $combatChain, $defPlayer;
   switch ($cardID) {
     case "MON089":
-      for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
-      {
-        if($combatChain[$i+1] != $defPlayer) continue;
-        if($combatChain[$i] == $cardID) return 1;
-      }
+      if($combatChain[$index] == $cardID) return 1;
       return 0;
     case "ELE000-2":
       return 1;
     case "ELE143":
       return 1;
     case "DYN115": case "DYN116":
-      $rv = 0;
-      for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
-      {
-        if($combatChain[$i+1] != $defPlayer) continue;
-        if($index > -1 && $i != $index) continue;
-        $cardType = CardType($combatChain[$i]);
-        $cardBlock = BlockValue($combatChain[$i]);
-        if($cardType == "AA" && $cardBlock-1 >= 0) $rv -= 1; // Check for rare case of cards with 0 defense
-      }
-      return $rv;
+      $cardType = CardType($combatChain[$index]);
+      $cardBlock = BlockValue($combatChain[$index]);
+      return ($cardType == "AA" ? -1 : 0);
     case "ELE203":
-      for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
-      {
-        if($combatChain[$i+1] != $defPlayer) continue;
-        if($combatChain[$i] == "ELE203") return 1;
-      }
-      return 0;
+      return ($combatChain[$index] == "ELE203" ? 1 : 0);
     default:
       return 0;
   }
@@ -3570,15 +3554,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINDEBUFFDEFENSE":
       global $currentTurnEffects, $mainPlayer;
       $defense = BlockingCardDefense($lastResult);
-      //Now check current turn effects
-      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
-        if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-          if ($currentTurnEffects[$i + 1] != $mainPlayer) {
-            $defense += EffectBlockModifier($currentTurnEffects[$i], "", index:$lastResult);
-            if ($defense < 0) $defense = 0;
-          }
-        }
-      }
       if ($parameter > $defense) $parameter = $defense;
       $combatChain[$lastResult + 6] -= $parameter;
       return $lastResult;
