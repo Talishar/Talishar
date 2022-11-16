@@ -985,7 +985,7 @@ function EffectBlockModifier($cardID, $index)
 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
-  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $combatChain, $chainLinkSummary;
+  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $combatChain, $chainLinks;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
@@ -1035,7 +1035,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "EVR052":
       return (CardCost($combatChain[0]) == 0 && CardType($combatChain[0]) == "AA" ? 2 : 0);
     case "DYN045":
-      $blockModifier += (count($chainLinkSummary)/ChainLinksPieces() >= 4 ? 4 : 0);
+      $blockModifier += (count($chainLinks) >= 3 ? 4 : 0);
       break;
     case "DYN036": case "DYN037": case "DYN038":
       $blockModifier += SearchCharacter($defPlayer, subtype: "Off-Hand", class: "GUARDIAN") != "" ? 4 : 0;
