@@ -49,6 +49,10 @@ if(isset($_SESSION["userid"]))
   }
   ChangeSetting("", $SET_Format, FormatCode($format), $_SESSION["userid"]);
   ChangeSetting("", $SET_GameVisibility, ($visibility == "public" ? 1 : 0), $_SESSION["userid"]);
+  if($deckbuilderID != "" && str_contains($decklink, "fabrary"))
+  {
+    storeFabraryId($_SESSION["userid"], $deckbuilderID);
+  }
 }
 
 session_write_close();
@@ -117,7 +121,6 @@ $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
 $hostIP = $_SERVER['REMOTE_ADDR'];
-if($deckbuilderID != "") $p1deckbuilderID = $deckbuilderID;
 $p1StartingHealth = $startingHealth;
 
 $filename = "./Games/" . $gameName . "/GameFile.txt";

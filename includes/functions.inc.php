@@ -234,6 +234,32 @@ function storeRememberMeCookie($conn, $uuid, $cookie)
 	}
 }
 
+function storeFabraryId($uid, $fabraryId)
+{
+	$conn = GetDBConnection();
+  $sql = "UPDATE users SET fabraryId='$fabraryId' WHERE usersId='$uid'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+}
+
+function GetDeckBuilderId($uid)
+{
+	$conn = GetDBConnection();
+	$sql = "SELECT fabraryId FROM users WHERE usersId='$uid'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_array($data, MYSQLI_NUM);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	return (count($row) > 0 ? $row[0] : "");
+}
+
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
 {
 	$conn = GetDBConnection();
