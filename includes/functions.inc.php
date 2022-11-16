@@ -245,10 +245,21 @@ function storeFabraryId($uid, $fabraryId)
 	}
 }
 
-function GetDeckBuilderId($uid)
+function storeFabDBId($uid, $fabdbId)
 {
 	$conn = GetDBConnection();
-	$sql = "SELECT fabraryId FROM users WHERE usersId='$uid'";
+  $sql = "UPDATE users SET fabdbId='$fabdbId' WHERE usersId='$uid'";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+}
+
+function GetDeckBuilderId($uid, $decklink)
+{
+	$conn = GetDBConnection();
+	$sql = "SELECT fabraryId,fabdbId FROM users WHERE usersId='$uid'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
@@ -257,7 +268,12 @@ function GetDeckBuilderId($uid)
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
-	return (count($row) > 0 ? $row[0] : "");
+	$dbId = "";
+	if(count($row) == 0) return "";
+	if(str_contains($decklink, "fabrary")) $dbId = $row[0];
+	else if(str_contains($decklink, "fabdb")) $dbId = $row[1];
+	if($dbId == "NULL") $dbId = "";
+	return $dbId;
 }
 
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
