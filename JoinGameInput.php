@@ -381,7 +381,7 @@ if ($decklink != "") {
   {
     include_once './includes/functions.inc.php';
     include_once "./includes/dbh.inc.php";
-    $deckbuilderID = GetDeckBuilderId($_SESSION["userid"]);
+    $deckbuilderID = GetDeckBuilderId($_SESSION["userid"], $decklink);
     if($deckbuilderID != "")
     {
       if($playerID == 1) $p1deckbuilderID = $deckbuilderID;
