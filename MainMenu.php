@@ -220,8 +220,8 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 
       <div style="vertical-align:middle; position: relative;">
         <h3>Promise of Plenty</h3>
-        <h4 style="margin-left:5%; margin-right:5%;">Check out what Nate and Keith think about Dynasty on the latest Promise of Plenty podcast!</h4><br>
-        <a href='https://www.youtube.com/watch?v=3u68BYd9EbI&t=4s' target='_blank'>
+        <h4 style="margin-left:5%; margin-right:5%;">Nate and Keith go over Dynasty release on episode 5 of the Promise of Plenty podcast!</h4><br>
+        <a href='https://www.youtube.com/watch?v=i1fzBYitRDQ' target='_blank'>
           <img style=" margin-left:5%; margin-right:5%; margin-top:-5%; margin-bottom:-5%; width:50%; border-radius:5%;" src="./Images/logos/PromiseOfPlenty.webp" /></a>
       </div>
 
