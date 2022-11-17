@@ -801,3 +801,15 @@ function GetTheirBanishForDisplay($playerID)
   }
   return $banish;
 }
+
+function GetMyBanishForDisplay($playerID)
+{
+  global $myBanish;
+  $myCardBack = GetCardBack($playerID == 1 ? 1 : 2);
+  $banish = array();
+  for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
+    if ($myBanish[$i + 1] == "INT") array_push($banish, $myCardBack);
+    else array_push($banish, $myBanish[$i]);
+  }
+  return $banish;
+}
