@@ -78,7 +78,7 @@ function DestroyMyItem($index)
 function DestroyItemForPlayer($player, $index)
 {
   $items = &GetItems($player);
-  if (CardType($items[$index]) != "T") {
+  if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY") {
     AddGraveyard($items[$index], $player, "PLAY");
   }
   for ($i = $index + ItemPieces() - 1; $i >= $index; --$i) {

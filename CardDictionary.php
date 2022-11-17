@@ -1068,6 +1068,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "")
         SearchCurrentTurnEffects($cardID, $player, 1);
         return "GY";
       }
+    case "DYN241":
+      if ($from == "PLAY") return "-";
     default:
       return "GY";
   }
