@@ -59,11 +59,11 @@ if ($handle = opendir($path)) {
           if ($p1Hero == "") {
             $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate) / 1000) . " seconds ago </label>";
           } else {
-            $spectateLinks .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+            $spectateLinks .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.webp' />";
             $spectateLinks .= "</td><td style='vertical-align:middle;'>";
             $spectateLinks .= " &nbsp; vs &nbsp; ";
             $spectateLinks .= "</td><td>";
-            $spectateLinks .= "<img height='40px;' src='./crops/" . $p2Hero . "_cropped.png' />";
+            $spectateLinks .= "<img height='40px;' src='./crops/" . $p2Hero . "_cropped.webp' />";
             $spectateLinks .= "</td><td style='vertical-align:middle;'>&nbsp;";
           }
           $spectateLinks .= "<input class='ServerChecker_Button' type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
@@ -110,7 +110,7 @@ if ($handle = opendir($path)) {
       $link .= "<center><table style='left:40%;'><tr><td style='vertical-align:middle;'>";
       if ($formatName != "") $link .= $formatName . "&nbsp;</td><td>";
       //else $link .= "Game #" . $gameName . "&nbsp;";
-      //if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+      //if($p1Hero != "") $link .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.webp' />";
       $link .= "</td><td style='vertical-align:middle;'>";
       $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
       $link .= "<span style='font-weight:500; pointer:default;'> &nbsp;" . $description . " </span>";
