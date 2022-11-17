@@ -709,15 +709,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $enduranceCounters = 0;
       $atkCounters = 0;
 
-      if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
+      if (($option[0] == "MYALLY" || $option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && $option[1] == $combatChainState[$CCS_WeaponIndex]) {
         $counters = "Attacker";
       }
 
       if (count($layers) > 0) {
-        if (
-          $option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer
-        ) {
+        if ( $option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer ) {
           $index = SearchLayer($otherPlayer, subtype: "Ally");
+          if ($index != "") {
+            $params = explode("|", $layers[$index + 2]);
+            if ($option[1] == $params[2]) $counters = "Attacker";
+          }
+        }
+        if ($option[0] == "THEIRAURAS" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
+          $index = SearchLayer($otherPlayer, subtype: "Aura");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
             if ($option[1] == $params[2]) $counters = "Attacker";
