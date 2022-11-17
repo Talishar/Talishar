@@ -102,11 +102,12 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
   global $playerID, $darkMode;
   $LanguageJP = ((IsLanguageJP($playerID) && TranslationExist("JP", $cardNumber)) ? true : false);
   if ($darkMode == null) $darkMode = false;
-  if ($folder == "crops") {
-    $cardNumber .= "_cropped";
-  }
   $fileExt = ".png";
   $folderPath = $folder;
+  if ($folder == "crops") {
+    $cardNumber .= "_cropped";
+    $fileExt = ".webp";
+  }
   if ($cardNumber == "ENDTURN" || $cardNumber == "RESUMETURN" || $cardNumber == "PHANTASM" || $cardNumber == "FINALIZECHAINLINK" || $cardNumber == "DEFENDSTEP" || $cardNumber == "AIM_cropped") {
     $folderPath = str_replace("CardImages", "Images", $folderPath);
     $folderPath = str_replace("concat", "Images", $folderPath);
