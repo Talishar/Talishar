@@ -1349,7 +1349,7 @@ if ($set == "DYN") {
 		case "234": return "Crown of Dominion";
 		case "235": return "Ornate Tessen";
 		case "236": return "Spell Fray Tiara";
-		case "237": return "Spell Fray Cloack";
+		case "237": return "Spell Fray Cloak";
 		case "238": return "Spell Fray Gloves";
 		case "239": return "Spell Fray Leggings";
     	case "240": return "Imperial Edict";
