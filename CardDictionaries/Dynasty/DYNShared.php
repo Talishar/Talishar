@@ -890,7 +890,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Your sword and dagger attacks have piercing " . $amount . " this turn.";
     case "DYN090":
-      if(IsHeroAttackTarget())
+      if(IsHeroAttackTarget() && $combatChainState[$CCS_NumBoosted] > 0)
       {
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $combatChainState[$CCS_NumBoosted]);
