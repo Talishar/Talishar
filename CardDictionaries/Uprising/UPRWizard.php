@@ -284,9 +284,9 @@
         DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false, resolvedTarget: $target);
         for($i=1; $i<$maxAllies; ++$i)
         {
-          DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, true);
+          DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, true, true);
         }
-        DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, false, false);
+        DealArcane($damage, 3, "PLAYCARD", $cardID, false, $currentPlayer, true, false);
         return "";
       default: return "";
     }
