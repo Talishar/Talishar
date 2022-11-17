@@ -27,8 +27,9 @@
     else $authKey = TryGet("authKey", "");
     session_write_close();
 
-    if (($playerID == 1 || $playerID == 2) && $authKey == "") {
-      if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+    if(($playerID == 1 || $playerID == 2) && $authKey == "")
+    {
+      if(isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
     }
 
     //First we need to parse the game state from the file
@@ -75,9 +76,7 @@
       //var cardSize = 96;
 
       function Hotkeys(event) {
-        if (event.keyCode === 32) {
-          if (document.getElementById("passConfirm").innerText == "false" || confirm("Do you want to skip arsenal?")) SubmitInput(99, "");
-        } //Space = pass
+        if (event.keyCode === 32) { if(document.getElementById("passConfirm").innerText == "false" || confirm("Do you want to skip arsenal?")) SubmitInput(99, ""); } //Space = pass
         if (event.keyCode === 117) SubmitInput(10000, ""); //U = undo
         if (event.keyCode === 104) SubmitInput(3, "&cardID=0"); //H = hero ability
         if (event.keyCode === 109) ShowPopup("menuPopup"); //M = open menu
@@ -93,12 +92,12 @@
 
       //Rotate is deprecated
       function Card(cardNumber, folder, maxHeight, action = 0, showHover = 0, overlay = 0, borderColor = 0, counters = 0, actionDataOverride = "", id = "", rotate = false, lifeCounters = 0, defCounters = 0, atkCounters = 0, controller = 0, restriction = "", isBroken = 0, onChain = 0, isFrozen = 0, gem = 0) {
-        fileExt = ".png";
-        folderPath = folder;
         if (folder == "crops") {
           cardNumber += "_cropped";
-          fileExt = ".webp";
         }
+        fileExt = ".png";
+        folderPath = folder;
+
         var LanguageJP = <?php echo ((IsLanguageJP($playerID) ? "true" : "false")); ?>;
         LanguageJP = LanguageJP && TranslationExist('JP', cardNumber);
 
@@ -289,7 +288,8 @@
         }
       }
 
-      function TranslationExist(Language, cardID) {
+      function TranslationExist(Language, cardID)
+      {
         switch (Language) {
           case "JP": //Japanese
             switch (cardID) {
@@ -395,7 +395,7 @@
 
           }
           var restriction = cardArr[12];
-          if (!!restriction || typeof restriction != "string") restriction = "";
+          if(!!restriction || typeof restriction != "string") restriction = "";
           restriction = restriction.replace(/_/g, ' ');
           newHTML += Card(cardArr[0], folder, size, cardArr[1], 1, cardArr[2], cardArr[3], cardArr[4], cardArr[5], "", false, cardArr[6], cardArr[7], cardArr[8], cardArr[9], restriction, cardArr[13], cardArr[14], cardArr[15], cardArr[16]);
           newHTML += "</span>";
