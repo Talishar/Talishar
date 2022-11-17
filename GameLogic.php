@@ -1903,7 +1903,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "DYN049":
       return true;
-    case "DYN085": case "DYN086": case "DYN087": 
+    case "DYN085": case "DYN086": case "DYN087":
       return true;
     case "DYN089-UNDER":
       return true;
@@ -2458,9 +2458,14 @@ function Draw($player, $mainPhase = true)
       if ($cardType == "A" || $cardType == "AA") PlayAura("WTR075", $player);
     }
   }
-  if ($mainPhase && SearchCurrentTurnEffects("DYN196", $player)) {
-    $character = &GetPlayerCharacter($player);
-    DealArcane(1, 2, "TRIGGER", $character[0]);
+  if ($mainPhase)
+  {
+    $numBrainstorm = CountCurrentTurnEffects("DYN196", $player);
+    if($numBrainstorm > 0)
+    {
+      $character = &GetPlayerCharacter($player);
+      for($i=0; $i<$numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
+    }
   }
   return $hand[count($hand) - 1];
 }
