@@ -221,6 +221,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $fontSize = 30;
     $left = 65;
     $top = 20;
+  } else if(IsReplay())
+  {
+    $passLabel = "Next";
+    $fontSize = 36;
+    $left = 85;
+    $top = 15;
   } else {
     $passLabel = "Pass";
     $fontSize = 36;
@@ -228,7 +234,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $top = 15;
   }
 
-  if (CanPassPhase($turn[0]) && $currentPlayer == $playerID) {
+  if ((CanPassPhase($turn[0]) && $currentPlayer == $playerID) || (IsReplay() && $playerID == 3)) {
     $prompt = "";
     if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID)) {
       // Prompt the player if they want to skip arsenal with cards in hand.
@@ -1382,7 +1388,7 @@ function GetCharacterBottom($cardType, $cardSubType)
     case "C":
       return ($cardSize * 2 - 25) . "px";
     case "W":
-      return ($cardSize * 2 - 25) . "px"; 
+      return ($cardSize * 2 - 25) . "px";
     default:
       break;
   }
@@ -1407,7 +1413,7 @@ function GetCharacterTop($cardType, $cardSubType)
     case "C":
       return "52px";
     case "W":
-      return "52px"; 
+      return "52px";
     default:
       break;
   }
