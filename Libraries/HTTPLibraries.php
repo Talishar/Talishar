@@ -45,6 +45,12 @@ function GetGameCounter()
   return $gameName;
 }
 
+function IsReplay()
+{
+  global $gameName;
+  return (GetCachePiece($gameName, 10) == "1" ? true : false);
+}
+
 function SetHeaders()
 {
   // array holding allowed Origin domains
