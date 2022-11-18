@@ -20,7 +20,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo($turn[0] . " Invalid Input<BR>");
+        echo("Play from hand " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 3: //Play equipment ability
@@ -44,7 +45,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo($turn[0] . " Invalid Input<BR>");
+        echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 4: //Add something to your arsenal
@@ -59,7 +61,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       else
       {
         echo($cardID . " " . $turn[0] . "<BR>");
-        echo($turn[0] . " Invalid Input<BR>");
+        echo("Add to arsenal " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 5: //Card Played from Arsenal
@@ -75,7 +78,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo($turn[0] . " Invalid Input<BR>");
+        echo("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 6: //Pitch Deck
@@ -87,7 +91,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo($turn[0] . " Invalid Input<BR>");
+        echo("Pitch deck " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 7: //Number input
@@ -96,7 +101,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo($turn[0] . " Invalid Input<BR>");
+        echo("Number input " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 8:
@@ -126,7 +132,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else
       {
-        echo($turn[0] . " Invalid Input<BR>");
+        echo("Opt " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 10: //Item ability
@@ -188,7 +195,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 15:
     case 16:
     case 18: //CHOOSE (15 and 18 deprecated)
-      if (count($decisionQueue) > 0) 
+      if (count($decisionQueue) > 0)
       {
         $index = $cardID;
         ContinueDecisionQueue($index);
@@ -343,7 +350,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
         ContinueDecisionQueue($buttonInput);
       } else {
-        echo ($turn[0] . " Invalid Input<BR>");
+        echo ("Choose top opponent " . $turn[0] . " Invalid Input<BR>");
+        return false;
       }
       break;
     case 99: //Pass
@@ -583,6 +591,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     default:
       break;
   }
+  return true;
 }
 
 
