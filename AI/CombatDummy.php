@@ -27,8 +27,9 @@ function CombatDummyAI()
 
         if($index != -1 && $cost == 0)
         {
-          ProcessInput($currentPlayer, 3, "", CharacterPieces(), $index, "");
-          CacheCombatResult();
+          $wasSuccessful = ProcessInput($currentPlayer, 3, "", CharacterPieces(), $index, "");
+          if($wasSuccessful) CacheCombatResult();
+          else PassInput();
         }
         else PassInput();
       }
