@@ -180,6 +180,9 @@ function SoulPieces()
   return 1;
 }
 
+$SHMOP_CURRENTPLAYER = 9;
+$SHMOP_ISREPLAY = 10;//0 = not replay, 1 = replay
+
 //Class State (one for each player)
 $CS_Num6PowDisc = 0;
 $CS_NumBoosted = 1;
