@@ -44,7 +44,8 @@ $handler = fopen($filename, "w");
 fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0"); //Initialize SHMOP cache for this game
+$isReplay = "1";
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!" . $isReplay); //Initialize SHMOP cache for this game
 
 copy("./Replays/" . $replayNumber . "/origGamestate.txt", "./Games/" . $gameName . "/gamestate.txt");
 copy("./Replays/" . $replayNumber . "/commandfile.txt", "./Games/" . $gameName . "/replayCommands.txt");
