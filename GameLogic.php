@@ -4200,14 +4200,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
       $character[$index + 4] += 2;
       return $lastResult;
-    case "PHANTASMALFOOTSTEPSDESTROYED":
-      $otherPlayer = $player == 1 ? 2 : 1;
-      $character = &GetPlayerCharacter($player);
-      $index = FindCharacterIndex($player, $combatChain[$lastResult]);
-      if (!ClassContains($combatChain[0], "ILLUSIONIST", $otherPlayer) && DoesBlockTriggerPhantasm(0)) {
-        $character[$index + 1] = 0;
-      }
-      return $lastResult;
     case "ARTOFWAR":
       global $currentPlayer, $combatChain, $defPlayer;
       $params = explode(",", $lastResult);
