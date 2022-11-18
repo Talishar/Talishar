@@ -770,7 +770,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,ARC159");
       AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
     case "DYN007":
       if (AttackValue($additionalCosts) >= 6) {

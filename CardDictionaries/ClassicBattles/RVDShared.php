@@ -165,7 +165,7 @@ function ChiefRukutanAbility($player, $index)
     AddDecisionQueue("FINDINDICES", $player, "DECKCARD,WTR006");
     AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
     AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-    AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $player, "-");
   }
   WriteLog($log . ".");
 }

@@ -158,7 +158,7 @@
       case "ARC046":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDECKARROW");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         Reload();

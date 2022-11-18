@@ -691,7 +691,7 @@
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "Lets you to search for a Guardian attack card.";
       //Ninja
       case "WTR078":
@@ -744,7 +744,7 @@
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, $ARs);
           AddDecisionQueue("BANISH", $currentPlayer, "TCL", 1);
           AddDecisionQueue("SHOWBANISHEDCARD", $currentPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
       case "WTR123": case "WTR124": case "WTR125":
@@ -923,7 +923,7 @@
           AddDecisionQueue("MULTICHOOSEDECK", $mainPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "-", 1);
           AddDecisionQueue("MULTIADDHAND", $mainPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
         }
         break;
       case "WTR084":
