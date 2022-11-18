@@ -588,7 +588,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("ADDMYHAND", $player, "-", 1);
       AddDecisionQueue("REVEALCARDS", $player, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-");
       break;
     case "CRU000":
       PlayAura("ARC112", $player);
@@ -771,7 +771,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
       AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-");
       break;
     case "EVR069":
       $index = SearchItemsForUniqueID($uniqueID, $player);

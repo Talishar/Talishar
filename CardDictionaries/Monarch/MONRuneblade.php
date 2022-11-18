@@ -281,7 +281,7 @@
         AddDecisionQueue("FINDINDICES", $player, "DECKSPEC");
         AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
         AddDecisionQueue("ADDARSENALFACEUP", $player, "DECK", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, "-");
       }
     }
   }
