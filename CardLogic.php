@@ -58,6 +58,16 @@ function MayBottomDeckDraw()
   }
 }
 
+function BottomDeckDraw()
+{
+  global $currentPlayer;
+  $hand = GetHand($currentPlayer);
+  if (count($hand) > 0) {
+    BottomDeck();
+    AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+  }
+}
+
 function BottomDeckMultizone($player, $zone1, $zone2)
 {
   AddDecisionQueue("FINDINDICES", $player, "SEARCHMZ," . $zone1 . "|" . $zone2, 1);
