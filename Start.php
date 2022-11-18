@@ -92,7 +92,9 @@ $currentTime = strval(round(microtime(true) * 1000));
 $currentUpdate = GetCachePiece($gameName, 1);
 $p1Hero = GetCachePiece($gameName, 7);
 $p2Hero = GetCachePiece($gameName, 8);
-WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . 0); //Initialize SHMOP cache for this game
+$currentPlayer = 0;
+$isReplay = 0;
+WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $currentPlayer . "!" . $isReplay); //Initialize SHMOP cache for this game
 
 ob_start();
 include "StartEffects.php";
