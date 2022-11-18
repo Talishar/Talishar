@@ -207,11 +207,6 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
         $ret = "Gained go again.";
       }
       return $ret;
-    case "ARC185":
-    case "ARC186":
-    case "ARC187":
-      IncrementClassState($currentPlayer, $CS_NumMoonWishPlayed);
-      return "";
     case "ARC191":
     case "ARC192":
     case "ARC193":
