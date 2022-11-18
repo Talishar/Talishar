@@ -236,7 +236,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ((CanPassPhase($turn[0]) && $currentPlayer == $playerID) || (IsReplay() && $playerID == 3)) {
     $prompt = "";
-    if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID)) {
+    if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID) && !IsReplay()) {
       // Prompt the player if they want to skip arsenal with cards in hand.
       $prompt = "Do you want to skip arsenal?";
     }
