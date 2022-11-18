@@ -58,24 +58,44 @@ $randomSeeded = false;
 
 SetHeaders();
 
-if (($playerID == 1 || $playerID == 2) && $authKey == "") {
-  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+if(IsReplay())
+{
+  $filename = "./Games/" . $gameName . "/replayCommands.txt";
+  $file = file($filename);
+  $line = $file[0];
+  unset($file[0]);
+  file_put_contents($filename, $file);
+  $params = explode(" ", $line);
+  $playerID = $params[0];
+  $mode = $params[1];
+  $buttonInput = $params[2];
+  $cardID = $params[3];
+  $chkCount = $params[4];
+  $chkInput = explode("|", $params[5]);
+  for($i=0; $i<count($chkInput); ++$i)
+  {
+    $chkInput[$i] = trim($chkInput[$i]);
+  }
 }
-
-if ($playerID != 3 && $authKey != $targetAuth) exit;
-if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
-if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
-  $currentTime = round(microtime(true) * 1000);
-  SetCachePiece($gameName, 2, $currentTime);
-  SetCachePiece($gameName, 3, $currentTime);
-  ExitProcessInput();
+else {
+  if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+    if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+  }
+  if ($playerID != 3 && $authKey != $targetAuth) exit;
+  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
+  if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
+    $currentTime = round(microtime(true) * 1000);
+    SetCachePiece($gameName, 2, $currentTime);
+    SetCachePiece($gameName, 3, $currentTime);
+    ExitProcessInput();
+  }
 }
 
 $afterResolveEffects = [];
 
 $animations = [];
 
-if ((IsPatron(1) || IsPatron(2))) {
+if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
   $commandFile = fopen("./Games/" . $gameName . "/commandfile.txt", "a");
   fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
