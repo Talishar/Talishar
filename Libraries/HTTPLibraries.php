@@ -22,7 +22,8 @@ function IsDeckLinkValid($deckLink)
   */
 }
 
-function CreateGameFile()
+
+function GetGameCounter()
 {
   $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
   $attemptCount = 0;
