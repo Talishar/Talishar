@@ -1240,7 +1240,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "Reveal has been prevented.";
     case "DYN235":
-      MayBottomDeckDraw();
+      BottomDeckDraw();
       return CardLink($cardID, $cardID) . " let you sink a card.";
     case "DYN240":
       $rv = "";
