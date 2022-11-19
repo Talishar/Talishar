@@ -3165,6 +3165,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ARCANETARGET":
           $rv = GetArcaneTargetIndices($player, $subparam);
           break;
+        case "DAMAGEPREVENTION":
+          $rv = "";
+          break;
+        case "DAMAGEPREVENTIONTARGET": $rv = GetDamagePreventionIndices(); break;
         case "WTR083":
           $rv = SearchDeckForCard($player, "WTR081");
           if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
@@ -3370,7 +3374,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "WEAPON":
           $rv = WeaponIndices($player, $player, $subparam);
           break;
-        case "DMGPREVENTION": $rv = GetDamagePreventionIndices(); break;
         case "MON020":
         case "MON021":
         case "MON022":

@@ -567,6 +567,11 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   }
   //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
   $damage = $damage > 0 ? $damage : 0;
+  if($damage > 0 && $preventable)
+  {
+    AddDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION");
+    AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  }
   $damage = CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable);
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
