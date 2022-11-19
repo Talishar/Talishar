@@ -58,7 +58,7 @@ $randomSeeded = false;
 
 SetHeaders();
 
-if(IsReplay())
+if(IsReplay() && $mode == 99)
 {
   $filename = "./Games/" . $gameName . "/replayCommands.txt";
   $file = file($filename);
