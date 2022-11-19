@@ -139,6 +139,7 @@ function ItemHitEffects($attackID)
 
 function ItemTakeDamageAbilities($player, $damage, $type)
 {
+  $otherPlayer = ($player == 1 ? 2 : 1);
   $items = &GetItems($player);
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for($i=count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())

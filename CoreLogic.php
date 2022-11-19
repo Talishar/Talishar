@@ -528,7 +528,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
 function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $combatChainState, $combatChain, $mainPlayer;
-  global $CCS_AttackFused, $CS_ArcaneDamagePrevention, $currentPlayer;
+  global $CCS_AttackFused, $CS_ArcaneDamagePrevention, $currentPlayer, $dqVars;
 
   $classState = &GetPlayerClassState($player);
   $Items = &GetItems($player);
@@ -567,11 +567,6 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   }
   //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
   $damage = $damage > 0 ? $damage : 0;
-  if($damage > 0 && $preventable)
-  {
-    AddDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION");
-    AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  }
   $damage = CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable);
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
@@ -579,8 +574,20 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = CharacterTakeDamageAbilities($player, $damage, $type);
   $damage = ItemTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
+  $dqVars[0] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
+  if($damage > 0 && $preventable)
+  {
+    AddDamagePreventionSelection($player, $damage);
+  }
   return $damage;
+}
+
+function AddDamagePreventionSelection($player, $damage)
+{
+  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage, 1);
+  PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION");
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
@@ -1772,6 +1779,24 @@ function IsSpecificAuraAttacking($player, $index)
     }
     return "-";
   }
+
+function GetDamagePreventionIndices($player)
+{
+  $rv = "";
+  $auras = &GetAuras($player);
+  $indices = "";
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if(AuraDamagePreventionAmount($player, $i) > 0)
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
+  $rv = $mzIndices;
+  return $rv;
+}
 
 function GetDamagePreventionTargetIndices()
 {

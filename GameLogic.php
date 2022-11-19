@@ -3166,7 +3166,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetArcaneTargetIndices($player, $subparam);
           break;
         case "DAMAGEPREVENTION":
-          $rv = "";
+          $rv = GetDamagePreventionIndices($player);
           break;
         case "DAMAGEPREVENTIONTARGET": $rv = GetDamagePreventionTargetIndices(); break;
         case "WTR083":
@@ -4900,7 +4900,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);
-      return FinalizeDamage($player, $lastResult, $params[0], $params[1], $params[2]);
+      return FinalizeDamage($player, $dqVars[0], $params[0], $params[1], $params[2]);
     case "KORSHEM":
       switch ($lastResult) {
         case "Gain_a_resource":
@@ -5690,6 +5690,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SURAYA":
       DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
+    case "PROCESSDAMAGEPREVENTION":
+      $mzIndex = explode("-", $lastResult);
+      $damage = intval($parameter);
+      switch($mzIndex[0])
+      {
+        case "MYAURAS":
+          $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $damage);
+          break;
+        default: break;
+      }
+      $dqVars[0] = $damage;
+      if($damage > 0) AddDamagePreventionSelection($player, $damage);
+      return $damage;
     default:
       return "NOTSTATIC";
   }

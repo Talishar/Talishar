@@ -583,46 +583,55 @@ function AuraEndTurnCleanup()
   }
 }
 
+function AuraDamagePreventionAmount($player, $index)
+{
+  $auras = &GetAuras($player);
+  switch($auras[$index])
+  {
+    case "ARC112": return (CountAura("CRU144", $player) > 0 ? 1 : 0);
+    case "ARC167": return 4;
+    case "ARC168": return 3;
+    case "ARC169": return 2;
+    case "CRU075": return 1;
+    case "MON104": return 1;
+    case "EVR131": return 3;
+    case "EVR132": return 2;
+    case "EVR133": return 1;
+    case "UPR218": return 4;
+    case "UPR219": return 3;
+    case "UPR220": return 2;
+    case "DYN217": return 1;
+    case "DYN218": case "DYN219": case "DYN220": return 1;
+    case "DYN221": case "DYN222": case "DYN223": return 1;
+    default:
+      break;
+  }
+}
+
+//This function is for effects that prevent damage and DO destroy themselves
+function AuraTakeDamageAbility($player, $index, $damage)
+{
+  $damage -= AuraDamagePreventionAmount($player, $index);
+  DestroyAura($player, $index);
+  return $damage;
+}
+
+//This function is for effects that prevent damage and do NOT destroy themselves
+//These are applied first and not prompted (which would be annoying because of course you want to do this before consuming something)
 function AuraTakeDamageAbilities($player, $damage, $type)
 {
   $auras = &GetAuras($player);
-  $hasRunebloodBarrier = CountAura("CRU144", $player) > 0;
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    $remove = 0;
     if ($damage <= 0) {
       $damage = 0;
       break;
     }
     switch ($auras[$i]) {
-      case "ARC112":
-        if ($hasRunebloodBarrier) {
-          if ($preventable) {
-            $damage -= 1;
-          }
-          $remove = 1;
-        }
-        break;
-      case "ARC167":
-        if ($preventable) $damage -= 4;
-        $remove = 1;
-        break;
-      case "ARC168":
-        if ($preventable) $damage -= 3;
-        $remove = 1;
-        break;
-      case "ARC169":
-        if ($preventable) $damage -= 2;
-        $remove = 1;
-        break;
       case "CRU075":
         if ($preventable) $damage -= 1;
-        break;
-      case "MON104":
-        if ($preventable) $damage -= 1;
-        $remove = 1;
         break;
       case "EVR131":
         if ($type == "ARCANE" && $preventable) $damage -= 3;
@@ -633,35 +642,8 @@ function AuraTakeDamageAbilities($player, $damage, $type)
       case "EVR133":
         if ($type == "ARCANE" && $preventable) $damage -= 1;
         break;
-      case "UPR218":
-        if ($preventable) $damage -= 4;
-        $remove = 1;
-        break;
-      case "UPR219":
-        if ($preventable) $damage -= 3;
-        $remove = 1;
-        break;
-      case "UPR220":
-        if ($preventable) $damage -= 2;
-        $remove = 1;
-        break;
-      case "DYN217":
-        if ($preventable) $damage -= 1;
-        $remove = 1;
-        break;
-      case "DYN218": case "DYN219": case "DYN220":
-        if ($preventable) $damage -= 1;
-        $remove = 1;
-        break;
-      case "DYN221": case "DYN222": case "DYN223":
-        if ($preventable) $damage -= 1;
-        $remove = 1;
-        break;
       default:
         break;
-    }
-    if ($remove == 1) {
-      DestroyAura($player, $i);
     }
   }
   return $damage;
