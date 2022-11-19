@@ -1310,63 +1310,69 @@ function BanishCostModifier($from, $index)
   }
 }
 
-function CurrentEffectDamagePrevention($player, $type, $damage, $source)
+function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
   global $currentTurnEffects, $currentPlayer;
-  $prevention = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $prevention < $damage; $i -= CurrentTurnEffectPieces()) {
+  //$prevention = 0;
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $player) {
       $effects = explode("-", $currentTurnEffects[$i]);
       $remove = 0;
       switch ($effects[0]) {
         case "ARC035":
-          $prevention += $effects[1];
+          if($preventable) $damage -= $effects[1];
           $remove = 1;
           break;
         case "CRU041":
           if ($type == "COMBAT") {
-            $prevention += 3;
+            if($preventable) $damage -= 3;
             $remove = 1;
           }
           break;
         case "CRU042":
           if ($type == "COMBAT") {
-            $prevention += 2;
+            if($preventable) $damage -= 2;
             $remove = 1;
           }
           break;
         case "CRU043":
           if ($type == "COMBAT") {
-            $prevention += 1;
+            if($preventable) $damage -= 1;
             $remove = 1;
           }
           break;
         case "EVR033": case "EVR034": case "EVR035":
           if ($source == $currentTurnEffects[$i + 2]) {
-            $prevention += $currentTurnEffects[$i + 3];
-            $currentTurnEffects[$i + 3] -= $damage;
+            if($preventable)
+            {
+              $damage -= $currentTurnEffects[$i + 3];
+              $currentTurnEffects[$i + 3] -= $damage;
+            }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = 1;
           }
           break;
         case "EVR180":
-          $prevention += 1;
+          if($preventable) $damage -= 1;
           $remove = 1;
           break;
         case "UPR183":
-          $prevention += 1;
+          if($preventable) $damage -= 1;
           $remove = 1;
           break;
         case "UPR221": case "UPR222": case "UPR223":
           if($source == $currentTurnEffects[$i+2])
           {
-            $prevention += $currentTurnEffects[$i+3];
-            $currentTurnEffects[$i+3] -= $damage;
+            if($preventable)
+            {
+              $damage -= $currentTurnEffects[$i+3];
+              $currentTurnEffects[$i+3] -= $damage;
+            }
             if($currentTurnEffects[$i+3] <= 0) $remove = 1;
           }
           break;
         case "DYN025":
           if ($currentTurnEffects[$i] == "DYN025-1") {
-            $prevention += 1;
+            if($preventable) $damage -= 1;
             $remove = 1;
           }
           break;
@@ -1376,7 +1382,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source)
       if ($remove == 1) RemoveCurrentTurnEffect($i);
     }
   }
-  return $prevention;
+  return $damage;
 }
 
 function CurrentEffectAttackAbility()

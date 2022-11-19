@@ -3,7 +3,7 @@
 function PayItemAbilityAdditionalCosts($cardID, $from)
 {
   global $currentPlayer, $CS_PlayIndex, $combatChain;
-  $paidSteamCounter = "NOTPAID"; 
+  $paidSteamCounter = "NOTPAID";
   switch ($cardID) {
     case "WTR162":
     case "WTR170": case "WTR171": case "WTR172":
@@ -122,7 +122,7 @@ function GetItemGemState($player, $cardID)
 function ItemHitEffects($attackID)
 {
   global $mainPlayer;
-  $attackSubType = CardSubType($attackID);  
+  $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     switch ($items[$i]) {
@@ -137,3 +137,19 @@ function ItemHitEffects($attackID)
   }
 }
 
+function ItemTakeDamageAbilities($player, $damage, $type)
+{
+  $items = &GetItems($player);
+  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
+  for($i=count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
+  {
+    switch($items[$i])
+    {
+      case "CRU104":
+        if($damage > $items[$i+1]) { if($preventable) $damage -= $items[$i+1]; $items[$i+1] = 0; }
+        else { $items[$i+1] -= $damage; if($preventable) $damage = 0; }
+        if($items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
+    }
+  }
+  return $damage;
+}
