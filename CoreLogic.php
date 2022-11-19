@@ -537,7 +537,8 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   $damageThreatened = $damage;
-  if(CanDamageBePrevented($player, $damage, $type, $source))
+  $preventable = CanDamageBePrevented($player, $damage, $type, $source);
+  if($preventable)
   {
     if(ConsumeDamagePrevention($player)) return 0;//If damage can be prevented outright, don't use up your limited damage prevention
     if($type == "ARCANE")
@@ -563,67 +564,49 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
       $damage -= $classState[$CS_DamagePrevention];
       $classState[$CS_DamagePrevention] = 0;
     }
-    $damage -= CurrentEffectDamagePrevention($player, $type, $damage, $source);
-    for($i=count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces())
-    {
-      if($Items[$i] == "CRU104")
-      {
-        if($damage > $Items[$i+1]) { $damage -= $Items[$i+1]; $Items[$i+1] = 0; }
-        else { $Items[$i+1] -= $damage; $damage = 0; }
-        if($Items[$i+1] <= 0) DestroyItemForPlayer($player, $i);
-      }
-    }
-  } elseif ($damageThreatened > 0) { // Clear Damage prevention as they are trying to prevent, but fails
-    ConsumeDamagePrevention($player);
-    if ($type == "ARCANE") {
-        $classState[$CS_ArcaneDamagePrevention] = 0;
-    }
-    $classState[$CS_DamagePrevention] = 0;
-    CurrentEffectDamagePrevention($player, $type, $damage, $source);
-    for ($i = count($Items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces()) {
-      if ($Items[$i] == "CRU104") {
-        $Items[$i + 1] = 0;
-        DestroyItemForPlayer($player, $i);
-        }
-    }
   }
+  //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
   $damage = $damage > 0 ? $damage : 0;
+  $damage = CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable);
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
   $damage = AllyTakeDamageAbilities($player, $damage, $type);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type);
+  $damage = ItemTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
-  if($damage > 0 && $source != "NA")
-  {
-    $damage += CurrentEffectDamageModifiers($player, $source, $type);
-    $otherCharacter = &GetPlayerCharacter($otherPlayer);
-    if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer))
-    && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
-      PlayAura("ELE109", $otherPlayer);
-    }
-    if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
-    if($source == "DYN173" && SearchCurrentTurnEffects("DYN173", $mainPlayer, true)) {
-      WriteLog("Player " . $mainPlayer . " draw a card and Player " . $otherPlayer . " must discard a card.");
-      MainDrawCard();
-      PummelHit();
-    }
-    if ($source == "DYN612") {
-      GainHealth($damage, $mainPlayer);
-      WriteLog("Player " . $mainPlayer . " gains " . $damage . " life.", $mainPlayer);
-    }
-  }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   return $damage;
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 {
-  global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer;
+  global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
+  global $CCS_AttackFused;
   $classState = &GetPlayerClassState($player);
   $Auras = &GetAuras($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if($damage > 0)
   {
+    if($source != "NA")
+    {
+      $damage += CurrentEffectDamageModifiers($player, $source, $type);
+      $otherCharacter = &GetPlayerCharacter($otherPlayer);
+      if(($otherCharacter[0] == "ELE062" || $otherCharacter[0] == "ELE063" || SearchCurrentTurnEffects("ELE062-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("ELE063-SHIYANA", $mainPlayer))
+      && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("ELE109", $otherPlayer)) {
+        PlayAura("ELE109", $otherPlayer);
+      }
+      if(($source == "ELE067" || $source == "ELE068" || $source == "ELE069") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
+      if($source == "DYN173" && SearchCurrentTurnEffects("DYN173", $mainPlayer, true)) {
+        WriteLog("Player " . $mainPlayer . " draw a card and Player " . $otherPlayer . " must discard a card.");
+        MainDrawCard();
+        PummelHit();
+      }
+      if ($source == "DYN612") {
+        GainHealth($damage, $mainPlayer);
+        WriteLog("Player " . $mainPlayer . " gains " . $damage . " life.", $mainPlayer);
+      }
+    }
+
     AuraDamageTakenAbilities($Auras, $damage);
     ItemDamageTakenAbilities($player, $damage);
     // The second condition after the OR is for when Merciful is destroyed, the target is lost for some reason
