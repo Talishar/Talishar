@@ -1773,7 +1773,7 @@ function IsSpecificAuraAttacking($player, $index)
     return "-";
   }
 
-function GetDamagePreventionIndices()
+function GetDamagePreventionTargetIndices()
 {
   global $combatChain, $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;

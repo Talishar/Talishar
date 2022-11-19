@@ -3168,7 +3168,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DAMAGEPREVENTION":
           $rv = "";
           break;
-        case "DAMAGEPREVENTIONTARGET": $rv = GetDamagePreventionIndices(); break;
+        case "DAMAGEPREVENTIONTARGET": $rv = GetDamagePreventionTargetIndices(); break;
         case "WTR083":
           $rv = SearchDeckForCard($player, "WTR081");
           if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
