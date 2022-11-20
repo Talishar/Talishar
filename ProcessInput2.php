@@ -41,21 +41,6 @@ for ($i = 0; $i < $chkCount; ++$i) {
   if ($chk != "") array_push($chkInput, $chk);
 }
 
-//Testing only
-//WriteLog('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'] . "&gameName=$gameName&playerID=$playerID&authKey=$authKey&mode=$mode&cardID=$cardID");
-
-//First we need to parse the game state from the file
-include "ParseGamestate.php";
-$otherPlayer = $currentPlayer == 1 ? 2 : 1;
-$skipWriteGamestate = false;
-$mainPlayerGamestateStillBuilt = 0;
-$makeCheckpoint = 0;
-$makeBlockBackup = 0;
-$MakeStartTurnBackup = false;
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-$conceded = false;
-$randomSeeded = false;
-
 SetHeaders();
 
 if(IsReplay() && $mode == 99)
@@ -90,6 +75,19 @@ else {
     ExitProcessInput();
   }
 }
+
+//First we need to parse the game state from the file
+include "ParseGamestate.php";
+$otherPlayer = $currentPlayer == 1 ? 2 : 1;
+$skipWriteGamestate = false;
+$mainPlayerGamestateStillBuilt = 0;
+$makeCheckpoint = 0;
+$makeBlockBackup = 0;
+$MakeStartTurnBackup = false;
+$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+$conceded = false;
+$randomSeeded = false;
+
 
 $afterResolveEffects = [];
 
