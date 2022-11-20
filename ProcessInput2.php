@@ -62,19 +62,6 @@ if(IsReplay() && $mode == 99)
     $chkInput[$i] = trim($chkInput[$i]);
   }
 }
-else {
-  if (($playerID == 1 || $playerID == 2) && $authKey == "") {
-    if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
-  }
-  if ($playerID != 3 && $authKey != $targetAuth) exit;
-  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
-  if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
-    $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
-    ExitProcessInput();
-  }
-}
 
 //First we need to parse the game state from the file
 include "ParseGamestate.php";
@@ -88,6 +75,19 @@ $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
+if(!IsReplay()) {
+  if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+    if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+  }
+  if ($playerID != 3 && $authKey != $targetAuth) exit;
+  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
+  if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
+    $currentTime = round(microtime(true) * 1000);
+    SetCachePiece($gameName, 2, $currentTime);
+    SetCachePiece($gameName, 3, $currentTime);
+    ExitProcessInput();
+  }
+}
 
 $afterResolveEffects = [];
 
