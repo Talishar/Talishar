@@ -588,6 +588,27 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($roguelikeGameID == "") break;
       header("Location: " . $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1));
       break;
+    case 100012: //Create Replay
+      include "MenuFiles/ParseGamefile.php";
+      WriteLog("Player " . $playerID . " saved this game as a replay.");
+      $pid = ($playerID == 1 ? $p1id : $p2id);
+      $path = "./Replays/" . $pid . "/";
+      if (!file_exists($path)) {
+        mkdir($path, 0777, true);
+      }
+      if(!file_exists($path . "counter.txt")) $counter = 1;
+      else {
+        $counterFile = fopen($path . "counter.txt", "r");
+        $counter = fgets($counterFile);
+        fclose($counterFile);
+      }
+      mkdir($path . $counter . "/", 0777, true);
+      copy("./Games/" . $gameName . "/origGamestate.txt", "./Replays/" . $pid . "/" . $counter . "/origGamestate.txt");
+      copy("./Games/" . $gameName . "/commandfile.txt", "./Replays/" . $pid . "/" . $counter . "/replayCommands.txt");
+      $counterFile = fopen($path . "counter.txt", "w");
+      fwrite($counterFile, $counter+1);
+      fclose($counterFile);
+      break;
     default:
       break;
   }
