@@ -8,7 +8,20 @@ include "Libraries/SHMOPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
 ob_end_clean();
 
+$userId = "";
+if(isset($_SESSION["userid"])) $userId = $_SESSION["userid"];
+if($userId == "")
+{
+  echo("You must be logged in to use this feature.");
+  exit;
+}
 $replayNumber = TryGet("replayNumber", "");
+
+if(!file_exists("./Replays/" . $userId . "/" . $replayNumber . "/"))
+{
+  echo("That replay file does not exist.");
+  exit;
+}
 
 
 $gameName = GetGameCounter();
@@ -47,7 +60,7 @@ $currentTime = round(microtime(true) * 1000);
 $isReplay = "1";
 WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!" . $isReplay); //Initialize SHMOP cache for this game
 
-copy("./Replays/" . $replayNumber . "/origGamestate.txt", "./Games/" . $gameName . "/gamestate.txt");
-copy("./Replays/" . $replayNumber . "/commandfile.txt", "./Games/" . $gameName . "/replayCommands.txt");
+copy("./Replays/" . $userId . "/" . $replayNumber . "/origGamestate.txt", "./Games/" . $gameName . "/gamestate.txt");
+copy("./Replays/" . $userId . "/" . $replayNumber . "/replayCommands.txt", "./Games/" . $gameName . "/replayCommands.txt");
 
 header("Location: NextTurn4.php?gameName=$gameName&playerID=3");
