@@ -203,6 +203,10 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
         echo ("</div>");
       }
     }
+    else {
+      echo("<BR>The following deckbuilder sites support matchups:<BR>");
+      echo("<a href='https://fabrary.net' target='_blank'>Fabrary</a>");
+    }
 
     ?>
 
