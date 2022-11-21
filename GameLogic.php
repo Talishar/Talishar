@@ -269,19 +269,6 @@ function DoSurgeEffect($cardID, $player, $target)
   }
 }
 
-function ProcessMissEffect($cardID)
-{
-  global $defPlayer;
-  switch ($cardID) {
-    case "EVR002":
-      if(!IsAllyAttackTarget()) {
-        PlayAura("WTR225", $defPlayer);
-      }
-    default:
-      break;
-  }
-}
-
 function ChainLinkBeginResolutionEffects()
 {
   global $combatChain, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $combatChainState, $CCS_WeaponIndex;
@@ -2496,8 +2483,12 @@ function MainDrawCard()
 
 function CombatChainCloseAbilities($player, $cardID, $chainLink)
 {
-  global $chainLinkSummary, $mainPlayer;
+  global $chainLinkSummary, $mainPlayer, $defPlayer;
   switch ($cardID) {
+    case "EVR002":
+      if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0) {
+        PlayAura("WTR225", $defPlayer);
+      }
     case "UPR189":
       if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) {
         Draw($player);
