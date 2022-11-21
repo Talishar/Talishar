@@ -51,11 +51,11 @@ function JSONRenderedCard(
   $action = NULL,
   $overlay = NULL,
   $borderColor = NULL,
-  $counters = NULL,
+  $counters = NULL, // deprecated
   $actionDataOverride = NULL,
-  $lifeCounters = NULL,
-  $defCounters = NULL,
-  $atkCounters = NULL,
+  $lifeCounters = NULL, // deprecated
+  $defCounters = NULL, // deprecated
+  $atkCounters = NULL, // deprecated
   $controller = NULL,
   $type = NULL,
   $sType = NULL,
@@ -64,8 +64,23 @@ function JSONRenderedCard(
   $onChain = NULL,
   $isFrozen = NULL,
   $gem = NULL,
-  $modeOverride = NULL,
+  $countersMap = new stdClass(), // new object for counters
+  $label = NULL
 ) {
+
+  $countersMap->counters = property_exists($countersMap, 'counters') ?
+    $countersMap->counters : $counters;
+  $countersMap->life = property_exists($countersMap, 'life') ?
+    $countersMap->life : $lifeCounters;
+  $countersMap->defence = property_exists($countersMap, 'defence') ?
+    $countersMap->defence :  $defCounters;
+  $countersMap->attack = property_exists($countersMap, 'attack') ?
+    $atkCounters->attack :  $atkCounters;
+
+  $countersMap = (object) array_filter((array) $countersMap, function ($val) {
+    return !is_null($val);
+  });
+
   $card = (object) [
     'cardNumber' => $cardNumber,
     'action' => $action,
@@ -84,7 +99,8 @@ function JSONRenderedCard(
     'onChain' => $onChain,
     'isFrozen' => $isFrozen,
     'gem' => $gem,
-    'modeOverride' => $modeOverride,
+    'countersMap' => $countersMap,
+    'label' => $label,
   ];
 
   // To reduce space/size strip out all values that are null.
