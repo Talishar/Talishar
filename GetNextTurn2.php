@@ -1065,7 +1065,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (IsCasterMode()) $handContents .= ClientRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $handContents .= ClientRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {
-      if ($playerID == $currentPlayer) $playable = ($turn[0] == "CHOOSEHANDCANCEL" && !IsPitchRestricted($myHand[$i], $restriction, "HAND", -1));
+      if ($playerID == $currentPlayer && $turn[0] == "CHOOSEHANDCANCEL") $playable = !IsPitchRestricted($myHand[$i], $restriction, "HAND", -1);
       elseif ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
       else $playable = false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable);
