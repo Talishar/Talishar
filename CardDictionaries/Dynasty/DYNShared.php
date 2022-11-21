@@ -959,7 +959,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PutCharacterIntoPlayForPlayer("DYN492b", $currentPlayer);//Armor
       PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
       return "";
-    case "DYN095": case "DYN096": case "DYN097": 
+    case "DYN095": case "DYN096": case "DYN097":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN119": case "DYN120": case "DYN122":
@@ -1384,16 +1384,16 @@ function DYNHitEffect($cardID)
       break;
     case "DYN120":
       if (IsHeroAttackTarget()) {
-        $deck = &GetDeck($defPlayer);
-        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
-        $cardToBanish = array_shift($deck);
-        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
-        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
         AddDecisionQueue("FINDINDICES", $mainPlayer, "SEARCHMZ,THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $mainPlayer, "ARS,-," . $mainPlayer, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        $deck = &GetDeck($defPlayer);
+        if (count($deck) == 0) { WriteLog("The opponent deck is already... depleted."); break; }
+        $cardToBanish = array_shift($deck);
+        BanishCardForPlayer($cardToBanish, $defPlayer, "DECK", "-", $mainPlayer);
+        WriteLog(CardLink($cardToBanish, $cardToBanish) . " was banished.");
       }
       break;
     case "DYN122":
