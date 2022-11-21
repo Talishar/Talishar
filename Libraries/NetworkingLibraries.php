@@ -839,7 +839,6 @@ function ResolveCombatDamage($damageDone)
     for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
       if ($combatChain[$i] == $mainPlayer) {
         SetClassState($mainPlayer, $CS_EffectContext, $combatChain[$i - 1]);
-        ProcessMissEffect($combatChain[$i - 1]);
         AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
       }
     }
