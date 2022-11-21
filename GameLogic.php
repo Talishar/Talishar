@@ -4398,7 +4398,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (!CanDamageBePrevented($player, $damage, "DAMAGE")) $lastResult = 0;
       $damage -= intval($lastResult);
       $damage = DealDamageAsync($player, $damage, $type, $source);
-      $dqState[6] = $damage;
+      if($type == "COMBAT") $dqState[6] = $damage;
       return $damage;
     case "AFTERQUELL":
       $curMaxQuell = GetClassState($player, $CS_MaxQuellUsed);
@@ -5701,6 +5701,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       $dqVars[0] = $damage;
+      $dqState[6] = $damage;
       if($damage > 0) AddDamagePreventionSelection($player, $damage);
       return $damage;
     default:
