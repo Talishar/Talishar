@@ -71,6 +71,7 @@ $mainPlayerGamestateStillBuilt = 0;
 $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
+$MakeStartGameBackup = false;
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
@@ -149,6 +150,7 @@ if (!$skipWriteGamestate) {
 if ($makeCheckpoint) MakeGamestateBackup();
 if ($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
 if ($MakeStartTurnBackup) MakeStartTurnBackup();
+if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 GamestateUpdated($gameName);
 
