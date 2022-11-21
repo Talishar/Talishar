@@ -386,7 +386,7 @@ function SearchPitchForCard($playerID, $cardID)
 function SearchBanishForCard($playerID, $cardID)
 {
   $banish = GetBanish($playerID);
-  for ($i = 0; $i < count($banish); ++$i) {
+  for ($i = 0; $i < count($banish); $i+=BanishPieces()) {
     if ($banish[$i] == $cardID) return $i;
   }
   return -1;
