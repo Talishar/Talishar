@@ -592,11 +592,7 @@ function AuraDamagePreventionAmount($player, $index)
     case "ARC167": return 4;
     case "ARC168": return 3;
     case "ARC169": return 2;
-    case "CRU075": return 1;
     case "MON104": return 1;
-    case "EVR131": return 3;
-    case "EVR132": return 2;
-    case "EVR133": return 1;
     case "UPR218": return 4;
     case "UPR219": return 3;
     case "UPR220": return 2;
