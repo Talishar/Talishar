@@ -528,7 +528,7 @@ function CanDamageBePrevented($player, $damage, $type, $source="-")
 function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
 {
   global $CS_DamagePrevention, $combatChainState, $combatChain, $mainPlayer;
-  global $CCS_AttackFused, $CS_ArcaneDamagePrevention, $currentPlayer, $dqVars;
+  global $CCS_AttackFused, $CS_ArcaneDamagePrevention, $currentPlayer, $dqVars, $dqState;
 
   $classState = &GetPlayerClassState($player);
   $Items = &GetItems($player);
@@ -575,6 +575,7 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = ItemTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   $dqVars[0] = $damage;
+  if($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
   if($damage > 0 && $preventable)
   {
