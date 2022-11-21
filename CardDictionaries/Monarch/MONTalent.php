@@ -207,7 +207,7 @@
       case "MON066": case "MON067": case "MON068":
         if(count(GetSoul($currentPlayer)) == 0)
         {
-          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+          AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Goes into your soul after the chain link closes.";
         }
         return $rv;

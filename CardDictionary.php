@@ -1050,6 +1050,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFro
     case "ELE141":
     case "ELE142":
       return "BANISH";
+    case "MON066": case "MON067": case "MON068":
+      if (SearchCurrentTurnEffects($cardID, $mainPlayer) && $from == "CHAINCLOSING") return "SOUL";
+      return "GY";
     case "MON087":
       $theirChar = GetPlayerCharacter($otherPlayer);
       if (TalentContains($theirChar[0], "SHADOW") && PlayerHasLessHealth($player)) return "SOUL";
