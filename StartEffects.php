@@ -94,9 +94,6 @@ ProcessDecisionQueue();
 DoGamestateUpdate();
 include "WriteGamestate.php";
 
-$filepath = "./Games/" . $gameName . "/";
-copy($filepath . "gamestate.txt", $filepath . "origGamestate.txt");
-
 ?>
 
 Something is wrong with the XAMPP installation :-(
