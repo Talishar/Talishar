@@ -1021,9 +1021,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "")
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFrom="")
 {
-  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $combatChainState, $CCS_AttackPlayedFrom;
+  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
@@ -1042,6 +1042,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "")
       return "BANISH";
     case "ELE113":
       return "BANISH";
+    case "ELE119": case "ELE120": case "ELE121":
+      if ($playerFrom == "ARS") return "BOTDECK";
+      return "GY";
     case "ELE140":
     case "ELE141":
     case "ELE142":
