@@ -341,7 +341,17 @@ function ResetCombatChainState()
       CombatChainCloseAbilities($chainLinks[$i][$j + 1], $chainLinks[$i][$j], $i);
       $cardType = CardType($chainLinks[$i][$j]);
       if ($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A") continue;
-      if (GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1]) == "GY") AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
+      $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3]);
+      switch ($goesWhere) {
+        case "GY":
+          AddGraveyard($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
+          break;
+        case "BOTDECK":
+          AddBottomMainDeck($chainLinks[$i][$j], "CC");
+          break;
+        default:
+          break;
+      }
     }
   }
   UnsetCombatChainBanish();

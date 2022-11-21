@@ -312,7 +312,6 @@
       case "ELE119": case "ELE120": case "ELE121":
         if($from == "ARS")
         {
-          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
           $rv = "Goes to the bottom of your deck when the combat chain closes.";
         }
         return $rv;
