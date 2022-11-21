@@ -349,6 +349,12 @@ function ResetCombatChainState()
         case "BOTDECK":
           AddBottomMainDeck($chainLinks[$i][$j], "CC");
           break;
+        case "HAND":
+          AddMainHand($chainLinks[$i][$j], "CC");
+          break;
+        case "SOUL":
+          AddSoul($chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CC");
+          break;
         default:
           break;
       }

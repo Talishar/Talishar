@@ -1035,7 +1035,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFro
     case "CRU163":
       return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
     case "MON063":
-      return "SOUL";
+      if ($from == "CHAINCLOSING") return "SOUL";
+      return "GY";
     case "MON064":
       return "SOUL";
     case "MON231":
@@ -1043,7 +1044,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFro
     case "ELE113":
       return "BANISH";
     case "ELE119": case "ELE120": case "ELE121":
-      if ($playerFrom == "ARS") return "BOTDECK";
+      if ($playerFrom == "ARS" && $from == "CHAINCLOSING") return "BOTDECK";
       return "GY";
     case "ELE140":
     case "ELE141":
