@@ -1136,7 +1136,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
-    if (ArcaneDamage($cardID) > 0 && $turn[0] != "B") {
+    if (ArcaneDamage($cardID) > 0 && $turn[0] != "B" && $turn[0] != "P") {
       $expectedArcaneDamage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus);
       WriteLog(CardLink($cardID, $cardID) . " will be dealing " . $expectedArcaneDamage . " arcane damage.");
     }
