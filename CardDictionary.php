@@ -973,8 +973,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($cardType == "AA") {
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
       if ($baseAttackMax > -1 && AttackValue($cardID) > $baseAttackMax) return false;
-      if ($combatChain[0] == "DYN121" && $phase == "B") return SearchBanishForCard($player, $cardID) == -1;
     }
+    if ($combatChain[0] == "DYN121" && $phase == "B") return SearchBanishForCard($player, $cardID) == -1;
     $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
     if ($resourceMin > -1 && CardCost($cardID) < $resourceMin && $cardType != "E") return false;
     if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
