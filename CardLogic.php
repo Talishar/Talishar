@@ -781,7 +781,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "DECK,TT", 1);
       AddDecisionQueue("SHOWBANISHEDCARD", $player, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       break;
     case "EVR069":
       $index = SearchItemsForUniqueID($uniqueID, $player);
