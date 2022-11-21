@@ -1161,9 +1161,22 @@ function DiscardRandom($player = "", $source = "")
   AddGraveyard($discarded, $player, "HAND");
   WriteLog(CardLink($discarded, $discarded) . " was randomly discarded.");
   CardDiscarded($player, $discarded, $source);
-
+  DiscardedAtRandomEffects($player, $discarded, $source);
   return $discarded;
-};
+}
+
+function DiscardedAtRandomEffects($player, $discarded, $source) {
+  switch ($discarded) {
+    case "DYN008":
+      AddLayer("TRIGGER", $player, $discarded);
+      break;
+    case "DYN010": case "DYN011": case "DYN012":
+      AddLayer("TRIGGER", $player, $discarded);
+      break;
+    default:
+      break;
+  }
+}
 
 function CardDiscarded($player, $discarded, $source = "")
 {
@@ -1192,12 +1205,6 @@ function CardDiscarded($player, $discarded, $source = "")
   if ($discarded == "CRU008" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
     WriteLog(CardLink("CRU008", "CRU008") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
-  }
-  if($discarded == "DYN008") {
-    AddLayer("TRIGGER", $player, $discarded);
-  }
-  if($discarded == "DYN010" || $discarded == "DYN011" || $discarded == "DYN012"){
-    AddLayer("TRIGGER", $player, $discarded);
   }
 }
 
