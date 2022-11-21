@@ -2483,12 +2483,13 @@ function MainDrawCard()
 
 function CombatChainCloseAbilities($player, $cardID, $chainLink)
 {
-  global $chainLinkSummary, $mainPlayer, $defPlayer;
+  global $chainLinkSummary, $mainPlayer, $defPlayer, $chainLinks;
   switch ($cardID) {
     case "EVR002":
-      if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0) {
+      if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID) {
         PlayAura("WTR225", $defPlayer);
       }
+      break;
     case "UPR189":
       if ($chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1] <= 2) {
         Draw($player);
