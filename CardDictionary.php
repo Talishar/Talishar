@@ -982,7 +982,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($combatChain[0] == "DYN121" && $cardType == "DR") return SearchBanishForCard($player, $cardID) == -1;
   }
   if ($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
-  if ($phase == "P" && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
+  if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index)) return false;
   if ($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($isStaticType) {
