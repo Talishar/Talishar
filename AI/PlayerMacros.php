@@ -2,8 +2,12 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass;
   $somethingChanged = true;
+  for($i=0; $i<$numPass; ++$i)
+  {
+    PassInput();
+  }
   if(!IsGameOver())
   {
     for($i=0; $i<100 && $somethingChanged; ++$i)
@@ -81,7 +85,7 @@ function HasPlayableCard($player, $phase)
   {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) 
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces())
   {
     if(IsPlayable($combatChain[$i], $phase, "CC", $i, $restriction, $player)) return true;
   }

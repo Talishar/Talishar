@@ -43,13 +43,13 @@ for ($i = 0; $i < $chkCount; ++$i) {
 
 SetHeaders();
 
+$numPass = 0;
 if(IsReplay() && $mode == 99)
 {
   $filename = "./Games/" . $gameName . "/replayCommands.txt";
   $file = file($filename);
   $line = $file[0];
   unset($file[0]);
-  file_put_contents($filename, $file);
   $params = explode(" ", $line);
   $playerID = $params[0];
   $mode = $params[1];
@@ -61,6 +61,16 @@ if(IsReplay() && $mode == 99)
   {
     $chkInput[$i] = trim($chkInput[$i]);
   }
+  //Automate extra passes
+  for($i=1; $i<count($file); ++$i)
+  {
+    $line = $file[$i];
+    $params = explode(" ", $line);
+    if(intval($mode) != 99 || intval($params[1]) != 99) break;
+    ++$numPass;
+    unset($file[$i]);
+  }
+  file_put_contents($filename, $file);
 }
 
 //First we need to parse the game state from the file
