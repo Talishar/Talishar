@@ -218,12 +218,14 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 
       <h5 style='text-align:center;'>________</h5><BR>
 
+<!--
       <div style="vertical-align:middle; position: relative;">
         <h3>Did you know?</h3>
         <h4 style="margin-left:5%; margin-right:5%;">If you create matchups on your Fabrary deck, you can one-click sideboard on Talishar!</h4><br>
         <a href='https://fabrary.net/' target='_blank'>
           <img style=" margin-left:5%; margin-right:5%; margin-top:-5%; margin-bottom:-5%; width:50%; border-radius:5%;" src="./Images/didyouknow/fabrary-matchups.webp" /></a>
       </div>
+  -->
       <BR>
 
       <div style='vertical-align:middle; text-align:center;'>
