@@ -2535,6 +2535,15 @@ function isIyslander($character)
   }
 }
 
+function WardAmount($cardID)
+{
+  switch($cardID)
+  {
+    case "DYN213": case "DYN214": return 1;
+    default: return 0;
+  }
+}
+
 function HasWard($cardID)
 {
   switch ($cardID) {

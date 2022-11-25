@@ -5691,6 +5691,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYAURAS":
           $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $damage);
           break;
+        case "MYCHAR":
+          $damage = CharacterTakeDamageAbility($player, intval($mzIndex[1]), $damage);
+          break;
         default: break;
       }
       $dqVars[0] = $damage;
