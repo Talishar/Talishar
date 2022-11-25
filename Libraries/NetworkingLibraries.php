@@ -185,6 +185,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $cardID;
       $banish = &GetBanish($playerID);
       $theirCharacter = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+      if($index < 0 || $index >= count($banish))
+      {
+        echo("Banish Index " . $index . " Invalid Input<BR>");
+        return false;
+      }
       $cardID = $banish[$index];
       if ($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       if ($banish[$index + 1] == "MON212" && TalentContains($theirCharacter[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("MON212", $currentPlayer);
