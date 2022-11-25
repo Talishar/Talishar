@@ -589,6 +589,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       header("Location: " . $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1));
       break;
     case 100012: //Create Replay
+      if(!file_exists("./Games/" . $gameName . "/origGamestate.txt"))
+      {
+        WriteLog("Failed to create replay; original gamestate file failed to create.");
+        return true;
+      }
       include "MenuFiles/ParseGamefile.php";
       WriteLog("Player " . $playerID . " saved this game as a replay.");
       $pid = ($playerID == 1 ? $p1id : $p2id);
