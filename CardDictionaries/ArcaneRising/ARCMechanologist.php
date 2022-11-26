@@ -206,14 +206,16 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return $rv;
     case "ARC018":
-      $items = &GetItems($currentPlayer);
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      if ($from == "PLAY") {
+        $items = &GetItems($currentPlayer);
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if (count($combatChain) > 0) {
           $rv = "Makes your attack go on the bottom of your deck if it hits.";
         } else {
           $items[$index + 1] = 1;
           $rv = "Gained a steam counter.";
         }
+      }
       return $rv;
     case "ARC019": //Convection Amplifier
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -286,7 +288,7 @@ function HasBoost($cardID)
     case "EVR073": case "EVR074": case "EVR075":
     case "EVR079": case "EVR080": case "EVR081":
     case "DYN090":
-    case "DYN095": case "DYN096": case "DYN097": 
+    case "DYN095": case "DYN096": case "DYN097":
 		case "DYN101": case "DYN102": case "DYN103":
 		case "DYN104": case "DYN105": case "DYN106":
       return true;
