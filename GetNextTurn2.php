@@ -56,7 +56,7 @@ while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece ==
   if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 1, $currentTime);
     $otherP = ($playerID == 1 ? 2 : 1);
-    $oppLastTime = GetCachePiece($gameName, $otherP + 1);
+    $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = GetCachePiece($gameName, $otherP + 3);
     if (($currentTime - $oppLastTime) > 3000 && ($oppStatus == "0")) {
       WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect.");
