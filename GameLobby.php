@@ -6,6 +6,7 @@ include "HostFiles/Redirector.php";
 include "Libraries/UILibraries2.php";
 include "Libraries/SHMOPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
+include_once "Libraries/HTTPLibraries.php";
 ob_end_clean();
 
 session_start();
@@ -51,6 +52,9 @@ else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $icon = "notReady.p
 
 echo '<title>Game Lobby</title> <meta http-equiv="content-type" content="text/html; charset=utf-8" > <meta name="viewport" content="width=device-width, initial-scale=1.0">';
 echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
+
+$isMobile = IsMobile();
+
 ?>
 
 <head>
@@ -110,21 +114,24 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
   <div id="cardDetail" style="display:none; position:absolute;"></div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
-    <?php
+  <?php
+  if($isMobile) echo '<div style="position:absolute; z-index:1; top:2%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
+  else echo '<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
     $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
     echo ("<h2>$theirDisplayName Hero</h2>");
 
     $otherHero = "CardBack";
-    echo ("<div id='oppHero' style='padding-left:5%;'>");
-    echo (Card($otherHero, "concat", 250, 0, 0));
+    echo ("<center>");
+    echo ("<div id='oppHero'>");
+    echo (Card($otherHero, "concat", ($isMobile ? 100 : 250), 0, 0));
     echo ("</div>");
+    echo ("</center>");
     ?>
   </div>
 
-  <div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
-
-    <?php
+  <?php
+  if($isMobile) echo '<div style="position:absolute; z-index:1; top:29%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
+  else echo '<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
     $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
     echo ("<h2>$displayName Hero</h2>");
 
@@ -132,9 +139,11 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     $handler = fopen($deckFile, "r");
     $character = GetArray($handler);
 
-    echo ("<div style='padding-left:5%;'>");
-    echo (Card($character[0], "concat", 250, 0, 1));
+    echo ("<center>");
+    echo ("<div>");
+    echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
     echo ("</div>");
+    echo ("</center>");
 
     echo ("<div style='text-align:center; margin-top: 2px;'>");
     echo ("<a href='MainMenu.php'><button class='GameLobby_Button' style='display:inline; cursor:pointer;'>Leave Lobby</button></a>");
@@ -184,10 +193,10 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     ?>
   </div>
 
-  <div id="matchupTab" style="position:absolute; z-index:1; top:20px; right:10px; width:160px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div id="matchupTab" style="position:absolute; z-index:1; top:2%; right:10px; width:160px; height:8%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
     <h1>Matchups</h1>
   </div>
-  <div id="matchups" style="position:absolute; text-align: center; z-index:1; top:95px; right:10px; bottom:3%; width:160px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+  <div id="matchups" style="position:absolute; text-align: center; z-index:1; top:10%; margin-top:3px; right:10px; bottom:3%; width:160px; <?php if($isMobile) echo('height:43.5%; '); ?> background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
     <?php
 
@@ -212,68 +221,70 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
 
   </div>
 
-  <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:280px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
+  <div<?php if($isMobile) echo(" style='display:none;'"); ?>>
+    <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:280px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
 
-    <h1>Your Equipment</h1>
-  </div>
+      <h1>Your Equipment</h1>
+    </div>
 
-  <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
+    <div id="equipDisplay" style="position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
 
-    <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
+      <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
-    <table>
-      <?php
-
-      DisplayEquipRow($head, $headSB, "HEAD");
-      DisplayEquipRow($chest, $chestSB, "CHEST");
-      DisplayEquipRow($arms, $armsSB, "ARMS");
-      DisplayEquipRow($legs, $legsSB, "LEGS");
-
-      ?>
-    </table>
-    <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:59%; right:20px;">
       <table>
         <?php
 
-        $weaponArray = explode(",", $weapons);
-        $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
-        $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
-        DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
-        DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+        DisplayEquipRow($head, $headSB, "HEAD");
+        DisplayEquipRow($chest, $chestSB, "CHEST");
+        DisplayEquipRow($arms, $armsSB, "ARMS");
+        DisplayEquipRow($legs, $legsSB, "LEGS");
 
         ?>
       </table>
+      <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:59%; right:20px;">
+        <table>
+          <?php
+
+          $weaponArray = explode(",", $weapons);
+          $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
+          $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
+          DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
+          DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+
+          ?>
+        </table>
+      </div>
+    </div>
+
+    <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:922px; width:280px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
+
+      <?php
+      echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
+      ?>
+    </div>
+
+    <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
+
+      <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
+
+      <?php
+      $cardSize = 110;
+      $count = 0;
+      sort($deck);
+      for ($i = 0; $i < count($deck); ++$i) {
+        $id = "DECK-" . $count;
+        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+        ++$count;
+      }
+      for ($i = 0; $i < count($deckSB); ++$i) {
+        $id = "DECK-" . $count;
+        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+        ++$count;
+      }
+      ?>
     </div>
   </div>
-
-  <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:922px; width:280px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
-
-    <?php
-    echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
-    ?>
-  </div>
-
-  <div id="deckDisplay" style="display:none; position:absolute; z-index:1; top:95px; left:640px; right:180px; bottom:3%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y:scroll; overflow-x:hidden;">
-
-    <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
-
-    <?php
-    $cardSize = 110;
-    $count = 0;
-    sort($deck);
-    for ($i = 0; $i < count($deck); ++$i) {
-      $id = "DECK-" . $count;
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
-      ++$count;
-    }
-    for ($i = 0; $i < count($deckSB); ++$i) {
-      $id = "DECK-" . $count;
-      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
-      ++$count;
-    }
-    ?>
-  </div>
-  <div style="position:absolute; z-index:1; top:390px; left:20px; width:600px; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a;border-radius: 5px;">
+  <div style="position:absolute; z-index:1; top:390px; left:2%; width:600px; max-width: 96%; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a;border-radius: 5px;">
     <h1>Game Lobby</h1>
     <?php
 
@@ -293,7 +304,7 @@ echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' .
     echo ("</div>");
 
     echo ("<div id='chatbox' style='position:absolute; bottom:3%; left:3%; width:97%;'>");
-    echo ("<input class='GameLobby_Input' style='width:85%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+    echo ("<input class='GameLobby_Input' style='width:82%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
     echo ("<button class='GameLobby_Button' style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
     echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");
     echo ("<input type='hidden' id='playerID' value='" . $playerID . "'>");

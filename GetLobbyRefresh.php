@@ -116,7 +116,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   }
 
   echo ("<div id='otherHero' style='display:none;'>");
-  echo (Card($otherHero, "concat", 250, 0, 1));
+  echo (Card($otherHero, "concat", (IsMobile() ? 100 : 250) , 0, 1));
   echo ("</div>");
 
   echo ("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
