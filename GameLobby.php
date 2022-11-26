@@ -307,7 +307,8 @@ $isMobile = IsMobile();
 
     echo ("</div>");
 
-    echo ("<div id='chatbox' style='position:relative; left:3%; width:97%; margin-top:4px;'>");
+    echo ("<div id='chatbox' style='position:absolute; bottom:3%; left:3%; width:97%;'>");
+    //echo ("<div id='chatbox' style='position:relative; left:3%; width:97%; margin-top:4px;'>");
     echo ("<input class='GameLobby_Input' style='width:82%; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
     echo ("<button class='GameLobby_Button' style='display:inline; width:11.5%; margin-left:3px; cursor:pointer;' onclick='SubmitChat()'>Chat</button>");
     echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");
