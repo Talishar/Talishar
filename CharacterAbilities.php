@@ -1,13 +1,11 @@
 <?php
 
-function CharacterTakeDamageAbility($player, $mzIndex, $damage)
+function CharacterTakeDamageAbility($player, $index, $damage)
 {
   $char = &GetPlayerCharacter($player);
   $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type);
-  $mzArr = explode("-", $mzIndex);
-  $index = $mzArr[1];
   switch ($char[$index]) {
     case "DYN213":
       if ($damage > 0) {
