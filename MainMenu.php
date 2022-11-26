@@ -211,14 +211,15 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 
       <div style="vertical-align:middle; position: relative;">
         <h3>From November 25th-27th</h3>
-        <h4>Click for more information:</h4><br>
         <a href='https://fabtcg.com/organised-play/2022/battle-hardened-hong-kong/' target='_blank'>
           <img style="margin-left:5%; margin-right:5%; width:50%; border-radius:5%;" src="https://storage.googleapis.com/fabmaster/media/images/gold_battle_hardened_HongKongGLOW.min-400x350.png" /></a>
+        <h4>🔴 Go Watch Live:</h4><br>
+        <iframe width="375" height="250" src="https://www.youtube.com/embed/eEx0D66hwAA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
 
       <h5 style='text-align:center;'>________</h5><BR>
 
-<!--
+      <!--
       <div style="vertical-align:middle; position: relative;">
         <h3>Did you know?</h3>
         <h4 style="margin-left:5%; margin-right:5%;">If you create matchups on your Fabrary deck, you can one-click sideboard on Talishar!</h4><br>
@@ -231,7 +232,6 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
       <div style='vertical-align:middle; text-align:center;'>
         <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play on Talishar</h2>
         <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
-        <!-- <a title='Italian' href='https://youtu.be/xj5vg1BsNPk' target='_blank'><img style='height:30px;' src='./Images/flags/italy.png' /></a> -->
         <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
         <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
         <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
