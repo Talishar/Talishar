@@ -288,7 +288,7 @@ $isMobile = IsMobile();
       ?>
     </div>
   </div>
-  <div style="position:absolute; z-index:1; top:390px; left:2%; width:600px; max-width: 96%; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a;border-radius: 5px;">
+  <div style="position:absolute; z-index:1; <?php if($isMobile) echo 'top:56%;'; else echo 'top:390px;'; ?> left:2%; width:600px; max-width: 96%; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a;border-radius: 5px;">
     <h1>Game Lobby</h1>
     <?php
 
