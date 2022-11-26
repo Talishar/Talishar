@@ -633,7 +633,11 @@
         return $rv . ".";
       case "WTR008":
         $damaged = false;
-        if(AttackValue($additionalCosts) >= 6 && !IsAllyAttacking()) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
+        if(IsAllyAttacking())
+        {
+          return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
+        }
+        else if(AttackValue($additionalCosts) >= 6) { $damaged = true; DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID); }
         return "Discarded a random card from your hand" . ($damaged ? " and does 2 damage." : ".");
       case "WTR009":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
