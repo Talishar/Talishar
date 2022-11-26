@@ -209,6 +209,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
 -->
 
+<!--
       <div style="vertical-align:middle; position: relative;">
         <h3>From November 25th-27th</h3>
         <a href='https://fabtcg.com/organised-play/2022/battle-hardened-hong-kong/' target='_blank'>
@@ -216,6 +217,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
         <h4>🔴 Go Watch Live:</h4><br>
         <iframe width="375" height="250" src="https://www.youtube.com/embed/1OIM6wbMBIc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
+    -->
 
       <h5 style='text-align:center;'>________</h5><BR>
 
