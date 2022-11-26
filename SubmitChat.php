@@ -18,7 +18,8 @@ $uid = "-";
 if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];
 $displayName = ($uid != "-" ? $uid : "Player " . $playerID);
 
-if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+$authKey = "";
+if ($playerID == 1 || $playerID == 2) {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
 }
 
