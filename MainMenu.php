@@ -214,7 +214,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
         <a href='https://fabtcg.com/organised-play/2022/battle-hardened-hong-kong/' target='_blank'>
           <img style="margin-left:5%; margin-right:5%; width:50%; border-radius:5%;" src="https://storage.googleapis.com/fabmaster/media/images/gold_battle_hardened_HongKongGLOW.min-400x350.png" /></a>
         <h4>🔴 Go Watch Live:</h4><br>
-        <iframe width="375" height="250" src="https://www.youtube.com/embed/eEx0D66hwAA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe width="375" height="250" src="https://www.youtube.com/embed/1OIM6wbMBIc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
 
       <h5 style='text-align:center;'>________</h5><BR>
