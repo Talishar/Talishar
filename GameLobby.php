@@ -211,6 +211,10 @@ $isMobile = IsMobile();
         echo ("</a>");
         echo ("</div>");
       }
+      if($isMobile && count($matchups) == 0)
+      {
+        echo("Sideboarding is limited on mobile; we recommend defining matchups in your decklist for mobile sideboarding.");
+      }
     }
     else {
       echo("<BR>The following deckbuilder sites support matchups:<BR>");
