@@ -1126,7 +1126,7 @@ if($set == "UPR"){
     case "215": case "216": case "217": return "Healing Balm";
     case "218": case "219": case "220": return "Sigil of Protection";
     case "221": case "222": case "223": return "Oasis Respite";
-    case "406": return "Dracona Optima";
+    case "406": return "Dracona Optimai";
     case "407": return "Tomeltai";
     case "408": return "Dominia";
     case "409": return "Azvolai";
