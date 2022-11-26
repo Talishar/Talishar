@@ -2255,6 +2255,9 @@ function OnBlockResolveEffects()
           WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " trigger creates a layer.");
           AddLayer("TRIGGER", $mainPlayer, $combatChain[$i]);
         }
+        else {
+          WriteLog("<span style='color:red;'>No frostbite is created because there is no attacking hero when allies attack.</span>");
+        }
         break;
       case "MON241": case "MON242": case "MON243":
       case "MON244": case "RVD005": case "RVD006": // Pay 1 -> Get 2 Defense
