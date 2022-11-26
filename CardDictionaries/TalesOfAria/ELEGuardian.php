@@ -143,14 +143,21 @@
           IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
           $rv .= "Prevent the next 2 damage that would be dealt to Oldhim this turn. ";
         }
-        if($icePitched && !IsAllyAttacking())
+        if($icePitched)
         {
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("MULTIADDTOPDECK", $otherPlayer, "-", 1);
-          $rv .= "The opponent must put a card from their hand on top of their deck.";
+          if(IsAllyAttacking())
+          {
+            $rv .= "<span style='color:red;'>No card is put on top because there is no attacking hero when allies attack.</span>";
+          }
+          else
+          {
+            $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+            AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+            AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
+            AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+            AddDecisionQueue("MULTIADDTOPDECK", $otherPlayer, "-", 1);
+            $rv .= "The opponent must put a card from their hand on top of their deck.";
+          }
         }
         return $rv;
       case "ELE003":
