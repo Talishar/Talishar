@@ -42,7 +42,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
       echo("<BR>");
     }
     //TODO: filter out inactive patrons
-		if($include->type == "campaign" && $include->id == "7198186")
+		if($include->type == "campaign" && ($include->id == "7198186" || $include->id == "9408649"))
 		{
 			$_SESSION["isPatron"] = true;
 			array_push($yourPatronages, "Talishar");
