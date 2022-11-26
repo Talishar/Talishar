@@ -53,7 +53,7 @@
         else return "A";
       case "ARC018":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return (count($combatChain) > 0 && $items[$index + 1] > 0 ? "AR" : "A");
+        return (count($combatChain) > 0 ? "AR" : "A");
       case "ARC019": return "A";
       case "ARC035": return "I";
       case "ARC037": return "A";
@@ -96,7 +96,7 @@
       case "ARC209": case "ARC210": case "ARC211": return true;
       case "ARC212": case "ARC213": case "ARC214": return GetClassState($currentPlayer, $CS_NumMoonWishPlayed) > 0;
       case "ARC215": case "ARC216": case "ARC217": return true;
-      
+
       default: return false;
     }
   }
@@ -170,7 +170,7 @@ function ARCCombatEffectActive($cardID, $attackID)
     case "ARC038": case "ARC039":
       return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
     case "ARC042":
-      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS"; 
+      return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
     case "ARC047":
       return CardSubType($attackID) == "Arrow";
     case "ARC054": case "ARC055": case "ARC056":
