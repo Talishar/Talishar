@@ -25,8 +25,8 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
   }
   if ($remove == 1) {
     if (HasWard($char[$index]) && (SearchCharacterActive($player, "DYN213") || $char[$index] == "DYN213") && CardType($char[$index]) != "T") {
-      $index = FindCharacterIndex($player, "DYN213");
-      $char[$index + 1] = 1;
+      $kimonoIndex = FindCharacterIndex($player, "DYN213");
+      $char[$kimonoIndex + 1] = 1;
       GainResources($player, 1);
     }
     DestroyCharacter($player, $index);
