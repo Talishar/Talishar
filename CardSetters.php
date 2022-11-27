@@ -34,10 +34,12 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   } else {
-    $rv = count($banish);
-    array_push($banish, $cardID);
-    array_push($banish, $modifier);
-    array_push($banish, GetUniqueId());
+    if (CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
+      $rv = count($banish);
+      array_push($banish, $cardID);
+      array_push($banish, $modifier);
+      array_push($banish, GetUniqueId());
+    }
   }
   ++$classState[$CS_CardsBanished];
   if (AttackValue($cardID) >= 6) {
