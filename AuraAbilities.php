@@ -605,9 +605,9 @@ function AuraDamagePreventionAmount($player, $index)
 }
 
 //This function is for effects that prevent damage and DO destroy themselves
-function AuraTakeDamageAbility($player, $index, $damage)
+function AuraTakeDamageAbility($player, $index, $damage, $preventable)
 {
-  $damage -= AuraDamagePreventionAmount($player, $index);
+  if ($preventable) $damage -= AuraDamagePreventionAmount($player, $index);
   DestroyAura($player, $index);
   return $damage;
 }
