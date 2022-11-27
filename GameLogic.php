@@ -301,20 +301,19 @@ function ChainLinkBeginResolutionEffects()
 
 function CombatChainResolutionEffects()
 {
-  global $combatChain, $defPlayer;
-  for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
-  {
-    switch($combatChain[$i])
+  global $combatChain;
+    switch($combatChain[0])
     {
       case "CRU051": case "CRU052":
         EvaluateCombatChain($totalAttack, $totalBlock);
-        if ($totalBlock > 0 && BlockValue($combatChain[$i]) > $totalAttack) {
-          DestroyCurrentWeapon();
+        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+            DestroyCurrentWeapon();
+          }
         }
         break;
         default: break;
     }
-  }
 }
 
 function HasCrush($cardID)
