@@ -826,8 +826,8 @@ function ResolveCombatDamage($damageDone)
     for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
       if ($combatChain[$i] == $mainPlayer) {
         SetClassState($mainPlayer, $CS_EffectContext, $combatChain[$i - 1]);
-        ProcessHitEffect($combatChain[$i - 1]);
-        if ($damageDone >= 4) ProcessCrushEffect($combatChain[$i - 1]);
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[$i - 1], "ONHITTRIGGER");
+        if ($damageDone >= 4) AddLayer("TRIGGER", $mainPlayer, $combatChain[$i - 1], "CRUSHTRIGGER");
         AddDecisionQueue("CLEAREFFECTCONTEXT", $mainPlayer, "-");
       }
     }
