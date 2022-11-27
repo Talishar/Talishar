@@ -394,6 +394,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 {
   global $gameName;
   $filepath = "./Games/" . $gameName . "/";
+  if(!file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
   copy($filepath . "gamestate.txt", $filepath . $filename);
 }
 
