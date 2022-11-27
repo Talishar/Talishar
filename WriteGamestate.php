@@ -91,4 +91,6 @@ fwrite($handler, $p1TotalTime . "\r\n"); //Player 1 total time
 fwrite($handler, $p2TotalTime . "\r\n"); //Player 2 total time
 fwrite($handler, $lastUpdateTime . "\r\n"); //Last update time
 fwrite($handler, $roguelikeGameID . "\r\n"); //Last update time
+
+flock($handler, LOCK_UN);
 fclose($handler);
