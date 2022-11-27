@@ -20,6 +20,9 @@ $currentPlayer = $firstPlayer;
 $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
 StatsStartTurn();
 
+$MakeStartTurnBackup = false;
+$MakeStartGameBackup = false;
+
 WriteLog("If you see a bug, use the Report Bug button in the menu. There is also a manual control mode to help correct the game state.");
 
 if ($p2Char[0] == "DUMMY") {
@@ -93,6 +96,9 @@ ProcessDecisionQueue();
 
 DoGamestateUpdate();
 include "WriteGamestate.php";
+
+if ($MakeStartTurnBackup) MakeStartTurnBackup();
+if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 ?>
 
