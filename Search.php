@@ -182,7 +182,7 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
   $cardList = "";
   for ($i = 0; $i < count($deck); $i += DeckPieces()) {
     $id = $deck[$i];
-    if ($id == $card1 || $id == $card2 || $id == $card3) {
+    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -196,7 +196,7 @@ function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
   $cardList = "";
   for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
     $id = $discard[$i];
-    if ($id == $card1 || $id == $card2 || $id == $card3) {
+    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -210,7 +210,7 @@ function SearchAlliesForCard($player, $card1, $card2 = "", $card3 = "")
   $cardList = "";
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     $id = $allies[$i];
-    if ($id == $card1 || $id == $card2 || $id == $card3) {
+    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -224,7 +224,7 @@ function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
   $cardList = "";
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     $id = $allies[$i];
-    if ($id == $card1 || $id == $card2 || $id == $card3) {
+    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
