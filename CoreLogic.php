@@ -788,8 +788,7 @@ function PlayerWon($playerID)
 
 function UnsetBanishModifier($player, $modifier, $newMod="DECK")
 {
-  global $mainPlayer;
-  $banish = &GetBanish($mainPlayer);
+  $banish = &GetBanish($player);
   for($i=0; $i<count($banish); $i+=BanishPieces())
   {
     $cardModifier = explode("-", $banish[$i+1])[0];
