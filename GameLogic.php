@@ -5711,24 +5711,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 
 function ImperialWarHorn($player, $term)
 {
-  //Allies
-  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "ALLY");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an ally to destroy", 1);
-  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZDESTROY", $player, "-", 1);
-  //Auras
-  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "AURAS");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an aura to destroy", 1);
-  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZDESTROY", $player, "-", 1);
-  //Items
-  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "ITEMS");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to destroy", 1);
-  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZDESTROY", $player, "-", 1);
-  //Landmarks
-  AddDecisionQueue("MULTIZONEINDICES", $player, "LANDMARK");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a landmark to destroy", 1);
+  AddDecisionQueue("MULTIZONEINDICES", $player, $term . "ALLY&" . $term . "AURAS&"  . $term . "ITEMS&LANDMARK");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to destroy", 1);
   AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }
