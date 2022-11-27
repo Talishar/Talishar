@@ -508,6 +508,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
     }
   }
 
+  if ($target == "ONHITTRIGGER") {
+    ProcessHitEffect($parameter);
+  }
+  if ($target == "CRUSHTRIGGER") {
+    ProcessCrushEffect($parameter);
+  }
+
   switch ($parameter) {
     case "WTR000":
       if (IHaveLessHealth()) {
