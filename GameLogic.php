@@ -3102,6 +3102,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       break;
     case "DYN088":
       $character[$cardIndex + 2] -= 2;
+      $character[$cardIndex + 1] = 1;
       break;
     case "DYN117":
       DestroyCharacter($currentPlayer, $cardIndex);
