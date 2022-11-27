@@ -111,6 +111,6 @@ function isMobile() {
         $tablet_browser++;
       }
   }
-
+  if($tablet_browser > 0) return false;
   return $mobile_browser > 0;
 }
