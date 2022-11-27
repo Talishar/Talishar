@@ -915,7 +915,7 @@
 
   function WTRHitEffect($cardID)
   {
-    global $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $mainCharacter;
+    global $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex;
     global $mainPlayer, $defPlayer, $CCS_DamageDealt, $combatChain;
     $attackID = $combatChain[0];
     switch ($cardID)
@@ -943,8 +943,12 @@
         break;
       case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog(CardLink($cardID,$cardID) . " draw a card."); MainDrawCard(); } break;
       case "WTR115":
-       if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1 && $CCS_WeaponIndex < count($combatChainState)) { ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+3]; }
-       IncrementClassState($mainPlayer, $CS_HitsWDawnblade, 1);
+        if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1 && $CCS_WeaponIndex < count($combatChainState)) { 
+          $mainCharacter = &GetPlayerCharacter($mainPlayer);
+          $index = FindCharacterIndex($mainPlayer, $cardID);
+          ++$mainCharacter[$index+3]; 
+        }
+        IncrementClassState($mainPlayer, $CS_HitsWDawnblade, 1);
       break;
       case "WTR167": case "WTR168": case "WTR169": MainDrawCard(); break;
       case "WTR206": case "WTR207": case "WTR208": if(IsHeroAttackTarget() && CardType($attackID) == "AA") PummelHit(); break;
