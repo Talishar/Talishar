@@ -576,16 +576,16 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $dqVars[0] = $damage;
   if($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damageThreatened . "," . $type . "," . $source);
-  if($damage > 0 && $preventable)
+  if($damage > 0)
   {
-    AddDamagePreventionSelection($player, $damage);
+    AddDamagePreventionSelection($player, $damage, $preventable);
   }
   return $damage;
 }
 
-function AddDamagePreventionSelection($player, $damage)
+function AddDamagePreventionSelection($player, $damage, $preventable)
 {
-  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage, 1);
+  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage", 1);
   PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION");

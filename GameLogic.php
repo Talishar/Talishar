@@ -5688,20 +5688,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PROCESSDAMAGEPREVENTION":
       $mzIndex = explode("-", $lastResult);
-      $damage = intval($parameter);
+      $params =  explode("-", $parameter);
       switch($mzIndex[0])
       {
         case "MYAURAS":
-          $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $damage);
+          $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]);
           break;
         case "MYCHAR":
-          $damage = CharacterTakeDamageAbility($player, intval($mzIndex[1]), $damage);
+          $damage = CharacterTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1]);
           break;
         default: break;
       }
       $dqVars[0] = $damage;
       $dqState[6] = $damage;
-      if($damage > 0) AddDamagePreventionSelection($player, $damage);
+      if($damage > 0) AddDamagePreventionSelection($player, $params[0], $params[1]);
       return $damage;
     default:
       return "NOTSTATIC";

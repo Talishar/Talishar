@@ -1,6 +1,6 @@
 <?php
 
-function CharacterTakeDamageAbility($player, $index, $damage)
+function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 {
   $char = &GetPlayerCharacter($player);
   $otherPlayer = $player == 1 ? 1 : 2;
