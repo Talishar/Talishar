@@ -1581,8 +1581,8 @@ function LookAtHand($player)
 
 function GainActionPoints($amount=1)
 {
-  global $actionPoints;
-  $actionPoints += $amount;
+  global $actionPoints, $mainPlayer, $currentPlayer;
+  if ($currentPlayer == $mainPlayer) $actionPoints += $amount;
 }
 
 function AddCharacterUses($player, $index, $numToAdd)
