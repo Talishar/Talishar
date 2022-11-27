@@ -346,7 +346,11 @@
         PutPermanentIntoPlay($mainPlayer, "UPR043");
         WriteLog(CardLink($cardID,$cardID) . " got a -1 health counter and created an ash token.");
         break;
-      case "UPR416": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
+      case "UPR416": 
+        if(IsHeroAttackTarget()) { 
+          DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); 
+        } 
+        break;
       default: break;
     }
   }
