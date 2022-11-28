@@ -118,7 +118,8 @@ $isMobile = IsMobile();
   if($isMobile) echo '<div style="position:absolute; z-index:1; top:2%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
   else echo '<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
     $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
-    echo ("<h2>$theirDisplayName Hero</h2>");
+    if($isMobile) echo ("<h3>$theirDisplayName Hero</h3>");
+    else echo ("<h2>$theirDisplayName Hero</h2>");
 
     $otherHero = "CardBack";
     echo ("<center>");
@@ -133,7 +134,8 @@ $isMobile = IsMobile();
   if($isMobile) echo '<div style="position:absolute; z-index:1; top:29%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
   else echo '<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
     $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
-    echo ("<h2>$displayName Hero</h2>");
+    if($isMobile) echo ("<h3>$displayName Hero</h3>");
+    else echo ("<h2>$displayName Hero</h2>");
 
     $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $handler = fopen($deckFile, "r");
