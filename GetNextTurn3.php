@@ -97,6 +97,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   include "Libraries/StatFunctions.php";
   include "Libraries/PlayerSettings.php";
 
+  $isReactFE = true;
+
   if ($opponentDisconnected && !IsGameOver()) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
@@ -888,7 +890,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->active = true;
     $playerInputPopup->popup = ChoosePopup($mySoul, $turn[2], 16, "Choose one of your soul", SoulPieces());
   }
-  
+
   $playerInputPopup->buttons = $playerInputButtons;
   $response->playerInputPopUp = $playerInputPopup;
   // encode and send it out
