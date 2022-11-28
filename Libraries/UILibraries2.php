@@ -4,6 +4,8 @@ use JetBrains\PhpStorm\Language;
 
 require_once("CoreLibraries.php");
 
+$isReactFE = false;
+
 function BackgroundColor($darkMode)
 {
   if ($darkMode) return "rgba(74, 74, 74, 0.95)";
@@ -204,7 +206,7 @@ function Card($cardNumber, $folder, $maxHeight, $action = 0, $showHover = 0, $ov
    <img style='position:absolute; top: -2px; width:" . $imgCounterHeight . "px; height:" . $imgCounterHeight . "px; opacity: 0.9; z-index:-1; user-select: none;' src='./Images/SteamCounters.png'></div>";
   }
 
-  //Aim Counters style  
+  //Aim Counters style
   elseif ((($counters != 0 && $from == "ARS") || $atkCounters != 0) && CardSubType($cardNumber) == "Arrow") {
     if ($lifeCounters == 0 && $defCounters == 0) {
       $left = "0px";
@@ -734,7 +736,12 @@ function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
 function CardLink($caption, $cardNumber, $recordMenu = false)
 {
   //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
-  global $darkMode, $playerID;
+  global $darkMode, $playerID, $isReactFE;
+  if($isReactFE)
+  {
+    return "{{" . $cardNumber . "|" . CardName($cardNumber) . "|" . PitchValue($cardNumber) . "}}";
+  }
+
   $name = CardName($cardNumber);
   if ($name == "") return "";
   $pitchValue = PitchValue($cardNumber);
