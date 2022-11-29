@@ -271,7 +271,6 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   */
   ?>
   <BR>
-  <div style='width:100%; text-align:center'><a href='./MenuFiles/PrivacyPolicy.php'>Privacy Policy</a></div>
 
 </div>
 

@@ -38,6 +38,7 @@ if (isset($_SESSION['useruid'])) {
 
   <section class='signup-form' style='position:absolute; bottom:30px; right:30px; padding: 5px;'>
     <i>By using the Remember Me function, you consent to a cookie being stored in your browser for purpose of identifying your account on future visits.</i>
+    <div style='width:100%; text-align:center'><a href='./MenuFiles/PrivacyPolicy.php'>Privacy Policy</a></div>
   </section>
   </div>
   <?php
