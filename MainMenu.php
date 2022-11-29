@@ -2,7 +2,6 @@
 
 include_once 'Header.php';
 include "HostFiles/Redirector.php";
-include_once "Libraries/HTTPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
 include_once "APIKeys/APIKeys.php";
 
@@ -136,29 +135,19 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   }
   ?>
 
-    <input type="radio" id="blitz" name="format" value="blitz" <?php if ($defaultFormat == 2) echo 'checked="checked"'; ?>>
-    <label style='margin-left:-10px;' for="blitz">Blitz</label>
-
-  <input style='margin-left: 10px;' type="radio" id="compblitz" name="format" value="compblitz" <?php if ($defaultFormat == 3) echo 'checked="checked"'; ?>>
-  <label for="compblitz">Competitive Blitz</label>
-  <br class="BRMobile">
-
-  <input style='margin-left: 10px;' type="radio" id="cc" name="format" value="cc" <?php if ($defaultFormat == 0) echo 'checked="checked"'; ?>>
-  <label for="cc">CC</label>
-  <br class="BRMobile">
-
-  <input style='margin-left: 10px;' type="radio" id="compcc" name="format" value="compcc" <?php if ($defaultFormat == 1) echo 'checked="checked"'; ?>>
-  <label for="compcc">Competitive CC</label>
-  <br class="BRMobile">
-
-  <br><br>
-    <input style='margin-left: 5px;' type="radio" id="commoner" name="format" value="commoner" <?php if ($defaultFormat == 5) echo 'checked="checked"'; ?>>
-    <label style='margin-left:-12px;' for="commoner">Commoner</label>
-
-
-    <input style='margin-left: 5px;' type="radio" id="livinglegendscc" name="format" value="livinglegendscc" <?php if ($defaultFormat == 4) echo 'checked="checked"'; ?>>
-    <label style='margin-left:-12px;' for="livinglegendscc">Open Format (No Restriction)</label>
-  <br><br>
+  <?php
+  echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
+  echo ("<select name='format' id='format'>");
+  echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
+  echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
+  echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
+  echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
+  echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
+  echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
+  echo ("</select>");
+  ?>
+  <BR>
+  <BR>
 
     <input type="radio" id="public" name="visibility" value="public" <?php if ($defaultVisibility == 1) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="public">Public</label>
@@ -167,7 +156,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     <label style='margin-left:-12px;' for="private">Private</label><br><br>
 
   <input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
-  <label for="deckTestMode">Single Player Mode</label><br><br>
+  <label for="deckTestMode">Single Player</label><br><br>
   <div style="text-align:center;">
 
     <label>
