@@ -11,14 +11,14 @@ $visibility = "private";
 $gameDescription = "Draft game";
 $karmaRestriction = TryGet("gameKarmaRestriction", "0");
 
-$fileLocation = "HostFiles/GameIDCounter.txt";
+$gameIDCounterFile = "HostFiles/GameIDCounter.txt";
 
-if (!is_file($fileLocation)) { // if the game ID counter does not exist, make it.
+if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
   $contents = '101';
-  file_put_contents($fileLocation, $contents);
+  file_put_contents($gameIDCounterFile, $contents);
 }
 
-$gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
+$gcFile = fopen($gameIDCounterFile, "r+");
 $attemptCount = 0;
 
 while (!flock($gcFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
