@@ -712,7 +712,6 @@ button {
   background-color: var(--grey-transparent-background);
   border: 2px solid var(--dark-color);
   border-radius: 5px;
-  overflow-y: scroll;
 }
 
 .FabLogo {
