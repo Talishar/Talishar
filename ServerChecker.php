@@ -174,10 +174,10 @@ echo ($compCCLinks);
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
 echo ($otherFormatsLinks);
+echo ("<h3 style='text-align:center;'>________</h3>");
+echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h2>");
 if(!IsMobile())
 {
-  echo ("<h3 style='text-align:center;'>________</h3>");
-  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h2>");
   echo ($spectateLinks);
 }
 echo ("</div>");
