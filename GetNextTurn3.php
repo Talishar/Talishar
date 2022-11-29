@@ -609,19 +609,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerInputButtons = array();
   $playerInputPopup->active = false;
 
-  // TODO: Arcane damage popup
-  if (($turn[0] == "CHOOSEARCANE")) {
-    // do nothing
-  }
-
   // Do arcane separately
-  if (($turn[0] == "BUTTONINPUT" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID) {
+  if (($turn[0] == "BUTTONINPUT" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEARCANE") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $options = explode(",", $turn[2]);
+    $caption = "";
+    if ($turn[0] == "CHOOSEARCANE") {
+      $vars = explode("-", $dqVars[0]);
+      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . " Total Damage: " . $vars[0];
+    }
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
     }
-    $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, GetPhaseHelptext(), 1, "");
+    $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
   }
 
   if ($turn[0] == "YESNO" && $turn[1] == $playerID) {
