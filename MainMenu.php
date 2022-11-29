@@ -198,13 +198,14 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
 -->
 
-
+<!--
       <div style="vertical-align:middle; position: relative;">
         <h3>December 10th-11th</h3>
         <h4>Click for more info:</h4><br>
         <a href='https://fabtcg.com/organised-play/2022/battle-hardened-singapore/' target='_blank'>
           <img style="margin-left:5%; margin-right:5%; width:50%; border-radius:5%;" src="https://storage.googleapis.com/fabmaster/media/images/Battle_Hardened_Singapore_Glow.min-400x350.png" /></a>
       </div>
+    -->
 
 
       <h5 style='text-align:center;'>________</h5><BR>
