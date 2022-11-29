@@ -63,7 +63,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   ?>
 </div>
 
-<div class="CreateGame_Menu">
+<div class="CreateGame_Menu" <?php if(IsMobile()) echo(" style='width:65%;' "); ?>>
   <h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
 
   <?php
@@ -176,7 +176,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 </div>
 </div>
 
-<div class="NewsMenu">
+<div class="NewsMenu" <?php if(IsMobile()) echo(" style='display:none;' "); ?>>
 
   <h1>News</h1>
   <div style="position: relative;">
