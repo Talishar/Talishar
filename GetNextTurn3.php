@@ -568,8 +568,38 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Turn number
   $response->turnNo = $currentTurn;
 
+  $playerPrompt = new StdClass();
+  $promptButtons = array();
+  $helpText = "";
   // Reminder text box highlight thing
+  if ($turn[0] != "OVER") {
+    $helpText .= ($currentPlayer != $playerID ? "Waiting for other player to choose " . TypeToPlay($turn[0]) : GetPhaseHelptext());
 
+    if ($currentPlayer == $playerID) {
+      if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") {
+        $helpText .=  (" ( " . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . ")");
+        array_push($promptButtons, CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px"));
+      }
+
+      if (CanPassPhase($turn[0])) {
+        if ($turn[0] == "B") {
+          array_push($promptButtons, CreateButtonAPI($playerID, "Undo Block", 10001, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass", 99, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
+        }
+      } else {
+        if (
+          $currentPlayerActivity == 2 && $playerID != 3
+        ) {
+          $helpText .= "— Opponent is inactive ";
+          array_push($promptButtons, CreateButtonAPI($playerID, "Claim Victory", 100007, 0, "16px"));
+        }
+      }
+    }
+  }
+  $playerPrompt->helpText = $helpText;
+  $playerPrompt->buttons = $promptButtons;
+  $response->playerPrompt = $playerPrompt;
 
   // ******************************
   // * PLAYER MUST CHOOSE A THING *
@@ -716,7 +746,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
 
       if (count($layers) > 0) {
-        if ( $option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer ) {
+        if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
           $index = SearchLayer($otherPlayer, subtype: "Ally");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
