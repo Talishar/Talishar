@@ -4,7 +4,6 @@
 include_once 'Header.php';
 include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries2.php";
-include_once "./Libraries/HTTPLibraries.php";
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 

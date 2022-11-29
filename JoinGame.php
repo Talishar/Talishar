@@ -1,7 +1,6 @@
 <?php
 include_once 'Header.php';
 include "HostFiles/Redirector.php";
-include "Libraries/HTTPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
 
 $gameName = $_GET["gameName"];
