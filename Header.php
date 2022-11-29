@@ -5,6 +5,7 @@ include_once 'Assets/patreon-php-master/src/API.php';
 include_once 'Assets/patreon-php-master/src/PatreonLibraries.php';
 include_once 'includes/functions.inc.php';
 include_once 'includes/dbh.inc.php';
+include_once 'Libraries/HTTPLibraries.php';
 session_start();
 
 if (!isset($_SESSION["userid"])) {
@@ -29,6 +30,8 @@ if (isset($_SESSION["useruid"])) {
 if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
 else $isPatron = false;
 
+$isMobile = IsMobile();
+
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +55,7 @@ else $isPatron = false;
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style4.css">
   <link rel="shortcut icon" type="image/png" href="./Images/TeenyCoin.png" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783" crossorigin="anonymous"></script>
+  <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783" crossorigin="anonymous"></script>-->
 </head>
 
 <body>
@@ -62,14 +65,14 @@ else $isPatron = false;
     <div class="wrapper">
       <ul>
         <!--<li><a href="Blog.php">Blog</a></li>-->
-        <li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>
-        <li><a target="_blank" href="https://twitter.com/talishar_online">Twitter</a></li>
+        <?php if(!$isMobile) echo '<li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>'; ?>
+        <?php if(!$isMobile) echo '<li><a target="_blank" href="https://twitter.com/talishar_online">Twitter</a></li>'; ?>
         <li><a target="_blank" href="https://www.patreon.com/talishar_online">Support Us</a></li>
       </ul>
 
       <ul>
         <li><a href="MainMenu.php">Home Page</a></li>
-        <li><a href="https://fabtcg.com/events">Find Local Events</a></li>
+        <?php if(!$isMobile) echo '<li><a href="https://fabtcg.com/events">Find Local Events</a></li>'; ?>
         <?php if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>"; ?>
         <li><a href="Draft.php">Limited</a></li>
         <?php
