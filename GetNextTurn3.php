@@ -568,8 +568,38 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Turn number
   $response->turnNo = $currentTurn;
 
+  $playerPrompt = new StdClass();
+  $promptButtons = array();
+  $helpText = "";
   // Reminder text box highlight thing
+  if ($turn[0] != "OVER") {
+    $helpText .= ($currentPlayer != $playerID ? "Waiting for other player to choose " . TypeToPlay($turn[0]) : GetPhaseHelptext());
 
+    if ($currentPlayer == $playerID) {
+      if ($turn[0] == "P" || $turn[0] == "CHOOSEHANDCANCEL" || $turn[0] == "CHOOSEDISCARDCANCEL") {
+        $helpText .=  (" ( " . ($turn[0] == "P" ? $myResources[0] . " of " . $myResources[1] . " " : "") . ")");
+        array_push($promptButtons, CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px"));
+      }
+
+      if (CanPassPhase($turn[0])) {
+        if ($turn[0] == "B") {
+          array_push($promptButtons, CreateButtonAPI($playerID, "Undo Block", 10001, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass", 99, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
+        }
+      } else {
+        if (
+          $currentPlayerActivity == 2 && $playerID != 3
+        ) {
+          $helpText .= "— Opponent is inactive ";
+          array_push($promptButtons, CreateButtonAPI($playerID, "Claim Victory", 100007, 0, "16px"));
+        }
+      }
+    }
+  }
+  $playerPrompt->helpText = $helpText;
+  $playerPrompt->buttons = $promptButtons;
+  $response->playerPrompt = $playerPrompt;
 
   // ******************************
   // * PLAYER MUST CHOOSE A THING *
@@ -579,19 +609,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerInputButtons = array();
   $playerInputPopup->active = false;
 
-  // TODO: Arcane damage popup
-  if (($turn[0] == "CHOOSEARCANE")) {
-    // do nothing
-  }
-
   // Do arcane separately
-  if (($turn[0] == "BUTTONINPUT" || $turn[0] == "BUTTONINPUTNOPASS") && $turn[1] == $playerID) {
+  if (($turn[0] == "BUTTONINPUT" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEARCANE") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $options = explode(",", $turn[2]);
+    $caption = "";
+    if ($turn[0] == "CHOOSEARCANE") {
+      $vars = explode("-", $dqVars[0]);
+      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . " Total Damage: " . $vars[0];
+    }
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
     }
-    $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, GetPhaseHelptext(), 1, "");
+    $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
   }
 
   if ($turn[0] == "YESNO" && $turn[1] == $playerID) {
@@ -716,7 +746,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
 
       if (count($layers) > 0) {
-        if ( $option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer ) {
+        if ($option[0] == "THEIRALLY" && $layers[0] != "" && $mainPlayer != $currentPlayer) {
           $index = SearchLayer($otherPlayer, subtype: "Ally");
           if ($index != "") {
             $params = explode("|", $layers[$index + 2]);
