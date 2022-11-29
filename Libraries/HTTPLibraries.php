@@ -25,7 +25,15 @@ function IsDeckLinkValid($deckLink)
 
 function GetGameCounter()
 {
-  $gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
+  $gameIDCounterFile = "HostFiles/GameIDCounter.txt";
+
+  if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
+    $contents = '101';
+    file_put_contents($gameIDCounterFile, $contents);
+  }
+
+  $gcFile = fopen($gameIDCounterFile, "r+");
+
   $attemptCount = 0;
   while (!flock($gcFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
     sleep(1);
