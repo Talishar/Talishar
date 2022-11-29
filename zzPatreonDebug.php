@@ -5,7 +5,6 @@ include_once 'Header.php';
 require_once './Assets/patreon-php-master/src/OAuth.php';
 require_once './Assets/patreon-php-master/src/API.php';
 require_once './Assets/patreon-php-master/src/PatreonLibraries.php';
-include "./Libraries/HTTPLibraries.php";
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 

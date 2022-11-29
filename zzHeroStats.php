@@ -3,7 +3,6 @@
 include_once 'Header.php';
 include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
-include_once "Libraries/HTTPLibraries.php";
 require_once "./includes/dbh.inc.php";
 
 if (!isset($_SESSION["useruid"])) {

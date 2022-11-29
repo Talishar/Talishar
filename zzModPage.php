@@ -2,7 +2,6 @@
 
 include_once 'Header.php';
 
-include "./Libraries/HTTPLibraries.php";
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 
