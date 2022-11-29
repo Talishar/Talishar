@@ -737,8 +737,7 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
 {
   //$file = "'./" . "CardImages" . "/" . $cardNumber . ".png'";
   global $darkMode, $playerID, $isReactFE;
-  if($isReactFE)
-  {
+  if ($isReactFE) {
     return "{{" . $cardNumber . "|" . CardName($cardNumber) . "|" . PitchValue($cardNumber) . "}}";
   }
 

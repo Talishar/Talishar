@@ -11,7 +11,14 @@ $visibility = "private";
 $gameDescription = "Draft game";
 $karmaRestriction = TryGet("gameKarmaRestriction", "0");
 
-$gcFile = fopen("HostFiles/GameIDCounter.txt", "r+");
+$gameIDCounterFile = "HostFiles/GameIDCounter.txt";
+
+if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
+  $contents = '101';
+  file_put_contents($gameIDCounterFile, $contents);
+}
+
+$gcFile = fopen($gameIDCounterFile, "r+");
 $attemptCount = 0;
 
 while (!flock($gcFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
@@ -30,7 +37,7 @@ fwrite($gcFile, $counter + 1);
 flock($gcFile, LOCK_UN);    // release the lock
 fclose($gcFile);
 
-if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true)) ){
+if ((!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true))) {
 } else {
   print_r("Encountered a problem creating a game. Please return to the main menu and try again");
 }
@@ -60,4 +67,4 @@ fclose($handler);
 $currentTime = round(microtime(true) * 1000);
 WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!0"); //Initialize SHMOP cache for this game
 
-echo($gameName);
+echo ($gameName);
