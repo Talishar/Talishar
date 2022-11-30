@@ -140,6 +140,7 @@ function GetCardBack($player)
     case 42: return "CBEternalOracles";
     case 43: return "CBTheTablePit";
     case 44: return "CBTCGTed";
+    case 45: return "CBLuminaris";
     default: return "CardBack";
   }
 }
@@ -520,10 +521,17 @@ function GetSettingsUI($player)
   }
 
   $isTCGTedPatron = false;
-  $isTCGTedPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TCGTed" || $_SESSION["useruid"] == "PvtVoid");
+  $isTCGTedPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TCGTed");
   if (isset($_SESSION['isTCGTedPatron']) || $isTCGTedPatron) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-44", "TCGTed", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "TCG Ted");
+  }
+
+  $isTCGTedPatron = false;
+  $isLuminaris = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "LeoLeo");
+  if (isset($isLuminaris)) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-45", "Luminaris", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Luminaris");
   }
 
   if (!$hasCardBacks) $rv .= "<br><br><h4>Become a patron to customize your card backs!</h4>";
