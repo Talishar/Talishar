@@ -1013,6 +1013,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
         }
       }
       break;
+      case "DYN214":
+        PlayAura("MON104", $player);
+        break;
       case "DYN217":
         MyDrawCard();
         DestroyAuraUniqueID($player, $uniqueID);
