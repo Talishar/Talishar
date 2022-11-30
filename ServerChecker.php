@@ -18,7 +18,7 @@ $compCCLinks = "";
 $otherFormatsLinks = "";
 $livingLegendsCCLinks = "";
 
-$isisShadowBanned = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "";
+$isisShadowBanned = false;
 
 $bannedIPHandler = fopen("./HostFiles/bannedIPs.txt", "r");
 while (!feof($bannedIPHandler)) {

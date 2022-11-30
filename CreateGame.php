@@ -33,7 +33,7 @@ if($favoriteDeckLink != 0)
   }
 }
 
-$isisShadowBanned = isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "";
+$isisShadowBanned = false;
 
 if(isset($_SESSION["userid"]))
 {
