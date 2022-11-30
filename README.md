@@ -20,4 +20,6 @@ If you would like to contribute, be sure to join the discord to chat with fellow
 
 ## Disclaimer
 
+All artwork and card images © Legend Story Studios.
+
 Talishar.net is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of [Legend Story Studios](https://legendstory.com/).
