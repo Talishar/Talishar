@@ -2527,7 +2527,7 @@ function CharacterDestroyEffect($cardID, $player)
       DestroyArsenal($player);
       break;
     case "DYN214":
-      PlayAura("MON104", $player);
+      AddLayer("TRIGGER", $player, "DYN214", "-", "-");
       break;
     default:
       break;
