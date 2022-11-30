@@ -1,0 +1,10 @@
+Flesh and Blood (“the Game”) is a product of Legend Story Studios Limited (“the Studio”). Flesh and Blood™, Legend Story Studios® are registered trademarks of the Studio in the US, Australia, New Zealand, Europe, and other territories.
+
+All Intellectual Property (“IP”) pertaining to the Game and the Studio, including characters, cards, logos, stories, art, books, apparel and merchandise, as well as all assets and content found on this website (fabtcg.com), are property of the Studio.
+
+Talishar is in no way affiliated with Legend Story Studios. Legend Story Studios®, Flesh and Blood™, and set names are trademarks of Legend Story Studios. Flesh and Blood characters, cards, logos, and art are property of Legend Story Studios.
+
+The repository necessarily contains card images, modified card images, card names, and other properties of cards. The included LICENSE file applies only to the Talishar source code, and does not extend to any intellectual property owned by LSS.
+
+The intellectual property owned by LSS is used in accordance to the policy outlined here:
+https://fabtcg.com/resources/terms-use-licensed-assets
