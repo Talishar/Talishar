@@ -5,8 +5,8 @@
 <h3 align="center">Talishar is a browser-based platform to play Flesh and Blood. It is a fan-made FABTCG project not associated with Legend Story Studios.</h3>
 
 [![license](https://flat.badgen.net/github/license/talishar/talishar)](./LICENSE)
-[![discord](https://flat.badgen.net/discord/online-members/JykuRkdd5S)](https://discord.gg/JykuRkdd5S)
-[![patreon](https://flat.badgen.net/badge/become/a%20patron/F96854)](https://www.patreon.com/talishar_online/)
+[![discord](https://flat.badgen.net/discord/online-members/JykuRkdd5S?icon=discord)](https://discord.gg/JykuRkdd5S)
+[![patreon](https://flat.badgen.net/badge/become/a%20patreon/F96854?icon=patreon)](https://www.patreon.com/talishar_online/)
 
 Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your browser right now!
 
