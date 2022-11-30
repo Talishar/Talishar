@@ -182,11 +182,6 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
 
-      <h2>Talishar is now open source!</h2>
-        <a href='https://github.com/Talishar/Talishar' target='_blank'>Source Code</a><BR><BR>
-        <a href='https://twitter.com/talishar_sim' target='_blank'>New Twitter Account</a><BR><BR>
-        We have disabled our patreon page. Many thanks to the patrons that have supported us! We'll be paying the hosting costs from the excess amount collected until we can form a proper governance structure for a non-commercial open source project. If you have any interest in helping us set this up, let us know!
-
       <!-- <a href='./zzSetChecker.php' target='_blank'>Click here to see unsupported cards</a><br><br>
 
       <h3 style='text-align:center;'>________</h3> -->
