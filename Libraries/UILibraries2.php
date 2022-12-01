@@ -80,11 +80,28 @@ function JSONRenderedCard(
     $atkCounters->attack :  $atkCounters;
   if($countersMap->counters > 0)
   {
-    $countersMap->counterType = "default";
     $class = CardClass($cardNumber);
     $subtype = CardSubType($cardNumber);
-    if($class == "MECHANOLOGIST" && $subtype == "Item") $countersMap->counterType = "steam";
-    else if($subtype == "Arrow") $countersMap->counterType = "aim";
+    if($class == "MECHANOLOGIST" && $subtype == "Item")
+    {
+      $countersMap->steam = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if($subtype == "Arrow")
+    {
+      $countersMap->aim = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if($cardNumber == "WTR150" || $cardNumber == "UPR166")
+    {
+      $countersMap->energy = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if($cardNumber == "DYN175")
+    {
+      $countersMap->doom = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
   }
 
   $countersMap = (object) array_filter((array) $countersMap, function ($val) {
