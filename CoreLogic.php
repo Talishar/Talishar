@@ -732,7 +732,7 @@ function GainHealth($amount, $player)
   {
     if($health > $otherHealth) return false;
   }
-  PlayerGainHealth($amount, $health);
+  $health += $amount;
   return true;
 }
 
@@ -745,11 +745,6 @@ function PlayerLoseHealth($player, $amount)
   {
     PlayerWon(($player == 1 ? 2 : 1));
   }
-}
-
-function PlayerGainHealth($amount, &$health)
-{
-  $health += $amount;
 }
 
 function IsGameOver()

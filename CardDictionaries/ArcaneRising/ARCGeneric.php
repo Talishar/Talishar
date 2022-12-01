@@ -276,7 +276,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
 
 function ARCGenericHitEffect($cardID)
 {
-  global $mainPlayer, $mainHealth, $CS_NextNAAInstant, $defPlayer;
+  global $mainPlayer, $CS_NextNAAInstant, $defPlayer;
   switch ($cardID) {
     case "ARC159":
       if (IsHeroAttackTarget()) {
@@ -284,7 +284,7 @@ function ARCGenericHitEffect($cardID)
       }
       break;
     case "ARC164": case "ARC165": case "ARC166":
-      PlayerGainHealth(1, $mainHealth);
+      GainHealth(1, $mainPlayer);
       break;
     case "ARC161":
       AddCurrentTurnEffect($cardID, $mainPlayer);
