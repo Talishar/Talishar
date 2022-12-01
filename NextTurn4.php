@@ -589,6 +589,7 @@
       var IDLE_TIMEOUT = 40; //seconds
       var _idleSecondsCounter = 0;
       var _idleState = 0; //0 = not idle, 1 = idle warning, 2 = idle
+      var _lastUpdate = 0;
 
       var activityFunction = function() {
         var oldIdleState = _idleState;
@@ -650,6 +651,8 @@
               document.getElementById("mainDiv").innerHTML = responseArr[1];
               var update = parseInt(responseArr[0]);
               if (update != "NaN") CheckReloadNeeded(update);
+              if(update < _lastUpdate) return;
+              _lastUpdate = update;
               var readyIcon = document.getElementById("iconHolder").innerText;
               document.getElementById("icon").href = "./HostFiles/" + readyIcon;
               var log = document.getElementById('gamelog');
