@@ -78,6 +78,14 @@ function JSONRenderedCard(
     $countersMap->defence :  $defCounters;
   $countersMap->attack = property_exists($countersMap, 'attack') ?
     $atkCounters->attack :  $atkCounters;
+  if($countersMap->counters > 0)
+  {
+    $countersMap->counterType = "default";
+    $class = CardClass($cardNumber);
+    $subtype = CardSubType($cardNumber);
+    if($class == "MECHANOLOGIST" && $subtype == "Item") $countersMap->counterType = "steam";
+    else if($subtype == "Arrow") $countersMap->counterType = "aim";
+  }
 
   $countersMap = (object) array_filter((array) $countersMap, function ($val) {
     return !is_null($val);
