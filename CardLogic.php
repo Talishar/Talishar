@@ -510,11 +510,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
 
   if ($target == "ONHITTRIGGER") {
     ProcessHitEffect($parameter);
-    return;
   }
   if ($target == "CRUSHTRIGGER") {
     ProcessCrushEffect($parameter);
-    return;
   }
 
   switch ($parameter) {
