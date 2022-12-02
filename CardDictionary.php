@@ -296,6 +296,7 @@ function CharacterIntellect($cardID)
 
 function CardSet($cardID)
 {
+  if(!$cardID) return "";
   return substr($cardID, 0, 3);
 }
 
