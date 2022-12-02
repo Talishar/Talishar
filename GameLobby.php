@@ -29,7 +29,7 @@ include "MenuFiles/ParseGamefile.php";
 ob_end_clean();
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($authKey != $targetAuth) {
+if (!isset($authKey) || $authKey != $targetAuth) {
   echo ("Invalid Auth Key");
   exit;
 }
