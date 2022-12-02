@@ -302,6 +302,7 @@ function CardSet($cardID)
 
 function CardClass($cardID)
 {
+  if(!$cardID) return "";
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3));
   switch ($set) {
