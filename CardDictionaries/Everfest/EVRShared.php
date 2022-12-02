@@ -673,6 +673,7 @@
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $CS_NumBoosted, $mainPlayer, $CCS_RequiredEquipmentBlock;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $rv = "";
     switch($cardID)
     {
       case "EVR003":
@@ -814,7 +815,6 @@
         $rv = "Micro-Processor is a partially manual card. Only choose each option once per turn.";
         if($from == "PLAY")
         {
-          $rv = "";
           $items = &GetItems($currentPlayer);
           if($items[GetClassState($currentPlayer, $CS_PlayIndex)+3] == 2) { $rv = "Gained an action point from Micro-Processor."; GainActionPoints(1); }
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
@@ -823,8 +823,7 @@
         }
         return $rv;
       case "EVR073": case "EVR074": case "EVR075":
-        $rv = "";
-      if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) {
+        if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) {
           $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
           $rv = "Requires you to block with an equipment if able.";
         }
@@ -880,7 +879,6 @@
         PlayAura("ARC112", $currentPlayer, 2);
         return "Creates 2 Runechants.";
       case "EVR106":
-        $rv = "";
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 1 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
           PlayAura("ARC112", $currentPlayer, 4);
@@ -946,7 +944,6 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Buffs your next attack action card and makes it draw if it is destroyed.";
       case "EVR157":
-        $rv = "";
         if($from == "PLAY")
         {
           $rv = "Gained +1.";
@@ -1006,7 +1003,6 @@
         AddDecisionQueue("EVENBIGGERTHANTHAT", $currentPlayer, "-");
         return "";
       case "EVR176":
-        $rv = "";
         if($from == "PLAY")
         {
           $deck = &GetDeck($currentPlayer);
@@ -1019,7 +1015,6 @@
         }
         return "";
       case "EVR177":
-        $rv = "";
         if($from == "PLAY")
         {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -1056,7 +1051,6 @@
         }
         return "";
       case "EVR182":
-        $rv = "";
         if($from == "PLAY")
         {
           Opt($cardID, 2);
@@ -1067,16 +1061,14 @@
         if($from == "PLAY"){
           GainHealth(2, $currentPlayer);
         }
-        return "Gain 2 healths.";
+        return "Gain 2 health.";
       case "EVR184":
-        $rv = "";
         if($from == "PLAY"){
           LookAtHand($otherPlayer);
           $rv = "Reveals the opponent's hand.";
         }
         return $rv;
       case "EVR185":
-        $rv = "";
         if($from == "PLAY"){
           $cards = "";
           $pitch = &GetPitch($currentPlayer);
@@ -1091,7 +1083,6 @@
         }
         return $rv;
       case "EVR186":
-        $rv = "";
         if($from == "PLAY")
         {
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -1112,7 +1103,6 @@
         }
         return $rv;
       case "EVR195":
-        $rv = "";
         if($from == "PLAY"){
           DestroyMyItem(GetClassState($currentPlayer, $CS_PlayIndex));
           $rv = "Draws a card.";
