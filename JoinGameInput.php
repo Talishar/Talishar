@@ -176,7 +176,7 @@ if ($decklink != "") {
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
-      $numSideboard = $cards[$i]->{'sideboardTotal'};
+      $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
       if ($isFaBDB) {
         $printings = $cards[$i]->{'printings'};
         $printing = $printings[0];
