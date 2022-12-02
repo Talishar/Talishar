@@ -3,6 +3,7 @@
 if (!function_exists("GetArray")) {
   function GetArray($handler)
   {
+    if(!$handler) return [];
     $line = trim(fgets($handler));
     if ($line == "") return [];
     return explode(" ", $line);
