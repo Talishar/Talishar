@@ -1469,7 +1469,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "DYN212":
       return CountAura("MON104", $currentPlayer) < 1;
     case "DYN492a":
-      $index = SearchCharacterForCard($currentPlayer, "DYN492a");
+      $index = FindCharacterIndex($currentPlayer, "DYN492a");
       $character = &GetPlayerCharacter($currentPlayer);
       return $character[$index + 2] <= 0;
     default:
