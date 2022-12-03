@@ -4509,6 +4509,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $damage;
     case "PAYRESOURCES":
       $resources = &GetResources($player);
+      $lastResult = intval($lastResult);
       if ($lastResult < 0) $resources[0] += (-1 * $lastResult);
       else if ($resources[0] > 0) {
         $res = $resources[0];
