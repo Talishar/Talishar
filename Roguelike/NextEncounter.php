@@ -119,7 +119,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
       $encounterContent .= "Bug. This phase not implemented: " . $myDQ[0];
     }
   }
-  else {
+  else if(GetNextEncounter($encounter[0]) != ""){
     $encounterContent .= "<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/Roguelike/PlayEncounter.php'>";
     $encounterContent .= "<input type='hidden' id='gameName' name='gameName' value='$gameName' />";
     $encounterContent .= "<input type='hidden' id='playerID' name='playerID' value='$playerID' />";

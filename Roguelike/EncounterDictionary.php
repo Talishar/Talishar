@@ -25,7 +25,7 @@ function EncounterDescription($encounter, $subphase)
     case 8:
       return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
     case 9:
-      if($subphase == "BeforeFight") return "You're attacked by a group of bandits.";
+      if($subphase == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
       else if($subphase == "AfterFight") return "You defeated the group of bandits.";
     default: return "No encounter text.";
   }
@@ -81,7 +81,7 @@ function EncounterImage($encounter, $subphase)
     case 8:
       return "ELE112_cropped.png";
     case 9:
-      return "MON269_cropped.png";
+      return "ELE117_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
