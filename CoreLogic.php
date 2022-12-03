@@ -1574,10 +1574,11 @@ function LookAtHand($player)
   RevealCards($cards, $player);
 }
 
-function GainActionPoints($amount=1)
+function GainActionPoints($amount=1, $player=0)
 {
   global $actionPoints, $mainPlayer, $currentPlayer;
-  if ($currentPlayer == $mainPlayer) $actionPoints += $amount;
+  if($player == 0) $player = $currentPlayer;
+  if($player == $mainPlayer) $actionPoints += $amount;
 }
 
 function AddCharacterUses($player, $index, $numToAdd)

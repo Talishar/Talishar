@@ -111,7 +111,7 @@ function AllyDestroyedAbility($player, $index)
   switch ($cardID) {
     case "UPR410":
       if ($player == $mainPlayer && $allies[$index + 8] > 0) {
-        GainActionPoints(1);
+        GainActionPoints(1, $player);
         WriteLog(CardLink($cardID, $cardID) . " leaves the arena. Gain 1 action point.");
         --$allies[$index + 8];
       }
