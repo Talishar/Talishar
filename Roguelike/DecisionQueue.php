@@ -73,7 +73,6 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
     switch($phase)
     {
       case "SETENCOUNTER":
-        WriteLog($parameter1);
         $params = explode("-", $parameter1);
         $encounter = &GetZone($player, "Encounter");
         $encounter[0] = $params[0];
