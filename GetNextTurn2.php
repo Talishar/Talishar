@@ -486,7 +486,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($turn[0] == "OVER") {
     if ($roguelikeGameID != "") {
-      $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
+      $caption = (GetHealth($playerID) > 0 ? "Continue Adventure" : "Game Over");
+      if(GetHealth($playerID) > 0) $content = CreateButton($playerID, "Continue Adventure", 100011, 0, "24px", "", "", false, true);
+      else $content = CreateButton($playerID, "Game Over!", 100001, 0, "24px", "", "", false, true);
     } else {
       $content = CreateButton($playerID, "Main Menu", 100001, 0, "24px", "", "", false, true);
       if ($playerID == 1 && $theirCharacter[0] != "DUMMY") $content .= "&nbsp;" . CreateButton($playerID, "Rematch", 100004, 0, "24px");
