@@ -976,7 +976,6 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
-  if ($cardType == "E" && count($combatChain) > 0 && ($combatChain[0] == "DYN095" || $combatChain[0] == "DYN096" || $combatChain[0] == "DYN097")) $blockModifier -= 1;
   if ($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   $defAuras = &GetAuras($defPlayer);

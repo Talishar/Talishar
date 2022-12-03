@@ -1,5 +1,67 @@
 <?php
 
+//0 - Card ID
+//1 - Status (2=ready, 1=unavailable, 0=destroyed)
+//2 - Num counters
+//3 - Num attack counters
+//4 - Num defense counters
+//5 - Num uses
+//6 - On chain (1 = yes, 0 = no)
+//7 - Flagged for destruction (1 = yes, 0 = no)
+//8 - Frozen (1 = yes, 0 = no)
+//9 - Is Active (2 = always active, 1 = yes, 0 = no)
+class Character
+{
+    // property declaration
+    public $cardID = "";
+    public $status = 2;
+    public $numCounters = 0;
+    public $numAttackCounters = 0;
+    public $numDefenseCounters = 0;
+    public $numUses = 0;
+    public $onChain = 0;
+    public $flaggedForDestruction = 0;
+    public $frozen = 0;
+    public $isActive = 2;
+
+    private $player = null;
+    private $arrIndex = -1;
+
+    public function __construct($player, $index)
+    {
+      $this->player = $player;
+      $this->arrIndex = $index;
+      $array = &GetPlayerCharacter($player);
+
+      $this->cardID = $array[$index];
+      $this->status = $array[$index+1];
+      $this->numCounters = $array[$index+2];
+      $this->numAttackCounters = $array[$index+3];
+      $this->numDefenseCounters = $array[$index+4];
+      $this->numUses = $array[$index+5];
+      $this->onChain = $array[$index+6];
+      $this->flaggedForDestruction = $array[$index+7];
+      $this->frozen = $array[$index+8];
+      $this->isActive = $array[$index+9];
+    }
+
+    public function Finished()
+    {
+      $array = &GetPlayerCharacter($this->player);
+      $array[$this->arrIndex] = $this->cardID;
+      $array[$this->arrIndex+1] = $this->status;
+      $array[$this->arrIndex+2] = $this->numCounters;
+      $array[$this->arrIndex+3] = $this->numAttackCounters;
+      $array[$this->arrIndex+4] = $this->numDefenseCounters;
+      $array[$this->arrIndex+5] = $this->numUses;
+      $array[$this->arrIndex+6] = $this->onChain;
+      $array[$this->arrIndex+7] = $this->flaggedForDestruction;
+      $array[$this->arrIndex+8] = $this->frozen;
+      $array[$this->arrIndex+9] = $this->isActive;
+    }
+
+}
+
 function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 {
   $char = &GetPlayerCharacter($player);

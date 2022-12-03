@@ -128,9 +128,10 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $abilityType = GetResolvedAbilityType($cardID);
       if($abilityType == "A")
       {
-        $character = &GetPlayerCharacter($currentPlayer);
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        $character[$index + 2] = 1;
+        $character = new Character($currentPlayer, $index);
+        $character->numCounters = 1;
+        $character->Finished();
       }
       return "";
     case "ARC004":
