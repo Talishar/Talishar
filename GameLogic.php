@@ -1305,7 +1305,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
       $remove = 0;
       switch ($effects[0]) {
         case "ARC035":
-          if($preventable) $damage -= $effects[1];
+          if($preventable) $damage -= intval($effects[1]);
           $remove = 1;
           break;
         case "CRU041":
