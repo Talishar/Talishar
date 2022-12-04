@@ -37,7 +37,8 @@ function InitializeEncounter($player, $encounter, $subphase)
   switch($encounter)
   {
     case 2:
-      AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
+      //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
+      AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn");
       AddDecisionQueue("CAMPFIRE", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
