@@ -812,6 +812,7 @@ function ReplaceBanishModifier($player, $oldMod, $newMod)
 
 function UnsetTurnBanish()
 {
+  global $defPlayer;
   UnsetBanishModifier(1, "TT");
   UnsetBanishModifier(1, "INST");
   UnsetBanishModifier(2, "TT");
@@ -819,8 +820,7 @@ function UnsetTurnBanish()
   UnsetBanishModifier(1, "ARC119");
   UnsetBanishModifier(2, "ARC119");
   UnsetCombatChainBanish();
-  ReplaceBanishModifier(1, "NT", "TT");
-  ReplaceBanishModifier(2, "NT", "TT");
+  ReplaceBanishModifier($defPlayer, "NT", "TT");
 }
 
 function GetChainLinkCards($playerID="", $cardType="", $exclCardTypes="")
