@@ -141,6 +141,7 @@ function GetCardBack($player)
     case 43: return "CBTheTablePit";
     case 44: return "CBTCGTed";
     case 45: return "CBLuminaris";
+    case 46: return "CBFaBLab";
     default: return "CardBack";
   }
 }
@@ -532,6 +533,13 @@ function GetSettingsUI($player)
   if (isset($isLuminaris)) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-45", "Luminaris", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Luminaris");
+  }
+
+  //$isTCGTedPatron = false;
+  $isFABLAB = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "XIR" || $_SESSION["useruid"] == "OotTheMonk");
+  if (isset($isFABLAB)) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-46", "FAB-LAB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "FAB-LAB");
   }
 
   if (!$hasCardBacks) $rv .= "<br><br><h4>Become a patron to customize your card backs!</h4>";
