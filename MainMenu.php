@@ -43,6 +43,8 @@ $languageText = ($language == 1 ? "Language" : "言語");
 $createNewGameText = ($language == 1 ? "Create New Game" : "新しいゲームを作成する");
 $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ");
 
+$canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_SESSION["userKarma"] >= 80;
+
 ?>
 
 <style>
@@ -139,9 +141,9 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
   echo ("<select name='format' id='format'>");
   echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
-  echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
+  if($canSeeComp) echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
   echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
-  echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
+  if($canSeeComp) echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
   echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
   echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
   echo ("</select>");
