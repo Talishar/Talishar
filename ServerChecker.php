@@ -36,6 +36,8 @@ if (isset($_SESSION["userKarma"])) {
   $isKarmaGoodEnough = $_SESSION["userKarma"];
 }
 
+$canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_SESSION["userKarma"] >= 80;
+
 echo ("<div class='SpectatorContainer'>");
 echo ("<h1 style='width:100%; text-align:center; color:rgb(240, 240, 240);'>Public Games</h1>");
 $gameInProgressCount = 0;
@@ -162,15 +164,21 @@ if ($handle = opendir($path)) {
 }
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
 echo ($blitzLinks);
-echo ("<h3 style='text-align:center;'>________</h3>");
-echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Competitive Blitz</h2>");
-echo ($compBlitzLinks);
+if($canSeeComp)
+{
+  echo ("<h3 style='text-align:center;'>________</h3>");
+  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Competitive Blitz</h2>");
+  echo ($compBlitzLinks);
+}
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
 echo ($ccLinks);
-echo ("<h3 style='text-align:center;'>________</h3>");
-echo ("<h2 title='This game mode is intended for training for high level regional and national events.' style='cursor:default; width:100%; text-align:center;'>Competitive CC</h2>");
-echo ($compCCLinks);
+if($canSeeComp)
+{
+  echo ("<h3 style='text-align:center;'>________</h3>");
+  echo ("<h2 title='This game mode is intended for training for high level regional and national events.' style='cursor:default; width:100%; text-align:center;'>Competitive CC</h2>");
+  echo ($compCCLinks);
+}
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
 echo ($otherFormatsLinks);
