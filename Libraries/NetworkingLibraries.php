@@ -560,6 +560,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($isSimulation) return;
       if($playerID == 1 && $p1PlayerRating != 0) break;
       if($playerID == 2 && $p2PlayerRating != 0) break;
+      global $p1id, $p2id;
       include "MenuFiles/ParseGamefile.php";
       AddRating(($playerID == 1 ? 2 : 1), "green");
       if ($playerID == 1) $p1PlayerRating = 1;
@@ -569,6 +570,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($isSimulation) return;
       if($playerID == 1 && $p1PlayerRating != 0) break;
       if($playerID == 2 && $p2PlayerRating != 0) break;
+      global $p1id, $p2id;
       include "MenuFiles/ParseGamefile.php";
       AddRating(($playerID == 1 ? 2 : 1), "red");
       if ($playerID == 1) $p1PlayerRating = 2;

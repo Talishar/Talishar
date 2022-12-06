@@ -491,16 +491,8 @@ function UpdateKarma($p1value=0, $p2value=0)
 	$stmt = "";
 	if($p1id != "" && $p1id != "-")
 	{
-		/*
-		if($p1value < 0) {
-			$sql = "SELECT usersKarma FROM users WHERE usersid='$p1id'";
-			$result = mysqli_query($conn, $sql);
-			$result = $result->fetch_array();
-			$p1karma = intval($result[0]);
-			if ($p1karma <= 10) $p1value = $p1value - ($p1karma + $p1value);
-		}
-		*/
-		$sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
+		if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
+		else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
 		$stmt = mysqli_stmt_init($conn);
 		if (mysqli_stmt_prepare($stmt, $sql)) {
 			mysqli_stmt_execute($stmt);
@@ -508,16 +500,8 @@ function UpdateKarma($p1value=0, $p2value=0)
 	}
 	if($p2id != "" && $p2id != "-")
 	{
-		/*
-		if ($p2value < 0) {
-			$sql = "SELECT usersKarma FROM users WHERE usersid='$p2id'";
-			$result = mysqli_query($conn, $sql);
-			$result = $result->fetch_array();
-			$p2karma = intval($result[0]);
-			if ($p2karma <= 10) $p2value = $p2value - ($p2karma + $p2value);
-		}
-		*/
-		$sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'"; // SET field = IF (condition, new value, field)
+		if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'";
+		else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'"; // SET field = IF (condition, new value, field)
 		$stmt = mysqli_stmt_init($conn);
 		if (mysqli_stmt_prepare($stmt, $sql)) {
 			mysqli_stmt_execute($stmt);
@@ -529,12 +513,13 @@ function UpdateKarma($p1value=0, $p2value=0)
 	mysqli_close($conn);
 }
 
+//rating = "green" or "red"
 function AddRating($player, $rating)
 {
 	global $p1id, $p2id;
 
 	$dbID = ($player == 1 ? $p1id : $p2id);
-
+WriteLog($dbID);
 	if($dbID != "" && $dbID != "-")
 	{
 		$conn = GetDBConnection();
@@ -545,6 +530,8 @@ function AddRating($player, $rating)
 			mysqli_stmt_close($stmt);
 		}
 		mysqli_close($conn);
+		$karmaChange = ($rating == "red" ? -4 : 1);
+		UpdateKarma(($player == 1 ? $karmaChange : 0), ($player == 2 ? $karmaChange : 0));
 	}
 }
 
