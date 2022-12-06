@@ -35,5 +35,10 @@ services:
       PMA_PASSWORD: "secret"
     ports:
       - "5000:80"
+  redis:
+    image: redis:7.0
+    container_name: app_redis
+    ports:
+      - "6382:6379"
 volumes:
   mysql-data:

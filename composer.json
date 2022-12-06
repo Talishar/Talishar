@@ -1,5 +1,6 @@
 {
   "require": {
-    "sendgrid/sendgrid": "~7"
+    "sendgrid/sendgrid": "~7",
+    "predis/predis": "^2.0"
   }
 }
