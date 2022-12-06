@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  web-server:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    volumes:
+      - "./:/var/www/html/FaBOnline"
+    ports:
+      - "8080:80"
+    environment:
+      PHP_FPM_CLEAR_ENV: "no"
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_SERVER_NAME: "mysql-server"
+      MYSQL_SERVER_USER_NAME: "root"
+  mysql-server:
+    image: mysql:latest
+    restart: always
+    environment:
+      PHP_FPM_CLEAR_ENV: "no"
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_SERVER_NAME: "mysql-server"
+      MYSQL_SERVER_USER_NAME: "root"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: mysql-server
+      PMA_USER: root
+      PMA_PASSWORD: "secret"
+    ports:
+      - "5000:80"
+volumes:
+  mysql-data:
