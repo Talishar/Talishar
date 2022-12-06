@@ -104,11 +104,13 @@ $afterResolveEffects = [];
 
 $animations = [];
 
+/*
 if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
   $commandFile = fopen("./Games/" . $gameName . "/commandfile.txt", "a");
   fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
 }
+*/
 
 //Now we can process the command
 ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput);
@@ -160,7 +162,7 @@ if (!$skipWriteGamestate) {
 if ($makeCheckpoint) MakeGamestateBackup();
 if ($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
 if ($MakeStartTurnBackup) MakeStartTurnBackup();
-if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
+//if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 GamestateUpdated($gameName);
 
