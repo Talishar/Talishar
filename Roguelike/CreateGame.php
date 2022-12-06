@@ -9,6 +9,9 @@ $numPlayers = 1;
 //First get your game ID
 $gameIDCounterFile = "HostFiles/Counter.txt";
 if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
+  if (!is_dir("HostFiles")) {
+    mkdir("HostFiles");
+  };
   $contents = '101';
   file_put_contents($gameIDCounterFile, $contents);
 }
