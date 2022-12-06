@@ -147,6 +147,15 @@ if ($decklink != "") {
     exit;
   }
   $deckObj = json_decode($apiDeck);
+  // if has message forbidden error out.
+  if (property_exists($deckObj, 'message')) {
+    if ($deckObj->message == "Forbidden") {
+      $_SESSION['error'] =
+        "There has been an error! The response from the deck hosting service was: " . $apiDeck;
+      header("Location: MainMenu.php");
+      die();
+    }
+  }
   $deckName = $deckObj->{'name'};
   if (isset($deckObj->{'matchups'})) {
     if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
