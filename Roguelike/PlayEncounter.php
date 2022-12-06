@@ -1,4 +1,3 @@
-
 <?php
 
   include '../Libraries/HTTPLibraries.php';
@@ -84,5 +83,3 @@
       default: return "Woottonhog";
     }
   }
-
-?>
