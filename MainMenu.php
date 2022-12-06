@@ -209,17 +209,23 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
       </div>
     -->
 
-
-      <h5 style='text-align:center;'>________</h5><BR>
-
       <div style="vertical-align:middle; position: relative;">
-        <h3>Roguelike</h3>
-        <h4 style="margin-left:5%; margin-right:5%;">Check out a demo of a Flesh and Blood Roguelike!</h4><br>
-        <a href='<?php echo($roguelikePath); ?>' target='_blank'>
-          <img style=" margin-left:5%; margin-right:5%; margin-top:-5%; margin-bottom:-5%; width:50%; border-radius:5%;" src="./Images/didyouknow/RoguelikeAnnouncement.webp" /></a>
+        <h3>Big changes to competitive queues!</h3>
+        <h4 style="margin-left:5%; margin-right:5%;">Competitive CC and competitive blitz queues have been updated to try to provide a more competitive experience:</h4>
+        <BR>
+        1. Must be logged in to access comp queues<BR><BR>
+        2. Must have >= 80 karma to access comp queues<BR><BR>
+        3. Dodging comp queues will give -1 karma<BR><BR>
+        4. Thumbs up give +1 karma, thumbs down give -4 karma<BR><BR>
+        5. Max deck limit is enforced for comp cc (can't bring huge sideboard to tech your matchup)<BR><BR>
+
+        <br>
       </div>
 
       <BR>
+
+      <h5 style='text-align:center;'>________</h5><BR>
+
 
       <div style='vertical-align:middle; text-align:center;'>
         <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play on Talishar</h2>
