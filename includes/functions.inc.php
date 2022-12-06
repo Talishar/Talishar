@@ -519,7 +519,7 @@ function AddRating($player, $rating)
 	global $p1id, $p2id;
 
 	$dbID = ($player == 1 ? $p1id : $p2id);
-WriteLog($dbID);
+
 	if($dbID != "" && $dbID != "-")
 	{
 		$conn = GetDBConnection();
