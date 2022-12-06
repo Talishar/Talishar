@@ -9,12 +9,16 @@ services:
       - "./:/var/www/html/FaBOnline"
     ports:
       - "8080:80"
+    depends_on:
+      - redis
+      - mysql-server
     environment:
       PHP_FPM_CLEAR_ENV: "no"
       MYSQL_ROOT_PASSWORD: "secret"
       MYSQL_SERVER_NAME: "mysql-server"
       MYSQL_SERVER_USER_NAME: "root"
       REDIS_HOST: "app_redis"
+      REDIS_ENABLED: true
   mysql-server:
     image: mysql:latest
     restart: always

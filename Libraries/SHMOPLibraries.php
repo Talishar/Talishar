@@ -1,6 +1,6 @@
 <?php
 
-$useRedis = true;
+$useRedis = getenv('REDIS_ENABLED');
 
 if ($useRedis) {
   $redis = new Redis();
