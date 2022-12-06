@@ -297,7 +297,6 @@ if ($decklink != "") {
         }
         $totalCards += $numMainBoard + $numSideboard;
       }
-
     }
   } else {
     $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
@@ -377,14 +376,12 @@ if ($decklink != "") {
   fclose($deckFile);
   copy($filename, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
-  if(isset($_SESSION["userid"]))
-  {
+  if (isset($_SESSION["userid"])) {
     include_once './includes/functions.inc.php';
     include_once "./includes/dbh.inc.php";
     $deckbuilderID = GetDeckBuilderId($_SESSION["userid"], $decklink);
-    if($deckbuilderID != "")
-    {
-      if($playerID == 1) $p1deckbuilderID = $deckbuilderID;
+    if ($deckbuilderID != "") {
+      if ($playerID == 1) $p1deckbuilderID = $deckbuilderID;
       else $p2deckbuilderID = $deckbuilderID;
     }
   }
@@ -458,10 +455,10 @@ if ($matchup == "") {
   //$_SESSION["authKey"] = $authKey;
   if ($playerID == 1) {
     $_SESSION["p1AuthKey"] = $p1Key;
-    setcookie("lastAuthKey", $p1Key, time() + 86400, "/", "talishar.net");
+    setcookie("lastAuthKey", $p1Key, time() + 86400, "/");
   } else if ($playerID == 2) {
     $_SESSION["p2AuthKey"] = $p2Key;
-    setcookie("lastAuthKey", $p2Key, time() + 86400, "/", "talishar.net");
+    setcookie("lastAuthKey", $p2Key, time() + 86400, "/");
   }
 }
 
@@ -628,8 +625,8 @@ function GetAltCardID($cardID)
       return "WTR224";
     case "DYN238":
       return "MON401";
-    // case "DYN000":
-    //   return "ARC159";
+      // case "DYN000":
+      //   return "ARC159";
   }
   return $cardID;
 }
@@ -681,7 +678,9 @@ function IsBanned($cardID, $format)
         case "CRU141":
         case "EVR037":
         case "EVR123": // Aether Wildfire
-        case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
+        case "UPR113":
+        case "UPR114":
+        case "UPR115": // Aether Icevein
         case "UPR139": // Hypothermia
           return true;
         default:
