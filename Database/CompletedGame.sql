@@ -6,23 +6,22 @@
 -- Generation Time: Jun 23, 2022 at 01:34 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */
+;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */
+;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */
+;
+/*!40101 SET NAMES utf8mb4 */
+;
 --
 -- Database: `fabonline`
 --
 
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `completedgame`
 --
@@ -37,8 +36,7 @@ CREATE TABLE `completedgame` (
   `NumTurns` int(11) NOT NULL,
   `Format` int(11) DEFAULT NULL,
   `GameID` int(22) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables
 --
@@ -47,10 +45,9 @@ CREATE TABLE `completedgame` (
 -- Indexes for table `completedgame`
 --
 ALTER TABLE `completedgame`
-  ADD PRIMARY KEY (`GameID`),
+ADD PRIMARY KEY (`GameID`),
   ADD KEY `FK_WINNING_PLAYER` (`WinningPID`),
   ADD KEY `FK_LOSING_PLAYER` (`LosingPID`);
-
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -59,8 +56,8 @@ ALTER TABLE `completedgame`
 -- AUTO_INCREMENT for table `completedgame`
 --
 ALTER TABLE `completedgame`
-  MODIFY `GameID` int(22) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
-
+MODIFY `GameID` int(22) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 58;
 --
 -- Constraints for dumped tables
 --
@@ -69,10 +66,12 @@ ALTER TABLE `completedgame`
 -- Constraints for table `completedgame`
 --
 ALTER TABLE `completedgame`
-  ADD CONSTRAINT `FK_LOSING_PLAYER` FOREIGN KEY (`LosingPID`) REFERENCES `users` (`usersId`),
+ADD CONSTRAINT `FK_LOSING_PLAYER` FOREIGN KEY (`LosingPID`) REFERENCES `users` (`usersId`),
   ADD CONSTRAINT `FK_WINNING_PLAYER` FOREIGN KEY (`WinningPID`) REFERENCES `users` (`usersId`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */
+;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */
+;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */
+;
