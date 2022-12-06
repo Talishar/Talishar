@@ -61,6 +61,9 @@
   $MGS_ReadyToStart = 4;
   $MGS_GameStarted = 5;
 
+  $FORMAT_CompCC = 1;
+  $FORMAT_CompBlitz = 3;
+
   if(!function_exists("UnlockGamefile"))
   {
     function UnlockGamefile()
