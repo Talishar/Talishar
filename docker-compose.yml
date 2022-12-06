@@ -14,6 +14,7 @@ services:
       MYSQL_ROOT_PASSWORD: "secret"
       MYSQL_SERVER_NAME: "mysql-server"
       MYSQL_SERVER_USER_NAME: "root"
+      REDIS_HOST: "app_redis"
   mysql-server:
     image: mysql:latest
     restart: always

@@ -1,10 +1,10 @@
 <?php
 
-$useRedis = false;
+$useRedis = true;
 
 if ($useRedis) {
   $redis = new Redis();
-  $redis->connect('127.0.0.1', 6379);
+  $redis->connect(getenv('REDIS_HOST'), 6379);
 }
 
 function WriteCache($name, $data)
@@ -51,7 +51,7 @@ function DeleteCache($name)
 {
   global $useRedis, $redis;
   if ($useRedis) {
-    $redis->delete($name);
+    $redis->del($name);
   } else {
     $id = shmop_open($name, "w", 0644, 128);
     if ($id) {

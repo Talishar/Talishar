@@ -6,4 +6,8 @@ RUN apt-get install -y libzip-dev
 
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap
+
+RUN pecl install -o -f redis \
+    &&  rm -rf /tmp/pear \
+    &&  docker-php-ext-enable redis
 RUN docker-php-ext-install zip mysqli pdo pdo_mysql shmop bz2
