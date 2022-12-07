@@ -15,19 +15,6 @@ if (!isset($_SESSION["userid"])) {
   }
 }
 
-if (isset($_SESSION["useruid"])) {
-  $useruid = $_SESSION["useruid"];
-  $banfileHandler = fopen("./HostFiles/bannedPlayers.txt", "r");
-  while (!feof($banfileHandler)) {
-    $bannedPlayer = trim(fgets($banfileHandler), "\r\n");
-    if ($useruid == $bannedPlayer) {
-      fclose($banfileHandler);
-      exit;
-    }
-  }
-  fclose($banfileHandler);
-}
-
 if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
 else $isPatron = false;
 

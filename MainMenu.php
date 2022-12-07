@@ -6,6 +6,19 @@ include_once "Libraries/PlayerSettings.php";
 include_once "APIKeys/APIKeys.php";
 
 
+if (isset($_SESSION["useruid"])) {
+  $useruid = $_SESSION["useruid"];
+  $banfileHandler = fopen("./HostFiles/bannedPlayers.txt", "r");
+  while (!feof($banfileHandler)) {
+    $bannedPlayer = trim(fgets($banfileHandler), "\r\n");
+    if ($useruid == $bannedPlayer) {
+      fclose($banfileHandler);
+      exit;
+    }
+  }
+  fclose($banfileHandler);
+}
+
 if (isset($_SESSION["userid"])) {
   $uidExists = getUInfo($conn, $_SESSION['useruid']);
   $_SESSION["userKarma"] = $uidExists["usersKarma"];
