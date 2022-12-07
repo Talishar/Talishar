@@ -141,6 +141,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
 {
   global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;
   global $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
+  $rv = "";
   switch ($cardID) {
     case "ARC151":
       Opt($cardID, 2);
@@ -171,9 +172,9 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
     case "ARC166":
       if (IHaveLessHealth()) {
         $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-        $ret = "Gained go again.";
+        $rv = "Gained go again.";
       }
-      return $ret;
+      return $rv;
     case "ARC170":
     case "ARC171":
     case "ARC172":
