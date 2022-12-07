@@ -4871,7 +4871,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $pieces = explode("-", $lastResult);
       return $pieces[$parameter];
     case "IMPLODELASTRESULT":
-      return implode($parameter, $lastResult);
+      return ($lastResult == "" ? "PASS" : implode($parameter, $lastResult));
     case "VALIDATECOUNT":
       if (count($lastResult) != $parameter) {
         WriteLog("The count from the last step is incorrect. Reverting gamestate prior to that effect.");
