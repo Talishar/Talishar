@@ -732,6 +732,7 @@ function GetMZCardLink($player, $MZ)
   $params = explode("-", $MZ);
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
+  if($index == "") return "";
   return CardLink($zoneDS[$index], $zoneDS[$index]);
 }
 
