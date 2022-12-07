@@ -4356,7 +4356,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       IncrementClassState($player, $CS_NumCharged);
       return $lastResult;
     case "DEALDAMAGE":
-      $target = (is_array($lastResult) ? explode("-", $lastResult) : $lastResult);
+      $target = (is_array($lastResult) ? $lastResult : explode("-", $lastResult));
       $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 1 : 2));
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
