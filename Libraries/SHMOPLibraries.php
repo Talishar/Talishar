@@ -58,7 +58,7 @@ function DeleteCache($name)
   global $useRedis, $redis;
   if($useRedis)
   {
-    $redis->delete($name);
+    $redis->del($name);
   }
   else {
     $id=shmop_open($name, "w", 0644, 128);
