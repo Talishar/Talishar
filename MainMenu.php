@@ -5,7 +5,6 @@ include "HostFiles/Redirector.php";
 include_once "Libraries/PlayerSettings.php";
 include_once "APIKeys/APIKeys.php";
 
-
 if (isset($_SESSION["userid"])) {
   $uidExists = getUInfo($conn, $_SESSION['useruid']);
   $_SESSION["userKarma"] = $uidExists["usersKarma"];
@@ -63,7 +62,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   ?>
 </div>
 
-<div class="CreateGame_Menu" <?php if(IsMobile()) echo(" style='width:65%;' "); ?>>
+<div class="CreateGame_Menu" <?php if (IsMobile()) echo (" style='width:65%;' "); ?>>
   <h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
 
   <?php
@@ -176,7 +175,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
 </div>
 </div>
 
-<div class="NewsMenu" <?php if(IsMobile()) echo(" style='display:none;' "); ?>>
+<div class="NewsMenu" <?php if (IsMobile()) echo (" style='display:none;' "); ?>>
 
   <h1>News</h1>
   <div style="position: relative;">
@@ -198,7 +197,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
 -->
 
-<!--
+      <!--
       <div style="vertical-align:middle; position: relative;">
         <h3>December 10th-11th</h3>
         <h4>Click for more info:</h4><br>
@@ -213,7 +212,7 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
       <div style="vertical-align:middle; position: relative;">
         <h3>Roguelike</h3>
         <h4 style="margin-left:5%; margin-right:5%;">Check out a demo of a Flesh and Blood Roguelike!</h4><br>
-        <a href='<?php echo($roguelikePath); ?>' target='_blank'>
+        <a href='<?php echo ($roguelikePath); ?>' target='_blank'>
           <img style=" margin-left:5%; margin-right:5%; margin-top:-5%; margin-bottom:-5%; width:50%; border-radius:5%;" src="./Images/didyouknow/RoguelikeAnnouncement.webp" /></a>
       </div>
 
