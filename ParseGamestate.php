@@ -59,6 +59,8 @@ while (!flock($handler, LOCK_SH) && $lockTries < 10) {
 
 if ($lockTries == 10) exit;
 
+if(!isset($useRedis)) $useRedis = false;
+
 $gamestateContent = "";
 if($useRedis) $gamestateContent = ReadCache($gameName . "GS");
 if($gamestateContent == "") $gamestateContent = file_get_contents($filename);
