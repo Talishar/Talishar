@@ -439,7 +439,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $oppo
 	$DeckLink = explode("/", $DeckLink);
 	$DeckLink = $DeckLink[count($DeckLink)-1];
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
-	if(count($deckAfterSB) == 1) return;
+	if(count($deckAfterSB) == 1) return "";
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
 	if($gameID != "") $deck["gameId"] = $gameID;
