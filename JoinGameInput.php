@@ -150,12 +150,10 @@ if ($decklink != "") {
   $deckObj = json_decode($apiDeck);
   // if has message forbidden error out.
   if ($apiInfo['http_code'] == 403) {
-    if ($deckObj->message == "Forbidden") {
-      $_SESSION['error'] =
-        "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
-      header("Location: MainMenu.php");
-      die();
-    }
+    $_SESSION['error'] =
+      "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
+    header("Location: MainMenu.php");
+    die();
   }
   $deckName = $deckObj->{'name'};
   if (isset($deckObj->{'matchups'})) {
