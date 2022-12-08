@@ -33,6 +33,7 @@
     }
 
     //First we need to parse the game state from the file
+    include "Libraries/SHMOPLibraries.php";
     include "WriteLog.php";
     include "ParseGamestate.php";
     include "GameTerms.php";
