@@ -26,18 +26,6 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
 }
 
 //First we need to parse the game state from the file
-include "WriteLog.php";
-include "ParseGamestate.php";
-include "GameTerms.php";
-include "GameLogic.php";
-include "HostFiles/Redirector.php";
-include "Libraries/UILibraries2.php";
-include "Libraries/StatFunctions.php";
-include "Libraries/PlayerSettings.php";
-include "MenuFiles/ParseGamefile.php";
-include_once 'includes/functions.inc.php';
-include_once 'includes/dbh.inc.php';
-//First we need to parse the game state from the file
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 include "ParseGamestate.php";
