@@ -139,6 +139,7 @@ if ($decklink != "") {
   curl_setopt($curl, CURLOPT_URL, $apiLink);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
   $apiDeck = curl_exec($curl);
+  $apiInfo = curl_getinfo($curl);
   curl_close($curl);
 
   if ($apiDeck === FALSE) {
@@ -148,10 +149,10 @@ if ($decklink != "") {
   }
   $deckObj = json_decode($apiDeck);
   // if has message forbidden error out.
-  if (property_exists($deckObj, 'message')) {
+  if ($apiInfo['http_code'] == 403) {
     if ($deckObj->message == "Forbidden") {
       $_SESSION['error'] =
-        "There has been an error! The response from the deck hosting service was: " . $apiDeck;
+        "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
       header("Location: MainMenu.php");
       die();
     }
