@@ -1,13 +1,10 @@
 <?php
 
-if (!function_exists("GetArray")) {
-  function GetArray($handler)
-  {
-    if(!$handler) return [];
-    $line = trim(fgets($handler));
-    if ($line == "") return [];
-    return explode(" ", $line);
-  }
+function GetStringArray($line)
+{
+  $line = trim($line);
+  if($line == "") return [];
+  return explode(" ", $line);
 }
 
 $mainPlayerGamestateStillBuilt = 0;
@@ -62,87 +59,93 @@ while (!flock($handler, LOCK_SH) && $lockTries < 10) {
 
 if ($lockTries == 10) exit;
 
-$playerHealths = GetArray($handler); // 1
+$gamestateContent = "";
+if($useRedis) $gamestateContent = ReadCache($gameName . "GS");
+if($gamestateContent == "") $gamestateContent = file_get_contents($filename);
+$gamestateContent = explode("\r\n", $gamestateContent);
+
+$playerHealths = GetStringArray($gamestateContent[0]); // 1
 
 //Player 1
-$p1Hand = GetArray($handler); // 2
-$p1Deck = GetArray($handler); // 3
-$p1CharEquip = GetArray($handler); // 4
-$p1Resources = GetArray($handler); // 5
-$p1Arsenal = GetArray($handler); // 6
-$p1Items = GetArray($handler); // 7
-$p1Auras = GetArray($handler); // 8
-$p1Discard = GetArray($handler); // 9
-$p1Pitch = GetArray($handler); // 10
-$p1Banish = GetArray($handler); // 11
-$p1ClassState = GetArray($handler); // 12
-$p1CharacterEffects = GetArray($handler); // 13
-$p1Soul = GetArray($handler); // 14
-$p1CardStats = GetArray($handler); // 15
-$p1TurnStats = GetArray($handler); // 16
-$p1Allies = GetArray($handler); // 17
-$p1Permanents = GetArray($handler); // 18
-$p1Settings = GetArray($handler); // 19
+$p1Hand = GetStringArray($gamestateContent[1]); // 2
+$p1Deck = GetStringArray($gamestateContent[2]); // 3
+$p1CharEquip = GetStringArray($gamestateContent[3]); // 4
+$p1Resources = GetStringArray($gamestateContent[4]); // 5
+$p1Arsenal = GetStringArray($gamestateContent[5]); // 6
+$p1Items = GetStringArray($gamestateContent[6]); // 7
+$p1Auras = GetStringArray($gamestateContent[7]); // 8
+$p1Discard = GetStringArray($gamestateContent[8]); // 9
+$p1Pitch = GetStringArray($gamestateContent[9]); // 10
+$p1Banish = GetStringArray($gamestateContent[10]); // 11
+$p1ClassState = GetStringArray($gamestateContent[11]); // 12
+$p1CharacterEffects = GetStringArray($gamestateContent[12]); // 13
+$p1Soul = GetStringArray($gamestateContent[13]); // 14
+$p1CardStats = GetStringArray($gamestateContent[14]); // 15
+$p1TurnStats = GetStringArray($gamestateContent[15]); // 16
+$p1Allies = GetStringArray($gamestateContent[16]); // 17
+$p1Permanents = GetStringArray($gamestateContent[17]); // 18
+$p1Settings = GetStringArray($gamestateContent[18]); // 19
 
 //Player 2
-$p2Hand = GetArray($handler); // 20
-$p2Deck = GetArray($handler); // 21
-$p2CharEquip = GetArray($handler); // 22
-$p2Resources = GetArray($handler); // 23
-$p2Arsenal = GetArray($handler); // 24
-$p2Items = GetArray($handler); // 25
-$p2Auras = GetArray($handler); // 26
-$p2Discard = GetArray($handler); // 27
-$p2Pitch = GetArray($handler); // 28
-$p2Banish = GetArray($handler); // 29
-$p2ClassState = GetArray($handler); // 30
-$p2CharacterEffects = GetArray($handler); // 31
-$p2Soul = GetArray($handler); // 32
-$p2CardStats = GetArray($handler); // 33
-$p2TurnStats = GetArray($handler); // 34
-$p2Allies = GetArray($handler); // 35
-$p2Permanents = GetArray($handler); // 36
-$p2Settings = GetArray($handler); // 37
+$p2Hand = GetStringArray($gamestateContent[19]); // 20
+$p2Deck = GetStringArray($gamestateContent[20]); // 21
+$p2CharEquip = GetStringArray($gamestateContent[21]); // 22
+$p2Resources = GetStringArray($gamestateContent[22]); // 23
+$p2Arsenal = GetStringArray($gamestateContent[23]); // 24
+$p2Items = GetStringArray($gamestateContent[24]); // 25
+$p2Auras = GetStringArray($gamestateContent[25]); // 26
+$p2Discard = GetStringArray($gamestateContent[26]); // 27
+$p2Pitch = GetStringArray($gamestateContent[27]); // 28
+$p2Banish = GetStringArray($gamestateContent[28]); // 29
+$p2ClassState = GetStringArray($gamestateContent[29]); // 30
+$p2CharacterEffects = GetStringArray($gamestateContent[30]); // 31
+$p2Soul = GetStringArray($gamestateContent[31]); // 32
+$p2CardStats = GetStringArray($gamestateContent[32]); // 33
+$p2TurnStats = GetStringArray($gamestateContent[33]); // 34
+$p2Allies = GetStringArray($gamestateContent[34]); // 35
+$p2Permanents = GetStringArray($gamestateContent[35]); // 36
+$p2Settings = GetStringArray($gamestateContent[36]); // 37
 
-$landmarks = GetArray($handler);
-$winner = trim(fgets($handler));
-$firstPlayer = trim(fgets($handler));
-$currentPlayer = trim(fgets($handler));
-$currentTurn = trim(fgets($handler));
-$turn = GetArray($handler);
-$actionPoints = trim(fgets($handler));
-$combatChain = GetArray($handler);
-$combatChainState = GetArray($handler);
-$currentTurnEffects = GetArray($handler);
-$currentTurnEffectsFromCombat = GetArray($handler);
-$nextTurnEffects = GetArray($handler);
-$decisionQueue = GetArray($handler);
-$dqVars = GetArray($handler);
-$dqState = GetArray($handler);
-$layers = GetArray($handler);
-$layerPriority = GetArray($handler);
-$mainPlayer = trim(fgets($handler));
+$landmarks = GetStringArray($gamestateContent[37]);
+$winner = trim($gamestateContent[38]);
+$firstPlayer = trim($gamestateContent[39]);
+$currentPlayer = trim($gamestateContent[40]);
+$currentTurn = trim($gamestateContent[41]);
+$turn = GetStringArray($gamestateContent[42]);
+$actionPoints = trim($gamestateContent[43]);
+$combatChain = GetStringArray($gamestateContent[44]);
+$combatChainState = GetStringArray($gamestateContent[45]);
+$currentTurnEffects = GetStringArray($gamestateContent[46]);
+$currentTurnEffectsFromCombat = GetStringArray($gamestateContent[47]);
+$nextTurnEffects = GetStringArray($gamestateContent[48]);
+$decisionQueue = GetStringArray($gamestateContent[49]);
+$dqVars = GetStringArray($gamestateContent[50]);
+$dqState = GetStringArray($gamestateContent[51]);
+$layers = GetStringArray($gamestateContent[52]);
+$layerPriority = GetStringArray($gamestateContent[53]);
+$mainPlayer = trim($gamestateContent[54]);
 $defPlayer = $mainPlayer == 1 ? 2 : 1;
-$lastPlayed = GetArray($handler);
-$numChainLinks = trim(fgets($handler));
+$lastPlayed = GetStringArray($gamestateContent[55]);
+$numChainLinks = trim($gamestateContent[56]);
 $chainLinks = array();
 for ($i = 0; $i < $numChainLinks; ++$i) {
-  $chainLink = GetArray($handler);
+  $chainLink = GetStringArray($gamestateContent[57+$i]);
   array_push($chainLinks, $chainLink);
 }
-$chainLinkSummary = GetArray($handler);
-$p1Key = trim(fgets($handler));
-$p2Key = trim(fgets($handler));
-$permanentUniqueIDCounter = trim(fgets($handler));
-$inGameStatus = trim(fgets($handler)); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-$animations = GetArray($handler); //Animations
-$currentPlayerActivity = trim(fgets($handler)); //Current Player activity status -- 0 = active, 2 = inactive
-$p1PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-$p2PlayerRating = trim(fgets($handler)); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-$p1TotalTime = trim(fgets($handler)); //Player 1 total time
-$p2TotalTime = trim(fgets($handler)); //Player 2 total time
-$lastUpdateTime = trim(fgets($handler)); //Last update time
-$roguelikeGameID = trim(fgets($handler)); //Roguelike game id
+$chainLinkSummary = GetStringArray($gamestateContent[57+$numChainLinks]);
+$p1Key = trim($gamestateContent[58+$numChainLinks]);
+$p2Key = trim($gamestateContent[59+$numChainLinks]);
+$permanentUniqueIDCounter = trim($gamestateContent[60+$numChainLinks]);
+$inGameStatus = trim($gamestateContent[61+$numChainLinks]); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+$animations = GetStringArray($gamestateContent[62+$numChainLinks]); //Animations
+$currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); //Current Player activity status -- 0 = active, 2 = inactive
+$p1PlayerRating = trim($gamestateContent[64+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$p2PlayerRating = trim($gamestateContent[65+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+$p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
+$p2TotalTime = trim($gamestateContent[67+$numChainLinks]); //Player 2 total time
+$lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
+$roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
+
 fclose($handler);
 BuildMyGamestate($playerID);
 

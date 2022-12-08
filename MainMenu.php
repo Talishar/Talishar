@@ -5,6 +5,20 @@ include "HostFiles/Redirector.php";
 include_once "Libraries/PlayerSettings.php";
 include_once "APIKeys/APIKeys.php";
 
+
+if (isset($_SESSION["useruid"])) {
+  $useruid = $_SESSION["useruid"];
+  $banfileHandler = fopen("./HostFiles/bannedPlayers.txt", "r");
+  while (!feof($banfileHandler)) {
+    $bannedPlayer = trim(fgets($banfileHandler), "\r\n");
+    if ($useruid == $bannedPlayer) {
+      fclose($banfileHandler);
+      exit;
+    }
+  }
+  fclose($banfileHandler);
+}
+
 if (isset($_SESSION["userid"])) {
   $uidExists = getUInfo($conn, $_SESSION['useruid']);
   $_SESSION["userKarma"] = $uidExists["usersKarma"];
@@ -41,6 +55,8 @@ $createGameText = ($language == 1 ? "Create Game" : "ゲームを作る");
 $languageText = ($language == 1 ? "Language" : "言語");
 $createNewGameText = ($language == 1 ? "Create New Game" : "新しいゲームを作成する");
 $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ");
+
+$canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_SESSION["userKarma"] >= 80;
 
 ?>
 
@@ -138,9 +154,9 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
   echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
   echo ("<select name='format' id='format'>");
   echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
-  echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
+  if ($canSeeComp) echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
   echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
-  echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
+  if ($canSeeComp) echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
   echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
   echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
   echo ("</select>");
@@ -206,17 +222,27 @@ $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ")
       </div>
     -->
 
-
-      <h5 style='text-align:center;'>________</h5><BR>
-
       <div style="vertical-align:middle; position: relative;">
         <h3>Roguelike</h3>
         <h4 style="margin-left:5%; margin-right:5%;">Check out a demo of a Flesh and Blood Roguelike!</h4><br>
         <a href='<?php echo ($roguelikePath); ?>' target='_blank'>
           <img style=" margin-left:5%; margin-right:5%; margin-top:-5%; margin-bottom:-5%; width:50%; border-radius:5%;" src="./Images/didyouknow/RoguelikeAnnouncement.webp" /></a>
+        <h3>Big changes to competitive queues!</h3>
+        <h4 style="margin-left:5%; margin-right:5%;">Competitive CC and competitive blitz queues have been updated to try to provide a more competitive experience:</h4>
+        <BR>
+        1. Must be logged in to access comp queues<BR><BR>
+        2. Must have >= 80 karma to access comp queues<BR><BR>
+        3. Dodging comp queues will give -1 karma<BR><BR>
+        4. Thumbs up give +1 karma, thumbs down give -4 karma<BR><BR>
+        5. Max deck limit is enforced for comp cc (can't bring huge sideboard to tech your matchup)<BR><BR>
+
+        <br>
       </div>
 
       <BR>
+
+      <h5 style='text-align:center;'>________</h5><BR>
+
 
       <div style='vertical-align:middle; text-align:center;'>
         <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play on Talishar</h2>

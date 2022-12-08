@@ -361,6 +361,12 @@ if ($decklink != "") {
     die();
   }
 
+  if ($totalCards > 80  && $format == "compcc") {
+    $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too many cards (' . $totalCards . ').\n\nPlease double-check your decklist link and try again.';
+    header("Location: MainMenu.php");
+    die();
+  }
+
   //We have the decklist, now write to file
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
   $deckFile = fopen($filename, "w");

@@ -4,6 +4,7 @@
   {
     function GetArray($handler)
     {
+      if(!$handler) return false;
       $line = trim(fgets($handler));
       if($line=="") return [];
       return explode(" ", $line);
@@ -60,6 +61,9 @@
   $MGS_P2Sideboard = 3;
   $MGS_ReadyToStart = 4;
   $MGS_GameStarted = 5;
+
+  $FORMAT_CompCC = 1;
+  $FORMAT_CompBlitz = 3;
 
   if(!function_exists("UnlockGamefile"))
   {

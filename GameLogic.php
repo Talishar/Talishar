@@ -4356,7 +4356,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       IncrementClassState($player, $CS_NumCharged);
       return $lastResult;
     case "DEALDAMAGE":
-      $target = explode("-", $lastResult);
+      $target = (is_array($lastResult) ? $lastResult : explode("-", $lastResult));
       $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 1 : 2));
       $parameters = explode("-", $parameter);
       $damage = $parameters[0];
@@ -4871,7 +4871,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $pieces = explode("-", $lastResult);
       return $pieces[$parameter];
     case "IMPLODELASTRESULT":
-      return implode($parameter, $lastResult);
+      return ($lastResult == "" ? "PASS" : implode($parameter, $lastResult));
     case "VALIDATECOUNT":
       if (count($lastResult) != $parameter) {
         WriteLog("The count from the last step is incorrect. Reverting gamestate prior to that effect.");
@@ -4918,10 +4918,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
     case "INCDQVAR":
-      $dqVars[$parameter] += $lastResult;
+      $dqVars[$parameter] = intval($dqVars[$parameter]) + intval($lastResult);
       return $lastResult;
     case "DECDQVAR":
-      $dqVars[$parameter] -= 1;
+      $dqVars[$parameter] = intval($dqVars[$parameter]) - 1;
       return $lastResult;
     case "DIVIDE":
       return floor($lastResult / $parameter);

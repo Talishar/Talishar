@@ -560,6 +560,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($isSimulation) return;
       if($playerID == 1 && $p1PlayerRating != 0) break;
       if($playerID == 2 && $p2PlayerRating != 0) break;
+      global $p1id, $p2id;
       include "MenuFiles/ParseGamefile.php";
       AddRating(($playerID == 1 ? 2 : 1), "green");
       if ($playerID == 1) $p1PlayerRating = 1;
@@ -569,6 +570,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if($isSimulation) return;
       if($playerID == 1 && $p1PlayerRating != 0) break;
       if($playerID == 2 && $p2PlayerRating != 0) break;
+      global $p1id, $p2id;
       include "MenuFiles/ParseGamefile.php";
       AddRating(($playerID == 1 ? 2 : 1), "red");
       if ($playerID == 1) $p1PlayerRating = 2;
@@ -787,7 +789,7 @@ function ResolveChainLink()
     $index = $target[1];
     $allies = &GetAllies($defPlayer);
     $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack);
-    $allies[$index + 2] -= $totalAttack;
+    $allies[$index + 2] = intval($allies[$index+2]) - $totalAttack;
     if ($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
     if ($allies[$index + 2] <= 0) DestroyAlly($defPlayer, $index);
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalAttack);
