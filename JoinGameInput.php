@@ -467,12 +467,13 @@ if ($matchup == "") {
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
+  $domain = getenv('DOMAIN') ? getenv('DOMAIN') : 'talishar.net';
   if ($playerID == 1) {
     $_SESSION["p1AuthKey"] = $p1Key;
-    setcookie("lastAuthKey", $p1Key, time() + 86400, "/");
+    setcookie("lastAuthKey", $p1Key, time() + 86400, "/", $domain);
   } else if ($playerID == 2) {
     $_SESSION["p2AuthKey"] = $p2Key;
-    setcookie("lastAuthKey", $p2Key, time() + 86400, "/");
+    setcookie("lastAuthKey", $p2Key, time() + 86400, "/", $domain);
   }
 }
 

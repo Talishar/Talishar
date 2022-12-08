@@ -19,6 +19,7 @@ services:
       MYSQL_SERVER_USER_NAME: "root"
       REDIS_HOST: "app_redis"
       REDIS_ENABLED: true
+      DOMAIN: "localhost"
   mysql-server:
     image: mysql:latest
     restart: always
