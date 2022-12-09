@@ -2529,6 +2529,10 @@ function CharacterDestroyEffect($cardID, $player)
     case "DYN214":
       AddLayer("TRIGGER", $player, "DYN214", "-", "-");
       break;
+    case "DYN492b":
+      $weaponIndex = FindCharacterIndex($player, "DYN492a");
+      if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex);
+      break;
     default:
       break;
   }
