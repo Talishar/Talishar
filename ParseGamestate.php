@@ -65,6 +65,7 @@ $gamestateContent = "";
 if($useRedis) $gamestateContent = ReadCache($gameName . "GS");
 if($gamestateContent == "") $gamestateContent = file_get_contents($filename);
 $gamestateContent = explode("\r\n", $gamestateContent);
+if(count($gamestateContent) < 60) exit;
 
 $playerHealths = GetStringArray($gamestateContent[0]); // 1
 
