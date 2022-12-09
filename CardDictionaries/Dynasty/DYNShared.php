@@ -942,8 +942,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $numHypers += CountItem("DYN112", $currentPlayer);
       if($numHypers < 3) return "You do not meet the Hyper Driver requirement.";
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
+      $mechMaterial = "";
       for($i=count($char)-1; $i>=CharacterPieces(); --$i) {
         if ($char[$i] == "DYN089") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
+        if($mechMaterial != "") $mechMaterial .= ",";
+        $mechMaterial .= $char[$i];
         unset($char[$i]);
       }
       $char = array_values($char);
@@ -951,6 +954,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $hyperToDestroy = 3;
       for($i=count($items)-ItemPieces(); $i>=0 && $hyperToDestroy>0; $i-=ItemPieces())
       {
+        if($mechMaterial != "") $mechMaterial .= ",";
+        $mechMaterial .= $items[$i];
         if($items[$i] == "ARC036" || $items[$i] == "DYN111" || $items[$i] == "DYN112") DestroyItemForPlayer($currentPlayer, $i);
         $hyperToDestroy--;
       }
