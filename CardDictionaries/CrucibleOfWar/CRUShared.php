@@ -306,6 +306,7 @@
   {
     switch ($cardID)
     {
+      case "CRU000": return -1;
       case "CRU001": return -1;
       //CRU Brute
       case "CRU007": case "CRU008": case "CRU009": return 3;

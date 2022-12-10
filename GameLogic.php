@@ -2529,6 +2529,10 @@ function CharacterDestroyEffect($cardID, $player)
     case "DYN214":
       AddLayer("TRIGGER", $player, "DYN214", "-", "-");
       break;
+    case "DYN492b":
+      $weaponIndex = FindCharacterIndex($player, "DYN492a");
+      if(intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex);
+      break;
     default:
       break;
   }
@@ -4169,6 +4173,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "COAXCOMMOTION":
+      if(!is_array($lastResult)) return $lastResult;
       for ($i = 0; $i < count($lastResult); ++$i) {
         switch ($lastResult[$i]) {
           case "Quicken_token":
@@ -4797,27 +4802,31 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEREMOVE":
       $params = explode("-", $lastResult);
       $source = $params[0];
-      $index = $params[1];
       $otherP = ($player == 1 ? 2 : 1);
-      switch ($source) {
-        case "MYARS":
-          $arsenal = &GetArsenal($player);
-          $card = $arsenal[$index];
-          RemoveFromArsenal($player, $index);
-          break;
-        case "MYHAND":
-          $hand = &GetHand($player);
-          $card = $hand[$index];
-          RemoveCard($player, $index);
-          break;
-        case "DISCARD":
-        case "MYDISCARD":
-          $discard = &GetDiscard($player);
-          $card = $discard[$index];
-          RemoveGraveyard($player, $index);
-          break;
-        default:
-          break;
+      $indices = explode(",", $params[1]);
+      for($i=0; $i<count($indices); ++$i)
+      {
+        $index = $indices[$i];
+        switch ($source) {
+          case "MYARS":
+            $arsenal = &GetArsenal($player);
+            $card = $arsenal[$index];
+            RemoveFromArsenal($player, $index);
+            break;
+          case "MYHAND":
+            $hand = &GetHand($player);
+            $card = $hand[$index];
+            RemoveCard($player, $index);
+            break;
+          case "DISCARD":
+          case "MYDISCARD":
+            $discard = &GetDiscard($player);
+            $card = $discard[$index];
+            RemoveGraveyard($player, $index);
+            break;
+          default:
+            break;
+        }
       }
       return $card;
     case "MULTIZONETOKENCOPY":
@@ -5630,6 +5639,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $numToReorder = 5 - count($numBanished);
         $otherPlayer = ($player == 1 ? 2 : 1);
         $deck = &GetDeck($otherPlayer);
+        $cards = "";
         for ($i = 0; $i < $numToReorder; ++$i) {
           if (count($deck) > 0) {
             if ($cards != "") $cards .= ",";
@@ -5637,8 +5647,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $cards .= $card;
           }
         }
-        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $cards);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of your opponent deck");
+        if($cards != "")
+        {
+          PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $cards);
+          PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of your opponent deck");
+        }
         return "";
       case "COUNTSILVERS":
         return CountItem("EVR195", $player);

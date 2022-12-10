@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 ob_start();
 include "HostFiles/Redirector.php";
@@ -34,6 +33,8 @@ if($favoriteDeckLink != 0)
 }
 
 $isisShadowBanned = false;
+
+session_start();
 
 if(isset($_SESSION["userid"]))
 {

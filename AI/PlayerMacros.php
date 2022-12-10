@@ -10,7 +10,7 @@ function ProcessMacros()
   }
   if(!IsGameOver())
   {
-    for($i=0; $i<100 && $somethingChanged; ++$i)
+    for($i=0; $i<10 && $somethingChanged; ++$i)
     {
       $somethingChanged = false;
       if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }

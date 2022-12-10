@@ -155,6 +155,11 @@ if ($decklink != "") {
     header("Location: MainMenu.php");
     die();
   }
+  if($deckObj == null)
+  {
+    echo 'Deck object is null. Failed to retrieve deck from API.';
+    exit;
+  }
   $deckName = $deckObj->{'name'};
   if (isset($deckObj->{'matchups'})) {
     if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};

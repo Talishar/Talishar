@@ -139,58 +139,61 @@ $isMobile = IsMobile();
 
     $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $handler = fopen($deckFile, "r");
-    $character = GetArray($handler);
+    if($handler)
+    {
+      $character = GetArray($handler);
 
-    echo ("<center>");
-    echo ("<div>");
-    echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
-    echo ("</div>");
-    echo ("</center>");
+      echo ("<center>");
+      echo ("<div>");
+      echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
+      echo ("</div>");
+      echo ("</center>");
 
-    echo ("<div style='text-align:center; margin-top: 2px;'>");
-    echo ("<a href='MainMenu.php'><button class='GameLobby_Button' style='display:inline; cursor:pointer;'>Leave Lobby</button></a>");
-    echo ("</div>");
+      echo ("<div style='text-align:center; margin-top: 2px;'>");
+      echo ("<a href='MainMenu.php'><button class='GameLobby_Button' style='display:inline; cursor:pointer;'>Leave Lobby</button></a>");
+      echo ("</div>");
 
-    $weapons = "";
-    $head = "";
-    $chest = "";
-    $arms = "";
-    $legs = "";
-    $offhand = "";
-    for ($i = 1; $i < count($character); ++$i) {
-      switch (CardSubtype($character[$i])) {
-        case "Head":
-          $head = $character[$i];
-          break;
-        case "Chest":
-          $chest = $character[$i];
-          break;
-        case "Arms":
-          $arms = $character[$i];
-          break;
-        case "Legs":
-          $legs = $character[$i];
-          break;
-        case "Off-Hand":
-          $offhand = $character[$i];
-          break;
-        default:
-          if ($weapons != "") $weapons .= ",";
-          $weapons .= $character[$i];
-          break;
+      $weapons = "";
+      $head = "";
+      $chest = "";
+      $arms = "";
+      $legs = "";
+      $offhand = "";
+      for ($i = 1; $i < count($character); ++$i) {
+        switch (CardSubtype($character[$i])) {
+          case "Head":
+            $head = $character[$i];
+            break;
+          case "Chest":
+            $chest = $character[$i];
+            break;
+          case "Arms":
+            $arms = $character[$i];
+            break;
+          case "Legs":
+            $legs = $character[$i];
+            break;
+          case "Off-Hand":
+            $offhand = $character[$i];
+            break;
+          default:
+            if ($weapons != "") $weapons .= ",";
+            $weapons .= $character[$i];
+            break;
+        }
       }
+
+      $deck = GetArray($handler);
+      $headSB = GetArray($handler);
+      $chestSB = GetArray($handler);
+      $armsSB = GetArray($handler);
+      $legsSB = GetArray($handler);
+      $offhandSB = GetArray($handler);
+      $weaponSB = GetArray($handler);
+      $deckSB = GetArray($handler);
+
+      fclose($handler);
     }
-
-    $deck = GetArray($handler);
-    $headSB = GetArray($handler);
-    $chestSB = GetArray($handler);
-    $armsSB = GetArray($handler);
-    $legsSB = GetArray($handler);
-    $offhandSB = GetArray($handler);
-    $weaponSB = GetArray($handler);
-    $deckSB = GetArray($handler);
-
-    fclose($handler);
 
     ?>
   </div>
