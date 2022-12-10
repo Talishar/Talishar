@@ -4173,6 +4173,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "COAXCOMMOTION":
+      if(!is_array($lastResult)) return $lastResult;
       for ($i = 0; $i < count($lastResult); ++$i) {
         switch ($lastResult[$i]) {
           case "Quicken_token":
