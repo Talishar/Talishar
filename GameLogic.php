@@ -5639,6 +5639,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $numToReorder = 5 - count($numBanished);
         $otherPlayer = ($player == 1 ? 2 : 1);
         $deck = &GetDeck($otherPlayer);
+        $cards = "";
         for ($i = 0; $i < $numToReorder; ++$i) {
           if (count($deck) > 0) {
             if ($cards != "") $cards .= ",";
@@ -5646,8 +5647,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $cards .= $card;
           }
         }
-        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $cards);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of your opponent deck");
+        if($cards != "")
+        {
+          PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $cards);
+          PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of your opponent deck");
+        }
         return "";
       case "COUNTSILVERS":
         return CountItem("EVR195", $player);
