@@ -243,10 +243,10 @@ $isMobile = IsMobile();
       <table>
         <?php
 
-        DisplayEquipRow($head, $headSB, "HEAD");
-        DisplayEquipRow($chest, $chestSB, "CHEST");
-        DisplayEquipRow($arms, $armsSB, "ARMS");
-        DisplayEquipRow($legs, $legsSB, "LEGS");
+        if(isset($head) && isset($headSB)) DisplayEquipRow($head, $headSB, "HEAD");
+        if(isset($chest) && isset($chestSB)) DisplayEquipRow($chest, $chestSB, "CHEST");
+        if(isset($arms) && isset($armsSB)) DisplayEquipRow($arms, $armsSB, "ARMS");
+        if(isset($legs) && isset($legsSB)) DisplayEquipRow($legs, $legsSB, "LEGS");
 
         ?>
       </table>
