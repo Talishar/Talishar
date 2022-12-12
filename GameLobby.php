@@ -257,8 +257,8 @@ $isMobile = IsMobile();
           $weaponArray = explode(",", $weapons);
           $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
           $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
-          DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
-          DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+          if(isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
+          if(isset($offhand) && isset($offhandSB)) DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
 
           ?>
         </table>
