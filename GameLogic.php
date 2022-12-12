@@ -4880,6 +4880,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $pieces = explode("-", $lastResult);
       return $pieces[$parameter];
     case "IMPLODELASTRESULT":
+      if(!is_array($lastResult)) return $lastResult;
       return ($lastResult == "" ? "PASS" : implode($parameter, $lastResult));
     case "VALIDATECOUNT":
       if (count($lastResult) != $parameter) {
