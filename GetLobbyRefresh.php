@@ -68,7 +68,7 @@ if ($authKey != $targetAuth) {
 }
 
 if ($kickPlayerTwo) {
-  if($format == "compcc" || $format == "compblitz")
+  if($oppStatus != "-1" && ($format == "compcc" || $format == "compblitz"))
   {
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
