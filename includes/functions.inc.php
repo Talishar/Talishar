@@ -461,7 +461,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $oppo
 	for($i=0; $i<count($deduplicatedDeck); ++$i)
 	{
 		$deck["cardResults"][$i] = [];
-		$deck["cardResults"][$i]["cardId"] = $deduplicatedDeck[$i];
+		$deck["cardResults"][$i]["cardId"] = GetNormalCardID($deduplicatedDeck[$i]);
 		$deck["cardResults"][$i]["played"] = 0;
 		$deck["cardResults"][$i]["blocked"] = 0;
 		$deck["cardResults"][$i]["pitched"] = 0;
