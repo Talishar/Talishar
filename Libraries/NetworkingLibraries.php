@@ -789,9 +789,12 @@ function ResolveChainLink()
     $index = $target[1];
     $allies = &GetAllies($defPlayer);
     $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack);
-    $allies[$index + 2] = intval($allies[$index+2]) - $totalAttack;
-    if ($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
-    if ($allies[$index + 2] <= 0) DestroyAlly($defPlayer, $index);
+    if($index < count($allies))
+    {
+      $allies[$index + 2] = intval($allies[$index+2]) - $totalAttack;
+      if ($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
+      if ($allies[$index + 2] <= 0) DestroyAlly($defPlayer, $index);
+    }
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalAttack);
   } else {
     if ($combatChainState[$CCS_CombatDamageReplaced] == 1) $damage = 0;

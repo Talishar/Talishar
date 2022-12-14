@@ -9,6 +9,7 @@ function PutPermanentIntoPlay($player, $cardID)
 
 function RemovePermanent($player, $index)
 {
+  $index = intval($index);
   $permanents = &GetPermanents($player);
   $cardID = $permanents[$index];
   for ($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
@@ -20,6 +21,7 @@ function RemovePermanent($player, $index)
 
 function DestroyPermanent($player, $index)
 {
+  $index = intval($index);
   $permanents = &GetPermanents($player);
   $cardID = $permanents[$index];
   $isToken = $permanents[$index + 4] == 1;

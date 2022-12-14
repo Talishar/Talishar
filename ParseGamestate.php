@@ -408,8 +408,13 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt")
 {
-  global $gameName, $skipWriteGamestate;
+  global $gameName, $skipWriteGamestate, $useRedis;
   $filepath = "./Games/" . $gameName . "/";
+  if($useRedis)
+  {
+    $gamestate = file_get_contents($filepath . $filename);
+    WriteCache($gameName . "GS", $gamestate);
+  }
   copy($filepath . $filename, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;
 }

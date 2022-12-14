@@ -190,6 +190,7 @@ if ($decklink != "") {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
       $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
+      $id = "";
       if ($isFaBDB) {
         $printings = $cards[$i]->{'printings'};
         $printing = $printings[0];
@@ -198,9 +199,10 @@ if ($decklink != "") {
         $id = explode("-", $id)[0];
       } else if ($isFaBMeta) {
         $id = $cards[$i]->{'identifier'};
-      } else {
+      } else if(isset($cards[$i]->{'cardIdentifier'})) {
         $id = $cards[$i]->{'cardIdentifier'};
       }
+      if($id == "") continue;
       $id = GetAltCardID($id);
       $cardType = CardType($id);
       $cardSet = substr($id, 0, 3);
