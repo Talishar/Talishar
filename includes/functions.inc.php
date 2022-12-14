@@ -471,7 +471,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $oppo
 	{
 		for($j=0; $j<count($deck["cardResults"]); ++$j)
 		{
-			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i])
+			if($deck["cardResults"][$j]["cardId"] == GetNormalCardID($cardStats[$i]))
 			{
 				$deck["cardResults"][$j]["played"] = $cardStats[$i+$CardStats_TimesPlayed];
 				$deck["cardResults"][$j]["blocked"] = $cardStats[$i+$CardStats_TimesBlocked];
@@ -481,6 +481,29 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID="", $oppo
 		}
 	}
 	return json_encode($deck);
+}
+
+function GetNormalCardID($cardID)
+{
+  switch ($cardID) {
+    case "MON405":
+      return "BOL002";
+    case "MON400":
+      return "BOL006";
+    case "MON407":
+      return "CHN002";
+    case "MON401":
+      return "CHN006";
+    case "MON406":
+      return "LEV002";
+    case "MON400":
+      return "LEV005";
+    case "MON404":
+      return "PSM002";
+    case "MON402":
+      return "PSM007";
+  }
+  return $cardID;
 }
 
 function UpdateKarma($p1value=0, $p2value=0)
