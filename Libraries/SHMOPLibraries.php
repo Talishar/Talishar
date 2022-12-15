@@ -54,9 +54,12 @@ function DeleteCache($name)
   global $useRedis, $redis;
   if ($useRedis) {
     $redis->del($name);
-  } else {
-    $id = shmop_open($name, "w", 0644, 128);
-    if ($id) {
+    $redis->del($name . "GS");
+  }
+  else {
+    $id=shmop_open($name, "w", 0644, 128);
+    if($id)
+    {
       shmop_delete($id);
       shmop_close($id); //shmop_close is deprecated
     }
