@@ -56,7 +56,7 @@ $isMobile = IsMobile();
         <?php if(!$isMobile) echo '<li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>'; ?>
 
         <?php
-         if(!$isMobile) echo '<li><a target="_blank" href="https://twitter.com/talishar_sim">Twitter</a></li>';
+         if(!$isMobile) echo '<li><a target="_blank" href="https://twitter.com/talishar_online">Twitter</a></li>';
           ?>
         <!--<li><a target="_blank" href="https://www.patreon.com/talishar_online">Support Us</a></li>-->
       </ul>
