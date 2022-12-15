@@ -899,7 +899,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       for ($i = 0; $i < count($options); ++$i) {
         array_push($multiChooseText, CreateCheckboxAPI($i, strval($options[$i]), -1, false, implode(" ", explode("_", strval($options[$i])))));
       }
-      $caption = "Choose up to $params[0]card" . ($params[0] > 1 ? "s." : ".");
+      $caption = "Choose up to $params[0] card" . ($params[0] > 1 ? "s." : ".");
       $playerInputPopup->popup =  CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
       $playerInputPopup->multiChooseText = $multiChooseText;
     } else {
@@ -912,7 +912,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($turn[0] == "MULTICHOOSEDECK") array_push($cardsArray, JSONRenderedCard($myDeck[$options[$i]], actionDataOverride: $i));
         else if ($turn[0] == "MULTICHOOSETHEIRDECK") array_push($cardsArray, JSONRenderedCard($theirDeck[$options[$i]], actionDataOverride: $i));
       }
-      $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
+      $caption = "Choose up to $params[0] card" . ($params[0] > 1 ? "s." : ".");
+      $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, cardsArray: $cardsArray);
     }
   }
 

@@ -40,7 +40,7 @@ function TextCounterColor($darkMode)
 //13 isBroken = 1 if card is destroyed
 //14 onChain = 1 if card is on combat chain (mostly for equipment)
 //15 isFrozen = 1 if frozen
-//16 shows gem = (0, 1, 2?) (0 off, 1 inactive, 2 active at a guess?)
+//16 shows gem = (0, 1, 2) (0 off, 1 active, 2 inactive)
 function ClientRenderedCard($cardNumber, $action = 0, $overlay = 0, $borderColor = 0, $counters = 0, $actionDataOverride = "-", $lifeCounters = 0, $defCounters = 0, $atkCounters = 0, $controller = 0, $type = "", $sType = "", $restriction = "", $isBroken = 0, $onChain = 0, $isFrozen = 0, $gem = 0)
 {
   $rv = $cardNumber . " " . $action . " " . $overlay . " " . $borderColor . " " . $counters . " " . $actionDataOverride . " " . $lifeCounters . " " . $defCounters . " " . $atkCounters . " ";
@@ -407,13 +407,11 @@ function CreateCheckboxAPI($input, $value, $immediateSubmitMode = -1, $defaultCh
   $option = new stdClass();
   global $playerID;
   $submitLink = "";
-  $check = "";
   if ($immediateSubmitMode != -1) $submitLink = ProcessInputLink($playerID, $immediateSubmitMode, $input, "onchange", $fullRefresh);
-  if ($defaultChecked) $check = " checked='checked'";
   $option->submitLink = $submitLink;
   $option->input = $input;
   $option->value = $value;
-  $option->check = $check;
+  $option->check = $defaultChecked;
   $option->label = $label;
   return $option;
 }
