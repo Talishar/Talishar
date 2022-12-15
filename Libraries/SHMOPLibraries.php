@@ -1,7 +1,11 @@
 <?php
 
+<<<<<<< HEAD
 // $useRedis = getenv('REDIS_ENABLED');
 $useRedis = false;
+=======
+$useRedis = true;
+>>>>>>> b414b0b7e (Set use redis to try by default)
 
 if ($useRedis) {
   $redis = new Redis();
