@@ -243,10 +243,10 @@ $isMobile = IsMobile();
       <table>
         <?php
 
-        DisplayEquipRow($head, $headSB, "HEAD");
-        DisplayEquipRow($chest, $chestSB, "CHEST");
-        DisplayEquipRow($arms, $armsSB, "ARMS");
-        DisplayEquipRow($legs, $legsSB, "LEGS");
+        if(isset($head) && isset($headSB)) DisplayEquipRow($head, $headSB, "HEAD");
+        if(isset($chest) && isset($chestSB)) DisplayEquipRow($chest, $chestSB, "CHEST");
+        if(isset($arms) && isset($armsSB)) DisplayEquipRow($arms, $armsSB, "ARMS");
+        if(isset($legs) && isset($legsSB)) DisplayEquipRow($legs, $legsSB, "LEGS");
 
         ?>
       </table>
@@ -257,8 +257,8 @@ $isMobile = IsMobile();
           $weaponArray = explode(",", $weapons);
           $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
           $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
-          DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
-          DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+          if(isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
+          if(isset($offhand) && isset($offhandSB)) DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
 
           ?>
         </table>
