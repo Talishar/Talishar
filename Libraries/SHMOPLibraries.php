@@ -1,6 +1,6 @@
 <?php
 
-$useRedis = false;
+$useRedis = true;
 
 if($useRedis)
 {
