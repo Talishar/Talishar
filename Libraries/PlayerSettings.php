@@ -30,6 +30,8 @@ $SET_KarmaRestriction = 19; //What format did this player create a game for last
 $SET_FavoriteDeckIndex = 20; //What deck did this player play a game with last
 $SET_GameVisibility = 21; //The visibility of the last game you created
 
+$SET_StreamerMode = 22; //Did this player enable caster mode
+
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
@@ -234,6 +236,14 @@ function IsCasterMode()
   return $settings1[$SET_CasterMode] == "1" && $settings2[$SET_CasterMode] == "1";
 }
 
+function IsStreamerMode($player)
+{
+  global $SET_StreamerMode;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return $settings[$SET_StreamerMode] == "1";
+}
+
 function ChangeSetting($player, $setting, $value, $playerId="")
 {
   /*
@@ -272,7 +282,7 @@ function GetSettingsUI($player)
 {
   global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
   global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat, $SET_DisableStats;
-  global $SET_CasterMode;
+  global $SET_CasterMode, $SET_StreamerMode;
   $rv = "";
   $settings = GetSettings($player);
   $currentValue = HoldPrioritySetting($player);
@@ -575,6 +585,10 @@ function GetSettingsUI($player)
   else $rv .= CreateCheckbox($SET_CasterMode . "-0", "Caster Mode", 26, true, "Caster Mode", true);
   $rv .= "<BR>";
 
+  if ($settings[$SET_StreamerMode] == 0) $rv .= CreateCheckbox($SET_StreamerMode . "-1", "Streamer Mode", 26, false, "Streamer Mode", true);
+  else $rv .= CreateCheckbox($SET_StreamerMode . "-0", "Streamer Mode", 26, true, "Streamer Mode", true);
+  $rv .= "<BR>";
+
   /*
     $rv .= "<BR>";
     if($settings[$SET_ManualMode] == 0) $rv .= CreateButton($player, "Request Manual Mode", 26, $SET_ManualMode . "-1", "24px");
@@ -594,6 +608,7 @@ function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_KarmaRestriction, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
+  global $SET_StreamerMode;
   switch($setting)
   {
     case $SET_DarkMode:
@@ -608,6 +623,7 @@ function SaveSettingInDatabase($setting)
     case $SET_GameVisibility:
     case $SET_AlwaysHoldPriority:
     case $SET_ManualMode:
+    case $SET_StreamerMode:
       return true;
     default: return false;
   }
