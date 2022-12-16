@@ -673,8 +673,8 @@
                 var sidebarWrapperWidth = sidebarWrapper.style.width;
                 var chatbox = document.getElementById("chatbox");
                 if(chatbox) chatbox.style.width = (parseInt(sidebarWrapperWidth)-10) + "px";
-                var chatinput = document.getElementById("chatinput");
-                if(chatinput) chatinput.style.width = (parseInt(sidebarWrapperWidth)-70) + "px";
+                var chatText = document.getElementById("chatText");
+                if(chatText) chatText.style.width = (parseInt(sidebarWrapperWidth)-70) + "px";
               }
             } else {
               CheckReloadNeeded(lastUpdate);
@@ -709,7 +709,7 @@
     echo ("<div id='mainDiv' style='position:fixed; z-index:20; left:0px; top:0px; width:100%;height:100%;'></div>");
     if ($playerID != 3 && !IsChatMuted()) {
       echo ("<div id='chatbox' style='z-index:40; position:fixed; bottom:0px; right:18px; width:200px; height: 32px;'>");
-      echo ("<input id='chatinput' style='margin-left: 4px; margin-right: 1px; width:140px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+      echo ("<input id='chatText' style='margin-left: 4px; margin-right: 1px; width:140px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
       echo ("<button style='display:inline; border: 2px solid " . $borderColor . "; width:45px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;' onclick='SubmitChat()'>Chat</button>");
       echo ("</div>");
     }
