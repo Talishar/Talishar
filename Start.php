@@ -179,7 +179,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $userId = ($player == 1 ? $p1id : $p2id);
   $savedSettings = LoadSavedSettings($userId);
   $settingArray = [];
-  for($i=0; $i<=17; ++$i)
+  for($i=0; $i<=22; ++$i)
   {
     $value = "";
     switch($i)
