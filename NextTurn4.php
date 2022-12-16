@@ -632,36 +632,46 @@ $borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
       CheckReloadNeeded(0);
     }
 
-    function CheckReloadNeeded(lastUpdate) {
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          if (this.responseText == "NaN") {} //Do nothing, game is invalid
-          else if (this.responseText.split("REMATCH")[0] == "1234") {
-            location.replace('GameLobby.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&authKey=<?php echo ($authKey); ?>');
-          } else if (parseInt(this.responseText) != 0) {
-            HideCardDetail();
-            var responseArr = this.responseText.split("ENDTIMESTAMP");
-            document.getElementById("mainDiv").innerHTML = responseArr[1];
-            var update = parseInt(responseArr[0]);
-            if (update != "NaN") CheckReloadNeeded(update);
-            if (update < _lastUpdate) return;
-            _lastUpdate = update;
-            var readyIcon = document.getElementById("iconHolder").innerText;
-            document.getElementById("icon").href = "./HostFiles/" + readyIcon;
-            var log = document.getElementById('gamelog');
-            if (log !== null) log.scrollTop = log.scrollHeight;
-            if (readyIcon == "ready.png") {
-              var audio = document.getElementById('yourTurnSound');
-              <?php if (!IsMuted($playerID)) echo ("audio.play();");
-              ?>
+      function CheckReloadNeeded(lastUpdate) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            if (this.responseText == "NaN") {} //Do nothing, game is invalid
+            else if (this.responseText.split("REMATCH")[0] == "1234") {
+              location.replace('GameLobby.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&authKey=<?php echo ($authKey); ?>');
+            } else if (parseInt(this.responseText) != 0) {
+              HideCardDetail();
+              var responseArr = this.responseText.split("ENDTIMESTAMP");
+              document.getElementById("mainDiv").innerHTML = responseArr[1];
+              var update = parseInt(responseArr[0]);
+              if (update != "NaN") CheckReloadNeeded(update);
+              if(update < _lastUpdate) return;
+              _lastUpdate = update;
+              var readyIcon = document.getElementById("iconHolder").innerText;
+              document.getElementById("icon").href = "./HostFiles/" + readyIcon;
+              var log = document.getElementById('gamelog');
+              if (log !== null) log.scrollTop = log.scrollHeight;
+              if (readyIcon == "ready.png") {
+                var audio = document.getElementById('yourTurnSound');
+                <?php if (!IsMuted($playerID)) echo ("audio.play();");
+                ?>
+              }
+              PopulateZone("myHand", cardSize);
+              PopulateZone("theirHand", cardSize);
+              PopulateZone("myChar", cardSize);
+              PopulateZone("theirChar", cardSize);
+              var sidebarWrapper = document.getElementById("sidebarWrapper");
+              if(sidebarWrapper)
+              {
+                var sidebarWrapperWidth = sidebarWrapper.style.width;
+                var chatbox = document.getElementById("chatbox");
+                if(chatbox) chatbox.style.width = (parseInt(sidebarWrapperWidth)-10) + "px";
+                var chatinput = document.getElementById("chatinput");
+                if(chatinput) chatinput.style.width = (parseInt(sidebarWrapperWidth)-70) + "px";
+              }
+            } else {
+              CheckReloadNeeded(lastUpdate);
             }
-            PopulateZone("myHand", cardSize);
-            PopulateZone("theirHand", cardSize);
-            PopulateZone("myChar", cardSize);
-            PopulateZone("theirChar", cardSize);
-          } else {
-            CheckReloadNeeded(lastUpdate);
           }
         }
       };
@@ -686,20 +696,20 @@ $borderColor = ($darkMode ? "#DDD" : "#1a1a1a");
     }
   </script>
 
-  <?php
-  //Display hidden elements
-  echo ("<div id='popupContainer'></div>");
-  echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
-  echo ("<div id='mainDiv' style='position:fixed; z-index:20; left:0px; top:0px; width:100%;height:100%;'></div>");
-  if ($playerID != 3 && !IsChatMuted()) {
-    echo ("<div id='chatbox' style='z-index:40; position:fixed; bottom:0px; right:18px; width:200px; height: 32px;'>");
-    echo ("<input style='margin-left: 4px; margin-right: 1px; width:140px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-    echo ("<button style='display:inline; border: 2px solid " . $borderColor . "; width:45px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;' onclick='SubmitChat()'>Chat</button>");
-    echo ("</div>");
-  }
-  echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");
-  echo ("<input type='hidden' id='playerID' value='" . $playerID . "'>");
-  echo ("<input type='hidden' id='authKey' value='" . $authKey . "'>");
-  ?>
+    <?php
+    //Display hidden elements
+    echo ("<div id='popupContainer'></div>");
+    echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
+    echo ("<div id='mainDiv' style='position:fixed; z-index:20; left:0px; top:0px; width:100%;height:100%;'></div>");
+    if ($playerID != 3 && !IsChatMuted()) {
+      echo ("<div id='chatbox' style='z-index:40; position:fixed; bottom:0px; right:18px; width:200px; height: 32px;'>");
+      echo ("<input id='chatinput' style='margin-left: 4px; margin-right: 1px; width:140px; display:inline; border: 2px solid " . $borderColor . "; border-radius: 3px; font-weight: 500;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
+      echo ("<button style='display:inline; border: 2px solid " . $borderColor . "; width:45px; color: #1a1a1a; border:" . $backgroundColor . "; padding: 0; font: inherit; cursor: pointer; outline: inherit; box-shadow: none;' onclick='SubmitChat()'>Chat</button>");
+      echo ("</div>");
+    }
+    echo ("<input type='hidden' id='gameName' value='" . $gameName . "'>");
+    echo ("<input type='hidden' id='playerID' value='" . $playerID . "'>");
+    echo ("<input type='hidden' id='authKey' value='" . $authKey . "'>");
+    ?>
 
 </body>
