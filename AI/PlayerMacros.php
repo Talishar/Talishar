@@ -45,7 +45,11 @@ function ProcessMacros()
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);
         if($threshold == "99") { $somethingChanged = true; PassInput(); }
-        else if($threshold == "1" && CachedTotalAttack() <= 1)  { $somethingChanged = true; PassInput(); }
+        else if($threshold == "1")
+        {
+          CacheCombatResult();
+          if(CachedTotalAttack() <= 1) { $somethingChanged = true; PassInput(); }
+        }
       }
     }
   }
