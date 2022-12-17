@@ -52,6 +52,7 @@ while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece ==
   usleep(100000); //100 milliseconds
   $currentTime = round(microtime(true) * 1000);
   $readCache = ReadCache($gameName);
+  if($readCache == "") break;
   $cacheArr = explode(SHMOPDelimiter(), $readCache);
   $cacheVal = intval($cacheArr[0]);
   $lastCurrentCachePiece = intval($cacheArr[8]);
