@@ -51,13 +51,15 @@ $lastCurrentCachePiece = intval(GetCachePiece($gameName, 9));
 while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece == 0 || $lastCurrentPlayer == $lastCurrentCachePiece) && $cacheVal <= $lastUpdate) {
   usleep(100000); //100 milliseconds
   $currentTime = round(microtime(true) * 1000);
-  $cacheVal = GetCachePiece($gameName, 1);
-  $lastCurrentCachePiece = intval(GetCachePiece($gameName, 9));
+  $readCache = ReadCache($gameName);
+  $cacheArr = explode(SHMOPDelimiter(), $readCache);
+  $cacheVal = intval($cacheArr[0]);
+  $lastCurrentCachePiece = intval($cacheArr[8]);
   if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 1, $currentTime);
     $otherP = ($playerID == 1 ? 2 : 1);
-    $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
-    $oppStatus = GetCachePiece($gameName, $otherP + 3);
+    $oppLastTime = intval($cacheArr[$otherP]);
+    $oppStatus = $cacheArr[$otherP + 2];
     if (($currentTime - $oppLastTime) > 3000 && ($oppStatus == "0")) {
       WriteLog("Opponent has disconnected. Waiting 60 seconds to reconnect.");
       GamestateUpdated($gameName);

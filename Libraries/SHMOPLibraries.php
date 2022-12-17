@@ -73,6 +73,11 @@ function DeleteCache($name)
   }
 }
 
+function SHMOPDelimiter()
+{
+  return "!";
+}
+
 function SetCachePiece($name, $piece, $value)
 {
   $piece -= 1;
