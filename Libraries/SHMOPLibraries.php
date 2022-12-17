@@ -2,8 +2,8 @@
 
 // $useRedis = getenv('REDIS_ENABLED') ?? false;
 $useRedis = true;
-$redisHost = getenv('REDIS_HOST') ?? '127.0.0.1';
-$redisPort = getenv('REDIS_PORT') ?? 6379;
+$redisHost = (!empty(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "127.0.0.1");
+$redisPort = (!empty(getenv("REDIS_PORT")) ? getenv("REDIS_PORT") : "6379");
 
 if ($useRedis) {
   $redis = new Redis();
