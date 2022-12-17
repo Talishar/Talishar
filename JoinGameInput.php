@@ -143,8 +143,9 @@ if ($decklink != "") {
   curl_close($curl);
 
   if ($apiDeck === FALSE) {
-    echo  '<b>' . "⚠️ FabDB API for this deck returns no data: " . implode("/", $decklink) . '</b>';
+    echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
     WriteGameFile();
+    LogDeckLoadFailure("API returned no data");
     exit;
   }
   $deckObj = json_decode($apiDeck);
@@ -152,12 +153,14 @@ if ($decklink != "") {
   if ($apiInfo['http_code'] == 403) {
     $_SESSION['error'] =
       "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
+    LogDeckLoadFailure("Missing API Key");
     header("Location: MainMenu.php");
     die();
   }
   if($deckObj == null)
   {
     echo 'Deck object is null. Failed to retrieve deck from API.';
+    LogDeckLoadFailure("Failed to retrieve deck from API.");
     exit;
   }
   $deckName = $deckObj->{'name'};
@@ -314,6 +317,7 @@ if ($decklink != "") {
       }
     }
   } else {
+    LogDeckLoadFailure("Decklist link invalid.");
     $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
     header("Location: MainMenu.php");
     die();
@@ -767,4 +771,16 @@ function IsBanned($cardID, $format)
     default:
       return false;
   }
+}
+
+function LogDeckLoadFailure($failure)
+{
+  global $gameName, $decklink;
+  $errorFileName = "./BugReports/LoadDeckFailure.txt";
+  $errorHandler = fopen($errorFileName, "a");
+  date_default_timezone_set('America/Chicago');
+  $errorDate = date('m/d/Y h:i:s a');
+  $errorOutput = "Deck load failure (type " . $failure . ") $gameName at $errorDate (deck link: $decklink)";
+  fwrite($errorHandler, $errorOutput . "\r\n");
+  fclose($errorHandler);
 }
