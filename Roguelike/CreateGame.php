@@ -7,7 +7,16 @@
   $numPlayers = 1;
 
   //First get your game ID
-  $gcFile = fopen("HostFiles/Counter.txt", "r+");
+  //First get your game ID
+  $gameIDCounterFile = "HostFiles/Counter.txt";
+  if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
+    if (!is_dir("HostFiles")) {
+      mkdir("HostFiles");
+    };
+    $contents = '101';
+    file_put_contents($gameIDCounterFile, $contents);
+  }
+  $gcFile = fopen($gameIDCounterFile, "r+");
   $attemptCount = 0;
   while(!flock($gcFile, LOCK_EX) && $attemptCount < 30) {  // acquire an exclusive lock
     sleep(1);

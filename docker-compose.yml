@@ -1,0 +1,50 @@
+version: "3.7"
+services:
+  web-server:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    volumes:
+      - "./:/var/www/html/game"
+    ports:
+      - "8080:80"
+    depends_on:
+      - redis
+      - mysql-server
+    environment:
+      PHP_FPM_CLEAR_ENV: "no"
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_SERVER_NAME: "mysql-server"
+      MYSQL_SERVER_USER_NAME: "root"
+      REDIS_HOST: "app_redis"
+      REDIS_ENABLED: true
+      DOMAIN: "localhost"
+  mysql-server:
+    image: mysql:latest
+    restart: always
+    environment:
+      PHP_FPM_CLEAR_ENV: "no"
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_SERVER_NAME: "mysql-server"
+      MYSQL_SERVER_USER_NAME: "root"
+      MYSQL_DATABASE: "fabonline"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./Database:/docker-entrypoint-initdb.d
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: mysql-server
+      PMA_USER: root
+      PMA_PASSWORD: "secret"
+    ports:
+      - "5000:80"
+  redis:
+    image: redis:7.0
+    container_name: app_redis
+    ports:
+      - "6382:6379"
+volumes:
+  mysql-data:

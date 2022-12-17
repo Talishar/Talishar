@@ -139,6 +139,7 @@ if ($decklink != "") {
   curl_setopt($curl, CURLOPT_URL, $apiLink);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
   $apiDeck = curl_exec($curl);
+  $apiInfo = curl_getinfo($curl);
   curl_close($curl);
 
   if ($apiDeck === FALSE) {
@@ -147,6 +148,13 @@ if ($decklink != "") {
     exit;
   }
   $deckObj = json_decode($apiDeck);
+  // if has message forbidden error out.
+  if ($apiInfo['http_code'] == 403) {
+    $_SESSION['error'] =
+      "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
+    header("Location: MainMenu.php");
+    die();
+  }
   if($deckObj == null)
   {
     echo 'Deck object is null. Failed to retrieve deck from API.';
@@ -304,7 +312,6 @@ if ($decklink != "") {
         }
         $totalCards += $numMainBoard + $numSideboard;
       }
-
     }
   } else {
     $_SESSION['error'] = '⚠️ The decklist link you have entered might be invalid or contain invalid cards (e.g Tokens).\n\nPlease double-check your decklist link and try again.';
@@ -390,14 +397,12 @@ if ($decklink != "") {
   fclose($deckFile);
   copy($filename, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
-  if(isset($_SESSION["userid"]))
-  {
+  if (isset($_SESSION["userid"])) {
     include_once './includes/functions.inc.php';
     include_once "./includes/dbh.inc.php";
     $deckbuilderID = GetDeckBuilderId($_SESSION["userid"], $decklink);
-    if($deckbuilderID != "")
-    {
-      if($playerID == 1) $p1deckbuilderID = $deckbuilderID;
+    if ($deckbuilderID != "") {
+      if ($playerID == 1) $p1deckbuilderID = $deckbuilderID;
       else $p2deckbuilderID = $deckbuilderID;
     }
   }
@@ -469,12 +474,13 @@ if ($matchup == "") {
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
+  $domain = getenv('DOMAIN') ?? 'talishar.net';
   if ($playerID == 1) {
     $_SESSION["p1AuthKey"] = $p1Key;
-    setcookie("lastAuthKey", $p1Key, time() + 86400, "/", "talishar.net");
+    setcookie("lastAuthKey", $p1Key, time() + 86400, "/", $domain);
   } else if ($playerID == 2) {
     $_SESSION["p2AuthKey"] = $p2Key;
-    setcookie("lastAuthKey", $p2Key, time() + 86400, "/", "talishar.net");
+    setcookie("lastAuthKey", $p2Key, time() + 86400, "/", $domain);
   }
 }
 
@@ -641,8 +647,8 @@ function GetAltCardID($cardID)
       return "WTR224";
     case "DYN238":
       return "MON401";
-    // case "DYN000":
-    //   return "ARC159";
+      // case "DYN000":
+      //   return "ARC159";
   }
   return $cardID;
 }

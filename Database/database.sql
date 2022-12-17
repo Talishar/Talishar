@@ -6,11 +6,9 @@
 -- Generation Time: Aug 03, 2022 at 02:11 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.2
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 CREATE TABLE `completedgame` (
   `CompletionTime` timestamp NOT NULL DEFAULT current_timestamp(),
   `WinningHero` char(6) NOT NULL,
@@ -25,10 +23,8 @@ CREATE TABLE `completedgame` (
   `WinnerDeck` varchar(1000) DEFAULT NULL,
   `LoserDeck` varchar(1000) DEFAULT NULL,
   `lastAuthKey` varchar(128) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `favoritedeck`
 --
@@ -38,10 +34,8 @@ CREATE TABLE `favoritedeck` (
   `usersId` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
   `hero` varchar(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `pwdreset`
 --
@@ -52,10 +46,8 @@ CREATE TABLE `pwdreset` (
   `pwdResetSelector` text NOT NULL,
   `pwdResetToken` longtext NOT NULL,
   `pwdResetExpires` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `users`
 --
@@ -73,9 +65,7 @@ CREATE TABLE `users` (
   `redThumbs` int(11) NOT NULL DEFAULT '0',
   `fabraryId` varchar(64) DEFAULT NULL,
   `fabdbId` varchar(64) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables
 --
@@ -84,30 +74,26 @@ CREATE TABLE `users` (
 -- Indexes for table `completedgame`
 --
 ALTER TABLE `completedgame`
-  ADD PRIMARY KEY (`GameID`),
+ADD PRIMARY KEY (`GameID`),
   ADD KEY `FK_WINNING_PLAYER` (`WinningPID`),
   ADD KEY `FK_LOSING_PLAYER` (`LosingPID`);
-
 --
 -- Indexes for table `favoritedeck`
 --
 ALTER TABLE `favoritedeck`
-  ADD PRIMARY KEY (`decklink`),
+ADD PRIMARY KEY (`decklink`),
   ADD KEY `usersId` (`usersId`);
-
 --
 -- Indexes for table `pwdreset`
 --
 ALTER TABLE `pwdreset`
-  ADD PRIMARY KEY (`pwdResetId`);
-
+ADD PRIMARY KEY (`pwdResetId`);
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`usersID`),
+ADD PRIMARY KEY (`usersID`),
   ADD KEY `usersUid` (`usersUid`);
-
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -116,20 +102,20 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `completedgame`
 --
 ALTER TABLE `completedgame`
-  MODIFY `GameID` int(22) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
-
+MODIFY `GameID` int(22) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 96;
 --
 -- AUTO_INCREMENT for table `pwdreset`
 --
 ALTER TABLE `pwdreset`
-  MODIFY `pwdResetId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
+MODIFY `pwdResetId` int(11) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 2;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `usersID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
+MODIFY `usersID` int(11) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 5;
 --
 -- Constraints for dumped tables
 --
@@ -138,29 +124,30 @@ ALTER TABLE `users`
 -- Constraints for table `completedgame`
 --
 ALTER TABLE `completedgame`
-  ADD CONSTRAINT `FK_LOSING_PLAYER` FOREIGN KEY (`LosingPID`) REFERENCES `users` (`usersID`),
+ADD CONSTRAINT `FK_LOSING_PLAYER` FOREIGN KEY (`LosingPID`) REFERENCES `users` (`usersID`),
   ADD CONSTRAINT `FK_WINNING_PLAYER` FOREIGN KEY (`WinningPID`) REFERENCES `users` (`usersID`);
 COMMIT;
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 CREATE TABLE `badges` (
   `badgeId` int(11) NOT NULL,
   `topText` varchar(128) DEFAULT NULL,
   `bottomText` varchar(128) DEFAULT NULL,
   `image` varchar(128) DEFAULT NULL,
   `link` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Dumping data for table `badges`
 --
 
-INSERT INTO `badges` (`badgeId`, `topText`, `bottomText`, `image`) VALUES
-(1, 'Commotion #1', 'Wins: {0}', './concat/WTR175.webp');
-
+INSERT INTO `badges` (`badgeId`, `topText`, `bottomText`, `image`)
+VALUES (
+    1,
+    'Commotion #1',
+    'Wins: {0}',
+    './concat/WTR175.webp'
+  );
 --
 -- Indexes for dumped tables
 --
@@ -169,8 +156,7 @@ INSERT INTO `badges` (`badgeId`, `topText`, `bottomText`, `image`) VALUES
 -- Indexes for table `badges`
 --
 ALTER TABLE `badges`
-  ADD PRIMARY KEY (`badgeId`);
-
+ADD PRIMARY KEY (`badgeId`);
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -179,16 +165,14 @@ ALTER TABLE `badges`
 -- AUTO_INCREMENT for table `badges`
 --
 ALTER TABLE `badges`
-  MODIFY `badgeId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+MODIFY `badgeId` int(11) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 2;
 COMMIT;
-
-
 CREATE TABLE `playerbadge` (
   `playerId` int(11) NOT NULL,
   `badgeId` int(11) NOT NULL,
   `intVariable` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Dumping data for table `playerbadge`
 --
@@ -197,26 +181,22 @@ CREATE TABLE `playerbadge` (
 -- Indexes for table `playerbadge`
 --
 ALTER TABLE `playerbadge`
-  ADD PRIMARY KEY (`playerId`,`badgeId`);
-
-
+ADD PRIMARY KEY (`playerId`, `badgeId`);
 CREATE TABLE `challengeresult` (
   `gameId` int(11) NOT NULL,
   `challengeId` int(11) NOT NULL,
   `playerId` int(11) NOT NULL,
   `result` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 ALTER TABLE `challengeresult`
-  ADD PRIMARY KEY (`gameId`,`playerId`) USING BTREE,
+ADD PRIMARY KEY (`gameId`, `playerId`) USING BTREE,
   ADD KEY `PLAYER_ID_INDEX` (`playerId`);
 ALTER TABLE `challengeresult`
-  ADD CONSTRAINT `FK_GAME_ID` FOREIGN KEY (`gameId`) REFERENCES `completedgame` (`GameID`);
-
-
+ADD CONSTRAINT `FK_GAME_ID` FOREIGN KEY (`gameId`) REFERENCES `completedgame` (`GameID`);
 CREATE TABLE `savedsettings` (
   `playerId` int(11) NOT NULL,
   `settingNumber` int(11) NOT NULL,
   `settingValue` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 ALTER TABLE `savedsettings`
-  ADD PRIMARY KEY (`playerId`,`settingNumber`);
+ADD PRIMARY KEY (`playerId`, `settingNumber`);

@@ -11,12 +11,43 @@
 
 Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your browser right now!
 
-## Developer / Contributor Resources
+## New docker way to run Talishar.
+
+### Prerequisites: 
+ - Docker
+
+If you're on MS operating system please add to this readme any hurdles you've encountered and how you got over them.
+
+First clone the repo:
+```
+git clone https://github.com/Talishar/Talishar.git
+```
+Into the directory we go:
+```
+cd Talishar
+```
+Run the script to do the setup and start the docker containers
+```
+bash start.sh
+```
+You'll then be able to access your local dev Talishar at http://localhost:8080/game/MainMenu.php , play a game or two against yourself and have a play about.
+
+The containers are running in detached (background) mode. To stop them:
+```
+bash stop.sh
+```
+
+### What do the scripts do?
+- As noted in the [Quickstart Guide](https://docs.google.com/document/d/1qVlTrst58iZ_6xD9PkxIgZUiSKzV-S4eTJmK32qzaP0/edit) below you need a unique Redirector file setup. You can customise it, it's required, but it's not checked into the repo. So the script makes a copy of the Redirector file before launching the containers.
+- The stop script just stops the containers by calling `docker compose down`
+- After the first time making the Redirector file, you can bring the docker containers up and down using `docker compose up` and `docker compose down` and whatever else you're used to.
+
+## Developer / Contributor Resources / XAMPP dev env
 
 - [Webserver Dev Quickstart Guide](https://docs.google.com/document/d/1qVlTrst58iZ_6xD9PkxIgZUiSKzV-S4eTJmK32qzaP0/edit)
 - [Docs](https://docs.google.com/document/d/15zRJvMOYnwrFtf-pLW3jwpYEMaUrdnNhlhmfgyE4Rs0)
 
-If you would like to contribute, be sure to join the discord to chat with fellow contributors.
+If you would like to contribute, be sure to join the [discord](https://discord.gg/ErmtqQQEFm) to chat with fellow contributors.
 
 ## Disclaimer
 
