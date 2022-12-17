@@ -30,6 +30,30 @@ $params = explode("-", $popupType);
 $popupType = $params[0];
 $response = new stdClass();
 switch ($popupType) {
+  case "attackSummary":
+    $totalAttack = 0;
+    $totalDefense = 0;
+    $attackModifiers = [];
+    $response->modifiers = array();
+    EvaluateCombatChain($totalAttack, $totalDefense, $attackModifiers);
+    for ($i = 0; $i < count($attackModifiers); $i += 2) {
+      $thisModifier = new stdClass();
+      $idArr = explode("-", $attackModifiers[$i]);
+      $cardID = $idArr[0];
+      $bonus = $attackModifiers[$i + 1];
+      if ($bonus == 0) continue;
+      $effectName = CardName($cardID);
+      if($effectName == "")
+      {
+        $effectName = $cardID;
+        $cardID = "";
+      }
+      $thisModifier->effectName = $effectName;
+      $thisModifier->cardID = $cardID;
+      $thisModifier->modifier = $bonus;
+      array_push($response->modifiers, $thisModifier);
+    }
+    break;
   case "myPitchPopup":
     JSONPopup($response, $myPitch, PitchPieces());
     break;
