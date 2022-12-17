@@ -78,7 +78,7 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
   ?>
 </div>
 
-<div class="CreateGame_Menu" <?php if (IsMobile()) echo (" style='width:65%;' "); ?>>
+<div class="CreateGame_Menu" <?php if(IsMobile()) echo(" style='width:65%;' "); ?>>
   <h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
 
   <?php
@@ -154,9 +154,9 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
   echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
   echo ("<select name='format' id='format'>");
   echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
-  if ($canSeeComp) echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
+  if($canSeeComp) echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
   echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
-  if ($canSeeComp) echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
+  if($canSeeComp) echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
   echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
   echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
   echo ("</select>");
@@ -191,7 +191,7 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
 </div>
 </div>
 
-<div class="NewsMenu" <?php if (IsMobile()) echo (" style='display:none;' "); ?>>
+<div class="NewsMenu" <?php if(IsMobile()) echo(" style='display:none;' "); ?>>
 
   <h1>News</h1>
   <div style="position: relative;">
@@ -213,7 +213,7 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
     <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
 -->
 
-      <!--
+<!--
       <div style="vertical-align:middle; position: relative;">
         <h3>December 10th-11th</h3>
         <h4>Click for more info:</h4><br>
@@ -223,10 +223,6 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
     -->
 
       <div style="vertical-align:middle; position: relative;">
-        <h3>Roguelike</h3>
-        <h4 style="margin-left:5%; margin-right:5%;">Check out a demo of a Flesh and Blood Roguelike!</h4><br>
-        <a href='<?php echo ($roguelikePath); ?>' target='_blank'>
-          <img style=" margin-left:5%; margin-right:5%; margin-top:-5%; margin-bottom:-5%; width:50%; border-radius:5%;" src="./Images/didyouknow/RoguelikeAnnouncement.webp" /></a>
         <h3>Big changes to competitive queues!</h3>
         <h4 style="margin-left:5%; margin-right:5%;">Competitive CC and competitive blitz queues have been updated to try to provide a more competitive experience:</h4>
         <BR>

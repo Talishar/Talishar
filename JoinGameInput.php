@@ -474,7 +474,7 @@ if ($matchup == "") {
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
-  $domain = getenv('DOMAIN') ? getenv('DOMAIN') : 'talishar.net';
+  $domain = getenv('DOMAIN') ?? 'talishar.net';
   if ($playerID == 1) {
     $_SESSION["p1AuthKey"] = $p1Key;
     setcookie("lastAuthKey", $p1Key, time() + 86400, "/", $domain);
@@ -700,9 +700,7 @@ function IsBanned($cardID, $format)
         case "CRU141":
         case "EVR037":
         case "EVR123": // Aether Wildfire
-        case "UPR113":
-        case "UPR114":
-        case "UPR115": // Aether Icevein
+        case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
         case "UPR139": // Hypothermia
           return true;
         default:

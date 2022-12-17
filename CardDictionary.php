@@ -261,18 +261,12 @@ function CharacterHealth($cardID)
       return 15;
     case "DYN025":
       return 22;
-    case "DYN113":
-      return 40;
-    case "DYN114":
-      return 20;
-    case "ROGUE001":
-      return 6;
-    case "ROGUE003":
-      return 10;
-    case "ROGUE004":
-      return 10;
-    case "ROGUE006":
-      return 14;
+    case "DYN113": return 40;
+    case "DYN114": return 20;
+    case "ROGUE001": return 6;
+    case "ROGUE003": return 10;
+    case "ROGUE004": return 10;
+    case "ROGUE006": return 14;
     default:
       return 20;
   }
@@ -291,14 +285,10 @@ function CharacterIntellect($cardID)
   switch ($cardID) {
     case "CRU099":
       return 3;
-    case "ROGUE001":
-      return 3;
-    case "ROGUE003":
-      return 3;
-    case "ROGUE004":
-      return 3;
-    case "ROGUE006":
-      return 3;
+    case "ROGUE001": return 3;
+    case "ROGUE003": return 3;
+    case "ROGUE004": return 3;
+    case "ROGUE006": return 3;
     default:
       return 4;
   }
@@ -306,13 +296,13 @@ function CharacterIntellect($cardID)
 
 function CardSet($cardID)
 {
-  if (!$cardID) return "";
+  if(!$cardID) return "";
   return substr($cardID, 0, 3);
 }
 
 function CardClass($cardID)
 {
-  if (!$cardID) return "";
+  if(!$cardID) return "";
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3));
   switch ($set) {
@@ -896,8 +886,7 @@ function GetAbilityType($cardID, $index = -1)
 function GetAbilityTypes($cardID)
 {
   switch ($cardID) {
-    case "ARC003":
-    case "CRU101":
+    case "ARC003": case "CRU101":
       return "A,AA";
     default:
       return "";
@@ -908,8 +897,7 @@ function GetAbilityNames($cardID, $index = -1)
 {
   global $currentPlayer;
   switch ($cardID) {
-    case "ARC003":
-    case "CRU101":
+    case "ARC003": case "CRU101":
       $character = &GetPlayerCharacter($currentPlayer);
       if ($index == -1) return "";
       $rv = "Add_a_steam_counter";
@@ -1027,18 +1015,15 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     case "AR":
       return $phase == "A";
     case "DR":
-      if ($phase != "D") return false;
-      if (!IsDefenseReactionPlayable($cardID, $from)) {
-        $restriction = "Defense reaction not playable.";
-        return false;
-      }
+      if($phase != "D") return false;
+      if(!IsDefenseReactionPlayable($cardID, $from)) { $restriction = "Defense reaction not playable."; return false; }
       return true;
     default:
       return false;
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFrom = "")
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFrom="")
 {
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer;
   if ($player == "") $player = $currentPlayer;
@@ -1060,18 +1045,14 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playerFro
       return "BANISH";
     case "ELE113":
       return "BANISH";
-    case "ELE119":
-    case "ELE120":
-    case "ELE121":
+    case "ELE119": case "ELE120": case "ELE121":
       if ($playerFrom == "ARS" && $from == "CHAINCLOSING") return "BOTDECK";
       return "GY";
     case "ELE140":
     case "ELE141":
     case "ELE142":
       return "BANISH";
-    case "MON066":
-    case "MON067":
-    case "MON068":
+    case "MON066": case "MON067": case "MON068":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer) && $from == "CHAINCLOSING") return "SOUL";
       return "GY";
     case "MON087":
@@ -1173,26 +1154,17 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "WTR118":
       if (count($combatChain) == 0) return true;
       return CardType($combatChain[0]) != "W";
-    case "WTR120":
-    case "WTR121":
-    case "WTR123":
-    case "WTR124":
-    case "WTR125":
-    case "WTR135":
-    case "WTR136":
-    case "WTR137":
+    case "WTR120": case "WTR121": case "WTR123":
+    case "WTR124": case "WTR125":
+    case "WTR135": case "WTR136": case "WTR137":
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "W";
-    case "WTR138":
-    case "WTR139":
-    case "WTR140":
+    case "WTR138": case "WTR139": case "WTR140":
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "W";
-    case "WTR132":
-    case "WTR133":
-    case "WTR134":
+    case "WTR132": case "WTR133": case "WTR134":
       if (count($combatChain) == 0) return true;
       if (!RepriseActive()) return false;
       $type = CardType($combatChain[0]);
@@ -1205,16 +1177,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CardType($combatChain[0]) != "AA") return true;
       if (CardCost($combatChain[0]) > 1) return true;
       return false;
-    case "WTR206":
-    case "WTR207":
-    case "WTR208":
+    case "WTR206": case "WTR207": case "WTR208":
       if (count($combatChain) == 0) return true;
       $subtype = CardSubtype($combatChain[0]);
       if ($subtype == "Club" || $subtype == "Hammer" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) >= 2)) return false;
       return true;
-    case "WTR209":
-    case "WTR210":
-    case "WTR211":
+    case "WTR209": case "WTR210": case "WTR211":
       if (count($combatChain) == 0) return true;
       $subtype = CardSubtype($combatChain[0]);
       if ($subtype == "Sword" || $subtype == "Dagger" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1)) return false;
@@ -1231,14 +1199,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardType($combatChain[0]) != "AA" || $myItems[$index + 2] != 2));
     case "ARC041":
       return !ArsenalHasFaceDownCard($player); //Restricted if you don't have a face down card
-    case "CRU082":
-    case "CRU083":
+    case "CRU082": case "CRU083":
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "W";
-    case "CRU088":
-    case "CRU089":
-    case "CRU090":
+    case "CRU088": case "CRU089": case "CRU090":
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "W";
@@ -1258,51 +1223,29 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (count($combatChain) == 0) return true;
       $type = CardType($combatChain[0]);
       return $type != "AA";
-    case "CRU189":
-    case "CRU190":
-    case "CRU191":
+    case "CRU189": case "CRU190": case "CRU191":
       if (count($combatChain) <= 2) return true;
       $found = SearchCombatChainLink($player, "AA");
       return $found == "" || $found == "0";
     case "MON000":
       return $from == "PLAY" && SearchCount(SearchHand($player, "", "", -1, -1, "", "", false, false, 2)) < 2;
-    case "MON001":
-    case "MON002":
+    case "MON001": case "MON002":
       return count($mySoul) == 0;
-    case "MON029":
-    case "MON030":
+    case "MON029": case "MON030":
       return count($mySoul) == 0 || !HasIncreasedAttack();
     case "MON062":
       return count($mySoul) < 3;
-    case "MON084":
-    case "MON085":
-    case "MON086":
+    case "MON084": case "MON085": case "MON086":
       return count($combatChain) == 0;
-    case "MON144":
-    case "MON145":
-    case "MON146":
+    case "MON144": case "MON145": case "MON146":
       return GetClassState($player, $CS_Num6PowBan) == 0;
-    case "MON126":
-    case "MON127":
-    case "MON128":
-    case "MON129":
-    case "MON130":
-    case "MON131":
-    case "MON132":
-    case "MON133":
-    case "MON134":
-    case "MON135":
-    case "MON136":
-    case "MON137":
-    case "MON141":
-    case "MON142":
-    case "MON143":
-    case "MON147":
-    case "MON148":
-    case "MON149":
-    case "MON150":
-    case "MON151":
-    case "MON152":
+    case "MON126": case "MON127": case "MON128":
+    case "MON129": case "MON130": case "MON131":
+    case "MON132": case "MON133": case "MON134":
+    case "MON135": case "MON136": case "MON137":
+    case "MON141": case "MON142": case "MON143":
+    case "MON147": case "MON148": case "MON149":
+    case "MON150": case "MON151": case "MON152":
       return count($myDiscard) < 3;
     case "MON189":
       return SearchCount(SearchBanish($player, "", "", -1, -1, "", "", true)) < 6;
@@ -1321,21 +1264,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return SearchDiscard($player, "AA", "", 1) == "";
     case "MON305":
       return SearchDiscard($player, "AA", "", 0) == "";
-    case "ELE031":
-    case "ELE032":
-    case "ELE115":
+    case "ELE031": case "ELE032": case "ELE115":
       return !ArsenalHasFaceDownCard($player);
     case "ELE118":
       return $from == "ARS" || ArsenalEmpty($player);
-    case "ELE125":
-    case "ELE126":
-    case "ELE127":
+    case "ELE125": case "ELE126": case "ELE127":
       if (count($combatChain) <= 2) return true;
       $found = CombineSearches(SearchCombatChainLink($defPlayer, "A", talent: "EARTH,ELEMENTAL"), SearchCombatChainLink($defPlayer, "AA", talent: "EARTH,ELEMENTAL"));
       return $found == "" || $found == "0";
-    case "ELE140":
-    case "ELE141":
-    case "ELE142":
+    case "ELE140": case "ELE141": case "ELE142":
       return SowTomorrowIndices($player, $cardID) == "";
     case "ELE143":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
@@ -1429,9 +1366,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return ($from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1);
     case "EVR180":
       if ($from != "PLAY") return false;
-      if (count($layers) > 0) {
+      if (count($layers) > 0){
         for ($i = 0; $i < count($layers); $i++) {
-          if (ArcaneDamage($layers[$i]) >= GetHealth($player) && $layers[$i + 3] == "THEIRCHAR-0") return false;
+          if (ArcaneDamage($layers[$i]) >= GetHealth($player) && $layers[$i+3] == "THEIRCHAR-0") return false;
         }
       }
       if (count($combatChain) > 0) {
@@ -1485,24 +1422,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "UPR169":
       return SearchLayer($otherPlayer, "A") == "";
       //Mandatory Target Ash
-    case "UPR006":
-    case "UPR007":
-    case "UPR008":
-    case "UPR009":
-    case "UPR010":
-    case "UPR011":
-    case "UPR012":
-    case "UPR013":
-    case "UPR014":
-    case "UPR015":
-    case "UPR016":
-    case "UPR017":
-    case "UPR036":
-    case "UPR037":
-    case "UPR038":
-    case "UPR039":
-    case "UPR040":
-    case "UPR041":
+    case "UPR006": case "UPR007": case "UPR008":
+    case "UPR009": case "UPR010": case "UPR011":
+    case "UPR012": case "UPR013": case "UPR014":
+    case "UPR015": case "UPR016": case "UPR017":
+    case "UPR036": case "UPR037": case "UPR038":
+    case "UPR039": case "UPR040": case "UPR041":
       $myAsh = &GetPermanents($player);
       $ash = 0;
       for ($i = 0; $i < count($myAsh); ++$i) {
@@ -1519,38 +1444,27 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ELE196":
     case "ELE197":
       return SearchCurrentTurnEffects($cardID, $player);
-    case "DYN005":
-      return count(GetHand($player)) != 0;
+    case "DYN005": return count(GetHand($player)) != 0;
     case "DYN007":
       return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
-    case "DYN022":
-    case "DYN023":
-    case "DYN024":
+    case "DYN022": case "DYN023": case "DYN024":
       return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 0 : 1;
     case "DYN088":
       $char = &GetPlayerCharacter($player);
       return $char[$index + 2] < 2;
-    case "DYN079":
-    case "DYN080":
-    case "DYN081":
-      if (count($combatChain) == 0) return true;
+    case "DYN079": case "DYN080": case "DYN081":
+      if(count($combatChain) == 0) return true;
       $subtype = CardSubType($combatChain[0]);
       return $subtype != "Sword" && $subtype != "Dagger";
     case "DYN117":
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || CardType($combatChain[0]) != "AA";
     case "DYN118":
       return count($combatChain) == 0 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || CardType($combatChain[0]) != "AA";
-    case "DYN130":
-    case "DYN131":
-    case "DYN132":
+    case "DYN130": case "DYN131": case "DYN132":
       return NumCardsBlocking() < 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer);
-    case "DYN148":
-    case "DYN149":
-    case "DYN150":
+    case "DYN148": case "DYN149": case "DYN150":
       return count($combatChain) <= 1 || !ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) || ContractType($combatChain[0]) == "";
-    case "DYN168":
-    case "DYN169":
-    case "DYN170":
+    case "DYN168": case "DYN169": case "DYN170":
       return !ArsenalHasFaceUpArrowCard($mainPlayer);
     case "DYN212":
       return CountAura("MON104", $currentPlayer) < 1;
@@ -1659,15 +1573,12 @@ function HasBladeBreak($cardID)
 function HasBattleworn($cardID)
 {
   switch ($cardID) {
-    case "WTR004":
-    case "WTR005":
-    case "WTR041":
-    case "WTR042":
+    case "WTR004": case "WTR005":
+    case "WTR041": case "WTR042":
       return true;
     case "WTR080":
       return true;
-    case "WTR116":
-    case "WTR117":
+    case "WTR116": case "WTR117":
       return true;
     case "ARC004":
       return true;
@@ -1677,8 +1588,7 @@ function HasBattleworn($cardID)
       return true;
     case "CRU053":
       return true;
-    case "MON107":
-    case "MON108":
+    case "MON107": case "MON108":
       return true;
     case "MON122":
       return true;
@@ -1728,15 +1638,11 @@ function HasTemper($cardID)
 function HasDynamicBlock($cardID) // For Equipments
 {
   switch ($cardID) {
-    case "MON241":
-    case "MON242":
-    case "MON243":
-    case "MON244":
-    case "RVD005":
-    case "RVD006":
-      return true;
-    default:
-      return false;
+    case "MON241": case "MON242": case "MON243":
+    case "MON244": case "RVD005": case "RVD006":
+    return true;
+  default:
+    return false;
   }
 }
 
@@ -1971,8 +1877,7 @@ function DoesEffectGrantDominate($cardID)
 function CharacterNumUsesPerTurn($cardID)
 {
   switch ($cardID) {
-    case "WTR038":
-    case "WTR039":
+    case "WTR038": case "WTR039":
       return 999;
     case "ELE034":
       return 2;
@@ -2003,26 +1908,16 @@ function CharacterDefaultActiveState($cardID)
       return 1;
     case "ELE174": // Mark of Lightning
       return 1;
-    case "ELE173":
-    case "MON061":
-    case "MON090":
-    case "MON188":
-    case "MON400": // Spellvoid Equipments
-    case "MON401":
-    case "MON402":
-    case "DYN236":
-    case "DYN237":
-    case "DYN238":
-    case "DYN239":
+    case "ELE173": case "MON061": case "MON090":
+    case "MON188": case "MON400": // Spellvoid Equipments
+    case "MON401": case "MON402":
+    case "DYN236": case "DYN237":
+    case "DYN238": case "DYN239":
       return 1;
     case "EVR037": // Mask of the Pouncing Lynx
       return 1;
-    case "UPR004":
-    case "UPR047":
-    case "UPR125":
-    case "UPR184":
-    case "UPR185":
-    case "UPR186": // Quell
+    case "UPR004": case "UPR047": case "UPR125":
+    case "UPR184": case "UPR185": case "UPR186": // Quell
       return 0;
     case "DYN006": // Beaten Trackers
       return 1;
@@ -2036,20 +1931,14 @@ function AuraDefaultHoldTriggerState($cardID)
 {
   switch ($cardID) {
     case "WTR046":
-      return 0; //Forged for War
+      return 0 ; //Forged for War
     case "WTR047":
       return 0; //Show Time!
-    case "WTR054":
-    case "WTR055":
-    case "WTR056":
+    case "WTR054": case "WTR055": case "WTR056":
       return 0; //Blessing of Deliverance
-    case "WTR069":
-    case "WTR070":
-    case "WTR071":
+    case "WTR069": case "WTR070": case "WTR071":
       return 0; //Emerging Power
-    case "WTR072":
-    case "WTR073":
-    case "WTR074":
+    case "WTR072": case "WTR073": case "WTR074":
       return 0; //Stonewall Confidence
     case "WTR075":
       return 0; //Seismic Surge
@@ -2057,13 +1946,9 @@ function AuraDefaultHoldTriggerState($cardID)
       return 1; //Runechant
     case "CRU028":
       return 0; //Stamp Authority
-    case "CRU029":
-    case "CRU030":
-    case "CRU031":
+    case "CRU029": case "CRU030": case "CRU031":
       return 0; //Towering Titan
-    case "CRU038":
-    case "CRU039":
-    case "CRU040":
+    case "CRU038": case "CRU039": case "CRU040":
       return 0; //Emerging Dominance
     case "CRU075":
       return 0; //Zen Token
@@ -2071,35 +1956,21 @@ function AuraDefaultHoldTriggerState($cardID)
       return 0; //Runeblood Barrier
     case "MON186":
       return 0; //Soul Shackle
-    case "ELE025":
-    case "ELE026":
-    case "ELE027":
+    case "ELE025": case "ELE026": case "ELE027":
       return 0; //Emerging Avalanche
-    case "ELE028":
-    case "ELE029":
-    case "ELE030":
+    case "ELE028": case "ELE029": case "ELE030":
       return 0; //Strength of Sequoia
-    case "ELE206":
-    case "ELE207":
-    case "ELE208":
+    case "ELE206": case "ELE207": case "ELE208":
       return 0; //Embolden
-    case "ELE109":
-    case "ELE110":
-    case "ELE111":
+    case "ELE109": case "ELE110": case "ELE111":
       return 0; //Embodiment of Earth and Lightning, Frostbite
-    case "EVR107":
-    case "EVR108":
-    case "EVR109":
+    case "EVR107": case "EVR108": case "EVR109":
       return 0; //Runeblood incantation
-    case "EVR131":
-    case "EVR132":
-    case "EVR133":
+    case "EVR131": case "EVR132": case "EVR133":
       return 0; //Pyroglyphic Protection
     case "UPR190":
       return 0; //Fog Down
-    case "UPR218":
-    case "UPR219":
-    case "UPR220":
+    case "UPR218": case "UPR219": case "UPR220":
       return 0; //Sigil of Protection
     case "DYN217":
       return 0; //Tome of Aoe
@@ -2212,12 +2083,8 @@ function HasCombo($cardID)
     case "EVR043":
       return true;
     case "DYN047":
-    case "DYN056":
-    case "DYN057":
-    case "DYN058":
-    case "DYN059":
-    case "DYN060":
-    case "DYN061":
+    case "DYN056": case "DYN057": case "DYN058":
+    case "DYN059": case "DYN060": case "DYN061":
       return true;
   }
   return false;
@@ -2282,12 +2149,8 @@ function ComboActive($cardID = "")
     case "EVR043":
       return $LA == "EVR041" || $LA == "EVR042" || $LA == "EVR043";
     case "DYN047":
-    case "DYN056":
-    case "DYN057":
-    case "DYN058":
-    case "DYN059":
-    case "DYN060":
-    case "DYN061":
+    case "DYN056": case "DYN057": case "DYN058":
+    case "DYN059": case "DYN060": case "DYN061":
       return $LA == "DYN065";
   }
   return false;
@@ -2499,11 +2362,11 @@ function SpellVoidAmount($cardID, $player)
     case "MON402":
       return 1;
     case "DYN236":
-    case "DYN237":
-    case "DYN238":
-    case "DYN239":
+		case "DYN237":
+		case "DYN238":
+		case "DYN239":
       return 1;
-    case "DYN246":
+		case "DYN246":
       return 1;
   }
   return 0;
@@ -2586,10 +2449,8 @@ function Is1H($cardID)
     case "ELE003":
     case "ELE202":
       return true;
-    case "DYN069":
-    case "DYN070":
-    case "DYN115":
-    case "DYN116":
+    case "DYN069": case "DYN070":
+    case "DYN115": case "DYN116":
       return true;
     default:
       return false;
@@ -2619,24 +2480,16 @@ function AbilityPlayableFromCombatChain($cardID)
 function CardCaresAboutPitch($cardID)
 {
   global $currentPlayer;
-  if (SearchCurrentTurnEffects("ELE001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("ELE002-SHIYANA", $currentPlayer)) return true;
+  if(SearchCurrentTurnEffects("ELE001-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("ELE002-SHIYANA", $currentPlayer)) return true;
   switch ($cardID) {
     case "ELE001":
     case "ELE002":
     case "ELE003":
       return true;
-    case "DYN172":
-    case "DYN173":
-    case "DYN174":
-    case "DYN176":
-    case "DYN177":
-    case "DYN178":
-    case "DYN182":
-    case "DYN183":
-    case "DYN184":
-    case "DYN185":
-    case "DYN186":
-    case "DYN187":
+    case "DYN172": case "DYN173": case "DYN174":
+    case "DYN176": case "DYN177": case "DYN178":
+		case "DYN182": case "DYN183": case "DYN184":
+		case "DYN185": case "DYN186": case "DYN187":
       return true;
     default:
       return false;
@@ -2646,53 +2499,29 @@ function CardCaresAboutPitch($cardID)
 function CardHasAltArt($cardID)
 {
   switch ($cardID) {
-    case "WTR002":
-    case "WTR150":
-    case "WTR162":
+    case "WTR002": case "WTR150": case "WTR162":
     case "WTR224":
       return true;
-    case "MON155":
-    case "MON215":
-    case "MON216":
-    case "MON217":
-    case "MON219":
-    case "MON220":
+    case "MON155": case "MON215": case "MON216":
+    case "MON217": case "MON219": case "MON220":
       return true;
     case "ELE146":
       return true;
-    case "UPR006":
-    case "UPR007":
-    case "UPR008":
-    case "UPR009":
-    case "UPR010":
-    case "UPR011":
-    case "UPR012":
-    case "UPR013":
-    case "UPR014":
-    case "UPR015":
-    case "UPR016":
-    case "UPR017":
+    case "UPR006": case "UPR007": case "UPR008":
+    case "UPR009": case "UPR010": case "UPR011":
+    case "UPR012": case "UPR013": case "UPR014":
+    case "UPR015": case "UPR016": case "UPR017":
       return true;
-    case "UPR042":
-    case "UPR043":
-    case "UPR169":
+    case "UPR042": case "UPR043": case "UPR169":
       return true;
-    case "UPR406":
-    case "UPR407":
-    case "UPR408":
-    case "UPR409":
-    case "UPR410":
-    case "UPR411":
-    case "UPR412":
-    case "UPR413":
-    case "UPR414":
-    case "UPR415":
-    case "UPR416":
-    case "UPR417":
+    case "UPR406": case "UPR407": case "UPR408":
+    case "UPR409": case "UPR410": case "UPR411":
+    case "UPR412": case "UPR413": case "UPR414":
+    case "UPR415": case "UPR416": case "UPR417":
       return true;
     case "DYN234":
       return true;
-    default:
+  default:
       return false;
   }
 }
@@ -2711,12 +2540,10 @@ function isIyslander($character)
 
 function WardAmount($cardID)
 {
-  switch ($cardID) {
-    case "DYN213":
-    case "DYN214":
-      return 1;
-    default:
-      return 0;
+  switch($cardID)
+  {
+    case "DYN213": case "DYN214": return 1;
+    default: return 0;
   }
 }
 
@@ -2724,22 +2551,12 @@ function HasWard($cardID)
 {
   switch ($cardID) {
     case "MON103":
-    case "UPR039":
-    case "UPR040":
-    case "UPR041":
-    case "UPR218":
-    case "UPR219":
-    case "UPR220":
+    case "UPR039": case "UPR040": case "UPR041":
+    case "UPR218": case "UPR219": case "UPR220":
     case "DYN213":
-    case "DYN214":
-    case "DYN215":
-    case "DYN217":
-    case "DYN218":
-    case "DYN219":
-    case "DYN220":
-    case "DYN221":
-    case "DYN222":
-    case "DYN223":
+    case "DYN214": case "DYN215": case "DYN217":
+    case "DYN218": case "DYN219": case "DYN220":
+    case "DYN221": case "DYN222": case "DYN223":
     case "DYN612":
       return true;
     default:
