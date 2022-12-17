@@ -101,7 +101,7 @@ function JSONPopup($response, $zone, $zonePieces)
   $response->cards = array();
   for($i=0; $i<count($zone); $i+=$zonePieces)
   {
-    array_push($response->cards, $zone[$i]);
+    array_push($response->cards, JSONRenderedCard($zone[$i]));
   }
 }
 /*
