@@ -254,10 +254,13 @@ $isMobile = IsMobile();
         <table>
           <?php
 
-          $weaponArray = explode(",", $weapons);
-          $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
-          $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
-          if(isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
+          if(isset($weapons))
+          {
+            $weaponArray = explode(",", $weapons);
+            $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
+            $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
+            if(isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
+          }
           if(isset($offhand) && isset($offhandSB)) DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
 
           ?>
@@ -268,7 +271,7 @@ $isMobile = IsMobile();
     <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:922px; width:280px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
 
       <?php
-      echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
+      if(isset($deck)) echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
       ?>
     </div>
 
@@ -277,18 +280,21 @@ $isMobile = IsMobile();
       <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
       <?php
-      $cardSize = 110;
-      $count = 0;
-      sort($deck);
-      for ($i = 0; $i < count($deck); ++$i) {
-        $id = "DECK-" . $count;
-        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
-        ++$count;
-      }
-      for ($i = 0; $i < count($deckSB); ++$i) {
-        $id = "DECK-" . $count;
-        echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
-        ++$count;
+      if(isset($deck))
+      {
+        $cardSize = 110;
+        $count = 0;
+        sort($deck);
+        for ($i = 0; $i < count($deck); ++$i) {
+          $id = "DECK-" . $count;
+          echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+          ++$count;
+        }
+        for ($i = 0; $i < count($deckSB); ++$i) {
+          $id = "DECK-" . $count;
+          echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deckSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+          ++$count;
+        }
       }
       ?>
     </div>
