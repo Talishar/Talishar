@@ -1,16 +1,13 @@
 <?php
 
-$servername = getenv("MYSQL_SERVER_NAME") != false ? getenv("MYSQL_SERVER_NAME") : "localhost";
-$dBUsername =
-	getenv("MYSQL_SERVER_USER_NAME") != false ? getenv("MYSQL_SERVER_USER_NAME") : "root";
-$dBPassword = getenv("MYSQL_ROOT_PASSWORD") != false ? getenv("MYSQL_ROOT_PASSWORD") : "";
+$servername = getenv("MYSQL_SERVER_NAME") ?? "localhost";
+$dBUsername = getenv("MYSQL_SERVER_USER_NAME") ?? "root";
+$dBPassword = getenv("MYSQL_ROOT_PASSWORD") ?? "";
 $dBName = "fabonline";
 
-$reportingServername =
-	getenv("MYSQL_SERVER_NAME") != false ? getenv("MYSQL_SERVER_NAME") : "localhost";
-$reportingDBUsername = getenv("MYSQL_SERVER_USER_NAME") != false ? getenv("MYSQL_SERVER_USER_NAME") : "root";
-$reportingDBPassword =
-	getenv("MYSQL_ROOT_PASSWORD") != false ? getenv("MYSQL_ROOT_PASSWORD") : "";
+$reportingServername = getenv("MYSQL_SERVER_NAME") ?? "localhost";
+$reportingDBUsername = getenv("MYSQL_SERVER_USER_NAME") ?? "root";
+$reportingDBPassword = getenv("MYSQL_ROOT_PASSWORD") ?? "";
 $reportingDBName = "fabonline";
 
 $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);

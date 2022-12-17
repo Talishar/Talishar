@@ -1,12 +1,13 @@
 <?php
 
-// $useRedis = getenv('REDIS_ENABLED');
+// $useRedis = getenv('REDIS_ENABLED') ?? false;
 $useRedis = true;
+$redisHost = getenv('REDIS_HOST') ?? '127.0.0.1';
+$redisPort = getenv('REDIS_PORT') ?? 6379;
 
 if ($useRedis) {
   $redis = new Redis();
-  $redis->connect('127.0.0.1', 6379);
-  // $redis->connect(getenv('REDIS_HOST'), 6379);
+  $redis->connect($redisHost, $redisPort);
 }
 
 function WriteCache($name, $data)
