@@ -4,6 +4,7 @@ ob_start();
 include "HostFiles/Redirector.php";
 include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
+include "Libraries/NetworkingLibraries.php";
 include "GameLogic.php";
 include "GameTerms.php";
 include "Libraries/StatFunctions.php";
