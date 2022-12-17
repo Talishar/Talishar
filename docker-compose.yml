@@ -6,7 +6,7 @@ services:
       context: .
     restart: always
     volumes:
-      - "./:/var/www/html/FaBOnline"
+      - "./:/var/www/html/game"
     ports:
       - "8080:80"
     depends_on:

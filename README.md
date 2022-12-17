@@ -18,6 +18,10 @@ Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your
 
 If you would like to contribute, be sure to join the discord to chat with fellow contributors.
 
+## We now have docker!
+
+Once you've downloaded the repo, first you need to configure the 
+
 ## Disclaimer
 
 All artwork and card images © Legend Story Studios.

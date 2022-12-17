@@ -11,7 +11,7 @@
   }
 
   $uri .= $_SERVER['HTTP_HOST'];
-  $redirectPath = $uri . "/FaBOnline";
+  $redirectPath = $uri . "/game";
   $autoDeleteGames = false;
 
 ?>
