@@ -10,7 +10,7 @@ $reportingDBUsername = (!empty(getenv("MYSQL_SERVER_USER_NAME")) ? getenv("MYSQL
 $reportingDBPassword = (!empty(getenv("MYSQL_ROOT_PASSWORD")) ? getenv("MYSQL_ROOT_PASSWORD") : "");
 $reportingDBName = "fabonline";
 
-$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+$conn = GetDBConnection();
 
 if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
@@ -19,11 +19,23 @@ if (!$conn) {
 function GetDBConnection()
 {
 	global $servername, $dBUsername, $dBPassword, $dBName;
-	return mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+	try {
+		$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+	} catch (\Exception $e) {
+		$conn = false;
+	}
+
+	return $conn;
 }
 
 function GetReportingDBConnection()
 {
 	global $reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName;
-	return mysqli_connect($reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName);
+	try {
+		$conn = mysqli_connect($reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName);
+	} catch (\Exception $e) {
+		$conn = false;
+	}
+
+	return $conn;
 }
