@@ -36,23 +36,53 @@ function ReadCache($name)
   global $useRedis, $redis;
   if($name == 0) return "";
 
+  $data = "";
   if($useRedis)
   {
-    $data = $redis->get($name);
+    $data = RedisReadCache($name);
+    if($data == "" && is_numeric($name))
+    {
+      $data = ShmopReadCache($name);
+    }
   }
   else {
-    @$id = shmop_open($name, "a", 0, 0);
-    if(empty($id) || $id == false)
+    $data = ShmopReadCache($name);
+    if($data == "")
     {
-      return "";
+      $data = RedisReadCache($name);
     }
-    $data = shmop_read($id, 0, shmop_size($id));
-    $data = preg_replace_callback( '!s:(\d+):"(.*?)";!', function($match) {
-      return ($match[1] == strlen($match[2])) ? $match[0] : 's:' . strlen($match[2]) . ':"' . $match[2] . '";';
-      }, $data);
   }
 
   return unserialize($data);
+}
+
+function ShmopReadCache($name)
+{
+  @$id = shmop_open($name, "a", 0, 0);
+  if(empty($id) || $id == false)
+  {
+    return "";
+  }
+  $data = shmop_read($id, 0, shmop_size($id));
+  $data = preg_replace_callback( '!s:(\d+):"(.*?)";!', function($match) {
+    return ($match[1] == strlen($match[2])) ? $match[0] : 's:' . strlen($match[2]) . ':"' . $match[2] . '";';
+    }, $data);
+  return $data;
+}
+
+function RedisReadCache($name)
+{
+  global $redis;
+  if(!isset($redis)) $redis = RedisConnect();
+  return $data = $redis->get($name);
+}
+
+function RedisConnect()
+{
+  global $redis, $redisHost, $redisPort;
+  $redis = new Redis();
+  $redis->connect($redisHost, $redisPort);
+  return $redis;
 }
 
 function DeleteCache($name)
@@ -63,13 +93,12 @@ function DeleteCache($name)
     $redis->del($name);
     $redis->del($name . "GS");
   }
-  else {
-    $id=shmop_open($name, "w", 0644, 128);
-    if($id)
-    {
-      shmop_delete($id);
-      shmop_close($id); //shmop_close is deprecated
-    }
+  //Always try to delete shmop
+  $id=shmop_open($name, "w", 0644, 128);
+  if($id)
+  {
+    shmop_delete($id);
+    shmop_close($id); //shmop_close is deprecated
   }
 }
 
@@ -100,10 +129,13 @@ function GetCachePiece($name, $piece)
 function GamestateUpdated($gameName)
 {
   global $currentPlayer;
-  SetCachePiece($gameName, 1, (intval(GetCachePiece($gameName, 1)) + 1));
+  $cache = ReadCache($gameName);
+  $cacheArr = explode(SHMOPDelimiter(), $cache);
+  $cacheArr[0]++;
   $currentTime = round(microtime(true) * 1000);
-  SetCachePiece($gameName, 6, $currentTime);
-  SetCachePiece($gameName, 9, $currentPlayer);
+  $cacheArr[5] = $currentTime;
+  $cacheArr[8] = $currentPlayer;
+  WriteCache($gameName, implode(SHMOPDelimiter(), $cacheArr));
 }
 
 ?>
