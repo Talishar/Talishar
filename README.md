@@ -13,7 +13,7 @@ Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your
 
 ## New docker way to run Talishar.
 
-### Prerequisites: 
+### Prerequisites:
  - Docker
 
 If you're on MS operating system please add to this readme any hurdles you've encountered and how you got over them.
@@ -29,6 +29,7 @@ cd Talishar
 Run the script to do the setup and start the docker containers
 ```
 bash start.sh
+NOTE: If you're on windows, the newline characters might mess up this script. It's only two lines so you can just run them manually in windows powershell.
 ```
 You'll then be able to access your local dev Talishar at http://localhost:8080/game/MainMenu.php , play a game or two against yourself and have a play about.
 
