@@ -148,6 +148,7 @@ $p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
 $p2TotalTime = trim($gamestateContent[67+$numChainLinks]); //Player 2 total time
 $lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
 $roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
+$events = GetStringArray($gamestateContent[70+$numChainLinks]); //Events
 
 fclose($handler);
 BuildMyGamestate($playerID);

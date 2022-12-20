@@ -93,6 +93,7 @@ $gamestateContent .= $p1TotalTime . "\r\n"; //Player 1 total time
 $gamestateContent .= $p2TotalTime . "\r\n"; //Player 2 total time
 $gamestateContent .= $lastUpdateTime . "\r\n"; //Last update time
 $gamestateContent .= $roguelikeGameID . "\r\n"; //Last update time
+$gamestateContent .= implode(" ", $events) . "\r\n";//Events
 
 fwrite($handler, $gamestateContent);
 

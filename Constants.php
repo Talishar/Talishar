@@ -180,6 +180,13 @@ function SoulPieces()
   return 1;
 }
 
+//0 - Event type
+//1 - Event Value
+function EventPieces()
+{
+  return 2;
+}
+
 $SHMOP_CURRENTPLAYER = 9;
 $SHMOP_ISREPLAY = 10;//0 = not replay, 1 = replay
 
