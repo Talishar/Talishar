@@ -544,6 +544,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerEffects = $playerEffects;
 
+  //Events
+  $newEvents = new stdClass();
+  $newEvents->eventArray = array();
+  for($i=0; $i<count($events); $i+=EventPieces())
+  {
+    $thisEvent = new stdClass();
+    $thisEvent->EventType = $events[$i];
+    $thisEvent->EventValue = $events[$i+1];
+    array_push($newEvents->eventArray, $thisEvent);
+  }
+  $response->newEvents = $newEvents;
+
   // TODO: determine the turnPhase and what corresponds to what.
   // Phase of the turn (for the tracker widget)
   $turnPhase = new stdClass();
