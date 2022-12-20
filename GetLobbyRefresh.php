@@ -100,12 +100,22 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   }
 
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
+    if($visibility == "private")
+    {
+      if($p1id == "")
+      {
+        echo("<div>&#10071;This is a private lobby. You need to log in for matchmaking.</div><br>");
+      }
+      else {
+        echo("<div>&#10071;This is a private lobby. You will need to invite an opponent.</div><br>");
+      }
+    }
     echo ("<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Invite Link</button></div>");
   }
 
   // Chat Log
   echo ("<br>");
-  echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:115px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
+  echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:140px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   //if(!IsMobile()) echo("<BR>");
   //echo ("<div id='gamelog' style='text-align:left; position:relative; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); margin-top:6px; height:63%; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);

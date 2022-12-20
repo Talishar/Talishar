@@ -35,7 +35,7 @@ if (!empty($_SESSION['error'])) {
 $language = TryGet("language", 1);
 $settingArray = [];
 $defaultFormat = 0;
-$defaultVisibility = 1;
+$defaultVisibility = (isset($_SESSION["useruid"]) ? 1 : 0);
 if (isset($_SESSION["userid"])) {
   $savedSettings = LoadSavedSettings($_SESSION["userid"]);
   for ($i = 0; $i < count($savedSettings); $i += 2) {
@@ -56,6 +56,7 @@ $languageText = ($language == 1 ? "Language" : "言語");
 $createNewGameText = ($language == 1 ? "Create New Game" : "新しいゲームを作成する");
 $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ");
 
+$canSeeNormalQueue = isset($_SESSION["useruid"]);
 $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_SESSION["userKarma"] >= 80;
 
 ?>
@@ -153,19 +154,25 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
   <?php
   echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
   echo ("<select name='format' id='format'>");
-  echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
+  if($canSeeNormalQueue) echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
   if($canSeeComp) echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
-  echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
+  if($canSeeNormalQueue) echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
   if($canSeeComp) echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
-  echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
+  if($canSeeNormalQueue) echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
+  if($canSeeNormalQueue) echo ("<option value='clash'" . ($defaultFormat == 6 ? " selected" : "") . ">Clash</option>");
   echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
   echo ("</select>");
   ?>
   <BR>
   <BR>
 
-    <input type="radio" id="public" name="visibility" value="public" <?php if ($defaultVisibility == 1) echo 'checked="checked"'; ?>>
-    <label style='margin-left:-12px;' for="public">Public</label>
+    <?php
+      if($canSeeNormalQueue)
+      {
+        echo '<input style="margin-left:20px;" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
+        echo('<label style="margin-left:2px;" for="public">Public</label>');
+      }
+     ?>
 
     <input type="radio" id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="private">Private</label><br><br>
@@ -223,14 +230,10 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
     -->
 
       <div style="vertical-align:middle; position: relative;">
-        <h3>Big changes to competitive queues!</h3>
-        <h4 style="margin-left:5%; margin-right:5%;">Competitive CC and competitive blitz queues have been updated to try to provide a more competitive experience:</h4>
+        <h3>Big changes to matchmaking!</h3>
+        <h4 style="margin-left:5%; margin-right:5%;">Login is now required for matchmaking</h4>
         <BR>
-        1. Must be logged in to access comp queues<BR><BR>
-        2. Must have >= 80 karma to access comp queues<BR><BR>
-        3. Dodging comp queues will give -1 karma<BR><BR>
-        4. Thumbs up give +1 karma, thumbs down give -4 karma<BR><BR>
-        5. Max deck limit is enforced for comp cc (can't bring huge sideboard to tech your matchup)<BR><BR>
+        If logged out, you can still make private games to play with friends, against yourself in multiple tabs, or against the bot! We've also added Clash as a supported format.
 
         <br>
       </div>

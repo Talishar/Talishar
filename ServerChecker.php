@@ -36,6 +36,7 @@ if (isset($_SESSION["userKarma"])) {
   $isKarmaGoodEnough = $_SESSION["userKarma"];
 }
 
+$canSeeNormalQueue = isset($_SESSION["useruid"]);
 $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_SESSION["userKarma"] >= 80;
 
 echo ("<div class='SpectatorContainer'>");
@@ -106,7 +107,7 @@ if ($handle = opendir($path)) {
       $formatName = "";
       if ($format == "commoner") $formatName = "Commoner ";
       else if ($format == "livinglegendscc") $formatName = "Open Format ";
-      else if ($format == "aggrocc") $formatName = "Aggro CC ";
+      else if ($format == "clash") $formatName = "Clash";
 
       $link = "<form style='text-align:center;' action='" . $redirectPath . "/JoinGame.php'>";
       $link .= "<center><table style='left:40%;'><tr><td style='vertical-align:middle;'>";
@@ -151,37 +152,51 @@ if ($handle = opendir($path)) {
       else if ($format == "commoner") {
         if (!$isisShadowBanned) $otherFormatsLinks .= $link;
       }
+      else if ($format == "clash") {
+        if (!$isisShadowBanned) $otherFormatsLinks .= $link;
+      }
       else if ($format == "shadowcommoner") {
         if ($isisShadowBanned) $otherFormatsLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      }
-      else if ($format == "aggrocc") {
-        if ($isisShadowBanned) $otherFormatsLinks .= $link;
       }
     }
   }
   closedir($handle);
 }
-echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
-echo ($blitzLinks);
+if($canSeeNormalQueue)
+{
+  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
+  echo ($blitzLinks);
+}
 if($canSeeComp)
 {
   echo ("<h3 style='text-align:center;'>________</h3>");
   echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Competitive Blitz</h2>");
   echo ($compBlitzLinks);
 }
-echo ("<h3 style='text-align:center;'>________</h3>");
-echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
-echo ($ccLinks);
+if($canSeeNormalQueue)
+{
+  echo ("<h3 style='text-align:center;'>________</h3>");
+  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
+  echo ($ccLinks);
+}
 if($canSeeComp)
 {
   echo ("<h3 style='text-align:center;'>________</h3>");
   echo ("<h2 title='This game mode is intended for training for high level regional and national events.' style='cursor:default; width:100%; text-align:center;'>Competitive CC</h2>");
   echo ($compCCLinks);
 }
-echo ("<h3 style='text-align:center;'>________</h3>");
-echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
-echo ($otherFormatsLinks);
+if($canSeeNormalQueue)
+{
+  echo ("<h3 style='text-align:center;'>________</h3>");
+  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
+  echo ($otherFormatsLinks);
+}
+if(!$canSeeNormalQueue)
+{
+  echo("<BR>");
+  echo("<div><b>&#10071;Log in to use matchmaking and see open matches</b></div><br>");
+}
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h2>");
 if(!IsMobile())
