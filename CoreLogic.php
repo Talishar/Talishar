@@ -1139,6 +1139,7 @@ function RollDie($player, $fromDQ=false, $subsequent=false)
     WriteLog($roll . " was rolled.");
     if($roll > $highRoll) $highRoll = $roll;
   }
+  AddEvent("ROLL", $highRoll);
   SetClassState($player, $CS_DieRoll, $highRoll);
   $GGActive = HasGamblersGloves(1) || HasGamblersGloves(2);
   if($GGActive)
