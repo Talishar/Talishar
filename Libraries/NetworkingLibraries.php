@@ -2214,4 +2214,11 @@ function WriteGamestate()
   fclose($handler);
 }
 
+function AddEvent($type, $value)
+{
+  global $events;
+  array_push($events, $type);
+  array_push($events, $value);
+}
+
 ?>

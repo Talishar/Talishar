@@ -103,6 +103,7 @@ if(!IsReplay()) {
 $afterResolveEffects = [];
 
 $animations = [];
+$events = [];//Clear events each time so it's only updated ones that get sent
 
 /*
 if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
