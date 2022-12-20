@@ -137,6 +137,10 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
       $_SESSION["isTCGTedPatron"] = true;
       array_push($yourPatronages, "TCG Ted");
     }
+    if ($include->type == "campaign" && $include->id == "8040288") {
+      $_SESSION["isCardAdvantagePatron"] = true;
+      array_push($yourPatronages, "Card Advantage");
+    }
 	}
 
   if(!$silent)

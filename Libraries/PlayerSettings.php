@@ -144,6 +144,7 @@ function GetCardBack($player)
     case 44: return "CBTCGTed";
     case 45: return "CBLuminaris";
     case 46: return "CBFaBLab";
+    case 47: return "CBCardAdvantage";
     default: return "CardBack";
   }
 }
@@ -539,17 +540,24 @@ function GetSettingsUI($player)
   }
 
   $isTCGTedPatron = false;
-  $isLuminaris = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "LeoLeo" || $_SESSION["useruid"] == "OotTheMonk");
+  $isLuminaris = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "LeoLeo");
   if ($isLuminaris) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-45", "Luminaris", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Luminaris");
   }
 
   //$isTCGTedPatron = false;
-  $isFABLAB = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "XIR" || $_SESSION["useruid"] == "OotTheMonk");
+  $isFABLAB = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "XIR");
   if ($isFABLAB) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-46", "FAB-LAB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "FAB-LAB");
+  }
+
+  $isCardAdvantage = false;
+  $isCardAdvantage = isset($_SESSION["useruid"]) && (IsTeamCardAdvantage($_SESSION["useruid"]));
+  if (isset($_SESSION['isCardAdvantagePatron']) || $isCardAdvantage) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-47", "Card Advantage", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Card Advantage");
   }
 
   if (!$hasCardBacks) $rv .= "<br><br><h4>Become a patron to customize your card backs!</h4>";
@@ -668,4 +676,27 @@ function FormatCode($format)
     case "commoner": return 5;
     default: return -1;
   }
+}
+
+function IsTeamCardAdvantage($userID)
+{
+  switch($userID)
+  {
+    case "JacobK":
+    case "Pastry Boi":
+    case "Brotworst":
+    case "1nigoMontoya (Cody)":
+    case "Motley":
+    case "jimmyhl1329":
+    case "Stilltzkin":
+    case "Krav":
+    case "Infamousb":
+    case "FatFabJesus":
+    case "MisterPNP":
+    case "OotTheMonk":
+      return true;
+    default:
+      break;
+  }
+  return false;
 }
