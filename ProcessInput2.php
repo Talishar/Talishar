@@ -16,6 +16,7 @@ include "AI/CombatDummy.php";
 include "AI/EncounterAI.php";
 include "AI/PlayerMacros.php";
 include "Libraries/HTTPLibraries.php";
+include "Libraries/IOLibraries.php";
 require_once("Libraries/CoreLibraries.php");
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
@@ -29,6 +30,7 @@ if (!IsGameNameValid($gameName)) {
 }
 $playerID = $_GET["playerID"];
 $authKey = $_GET["authKey"];
+$updateFor = TryGet("lastUpdate", "");
 
 //We should also have some information on the type of command
 $mode = $_GET["mode"];
@@ -75,6 +77,7 @@ if(IsReplay() && $mode == 99)
 
 //First we need to parse the game state from the file
 include "ParseGamestate.php";
+if($updateNumber != "" && $updateFor != "" && intval($updateFor) != intval($updateNumber)) exit;
 $otherPlayer = $currentPlayer == 1 ? 2 : 1;
 $skipWriteGamestate = false;
 $mainPlayerGamestateStillBuilt = 0;

@@ -103,7 +103,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
   }
-  if($lastUpdate != 0 && $lastUpdate <= intval($updateNumber)) {
+  if($lastUpdate != 0 && intval($updateNumber) <= $lastUpdate) {
     echo "0";
     exit;
   }

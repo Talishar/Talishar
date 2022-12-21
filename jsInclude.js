@@ -110,6 +110,7 @@ function SubmitInput(mode, params, fullRefresh = false) {
   ajaxLink += "&playerID=" + document.getElementById("playerID").value;
   ajaxLink += "&authKey=" + document.getElementById("authKey").value;
   ajaxLink += "&mode=" + mode;
+  ajaxLink += "&lastUpdate=" + _lastUpdate;
   ajaxLink += params;
   xmlhttp.open("GET", ajaxLink, true);
   xmlhttp.send();
