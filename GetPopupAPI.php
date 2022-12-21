@@ -25,6 +25,9 @@ ob_end_clean();
 
 session_start();
 
+// CORS etc *must* be set for all endpoints
+SetHeaders();
+
 $cardSize = 120;
 $params = explode("-", $popupType);
 $popupType = $params[0];
