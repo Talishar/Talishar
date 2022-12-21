@@ -17,7 +17,7 @@ if (isset($_SESSION['useruid'])) {
       <input type="text" name="uid" placeholder="Username...">
       <input type="password" name="pwd" placeholder="Password...">
       <label style='display:inline;' for="rememberMe">Remember Me</label>
-      <input style='display:inline; width:16px;' type="checkbox" id="rememberMe" name="rememberMe" value="rememberMe">
+      <input style='display:inline; width:16px;' type="checkbox" checked='checked' id="rememberMe" name="rememberMe" value="rememberMe">
       <button type="submit" name="submit">SUBMIT</button>
       <!--
       <div class="centeredGoogle">
