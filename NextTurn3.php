@@ -237,8 +237,13 @@
             var log = document.getElementById('gamelog');
             if (log !== null) log.scrollTop = log.scrollHeight;
             if (readyIcon == "ready.png") {
-              var audio = document.getElementById('yourTurnSound');
-              <?php if (!IsMuted($playerID)) echo ("audio.play();"); ?>
+              try {
+                //Don't crash and stop executing if no sound gets played
+                var audio = document.getElementById('yourTurnSound');
+                <?php if (!IsMuted($playerID)) echo ("audio.play();"); ?>
+              } catch (e) {
+
+              }
             }
             var animations = document.getElementById("animations").innerText;
             //if(animations != "") alert(animations);
