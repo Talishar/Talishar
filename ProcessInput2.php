@@ -77,7 +77,7 @@ if(IsReplay() && $mode == 99)
 
 //First we need to parse the game state from the file
 include "ParseGamestate.php";
-if($updateNumber != "" && $updateFor != "" && intval($updateFor) != intval($updateNumber)) exit;
+//if($updateNumber != "" && $updateFor != "" && intval($updateFor) != intval($updateNumber)) exit;
 $otherPlayer = $currentPlayer == 1 ? 2 : 1;
 $skipWriteGamestate = false;
 $mainPlayerGamestateStillBuilt = 0;
