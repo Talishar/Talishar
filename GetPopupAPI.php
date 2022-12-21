@@ -34,7 +34,7 @@ switch ($popupType) {
     $totalAttack = 0;
     $totalDefense = 0;
     $attackModifiers = [];
-    $response->modifiers = array();
+    $response->Cards = array();
     EvaluateCombatChain($totalAttack, $totalDefense, $attackModifiers);
     for ($i = 0; $i < count($attackModifiers); $i += 2) {
       $thisModifier = new stdClass();
@@ -48,10 +48,11 @@ switch ($popupType) {
         $effectName = $cardID;
         $cardID = "";
       }
-      $thisModifier->effectName = $effectName;
+      $thisModifier->Player = $mainPlayer;
+      $thisModifier->Name = $effectName;
       $thisModifier->cardID = $cardID;
       $thisModifier->modifier = $bonus;
-      array_push($response->modifiers, $thisModifier);
+      array_push($response->Cards, $thisModifier);
     }
     break;
   case "myPitchPopup":
@@ -111,6 +112,8 @@ switch ($popupType) {
     JSONPopup($response, $theirSoul, SoulPieces());
     break;
   case "chainLinkPopup":
+    $response = ChainLinkObject($params[1]);
+    $response->TotalDamageDealt = $chainLinkSummary[$params[1] * ChainLinkSummaryPieces()];
     //TODO
     //echo (CreatePopup("chainLinkPopup-" . $params[1], [], 1, 0, "Summary Chain Link " . $params[1] + 1, 1, ChainLinkPopup($params[1]), "./", false, false, "Total Damage Dealt: " . $chainLinkSummary[$params[1] * ChainLinkSummaryPieces()]));
     break;
@@ -128,12 +131,15 @@ function JSONPopup($response, $zone, $zonePieces)
     array_push($response->cards, JSONRenderedCard($zone[$i]));
   }
 }
-/*
-function ChainLinkPopup($link)
+
+function ChainLinkObject($link)
 {
   global $chainLinks, $cardSize, $playerID, $mainPlayer, $defPlayer;
-  $rv = "";
+  $chainLink = new stdClass();
+  $chainLink->Cards = array();
   for ($i = 0; $i < count($chainLinks[$link]); $i += ChainLinksPieces()) {
+    $card = new stdClass();
+    $card->Player = $chainLinks[$link][$i+1];
     if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR")
     {
       $attackValue = AttackValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
@@ -147,10 +153,12 @@ function ChainLinkPopup($link)
     if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = BlockValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 5];
     else $blockValue = 0;
 
-    $rv .= Card($chainLinks[$link][$i], "concat", $cardSize, 0, 1, 0, ($chainLinks[$link][$i + 1] == $playerID ? 1 : 2), 0, "", "", false, 0, $blockValue, $attackValue);
-    //$rv .= $chainLinks[$link][$i] . " ";
+    if($card->Player == $mainPlayer) $card->modifier = $attackValue;
+    else $card->modifier = $blockValue;
+    $card->cardID = $chainLinks[$link][$i];
+    $card->Name = CardName($chainLinks[$link][$i]);
 
+    array_push($chainLink->Cards, $card);
   }
-  return $rv;
+  return $chainLink;
 }
-*/

@@ -99,14 +99,14 @@ function ChainLinkPopup($link)
   global $chainLinks, $cardSize, $playerID, $mainPlayer, $defPlayer;
   $rv = "";
   for ($i = 0; $i < count($chainLinks[$link]); $i += ChainLinksPieces()) {
-    if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR") 
+    if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR")
     {
       $attackValue = AttackValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
-    } 
-    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || CardType($chainLinks[$link][$i]) == "I")) 
+    }
+    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || CardType($chainLinks[$link][$i]) == "I"))
     {
       $attackValue = AttackModifier($chainLinks[$link][$i]);
-    } 
+    }
     else $attackValue = 0;
 
     if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = BlockValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 5];
