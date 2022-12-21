@@ -3856,6 +3856,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = &GetDeck($player);
       $rv = "";
       for ($i = 0; $i < count($indices); ++$i) {
+        if(count($deck) <= $i) continue;
         if ($rv != "") $rv .= ",";
         $rv .= $deck[$i];
       }
