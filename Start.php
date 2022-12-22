@@ -82,9 +82,6 @@ fwrite($handler, "0\r\n"); //Player 1 total time
 fwrite($handler, "0\r\n"); //Player 2 total time
 fwrite($handler, time() . "\r\n"); //Last update time
 fwrite($handler, $roguelikeGameID . "\r\n"); //Last update time
-fwrite($handler, "\r\n"); //Events
-$currentUpdate = GetCachePiece($gameName, 1);
-fwrite($handler, (intval($currentUpdate)+1) . "\r\n"); //Last update number
 fclose($handler);
 
 //Set up log file
@@ -93,6 +90,7 @@ $handler = fopen($filename, "w");
 fclose($handler);
 
 $currentTime = strval(round(microtime(true) * 1000));
+$currentUpdate = GetCachePiece($gameName, 1);
 $p1Hero = GetCachePiece($gameName, 7);
 $p2Hero = GetCachePiece($gameName, 8);
 $currentPlayer = 0;

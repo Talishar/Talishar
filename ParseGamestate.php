@@ -427,7 +427,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt")
 {
-  global $gameName, $skipWriteGamestate, $useRedis, $lastUpdate;
+  global $gameName, $skipWriteGamestate, $useRedis;
   $filepath = "./Games/" . $gameName . "/";
   if($useRedis)
   {
@@ -435,8 +435,7 @@ function RevertGamestate($filename = "gamestateBackup.txt")
     WriteCache($gameName . "GS", $gamestate);
   }
   copy($filepath . $filename, $filepath . "gamestate.txt");
-  ParseGamestate();
-  $lastUpdate = GetCachePiece($gameName, 1);
+  $skipWriteGamestate = true;
 }
 
 function MakeStartTurnBackup()

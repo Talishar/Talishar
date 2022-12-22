@@ -1,7 +1,7 @@
 <?php
 function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, $isSimulation=false)
 {
-  global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $combatChain, $landmarks;
+  global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating, $redirectPath, $CS_PlayedAsInstant;
   global $roguelikeGameID;
   switch ($mode) {
@@ -216,19 +216,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $params = explode("-", $turn[2]);
       $maxSelect = intval($params[0]);
       $options = explode(",", $params[1]);
-      $skip = false;
       if(count($params) > 2) $minSelect = intval($params[2]);
       else $minSelect = -1;
       if (count($chkInput) > $maxSelect) {
         WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " is allowed. Reverting gamestate prior to that effect.");
         RevertGamestate();
-        $skip = true;
+        $skipWriteGamestate = true;
         break;
       }
       if ($minSelect != -1 && count($chkInput) < $minSelect && count($chkInput) < count($options)) {
         WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " is requested. Reverting gamestate prior to that effect.");
         RevertGamestate();
-        $skip = true;
+        $skipWriteGamestate = true;
         break;
       }
       for ($i = 0; $i < count($chkInput); ++$i) {
@@ -242,11 +241,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (!$found) {
           WriteLog("You selected option " . $chkInput[$i] . " but that was not one of the original options. Reverting gamestate prior to that effect.");
           RevertGamestate();
-          $skip = true;
+          $skipWriteGamestate = true;
           break;
         }
       }
-      if (!$skip) {
+      if (!$skipWriteGamestate) {
         ContinueDecisionQueue($chkInput);
       }
       break;
@@ -406,10 +405,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10000: //Undo
       RevertGamestate();
+      $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " undid their last action.");
       break;
     case 10001:
       RevertGamestate("preBlockBackup.txt");
+      $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " cancel their blocks.");
       break;
     case 10002:
@@ -1971,7 +1972,7 @@ function ParseGamestate()
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
-  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
 
   $mainPlayerGamestateStillBuilt = 0;
@@ -2106,9 +2107,6 @@ function ParseGamestate()
   $p1TotalTime = trim(fgets($handler));//Player 1 total time
   $p2TotalTime = trim(fgets($handler));//Player 2 total time
   $lastUpdateTime = trim(fgets($handler));//Last update time
-  $roguelikeGameID = trim(fgets($handler)); //Roguelike game id
-  $events = GetArray($handler); //Events
-  $updateNumber = trim(fgets($handler)); //What update number the gamestate is for
   fclose($handler);
   BuildMyGamestate($playerID);
 }
