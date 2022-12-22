@@ -7,152 +7,169 @@ function GetStringArray($line)
   return explode(" ", $line);
 }
 
-$mainPlayerGamestateStillBuilt = 0;
-$mpgBuiltFor = -1;
-$myStateBuiltFor = -1;
 
-$filename = "./Games/" . $gameName . "/gamestate.txt";
 
-$fileTries = 0;
-$targetTries = ($playerID == 1 ? 5 : 100);
-$waitTime = ($playerID == 1 ? 100000 : 1000000);
-while (!file_exists($filename) && $fileTries < $targetTries) {
-  usleep($waitTime); //100ms
-  ++$fileTries;
-}
-if ($fileTries == $targetTries) {
-  if ($playerID == 1) {
-    $errorFileName = "./BugReports/CreateGameFailsafe.txt";
-    $errorHandler = fopen($errorFileName, "a");
-    date_default_timezone_set('America/Chicago');
-    $errorDate = date('m/d/Y h:i:s a');
-    $errorOutput = "Create game failsafe hit for game $gameName at $errorDate";
-    fwrite($errorHandler, $errorOutput . "\r\n");
-    fclose($errorHandler);
-    include "HostFiles/Redirector.php";
-    header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
-  } else {
-    echo ("This game no longer exists on the server. Please go to the main menu and create a new game.");
-    $errorFileName = "./BugReports/CreateGameFailsafe.txt";
-    $errorHandler = fopen($errorFileName, "a");
-    date_default_timezone_set('America/Chicago');
-    $errorDate = date('m/d/Y h:i:s a');
-    $errorOutput = "Final create game error for game $gameName at $errorDate (total failure)";
-    fwrite($errorHandler, $errorOutput . "\r\n");
-    fclose($errorHandler);
+ParseGamestate();
+
+function ParseGamestate($useRedis = false)
+{
+  global $gameName, $playerHealths;
+  global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
+  global $p1ClassState, $p1CharacterEffects, $p1Soul, $p1CardStats, $p1TurnStats, $p1Allies, $p1Permanents, $p1Settings;
+  global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
+  global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
+  global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
+  global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
+  global $layers, $layerPriority, $mainPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
+  global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate;
+  global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
+
+  $mainPlayerGamestateStillBuilt = 0;
+  $mpgBuiltFor = -1;
+  $myStateBuiltFor = -1;
+
+  $filename = "./Games/" . $gameName . "/gamestate.txt";
+
+  $fileTries = 0;
+  $targetTries = ($playerID == 1 ? 5 : 100);
+  $waitTime = ($playerID == 1 ? 100000 : 1000000);
+  while (!file_exists($filename) && $fileTries < $targetTries) {
+    usleep($waitTime); //100ms
+    ++$fileTries;
   }
-  exit;
+  if ($fileTries == $targetTries) {
+    if ($playerID == 1) {
+      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
+      $errorHandler = fopen($errorFileName, "a");
+      date_default_timezone_set('America/Chicago');
+      $errorDate = date('m/d/Y h:i:s a');
+      $errorOutput = "Create game failsafe hit for game $gameName at $errorDate";
+      fwrite($errorHandler, $errorOutput . "\r\n");
+      fclose($errorHandler);
+      include "HostFiles/Redirector.php";
+      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
+    } else {
+      echo ("This game no longer exists on the server. Please go to the main menu and create a new game.");
+      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
+      $errorHandler = fopen($errorFileName, "a");
+      date_default_timezone_set('America/Chicago');
+      $errorDate = date('m/d/Y h:i:s a');
+      $errorOutput = "Final create game error for game $gameName at $errorDate (total failure)";
+      fwrite($errorHandler, $errorOutput . "\r\n");
+      fclose($errorHandler);
+    }
+    exit;
+  }
+
+  if (!file_exists($filename)) exit;
+  $handler = fopen($filename, "r");
+
+  if (!$handler) {
+    exit;
+  } //Game does not exist
+
+  $lockTries = 0;
+  while (!flock($handler, LOCK_SH) && $lockTries < 10) {
+    usleep(100000); //100ms
+    ++$lockTries;
+  }
+
+  if ($lockTries == 10) exit;
+
+  $gamestateContent = "";
+  if($useRedis) $gamestateContent = ReadCache($gameName . "GS");
+  if($gamestateContent == "") $gamestateContent = file_get_contents($filename);
+  $gamestateContent = explode("\r\n", $gamestateContent);
+  if(count($gamestateContent) < 60) exit;
+
+  $playerHealths = GetStringArray($gamestateContent[0]); // 1
+
+  //Player 1
+  $p1Hand = GetStringArray($gamestateContent[1]); // 2
+  $p1Deck = GetStringArray($gamestateContent[2]); // 3
+  $p1CharEquip = GetStringArray($gamestateContent[3]); // 4
+  $p1Resources = GetStringArray($gamestateContent[4]); // 5
+  $p1Arsenal = GetStringArray($gamestateContent[5]); // 6
+  $p1Items = GetStringArray($gamestateContent[6]); // 7
+  $p1Auras = GetStringArray($gamestateContent[7]); // 8
+  $p1Discard = GetStringArray($gamestateContent[8]); // 9
+  $p1Pitch = GetStringArray($gamestateContent[9]); // 10
+  $p1Banish = GetStringArray($gamestateContent[10]); // 11
+  $p1ClassState = GetStringArray($gamestateContent[11]); // 12
+  $p1CharacterEffects = GetStringArray($gamestateContent[12]); // 13
+  $p1Soul = GetStringArray($gamestateContent[13]); // 14
+  $p1CardStats = GetStringArray($gamestateContent[14]); // 15
+  $p1TurnStats = GetStringArray($gamestateContent[15]); // 16
+  $p1Allies = GetStringArray($gamestateContent[16]); // 17
+  $p1Permanents = GetStringArray($gamestateContent[17]); // 18
+  $p1Settings = GetStringArray($gamestateContent[18]); // 19
+
+  //Player 2
+  $p2Hand = GetStringArray($gamestateContent[19]); // 20
+  $p2Deck = GetStringArray($gamestateContent[20]); // 21
+  $p2CharEquip = GetStringArray($gamestateContent[21]); // 22
+  $p2Resources = GetStringArray($gamestateContent[22]); // 23
+  $p2Arsenal = GetStringArray($gamestateContent[23]); // 24
+  $p2Items = GetStringArray($gamestateContent[24]); // 25
+  $p2Auras = GetStringArray($gamestateContent[25]); // 26
+  $p2Discard = GetStringArray($gamestateContent[26]); // 27
+  $p2Pitch = GetStringArray($gamestateContent[27]); // 28
+  $p2Banish = GetStringArray($gamestateContent[28]); // 29
+  $p2ClassState = GetStringArray($gamestateContent[29]); // 30
+  $p2CharacterEffects = GetStringArray($gamestateContent[30]); // 31
+  $p2Soul = GetStringArray($gamestateContent[31]); // 32
+  $p2CardStats = GetStringArray($gamestateContent[32]); // 33
+  $p2TurnStats = GetStringArray($gamestateContent[33]); // 34
+  $p2Allies = GetStringArray($gamestateContent[34]); // 35
+  $p2Permanents = GetStringArray($gamestateContent[35]); // 36
+  $p2Settings = GetStringArray($gamestateContent[36]); // 37
+
+  $landmarks = GetStringArray($gamestateContent[37]);
+  $winner = trim($gamestateContent[38]);
+  $firstPlayer = trim($gamestateContent[39]);
+  $currentPlayer = trim($gamestateContent[40]);
+  $currentTurn = trim($gamestateContent[41]);
+  $turn = GetStringArray($gamestateContent[42]);
+  $actionPoints = trim($gamestateContent[43]);
+  $combatChain = GetStringArray($gamestateContent[44]);
+  $combatChainState = GetStringArray($gamestateContent[45]);
+  $currentTurnEffects = GetStringArray($gamestateContent[46]);
+  $currentTurnEffectsFromCombat = GetStringArray($gamestateContent[47]);
+  $nextTurnEffects = GetStringArray($gamestateContent[48]);
+  $decisionQueue = GetStringArray($gamestateContent[49]);
+  $dqVars = GetStringArray($gamestateContent[50]);
+  $dqState = GetStringArray($gamestateContent[51]);
+  $layers = GetStringArray($gamestateContent[52]);
+  $layerPriority = GetStringArray($gamestateContent[53]);
+  $mainPlayer = trim($gamestateContent[54]);
+  $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $lastPlayed = GetStringArray($gamestateContent[55]);
+  $numChainLinks = trim($gamestateContent[56]);
+  $chainLinks = array();
+  for ($i = 0; $i < $numChainLinks; ++$i) {
+    $chainLink = GetStringArray($gamestateContent[57+$i]);
+    array_push($chainLinks, $chainLink);
+  }
+  $chainLinkSummary = GetStringArray($gamestateContent[57+$numChainLinks]);
+  $p1Key = trim($gamestateContent[58+$numChainLinks]);
+  $p2Key = trim($gamestateContent[59+$numChainLinks]);
+  $permanentUniqueIDCounter = trim($gamestateContent[60+$numChainLinks]);
+  $inGameStatus = trim($gamestateContent[61+$numChainLinks]); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+  $animations = GetStringArray($gamestateContent[62+$numChainLinks]); //Animations
+  $currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); //Current Player activity status -- 0 = active, 2 = inactive
+  $p1PlayerRating = trim($gamestateContent[64+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  $p2PlayerRating = trim($gamestateContent[65+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  $p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
+  $p2TotalTime = trim($gamestateContent[67+$numChainLinks]); //Player 2 total time
+  $lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
+  $roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
+  $events = GetStringArray($gamestateContent[70+$numChainLinks]); //Events
+  $updateNumber = trim($gamestateContent[71+$numChainLinks]); //What update number the gamestate is for
+
+  fclose($handler);
+  BuildMyGamestate($playerID);
 }
-
-if (!file_exists($filename)) exit;
-$handler = fopen($filename, "r");
-
-if (!$handler) {
-  exit;
-} //Game does not exist
-
-$lockTries = 0;
-while (!flock($handler, LOCK_SH) && $lockTries < 10) {
-  usleep(100000); //100ms
-  ++$lockTries;
-}
-
-if ($lockTries == 10) exit;
-
-if(!isset($useRedis)) $useRedis = false;
-
-$gamestateContent = "";
-if($useRedis) $gamestateContent = ReadCache($gameName . "GS");
-if($gamestateContent == "") $gamestateContent = file_get_contents($filename);
-$gamestateContent = explode("\r\n", $gamestateContent);
-if(count($gamestateContent) < 60) exit;
-
-$playerHealths = GetStringArray($gamestateContent[0]); // 1
-
-//Player 1
-$p1Hand = GetStringArray($gamestateContent[1]); // 2
-$p1Deck = GetStringArray($gamestateContent[2]); // 3
-$p1CharEquip = GetStringArray($gamestateContent[3]); // 4
-$p1Resources = GetStringArray($gamestateContent[4]); // 5
-$p1Arsenal = GetStringArray($gamestateContent[5]); // 6
-$p1Items = GetStringArray($gamestateContent[6]); // 7
-$p1Auras = GetStringArray($gamestateContent[7]); // 8
-$p1Discard = GetStringArray($gamestateContent[8]); // 9
-$p1Pitch = GetStringArray($gamestateContent[9]); // 10
-$p1Banish = GetStringArray($gamestateContent[10]); // 11
-$p1ClassState = GetStringArray($gamestateContent[11]); // 12
-$p1CharacterEffects = GetStringArray($gamestateContent[12]); // 13
-$p1Soul = GetStringArray($gamestateContent[13]); // 14
-$p1CardStats = GetStringArray($gamestateContent[14]); // 15
-$p1TurnStats = GetStringArray($gamestateContent[15]); // 16
-$p1Allies = GetStringArray($gamestateContent[16]); // 17
-$p1Permanents = GetStringArray($gamestateContent[17]); // 18
-$p1Settings = GetStringArray($gamestateContent[18]); // 19
-
-//Player 2
-$p2Hand = GetStringArray($gamestateContent[19]); // 20
-$p2Deck = GetStringArray($gamestateContent[20]); // 21
-$p2CharEquip = GetStringArray($gamestateContent[21]); // 22
-$p2Resources = GetStringArray($gamestateContent[22]); // 23
-$p2Arsenal = GetStringArray($gamestateContent[23]); // 24
-$p2Items = GetStringArray($gamestateContent[24]); // 25
-$p2Auras = GetStringArray($gamestateContent[25]); // 26
-$p2Discard = GetStringArray($gamestateContent[26]); // 27
-$p2Pitch = GetStringArray($gamestateContent[27]); // 28
-$p2Banish = GetStringArray($gamestateContent[28]); // 29
-$p2ClassState = GetStringArray($gamestateContent[29]); // 30
-$p2CharacterEffects = GetStringArray($gamestateContent[30]); // 31
-$p2Soul = GetStringArray($gamestateContent[31]); // 32
-$p2CardStats = GetStringArray($gamestateContent[32]); // 33
-$p2TurnStats = GetStringArray($gamestateContent[33]); // 34
-$p2Allies = GetStringArray($gamestateContent[34]); // 35
-$p2Permanents = GetStringArray($gamestateContent[35]); // 36
-$p2Settings = GetStringArray($gamestateContent[36]); // 37
-
-$landmarks = GetStringArray($gamestateContent[37]);
-$winner = trim($gamestateContent[38]);
-$firstPlayer = trim($gamestateContent[39]);
-$currentPlayer = trim($gamestateContent[40]);
-$currentTurn = trim($gamestateContent[41]);
-$turn = GetStringArray($gamestateContent[42]);
-$actionPoints = trim($gamestateContent[43]);
-$combatChain = GetStringArray($gamestateContent[44]);
-$combatChainState = GetStringArray($gamestateContent[45]);
-$currentTurnEffects = GetStringArray($gamestateContent[46]);
-$currentTurnEffectsFromCombat = GetStringArray($gamestateContent[47]);
-$nextTurnEffects = GetStringArray($gamestateContent[48]);
-$decisionQueue = GetStringArray($gamestateContent[49]);
-$dqVars = GetStringArray($gamestateContent[50]);
-$dqState = GetStringArray($gamestateContent[51]);
-$layers = GetStringArray($gamestateContent[52]);
-$layerPriority = GetStringArray($gamestateContent[53]);
-$mainPlayer = trim($gamestateContent[54]);
-$defPlayer = $mainPlayer == 1 ? 2 : 1;
-$lastPlayed = GetStringArray($gamestateContent[55]);
-$numChainLinks = trim($gamestateContent[56]);
-$chainLinks = array();
-for ($i = 0; $i < $numChainLinks; ++$i) {
-  $chainLink = GetStringArray($gamestateContent[57+$i]);
-  array_push($chainLinks, $chainLink);
-}
-$chainLinkSummary = GetStringArray($gamestateContent[57+$numChainLinks]);
-$p1Key = trim($gamestateContent[58+$numChainLinks]);
-$p2Key = trim($gamestateContent[59+$numChainLinks]);
-$permanentUniqueIDCounter = trim($gamestateContent[60+$numChainLinks]);
-$inGameStatus = trim($gamestateContent[61+$numChainLinks]); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-$animations = GetStringArray($gamestateContent[62+$numChainLinks]); //Animations
-$currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); //Current Player activity status -- 0 = active, 2 = inactive
-$p1PlayerRating = trim($gamestateContent[64+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-$p2PlayerRating = trim($gamestateContent[65+$numChainLinks]); //Player Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-$p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
-$p2TotalTime = trim($gamestateContent[67+$numChainLinks]); //Player 2 total time
-$lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
-$roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
-$events = GetStringArray($gamestateContent[70+$numChainLinks]); //Events
-$updateNumber = trim($gamestateContent[71+$numChainLinks]); //What update number the gamestate is for
-
-fclose($handler);
-BuildMyGamestate($playerID);
 
 function DoGamestateUpdate()
 {

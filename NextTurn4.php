@@ -654,14 +654,19 @@
               if (update != "NaN") CheckReloadNeeded(update);
               if(update < _lastUpdate) return;
               _lastUpdate = update;
+              
               var readyIcon = document.getElementById("iconHolder").innerText;
               document.getElementById("icon").href = "./HostFiles/" + readyIcon;
               var log = document.getElementById('gamelog');
               if (log !== null) log.scrollTop = log.scrollHeight;
               if (readyIcon == "ready.png") {
-                var audio = document.getElementById('yourTurnSound');
-                <?php if (!IsMuted($playerID)) echo ("audio.play();");
-                ?>
+                try {
+                  var audio = document.getElementById('yourTurnSound');
+                  <?php if (!IsMuted($playerID)) echo ("audio.play();");
+                  ?>
+                } catch (e) {
+
+                }
               }
               PopulateZone("myHand", cardSize);
               PopulateZone("theirHand", cardSize);

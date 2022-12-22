@@ -1959,7 +1959,7 @@ function ProcessAttackTarget()
   return false;
 }
 
-
+/*
 function ParseGamestate()
 {
   global $gameName, $playerHealths;
@@ -2112,6 +2112,7 @@ function ParseGamestate()
   fclose($handler);
   BuildMyGamestate($playerID);
 }
+*/
 
 function WriteGamestate()
 {
