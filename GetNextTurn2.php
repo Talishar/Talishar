@@ -103,13 +103,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
   }
-  /*
-  Temporarily disable until fix dash start game + infinite loop issue
-  if($lastUpdate != 0 && intval($updateNumber) <= $lastUpdate) {
-    echo "0";
-    exit;
-  }
-  */
 
   if ($turn[0] == "REMATCH") {
     include "MenuFiles/ParseGamefile.php";
