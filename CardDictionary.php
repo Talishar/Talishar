@@ -1106,7 +1106,7 @@ function IsPitchRestricted($cardID, &$restriction, $from = "", $index = -1)
 
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
 {
-  global $myClassState, $theirClassState, $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
+  global $theirClassState, $CS_NumBoosted, $combatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $myDiscard;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $CS_NumAttacks, $defPlayer, $CS_NumCardsPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $turn, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_NamesOfCardsPlayed, $CS_Num6PowDisc;
@@ -1188,11 +1188,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($subtype == "Sword" || $subtype == "Dagger" || (CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) <= 1)) return false;
       return true;
     case "ARC004":
-      return $myClassState[$CS_NumBoosted] < 1;
+      return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC005":
-      return $myClassState[$CS_NumBoosted] < 1;
+      return GetClassState($player, $CS_NumBoosted) < 1;
     case "ARC008":
-      return $myClassState[$CS_NumBoosted] < 3;
+      return GetClassState($player, $CS_NumBoosted) < 3;
     case "ARC010":
       return (count($combatChain) > 0 && $from == "PLAY" && $myItems[$index + 1] > 0 && (CardSubtype($combatChain[0]) != "Pistol" || $myItems[$index + 2] != 2));
     case "ARC018":
@@ -1250,14 +1250,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "MON189":
       return SearchCount(SearchBanish($player, "", "", -1, -1, "", "", true)) < 6;
     case "MON190":
-      return $myClassState[$CS_NumBloodDebtPlayed] < 6;
+      return GetClassState($player, $CS_NumBloodDebtPlayed) < 6;
     case "MON198":
       $discard = GetDiscard($player);
       return count($discard) < 6;
     case "MON230":
       return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "MON238":
-      return $myClassState[$CS_DamageTaken] == 0 && $theirClassState[$CS_DamageTaken] == 0;
+      return GetClassState($player, $CS_DamageTaken) == 0 && $theirClassState[$CS_DamageTaken] == 0;
     case "MON303":
       return SearchDiscard($player, "AA", "", 2) == "";
     case "MON304":
