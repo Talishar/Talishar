@@ -138,10 +138,11 @@ function PermanentPieces()
 //2 - Parameter (For play card | Delimited, piece 0 = $from)
 //3 - Target
 //4 - Additional Costs
-//5 - Unique ID
+//5 - Unique ID (the unique ID of the object that created the layer)
+//6 - Layer Unique ID (the unique ID of the layer)
 function LayerPieces()
 {
-  return 6;
+  return 7;
 }
 
 function LandmarkPieces()

@@ -19,8 +19,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if($target != "-")
   {
     $targetArr = explode("-", $target);
-    //TODO: This -6 is not right
-    if($targetArr[0] == "LAYER" && $targetArr[1] >= 0) $targetArr[1] -= 6;
+    if($targetArr[0] == "LAYERUID") { $targetArr[0] = "LAYER"; $targetArr[1] = SearchLayersForUniqueID($targetArr[1]); }
     $target = $targetArr[0] . "-" . $targetArr[1];
   }
   if (($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
@@ -4757,11 +4756,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SETLAYERTARGET":
       global $layers;
+      $target = $lastResult;
+      $targetArr = explode("-", $target);
+      if($targetArr[0] == "LAYER") $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
       for($i=0; $i<count($layers); $i+=LayerPieces())
       {
         if($layers[$i] == $parameter)
         {
-          $layers[$i+3] = $lastResult;
+          $layers[$i+3] = $target;
         }
       }
       return $lastResult;

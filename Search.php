@@ -520,7 +520,18 @@ function SearchForUniqueID($uniqueID, $player)
   if ($index == -1) $index = SearchItemsForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchAlliesForUniqueID($uniqueID, $player);
   if ($index == -1) $index = SearchArsenalForUniqueID($uniqueID, $player);
+  if ($index == -1) $index = SearchLayersForUniqueID($uniqueID);
   return $index;
+}
+
+function SearchLayersForUniqueID($uniqueID)
+{
+  global $layers;
+  for($i=0; $i<count($layers); $i+=LayerPieces())
+  {
+    if($layers[$i+6] == $uniqueID) return $i;
+  }
+  return -1;
 }
 
 function SearchAurasForUniqueID($uniqueID, $player)

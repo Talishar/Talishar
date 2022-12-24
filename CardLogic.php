@@ -225,6 +225,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
 {
   global $layers;
   //Layers are on a stack, so you need to push things on in reverse order
+  array_unshift($layers, GetUniqueId());
   array_unshift($layers, $uniqueID);
   array_unshift($layers, $additionalCosts);
   array_unshift($layers, $target);
@@ -376,6 +377,7 @@ function ContinueDecisionQueue($lastResult = "")
         $target = array_shift($layers);
         $additionalCosts = array_shift($layers);
         $uniqueID = array_shift($layers);
+        $layerUniqueID = array_shift($layers);
         $params = explode("|", $parameter);
         if ($currentPlayer != $player) {
           if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
