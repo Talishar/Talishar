@@ -6,13 +6,14 @@ require_once './Assets/patreon-php-master/src/API.php';
 require_once './Assets/patreon-php-master/src/PatreonLibraries.php';
 require_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
+include_once "./APIKeys/APIKeys.php";
 
 
   use Patreon\API;
   use Patreon\OAuth;
 
-  $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
-  $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
+  $client_id = $patreonClientID;
+  $client_secret = $patreonClientSecret;
   $redirect_uri = "https://www.talishar.net/game/PatreonLogin.php";
 
 
