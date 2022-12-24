@@ -8,6 +8,7 @@ if(!isset($_SESSION['userid'])) { header('Location: ./MainMenu.php'); die(); }
 
 include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries2.php";
+include_once "./APIKeys/APIKeys.php";
 
 if (isset($_POST['update_profile'])) {
 
@@ -174,8 +175,8 @@ if (isset($_SESSION["isPatron"])) {
     }
 
 
-    $client_id = 'ZUg4PrZuOwdahOIqG8YP-OrEV3KTxgCWCmFa9eYKv1iKOgOoCIooooUZh9llfEZj';      // Replace with your data
-    $client_secret = 'kU1g4JpVzEEK28bgDHLFRAiL0UBRa6-wWzvGV3cjELnG2o0-VfzOwbeiOGArYTpJ';  // Replace with your data
+    $client_id = $patreonClientID;
+    $client_secret = $patreonClientSecret;
 
     // Set the redirect url where the user will land after oAuth. That url is where the access code will be sent as a _GET parameter. This may be any url in your app that you can accept and process the access code and login
 
