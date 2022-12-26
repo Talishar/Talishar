@@ -18,13 +18,12 @@
   $filename = "./GeneratedCode/GeneratedCardDictionaries.php";
   $handler = fopen($filename, "w");
 
-  fwrite($handler, "function CardType(\$cardID) {\r\n");
+  fwrite($handler, "<?php\r\n");
+  fwrite($handler, "function GeneratedCardType(\$cardID) {\r\n");
   $trie = [];
-  //fwrite($handler, "  switch(\$cardID) {\r\n");
   for($i=0; $i<count($cardArray); ++$i)
   {
     $cardPrintings = [];
-    //echo($cardArray[$i]->name . "<BR>");
     for($j=0; $j<count($cardArray[$i]->printings); ++$j)
     {
       $cardID = $cardArray[$i]->printings[$j]->id;
@@ -35,28 +34,40 @@
       }
       if($duplicate) continue;
       array_push($cardPrintings, $cardID);
-      AddToTrie($trie, $cardID, 0, MapType($cardArray[$i]));
-      //echo($cardID . "<BR>");
+      $type = MapType($cardArray[$i]);
+      if($type != "-") AddToTrie($trie, $cardID, 0, $type);
     }
   }
-  //echo(var_dump($trie));
-  foreach ($trie as $key1 => $value) {
-    foreach ($trie[$key1] as $key2 => $value) {
-      foreach ($trie[$key1][$key2] as $key3 => $value) {
-        foreach ($trie[$key1][$key2][$key3] as $key4 => $value) {
-          foreach ($trie[$key1][$key2][$key3][$key4] as $key5 => $value) {
-            foreach ($trie[$key1][$key2][$key3][$key4][$key5] as $key6 => $value) {
-              echo($key1 . $key2 . $key3 . $key4 . $key5 . $key6 . "<BR>");
-            }
-          }
-        }
-      }
-    }
-  }
-  //fwrite($handler, "default: return \"\";");
+
+  fwrite($handler, "  switch(\$cardID) {\r\n");
+  TraverseTrie($trie, "", $handler);
+  fwrite($handler, "    default: return \"\";\r\n");
+  fwrite($handler, "  }\r\n");
+
   fwrite($handler, "}\r\n");
 
+  fwrite($handler, "?>");
+
   fclose($handler);
+
+  function TraverseTrie(&$trie, $keySoFar, &$handler=null)
+  {
+    if(is_array($trie))
+    {
+      foreach ($trie as $key => $value)
+      {
+          TraverseTrie($trie[$key], $keySoFar . $key, $handler);
+      }
+    }
+    else
+    {
+      if($handler != null)
+      {
+        fwrite($handler, "    case \"" . $keySoFar . "\": return \"" . $trie . "\";\r\n");
+      }
+      echo($keySoFar . " " . $trie . "<BR>");
+    }
+  }
 
   function AddToTrie(&$trie, $cardID, $depth, $value)
   {
