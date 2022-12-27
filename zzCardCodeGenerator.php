@@ -19,37 +19,43 @@
   $handler = fopen($filename, "w");
 
   fwrite($handler, "<?php\r\n");
-  fwrite($handler, "function GeneratedCardType(\$cardID) {\r\n");
-  $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
-  $trie = [];
-  for($i=0; $i<count($cardArray); ++$i)
-  {
-    $cardPrintings = [];
-    if($cardArray[$i]->name == "Nitro Mechanoid") continue;//This is due to the data set not yet differentiating faces
-    for($j=0; $j<count($cardArray[$i]->printings); ++$j)
-    {
-      $cardID = $cardArray[$i]->printings[$j]->id;
-      $set = substr($cardID, 0, 3);
-      if(!in_array($set, $originalSets)) continue;
-      $duplicate = false;
-      for($k=0; $k<count($cardPrintings); ++$k)
-      {
-        if($cardPrintings[$k] == $cardID) $duplicate = true;
-      }
-      if($duplicate) continue;
-      array_push($cardPrintings, $cardID);
-      $type = MapType($cardArray[$i]);
-      if($type != "-") AddToTrie($trie, $cardID, 0, $type);
-    }
-  }
 
-  TraverseTrie($trie, "", $handler);
-
-  fwrite($handler, "}\r\n");
+  GenerateFunction($cardArray, $handler, "CardType", "type");
 
   fwrite($handler, "?>");
 
   fclose($handler);
+
+  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName)
+  {
+    fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
+    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
+    $trie = [];
+    for($i=0; $i<count($cardArray); ++$i)
+    {
+      $cardPrintings = [];
+      if($cardArray[$i]->name == "Nitro Mechanoid") continue;//This is due to the data set not yet differentiating faces
+      for($j=0; $j<count($cardArray[$i]->printings); ++$j)
+      {
+        $cardID = $cardArray[$i]->printings[$j]->id;
+        $set = substr($cardID, 0, 3);
+        if(!in_array($set, $originalSets)) continue;
+        $duplicate = false;
+        for($k=0; $k<count($cardPrintings); ++$k)
+        {
+          if($cardPrintings[$k] == $cardID) $duplicate = true;
+        }
+        if($duplicate) continue;
+        array_push($cardPrintings, $cardID);
+        if($propertyName == "type") $data = MapType($cardArray[$i]);
+        if($data != "-") AddToTrie($trie, $cardID, 0, $data);
+      }
+    }
+
+    TraverseTrie($trie, "", $handler);
+
+    fwrite($handler, "}\r\n");
+  }
 
   function TraverseTrie(&$trie, $keySoFar, &$handler=null)
   {
