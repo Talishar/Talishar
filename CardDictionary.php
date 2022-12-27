@@ -37,7 +37,7 @@ function CardType($cardID)
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM")
   {
-    $number = intval(substr($cardID, -3));
+    $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
   }
   $class = CardClass($cardID);
