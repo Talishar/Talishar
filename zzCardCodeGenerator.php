@@ -39,10 +39,7 @@
     }
   }
 
-  fwrite($handler, "  switch(\$cardID) {\r\n");
   TraverseTrie($trie, "", $handler);
-  fwrite($handler, "    default: return \"\";\r\n");
-  fwrite($handler, "  }\r\n");
 
   fwrite($handler, "}\r\n");
 
@@ -51,6 +48,31 @@
   fclose($handler);
 
   function TraverseTrie(&$trie, $keySoFar, &$handler=null)
+  {
+    $depth = strlen($keySoFar);
+    if(is_array($trie))
+    {
+      fwrite($handler, "switch(\$cardID[" . $depth . "]) {\r\n");
+      foreach ($trie as $key => $value)
+      {
+        fwrite($handler, "case \"" . $key . "\":\r\n");
+        TraverseTrie($trie[$key], $keySoFar . $key, $handler);
+      }
+      fwrite($handler, "default: return \"\";\r\n");
+      fwrite($handler, "}\r\n");
+    }
+    else
+    {
+      if($handler != null)
+      {
+        fwrite($handler, "return \"" . $trie . "\";\r\n");
+      }
+      echo($keySoFar . " " . $trie . "<BR>");
+    }
+  }
+
+
+  function TraverseTrieSingleSwitch(&$trie, $keySoFar, &$handler=null)
   {
     if(is_array($trie))
     {
