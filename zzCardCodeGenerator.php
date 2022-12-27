@@ -22,6 +22,7 @@
 
   GenerateFunction($cardArray, $handler, "CardType", "type");
   GenerateFunction($cardArray, $handler, "AttackValue", "attack");
+  GenerateFunction($cardArray, $handler, "BlockValue", "block");
 
   fwrite($handler, "?>");
 
@@ -33,7 +34,7 @@
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
     $isString = true;
-    if($propertyName == "attack") $isString = false;
+    if($propertyName == "attack" || $propertyName == "block") $isString = false;
     $trie = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
@@ -52,8 +53,9 @@
         if($duplicate) continue;
         array_push($cardPrintings, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
-        else if($propertyName = "attack") $data = $cardArray[$i]->power;
-        if($data == "-" || $data == "*") echo("Exception with " . $cardID . "<BR>");
+        else if($propertyName == "attack") $data = $cardArray[$i]->power;
+        else if($propertyName == "block") $data = $cardArray[$i]->defense;
+        if($data == "-" || $data == "*") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
         if($data != "-" && $data != "" && $data != "*") AddToTrie($trie, $cardID, 0, $data);
       }
     }
