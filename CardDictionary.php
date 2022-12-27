@@ -29,10 +29,17 @@ include "CardDictionaries/ClassicBattles/RVDShared.php";
 include "CardDictionaries/Dynasty/DYNShared.php";
 include "CardDictionaries/Roguelike/ROGUEShared.php";
 
+include "GeneratedCode/GeneratedCardDictionaries.php";
+
 
 function CardType($cardID)
 {
   $set = CardSet($cardID);
+  if($set != "ROG" && $set != "DUM")
+  {
+    $number = intval(substr($cardID, -3));
+    if($number < 400) return GeneratedCardType($cardID);
+  }
   $class = CardClass($cardID);
   if ($set == "WTR") {
     return WTRCardType($cardID);
