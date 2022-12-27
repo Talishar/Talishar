@@ -24,6 +24,7 @@
   for($i=0; $i<count($cardArray); ++$i)
   {
     $cardPrintings = [];
+    if($cardArray[$i]->name == "Nitro Mechanoid") continue;
     for($j=0; $j<count($cardArray[$i]->printings); ++$j)
     {
       $cardID = $cardArray[$i]->printings[$j]->id;
