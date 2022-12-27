@@ -21,6 +21,7 @@
   fwrite($handler, "<?php\r\n");
 
   GenerateFunction($cardArray, $handler, "CardType", "type");
+  GenerateFunction($cardArray, $handler, "AttackValue", "attack");
 
   fwrite($handler, "?>");
 
@@ -30,6 +31,8 @@
   {
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
+    $isString = true;
+    if($propertyName == "attack") $isString = false;
     $trie = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
@@ -48,16 +51,17 @@
         if($duplicate) continue;
         array_push($cardPrintings, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
-        if($data != "-") AddToTrie($trie, $cardID, 0, $data);
+        else if($propertyName = "attack") $data = $cardArray[$i]->power;
+        if($data != "-" && $data != "" && $data != "*") AddToTrie($trie, $cardID, 0, $data);
       }
     }
 
-    TraverseTrie($trie, "", $handler);
+    TraverseTrie($trie, "", $handler, $isString);
 
-    fwrite($handler, "}\r\n");
+    fwrite($handler, "}\r\n\r\n");
   }
 
-  function TraverseTrie(&$trie, $keySoFar, &$handler=null)
+  function TraverseTrie(&$trie, $keySoFar, &$handler=null, $isString=true)
   {
     $depth = strlen($keySoFar);
     if(is_array($trie))
@@ -66,36 +70,18 @@
       foreach ($trie as $key => $value)
       {
         fwrite($handler, "case \"" . $key . "\":\r\n");
-        TraverseTrie($trie[$key], $keySoFar . $key, $handler);
+        TraverseTrie($trie[$key], $keySoFar . $key, $handler, $isString);
       }
-      fwrite($handler, "default: return \"\";\r\n");
+      if($isString) fwrite($handler, "default: return \"\";\r\n");
+      else fwrite($handler, "default: return 0;\r\n");
       fwrite($handler, "}\r\n");
     }
     else
     {
       if($handler != null)
       {
-        fwrite($handler, "return \"" . $trie . "\";\r\n");
-      }
-      echo($keySoFar . " " . $trie . "<BR>");
-    }
-  }
-
-
-  function TraverseTrieSingleSwitch(&$trie, $keySoFar, &$handler=null)
-  {
-    if(is_array($trie))
-    {
-      foreach ($trie as $key => $value)
-      {
-          TraverseTrie($trie[$key], $keySoFar . $key, $handler);
-      }
-    }
-    else
-    {
-      if($handler != null)
-      {
-        fwrite($handler, "    case \"" . $keySoFar . "\": return \"" . $trie . "\";\r\n");
+        if($isString) fwrite($handler, "return \"" . $trie . "\";\r\n");
+        else fwrite($handler, "return " . $trie . ";\r\n");
       }
       echo($keySoFar . " " . $trie . "<BR>");
     }
