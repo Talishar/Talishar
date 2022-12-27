@@ -29,6 +29,7 @@
 
   function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName)
   {
+    echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
     $isString = true;
@@ -52,6 +53,7 @@
         array_push($cardPrintings, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
         else if($propertyName = "attack") $data = $cardArray[$i]->power;
+        if($data == "-" || $data == "*") echo("Exception with " . $cardID . "<BR>");
         if($data != "-" && $data != "" && $data != "*") AddToTrie($trie, $cardID, 0, $data);
       }
     }
@@ -83,7 +85,6 @@
         if($isString) fwrite($handler, "return \"" . $trie . "\";\r\n");
         else fwrite($handler, "return " . $trie . ";\r\n");
       }
-      echo($keySoFar . " " . $trie . "<BR>");
     }
   }
 
