@@ -20,14 +20,17 @@
 
   fwrite($handler, "<?php\r\n");
   fwrite($handler, "function GeneratedCardType(\$cardID) {\r\n");
+  $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
   $trie = [];
   for($i=0; $i<count($cardArray); ++$i)
   {
     $cardPrintings = [];
-    if($cardArray[$i]->name == "Nitro Mechanoid") continue;
+    if($cardArray[$i]->name == "Nitro Mechanoid") continue;//This is due to the data set not yet differentiating faces
     for($j=0; $j<count($cardArray[$i]->printings); ++$j)
     {
       $cardID = $cardArray[$i]->printings[$j]->id;
+      $set = substr($cardID, 0, 3);
+      if(!in_array($set, $originalSets)) continue;
       $duplicate = false;
       for($k=0; $k<count($cardPrintings); ++$k)
       {
