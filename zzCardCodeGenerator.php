@@ -15,6 +15,8 @@
 
   $cardArray = json_decode($cardData);
 
+  if(!is_dir("./GeneratedCode")) mkdir("./GeneratedCode", 700, true);
+
   $filename = "./GeneratedCode/GeneratedCardDictionaries.php";
   $handler = fopen($filename, "w");
 
