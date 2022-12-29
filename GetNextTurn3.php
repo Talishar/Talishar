@@ -256,7 +256,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $opponentBanishArr = array();
   for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
-    array_push($opponentBanishArr, JSONRenderedCard($theirBanish[$i]));
+    $cardID = $theirBanish[$i];
+    if($theirBanish[$i+1] == "INT") $cardID = "CardBack";
+    array_push($opponentBanishArr, JSONRenderedCard($cardID));
   }
   $response->opponentBanish = $opponentBanishArr;
 
