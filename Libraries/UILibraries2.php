@@ -69,6 +69,8 @@ function JSONRenderedCard(
   $countersMap = new stdClass(), // new object for counters
   $label = NULL
 ) {
+  global $playerID;
+  $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
 
   $countersMap->counters = property_exists($countersMap, 'counters') ?
     $countersMap->counters : $counters;
@@ -117,10 +119,10 @@ function JSONRenderedCard(
     'isBroken' => $isBroken,
     'onChain' => $onChain,
     'isFrozen' => $isFrozen,
-    'gem' => $gem,
     'countersMap' => $countersMap,
     'label' => $label,
   ];
+  if(!$isSpectator) $card->gem = $gem;
 
   // To reduce space/size strip out all values that are null.
   // On the FE repopulate the null values with the defaults like the binary blob.
