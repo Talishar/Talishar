@@ -102,6 +102,8 @@ function JSONRenderedCard(
     return !is_null($val);
   });
 
+  if(!$isSpectator) $gem = 0;
+
   $card = (object) [
     'cardNumber' => $cardNumber,
     'action' => $action,
@@ -118,11 +120,11 @@ function JSONRenderedCard(
     'restriction' => $restriction,
     'isBroken' => $isBroken,
     'onChain' => $onChain,
-    'isFrozen' => $isFrozen,
+    'isFrozen' => $isFrozen,,
+    'gem' => $gem,
     'countersMap' => $countersMap,
     'label' => $label,
   ];
-  if(!$isSpectator) $card->gem = $gem;
 
   // To reduce space/size strip out all values that are null.
   // On the FE repopulate the null values with the defaults like the binary blob.
