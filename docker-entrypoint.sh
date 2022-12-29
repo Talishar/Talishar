@@ -1,0 +1,1 @@
+ pwd && php ./game/zzCardCodeGenerator.php && apache2-foreground
