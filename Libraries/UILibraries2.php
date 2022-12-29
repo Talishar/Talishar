@@ -69,6 +69,8 @@ function JSONRenderedCard(
   $countersMap = new stdClass(), // new object for counters
   $label = NULL
 ) {
+  global $playerID;
+  $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
 
   $countersMap->counters = property_exists($countersMap, 'counters') ?
     $countersMap->counters : $counters;
@@ -99,6 +101,8 @@ function JSONRenderedCard(
   $countersMap = (object) array_filter((array) $countersMap, function ($val) {
     return !is_null($val);
   });
+
+  if(!$isSpectator) $gem = 0;
 
   $card = (object) [
     'cardNumber' => $cardNumber,
