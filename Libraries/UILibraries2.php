@@ -120,7 +120,7 @@ function JSONRenderedCard(
     'restriction' => $restriction,
     'isBroken' => $isBroken,
     'onChain' => $onChain,
-    'isFrozen' => $isFrozen,,
+    'isFrozen' => $isFrozen,
     'gem' => $gem,
     'countersMap' => $countersMap,
     'label' => $label,
