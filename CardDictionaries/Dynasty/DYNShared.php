@@ -538,6 +538,7 @@ function DYNPitchValue($cardID)
     case "DYN004": return 1;
     //Brute
     case "DYN005": return 0;
+    case "DYN006": return 0;
     case "DYN007": return 1;
     case "DYN008":  case "DYN010": case "DYN013": case "DYN016": case "DYN019": case "DYN022": return 1;
     case "DYN009":  case "DYN011": case "DYN014": case "DYN017": case "DYN020": case "DYN023": return 2;
