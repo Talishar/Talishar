@@ -911,6 +911,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1); //Operates off last result
       AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+      AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_an_action_point_from_" . CardLink("DYN006", "DYN006"), 1);
       break;
     case "DYN008":
       WriteLog("Gained a resource from " . CardLink($parameter, $parameter));
