@@ -100,7 +100,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include "WriteGamestate.php";
   }
 
-  if ($turn[0] == "REMATCH") {
+  if ($turn[0] == "REMATCH" && intval($playerID) != 3) {
     include "MenuFiles/ParseGamefile.php";
     include "MenuFiles/WriteGamefile.php";
     if ($gameStatus == $MGS_GameStarted) {
@@ -723,7 +723,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   display:inline-block;'>" . count($theirSoul) . " cards</div></div>");
   echo ("</div>");
 
-  //Show deck, discard, pitch, 
+  //Show deck, discard, pitch,
   //Display Their Discard
   echo ("<div title='Click to view the cards in your opponent's Graveyard.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DISCARD") . "; top:" . GetZoneTop("THEIRDISCARD") . ";' onclick='ShowPopup(\"theirDiscardPopup\");'>");
   $card = (count($theirDiscard) > 0 ? $theirDiscard[count($theirDiscard) - 1] : $blankZone);
@@ -1197,7 +1197,7 @@ function GetCharacterTop($cardType, $cardSubType)
     case "C":
       return "52px";
     case "W":
-      return "52px"; 
+      return "52px";
     default:
       break;
   }

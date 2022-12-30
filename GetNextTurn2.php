@@ -104,7 +104,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include "WriteGamestate.php";
   }
 
-  if ($turn[0] == "REMATCH") {
+  if ($turn[0] == "REMATCH" && intval($playerID) != 3) {
     include "MenuFiles/ParseGamefile.php";
     include "MenuFiles/WriteGamefile.php";
     if ($gameStatus == $MGS_GameStarted) {
