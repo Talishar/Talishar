@@ -669,6 +669,11 @@ function PitchValue($cardID)
 function BlockValue($cardID)
 {
   $set = CardSet($cardID);
+  if($set != "ROG" && $set != "DUM" && $cardID != "MON191" && $cardID != "EVR138")
+  {
+    $number = intval(substr($cardID, 3));
+    if($number < 400) return GeneratedBlockValue($cardID);
+  }
   $class = CardClass($cardID);
   if ($set == "WTR") {
     return WTRBlockValue($cardID);
