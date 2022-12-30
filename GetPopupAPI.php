@@ -71,8 +71,8 @@ switch ($popupType) {
     JSONPopup($response, $myDeck, DeckPieces());
     break;
   case "myStatsPopup":
-    //TODO
-    //echo (CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
+    echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName));
+    exit;
     break;
   case "menuPopup":
     /*
