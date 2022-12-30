@@ -1,10 +1,10 @@
 <?php
 
-include 'CardDictionary.php';
+include 'GameLogic.php';
 
 $set = "DYN";
 $count = 0;
-for ($number = 0; $number < 246; ++$number) {
+for ($number = 0; $number < 320; ++$number) {
   if($number == 65) continue;//Tiger (ignore no attack)
   if($number == 191) continue;//Runechant
   if($number == 216) continue;//Spectral Procession (ignore no attack)
@@ -19,6 +19,7 @@ for ($number = 0; $number < 246; ++$number) {
     echo ($card . " not found.<br>");
     ++$count;
   }
+  if($type == "AR" && AttackValue($card) != 0) echo($card . " Attack Reaction has attack " . AttackValue($card) . ".<BR>");
   if ($type == "AA" && $card != "EVR138" && AttackValue($card) == 0) echo ($card . " Attack action has no attack.<br>");
   if (($type != "C" && $type != "E" && $type != "W" && $type != "T") && PitchValue($card) == 0) echo ($card . " has no pitch value.<br>");
 }
