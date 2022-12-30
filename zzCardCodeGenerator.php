@@ -57,7 +57,11 @@
         array_push($cardPrintings, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
         else if($propertyName == "attack") $data = $cardArray[$i]->power;
-        else if($propertyName == "block") $data = $cardArray[$i]->defense;
+        else if($propertyName == "block")
+        {
+          $data = $cardArray[$i]->defense;
+          if($data == "") $data = -1;
+        }
         else if($propertyName == "name") $data = $cardArray[$i]->name;
         if($data == "-" || $data == "*") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
         if($data != "-" && $data != "" && $data != "*") AddToTrie($trie, $cardID, 0, $data);
