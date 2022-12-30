@@ -744,14 +744,11 @@ function AttackValue($cardID)
     if (SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;
   }
-  /*
-  //Do not enable until attack reactions get figured out
   if($set != "ROG" && $set != "DUM" && $cardID != "MON191" && $cardID != "EVR138" && $cardID != "DYN216")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedAttackValue($cardID);
   }
-  */
   if ($set == "WTR") {
     return WTRAttackValue($cardID);
   } else if ($set == "ARC") {
