@@ -622,16 +622,24 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return IntimidateCount($mainPlayer) > 0 ? 2 : 0;
     case "UPR048":
       return (NumPhoenixFlameChainLinks() >= 2 ? 2 : 0);
+    case "UPR050":
+      return 1;
     case "UPR098":
       return (RuptureActive() ? 3 : 0);
     case "UPR101":
       return (NumDraconicChainLinks() >= 2 ? 1 : 0);
+    case "UPR162": return 3;
+    case "UPR163": return 2;
+    case "UPR164": return 1;
     case "DYN047":
       return (ComboActive() ? 2 : 0);
     case "DYN056": case "DYN057": case "DYN058":
       return (ComboActive() ? 1 : 0);
     case "DYN059": case "DYN060": case "DYN061":
       return (ComboActive() ? 4 : 0);
+    case "DYN079": return 3 + (NumEquipBlock() > 0 ? 1 : 0);
+    case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
+    case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
     case "DYN115": case "DYN116":
       return NumEquipBlock() > 0 ? 1 : 0;
     case "DYN148": return 3;

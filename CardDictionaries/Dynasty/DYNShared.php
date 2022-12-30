@@ -718,9 +718,6 @@ function DYNAttackValue($cardID)
     //Warrior
     case "DYN067": return 3;
     case "DYN069": case "DYN070": return 1;
-    case "DYN079": return 3 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN080": return 2 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN081": return 1 + (NumEquipBlock() > 0 ? 1 : 0);
     //Mechanologist
     case "DYN088": case "DYN095": case "DYN101": case "DYN104": return 5;
     case "DYN090": case "DYN096": case "DYN102": case "DYN105": case "DYN107": return 4;
