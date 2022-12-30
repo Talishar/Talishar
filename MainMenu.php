@@ -75,7 +75,11 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
 
 <div class="ServerChecker">
   <?php
-  include "ServerChecker.php";
+  try {
+    include "ServerChecker.php";
+  } catch (\Exception $e) {
+
+  }
   ?>
 </div>
 
