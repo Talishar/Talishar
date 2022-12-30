@@ -368,7 +368,7 @@
         else if($cardID == "UPR148") $cost = 2;
         else $cost = 1;
         $theirAllies = &GetAllies($otherPlayer);
-      if (!ArsenalEmpty($otherPlayer) || count($theirAllies) > 0) {        
+      if (!ArsenalEmpty($otherPlayer) || count($theirAllies) > 0) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -414,8 +414,14 @@
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"MYDISCARD:maxCost=".$maxCost.";type=AA&MYDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=AA&THEIRDISCARD:maxCost=".$maxCost.";type=A");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card from a graveyard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("MZGETCARDID", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
         AddDecisionQueue("MZADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from Strategic Planning.", 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Lets you return a card and draw a card.";
       case "UPR212": case "UPR213": case "UPR214":

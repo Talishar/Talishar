@@ -5718,6 +5718,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         default: break;
       }
+      if($damage < 0) $damage = 0;
       $dqVars[0] = $damage;
       $dqState[6] = $damage;
       if($damage > 0) AddDamagePreventionSelection($player, $damage, $params[1]);

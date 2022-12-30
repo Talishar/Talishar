@@ -71,8 +71,8 @@ switch ($popupType) {
     JSONPopup($response, $myDeck, DeckPieces());
     break;
   case "myStatsPopup":
-    //TODO
-    //echo (CreatePopup("myStatsPopup", [], 1, 0, "Your Game Stats", 1, CardStats($playerID), "./", true));
+    echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName));
+    exit;
     break;
   case "menuPopup":
     /*
@@ -120,11 +120,45 @@ switch ($popupType) {
     //TODO
     //echo (CreatePopup("chainLinkPopup-" . $params[1], [], 1, 0, "Summary Chain Link " . $params[1] + 1, 1, ChainLinkPopup($params[1]), "./", false, false, "Total Damage Dealt: " . $chainLinkSummary[$params[1] * ChainLinkSummaryPieces()]));
     break;
+  case "mySettings":
+    global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
+    global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
+    global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode;
+    $response->Settings = array();
+    AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
+    AddSetting($response->Settings, "TryReactUI", $SET_TryUI2);
+    AddSetting($response->Settings, "DarkMode", $SET_DarkMode);
+    AddSetting($response->Settings, "ManualMode", $SET_ManualMode);
+    AddSetting($response->Settings, "SkipARWindow", $SET_SkipARs);
+    AddSetting($response->Settings, "SkipDRWindow", $SET_SkipDRs);
+    AddSetting($response->Settings, "SkipNextDRWindow", $SET_PassDRStep);
+    AddSetting($response->Settings, "AutoTargetOpponent", $SET_AutotargetArcane);
+    AddSetting($response->Settings, "ColorblindMode", $SET_ColorblindMode);
+    AddSetting($response->Settings, "ShortcutAttackThreshold", $SET_ShortcutAttackThreshold);
+    AddSetting($response->Settings, "EnableDynamicScaling", $SET_EnableDynamicScaling);
+    AddSetting($response->Settings, "MuteSound", $SET_Mute);
+    AddSetting($response->Settings, "CardBack", $SET_Cardback);
+    AddSetting($response->Settings, "IsPatron", $SET_IsPatron);
+    AddSetting($response->Settings, "MuteChat", $SET_MuteChat);
+    AddSetting($response->Settings, "DisableStats", $SET_DisableStats);
+    AddSetting($response->Settings, "IsCasterMode", $SET_CasterMode);
+    AddSetting($response->Settings, "IsStreamerMode", $SET_StreamerMode);
+    break;
   default:
     break;
 }
 
 echo json_encode($response);
+
+function AddSetting(&$response, $name, $setting)
+{
+  global $playerID;
+  $mySettings = &GetSettings($playerID);
+  $thisSetting = new stdClass();
+  $thisSetting->name = $name;
+  $thisSetting->value = $mySettings[$setting];
+  array_push($response, $thisSetting);
+}
 
 function JSONPopup($response, $zone, $zonePieces)
 {
