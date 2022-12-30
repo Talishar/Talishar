@@ -10,6 +10,7 @@ if (!IsGameNameValid($gameName)) {
 $playerID = $_GET["playerID"];
 $authKey = TryGet("authKey", "");
 $popupType = $_GET["popupType"];
+$chainLinkIndex = TryGet("chainLinkIndex", "");
 
 ob_start();
 include "./ParseGamestate.php";
@@ -88,7 +89,8 @@ switch ($popupType) {
     echo (CreatePopup("theirSoulPopup", $theirSoul, 1, 0, "Opponent's Soul"));
     break;
   case "chainLinkPopup":
-    echo (CreatePopup("chainLinkPopup-" . $params[1], [], 1, 0, "Summary Chain Link " . $params[1] + 1, 1, ChainLinkPopup($params[1]), "./", false, false, "Total Damage Dealt: " . $chainLinkSummary[$params[1] * ChainLinkSummaryPieces()]));
+    $popupIndex = intval(($chainLinkIndex != "" ? $chainLinkIndex : $params[1]));
+    echo (CreatePopup("chainLinkPopup-" . $popupIndex, [], 1, 0, "Summary Chain Link " . $popupIndex + 1, 1, ChainLinkPopup($popupIndex), "./", false, false, "Total Damage Dealt: " . $chainLinkSummary[$popupIndex * ChainLinkSummaryPieces()]));
     break;
   default:
     break;
