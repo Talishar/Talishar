@@ -1,6 +1,6 @@
 <?php
 
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/json/json/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/json/json/english/card.json";
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
