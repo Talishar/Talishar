@@ -1,5 +1,20 @@
 <?php
 
+function WTRAbilityCost($cardID)
+{
+  switch($cardID)
+  {
+    case "WTR003": return 2;
+    case "WTR040": return 3;
+    case "WTR041": return 1;
+    case "WTR042": return 1;
+    case "WTR078": return 1;
+    case "WTR115": return 1;
+    case "WTR116": return 1;
+    default: return 0;
+  }
+}
+
   function WTRAbilityType($cardID, $index=-1)
   {
     switch ($cardID)
