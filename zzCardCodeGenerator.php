@@ -105,7 +105,7 @@
       if(!array_key_exists($cardID[$depth], $trie)) $trie[$cardID[$depth]] = [];
       AddToTrie($trie[$cardID[$depth]], $cardID, $depth+1, $value);
     }
-    else $trie[$cardID[$depth]] = $value;
+    else if(!isset($trie[$cardID[$depth]])) $trie[$cardID[$depth]] = $value;
   }
 
   function MapType($card)

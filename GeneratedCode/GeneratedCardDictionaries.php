@@ -7470,7 +7470,7 @@ return 2;
 case "1":
 return 2;
 case "2":
-return -1;
+return 3;
 case "3":
 return -1;
 case "4":
@@ -10654,33 +10654,33 @@ return 0;
 case "5":
 return 3;
 case "6":
-return -1;
+return 3;
 case "7":
-return -1;
+return 3;
 case "8":
-return -1;
+return 3;
 case "9":
-return -1;
+return 3;
 default: return 0;
 }
 case "1":
 switch($cardID[5]) {
 case "0":
-return -1;
+return 3;
 case "1":
-return -1;
+return 3;
 case "2":
-return -1;
+return 3;
 case "3":
-return -1;
+return 3;
 case "4":
-return -1;
+return 3;
 case "5":
-return -1;
+return 3;
 case "6":
-return -1;
+return 3;
 case "7":
-return -1;
+return 3;
 case "8":
 return 3;
 case "9":
@@ -12288,7 +12288,7 @@ return "Tempest Aurora";
 case "1":
 return "Tempest Aurora";
 case "2":
-return "Suraya, Archangel of Knowledge";
+return "Invoke Suraya";
 case "3":
 return "Celestial Kimono";
 case "4":
@@ -15474,33 +15474,33 @@ return "Silken Form";
 case "5":
 return "Burn Them All";
 case "6":
-return "Dracona Optimai";
+return "Invoke Dracona Optimai";
 case "7":
-return "Tomeltai";
+return "Invoke Tomeltai";
 case "8":
-return "Dominia";
+return "Invoke Dominia";
 case "9":
-return "Azvolai";
+return "Invoke Azvolai";
 default: return "";
 }
 case "1":
 switch($cardID[5]) {
 case "0":
-return "Cromai";
+return "Invoke Cromai";
 case "1":
-return "Kyloria";
+return "Invoke Kyloria";
 case "2":
-return "Miragai";
+return "Invoke Miragai";
 case "3":
-return "Nekria";
+return "Invoke Nekria";
 case "4":
-return "Ouvia";
+return "Invoke Ouvia";
 case "5":
-return "Themai";
+return "Invoke Themai";
 case "6":
-return "Vynserakai";
+return "Invoke Vynserakai";
 case "7":
-return "Yendurai";
+return "Invoke Yendurai";
 case "8":
 return "Billowing Mirage";
 case "9":
