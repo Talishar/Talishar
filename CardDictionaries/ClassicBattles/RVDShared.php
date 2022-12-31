@@ -1,24 +1,5 @@
 <?php
 
-  function RVDCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "RVD001": return "C";
-      case "RVD002": return "W";
-      case "RVD003": case "RVD004": case "RVD005": case "RVD006": return "E";
-      case "RVD007": return "M";
-      case "RVD025": return "A";
-      case "RVD009": return "AA";
-      case "RVD013": return "AA";
-      case "RVD015": return "AA";
-      case "RVD018": return "AA";
-      case "RVD026": return "DR";
-      case "RVD027": return "R";
-      default: return "";
-    }
-  }
-
   function RVDCardSubType($cardID)
   {
     switch($cardID)

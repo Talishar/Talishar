@@ -1,26 +1,5 @@
 <?php
 
-  function DVRCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "DVR001": return "C";
-      case "DVR002": return "W";
-      case "DVR003": case "DVR004": case "DVR005": case "DVR006": return "E";
-      case "DVR007": return "M";
-      case "DVR008": case "DVR009": return "A";
-      case "DVR012": return "A";
-      case "DVR019": return "A";
-      case "DVR022": return "A";
-      case "DVR013": return "AR";
-      case "DVR014": return "AR";
-      case "DVR023": return "AR";
-      case "DVR024": return "DR";
-      case "DVR027": return "R";
-      default: return "";
-    }
-  }
-
   function DVRCardSubType($cardID)
   {
     switch($cardID)

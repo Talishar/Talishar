@@ -40,14 +40,7 @@ function CardType($cardID)
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardType($cardID);
   }
-  $class = CardClass($cardID);
-  if ($set == "DVR") {
-    return DVRCardType($cardID);
-  } else if ($set == "RVD") {
-    return RVDCardType($cardID);
-  } else if ($set == "DYN") {
-    return DYNCardType($cardID);
-  } else if ($set == "ROG") {
+  if ($set == "ROG") {
     return ROGUECardType($cardID);
   }
   switch ($cardID) {
@@ -72,6 +65,7 @@ function CardType($cardID)
     case "UPR440": return "-";
     case "UPR441": return "-";
     case "UPR551": return "-";
+    case "DYN612": return "-";
     case "DUMMY":
       return "C";
     case "OVRPVE001":
