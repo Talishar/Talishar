@@ -65,6 +65,8 @@ function CardType($cardID)
     case "UPR440": return "-";
     case "UPR441": return "-";
     case "UPR551": return "-";
+    case "DYN492a": return "W";
+    case "DYN492b": return "E";
     case "DYN612": return "-";
     case "DUMMY":
       return "C";
