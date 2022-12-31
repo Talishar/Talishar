@@ -679,6 +679,7 @@ function AttackValue($cardID)
     if (SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;
   }
+  if($cardID == "CRU101") return 1 + $combatChainState[$CCS_NumBoosted];
   if($set != "ROG" && $set != "DUM" && $cardID != "MON191" && $cardID != "EVR138" && $cardID != "DYN216")
   {
     $number = intval(substr($cardID, 3));
