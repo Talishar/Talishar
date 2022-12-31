@@ -42,52 +42,6 @@
     }
   }
 
-  function ARCRangerPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC038": case "ARC039": case "ARC040": case "ARC041": case "ARC042": return 0;
-      case "ARC043": case "ARC044": case "ARC045": return 1;
-      case "ARC046": return 3;
-      case "ARC047": return 2;
-      case "ARC048": case "ARC051": case "ARC054": case "ARC057": case "ARC060": case "ARC063": case "ARC066": case "ARC069": case "ARC072": return 1;
-      case "ARC049": case "ARC052": case "ARC055": case "ARC058": case "ARC061": case "ARC064": case "ARC067": case "ARC070": case "ARC073": return 2;
-      case "ARC050": case "ARC053": case "ARC056": case "ARC059": case "ARC062": case "ARC065": case "ARC068": case "ARC071": case "ARC074": return 3;
-      default: return 3;
-    }
-  }
-
-  function ARCRangerBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC038": case "ARC039": case "ARC040": return -1;
-      case "ARC041": return 1;
-      case "ARC042": return 0;
-      case "ARC044": case "ARC047": return 2;
-      case "ARC048": return 4;
-      case "ARC049": return 3;
-      case "ARC050": return 2;
-      case "ARC051": case "ARC052": case "ARC053": return 2;
-      case "ARC054": case "ARC055": case "ARC056": return 2;
-      default: return 3;
-    }
-  }
-
-  function ARCRangerAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC043": return 5;
-      case "ARC045": return 4;
-      case "ARC060": case "ARC066": return 5;
-      case "ARC057": case "ARC061": case "ARC063": case "ARC067": case "ARC069": case "ARC072": return 4;
-      case "ARC058": case "ARC062": case "ARC064": case "ARC068": case "ARC070": case "ARC073": return 3;
-      case "ARC059": case "ARC065": case "ARC071": case "ARC074": return 2;
-      default: return 0;
-    }
-  }
-
   function ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;

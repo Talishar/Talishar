@@ -40,60 +40,6 @@
     }
   }
 
-  function ARCMechanologistPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC001": case "ARC002": case "ARC003": case "ARC004": case "ARC005": return 0;
-      case "ARC006": return 1;
-      case "ARC007": return 3;
-      case "ARC008": return 1;
-      case "ARC009": return 2;
-      case "ARC010": return 1;
-      case "ARC011": case "ARC014": case "ARC019": case "ARC020": case "ARC023": case "ARC026": case "ARC029": case "ARC032": case "ARC036": return 1;
-      case "ARC012": case "ARC015": case "ARC017": case "ARC021": case "ARC024": case "ARC027": case "ARC030": case "ARC033": case "ARC035": return 2;
-      default: return 3;
-    }
-  }
-
-  function ARCMechanologistBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC001": case "ARC002": case "ARC003": return -1;
-      case "ARC004": return 2;
-      case "ARC005": return 0;
-      case "ARC007": case "ARC010": case "ARC017": case "ARC018": case "ARC019": return -1;
-      case "ARC035": case "ARC036": case "ARC037": return -1;
-      default: return 3;
-    }
-  }
-
-  function ARCMechanologistAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC003": return 2;
-      case "ARC008": return 10;
-      case "ARC011": return 5;
-      case "ARC012": return 4;
-      case "ARC013": return 3;
-      case "ARC020": return 5;
-      case "ARC021": return 4;
-      case "ARC022": return 3;
-      case "ARC023": return 6;
-      case "ARC024": return 5;
-      case "ARC025": return 4;
-      case "ARC026": return 4;
-      case "ARC027": return 3;
-      case "ARC028": return 2;
-      case "ARC029": return 5;
-      case "ARC030": return 4;
-      case "ARC031": return 3;
-      default: return 0;
-    }
-  }
-
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBoosted, $actionPoints, $combatChainState, $CS_PlayIndex;

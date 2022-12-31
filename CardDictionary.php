@@ -548,30 +548,13 @@ function DynamicCost($cardID)
 function PitchValue($cardID)
 {
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM" && $cardID != "MON191")
+  if($set != "ROG" && $set != "DUM")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedPitchValue($cardID);
   }
   $class = CardClass($cardID);
-  if ($set == "WTR") {
-    return WTRPitchValue($cardID);
-  } else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistPitchValue($cardID);
-      case "RANGER":
-        return ARCRangerPitchValue($cardID);
-      case "RUNEBLADE":
-        return ARCRunebladePitchValue($cardID);
-      case "WIZARD":
-        return ARCWizardPitchValue($cardID);
-      case "GENERIC":
-        return ARCGenericPitchValue($cardID);
-    }
-  } else if ($set == "CRU") {
-    return CRUPitchValue($cardID);
-  } else if ($set == "MON") {
+  if ($set == "MON") {
     switch ($class) {
       case "BRUTE":
         return MONBrutePitchValue($cardID);
@@ -621,30 +604,15 @@ function PitchValue($cardID)
 function BlockValue($cardID)
 {
   $set = CardSet($cardID);
-  if($set != "ROG" && $set != "DUM" && $cardID != "MON191" && $cardID != "EVR138")
+  if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  else if($cardID == "EVR138") return FractalReplicationStats("Block");
+  if($set != "ROG" && $set != "DUM")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedBlockValue($cardID);
   }
   $class = CardClass($cardID);
-  if ($set == "WTR") {
-    return WTRBlockValue($cardID);
-  } else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistBlockValue($cardID);
-      case "RANGER":
-        return ARCRangerBlockValue($cardID);
-      case "RUNEBLADE":
-        return ARCRunebladeBlockValue($cardID);
-      case "WIZARD":
-        return ARCWizardBlockValue($cardID);
-      case "GENERIC":
-        return ARCGenericBlockValue($cardID);
-    }
-  } else if ($set == "CRU") {
-    return CRUBlockValue($cardID);
-  } else if ($set == "MON") {
+  if ($set == "MON") {
     switch ($class) {
       case "BRUTE":
         return MONBruteBlockValue($cardID);
@@ -693,7 +661,7 @@ function BlockValue($cardID)
 
 function AttackValue($cardID)
 {
-  global $combatChainState, $CCS_NumBoosted, $mainPlayer;
+  global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
@@ -702,29 +670,15 @@ function AttackValue($cardID)
     if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;
   }
   if($cardID == "CRU101") return 1 + $combatChainState[$CCS_NumBoosted];
-  if($set != "ROG" && $set != "DUM" && $cardID != "MON191" && $cardID != "EVR138" && $cardID != "DYN216")
+  else if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
+  else if($cardID == "EVR138") return FractalReplicationStats("Attack");
+  else if($cardID == "DYN216") return CountAura("MON104", $currentPlayer);
+  if($set != "ROG" && $set != "DUM")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedAttackValue($cardID);
   }
-  if ($set == "WTR") {
-    return WTRAttackValue($cardID);
-  } else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistAttackValue($cardID);
-      case "RANGER":
-        return ARCRangerAttackValue($cardID);
-      case "RUNEBLADE":
-        return ARCRunebladeAttackValue($cardID);
-      case "WIZARD":
-        return ARCWizardAttackValue($cardID);
-      case "GENERIC":
-        return ARCGenericAttackValue($cardID);
-    }
-  } else if ($set == "CRU") {
-    return CRUAttackValue($cardID);
-  } else if ($set == "MON") {
+  if ($set == "MON") {
     switch ($class) {
       case "BRUTE":
         return MONBruteAttackValue($cardID);

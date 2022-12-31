@@ -45,65 +45,7 @@
       default: return 0;
     }
   }
-
-  function ARCGenericPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC000": return 3;
-      case "ARC159": return 1;
-      case "ARC160": return 2;
-      case "ARC161": return 3;
-      case "ARC162": return 1;
-      case "ARC163": return 3;
-      case "ARC164": case "ARC167": case "ARC170": case "ARC173": case "ARC176": case "ARC179": case "ARC182": case "ARC185": case "ARC188": return 1;
-      case "ARC191": case "ARC194": case "ARC197": case "ARC200": case "ARC203": case "ARC206": case "ARC209": case "ARC212": case "ARC215": return 1;
-      case "ARC165": case "ARC168": case "ARC171": case "ARC174": case "ARC177": case "ARC180": case "ARC183": case "ARC186": case "ARC189": return 2;
-      case "ARC192": case "ARC195": case "ARC198": case "ARC201": case "ARC204": case "ARC207": case "ARC210": case "ARC213": case "ARC216": return 2;
-      case "ARC166": case "ARC169": case "ARC172": case "ARC175": case "ARC178": case "ARC181": case "ARC184": case "ARC187": case "ARC190": return 3;
-      case "ARC193": case "ARC196": case "ARC199": case "ARC202": case "ARC205": case "ARC208": case "ARC211": case "ARC214": case "ARC217": return 3;
-      default: return 0;
-    }
-  }
-
-  function ARCGenericBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC000": return -1;
-      case "ARC150": return 1;
-      case "ARC151": case "ARC152": case "ARC153": case "ARC154": return 0;
-      case "ARC155": case "ARC156": case "ARC157": case "ARC158": return 0;
-      case "ARC159": return 3;
-      case "ARC160": return -1;
-      case "ARC163": return -1;
-      case "ARC173": case "ARC174": case "ARC175": return -1;
-      case "ARC200": return 4;
-      case "ARC201": return 3;
-      case "ARC202": return 2;
-      case "ARC203": case "ARC204": case "ARC205": return 3;
-      case "ARC215": case "ARC216": case "ARC217": return 3;
-      default: return 2;
-    }
-  }
-
-  function ARCGenericAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC159": return 6;
-      case "ARC161": return 4;
-      case "ARC179": case "ARC194": return 6;
-      case "ARC176": case "ARC180": case "ARC185": case "ARC191": case "ARC195": return 5;
-      case "ARC164": case "ARC177": case "ARC181": case "ARC186": case "ARC188": case "ARC192": case "ARC196": case "ARC197": return 4;
-      case "ARC165": case "ARC178": case "ARC182": case "ARC187": case "ARC189": case "ARC193": case "ARC198": return 3;
-      case "ARC166": case "ARC183": case "ARC190": case "ARC199": return 2;
-      case "ARC184": return 1;
-      default: return 0;
-    }
-  }
-
-
+  
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;

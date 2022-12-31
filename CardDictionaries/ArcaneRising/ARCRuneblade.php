@@ -37,56 +37,6 @@
     }
   }
 
-  function ARCRunebladePitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC080": return 1;
-      case "ARC081": return 1;
-      case "ARC082": return 2;
-      case "ARC083": return 3;
-      case "ARC084": return 3;
-      case "ARC085": case "ARC088": case "ARC091": case "ARC094": case "ARC097": case "ARC100": case "ARC103": case "ARC106": case "ARC109": return 1;
-      case "ARC086": case "ARC089": case "ARC092": case "ARC095": case "ARC098": case "ARC101": case "ARC104": case "ARC107": case "ARC110": return 2;
-      case "ARC087": case "ARC090": case "ARC093": case "ARC096": case "ARC099": case "ARC102": case "ARC105": case "ARC108": case "ARC111": return 3;
-      default: return 0;
-    }
-  }
-
-  function ARCRunebladeBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC075": case "ARC076": case "ARC077": return -1;
-      case "ARC078": return 2;
-      case "ARC079": return 0;
-      case "ARC084": return 2;
-      case "ARC088": return 4;
-      case "ARC089": return 3;
-      case "ARC090": return 2;
-      case "ARC106": case "ARC107": case "ARC108":
-      case "ARC109": case "ARC110": case "ARC111": return 2;
-      default: return 3;
-    }
-  }
-
-  function ARCRunebladeAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC077": return 1;
-      case "ARC080": return 5;
-      case "ARC082": return 9;
-      case "ARC094": return 6;
-      case "ARC095": return 5;
-      case "ARC085": case "ARC096": case "ARC100": case "ARC103": return 4;
-      case "ARC086": case "ARC097": case "ARC101": case "ARC104": return 3;
-      case "ARC087": case "ARC098": case "ARC102": case "ARC105": return 2;
-      case "ARC099": return 1;
-      default: return 0;
-    }
-  }
-
   function ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;

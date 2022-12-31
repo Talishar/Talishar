@@ -32,47 +32,6 @@
     }
   }
 
-  function ARCWizardPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC118": return 1;
-      case "ARC119": return 2;
-      case "ARC120": return 1;
-      case "ARC121": return 2;
-      case "ARC122": return 1;
-      case "ARC123": case "ARC126": case "ARC129": case "ARC132": case "ARC135": case "ARC138": case "ARC141": case "ARC144": case "ARC147": return 1;
-      case "ARC124": case "ARC127": case "ARC130": case "ARC133": case "ARC136": case "ARC139": case "ARC142": case "ARC145": case "ARC148": return 2;
-      case "ARC125": case "ARC128": case "ARC131": case "ARC134": case "ARC137": case "ARC140": case "ARC143": case "ARC146": case "ARC149": return 3;
-      default: return 0;
-    }
-  }
-
-  function ARCWizardBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC113": case "ARC114": case "ARC115": return -1;
-      case "ARC116": case "ARC117": return 0;
-      case "ARC122": return 2;
-      case "ARC123": return 4;
-      case "ARC124": return 3;
-      case "ARC125": return 2;
-      case "ARC129": case "ARC130": case "ARC131": return 2;
-      case "ARC135": case "ARC136": case "ARC137": return 2;
-      default: return 3;
-    }
-  }
-
-  function ARCWizardAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-
-      default: return 0;
-    }
-  }
-
   function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
