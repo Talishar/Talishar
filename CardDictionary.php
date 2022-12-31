@@ -68,40 +68,6 @@ function CardType($cardID)
     case "DYN612": return "-";
     case "DUMMY":
       return "C";
-    case "OVRPVE001":
-      return "C";
-    case "OVRPVE002":
-      return "C";
-    case "OVRPVE003":
-      return "C";
-    case "OVRPVE004":
-      return "W";
-    case "OVRPVE005":
-      return "B";
-    case "OVRPVE006":
-      return "S";
-    case "OVRPVE007":
-      return "S";
-    case "OVRPVE008":
-      return "S";
-    case "OVRPVE009":
-      return "S";
-    case "OVRPVE010":
-      return "S";
-    case "OVRPVE011":
-      return "S";
-    case "OVRPVE012":
-      return "S";
-    case "OVRPVE013":
-      return "S";
-    case "OVRPVE014":
-      return "S";
-    case "OVRPVE015":
-      return "S";
-    case "OVRPVE016":
-      return "S";
-    case "OVRPVE017":
-      return "S";
     default:
       return "";
   }
