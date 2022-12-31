@@ -606,6 +606,19 @@ function AttackValue($cardID)
     return ROGUEAttackValue($cardID);
   }
   switch ($cardID) {
+    case "UPR406": return 6;
+    case "UPR407": return 5;
+    case "UPR408": return 4;
+    case "UPR409": return 2;
+    case "UPR410": return 3;
+    case "UPR411": return 4;
+    case "UPR412": return 2;
+    case "UPR413": return 4;
+    case "UPR414": return 1;
+    case "UPR415": return 3;
+    case "UPR416": return 6;
+    case "UPR417": return 3;
+    case "DYN612": return 4;
     default:
       return 0;
   }
