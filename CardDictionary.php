@@ -41,26 +41,7 @@ function CardType($cardID)
     if($number < 400) return GeneratedCardType($cardID);
   }
   $class = CardClass($cardID);
-  if ($set == "WTR") {
-    return WTRCardType($cardID);
-  } else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistCardType($cardID);
-      case "RANGER":
-        return ARCRangerCardType($cardID);
-      case "RUNEBLADE":
-        return ARCRunebladeCardType($cardID);
-      case "WIZARD":
-        return ARCWizardCardType($cardID);
-      case "GENERIC":
-        return ARCGenericCardType($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "CRU") {
-    return CRUCardType($cardID);
-  } else if ($set == "MON") {
+  if ($set == "MON") {
     switch ($class) {
       case "BRUTE":
         return MONBruteCardType($cardID);

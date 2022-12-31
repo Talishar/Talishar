@@ -1,39 +1,6 @@
 <?php
 
 
-  function ARCGenericCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC000": return "R";
-      case "ARC150": case "ARC151": case "ARC152": case "ARC153": case "ARC154": return "E";
-      case "ARC155": case "ARC156": case "ARC157": case "ARC158": return "E";
-      case "ARC159": return "AA";
-      case "ARC160": return "I";
-      case "ARC161": return "AA";
-      case "ARC162": case "ARC163": return "A";
-      case "ARC164": case "ARC165": case "ARC166": return "AA";
-      case "ARC167": case "ARC168": case "ARC169": return "A";
-      case "ARC170": case "ARC171": case "ARC172": return "A";
-      case "ARC173": case "ARC174": case "ARC175": return "I";
-      case "ARC176": case "ARC177": case "ARC178": return "AA";
-      case "ARC179": case "ARC180": case "ARC181": return "AA";
-      case "ARC182": case "ARC183": case "ARC184": return "AA";
-      case "ARC185": case "ARC186": case "ARC187": return "AA";
-      case "ARC188": case "ARC189": case "ARC190": return "AA";
-      case "ARC191": case "ARC192": case "ARC193": return "AA";
-      case "ARC194": case "ARC195": case "ARC196": return "AA";
-      case "ARC197": case "ARC198": case "ARC199": return "AA";
-      case "ARC200": case "ARC201": case "ARC202": return "DR";
-      case "ARC203": case "ARC204": case "ARC205": return "A";
-      case "ARC206": case "ARC207": case "ARC208": return "A";
-      case "ARC209": case "ARC210": case "ARC211": return "A";
-      case "ARC212": case "ARC213": case "ARC214": return "A";
-      case "ARC215": case "ARC216": case "ARC217": return "A";
-      default: return "";
-    }
-  }
-
   function ARCGenericCardSubType($cardID)
   {
     switch($cardID)

@@ -1,30 +1,6 @@
 <?php
 
 
-  function ARCRangerCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC038": case "ARC039": return "C";
-      case "ARC040": return "W";
-      case "ARC041": case "ARC042": return "E";
-      case "ARC043": return "AA";
-      case "ARC044": return "A";
-      case "ARC045": return "AA";
-      case "ARC046": case "ARC047": return "A";
-      case "ARC048": case "ARC049": case "ARC050": return "DR";
-      case "ARC051": case "ARC052": case "ARC053": return "A";
-      case "ARC054": case "ARC055": case "ARC056": return "A";
-      case "ARC057": case "ARC058": case "ARC059": return "AA";
-      case "ARC060": case "ARC061": case "ARC062": return "AA";
-      case "ARC063": case "ARC064": case "ARC065": return "AA";
-      case "ARC066": case "ARC067": case "ARC068": return "AA";
-      case "ARC069": case "ARC070": case "ARC071": return "AA";
-      case "ARC072": case "ARC073": case "ARC074": return "AA";
-      default: return "";
-    }
-  }
-
   function ARCRangerCardSubType($cardID)
   {
     switch($cardID)

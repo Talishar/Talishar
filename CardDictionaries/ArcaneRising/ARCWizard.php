@@ -1,18 +1,6 @@
 <?php
 
 
-  function ARCWizardCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC113": case "ARC114": return "C";
-      case "ARC115": return "W";
-      case "ARC116": case "ARC117": return "E";
-      case "ARC123": case "ARC124": case "ARC125": return "DR";
-      default: return "A";
-    }
-  }
-
   function ARCWizardCardSubType($cardID)
   {
     switch($cardID)

@@ -1,32 +1,6 @@
 <?php
 
 
-  function ARCRunebladeCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC075": case "ARC076": return "C";
-      case "ARC077": return "W";
-      case "ARC078": return "E";
-      case "ARC079": return "E";
-      case "ARC080": return "AA";
-      case "ARC081": return "A";
-      case "ARC082": return "AA";
-      case "ARC083": case "ARC084": return "A";
-      case "ARC085": case "ARC086": case "ARC087": return "AA";
-      case "ARC088": case "ARC089": case "ARC090": return "DR";
-      case "ARC091": case "ARC092": case "ARC093": return "A";
-      case "ARC094": case "ARC095": case "ARC096": return "AA";
-      case "ARC097": case "ARC098": case "ARC099": return "AA";
-      case "ARC100": case "ARC101": case "ARC102": return "AA";
-      case "ARC103": case "ARC104": case "ARC105": return "AA";
-      case "ARC106": case "ARC107": case "ARC108": return "A";
-      case "ARC109": case "ARC110": case "ARC111": return "A";
-      case "ARC112": return "T";
-      default: return "";
-    }
-  }
-
   function ARCRunebladeCardSubType($cardID)
   {
     switch($cardID)

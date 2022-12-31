@@ -1,29 +1,5 @@
 <?php
 
-
-  function ARCMechanologistCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC001": case "ARC002": return "C";
-      case "ARC003": return "W";
-      case "ARC004": case "ARC005": return "E";
-      case "ARC006": case "ARC007": return "A";
-      case "ARC008": return "AA";
-      case "ARC009": case "ARC010": return "A";
-      case "ARC011": case "ARC012": case "ARC013": return "AA";
-      case "ARC014": case "ARC015": case "ARC016": return "A";
-      case "ARC017": case "ARC018": case "ARC019": return "A";
-      case "ARC020": case "ARC021": case "ARC022": return "AA";
-      case "ARC023": case "ARC024": case "ARC025": return "AA";
-      case "ARC026": case "ARC027": case "ARC028": return "AA";
-      case "ARC029": case "ARC030": case "ARC031": return "AA";
-      case "ARC032": case "ARC033": case "ARC034": return "A";
-      case "ARC035": case "ARC036": case "ARC037": return "A";
-      default: return "";
-    }
-  }
-
   function ARCMechanologistCardSubType($cardID)
   {
     switch($cardID)

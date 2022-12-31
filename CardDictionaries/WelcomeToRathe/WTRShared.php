@@ -123,109 +123,6 @@
     }
   }
 
-  function WTRCardType($cardID)
-  {
-    switch ($cardID)
-    {
-      case "WTR000": return "R";
-      case "WTR113": case "WTR114": case "ARC002": return "C";
-      case "WTR115": case "CRU177": return "W";
-      case "WTR155": case "WTR156": case "WTR157": case "WTR158": case "WTR117": return "E";
-      //Brute
-      case "WTR001": case "WTR002": return "C";
-      case "WTR003": return "W";
-      case "WTR004": case "WTR005": return "E";
-      case "WTR006": return "AA";
-      case "WTR007": return "A";
-      case "WTR008": return "DR";
-      case "WTR009": return "A";
-      case "WTR010": return "I";
-      case "WTR011": case "WTR012": case "WTR013": return "AA";
-      case "WTR014": case "WTR015": case "WTR016": return "AA";
-      case "WTR017": case "WTR018": case "WTR019": return "A";
-      case "WTR020": case "WTR021": case "WTR022": return "AA";
-      case "WTR023": case "WTR024": case "WTR025": return "AA";
-      case "WTR026": case "WTR027": case "WTR028": return "AA";
-      case "WTR029": case "WTR030": case "WTR031": return "AA";
-      case "WTR032": case "WTR033": case "WTR034": return "A";
-      case "WTR035": case "WTR036": case "WTR037": return "A";
-      //Guardian
-      case "WTR038": case "WTR039": return "C";
-      case "WTR040": return "W";
-      case "WTR041": case "WTR042": return "E";
-      case "WTR043": case "WTR044": case "WTR045": return "AA";
-      case "WTR046": case "WTR047": return "A";
-      case "WTR048": case "WTR049": case "WTR050": return "AA";
-      case "WTR051": case "WTR052": case "WTR053": return "DR";
-      case "WTR054": case "WTR055": case "WTR056": return "A";
-      case "WTR057": case "WTR058": case "WTR059": return "AA";
-      case "WTR060": case "WTR061": case "WTR062": return "AA";
-      case "WTR063": case "WTR064": case "WTR065": return "AA";
-      case "WTR066": case "WTR067": case "WTR068": return "AA";
-      case "WTR069": case "WTR070": case "WTR071": return "A";
-      case "WTR072": case "WTR073": case "WTR074": return "A";
-      case "WTR075": return "T";
-      //Ninja
-      case "WTR076": case "WTR077": return "C";
-      case "WTR078": return "W";
-      case "WTR079": case "WTR080": return "E";
-      case "WTR082": return "AR";
-      case "WTR081": case "WTR083": case "WTR084": case "WTR085": return "AA";
-      case "WTR086": case "WTR087": case "WTR088": return "AA";
-      case "WTR089": case "WTR090": case "WTR091": return "AA";
-      case "WTR092": case "WTR093": case "WTR094": return "DR";
-      case "WTR095": case "WTR096": case "WTR097": return "AA";
-      case "WTR098": case "WTR099": case "WTR100": return "AA";
-      case "WTR101": case "WTR102": case "WTR103": return "AA";
-      case "WTR104": case "WTR105": case "WTR106": return "AA";
-      case "WTR107": case "WTR108": case "WTR109": return "AA";
-      case "WTR110": case "WTR111": case "WTR112": return "AA";
-      case "WTR116": return "E";
-      case "WTR118": return "AR";
-      case "WTR119": return "A";
-      case "WTR120": case "WTR121": return "AR";
-      case "WTR122": return "A";
-      case "WTR123": case "WTR124": case "WTR125": return "AR";
-      case "WTR126": case "WTR127": case "WTR128": return "DR";
-      case "WTR129": case "WTR130": case "WTR131": return "A";
-      case "WTR132": case "WTR133": case "WTR134": return "AR";
-      case "WTR135": case "WTR136": case "WTR137": return "AR";
-      case "WTR138": case "WTR139": case "WTR140": return "AR";
-      case "WTR141": case "WTR142": case "WTR143": return "A";
-      case "WTR144": case "WTR145": case "WTR146": return "A";
-      case "WTR147": case "WTR148": case "WTR149": return "A";
-      case "WTR150": case "WTR151": case "WTR152": case "WTR153": case "WTR154": return "E";
-      case "WTR159": return "AA";
-      case "WTR160": return "A";
-      case "WTR161": return "AA";
-      case "WTR162": return "A";
-      case "WTR163": return "I";
-      case "WTR164": case "WTR165": case "WTR166": return "AA";
-      case "WTR167": case "WTR168": case "WTR169": return "AA";
-      case "WTR170": case "WTR171": case "WTR172": return "A";
-      case "WTR173": case "WTR174": case "WTR175": return "I";
-      case "WTR176": case "WTR177": case "WTR178": return "AA";
-      case "WTR179": case "WTR180": case "WTR181": return "AA";
-      case "WTR182": case "WTR183": case "WTR184": return "AA";
-      case "WTR185": case "WTR186": case "WTR187": return "AA";
-      case "WTR188": case "WTR189": case "WTR190": return "AA";
-      case "WTR191": case "WTR192": case "WTR193": return "AA";
-      case "WTR194": case "WTR195": case "WTR196": return "AA";
-      case "WTR197": case "WTR198": case "WTR199": return "AA";
-      case "WTR200": case "WTR201": case "WTR202": return "AA";
-      case "WTR203": case "WTR204": case "WTR205": return "AA";
-      case "WTR206": case "WTR207": case "WTR208": return "AR";
-      case "WTR209": case "WTR210": case "WTR211": return "AR";
-      case "WTR212": case "WTR213": case "WTR214": return "DR";
-      case "WTR215": case "WTR216": case "WTR217": return "DR";
-      case "WTR218": case "WTR219": case "WTR220": return "A";
-      case "WTR221": case "WTR222": case "WTR223": return "A";
-      case "WTR224": return "R";
-      case "WTR225": return "T";
-      default: return "";
-    }
-  }
-
   function WTRCardSubtype($cardID)
   {
     switch ($cardID)
@@ -943,10 +840,10 @@
         break;
       case "WTR110": case "WTR111": case "WTR112": if(ComboActive()) { WriteLog(CardLink($cardID,$cardID) . " draw a card."); MainDrawCard(); } break;
       case "WTR115":
-        if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1 && $CCS_WeaponIndex < count($combatChainState)) { 
+        if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1 && $CCS_WeaponIndex < count($combatChainState)) {
           $mainCharacter = &GetPlayerCharacter($mainPlayer);
           $index = FindCharacterIndex($mainPlayer, $cardID);
-          ++$mainCharacter[$index+3]; 
+          ++$mainCharacter[$index+3];
         }
         IncrementClassState($mainPlayer, $CS_HitsWDawnblade, 1);
       break;
