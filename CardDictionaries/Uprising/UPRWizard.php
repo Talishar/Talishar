@@ -1,38 +1,5 @@
 <?php
 
-
-  function UPRWizardCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR102": case "UPR103": return "C";
-      case "UPR104": return "A";
-      case "UPR105": return "A";
-      case "UPR106": case "UPR107": case "UPR108": return "DR";
-      case "UPR109": return "A";
-      case "UPR110": case "UPR111": case "UPR112": return "A";
-      case "UPR113": case "UPR114": case "UPR115": return "A";
-      case "UPR116": case "UPR117": case "UPR118": return "A";
-      case "UPR119": case "UPR120": case "UPR121": return "A";
-      case "UPR122": case "UPR123": case "UPR124": return "A";
-      case "UPR125": return "E";
-      case "UPR126": return "A";
-      case "UPR127": case "UPR128": case "UPR129": return "A";
-      case "UPR130": case "UPR131": case "UPR132": return "A";
-      case "UPR133": case "UPR134": case "UPR135": return "A";
-      case "UPR165": return "W";
-      case "UPR166": return "E";
-      case "UPR167": return "E";
-      case "UPR168": return "A";
-      case "UPR169": return "I";
-      case "UPR170": case "UPR171": case "UPR172": return "A";
-      case "UPR173": case "UPR174": case "UPR175": return "A";
-      case "UPR176": case "UPR177": case "UPR178": return "A";
-      case "UPR179": case "UPR180": case "UPR181": return "A";
-      default: return "";
-    }
-  }
-
   function UPRWizardCardSubType($cardID)
   {
     switch($cardID)

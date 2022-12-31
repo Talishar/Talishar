@@ -1,36 +1,5 @@
 <?php
 
-
-  function MONIllusionistCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON001": case "MON002": return "C";
-      case "MON003": return "W";
-      case "MON004": return "AA";
-      case "MON005": return "I";
-      case "MON006": return "I";
-      case "MON007": return "AA";
-      case "MON008": case "MON009": case "MON010": return "AA";
-      case "MON011": case "MON012": case "MON013": return "I";
-      case "MON014": case "MON015": case "MON016": return "AA";
-      case "MON017": case "MON018": case "MON019": return "AA";
-      case "MON020": case "MON021": case "MON022": return "AA";
-      case "MON023": case "MON024": case "MON025": return "AA";
-      case "MON026": case "MON027": case "MON028": return "AA";
-      case "MON088": return "W";
-      case "MON089": case "MON090": return "E";
-      case "MON091": return "AA";
-      case "MON092": case "MON093": case "MON094": return "I";
-      case "MON095": case "MON096": case "MON097": return "A";
-      case "MON098": case "MON099": case "MON100": return "AA";
-      case "MON101": case "MON102": case "MON103": return "AA";
-      case "MON104": return "T";
-      case "MON404": return "M";
-      default: return "";
-    }
-  }
-
   function MONIllusionistCardSubType($cardID)
   {
     switch($cardID)
@@ -222,8 +191,8 @@
       case "UPR153": return true;
       case "UPR551": return true;
       case "DYN215": case "DYN216":
-      case "DYN224": case "DYN225": case "DYN226": 
-      case "DYN227": case "DYN228": case "DYN229": 
+      case "DYN224": case "DYN225": case "DYN226":
+      case "DYN227": case "DYN228": case "DYN229":
         return true;
       default: return false;
     }

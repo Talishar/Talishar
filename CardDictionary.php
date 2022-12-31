@@ -41,39 +41,7 @@ function CardType($cardID)
     if($number < 400) return GeneratedCardType($cardID);
   }
   $class = CardClass($cardID);
-  if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBruteCardType($cardID);
-      case "ILLUSIONIST":
-        return MONIllusionistCardType($cardID);
-      case "RUNEBLADE":
-        return MONRunebladeCardType($cardID);
-      case "WARRIOR":
-        return MONWarriorCardType($cardID);
-      case "GENERIC":
-        return MONGenericCardType($cardID);
-      case "NONE":
-        return MONTalentCardType($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianCardType($cardID);
-      case "RANGER":
-        return ELERangerCardType($cardID);
-      case "RUNEBLADE":
-        return ELERunebladeCardType($cardID);
-      default:
-        return ELETalentCardType($cardID);
-    }
-  } else if ($set == "EVR") {
-    return EVRCardType($cardID);
-  } else if ($set == "UPR") {
-    return UPRCardType($cardID);
-  } else if ($set == "DVR") {
+  if ($set == "DVR") {
     return DVRCardType($cardID);
   } else if ($set == "RVD") {
     return RVDCardType($cardID);
@@ -83,6 +51,27 @@ function CardType($cardID)
     return ROGUECardType($cardID);
   }
   switch ($cardID) {
+    case "MON406": return "M";
+    case "MON400": case "MON401": case "MON402": return "E";
+    case "MON404": return "M";
+    case "MON405": return "M";
+    case "MON406": case "MON407": return "M";
+    case "UPR406": return "-";
+    case "UPR407": return "-";
+    case "UPR408": return "-";
+    case "UPR409": return "-";
+    case "UPR410": return "-";
+    case "UPR411": return "-";
+    case "UPR412": return "-";
+    case "UPR413": return "-";
+    case "UPR414": return "-";
+    case "UPR415": return "-";
+    case "UPR416": return "-";
+    case "UPR417": return "-";
+    case "UPR439": return "-";
+    case "UPR440": return "-";
+    case "UPR441": return "-";
+    case "UPR551": return "-";
     case "DUMMY":
       return "C";
     case "OVRPVE001":

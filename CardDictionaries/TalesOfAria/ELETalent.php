@@ -1,69 +1,5 @@
 <?php
 
-
-  function ELETalentCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE000": return "A";
-      case "ELE091": return "A";
-      case "ELE092": return "A";
-      case "ELE093": return "I";
-      case "ELE094": case "ELE095": case "ELE096": return "AA";
-      case "ELE097": case "ELE098": case "ELE099": return "AA";
-      case "ELE100": case "ELE101": case "ELE102": return "AA";
-      case "ELE103": case "ELE104": case "ELE105": return "A";
-      case "ELE106": case "ELE107": case "ELE108": return "A";
-      case "ELE109": return "T";
-      case "ELE110": return "T";
-      case "ELE111": return "T";
-      case "ELE112": return "I";
-      case "ELE113": return "A";
-      case "ELE114": return "DR";
-      case "ELE115": return "E";
-      case "ELE116": return "E";
-      case "ELE117": return "A";
-      case "ELE118": return "A";
-      case "ELE119": case "ELE120": case "ELE121": return "AA";
-      case "ELE122": case "ELE123": case "ELE124": return "A";
-      case "ELE125": case "ELE126": case "ELE127": return "I";
-      case "ELE128": case "ELE129": case "ELE130": return "AA";
-      case "ELE131": case "ELE132": case "ELE133": return "AA";
-      case "ELE134": case "ELE135": case "ELE136": return "AA";
-      case "ELE137": case "ELE138": case "ELE139": return "A";
-      case "ELE140": case "ELE141": case "ELE142": return "A";
-      case "ELE143": return "A";
-      case "ELE144": return "E";
-      case "ELE145": return "E";
-      case "ELE146": return "A";
-      case "ELE147": return "I";
-      case "ELE148": case "ELE149": case "ELE150": return "AA";
-      case "ELE151": case "ELE152": case "ELE153": return "A";
-      case "ELE154": case "ELE155": case "ELE156": return "A";
-      case "ELE157": case "ELE158": case "ELE159": return "AA";
-      case "ELE160": case "ELE161": case "ELE162": return "AA";
-      case "ELE163": case "ELE164": case "ELE165": return "A";
-      case "ELE166": case "ELE167": case "ELE168": return "A";
-      case "ELE169": case "ELE170": case "ELE171": return "A";
-      case "ELE172": return "A";
-      case "ELE173": return "E";
-      case "ELE174": return "E";
-      case "ELE175": return "A";
-      case "ELE176": return "I";
-      case "ELE177": case "ELE178": case "ELE179": return "A";
-      case "ELE180": case "ELE181": case "ELE182": return "A";
-      case "ELE183": case "ELE184": case "ELE185": return "I";
-      case "ELE186": case "ELE187": case "ELE188": return "AA";
-      case "ELE189": case "ELE190": case "ELE191": return "AA";
-      case "ELE192": case "ELE193": case "ELE194": return "AA";
-      case "ELE195": case "ELE196": case "ELE197": return "AA";
-      case "ELE198": case "ELE199": case "ELE200": return "A";
-      case "ELE201": return "A";
-      case "ELE233": case "ELE234": case "ELE235": case "ELE236": return "E";
-      default: return "";
-    }
-  }
-
   function ELETalentCardSubType($cardID)
   {
     switch($cardID)
@@ -276,7 +212,7 @@
           else AddCurrentTurnEffect($cardID, $currentPlayer);
         } else {
           AddCurrentTurnEffect($cardID, $currentPlayer);
-        }        
+        }
         return "Gives your next Lightning, Ice, or Elemental attack this turn +4.";
       case "ELE113":
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);

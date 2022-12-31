@@ -1,32 +1,5 @@
 <?php
 
-
-  function ELERangerCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE031": case "ELE032": return "C";
-      case "ELE033": case "ELE034": return "W";
-      case "ELE035": return "AA";
-      case "ELE036": return "AA";
-      case "ELE037": return "A";
-      case "ELE038": case "ELE039": case "ELE040": return "AA";
-      case "ELE041": case "ELE042": case "ELE043": return "AA";
-      case "ELE044": case "ELE045": case "ELE046": return "AA";
-      case "ELE047": case "ELE048": case "ELE049": return "AA";
-      case "ELE050": case "ELE051": case "ELE052": return "AA";
-      case "ELE053": case "ELE054": case "ELE055": return "AA";
-      case "ELE056": case "ELE057": case "ELE058": return "AA";
-      case "ELE059": case "ELE060": case "ELE061": return "AA";
-      case "ELE213": return "E";
-      case "ELE214": return "E";
-      case "ELE215": return "A";
-      case "ELE216": case "ELE217": case "ELE218": return "AA";
-      case "ELE219": case "ELE220": case "ELE221": return "A";
-      default: return "";
-    }
-  }
-
   function ELERangerCardSubType($cardID)
   {
     switch($cardID)

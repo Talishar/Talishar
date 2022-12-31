@@ -1,35 +1,5 @@
 <?php
 
-
-  function MONRunebladeCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON153": case "MON154": return "C";
-      case "MON155": return "W";
-      case "MON156": return "AA";
-      case "MON157": return "A";
-      case "MON158": return "I";
-      case "MON159": case "MON160": case "MON161": return "AA";
-      case "MON162": case "MON163": case "MON164": return "A";
-      case "MON165": case "MON166": case "MON167": return "A";
-      case "MON168": case "MON169": case "MON170": return "AA";
-      case "MON171": case "MON172": case "MON173": return "AA";
-      case "MON174": case "MON175": case "MON176": return "AA";
-      case "MON177": case "MON178": case "MON179": return "AA";
-      case "MON180": case "MON181": case "MON182": return "AA";
-      case "MON183": case "MON184": case "MON185": return "A";
-      case "MON186": return "T";
-      case "MON229": return "W";
-      case "MON230": return "E";
-      case "MON231": return "A";
-      case "MON232": case "MON233": case "MON234": return "AA";
-      case "MON235": case "MON236": case "MON237": return "AA";
-      case "MON406": case "MON407": return "M";
-      default: return "";
-    }
-  }
-
   function MONRunebladeCardSubType($cardID)
   {
     switch($cardID)

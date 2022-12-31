@@ -1,36 +1,5 @@
 <?php
 
-
-  function UPRNinjaCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR044": case "UPR045": return "C";
-      case "UPR046": return "W";
-      case "UPR047": return "E";
-      case "UPR048": return "AA";
-      case "UPR049": return "AA";
-      case "UPR050": return "AR";
-      case "UPR051": case "UPR052": case "UPR053": return "AA";
-      case "UPR054": case "UPR055": case "UPR056": return "AA";
-      case "UPR057": case "UPR058": case "UPR059": return "A";
-      case "UPR060": case "UPR061": case "UPR062": return "AA";
-      case "UPR063": case "UPR064": case "UPR065": return "AA";
-      case "UPR066": case "UPR067": case "UPR068": return "AA";
-      case "UPR069": case "UPR070": case "UPR071": return "AA";
-      case "UPR072": case "UPR073": case "UPR074": return "AA";
-      case "UPR075": case "UPR076": case "UPR077": return "AA";
-      case "UPR078": case "UPR079": case "UPR080": return "AA";
-      case "UPR081": case "UPR082": case "UPR083": return "AA";
-      case "UPR158": return "E";
-      case "UPR159": return "E";
-      case "UPR160": return "AA";
-      case "UPR161": return "AA";
-      case "UPR162": case "UPR163": case "UPR164": return "AR";
-      default: return "";
-    }
-  }
-
   function UPRNinjaCardSubType($cardID)
   {
     switch($cardID)

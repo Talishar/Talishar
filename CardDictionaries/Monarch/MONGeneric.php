@@ -1,37 +1,5 @@
 <?php
 
-
-  function MONGenericCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON238": case "MON239": case "MON240": case "MON241": case "MON242": case "MON243": case "MON244": return "E";
-      case "MON245": case "MON246": case "MON247": return "AA";
-      case "MON248": case "MON249": case "MON250": return "AA";
-      case "MON251": case "MON252": case "MON253": return "AA";
-      case "MON254": case "MON255": case "MON256": return "AA";
-      case "MON257": case "MON258": case "MON259": return "DR";
-      case "MON260": case "MON261": case "MON262": return "A";
-      case "MON263": case "MON264": case "MON265": return "AA";
-      case "MON266": case "MON267": case "MON268": return "AA";
-      case "MON269": case "MON270": case "MON271": return "AA";
-      case "MON272": case "MON273": case "MON274": return "AA";
-      case "MON275": case "MON276": case "MON277": return "AA";
-      case "MON278": case "MON279": case "MON280": return "AA";
-      case "MON281": case "MON282": case "MON283": return "AA";
-      case "MON284": case "MON285": case "MON286": return "AA";
-      case "MON287": case "MON288": case "MON289": return "AA";
-      case "MON290": case "MON291": case "MON292": return "AA";
-      case "MON293": case "MON294": case "MON295": return "AA";
-      case "MON296": case "MON297": case "MON298": return "A";
-      case "MON299": case "MON300": case "MON301": return "A";
-      case "MON302": return "A";
-      case "MON303": case "MON304": case "MON305": return "I";
-      case "MON400": case "MON401": case "MON402": return "E";
-      default: return "";
-    }
-  }
-
   function MONGenericCardSubType($cardID)
   {
     switch($cardID)

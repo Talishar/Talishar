@@ -1,35 +1,5 @@
 <?php
 
-
-  function MONWarriorCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON029": case "MON030": return "C";
-      case "MON031": return "W";
-      case "MON032": return "AA";
-      case "MON033": return "AR";
-      case "MON034": return "A";
-      case "MON035": return "AA";
-      case "MON036": case "MON037": case "MON038": return "AA";
-      case "MON039": case "MON040": case "MON041": return "AA";
-      case "MON042": case "MON043": case "MON044": return "AA";
-      case "MON045": case "MON046": case "MON047": return "AA";
-      case "MON048": case "MON049": case "MON050": return "AA";
-      case "MON051": case "MON052": case "MON053": return "AA";
-      case "MON054": case "MON055": case "MON056": return "AA";
-      case "MON057": case "MON058": case "MON059": return "AR";
-      case "MON105": case "MON106": return "W";
-      case "MON107": case "MON108": return "E";
-      case "MON109": return "A";
-      case "MON110": case "MON111": case "MON112": return "A";
-      case "MON113": case "MON114": case "MON115": return "A";
-      case "MON116": case "MON117": case "MON118": return "A";
-      case "MON405": return "M";
-      default: return "";
-    }
-  }
-
   function MONWarriorCardSubType($cardID)
   {
     switch($cardID)

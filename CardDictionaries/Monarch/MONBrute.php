@@ -1,33 +1,5 @@
 <?php
 
-  function MONBruteCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON119": case "MON120": return "C";
-      case "MON121"; return "W";
-      case "MON122"; return "E";
-      case "MON123": return "AA";
-      case "MON124": return "AA";
-      case "MON125": return "AA";
-      case "MON126": case "MON127": case "MON128": return "AA";
-      case "MON129": case "MON130": case "MON131": return "AA";
-      case "MON132": case "MON133": case "MON134": return "A";
-      case "MON135": case "MON136": case "MON137": return "AA";
-      case "MON138": case "MON139": case "MON140": return "AA";
-      case "MON141": case "MON142": case "MON143": return "AA";
-      case "MON144": case "MON145": case "MON146": return "AA";
-      case "MON147": case "MON148": case "MON149": return "AA";
-      case "MON150": case "MON151": case "MON152": return "A";
-      case "MON221": return "W";
-      case "MON222": return "A";
-      case "MON223": case "MON224": case "MON225": return "AA";
-      case "MON226": case "MON227": case "MON228": return "AA";
-      case "MON406": return "M";
-      default: return "";
-    }
-  }
-
   function MONBruteCardSubType($cardID)
   {
     switch($cardID)

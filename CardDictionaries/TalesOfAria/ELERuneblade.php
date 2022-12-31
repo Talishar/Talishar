@@ -1,30 +1,5 @@
 <?php
 
-
-  function ELERunebladeCardType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE062": case "ELE063": return "C";
-      case "ELE064": return "AA";
-      case "ELE065": case "ELE066": return "A";
-      case "ELE067": case "ELE068": case "ELE069": return "AA";
-      case "ELE070": case "ELE071": case "ELE072": return "AA";
-      case "ELE073": case "ELE074": case "ELE075": return "AA";
-      case "ELE076": case "ELE077": case "ELE078": return "AA";
-      case "ELE079": case "ELE080": case "ELE081": return "AA";
-      case "ELE082": case "ELE083": case "ELE084": return "AA";
-      case "ELE085": case "ELE086": case "ELE087": return "A";
-      case "ELE088": case "ELE089": case "ELE090": return "A";
-      case "ELE222": case "ELE223": return "W";
-      case "ELE224": case "ELE225": return "E";
-      case "ELE226": return "A";
-      case "ELE227": case "ELE228": case "ELE229": return "DR";
-      case "ELE230": case "ELE231": case "ELE232": return "AA";
-      default: return "";
-    }
-  }
-
   function ELERunebladeCardSubType($cardID)
   {
     switch($cardID)
