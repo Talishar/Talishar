@@ -390,11 +390,14 @@ function CardCost($cardID)
     case "UPR109": return 0;
     default: break;
   }
+  /*
+  //Fix WTR ability costs being through here
   if($set != "ROG" && $set != "DUM")
   {
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedCardCost($cardID);
   }
+  */
   if ($set == "WTR") {
     return WTRCardCost($cardID);
   } else if ($set == "ARC") {
