@@ -5,6 +5,7 @@ function WTRAbilityCost($cardID)
   switch($cardID)
   {
     case "WTR003": return 2;
+    case "WTR038": case "WTR039": return 2;
     case "WTR040": return 3;
     case "WTR041": return 1;
     case "WTR042": return 1;
