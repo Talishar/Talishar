@@ -69,7 +69,7 @@
           $data = $cardArray[$i]->pitch;
           if($data == "") $data = 0;
         }
-        if($data == "-" || $data == "*") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
+        if($data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
         if($data != "-" && $data != "" && $data != "*") AddToTrie($trie, $cardID, 0, $data);
       }
     }
