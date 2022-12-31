@@ -27,6 +27,7 @@
   GenerateFunction($cardArray, $handler, "BlockValue", "block");
   GenerateFunction($cardArray, $handler, "CardName", "name");
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch");
+  GenerateFunction($cardArray, $handler, "CardCost", "cost");
 
   fwrite($handler, "?>");
 
@@ -38,7 +39,7 @@
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
     $isString = true;
-    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch") $isString = false;
+    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost") $isString = false;
     $trie = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
@@ -69,7 +70,12 @@
           $data = $cardArray[$i]->pitch;
           if($data == "") $data = 0;
         }
-        if($data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
+        else if($propertyName == "cost")
+        {
+          $data = $cardArray[$i]->cost;
+          if($data == "") $data = 0;
+        }
+        if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
         if($data != "-" && $data != "" && $data != "*") AddToTrie($trie, $cardID, 0, $data);
       }
     }
