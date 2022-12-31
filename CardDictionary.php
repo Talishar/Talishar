@@ -381,6 +381,20 @@ function CardCost($cardID)
       return CardCost($otherCharacter[0]);
     }
   }
+  switch($cardID)
+  {
+    case "ARC009": return 0;
+    case "MON231": return 0;
+    case "EVR022": return 3;
+    case "EVR124": return 0;
+    case "UPR109": return 0;
+    default: break;
+  }
+  if($set != "ROG" && $set != "DUM")
+  {
+    $number = intval(substr($cardID, 3));
+    if($number < 400) return GeneratedCardCost($cardID);
+  }
   if ($set == "WTR") {
     return WTRCardCost($cardID);
   } else if ($set == "ARC") {
