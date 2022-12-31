@@ -531,6 +531,11 @@ function DynamicCost($cardID)
 function PitchValue($cardID)
 {
   $set = CardSet($cardID);
+  if($set != "ROG" && $set != "DUM" && $cardID != "MON191")
+  {
+    $number = intval(substr($cardID, 3));
+    if($number < 400) return GeneratedPitchValue($cardID);
+  }
   $class = CardClass($cardID);
   if ($set == "WTR") {
     return WTRPitchValue($cardID);
