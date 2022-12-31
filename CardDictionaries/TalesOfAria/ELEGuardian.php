@@ -37,65 +37,6 @@
     }
   }
 
-  function ELEGuardianPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE004": case "ELE005": return 1;
-      case "ELE006": return 3;
-      case "ELE007": case "ELE010": case "ELE013": case "ELE016": case "ELE019": case "ELE022": case "ELE025": case "ELE028": return 1;
-      case "ELE008": case "ELE011": case "ELE014": case "ELE017": case "ELE020": case "ELE023": case "ELE026": case "ELE029": return 2;
-      case "ELE009": case "ELE012": case "ELE015": case "ELE018": case "ELE021": case "ELE024": case "ELE027": case "ELE030": return 3;
-      //Normal Guardian
-      case "ELE205": return 3;
-      case "ELE206": case "ELE209": return 1;
-      case "ELE207": case "ELE210": return 2;
-      case "ELE208": case "ELE211": return 3;
-      default: return 0;
-    }
-  }
-
-  function ELEGuardianBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE001": case "ELE002": case "ELE003": return -1;
-      case "ELE006": return -1;
-      case "ELE007": return 4;
-      case "ELE008": return 3;
-      case "ELE009": return 2;
-      case "ELE010": return 6;
-      case "ELE011": return 5;
-      case "ELE012": return 4;
-      case "ELE202": return -1;
-      case "ELE203": return 0;
-      case "ELE204": return 1;
-      default: return 3;
-    }
-  }
-
-  function ELEGuardianAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE003": return 4;
-      case "ELE004": return 8;
-      case "ELE005": return 7;
-      case "ELE016": return 10;
-      case "ELE017": return 9;
-      case "ELE018": case "ELE019": return 8;
-      case "ELE013": case "ELE020": case "ELE022": return 7;
-      case "ELE014": case "ELE021": case "ELE023": return 6;
-      case "ELE015": case "ELE024": return 5;
-      //Normal Guardian
-      case "ELE202": return 3;
-      case "ELE209": return 6;
-      case "ELE210": return 5;
-      case "ELE211": return 4;
-      default: return 0;
-    }
-  }
-
   function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_DamagePrevention;

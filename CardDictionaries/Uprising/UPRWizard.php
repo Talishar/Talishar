@@ -43,58 +43,6 @@
     }
   }
 
-  function UPRWizardPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR104": return 1;
-      case "UPR105": return 1;
-      case "UPR109": return 3;
-      case "UPR126": return 3;
-      case "UPR106": case "UPR110": case "UPR113": case "UPR116": case "UPR119": case "UPR122": return 1;
-      case "UPR107": case "UPR111": case "UPR114": case "UPR117": case "UPR120": case "UPR123": return 2;
-      case "UPR108": case "UPR112": case "UPR115": case "UPR118": case "UPR121": case "UPR124": return 3;
-      case "UPR127": case "UPR130": case "UPR133": return 1;
-      case "UPR128": case "UPR131": case "UPR134": return 2;
-      case "UPR129": case "UPR132": case "UPR135": return 3;
-      case "UPR168": return 3;
-      case "UPR169": return 3;
-      case "UPR170": case "UPR173": case "UPR176": case "UPR179": return 1;
-      case "UPR171": case "UPR174": case "UPR177": case "UPR180": return 2;
-      case "UPR172": case "UPR175": case "UPR178": case "UPR181": return 3;
-      default: return 0;
-    }
-  }
-
-  function UPRWizardBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR102": case "UPR103": return -1;
-      case "UPR105": return 3;
-      case "UPR106": return 4;
-      case "UPR107": return 3;
-      case "UPR108": return 2;
-      case "UPR125": return 0;
-      case "UPR165": return -1;
-      case "UPR166": return 0;
-      case "UPR167": return 0;
-      case "UPR168": return 2;
-      case "UPR169": return -1;
-      case "UPR176": case "UPR177": case "UPR178": return 2;
-      default: return 3;
-    }
-  }
-
-  function UPRWizardAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-
-      default: return 0;
-    }
-  }
-
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost, $CS_NextArcaneBonus;

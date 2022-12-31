@@ -27,42 +27,6 @@
     }
   }
 
-  function DVRPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "DVR001": case "DVR002": case "DVR007": return 0;
-      case "DVR003": case "DVR004": case "DVR005": case "DVR006": return 0;
-      case "DVR008": case "DVR013": case "DVR019": return 2;
-      case "DVR009": return 1;
-      case "DVR012": case "DVR014": return 1;
-      default: return 3;
-    }
-  }
-
-  function DVRBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "DVR001": case "DVR002": return -1;
-      case "DVR004": return 0;
-      case "DVR003": case "DVR005": case "DVR006": return 1;
-      case "DVR014": case "DVR019": return 2;
-      case "DVR022": case "DVR023": return 2;
-      case "DVR024": return 4;
-      default: return 3;
-    }
-  }
-
-  function DVRAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "DVR002": return 2;
-      default: return 0;
-    }
-  }
-
   function DVRHasGoAgain($cardID)
   {
     switch($cardID)

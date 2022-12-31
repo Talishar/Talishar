@@ -554,45 +554,7 @@ function PitchValue($cardID)
     if($number < 400) return GeneratedPitchValue($cardID);
   }
   $class = CardClass($cardID);
-  if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBrutePitchValue($cardID);
-      case "ILLUSIONIST":
-        return MONIllusionistPitchValue($cardID);
-      case "RUNEBLADE":
-        return MONRunebladePitchValue($cardID);
-      case "WARRIOR":
-        return MONWarriorPitchValue($cardID);
-      case "GENERIC":
-        return MONGenericPitchValue($cardID);
-      case "NONE":
-        return MONTalentPitchValue($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianPitchValue($cardID);
-      case "RANGER":
-        return ELERangerPitchValue($cardID);
-      case "RUNEBLADE":
-        return ELERunebladePitchValue($cardID);
-      default:
-        return ELETalentPitchValue($cardID);
-    }
-  } else if ($set == "EVR") {
-    return EVRPitchValue($cardID);
-  } else if ($set == "UPR") {
-    return UPRPitchValue($cardID);
-  } else if ($set == "DVR") {
-    return DVRPitchValue($cardID);
-  } else if ($set == "RVD") {
-    return RVDPitchValue($cardID);
-  } else if ($set == "DYN") {
-    return DYNPitchValue($cardID);
-  } else if ($set == "ROG") {
+  if ($set == "ROG") {
     return ROGUEPitchValue($cardID);
   }
   switch ($cardID) {
@@ -612,45 +574,7 @@ function BlockValue($cardID)
     if($number < 400) return GeneratedBlockValue($cardID);
   }
   $class = CardClass($cardID);
-  if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBruteBlockValue($cardID);
-      case "ILLUSIONIST":
-        return MONIllusionistBlockValue($cardID);
-      case "RUNEBLADE":
-        return MONRunebladeBlockValue($cardID);
-      case "WARRIOR":
-        return MONWarriorBlockValue($cardID);
-      case "GENERIC":
-        return MONGenericBlockValue($cardID);
-      case "NONE":
-        return MONTalentBlockValue($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianBlockValue($cardID);
-      case "RANGER":
-        return ELERangerBlockValue($cardID);
-      case "RUNEBLADE":
-        return ELERunebladeBlockValue($cardID);
-      default:
-        return ELETalentBlockValue($cardID);
-    }
-  } else if ($set == "EVR") {
-    return EVRBlockValue($cardID);
-  } else if ($set == "UPR") {
-    return UPRBlockValue($cardID);
-  } else if ($set == "DVR") {
-    return DVRBlockValue($cardID);
-  } else if ($set == "RVD") {
-    return RVDBlockValue($cardID);
-  } else if ($set == "DYN") {
-    return DYNBlockValue($cardID);
-  } else if ($set == "ROG") {
+  if ($set == "ROG") {
     return ROGUEBlockValue($cardID);
   }
   switch ($cardID) {
@@ -678,45 +602,7 @@ function AttackValue($cardID)
     $number = intval(substr($cardID, 3));
     if($number < 400) return GeneratedAttackValue($cardID);
   }
-  if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBruteAttackValue($cardID);
-      case "ILLUSIONIST":
-        return MONIllusionistAttackValue($cardID);
-      case "RUNEBLADE":
-        return MONRunebladeAttackValue($cardID);
-      case "WARRIOR":
-        return MONWarriorAttackValue($cardID);
-      case "GENERIC":
-        return MONGenericAttackValue($cardID);
-      case "NONE":
-        return MONTalentAttackValue($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianAttackValue($cardID);
-      case "RANGER":
-        return ELERangerAttackValue($cardID);
-      case "RUNEBLADE":
-        return ELERunebladeAttackValue($cardID);
-      default:
-        return ELETalentAttackValue($cardID);
-    }
-  } else if ($set == "EVR") {
-    return EVRAttackValue($cardID);
-  } else if ($set == "UPR") {
-    return UPRAttackValue($cardID);
-  } else if ($set == "DVR") {
-    return DVRAttackValue($cardID);
-  } else if ($set == "RVD") {
-    return RVDAttackValue($cardID);
-  } else if ($set == "DYN") {
-    return DYNAttackValue($cardID);
-  } else if ($set == "ROG") {
+  if ($set == "ROG") {
     return ROGUEAttackValue($cardID);
   }
   switch ($cardID) {

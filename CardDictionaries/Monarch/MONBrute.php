@@ -36,63 +36,6 @@
     }
   }
 
-  function MONBrutePitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON119": case "MON120": case "MON121": case "MON122": return 0;
-      case "MON123": case "MON124": return 2;
-      case "MON125": return 1;
-      case "MON126": case "MON129": case "MON132": case "MON135": case "MON138": case "MON141": case "MON144": case "MON147": case "MON150": return 1;
-      case "MON127": case "MON130": case "MON133": case "MON136": case "MON139": case "MON142": case "MON145": case "MON148": case "MON151": return 2;
-      case "MON128": case "MON131": case "MON134": case "MON137": case "MON140": case "MON143": case "MON146": case "MON149": case "MON152": return 3;
-      case "MON221": return 0;
-      case "MON222": return 3;
-      case "MON223": case "MON226": return 1;
-      case "MON224": case "MON227": return 2;
-      case "MON225": case "MON228": return 3;
-      case "MON406": return 0;
-      default: return 3;
-    }
-  }
-
-  function MONBruteBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON119": case "MON120": case "MON121": return -1;
-      case "MON122": return 1;
-      case "MON123": return -1;
-      case "MON125": return -1;
-      case "MON138": case "MON139": case "MON140": return -1;
-      case "MON221": return -1;
-      case "MON222": return -1;
-      case "MON223": case "MON224": case "MON225": return -1;
-      case "MON226": case "MON227": case "MON228": return -1;
-      default: return 3;
-    }
-  }
-
-  function MONBruteAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON121": return 6;
-      case "MON124": return 6;
-      case "MON138": return 8;
-      case "MON139": case "MON144": case "MON147": return 7;
-      case "MON123": case "MON125": case "MON126": case "MON129": case "MON135": case "MON140": case "MON141": case "MON145": case "MON148": return 6;
-      case "MON127": case "MON130": case "MON136": case "MON142": case "MON146": case "MON149": return 5;
-      case "MON128": case "MON131": case "MON137": case "MON143" :return 4;
-      case "MON221": return 3;
-      case "MON226": return 7;
-      case "MON223": case "MON227": return 6;
-      case "MON224": case "MON228": return 5;
-      case "MON225": return 4;
-      default: return 0;
-    }
-  }
-
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

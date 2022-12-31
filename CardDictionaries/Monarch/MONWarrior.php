@@ -36,52 +36,6 @@
     }
   }
 
-  function MONWarriorPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON029": case "MON030": case "MON031": return 0;
-      case "MON032": case "MON033": case "MON034": case "MON035": return 2;
-      case "MON036": case "MON039": case "MON042": case "MON045": case "MON048": case "MON051": case "MON054": case "MON057": return 1;
-      case "MON037": case "MON040": case "MON043": case "MON046": case "MON049": case "MON052": case "MON055": case "MON058": return 2;
-      case "MON105": case "MON106": case "MON107": case "MON108": return 0;
-      case "MON109": return 1;
-      case "MON110": case "MON113": case "MON116": return 1;
-      case "MON111": case "MON114": case "MON117": return 2;
-      case "MON405": return "0";
-      default: return 3;
-    }
-  }
-
-  function MONWarriorBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON029": case "MON030": case "MON031": return -1;
-      case "MON057": case "MON058": case "MON059": return 2;
-      case "MON105": case "MON106": return -1;
-      case "MON107": case "MON108": return 1;
-      default: return 3;
-    }
-  }
-
-  function MONWarriorAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON031": return 0;
-      case "MON032": return 7;
-      case "MON035": return 3;
-      case "MON036": case "MON045": return 5;
-      case "MON037": case "MON039": case "MON046": case "MON051": case "MON054": return 4;
-      case "MON038": case "MON040": case "MON042": case "MON047": case "MON048": case "MON052": case "MON055": return 3;
-      case "MON041": case "MON043": case "MON049": case "MON053": case "MON056": return 2;
-      case "MON044": case "MON050": return 1;
-      case "MON105": case "MON106": return 2;
-      default: return 0;
-    }
-  }
-
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;

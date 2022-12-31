@@ -27,44 +27,6 @@
     }
   }
 
-  function RVDPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "RVD001": case "RVD002": case "RVD007": return 0;
-      case "RVD003": case "RVD004": case "RVD005": case "RVD006": return 0;
-      case "RVD009": case "RVD013": return 1;
-      case "RVD015": return 2;
-      case "RVD018": return 2;
-      default: return 3;
-    }
-  }
-
-  function RVDBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "RVD001": case "RVD002": case "RVD013": return -1;
-      case "RVD004": return 0;
-      case "RVD003": return 1;
-      case "RVD018": return 2;
-      case "RVD026": return 2;
-      default: return 3;
-    }
-  }
-
-  function RVDAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "RVD002": return 4;
-      case "RVD009": return 6;
-      case "RVD013": case "RVD015": return 6;
-      case "RVD018": return 6;
-      default: return 0;
-    }
-  }
-
   function RVDEffectAttackModifier($cardID)
   {
     switch($cardID)

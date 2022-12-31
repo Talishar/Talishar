@@ -40,59 +40,6 @@
     }
   }
 
-  function MONIllusionistPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON004": case "MON005": case "MON006": case "MON007": case "MON011": case "MON012": case "MON013": return 2;
-      case "MON008": case "MON014": case "MON017": case "MON020": case "MON023": case "MON026": return 1;
-      case "MON009": case "MON015": case "MON018": case "MON021": case "MON024": case "MON027": return 2;
-      case "MON010": case "MON016": case "MON019": case "MON022": case "MON025": case "MON028": return 3;
-      case "MON091": return 1;
-      case "MON092": case "MON095": case "MON098": case "MON101": return 1;
-      case "MON093": case "MON096": case "MON099": case "MON102": return 2;
-      case "MON094": case "MON097": case "MON100": case "MON103": return 3;
-      case "MON404": return 0;
-      default: return 0;
-    }
-  }
-
-  function MONIllusionistBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON001": case "MON002": case "MON003": return -1;
-      case "MON005": case "MON006": case "MON088": return -1;
-      case "MON011": case "MON012": case "MON013": return -1;
-      case "MON089": case "MON090": return 0;
-      case "MON092": case "MON093": case "MON094": return -1;
-      case "MON095": case "MON096": case "MON097": return 2;
-      case "MON404": return 2;
-      default: return 3;
-    }
-  }
-
-  function MONIllusionistAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON004": return 5;
-      case "MON007": return 6;
-      case "MON008": case "MON014": case "MON017": case "MON020": case "MON026": return 7;
-      case "MON009": case "MON015": case "MON018": case "MON021": case "MON023": case "MON027": return 6;
-      case "MON010": case "MON016": case "MON019": case "MON022": case "MON024": case "MON028": return 5;
-      case "MON025": return 4;
-      case "MON091": return 9;
-      case "MON098": return 8;
-      case "MON099": return 7;
-      case "MON100": return 6;
-      case "MON101": return 5;
-      case "MON102": return 4;
-      case "MON103": return 3;
-      default: return 0;
-    }
-  }
-
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

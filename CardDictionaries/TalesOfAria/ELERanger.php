@@ -45,57 +45,6 @@
     }
   }
 
-  function ELERangerPitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE035": return 3;
-      case "ELE036": return 2;
-      case "ELE037": return 1;
-      case "ELE038": case "ELE041": case "ELE044": case "ELE047": case "ELE050": case "ELE053": case "ELE056": case "ELE059": return 1;
-      case "ELE039": case "ELE042": case "ELE045": case "ELE048": case "ELE051": case "ELE054": case "ELE057": case "ELE060": return 2;
-      case "ELE040": case "ELE043": case "ELE046": case "ELE049": case "ELE052": case "ELE055": case "ELE058": case "ELE061": return 3;
-      //Normal Ranger
-      case "ELE215": return 1;
-      case "ELE216": case "ELE219": return 1;
-      case "ELE217": case "ELE220": return 2;
-      case "ELE218": case "ELE221": return 3;
-      default: return 0;
-    }
-  }
-
-  function ELERangerBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE031": case "ELE032": case "ELE033": case "ELE034": return -1;
-      case "ELE037": return 2;
-      case "ELE213": return 2;
-      case "ELE214": return 0;
-      case "ELE215": return 2;
-      case "ELE219": case "ELE220": case "ELE221": return 2;
-      default: return 3;
-    }
-  }
-
-  function ELERangerAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE035": return 3;
-      case "ELE036": return 4;
-      case "ELE038": case "ELE044": case "ELE047": case "ELE050": case "ELE056": case "ELE059": return 5;
-      case "ELE039": case "ELE041": case "ELE045": case "ELE048": case "ELE051": case "ELE053": case "ELE057": case "ELE060": return 4;
-      case "ELE040": case "ELE042": case "ELE046": case "ELE049": case "ELE052": case "ELE054": case "ELE058": case "ELE061": return 3;
-      case "ELE043": case "ELE055": return 2;
-      //Normal Ranger
-      case "ELE216": return 4;
-      case "ELE217": return 3;
-      case "ELE218": return 2;
-      default: return 0;
-    }
-  }
-
   function ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

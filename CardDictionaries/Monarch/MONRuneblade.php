@@ -35,58 +35,6 @@
     }
   }
 
-  function MONRunebladePitchValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON156": return 3;
-      case "MON157": return 2;
-      case "MON158": return 3;
-      case "MON159": case "MON162": case "MON165": case "MON168": case "MON171": case "MON174": case "MON177": case "MON180": case "MON183": return 1;
-      case "MON160": case "MON163": case "MON166": case "MON169": case "MON172": case "MON175": case "MON178": case "MON181": case "MON184": return 2;
-      case "MON161": case "MON164": case "MON167": case "MON170": case "MON173": case "MON176": case "MON179": case "MON182": case "MON185": return 3;
-      case "MON231": case "MON232": case "MON235": return 1;
-      case "MON233": case "MON236": return 2;
-      case "MON234": case "MON237": return 3;
-      case "MON407": return 0;
-      default: return 0;
-    }
-  }
-
-  function MONRunebladeBlockValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON153": case "MON154": case "MON155": return -1;
-      case "MON158": return -1;
-      case "MON162": case "MON163": case "MON164": return 2;
-      case "MON165": case "MON166": case "MON167": return 2;
-      case "MON183": case "MON184": case "MON185": return 2;
-      case "MON229": return -1;
-      case "MON230": return 1;
-      case "MON231": return 2;
-      default: return 3;
-    }
-  }
-
-  function MONRunebladeAttackValue($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON155": return 1;
-      case "MON156": return 2;
-      case "MON159": case "MON171": case "MON177": case "MON180": return 4;
-      case "MON160": case "MON168": case "MON172": case "MON174": case "MON178": case "MON181": return 3;
-      case "MON161": case "MON169": case "MON173": case "MON175": case "MON179": case "MON182": return 2;
-      case "MON170": case "MON176": return 1;
-      //Normal Runeblade
-      case "MON229": case "MON232": case "MON235": return 3;
-      case "MON233": case "MON236": return 2;
-      case "MON234": case "MON237": return 1;
-      default: return 0;
-    }
-  }
-
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_DynCostResolved;
