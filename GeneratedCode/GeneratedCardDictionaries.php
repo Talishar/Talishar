@@ -1,5 +1,6 @@
 <?php
 function GeneratedCardType($cardID) {
+if(is_int($cardID)) return "";
 switch($cardID[0]) {
 case "D":
 switch($cardID[1]) {
@@ -3132,6 +3133,7 @@ default: return "AA";
 }
 
 function GeneratedAttackValue($cardID) {
+if(is_int($cardID)) return 0;
 switch($cardID[0]) {
 case "W":
 switch($cardID[1]) {
@@ -5670,6 +5672,7 @@ default: return 0;
 }
 
 function GeneratedBlockValue($cardID) {
+if(is_int($cardID)) return 0;
 switch($cardID[0]) {
 case "D":
 switch($cardID[1]) {
@@ -8556,6 +8559,7 @@ default: return 3;
 }
 
 function GeneratedCardName($cardID) {
+if(is_int($cardID)) return "";
 switch($cardID[0]) {
 case "D":
 switch($cardID[1]) {
@@ -13378,6 +13382,7 @@ default: return "";
 }
 
 function GeneratedPitchValue($cardID) {
+if(is_int($cardID)) return 0;
 switch($cardID[0]) {
 case "D":
 switch($cardID[1]) {
@@ -17074,6 +17079,7 @@ default: return 1;
 }
 
 function GeneratedCardCost($cardID) {
+if(is_int($cardID)) return 0;
 switch($cardID[0]) {
 case "R":
 switch($cardID[1]) {
