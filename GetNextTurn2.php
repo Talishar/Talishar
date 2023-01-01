@@ -73,10 +73,10 @@ while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece ==
       $opponentDisconnected = true;
 
       if ($otherP == 1) {
-        $GLO_Player1Disconnected = -10; // Remove 10 karma to the leaver if it's player 1.
+        $GLO_Player1Disconnected = -2; // Remove 10 karma to the leaver if it's player 1.
         $GLO_Player2Disconnected = 0; // No punition to the other player.
       } else {
-        $GLO_Player2Disconnected = -10; // Remove 10 karma to the leaver if it's player 2.
+        $GLO_Player2Disconnected = -2; // Remove 10 karma to the leaver if it's player 2.
         $GLO_Player1Disconnected = 0; // No punition to the other player.
       }
     }
