@@ -24,22 +24,23 @@
 
   GenerateFunction($cardArray, $handler, "CardType", "type");
   GenerateFunction($cardArray, $handler, "AttackValue", "attack");
-  GenerateFunction($cardArray, $handler, "BlockValue", "block");
+  GenerateFunction($cardArray, $handler, "BlockValue", "block", "3");
   GenerateFunction($cardArray, $handler, "CardName", "name");
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch");
   GenerateFunction($cardArray, $handler, "CardCost", "cost");
+  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");
 
   fwrite($handler, "?>");
 
   fclose($handler);
 
-  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName)
+  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="")
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD"];
     $isString = true;
-    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost") $isString = false;
+    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health") $isString = false;
     $trie = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
@@ -75,18 +76,23 @@
           $data = $cardArray[$i]->cost;
           if($data == "") $data = 0;
         }
+        else if($propertyName == "health")
+        {
+          $data = $cardArray[$i]->health;
+        }
         if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
-        if($data != "-" && $data != "" && $data != "*") AddToTrie($trie, $cardID, 0, $data);
+        if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue) AddToTrie($trie, $cardID, 0, $data);
       }
     }
 
-    TraverseTrie($trie, "", $handler, $isString);
+    TraverseTrie($trie, "", $handler, $isString, $defaultValue);
 
     fwrite($handler, "}\r\n\r\n");
   }
 
-  function TraverseTrie(&$trie, $keySoFar, &$handler=null, $isString=true)
+  function TraverseTrie(&$trie, $keySoFar, &$handler=null, $isString=true, $defaultValue="")
   {
+    $default = ($defaultValue != "" ? $defaultValue : ($isString ? "\"\"" : "0"));
     $depth = strlen($keySoFar);
     if(is_array($trie))
     {
@@ -94,10 +100,9 @@
       foreach ($trie as $key => $value)
       {
         fwrite($handler, "case \"" . $key . "\":\r\n");
-        TraverseTrie($trie[$key], $keySoFar . $key, $handler, $isString);
+        TraverseTrie($trie[$key], $keySoFar . $key, $handler, $isString, $defaultValue);
       }
-      if($isString) fwrite($handler, "default: return \"\";\r\n");
-      else fwrite($handler, "default: return 0;\r\n");
+      fwrite($handler, "default: return " . $default . ";\r\n");
       fwrite($handler, "}\r\n");
     }
     else
