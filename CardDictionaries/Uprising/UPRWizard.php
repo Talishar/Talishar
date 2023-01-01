@@ -14,35 +14,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function UPRWizardCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR102": case "UPR103": return 0;
-      case "UPR104": return 0;
-      case "UPR105": return 3;
-      case "UPR106": case "UPR107": case "UPR108": return 1;
-      case "UPR109": return 0;
-      case "UPR110": case "UPR111": case "UPR112": return 3;
-      case "UPR113": case "UPR114": case "UPR115": return 3;
-      case "UPR116": case "UPR117": case "UPR118": return 0;
-      case "UPR119": case "UPR120": case "UPR121": return 0;
-      case "UPR122": case "UPR123": case "UPR124": return 2;
-      case "UPR126": return 3;
-      case "UPR127": case "UPR128": case "UPR129": return 1;
-      case "UPR130": case "UPR131": case "UPR132": return 0;
-      case "UPR133": case "UPR134": case "UPR135": return 2;
-      case "UPR168": return 3;
-      case "UPR169": return 1;
-      case "UPR170": case "UPR171": case "UPR172": return 2;
-      case "UPR173": case "UPR174": case "UPR175": return 0;
-      case "UPR176": case "UPR177": case "UPR178": return 0;
-      case "UPR179": case "UPR180": case "UPR181": return 1;
-      default: return 0;
-    }
-  }
-
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost, $CS_NextArcaneBonus;

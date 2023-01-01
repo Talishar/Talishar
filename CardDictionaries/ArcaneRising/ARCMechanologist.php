@@ -13,33 +13,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ARCMechanologistCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC005": return 0;
-      case "ARC006": return 1;
-      case "ARC007": return 0;
-      case "ARC008": return 2;
-      case "ARC009": return 0;
-      case "ARC010": return 2;
-      case "ARC011": case "ARC012": case "ARC013": return 2;
-      case "ARC014": case "ARC015": case "ARC016": return 0;
-      case "ARC017": case "ARC018": return 1;
-      case "ARC019": return 0;
-      case "ARC020": case "ARC021": case "ARC022": return 2;
-      case "ARC023": case "ARC024": case "ARC025": return 2;
-      case "ARC026": case "ARC027": case "ARC028": return 0;
-      case "ARC029": case "ARC030": case "ARC031": return 1;
-      case "ARC032": case "ARC033": case "ARC034": return 0;
-      case "ARC035": return 2;
-      case "ARC036": return 1;
-      case "ARC037": return 0;
-      default: return 0;
-    }
-  }
-
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBoosted, $actionPoints, $combatChainState, $CS_PlayIndex;

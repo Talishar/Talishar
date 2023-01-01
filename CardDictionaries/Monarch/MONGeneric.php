@@ -19,39 +19,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function MONGenericCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON245": return 0;
-      case "MON246": return 2;
-      case "MON247": return 3;
-      case "MON248": case "MON249": case "MON250": return 3;
-      case "MON251": case "MON252": case "MON253": return 0;
-      case "MON254": case "MON255": case "MON256": return 1;
-      case "MON257": case "MON258": case "MON259": return 2;
-      case "MON260": case "MON261": case "MON262": return 0;
-      case "MON263": case "MON264": case "MON265": return 2;
-      case "MON266": case "MON267": case "MON268": return 1;
-      case "MON269": case "MON270": case "MON271": return 1;
-      case "MON272": case "MON273": case "MON274": return 0;
-      case "MON275": case "MON276": case "MON277": return 0;
-      case "MON278": case "MON279": case "MON280": return 3;
-      case "MON281": case "MON282": case "MON283": return 2;
-      case "MON284": case "MON285": case "MON286": return 2;
-      case "MON287": case "MON288": case "MON289": return 2;
-      case "MON290": case "MON291": case "MON292": return 0;
-      case "MON293": case "MON294": case "MON295": return 2;
-      case "MON296": case "MON297": case "MON298": return 0;
-      case "MON299": case "MON300": case "MON301": return 1;
-      case "MON302": return 0;
-      case "MON303": case "MON304": case "MON305": return 0;
-      case "MON400": case "MON401": case "MON402": return 0;
-      default: return 0;
-    }
-  }
-
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
     global $actionPoints, $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;

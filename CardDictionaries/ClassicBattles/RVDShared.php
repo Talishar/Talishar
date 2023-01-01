@@ -13,20 +13,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function RVDCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "RVD002": return 2;
-      case "RVD009": return 3;
-      case "RVD013": return 3;
-      case "RVD015": return 3;
-      case "RVD018": return 3;
-      default: return 0;
-    }
-  }
-
   function RVDEffectAttackModifier($cardID)
   {
     switch($cardID)

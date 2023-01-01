@@ -14,29 +14,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ARCRunebladeCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC080": return 6;
-      case "ARC081": return 0;
-      case "ARC082": return 9;
-      case "ARC083": return 0;
-      case "ARC084": return 1;
-      case "ARC085": case "ARC086": case "ARC087": return 2;
-      case "ARC088": case "ARC089": case "ARC090": return 1;
-      case "ARC091": case "ARC092": case "ARC093": return 2;
-      case "ARC094": case "ARC095": case "ARC096": return 3;
-      case "ARC097": case "ARC098": case "ARC099": return 2;
-      case "ARC100": case "ARC101": case "ARC102": return 3;
-      case "ARC103": case "ARC104": case "ARC105": return 1;
-      case "ARC106": case "ARC107": case "ARC108": return 1;
-      case "ARC109": case "ARC110": case "ARC111": return 0;
-      default: return 0;
-    }
-  }
-
   function ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;

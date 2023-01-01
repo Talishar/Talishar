@@ -30,42 +30,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function UPRIllusionistCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR001": case "UPR002": return -1;
-      case "UPR004": return -1;
-      case "UPR005": return 0;
-      case "UPR006": return 6;
-      case "UPR007": return 5;
-      case "UPR008": return 4;
-      case "UPR009": return 0;
-      case "UPR010": return 0;
-      case "UPR011": return 1;
-      case "UPR012": return 1;
-      case "UPR013": return 3;
-      case "UPR014": return 2;
-      case "UPR015": return 2;
-      case "UPR016": return 3;
-      case "UPR017": return 1;
-      case "UPR018": case "UPR019": case "UPR020": return 1;
-      case "UPR021": case "UPR022": case "UPR023": return 1;
-      case "UPR024": case "UPR025": case "UPR026": return 0;
-      case "UPR027": case "UPR028": case "UPR029": return 2;
-      case "UPR030": case "UPR031": case "UPR032": return 1;
-      case "UPR033": case "UPR034": case "UPR035": return 1;
-      case "UPR036": case "UPR037": case "UPR038": return 0;
-      case "UPR039": case "UPR040": case "UPR041": return 0;
-      case "UPR042": case "UPR043": return -1;
-      case "UPR153": return 3;
-      case "UPR154": return 3;
-      case "UPR155": case "UPR156": case "UPR157": return 1;
-      default: return 0;
-    }
-  }
-
   function UPRIllusionistPlayAbility($cardID, $from, $resourcesPaid)
   {
     global $currentPlayer;

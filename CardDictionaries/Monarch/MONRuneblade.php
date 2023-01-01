@@ -12,29 +12,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function MONRunebladeCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON156": return 0;
-      case "MON157": return 2;
-      case "MON158": return 1;
-      case "MON159": case "MON160": case "MON161": return 1;
-      case "MON162": case "MON163": case "MON164": return 1;
-      case "MON165": case "MON166": case "MON167": return 3;
-      case "MON168": case "MON169": case "MON170": return 0;
-      case "MON171": case "MON172": case "MON173": return 2;
-      case "MON174": case "MON175": case "MON176": return 1;
-      case "MON177": case "MON178": case "MON179": return 2;
-      case "MON180": case "MON181": case "MON182": return 2;
-      case "MON183": case "MON184": case "MON185": return 0;
-      case "MON232": case "MON233": case "MON234": return 1;
-      case "MON235": case "MON236": case "MON237": return 0;
-      default: return 0;
-    }
-  }
-
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_DynCostResolved;

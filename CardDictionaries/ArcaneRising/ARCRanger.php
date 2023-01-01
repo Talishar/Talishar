@@ -19,29 +19,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ARCRangerCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC038": case "ARC039": return 0;
-      case "ARC040": return 1;
-      case "ARC041": case "ARC042": return 0;
-      case "ARC043": case "ARC044": return 1;
-      case "ARC045": case "ARC046": case "ARC047": return 0;
-      case "ARC048": case "ARC049": case "ARC050": return 0;
-      case "ARC051": case "ARC052": case "ARC053": return 1;
-      case "ARC054": case "ARC055": case "ARC056": return 0;
-      case "ARC057": case "ARC058": case "ARC059": return 1;
-      case "ARC060": case "ARC061": case "ARC062": return 1;
-      case "ARC063": case "ARC064": case "ARC065": return 0;
-      case "ARC066": case "ARC067": case "ARC068": return 1;
-      case "ARC069": case "ARC070": case "ARC071": return 0;
-      case "ARC072": case "ARC073": case "ARC074": return 1;
-      default: return 0;
-    }
-  }
-
   function ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;

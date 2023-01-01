@@ -15,31 +15,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function MONIllusionistCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON004": return 2;
-      case "MON005": return 6;
-      case "MON006": return 4;
-      case "MON007": return 2;
-      case "MON008": case "MON009": case "MON010": return 2;
-      case "MON011": case "MON012": case "MON013": return 4;
-      case "MON014": case "MON015": case "MON016": return 2;
-      case "MON017": case "MON018": case "MON019": return 2;
-      case "MON020": case "MON021": case "MON022": return 2;
-      case "MON023": case "MON024": case "MON025": return 2;
-      case "MON026": case "MON027": case "MON028": return 1;
-      case "MON091": return 3;
-      case "MON092": case "MON093": case "MON094": return 3;
-      case "MON095": case "MON096": case "MON097": return 1;
-      case "MON098": case "MON099": case "MON100": return 2;
-      case "MON101": case "MON102": case "MON103": return 1;
-      default: return 0;
-    }
-  }
-
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

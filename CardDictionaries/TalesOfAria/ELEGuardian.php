@@ -14,29 +14,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ELEGuardianCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE004": return 4;
-      case "ELE005": return 3;
-      case "ELE006": return 2;
-      case "ELE007": case "ELE008": case "ELE009": return 2;
-      case "ELE010": case "ELE011": case "ELE012": return 2;
-      case "ELE013": case "ELE014": case "ELE015": return 3;
-      case "ELE016": case "ELE017": case "ELE018": return 6;
-      case "ELE019": case "ELE020": case "ELE021": return 4;
-      case "ELE022": case "ELE023": case "ELE024": return 3;
-      case "ELE025": case "ELE026": case "ELE027": return 2;
-      case "ELE028": case "ELE029": case "ELE030": return 2;
-      case "ELE205": Return 3;
-      case "ELE206": case "ELE207": case "ELE208": return 4;
-      case "ELE209": case "ELE210": case "ELE211": return 4;
-      default: return 0;
-    }
-  }
-
   function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_DamagePrevention;

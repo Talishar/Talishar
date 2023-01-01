@@ -22,30 +22,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ARCGenericCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC000": return -1;
-      case "ARC159": return 2;
-      case "ARC160": return 1;
-      case "ARC161": return 2;
-      case "ARC164": case "ARC165": case "ARC166": return 1;
-      case "ARC167": case "ARC168": case "ARC169": return 2;
-      case "ARC173": case "ARC174": case "ARC175": return 1;
-      case "ARC176": case "ARC177": case "ARC178": return 1;
-      case "ARC179": case "ARC180": case "ARC181": return 2;
-      case "ARC185": case "ARC186": case "ARC187": return 2;
-      case "ARC188": case "ARC189": case "ARC190": return 1;
-      case "ARC194": case "ARC195": case "ARC196": return 2;
-      case "ARC197": case "ARC198": case "ARC199": return 1;
-      case "ARC203": case "ARC204": case "ARC205": return 1;
-      case "ARC206": case "ARC207": case "ARC208": return 1;
-      default: return 0;
-    }
-  }
-  
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;

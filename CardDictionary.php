@@ -399,62 +399,7 @@ function CardCost($cardID)
     if($number < 400) return GeneratedCardCost($cardID);
   }
 
-  if ($set == "WTR") {
-    return WTRCardCost($cardID);
-  } else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistCardCost($cardID);
-      case "RANGER":
-        return ARCRangerCardCost($cardID);
-      case "RUNEBLADE":
-        return ARCRunebladeCardCost($cardID);
-      case "WIZARD":
-        return ARCWizardCardCost($cardID);
-      case "GENERIC":
-        return ARCGenericCardCost($cardID);
-    }
-  } else if ($set == "CRU") {
-    return CRUCardCost($cardID);
-  } else if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBruteCardCost($cardID);
-      case "ILLUSIONIST":
-        return MONIllusionistCardCost($cardID);
-      case "RUNEBLADE":
-        return MONRunebladeCardCost($cardID);
-      case "WARRIOR":
-        return MONWarriorCardCost($cardID);
-      case "GENERIC":
-        return MONGenericCardCost($cardID);
-      case "NONE":
-        return MONTalentCardCost($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianCardCost($cardID);
-      case "RANGER":
-        return ELERangerCardCost($cardID);
-      case "RUNEBLADE":
-        return ELERunebladeCardCost($cardID);
-      default:
-        return ELETalentCardCost($cardID);
-    }
-  } else if ($set == "EVR") {
-    return EVRCardCost($cardID);
-  } else if ($set == "UPR") {
-    return UPRCardCost($cardID);
-  } else if ($set == "DVR") {
-    return DVRCardCost($cardID);
-  } else if ($set == "RVD") {
-    return RVDCardCost($cardID);
-  } else if ($set == "DYN") {
-    return DYNCardCost($cardID);
-  } else if ($set == "ROG") {
+  if ($set == "ROG") {
     return ROGUECardCost($cardID);
   }
   switch ($cardID) {

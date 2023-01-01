@@ -28,60 +28,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ELETalentCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE000": return 1;
-      case "ELE091": return 2;
-      case "ELE092": return 1;
-      case "ELE093": return 2;
-      case "ELE094": case "ELE095": case "ELE096": return 2;
-      case "ELE097": case "ELE098": case "ELE099": return 1;
-      case "ELE100": case "ELE101": case "ELE102": return 0;
-      case "ELE103": case "ELE104": case "ELE105": return 0;
-      case "ELE106": case "ELE107": case "ELE108": return 1;
-      case "ELE112": return 0;
-      case "ELE113": return 0;
-      case "ELE114": return 2;
-      case "ELE117": return 3;
-      case "ELE118": return 3;
-      case "ELE119": case "ELE120": case "ELE121": return 3;
-      case "ELE122": case "ELE123": case "ELE124": return 0;
-      case "ELE125": case "ELE126": case "ELE127": return 0;
-      case "ELE128": case "ELE129": case "ELE130": return 3;
-      case "ELE131": case "ELE132": case "ELE133": return 3;
-      case "ELE134": case "ELE135": case "ELE136": return 2;
-      case "ELE137": case "ELE138": case "ELE139": return 2;
-      case "ELE140": case "ELE141": case "ELE142": return 1;
-      case "ELE143": return 0;
-      case "ELE146": return 2;
-      case "ELE147": return 0;
-      case "ELE148": case "ELE149": case "ELE150": return 2;
-      case "ELE151": case "ELE152": case "ELE153": return 1;
-      case "ELE154": case "ELE155": case "ELE156": return 0;
-      case "ELE157": case "ELE158": case "ELE159": return 2;
-      case "ELE160": case "ELE161": case "ELE162": return 2;
-      case "ELE163": case "ELE164": case "ELE165": return 0;
-      case "ELE166": case "ELE167": case "ELE168": return 1;
-      case "ELE169": case "ELE170": case "ELE171": return 0;
-      case "ELE172": return 0;
-      case "ELE175": return 1;
-      case "ELE176": return 0;
-      case "ELE177": case "ELE178": case "ELE179": return 0;
-      case "ELE180": case "ELE181": case "ELE182": return 0;
-      case "ELE183": case "ELE184": case "ELE185": return 0;
-      case "ELE186": case "ELE187": case "ELE188": return 0;
-      case "ELE189": case "ELE190": case "ELE191": return 0;
-      case "ELE192": case "ELE193": case "ELE194": return 1;
-      case "ELE195": case "ELE196": case "ELE197": return 1;
-      case "ELE198": case "ELE199": case "ELE200": return 1;
-      case "ELE201": return 0;
-      default: return 0;
-    }
-  }
-
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;

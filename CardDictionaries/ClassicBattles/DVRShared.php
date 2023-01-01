@@ -13,19 +13,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function DVRCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "DVR008": case "DVR009": return 1;
-      case "DVR013": case "DVR014": return 1;
-      case "DVR023": return 1;
-      case "DVR024": return 2;
-      default: return 0;
-    }
-  }
-
   function DVRHasGoAgain($cardID)
   {
     switch($cardID)

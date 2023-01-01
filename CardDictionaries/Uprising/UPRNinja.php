@@ -12,32 +12,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function UPRNinjaCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR048": return 0;
-      case "UPR049": return 1;
-      case "UPR050": return 1;
-      case "UPR051": case "UPR052": case "UPR053": return 2;
-      case "UPR054": case "UPR055": case "UPR056": return 1;
-      case "UPR057": case "UPR058": case "UPR059": return 0;
-      case "UPR060": case "UPR061": case "UPR062": return 0;
-      case "UPR063": case "UPR064": case "UPR065": return 1;
-      case "UPR066": case "UPR067": case "UPR068": return 1;
-      case "UPR069": case "UPR070": case "UPR071": return 0;
-      case "UPR072": case "UPR073": case "UPR074": return 2;
-      case "UPR075": case "UPR076": case "UPR077": return 0;
-      case "UPR078": case "UPR079": case "UPR080": return 0;
-      case "UPR081": case "UPR082": case "UPR083": return 1;
-      case "UPR160": return 0;
-      case "UPR161": return 1;
-      case "UPR162": case "UPR163": case "UPR164": return 1;
-      default: return 0;
-    }
-  }
-
   function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

@@ -13,29 +13,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function MONWarriorCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON032": return 4;
-      case "MON035": return 1;
-      case "MON036": case "MON037": case "MON038": return 1;
-      case "MON039": case "MON040": case "MON041": return 1;
-      case "MON042": case "MON043": case "MON044": return 0;
-      case "MON045": case "MON046": case "MON047": return 1;
-      case "MON048": case "MON049": case "MON050": return 0;
-      case "MON051": case "MON052": case "MON053": return 0;
-      case "MON054": case "MON055": case "MON056": return 1;
-      case "MON057": case "MON058": case "MON059": return 0;
-      case "MON109": return 1;
-      case "MON110": case "MON111": case "MON112": return 1;
-      case "MON113": case "MON114": case "MON115": return 1;
-      case "MON116": case "MON117": case "MON118": return 1;
-      default: return 0;
-    }
-  }
-
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;

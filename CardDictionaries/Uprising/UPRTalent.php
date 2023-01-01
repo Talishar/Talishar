@@ -23,52 +23,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function UPRTalentCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR000": return -1;
-      case "UPR086": return 2;
-      case "UPR087": return 1;
-      case "UPR088": return 0;
-      case "UPR089": return 1;
-      case "UPR090": return 2;
-      case "UPR091": return 1;
-      case "UPR092": return 0;
-      case "UPR093": return 1;
-      case "UPR094": return 0;
-      case "UPR095": return 1;
-      case "UPR096": return 1;
-      case "UPR097": return 0;
-      case "UPR098": return 0;
-      case "UPR099": return 1;
-      case "UPR100": return 1;
-      case "UPR101": return 0;
-      case "UPR138": return 1;
-      case "UPR139": return 0;
-      case "UPR140": return 3;
-      case "UPR141": case "UPR142": case "UPR143": return 1;
-      case "UPR144": case "UPR145": case "UPR146": return 0;
-      case "UPR147": case "UPR148": case "UPR149": return 1;
-      case "UPR187": return 2;
-      case "UPR188": return 0;
-      case "UPR189": return 0;
-      case "UPR190": return 3;
-      case "UPR191": case "UPR192": case "UPR193": return 0;
-      case "UPR194": case "UPR195": case "UPR196": return 3;
-      case "UPR197": case "UPR198": case "UPR199": return 0;
-      case "UPR200": case "UPR201": case "UPR202": return 1;
-      case "UPR203": case "UPR204": case "UPR205": return 2;
-      case "UPR206": case "UPR207": case "UPR208": return 1;
-      case "UPR212": case "UPR213": case "UPR214": return 0;
-      case "UPR215": case "UPR216": case "UPR217": return 0;
-      case "UPR218": case "UPR219": case "UPR220": return 1;
-      case "UPR221": case "UPR222": case "UPR223": return 1;
-      default: return 0;
-    }
-  }
-
   function UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_PlayIndex, $CS_NumRedPlayed;

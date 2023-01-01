@@ -11,28 +11,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ELERunebladeCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE064": return 2;
-      case "ELE065": case "ELE066": return 0;
-      case "ELE067": case "ELE068": case "ELE069": return 1;
-      case "ELE070": case "ELE071": case "ELE072": return 1;
-      case "ELE073": case "ELE074": case "ELE075": return 0;
-      case "ELE076": case "ELE077": case "ELE078": return 1;
-      case "ELE079": case "ELE080": case "ELE081": return 2;
-      case "ELE082": case "ELE083": case "ELE084": return 2;
-      case "ELE085": case "ELE086": case "ELE087": return 0;
-      case "ELE088": case "ELE089": case "ELE090": return 1;
-      case "ELE226": return 0;
-      case "ELE227": case "ELE228": case "ELE229": return 0;
-      case "ELE230": case "ELE231": case "ELE232": return 1;
-      default: return 0;
-    }
-  }
-
   function ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $otherPlayer, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;

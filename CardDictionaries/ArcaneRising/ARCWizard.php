@@ -12,26 +12,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ARCWizardCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC119": return 2;
-      case "ARC120": return 3;
-      case "ARC121": return 1;
-      case "ARC122": return 0;
-      case "ARC123": case "ARC124": case "ARC125": return 1;
-      case "ARC126": case "ARC127": case "ARC128": return 2;
-      case "ARC129": case "ARC130": case "ARC131": return 2;
-      case "ARC132": case "ARC133": case "ARC134": return 1;
-      case "ARC138": case "ARC139": case "ARC140": return 1;
-      case "ARC141": case "ARC142": case "ARC143": return 1;
-      case "ARC147": case "ARC148": case "ARC149": return 2;
-      default: return 0;
-    }
-  }
-
   function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;

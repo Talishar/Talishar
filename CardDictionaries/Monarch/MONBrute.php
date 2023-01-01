@@ -11,31 +11,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function MONBruteCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON123": return 3;
-      case "MON124": return 2;
-      case "MON125": return 2;
-      case "MON126": case "MON127": case "MON128": return 3;
-      case "MON129": case "MON130": case "MON131": return 2;
-      case "MON132": case "MON133": case "MON134": return 2;
-      case "MON135": case "MON136": case "MON137": return 1;
-      case "MON138": case "MON139": case "MON140": return 3;
-      case "MON141": case "MON142": case "MON143": return 2;
-      case "MON144": case "MON145": case "MON146": return 1;
-      case "MON147": case "MON148": case "MON149": return 2;
-      case "MON150": case "MON151": case "MON152": return 1;
-      case "MON221": return 0;
-      case "MON222": return 2;
-      case "MON223": case "MON224": case "MON225": return 2;
-      case "MON226": case "MON227": case "MON228": return 2;
-      default: return 0;
-    }
-  }
-
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

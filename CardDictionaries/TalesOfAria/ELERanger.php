@@ -21,30 +21,6 @@
     }
   }
 
-  //Minimum cost of the card
-  function ELERangerCardCost($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE035": return 1;
-      case "ELE036": return 1;
-      case "ELE037": return 0;
-      case "ELE038": case "ELE039": case "ELE040": return 1;
-      case "ELE041": case "ELE042": case "ELE043": return 0;
-      case "ELE044": case "ELE045": case "ELE046": return 1;
-      case "ELE047": case "ELE048": case "ELE049": return 1;
-      case "ELE050": case "ELE051": case "ELE052": return 1;
-      case "ELE053": case "ELE054": case "ELE055": return 0;
-      case "ELE056": case "ELE057": case "ELE058": return 1;
-      case "ELE059": case "ELE060": case "ELE061": return 1;
-      //Normal Ranger
-      case "ELE215": return 0;
-      case "ELE216": case "ELE217": case "ELE218": return 0;
-      case "ELE219": case "ELE220": case "ELE221": return 1;
-      default: return 0;
-    }
-  }
-
   function ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
