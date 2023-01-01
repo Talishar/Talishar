@@ -81,6 +81,11 @@ function CheckImage($cardID)
     if(file_exists($filename))
     {
       echo("Attempting to convert image for " . $cardID . " to crops.<BR>");
+      $image = imagecreatefromwebp($filename);
+      $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
+      imagepng($image, $cropFilename);
+      imagedestroy($image);
+      if(file_exists($cropFilename)) echo("Image for " . $cardID . " successfully converted to crops.<BR>");
     }
   }
 }
