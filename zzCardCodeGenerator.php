@@ -28,7 +28,7 @@
   GenerateFunction($cardArray, $handler, "CardName", "name");
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
-  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");
+  //GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");
 
   fwrite($handler, "?>");
 

@@ -163,12 +163,8 @@ function CharacterHealth($cardID)
       return 15;
     case "CRU002":
       return 19;
-    case "CRU046":
-      return 20;
     case "CRU047":
       return 17;
-    case "CRU118":
-      return 20;
     case "MON001":
     case "MON029":
     case "MON119":
@@ -186,12 +182,8 @@ function CharacterHealth($cardID)
       return 18;
     case "UPR001":
       return 40;
-    case "UPR002":
-      return 20;
     case "UPR044":
       return 40;
-    case "UPR045":
-      return 20;
     case "UPR102":
       return 36;
     case "UPR103":
@@ -201,7 +193,6 @@ function CharacterHealth($cardID)
     case "DYN025":
       return 22;
     case "DYN113": return 40;
-    case "DYN114": return 20;
     case "ROGUE001": return 6;
     case "ROGUE003": return 10;
     case "ROGUE004": return 10;
