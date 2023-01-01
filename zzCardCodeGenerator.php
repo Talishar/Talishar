@@ -22,12 +22,12 @@
 
   fwrite($handler, "<?php\r\n");
 
-  GenerateFunction($cardArray, $handler, "CardType", "type");
+  GenerateFunction($cardArray, $handler, "CardType", "type", "AA");
   GenerateFunction($cardArray, $handler, "AttackValue", "attack");
   GenerateFunction($cardArray, $handler, "BlockValue", "block", "3");
   GenerateFunction($cardArray, $handler, "CardName", "name");
-  GenerateFunction($cardArray, $handler, "PitchValue", "pitch");
-  GenerateFunction($cardArray, $handler, "CardCost", "cost");
+  GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
+  GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");
 
   fwrite($handler, "?>");
@@ -42,6 +42,7 @@
     $isString = true;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health") $isString = false;
     $trie = [];
+    $cardsSeen = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
       $cardPrintings = [];
@@ -56,8 +57,13 @@
         {
           if($cardPrintings[$k] == $cardID) $duplicate = true;
         }
+        for($k=0; $k<count($cardsSeen); ++$k)
+        {
+          if($cardsSeen[$k] == $cardID) $duplicate = true;
+        }
         if($duplicate) continue;
         array_push($cardPrintings, $cardID);
+        array_push($cardsSeen, $cardID);
         if($propertyName == "type") $data = MapType($cardArray[$i]);
         else if($propertyName == "attack") $data = $cardArray[$i]->power;
         else if($propertyName == "block")
@@ -92,7 +98,7 @@
 
   function TraverseTrie(&$trie, $keySoFar, &$handler=null, $isString=true, $defaultValue="")
   {
-    $default = ($defaultValue != "" ? $defaultValue : ($isString ? "\"\"" : "0"));
+    $default = ($defaultValue != "" ? ($isString ? "\"" . $defaultValue . "\"" : $defaultValue) : ($isString ? "\"\"" : "0"));
     $depth = strlen($keySoFar);
     if(is_array($trie))
     {
