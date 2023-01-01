@@ -584,6 +584,7 @@ function BlockValue($cardID)
     return ROGUEBlockValue($cardID);
   }
   switch ($cardID) {
+    case "DYN492b": return 5;
     default:
       return 3;
   }
@@ -624,6 +625,7 @@ function AttackValue($cardID)
     case "UPR415": return 3;
     case "UPR416": return 6;
     case "UPR417": return 3;
+    case "DYN492a": return 5;
     case "DYN612": return 4;
     default:
       return 0;
