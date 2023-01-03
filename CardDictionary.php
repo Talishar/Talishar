@@ -520,6 +520,7 @@ function BlockValue($cardID)
     return ROGUEBlockValue($cardID);
   }
   switch ($cardID) {
+    case "DYN492a": return -1;
     case "DYN492b": return 5;
     default:
       return 3;
