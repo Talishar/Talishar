@@ -4227,7 +4227,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             WriteLog(CardLink("ARC160", "ARC160") . " gives attack action cards +1 power and defense this turn.");
             AddCurrentTurnEffect("ARC160-1", $currentPlayer);
             if ($currentPlayer == $defPlayer) {
-              for ($j = CombatChainPieces(); $j <= count($combatChain); $j += CombatChainPieces()) {
+              for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
                 if (CardType($combatChain[$j]) == "AA") CombatChainPowerModifier($j, 1);
               }
             }
