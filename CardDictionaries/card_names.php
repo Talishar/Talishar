@@ -10,5 +10,10 @@ function CardName($cardID)
       $number = intval(substr($cardID, 3));
       if($number < 400) return GeneratedCardName($cardID);
     }
+    switch($cardID)
+    {
+      case "DUMMY": return "Practice Dummy";
+      default: return "";
+    }
     return "";
 	}
