@@ -133,11 +133,9 @@ switch ($popupType) {
     AddSetting($response->Settings, "ManualMode", $SET_ManualMode);
     AddSetting($response->Settings, "SkipARWindow", $SET_SkipARs);
     AddSetting($response->Settings, "SkipDRWindow", $SET_SkipDRs);
-    AddSetting($response->Settings, "SkipNextDRWindow", $SET_PassDRStep);
     AddSetting($response->Settings, "AutoTargetOpponent", $SET_AutotargetArcane);
     AddSetting($response->Settings, "ColorblindMode", $SET_ColorblindMode);
     AddSetting($response->Settings, "ShortcutAttackThreshold", $SET_ShortcutAttackThreshold);
-    AddSetting($response->Settings, "EnableDynamicScaling", $SET_EnableDynamicScaling);
     AddSetting($response->Settings, "MuteSound", $SET_Mute);
     AddSetting($response->Settings, "CardBack", $SET_Cardback);
     AddSetting($response->Settings, "IsPatron", $SET_IsPatron);
