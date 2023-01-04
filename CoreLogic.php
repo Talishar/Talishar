@@ -1372,7 +1372,6 @@ function DoesAttackHaveGoAgain()
   if(count($combatChain) == 0) return false;//No combat chain, so no
   $attackType = CardType($combatChain[0]);
   $attackSubtype = CardSubType($combatChain[0]);
-  $attackValue = AttackValue($combatChain[0]);
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false; //Blizzard
   if(HasGoAgain($combatChain[0])) return true;
@@ -1416,9 +1415,9 @@ function DoesAttackHaveGoAgain()
     case "MON223": case "MON224": case "MON225":
       return NumCardsNonEquipBlocking() < 2;
     case "MON248": case "MON249": case "MON250":
-      return SearchHighestAttackDefended() < $attackValue;
+      return SearchHighestAttackDefended() < CachedTotalAttack();
     case "MON293": case "MON294": case "MON295":
-      return SearchPitchHighestAttack($mainPitch) > $attackValue;
+      return SearchPitchHighestAttack($mainPitch) > AttackValue($combatChain[0]);
     case "ELE216": case "ELE217": case "ELE218":
       return CachedTotalAttack() > AttackValue($combatChain[0]);
     case "ELE216": case "ELE217": case "ELE218":
