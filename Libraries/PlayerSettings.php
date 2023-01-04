@@ -616,7 +616,7 @@ function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_KarmaRestriction, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
-  global $SET_StreamerMode;
+  global $SET_StreamerMode, $SET_AutotargetArcane;
   switch($setting)
   {
     case $SET_DarkMode:
@@ -632,6 +632,7 @@ function SaveSettingInDatabase($setting)
     case $SET_AlwaysHoldPriority:
     case $SET_ManualMode:
     case $SET_StreamerMode:
+    case $SET_AutotargetArcane:
       return true;
     default: return false;
   }
