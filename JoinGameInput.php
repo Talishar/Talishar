@@ -127,7 +127,8 @@ if ($decklink != "") {
     );
     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
     $decklinkArr = explode("/", $decklink);
-    $slug = $decklinkArr[count($decklinkArr) - 1];
+    $decklinkArr = explode("?", $decklinkArr[count($decklinkArr) - 1]);
+    $slug = $decklinkArr[0];
     $apiLink = "https://5zvy977nw7.execute-api.us-east-2.amazonaws.com/prod/decks/" . $slug;
     if ($matchup != "") $apiLink .= "?matchupId=" . $matchup;
   } else {
