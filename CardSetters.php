@@ -294,12 +294,13 @@ function EffectArcaneBonus($cardID)
 
 function AssignArcaneBonus($playerID)
 {
-  global $currentTurnEffects, $layers, $permanentUniqueIDCounter;
-  $layerIndex = count($layers) - LayerPieces();
+  global $currentTurnEffects, $layers;
+  $layerIndex = 0;
   for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
   {
     if($currentTurnEffects[$i+1] == $playerID && EffectArcaneBonus($currentTurnEffects[$i]) > 0)
     {
+      WriteLog("Arcane bonus from " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " associated with " . CardLink($layers[$layerIndex], $layers[$layerIndex]));
       $currentTurnEffects[$i+2] = $layers[$layerIndex+6];
     }
   }
