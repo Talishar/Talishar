@@ -393,7 +393,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
         array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
       } else {
-        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "HAND", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         else $playable = false;
         $border = CardBorderColor($myArsenal[$i], "HAND", $playable);
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
