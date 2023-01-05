@@ -479,7 +479,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
     $type = CardType($myItems[$i]);
     $sType = CardSubType($myItems[$i]);
-    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem:$myItems[$i+5]));
+    $playable = ($currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false);
+    $border = CardBorderColor($myItems[$i], "PLAY", $playable);
+    $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 10 : 0);
+    if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+    $actionDataOverride = ($actionType == 10 ? strval($i) : "");
+    array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem:$myItems[$i+5], restriction:$restriction));
   }
   $response->playerItems = $myItemsOutput;
 
