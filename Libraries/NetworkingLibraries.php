@@ -1131,7 +1131,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
 {
   global $playerID, $turn, $currentPlayer, $actionPoints, $layers;
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
-  global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumMoonWishPlayed, $CS_NextArcaneBonus;
+  global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumMoonWishPlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed;
   global $CS_PlayedAsInstant, $mainPlayer;
   $resources = &GetResources($currentPlayer);
@@ -1147,14 +1147,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-");
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
+      if(ActionsThatDoArcaneDamage($cardID)) AssignArcaneBonus($currentPlayer);
     }
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
-    if (ArcaneDamage($cardID) > 0 && $turn[0] != "B" && $turn[0] != "P") {
-      $expectedArcaneDamage = ArcaneDamage($cardID) + GetClassState($currentPlayer, $CS_NextArcaneBonus);
-      WriteLog(CardLink($cardID, $cardID) . " will be dealing " . $expectedArcaneDamage . " arcane damage.");
-    }
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {

@@ -332,6 +332,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $mainPlayerGamestateStillBuilt, $makeCheckpoint, $otherPlayer, $CS_LayerTarget;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
+  global $CS_ResolvingLayerUniqueID;
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
     else if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
@@ -378,6 +379,7 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = array_shift($layers);
         $uniqueID = array_shift($layers);
         $layerUniqueID = array_shift($layers);
+        SetClassState($player, $CS_ResolvingLayerUniqueID, $layerUniqueID);
         $params = explode("|", $parameter);
         if ($currentPlayer != $player) {
           if ($mainPlayerGamestateStillBuilt) UpdateMainPlayerGameState();
@@ -679,7 +681,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target="-")
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
       AddDecisionQueue("NOPASS", $player, "-", 1, 1); //Create cancel point
       AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
-      AddDecisionQueue("BUFFARCANE", $player, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+      AddDecisionQueue("BUFFARCANEPREVLAYER", $player, "CRU161", 1);
       AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "CRU161"), 1);
       break;
     case "MON089": // Phantasmal Footsteps

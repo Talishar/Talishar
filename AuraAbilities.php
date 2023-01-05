@@ -392,11 +392,8 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "DYN200": case "DYN201": case "DYN202":
-        if ($auras[$i] == "DYN200") $amount = 3;
-        else if ($auras[$i] == "DYN201") $amount = 2;
-        else $amount = 1;
-        WriteLog(CardLink($auras[$i], $auras[$i]) . " gives plus " . $amount . " damage to your next card if it deals arcane damage.");
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
+        WriteLog(CardLink($auras[$i], $auras[$i]) . " buffs your next arcane damage card.");
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "DYN218": case "DYN219": case "DYN220":

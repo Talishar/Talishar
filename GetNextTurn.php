@@ -352,8 +352,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
 
-  if (GetClassState($playerID, $CS_NextArcaneBonus) > 0) $friendlyEffects .= "<div title='Next arcane bonus: " . GetClassState($playerID, $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid blue;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
-  if (GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) > 0) $opponentEffects .= "<div title='Next arcane bonus: " . GetClassState(($playerID == 1 ? 2 : 1), $CS_NextArcaneBonus) . "' style='width:86px; height:66px; margin:2px; border:2px solid red;'>" . Card("CRU161", "crops", 67, 0, 0) . "</div>";
   echo ("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
   echo ("<div style='font-weight: bold; text-align:center; padding-bottom:4px; border-bottom: 4px solid " . $borderColor . "; font-size:18px; font-weight: 600; color: " . $fontColor . "; text-shadow: 2px 0 0 " . $borderColor . ", 0 -2px 0 " . $borderColor . ", 0 2px 0 " . $borderColor . ", -2px 0 0 " . $borderColor . ";'>Opponent<br>Effects</div>");
   echo ($opponentEffects);

@@ -268,19 +268,63 @@ function BanishFromSpecificSoul(&$soul, $player)
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
-function AddArcaneBonus($bonus, $player)
+function EffectArcaneBonus($cardID)
 {
-  global $CS_NextArcaneBonus;
-  $newBonus = GetClassState($player, $CS_NextArcaneBonus) + $bonus;
-  SetClassState($player, $CS_NextArcaneBonus, $newBonus);
+  $idArr = explode("-", $cardID);
+  $cardID = $idArr[0];
+  $modifier = $idArr[1];
+  switch($cardID)
+  {
+    case "ARC115": return 1;
+    case "ARC122": return 1;
+    case "ARC123": case "ARC124": case "ARC125": return 2;
+    case "ARC129": return 3;
+    case "ARC130": return 2;
+    case "ARC131": return 1;
+    case "ARC132": case "ARC133": case "ARC134": return intval($modifier);
+    case "CRU161": return 1;
+    case "CRU165": case "CRU166": case "CRU167": return 1;
+    case "CRU171": case "CRU172": case "CRU173": return 1;
+    case "DYN200": return 3;
+    case "DYN201": return 2;
+    case "DYN202": return 1;
+    default: return 0;
+  }
+}
+
+function AssignArcaneBonus($playerID)
+{
+  global $currentTurnEffects, $layers, $permanentUniqueIDCounter;
+  $layerIndex = count($layers) - LayerPieces();
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+  {
+    if($currentTurnEffects[$i+1] == $playerID && EffectArcaneBonus($currentTurnEffects[$i]) > 0)
+    {
+      $currentTurnEffects[$i+2] = $layers[$layerIndex+6];
+    }
+  }
 }
 
 function ConsumeArcaneBonus($player)
 {
-  global $CS_NextArcaneBonus;
-  $bonus = GetClassState($player, $CS_NextArcaneBonus);
-  SetClassState($player, $CS_NextArcaneBonus, 0);
-  return $bonus;
+  global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
+  $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
+  $totalBonus = 0;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces())
+  {
+    $remove = 0;
+    if ($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i+2] == $uniqueID)
+    {
+      $bonus = EffectArcaneBonus($currentTurnEffects[$i]);
+      if($bonus > 0)
+      {
+        $totalBonus += $bonus;
+        $remove = 1;
+      }
+    }
+    if ($remove == 1) RemoveCurrentTurnEffect($i);
+  }
+  return $totalBonus;
 }
 
 function ConsumeDamagePrevention($player)

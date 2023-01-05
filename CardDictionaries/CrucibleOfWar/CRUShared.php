@@ -554,7 +554,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if ($cardID == "CRU165") $optAmt = 3;
       else if ($cardID == "CRU166") $optAmt = 2;
       else $optAmt = 1;
-      AddArcaneBonus(1, $currentPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       Opt($cardID, $optAmt);
       return "";
     case "CRU168":
@@ -567,7 +567,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "CRU172":
     case "CRU173":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      AddDecisionQueue("ADDARCANEBONUS", $currentPlayer, 1);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "CRU174":
     case "CRU175":

@@ -413,10 +413,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i] == "ARC115" && SearchCurrentTurnEffects($character[$i], $currentPlayer) && ActionsThatDoArcaneDamage($cardID)) {
-      AddArcaneBonus(1, $currentPlayer);
-      RemoveCurrentEffect($currentPlayer, $character[$i]);
-    }
     if ($character[$i + 1] != 2) continue;
     $characterID = $character[$i];
     if ($i == 0 && $character[0] == "CRU097") {

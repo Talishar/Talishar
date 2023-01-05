@@ -209,7 +209,7 @@ $CS_NumAddedToSoul = 13;
 $CS_NextNAACardGoAgain = 14;
 $CS_NumCharged = 15;
 $CS_Num6PowBan = 16;
-$CS_NextArcaneBonus = 17;
+$CS_ResolvingLayerUniqueID = 17;
 $CS_NextWizardNAAInstant = 18;
 $CS_ArcaneDamageTaken = 19;
 $CS_NextNAAInstant = 20;
@@ -417,7 +417,7 @@ function ResetMainClassState()
 {
   global $mainClassState, $CS_Num6PowDisc, $CS_NumBoosted, $CS_AtksWWeapon, $CS_HitsWDawnblade, $CS_DamagePrevention, $CS_CardsBanished;
   global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumMoonWishPlayed;
-  global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_NextArcaneBonus, $CS_NextWizardNAAInstant;
+  global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_ResolvingLayerUniqueID, $CS_NextWizardNAAInstant;
   global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
   global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
@@ -443,7 +443,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NextNAACardGoAgain] = 0;
   $mainClassState[$CS_NumCharged] = 0;
   $mainClassState[$CS_Num6PowBan] = 0;
-  $mainClassState[$CS_NextArcaneBonus] = 0;
+  $mainClassState[$CS_ResolvingLayerUniqueID] = -1;
   $mainClassState[$CS_NextWizardNAAInstant] = 0;
   $mainClassState[$CS_ArcaneDamageTaken] = 0;
   $mainClassState[$CS_NextNAAInstant] = 0;

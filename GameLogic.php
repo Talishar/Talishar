@@ -1459,20 +1459,13 @@ function CurrentEffectPlayAbility($cardID, $from)
             $remove = 1;
           }
           break;
-        case "DYN200": case "DYN201": case "DYN202":
-          if ($currentTurnEffects[$i] == "DYN200") $amount = 3;
-          else if ($currentTurnEffects[$i] == "DYN201") $amount = 2;
-          else $amount = 1;
-          if (ActionsThatDoArcaneDamage($cardID)) AddArcaneBonus($amount, $currentPlayer);
-          if ($from != "EQUIP") $remove = 1;
-          break;
         case "DYN209": case "DYN210": case "DYN211":
           if ($currentTurnEffects[$i] == "DYN209") $maxCost = 2;
           else if ($currentTurnEffects[$i] == "DYN210") $maxCost = 1;
           else $maxCost = 0;
           if (ActionsThatDoArcaneDamage($cardID) && CardCost($cardID) <= $maxCost)
           {
-            AddArcaneBonus(1, $currentPlayer);
+            AddCurrentTurnEffect($cardID, $currentPlayer);
             $remove = 1;
           }
           break;
@@ -4170,7 +4163,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($params); ++$i) {
         switch ($params[$i]) {
           case "Buff_Arcane":
-            AddArcaneBonus(1, $player);
+            AddCurrentTurnEffect("ARC122", $player);
             break;
           case "Draw_card":
             MyDrawCard();
@@ -4587,8 +4580,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SUBPITCHVALUE":
       return $parameter - PitchValue($lastResult);
     case "BUFFARCANE":
-      AddArcaneBonus($parameter, $player);
-      return $parameter;
+      AddCurrentTurnEffect($parameter . "-" . $lastResult, $player);
+      return $lastResult;
+    case "BUFFARCANEPREVLAYER":
+      global $layers;
+      AddCurrentTurnEffect("CRU161", $player, "PLAY", $layers[count($layers)-1]);
+      return $lastResult;
     case "SHIVER":
       $arsenal = &GetArsenal($player);
       switch ($lastResult) {
@@ -5543,9 +5540,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $inGameStatus = "1";
       $MakeStartTurnBackup = true;
       $MakeStartGameBackup = true;
-      return 0;
-    case "ADDARCANEBONUS":
-      AddArcaneBonus($parameter, $player);
       return 0;
     case "QUICKREMATCH":
       $currentTime = round(microtime(true) * 1000);

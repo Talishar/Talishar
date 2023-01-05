@@ -88,22 +88,19 @@
         AddDecisionQueue("TOMEOFAETHERWIND", $currentPlayer, "-", 1);
         return "";
       case "ARC123": case "ARC124": case "ARC125":
-        AddArcaneBonus(2, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives the next card that deals arcane damage +2.";
       case "ARC126": case "ARC127": case "ARC128":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
         return "";
       case "ARC129": case "ARC130": case "ARC131":
-        if($cardID == "ARC129") $buff = 3;
-        else if($cardID == "ARC130") $buff = 2;
-        else $buff = 1;
-        AddArcaneBonus($buff, $currentPlayer);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-        return "Gives your next arcane +$buff and lets you play your next Wizard non-attack action as though it were an instant.";
+        return "Buffs your next arcane and lets you play your next Wizard non-attack action as though it were an instant.";
       case "ARC132": case "ARC133": case "ARC134":
         DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD",$cardID, resolvedTarget: $target);
-        AddDecisionQueue("BUFFARCANE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("BUFFARCANE", $currentPlayer, $cardID, 1);
         return "";
       case "ARC135": case "ARC136": case "ARC137":
         if($cardID == "ARC135") $count = 5;
