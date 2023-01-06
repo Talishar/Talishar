@@ -483,7 +483,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = CardBorderColor($myItems[$i], "PLAY", $playable);
     $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 10 : 0);
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
-    $actionDataOverride = ($actionType == 10 ? strval($i) : "");
+    $actionDataOverride = ($actionTypeOut == 10 ? strval($i) : "");
     array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem:$myItems[$i+5], restriction:$restriction));
   }
   $response->playerItems = $myItemsOutput;
@@ -669,6 +669,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       array_push($pitchingCards, JSONRenderedCard($myPitch[$i], action: 6, actionDataOverride: $myPitch[$i]));
     }
     $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card from your Pitch Zone to add to the bottom of your deck", 1, cardsArray: $pitchingCards);
+  }
+
+  if ($turn[0] == "DYNPITCH" && $turn[1] == $playerID) {
+    $playerInputPopup->active = true;
+    $options = explode(",", $turn[2]);
+    for ($i = 0; $i < count($options); ++$i) {
+      array_push($playerInputButtons, CreateButtonAPI($playerID, $options[$i], 7, $options[$i], "24px"));
+    }
+    $playerInputPopup->popup = CreatePopupAPI("DYNPITCH", [], 0, 1, "Choose ". TypeToPlay($turn[0]), 1, "");
   }
 
   if ($turn[0] == "PAYORDISCARD" && $turn[1] == $playerID) {
