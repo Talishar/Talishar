@@ -456,10 +456,26 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //my allies
   $myAlliesOutput = array();
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
+  //TODO: remove magic numbers
   for ($i = 0; $i < count($myAllies); $i += AllyPieces()) {
     $type = CardType($myAllies[$i]);
     $sType = CardSubType($myAllies[$i]);
-    array_push($myAlliesOutput, JSONRenderedCard(cardNumber: $myAllies[$i], overlay: ($myAllies[$i + 1] != 2 ? 1 : 0), counters: $myAllies[$i + 6], lifeCounters: $myAllies[$i + 2], controller: $playerID, type: $type, sType: $sType, isFrozen: ($myAllies[$i + 3] == 1)));
+    $playable = IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i + 1] == 2;
+    $actionType = ($currentPlayer == $playerID && $turn[0] != "P" && $playable) ? 24 : 0;
+    $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
+    $actionDataOverride = ($actionType == 24 ? strval($i) : "");
+    array_push($myAlliesOutput, JSONRenderedCard(
+      cardNumber: $myAllies[$i], 
+      action: $actionType,
+      overlay: ($myAllies[$i + 1] != 2 ? 1 : 0), 
+      counters: $myAllies[$i + 6], 
+      borderColor: $border,
+      actionDataOverride: $actionDataOverride,
+      lifeCounters: $myAllies[$i + 2], 
+      controller: $playerID, 
+      type: $type, 
+      sType: $sType, 
+      isFrozen: ($myAllies[$i + 3] == 1)));
   }
   $response->playerAllies = $myAlliesOutput;
 
@@ -1124,98 +1140,11 @@ function IsTileable($cardID)
   }
 }
 
-function DisplayTiles($player)
-{
-  global $cardSizeAura, $playerID;
-  $auras = GetAuras($player);
-
-  $count = 0;
-  $first = -1;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == "WTR075") {
-      if ($count == 0) $first = $i;
-      ++$count;
-    }
-  }
-  if ($count > 0) {
-    echo ("<div style='position:relative; display: inline-block;'>");
-    echo (Card("WTR075", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
-    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), "AURAS-" . $first, ($player != $playerID ? 1 : 0));
-    echo ("</div>");
-  }
-
-  $count = 0;
-  $first = -1;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == "ARC112") {
-      if ($count == 0) $first = $i;
-      ++$count;
-    }
-  }
-  if ($count > 0) {
-    echo ("<div style='position:relative; display: inline-block;'>");
-    echo (Card("ARC112", "concat", $cardSizeAura, 0, 1, 0, 0, ($count > 1 ? $count : 0)) . "&nbsp");
-    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), "AURAS-" . $first, ($player != $playerID ? 1 : 0));
-    echo ("</div>");
-  }
-
-
-  $soulShackleCount = 0;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == "MON186") ++$soulShackleCount;
-  }
-  if ($soulShackleCount > 0) echo (Card("MON186", "concat", $cardSizeAura, 0, 1, 0, 0, ($soulShackleCount > 1 ? $soulShackleCount : 0)) . "&nbsp");
-
-  $frostbiteCount = 0;
-  $first = -1;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == "ELE111") {
-      if ($count == 0) $first = $i;
-      ++$frostbiteCount;
-    }
-  }
-  if ($frostbiteCount > 0) {
-    echo ("<div style='position:relative; display: inline-block;'>");
-    echo (Card("ELE111", "concat", $cardSizeAura, 0, 1, 0, 0, ($frostbiteCount > 1 ? $frostbiteCount : 0)) . "&nbsp");
-    DisplayPriorityGem(($player == $playerID ? $auras[$first + 7] : $auras[$first + 8]), "AURAS-" . $first, ($player != $playerID ? 1 : 0));
-    echo ("</div>");
-  }
-
-  $items = GetItems($player);
-  $copperCount = -1;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == "CRU197") ++$copperCount;
-  }
-  if ($copperCount > 0) echo (Card("CRU197", "concat", $cardSizeAura, 0, 1, 0, 0, ($copperCount > 1 ? $copperCount : 0)) . "&nbsp");
-
-  $permanents = GetPermanents($player);
-  $ashCount = 0;
-  for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
-    if ($permanents[$i] == "UPR043") ++$ashCount;
-  }
-  if ($ashCount > 0) echo (Card("UPR043", "concat", $cardSizeAura, 0, 1, 0, 0, ($ashCount > 1 ? $ashCount : 0)) . "&nbsp");
-}
-
 function GetPhaseHelptext()
 {
   global $turn;
   $defaultText = "Choose " . TypeToPlay($turn[0]);
   return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
-}
-
-function DisplayPriorityGem($setting, $MZindex, $otherPlayer = 0)
-{
-  global $cardWidth, $playerID;
-  if ($otherPlayer != 0) {
-    $position = "top: 60px;";
-  } else {
-    $position = "bottom: 5px;";
-  }
-  if ($setting != 2 && $playerID != 3) {
-    $gem = ($setting == 1 ? "hexagonRedGem.png" : "hexagonGrayGem.png");
-    if ($setting == 0) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Not holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 12 . "px; width:40px; height:40px; cursor:pointer;' src='./Images/$gem' />");
-    else if ($setting == 1) echo ("<img " . ProcessInputLink($playerID, ($otherPlayer ? 104 : 103), $MZindex) . " title='Holding priority' style='position:absolute; display: inline-block; z-index:1001; " . $position . " left:" . $cardWidth / 2 - 12 . "px; width:40px; height:40px; cursor:pointer;' src='./Images/$gem' />");
-  }
 }
 
 function IsEffectTileable($cardID)
