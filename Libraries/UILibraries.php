@@ -265,6 +265,7 @@
     return 0;
   }
 
+  // TODO: need to have {{Card}} notation if the client is react as this is broken on React FE.
   function CardLink($caption, $cardNumber)
   {
     global $playerID;

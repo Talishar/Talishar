@@ -482,6 +482,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //my auras
   $myAurasOutput = array();
   $myAuras = GetAuras($playerID == 1 ? 1 : 2);
+  // TODO: If auras can be interacted with, add interaction.
   for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
@@ -507,6 +508,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //my permanents
   $myPermanentsOutput = array();
   $myPermanents = GetPermanents($playerID == 1 ? 1 : 2);
+  // TODO: If other permanents can be interacted with, add interaction.
   for ($i = 0; $i < count($myPermanents); $i += PermanentPieces()) {
     $type = CardType($myPermanents[$i]);
     $sType = CardSubType($myPermanents[$i]);
