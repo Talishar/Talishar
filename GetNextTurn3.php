@@ -953,7 +953,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $playerInputPopup->buttons = $playerInputButtons;
   $response->playerInputPopUp = $playerInputPopup;
-  $response->CanPassPhase = (CanPassPhase($turn[0]) && $currentPlayer == $playerID) || (IsReplay() && $playerID == 3);
+  $response->canPassPhase = (CanPassPhase($turn[0]) && $currentPlayer == $playerID) || (IsReplay() && $playerID == 3);
   // encode and send it out
   echo json_encode($response);
   exit;
