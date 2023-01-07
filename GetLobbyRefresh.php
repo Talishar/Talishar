@@ -135,8 +135,13 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   }
 
   $isMobile = IsMobile();
+  $theirName = ($playerID == 1 ? $p2uid : $p1uid);
   echo ("<div id='otherHero' style='display:none;'>");
   $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID));
+  $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
+  $theirDisplayName = "<span style='color:" . $nameColor . "'>" . ($theirName != "-" ? $theirName : "Player " . ($playerID == 1 ? 2 : 1)) . "</span>";
+  if($isMobile) echo ("<h3>$theirDisplayName</h3>");
+  else echo ("<h2>$theirDisplayName</h2>");
   $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($otherHero) : "");
   echo (Card($otherHero, "concat", ($isMobile ? 100 : 250) , 0, 1));
   if($overlayURL != "") echo ("<img title='Portrait' style='position:absolute; z-index:1001; top: 87px; left: 18px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");

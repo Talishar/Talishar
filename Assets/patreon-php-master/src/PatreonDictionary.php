@@ -43,6 +43,15 @@ enum ContentCreators : string
       default: return "";
     }
   }
+
+  public function NameColor(): string
+  {
+    switch($this->value)
+    {
+      case "0": return "rgb(2,190,253)";
+      default: return "";
+    }
+  }
 }
 
 

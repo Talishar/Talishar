@@ -115,28 +115,30 @@ $isMobile = IsMobile();
 
   <div id="cardDetail" style="display:none; position:absolute;"></div>
 
+  <center>
   <?php
-  if($isMobile) echo '<div style="position:absolute; z-index:1; top:2%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
-  else echo '<div style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
-    $theirDisplayName = ($theirName != "-" ? $theirName . "'s" : "Opponent's ");
-    if($isMobile) echo ("<h3>$theirDisplayName Hero</h3>");
-    else echo ("<h2>$theirDisplayName Hero</h2>");
+  if($isMobile) echo '<div id="oppHero" style="position:absolute; z-index:1; top:2%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
+  else echo '<div id="oppHero" style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
+    $theirDisplayName = ($theirName != "-" ? $theirName : "Player " . ($playerID == 1 ? 2 : 1));
+    if($isMobile) echo ("<h3>$theirDisplayName</h3>");
+    else echo ("<h2>$theirDisplayName</h2>");
 
     $otherHero = "CardBack";
-    echo ("<center>");
-    echo ("<div id='oppHero'>");
+    echo ("<div>");
     echo (Card($otherHero, "concat", ($isMobile ? 100 : 250), 0, 0));
     echo ("</div>");
-    echo ("</center>");
     ?>
   </div>
+  </center>
 
   <?php
   if($isMobile) echo '<div style="position:absolute; z-index:1; top:29%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
   else echo '<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
-    $displayName = ($yourName != "-" ? $yourName . "'s" : "Your ");
-    if($isMobile) echo ("<h3>$displayName Hero</h3>");
-    else echo ("<h2>$displayName Hero</h2>");
+    $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p1ContentCreatorID : $p2ContentCreatorID));
+    $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
+    $displayName = "<span style='color:" . $nameColor . "'>" . ($yourName != "-" ? $yourName : "Player " . $playerID) . "</span>";
+    if($isMobile) echo ("<h3>$displayName</h3>");
+    else echo ("<h2>$displayName</h2>");
 
     $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $handler = fopen($deckFile, "r");
@@ -146,7 +148,6 @@ $isMobile = IsMobile();
 
       echo ("<center>");
       echo ("<div style='position:relative; display: inline-block;'>");
-      $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p1ContentCreatorID : $p2ContentCreatorID));
       $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
       echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
       if($overlayURL != "") echo ("<img title='Portrait' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
