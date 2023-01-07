@@ -118,7 +118,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   // Chat Log
   echo ("<br>");
   if($isMobile) echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:80px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
-  else echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:260px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
+  else echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:120px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   //if(!IsMobile()) echo("<BR>");
   //echo ("<div id='gamelog' style='text-align:left; position:relative; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); margin-top:6px; height:63%; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
@@ -150,6 +150,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   echo ("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
 
+  /*
   $bannerURL = ($contentCreator != null ? $contentCreator->BannerURL() : "");
   if(!$isMobile && $bannerURL != "")
   {
@@ -160,6 +161,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     if($channelLink != "") echo("</a>");
     echo("</div>");
   }
+  */
 
   $icon = "ready.png";
   if ($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";
