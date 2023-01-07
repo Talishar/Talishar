@@ -114,9 +114,11 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     echo ("<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/JoinGame.php?gameName=$gameName&playerID=2'><button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Invite Link</button></div>");
   }
 
+  $isMobile = IsMobile();
   // Chat Log
   echo ("<br>");
-  echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:140px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
+  if($isMobile) echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:80px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
+  else echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:260px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   //if(!IsMobile()) echo("<BR>");
   //echo ("<div id='gamelog' style='text-align:left; position:relative; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); margin-top:6px; height:63%; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
@@ -134,7 +136,6 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     fclose($handler);
   }
 
-  $isMobile = IsMobile();
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
   echo ("<div id='otherHero' style='display:none;'>");
   $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID));
@@ -148,6 +149,17 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   echo ("</div>");
 
   echo ("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
+
+  $bannerURL = ($contentCreator != null ? $contentCreator->BannerURL() : "");
+  if(!$isMobile && $bannerURL != "")
+  {
+    $channelLink = ($contentCreator != null ? $contentCreator->ChannelLink() : "");
+    echo("<div>");
+    if($channelLink != "") echo("<a href='" . $channelLink . "' target='_blank'>");
+    echo("<img title='Banner' style='width:600px;' src='" . $bannerURL . "' />");
+    if($channelLink != "") echo("</a>");
+    echo("</div>");
+  }
 
   $icon = "ready.png";
   if ($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";

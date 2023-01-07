@@ -22,11 +22,20 @@ enum ContentCreators : string
     }
   }
 
+  public function ChannelLink(): string
+  {
+    switch($this->value)
+    {
+      case "0": return "https://www.youtube.com/playlist?list=PLIo1KFShm1L3e91QrlPG6ZdwfmqKk0NIP";
+      default: return "";
+    }
+  }
+
   public function BannerURL(): string
   {
     switch($this->value)
     {
-      case "0": return "./Assets/patreon-php-master/assets/ContentCreatorImages/InstantSpeedBanner.png";
+      case "0": return "./Assets/patreon-php-master/assets/ContentCreatorImages/InstantSpeedBanner.webp";
       default: return "";
     }
   }
