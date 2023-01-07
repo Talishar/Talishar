@@ -524,31 +524,34 @@ function GetNormalCardID($cardID)
 function UpdateKarma($p1value=0, $p2value=0)
 {
 	global $p1id, $p2id;
+	try {
+		$conn = GetDBConnection();
+		$stmt = "";
+		if($p1id != "" && $p1id != "-")
+		{
+			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
+			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
+			$stmt = mysqli_stmt_init($conn);
+			if (mysqli_stmt_prepare($stmt, $sql)) {
+				mysqli_stmt_execute($stmt);
+			}
+		}
+		if($p2id != "" && $p2id != "-")
+		{
+			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'";
+			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'"; // SET field = IF (condition, new value, field)
+			$stmt = mysqli_stmt_init($conn);
+			if (mysqli_stmt_prepare($stmt, $sql)) {
+				mysqli_stmt_execute($stmt);
+			}
+		}
+		if($stmt != ""){
+			mysqli_stmt_close($stmt);
+		}
+		mysqli_close($conn);
+	} catch (\Exception $e) {
 
-	$conn = GetDBConnection();
-	$stmt = "";
-	if($p1id != "" && $p1id != "-")
-	{
-		if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
-		else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
-		$stmt = mysqli_stmt_init($conn);
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_execute($stmt);
-		}
 	}
-	if($p2id != "" && $p2id != "-")
-	{
-		if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'";
-		else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'"; // SET field = IF (condition, new value, field)
-		$stmt = mysqli_stmt_init($conn);
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_execute($stmt);
-		}
-	}
-	if($stmt != ""){
-		mysqli_stmt_close($stmt);
-	}
-	mysqli_close($conn);
 }
 
 //rating = "green" or "red"
