@@ -147,25 +147,6 @@ if (isset($_SESSION["isPatron"])) {
     echo ("<div class='karma-amount'>☯ " . $_SESSION["userKarma"] . "</div>");
     echo ("</div></div><br>");
 
-    ?>
-
-    <div>Username:</div>
-    <input type="text" name="update_name" value="<?php echo $_SESSION['useruid']; ?>">
-    <div>Your email:</div>
-    <input type="email" name="update_email" value="<?php echo $_SESSION['useremail']; ?>">
-
-    <!-- <div>Update your avatar :</div>
-            <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png"> -->
-
-    <input type="hidden" name="old_pass" value="<?php echo $_SESSION['userspwd']; ?>">
-    <div>Old password:</div>
-    <input type="password" name="update_pass" placeholder="Enter Password">
-    <div>New password:</div>
-    <input type="password" name="new_pass" placeholder="Enter New Password">
-    <div>Confirm password:</div>
-    <input type="password" name="confirm_pass" placeholder="Confirm New Password">
-    <button type="submit" name="update_profile">UPDATE PROFILE</button>
-    <?php
     if (isset($message)) {
       echo ("<BR>");
       echo ("<BR>");
