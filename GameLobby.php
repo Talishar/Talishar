@@ -146,8 +146,8 @@ $isMobile = IsMobile();
 
       echo ("<center>");
       echo ("<div style='position:relative; display: inline-block;'>");
-      $contentCreator = ContentCreators::InstantSpeed;
-      $overlayURL = $contentCreator->HeroOverlayURL($character[0]);
+      $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p1ContentCreatorID : $p2ContentCreatorID));
+      $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
       echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
       if($overlayURL != "") echo ("<img title='Flake' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
       echo ("</div>");
