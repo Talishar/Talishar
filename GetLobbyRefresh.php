@@ -145,23 +145,13 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   else echo ("<h2>$theirDisplayName</h2>");
   $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($otherHero) : "");
   echo (Card($otherHero, "concat", ($isMobile ? 100 : 250) , 0, 1));
+  $channelLink = ($contentCreator != null ? $contentCreator->ChannelLink() : "");
+  if($channelLink != "") echo("<a href='" . $channelLink . "' target='_blank'>");
   if($overlayURL != "") echo ("<img title='Portrait' style='position:absolute; z-index:1001; top: 87px; left: 18px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
+  if($channelLink != "") echo("</a>");
   echo ("</div>");
 
   echo ("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
-
-  /*
-  $bannerURL = ($contentCreator != null ? $contentCreator->BannerURL() : "");
-  if(!$isMobile && $bannerURL != "")
-  {
-    $channelLink = ($contentCreator != null ? $contentCreator->ChannelLink() : "");
-    echo("<div>");
-    if($channelLink != "") echo("<a href='" . $channelLink . "' target='_blank'>");
-    echo("<img title='Banner' style='width:600px;' src='" . $bannerURL . "' />");
-    if($channelLink != "") echo("</a>");
-    echo("</div>");
-  }
-  */
 
   $icon = "ready.png";
   if ($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";
