@@ -3,6 +3,7 @@
 
 include 'Libraries/HTTPLibraries.php';
 include_once "Libraries/PlayerSettings.php";
+include_once "Assets/patreon-php-master/src/PatreonDictionary.php";
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -133,8 +134,12 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     fclose($handler);
   }
 
+  $isMobile = IsMobile();
   echo ("<div id='otherHero' style='display:none;'>");
-  echo (Card($otherHero, "concat", (IsMobile() ? 100 : 250) , 0, 1));
+  $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID));
+  $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($otherHero) : "");
+  echo (Card($otherHero, "concat", ($isMobile ? 100 : 250) , 0, 1));
+  if($overlayURL != "") echo ("<img title='Portrait' style='position:absolute; z-index:1001; top: 87px; left: 18px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
   echo ("</div>");
 
   echo ("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
