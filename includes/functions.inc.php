@@ -165,6 +165,7 @@ function loginUser($username, $pwd, $rememberMe) {
 		$_SESSION["userKarma"] = $uidExists["usersKarma"];
 		$_SESSION["greenThumb"] = $uidExists["greenThumbs"];
 		$_SESSION["redThumb"] = $uidExists["redThumbs"];
+		$_SESSION["patreonEnum"] = $uidExists["patreonEnum"];
 
 		try {
 			PatreonLogin($patreonAccessToken);
@@ -191,7 +192,7 @@ function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, usersKarma FROM users WHERE rememberMeToken='$token'";
+	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, usersKarma, patreonEnum FROM users WHERE rememberMeToken='$token'";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_execute($stmt);
@@ -207,6 +208,7 @@ function loginFromCookie()
 			$patreonAccessToken = $row[3];
 			$patreonRefreshToken = $row[4];
 			$_SESSION["userKarma"] = $row[5];
+			$_SESSION["patreonEnum"] = $row[6];
 			try {
 				PatreonLogin($patreonAccessToken);
 			} catch (\Exception $e) {

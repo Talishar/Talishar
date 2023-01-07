@@ -144,8 +144,9 @@ $isMobile = IsMobile();
       $character = GetArray($handler);
 
       echo ("<center>");
-      echo ("<div>");
+      echo ("<div style='position:relative; display: inline-block;'>");
       echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
+      echo ("<img title='Flake' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:250; width:250;' src='./Assets/patreon-php-master/assets/ContentCreatorImages/flakeOverlay.webp' />");
       echo ("</div>");
       echo ("</center>");
 
