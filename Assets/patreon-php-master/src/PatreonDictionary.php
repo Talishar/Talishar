@@ -30,6 +30,19 @@ enum ContentCreators : string
       default: return "";
     }
   }
+
+  public function HeroOverlayURL($heroID): string
+  {
+    include_once "./CardDictionary.php";
+    switch($this->value)
+    {
+      case "0": //WatchFlake
+        if(CardClass($heroID) == "GUARDIAN") return "./Assets/patreon-php-master/assets/ContentCreatorImages/Matt_anathos_overlay.webp";
+        return "./Assets/patreon-php-master/assets/ContentCreatorImages/flakeOverlay.webp";
+        break;
+      default: return "";
+    }
+  }
 }
 
 

@@ -7,6 +7,7 @@ include "Libraries/UILibraries2.php";
 include "Libraries/SHMOPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/HTTPLibraries.php";
+include_once "Assets/patreon-php-master/src/PatreonDictionary.php";
 ob_end_clean();
 
 session_start();
@@ -144,8 +145,11 @@ $isMobile = IsMobile();
       $character = GetArray($handler);
 
       echo ("<center>");
-      echo ("<div>");
+      echo ("<div style='position:relative; display: inline-block;'>");
+      $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p1ContentCreatorID : $p2ContentCreatorID));
+      $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
       echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
+      if($overlayURL != "") echo ("<img title='Portrait' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
       echo ("</div>");
       echo ("</center>");
 
