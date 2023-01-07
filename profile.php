@@ -10,59 +10,6 @@ include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries2.php";
 include_once "./APIKeys/APIKeys.php";
 
-if (isset($_POST['update_profile'])) {
-
-  $user_id = $_SESSION['userid'];
-  $update_name = mysqli_real_escape_string($conn, $_POST['update_name']);
-  $update_email = mysqli_real_escape_string($conn, $_POST['update_email']);
-
-  if ($update_name != $_SESSION['useruid']){
-    $alreadyExistUsersUid = mysqli_query($conn, "SELECT usersUid FROM users WHERE usersUid='$update_name'");
-    $resultUsersUid = mysqli_fetch_array($alreadyExistUsersUid);
-    if (!empty($resultUsersUid)) {
-      $message[] = "This Username is already taken";
-    }
-    else {
-      mysqli_query($conn, "UPDATE users SET usersUid = '$update_name' WHERE usersId = '$user_id'") or die('query failed');
-      $_SESSION['useruid'] = $update_name;
-    }
-  }
-
-  if ($update_email != $_SESSION['useremail']){
-    $alreadyExistEmail = mysqli_query($conn, "SELECT usersEmail FROM users WHERE usersEmail='$update_email'");
-    $resultExistEmail = mysqli_fetch_array($alreadyExistEmail);
-    if (!empty($resultExistEmail)) {
-      $message[] = "This Email is already taken";
-    }
-    else {
-      mysqli_query($conn, "UPDATE users SET usersEmail = '$update_email' WHERE usersId = '$user_id'") or die('query failed');
-      $_SESSION['useremail'] = $update_email;
-    }
-  }
-
-  $old_pass = mysqli_real_escape_string($conn, $_POST['old_pass']);
-  $update_pass = mysqli_real_escape_string($conn, $_POST['update_pass']);
-  $new_pass = mysqli_real_escape_string($conn, $_POST['new_pass']);
-  $confirm_pass = mysqli_real_escape_string($conn, $_POST['confirm_pass']);
-
-  if (!empty($update_pass) || !empty($new_pass) || !empty($confirm_pass)) {
-    // Check if the two new passwords are the same
-    if ($new_pass != $confirm_pass) {
-      $message[] = "New password doesn't matched!";
-      // Verify that the password is the same as the hashed pwd in the database
-    } elseif (password_verify($update_pass, $old_pass)) {
-      // Hash new password for security
-      $confirmed_hashedPwd = password_hash($confirm_pass, PASSWORD_DEFAULT);
-      mysqli_query($conn, "UPDATE users SET usersPwd = '$confirmed_hashedPwd' WHERE usersId = '$user_id'") or die('query failed');
-      $_SESSION['userspwd'] = $confirmed_hashedPwd;
-      $message[] = "Your password was updated!";
-    } else {
-      $message[] = "Old password doesn't matched!";
-    }
-  }
-  $message[] = "Profile saved!";
-}
-
 if(isset($_SESSION['userid']))
 {
   $badges = LoadBadges($_SESSION['userid']);
