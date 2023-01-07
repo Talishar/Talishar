@@ -7,6 +7,7 @@ include "Libraries/UILibraries2.php";
 include "Libraries/SHMOPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/HTTPLibraries.php";
+include_once "Assets/patreon-php-master/src/PatreonDictionary.php";
 ob_end_clean();
 
 session_start();
@@ -145,8 +146,10 @@ $isMobile = IsMobile();
 
       echo ("<center>");
       echo ("<div style='position:relative; display: inline-block;'>");
+      $contentCreator = ContentCreators::InstantSpeed;
+      $overlayURL = $contentCreator->HeroOverlayURL($character[0]);
       echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
-      echo ("<img title='Flake' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:250; width:250;' src='./Assets/patreon-php-master/assets/ContentCreatorImages/flakeOverlay.webp' />");
+      if($overlayURL != "") echo ("<img title='Flake' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
       echo ("</div>");
       echo ("</center>");
 
