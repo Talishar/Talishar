@@ -64,7 +64,8 @@ CREATE TABLE `users` (
   `greenThumbs` int(11) NOT NULL DEFAULT '0',
   `redThumbs` int(11) NOT NULL DEFAULT '0',
   `fabraryId` varchar(64) DEFAULT NULL,
-  `fabdbId` varchar(64) DEFAULT NULL
+  `fabdbId` varchar(64) DEFAULT NULL,
+  `patreonEnum` varchar(64) DEFAULT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables
