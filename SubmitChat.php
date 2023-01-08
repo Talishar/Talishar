@@ -24,6 +24,9 @@ if ($playerID == 1 || $playerID == 2) {
 }
 
 if (isset($_SESSION["isPatron"])) $displayName = "<img title='Patron' style='margin-bottom:-2px; margin-right:-4px; height:18px;' src='./Images/patronHeart.webp' /> " . $displayName;
+//This is the code for Contributor's icon.
+$contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower")
+if (in_array($_SESSION['userid'], $contributors)) $displayName = "<img title='Patron' style='margin-bottom:-2px; margin-right:-4px; height:18px;' src='./Images/copper.webp' /> " . $displayName;
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
