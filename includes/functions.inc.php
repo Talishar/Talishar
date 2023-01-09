@@ -303,10 +303,11 @@ function LoadFavoriteDecks($userID)
 {
 	if($userID == "") return "";
 	$conn = GetDBConnection();
-	$sql = "SELECT decklink, name, hero from favoritedeck where usersId='$userID'";
+	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
 	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $userID);
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 	  while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
