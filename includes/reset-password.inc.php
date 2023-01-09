@@ -21,13 +21,13 @@ if (isset($_POST['reset-password-submit'])) {
 
   require 'dbh.inc.php';
 
-  $sql = "SELECT * FROM pwdReset WHERE pwdResetSelector=? AND pwdResetExpires >= $currentDate";
+  $sql = "SELECT * FROM pwdReset WHERE pwdResetSelector=? AND pwdResetExpires >= ?";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
     echo "There was an error finding your password reset selector.";
     exit();
   } else {
-    mysqli_stmt_bind_param($stmt, "s", $selector);
+    mysqli_stmt_bind_param($stmt, "ss", $selector, $currentDate);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if (!$row = mysqli_fetch_assoc($result)) {
