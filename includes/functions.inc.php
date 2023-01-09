@@ -241,9 +241,10 @@ function storeRememberMeCookie($conn, $uuid, $cookie)
 function storeFabraryId($uid, $fabraryId)
 {
 	$conn = GetDBConnection();
-  $sql = "UPDATE users SET fabraryId='$fabraryId' WHERE usersId='$uid'";
+  $sql = "UPDATE users SET fabraryId=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $fabraryId, $uid);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
@@ -252,9 +253,10 @@ function storeFabraryId($uid, $fabraryId)
 function storeFabDBId($uid, $fabdbId)
 {
 	$conn = GetDBConnection();
-  $sql = "UPDATE users SET fabdbId='$fabdbId' WHERE usersId='$uid'";
+  $sql = "UPDATE users SET fabdbId=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $fabdbId, $uid);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
@@ -263,9 +265,10 @@ function storeFabDBId($uid, $fabdbId)
 function GetDeckBuilderId($uid, $decklink)
 {
 	$conn = GetDBConnection();
-	$sql = "SELECT fabraryId,fabdbId FROM users WHERE usersId='$uid'";
+	$sql = "SELECT fabraryId,fabdbId FROM users WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $uid);
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		$row = mysqli_fetch_array($data, MYSQLI_NUM);
