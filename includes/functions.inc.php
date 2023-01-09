@@ -536,19 +536,21 @@ function UpdateKarma($p1value=0, $p2value=0)
 		$stmt = "";
 		if($p1id != "" && $p1id != "-")
 		{
-			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
-			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p1value, usersKarma) WHERE usersid='$p1id'"; // SET field = IF (condition, new value, field)
+			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid=?"; // SET field = IF (condition, new value, field)
+			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p1value, usersKarma) WHERE usersid=?"; // SET field = IF (condition, new value, field)
 			$stmt = mysqli_stmt_init($conn);
 			if (mysqli_stmt_prepare($stmt, $sql)) {
+				mysqli_stmt_bind_param($stmt, "s", $p1id);
 				mysqli_stmt_execute($stmt);
 			}
 		}
 		if($p2id != "" && $p2id != "-")
 		{
-			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'";
-			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p2value, usersKarma) WHERE usersid='$p2id'"; // SET field = IF (condition, new value, field)
+			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid=?";
+			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p2value, usersKarma) WHERE usersid=?"; // SET field = IF (condition, new value, field)
 			$stmt = mysqli_stmt_init($conn);
 			if (mysqli_stmt_prepare($stmt, $sql)) {
+				mysqli_stmt_bind_param($stmt, "s", $p2id);
 				mysqli_stmt_execute($stmt);
 			}
 		}
@@ -571,9 +573,10 @@ function AddRating($player, $rating)
 	if($dbID != "" && $dbID != "-")
 	{
 		$conn = GetDBConnection();
-		$sql = "UPDATE users SET " . $rating . "Thumbs=" . $rating . "Thumbs+1 WHERE usersid='$dbID'";
+		$sql = "UPDATE users SET " . $rating . "Thumbs=" . $rating . "Thumbs+1 WHERE usersid=?";
 		$stmt = mysqli_stmt_init($conn);
 		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, "s", $dbID);
 			mysqli_stmt_execute($stmt);
 			mysqli_stmt_close($stmt);
 		}
@@ -588,9 +591,10 @@ function SavePatreonTokens($accessToken, $refreshToken)
 	if(!isset($_SESSION["userid"])) return;
 	$userID = $_SESSION["userid"];
 	$conn = GetDBConnection();
-	$sql = "UPDATE users SET patreonAccessToken='$accessToken', patreonRefreshToken='$refreshToken' WHERE usersid='$userID'";
+	$sql = "UPDATE users SET patreonAccessToken=?, patreonRefreshToken=? WHERE usersid=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "sss", $accessToken, $refreshToken, $userID);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
