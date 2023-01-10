@@ -210,9 +210,18 @@ $isMobile = IsMobile();
 
     <?php
 
+    function sortMatchupsAlphabetically($a, $b) {
+        if ($a->name == $b->name) {
+            return 0;
+        }
+
+        return $a->name < $b->name ? -1 : 1;
+    }
+
     $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
     $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
     if ($matchups != NULL) {
+      usort($matchups, "sortMatchupsAlphabetically");
       for ($i = 0; $i < count($matchups); ++$i) {
         echo ("<div style='cursor:pointer; padding:5px; font-size:24px;'>");
         $matchuplink = $redirectPath . "/JoinGameInput.php?gameName=" . $gameName . "&playerID=" . $playerID . "&fabdb=" . $decklink . "&matchup=" . $matchups[$i]->{"matchupId"};
