@@ -60,10 +60,9 @@ function SubmitChat() {
   var ajaxLink =
     "SubmitChat.php?gameName=" + document.getElementById("gameName").value;
   ajaxLink +=
-    "&playerID=" +
-    document.getElementById("playerID").value +
-    "&chatText=" +
-    encodeURI(chatBox.value);
+    "&playerID=" + document.getElementById("playerID").value +
+    "&chatText=" + encodeURI(chatBox.value) +
+    "&authKey=" + document.getElementById("authKey").value;
   xmlhttp.open("GET", ajaxLink, true);
   xmlhttp.send();
   chatBox.value = "";

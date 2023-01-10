@@ -151,8 +151,6 @@ $cardIconTop = intval($cardSize / 4.2); //30
   echo("</div>");
 
   echo("<div id='chatbox' style='position:fixed; display:inline; width:200px; height: 50px; right:10px;'>");
-  //echo("<input style='width:155px; display:inline;' type='text' id='chatText' name='chatText' value='' autocomplete='off' onkeypress='ChatKey(event)'>");
-  //echo("<button style='display:inline;' onclick='SubmitChat()'>Chat</button>");
   echo("<input type='hidden' id='gameName' value='" . $gameName . "'>");
   echo("<input type='hidden' id='playerID' value='" . $playerID . "'>");
 
