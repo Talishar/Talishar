@@ -57,7 +57,7 @@ echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fix
 
 $sql = "SELECT WinningHero,LosingHero,count(WinningHero) AS Count,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$detailHeroID\" and LosingHero=\"$detailMatchupID\" and numTurns>1
+WHERE WinningHero=? and LosingHero=? and numTurns>1
 GROUP by LosingHero
 ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -65,24 +65,26 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
   exit();
 }
+mysqli_stmt_bind_param($stmt, "ss", $detailHeroID, $detailHeroID);
 mysqli_stmt_execute($stmt);
 $winData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,WinnerDeck
 FROM completedgame
-WHERE WinningHero=\"$detailHeroID\" and LosingHero=\"$detailMatchupID\" and numTurns>1";
+WHERE WinningHero=? and LosingHero=? and numTurns>1";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
   exit();
 }
+mysqli_stmt_bind_param($stmt, "ss", $detailHeroID, $detailHeroID);
 mysqli_stmt_execute($stmt);
 $winCardData = mysqli_stmt_get_result($stmt);
 
 
 $sql = "SELECT WinningHero,LosingHero,count(LosingHero) AS Count,LoserDeck
     FROM completedgame
-    WHERE WinningHero=\"$detailMatchupID\" and LosingHero=\"$detailHeroID\" and numTurns>1
+    WHERE WinningHero=? and LosingHero=? and numTurns>1
     GROUP by WinningHero
     ORDER BY Count";
 $stmt = mysqli_stmt_init($conn);
@@ -90,17 +92,19 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
   exit();
 }
+mysqli_stmt_bind_param($stmt, "ss", $detailMatchupID, $detailHeroID);
 mysqli_stmt_execute($stmt);
 $loseData = mysqli_stmt_get_result($stmt);
 
 $sql = "SELECT WinningHero,LosingHero,LoserDeck
     FROM completedgame
-    WHERE WinningHero=\"$detailMatchupID\" and LosingHero=\"$detailHeroID\" and numTurns>1";
+    WHERE WinningHero=? and LosingHero=? and numTurns>1";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
   exit();
 }
+mysqli_stmt_bind_param($stmt, "ss", $detailMatchupID, $detailHeroID);
 mysqli_stmt_execute($stmt);
 $loseCardData = mysqli_stmt_get_result($stmt);
 
