@@ -69,8 +69,8 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
   echo ("ERROR");
   exit();
 }
-mysqli_stmt_execute($stmt);
 mysqli_stmt_bind_param($stmt, "ss", $detailHeroID, $userID);
+mysqli_stmt_execute($stmt);
 $winData = mysqli_stmt_get_result($stmt);
 
 
