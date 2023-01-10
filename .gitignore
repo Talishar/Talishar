@@ -26,3 +26,4 @@ Roguelike/HostFiles
 RogueLike/Games
 /mysql-data/
 BugReports/CreateGameFailsafe.txt
+.idea
