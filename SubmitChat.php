@@ -12,6 +12,7 @@ $playerID = $_GET["playerID"];
 $chatText = htmlspecialchars($_GET["chatText"]);
 $authKey = $_GET["authKey"];
 
+session_set_cookie_params(0, '/', '.talishar.net');
 session_start();
 
 if($authKey == "") $authKey = $_COOKIE["lastAuthKey"];

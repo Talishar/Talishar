@@ -29,6 +29,7 @@ ob_start();
 include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
 ob_end_clean();
+session_set_cookie_params(0, '/', '.talishar.net');
 session_start();
 if($playerID == 1 && isset($_SESSION["p1AuthKey"])) { $targetKey = $p1Key; $authKey = $_SESSION["p1AuthKey"]; }
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) { $targetKey = $p2Key; $authKey = $_SESSION["p2AuthKey"]; }

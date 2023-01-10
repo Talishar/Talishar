@@ -19,6 +19,7 @@ if ($playerID != 1 && $playerID != 2) {
 
 include "ParseGamestate.php";
 
+session_set_cookie_params(0, '/', '.talishar.net');
 session_start();
 $uid = "-";
 if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];
