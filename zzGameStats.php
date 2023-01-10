@@ -59,8 +59,8 @@ h3 {
 
 echo ("<div id=\"cardDetail\" style=\"z-index:100000; display:none; position:fixed;\"></div>");
 
-$winnerQuery = ($forIndividual ? "where WinningPID = '$userID'" : "where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL $numDays DAY)");
-$loserQuery = ($forIndividual ? "where LosingPID = '$userID'" : "where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL $numDays DAY)");
+$winnerQuery = ($forIndividual ? "where WinningPID = ?" : "where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL ? DAY)");
+$loserQuery = ($forIndividual ? "where LosingPID = ?" : "where WinningHero<>\"DUMMY\" and LosingHero<>\"DUMMY\" and CompletionTime >= DATE(NOW() - INTERVAL ? DAY)");
 $winnerQuery .= " and numTurns>1";
 $loserQuery .= " and numTurns>1";
 $sql = "SELECT Hero,sum(Count) AS Total FROM
@@ -82,7 +82,8 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
   exit();
 }
 
-//mysqli_stmt_bind_param($stmt, "ss", $username, $email);
+$param = ($forIndividual ? $userID : $numDays);
+mysqli_stmt_bind_param($stmt, "ss", $param, $param);
 mysqli_stmt_execute($stmt);
 
 // "Get result" returns the results from a prepared statement
@@ -101,7 +102,8 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
   exit();
 }
 
-//mysqli_stmt_bind_param($stmt, "ss", $username, $email);
+$param = ($forIndividual ? $userID : $numDays);
+mysqli_stmt_bind_param($stmt, "s", $param);
 mysqli_stmt_execute($stmt);
 
 // "Get result" returns the results from a prepared statement
