@@ -13,12 +13,12 @@ $chatText = htmlspecialchars($_GET["chatText"]);
 $authKey = $_GET["authKey"];
 
 session_start();
-echo($_SESSION["p1AuthKey"]);
+
+if($authKey == "") $authKey = $_COOKIE["lastAuthKey"];
 
 $targetAuthKey = "";
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
-if($targetAuthKey == "") $targetAuthKey = $_COOKIE["lastAuthKey"];
 if($authKey != $targetAuthKey) exit;
 
 SetHeaders();
