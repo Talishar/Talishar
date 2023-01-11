@@ -2,6 +2,7 @@
 
 include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
+SetHeaders();
 
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
@@ -20,8 +21,6 @@ $targetAuthKey = "";
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
 if($authKey != $targetAuthKey) exit;
-
-SetHeaders();
 
 $uid = "-";
 if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];
