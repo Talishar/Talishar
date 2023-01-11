@@ -482,11 +482,25 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //my auras
   $myAurasOutput = array();
   $myAuras = GetAuras($playerID == 1 ? 1 : 2);
-  // TODO: If auras can be interacted with, add interaction.
   for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
+    $playable = ($currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction) : false);
+    $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
+    $counters = $myAuras[$i + 2];
+    $atkCounters = $myAuras[$i + 3];
+    $action = $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0;
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
-    array_push($myAurasOutput, JSONRenderedCard(cardNumber: $myAuras[$i], overlay: ($myAuras[$i + 1] != 2 ? 1 : 0), counters: $myAuras[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, gem:$myAuras[$i+7]));
+    array_push($myAurasOutput, JSONRenderedCard(
+      cardNumber: $myAuras[$i], 
+      overlay: ($myAuras[$i + 1] != 2 ? 1 : 0), 
+      counters: $counters,
+      action: $action,
+      controller: $otherPlayer, 
+      borderColor: $border,
+      type: $type, 
+      actionDataOverride: strval($i),
+      sType: $sType, 
+      gem:$myAuras[$i+7]));
   }
   $response->playerAuras = $myAurasOutput;
 
