@@ -53,7 +53,7 @@
       $icon = "notReady.png";
       $readyText = "The other player has priority.";
     }
-    echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
+    echo '<link id="icon" rel="shortcut icon" type="image/png" href="./Images/' . $icon . '"/>';
 
     $darkMode = IsDarkMode($playerID);
 
@@ -656,7 +656,7 @@
               _lastUpdate = update;
 
               var readyIcon = document.getElementById("iconHolder").innerText;
-              document.getElementById("icon").href = "./HostFiles/" + readyIcon;
+              document.getElementById("icon").href = "./Images/" + readyIcon;
               var log = document.getElementById('gamelog');
               if (log !== null) log.scrollTop = log.scrollHeight;
               if (readyIcon == "ready.png") {

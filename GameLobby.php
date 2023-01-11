@@ -52,7 +52,7 @@ else if ($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $icon = "notReady.pn
 else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $icon = "notReady.png";
 
 echo '<title>Game Lobby</title> <meta http-equiv="content-type" content="text/html; charset=utf-8" > <meta name="viewport" content="width=device-width, initial-scale=1.0">';
-echo '<link id="icon" rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
+echo '<link id="icon" rel="shortcut icon" type="image/png" href="./Images/' . $icon . '"/>';
 
 $isMobile = IsMobile();
 
@@ -480,7 +480,7 @@ $isMobile = IsMobile();
               }
               var otherHero = document.getElementById("otherHero");
               if (!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
-              document.getElementById("icon").href = "./HostFiles/" + document.getElementById("iconHolder").innerText;
+              document.getElementById("icon").href = "./Images/" + document.getElementById("iconHolder").innerText;
               var log = document.getElementById('gamelog');
               if (log !== null) log.scrollTop = log.scrollHeight;
               document.getElementById("submitForm").style.display = document.getElementById("submitDisplay").innerHTML;

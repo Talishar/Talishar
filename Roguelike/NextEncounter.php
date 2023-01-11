@@ -16,11 +16,6 @@
   include "../HostFiles/Redirector.php";
   include "../Libraries/UILibraries2.php";
   include "../WriteLog.php";
-/*
-  if($currentPlayer == $playerID) $icon = "ready.png";
-  else $icon = "notReady.png";
-  echo '<link rel="shortcut icon" type="image/png" href="./HostFiles/' . $icon . '"/>';
-*/
 
 ?>
 
