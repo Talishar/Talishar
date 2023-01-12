@@ -1058,8 +1058,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       if (count($layers) != 0 && count($combatChain) == 0) {
         $layerIndex = count($layers) - LayerPieces();
-        $abilityType = GetResolvedAbilityType($layers[0]);
-        $layerSubtype = CardSubType($layerIndex);
+        $abilityType = GetResolvedAbilityType($layers[$layerIndex]);
+        $layerSubtype = CardSubType($layers[$layerIndex]);
         return !($weapons == "AURAS"
           || $layerSubtype == "Dagger"
           || $layerSubtype == "Hammer"
@@ -1069,7 +1069,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           || $layerSubtype == "Axe"
           || $layerSubtype == "Flail"
           || ($layerSubtype == "Pistol" && $abilityType == "AA")
-          || CardType($layerIndex) == "AA"
+          || CardType($layers[$layerIndex]) == "AA"
           || DelimStringContains($layerSubtype, "Ally"));
       }
       return count($combatChain) == 0;
