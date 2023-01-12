@@ -53,8 +53,7 @@ enum ContentCreators : string
         if(CardClass($heroID) == "GUARDIAN") return "./Assets/patreon-php-master/assets/ContentCreatorImages/Matt_anathos_overlay.webp";
         return "./Assets/patreon-php-master/assets/ContentCreatorImages/flakeOverlay.webp";
       case "731":
-        if(CardClass($heroID) == "BRUTE") return "./Assets/patreon-php-master/assets/ContentCreatorImages/ManSantLevia.webp";
-        return "";
+        return "./Assets/patreon-php-master/assets/ContentCreatorImages/ManSantLevia.webp";
       default: return "";
     }
   }
