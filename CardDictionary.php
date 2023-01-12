@@ -1057,21 +1057,22 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         }
       }
       if (count($layers) != 0 && count($combatChain) == 0) {
+        $layerIndex = count($layers) - LayerPieces();
         $abilityType = GetResolvedAbilityType($layers[0]);
+        $layerSubtype = CardSubType($layerIndex);
         return !($weapons == "AURAS"
-          || CardSubType($layers[0]) == "Dagger"
-          || CardSubType($layers[0]) == "Hammer"
-          || CardSubType($layers[0]) == "Sword"
-          || CardSubType($layers[0]) == "Club"
-          || CardSubType($layers[0]) == "Scythe"
-          || CardSubType($layers[0]) == "Axe"
-          || CardSubType($layers[0]) == "Flail"
-          || (CardSubType($layers[0]) == "Pistol" && $abilityType == "AA")
-          || CardType($layers[0]) == "AA"
-          || DelimStringContains(CardSubType($layers[0]), "Ally"));
-      } else {
-        return count($combatChain) == 0;
+          || $layerSubtype == "Dagger"
+          || $layerSubtype == "Hammer"
+          || $layerSubtype == "Sword"
+          || $layerSubtype == "Club"
+          || $layerSubtype == "Scythe"
+          || $layerSubtype == "Axe"
+          || $layerSubtype == "Flail"
+          || ($layerSubtype == "Pistol" && $abilityType == "AA")
+          || CardType($layerIndex) == "AA"
+          || DelimStringContains($layerSubtype, "Ally"));
       }
+      return count($combatChain) == 0;
     case "ELE172":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
     case "ELE183":
