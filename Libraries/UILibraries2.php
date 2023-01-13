@@ -805,6 +805,7 @@ function MainMenuUI()
   $rv = "<table class='table-MainMenu'><tr><td class='table-td-MainMenu'>";
   $rv .= GetSettingsUI($playerID) . "<BR>";
   $rv .= "</td><td style='width:45%;  margin-top: 10px; vertical-align:top;'>";
+  $rv .= "<div style='font-size:24px;'><a href='https://fe.talishar.net/?gameName=$gameName&playerID=$playerID&authKey=$authKey'>Launch Beta UI</a></div><br>";
   $rv .= CreateButton($playerID, "Home Page", 100001, 0, "24px", "", "", false, true) . "<BR>";
   $rv .= CreateButton($playerID, "Concede", 100002, 0, "24px", prompt: "⚠️ Do you really want to concede ?") . "<BR><BR>";
   $rv .= CreateButton($playerID, "Report Bug", 100003, 0, "24px") . "<BR>";
@@ -813,7 +814,6 @@ function MainMenuUI()
   $rv .= PreviousTurnSelectionUI() . "<BR>";
   $rv .= "<img style='width: 66vh; height: 33vh;' src='./Images/ShortcutMenu.png'>";
   $rv .= "<div><input class='GameLobby_Input' onclick='copyText()' style='width:40%;' type='text' id='gameLink' value='" . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=3'>&nbsp;<button class='GameLobby_Button' style='margin-left:3px;' onclick='copyText()'>Copy Spectate Link</button></div><br>";
-  $rv .= "<div><a href='https://fe.talishar.net/?gameName=$gameName&playerID=$playerID&authKey=$authKey' target='_blank'>Launch new UI in new window</a></div><br>";
   if (isset($_SESSION["userid"])) {
     $userID = $_SESSION["userid"];
     $badges = GetMyAwardableBadges($userID);
