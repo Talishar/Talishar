@@ -743,7 +743,10 @@ function KayoStaticAbility()
 {
   global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
   $roll = GetDieRoll($mainPlayer);
-  if ($roll >= 5) $combatChainState[$CCS_LinkBaseAttack] *= 2;
+  if ($roll >= 5)
+  {
+    if(CanGainAttack()) $combatChainState[$CCS_LinkBaseAttack] *= 2;
+  }
   else $combatChainState[$CCS_LinkBaseAttack] = floor($combatChainState[$CCS_LinkBaseAttack] / 2);
 }
 
