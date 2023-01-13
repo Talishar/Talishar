@@ -288,6 +288,7 @@ function EffectArcaneBonus($cardID)
     case "DYN200": return 3;
     case "DYN201": return 2;
     case "DYN202": return 1;
+    case "DYN209": case "DYN210": case "DYN211": return 1;
     default: return 0;
   }
 }
@@ -300,8 +301,20 @@ function AssignArcaneBonus($playerID)
   {
     if($currentTurnEffects[$i+1] == $playerID && EffectArcaneBonus($currentTurnEffects[$i]) > 0)
     {
-      WriteLog("Arcane bonus from " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " associated with " . CardLink($layers[$layerIndex], $layers[$layerIndex]));
-      $currentTurnEffects[$i+2] = $layers[$layerIndex+6];
+      $skip = false;
+      switch($currentTurnEffects[$i])
+      {
+        case "DYN209": if(CardCost($layers[$layerIndex]) > 2) $skip = true; break;
+        case "DYN210": if(CardCost($layers[$layerIndex]) > 1) $skip = true; break;
+        case "DYN211": if(CardCost($layers[$layerIndex]) > 0) $skip = true; break;
+        default: break;
+      }
+      if(!$skip)
+      {
+        WriteLog("Arcane bonus from " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " associated with " . CardLink($layers[$layerIndex], $layers[$layerIndex]));
+        $uniqueID = $layers[$layerIndex+6];
+        $currentTurnEffects[$i+2] = $uniqueID;
+      }
     }
   }
 }
