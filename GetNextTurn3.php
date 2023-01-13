@@ -160,6 +160,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad = new stdClass();
     $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
     $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
+    $initialLoad->isPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron);
+    $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar");
+    $initialLoad->isContributor = in_array($initialLoad->playerName, $contributors);
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $response->initialLoad = $initialLoad;
   }
@@ -465,16 +468,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
     $actionDataOverride = ($actionType == 24 ? strval($i) : "");
     array_push($myAlliesOutput, JSONRenderedCard(
-      cardNumber: $myAllies[$i], 
+      cardNumber: $myAllies[$i],
       action: $actionType,
-      overlay: ($myAllies[$i + 1] != 2 ? 1 : 0), 
-      counters: $myAllies[$i + 6], 
+      overlay: ($myAllies[$i + 1] != 2 ? 1 : 0),
+      counters: $myAllies[$i + 6],
       borderColor: $border,
       actionDataOverride: $actionDataOverride,
-      lifeCounters: $myAllies[$i + 2], 
-      controller: $playerID, 
-      type: $type, 
-      sType: $sType, 
+      lifeCounters: $myAllies[$i + 2],
+      controller: $playerID,
+      type: $type,
+      sType: $sType,
       isFrozen: ($myAllies[$i + 3] == 1)));
   }
   $response->playerAllies = $myAlliesOutput;
@@ -491,15 +494,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
     array_push($myAurasOutput, JSONRenderedCard(
-      cardNumber: $myAuras[$i], 
-      overlay: ($myAuras[$i + 1] != 2 ? 1 : 0), 
+      cardNumber: $myAuras[$i],
+      overlay: ($myAuras[$i + 1] != 2 ? 1 : 0),
       counters: $counters,
       action: $action,
-      controller: $otherPlayer, 
+      controller: $otherPlayer,
       borderColor: $border,
-      type: $type, 
+      type: $type,
       actionDataOverride: strval($i),
-      sType: $sType, 
+      sType: $sType,
       gem:$myAuras[$i+7]));
   }
   $response->playerAuras = $myAurasOutput;
