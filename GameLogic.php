@@ -4575,7 +4575,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BUFFARCANEPREVLAYER":
       global $layers;
       $index = 0;
-      for($index=0; $i<count($layers) && $layers[$index] == "TRIGGER"; $index+=LayerPieces());
+      for($index=0; $index<count($layers) && $layers[$index] == "TRIGGER"; $index+=LayerPieces());
       AddCurrentTurnEffect("CRU161", $player, "PLAY", $layers[$index+6]);
       return $lastResult;
     case "SHIVER":
