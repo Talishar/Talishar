@@ -272,7 +272,7 @@ function EffectArcaneBonus($cardID)
 {
   $idArr = explode("-", $cardID);
   $cardID = $idArr[0];
-  $modifier = $idArr[1];
+  $modifier = (count($idArr) > 1 ? $idArr[1] : 0);
   switch($cardID)
   {
     case "ARC115": return 1;
