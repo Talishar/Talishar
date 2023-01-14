@@ -301,7 +301,7 @@ function AssignArcaneBonus($playerID)
   {
     if($currentTurnEffects[$i+1] == $playerID && EffectArcaneBonus($currentTurnEffects[$i]) > 0)
     {
-      $skip = false;
+      $skip = intval($currentTurnEffects[$i+2]) != -1;
       switch($currentTurnEffects[$i])
       {
         case "DYN209": if(CardCost($layers[$layerIndex]) > 2) $skip = true; break;
