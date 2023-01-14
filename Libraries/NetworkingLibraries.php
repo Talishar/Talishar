@@ -519,6 +519,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
       copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
       copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
+      copy("./Games/$gameName/gamelog.txt", $folderName . "/beginTurnGamestate.txt");
+      copy("./Games/$gameName/gamelog.txt", $folderName . "/lastTurnGamestate.txt");
       WriteLog("Thank you for reporting a bug. To describe what happened, please report it on the discord server with the game number for reference ($gameName).");
       break;
     case 100004: //Full Rematch
