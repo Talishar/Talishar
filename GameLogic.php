@@ -3910,6 +3910,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog($message);
       return $lastResult;
     case "ADDNEGDEFCOUNTER":
+      if($lastResult == "") return $lastResult;
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 4] = intval($character[$lastResult + 4]) - 1;
       WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " gained a negative counter.");
