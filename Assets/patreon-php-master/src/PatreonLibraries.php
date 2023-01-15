@@ -30,6 +30,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
 
   if(!isset($patron_response->included)) return;
   $yourPatronages = [];
+  $activeStatus = [];
 	for($i=0; $i<count($patron_response->included); ++$i)
 	{
     $_SESSION["patreonAuthenticated"] = true;
@@ -41,8 +42,12 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
       else if(isset($include->attributes->creation_name)) echo($include->attributes->creation_name);
       echo("<BR>");
     }
-    //TODO: filter out inactive patrons
-		if($include->type == "campaign" && ($include->id == "7198186" || $include->id == "9408649"))
+    if($include->attributes && isset($include->attributes->patron_status))
+    {
+      $activeStatus[$include->relationships->campaign->data->id] = $include->attributes->patron_status;
+    }
+    if($include->type == "campaign" && (!isset($activeStatus[$include->id]) || $activeStatus[$include->id] == "former_patron")) continue;
+		if($include->type == "campaign" && $include->id == "7198186")
 		{
 			$_SESSION["isPatron"] = true;
 			array_push($yourPatronages, "Talishar");
