@@ -17,6 +17,7 @@ $ccLinks = "";
 $compCCLinks = "";
 $otherFormatsLinks = "";
 $livingLegendsCCLinks = "";
+// TODO: Have as a global variable.
 $reactFE = "https://fe.talishar.net/";
 
 $isisShadowBanned = false;
