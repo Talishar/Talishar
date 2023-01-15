@@ -17,6 +17,8 @@ $ccLinks = "";
 $compCCLinks = "";
 $otherFormatsLinks = "";
 $livingLegendsCCLinks = "";
+// TODO: Have as a global variable.
+$reactFE = "https://fe.talishar.net/";
 
 $isisShadowBanned = false;
 
@@ -57,7 +59,7 @@ if ($handle = opendir($path)) {
         $p2Hero = GetCachePiece($gameToken, 8);
         if ($p2Hero != "") {
           $gameInProgressCount += 1;
-          $spectateLinks .= "<form style='text-align:center;' action='" . $redirectPath . "/NextTurn4.php'>";
+          $spectateLinks .= "<form style='text-align:center;' action='". $reactFE . "'>";
           $spectateLinks .= "<center><table><tr><td style='vertical-align:middle;'>";
           if ($p1Hero == "") {
             $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate) / 1000) . " seconds ago </label>";
