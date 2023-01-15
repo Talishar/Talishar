@@ -1175,7 +1175,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
         $frostbitesPaid = AuraCostModifier();
+        $isAlternativeCostPaid = IsAlternativeCostPaid($cardID, $from);
+        if($isAlternativeCostPaid) $baseCost = 0;
         $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + $frostbitesPaid + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
+        if($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
       if ($resources[1] < 0) $resources[1] = 0;
       LogResourcesUsedStats($currentPlayer, $resources[1]);
@@ -1406,6 +1409,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "CRU197-4", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "Copper_alternative_cost_was_paid.", 1);
 
       AddDecisionQueue("COUNTITEM", $currentPlayer, "EVR195"); //Silver
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "2");
@@ -1414,6 +1418,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "EVR195-2", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "Silver_alternative_cost_was_paid.", 1);
 
       AddDecisionQueue("COUNTITEM", $currentPlayer, "DYN243"); //Gold
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
@@ -1422,6 +1427,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "DYN243-1", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "CRU188", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "Gold_alternative_cost_was_paid.", 1);
       break;
     case "MON199":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");

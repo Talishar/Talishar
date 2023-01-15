@@ -1160,6 +1160,31 @@ function CurrentEffectBaseAttackSet($cardID)
   return $currentModifier;
 }
 
+function IsAlternativeCostPaid($cardID, $from)
+{
+  global $currentTurnEffects, $currentPlayer;
+  $isAlternativeCostPaid = false;
+  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      $remove = 0;
+      switch ($currentTurnEffects[$i]) {
+        case "ARC185":
+        case "CRU188":
+        case "MON199":
+        case "MON257":
+        case "EVR161":
+          $isAlternativeCostPaid = true;
+          $remove = 1;
+          break;
+        default:
+          break;
+      }
+      if ($remove == 1) RemoveCurrentTurnEffect($i);
+    }
+  }
+  return $isAlternativeCostPaid;
+}
+
 function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
@@ -1212,26 +1237,6 @@ function CurrentEffectCostModifiers($cardID, $from)
             $costModifier -= CountAura("ARC112", $currentPlayer);
             $remove = 1;
           }
-          break;
-        case "CRU188":
-          $costModifier -= 999;
-          $remove = 1;
-          break;
-        case "MON257":
-          $costModifier -= 999;
-          $remove = 1;
-          break;
-        case "MON199":
-          $costModifier -= 999;
-          $remove = 1;
-          break;
-        case "ARC185":
-          $costModifier -= 999;
-          $remove = 1;
-          break;
-        case "EVR161":
-          $costModifier -= 999;
-          $remove = 1;
           break;
         case "ARC060":
         case "ARC061":
