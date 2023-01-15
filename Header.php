@@ -64,6 +64,7 @@ $isMobile = IsMobile();
       <ul>
         <li><a href="MainMenu.php">Home Page</a></li>
         <?php if(!$isMobile) echo '<li><a href="https://fabtcg.com/events">Find Local Events</a></li>'; ?>
+        <?php if(!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
         <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>"; ?>
         <li><a href="Draft.php">Limited</a></li>
         <?php if(!$isMobile) echo '<li><a href="' . $roguelikePath .'">Roguelike</a></li>'; ?>
