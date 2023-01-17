@@ -1150,6 +1150,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-");
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
       if(ActionsThatDoArcaneDamage($cardID)) AssignArcaneBonus($currentPlayer);
+      else ClearNextCardArcaneBuffs($currentPlayer);
     }
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);

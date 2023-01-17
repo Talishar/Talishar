@@ -319,6 +319,25 @@ function AssignArcaneBonus($playerID)
   }
 }
 
+function ClearNextCardArcaneBuffs($player)
+{
+  global $currentTurnEffects;
+  $layerIndex = 0;
+  for($i=0; $i<count($currentTurnEffects); $i+=CurrentTurnPieces())
+  {
+    $remove = 0;
+    if($currentTurnEffects[$i+1] == $player)
+    {
+      switch($currentTurnEffects[$i])
+      {
+        case "DYN200": case "DYN201": case "DYN202": $remove = 1; break;
+        default: break;
+      }
+    }
+    if ($remove == 1) RemoveCurrentTurnEffect($i);
+  }
+}
+
 function ConsumeArcaneBonus($player)
 {
   global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
