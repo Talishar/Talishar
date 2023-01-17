@@ -2313,6 +2313,7 @@ function WardAmount($cardID)
   switch($cardID)
   {
     case "DYN213": case "DYN214": return 1;
+    case "DYN612": return 4;
     default: return 0;
   }
 }

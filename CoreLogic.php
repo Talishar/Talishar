@@ -566,7 +566,6 @@ function DealDamageAsync($player, $damage, $type="DAMAGE", $source="NA")
   $damage = CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable);
   $damage = AuraTakeDamageAbilities($player, $damage, $type);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type);
-  $damage = AllyTakeDamageAbilities($player, $damage, $type);
   $damage = ItemTakeDamageAbilities($player, $damage, $type);
   if($damage == 1 && $preventable && SearchItemsForCard("EVR069", $player) != "") $damage = 0;//Must be last
   $dqVars[0] = $damage;
@@ -1786,6 +1785,7 @@ function GetDamagePreventionIndices($player)
     }
   }
   $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
+
   $char = &GetPlayerCharacter($player);
   $indices = "";
   for($i=0; $i<count($char); $i+=CharacterPieces())
@@ -1797,6 +1797,20 @@ function GetDamagePreventionIndices($player)
     }
   }
   $indices = SearchMultiZoneFormat($indices, "MYCHAR");
+  $mzIndices = CombineSearches($mzIndices, $indices);
+
+  $ally = &GetAllies($player);
+  $indices = "";
+  for($i=0; $i<count($ally); $i+=AllyPieces())
+  {
+    WriteLog($ally[$i] . " " . WardAmount($ally[$i]));
+    if($ally[$i+1] != 0 && WardAmount($ally[$i]) > 0)
+    {
+      if($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  $indices = SearchMultiZoneFormat($indices, "MYALLY");
   $mzIndices = CombineSearches($mzIndices, $indices);
   $rv = $mzIndices;
   return $rv;
