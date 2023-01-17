@@ -1239,7 +1239,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (IsStaticType($cardType, $from, $cardID)) {
-      $playType = GetResolvedAbilityType($cardID);
+      $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
       if ($abilityType == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
