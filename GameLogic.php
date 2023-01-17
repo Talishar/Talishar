@@ -1241,7 +1241,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "ARC060":
         case "ARC061":
         case "ARC062":
-          if (CardType($cardID) == "AA" || GetAbilityType($cardID) == "AA") {
+          if (CardType($cardID) == "AA" || GetAbilityType($cardID, -1, $from) == "AA") {
             $costModifier += 1;
             $remove = 1;
           }
@@ -1840,8 +1840,6 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "ELE092-DOM":
     case "ELE092-BUFF":
-      return true;
-    case "ELE112-1":
       return true;
     case "ELE143":
       return true;

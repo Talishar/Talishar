@@ -50,11 +50,8 @@
       case "ELE107": GainHealth(2, $currentPlayer); return "Rejuvenate gains 2 health.";
       case "ELE108": GainHealth(1, $currentPlayer); return "Rejuvenate gains 1 health.";
       case "ELE112":
-        if (count($combatChain) > 0) {
+        if (count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA") {
           AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-        } elseif (count($layers) > 0) {
-          if (CardType($layers[0] == "AA") || GetAbilityType($layers[0] == "AA")) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
-          else AddCurrentTurnEffect($cardID, $currentPlayer);
         } else {
           AddCurrentTurnEffect($cardID, $currentPlayer);
         }

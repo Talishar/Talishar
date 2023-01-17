@@ -890,10 +890,6 @@ function ChainLinkResolvedEffects()
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "ELE112-1":
-          RemoveCurrentEffect($mainPlayer, $currentTurnEffects[$i]);
-          AddCurrentTurnEffectFromCombat("ELE112", $mainPlayer);
-          break;
         default:
           break;
       }
@@ -1246,7 +1242,7 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($from == "ARS" && $cardType == "A" && $currentPlayer != $mainPlayer && PitchValue($cardID) == 3 && (SearchCharacterActive($currentPlayer, "EVR120") || SearchCharacterActive($currentPlayer, "UPR102") || SearchCharacterActive($currentPlayer, "UPR103") || (SearchCharacterActive($currentPlayer, "CRU097") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && isIyslander($otherCharacter[0])))) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   $abilityType = "-";
-  if($isStaticType) $abilityType = GetAbilityType($cardID, $index);
+  if($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);
   if(($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if(($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   return false;

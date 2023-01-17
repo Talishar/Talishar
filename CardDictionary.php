@@ -604,7 +604,7 @@ function HasGoAgain($cardID)
   }
 }
 
-function GetAbilityType($cardID, $index = -1)
+function GetAbilityType($cardID, $index = -1, $from="-")
 {
   global $currentPlayer;
   $set = CardSet($cardID);
@@ -613,10 +613,10 @@ function GetAbilityType($cardID, $index = -1)
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-      return GetAbilityType($otherCharacter[0], $index);
+      return GetAbilityType($otherCharacter[0], $index, $from);
     }
   }
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $subtype == "Aura") {
+  if ($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $subtype == "Aura") {
     if (SearchCharacterForCard($currentPlayer, "MON003")) return "AA";
     if (SearchCharacterForCard($currentPlayer, "MON088")) return "AA";
   }
@@ -711,7 +711,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $restriction = "";
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
-  $abilityType = GetAbilityType($cardID);
+  $abilityType = GetAbilityType($cardID, $index, $from);
   if ($phase == "P" && $from != "HAND") return false;
   if ($phase == "B" && $from == "BANISH") return false;
   if ($phase == "B" && $cardType == "E" && $myCharacter[$index + 6] == 1) {
@@ -757,7 +757,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($isStaticType) {
-    $cardType = GetAbilityType($cardID, $index);
+    $cardType = GetAbilityType($cardID, $index, $from);
   }
   if ($cardType == "") return false;
   if (RequiresDiscard($cardID) || $cardID == "WTR159") {
