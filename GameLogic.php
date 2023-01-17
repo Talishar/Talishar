@@ -4147,6 +4147,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $number = count(explode(",", $lastResult));
        }
       AddResourceCost($player, $number);
+      AddCurrentTurnEffect("WTR081-" . $number, $player);
       return $number;
     case "REFRACTIONBOLTERS":
       if ($lastResult == "YES") {

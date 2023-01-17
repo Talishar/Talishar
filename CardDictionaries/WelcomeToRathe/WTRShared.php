@@ -58,6 +58,8 @@ function WTRAbilityCost($cardID)
 
   function WTREffectAttackModifier($cardID)
   {
+    $idArr = explode("-", $cardID);
+    $cardID = $idArr[0];
     switch ($cardID)
     {
       case "WTR007": return 2;
@@ -74,6 +76,7 @@ function WTRAbilityCost($cardID)
       case "WTR069": return 3;
       case "WTR070": return 2;
       case "WTR071": return 1;
+      case "WTR081": return (count($idArr) > 1 ? $idArr[1] : 0);
       case "WTR116": return 1;
       case "WTR129": return 3;
       case "WTR130": return 2;
@@ -107,6 +110,8 @@ function WTRAbilityCost($cardID)
   function WTRCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer;
+    $idArr = explode("-", $cardID);
+    $cardID = $idArr[0];
     switch ($cardID)
     {
       //Brute
@@ -118,6 +123,8 @@ function WTRAbilityCost($cardID)
       case "WTR038": case "WTR039": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;
       case "WTR066": case "WTR067": case "WTR068": return true;
       case "WTR069": case "WTR070": case "WTR071": return CardType($attackID) == "AA" && ClassContains($attackID, "GUARDIAN", $mainPlayer);
+      //Ninja
+      case "WTR081": return true;
       //Warrior
       case "WTR116": return CardType($attackID) == "W";
       case "WTR129": case "WTR130": case "WTR131": return CardType($attackID) == "W";
