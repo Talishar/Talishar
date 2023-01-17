@@ -1347,6 +1347,7 @@ function RevealCards($cards, $player="")
   {
     if($string != "") $string .= ", ";
     $string .= CardLink($cardArray[$i], $cardArray[$i]);
+    AddEvent("REVEAL", $cardArray[$i]);
   }
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed.";

@@ -192,6 +192,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->goAgain = DoesAttackHaveGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
+  // TODO: How to find out if a card has been fused?
   $activeChainLink->fused = false;
 
   // current chain link attack

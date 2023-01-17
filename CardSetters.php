@@ -21,6 +21,7 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   WriteReplay($player, $cardID, $from, "BANISH");
+  AddEvent("BANISH", $cardID);
   if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
     ++$actionPoints;
@@ -221,6 +222,7 @@ function AddSoul($cardID, $player, $from)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   WriteReplay($player, $cardID, $from, "SOUL");
+  AddEvent("SOUL", $cardID);
   global $CS_NumAddedToSoul;
   global $myStateBuiltFor;
   if($cardID == "DYN066")
@@ -265,6 +267,7 @@ function BanishFromSpecificSoul(&$soul, $player)
   if (count($soul) == 0) return;
   $cardID = array_shift($soul);
   WriteReplay($player, $cardID, "SOUL", "BANISH");
+  AddEvent("BANISH", $cardID);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
