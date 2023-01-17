@@ -14,7 +14,7 @@
 
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $CS_DynCostResolved;
+    global $currentPlayer;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -82,7 +82,7 @@
         GainResources($currentPlayer, 2);
         return "Gain 2 resources.";
       case "MON231":
-        $xVal = GetClassState($currentPlayer, $CS_DynCostResolved)/2;
+        $xVal = $resourcesPaid/2;
         $numRevealed = 3 + $xVal;
         WriteLog(CardLink($cardID, $cardID) . " reveals " . $numRevealed . " cards.");
         AddDecisionQueue("FINDINDICES", $currentPlayer, "FIRSTXDECK," . $numRevealed);
