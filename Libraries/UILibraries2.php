@@ -100,6 +100,7 @@ function JSONRenderedCard(
     } else if ($cardNumber == "UPR417" || $cardNumber == "UPR017") {
       $countersMap->endurance = $countersMap->counters;
       $countersMap->counters = 0;
+    }
   }
 
   $countersMap = (object) array_filter((array) $countersMap, function ($val) {
