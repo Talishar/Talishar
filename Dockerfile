@@ -1,4 +1,4 @@
-FROM php:8.1.6-apache
+FROM php:8.2.1-apache
 RUN apt-get update && apt-get install -y libbz2-dev
 RUN apt-get update && apt-get install -y libc-client-dev libkrb5-dev && rm -r /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y libxslt-dev
