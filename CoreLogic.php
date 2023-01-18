@@ -1800,7 +1800,6 @@ function GetDamagePreventionIndices($player)
   $indices = "";
   for($i=0; $i<count($ally); $i+=AllyPieces())
   {
-    WriteLog($ally[$i] . " " . WardAmount($ally[$i]));
     if($ally[$i+1] != 0 && WardAmount($ally[$i]) > 0)
     {
       if($indices != "") $indices .= ",";
