@@ -166,6 +166,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron);
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
     $initialLoad->roguelikeGameID = $roguelikeGameID;
+    $initialLoad->playerPlaymat = "";
+    $initialLoad->opponentPlaymat = "";
     $response->initialLoad = $initialLoad;
   }
 
