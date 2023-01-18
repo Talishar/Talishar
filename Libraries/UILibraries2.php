@@ -67,11 +67,13 @@ function JSONRenderedCard(
   $isFrozen = NULL,
   $gem = NULL,
   $countersMap = new stdClass(), // new object for counters
-  $label = NULL
+  $label = NULL,
+  $face = NULL,
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
 
+  // special logic for counters
   $countersMap->counters = property_exists($countersMap, 'counters') ?
     $countersMap->counters : $counters;
   $countersMap->life = property_exists($countersMap, 'life') ?
@@ -95,7 +97,9 @@ function JSONRenderedCard(
     } else if ($cardNumber == "DYN175") {
       $countersMap->doom = $countersMap->counters;
       $countersMap->counters = 0;
-    }
+    } else if ($cardNumber == "UPR417" || $cardNumber == "UPR017") {
+      $countersMap->endurance = $countersMap->counters;
+      $countersMap->counters = 0;
   }
 
   $countersMap = (object) array_filter((array) $countersMap, function ($val) {
@@ -123,6 +127,7 @@ function JSONRenderedCard(
     'isFrozen' => $isFrozen,
     'countersMap' => $countersMap,
     'label' => $label,
+    'face' => $face
   ];
 
   if($gem != NULL)
