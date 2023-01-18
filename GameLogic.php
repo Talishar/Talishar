@@ -1459,7 +1459,8 @@ function CurrentEffectPlayAbility($cardID, $from)
           break;
         case "MON153":
         case "MON154":
-          if (CardType($cardID) != "A" && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
+          $cardType = CardType($cardID);
+          if (($cardType == "AA" || $cardType == "W") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
             GiveAttackGoAgain();
             $remove = 1;
           }

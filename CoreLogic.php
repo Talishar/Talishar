@@ -1668,6 +1668,7 @@ function NumEquipBlock()
     if(IsStaticType($cardType, $from, $cardID))
     {
       $hasGoAgain = AbilityHasGoAgain($cardID);
+      if(!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID);
     }
     else
     {
