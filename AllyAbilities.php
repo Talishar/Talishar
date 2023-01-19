@@ -35,7 +35,7 @@ function DestroyAlly($player, $index, $skipDestroy = false)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
     }
   }
-  if (IsSpecificAllyAttacking($player, $index)) {
+  if (IsSpecificAllyAttacking($player, $index) || IsSpecificAllyAttackTarget($player, $index)) {
     CloseCombatChain();
   }
   //Dragon Allies

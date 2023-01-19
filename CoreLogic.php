@@ -1714,6 +1714,17 @@ function NumEquipBlock()
     return $target[0] == "THEIRALLY";
   }
 
+  function IsSpecificAllyAttackTarget($player, $index)
+  {
+    $mzTarget = GetAttackTarget();
+    $mzArr = explode("-", $mzTarget);
+    if($mzArr[0] == "ALLY" || $mzArr[0] == "MYALLY" || $mzArr[0] == "THEIRALLY")
+    {
+      return $index == intval($mzArr[1]);
+    }
+    return false;
+  }
+
   function IsAllyAttacking()
   {
     global $combatChain;
