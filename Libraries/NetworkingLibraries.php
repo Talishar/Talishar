@@ -813,7 +813,7 @@ function ResolveCombatDamage($damageDone)
   global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CCS_ChainLinkHitEffectsPrevented;
   $wasHit = $damageDone > 0;
 
-  AddLayer("FINALIZECHAINLINK", $mainPlayer, "0");
+  PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
 
   WriteLog("Combat resolved with " . ($wasHit ? "a HIT for $damageDone damage." : "NO hit."));
 

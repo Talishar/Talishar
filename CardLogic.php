@@ -221,6 +221,19 @@ function HasEffect($cardID)
   return false;
 }
 
+function PrependLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
+{
+    global $layers;
+    array_push($layers, $cardID);
+    array_push($layers, $player);
+    array_push($layers, $parameter);
+    array_push($layers, $target);
+    array_push($layers, $additionalCosts);
+    array_push($layers, $uniqueID);
+    array_push($layers, GetUniqueId());
+    return count($layers);//How far it is from the end
+}
+
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   global $layers;

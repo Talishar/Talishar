@@ -1523,7 +1523,7 @@ function CloseCombatChain($chainClosed="true")
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
   $layers = [];//In case there's another combat chain related layer like defense step
-  AddLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";
