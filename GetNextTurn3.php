@@ -343,12 +343,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   $banish = GetBanish($playerID);
   $playerBanishArr = array();
-  for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
-    $action
-      = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
+  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+    $action = $currentPlayer == $playerID && IsPlayable($banish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
     $mod = explode("-", $banish[$i + 1])[0];
     $border = CardBorderColor($banish[$i], "BANISH", $action > 0, $mod);
-    array_push($playerBanishArr, JSONRenderedCard($myBanish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
+    array_push($playerBanishArr, JSONRenderedCard($banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerBanish = $playerBanishArr;
 
