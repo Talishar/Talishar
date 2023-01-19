@@ -1367,13 +1367,16 @@ function DoesAttackHaveGoAgain()
   if(CurrentEffectPreventsGoAgain()) return false;
   if(SearchCurrentTurnEffects("ELE147", $mainPlayer)) return false; //Blizzard
   if(HasGoAgain($combatChain[0])) return true;
+  if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
+  {
+    if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
+    if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
+  }
   if(SearchAuras("UPR139", $mainPlayer)) return false;//Hypothermia
   if($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) return true;
   if(ClassContains($combatChain[0], "ILLUSIONIST", $mainPlayer))
   {
-    if(SearchCharacterForCard($mainPlayer, "MON003") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if($attackType == "AA" && SearchAuras("MON013", $mainPlayer)) return true;
-    if(DelimStringContains(CardSubtype($combatChain[0]), "Aura") && SearchCharacterForCard($mainPlayer, "MON088")) return true;
   }
   if(DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "UPR001") || SearchCharacterActive($mainPlayer, "UPR002") || SearchCurrentTurnEffects("UPR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("UPR002-SHIYANA", $mainPlayer))) return true;
 
