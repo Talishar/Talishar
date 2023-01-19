@@ -19,7 +19,7 @@ function PlayAlly($cardID, $player, $subCards = "-")
   return count($allies) - AllyPieces();
 }
 
-function DestroyAlly($player, $index, $skipDestroy = false)
+function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false)
 {
   global $combatChain, $mainPlayer;
   $allies = &GetAllies($player);
@@ -35,7 +35,7 @@ function DestroyAlly($player, $index, $skipDestroy = false)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
     }
   }
-  if (IsSpecificAllyAttacking($player, $index) || IsSpecificAllyAttackTarget($player, $index)) {
+  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index) && !$fromCombat)) {
     CloseCombatChain();
   }
   //Dragon Allies
