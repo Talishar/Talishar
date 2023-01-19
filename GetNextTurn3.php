@@ -430,7 +430,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //their auras
   $theirAurasOutput = array();
-  $theirAuras = GetAuras($playerID == 1 ? 2 : 1);
   for ($i = 0; $i < count($theirAuras); $i += AuraPieces()) {
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
@@ -440,7 +439,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //their items
   $theirItemsOutput = array();
-  $theirItems = GetItems($playerID == 1 ? 2 : 1);
   for ($i = 0; $i < count($theirItems); $i += ItemPieces()) {
     $type = CardType($theirItems[$i]);
     $sType = CardSubType($theirItems[$i]);
@@ -486,7 +484,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //my auras
   $myAurasOutput = array();
-  $myAuras = GetAuras($playerID == 1 ? 1 : 2);
   for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
     $playable = ($currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction) : false);
     $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
@@ -511,7 +508,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //my items
   $myItemsOutput = array();
-  $myItems = GetItems($playerID == 1 ? 1 : 2);
   for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
     $type = CardType($myItems[$i]);
     $sType = CardSubType($myItems[$i]);
