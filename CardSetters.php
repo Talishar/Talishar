@@ -322,7 +322,7 @@ function AssignArcaneBonus($playerID)
   }
 }
 
-function ClearNextCardArcaneBuffs($player)
+function ClearNextCardArcaneBuffs($player, $playedCard="", $from="")
 {
   global $currentTurnEffects;
   $layerIndex = 0;
@@ -333,7 +333,7 @@ function ClearNextCardArcaneBuffs($player)
     {
       switch($currentTurnEffects[$i])
       {
-        case "DYN200": case "DYN201": case "DYN202": $remove = 1; break;
+        case "DYN200": case "DYN201": case "DYN202": if(!IsStaticType(CardType($playedCard), $from, $playedCard))$remove = 1; break;
         default: break;
       }
     }
