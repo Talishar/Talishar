@@ -37,6 +37,12 @@ $isisShadowBanned = false;
 
 session_start();
 
+if (!isset($_SESSION["userid"])) {
+  if (isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
+}
+
 if(isset($_SESSION["userid"]))
 {
   //Save game creation settings
