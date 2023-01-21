@@ -64,9 +64,13 @@ $canSeeQueue = isset($_SESSION["useruid"]);
   }
 </style>
 
-<div class="FabLogo" style="background-image: url('Images/TalisharLogo.webp');"></div>
+<div style='position:absolute; top:100px; width:100%;'>
+<center>
+  <div style="width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
+</center>
+</div>
 
-<div class="ServerChecker">
+<div class="ContentWindow" style='width:25%; height:90%; left:20px; top:60px; overflow-y:auto;'>
   <?php
   try {
     include "ServerChecker.php";
@@ -76,7 +80,13 @@ $canSeeQueue = isset($_SESSION["useruid"]);
   ?>
 </div>
 
-<div class="CreateGame_Menu" <?php if(IsMobile()) echo(" style='width:65%;' "); ?>>
+<?php
+
+  if(IsMobile()) echo("<div class='ContentWindow' style='width:65%;'>");
+  else echo("<div class='ContentWindow' style='top:40%; left:35%; width:30%;'>");
+
+ ?>
+
   <h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
 
   <?php
@@ -170,23 +180,16 @@ $canSeeQueue = isset($_SESSION["useruid"]);
   <div style="text-align:center;">
 
     <label>
-      <input class="CreateGame_Button" type="submit" value="<?php echo ($createGameText); ?>">
+      <input type="submit" value="<?php echo ($createGameText); ?>">
     </label>
 
   </div>
   </form>
 
-
-  <?php
-  //echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/PVE/PVEMenu.php'>");
-  ?>
-  <!---<div style="text-align:center;"><input type="submit" style="font-size:20px;" value="PVE Menu"></div>
-</form>
---->
 </div>
 </div>
 
-<div class="NewsMenu" <?php if(IsMobile()) echo(" style='display:none;' "); ?>>
+<div class="ContentWindow" style='right:20px; top:60px; height:90%; width:25%; <?php if(IsMobile()) echo("display:none; "); ?>'>
 
   <h1>News</h1>
   <div style="position: relative;">
@@ -203,24 +206,13 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 
       <BR>
 
-      <h5 style='text-align:center;'>________</h5><BR>
 
-
-      <div style='vertical-align:middle; text-align:center;'>
-        <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play on Talishar</h2>
-        <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
-        <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
-        <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
-        <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
-        <a title='Brazil' href='https://youtu.be/dC9Ck9GDySo' target=' _blank'><img style='height:30px;' src='./Images/flags/brazil.png' /></a>
-
-        <div class='LanguageSelector'><?php echo ($languageText); ?>:
-          <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
-            <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
-            <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
-          </select>
-        </div>
-      </div>
+                <div class='LanguageSelector'><?php echo ($languageText); ?>:
+                  <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
+                    <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
+                    <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
+                  </select>
+                </div>
 
     </div>
   </div>

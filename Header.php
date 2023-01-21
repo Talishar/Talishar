@@ -51,6 +51,17 @@ $isMobile = IsMobile();
       text-decoration: none;
       font-family: helvetica;
     }
+
+    .ContentWindow {
+      background-color:rgba(40, 40, 40, .7);
+      font-family: helvetica;
+      color:white;
+      position:absolute;
+    }
+
+    h1,h2,h3,h4,h5 {
+      text-align: center;
+    }
   </style>
 </head>
 
