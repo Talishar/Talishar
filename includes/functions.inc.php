@@ -73,36 +73,6 @@ function uidExists($conn, $username) {
 	mysqli_close($conn);
 }
 
-// Check if username is in database, if so then return data
-function getUInfo($conn, $username) {
-	$conn = GetDBConnection();
-  $sql = "SELECT * FROM users WHERE usersUid = ? OR usersEmail = ?;";
-	$stmt = mysqli_stmt_init($conn);
-	if (!mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_close($conn);
-	 	header("location: ../Signup.php?error=stmtfailed");
-		exit();
-	}
-
-	mysqli_stmt_bind_param($stmt, "ss", $username, $email);
-	mysqli_stmt_execute($stmt);
-
-	// "Get result" returns the results from a prepared statement
-	$resultData = mysqli_stmt_get_result($stmt);
-
-	if ($row = mysqli_fetch_assoc($resultData)) {
-		mysqli_close($conn);
-		return $row;
-	}
-	else {
-		$result = false;
-		mysqli_close($conn);
-		return $result;
-	}
-	mysqli_stmt_close($stmt);
-	mysqli_close($conn);
-}
-
 // Insert new user into database
 function createUser($conn, $username, $email, $pwd, $reportingServer=false) {
 	if($reportingServer) $conn = GetReportingDBConnection();
@@ -162,9 +132,6 @@ function loginUser($username, $pwd, $rememberMe) {
 		$_SESSION["useremail"] = $uidExists["usersEmail"];
 		$_SESSION["userspwd"] = $uidExists["usersPwd"];
 		$patreonAccessToken = $uidExists["patreonAccessToken"];
-		$_SESSION["userKarma"] = $uidExists["usersKarma"];
-		$_SESSION["greenThumb"] = $uidExists["greenThumbs"];
-		$_SESSION["redThumb"] = $uidExists["redThumbs"];
 		$_SESSION["patreonEnum"] = $uidExists["patreonEnum"];
 
 		try {
@@ -192,7 +159,7 @@ function loginFromCookie()
 {
 	$token = $_COOKIE["rememberMeToken"];
 	$conn = GetDBConnection();
-	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, usersKarma, patreonEnum FROM users WHERE rememberMeToken=?";
+	$sql = "SELECT usersID, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum FROM users WHERE rememberMeToken=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "s", $token);
@@ -208,8 +175,7 @@ function loginFromCookie()
 			$_SESSION["useremail"] = $row[2];
 			$patreonAccessToken = $row[3];
 			$patreonRefreshToken = $row[4];
-			$_SESSION["userKarma"] = $row[5];
-			$_SESSION["patreonEnum"] = $row[6];
+			$_SESSION["patreonEnum"] = $row[5];
 			try {
 				PatreonLogin($patreonAccessToken);
 			} catch (\Exception $e) {
@@ -220,7 +186,6 @@ function loginFromCookie()
 			unset($_SESSION["userid"]);
 			unset($_SESSION["useruid"]);
 			unset($_SESSION["useremail"]);
-			unset($_SESSION["userKarma"]);
 		}
 		session_write_close();
 	}
@@ -528,64 +493,6 @@ function GetNormalCardID($cardID)
       return "PSM007";
   }
   return $cardID;
-}
-
-function UpdateKarma($p1value=0, $p2value=0)
-{
-	global $p1id, $p2id;
-	try {
-		$conn = GetDBConnection();
-		$stmt = "";
-		if($p1id != "" && $p1id != "-")
-		{
-			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p1value, usersKarma) WHERE usersid=?"; // SET field = IF (condition, new value, field)
-			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p1value, usersKarma) WHERE usersid=?"; // SET field = IF (condition, new value, field)
-			$stmt = mysqli_stmt_init($conn);
-			if (mysqli_stmt_prepare($stmt, $sql)) {
-				mysqli_stmt_bind_param($stmt, "s", $p1id);
-				mysqli_stmt_execute($stmt);
-			}
-		}
-		if($p2id != "" && $p2id != "-")
-		{
-			if($p1value > 0) $sql = "UPDATE users SET usersKarma=IF(usersKarma < 100, usersKarma+$p2value, usersKarma) WHERE usersid=?";
-			else $sql = "UPDATE users SET usersKarma=IF(usersKarma > 0, usersKarma+$p2value, usersKarma) WHERE usersid=?"; // SET field = IF (condition, new value, field)
-			$stmt = mysqli_stmt_init($conn);
-			if (mysqli_stmt_prepare($stmt, $sql)) {
-				mysqli_stmt_bind_param($stmt, "s", $p2id);
-				mysqli_stmt_execute($stmt);
-			}
-		}
-		if($stmt != ""){
-			mysqli_stmt_close($stmt);
-		}
-		mysqli_close($conn);
-	} catch (\Exception $e) {
-
-	}
-}
-
-//rating = "green" or "red"
-function AddRating($player, $rating)
-{
-	global $p1id, $p2id;
-
-	$dbID = ($player == 1 ? $p1id : $p2id);
-
-	if($dbID != "" && $dbID != "-")
-	{
-		$conn = GetDBConnection();
-		$sql = "UPDATE users SET " . $rating . "Thumbs=" . $rating . "Thumbs+1 WHERE usersid=?";
-		$stmt = mysqli_stmt_init($conn);
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_bind_param($stmt, "s", $dbID);
-			mysqli_stmt_execute($stmt);
-			mysqli_stmt_close($stmt);
-		}
-		mysqli_close($conn);
-		$karmaChange = ($rating == "red" ? -4 : 1);
-		UpdateKarma(($player == 1 ? $karmaChange : 0), ($player == 2 ? $karmaChange : 0));
-	}
 }
 
 function SavePatreonTokens($accessToken, $refreshToken)

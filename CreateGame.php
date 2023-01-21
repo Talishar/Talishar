@@ -18,7 +18,6 @@ $decksToTry = TryGet("decksToTry");
 $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
-$karmaRestriction = TryGet("gameKarmaRestriction", "0");
 $deckbuilderID = TryGet("user", "");
 $roguelikeGameID = TryGet("roguelikeGameID", "");
 $startingHealth = TryGet("startingHealth", "");

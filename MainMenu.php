@@ -20,13 +20,6 @@ if (isset($_SESSION["useruid"])) {
   fclose($banfileHandler);
 }
 
-if (isset($_SESSION["userid"])) {
-  $uidExists = getUInfo($conn, $_SESSION['useruid']);
-  $_SESSION["userKarma"] = $uidExists["usersKarma"];
-  $_SESSION["greenThumb"] = $uidExists["greenThumbs"];
-  $_SESSION["redThumb"] = $uidExists["redThumbs"];
-}
-
 if (!empty($_SESSION['error'])) {
   $error = $_SESSION['error'];
   unset($_SESSION['error']);
@@ -57,8 +50,7 @@ $languageText = ($language == 1 ? "Language" : "言語");
 $createNewGameText = ($language == 1 ? "Create New Game" : "新しいゲームを作成する");
 $starterDecksText = ($language == 1 ? "Starter Decks" : "おすすめデッキ");
 
-$canSeeNormalQueue = isset($_SESSION["useruid"]);
-$canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_SESSION["userKarma"] >= 80;
+$canSeeQueue = isset($_SESSION["useruid"]);
 
 ?>
 
@@ -145,26 +137,17 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
     <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
   <?php
-  if (isset($_SESSION["userid"])) {
-    echo ("<label for='gameKarmaRestriction' style='font-weight:bolder; margin-left:20px;'>Restrict by Reputation:</label>");
-    echo ("<select class='karmaRestriction-Select' style='margin-left:10px;' name='gameKarmaRestriction' id='gameKarmaRestriction'>");
-    echo ("<option value='0'>No Restriction</option>");
-    if ($_SESSION["userKarma"] >= 50) echo ("<option value='50'>☯ ≥ 50% - Exclude players with a karma below 50% (Bad reputation).</option>");
-    if ($_SESSION["userKarma"] >= 75) echo ("<option value='75'>☯ ≥ 75% - Only players with a good reputation. Exclude players without accounts.</option>");
-    if ($_SESSION["userKarma"] >= 85) echo ("<option value='85'>☯ ≥ 85% - Only players with a very good reputation, while excluding new players.</option>");
-    echo ("</select><br><br>");
-  }
-  ?>
-
-  <?php
   echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
   echo ("<select name='format' id='format'>");
-  if($canSeeNormalQueue) echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
-  if($canSeeComp) echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
-  if($canSeeNormalQueue) echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
-  if($canSeeComp) echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
-  if($canSeeNormalQueue) echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
-  if($canSeeNormalQueue) echo ("<option value='clash'" . ($defaultFormat == 6 ? " selected" : "") . ">Clash</option>");
+  if($canSeeQueue)
+  {
+    echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
+    echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
+    echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
+    echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
+    echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
+    echo ("<option value='clash'" . ($defaultFormat == 6 ? " selected" : "") . ">Clash</option>");
+  }
   echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
   echo ("</select>");
   ?>
@@ -172,7 +155,7 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
   <BR>
 
     <?php
-      if($canSeeNormalQueue)
+      if($canSeeQueue)
       {
         echo '<input style="margin-left:20px;" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
         echo('<label style="margin-left:2px;" for="public">Public</label>');

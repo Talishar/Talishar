@@ -26,7 +26,7 @@ $SET_CasterMode = 16; //Did this player enable caster mode
 //Menu settings
 $SET_Language = 17; //What language is this player using?
 $SET_Format = 18; //What format did this player create a game for last?
-$SET_KarmaRestriction = 19; //What format did this player create a game for last?
+$SET_Deprecated = 19; //Deprecated
 $SET_FavoriteDeckIndex = 20; //What deck did this player play a game with last
 $SET_GameVisibility = 21; //The visibility of the last game you created
 
@@ -381,7 +381,7 @@ function GetSettingsUI($player)
 function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
-  global $SET_Format, $SET_KarmaRestriction, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
+  global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane;
   switch($setting)
   {
@@ -392,7 +392,6 @@ function SaveSettingInDatabase($setting)
     case $SET_DisableStats:
     case $SET_Language:
     case $SET_Format:
-    case $SET_KarmaRestriction:
     case $SET_FavoriteDeckIndex:
     case $SET_GameVisibility:
     case $SET_AlwaysHoldPriority:

@@ -71,9 +71,7 @@ if ($authKey != $targetAuth) {
 if ($kickPlayerTwo) {
   if($oppStatus != "-1" && ($format == "compcc" || $format == "compblitz"))
   {
-      include_once "./includes/dbh.inc.php";
-      include_once "./includes/functions.inc.php";
-      UpdateKarma(0, -1);
+      //This happens when player 2 "dodges" -- add logging?
   }
   if (file_exists("./Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
   if (file_exists("./Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");

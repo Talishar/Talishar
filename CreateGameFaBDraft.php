@@ -9,7 +9,6 @@ ob_end_clean();
 $format = "blitz";
 $visibility = "private";
 $gameDescription = "Draft game";
-$karmaRestriction = TryGet("gameKarmaRestriction", "0");
 
 $gameIDCounterFile = "HostFiles/GameIDCounter.txt";
 

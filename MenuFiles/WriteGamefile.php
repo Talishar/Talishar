@@ -9,7 +9,7 @@
     {
       global $gameFileHandler;
       global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
-      global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink, $karmaRestriction;
+      global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink;
       global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP, $p1deckbuilderID, $p2deckbuilderID, $roguelikeGameID;
       global $p1Matchups, $p2Matchups, $p1StartingHealth, $p1ContentCreatorID, $p2ContentCreatorID;
       rewind($gameFileHandler);
@@ -35,7 +35,7 @@
       fwrite($gameFileHandler, $p1IsChallengeActive . "\r\n");
       fwrite($gameFileHandler, $p2IsChallengeActive . "\r\n");
       fwrite($gameFileHandler, $joinerIP . "\r\n");
-      fwrite($gameFileHandler, $karmaRestriction . "\r\n");
+      fwrite($gameFileHandler, "\r\n");//Deprecated
       fwrite($gameFileHandler, json_encode($p1Matchups) . "\r\n");
       fwrite($gameFileHandler, json_encode($p2Matchups) . "\r\n");
       fwrite($gameFileHandler, $p1deckbuilderID . "\r\n");

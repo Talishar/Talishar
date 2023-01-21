@@ -448,87 +448,6 @@ button {
   text-align: center;
 }
 
-/* ====================
-    Karma Progress Bar
-   ==================== */
-
-.karma-container {
-  width: 99%;
-  font-size: 18px;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  border-radius: 5px;
-}
-
-.karma-hover {
-  width: 400px;
-  background-color: var(--light-color);
-  color: var(--dark-color);
-  border: 2px solid var(--dark-color);
-  border-radius: 5px;
-  font-size: 16px;
-  padding-left: 5px;
-  padding-top: 5px;
-  line-height: 1.5em;
-  text-shadow: none;
-  transform: scale(0);
-  transition: transform ease-out 150ms;
-
-  /* Position the tooltip */
-  position: fixed;
-  top: 120px;
-  left: 40px;
-  z-index: 1;
-}
-
-.karma-container:hover .karma-hover {
-  transform: scale(1);
-}
-
-.karma-title {
-  font-size: 18px;
-  text-decoration: underline;
-}
-
-.karma-light-grey {
-  color: #fff;
-  background-color: var(--light-color);
-  border-radius: 5px;
-  border: 1px solid var(--dark-color);
-  margin-bottom: 5px;
-  position: relative;
-}
-
-.karma-green {
-  color: #fff;
-  background-color: #4CAF50;
-  border-right: 1px solid var(--dark-color);
-}
-
-.karma-orange {
-  color: #fff;
-  background-color: #ff9800;
-  border-right: 1px solid var(--dark-color);
-}
-
-.karma-red {
-  color: #fff;
-  background-color: #f44336;
-  border-right: 1px solid var(--dark-color);
-}
-
-.karma-amount {
-  display: inline-block;
-  position: absolute;
-  margin: 0;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
 /* ================
     Reset Password
    ================ */
@@ -953,10 +872,6 @@ button {
   cursor: pointer;
 }
 
-.karmaRestriction-Select {
-  width: 50%;
-}
-
 /* ===========
    Game Stats
   ============ */
@@ -1133,10 +1048,6 @@ button {
   }
 
   .FavoriteDeckMainMenu {
-    font-size: 12px;
-  }
-
-  .karmaRestriction-Select {
     font-size: 12px;
   }
 

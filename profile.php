@@ -54,54 +54,12 @@ if (isset($_SESSION["isPatron"])) {
 <section class="profile-form">
   <h2>Welcome <?php echo $_SESSION['useruid'] ?>!</h2>
 
-  <?php
-  $uidExists = getUInfo($conn, $_SESSION['useruid']);
-  $_SESSION["useremail"] = $uidExists["usersEmail"];
-  $_SESSION["userspwd"] = $uidExists["usersPwd"];
-  $_SESSION["userKarma"] = $uidExists["usersKarma"];
-
-  ?>
-
   <div class="wrapper"'>
     <div class="profile-form-form">
       <form action="Profile.php" method="post">
 
-        <img src="Images/default-avatar.jpg" class=' avatarImage' alt="Avatar">
-
 
     <?php
-    if ($_SESSION["userKarma"] < 40) $repColor = "red";
-    else if ($_SESSION["userKarma"] < 65) $repColor = "orange";
-    else $repColor = "green";
-
-    echo ("<div class='karma-container'>");
-    echo ("<div style='margin-bottom: 3px;'>Your Reputation:");
-
-    echo ("<div class='karma-hover'><span class='karma-title'>How does reputation score (Karma) work?</span><br>
-    The Karma score (☯) is a quick way to check if a player has a good reputation on Talishar (does not quit games, is friendly, plays fair).<br><br>
-    Depending on your Karma score, you may also be allowed or not allowed to use some features or to join a given game.<br><br>
-    Your initial Karma score is 75☯ (on a maximum of 100☯). Then:<br>
-    &#8226; Each time you finish a game, you get +1☯.<br>
-    &#8226; If you quit a game in progress, you lose 10☯ (conceding does not count as quitting).
-    </div></div>");
-
-    //<br>
-    //&#8226; If you receive too many 'Red thumbs-down' from other players when compared to the amount of 'Green thumbs-up' received, your karma will be reduced each time you receive a Red Thumb.<br>
-    //In this case, the best is to have a good behavior to get Green thumb and restore your ratio and reputation.
-
-    echo ("<div class='karma-light-grey'>");
-    echo ("<div class='karma-container karma-" . $repColor . "' style='width:" . $_SESSION["userKarma"] . "%'>&nbsp;</div>");
-    echo ("<div class='karma-amount'>☯ " . $_SESSION["userKarma"] . "</div>");
-    echo ("</div></div><br>");
-
-    if (isset($message)) {
-      echo ("<BR>");
-      echo ("<BR>");
-      foreach ($message as $message) {
-        echo '<p>' . $message . '</p>';
-      }
-    }
-
 
     $client_id = $patreonClientID;
     $client_secret = $patreonClientSecret;

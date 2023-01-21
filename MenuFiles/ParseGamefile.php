@@ -47,7 +47,7 @@
   $p1IsChallengeActive = trim(fgets($gameFileHandler));
   $p2IsChallengeActive = trim(fgets($gameFileHandler));
   $joinerIP = trim(fgets($gameFileHandler));
-  $karmaRestriction = trim(fgets($gameFileHandler));
+  $deprecated = trim(fgets($gameFileHandler));//Deprecated
   $p1Matchups = json_decode(trim(fgets($gameFileHandler)));
   $p2Matchups = json_decode(trim(fgets($gameFileHandler)));
   $p1deckbuilderID = trim(fgets($gameFileHandler));
