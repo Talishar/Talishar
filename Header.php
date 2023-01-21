@@ -29,7 +29,6 @@ $isMobile = IsMobile();
 <head>
   <title>Talishar</title>
   <link rel="shortcut icon" type="image/png" href="Images/TeenyCoin.png" />
-  <!--<link rel="stylesheet" href="css/style4.css">-->
   <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8442966023291783" crossorigin="anonymous"></script>-->
 
   <style>
@@ -102,7 +101,7 @@ $isMobile = IsMobile();
         <li><a href="MainMenu.php">Home Page</a></li>
         <?php if (!$isMobile) echo '<li><a href="https://fabtcg.com/events" target="_blank">Find Local Events</a></li>'; ?>
         <?php if (!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
-        <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>"; 
+        <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>";
         ?>
         <li><a href="Draft.php">Limited</a></li>
         <?php if (!$isMobile) echo '<li><a href="' . $roguelikePath . '">Roguelike</a></li>'; ?>
