@@ -100,7 +100,6 @@ function HasPlayableCard($player, $phase)
   {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
-  //TODO: Landmarks? Allies?
   return false;
 }
 
