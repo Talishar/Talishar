@@ -10,25 +10,22 @@ include_once "./APIKeys/APIKeys.php";
 if(isset($_SESSION['userid']))
 {
   $badges = LoadBadges($_SESSION['userid']);
-  echo ("<div style='position:relative; background-color:rgba(40, 40, 40, .7); width:50%; left:20px; top:20px; height:200px;'>");
+  echo ("<div class='ContentWindow' style='position:relative; width:50%; left:20px; top:20px; height:200px;'>");
   echo ("<h1>Your Badges</h1>");
   for($i=0; $i<count($badges); $i+=7)
   {
-    if($badges[$i+6] != "") echo("<a href='" . $badges[$i+6] . "'>");
-    echo ("<div style='float:left;'>");
-    echo ("<div class='container'>");
-    echo ("<img class='badge' src='" . $badges[$i + 5] . "'>");
-    echo ("<div class='overlay'>");
     $bottomText = str_replace("{0}", $badges[$i+2], $badges[$i+4]);
-    echo ("<div class='text'>" . $badges[$i + 3] . "<br><br>" . $bottomText . "</div>");
-    echo ("</img></div></div></div>");
+    $fullText = $badges[$i + 3] . "<br><br>" . $bottomText;
+    if($badges[$i+6] != "") echo("<a href='" . $badges[$i+6] . "'>");
+    echo ("<img style='margin:3px; width:120px; height:120px; object-fit: cover;' src='" . $badges[$i + 5] . "'></img>");
+    //TODO: Show badge text
     if($badges[$i+6] != "") echo("</a>");
   }
   echo ("</div>");
 }
 
 if (isset($_SESSION["isPatron"])) {
-  echo ("<div style='position:absolute; background-color:rgba(40, 40, 40, .7); width: 50%; left:20px; height: calc(90% - 220px); bottom:20px; overflow-y: scroll;'>");
+  echo ("<div class='ContentWindow' style='width: 50%; left:20px; height: calc(90% - 220px); bottom:20px; overflow-y: scroll;'>");
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
   include_once "zzGameStats.php";
@@ -40,7 +37,7 @@ if (isset($_SESSION["isPatron"])) {
 <script src="./jsInclude.js"></script>
 <div id="cardDetail" style="z-index:100000; display:none; position:fixed;"></div>
 
-<div style='position:absolute; left:60%; right:20px; top:60px; height:90%; background-color:rgba(40, 40, 40, .7);'>
+<div class='ContentWindow' style='left:60%; right:20px; top:60px; height:90%;'>
   <h2>Welcome <?php echo $_SESSION['useruid'] ?>!</h2>
 
 <?php

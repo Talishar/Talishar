@@ -61,132 +61,120 @@ $canSeeQueue = isset($_SESSION["useruid"]);
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .SelectDeckInput {
+    font-weight: bolder;
+    margin-left: 10px;
   }
 </style>
 
-<div class="FabLogo" style="background-image: url('Images/TalisharLogo.webp');"></div>
+<div style='position:absolute; top:100px; width:100%;'>
+  <center>
+    <div style="width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
+  </center>
+</div>
 
-<div class="ServerChecker">
+<div class="ContentWindow" style='width:25%; height:90%; left:20px; top:60px; overflow-y:auto;'>
   <?php
   try {
     include "ServerChecker.php";
   } catch (\Exception $e) {
-
   }
   ?>
 </div>
 
-<div class="CreateGame_Menu" <?php if(IsMobile()) echo(" style='width:65%;' "); ?>>
-  <h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
+<?php
 
-  <?php
-  echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
+if (IsMobile()) echo ("<div class='ContentWindow' style='width:65%;'>");
+else echo ("<div class='ContentWindow' style='top:40%; left:35%; width:30%;'>");
 
-  $favoriteDecks = [];
-  if (isset($_SESSION["userid"])) {
-    $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
-    if (count($favoriteDecks) > 0) {
-      $selIndex = -1;
-      if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
-      echo ("<div class='FavoriteDeckMainMenu'>Favorite Decks: ");
-      echo ("<select style='height:26px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
-      for ($i = 0; $i < count($favoriteDecks); $i += 3) {
-        echo ("<option value='" . $i . "<fav>" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
-      }
-      echo ("</select></div>");
+?>
+
+<h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
+
+<?php
+echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
+
+$favoriteDecks = [];
+if (isset($_SESSION["userid"])) {
+  $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
+  if (count($favoriteDecks) > 0) {
+    $selIndex = -1;
+    if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
+    echo ("<div class='SelectDeckInput'>Favorite Decks: ");
+    echo ("<select style='height:26px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
+    for ($i = 0; $i < count($favoriteDecks); $i += 3) {
+      echo ("<option value='" . $i . "<fav>" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
     }
-  }
-  if (count($favoriteDecks) == 0) {
-    echo ("<div class='FavoriteDeckMainMenu'>" . $starterDecksText . ": ");
-    echo ("<select name='decksToTry' id='decksToTry'>");
-    echo ("<option value='1'>Bravo CC Starter Deck</option>");
-    echo ("<option value='2'>Rhinar CC Starter Deck</option>");
-    echo ("<option value='3'>Katsu CC Starter Deck</option>");
-    echo ("<option value='4'>Dorinthea CC Starter Deck</option>");
-    echo ("<option value='5'>Dash CC Starter Deck</option>");
-    echo ("<option value='6'>Viserai CC Starter Deck</option>");
-    echo ("<option value='7'>Kano CC Starter Deck</option>");
-    echo ("<option value='8'>Azalea CC Starter Deck</option>");
-    echo ("<option value='9'>Prism Blitz Starter Deck</option>");
-    echo ("<option value='10'>Levia Blitz Starter Deck</option>");
-    echo ("<option value='11'>Boltyn Blitz Starter Deck</option>");
-    echo ("<option value='12'>Chane Blitz Starter Deck</option>");
-    echo ("<option value='13'>Oldhim BlitzStarter Deck</option>");
-    echo ("<option value='14'>Briar Blitz Starter Deck</option>");
-    echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
-    echo ("<option value='16'>Fai Blitz Starter Deck</option>");
-    echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
     echo ("</select></div>");
   }
-  echo ("<br>");
+}
+if (count($favoriteDecks) == 0) {
+  echo ("<div><label class='SelectDeckInput'>" . $starterDecksText . ": </label>");
+  echo ("<select name='decksToTry' id='decksToTry'>");
+  echo ("<option value='1'>Ira Welcome Deck</option>");
+  echo ("</select></div>");
+}
+echo ("<br>");
 
-  ?>
-    <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
-    <input type="text" id="fabdb" name="fabdb">
-  <?php
-  if (isset($_SESSION["userid"])) {
-    echo ("<span style='display:inline;'>");
-    echo ("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-    echo ("<label title='Save deck to Favorites' for='favoriteDeck' style='margin-left:10px;'></label>");
-    echo ("</span>");
-  }
-  echo ("<br>");
-  ?>
-  <br>
-    <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
-    <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
+?>
+<label for="fabdb" class='SelectDeckInput'>Deck Link:</label>
+<input type="text" id="fabdb" name="fabdb">
+<?php
+if (isset($_SESSION["userid"])) {
+  echo ("<span style='display:inline;'>");
+  echo ("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
+  echo ("<label title='Save deck to Favorites' for='favoriteDeck' style='margin-left:10px;'></label>");
+  echo ("</span>");
+}
+echo ("<br>");
+?>
+<br>
+<label for="gameDescription" class='SelectDeckInput'>Game Name:</label>
+<input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
-  <?php
-  echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
-  echo ("<select name='format' id='format'>");
-  if($canSeeQueue)
-  {
-    echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
-    echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
-    echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
-    echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
-    echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
-    echo ("<option value='clash'" . ($defaultFormat == 6 ? " selected" : "") . ">Clash</option>");
-  }
-  echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
-  echo ("</select>");
-  ?>
-  <BR>
-  <BR>
+<?php
+echo ("<label for='format' class='SelectDeckInput'>Format: </label>");
+echo ("<select name='format' id='format'>");
+if ($canSeeQueue) {
+  echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
+  echo ("<option value='compblitz' " . ($defaultFormat == 3 ? " selected" : "") . ">Competitive Blitz</option>");
+  echo ("<option value='cc' " . ($defaultFormat == 0 ? " selected" : "") . ">Classic Constructed</option>");
+  echo ("<option value='compcc'" . ($defaultFormat == 1 ? " selected" : "") . ">Competitive CC</option>");
+  echo ("<option value='commoner'" . ($defaultFormat == 5 ? " selected" : "") . ">Commoner</option>");
+  echo ("<option value='clash'" . ($defaultFormat == 6 ? " selected" : "") . ">Clash</option>");
+}
+echo ("<option value='livinglegendscc'" . ($defaultFormat == 4 ? " selected" : "") . ">Open Format</option>");
+echo ("</select>");
+?>
+<BR>
+<BR>
 
-    <?php
-      if($canSeeQueue)
-      {
-        echo '<input style="margin-left:20px;" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
-        echo('<label style="margin-left:2px;" for="public">Public</label>');
-      }
-     ?>
+<?php
+if ($canSeeQueue) {
+  echo '<input class="SelectDeckInput" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
+  echo ('<label style="margin-left:2px;" for="public">Public</label>');
+}
+?>
 
-    <input type="radio" id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
-    <label style='margin-left:-12px;' for="private">Private</label><br><br>
+<input type="radio" class='SelectDeckInput' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
+<label for="private">Private</label><br><br>
 
-  <input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
-  <label for="deckTestMode">Single Player</label><br><br>
-  <div style="text-align:center;">
-
-    <label>
-      <input class="CreateGame_Button" type="submit" value="<?php echo ($createGameText); ?>">
-    </label>
-
-  </div>
-  </form>
-
-
-  <?php
-  //echo("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/PVE/PVEMenu.php'>");
-  ?>
-  <!---<div style="text-align:center;"><input type="submit" style="font-size:20px;" value="PVE Menu"></div>
+<input class='SelectDeckInput' type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+<label for="deckTestMode">Single Player</label><br><br>
+<div style=' text-align:center;'>
+  <input type="submit" style="font-size:28px;" value="<?php echo ($createGameText); ?>">
+</div>
+<BR>
 </form>
---->
+
 </div>
 </div>
 
-<div class="NewsMenu" <?php if(IsMobile()) echo(" style='display:none;' "); ?>>
+<div class="ContentWindow" style='right:20px; top:60px; height:90%; width:25%; <?php if (IsMobile()) echo ("display:none; "); ?>'>
 
   <h1>News</h1>
   <div style="position: relative;">
@@ -203,23 +191,12 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 
       <BR>
 
-      <h5 style='text-align:center;'>________</h5><BR>
 
-
-      <div style='vertical-align:middle; text-align:center;'>
-        <h2 style="width:100%; text-align:center; color:rgb(220, 220, 220); font-size:20px;">Learn to Play on Talishar</h2>
-        <a title='English' href='https://youtu.be/zxQStzZPVGI' target=' _blank'><img style='height:30px;' src='./Images/flags/uk.png' /></a>
-        <a title='Spanish' href='https://youtu.be/Rr-TV3kRslk' target=' _blank'><img style='height:30px;' src='./Images/flags/spain.png' /></a>
-        <a title='Polish' href='https://youtu.be/BuMTY3K8eso' target=' _blank'><img style='height:30px;' src='./Images/flags/polish.png' /></a>
-        <a title='French' href='https://youtu.be/-hdLB2xusFg' target=' _blank'><img style='height:30px;' src='./Images/flags/french.png' /></a>
-        <a title='Brazil' href='https://youtu.be/dC9Ck9GDySo' target=' _blank'><img style='height:30px;' src='./Images/flags/brazil.png' /></a>
-
-        <div class='LanguageSelector'><?php echo ($languageText); ?>:
-          <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
-            <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
-            <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
-          </select>
-        </div>
+      <div class='LanguageSelector'><?php echo ($languageText); ?>:
+        <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
+          <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
+          <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
+        </select>
       </div>
 
     </div>

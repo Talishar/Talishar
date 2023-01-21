@@ -7,19 +7,6 @@
   --button-box-shadow: 1px 1px 0 var(--dark-color), -1px -1px 0 var(--dark-color), -1px 1px 0 var(--dark-color), 1px -1px 0 var(--dark-color);
 }
 
-body {
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-color: var(--dark-color);
-  background-image: url('../Images/background.jpg');
-  overflow: hidden;
-  font-family: var(--font-family);
-  font-weight: bolder;
-  font-size: 18px;
-  color: var(--light-color);
-}
-
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   ::-webkit-scrollbar {
     width: .50em;
