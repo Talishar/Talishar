@@ -1,14 +1,29 @@
 <?php
+include_once("vendor/autoload.php");
 
-function WriteLog($text, $playerColor = 0, $highlight=false)
+$redis = new \Redis(); // Using the Redis extension provided client
+$redisHost = (!empty(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "127.0.0.1");
+$redisPort = (!empty(getenv("REDIS_PORT")) ? getenv("REDIS_PORT") : "6379");
+$redis->connect($redisHost, $redisPort);
+
+function WriteLog($text, $playerColor = 0, $highlight = false)
 {
-  global $gameName;
+  global $gameName, $redis;
+  // write to file
   $filename = "./Games/" . $gameName . "/gamelog.txt";
   $handler = fopen($filename, "a");
   if ($highlight) $output =  ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "") . "<mark style='background-color: brown; color:azure;'>" . $text . "</mark>" . ($playerColor != 0 ? "</span>" : "");
   else $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "")  . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, $output . "\r\n");
   fclose($handler);
+
+  // Redis emitter
+  $emitter = new SocketIO\Emitter($redis);
+  $LogOut = new stdClass();
+  $LogOut->highlight = $highlight;
+  $LogOut->text = $text;
+  $LogOut->playerColor = $playerColor;
+  $emitter->to($gameName)->emit("log", $LogOut);
 }
 
 function ClearLog()
@@ -23,12 +38,12 @@ function ClearLog()
   $filename = "./Games/" . $gameName . "/gamelog.txt";
   $n = 20;
   $handle = fopen("./Games/" . $gameName . "/gamelog.txt", "r");
-  $lines = array_fill(0, $n-1, '');
+  $lines = array_fill(0, $n - 1, '');
   if ($handle) {
     while (!feof($handle)) {
-        $buffer = fgets($handle);
-        array_push($lines, $buffer);
-        array_shift($lines);
+      $buffer = fgets($handle);
+      array_push($lines, $buffer);
+      array_shift($lines);
     }
     fclose($handle);
   }
@@ -36,7 +51,6 @@ function ClearLog()
   $handle = fopen($filename, "w");
   fwrite($handle, implode("", $lines));
   fclose($handle);
-
 }
 
 function WriteError($text)
