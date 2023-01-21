@@ -46,28 +46,6 @@ class API {
 		return $this->get_data("campaigns/{$campaign_id}?include=benefits,creator,goals,tiers");
 	}
 
-	public function fetch_member_details($member_id) {
-		// Fetches details about a member from a campaign. Member id can be acquired from fetch_page_of_members_from_campaign
-		// currently_entitled_tiers is the best way to get info on which membership tiers the user is entitled to.  Requires the current user to be creator of the campaign or requires a creator access token.
-		return $this->get_data("members/{$member_id}?include=address,campaign,user,currently_entitled_tiers");
-	}
-
-	public function fetch_page_of_members_from_campaign($campaign_id, $page_size, $cursor = null) {
-
-		// Fetches a given page of members with page size and cursor point. Can be used to iterate through lists of members for a given campaign. Campaign id can be acquired from fetch_campaigns or from a saved campaign id variable.  Requires the current user to be creator of the campaign or requires a creator access token
-		$url = "campaigns/{$campaign_id}/members?page%5Bsize%5D={$page_size}";
-
-		if ($cursor != null) {
-
-		  $escaped_cursor = urlencode($cursor);
-		  $url = $url . "&page%5Bcursor%5D={$escaped_cursor}";
-
-		}
-
-		return $this->get_data($url);
-
-	}
-
 	public function fetch_patron_campaigns() {
 		// Fetches details of the current token user.
 		return $this->get_data('identity?include=memberships.currently_entitled_tiers,memberships.campaign&fields'.urlencode('[member]').'=last_charge_status,patron_status,last_charge_date,pledge_relationship_start&fields'.urlencode('[campaign]').'=creation_name');
