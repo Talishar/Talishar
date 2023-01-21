@@ -36,7 +36,7 @@ $isMobile = IsMobile();
     li {
       display: inline;
       font-size: 24px;
-      padding:8px;
+      padding: 8px;
     }
 
     ul {
@@ -53,13 +53,18 @@ $isMobile = IsMobile();
     }
 
     .ContentWindow {
-      background-color:rgba(40, 40, 40, .7);
+      background-color: rgba(40, 40, 40, .7);
+      font-size: 1rem;
       font-family: helvetica;
-      color:white;
-      position:absolute;
+      color: white;
+      position: absolute;
     }
 
-    h1,h2,h3,h4,h5 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
       text-align: center;
     }
   </style>
@@ -68,23 +73,24 @@ $isMobile = IsMobile();
 <body style="background-image: url('./Images/background.jpg');">
 
   <div style='position:fixed; left:0px; top:0px; height:30px; width:100%; z-index:100; background-color:rgba(30, 30, 30, .8);'>
-  <nav>
+    <nav>
       <ul>
-        <?php if(!$isMobile) echo '<li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>'; ?>
+        <?php if (!$isMobile) echo '<li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>'; ?>
 
         <?php
-         if(!$isMobile) echo '<li><a target="_blank" href="https://twitter.com/talishar_online">Twitter</a></li>';
-          ?>
+        if (!$isMobile) echo '<li><a target="_blank" href="https://twitter.com/talishar_online">Twitter</a></li>';
+        ?>
         <!--<li><a target="_blank" href="https://www.patreon.com/talishar_online">Support Us</a></li>-->
       </ul>
 
       <ul style='float:right;'>
         <li><a href="MainMenu.php">Home Page</a></li>
-        <?php if(!$isMobile) echo '<li><a href="https://fabtcg.com/events" target="_blank">Find Local Events</a></li>'; ?>
-        <?php if(!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
-        <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>"; ?>
+        <?php if (!$isMobile) echo '<li><a href="https://fabtcg.com/events" target="_blank">Find Local Events</a></li>'; ?>
+        <?php if (!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
+        <?php //if($isPatron) echo "<li><a href='Replays.php'>Replays[BETA]</a></li>"; 
+        ?>
         <li><a href="Draft.php">Limited</a></li>
-        <?php if(!$isMobile) echo '<li><a href="' . $roguelikePath .'">Roguelike</a></li>'; ?>
+        <?php if (!$isMobile) echo '<li><a href="' . $roguelikePath . '">Roguelike</a></li>'; ?>
         <?php
         if (isset($_SESSION["useruid"])) {
           echo "<li><a href='ProfilePage.php'>Profile</a></li>";
