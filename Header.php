@@ -53,7 +53,6 @@ $isMobile = IsMobile();
   <nav>
     <div class="wrapper">
       <ul>
-        <!--<li><a href="Blog.php">Blog</a></li>-->
         <?php if(!$isMobile) echo '<li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>'; ?>
 
         <?php
