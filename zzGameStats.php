@@ -179,3 +179,5 @@ foreach ($gameData as $row) {
 echo ("</table><div>");
 if(!$forIndividual) echo ("</section>");
 echo ("</div>");
+echo ("</div>");
+echo ("</div>");
