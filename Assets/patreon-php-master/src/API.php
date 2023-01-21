@@ -36,11 +36,6 @@ class API {
 
 	}
 
-	public function fetch_user() {
-		// Fetches details of the current token user.
-		return $this->get_data('identity?include=memberships.currently_entitled_tiers,memberships.campaign&fields'.urlencode('[user]').'=email,image_url,thumb_url,url,vanity,is_email_verified&fields'.urlencode('[member]').'=last_charge_status,patron_status,last_charge_date,pledge_relationship_start&fields'.urlencode('[campaign]').'=creation_name');
-	}
-
 	public function fetch_campaigns() {
 		// Fetches the list of campaigns of the current token user. Requires the current user to be creator of the campaign or requires a creator access token
 		return $this->get_data("campaigns");
@@ -71,6 +66,11 @@ class API {
 
 		return $this->get_data($url);
 
+	}
+
+	public function fetch_patron_campaigns() {
+		// Fetches details of the current token user.
+		return $this->get_data('identity?include=memberships.currently_entitled_tiers,memberships.campaign&fields'.urlencode('[member]').'=last_charge_status,patron_status,last_charge_date,pledge_relationship_start&fields'.urlencode('[campaign]').'=creation_name');
 	}
 
 	public function get_data( $suffix, $args = array() ) {

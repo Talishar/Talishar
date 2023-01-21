@@ -15,7 +15,7 @@ function PatreonLogin($access_token, $silent=true, $debugMode=false)
   $api_client = new API($access_token);
 	$api_client->api_return_format = 'object';
 
-	$patron_response = $api_client->fetch_user();
+	$patron_response = $api_client->fetch_patron_campaigns();
 
   if(is_string($patron_response))
   {
