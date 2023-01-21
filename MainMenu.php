@@ -64,6 +64,11 @@ $canSeeQueue = isset($_SESSION["useruid"]);
     height: 100vh;
     height: 100dvh;
   }
+
+  .FavoriteDeckMainMenu {
+    font-weight: bolder;
+    margin-left: 10px;
+  }
 </style>
 
 <div style='position:absolute; top:100px; width:100%;'>
@@ -108,7 +113,7 @@ if (isset($_SESSION["userid"])) {
   }
 }
 if (count($favoriteDecks) == 0) {
-  echo ("<div class='FavoriteDeckMainMenu'>" . $starterDecksText . ": ");
+  echo ("<div><label class='FavoriteDeckMainMenu'>" . $starterDecksText . ": </label>");
   echo ("<select name='decksToTry' id='decksToTry'>");
   echo ("<option value='1'>Ira Welcome Deck</option>");
   echo ("</select></div>");
@@ -116,8 +121,8 @@ if (count($favoriteDecks) == 0) {
 echo ("<br>");
 
 ?>
-  <label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
-  <input type="text" id="fabdb" name="fabdb">
+<label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
+<input type="text" id="fabdb" name="fabdb">
 <?php
 if (isset($_SESSION["userid"])) {
   echo ("<span style='display:inline;'>");
@@ -128,11 +133,11 @@ if (isset($_SESSION["userid"])) {
 echo ("<br>");
 ?>
 <br>
-  <label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
-  <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
+<label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
+<input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
 <?php
-echo ("<label for='format' style='font-weight:bolder; margin-left:20px;'>Format: </label>");
+echo ("<label for='format' style='font-weight:bolder; margin-left:10px;'>Format: </label>");
 echo ("<select name='format' id='format'>");
 if ($canSeeQueue) {
   echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
@@ -155,10 +160,10 @@ if ($canSeeQueue) {
 }
 ?>
 
-  <input type="radio" id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
-  <label style='margin-left:-12px;' for="private">Private</label><br><br>
+<input type="radio" style='margin-left:10px;' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
+<label for="private">Private</label><br><br>
 
-<input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+<input style="margin-left: 10px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
 <label for="deckTestMode">Single Player</label><br><br>
 <div style='text-align:center;'>
   <input type="submit" style="font-size:28px;" value="<?php echo ($createGameText); ?>">
