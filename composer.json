@@ -1,5 +1,6 @@
 {
   "require": {
-    "sendgrid/sendgrid": "~7"
+    "sendgrid/sendgrid": "~7",
+    "rase/socket.io-emitter": "^0.7.0"
   }
 }

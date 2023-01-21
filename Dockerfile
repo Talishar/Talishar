@@ -1,4 +1,5 @@
 FROM php:8.2.1-apache
+COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 RUN apt-get update && apt-get install -y libbz2-dev
 RUN apt-get update && apt-get install -y libc-client-dev libkrb5-dev && rm -r /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y libxslt-dev
