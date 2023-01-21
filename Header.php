@@ -54,10 +54,25 @@ $isMobile = IsMobile();
 
     .ContentWindow {
       background-color: rgba(40, 40, 40, .7);
-      font-size: 1rem;
       font-family: helvetica;
       color: white;
       position: absolute;
+    }
+
+    .NavBarDiv {
+      font-size: 0.5rem;
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      height: 30px;
+      width: 100%;
+      z-index: 100;
+      background-color: rgba(30, 30, 30, .8);
+    }
+
+    .rightnav {
+      position: absolute;
+      right: 0px;
     }
 
     h1,
@@ -72,8 +87,8 @@ $isMobile = IsMobile();
 
 <body style="background-image: url('./Images/background.jpg');">
 
-  <div style='position:fixed; left:0px; top:0px; height:30px; width:100%; z-index:100; background-color:rgba(30, 30, 30, .8);'>
-    <nav>
+  <div style='width: 100%'>
+    <nav class='NavBarDiv'>
       <ul>
         <?php if (!$isMobile) echo '<li><a target="_blank" href="https://discord.gg/JykuRkdd5S">Discord</a></li>'; ?>
 
@@ -83,7 +98,7 @@ $isMobile = IsMobile();
         <!--<li><a target="_blank" href="https://www.patreon.com/talishar_online">Support Us</a></li>-->
       </ul>
 
-      <ul style='float:right;'>
+      <ul class='rightnav'>
         <li><a href="MainMenu.php">Home Page</a></li>
         <?php if (!$isMobile) echo '<li><a href="https://fabtcg.com/events" target="_blank">Find Local Events</a></li>'; ?>
         <?php if (!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
