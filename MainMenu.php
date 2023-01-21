@@ -3,6 +3,7 @@
 include_once 'Header.php';
 include "HostFiles/Redirector.php";
 include_once "Libraries/PlayerSettings.php";
+include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once "APIKeys/APIKeys.php";
 
 

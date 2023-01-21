@@ -159,6 +159,71 @@ enum PatreonCampaign : string
       default: return "";
     }
   }
+
+  public function IsTeamMember($userName): string
+  {
+    return true;
+    switch($this->value)
+    {
+      case "7198186": return false;
+      case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
+      case "7329070": return ($userName == "GoAgainGamingAz");
+      case "1787491": return ($userName == "RedZoneRogue");
+      case "8997252": return ($userName == "phillip");
+      case "8955846": return ($userName == "Man_Sant");
+      case "6839952": return ($userName == "chonigman" || $userName == "Ijaque");
+      case "7285727": return ($userName == "Brendan" || $userName == "TheClub");
+      case "8635931": return ($userName == "TheTekloFoundry");
+      case "8736344": return ($userName == "Smithel");
+      case "7593240": return ($userName == "SinOnStream");
+      case "8458487": return ($userName == "FreshLord");
+      case "6996822": return ($userName == "Sloopdoop");
+      case "1919413": return ($userName == "DMArmada");
+      case "8306478": return ($userName == "Flake");
+      case "7733166": return ($userName == "NamVoTCGz" || $userName == "AlexTheCardGuy" || $userName == "RegularDegular" || $userName == "joshlau7" || $userName == "WillyB" || $userName == "Spoofy");
+      case "7009853": return ($userName == "hometowntcg");
+      case "8338817": return ($userName == "imjorman" || $userName == "ADavis83" || $userName == "loganpetersen");
+      case "9361474": return ($userName == "kappolo");
+      case "3828539": return ($userName == "Tee");
+      case "8951973": return ($userName == "Wes" || $userName == "Brandon");
+      case "9370276": return ($userName == "TheTablePitYT" || $userName == "TunaTCG");
+      case "9404423": return ($userName == "TCGTed");
+      case "8040288": return IsTeamCardAdvantage($userName);
+      default: return "";
+    }
+  }
+
+  public function CardBacks(): string
+  {
+    switch($this->value)
+    {
+      case "7198186": return "1,2,3,4,5,6,7,8";
+      case "7579026": return "9";
+      case "7329070": return "10,11,12,13,14,15,16";
+      case "1787491": return "17,18,19,20";
+      case "8997252": return "21,22";
+      case "8955846": return "23";
+      case "6839952": return "24";
+      case "7285727": return "25";
+      case "8635931": return "26";
+      case "8736344": return "29";
+      case "7593240": return "30";
+      case "8458487": return "31";
+      case "6996822": return "32";
+      case "1919413": return "33";
+      case "8306478": return "34";
+      case "7733166": return "35";
+      case "7009853": return "36";
+      case "8338817": return "38";
+      case "9361474": return "39";
+      case "3828539": return "40";
+      case "8951973": return "41";
+      case "9370276": return "43";
+      case "9404423": return "44";
+      case "8040288": return "47";
+      default: return "";
+    }
+  }
 }
 
 

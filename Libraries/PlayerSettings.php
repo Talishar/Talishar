@@ -331,6 +331,7 @@ function GetSettingsUI($player)
   // 9 - Push the Point
    $rv .= "<h3>Card Backs</h3>";
    $hasCardBacks = false;
+   /*
    $rv .= CreateRadioButton($SET_Cardback . "-0", "Default", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Default");
    if (IsPatron($player)) {
     $hasCardBacks = true;
@@ -346,6 +347,22 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-8", "Runeblood", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Runeblood");
     $rv .= "<BR>";
    }
+   */
+
+  foreach (PatreonCampaign::cases() as $campaign) {
+    if(isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"])))
+    {
+      $hasCardBacks = true;
+      $cardBacks = $campaign->CardBacks();
+      $cardBacks = explode(",", $cardBacks);
+      for($i=0; $i<count($cardBacks); ++$i)
+      {
+        $name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . $i + 1 : "");
+        $rv .= CreateRadioButton($SET_Cardback . "-" . $cardBacks[$i], str_replace(' ', '', $name), 26, $SET_Cardback . "-" . $settings[$SET_Cardback], $name);
+      }
+    }
+  }
+
 
   $isPtPPatron = false;
   $isPtPPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Hamsack" || $_SESSION["useruid"] == "BigMedSi" || $_SESSION["useruid"] == "Tripp");
@@ -413,6 +430,9 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-26", "TheTekloFoundry", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Teklo Foundry");
   }
 
+
+
+/*
   $isPummelowanko = false;
   $isPummelowanko = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "MrShub" || $_SESSION["useruid"] == "duofanel" || $_SESSION["useruid"] == "Matiisen" ||  $_SESSION["useruid"] == "Pepowski" ||  $_SESSION["useruid"] == "Seba_stian" ||  $_SESSION["useruid"] == "NatAlien" ||  $_SESSION["useruid"] == "dvooyas" || $_SESSION["useruid"] == "Lukashu" || $_SESSION["useruid"] == "Qwak" || $_SESSION["useruid"] == "NatAlien");
   if ($isPummelowanko) {
@@ -426,7 +446,7 @@ function GetSettingsUI($player)
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-28", "DragonShieldProTeamWB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team WB");
   }
-
+*/
   $isFleshAndCommonBloodPatreon = false;
   $isFleshAndCommonBloodPatreon = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "Smithel");
   if (isset($_SESSION['isFleshAndCommonBloodPatreon']) || $isFleshAndCommonBloodPatreon) {
@@ -482,14 +502,14 @@ function GetSettingsUI($player)
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-36", "HomeTownTCG", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "HomeTownTCG");
   }
-
+/*
   $isAscentGaming = false;
   $isAscentGaming = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "hometowntcg" || $_SESSION["useruid"] == "ProfessorKibosh" || $_SESSION["useruid"] == "criticalclover8" || $_SESSION["useruid"] == "bomberman" || $_SESSION["useruid"] == "woodjp64" || $_SESSION["useruid"] == "TealWater" || $_SESSION["useruid"] == "Bravosaur" || $_SESSION["useruid"] == "DaganTheZookeeper" || $_SESSION["useruid"] == "Dratylis" || $_SESSION["useruid"] == "MoBogsly");
   if ($isAscentGaming) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-37", "AscentGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Ascent Gaming");
   }
-
+*/
   $isFleshAndPodPatron = false;
   $isFleshAndPodPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "imjorman" || $_SESSION["useruid"] == "ADavis83" || $_SESSION["useruid"] == "loganpetersen");
   if (isset($_SESSION['isFleshAndPodPatron']) || $isFleshAndPodPatron) {
@@ -518,12 +538,14 @@ function GetSettingsUI($player)
     $rv .= CreateRadioButton($SET_Cardback . "-41", "TheMetrixMetagame", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "The Metrix Metagame");
   }
 
+/*
   $isEternalOracles = false;
   $isEternalOracles = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DeadSummer");
   if ($isEternalOracles) {
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-42", "EternalOracles", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Eternal Oracles");
   }
+  */
 
   $isTheTablePitPatron = false;
   $isTheTablePitPatron = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TheTablePitYT" || $_SESSION["useruid"] == "TunaTCG");
@@ -538,7 +560,7 @@ function GetSettingsUI($player)
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-44", "TCGTed", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "TCG Ted");
   }
-
+/*
   $isTCGTedPatron = false;
   $isLuminaris = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "LeoLeo");
   if ($isLuminaris) {
@@ -552,6 +574,7 @@ function GetSettingsUI($player)
     $hasCardBacks = true;
     $rv .= CreateRadioButton($SET_Cardback . "-46", "FAB-LAB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "FAB-LAB");
   }
+  */
 
   $isCardAdvantage = false;
   $isCardAdvantage = isset($_SESSION["useruid"]) && (IsTeamCardAdvantage($_SESSION["useruid"]));
