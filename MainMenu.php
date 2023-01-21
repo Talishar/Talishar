@@ -159,15 +159,12 @@ $canSeeQueue = isset($_SESSION["useruid"]);
     <input type="radio" id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
     <label style='margin-left:-12px;' for="private">Private</label><br><br>
 
-  <input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
-  <label for="deckTestMode">Single Player</label><br><br>
-  <div style="text-align:center;">
-
-    <label>
-      <input type="submit" value="<?php echo ($createGameText); ?>">
-    </label>
-
-  </div>
+    <input style="margin-left: 20px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+    <label for="deckTestMode">Single Player</label><br><br>
+    <div style='text-align:center;'>
+      <input type="submit" style="font-size:28px;" value="<?php echo ($createGameText); ?>">
+    </div>
+    <BR>
   </form>
 
 </div>

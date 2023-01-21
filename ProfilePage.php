@@ -14,14 +14,11 @@ if(isset($_SESSION['userid']))
   echo ("<h1>Your Badges</h1>");
   for($i=0; $i<count($badges); $i+=7)
   {
-    if($badges[$i+6] != "") echo("<a href='" . $badges[$i+6] . "'>");
-    echo ("<div style='float:left;'>");
-    echo ("<div class='container'>");
-    echo ("<img class='badge' src='" . $badges[$i + 5] . "'>");
-    echo ("<div class='overlay'>");
     $bottomText = str_replace("{0}", $badges[$i+2], $badges[$i+4]);
-    echo ("<div class='text'>" . $badges[$i + 3] . "<br><br>" . $bottomText . "</div>");
-    echo ("</img></div></div></div>");
+    $fullText = $badges[$i + 3] . "<br><br>" . $bottomText;
+    if($badges[$i+6] != "") echo("<a href='" . $badges[$i+6] . "'>");
+    echo ("<img style='margin:3px; width:120px; height:120px; object-fit: cover;' src='" . $badges[$i + 5] . "'></img>");
+    //TODO: Show badge text
     if($badges[$i+6] != "") echo("</a>");
   }
   echo ("</div>");
