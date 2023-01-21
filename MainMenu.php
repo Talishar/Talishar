@@ -65,7 +65,7 @@ $canSeeQueue = isset($_SESSION["useruid"]);
     height: 100dvh;
   }
 
-  .FavoriteDeckMainMenu {
+  .SelectDeckInput {
     font-weight: bolder;
     margin-left: 10px;
   }
@@ -104,7 +104,7 @@ if (isset($_SESSION["userid"])) {
   if (count($favoriteDecks) > 0) {
     $selIndex = -1;
     if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
-    echo ("<div class='FavoriteDeckMainMenu'>Favorite Decks: ");
+    echo ("<div class='SelectDeckInput'>Favorite Decks: ");
     echo ("<select style='height:26px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
     for ($i = 0; $i < count($favoriteDecks); $i += 3) {
       echo ("<option value='" . $i . "<fav>" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
@@ -113,7 +113,7 @@ if (isset($_SESSION["userid"])) {
   }
 }
 if (count($favoriteDecks) == 0) {
-  echo ("<div><label class='FavoriteDeckMainMenu'>" . $starterDecksText . ": </label>");
+  echo ("<div><label class='SelectDeckInput'>" . $starterDecksText . ": </label>");
   echo ("<select name='decksToTry' id='decksToTry'>");
   echo ("<option value='1'>Ira Welcome Deck</option>");
   echo ("</select></div>");
@@ -121,7 +121,7 @@ if (count($favoriteDecks) == 0) {
 echo ("<br>");
 
 ?>
-<label for="fabdb" style='font-weight:bolder; margin-left:10px;'>Deck Link:</label>
+<label for="fabdb" class='SelectDeckInput'>Deck Link:</label>
 <input type="text" id="fabdb" name="fabdb">
 <?php
 if (isset($_SESSION["userid"])) {
@@ -133,11 +133,11 @@ if (isset($_SESSION["userid"])) {
 echo ("<br>");
 ?>
 <br>
-<label for="gameDescription" style='font-weight:bolder; margin-left:10px;'>Game Name:</label>
+<label for="gameDescription" class='SelectDeckInput'>Game Name:</label>
 <input type="text" id="gameDescription" name="gameDescription" placeholder="Game #"><br><br>
 
 <?php
-echo ("<label for='format' style='font-weight:bolder; margin-left:10px;'>Format: </label>");
+echo ("<label for='format' class='SelectDeckInput'>Format: </label>");
 echo ("<select name='format' id='format'>");
 if ($canSeeQueue) {
   echo ("<option value='blitz' " . ($defaultFormat == 2 ? " selected" : "") . ">Blitz</option>");
@@ -155,17 +155,17 @@ echo ("</select>");
 
 <?php
 if ($canSeeQueue) {
-  echo '<input style="margin-left:20px;" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
+  echo '<input class="SelectDeckInput" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
   echo ('<label style="margin-left:2px;" for="public">Public</label>');
 }
 ?>
 
-<input type="radio" style='margin-left:10px;' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
+<input type="radio" class='SelectDeckInput' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
 <label for="private">Private</label><br><br>
 
-<input style="margin-left: 10px;" type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+<input class='SelectDeckInput' type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
 <label for="deckTestMode">Single Player</label><br><br>
-<div style='text-align:center;'>
+<div style=' text-align:center;'>
   <input type="submit" style="font-size:28px;" value="<?php echo ($createGameText); ?>">
 </div>
 <BR>
