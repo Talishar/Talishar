@@ -208,31 +208,6 @@ $canSeeComp = isset($_SESSION["useruid"]) && isset($_SESSION["userKarma"]) && $_
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
 
-      <!-- <a href='./zzSetChecker.php' target='_blank'>Click here to see unsupported cards</a><br><br>
-
-      <h3 style='text-align:center;'>________</h3> -->
-
-
-      <!--
-  <div style=" padding-top:10%; vertical-align:middle; position: relative;">
-    <div style="vertical-align:middle; position: relative;">
-      <h2>Coax a Commotion #3!<br>[Ending Soon!]</h2>
-      <h4>Win as many games as you can <br>with Moon Wish</h4><br>
-      <img style="margin-left:5%; margin-right:5%; width:90%; border-radius:5%;" src="./Images/challenges/moonwish.png" /><br><br>
-      <p style="width:90%; padding-left:5%; font-size:small;">Must be logged in with (4 in blitz / 6 in CC) copies of Moon Wish in your deck <i>after sideboarding</i> for the challenge to work. Check back soon for results!</p>
-    </div>
-    <div style='text-align:center;'><a href='./ChallengeLeaderboard.php'>Leaderboard</a></div>
--->
-
-<!--
-      <div style="vertical-align:middle; position: relative;">
-        <h3>December 10th-11th</h3>
-        <h4>Click for more info:</h4><br>
-        <a href='https://fabtcg.com/organised-play/2022/battle-hardened-singapore/' target='_blank'>
-          <img style="margin-left:5%; margin-right:5%; width:50%; border-radius:5%;" src="https://storage.googleapis.com/fabmaster/media/images/Battle_Hardened_Singapore_Glow.min-400x350.png" /></a>
-      </div>
-    -->
-
       <div style="vertical-align:middle; position: relative;">
         <h3>Big changes to matchmaking!</h3>
         <h4 style="margin-left:5%; margin-right:5%;">Login is now required for matchmaking</h4>
