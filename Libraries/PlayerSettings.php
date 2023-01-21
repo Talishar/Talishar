@@ -335,47 +335,6 @@ function GetSettingsUI($player)
     }
   }
 
-  $isPummelowanko = false;
-  $isPummelowanko = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "MrShub" || $_SESSION["useruid"] == "duofanel" || $_SESSION["useruid"] == "Matiisen" ||  $_SESSION["useruid"] == "Pepowski" ||  $_SESSION["useruid"] == "Seba_stian" ||  $_SESSION["useruid"] == "NatAlien" ||  $_SESSION["useruid"] == "dvooyas" || $_SESSION["useruid"] == "Lukashu" || $_SESSION["useruid"] == "Qwak" || $_SESSION["useruid"] == "NatAlien");
-  if ($isPummelowanko) {
-    $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-27", "Pummelowanko", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Pummelowanko");
-  }
-
-  $isDragonShieldProTeam = false;
-  $isDragonShieldProTeam = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TwitchTvFabschool" || $_SESSION["useruid"] == "MattRogers" || $_SESSION["useruid"] == "TariqPatel");
-  if ($isDragonShieldProTeam) {
-    $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-28", "DragonShieldProTeamWB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team WB");
-  }
-
-  $isAscentGaming = false;
-  $isAscentGaming = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "hometowntcg" || $_SESSION["useruid"] == "ProfessorKibosh" || $_SESSION["useruid"] == "criticalclover8" || $_SESSION["useruid"] == "bomberman" || $_SESSION["useruid"] == "woodjp64" || $_SESSION["useruid"] == "TealWater" || $_SESSION["useruid"] == "Bravosaur" || $_SESSION["useruid"] == "DaganTheZookeeper" || $_SESSION["useruid"] == "Dratylis" || $_SESSION["useruid"] == "MoBogsly");
-  if ($isAscentGaming) {
-    $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-37", "AscentGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Ascent Gaming");
-  }
-
-  $isEternalOracles = false;
-  $isEternalOracles = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DeadSummer");
-  if ($isEternalOracles) {
-    $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-42", "EternalOracles", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Eternal Oracles");
-  }
-
-  $isTCGTedPatron = false;
-  $isLuminaris = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "LeoLeo");
-  if ($isLuminaris) {
-    $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-45", "Luminaris", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Luminaris");
-  }
-
-  $isFABLAB = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "XIR");
-  if ($isFABLAB) {
-    $hasCardBacks = true;
-    $rv .= CreateRadioButton($SET_Cardback . "-46", "FAB-LAB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "FAB-LAB");
-  }
-
   if ($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
   else $rv .= CreateCheckbox($SET_ColorblindMode . "-0", "Accessibility Mode", 26, true, "Accessibility Mode");
   $rv .= "<BR>";

@@ -69,8 +69,59 @@ enum ContentCreators : string
   }
 }
 
+
+
+  $isPummelowanko = false;
+  $isPummelowanko = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "MrShub" || $_SESSION["useruid"] == "duofanel" || $_SESSION["useruid"] == "Matiisen" ||  $_SESSION["useruid"] == "Pepowski" ||  $_SESSION["useruid"] == "Seba_stian" ||  $_SESSION["useruid"] == "NatAlien" ||  $_SESSION["useruid"] == "dvooyas" || $_SESSION["useruid"] == "Lukashu" || $_SESSION["useruid"] == "Qwak" || $_SESSION["useruid"] == "NatAlien");
+  if ($isPummelowanko) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-27", "Pummelowanko", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Pummelowanko");
+  }
+
+  $isDragonShieldProTeam = false;
+  $isDragonShieldProTeam = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "TwitchTvFabschool" || $_SESSION["useruid"] == "MattRogers" || $_SESSION["useruid"] == "TariqPatel");
+  if ($isDragonShieldProTeam) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-28", "DragonShieldProTeamWB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Dragon Shield Pro Team WB");
+  }
+
+  $isAscentGaming = false;
+  $isAscentGaming = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "hometowntcg" || $_SESSION["useruid"] == "ProfessorKibosh" || $_SESSION["useruid"] == "criticalclover8" || $_SESSION["useruid"] == "bomberman" || $_SESSION["useruid"] == "woodjp64" || $_SESSION["useruid"] == "TealWater" || $_SESSION["useruid"] == "Bravosaur" || $_SESSION["useruid"] == "DaganTheZookeeper" || $_SESSION["useruid"] == "Dratylis" || $_SESSION["useruid"] == "MoBogsly");
+  if ($isAscentGaming) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-37", "AscentGaming", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Ascent Gaming");
+  }
+
+  $isEternalOracles = false;
+  $isEternalOracles = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "DeadSummer");
+  if ($isEternalOracles) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-42", "EternalOracles", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Eternal Oracles");
+  }
+
+  $isTCGTedPatron = false;
+  $isLuminaris = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "LeoLeo");
+  if ($isLuminaris) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-45", "Luminaris", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "Luminaris");
+  }
+
+  $isFABLAB = isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == "XIR");
+  if ($isFABLAB) {
+    $hasCardBacks = true;
+    $rv .= CreateRadioButton($SET_Cardback . "-46", "FAB-LAB", 26, $SET_Cardback . "-" . $settings[$SET_Cardback], "FAB-LAB");
+  }
+
+
 enum PatreonCampaign : string
 {
+  //These ones have no patreon
+  case Pummelowanko = "0";
+  case DragonShieldProTeamWB = "1";
+  case AscentGaming = "2";
+  case EternalOracles = "3";
+  case Luminaris = "4";
+  case FABLAB = "5";
   case Talishar = "7198186";
   case PushThePoint = "7579026";
   case GoAgainGaming = "7329070";
@@ -132,6 +183,12 @@ enum PatreonCampaign : string
   {
     switch($this->value)
     {
+      case "0": return "Pummelowanko";
+      case "1": return "Dragon Shield Pro Team";
+      case "2": return "AscentGaming";
+      case "3": return "Eternal Oracles";
+      case "4": return "Luminaris";
+      case "5": return "FAB-LAB";
       case "7198186": return "Talishar";
       case "7579026": return "Push the Point";
       case "7329070": return "Go Again Gaming";
@@ -164,6 +221,12 @@ enum PatreonCampaign : string
   {
     switch($this->value)
     {
+      case "0": return ($userName == "MrShub" || $userName == "duofanel" || $userName == "Matiisen" ||  $userName == "Pepowski" ||  $userName == "Seba_stian" ||  $userName == "NatAlien" ||  $userName == "dvooyas" || $userName == "Lukashu" || $userName == "Qwak" || $userName == "NatAlien");
+      case "1": return ($userName == "TwitchTvFabschool" || $userName == "MattRogers" || $userName == "TariqPatel");
+      case "2": return ($userName == "hometowntcg" || $userName == "ProfessorKibosh" || $userName == "criticalclover8" || $userName == "bomberman" || $userName == "woodjp64" || $userName == "TealWater" || $userName == "Bravosaur" || $userName == "DaganTheZookeeper" || $userName == "Dratylis" || $userName == "MoBogsly");
+      case "3": return ($userName == "DeadSummer");
+      case "4": return ($userName == "LeoLeo");
+      case "5": return ($userName == "XIR");
       case "7198186": return false;
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
@@ -196,6 +259,12 @@ enum PatreonCampaign : string
   {
     switch($this->value)
     {
+      case "0": return "27";
+      case "1": return "28";
+      case "2": return "37";
+      case "3": return "42";
+      case "4": return "45";
+      case "5": return "46";
       case "7198186": return "1,2,3,4,5,6,7,8";
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";
