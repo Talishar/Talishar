@@ -1,5 +1,5 @@
 <?php
-require "Header.php";
+require "MenuBar.php";
 
 if(!isset($_SESSION['userid'])) { header('Location: ./MainMenu.php'); die(); }
 

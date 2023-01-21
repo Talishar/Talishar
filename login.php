@@ -1,5 +1,5 @@
 <?php
-include_once 'Header.php';
+include_once 'MenuBar.php';
 
 if (isset($_SESSION['useruid'])) {
   header("Location: ./game/MainMenu.php");

@@ -3,7 +3,7 @@
 include "Libraries/SHMOPLibraries.php";
 include "HostFiles/Redirector.php";
 include "CardDictionary.php";
-include_once 'Header.php';
+include_once 'MenuBar.php';
 
 define('ROOTPATH', __DIR__);
 

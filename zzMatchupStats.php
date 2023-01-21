@@ -1,6 +1,6 @@
 <?php
 
-include_once 'Header.php';
+include_once 'MenuBar.php';
 include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
 require_once "./includes/dbh.inc.php";

@@ -1,5 +1,5 @@
 <?php
-require 'Header.php';
+require 'MenuBar.php';
 ?>
 
 <main>

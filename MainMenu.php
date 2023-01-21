@@ -1,6 +1,6 @@
 <?php
 
-include_once 'Header.php';
+include_once 'MenuBar.php';
 include "HostFiles/Redirector.php";
 include_once "Libraries/PlayerSettings.php";
 include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
