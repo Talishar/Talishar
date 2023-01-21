@@ -1,14 +1,23 @@
 <?php
 include_once("vendor/autoload.php");
 
-$redis = new \Redis(); // Using the Redis extension provided client
+use Predis\Client;
+use Goez\SocketIO\Emitter;
+
+// $redis = new Client(); // Using the Redis extension provided client
 $redisHost = (!empty(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "127.0.0.1");
-$redisPort = (!empty(getenv("REDIS_PORT")) ? getenv("REDIS_PORT") : "6379");
-$redis->connect($redisHost, $redisPort);
+$redisPort = (!empty(getenv("REDIS_PORT")) ? getenv("REDIS_PORT") : "6382");
+
+$redis = new Predis\Client([
+  'scheme' => 'tcp',
+  'host'   => $redisHost,
+]);
+
 
 function WriteLog($text, $playerColor = 0, $highlight = false)
 {
   global $gameName, $redis;
+
   // write to file
   $filename = "./Games/" . $gameName . "/gamelog.txt";
   $handler = fopen($filename, "a");
@@ -18,12 +27,12 @@ function WriteLog($text, $playerColor = 0, $highlight = false)
   fclose($handler);
 
   // Redis emitter
-  $emitter = new SocketIO\Emitter($redis);
+  $emitter = new Emitter($redis);
   $LogOut = new stdClass();
   $LogOut->highlight = $highlight;
   $LogOut->text = $text;
   $LogOut->playerColor = $playerColor;
-  $emitter->to($gameName)->emit("log", $LogOut);
+  $emitter->in($gameName)->emit("log", json_encode($LogOut));
 }
 
 function ClearLog()

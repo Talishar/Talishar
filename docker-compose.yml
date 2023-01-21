@@ -21,6 +21,8 @@ services:
       REDIS_HOST: "app_redis"
       REDIS_ENABLED: true
       DOMAIN: "localhost"
+    links:
+      - "redis:app_redis"
   mysql-server:
     image: mysql:latest
     restart: always
