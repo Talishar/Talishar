@@ -88,8 +88,8 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 
 <?php
 
-if (IsMobile()) echo ("<div class='ContentWindow' style='width:65%;'>");
-else echo ("<div class='ContentWindow' style='top:40%; left:35%; width:30%;'>");
+if (IsMobile()) echo ("<div class='ContentWindow' style='top:23%; left:32%; width:60%;'>");
+else echo ("<div class='ContentWindow' style='top:30%; left:35%; width:30%;'>");
 
 ?>
 
