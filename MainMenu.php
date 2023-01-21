@@ -109,23 +109,7 @@ $canSeeQueue = isset($_SESSION["useruid"]);
   if (count($favoriteDecks) == 0) {
     echo ("<div class='FavoriteDeckMainMenu'>" . $starterDecksText . ": ");
     echo ("<select name='decksToTry' id='decksToTry'>");
-    echo ("<option value='1'>Bravo CC Starter Deck</option>");
-    echo ("<option value='2'>Rhinar CC Starter Deck</option>");
-    echo ("<option value='3'>Katsu CC Starter Deck</option>");
-    echo ("<option value='4'>Dorinthea CC Starter Deck</option>");
-    echo ("<option value='5'>Dash CC Starter Deck</option>");
-    echo ("<option value='6'>Viserai CC Starter Deck</option>");
-    echo ("<option value='7'>Kano CC Starter Deck</option>");
-    echo ("<option value='8'>Azalea CC Starter Deck</option>");
-    echo ("<option value='9'>Prism Blitz Starter Deck</option>");
-    echo ("<option value='10'>Levia Blitz Starter Deck</option>");
-    echo ("<option value='11'>Boltyn Blitz Starter Deck</option>");
-    echo ("<option value='12'>Chane Blitz Starter Deck</option>");
-    echo ("<option value='13'>Oldhim BlitzStarter Deck</option>");
-    echo ("<option value='14'>Briar Blitz Starter Deck</option>");
-    echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
-    echo ("<option value='16'>Fai Blitz Starter Deck</option>");
-    echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
+    echo ("<option value='1'>Ira Welcome Deck</option>");
     echo ("</select></div>");
   }
   echo ("<br>");
