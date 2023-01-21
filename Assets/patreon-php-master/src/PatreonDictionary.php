@@ -162,7 +162,6 @@ enum PatreonCampaign : string
 
   public function IsTeamMember($userName): string
   {
-    return true;
     switch($this->value)
     {
       case "7198186": return false;
