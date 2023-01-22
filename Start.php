@@ -11,7 +11,6 @@ include "Libraries/StatFunctions.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/UILibraries2.php";
 include "AI/CombatDummy.php";
-include "WriteReplay.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 ob_end_clean();

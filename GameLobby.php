@@ -61,9 +61,7 @@ $isMobile = IsMobile();
 <head>
   <meta charset="utf-8">
   <title>Talishar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/style4.css">
+  <link rel="stylesheet" href="https://unpkg.com/bamboo.css/dist/dark.min.css">
 </head>
 
 <script>
@@ -116,11 +114,11 @@ $isMobile = IsMobile();
   <div id="cardDetail" style="display:none; position:absolute;"></div>
 
   <center>
-  <?php
-  if($isMobile) echo '<div id="oppHero" style="position:absolute; z-index:1; top:2%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
-  else echo '<div id="oppHero" style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
+    <?php
+    if ($isMobile) echo '<div id="oppHero" style="position:absolute; z-index:1; top:2%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
+    else echo '<div id="oppHero" style="position:absolute; z-index:1; top:20px; left:20px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
     $theirDisplayName = ($theirName != "-" ? $theirName : "Player " . ($playerID == 1 ? 2 : 1));
-    if($isMobile) echo ("<h3>$theirDisplayName</h3>");
+    if ($isMobile) echo ("<h3>$theirDisplayName</h3>");
     else echo ("<h2>$theirDisplayName</h2>");
 
     $otherHero = "CardBack";
@@ -128,94 +126,94 @@ $isMobile = IsMobile();
     echo (Card($otherHero, "concat", ($isMobile ? 100 : 250), 0, 0));
     echo ("</div>");
     ?>
-  </div>
+    </div>
   </center>
 
   <?php
-  if($isMobile) echo '<div style="position:absolute; z-index:1; top:29%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
+  if ($isMobile) echo '<div style="position:absolute; z-index:1; top:29%; left:2%; width:50%; height:25%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
   else echo '<div style="position:absolute; z-index:1; top:20px; left:330px; width:290px; height:351px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">';
-    $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p1ContentCreatorID : $p2ContentCreatorID));
-    $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
-    $displayName = "<span style='color:" . $nameColor . "'>" . ($yourName != "-" ? $yourName : "Player " . $playerID) . "</span>";
-    if($isMobile) echo ("<h3>$displayName</h3>");
-    else echo ("<h2>$displayName</h2>");
+  $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p1ContentCreatorID : $p2ContentCreatorID));
+  $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
+  $displayName = "<span style='color:" . $nameColor . "'>" . ($yourName != "-" ? $yourName : "Player " . $playerID) . "</span>";
+  if ($isMobile) echo ("<h3>$displayName</h3>");
+  else echo ("<h2>$displayName</h2>");
 
-    $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-    $handler = fopen($deckFile, "r");
-    if($handler)
-    {
-      $character = GetArray($handler);
+  $deckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+  $handler = fopen($deckFile, "r");
+  if ($handler) {
+    $character = GetArray($handler);
 
-      echo ("<center>");
-      echo ("<div style='position:relative; display: inline-block;'>");
-      $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
-      echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
-      if($overlayURL != "") echo ("<img title='Portrait' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
-      echo ("</div>");
-      echo ("</center>");
+    echo ("<center>");
+    echo ("<div style='position:relative; display: inline-block;'>");
+    $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
+    echo (Card($character[0], "concat", ($isMobile ? 100 : 250), 0, 1));
+    if ($overlayURL != "") echo ("<img title='Portrait' style='position:absolute; z-index:1001; top: 27px; left: 0px; cursor:pointer; height:" . ($isMobile ? 100 : 250) . "; width:" . ($isMobile ? 100 : 250) . ";' src='" . $overlayURL . "' />");
+    echo ("</div>");
+    echo ("</center>");
 
-      echo ("<div style='text-align:center; margin-top: 2px;'>");
-      echo ("<a href='MainMenu.php'><button class='GameLobby_Button' style='display:inline; cursor:pointer;'>Leave Lobby</button></a>");
-      echo ("</div>");
+    echo ("<div style='text-align:center; margin-top: 2px;'>");
+    echo ("<a href='MainMenu.php'><button class='GameLobby_Button' style='display:inline; cursor:pointer;'>Leave Lobby</button></a>");
+    echo ("</div>");
 
-      $weapons = "";
-      $head = "";
-      $chest = "";
-      $arms = "";
-      $legs = "";
-      $offhand = "";
-      for ($i = 1; $i < count($character); ++$i) {
-        switch (CardSubtype($character[$i])) {
-          case "Head":
-            $head = $character[$i];
-            break;
-          case "Chest":
-            $chest = $character[$i];
-            break;
-          case "Arms":
-            $arms = $character[$i];
-            break;
-          case "Legs":
-            $legs = $character[$i];
-            break;
-          case "Off-Hand":
-            $offhand = $character[$i];
-            break;
-          default:
-            if ($weapons != "") $weapons .= ",";
-            $weapons .= $character[$i];
-            break;
-        }
+    $weapons = "";
+    $head = "";
+    $chest = "";
+    $arms = "";
+    $legs = "";
+    $offhand = "";
+    for ($i = 1; $i < count($character); ++$i) {
+      switch (CardSubtype($character[$i])) {
+        case "Head":
+          $head = $character[$i];
+          break;
+        case "Chest":
+          $chest = $character[$i];
+          break;
+        case "Arms":
+          $arms = $character[$i];
+          break;
+        case "Legs":
+          $legs = $character[$i];
+          break;
+        case "Off-Hand":
+          $offhand = $character[$i];
+          break;
+        default:
+          if ($weapons != "") $weapons .= ",";
+          $weapons .= $character[$i];
+          break;
       }
-
-      $deck = GetArray($handler);
-      $headSB = GetArray($handler);
-      $chestSB = GetArray($handler);
-      $armsSB = GetArray($handler);
-      $legsSB = GetArray($handler);
-      $offhandSB = GetArray($handler);
-      $weaponSB = GetArray($handler);
-      $deckSB = GetArray($handler);
-
-      fclose($handler);
     }
 
-    ?>
+    $deck = GetArray($handler);
+    $headSB = GetArray($handler);
+    $chestSB = GetArray($handler);
+    $armsSB = GetArray($handler);
+    $legsSB = GetArray($handler);
+    $offhandSB = GetArray($handler);
+    $weaponSB = GetArray($handler);
+    $deckSB = GetArray($handler);
+
+    fclose($handler);
+  }
+
+  ?>
   </div>
 
   <div id="matchupTab" style="position:absolute; z-index:1; top:2%; right:10px; width:160px; height:8%; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;">
     <h1>Matchups</h1>
   </div>
-  <div id="matchups" style="position:absolute; text-align: center; z-index:1; top:10%; margin-top:3px; right:10px; bottom:3%; width:160px; <?php if($isMobile) echo('height:43.5%; '); ?> background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y: auto;">
+  <div id="matchups" style="position:absolute; text-align: center; z-index:1; top:10%; margin-top:3px; right:10px; bottom:3%; width:160px; <?php if ($isMobile) echo ('height:43.5%; '); ?> background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px; overflow-y: auto;">
 
     <?php
 
-    function sortMatchupsAlphabetically($a, $b) {
-        if ($a->name == $b->name) {
-            return 0;
-        }
+    function sortMatchupsAlphabetically($a, $b)
+    {
+      if ($a->name == $b->name) {
+        return 0;
+      }
 
-        return $a->name < $b->name ? -1 : 1;
+      return $a->name < $b->name ? -1 : 1;
     }
 
     $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
@@ -230,21 +228,19 @@ $isMobile = IsMobile();
         echo ("</a>");
         echo ("</div>");
       }
-      if($isMobile && count($matchups) == 0)
-      {
-        echo("Sideboarding is limited on mobile; we recommend defining matchups in your decklist for mobile sideboarding.");
+      if ($isMobile && count($matchups) == 0) {
+        echo ("Sideboarding is limited on mobile; we recommend defining matchups in your decklist for mobile sideboarding.");
       }
-    }
-    else {
-      echo("<BR>The following deckbuilder sites support matchups:<BR>");
-      echo("<a href='https://fabrary.net' target='_blank'>Fabrary</a>");
+    } else {
+      echo ("<BR>The following deckbuilder sites support matchups:<BR>");
+      echo ("<a href='https://fabrary.net' target='_blank'>Fabrary</a>");
     }
 
     ?>
 
   </div>
 
-  <div<?php if($isMobile) echo(" style='display:none;'"); ?>>
+  <div<?php if ($isMobile) echo (" style='display:none;'"); ?>>
     <div id="equipTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:640px; width:280px; height:73px; background-color:rgba(175, 175, 175, 0.8); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('EQUIP');">
 
       <h1>Your Equipment</h1>
@@ -257,25 +253,24 @@ $isMobile = IsMobile();
       <table>
         <?php
 
-        if(isset($head) && isset($headSB)) DisplayEquipRow($head, $headSB, "HEAD");
-        if(isset($chest) && isset($chestSB)) DisplayEquipRow($chest, $chestSB, "CHEST");
-        if(isset($arms) && isset($armsSB)) DisplayEquipRow($arms, $armsSB, "ARMS");
-        if(isset($legs) && isset($legsSB)) DisplayEquipRow($legs, $legsSB, "LEGS");
+        if (isset($head) && isset($headSB)) DisplayEquipRow($head, $headSB, "HEAD");
+        if (isset($chest) && isset($chestSB)) DisplayEquipRow($chest, $chestSB, "CHEST");
+        if (isset($arms) && isset($armsSB)) DisplayEquipRow($arms, $armsSB, "ARMS");
+        if (isset($legs) && isset($legsSB)) DisplayEquipRow($legs, $legsSB, "LEGS");
 
         ?>
       </table>
-      <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:59%; right:20px;">
+      <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:50%; right:20px;">
         <table>
           <?php
 
-          if(isset($weapons))
-          {
+          if (isset($weapons)) {
             $weaponArray = explode(",", $weapons);
             $weapon1 = (count($weaponArray) > 0 ? $weaponArray[0] : "");
             $weapon2 = (count($weaponArray) > 1 ? $weaponArray[1] : "");
-            if(isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
+            if (isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
           }
-          if(isset($offhand) && isset($offhandSB)) DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+          if (isset($offhand) && isset($offhandSB)) DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
 
           ?>
         </table>
@@ -285,7 +280,7 @@ $isMobile = IsMobile();
     <div id="deckTab" style="position:absolute; z-index:1; cursor:pointer; top:20px; left:922px; width:280px; height:73px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a; border-radius: 5px;" onclick="TabClick('DECK');">
 
       <?php
-      if(isset($deck)) echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
+      if (isset($deck)) echo ("<h1>Your Deck (<span id='mbCount'>" . count($deck) . "</span>/<span>" . (count($deck) + count($deckSB)) . "</span>)</h1>");
       ?>
     </div>
 
@@ -294,8 +289,7 @@ $isMobile = IsMobile();
       <div style='margin:3px; margin-top: 10px; margin-left: 10px; width:100%; text-align: left; font-family:Roboto; font-style: italic; font-weight: bold; font-size:18px; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a;'>Click Cards to Select/Unselect</div>
 
       <?php
-      if(isset($deck))
-      {
+      if (isset($deck)) {
         $cardSize = 110;
         $count = 0;
         sort($deck);
@@ -312,11 +306,11 @@ $isMobile = IsMobile();
       }
       ?>
     </div>
-  </div>
-  <?php
-    if($isMobile) echo '<div style="position:absolute; z-index:1; top:56%; left:2%; width:600px; max-width: 96%; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a;border-radius: 5px;">';
+    </div>
+    <?php
+    if ($isMobile) echo '<div style="position:absolute; z-index:1; top:56%; left:2%; width:600px; max-width: 96%; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a;border-radius: 5px;">';
     else echo '<div style="position:absolute; z-index:1; top:390px; left:20px; width:600px; bottom:3%; font-weight:500; font-size:18px; background-color:rgba(74, 74, 74, 0.9); border: 2px solid #1a1a1a;border-radius: 5px;">';
-   ?>
+    ?>
 
     <h1>Game Lobby</h1>
     <?php
@@ -351,171 +345,171 @@ $isMobile = IsMobile();
     echo ("</script>");
 
     ?>
-  </div>
+    </div>
 
-  <script>
-    function OnLoadCallback(lastUpdate) {
-      <?php
-      if ($playerID == "1" && $gameStatus == $MGS_ChooseFirstPlayer) {
-        echo ("var audio = document.getElementById('playerJoinedAudio');");
-        echo ("audio.play();");
+    <script>
+      function OnLoadCallback(lastUpdate) {
+        <?php
+        if ($playerID == "1" && $gameStatus == $MGS_ChooseFirstPlayer) {
+          echo ("var audio = document.getElementById('playerJoinedAudio');");
+          echo ("audio.play();");
+        }
+        ?>
+        UpdateFormInputs();
+        var log = document.getElementById('gamelog');
+        if (log !== null) log.scrollTop = log.scrollHeight;
+        CheckReloadNeeded(0);
       }
-      ?>
-      UpdateFormInputs();
-      var log = document.getElementById('gamelog');
-      if (log !== null) log.scrollTop = log.scrollHeight;
-      CheckReloadNeeded(0);
-    }
 
-    function UpdateFormInputs() {
-      var playerCharacter = document.getElementById("playerCharacter");
-      if (!!playerCharacter) playerCharacter.value = GetCharacterCards();
-      var playerDeck = document.getElementById("playerDeck");
-      if (!!playerDeck) playerDeck.value = GetDeckCards();
-    }
+      function UpdateFormInputs() {
+        var playerCharacter = document.getElementById("playerCharacter");
+        if (!!playerCharacter) playerCharacter.value = GetCharacterCards();
+        var playerDeck = document.getElementById("playerDeck");
+        if (!!playerDeck) playerDeck.value = GetDeckCards();
+      }
 
-    function TabClick(tab) {
-      var equipTab = document.getElementById("equipTab");
-      var equipDisplay = document.getElementById("equipDisplay");
-      var deckTab = document.getElementById("deckTab");
-      var deckDisplay = document.getElementById("deckDisplay");
-      equipDisplay.style.display = tab == "EQUIP" ? "block" : "none";
-      deckDisplay.style.display = tab == "DECK" ? "block" : "none";
-      equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
-      deckTab.style.backgroundColor = tab == "DECK" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
-    }
+      function TabClick(tab) {
+        var equipTab = document.getElementById("equipTab");
+        var equipDisplay = document.getElementById("equipDisplay");
+        var deckTab = document.getElementById("deckTab");
+        var deckDisplay = document.getElementById("deckDisplay");
+        equipDisplay.style.display = tab == "EQUIP" ? "block" : "none";
+        deckDisplay.style.display = tab == "DECK" ? "block" : "none";
+        equipTab.style.backgroundColor = tab == "EQUIP" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
+        deckTab.style.backgroundColor = tab == "DECK" ? "rgba(175, 175, 175, 0.8)" : "rgba(74, 74, 74, 0.8)";
+      }
 
-    function CardClick(id) {
-      var idArr = id.split("-");
-      if (IsEquipType(idArr[0])) {
-        var count = 0;
-        var overlay = document.getElementById(idArr[0] + "-" + count + "-ovr");
-        while (!!overlay) {
-          if (count != idArr[1]) overlay.style.visibility = "visible";
-          else overlay.style.visibility = (overlay.style.visibility == "visible" ? "hidden" : "visible");
-          //overlay.style.visibility = (count != idArr[1] ? "visible" : "hidden");
-          ++count;
+      function CardClick(id) {
+        var idArr = id.split("-");
+        if (IsEquipType(idArr[0])) {
+          var count = 0;
           var overlay = document.getElementById(idArr[0] + "-" + count + "-ovr");
+          while (!!overlay) {
+            if (count != idArr[1]) overlay.style.visibility = "visible";
+            else overlay.style.visibility = (overlay.style.visibility == "visible" ? "hidden" : "visible");
+            //overlay.style.visibility = (count != idArr[1] ? "visible" : "hidden");
+            ++count;
+            var overlay = document.getElementById(idArr[0] + "-" + count + "-ovr");
+          }
+        } else if (idArr[0] == "DECK") {
+          var overlay = document.getElementById(id + "-ovr");
+          overlay.style.visibility = (overlay.style.visibility == "hidden" ? "visible" : "hidden");
+          var mbCount = document.getElementById("mbCount");
+          mbCount.innerText = parseInt(mbCount.innerText) + (overlay.style.visibility == "hidden" ? 1 : -1);
+        } else if (idArr[0] == "WEAPONS") {
+          var overlay = document.getElementById(id + "-ovr");
+          overlay.style.visibility = (overlay.style.visibility == "hidden" ? "visible" : "hidden");
         }
-      } else if (idArr[0] == "DECK") {
-        var overlay = document.getElementById(id + "-ovr");
-        overlay.style.visibility = (overlay.style.visibility == "hidden" ? "visible" : "hidden");
-        var mbCount = document.getElementById("mbCount");
-        mbCount.innerText = parseInt(mbCount.innerText) + (overlay.style.visibility == "hidden" ? 1 : -1);
-      } else if (idArr[0] == "WEAPONS") {
-        var overlay = document.getElementById(id + "-ovr");
-        overlay.style.visibility = (overlay.style.visibility == "hidden" ? "visible" : "hidden");
+        UpdateFormInputs();
       }
-      UpdateFormInputs();
-    }
 
-    function IsEquipType(type) {
-      switch (type) {
-        case "HEAD":
-          return true;
-        case "CHEST":
-          return true;
-        case "ARMS":
-          return true;
-        case "LEGS":
-          return true;
-        case "OFFHAND":
-          return true;
-        default:
-          return false;
-      }
-    }
-
-    function GetCharacterCards() {
-      var types = ["WEAPONS", "OFFHAND", "HEAD", "CHEST", "ARMS", "LEGS"];
-      var returnValue = "<?php echo ($character[0]); ?>";
-      //returnValue += "<?php echo (($weapons != "" ? "," . $weapons : "")); ?>";
-      for (var i = 0; i < types.length; ++i) {
-        var selected = GetSelectedEquipType(types[i]);
-        if (selected != "") returnValue += "," + selected;
-      }
-      return returnValue;
-    }
-
-    function GetSelectedEquipType(type) {
-      var count = 0;
-      var overlay = document.getElementById(type + "-" + count + "-ovr");
-      var rv = "";
-      while (!!overlay) {
-        if (overlay.style.visibility == "hidden") {
-          var imageSrc = document.getElementById(type + "-" + count + "-img").src;
-          if (rv != "") rv += ",";
-          rv += imageSrc.substring(imageSrc.length - 11).split(".")[0];
+      function IsEquipType(type) {
+        switch (type) {
+          case "HEAD":
+            return true;
+          case "CHEST":
+            return true;
+          case "ARMS":
+            return true;
+          case "LEGS":
+            return true;
+          case "OFFHAND":
+            return true;
+          default:
+            return false;
         }
-        ++count;
+      }
+
+      function GetCharacterCards() {
+        var types = ["WEAPONS", "OFFHAND", "HEAD", "CHEST", "ARMS", "LEGS"];
+        var returnValue = "<?php echo ($character[0]); ?>";
+        //returnValue += "<?php echo (($weapons != "" ? "," . $weapons : "")); ?>";
+        for (var i = 0; i < types.length; ++i) {
+          var selected = GetSelectedEquipType(types[i]);
+          if (selected != "") returnValue += "," + selected;
+        }
+        return returnValue;
+      }
+
+      function GetSelectedEquipType(type) {
+        var count = 0;
         var overlay = document.getElementById(type + "-" + count + "-ovr");
-      }
-      return rv;
-    }
-
-    function GetDeckCards() {
-      var count = 0;
-      var returnValue = "";
-      var overlay = document.getElementById("DECK-" + count + "-ovr");
-      while (!!overlay) {
-        if (overlay.style.visibility == "hidden") {
-          var imageSrc = document.getElementById("DECK-" + count + "-img").src;
-          if (returnValue != "") returnValue += ",";
-          returnValue += imageSrc.substring(imageSrc.length - 11).split(".")[0];
+        var rv = "";
+        while (!!overlay) {
+          if (overlay.style.visibility == "hidden") {
+            var imageSrc = document.getElementById(type + "-" + count + "-img").src;
+            if (rv != "") rv += ",";
+            rv += imageSrc.substring(imageSrc.length - 11).split(".")[0];
+          }
+          ++count;
+          var overlay = document.getElementById(type + "-" + count + "-ovr");
         }
-        ++count;
-        var overlay = document.getElementById("DECK-" + count + "-ovr");
+        return rv;
       }
-      return returnValue;
-    }
 
-    var audioPlayed = false;
+      function GetDeckCards() {
+        var count = 0;
+        var returnValue = "";
+        var overlay = document.getElementById("DECK-" + count + "-ovr");
+        while (!!overlay) {
+          if (overlay.style.visibility == "hidden") {
+            var imageSrc = document.getElementById("DECK-" + count + "-img").src;
+            if (returnValue != "") returnValue += ",";
+            returnValue += imageSrc.substring(imageSrc.length - 11).split(".")[0];
+          }
+          ++count;
+          var overlay = document.getElementById("DECK-" + count + "-ovr");
+        }
+        return returnValue;
+      }
 
-    function CheckReloadNeeded(lastUpdate) {
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          if (parseInt(this.responseText) != 0) {
-            if (parseInt(this.responseText) == 1) location.reload();
-            else {
-              var responseArr = this.responseText.split("ENDTIMESTAMP");
-              document.getElementById("mainPanel").innerHTML = responseArr[1];
-              CheckReloadNeeded(parseInt(responseArr[0]));
-              var playAudio = document.getElementById("playAudio");
-              if (!!playAudio && playAudio.innerText == 1 && !audioPlayed) {
-                var audio = document.getElementById('playerJoinedAudio');
-                audio.play();
-                audioPlayed = true;
+      var audioPlayed = false;
+
+      function CheckReloadNeeded(lastUpdate) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            if (parseInt(this.responseText) != 0) {
+              if (parseInt(this.responseText) == 1) location.reload();
+              else {
+                var responseArr = this.responseText.split("ENDTIMESTAMP");
+                document.getElementById("mainPanel").innerHTML = responseArr[1];
+                CheckReloadNeeded(parseInt(responseArr[0]));
+                var playAudio = document.getElementById("playAudio");
+                if (!!playAudio && playAudio.innerText == 1 && !audioPlayed) {
+                  var audio = document.getElementById('playerJoinedAudio');
+                  audio.play();
+                  audioPlayed = true;
+                }
+                var otherHero = document.getElementById("otherHero");
+                if (!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
+                document.getElementById("icon").href = "./Images/" + document.getElementById("iconHolder").innerText;
+                var log = document.getElementById('gamelog');
+                if (log !== null) log.scrollTop = log.scrollHeight;
+                document.getElementById("submitForm").style.display = document.getElementById("submitDisplay").innerHTML;
               }
-              var otherHero = document.getElementById("otherHero");
-              if (!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
-              document.getElementById("icon").href = "./Images/" + document.getElementById("iconHolder").innerText;
-              var log = document.getElementById('gamelog');
-              if (log !== null) log.scrollTop = log.scrollHeight;
-              document.getElementById("submitForm").style.display = document.getElementById("submitDisplay").innerHTML;
             }
           }
-        }
-      };
-      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>", true);
-      xmlhttp.send();
-    }
-
-    function SubmitFirstPlayer(action) {
-      if (action == 1) action = "Go First";
-      else action = "Go Second";
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {}
+        };
+        xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>", true);
+        xmlhttp.send();
       }
-      var ajaxLink = "ChooseFirstPlayer.php?gameName=" + <?php echo ($gameName); ?>;
-      ajaxLink += "&playerID=" + <?php echo ($playerID); ?>;
-      ajaxLink += "&action=" + action;
-      ajaxLink += <?php echo ("\"&authKey=" . $authKey . "\""); ?>;
-      xmlhttp.open("GET", ajaxLink, true);
-      xmlhttp.send();
-    }
-  </script>
+
+      function SubmitFirstPlayer(action) {
+        if (action == 1) action = "Go First";
+        else action = "Go Second";
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {}
+        }
+        var ajaxLink = "ChooseFirstPlayer.php?gameName=" + <?php echo ($gameName); ?>;
+        ajaxLink += "&playerID=" + <?php echo ($playerID); ?>;
+        ajaxLink += "&action=" + action;
+        ajaxLink += <?php echo ("\"&authKey=" . $authKey . "\""); ?>;
+        xmlhttp.open("GET", ajaxLink, true);
+        xmlhttp.send();
+      }
+    </script>
 
   <?php
 
@@ -523,41 +517,35 @@ $isMobile = IsMobile();
   {
     $cardSize = 110;
     $count = 0;
-    if ($equip != "" || count($equipSB) > 0) echo ("<tr>");
+    if ($equip != "" || count($equipSB) > 0) echo ("<tr><td>");
     if ($equip != "") {
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
     for ($i = 0; $i < count($equipSB); ++$i) {
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
 
-    if ($equip != "" || count($equipSB) > 0) echo ("</tr>");
+    if ($equip != "" || count($equipSB) > 0) echo ("</td></tr>");
   }
 
   function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
   {
     $cardSize = 110;
     $count = 0;
-    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr>");
+    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr><td>");
     if ($weapon1 != "") {
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
     if ($weapon2 != "") {
@@ -565,14 +553,11 @@ $isMobile = IsMobile();
         $weapon2 = ReverseArt($weapon1);
       }
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
-    echo ("<tr>");
     for ($i = 0; $i < count($weaponSB); ++$i) {
       if (isset($weaponSB[$i + 1])) {
         if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
@@ -580,16 +565,13 @@ $isMobile = IsMobile();
         }
       }
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
-    echo ("</tr>");
 
-    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</tr>");
+    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</td></tr>");
   }
 
   function HasReverseArt($cardID)
@@ -635,5 +617,5 @@ $isMobile = IsMobile();
   ?>
 
   <?php
-  include_once 'Footer.php'
+  include_once 'Disclaimer.php'
   ?>

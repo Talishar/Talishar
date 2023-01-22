@@ -44,6 +44,14 @@
           $headSideboard .= $charZone[$i];
         }
         break;
+      case "Chest":
+        if($chest == "") $chest = $charZone[$i];
+        else
+        {
+          if($chestSideboard != "") $chestSideboard .= " ";
+          $chestSideboard .= $charZone[$i];
+        }
+        break;  
       default: break;
     }
   }

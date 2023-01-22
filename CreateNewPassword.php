@@ -1,5 +1,5 @@
 <?php
-require 'Header.php';
+require 'MenuBar.php';
 ?>
 
 <main>
@@ -39,5 +39,5 @@ require 'Header.php';
 </main>
 
 <?php
-require 'Footer.php';
+require 'Disclaimer.php';
 ?>

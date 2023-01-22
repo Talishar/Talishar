@@ -116,34 +116,17 @@ function GetRandomCards($number)
 
 function RandomWarriorCommon()
 {
-  $number = rand(0,38);
-  if($number <= 17)
-  {
-    $rv = "WTR";
-    $number = 132 + $number;
-    $rv .= $number;
-  }
-  else if($number <= 26)
-  {
-    $rv = "CRU";
-    $number = 88 + $number - 18;
-    if($number < 100) $number = "0" . $number;
-    $rv .= $number;
-  }
-  else if($number <= 29)
-  {
-    $rv = "MON";
-    $number = 116 + $number - 27;
-    $rv .= $number;
-  }
-  else if($number <= 38)
-  {
-    $rv = "EVR";
-    $number = 60 + $number - 30;
-    if($number < 100) $number = "0" . $number;
-    $rv .= $number;
-  }
-  return $rv;
+  //Card pool is all warrior commons up to Everfest
+  $DoriPoolRandomCommon = array(
+    "WTR132", "WTR133", "WTR134", "WTR135", "WTR136", "WTR137", "WTR138", "WTR139", "WTR140", "WTR141", "WTR142", "WTR143", "WTR144", "WTR145", "WTR146", "WTR147", "WTR148", "WTR149",
+    "CRU088", "CRU089", "CRU090", "CRU091", "CRU092", "CRU093", "CRU094", "CRU095", "CRU096",
+    "MON116", "MON117", "MON118",
+    "EVR060", "EVR061", "EVR062", "EVR063", "EVR064", "EVR065", "EVR066", "EVR067", "EVR068"
+  );
+  $poolCount = count($DoriPoolRandomCommon);
+  $number = rand(0,$poolCount - 1);
+
+  return $DoriPoolRandomCommon[$number];
 }
 
 ?>

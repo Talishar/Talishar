@@ -1,5 +1,4 @@
 <?php
-include './Libraries/PlayerSettings.php';
 
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
@@ -16,6 +15,7 @@ include "./GameLogic.php";
 include "./Libraries/UILibraries2.php";
 include "./Libraries/StatFunctions.php";
 include "./Libraries/PlayerSettings.php";
+include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
 include "./GameTerms.php";
 include "./HostFiles/Redirector.php";
 include_once "./includes/dbh.inc.php";

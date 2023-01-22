@@ -1,6 +1,6 @@
 <?php
 include "HostFiles/Redirector.php";
-include_once 'Header.php';
+include_once 'MenuBar.php';
 include_once 'APIKeys/APIKeys.php';
 
 if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
@@ -64,5 +64,5 @@ if(!file_exists($path))
 </section>
 
 <?php
-include_once 'Footer.php'
+include_once 'Disclaimer.php'
 ?>

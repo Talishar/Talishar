@@ -558,26 +558,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("The opponent forfeit due to inactivity.");
       }
       break;
-    case 100008: // Green Rating Update players rating with 👍 Good (Green Rating)
-      if($isSimulation) return;
-      if($playerID == 1 && $p1PlayerRating != 0) break;
-      if($playerID == 2 && $p2PlayerRating != 0) break;
-      global $p1id, $p2id;
-      include "MenuFiles/ParseGamefile.php";
-      AddRating(($playerID == 1 ? 2 : 1), "green");
-      if ($playerID == 1) $p1PlayerRating = 1;
-      if ($playerID == 2) $p2PlayerRating = 1;
-      break;
-    case 100009: // Red Rating - Update players rating 👎 Bad (Red Rating)
-      if($isSimulation) return;
-      if($playerID == 1 && $p1PlayerRating != 0) break;
-      if($playerID == 2 && $p2PlayerRating != 0) break;
-      global $p1id, $p2id;
-      include "MenuFiles/ParseGamefile.php";
-      AddRating(($playerID == 1 ? 2 : 1), "red");
-      if ($playerID == 1) $p1PlayerRating = 2;
-      if ($playerID == 2) $p2PlayerRating = 2;
-      break;
     case 100010: //Grant badge
       if($isSimulation) return;
       include "MenuFiles/ParseGamefile.php";
@@ -657,10 +637,6 @@ function IsModeAsync($mode)
     case 100004:
       return true;
     case 100007:
-      return true;
-    case 100008:
-      return true;
-    case 100009:
       return true;
     case 100010:
       return true;
@@ -1150,7 +1126,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-");
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
       if(ActionsThatDoArcaneDamage($cardID)) AssignArcaneBonus($currentPlayer);
-      else ClearNextCardArcaneBuffs($currentPlayer);
+      else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     }
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);

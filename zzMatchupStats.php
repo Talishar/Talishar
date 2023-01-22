@@ -1,6 +1,6 @@
 <?php
 
-include_once 'Header.php';
+include_once 'MenuBar.php';
 include "CardDictionary.php";
 include "./Libraries/UILibraries2.php";
 require_once "./includes/dbh.inc.php";
@@ -245,4 +245,4 @@ echo ("</div>");
 echo ("</section>");
 echo ("</div>");
 
-include_once 'Footer.php';
+include_once 'Disclaimer.php';

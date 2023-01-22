@@ -6,9 +6,9 @@
 
   $decklink = TryGet("decklink", "");
 
-  if($decklink == "") { header("Location: ../Profile.php"); exit; }
+  if($decklink == "") { header("Location: ../ProfilePage.php"); exit; }
   session_start();
-  if(!isset($_SESSION["userid"])) { header("Location: ../Profile.php"); exit; }
+  if(!isset($_SESSION["userid"])) { header("Location: ../ProfilePage.php"); exit; }
   $sql = "DELETE FROM favoritedeck WHERE decklink=? AND usersId=?";
 
 	$stmt = mysqli_stmt_init($conn);
@@ -19,7 +19,7 @@
   }
 
   mysqli_close($conn);
-  header("Location: ../Profile.php");
+  header("Location: ../ProfilePage.php");
   exit;
 
 ?>

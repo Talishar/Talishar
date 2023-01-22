@@ -5,6 +5,7 @@ include "HostFiles/Redirector.php";
 include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
 include_once "Libraries/PlayerSettings.php";
+include_once 'Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
 $deck = TryGET("deck");
@@ -17,7 +18,6 @@ $decksToTry = TryGet("decksToTry");
 $favoriteDeck = TryGet("favoriteDeck", "0");
 $favoriteDeckLink = TryGet("favoriteDecks", "0");
 $gameDescription = htmlentities(TryGet("gameDescription", "Game #"), ENT_QUOTES);
-$karmaRestriction = TryGet("gameKarmaRestriction", "0");
 $deckbuilderID = TryGet("user", "");
 $roguelikeGameID = TryGet("roguelikeGameID", "");
 $startingHealth = TryGet("startingHealth", "");
@@ -35,6 +35,12 @@ if($favoriteDeckLink != 0)
 $isisShadowBanned = false;
 
 session_start();
+
+if (!isset($_SESSION["userid"])) {
+  if (isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
+}
 
 if(isset($_SESSION["userid"]))
 {
@@ -84,7 +90,7 @@ $p1Data = [1];
 $p2Data = [2];
 if ($deckTestMode != "") {
   $gameStatus = 4; //ReadyToStart
-  $opponentDeck = "Dummy.txt";
+  $opponentDeck = "./Assets/Dummy.txt";
   switch($deckTestMode)
   {
     case "Woottonhog": $opponentDeck = "./Roguelike/Encounters/Woottonhog.txt"; break;

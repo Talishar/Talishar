@@ -1,0 +1,6 @@
+<?php
+// Key for development / test
+$FaBraryKey = "op://Dev/Fabrary/credential";
+
+// Fake key for development / test
+$adsenseClientId = "";

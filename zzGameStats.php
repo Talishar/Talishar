@@ -1,6 +1,6 @@
 <?php
 
-include_once 'Header.php';
+include_once 'MenuBar.php';
 include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries2.php";
 include_once './includes/functions.inc.php';
@@ -178,4 +178,6 @@ foreach ($gameData as $row) {
 }
 echo ("</table><div>");
 if(!$forIndividual) echo ("</section>");
+echo ("</div>");
+echo ("</div>");
 echo ("</div>");

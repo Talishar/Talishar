@@ -17,11 +17,8 @@ function ProcessMacros()
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if(($turn[0] == "B") && IsAllyAttackTarget()) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "CHOOSEARCANE" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue("0"); }
-      else if($turn[0] == "BUTTONINPUT" && count(explode(",", $turn[2])) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSEMULTIZONE" && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if(AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSEARSENAL" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSECHARACTER" && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSECOMBATCHAIN" && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
       {
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
@@ -55,9 +52,18 @@ function ProcessMacros()
   }
 }
 
+function AutopassPhaseWithOneOption($phase)
+{
+  switch($phase)
+  {
+    case "BUTTONINPUT": case "CHOOSEMULTIZONE": case "CHOOSECHARACTER": case "CHOOSECOMBATCHAIN":
+      return true;
+    default: return false;
+  }
+}
+
 function HasPlayableCard($player, $phase)
 {
-  global $combatChain;
   $restriction = "";
   $character = &GetPlayerCharacter($player);
   for($i=0; $i<count($character); $i+=CharacterPieces())
@@ -68,6 +74,11 @@ function HasPlayableCard($player, $phase)
   for($i=0; $i<count($hand); $i+=HandPieces())
   {
     if(IsPlayable($hand[$i], $phase, "HAND", $i, $restriction, $player)) return true;
+  }
+  global $combatChain;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces())
+  {
+    if(IsPlayable($combatChain[$i], $phase, "CC", $i, $restriction, $player)) return true;
   }
   $arsenal = &GetArsenal($player);
   for($i=0; $i<count($arsenal); $i+=ArsenalPieces())
@@ -89,11 +100,6 @@ function HasPlayableCard($player, $phase)
   {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces())
-  {
-    if(IsPlayable($combatChain[$i], $phase, "CC", $i, $restriction, $player)) return true;
-  }
-  //TODO: Landmarks? Allies?
   return false;
 }
 

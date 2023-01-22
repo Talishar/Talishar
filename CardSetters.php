@@ -20,7 +20,6 @@ function BanishCard(&$banish, &$classState, $cardID, $modifier, $player = "", $f
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
-  WriteReplay($player, $cardID, $from, "BANISH");
   AddEvent("BANISH", $cardID);
   if (($modifier == "BOOST" || $from == "DECK") && ($cardID == "ARC176" || $cardID == "ARC177" || $cardID == "ARC178")) {
     WriteLog(CardLink($cardID, $cardID) . " was banished from your deck face up by an action card. Gained 1 action point.");
@@ -86,14 +85,12 @@ function AddBottomMyDeck($cardID, $from)
 function AddBottomDeck($cardID, $player, $from)
 {
   $deck = &GetDeck($player);
-  WriteReplay($player, $cardID, $from, "BOTTOM");
   array_push($deck, $cardID);
 }
 
 function AddTopDeck($cardID, $player, $from)
 {
   $deck = &GetDeck($player);
-  WriteReplay($player, $cardID, $from, "TOP");
   array_unshift($deck, $cardID);
 }
 
@@ -113,7 +110,6 @@ function AddMainHand($cardID, $from)
 function AddPlayerHand($cardID, $player, $from)
 {
   $hand = &GetHand($player);
-  WriteReplay($player, $cardID, $from, "HAND");
   array_push($hand, $cardID);
 }
 
@@ -150,7 +146,6 @@ function AddArsenal($cardID, $player, $from, $facing, $counters=0)
   $character = &GetPlayerCharacter($player);
   $cardSubType = CardSubType($cardID);
   if ($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && $character[CharacterPieces()] == "DYN151") $counters=1;
-  WriteReplay($player, $cardID, $from, "ARSENAL");
   array_push($arsenal, $cardID);
   array_push($arsenal, $facing);
   array_push($arsenal, ArsenalNumUsesPerTurn($cardID)); //Num uses
@@ -221,7 +216,6 @@ function AddSoul($cardID, $player, $from)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
-  WriteReplay($player, $cardID, $from, "SOUL");
   AddEvent("SOUL", $cardID);
   global $CS_NumAddedToSoul;
   global $myStateBuiltFor;
@@ -266,7 +260,6 @@ function BanishFromSpecificSoul(&$soul, $player)
 {
   if (count($soul) == 0) return;
   $cardID = array_shift($soul);
-  WriteReplay($player, $cardID, "SOUL", "BANISH");
   AddEvent("BANISH", $cardID);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
@@ -322,7 +315,7 @@ function AssignArcaneBonus($playerID)
   }
 }
 
-function ClearNextCardArcaneBuffs($player)
+function ClearNextCardArcaneBuffs($player, $playedCard="", $from="")
 {
   global $currentTurnEffects;
   $layerIndex = 0;
@@ -333,7 +326,7 @@ function ClearNextCardArcaneBuffs($player)
     {
       switch($currentTurnEffects[$i])
       {
-        case "DYN200": case "DYN201": case "DYN202": $remove = 1; break;
+        case "DYN200": case "DYN201": case "DYN202": if(!IsStaticType(CardType($playedCard), $from, $playedCard))$remove = 1; break;
         default: break;
       }
     }
@@ -428,7 +421,6 @@ function AddGraveyard($cardID, $player, $from)
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor, $CS_CardsEnteredGY;
-  WriteReplay($player, $cardID, $from, "GRAVEYARD");
   if ($cardID == "MON124") {
     BanishCardForPlayer($cardID, $player, $from, "NA");
     return;

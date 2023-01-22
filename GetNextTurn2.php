@@ -72,14 +72,6 @@ while ($lastUpdate != 0 && ($lastCurrentPlayer == 0 || $lastCurrentCachePiece ==
       SetCachePiece($gameName, $otherP + 3, "2");
       $lastUpdate = 0;
       $opponentDisconnected = true;
-
-      if ($otherP == 1) {
-        $GLO_Player1Disconnected = -2; // Remove 10 karma to the leaver if it's player 1.
-        $GLO_Player2Disconnected = 0; // No punition to the other player.
-      } else {
-        $GLO_Player2Disconnected = -2; // Remove 10 karma to the leaver if it's player 2.
-        $GLO_Player1Disconnected = 0; // No punition to the other player.
-      }
     }
   }
   ++$count;
@@ -496,15 +488,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if ($playerID == 1) $content .= "&nbsp;" . CreateButton($playerID, "Quick Rematch", 100000, 0, "24px");
       //if ($playerID != 3 && IsPatron($playerID)) $content .= "&nbsp;" . CreateButton($playerID, "Save Replay", 100012, 0, "24px");
       if ($playerID != 3) {
-        $content .= "<BR><span class='Rate-Span'>Rate your Opponent:&nbsp;";
-        $rating = ($playerID == 1 ? $p1PlayerRating : $p2PlayerRating);
-        if ($rating != 2) {
-          $content .= CreateButton($playerID, "", 100008, "GreenThumb", "24px", "Images/GreenThumb.png", "👍 I liked and recommend playing with this player.");
-          $content .= ($rating != 1 ? "&nbsp;" : "</span>");
-        }
-        if ($rating != 1) {
-          $content .= CreateButton($playerID, "", 100009, "RedThumb", "24px", "Images/RedThumb.png", "👎 I disliked playing with this player.") . "</span>";
-        }
         $time = ($playerID == 1 ? $p1TotalTime : $p2TotalTime);
         $totalTime = $p1TotalTime + $p2TotalTime;
         $content .= "<BR><span class='Time-Span'>Your Play Time: " . intval($time / 60) . "m" . $time % 60 . "s - Game Time: " . intval($totalTime / 60) . "m" . $totalTime % 60 . "s</span>";
