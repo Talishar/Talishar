@@ -57,10 +57,8 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 <style>
 </style>
 
-<div style='position:absolute; top:100px; width:100%;'>
-  <center>
-    <div style="width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
-  </center>
+<div style="text-align: center; padding-top: 90px;">
+  <div style="display: inline-block; width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
 </div>
 
 <div class="ContentWindow" style='width:25%; height:90%; left:20px; top:60px; overflow-y:auto;'>
