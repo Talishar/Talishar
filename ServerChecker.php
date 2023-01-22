@@ -53,7 +53,7 @@ if ($handle = opendir($path)) {
         $p2Hero = GetCachePiece($gameToken, 8);
         if ($p2Hero != "") {
           $gameInProgressCount += 1;
-          $spectateLinks .= "<form style='text-align:center;' action='". $reactFE . "'>";
+          $spectateLinks .= "<form style='text-align:center;' action='" . $reactFE . "'>";
           $spectateLinks .= "<center><table><tr><td style='vertical-align:middle;'>";
           if ($p1Hero == "") {
             $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate) / 1000) . " seconds ago </label>";
@@ -63,7 +63,7 @@ if ($handle = opendir($path)) {
             $spectateLinks .= " &nbsp; vs &nbsp; ";
             $spectateLinks .= "</td><td>";
             $spectateLinks .= "<img height='40px;' src='./crops/" . $p2Hero . "_cropped.png' />";
-            $spectateLinks .= "</td><td style='vertical-align:middle;'>&nbsp;";
+            $spectateLinks .= "</td><td style='vertical-align:middle;'>";
           }
           $spectateLinks .= "<input class='ServerChecker_Button' type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
           $spectateLinks .= "</td></tr></table><center>";
@@ -118,38 +118,28 @@ if ($handle = opendir($path)) {
       $link .= "</form>";
       if ($format == "blitz") {
         if (!$isisShadowBanned) $blitzLinks .= $link;
-      }
-      else if ($format == "shadowblitz") {
+      } else if ($format == "shadowblitz") {
         if ($isisShadowBanned) $blitzLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      }
-      else if ($format == "compblitz") {
+      } else if ($format == "compblitz") {
         if (!$isisShadowBanned) $compBlitzLinks .= $link;
-      }
-      else if ($format == "cc") {
+      } else if ($format == "cc") {
         if (!$isisShadowBanned) $ccLinks .= $link;
-      }
-      else if ($format == "shadowcc") {
+      } else if ($format == "shadowcc") {
         if ($isisShadowBanned) $ccLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      }
-      else if ($format == "compcc") {
+      } else if ($format == "compcc") {
         if (!$isisShadowBanned) $compCCLinks .= $link;
-      }
-      else if ($format == "shadowcompcc") {
+      } else if ($format == "shadowcompcc") {
         if ($isisShadowBanned) $ccLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
-      }
-      else if ($format == "livinglegendscc") {
+      } else if ($format == "livinglegendscc") {
         if (!$isisShadowBanned) $otherFormatsLinks .= $link;
-      }
-      else if ($format == "commoner") {
+      } else if ($format == "commoner") {
         if (!$isisShadowBanned) $otherFormatsLinks .= $link;
-      }
-      else if ($format == "clash") {
+      } else if ($format == "clash") {
         if (!$isisShadowBanned) $otherFormatsLinks .= $link;
-      }
-      else if ($format == "shadowcommoner") {
+      } else if ($format == "shadowcommoner") {
         if ($isisShadowBanned) $otherFormatsLinks .= $link;
         else if ($isMod) $otherFormatsLinks .= $link;
       }
@@ -157,8 +147,7 @@ if ($handle = opendir($path)) {
   }
   closedir($handle);
 }
-if($canSeeQueue)
-{
+if ($canSeeQueue) {
   echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
   echo ($blitzLinks);
   echo ("<h3 style='text-align:center;'>________</h3>");
@@ -174,15 +163,13 @@ if($canSeeQueue)
   echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
   echo ($otherFormatsLinks);
 }
-if(!$canSeeQueue)
-{
-  echo("<BR>");
-  echo("<div><b>&#10071;Log in to use matchmaking and see open matches</b></div><br>");
+if (!$canSeeQueue) {
+  echo ("<BR>");
+  echo ("<div><b>&#10071;Log in to use matchmaking and see open matches</b></div><br>");
 }
 echo ("<h3 style='text-align:center;'>________</h3>");
 echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h2>");
-if(!IsMobile())
-{
+if (!IsMobile()) {
   echo ($spectateLinks);
 }
 echo ("</div>");

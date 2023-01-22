@@ -55,26 +55,10 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 ?>
 
 <style>
-  body {
-    background-image: url('Images/background_DYN.jpg');
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    overflow: hidden;
-    height: 100vh;
-    height: 100dvh;
-  }
-
-  .SelectDeckInput {
-    font-weight: bolder;
-    margin-left: 10px;
-  }
 </style>
 
-<div style='position:absolute; top:100px; width:100%;'>
-  <center>
-    <div style="width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
-  </center>
+<div style="text-align: center; padding-top: 90px;">
+  <div style="display: inline-block; width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
 </div>
 
 <div class="ContentWindow" style='width:25%; height:90%; left:20px; top:60px; overflow-y:auto;'>
@@ -93,7 +77,7 @@ else echo ("<div class='ContentWindow' style='top:30%; left:35%; width:30%;'>");
 
 ?>
 
-<h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
+<h1><?php echo ($createNewGameText); ?></h1>
 
 <?php
 echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
@@ -126,8 +110,8 @@ echo ("<br>");
 <?php
 if (isset($_SESSION["userid"])) {
   echo ("<span style='display:inline;'>");
-  echo ("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-  echo ("<label title='Save deck to Favorites' for='favoriteDeck' style='margin-left:10px;'></label>");
+  echo ("<labelfor='favoriteDeck'><input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
+  echo ("Save deck to ❤️ favorites</label>");
   echo ("</span>");
 }
 echo ("<br>");
@@ -155,16 +139,16 @@ echo ("</select>");
 
 <?php
 if ($canSeeQueue) {
-  echo '<input class="SelectDeckInput" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
-  echo ('<label style="margin-left:2px;" for="public">Public</label>');
+  echo '<label for="public"><input class="SelectDeckInput" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
+  echo (' Public</label>');
 }
 ?>
-
-<input type="radio" class='SelectDeckInput' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
-<label for="private">Private</label><br><br>
-
-<input class='SelectDeckInput' type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
-<label for="deckTestMode">Single Player</label><br><br>
+<label for="private">
+  <input type="radio" class='SelectDeckInput' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?> />
+  Private</label>
+<label for="deckTestMode">
+  <input class='SelectDeckInput' type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+  Single Player</label>
 <div style=' text-align:center;'>
   <input type="submit" style="font-size:28px;" value="<?php echo ($createGameText); ?>">
 </div>
@@ -175,7 +159,6 @@ if ($canSeeQueue) {
 </div>
 
 <div class="ContentWindow" style='right:20px; top:60px; height:90%; width:25%; <?php if (IsMobile()) echo ("display:none; "); ?>'>
-
   <h1>News</h1>
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
@@ -185,24 +168,17 @@ if ($canSeeQueue) {
         <h4 style="margin-left:5%; margin-right:5%;">Login is now required for matchmaking</h4>
         <BR>
         If logged out, you can still make private games to play with friends, against yourself in multiple tabs, or against the bot! We've also added Clash as a supported format.
-
         <br>
       </div>
-
       <BR>
-
-
       <div class='LanguageSelector'><?php echo ($languageText); ?>:
         <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
           <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
           <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
         </select>
       </div>
-
     </div>
   </div>
-
-
   <?php
   /*
   if (!$isPatron) {
@@ -224,9 +200,7 @@ if ($canSeeQueue) {
   */
   ?>
   <BR>
-
 </div>
-
 <script>
   function changeLanguage() {
     window.location.search = '?language=' + document.getElementById('languageSelect').value;

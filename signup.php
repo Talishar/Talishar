@@ -6,10 +6,18 @@ include_once 'MenuBar.php';
   <h2>SIGN UP</h2>
   <div class="signup-form-form">
     <form action="includes/signup.inc.php" method="post">
-      <input type="text" name="uid" placeholder="Username...">
-      <input type="text" name="email" placeholder="Email...">
-      <input type="password" name="pwd" placeholder="Password...">
-      <input type="password" name="pwdrepeat" placeholder="Repeat password...">
+      <label for="uid">Username
+        <input type="text" name="uid">
+      </label>
+      <label for="email">Email
+        <input type="text" name="email" placeholder="name@example.com">
+      </label>
+      <label for="pwd">Password
+        <input type="password" name="pwd" placeholder="Password...">
+      </label>
+      <label for="pwdrepeat">Repeat password...
+        <input type="password" name="pwdrepeat" placeholder="Repeat password...">
+      </label>
       <button type="submit" name="submit">SIGN UP</button>
     </form>
   </div>
@@ -30,7 +38,7 @@ include_once 'MenuBar.php';
     } else if ($_GET["error"] == "usernametaken") {
       echo "<p>Username already taken!</p>";
     } else if ($_GET["error"] == "none") {
-      echo "<p>You've signed up!</p>";
+      echo "<h2>You've signed up!</h2>";
     }
   }
   ?>

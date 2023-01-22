@@ -10,19 +10,16 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 $playerID = $_GET["playerID"];
-if($playerID == "1")
-{
-  echo("Player 1 should not use JoinGame.php");
+if ($playerID == "1") {
+  echo ("Player 1 should not use JoinGame.php");
   exit;
 }
 
 $settingArray = [];
-if(isset($_SESSION["userid"]))
-{
+if (isset($_SESSION["userid"])) {
   $savedSettings = LoadSavedSettings($_SESSION["userid"]);
-  for($i=0; $i<count($savedSettings); $i+=2)
-  {
-    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
+  for ($i = 0; $i < count($savedSettings); $i += 2) {
+    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i) + 1];
   }
 }
 
@@ -41,8 +38,8 @@ if(isset($_SESSION["userid"]))
 </style>
 
 <div class='JoinGameDiv'>
-  <h1>Game Lobby</h1></br>
-
+  <br>
+  <h1>Game Lobby</h1>
   <?php
   echo ("<form action='" . $redirectPath . "/JoinGameInput.php'>");
   echo ("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
@@ -57,17 +54,17 @@ if(isset($_SESSION["userid"]))
     $favoriteDecks = LoadFavoriteDecks($_SESSION["userid"]);
     if (count($favoriteDecks) > 0) {
       $selIndex = -1;
-      if(isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
-      echo ("<div class='DeckToTry'>Favorite Decks: ");
+      if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
+      echo ("<label for='favoriteDecks'>Favorite Decks");
       echo ("<select style='height:26px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
       for ($i = 0; $i < count($favoriteDecks); $i += 3) {
         echo ("<option value='" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
       }
-      echo ("</select></div><br>");
+      echo ("</select></label>");
     }
   }
   if (count($favoriteDecks) == 0) {
-    echo ("<div class='DeckToTry'>CC Starter Decks: ");
+    echo ("<label for='decksToTry'>Starter Decks");
     echo ("<select name='decksToTry' id='decksToTry'>");
     echo ("<option value='1'>Bravo CC Starter Deck</option>");
     echo ("<option value='2'>Rhinar CC Starter Deck</option>");
@@ -86,33 +83,32 @@ if(isset($_SESSION["userid"]))
     echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
     echo ("<option value='16'>Fai Blitz Starter Deck</option>");
     echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
-    echo ("</select></div><br>");
+    echo ("</select></label><br>");
   }
 
   ?>
-    <label for="fabdb" style='font-weight:bolder; margin-left:71px;'>Deck Link:</label>
-    <input type="text" id="fabdb" name="fabdb">
-  &nbsp;
+  <label for="fabdb">Deck Link</label>
+  <input type="text" id="fabdb" name="fabdb">
+  <br>
   <?php
   if (isset($_SESSION["userid"])) {
     echo ("<span style='display:inline;'>");
-    echo ("<input title='Save deck to Favorites' class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-    echo ("<label for='favoriteDeck'>&nbsp;</label>");
+    echo ("<label for='favoriteDeck'><input title='Save deck to Favorites' class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
+    echo ("Save Deck to Favorites</label>");
     echo ("</span>");
   }
-  echo ("<BR>");
-  echo ("<BR>");
   ?>
-
+  <br>
   <div style='text-align:center;'><input class="JoinGame_Button" type="submit" value="Submit"></div>
-  </form><br>
+  </form>
 
   <h3 style="text-align:center;">_____________________________</h3>
-  <h2>Instructions</h2>
-
-  <p style="text-align:center; padding:10px;">Choose a deck and click submit. You will be taken to the game lobby.</p><br>
-  <p style="text-align:center; padding:10px;">Once in the game lobby, the player who win the dice roll choose if the go first. Then the host can start the game.</p><br>
-  <p style="text-align:center; font-size: 20px; padding:5px;">Have Fun!</p>
+  <div>
+    <h2>Instructions</h2>
+    <p style="text-align:center; padding:10px;">Choose a deck and click submit. You will be taken to the game lobby.</p>
+    <p style="text-align:center; padding:10px;">Once in the game lobby, the player who win the dice roll choose if the go first. Then the host can start the game.</p>
+    <p style="text-align:center; font-size: 20px; padding:5px;">Have Fun!</p>
+  </div>
 </div>
 </div>
 
