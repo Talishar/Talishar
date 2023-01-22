@@ -1,25 +1,26 @@
 <?php
 require "MenuBar.php";
 
-if(!isset($_SESSION['userid'])) { header('Location: ./MainMenu.php'); die(); }
+if (!isset($_SESSION['userid'])) {
+  header('Location: ./MainMenu.php');
+  die();
+}
 
 include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries2.php";
 include_once "./APIKeys/APIKeys.php";
 
-if(isset($_SESSION['userid']))
-{
+if (isset($_SESSION['userid'])) {
   $badges = LoadBadges($_SESSION['userid']);
   echo ("<div class='ContentWindow' style='position:relative; width:50%; left:20px; top:20px; height:200px;'>");
   echo ("<h1>Your Badges</h1>");
-  for($i=0; $i<count($badges); $i+=7)
-  {
-    $bottomText = str_replace("{0}", $badges[$i+2], $badges[$i+4]);
+  for ($i = 0; $i < count($badges); $i += 7) {
+    $bottomText = str_replace("{0}", $badges[$i + 2], $badges[$i + 4]);
     $fullText = $badges[$i + 3] . "<br><br>" . $bottomText;
-    if($badges[$i+6] != "") echo("<a href='" . $badges[$i+6] . "'>");
+    if ($badges[$i + 6] != "") echo ("<a href='" . $badges[$i + 6] . "'>");
     echo ("<img style='margin:3px; width:120px; height:120px; object-fit: cover;' src='" . $badges[$i + 5] . "'></img>");
     //TODO: Show badge text
-    if($badges[$i+6] != "") echo("</a>");
+    if ($badges[$i + 6] != "") echo ("</a>");
   }
   echo ("</div>");
 }
@@ -40,7 +41,7 @@ if (isset($_SESSION["isPatron"])) {
 <div class='ContentWindow' style='left:60%; right:20px; top:60px; height:90%;'>
   <h2>Welcome <?php echo $_SESSION['useruid'] ?>!</h2>
 
-<?php
+  <?php
 
   DisplayPatreon();
 
@@ -81,8 +82,8 @@ if (isset($_SESSION["isPatron"])) {
       echo ("<img class='imgPatreon' src='./Assets/patreon-php-master/assets/images/login_with_patreon.png' alt='Login via Patreon'>");
       echo '</a>';
     }
-}
-?>
+  }
+  ?>
 </div>
 
 <?php

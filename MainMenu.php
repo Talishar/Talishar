@@ -55,10 +55,6 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 ?>
 
 <style>
-  .SelectDeckInput {
-    font-weight: bolder;
-    margin-left: 10px;
-  }
 </style>
 
 <div style='position:absolute; top:100px; width:100%;'>
@@ -116,8 +112,8 @@ echo ("<br>");
 <?php
 if (isset($_SESSION["userid"])) {
   echo ("<span style='display:inline;'>");
-  echo ("<input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
-  echo ("<label title='Save deck to Favorites' for='favoriteDeck' style='margin-left:10px;'></label>");
+  echo ("<labelfor='favoriteDeck'><input class='inputFavoriteDeck' type='checkbox' id='favoriteDeck' name='favoriteDeck' />");
+  echo ("Save deck to ❤️ favorites</label>");
   echo ("</span>");
 }
 echo ("<br>");
