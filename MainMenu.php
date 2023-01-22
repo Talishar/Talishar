@@ -55,16 +55,6 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 ?>
 
 <style>
-  body {
-    background-image: url('Images/background_DYN.jpg');
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    overflow: hidden;
-    height: 100vh;
-    height: 100dvh;
-  }
-
   .SelectDeckInput {
     font-weight: bolder;
     margin-left: 10px;
@@ -93,7 +83,7 @@ else echo ("<div class='ContentWindow' style='top:30%; left:35%; width:30%;'>");
 
 ?>
 
-<h1 style="margin-top: 3px;"><?php echo ($createNewGameText); ?></h1>
+<h1><?php echo ($createNewGameText); ?></h1>
 
 <?php
 echo ("<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/CreateGame.php'>");
@@ -155,16 +145,16 @@ echo ("</select>");
 
 <?php
 if ($canSeeQueue) {
-  echo '<input class="SelectDeckInput" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
-  echo ('<label style="margin-left:2px;" for="public">Public</label>');
+  echo '<label for="public"><input class="SelectDeckInput" type="radio" id="public" name="visibility" value="public" ' . ($defaultVisibility == 1 ? 'checked="checked"' : "") . '>';
+  echo (' Public</label>');
 }
 ?>
-
-<input type="radio" class='SelectDeckInput' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?>>
-<label for="private">Private</label><br><br>
-
-<input class='SelectDeckInput' type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
-<label for="deckTestMode">Single Player</label><br><br>
+<label for="private">
+  <input type="radio" class='SelectDeckInput' id="private" name="visibility" value="private" <?php if ($defaultVisibility == 0) echo 'checked="checked"'; ?> />
+  Private</label>
+<label for="deckTestMode">
+  <input class='SelectDeckInput' type="checkbox" id="deckTestMode" name="deckTestMode" value="deckTestMode">
+  Single Player</label>
 <div style=' text-align:center;'>
   <input type="submit" style="font-size:28px;" value="<?php echo ($createGameText); ?>">
 </div>

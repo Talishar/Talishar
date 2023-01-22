@@ -25,11 +25,20 @@ $isMobile = IsMobile();
 <head>
   <title>Talishar</title>
   <link rel="shortcut icon" type="image/png" href="Images/TeenyCoin.png" />
-
+  <link rel="stylesheet" href="https://unpkg.com/bamboo.css/dist/dark.min.css">
   <style>
+    body {
+      background-image: url('Images/background_DYN.jpg');
+      background-position: top center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+    }
+
     li {
       display: inline;
-      font-size: 24px;
       padding: 8px;
     }
 
@@ -47,6 +56,7 @@ $isMobile = IsMobile();
     }
 
     .ContentWindow {
+      padding: 0 4em;
       background-color: rgba(40, 40, 40, .7);
       font-family: helvetica;
       color: white;
@@ -54,11 +64,11 @@ $isMobile = IsMobile();
     }
 
     .NavBarDiv {
-      font-size: 0.5rem;
+      font-size: 1.5rem;
       position: fixed;
       left: 0px;
       top: 0px;
-      height: 30px;
+      height: 45px;
       width: 100%;
       z-index: 100;
       background-color: rgba(30, 30, 30, .8);
@@ -78,11 +88,11 @@ $isMobile = IsMobile();
     }
 
     td {
-      color:white;
+      color: white;
     }
 
     span {
-      color:white;
+      color: white;
     }
   </style>
 </head>
@@ -101,6 +111,7 @@ $isMobile = IsMobile();
       </ul>
 
       <ul class='rightnav'>
+        <li></li>
         <li><a href="MainMenu.php">Home Page</a></li>
         <?php if (!$isMobile) echo '<li><a href="https://fabtcg.com/events" target="_blank">Find Local Events</a></li>'; ?>
         <?php if (!$isMobile) echo '<li><a href="https://github.com/Talishar/Talishar/labels/bug" target="_blank">Known Bugs</a></li>'; ?>
