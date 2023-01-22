@@ -148,27 +148,27 @@ if ($handle = opendir($path)) {
   closedir($handle);
 }
 if ($canSeeQueue) {
-  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h2>");
+  echo ("<h3 style='width:100%; text-align:center; color:RGB(240,240,240);'>Blitz</h3>");
   echo ($blitzLinks);
-  echo ("<h3 style='text-align:center;'>________</h3>");
-  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Competitive Blitz</h2>");
+  echo ("<h4 style='text-align:center;'>______________________</h4>");
+  echo ("<h3 style='width:100%; text-align:center; color:RGB(240,240,240);'>Competitive Blitz</h3>");
   echo ($compBlitzLinks);
-  echo ("<h3 style='text-align:center;'>________</h3>");
-  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h2>");
+  echo ("<h4 style='text-align:center;'>______________________</h4>");
+  echo ("<h3 style='width:100%; text-align:center; color:RGB(240,240,240);'>Classic Constructed</h3>");
   echo ($ccLinks);
-  echo ("<h3 style='text-align:center;'>________</h3>");
-  echo ("<h2 title='This game mode is intended for training for high level regional and national events.' style='cursor:default; width:100%; text-align:center;'>Competitive CC</h2>");
+  echo ("<h4 style='text-align:center;'>______________________</h4>");
+  echo ("<h3 title='This game mode is intended for training for high level regional and national events.' style='cursor:default; width:100%; text-align:center;'>Competitive CC</h3>");
   echo ($compCCLinks);
-  echo ("<h3 style='text-align:center;'>________</h3>");
-  echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h2>");
+  echo ("<h4 style='text-align:center;'>______________________</h4>");
+  echo ("<h3 style='width:100%; text-align:center; color:RGB(240,240,240);'>Other Formats</h3>");
   echo ($otherFormatsLinks);
 }
 if (!$canSeeQueue) {
   echo ("<BR>");
   echo ("<div><b>&#10071;Log in to use matchmaking and see open matches</b></div><br>");
 }
-echo ("<h3 style='text-align:center;'>________</h3>");
-echo ("<h2 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h2>");
+echo ("<h4 style='text-align:center;'>______________________</h4>");
+echo ("<h3 style='width:100%; text-align:center; color:RGB(240,240,240);'>Games In Progress ($gameInProgressCount)</h3>");
 if (!IsMobile()) {
   echo ($spectateLinks);
 }
