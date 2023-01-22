@@ -64,5 +64,5 @@ if(!file_exists($path))
 </section>
 
 <?php
-include_once 'Footer.php'
+include_once 'Disclaimer.php'
 ?>

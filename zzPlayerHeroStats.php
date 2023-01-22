@@ -254,4 +254,4 @@ echo ("</section>");
 echo ("</div>");
 
 
-include_once 'Footer.php';
+include_once 'Disclaimer.php';

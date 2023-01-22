@@ -42,5 +42,5 @@ if (!$isPatron) {
   </div>
 </section>
 <?php
-include_once 'Footer.php'
+include_once 'Disclaimer.php'
 ?>

@@ -628,6 +628,203 @@ $isMobile = IsMobile();
     }
     ?>
 
-    <?php
-    include_once 'Footer.php'
-    ?>
+    function GetSelectedEquipType(type) {
+      var count = 0;
+      var overlay = document.getElementById(type + "-" + count + "-ovr");
+      var rv = "";
+      while (!!overlay) {
+        if (overlay.style.visibility == "hidden") {
+          var imageSrc = document.getElementById(type + "-" + count + "-img").src;
+          if (rv != "") rv += ",";
+          rv += imageSrc.substring(imageSrc.length - 11).split(".")[0];
+        }
+        ++count;
+        var overlay = document.getElementById(type + "-" + count + "-ovr");
+      }
+      return rv;
+    }
+
+    function GetDeckCards() {
+      var count = 0;
+      var returnValue = "";
+      var overlay = document.getElementById("DECK-" + count + "-ovr");
+      while (!!overlay) {
+        if (overlay.style.visibility == "hidden") {
+          var imageSrc = document.getElementById("DECK-" + count + "-img").src;
+          if (returnValue != "") returnValue += ",";
+          returnValue += imageSrc.substring(imageSrc.length - 11).split(".")[0];
+        }
+        ++count;
+        var overlay = document.getElementById("DECK-" + count + "-ovr");
+      }
+      return returnValue;
+    }
+
+    var audioPlayed = false;
+
+    function CheckReloadNeeded(lastUpdate) {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          if (parseInt(this.responseText) != 0) {
+            if (parseInt(this.responseText) == 1) location.reload();
+            else {
+              var responseArr = this.responseText.split("ENDTIMESTAMP");
+              document.getElementById("mainPanel").innerHTML = responseArr[1];
+              CheckReloadNeeded(parseInt(responseArr[0]));
+              var playAudio = document.getElementById("playAudio");
+              if (!!playAudio && playAudio.innerText == 1 && !audioPlayed) {
+                var audio = document.getElementById('playerJoinedAudio');
+                audio.play();
+                audioPlayed = true;
+              }
+              var otherHero = document.getElementById("otherHero");
+              if (!!otherHero) document.getElementById("oppHero").innerHTML = otherHero.innerHTML;
+              document.getElementById("icon").href = "./Images/" + document.getElementById("iconHolder").innerText;
+              var log = document.getElementById('gamelog');
+              if (log !== null) log.scrollTop = log.scrollHeight;
+              document.getElementById("submitForm").style.display = document.getElementById("submitDisplay").innerHTML;
+            }
+          }
+        }
+      };
+      xmlhttp.open("GET", "GetLobbyRefresh.php?gameName=<?php echo ($gameName); ?>&playerID=<?php echo ($playerID); ?>&lastUpdate=" + lastUpdate + "&authKey=<?php echo ($authKey); ?>", true);
+      xmlhttp.send();
+    }
+
+    function SubmitFirstPlayer(action) {
+      if (action == 1) action = "Go First";
+      else action = "Go Second";
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {}
+      }
+      var ajaxLink = "ChooseFirstPlayer.php?gameName=" + <?php echo ($gameName); ?>;
+      ajaxLink += "&playerID=" + <?php echo ($playerID); ?>;
+      ajaxLink += "&action=" + action;
+      ajaxLink += <?php echo ("\"&authKey=" . $authKey . "\""); ?>;
+      xmlhttp.open("GET", ajaxLink, true);
+      xmlhttp.send();
+    }
+  </script>
+
+  <?php
+
+  function DisplayEquipRow($equip, $equipSB, $name)
+  {
+    $cardSize = 110;
+    $count = 0;
+    if ($equip != "" || count($equipSB) > 0) echo ("<tr>");
+    if ($equip != "") {
+      $id = $name . "-" . $count;
+      echo ("<td>");
+      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo ("</div>");
+      echo ("</td>");
+      ++$count;
+    }
+    for ($i = 0; $i < count($equipSB); ++$i) {
+      $id = $name . "-" . $count;
+      echo ("<td>");
+      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+      echo ("</div>");
+      echo ("</td>");
+      ++$count;
+    }
+
+    if ($equip != "" || count($equipSB) > 0) echo ("</tr>");
+  }
+
+  function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
+  {
+    $cardSize = 110;
+    $count = 0;
+    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr>");
+    if ($weapon1 != "") {
+      $id = $name . "-" . $count;
+      echo ("<td>");
+      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo ("</div>");
+      echo ("</td>");
+      ++$count;
+    }
+    if ($weapon2 != "") {
+      if (HasReverseArt($weapon1) && $weapon2 == $weapon1) {
+        $weapon2 = ReverseArt($weapon1);
+      }
+      $id = $name . "-" . $count;
+      echo ("<td>");
+      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+      echo ("</div>");
+      echo ("</td>");
+      ++$count;
+    }
+    echo ("<tr>");
+    for ($i = 0; $i < count($weaponSB); ++$i) {
+      if (isset($weaponSB[$i + 1])) {
+        if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
+          $weaponSB[$i + 1] = ReverseArt($weaponSB[$i]);
+        }
+      }
+      $id = $name . "-" . $count;
+      echo ("<td>");
+      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
+      echo ("</div>");
+      echo ("</td>");
+      ++$count;
+    }
+    echo ("</tr>");
+
+    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</tr>");
+  }
+
+  function HasReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return true;
+      case "CRU004":
+        return true;
+      case "CRU051":
+        return true;
+      case "CRU079":
+        return true;
+      case "DYN069":
+        return true;
+      case "DYN115":
+        return true;
+      default:
+        return false;
+        break;
+    }
+  }
+
+  function ReverseArt($cardID)
+  {
+    switch ($cardID) {
+      case "WTR078":
+        return "CRU049";
+      case "CRU004":
+        return "CRU005";
+      case "CRU051":
+        return "CRU052";
+      case "CRU079":
+        return "CRU080";
+      case "DYN069":
+        return "DYN070";
+      case "DYN115":
+        return "DYN116";
+      default:
+        break;
+    }
+  }
+  ?>
+
+  <?php
+  include_once 'Disclaimer.php'
+  ?>

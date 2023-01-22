@@ -39,5 +39,5 @@ require 'MenuBar.php';
 </main>
 
 <?php
-require 'Footer.php';
+require 'Disclaimer.php';
 ?>

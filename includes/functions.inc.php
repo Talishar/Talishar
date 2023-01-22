@@ -46,33 +46,6 @@ function pwdMatch($pwd, $pwdrepeat) {
 	return $result;
 }
 
-// Check if username is in database, if so then return data
-function uidExists($conn, $username) {
-	$conn = GetDBConnection();
-  $sql = "SELECT * FROM users WHERE usersUid = ? OR usersEmail = ?;";
-	$stmt = mysqli_stmt_init($conn);
-	if (!mysqli_stmt_prepare($stmt, $sql)) {
-	 	header("location: ../Signup.php?error=stmtfailed");
-		exit();
-	}
-
-	mysqli_stmt_bind_param($stmt, "ss", $username, $email);
-	mysqli_stmt_execute($stmt);
-
-	// "Get result" returns the results from a prepared statement
-	$resultData = mysqli_stmt_get_result($stmt);
-
-	if ($row = mysqli_fetch_assoc($resultData)) {
-		return $row;
-	}
-	else {
-		$result = false;
-		return $result;
-	}
-	mysqli_stmt_close($stmt);
-	mysqli_close($conn);
-}
-
 // Insert new user into database
 function createUser($conn, $username, $email, $pwd, $reportingServer=false) {
 	if($reportingServer) $conn = GetReportingDBConnection();
@@ -93,66 +66,6 @@ function createUser($conn, $username, $email, $pwd, $reportingServer=false) {
 	mysqli_close($conn);
 	header("location: ../Signup.php?error=none");
 	exit();
-}
-
-// Check for empty input login
-function emptyInputLogin($username, $pwd) {
-	if (empty($username) || empty($pwd)) {
-		$result = true;
-	}
-	else {
-		$result = false;
-	}
-	return $result;
-}
-
-// Log user into website
-function loginUser($username, $pwd, $rememberMe) {
-	$conn = GetDBConnection();
-	$uidExists = uidExists($conn, $username);
-
-	if ($uidExists === false) {
-		mysqli_close($conn);
-		header("location: ../Login.php?error=wronglogin");
-		exit();
-	}
-
-	$pwdHashed = $uidExists["usersPwd"];
-	$checkPwd = password_verify($pwd, $pwdHashed);
-
-	if ($checkPwd === false) {
-		mysqli_close($conn);
-		header("location: ../Login.php?error=wronglogin");
-		exit();
-	}
-	elseif ($checkPwd === true) {
-		if(session_status() !== PHP_SESSION_ACTIVE) session_start();
-		$_SESSION["userid"] = $uidExists["usersId"];
-		$_SESSION["useruid"] = $uidExists["usersUid"];
-		$_SESSION["useremail"] = $uidExists["usersEmail"];
-		$_SESSION["userspwd"] = $uidExists["usersPwd"];
-		$patreonAccessToken = $uidExists["patreonAccessToken"];
-		$_SESSION["patreonEnum"] = $uidExists["patreonEnum"];
-
-		try {
-			PatreonLogin($patreonAccessToken);
-		} catch (\Exception $e) {
-
-		}
-
-
-		if($rememberMe)
-		{
-			$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
-			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
-			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
-		}
-		session_write_close();
-
-		mysqli_close($conn);
-		header("location: ../MainMenu.php?error=none");
-		exit();
-	}
 }
 
 function loginFromCookie()
@@ -604,8 +517,8 @@ function SendEmail($userEmail, $url) {
   require '../vendor/autoload.php';
 
   $email = new Mail();
-  $email->setFrom("no-reply@fleshandbloodonline.com", "No-Reply");
-  $email->setSubject("Talishar Password Reset");
+  $email->setFrom("no-reply@talisharonline.com", "No-Reply");
+  $email->setSubject("Talishar Password Reset Link");
   $email->addTo($userEmail);
   $email->addContent(
       "text/html",
