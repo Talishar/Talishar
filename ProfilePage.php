@@ -60,7 +60,6 @@ if (isset($_SESSION["isPatron"])) {
     echo ("</table>");
   }
 
-
   function DisplayPatreon()
   {
     global $patreonClientID, $patreonClientSecret;

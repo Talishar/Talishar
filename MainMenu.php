@@ -161,7 +161,6 @@ if ($canSeeQueue) {
 </div>
 
 <div class="ContentWindow" style='right:20px; top:60px; height:90%; width:25%; <?php if (IsMobile()) echo ("display:none; "); ?>'>
-
   <h1>News</h1>
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
@@ -171,24 +170,17 @@ if ($canSeeQueue) {
         <h4 style="margin-left:5%; margin-right:5%;">Login is now required for matchmaking</h4>
         <BR>
         If logged out, you can still make private games to play with friends, against yourself in multiple tabs, or against the bot! We've also added Clash as a supported format.
-
         <br>
       </div>
-
       <BR>
-
-
       <div class='LanguageSelector'><?php echo ($languageText); ?>:
         <select id='languageSelect' onchange='changeLanguage()' name='decksToTry' id='decksToTry'>
           <option value='1' <?php if ($language == 1) echo (" selected"); ?>>English</option>
           <option value='2' <?php if ($language == 2) echo (" selected"); ?>>Japanese (日本語)</option>
         </select>
       </div>
-
     </div>
   </div>
-
-
   <?php
   /*
   if (!$isPatron) {
@@ -210,9 +202,7 @@ if ($canSeeQueue) {
   */
   ?>
   <BR>
-
 </div>
-
 <script>
   function changeLanguage() {
     window.location.search = '?language=' + document.getElementById('languageSelect').value;
