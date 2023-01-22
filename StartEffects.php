@@ -13,7 +13,6 @@ $p2H = &GetHealth(2);
 $p1H = CharacterHealth($p1Char[0]);
 $p2H = CharacterHealth($p2Char[0]);
 if($p1StartingHealth != "") $p1H = $p1StartingHealth;
-StartReplay();
 
 $mainPlayer = $firstPlayer;
 $currentPlayer = $firstPlayer;

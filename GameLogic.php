@@ -2437,7 +2437,6 @@ function Draw($player, $mainPhase = true)
   if (count($deck) == 0) return -1;
   if (CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   array_push($hand, array_shift($deck));
-  WriteReplay($player, "Hide", "DECK", "HAND");
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "EVR019") || (SearchCurrentTurnEffects("EVR019-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "CRU097")))) PlayAura("WTR075", $otherPlayer);
   if (SearchCharacterActive($player, "EVR020")) {
     //Check if it was played by the player with Eartlore Bounty

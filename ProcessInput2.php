@@ -3,7 +3,6 @@
 error_reporting(E_ALL);
 
 include "WriteLog.php";
-include "WriteReplay.php";
 include "GameLogic.php";
 include "GameTerms.php";
 include "HostFiles/Redirector.php";
