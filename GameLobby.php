@@ -260,7 +260,7 @@ $isMobile = IsMobile();
 
         ?>
       </table>
-      <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:59%; right:20px;">
+      <div id="weaponDisplay" style="position:absolute; z-index:2; top:30px; left:50%; right:20px;">
         <table>
           <?php
 
@@ -517,41 +517,35 @@ $isMobile = IsMobile();
   {
     $cardSize = 110;
     $count = 0;
-    if ($equip != "" || count($equipSB) > 0) echo ("<tr>");
+    if ($equip != "" || count($equipSB) > 0) echo ("<tr><td>");
     if ($equip != "") {
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equip, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
     for ($i = 0; $i < count($equipSB); ++$i) {
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($equipSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
 
-    if ($equip != "" || count($equipSB) > 0) echo ("</tr>");
+    if ($equip != "" || count($equipSB) > 0) echo ("</td></tr>");
   }
 
   function DisplayWeaponRow($weapon1, $weapon2, $weaponSB, $name)
   {
     $cardSize = 110;
     $count = 0;
-    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr>");
+    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("<tr><td>");
     if ($weapon1 != "") {
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon1, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
     if ($weapon2 != "") {
@@ -559,14 +553,11 @@ $isMobile = IsMobile();
         $weapon2 = ReverseArt($weapon1);
       }
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weapon2, "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
-    echo ("<tr>");
     for ($i = 0; $i < count($weaponSB); ++$i) {
       if (isset($weaponSB[$i + 1])) {
         if (HasReverseArt($weaponSB[$i]) && $weaponSB[$i + 1] == $weaponSB[$i]) {
@@ -574,16 +565,13 @@ $isMobile = IsMobile();
         }
       }
       $id = $name . "-" . $count;
-      echo ("<td>");
-      echo ("<div onclick='CardClick(\"" . $id . "\")'>");
+      echo ("<div style='display:inline; width:" . $cardSize . ";' onclick='CardClick(\"" . $id . "\")'>");
       echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;'>" . Card($weaponSB[$i], "concat", $cardSize, 0, 1, 1, 0, 0, "", $id) . "</span>");
       echo ("</div>");
-      echo ("</td>");
       ++$count;
     }
-    echo ("</tr>");
 
-    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</tr>");
+    if ($weapon1 != "" || $weapon2 != "" || count($weaponSB) > 0) echo ("</td></tr>");
   }
 
   function HasReverseArt($cardID)
