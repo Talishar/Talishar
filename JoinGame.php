@@ -113,5 +113,5 @@ if (isset($_SESSION["userid"])) {
 </div>
 
 <?php
-include_once 'Footer.php'
+include_once 'Disclaimer.php'
 ?>

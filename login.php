@@ -33,5 +33,5 @@ if (isset($_SESSION['useruid'])) {
 </div>
 
 <?php
-include_once 'Footer.php';
+include_once 'Disclaimer.php';
 ?>

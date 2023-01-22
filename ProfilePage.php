@@ -86,5 +86,5 @@ if (isset($_SESSION["isPatron"])) {
 </div>
 
 <?php
-require "Footer.php";
+require "Disclaimer.php";
 ?>
