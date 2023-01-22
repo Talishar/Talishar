@@ -11,9 +11,6 @@ if (isset($_POST["submit"])) {
   $password = $_POST["password"];
   $rememberMe = isset($_POST["rememberMe"]);
 
-  require_once "../includes/dbh.inc.php";
-  require_once '../includes/functions.inc.php';
-
   try {
     AttemptPasswordLogin($username, $password, $rememberMe);
   } catch (\Exception $e) { }
