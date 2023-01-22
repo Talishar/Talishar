@@ -127,7 +127,7 @@ $isMobile = IsMobile();
         <?php
         if (isset($_SESSION["useruid"])) {
           echo "<li><a href='ProfilePage.php'>Profile</a></li>";
-          echo "<li><a href='Logout.php'>Logout</a></li>";
+          echo "<li><a href='./AccountFiles/LogoutUser.php'>Logout</a></li>";
         } else {
           echo "<li><a href='Signup.php'>Sign up</a></li>";
           echo "<li><a href='./AccountFiles/LoginPage.php'>Log in</a></li>";
