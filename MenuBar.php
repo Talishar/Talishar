@@ -76,6 +76,14 @@ $isMobile = IsMobile();
     h5 {
       text-align: center;
     }
+
+    td {
+      color:white;
+    }
+
+    span {
+      color:white;
+    }
   </style>
 </head>
 
