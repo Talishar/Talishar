@@ -115,8 +115,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $isMobile = IsMobile();
   // Chat Log
   echo ("<br>");
-  if($isMobile) echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:80px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
-  else echo ("<div id='gamelog' style='text-align:left; position:absolute; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); top:120px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
+  if($isMobile) echo ("<div id='gamelog' style='text-align:left; position:absolute; color: white; background-color: rgba(20,20,20,0.8); top:80px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
+  else echo ("<div id='gamelog' style='text-align:left; position:absolute; color: white; background-color: rgba(20,20,20,0.8); top:160px; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   //if(!IsMobile()) echo("<BR>");
   //echo ("<div id='gamelog' style='text-align:left; position:relative; text-shadow: 2px 0 0 #1a1a1a, 0 -2px 0 #1a1a1a, 0 2px 0 #1a1a1a, -2px 0 0 #1a1a1a; color: #EDEDED; background-color: rgba(20,20,20,0.8); margin-top:6px; height:63%; left:3%; width:94%; bottom:10%; font-weight:550; overflow-y: auto;'>");
   EchoLog($gameName, $playerID);
