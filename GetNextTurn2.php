@@ -1,6 +1,7 @@
 <?php
 
 include 'Libraries/HTTPLibraries.php';
+include 'Classes/Deck.php';
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -1227,9 +1228,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //Display My Deck
   if (count($myDeck) > 0) {
+    $playerDeck = new Deck($playerID);
     if ($turn[0] == "OVER") echo ("<div title='Click to view the cards in your Deck.' style='cursor:pointer; position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") . "' onclick='ShowPopup(\"myDeckPopup\");'>");
     else echo ("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") . ";'>");
-    echo (Card($MyCardBack, "concat", $cardSizeAura, 0, 0, 0, 0, count($myDeck)));
+    echo (Card($MyCardBack, "concat", $cardSizeAura, 0, 0, 0, 0, $playerDeck->RemainingCards()));
   } else {
     //Empty Deck div
     echo ("<div style='position:fixed; right:" . GetZoneRight("DECK") . "; bottom:" . GetZoneBottom("MYDECK") . "; border-radius:5%; padding:" . $cardSizeAura / 2 . "px; background-color: rgba(0, 0, 0, 0.4);'>");
