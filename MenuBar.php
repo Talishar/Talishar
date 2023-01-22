@@ -56,7 +56,7 @@ $isMobile = IsMobile();
     }
 
     .ContentWindow {
-      padding: 0 4em;
+      padding: 0 1em;
       background-color: rgba(40, 40, 40, .7);
       font-family: helvetica;
       color: white;
@@ -72,6 +72,11 @@ $isMobile = IsMobile();
       width: 100%;
       z-index: 100;
       background-color: rgba(30, 30, 30, .8);
+    }
+
+    td>img {
+      height: max-content;
+      width: 100%;
     }
 
     .rightnav {
