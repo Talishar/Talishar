@@ -1,6 +1,6 @@
 <?php
-// Fake key for development / test
-$FaBraryKey = "op://Talishar/Fabrary Deck API Key/credential";
+// Key for development / test
+$FaBraryKey = "op://Dev/Fabrary/credential";
 
 // Fake key for development / test
 $adsenseClientId = "";
