@@ -14,7 +14,9 @@ if (isset($_POST["submit"])) {
   require_once "../includes/dbh.inc.php";
   require_once '../includes/functions.inc.php';
 
-  AttemptPasswordLogin($username, $password, $rememberMe);
+  try {
+    AttemptPasswordLogin($username, $password, $rememberMe);
+  } catch (\Exception $e) { }
 
 } else {
 	header("location: ../Login.php");
