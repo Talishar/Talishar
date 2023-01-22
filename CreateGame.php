@@ -90,7 +90,7 @@ $p1Data = [1];
 $p2Data = [2];
 if ($deckTestMode != "") {
   $gameStatus = 4; //ReadyToStart
-  $opponentDeck = "Dummy.txt";
+  $opponentDeck = "./Assets/Dummy.txt";
   switch($deckTestMode)
   {
     case "Woottonhog": $opponentDeck = "./Roguelike/Encounters/Woottonhog.txt"; break;
