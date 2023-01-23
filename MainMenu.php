@@ -57,11 +57,11 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 <style>
 </style>
 
-<div style="text-align: center; padding-top: 90px;">
+<div style="text-align: center; padding-top: 45px;">
   <div style="display: inline-block; width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
 </div>
 
-<div class="ContentWindow" style='width:25%; height:90%; left:20px; top:60px; overflow-y:auto;'>
+<div class="ContentWindow" style='width:25%; left:20px; top:60px; bottom:30px; overflow-y:auto;'>
   <?php
   try {
     include "ServerChecker.php";
@@ -72,8 +72,8 @@ $canSeeQueue = isset($_SESSION["useruid"]);
 
 <?php
 
-if (IsMobile()) echo ("<div class='ContentWindow' style='top:23%; left:32%; width:60%; bottom: 0px; overflow-y:visible'>");
-else echo ("<div class='ContentWindow' style='top:30%; left:35%; width:30%; bottom: 0px; overflow-y:auto'>");
+if (IsMobile()) echo ("<div class='ContentWindow' style='top:240px; left:32%; width:60%; bottom: 0px; overflow-y:visible'>");
+else echo ("<div class='ContentWindow' style='top:225px; left:35%; width:30%; bottom: 30px; overflow-y:auto'>");
 
 ?>
 
@@ -158,7 +158,7 @@ if ($canSeeQueue) {
 </div>
 </div>
 
-<div class="ContentWindow" style='right:20px; top:60px; height:90%; width:25%; <?php if (IsMobile()) echo ("display:none; "); ?>'>
+<div class="ContentWindow" style='right:20px; top:60px; bottom:30px; width:25%; <?php if (IsMobile()) echo ("display:none; "); ?>'>
   <h1>News</h1>
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
