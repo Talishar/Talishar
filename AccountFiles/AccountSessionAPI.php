@@ -11,6 +11,12 @@
     return $_SESSION["userid"];
   }
 
+  function LoggedInUserName()
+  {
+    CheckSession();
+    return $_SESSION["useruid"];
+  }
+
   function ClearLoginSession()
   {
     //First clear the session
