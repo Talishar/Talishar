@@ -1,15 +1,15 @@
 <?php
-include_once '../MenuBar.php';
-include_once './AccountSessionAPI.php';
+include_once './MenuBar.php';
+include_once './AccountFiles/AccountSessionAPI.php';
 
 if (IsUserLoggedIn()) {
-  header("Location: ../game/MainMenu.php");
+  header("Location: ./game/MainMenu.php");
 }
 ?>
 
   <style>
     body {
-      background-image: url('../Images/welcome-to-rathe.jpg');
+      background-image: url('./Images/welcome-to-rathe.jpg');
       background-position: top center;
       background-repeat: no-repeat;
       background-size: cover;
@@ -21,7 +21,7 @@ if (IsUserLoggedIn()) {
 
   <div class="ContentWindow" style='width:30%; height:40%; top:200px; left:35%;'>
     <h2>Login</h2>
-    <form action="AttemptPasswordLogin.php" method="post" style='text-align:center;'>
+    <form action="./AccountFiles/AttemptPasswordLogin.php" method="post" style='text-align:center;'>
       <input type="text" name="userID" placeholder="Username">
       <BR>
       <input type="password" name="password" placeholder="Password">
@@ -43,5 +43,5 @@ if (IsUserLoggedIn()) {
   </div>
 
 <?php
-include_once '../Disclaimer.php';
+include_once './Disclaimer.php';
 ?>

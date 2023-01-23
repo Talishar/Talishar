@@ -130,7 +130,7 @@ $isMobile = IsMobile();
           echo "<li><a href='./AccountFiles/LogoutUser.php'>Logout</a></li>";
         } else {
           echo "<li><a href='Signup.php'>Sign up</a></li>";
-          echo "<li><a href='./AccountFiles/LoginPage.php'>Log in</a></li>";
+          echo "<li><a href='./LoginPage.php'>Log in</a></li>";
         }
         ?>
       </ul>

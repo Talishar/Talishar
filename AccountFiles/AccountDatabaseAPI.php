@@ -26,7 +26,7 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 
   }
   else {
-		header("location: ./LoginPage.php");
+		header("location: ../LoginPage.php");
 		exit();
   }
 
@@ -62,7 +62,7 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 		exit();
   }
   else {
-    header("location: ./LoginPage.php");
+    header("location: ../LoginPage.php");
     exit();
   }
 }
