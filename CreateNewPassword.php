@@ -4,7 +4,7 @@ require 'MenuBar.php';
 
 <main>
   <div class="wrapper">
-    <section class="section-default">
+    <section class="section-default" style='position:absolute; top:200px;'>
 
       <?php
       // First we grab the tokens from the URL.
