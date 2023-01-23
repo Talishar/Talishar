@@ -1,7 +1,14 @@
 <?php
   function IsUserLoggedIn()
   {
+    CheckSession();
     return isset($_SESSION['useruid']);
+  }
+
+  function LoggedInUser()
+  {
+    CheckSession();
+    return $_SESSION["userid"];
   }
 
   function ClearLoginSession()
@@ -14,5 +21,12 @@
     //Also delete cookies
     if (isset($_COOKIE["rememberMeToken"])) setcookie("rememberMeToken", "", time() + 1, "/");
     if (isset($_COOKIE["lastAuthKey"])) setcookie("lastAuthKey", "", time() + 1, "/");
+  }
+
+  function CheckSession()
+  {
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
   }
 ?>

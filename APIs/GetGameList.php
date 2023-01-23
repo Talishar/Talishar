@@ -108,3 +108,4 @@ function deleteDirectory($dir)
   }
   return rmdir($dir);
 }
+?>
