@@ -2,6 +2,7 @@
 
 include_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
 include_once '../Assets/patreon-php-master/src/API.php';
+include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once '../Database/ConnectionManager.php';
 include_once './AccountDatabaseAPI.php';
 
