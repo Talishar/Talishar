@@ -37,9 +37,9 @@ if (isset($_SESSION["userid"])) {
   }
 </style>
 
-<div class='JoinGameDiv'>
+<div class='ContentWindow' style='width:30%; left:35%; top:15%; height:70%'>
   <br>
-  <h1>Game Lobby</h1>
+  <h1>Join Game</h1>
   <?php
   echo ("<form action='" . $redirectPath . "/JoinGameInput.php'>");
   echo ("<input type='hidden' id='gameName' name='gameName' value='$gameName'>");
@@ -56,7 +56,7 @@ if (isset($_SESSION["userid"])) {
       $selIndex = -1;
       if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
       echo ("<label for='favoriteDecks'>Favorite Decks");
-      echo ("<select style='height:26px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
+      echo ("<select style='height:34px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
       for ($i = 0; $i < count($favoriteDecks); $i += 3) {
         echo ("<option value='" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
       }
@@ -65,24 +65,7 @@ if (isset($_SESSION["userid"])) {
   }
   if (count($favoriteDecks) == 0) {
     echo ("<label for='decksToTry'>Starter Decks");
-    echo ("<select name='decksToTry' id='decksToTry'>");
-    echo ("<option value='1'>Bravo CC Starter Deck</option>");
-    echo ("<option value='2'>Rhinar CC Starter Deck</option>");
-    echo ("<option value='3'>Katsu CC Starter Deck</option>");
-    echo ("<option value='4'>Dorinthea CC Starter Deck</option>");
-    echo ("<option value='5'>Dash CC Starter Deck</option>");
-    echo ("<option value='6'>Viserai CC Starter Deck</option>");
-    echo ("<option value='7'>Kano CC Starter Deck</option>");
-    echo ("<option value='8'>Azalea CC Starter Deck</option>");
-    echo ("<option value='9'>Prism Blitz Starter Deck</option>");
-    echo ("<option value='10'>Levia Blitz Starter Deck</option>");
-    echo ("<option value='11'>Boltyn Blitz Starter Deck</option>");
-    echo ("<option value='12'>Chane Blitz Starter Deck</option>");
-    echo ("<option value='13'>Oldhim BlitzStarter Deck</option>");
-    echo ("<option value='14'>Briar Blitz Starter Deck</option>");
-    echo ("<option value='15'>Lexi Blitz Starter Deck</option>");
-    echo ("<option value='16'>Fai Blitz Starter Deck</option>");
-    echo ("<option value='17'>Dromai Blitz Starter Deck</option>");
+    echo ("<option value='1'>Ira Welcome Deck</option>");
     echo ("</select></label><br>");
   }
 

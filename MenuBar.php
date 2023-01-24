@@ -74,11 +74,6 @@ $isMobile = IsMobile();
       background-color: rgba(30, 30, 30, .8);
     }
 
-    td>img {
-      height: max-content;
-      width: 100%;
-    }
-
     .rightnav {
       position: absolute;
       right: 0px;

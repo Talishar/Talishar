@@ -54,15 +54,15 @@ if ($handle = opendir($path)) {
         if ($p2Hero != "") {
           $gameInProgressCount += 1;
           $spectateLinks .= "<form style='text-align:center;' action='" . $reactFE . "'>";
-          $spectateLinks .= "<center><table><tr><td style='vertical-align:middle; width:50px; height: 40px;'>";
+          $spectateLinks .= "<center><table><tr><td style='vertical-align:middle; padding-left:8px; width:50px; height: 40px;'>";
           if ($p1Hero == "") {
             $spectateLinks .= "<label for='joinGame' style='font-weight:500;'>Last Update " . intval(($currentTime - $lastGamestateUpdate) / 1000) . " seconds ago </label>";
           } else {
-            $spectateLinks .= "<img height='40px;' src='./crops/" . $p1Hero . "_cropped.png' />";
+            $spectateLinks .= "<img height='40px;' style='max-width:50px;' src='./crops/" . $p1Hero . "_cropped.png' />";
             $spectateLinks .= "</td><td style='vertical-align:middle;'>";
-            $spectateLinks .= " &nbsp; vs &nbsp; ";
-            $spectateLinks .= "</td><td style='width:50px; height: 40px; vertical-align:middle;'>";
-            $spectateLinks .= "<img height='40px;' src='./crops/" . $p2Hero . "_cropped.png' />";
+            $spectateLinks .= "vs";
+            $spectateLinks .= "</td><td style='width:50px; height: 40px; vertical-align:middle; padding-left:8px;'>";
+            $spectateLinks .= "<img height='40px;' style='max-width:50px;' src='./crops/" . $p2Hero . "_cropped.png' />";
             $spectateLinks .= "</td><td style='vertical-align:middle;'>";
           }
           $spectateLinks .= "<input class='ServerChecker_Button' type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
