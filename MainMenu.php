@@ -61,7 +61,7 @@ $canSeeQueue = isset($_SESSION["useruid"]);
   <div style="display: inline-block; width:400px; height:180px; background-size: contain; background-image: url('Images/TalisharLogo.webp');"></div>
 </div>
 
-<div class="ContentWindow" style='width:25%; left:20px; top:60px; bottom:30px; overflow-y:auto;'>
+<div class="ContentWindow" style='width:27%; left:20px; top:60px; bottom:30px; overflow-y:auto;'>
   <?php
   try {
     include "ServerChecker.php";
@@ -158,7 +158,7 @@ if ($canSeeQueue) {
 </div>
 </div>
 
-<div class="ContentWindow" style='right:20px; top:60px; bottom:30px; width:25%; <?php if (IsMobile()) echo ("display:none; "); ?>'>
+<div class="ContentWindow" style='right:20px; top:60px; bottom:30px; width:27%; <?php if (IsMobile()) echo ("display:none; "); ?>'>
   <h1>News</h1>
   <div style="position: relative;">
     <div style='vertical-align:middle; text-align:center;'>
