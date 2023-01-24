@@ -2,20 +2,74 @@
 
 function EncounterAI()
 {
-  global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
+  global $currentPlayer, $p2CharEquip, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
   $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
+    //WriteLog("before the for loop, but in the 'If game isn't over and the current player is AI':");
+    //WriteLog("Turn[0] = ");
+    //WriteLog($turn[0]);
+    //WriteLog("current turn: ");
+    //WriteLog($currentTurn);
+    $isBowActive = false;
     for($logicCount=0; $logicCount<=10 && $currentPlayerIsAI; ++$logicCount)
     {
+      global $turn;
       $hand = &GetHand($currentPlayer);
       $character = &GetPlayerCharacter($currentPlayer);
-      /*WriteLog($hand[0]);
+      $arsenal = &GetArsenal($currentPlayer);
+      $resources = &GetResources($currentPlayer);
+      //WriteLog("turn[0] = ");
+      //WriteLog($turn[0]);
+      //WriteLog("Decision Queue size:");
+      //WriteLog(count($decisionQueue));
+      //WriteLog("resources:");
+      //WriteLog($resources[0]);*/
+      /*if($arsenal[0] != "")
+      {
+        WriteLog("look, it's a thing");
+      }*/
+      /*WriteLog("Arsenal:");
+      WriteLog($arsenal[0]);
+      WriteLog($hand[0]);
       WriteLog($hand[1]);
       WriteLog($hand[2]);
       WriteLog($hand[3]);*/
       if(count($decisionQueue) > 0)
       {
+        //WriteLog("Hijacked decision queue");
+        //WriteLog($decisionQueue[0]);
+        //WriteLog($canIMaintain);
+        if($isBowActive)
+        {
+          WriteLog("heya");
+          WriteLog(CardSubtype($hand[0]));
+          $optionIndex = 0;
+          $index = 0;
+          $largestIndex = 0;
+
+          for($i = 0; $i < count($hand); ++$i)
+          {
+            if(CardSubtype($hand[0]) == "Arrow")
+            {
+              if(FromArsenalActionPriority($hand[$largestIndex], $character[0]) <= FromArsenalActionPriority($hand[$i], $character[0]))
+              {
+                $largestIndex = $i;
+                $optionIndex = $index;
+              }
+              ++$index;
+            }
+          }
+
+          //if(FromArsenalActionPriority($hand[$largestIndex] != 0))
+          if(true)
+          {
+            WriteLog($optionIndex);
+            $options = explode(",", $turn[2]);
+            ContinueDecisionQueue($options[$optionIndex]);
+            //expand this, quick pause
+          }
+        }
         $options = explode(",", $turn[2]);
         ContinueDecisionQueue($options[0]);//Just pick the first option
       }
@@ -53,6 +107,7 @@ function EncounterAI()
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
       {
+        //WriteLog("hijacked main phase");
         /*$index = -1;
         for($i=0; $i<count($hand) && $index == -1; ++$i) if(CardCost($hand[0]) == 0 && CardType($hand[0]) != "I") $index = $i;
         if($index != -1)
@@ -76,16 +131,20 @@ function EncounterAI()
           $alreadyCheckedHand = 10.0; //larger than the highest possible AP
           $EPV = GenerateEPV($character);
           $alreadyCheckedEquipment = 10.0;
+          $arsePV = FromArsenalActionPriority($arsenal[0], $character[0]);
+          //WriteLog($arsenal[0]);
+          //WriteLog($arsePV);
           /*WriteLog("APV:");
           WriteLog($hand[0]);
           WriteLog($APV[0]);
           WriteLog($hand[1]);
           WriteLog($APV[1]);
           WriteLog($hand[2]);
-          WriteLog($APV[2]);
-          WriteLog($EPV[9]);*/
-          for($i = 0; $i < count($EPV); $i += CharacterPieces()) { $totalOptions += 1; }
-          for($i = 0; $i < count($hand); ++$i) { $totalOptions +=1; }
+          WriteLog($APV[2]);*/
+          //WriteLog($EPV[9]);
+          for($i = 0; $i < count($EPV); $i += CharacterPieces()) { $totalOptions += 1; } //available equipment
+          for($i = 0; $i < count($hand); ++$i) { $totalOptions +=1; } //available hand
+          $totalOptions +=1; //available arsenal
           for($i = 0; $i < $totalOptions; ++$i)
           {
             //WriteLog($totalOptions);
@@ -93,31 +152,44 @@ function EncounterAI()
             $nextAbilityIndex = GetNextAbility($EPV, $alreadyCheckedEquipment);
             //WriteLog($hand[$nextActionIndex]);
             //WriteLog($APV[$nextActionIndex]);
-            //WriteLog($character[$nextAbilityIndex]);
+            //WriteLog(CardSubtype($character[$nextAbilityIndex]));
             //WriteLog($EPV[$nextAbilityIndex]);
-            if($EPV[$nextAbilityIndex] < $APV[$nextActionIndex])
+            if($arsePV >= $EPV[$nextAbilityIndex] && $arsePV >= $APV[$nextActionIndex])
             {
-              WriteLog("checking hand");
-              if(IsCardPlayable($hand, $APV, $nextActionIndex)) //Is there enough pitch in hand to play the card?
+              if(IsArsenalPlayable($hand, $arsenal, $arsePV))
               {
-                //WriteLog("checking pitch, next action:");
-                //WriteLog($nextActionIndex);
-                //WriteLog($hand[$nextActionIndex]);
-                //ProcessInput($currentPlayer, 27, "", 0, $nextActionIndex, "");
-                //CacheCombatResult();
-                ProcessInput($currentPlayer, 27, "", $nextActionIndex, 0, "");
+                //WriteLog("attempting to play arsenal");
+                ProcessInput($currentPlayer, 5, "", 0, 0, "");
                 CacheCombatResult();
               }
-              else $alreadyCheckedHand = $APV[$nextActionIndex];
             }
             else
             {
-              if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
+              if($EPV[$nextAbilityIndex] < $APV[$nextActionIndex])
               {
-                ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
-                CacheCombatResult();
+                //WriteLog("checking hand");
+                if(IsCardPlayable($hand, $APV, $nextActionIndex)) //Is there enough pitch in hand to play the card?
+                {
+                  //WriteLog("checking pitch, next action:");
+                  //WriteLog($nextActionIndex);
+                  //WriteLog($hand[$nextActionIndex]);
+                  //ProcessInput($currentPlayer, 27, "", 0, $nextActionIndex, "");
+                  //CacheCombatResult();
+                  ProcessInput($currentPlayer, 27, "", $nextActionIndex, 0, "");
+                  CacheCombatResult();
+                }
+                else $alreadyCheckedHand = $APV[$nextActionIndex];
               }
-              else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
+              else
+              {
+                if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
+                {
+                  if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) { $isBowActive = true; }
+                  ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
+                  CacheCombatResult();
+                }
+                else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
+              }
             }
           }
           $alreadyCheckedEquipment = 10.0;
@@ -125,26 +197,44 @@ function EncounterAI()
           {
             if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
             {
+              if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) { $isBowActive = true; }
               ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
               CacheCombatResult();
             }
             else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
           }
+          //WriteLog("Hijacked Main Phase");
           PassInput();
         }
         else
         {
           $EPV = GenerateEPV($character);
           $alreadyCheckedEquipment = 10.0;
-          for($i = 0; $i < count($EPV); $i += CharacterPieces())
+          $arsePV = FromArsenalActionPriority($arsenal[0], $character[0]);
+          $totalOptions = 1;
+          for($i = 0; $i < count($EPV); $i += CharacterPieces()) { $totalOptions += 1; }
+          for($i = 0; $i < $totalOptions; ++$i)
           {
             $nextAbilityIndex = GetNextAbility($EPV, $alreadyCheckedEquipment);
-            if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
+            if($arsePV >= $EPV[$nextAbilityIndex])
             {
-              ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
-              CacheCombatResult();
+              if(IsArsenalPlayable($hand, $arsenal, $arsePV))
+              {
+                //WriteLog("attempting to play arsenal");
+                ProcessInput($currentPlayer, 5, "", 0, 0, "");
+                CacheCombatResult();
+              }
             }
-            else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
+            else
+            {
+              if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
+              {
+                if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) { $isBowActive = true; }
+                ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
+                CacheCombatResult();
+              }
+              else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
+            }
           }
           PassInput();
         }
@@ -157,20 +247,39 @@ function EncounterAI()
           CacheCombatResult();
         }
         else PassInput();*/
+        $arsePV = FromArsenalReactionPriority($arsenal[0], $character[0]);
         if(count($hand) > 0)
         {
           $RPV = generateRPV($hand, $character);
           $alreadyChecked = 10.0;
-          for($i = 0; $i < count($hand); ++$i)
+          for($i = 0; $i < count($hand)+1; ++$i)
           {
             $cardIndex = GetNextReaction($RPV, $alreadyChecked);
-            if(IsCardPlayable($hand, $RPV, $cardIndex)) //Is there enough pitch in hand to play the card?
+            if($arsePV >= $RPV[$cardIndex])
             {
-              ProcessInput($currentPlayer, 27, "", 0, $cardIndex, "");
-              CacheCombatResult();
+              if(IsArsenalPlayable($hand, $arsenal, $arsePV))
+              {
+                //WriteLog("attempting to play arsenal");
+                ProcessInput($currentPlayer, 5, "", 0, 0, "");
+                CacheCombatResult();
+              }
             }
-            else $alreadyChecked = $APV[$cardIndex];
+            else
+            {
+              if(IsCardPlayable($hand, $RPV, $cardIndex)) //Is there enough pitch in hand to play the card?
+              {
+                ProcessInput($currentPlayer, 27, "", 0, $cardIndex, "");
+                CacheCombatResult();
+              }
+              else $alreadyChecked = $APV[$cardIndex];
+            }
           }
+        }
+        if(IsArsenalPlayable($hand, $arsenal, $arsePV))
+        {
+          //WriteLog("attempting to play arsenal");
+          ProcessInput($currentPlayer, 5, "", 0, 0, "");
+          CacheCombatResult();
         }
         PassInput();
       }
@@ -206,8 +315,32 @@ function EncounterAI()
         ProcessInput($currentPlayer, 6, "", $pitch[0], 0, "");
         CacheCombatResult();
       }
+      else if($turn[0] == "ARS" && $mainPlayer = $currentPlayer)//choose a card to arsenal
+      {
+        //WriteLog("hijacked arsenal");
+        if(count($hand) > 0)
+        {
+          $index = 0;
+          for($i = 0; $i < count($hand); ++$i)
+          {
+            if(ToArsenalPriority($hand[$index], $character[0]) <= ToArsenalPriority($hand[$i], $character[0])) { $index = $i; }
+          }
+          if(ToArsenalPriority($hand[$index], $character[0]) != 0)
+          {
+            ProcessInput($currentPlayer, 4, "", $hand[$index], 0, "");
+            CacheCombatResult();
+          }
+          else PassInput();
+        }
+      }
+      else if($turn[0] == "FUSE" && $mainPlayer = $currentPlayer)
+      {
+        //WriteLog("Hijacked Fuse");
+      }
       else
       {
+        //WriteLog("after failing to find a turn[0], this is the turn[0]:");
+        //WriteLog($turn[0]);
         PassInput();
       }
       ProcessMacros();
@@ -222,6 +355,11 @@ function EncounterAI()
       }
     }
   }
+  else {
+    //WriteLog("If the main player isn't AI, or the game is over:");
+    //WriteLog("turn[0] = ");
+    //WriteLog($turn[0]);
+  }
 }
 
 function IsEncounterAI($enemyHero)
@@ -233,7 +371,7 @@ function IsCardPlayable($hand, $APV, $playIndex)
 {
   if($APV[$playIndex] != 0)
   {
-    $totalPitch = 0;
+    $totalPitch = $resources[0];
     for($i = 0; $i < count($hand); ++$i)
     {
       if($i != $playIndex)
@@ -251,12 +389,26 @@ function isEquipmentPlayable($hand, $EPV, $playIndex, $character)
 {
   if($EPV[$playIndex] != 0)
   {
-    $totalPitch = 0;
+    $totalPitch = $resources[0];
     for($i = 0; $i < count($hand); ++$i)
     {
       $totalPitch = $totalPitch + PitchValue($hand[$i]);
     }
     return AbilityCost($character[$playIndex]) <= $totalPitch;
+  }
+  else return false;
+}
+
+function IsArsenalPlayable($hand, $arsenal, $arsePV)
+{
+  if($arsePV != 0)
+  {
+    $totalPitch = $resources[0];
+    for($i = 0; $i < count($hand); ++$i)
+    {
+      $totalPitch = $totalPitch + PitchValue($hand[$i]);
+    }
+    return CardCost($arsenal[0]) <= $totalPitch;
   }
   else return false;
 }
@@ -274,6 +426,7 @@ function GetNextBlock($BPV)
 //prerequisite: count($hand) > 0
 function GenerateBPV($hand, $character)
 {
+  global $currentTurn;
   $ten = false;
   $eleven = false;
   $BPV = [];
@@ -282,6 +435,7 @@ function GenerateBPV($hand, $character)
     array_push($BPV, BlockPriority($hand[$i], $character[0]));
     if(10.1 <= $BPV[$i] && $BPV[$i] <= 10.9) { $ten = true; }
     if(11.1 <= $BPV[$i] && $BPV[$i] <= 11.9) { $eleven = true; }
+    if($BPV[$i] != 0 && $currentTurn == 1) { $BPV[$i] = 2.9; }
   }
 
   if($ten)
@@ -326,10 +480,26 @@ function GetNextAction($APV, $alreadyChecked)
 
 function GenerateAPV($hand, $character)
 {
+  $ten = false;
   $APV = [];
   for($i = 0; $i < count($hand); ++$i)
   {
     array_push($APV, ActionPriority($hand[$i], $character[0]));
+    if(10.1 <= $APV[$i] && $APV[$i] <= 10.9) { $ten = true; }
+  }
+  if($ten)
+  {
+    $index = 0;
+    for($i = 0; $i < count($hand); ++$i)
+    {
+      if($APV[$index] <= $APV[$i] && 10.1 <= $APV[$i] && $APV[$i] <= 10.9) { $index = $i; }
+    }
+    $APV[$index] = 0;
+    //WriteLog("set to 0");
+    for($i = 0; $i < count($hand); ++$i)
+    {
+      if(10.1 <= $APV[$i] && $APV[$i] <= 10.9) { $APV[$i] = $APV[$i]-9; }
+    }
   }
   return $APV;
 }
@@ -448,6 +618,29 @@ function BlockPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE008":
+      {
+        switch($cardId)
+        {
+          case "CRU065": return 10.3;
+          case "WTR100": return 10.5;
+          case "EVR043": return 10.4;
+          case "WTR103": return 10.6;
+          case "CRU063": return 11.2;
+          case "CRU073": return 11.1;
+          case "WTR082": return 0.1;
+          case "CRU074": return 0.1;
+          case "WTR209": return 0.3;
+          case "WTR098": return 0.4;
+          case "WTR099": return 0.8;
+          case "EVR041": return 0.4;
+          case "EVR042": return 0.8;
+          case "WTR101": return 0.6;
+          case "WTR102": return 0.9;
+          case "CRU072": return 0.4;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -456,6 +649,7 @@ function BlockPriority($cardId, $heroId)
 Action Priority works out as following:
 0 -> Can't play the card as an action
 0.1 -> 1.9 Will be played. Higher cards played first
+10.1 -> 10.9 One of these will not be played. The remainder will attempt to be played. This allows for fusion and guarenteed arsenal
 */
 
 function ActionPriority($cardId, $heroId)
@@ -495,6 +689,30 @@ function ActionPriority($cardId, $heroId)
           case "ELE183": return 0;
           case "ELE184": return 0;
           case "ELE185": return 0;
+          default: return 0;
+        }
+      }
+    case "ROGUE008":
+      {
+        switch($cardId)
+        {
+          case "CRU065": return 0.4;
+          case "WTR100": return 1.1;
+          case "EVR043": return 0.7;
+          case "WTR103": return 1.4;
+          case "CRU063": return 0.5;
+          case "CRU073": return 0.6;
+          case "WTR082": return 0;
+          case "CRU074": return 1.5;
+          case "WTR209": return 0;
+          case "WTR098": return 1.3;
+          case "WTR099": return 1.2;
+          case "EVR041": return 0.9;
+          case "EVR042": return 0.8;
+          case "WTR101": return 1.8;
+          case "WTR102": return 1.7;
+          case "CRU072": return 1.6;
+          case "CRU050": return 1.9;
           default: return 0;
         }
       }
@@ -545,6 +763,29 @@ function ReactionPriority($cardId, $heroId)
           case "ELE183": return 2.5;
           case "ELE184": return 2.3;
           case "ELE185": return 2.1;
+          default: return 0;
+        }
+      }
+    case "ROGUE008":
+      {
+        switch($cardId)
+        {
+          case "CRU065": return 0;
+          case "WTR100": return 0;
+          case "EVR043": return 0;
+          case "WTR103": return 0;
+          case "CRU063": return 0;
+          case "CRU073": return 0;
+          case "WTR082": return 2.9;
+          case "CRU074": return 0;
+          case "WTR209": return 1.9;
+          case "WTR098": return 0;
+          case "WTR099": return 0;
+          case "EVR041": return 0;
+          case "EVR042": return 0;
+          case "WTR101": return 0;
+          case "WTR102": return 0;
+          case "CRU072": return 0;
           default: return 0;
         }
       }
@@ -599,9 +840,245 @@ function PitchPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE008":
+      {
+        switch($cardId)
+        {
+          case "CRU065": return 2.9;
+          case "WTR100": return 2.8;
+          case "EVR043": return 2.7;
+          case "WTR103": return 2.6;
+          case "CRU063": return 0.9;
+          case "CRU073": return 1.2;
+          case "WTR082": return 0.4;
+          case "CRU074": return 1.1;
+          case "WTR209": return 0.8;
+          case "WTR098": return 0.7;
+          case "WTR099": return 1.7;
+          case "EVR041": return 0.6;
+          case "EVR042": return 1.6;
+          case "WTR101": return 0.5;
+          case "WTR102": return 1.5;
+          case "CRU072": return 1.4;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
 
+/*
+To Arsenal Priority works out as following:
+0 -> Will never arsenal this card (stops things like resources from being put in Arsenal)
+0.1 -> 1.9 Will arsenal this card. Higher values take precedent
+*/
 
+function ToArsenalPriority($cardId, $heroId)
+{
+  switch($heroId)
+  {
+    case "ROGUE001":
+      switch($cardId)
+      {
+        case "MON284": return 1.8;
+        case "MON285": return 1.6;
+        case "MON286": return 1.4;
+        default: return 0;
+      }
+    case "ROGUE004":
+      switch($cardId)
+      {
+        case "WTR176": return 1.5;
+        case "WTR178": return 0.8;
+        default: return 0;
+      }
+    case "ROGUE003":
+      switch($cardId)
+      {
+        case "ARC191": return 0.3;
+        case "ARC192": return 0.2;
+        case "ARC193": return 0.1;
+        default: return 0;
+      }
+    case "ROGUE006":
+      {
+        switch($cardId)
+        {
+          case "ELE197": return 0.5;
+          case "ELE183": return 0.4;
+          case "ELE184": return 0.3;
+          case "ELE185": return 0.2;
+          default: return 0;
+        }
+      }
+    case "ROGUE008":
+      {
+        switch($cardId)
+        {
+          case "CRU065": return 0.4;
+          case "WTR100": return 1.1;
+          case "EVR043": return 0.7;
+          case "WTR103": return 1.4;
+          case "CRU063": return 0.5;
+          case "CRU073": return 0.6;
+          case "WTR082": return 0.1;
+          case "CRU074": return 1.5;
+          case "WTR209": return 0.2;
+          case "WTR098": return 1.3;
+          case "WTR099": return 1.2;
+          case "EVR041": return 0.9;
+          case "EVR042": return 0.8;
+          case "WTR101": return 1.8;
+          case "WTR102": return 1.7;
+          case "CRU072": return 1.6;
+          default: return 0;
+        }
+      }
+    default: return 0;
+  }
+}
+
+/*
+From Arsenal Action Priority works out as following:
+0 -> Will not or cannot play this card from the arsenal (reactions get 0, wrong phase to play them)
+0.1 -> 1.9 Will play this card from arsenal during the main phase (It will prioritize cards from arsenal with the same priority value as cards from hand or equipment)
+*/
+
+function FromArsenalActionPriority($cardId, $heroId)
+{
+  switch($heroId)
+  {
+    case "ROGUE001":
+      switch($cardId)
+      {
+        case "MON284": return 1.8;
+        case "MON285": return 1.6;
+        case "MON286": return 1.4;
+        default: return 0;
+      }
+    case "ROGUE004":
+      switch($cardId)
+      {
+        case "WTR176": return 1.5;
+        case "WTR178": return 0.8;
+        default: return 0;
+      }
+    case "ROGUE003":
+      switch($cardId)
+      {
+        case "ARC191": return 0.3;
+        case "ARC192": return 0.2;
+        case "ARC193": return 0.1;
+        default: return 0;
+      }
+    case "ROGUE006":
+      {
+        switch($cardId)
+        {
+          case "ELE197": return 0.5;
+          case "ELE183": return 0;
+          case "ELE184": return 0;
+          case "ELE185": return 0;
+          default: return 0;
+        }
+      }
+    case "ROGUE008":
+      {
+        switch($cardId)
+        {
+          case "CRU065": return 0.4;
+          case "WTR100": return 1.1;
+          case "EVR043": return 0.7;
+          case "WTR103": return 1.4;
+          case "CRU063": return 0.5;
+          case "CRU073": return 0.6;
+          case "WTR082": return 0;
+          case "CRU074": return 1.5;
+          case "WTR209": return 0;
+          case "WTR098": return 1.3;
+          case "WTR099": return 1.2;
+          case "EVR041": return 0.9;
+          case "EVR042": return 0.8;
+          case "WTR101": return 1.8;
+          case "WTR102": return 1.7;
+          case "CRU072": return 1.6;
+          default: return 0;
+        }
+      }
+    default: return 0;
+  }
+}
+
+/*
+From Arsenal Reaction Priority works out as following: (It's exactly the same as from hand, but it will prioritize arsenal over hand if they have the same values)
+0 -> Can't play the card as a reaction
+1.1 -> 1.9 Will play to a weapon chain link (do not put an AR in this number if it can't be played to the weapon the hero has)
+2.1 -> 2.9 Will play to an attack action chain link (do not put an AR in this number if it can't be played to at least one attack in the deck (ie: don't put razor here if it there is even a single 2+ cost attack))
+10.1 -> 10.9 Will play to either a weapon or an attack chain link (If there is a single card in the deck that can't be targeted, don't include the AR in this section) (It will prioritize more restrictive ARs if possible)
+*/
+
+function FromArsenalReactionPriority($cardId, $heroId)
+{
+  switch($heroId)
+  {
+    case "ROGUE001":
+      switch($cardId)
+      {
+        case "MON284": return 0;
+        case "MON285": return 0;
+        case "MON286": return 0;
+        default: return 0;
+      }
+    case "ROGUE004":
+      switch($cardId)
+      {
+        case "WTR176": return 0;
+        case "WTR178": return 0;
+        default: return 0;
+      }
+    case "ROGUE003":
+      switch($cardId)
+      {
+        case "ARC191": return 0;
+        case "ARC192": return 0;
+        case "ARC193": return 0;
+        default: return 0;
+      }
+    case "ROGUE006":
+      {
+        switch($cardId)
+        {
+          case "ELE197": return 0;
+          case "ELE183": return 2.5;
+          case "ELE184": return 2.3;
+          case "ELE185": return 2.1;
+          default: return 0;
+        }
+      }
+    case "ROGUE008":
+      {
+        switch($cardId)
+        {
+          case "CRU065": return 0;
+          case "WTR100": return 0;
+          case "EVR043": return 0;
+          case "WTR103": return 0;
+          case "CRU063": return 0;
+          case "CRU073": return 0;
+          case "WTR082": return 2.9;
+          case "CRU074": return 0;
+          case "WTR209": return 1.9;
+          case "WTR098": return 0;
+          case "WTR099": return 0;
+          case "EVR041": return 0;
+          case "EVR042": return 0;
+          case "WTR101": return 0;
+          case "WTR102": return 0;
+          case "CRU072": return 0;
+          default: return 0;
+        }
+      }
+    default: return 0;
+  }
+}
 ?>
