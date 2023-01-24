@@ -66,7 +66,7 @@ if ($handle = opendir($path)) {
             $spectateLinks .= "</td><td style='vertical-align:middle;'>";
           }
           $spectateLinks .= "<input class='ServerChecker_Button' type='submit' style='font-size:16px;' id='joinGame' value='Spectate' />";
-          $spectateLinks .= "</td></tr></table><center>";
+          $spectateLinks .= "</td></tr></table></center>";
           $spectateLinks .= "<input type='hidden' name='gameName' value='$gameToken' />";
           $spectateLinks .= "<input type='hidden' name='playerID' value='3' />";
           $spectateLinks .= "</form>";

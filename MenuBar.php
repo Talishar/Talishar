@@ -100,6 +100,14 @@ $isMobile = IsMobile();
     span {
       color: white;
     }
+
+    table {
+      margin-bottom:0px;
+    }
+
+    form {
+      margin-bottom:4px;
+    }
   </style>
 </head>
 
