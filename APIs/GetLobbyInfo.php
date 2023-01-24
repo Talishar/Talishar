@@ -7,10 +7,8 @@
 
   session_start();
 
-  //$gameName = $_POST["gameName"];
-  //$playerID = $_POST["playerID"];
-    $gameName = $_GET["gameName"];
-    $playerID = $_GET["playerID"];
+  $gameName = $_POST["gameName"];
+  $playerID = $_POST["playerID"];
   if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
   else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
   else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
