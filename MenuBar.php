@@ -61,6 +61,8 @@ $isMobile = IsMobile();
       font-family: helvetica;
       color: white;
       position: absolute;
+      border-radius: 8px;
+      border: 2px solid gray;
     }
 
     .NavBarDiv {
@@ -85,10 +87,14 @@ $isMobile = IsMobile();
     h4,
     h5 {
       text-align: center;
+      margin-top:12px;
+      margin-bottom:12px;
     }
 
     td {
       color: white;
+      padding-top:2px;
+      padding-bottom:2px;
     }
 
     span {
