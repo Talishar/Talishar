@@ -50,6 +50,7 @@
     $response->overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
     $response->deck = new stdClass();
     $response->deck->hero = $character[0];
+    $response->deck->heroName = CardName($character[0]);
 
     $response->deck->weapons = [];
     $response->deck->head = [];
