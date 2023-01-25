@@ -1,9 +1,9 @@
 <?php
 
-function WriteLog($text, $playerColor = 0, $highlight=false)
+function WriteLog($text, $playerColor = 0, $highlight=false, $path="./")
 {
   global $gameName;
-  $filename = "./Games/" . $gameName . "/gamelog.txt";
+  $filename = $path . "Games/" . $gameName . "/gamelog.txt";
   $handler = fopen($filename, "a");
   if ($highlight) $output =  ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "") . "<mark style='background-color: brown; color:azure;'>" . $text . "</mark>" . ($playerColor != 0 ? "</span>" : "");
   else $output = ($playerColor != 0 ? "<span style='color:<PLAYER" . $playerColor . "COLOR>; '>" : "")  . $text . ($playerColor != 0 ? "</span>" : "");
@@ -62,10 +62,10 @@ function EchoLog($gameName, $playerID)
   }
 }
 
-function JSONLog($gameName, $playerID)
+function JSONLog($gameName, $playerID, $path="./")
 {
   $response = "";
-  $filename = "./Games/" . $gameName . "/gamelog.txt";
+  $filename = $path . "Games/" . $gameName . "/gamelog.txt";
   $filesize = filesize($filename);
   if ($filesize > 0) {
     $handler = fopen($filename, "r");

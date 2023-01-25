@@ -38,6 +38,8 @@ session_start();
 
 if (!isset($_SESSION["userid"])) {
   if (isset($_COOKIE["rememberMeToken"])) {
+    include_once 'includes/functions.inc.php';
+    include_once 'includes/dbh.inc.php';
     loginFromCookie();
   }
 }
