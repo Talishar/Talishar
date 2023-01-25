@@ -122,6 +122,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     fclose($handler);
   }
   $response->theirHero = $otherHero;
+  $response->theirName = CardName($otherHero);
 
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
   if($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
