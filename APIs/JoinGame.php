@@ -424,6 +424,7 @@ if ($matchup == "") {
 }
 
 session_write_close();
+//header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");//Uncomment for testing
 
 
 function ParseDraftFab($deck, $filename)
