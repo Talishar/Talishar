@@ -27,9 +27,9 @@ function IsDeckLinkValid($deckLink)
 }
 
 
-function GetGameCounter()
+function GetGameCounter($path = "./")
 {
-  $gameIDCounterFile = "HostFiles/GameIDCounter.txt";
+  $gameIDCounterFile = $path . "HostFiles/GameIDCounter.txt";
 
   if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
     $contents = '101';
