@@ -1625,25 +1625,25 @@ function CurrentEffectPreventsGoAgain()
 function CurrentEffectPreventsDefenseReaction($from)
 {
   global $currentTurnEffects, $currentPlayer;
+  $reactionPrevented = false;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "CRU123":
-          return $from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i]);
-        case "CRU135-1":
-        case "CRU136-1":
-        case "CRU137-1":
-          return $from == "HAND" && IsCombatEffectActive($currentTurnEffects[$i]);
-        case "EVR091-1":
-        case "EVR092-1":
-        case "EVR093-1":
-          return $from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i]);
+          if($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
+          break;
+        case "CRU135-1": case "CRU136-1": case "CRU137-1":
+          if($from == "HAND" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
+          break;
+        case "EVR091-1": case "EVR092-1": case "EVR093-1":
+          if($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
+          break;
         default:
           break;
       }
     }
   }
-  return false;
+  return $reactionPrevented;
 }
 
 function CurrentEffectPreventsDraw($player, $isMainPhase)
