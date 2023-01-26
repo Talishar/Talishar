@@ -6,6 +6,11 @@ function EncounterAI()
   $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
+    //WriteLog("before the for loop, but in the 'If game isn't over and the current player is AI':");
+    //WriteLog("Turn[0] = ");
+    //WriteLog($turn[0]);
+    //WriteLog("current turn: ");
+    //WriteLog($currentTurn);
     $isBowActive = false;
     for($logicCount=0; $logicCount<=10 && $currentPlayerIsAI; ++$logicCount)
     {
@@ -14,15 +19,36 @@ function EncounterAI()
       $character = &GetPlayerCharacter($currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
       $resources = &GetResources($currentPlayer);
+      //WriteLog("turn[0] = ");
+      //WriteLog($turn[0]);
+      //WriteLog("Decision Queue size:");
+      //WriteLog(count($decisionQueue));
+      //WriteLog("resources:");
+      //WriteLog($resources[0]);*/
+      /*if($arsenal[0] != "")
+      {
+        WriteLog("look, it's a thing");
+      }*/
+      /*WriteLog("Arsenal:");
+      WriteLog($arsenal[0]);
+      WriteLog($hand[0]);
+      WriteLog($hand[1]);
+      WriteLog($hand[2]);
+      WriteLog($hand[3]);*/
       if(count($decisionQueue) > 0)
       {
-        if($isBowActive)//was the last action a bow action?
+        //WriteLog("Hijacked decision queue");
+        //WriteLog($decisionQueue[0]);
+        //WriteLog($canIMaintain);
+        if($isBowActive)
         {
+          WriteLog("heya");
+          WriteLog(CardSubtype($hand[0]));
           $optionIndex = 0;
           $index = 0;
           $largestIndex = 0;
 
-          for($i = 0; $i < count($hand); ++$i)//find the highest priority arrow and choose it
+          for($i = 0; $i < count($hand); ++$i)
           {
             if(CardSubtype($hand[0]) == "Arrow")
             {
@@ -34,17 +60,29 @@ function EncounterAI()
               ++$index;
             }
           }
-          $options = explode(",", $turn[2]);
-          ContinueDecisionQueue($options[$optionIndex]);
+
+          //if(FromArsenalActionPriority($hand[$largestIndex] != 0))
+          if(true)
+          {
+            WriteLog($optionIndex);
+            $options = explode(",", $turn[2]);
+            ContinueDecisionQueue($options[$optionIndex]);
+            //expand this, quick pause
+          }
         }
-        else
-        {
-          $options = explode(",", $turn[2]);
-          ContinueDecisionQueue($options[0]);//Just pick the first option
-        }
+        $options = explode(",", $turn[2]);
+        ContinueDecisionQueue($options[0]);//Just pick the first option
       }
-      else if($turn[0] == "B")//The player is attacking the AI
+      else if($turn[0] == "B")
       {
+        /*if(count($hand) > 0 && (CachedTotalAttack() - CachedTotalBlock()) > 1)
+        {
+          $cardToBlock = GetNextBlock($BPV);
+          WriteLog($cardToBlock);
+          ProcessInput($currentPlayer, 27, "", $cardToBlock, 0, "");
+          CacheCombatResult();
+        }
+        else PassInput();*/
         if(count($hand) > 0) //are there cards in hand?
         {
           $BPV = GenerateBPV($hand, $character);
@@ -69,46 +107,82 @@ function EncounterAI()
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
       {
+        //WriteLog("hijacked main phase");
+        /*$index = -1;
+        for($i=0; $i<count($hand) && $index == -1; ++$i) if(CardCost($hand[0]) == 0 && CardType($hand[0]) != "I") $index = $i;
+        if($index != -1)
+        {
+          ProcessInput($currentPlayer, 27, "", 0, $index, "");
+          CacheCombatResult();
+        }
+        else {
+          for($i=0; $i<count($character) && $index == -1; $i += CharacterPieces()) if(CardType($character[$i]) != "C") $index = $i;
+          if($index != -1)
+          {
+            ProcessInput($currentPlayer, 3, "", CharacterPieces(), $index, "");
+            CacheCombatResult();
+          }
+          else PassInput();
+        }
+        /**/
         if(count($hand) > 0) //Are there cards in hand?
         {
           $APV = GenerateAPV($hand, $character);
           $alreadyCheckedHand = 10.0; //larger than the highest possible AP
           $EPV = GenerateEPV($character);
-          $alreadyCheckedEquipment = 10.0; //larger than the highest possible AP
+          $alreadyCheckedEquipment = 10.0;
           $arsePV = FromArsenalActionPriority($arsenal[0], $character[0]);
+          //WriteLog($arsenal[0]);
+          //WriteLog($arsePV);
+          /*WriteLog("APV:");
+          WriteLog($hand[0]);
+          WriteLog($APV[0]);
+          WriteLog($hand[1]);
+          WriteLog($APV[1]);
+          WriteLog($hand[2]);
+          WriteLog($APV[2]);*/
+          //WriteLog($EPV[9]);
           for($i = 0; $i < count($EPV); $i += CharacterPieces()) { $totalOptions += 1; } //available equipment
           for($i = 0; $i < count($hand); ++$i) { $totalOptions +=1; } //available hand
           $totalOptions +=1; //available arsenal
           for($i = 0; $i < $totalOptions; ++$i)
           {
+            //WriteLog($totalOptions);
             $nextActionIndex = GetNextAction($APV, $alreadyCheckedHand);
             $nextAbilityIndex = GetNextAbility($EPV, $alreadyCheckedEquipment);
-            if($arsePV >= $EPV[$nextAbilityIndex] && $arsePV >= $APV[$nextActionIndex]) //If the arsenal has the highest priority
+            //WriteLog($hand[$nextActionIndex]);
+            //WriteLog($APV[$nextActionIndex]);
+            //WriteLog(CardSubtype($character[$nextAbilityIndex]));
+            //WriteLog($EPV[$nextAbilityIndex]);
+            if($arsePV >= $EPV[$nextAbilityIndex] && $arsePV >= $APV[$nextActionIndex])
             {
-              if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //and if it's playable
+              if(IsArsenalPlayable($hand, $arsenal, $arsePV))
               {
+                //WriteLog("attempting to play arsenal");
                 ProcessInput($currentPlayer, 5, "", 0, 0, "");
                 CacheCombatResult();
-                $cardPlayed = true;
-                break;
               }
             }
             else
             {
-              if($EPV[$nextAbilityIndex] < $APV[$nextActionIndex]) //if the next highest card is higher than the next highest weapon
+              if($EPV[$nextAbilityIndex] < $APV[$nextActionIndex])
               {
+                //WriteLog("checking hand");
                 if(IsCardPlayable($hand, $APV, $nextActionIndex)) //Is there enough pitch in hand to play the card?
                 {
+                  //WriteLog("checking pitch, next action:");
+                  //WriteLog($nextActionIndex);
+                  //WriteLog($hand[$nextActionIndex]);
+                  //ProcessInput($currentPlayer, 27, "", 0, $nextActionIndex, "");
+                  //CacheCombatResult();
                   ProcessInput($currentPlayer, 27, "", $nextActionIndex, 0, "");
                   CacheCombatResult();
-                  $cardPlayed = true;
-                  break;
                 }
                 else $alreadyCheckedHand = $APV[$nextActionIndex];
               }
-              else //if the next highest equipment is higher than the next highest weapon
+              else
               {
-                if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))//Is there enough pitch in hand to play the equipment?
+                if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
                 {
                   if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) { $isBowActive = true; }
                   ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
@@ -117,7 +191,7 @@ function EncounterAI()
                 else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
               }
             }
-          } //NOTE TO SELF: TRY REMOVING THIS NEXT SEGMENT, I DON'T ACTUALLY KNOW IF IT'S NEEDED
+          }
           $alreadyCheckedEquipment = 10.0;
           for($i = 0; $i < count($EPV); $i += CharacterPieces())
           {
@@ -129,10 +203,10 @@ function EncounterAI()
             }
             else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
           }
-          if($cardPlayed) continue;
+          //WriteLog("Hijacked Main Phase");
           PassInput();
         }
-        else //no cards in hand. does the same as above without checking hand
+        else
         {
           $EPV = GenerateEPV($character);
           $alreadyCheckedEquipment = 10.0;
@@ -146,10 +220,9 @@ function EncounterAI()
             {
               if(IsArsenalPlayable($hand, $arsenal, $arsePV))
               {
+                //WriteLog("attempting to play arsenal");
                 ProcessInput($currentPlayer, 5, "", 0, 0, "");
                 CacheCombatResult();
-                $cardPlayed = true;
-                break;
               }
             }
             else
@@ -163,41 +236,48 @@ function EncounterAI()
               else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
             }
           }
-          if($cardPlayed) continue;
           PassInput();
         }
       }
       else if($turn[0] == "A" && $mainPlayer == $currentPlayer)//attack reaction phase
       {
+        /*if(count($hand) > 0 && CardCost($hand[0]) == 0 && CardType($hand[0]) == "I")
+        {
+          ProcessInput($currentPlayer, 27, "", 0, 0, "");
+          CacheCombatResult();
+        }
+        else PassInput();*/
         $arsePV = FromArsenalReactionPriority($arsenal[0], $character[0]);
-        if(count($hand) > 0) //if there is a card in hand
+        if(count($hand) > 0)
         {
           $RPV = generateRPV($hand, $character);
           $alreadyChecked = 10.0;
-          for($i = 0; $i < count($hand)+1; ++$i) //for each card in hand and in the arsenal, check them
+          for($i = 0; $i < count($hand)+1; ++$i)
           {
             $cardIndex = GetNextReaction($RPV, $alreadyChecked);
-            if($arsePV >= $RPV[$cardIndex]) //if the arsenal has a higher priority
+            if($arsePV >= $RPV[$cardIndex])
             {
-              if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //and it's playable
+              if(IsArsenalPlayable($hand, $arsenal, $arsePV))
               {
+                //WriteLog("attempting to play arsenal");
                 ProcessInput($currentPlayer, 5, "", 0, 0, "");
                 CacheCombatResult();
               }
             }
-            else //if the next card in hand has a higher priority
+            else
             {
               if(IsCardPlayable($hand, $RPV, $cardIndex)) //Is there enough pitch in hand to play the card?
               {
-                ProcessInput($currentPlayer, 27, "", $cardIndex, 0, "");
+                ProcessInput($currentPlayer, 27, "", 0, $cardIndex, "");
                 CacheCombatResult();
               }
               else $alreadyChecked = $APV[$cardIndex];
             }
           }
         }
-        if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //if there's no hand, it'll play the arsenal instead, if it can
+        if(IsArsenalPlayable($hand, $arsenal, $arsePV))
         {
+          //WriteLog("attempting to play arsenal");
           ProcessInput($currentPlayer, 5, "", 0, 0, "");
           CacheCombatResult();
         }
@@ -205,12 +285,23 @@ function EncounterAI()
       }
       else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
       {
-        if(count($hand) > 0) //if there are cards in hand
+        //WriteLog("checking the pitch step");
+        if(count($hand) > 0)
         {
           $PPV = GeneratePPV($hand, $character);
           $cardToPitch = GetNextPitch($PPV);
-          if($PPV[$cardToPitch] != 0) //choose the biggest pitch priority and pitch it if able
+          /*WriteLog("checking pitch, this is the hand");
+          WriteLog($hand[0]);
+          WriteLog($hand[1]);
+          WriteLog($hand[2]);
+          WriteLog($hand[3]);
+          WriteLog("Index of card pitched and what that is");
+          WriteLog($hand[$cardToPitch]);
+          WriteLog($cardToPitch);*/
+          if($PPV[$cardToPitch] != 0)
           {
+            //ProcessInput($currentPlayer, 27, "", 0, $cardToPitch, "");
+            //CacheCombatResult();
             ProcessInput($currentPlayer, 27, "", $cardToPitch, 0, "");
             CacheCombatResult();
           }
@@ -226,6 +317,7 @@ function EncounterAI()
       }
       else if($turn[0] == "ARS" && $mainPlayer = $currentPlayer)//choose a card to arsenal
       {
+        //WriteLog("hijacked arsenal");
         if(count($hand) > 0)
         {
           $index = 0;
@@ -241,8 +333,14 @@ function EncounterAI()
           else PassInput();
         }
       }
+      else if($turn[0] == "FUSE" && $mainPlayer = $currentPlayer)
+      {
+        //WriteLog("Hijacked Fuse");
+      }
       else
       {
+        //WriteLog("after failing to find a turn[0], this is the turn[0]:");
+        //WriteLog($turn[0]);
         PassInput();
       }
       ProcessMacros();
@@ -256,6 +354,11 @@ function EncounterAI()
         }
       }
     }
+  }
+  else {
+    //WriteLog("If the main player isn't AI, or the game is over:");
+    //WriteLog("turn[0] = ");
+    //WriteLog($turn[0]);
   }
 }
 
@@ -277,6 +380,7 @@ function IsCardPlayable($hand, $APV, $playIndex)
       }
     }
     return CardCost($hand[$playIndex]) <= $totalPitch;
+    //return false;
   }
   else return false;
 }
@@ -391,6 +495,7 @@ function GenerateAPV($hand, $character)
       if($APV[$index] <= $APV[$i] && 10.1 <= $APV[$i] && $APV[$i] <= 10.9) { $index = $i; }
     }
     $APV[$index] = 0;
+    //WriteLog("set to 0");
     for($i = 0; $i < count($hand); ++$i)
     {
       if(10.1 <= $APV[$i] && $APV[$i] <= 10.9) { $APV[$i] = $APV[$i]-9; }
