@@ -179,7 +179,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $userId = ($player == 1 ? $p1id : $p2id);
   $savedSettings = LoadSavedSettings($userId);
   $settingArray = [];
-  for($i=0; $i<=22; ++$i)
+  for($i=0; $i<=23; ++$i)
   {
     $value = "";
     switch($i)
@@ -205,11 +205,12 @@ function SettingDefaultValue($setting)
 {
   global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_PassDRStep, $SET_AutotargetArcane;
   global $SET_ColorblindMode, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_IsPatron;
-  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language;
+  global $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_Language, $SET_UseReactUI;
   switch($setting)
   {
     case $SET_TryUI2: return "1";
     case $SET_AutotargetArcane: return "1";
+    case $SET_UseReactUI: return "0";//TODO: Change this to "1" when react UI is on by default
     default: return "0";
   }
 }
