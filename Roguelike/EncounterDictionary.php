@@ -132,12 +132,12 @@ function GetRandomCards($number)
 
 function RandomWarriorCommon()
 {
-  //Card pool is all warrior commons up to Everfest
+  //Card pool is all warrior commons up to Everfest, except Outland Skirmish
   $DoriPoolRandomCommon = array(
     "WTR132", "WTR133", "WTR134", "WTR135", "WTR136", "WTR137", "WTR138", "WTR139", "WTR140", "WTR141", "WTR142", "WTR143", "WTR144", "WTR145", "WTR146", "WTR147", "WTR148", "WTR149",
     "CRU088", "CRU089", "CRU090", "CRU091", "CRU092", "CRU093", "CRU094", "CRU095", "CRU096",
     "MON116", "MON117", "MON118",
-    "EVR060", "EVR061", "EVR062", "EVR063", "EVR064", "EVR065", "EVR066", "EVR067", "EVR068"
+    "EVR060", "EVR061", "EVR062", "EVR063", "EVR064", "EVR065"
   );
   $poolCount = count($DoriPoolRandomCommon);
   $number = rand(0,$poolCount - 1);
