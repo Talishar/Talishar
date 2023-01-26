@@ -1204,6 +1204,7 @@ function DiscardedAtRandomEffects($player, $discarded, $source) {
 function CardDiscarded($player, $discarded, $source = "")
 {
   global $CS_Num6PowDisc, $mainPlayer;
+  AddEvent("DISCARD", $discarded);
   if (AttackValue($discarded) >= 6) {
     $character = &GetPlayerCharacter($player);
     if (($character[0] == "WTR001" || $character[0] == "WTR002" || $character[0] == "RVD001" || SearchCurrentTurnEffects("WTR001-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("WTR002-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("RVD001-SHIYANA", $mainPlayer)) && $character[1] == 2 && $player == $mainPlayer) { //Rhinar
