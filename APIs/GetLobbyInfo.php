@@ -76,7 +76,10 @@
           array_push($response->deck->offhand, $character[$i]);
           break;
         default:
-          array_push($response->deck->weapons, $character[$i]);
+          $weapon = new stdClass();
+          $weapon->id = $character[$i];
+          $weapon->is1H = Is1H($weapon->id);
+          array_push($response->deck->weapons, $weapon);
           break;
       }
     }
