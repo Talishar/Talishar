@@ -105,32 +105,24 @@ function GetNextEncounter($previousEncounter)
 
 function GetRandomCards($number)
 {
-  // OLD FUNCTION
-  // $rv = "";
-  // for($i=0; $i<$number; ++$i)
-  // {
-  //   if($rv != "") $rv .= ",";
-  //   $rv .= RandomWarriorCommon();
-  // }
-  // return $rv;
-
-  // Hardcoded since the only time this function is called is with 4.
-  // A diff solution would need to be implemented for other numbers in the future. 
+  //Hardcoded for 4. This is currently the only number that ever gets passed.
   $rv = "";
   if($number == 4){ 
-                    
-    $rv .= RandomWarriorCommon();
-    $rv .= ",";
-    $rv .= RandomWarriorcommon();
-    $rv .= ",";
-    $rv .= RandomWarriorCommon();
-    $rv .= ",";
-    $rv .= RandomGenericCommon();
+    //Current Pulls: Warrior/Warrior/Warrior/Generic
+    return RandomDoriCommon().",".RandomDoriCommon().",".RandomDoriCommon().",".RandomGenericCommon();
+  }
+
+  else{
+    for($i=0; $i<$number; ++$i)
+  {
+    if($rv != "") $rv .= ",";
+    $rv .= RandomDoriCommon();
+  }
   }
   return $rv;
 }
 
-function RandomWarriorCommon()
+function RandomDoriCommon()
 {
   //Card pool is all warrior commons up to Everfest, except Outland Skirmish
   $DoriPoolRandomCommon = array(
@@ -141,7 +133,6 @@ function RandomWarriorCommon()
   );
   $poolCount = count($DoriPoolRandomCommon);
   $number = rand(0,$poolCount - 1);
-
   return $DoriPoolRandomCommon[$number];
 }
 
