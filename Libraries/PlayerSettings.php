@@ -32,8 +32,6 @@ $SET_GameVisibility = 21; //The visibility of the last game you created
 
 $SET_StreamerMode = 22; //Did this player enable caster mode
 
-$SET_UseReactUI = 23; //Did this player enable caster mode
-
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
