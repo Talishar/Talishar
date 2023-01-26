@@ -72,9 +72,16 @@
       case "MON081": case "MON082": case "MON083":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives your next attack action card +" . EffectAttackModifier($cardID) . " and go in your soul if it hits.";
-      case "MON084": $combatChain[intval($target)+5] -= 3; return "";
-      case "MON085": $combatChain[intval($target)+5] -= 2; return "";
-      case "MON086": $combatChain[intval($target)+5] -= 1; return "";
+      case "MON084": case "MON085": case "MON086":
+        if($cardID == "MON084") $amount = 3;
+        else if($cardID == "MON085") $amount = 2;
+        else $amount = 1;
+        if($target == "-")
+        {
+          WriteLog("Blinding Beam gives no bonus because it does not have a valid target.");
+        }
+        else $combatChain[intval($target)+5] -= $amount;
+        return "";
       case "MON087":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives attacks against Shadow heroes +1 this turn.";
