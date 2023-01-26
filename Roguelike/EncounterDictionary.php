@@ -105,11 +105,27 @@ function GetNextEncounter($previousEncounter)
 
 function GetRandomCards($number)
 {
+  // OLD FUNCTION
+  // $rv = "";
+  // for($i=0; $i<$number; ++$i)
+  // {
+  //   if($rv != "") $rv .= ",";
+  //   $rv .= RandomWarriorCommon();
+  // }
+  // return $rv;
+
+  // Hardcoded since the only time this function is called is with 4.
+  // A diff solution would need to be implemented for other numbers in the future. 
   $rv = "";
-  for($i=0; $i<$number; ++$i)
-  {
-    if($rv != "") $rv .= ",";
+  if($number == 4){ 
+                    
     $rv .= RandomWarriorCommon();
+    $rv .= ",";
+    $rv .= RandomWarriorcommon();
+    $rv .= ",";
+    $rv .= RandomWarriorCommon();
+    $rv .= ",";
+    $rv .= RandomGenericCommon();
   }
   return $rv;
 }
@@ -129,4 +145,17 @@ function RandomWarriorCommon()
   return $DoriPoolRandomCommon[$number];
 }
 
+function RandomGenericCommon()
+{
+  //Wounding Blow RYB, Brandish RYB, Ravenous Rabble RYB
+  $GenericPoolCommon = array(
+    "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214", 
+    "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
+    "MON269", "MON270", "MON271",
+    "DVR014", "DVR023"
+  );
+  $poolCount = count($GenericPoolCommon);
+  $number = rand(0, $poolCount - 1);
+  return $GenericPoolCommon[$number];
+}
 ?>
