@@ -5727,6 +5727,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqState[6] = $damage;
       if($damage > 0) AddDamagePreventionSelection($player, $damage, $params[1]);
       return $damage;
+    case "CARDDISCARDED":
+      CardDiscarded($player, $lastResult, $parameter);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
