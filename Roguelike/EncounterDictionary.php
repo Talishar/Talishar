@@ -104,7 +104,7 @@ function EncounterImage($encounter, $subphase)
 
 function GetNextEncounter($previousEncounter)
 {
-  if(false)
+  if(false) //set to true to enable new random encounter generation
   {
     WriteLog("hijacked GetNextEncounter");
     $encounter = &GetZone(1, "Encounter");
@@ -189,7 +189,7 @@ function GetRandomCards($number)
 {
   //Hardcoded for 4. This is currently the only number that ever gets passed.
   $rv = "";
-  if($number == 4){ 
+  if($number == 4){
     //Current Pulls: Warrior/Warrior/Warrior/Generic
     return RandomDoriCommon().",".RandomDoriCommon().",".RandomDoriCommon().",".RandomGenericCommon();
   }
@@ -222,7 +222,7 @@ function RandomGenericCommon()
 {
   //Wounding Blow RYB, Brandish RYB, Ravenous Rabble RYB
   $GenericPoolCommon = array(
-    "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214", 
+    "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214",
     "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
     "MON269", "MON270", "MON271",
     "DVR014", "DVR023"
