@@ -122,6 +122,19 @@ function GetRandomCards($number)
   return $rv;
 }
 
+function RandomDoriRare(){
+  //Notable Exclusions: Dauntless RYB, Precision Press RYB
+  $DoriPoolRandomRare = array(
+    "WTR123", "WTR124", "WTR125", "WTR126", "WTR127", "WTR128", "WTR129", "WTR130", "WTR131",
+    "MON110", "MON111", "MON112", "MON113", "MON114", "MON115",
+    "DVR013", 
+    "EVR057", "EVR058", "EVR059",
+    "DYN073", "DYN074", "DYN075"
+  );
+  $poolCount = count($DoriPoolRandomRare);
+  $number = rand(0, $poolCount - 1);
+  return $DoriPoolRandomRare[$number];
+}
 function RandomDoriCommon()
 {
   //Card pool is all warrior commons up to Everfest, except Outland Skirmish
@@ -138,7 +151,6 @@ function RandomDoriCommon()
 
 function RandomGenericCommon()
 {
-  //Wounding Blow RYB, Brandish RYB, Ravenous Rabble RYB
   $GenericPoolCommon = array(
     "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214", 
     "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
