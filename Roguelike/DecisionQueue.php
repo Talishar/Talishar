@@ -124,6 +124,28 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+      case "BACKGROUND":
+        switch($lastResult)
+        {
+          case "Cintari_Saber_Background":
+            //WriteLog("Mighty fine pair of swords there, eh?");
+            //PrependDecisionQueue("CHOOSECARD", $player, "CRU079");
+            //PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
+            $deck = &GetZone($player, "Deck");
+            $character = &GetZone($player, "Character");
+            //array_push($deck, "CRU079");
+            //array_push($deck, "CRU080");
+            //array_push($deck, "EVR060");
+            break;
+          case "Dawnblade_Background":
+            //WriteLog("Beautiful tool there, eh?");
+            //PrependDecisionQueue("CHOOSECARD", $player, "WTR115");
+            $deck = &GetZone($player, "Deck");
+            $character = &GetZone($player, "Character");
+            array_push($character, "WTR115");
+            break;
+
+        }
         return 1;
       case "VOLTHAVEN":
         switch($lastResult)

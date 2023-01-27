@@ -6,6 +6,8 @@
   include 'ParseGamestate.php';
   include 'DecisionQueue.php';
   include "ZoneGetters.php";
+  include "../WriteLog.php";
+  //include "EncounterDictionary.php";
 
   for($i=1; $i<=$numPlayers; ++$i)
   {
@@ -18,8 +20,19 @@
     $deck = &GetZone($i, "Deck");
     $deck = explode(" ", "WTR129 WTR145 WTR201 ARC205 CRU093 MON116 MON283 DVR019 DVR022 DVR009 DVR024 CRU186");//TODO: Support multiple heroes
     $encounter = &GetZone($i, "Encounter");
-    array_push($encounter, 1);
-    array_push($encounter, "Fight");
+    if(true)
+    {
+      array_push($encounter, 1);
+      array_push($encounter, "Fight");
+    }
+    else
+    {
+      array_push($encounter, 10);
+      array_push($encounter, "PickMode");
+      array_push($encounter, 1);
+      //array_push($encounter, "");
+      InitializeEncounter($i, $encounter[0], "-");
+    }
 
   }
 

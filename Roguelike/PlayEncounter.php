@@ -51,7 +51,7 @@
           if($chestSideboard != "") $chestSideboard .= " ";
           $chestSideboard .= $charZone[$i];
         }
-        break;  
+        break;
       default: break;
     }
   }

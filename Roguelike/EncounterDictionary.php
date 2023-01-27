@@ -27,6 +27,10 @@ function EncounterDescription($encounter, $subphase)
     case 9:
       if($subphase == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
       else if($subphase == "AfterFight") return "You defeated the group of bandits.";
+    case 10:
+      return "Insert Flavor Text for Choosing a Backgroud";
+    case 11:
+      return "Insert Flavor Text for Choosing a Starting Bonus";
     default: return "No encounter text.";
   }
 }
@@ -57,6 +61,15 @@ function InitializeEncounter($player, $encounter, $subphase)
       AddDecisionQueue("VOLTHAVEN", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
+    case 10:
+      AddDecisionQueue("BUTTONINPUT", $player, "Cintari_Saber_Background,Dawnblade_Background");
+      AddDecisionQueue("BACKGROUND", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 11:
+      AddDecisionQueue("BUTTONINPUT", $player, "Choice_1_to_be_implemented,Choice_2_to_be_implemented");
+      AddDecisionQueue("BACKGROUND", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
     default: break;
   }
 }
@@ -83,24 +96,93 @@ function EncounterImage($encounter, $subphase)
       return "ELE112_cropped.png";
     case 9:
       return "ELE117_cropped.png";
+    case 10: case 11:
+      return "ROGUELORE001_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
 
 function GetNextEncounter($previousEncounter)
 {
-  switch($previousEncounter)
+  if(false)
   {
-    case 1: return "6-PickMode";
-    case 2: return "7-BeforeFight";
-    case 3: return "2-PickMode";
-    case 4: return "3-BeforeFight";
-    case 5: return "4-PickMode";
-    case 6: return "5-BeforeFight";
-    case 7: return "8-PickMode";
-    case 8: return "9-BeforeFight";
-    default: return "";
+    WriteLog("hijacked GetNextEncounter");
+    $encounter = &GetZone(1, "Encounter");
+    WriteLog("Encounter[0]: " . $encounter[0]);
+    WriteLog("Encounter[1]: " . $encounter[1]);
+    WriteLog("Encounter[2]: " . $encounter[2]);
+    ++$encounter[2];
+    if($encounter[2] == 3 || $encounter[2] == 5) return GetEasyCombat($previousEncounter, $encounter);
+    else if($encounter[2] == 7 || $encounter[2] == 10) return GetMediumCombat($previousEncounter, $encounter);
+    else if($encounter[2] == 12 || $encounter[2] == 14) return GetHardCombat($previousEncounter, $encounter);
+    else if($encounter[2] == 2) return "11-PickMode";
+    else if($encounter[2] == 17) return "9-BeforeFight";
+    else if($encounter[2] == 9 || $encounter[2] == 16) return "2-PickMode";
+    else return GetEvent($previousEncounter, $encounter);
   }
+  else
+  {
+    switch($previousEncounter)
+    {
+      case 1: return "6-PickMode";
+      case 2: return "7-BeforeFight";
+      case 3: return "2-PickMode";
+      case 4: return "3-BeforeFight";
+      case 5: return "4-PickMode";
+      case 6: return "5-BeforeFight";
+      case 7: return "8-PickMode";
+      case 8: return "9-BeforeFight";
+      case 10: return "11-PickMode";
+      case 11: return "1-Fight";
+      default: return "";
+    }
+  }
+}
+
+function GetEasyCombat($previousEncounter, $encounter)
+{
+  //$alreadyPicked = explode(" ", $encounter[3]);
+  $easyEncounters = array(
+    "1-Fight", "3-BeforeFight", "5-BeforeFight", "7-BeforeFight"
+  );
+  $randomEncounter = rand(0, count($easyEncounters)-1); //going to implement  no duplicate encounters later
+  /*$encounterFound = false;
+  for($i = 0; i < count($easyEncounters) && !$encounterFound; ++$i)
+  {
+    if($randomEncounter == count($easyEncounters)) { $randomEncounter = 0; }
+    for($index = 0; $index < count($alreadyPicked); $index++)
+    {
+      if($easyEncounters[$randomEncounter] == $alreadyPicked[$index]) { ++$randomEncounter; }
+    }
+  }*/
+  return $easyEncounters[$randomEncounter];
+}
+
+function GetMediumCombat($previousEncounter, $encounter)
+{
+  $mediumEncounters = array(
+    "1-Fight", "3-BeforeFight", "5-BeforeFight", "7-BeforeFight"
+  );
+  $randomEncounter = rand(0, count($mediumEncounters)-1);
+  return $mediumEncounters[$randomEncounter];
+}
+
+function GetHardCombat($previousEncounter, $encounter)
+{
+  $hardEncounters = array(
+    "1-Fight", "3-BeforeFight", "5-BeforeFight", "7-BeforeFight"
+  );
+  $randomEncounter = rand(0, count($hardEncounters)-1);
+  return $hardEncounters[$randomEncounter];
+}
+
+function GetEvent($previousEncounter, $encounter)
+{
+  $eventEncounters = array(
+    "4-PickMode", "6-PickMode"
+  );
+  $randomEncounter = rand(0, count($eventEncounters)-1);
+  return $eventEncounters[$randomEncounter];
 }
 
 function GetRandomCards($number)
