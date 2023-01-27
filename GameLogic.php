@@ -1342,8 +1342,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if ($source == $currentTurnEffects[$i + 2]) {
             if($preventable)
             {
+              $origDamage = $damage;
               $damage -= $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $damage;
+              if($damage < 0) $damage = 0;
+              $currentTurnEffects[$i + 3] -= $origDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = 1;
           }
