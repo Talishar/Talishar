@@ -90,7 +90,15 @@
     $response->deck->armsSB = GetArray($handler);
     $response->deck->legsSB = GetArray($handler);
     $response->deck->offhandSB = GetArray($handler);
-    $response->deck->weaponSB = GetArray($handler);
+    $weaponSB = GetArray($handler);
+    $response->deck->weaponSB = [];
+    for($i=0; $i<count($weaponSB); ++$i)
+    {
+      $weapon = new stdClass();
+      $weapon->id = $weaponSB[$i];
+      $weapon->is1H = Is1H($weapon->id);
+      array_push($response->deck->weaponSB, $weapon);
+    }
     $response->deck->cardsSB = GetArray($handler);
 
     fclose($handler);
