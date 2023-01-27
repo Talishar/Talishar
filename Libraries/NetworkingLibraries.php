@@ -1153,7 +1153,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       else {
         $frostbitesPaid = AuraCostModifier();
         $isAlternativeCostPaid = IsAlternativeCostPaid($cardID, $from);
-        if($isAlternativeCostPaid) $baseCost = 0;
+        if($isAlternativeCostPaid)
+        {
+          $baseCost = 0;
+          AddAdditionalCost($currentPlayer, "ALTERNATIVECOST");
+        }
         $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + $frostbitesPaid + CharacterCostModifier($cardID, $from) + BanishCostModifier($from, $index);
         if($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
@@ -1171,7 +1175,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
-      if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
+      if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
       $decisionQueue = array_merge($decisionQueue, $dqCopy);
       ProcessDecisionQueue();

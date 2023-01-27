@@ -28,6 +28,7 @@
   GenerateFunction($cardArray, $handler, "CardName", "name");
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
+  GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
   //GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");
 
   fwrite($handler, "?>");
@@ -87,6 +88,19 @@
         else if($propertyName == "health")
         {
           $data = $cardArray[$i]->health;
+        }
+        else if($propertyName == "subtype")
+        {
+          $data = "";
+          for($j=0; $j<count($cardArray[$j]->types); ++$j)
+          {
+            if(IsSubtype($cardArray[$i]->types[$j]) && !IsClass($cardArray[$i]->types[$j]) && !IsTalent($cardArray[$i]->types[$j]))
+            {
+              if($data != "") $data .= ",";
+              $data .= $cardArray[$i]->types[$j];
+            }
+          }
+          if($data != "") echo($data . "<BR>");
         }
         if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
         if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue) AddToTrie($trie, $cardID, 0, $data);
@@ -158,6 +172,38 @@
       echo("No type found for " . $card->name);
     }
     return "-";
+  }
+
+  function IsSubtype($term)
+  {
+    switch($term)
+    {
+      case "Action": case "Attack": case "Defense Reaction": case "Attack Reaction":
+      case "Instant": case "Weapon": case "Hero": case "Equipment": case "Token":
+      case "Resource": case "Mentor": case "(1H)": case "(2H)": return false;
+      default: return true;
+    }
+  }
+
+  function IsClass($term)
+  {
+    switch($term)
+    {
+      case "Generic": case "Warrior": case "Ninja": case "Brute": case "Guardian":
+      case "Wizard": case "Mechanologist": case "Ranger": case "Runeblade":
+      case "Illusionist": case "Assassin": return true;
+      case "Shapeshifter": case "Merchant": case "Arbiter": return true;
+      default: return false;
+    }
+  }
+
+  function IsTalent($term)
+  {
+    switch($term)
+    {
+      case "Elemental": case "Light": case "Shadow": case "Draconic": return true;
+      default: return false;
+    }
   }
 
 ?>
