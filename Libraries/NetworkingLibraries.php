@@ -1171,8 +1171,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
-      if ($playingCard && $dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, CardCost($cardID));
-      else if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+      if($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index);
       $decisionQueue = array_merge($decisionQueue, $dqCopy);
       ProcessDecisionQueue();
