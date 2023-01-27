@@ -105,28 +105,48 @@ function GetNextEncounter($previousEncounter)
 
 function GetRandomCards($number)
 {
+  //Hardcoded for 4. This is currently the only number that ever gets passed.
   $rv = "";
-  for($i=0; $i<$number; ++$i)
+  if($number == 4){ 
+    //Current Pulls: Warrior/Warrior/Warrior/Generic
+    return RandomDoriCommon().",".RandomDoriCommon().",".RandomDoriCommon().",".RandomGenericCommon();
+  }
+
+  else{
+    for($i=0; $i<$number; ++$i)
   {
     if($rv != "") $rv .= ",";
-    $rv .= RandomWarriorCommon();
+    $rv .= RandomDoriCommon();
+  }
   }
   return $rv;
 }
 
-function RandomWarriorCommon()
+function RandomDoriCommon()
 {
-  //Card pool is all warrior commons up to Everfest
+  //Card pool is all warrior commons up to Everfest, except Outland Skirmish
   $DoriPoolRandomCommon = array(
     "WTR132", "WTR133", "WTR134", "WTR135", "WTR136", "WTR137", "WTR138", "WTR139", "WTR140", "WTR141", "WTR142", "WTR143", "WTR144", "WTR145", "WTR146", "WTR147", "WTR148", "WTR149",
     "CRU088", "CRU089", "CRU090", "CRU091", "CRU092", "CRU093", "CRU094", "CRU095", "CRU096",
     "MON116", "MON117", "MON118",
-    "EVR060", "EVR061", "EVR062", "EVR063", "EVR064", "EVR065", "EVR066", "EVR067", "EVR068"
+    "EVR060", "EVR061", "EVR062", "EVR063", "EVR064", "EVR065"
   );
   $poolCount = count($DoriPoolRandomCommon);
   $number = rand(0,$poolCount - 1);
-
   return $DoriPoolRandomCommon[$number];
 }
 
+function RandomGenericCommon()
+{
+  //Wounding Blow RYB, Brandish RYB, Ravenous Rabble RYB
+  $GenericPoolCommon = array(
+    "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214", 
+    "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
+    "MON269", "MON270", "MON271",
+    "DVR014", "DVR023"
+  );
+  $poolCount = count($GenericPoolCommon);
+  $number = rand(0, $poolCount - 1);
+  return $GenericPoolCommon[$number];
+}
 ?>
