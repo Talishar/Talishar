@@ -46,8 +46,13 @@ for ($i = 1; $i < count($charZone); ++$i) {
       //We don't need to process equipment here, instead we look for relevant Subtypes
       break;
     case "W":
-      if ($weapon1 == "") $weapon1 = $charZone[$i];
-      else {
+      if ($weapon1 == "") { //If this is the first weapon read on the file,
+        $weapon1 = $charZone[$i]; // then equip it
+      }
+      elseif(is1H($weapon1) && is1H($charZone[$i])) { //If equipped and current are both 1h,
+        $weapon2 = $charZone[$i];                    // then Equip the new one in second hand
+      }
+      else { //If we have extra weapons, then sideboard them
         $weaponSideboard .= $charZone[$i];
       }
       break;
