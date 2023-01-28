@@ -422,8 +422,7 @@ $isMobile = IsMobile();
 
       function GetCharacterCards() {
         var types = ["WEAPONS", "OFFHAND", "HEAD", "CHEST", "ARMS", "LEGS"];
-        var returnValue = "<?php echo ($character[0]); ?>";
-        //returnValue += "<?php echo (($weapons != "" ? "," . $weapons : "")); ?>";
+        var returnValue = "<?php echo(isset($character) ? $character[0] : ""); ?>";
         for (var i = 0; i < types.length; ++i) {
           var selected = GetSelectedEquipType(types[i]);
           if (selected != "") returnValue += "," + selected;
