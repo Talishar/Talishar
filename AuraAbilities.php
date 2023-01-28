@@ -539,14 +539,12 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithWeapon;
+  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
-      case "ARC167":
-      case "ARC168":
-      case "ARC169":
+      case "ARC167": case "ARC168": case "ARC169":
         if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0) {
           $remove = 1;
         }
@@ -558,7 +556,7 @@ function AuraEndTurnAbilities()
         $remove = 1;
         break;
       case "DYN072":
-        if (GetClassState($mainPlayer, $CS_HitsWithWeapon) <= 0) {
+        if (GetClassState($mainPlayer, $CS_HitsWithSword) <= 0) {
           $remove = 1;
         }
         break;
