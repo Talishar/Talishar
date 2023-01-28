@@ -1472,6 +1472,7 @@ function PayAbilityAdditionalCosts($cardID)
         AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDDISCARD", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("CARDDISCARDED", $currentPlayer, "HAND", 1);
       }
       break;
     default:
