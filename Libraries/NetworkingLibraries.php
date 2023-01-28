@@ -787,6 +787,7 @@ function ResolveCombatDamage($damageDone)
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_NumHits, $CCS_DamageDealt, $CCS_HitsInRow, $CCS_HitsWithWeapon, $CS_EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CCS_ChainLinkHitEffectsPrevented;
+  global $CS_HitsWithSword;
   $wasHit = $damageDone > 0;
 
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
@@ -805,6 +806,7 @@ function ResolveCombatDamage($damageDone)
     if (CardType($combatChain[0]) == "W") {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
+      if(SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
     }
     for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
       if ($combatChain[$i] == $mainPlayer) {

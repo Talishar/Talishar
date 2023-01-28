@@ -84,6 +84,12 @@ $cardIconTop = intval($cardSize / 4.2); //30
   $myDQ = &GetZone($playerID, "DecisionQueue");
 
   $encounterContent = "";
+  //WriteLog("playerID: " . $playerID);
+  //WriteLog("encounter[0]: " . $encounter[0]);
+  //WriteLog("encounter[1]: " . $encounter[1]);
+  //WriteLog($encounter[2]);
+  //WriteLog("Next encounter[0]: " . GetNextEncounter($encounter[0]));
+  //WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
   if(count($myDQ) > 0)
   {
     if($myDQ[0] == "CHOOSECARD")
@@ -127,11 +133,11 @@ $cardIconTop = intval($cardSize / 4.2); //30
   echo("</div>");//End left sidebar div
 
   $content = "<div style='width:100%;'>";
-  $content .= "<center><img src='../crops/" . EncounterImage($encounter[0], $encounter[1]) . "' /></center>";
+  $content .= "<center><img src='../crops/" . EncounterImage() . "' /></center>";
   $content .= "<BR>";
   $content .= "</div>";
   $content .= "<center>" . $encounterContent . "</center>";
-  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription($encounter[0], $encounter[1]), 1, $content, size:2);
+  echo CreatePopup("BUTTONINPUT", [], 0, 1, EncounterDescription(), 1, $content, size:2);
   //EncounterImage($encounter[0], $encounter[1]);
 
 

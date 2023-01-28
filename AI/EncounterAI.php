@@ -14,6 +14,11 @@ function EncounterAI()
       $character = &GetPlayerCharacter($currentPlayer);
       $arsenal = &GetArsenal($currentPlayer);
       $resources = &GetResources($currentPlayer);
+      /*WriteLog("hand[0] = " . $hand[0]);
+      WriteLog("hand[1] = " . $hand[1]);
+      WriteLog("hand[2] = " . $hand[2]);
+      WriteLog("character[0] = " . $character[0]);
+      WriteLog("resources[0] = " . $resources[0]);*/
       if(count($decisionQueue) > 0)
       {
         if($isBowActive)//was the last action a bow action?
@@ -76,6 +81,9 @@ function EncounterAI()
           $EPV = GenerateEPV($character);
           $alreadyCheckedEquipment = 10.0; //larger than the highest possible AP
           $arsePV = FromArsenalActionPriority($arsenal[0], $character[0]);
+          /*WriteLog("APV[0] = " . $APV[0]);
+          WriteLog("APV[1] = " . $APV[1]);
+          WriteLog("APV[2] = " . $APV[2]);*/
           for($i = 0; $i < count($EPV); $i += CharacterPieces()) { $totalOptions += 1; } //available equipment
           for($i = 0; $i < count($hand); ++$i) { $totalOptions +=1; } //available hand
           $totalOptions +=1; //available arsenal
@@ -83,6 +91,8 @@ function EncounterAI()
           {
             $nextActionIndex = GetNextAction($APV, $alreadyCheckedHand);
             $nextAbilityIndex = GetNextAbility($EPV, $alreadyCheckedEquipment);
+            //WriteLog($hand[$nextActionIndex] . " " . $APV[$nextActionIndex]);
+            //WriteLog($character[$nextAbilityIndex] . " " . $EPV[$nextActionIndex]);
             if($arsePV >= $EPV[$nextAbilityIndex] && $arsePV >= $APV[$nextActionIndex]) //If the arsenal has the highest priority
             {
               if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //and if it's playable
@@ -266,8 +276,10 @@ function IsEncounterAI($enemyHero)
 
 function IsCardPlayable($hand, $APV, $playIndex)
 {
+  global $currentPlayer;
   if($APV[$playIndex] != 0)
   {
+    $resources = &GetResources($currentPlayer);
     $totalPitch = $resources[0];
     for($i = 0; $i < count($hand); ++$i)
     {
@@ -283,8 +295,10 @@ function IsCardPlayable($hand, $APV, $playIndex)
 
 function isEquipmentPlayable($hand, $EPV, $playIndex, $character)
 {
+  global $currentPlayer;
   if($EPV[$playIndex] != 0)
   {
+    $resources = &GetResources($currentPlayer);
     $totalPitch = $resources[0];
     for($i = 0; $i < count($hand); ++$i)
     {
@@ -297,8 +311,10 @@ function isEquipmentPlayable($hand, $EPV, $playIndex, $character)
 
 function IsArsenalPlayable($hand, $arsenal, $arsePV)
 {
+  global $currentPlayer;
   if($arsePV != 0)
   {
+    $resources = &GetResources($currentPlayer);
     $totalPitch = $resources[0];
     for($i = 0; $i < count($hand); ++$i)
     {
@@ -536,6 +552,37 @@ function BlockPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE009":
+      {
+        switch($cardId)
+        {
+          case "ARC045": return 0.1;
+          case "ARC069": return 0.2;
+          case "ARC054": return 0.5;
+          case "EVR091": return 0.3;
+          case "EVR100": return 0.4;
+          case "WTR218": return 0.6;
+          default: return 0;
+        }
+      }
+    case "ROGUE010":
+      {
+        switch($cardId)
+        {
+          case "ARC106": return 0.4;
+          case "ARC107": return 0.6;
+          case "ARC108": return 0.5;
+          case "EVR107": return 0.45;
+          case "EVR108": return 0.65;
+          case "EVR109": return 0.55;
+          case "EVR113": return 0.1;
+          case "EVR114": return 0.3;
+          case "EVR115": return 0.2;
+          case "ARC085": return 0.15;
+          case "ARC086": return 0.35;
+          case "ARC087": return 0.25;
+        }
+      }
     default: return 0;
   }
 }
@@ -609,6 +656,38 @@ function ActionPriority($cardId, $heroId)
           case "CRU072": return 1.6;
           case "CRU050": return 1.9;
           default: return 0;
+        }
+      }
+    case "ROGUE009":
+      {
+        switch($cardId)
+        {
+          case "ARC045": return 0;
+          case "ARC069": return 0;
+          case "ARC054": return 1.9;
+          case "EVR091": return 1.8;
+          case "EVR100": return 1.8;
+          case "WTR218": return 1.7;
+          case "CRU121": return 1.4;
+          default: return 0;
+        }
+      }
+    case "ROGUE010":
+      {
+        switch($cardId)
+        {
+          case "ARC106": return 1.9;
+          case "ARC107": return 1.7;
+          case "ARC108": return 0.6;
+          case "EVR107": return 1.8;
+          case "EVR108": return 1.6;
+          case "EVR109": return 0.5;
+          case "EVR113": return 1.5;
+          case "EVR114": return 1.3;
+          case "EVR115": return 0.8;
+          case "ARC085": return 1.4;
+          case "ARC086": return 1.3;
+          case "ARC087": return 0.7;
         }
       }
     default: return 0;
@@ -758,6 +837,24 @@ function PitchPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE010":
+      {
+        switch($cardId)
+        {
+          case "ARC106": return 0.2;
+          case "ARC107": return 1.2;
+          case "ARC108": return 2.2;
+          case "EVR107": return 0.3;
+          case "EVR108": return 1.3;
+          case "EVR109": return 2.3;
+          case "EVR113": return 0.4;
+          case "EVR114": return 1.4;
+          case "EVR115": return 2.4;
+          case "ARC085": return 0.5;
+          case "ARC086": return 1.5;
+          case "ARC087": return 2.5;
+        }
+      }
     default: return 0;
   }
 }
@@ -829,6 +926,19 @@ function ToArsenalPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE009":
+      {
+        switch($cardId)
+        {
+          case "ARC045": return 1.5;
+          case "ARC069": return 1.4;
+          case "ARC054": return 1.9;
+          case "EVR091": return 1.8;
+          case "EVR100": return 1.7;
+          case "WTR218": return 1.6;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -897,6 +1007,19 @@ function FromArsenalActionPriority($cardId, $heroId)
           case "WTR101": return 1.8;
           case "WTR102": return 1.7;
           case "CRU072": return 1.6;
+          default: return 0;
+        }
+      }
+    case "ROGUE009":
+      {
+        switch($cardId)
+        {
+          case "ARC045": return 1.5;
+          case "ARC069": return 1.4;
+          case "ARC054": return 1.9;
+          case "EVR091": return 1.8;
+          case "EVR100": return 1.7;
+          case "WTR218": return 1.6;
           default: return 0;
         }
       }

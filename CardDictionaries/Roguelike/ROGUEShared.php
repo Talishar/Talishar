@@ -82,6 +82,8 @@ function ROGUECardType($cardID)
       case "ROGUE006": return "C";
       case "ROGUE007": return "E";
       case "ROGUE008": return "C";
+      case "ROGUE009": return "C";
+      case "ROGUE010": return "C";
       default:
         return "";
     }
@@ -98,6 +100,8 @@ function ROGUECardSubtype($cardID)
       case "ROGUE006": return "Elemental";
       case "ROGUE007": return "Chest";
       case "ROGUE008": return "Ninja";
+      case "ROGUE009": return "Ranger";
+      case "ROGUE009": return "Guardian";
       default: return "";
     }
 }
@@ -121,6 +125,8 @@ function ROGUEPitchValue($cardID)
       case "ROGUE006": return -1;
       case "ROGUE007": return -1;
       case "ROGUE008": return -1;
+      case "ROGUE009": return -1;
+      case "ROGUE010": return -1;
       default: return 3;
     }
 }
@@ -136,6 +142,8 @@ function ROGUEBlockValue($cardID)
       case "ROGUE006": return -1;
       case "ROGUE007": return -1;
       case "ROGUE008": return -1;
+      case "ROGUE009": return -1;
+      case "ROGUE010": return -1;
       default:
         return 3;
     }

@@ -51,7 +51,7 @@
           if($chestSideboard != "") $chestSideboard .= " ";
           $chestSideboard .= $charZone[$i];
         }
-        break;  
+        break;
       default: break;
     }
   }
@@ -85,10 +85,12 @@
   {
     switch($encounterId)
     {
-      case 1: return "Woottonhog";
-      case 3: return "RavenousRabble";
-      case 5: return "BarragingBrawnhide";
-      case 7: return "ShockStriker";
+      case 101: return "Woottonhog";
+      case 102: return "RavenousRabble";
+      case 103: return "BarragingBrawnhide";
+      case 104: return "ShockStriker";
+      case 106: return "QuickshotNovice";
+      case 107: return "RuneScholar";
       default: return "Woottonhog";
     }
   }
