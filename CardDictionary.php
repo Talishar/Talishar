@@ -501,6 +501,7 @@ function PitchValue($cardID)
     return ROGUEPitchValue($cardID);
   }
   switch ($cardID) {
+    case "MON404": case "MON405": case "MON406": case "MON407": return 0;
     default:
       return 3;
   }
