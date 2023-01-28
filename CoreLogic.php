@@ -1287,6 +1287,13 @@ function ClassContains($cardID, $class, $player="")
   return DelimStringContains($cardClass, $class);
 }
 
+function SubtypeContains($cardID, $subtype, $player="")
+{
+  $cardSubtype = CardSubtype($cardID);
+  return DelimStringContains($cardSubtype, $subtype);
+}
+
+
 function TalentOverride($cardID, $player="")
 {
   global $currentTurnEffects;
