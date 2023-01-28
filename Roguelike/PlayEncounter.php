@@ -36,7 +36,7 @@ $weapon1 = "";
 $weapon2 = "";
 $weaponSideboard = "";
 $character = $charZone[0];
-//$weapon1 = $charZone[1];
+//$weapon1 = $charZone[1]; //Old code
 $deckCards = implode(" ", $cards);
 
 for ($i = 1; $i < count($charZone); ++$i) {
@@ -50,9 +50,16 @@ for ($i = 1; $i < count($charZone); ++$i) {
         $weapon1 = $charZone[$i]; // then equip it
       }
       elseif(is1H($weapon1) && is1H($charZone[$i])) { //If equipped and current are both 1h,
-        $weapon2 = $charZone[$i];                    // then Equip the new one in second hand
+        if($weapon2 == "" && $offhand == "") $weapon2 = $charZone[$i];
+        else {
+          if ($weaponSideboard != "")
+          $weaponSideboard .= " ";
+        $weaponSideboard .= $charZone[$i];
+        }
       }
       else { //If we have extra weapons, then sideboard them
+        if ($weaponSideboard != "")
+          $weaponSideboard .= " ";
         $weaponSideboard .= $charZone[$i];
       }
       break;
@@ -97,6 +104,14 @@ for ($i = 1; $i < count($charZone); ++$i) {
         $legsSideboard .= $charZone[$i];
       }
       break;
+    case "Off-Hand":
+      if ($offhand == "")
+        $offhand = $charZone[$i];
+        else {
+        if ($offhandSideboard != "")
+          $offhandSideboard .= " ";
+        $offhandSideboard .= $charZone[$i];
+        }
     default:
       break;
   }
