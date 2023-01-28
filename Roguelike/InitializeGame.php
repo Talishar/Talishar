@@ -20,10 +20,20 @@
     $deck = &GetZone($i, "Deck");
     $deck = explode(" ", "WTR129 WTR145 WTR201 ARC205 CRU093 MON116 MON283 DVR019 DVR022 DVR009 DVR024 CRU186");//TODO: Support multiple heroes
     $encounter = &GetZone($i, "Encounter");
-    if(true) //set to false to start in the new encounter start
+    if(false) //set to false to start in the new encounter start
     {
       array_push($encounter, 1);
       array_push($encounter, "Fight");
+    }
+    else if(true) //this is what I am currently working in
+    {
+      array_push($encounter, 001);
+      array_push($encounter, "PickMode");
+      array_push($encounter, 1);
+      array_push($encounter, "Dorinthea");
+      array_push($encounter, "Ira");
+      array_push($encounter, "none");
+      InitializeEncounter($i);
     }
     else
     {
@@ -31,7 +41,7 @@
       array_push($encounter, "PickMode");
       array_push($encounter, 1);
       //array_push($encounter, "");
-      InitializeEncounter($i, $encounter[0], "-");
+      InitializeEncounter($i);
     }
 
   }

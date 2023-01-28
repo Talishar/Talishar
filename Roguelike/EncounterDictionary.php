@@ -1,9 +1,21 @@
 <?php
 
-function EncounterDescription($encounter, $subphase)
+/*
+Encounter variable
+encounter[0] = Encounter ID (001-099 Special Encounters | 101-199 Combat Encounters | 201-299 Event Encounters)
+encounter[1] = Encounter Subphase
+encounter[2] = Position in adventure
+encounter[3] = Hero ID
+encounter[4] = Adventure ID
+encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
+*/
+
+function EncounterDescription()
 {
-  switch($encounter)
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter[0])
   {
+    /*
     case 1:
       if($subphase == "Fight") return "You're attacked by a Woottonhog.";
       else if($subphase == "AfterFight") return "You defeated the Woottonhog.";
@@ -31,15 +43,66 @@ function EncounterDescription($encounter, $subphase)
       return "Insert Flavor Text for Choosing a Backgroud";
     case 11:
       return "Insert Flavor Text for Choosing a Starting Bonus";
+    */
+    case 001:
+      return "Welcome to Blackjack's Tavern!";
+    case 002:
+      return "Choose your hero";
+    case 003:
+      return "Choose a bounty";
+    case 004:
+      return "Insert Flavor Text for Choosing a Background";
+    case 005:
+      return "Insert Flavor Text for Choosing a Starting Bonus";
+    case 020:
+      return "You found a campfire. Choose what you want to do.";
+
+    case 101:
+      if($encounter[1] == "Fight") return "You're attacked by a Woottonhog.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Woottonhog.";
+    case 102:
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Ravenous Rabble.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Ravenous Rabble.";
+    case 103:
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Barraging Brawnhide.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Barraging Brawnhide.";
+    case 104:
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Shock Striker.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Shock Striker.";
+    case 105:
+      if($encounter[1] == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
+      else if($encounter[1] == "AfterFight") return "You defeated the group of bandits.";
+    case 106:
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Cloaked Ranger.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Novice.";
+    case 107:
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar";
+      else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar";
+
+    case 201:
+      return "You found a battlefield. Choose what you want to do.";
+    case 202:
+      return "You found a library. Choose what you want to do.";
+    case 203:
+      return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
+
     default: return "No encounter text.";
   }
 }
 
 
-function InitializeEncounter($player, $encounter, $subphase)
+function InitializeEncounter($player)
 {
-  switch($encounter)
+  $encounter = &GetZone($player, "Encounter");
+  WriteLog("Encounter[0] = " . $encounter[0]);
+  WriteLog("Encounter[1] = " . $encounter[1]);
+  WriteLog("Encounter[2] = " . $encounter[2]);
+  WriteLog("Encounter[3] = " . $encounter[3]);
+  WriteLog("Encounter[4] = " . $encounter[4]);
+  WriteLog("Encounter[5] = " . $encounter[5]);
+  switch($encounter[0])
   {
+    /*
     case 2:
       //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn");
@@ -70,59 +133,136 @@ function InitializeEncounter($player, $encounter, $subphase)
       AddDecisionQueue("BUTTONINPUT", $player, "Choice_1_to_be_implemented,Choice_2_to_be_implemented");
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    */
+    case 001:
+      AddDecisionQueue("BUTTONINPUT", $player, "Change_your_hero,Change_your_bounty,Begin_adventure");
+      AddDecisionQueue("STARTADVENTURE", $player, "-");
+      break;
+    case 002:
+      AddDecisionQueue("BUTTONINPUT", $player, "Dorinthea,Bravo");
+      AddDecisionQueue("CHOOSEHERO", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
+      break;
+    case 003:
+      AddDecisionQueue("BUTTONINPUT", $player, "Ira");
+      AddDecisionQueue("CHOOSEADVENTURE", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
+      break;
+    case 004:
+      if($encounter[3] == "Dorinthea") AddDecisionQueue("BUTTONINPUT", $player, "Cintari_Saber_Background,Dawnblade_Background");
+      if($encounter[3] == "Bravo") AddDecisionQueue("BUTTONINPUT", $player, "Anothos_Background,Titans_Fist_Background");
+      AddDecisionQueue("BACKGROUND", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 005:
+      AddDecisionQueue("BUTTONINPUT", $player, "Choice_1_to_be_implemented,Choice_2_to_be_implemented");
+      AddDecisionQueue("BACKGROUND", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 020:
+      //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
+      AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn");
+      AddDecisionQueue("CAMPFIRE", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+
+    case 201:
+      AddDecisionQueue("BUTTONINPUT", $player, "Loot,Pay_Respects");
+      AddDecisionQueue("BATTLEFIELD", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 202:
+      AddDecisionQueue("BUTTONINPUT", $player, "Search,Leave");
+      AddDecisionQueue("LIBRARY", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 203:
+      AddDecisionQueue("BUTTONINPUT", $player, "Enter_Stream,Leave");
+      AddDecisionQueue("VOLTHAVEN", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
     default: break;
   }
 }
 
-function EncounterImage($encounter, $subphase)
+function EncounterImage()
 {
-  switch($encounter)
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter[0])
   {
-    case 1:
+    /*
+    case 101:
       return "MON286_cropped.png";
-    case 2:
+    case 020:
       return "UPR221_cropped.png";
-    case 3:
+    case 102:
       return "ARC191_cropped.png";
-    case 4:
+    case 201:
       return "WTR194_cropped.png";
-    case 5:
+    case 103:
       return "WTR178_cropped.png";
-    case 6:
+    case 202:
       return "UPR199_cropped.png";
-    case 7:
+    case 104:
       return "ELE197_cropped.png";
-    case 8:
+    case 203:
       return "ELE112_cropped.png";
-    case 9:
+    case 105:
       return "ELE117_cropped.png";
-    case 10: case 11:
+    case 001: case 002: case 003: case 004: case 005:
+      return "ROGUELORE001_cropped.png";*/
+    case 001: case 002: case 003: case 004: case 005:
       return "ROGUELORE001_cropped.png";
+    case 020:
+      return "UPR221_cropped.png";
+
+    case 101:
+      return "MON286_cropped.png";
+    case 102:
+      return "ARC191_cropped.png";
+    case 103:
+      return "WTR178_cropped.png";
+    case 104:
+      return "ELE197_cropped.png";
+    case 105:
+      return "ELE117_cropped.png";
+    case 106:
+      return "ELE214_cropped.png";
+    case 107:
+      return "ARC103_cropped.png";
+
+    case 201:
+      return "WTR194_cropped.png";
+    case 202:
+      return "UPR199_cropped.png";
+    case 203:
+      return "ELE112_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
 
-function GetNextEncounter($previousEncounter)
+function GetNextEncounter()
 {
-  if(false) //set to true to enable new random encounter generation
+  if(true) //set to true to enable new random encounter generation
   {
-    WriteLog("hijacked GetNextEncounter");
     $encounter = &GetZone(1, "Encounter");
+    WriteLog("hijacked GetNextEncounter");
     WriteLog("Encounter[0]: " . $encounter[0]);
     WriteLog("Encounter[1]: " . $encounter[1]);
     WriteLog("Encounter[2]: " . $encounter[2]);
     ++$encounter[2];
-    if($encounter[2] == 3 || $encounter[2] == 5) return GetEasyCombat($previousEncounter, $encounter);
-    else if($encounter[2] == 7 || $encounter[2] == 10) return GetMediumCombat($previousEncounter, $encounter);
-    else if($encounter[2] == 12 || $encounter[2] == 14) return GetHardCombat($previousEncounter, $encounter);
-    else if($encounter[2] == 2) return "11-PickMode";
-    else if($encounter[2] == 17) return "9-BeforeFight";
-    else if($encounter[2] == 9 || $encounter[2] == 16) return "2-PickMode";
-    else return GetEvent($previousEncounter, $encounter);
+    if($encounter[2] == 3 || $encounter[2] == 5) return GetEasyCombat();
+    else if($encounter[2] == 7 || $encounter[2] == 10) return GetMediumCombat();
+    else if($encounter[2] == 12 || $encounter[2] == 14) return GetHardCombat();
+    else if($encounter[2] == 2) return "005-PickMode";
+    else if($encounter[2] == 17) return "105-BeforeFight";
+    else if($encounter[2] == 9 || $encounter[2] == 16) return "020-PickMode";
+    else return GetEvent($encounter);
   }
   else
   {
-    switch($previousEncounter)
+    switch($encounter[0])
     {
       case 1: return "6-PickMode";
       case 2: return "7-BeforeFight";
@@ -139,47 +279,77 @@ function GetNextEncounter($previousEncounter)
   }
 }
 
-function GetEasyCombat($previousEncounter, $encounter)
+function GetEasyCombat()
 {
-  //$alreadyPicked = explode(" ", $encounter[3]);
+  $encounter = &GetZone(1, "Encounter");
+  $alreadyPicked = explode(" ", $encounter[5]);
   $easyEncounters = array(
-    "1-Fight", "3-BeforeFight", "5-BeforeFight", "7-BeforeFight"
+    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
   );
-  $randomEncounter = rand(0, count($easyEncounters)-1); //going to implement  no duplicate encounters later
-  /*$encounterFound = false;
-  for($i = 0; i < count($easyEncounters) && !$encounterFound; ++$i)
+  $generatedEncounters = [];
+  for($i = 0; $i < count($easyEncounters); ++$i)
   {
-    if($randomEncounter == count($easyEncounters)) { $randomEncounter = 0; }
-    for($index = 0; $index < count($alreadyPicked); $index++)
+    $notFound = true;
+    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
     {
-      if($easyEncounters[$randomEncounter] == $alreadyPicked[$index]) { ++$randomEncounter; }
+      if($alreadyPicked[$j] == $easyEncounters[$i]) $notFound = false;
     }
-  }*/
-  return $easyEncounters[$randomEncounter];
+    if($notFound) array_push($generatedEncounters, $easyEncounters[$i]);
+  }
+  WriteLog(count($generatedEncounters));
+  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
+  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
+  return $generatedEncounters[$randomEncounter];
 }
 
-function GetMediumCombat($previousEncounter, $encounter)
+function GetMediumCombat()
 {
+  $encounter = &GetZone(1, "Encounter");
+  $alreadyPicked = explode(" ", $encounter[5]);
   $mediumEncounters = array(
-    "1-Fight", "3-BeforeFight", "5-BeforeFight", "7-BeforeFight"
+    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
   );
-  $randomEncounter = rand(0, count($mediumEncounters)-1);
-  return $mediumEncounters[$randomEncounter];
+  $generatedEncounters = [];
+  for($i = 0; $i < count($mediumEncounters); ++$i)
+  {
+    $notFound = true;
+    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
+    {
+      if($alreadyPicked[$j] == $mediumEncounters[$i]) $notFound = false;
+    }
+    if($notFound) array_push($generatedEncounters, $mediumEncounters[$i]);
+  }
+  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
+  $encounter[5] = $encounter[5] . $generatedEncounters[$randomEncounter];
+  return $generatedEncounters[$randomEncounter];
 }
 
-function GetHardCombat($previousEncounter, $encounter)
+function GetHardCombat()
 {
+  $encounter = &GetZone(1, "Encounter");
+  $alreadyPicked = explode(" ", $encounter[5]);
   $hardEncounters = array(
-    "1-Fight", "3-BeforeFight", "5-BeforeFight", "7-BeforeFight"
+    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
   );
-  $randomEncounter = rand(0, count($hardEncounters)-1);
-  return $hardEncounters[$randomEncounter];
+  $generatedEncounters = [];
+  for($i = 0; $i < count($hardEncounters); ++$i)
+  {
+    $notFound = true;
+    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
+    {
+      if($alreadyPicked[$j] == $easyEncounters[$i]) $notFound = false;
+    }
+    if($notFound) array_push($generatedEncounters, $hardEncounters[$i]);
+  }
+  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
+  $encounter[5] = $encounter[5] . $generatedEncounters[$randomEncounter];
+  return $generatedEncounters[$randomEncounter];
 }
 
-function GetEvent($previousEncounter, $encounter)
+function GetEvent()
 {
   $eventEncounters = array(
-    "4-PickMode", "6-PickMode"
+    "201-PickMode", "202-PickMode"
   );
   $randomEncounter = rand(0, count($eventEncounters)-1);
   return $eventEncounters[$randomEncounter];

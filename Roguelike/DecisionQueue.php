@@ -77,7 +77,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $encounter = &GetZone($player, "Encounter");
         $encounter[0] = $params[0];
         $encounter[1] = $params[1];
-        InitializeEncounter($player, $encounter[0], $encounter[1]);
+        InitializeEncounter($player);
         return 1;
       case "CAMPFIRE":
         switch($lastResult)
@@ -144,7 +144,59 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $character = &GetZone($player, "Character");
             array_push($character, "WTR115");
             break;
-
+          case "Anothos_Background":
+            break;
+          case "Titans_Fist_Background":
+            break;
+        }
+      case "STARTADVENTURE":
+        switch($lastResult)
+        {
+          case "Change_your_hero":
+            AddDecisionQueue("SETENCOUNTER", $player, "002-PickMode");
+            break;
+          case "Change_your_bounty":
+            AddDecisionQueue("SETENCOUNTER", $player, "003-PickMode");
+            break;
+          case "Begin_adventure":
+            $devTest = false;
+            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight"); //set the above line to true and the last argument of this to your encounter to test it.
+            else AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
+            break;
+        }
+        return 1;
+      case "CHOOSEHERO":
+        switch($lastResult)
+        {
+          case "Dorinthea":
+            $health = &GetZone($player, "Health");
+            array_push($health, 20);//TODO: Base on hero health
+            $character = &GetZone($player, "Character");
+            $character = explode(" ", "DVR001 DVR002 WTR156");//TODO: Support multiple heroes
+            $deck = &GetZone($player, "Deck");
+            $deck = explode(" ", "WTR129 WTR145 WTR201 ARC205 CRU093 MON116 MON283 DVR019 DVR022 DVR009 DVR024 CRU186");//TODO: Support multiple heroes
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[3] = "Dorinthea";
+            break;
+          case "Bravo":
+            $health = &GetZone($player, "Health");
+            array_push($health, 20);//TODO: Base on hero health
+            $character = &GetZone($player, "Character");
+            $character = explode(" ", "WTR039 ELE202 ELE204");//TODO: Support multiple heroes
+            $deck = &GetZone($player, "Deck");
+            $deck = explode(" ", "WTR129 WTR145 WTR201 ARC205 CRU093 MON116 MON283 DVR019 DVR022 DVR009 DVR024 CRU186");//TODO: Support multiple heroes
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[3] = "Bravo";
+            break;
+        }
+        return 1;
+      case "CHOOSEADVENTURE":
+        switch($lastResult)
+        {
+          case "Ira":
+          $encounter = &GetZone($player, "Encounter");
+          $encounter[4] = "Ira";
+          break;
         }
         return 1;
       case "VOLTHAVEN":
