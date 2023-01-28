@@ -133,6 +133,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             //PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
             $deck = &GetZone($player, "Deck");
             $character = &GetZone($player, "Character");
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[7] = "Saber";
             //array_push($deck, "CRU079");
             //array_push($deck, "CRU080");
             //array_push($deck, "EVR060");
@@ -142,7 +144,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             //PrependDecisionQueue("CHOOSECARD", $player, "WTR115");
             $deck = &GetZone($player, "Deck");
             $character = &GetZone($player, "Character");
-            array_push($character, "WTR115");
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[7] = "Dawnblade";
+            //array_push($character, "WTR115");
             break;
           case "Anothos_Background":
             break;
@@ -160,7 +164,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Begin_adventure":
             $devTest = false;
-            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "107-BeforeFight"); //set the above line to true and the last argument of this to your encounter to test it.
+            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "202-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
             else AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
             break;
         }

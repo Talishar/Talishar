@@ -18,7 +18,7 @@ function EncounterAI()
       WriteLog("hand[1] = " . $hand[1]);
       WriteLog("hand[2] = " . $hand[2]);
       WriteLog("character[0] = " . $character[0]);
-      WriteLog("resources[0] = " . $resources[0])0;*/
+      WriteLog("resources[0] = " . $resources[0]);*/
       if(count($decisionQueue) > 0)
       {
         if($isBowActive)//was the last action a bow action?

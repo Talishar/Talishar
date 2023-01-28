@@ -16,6 +16,7 @@
     $health = &GetZone($i, "Health");
     array_push($health, 20);//TODO: Base on hero health
     $character = &GetZone($i, "Character");
+    //$character = explode(" ", "UPR044 WTR078 WTR078 WTR079 WTR150 UPR158 CRU053");//TODO: Support multiple heroes
     $character = explode(" ", "DVR001 DVR002 WTR156");//TODO: Support multiple heroes
     $deck = &GetZone($i, "Deck");
     $deck = explode(" ", "WTR129 WTR145 WTR201 ARC205 CRU093 MON116 MON283 DVR019 DVR022 DVR009 DVR024 CRU186");//TODO: Support multiple heroes
@@ -32,6 +33,8 @@
       array_push($encounter, 1);
       array_push($encounter, "Dorinthea");
       array_push($encounter, "Ira");
+      array_push($encounter, "none");
+      array_push($encounter, 1);
       array_push($encounter, "none");
       InitializeEncounter($i);
     }
