@@ -256,7 +256,7 @@ function GetHardCombat()
     $notFound = true;
     for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
     {
-      if($alreadyPicked[$j] == $easyEncounters[$i]) $notFound = false;
+      if($alreadyPicked[$j] == $hardEncounters[$i]) $notFound = false;
     }
     if($notFound) array_push($generatedEncounters, $hardEncounters[$i]);
   }
