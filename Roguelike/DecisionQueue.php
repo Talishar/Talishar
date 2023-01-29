@@ -125,63 +125,56 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
       case "BACKGROUND":
+        $deck = & GetZone($player, "Deck");
+        $character = &GetZone($player, "Character");
+        $encounter = &GetZone($player, "Encounter");
         switch($lastResult)
         {
           case "Cintari_Saber_Background":
             //PrependDecisionQueue("CHOOSECARD", $player, "CRU079");
             //PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Saber";
-            array_push($character, "CRU079");
-            array_push($character, "CRU080");
-            array_push($deck, "EVR060");
+            array_push($character, "CRU079"); //Saber 1
+            array_push($character, "CRU080"); //Saber 2
+            array_push($deck, "EVR062"); //Blade Runner (B)
+            array_push($deck, "EVR058"); //Slice and Dice (Y)
+            array_push($deck, "EVR066"); //Outland Skirmish (R)
             break;
           case "Dawnblade_Background":
             //PrependDecisionQueue("CHOOSECARD", $player, "WTR115");
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Dawnblade";
             array_push($character, "WTR115");
+            array_push($deck, "WTR125"); //Overpower (B)
+            array_push($deck, "WTR133"); //Ironsong Response (Y)
+            array_push($deck, "MON113"); //Plow Through (R)
             break;
           case "Hatchets_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Hatchet";
-            array_push($character, "MON105");
-            array_push($character, "MON106");
+            array_push($character, "MON105"); //Body
+            array_push($character, "MON106"); //Mind
+            array_push($deck, "EVR062"); //Blade Runner (B)
+            array_push($deck, "DYN083"); //Felling Swing (Y)
+            array_push($deck, "EVR066"); //Outland Skirmish (R)
             break;
           case "Battleaxe_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Battleaxe";
             array_push($character, "DYN068");
+            array_push($deck, "WTR125"); //Overpower (B)
+            array_push($deck, "WTR142"); //Sharpen Steel (Y)
+            array_push($deck, "DYN082"); //Felling Swing (R)
             break;
           case "Anothos_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Anothos";
             array_push($character, "WTR040");
             array_push($deck, "EVR024", "WTR065", "WTR066", "CRU035", "WTR206", "MON293");
             break;
           case "Titans_Fist_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Titans";
             array_push($character, "ELE202");
             array_push($character, "ELE204");
             array_push($deck, "DYN031", "DYN038", "WTR063", "WTR064", "ARC202", "WTR212");
             break;
           case "Sledge_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Sledge";
             array_push($character, "CRU024");
             array_push($deck, "ELE208", "EVR030", "WTR070", "CRU040", "WTR190", "ARC211");
