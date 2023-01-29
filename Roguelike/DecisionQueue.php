@@ -131,37 +131,24 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Cintari_Saber_Background":
-            //PrependDecisionQueue("CHOOSECARD", $player, "CRU079");
-            //PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
             $encounter[7] = "Saber";
-            array_push($character, "CRU079"); //Saber 1
-            array_push($character, "CRU080"); //Saber 2
-            array_push($deck, "EVR062"); //Blade Runner (B)
-            array_push($deck, "EVR058"); //Slice and Dice (Y)
-            array_push($deck, "EVR066"); //Outland Skirmish (R)
+            array_push($character, "CRU079", "CRU080"); //Cintari Sabers, both
+            array_push($deck, "EVR062", "EVR058", "EVR066"); //Blade Runner B, Slice and Dice Y, Outland Skirmish R
             break;
           case "Dawnblade_Background":
-            //PrependDecisionQueue("CHOOSECARD", $player, "WTR115");
             $encounter[7] = "Dawnblade";
             array_push($character, "WTR115");
-            array_push($deck, "WTR125"); //Overpower (B)
-            array_push($deck, "WTR133"); //Ironsong Response (Y)
-            array_push($deck, "MON113"); //Plow Through (R)
+            array_push($deck, "WTR125", "wtr133", "MON113"); //Overpower B, Ironsong Response Y, Plow Through R
             break;
           case "Hatchets_Background":
             $encounter[7] = "Hatchet";
-            array_push($character, "MON105"); //Body
-            array_push($character, "MON106"); //Mind
-            array_push($deck, "EVR062"); //Blade Runner (B)
-            array_push($deck, "DYN083"); //Felling Swing (Y)
-            array_push($deck, "EVR066"); //Outland Skirmish (R)
+            array_push($character, "MON105", "MON106"); //Body and Mind
+            array_push($deck, "EVR062", "DYN083", "EVR066"); //Blade Runner B, Felling Swing y, Outland Skirmish R
             break;
           case "Battleaxe_Background":
             $encounter[7] = "Battleaxe";
             array_push($character, "DYN068");
-            array_push($deck, "WTR125"); //Overpower (B)
-            array_push($deck, "WTR142"); //Sharpen Steel (Y)
-            array_push($deck, "DYN082"); //Felling Swing (R)
+            array_push($deck, "WTR125", "WTR142", "DYN082"); //Overpower B, Sharpen Steel Y, Felling Swing R
             break;
           case "Anothos_Background":
             $encounter[7] = "Anothos";
