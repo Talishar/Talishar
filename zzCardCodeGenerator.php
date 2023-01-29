@@ -56,6 +56,7 @@
         $cardID = $cardArray[$i]->printings[$j]->id;
         $set = substr($cardID, 0, 3);
         if(!in_array($set, $originalSets)) continue;
+        if(($set == "DVR" || $set == "RVD") && count($cardArray[$i]->printings) > 1) continue;
         $duplicate = false;
         for($k=0; $k<count($cardPrintings); ++$k)
         {
