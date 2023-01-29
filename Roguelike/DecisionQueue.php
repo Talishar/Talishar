@@ -128,25 +128,23 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Cintari_Saber_Background":
-            WriteLog("Mighty fine pair of swords there, eh?");
-            PrependDecisionQueue("CHOOSECARD", $player, "CRU079");
-            PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
+            //PrependDecisionQueue("CHOOSECARD", $player, "CRU079");
+            //PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
             $deck = &GetZone($player, "Deck");
             $character = &GetZone($player, "Character");
             $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Saber";
-            //array_push($character, "CRU079");
-            //array_push($character, "CRU080");
+            array_push($character, "CRU079");
+            array_push($character, "CRU080");
             array_push($deck, "EVR060");
             break;
           case "Dawnblade_Background":
-            //WriteLog("Beautiful tool there, eh?");
             //PrependDecisionQueue("CHOOSECARD", $player, "WTR115");
             $deck = &GetZone($player, "Deck");
             $character = &GetZone($player, "Character");
             $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Dawnblade";
-            //array_push($character, "WTR115");
+            array_push($character, "WTR115");
             break;
           case "Anothos_Background":
             break;
