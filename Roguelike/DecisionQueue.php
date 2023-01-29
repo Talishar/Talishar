@@ -146,6 +146,21 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $encounter[7] = "Dawnblade";
             array_push($character, "WTR115");
             break;
+          case "Hatchets_Background":
+            $deck = &GetZone($player, "Deck");
+            $character = &GetZone($player, "Character");
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[7] = "Hatchet";
+            array_push($character, "MON105");
+            array_push($character, "MON106");
+            break;
+          case "Battleaxe_Background":
+            $deck = &GetZone($player, "Deck");
+            $character = &GetZone($player, "Character");
+            $encounter = &GetZone($player, "Encounter");
+            $encounter[7] = "Battleaxe";
+            array_push($character, "DYN068");
+            break;
           case "Anothos_Background":
             break;
           case "Titans_Fist_Background":
