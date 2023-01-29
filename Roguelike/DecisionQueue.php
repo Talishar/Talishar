@@ -124,6 +124,25 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+      case "BLACKSMITH":
+        $encounter = &GetZone($player, "Encounter");
+        switch($lastResult)
+        {
+          case "Use_Forge":
+            WriteLog("You used your might to craft some armor.");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Head"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Chest"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Arms"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomArmor("Legs"));
+            break;
+          case "Ask_Legend":
+            WriteLog("A giant gave you a legendary gift.");
+            if($encounter[3] == "Dorinthea") PrependDecisionQueue("CHOOSECARD", $player, "WTR116");
+            if($encounter[3] == "Bravo") PrependDecisionQueue("CHOOSECARD", $player, "WTR041");
+            break;
+          case "Leave":
+            break;
+        }
       case "BACKGROUND":
         switch($lastResult)
         {
@@ -197,8 +216,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             AddDecisionQueue("SETENCOUNTER", $player, "003-PickMode");
             break;
           case "Begin_adventure":
-            $devTest = false;
-            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight"); //set the above line to true and the last argument of this to your encounter to test it.
+            $devTest = true;
+            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "204-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
             else AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
             break;
         }

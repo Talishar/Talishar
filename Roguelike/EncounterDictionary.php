@@ -58,6 +58,8 @@ function EncounterDescription()
       return "You found a library. Choose what you want to do.";
     case 203:
       return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
+    case 204:
+      return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
 
     default: return "No encounter text.";
   }
@@ -124,6 +126,10 @@ function InitializeEncounter($player)
       AddDecisionQueue("VOLTHAVEN", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
+    case 204:
+      AddDecisionQueue("BUTTONINPUT", $player, "Use_Forge,Ask_Legend,Leave");
+      AddDecisionQueue("BLACKSMITH", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
     default: break;
   }
 }
@@ -159,6 +165,8 @@ function EncounterImage()
       return "UPR199_cropped.png";
     case 203:
       return "ELE112_cropped.png";
+    case 204:
+      return "WTR046_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
@@ -292,6 +300,37 @@ function GetRandomCards($number)
   }
   }
   return $rv;
+}
+
+function GetRandomArmor($type)
+{
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter[3])
+  {
+    case "Dorinthea":
+    {
+      switch($type)
+      {
+        case "Head": $pool = array("UPR183", "WTR151", "MON241", "WTR155", "ARC155", "ELE233", "DYN236", "ARC151", "EVR053"); break;
+        case "Chest": $pool = array("MON238", "DVR004", "ELE234", "WTR152", "MON242", "WTR156", "ARC156", "UPR184", "DYN237", "ARC152", "CRU081"); break;
+        case "Arms": $pool = array("ARC153", "ELE235", "CRU179", "WTR153", "MON243", "WTR157", "ARC157", "UPR185", "DYN238", "MON239", "MON108"); break;
+        case "Legs": $pool = array("MON244", "WTR158", "ARC154", "ARC158", "UPR186", "ELE236", "WTR154", "DYN239", "MON240", "WTR117"); break;
+      }
+      break;
+    }
+    case "Bravo":
+    {
+      switch($type)
+      {
+        case "Head": $pool = array("UPR183", "WTR151", "MON241", "WTR155", "ARC155", "ELE233", "DYN236", "ARC151", "WTR042"); break;
+        case "Chest": $pool = array("MON238", "DVR004", "ELE234", "WTR152", "MON242", "WTR156", "ARC156", "UPR184", "DYN237", "ARC152", "EVR020"); break;
+        case "Arms": $pool = array("ARC153", "ELE235", "CRU179", "WTR153", "MON243", "WTR157", "ARC157", "UPR185", "DYN238", "MON239", "CRU025"); break;
+        case "Legs": $pool = array("MON244", "WTR158", "ARC154", "ARC158", "UPR186", "ELE236", "WTR154", "DYN239", "MON240"); break;
+      }
+      break;
+    }
+  }
+  return $pool[rand(0, count($pool)-1)];
 }
 
 function RandomCard($type)
