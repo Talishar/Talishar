@@ -135,8 +135,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $character = &GetZone($player, "Character");
             $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Saber";
-            array_push($character, "CRU079");
-            array_push($character, "CRU080");
+            //array_push($character, "CRU079");
+            //array_push($character, "CRU080");
             array_push($deck, "EVR060");
             break;
           case "Dawnblade_Background":
