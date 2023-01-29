@@ -169,24 +169,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
         return 1;
-    case "CHOOSEHERO":
-      $heroFileArray = file("Heroes/" . $lastResult . ".txt", FILE_IGNORE_NEW_LINES);
-        switch($lastResult)
-        {
-        case "Dorinthea":
+      case "CHOOSEHERO": //Logic for hero selection moved to ResetHero function
           ResetHero($player, $lastResult);
-            break;
-          case "Bravo":
-            $health = &GetZone($player, "Health");
-            array_push($health, 20);//TODO: Base on hero health
-            $character = &GetZone($player, "Character");
-            $character = explode(" ", "WTR039 ELE202 ELE204");//TODO: Support multiple heroes
-            $deck = &GetZone($player, "Deck");
-            $deck = explode(" ", "WTR129 WTR145 WTR201 ARC205 CRU093 MON116 MON283 DVR019 DVR022 DVR009 DVR024 CRU186");//TODO: Support multiple heroes
-            $encounter = &GetZone($player, "Encounter");
-            $encounter[3] = "Bravo";
-            break;
-        }
         return 1;
       case "CHOOSEADVENTURE":
         switch($lastResult)
