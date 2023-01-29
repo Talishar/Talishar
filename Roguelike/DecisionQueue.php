@@ -173,15 +173,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       $heroFileArray = file("Heroes/" . $lastResult . ".txt", FILE_IGNORE_NEW_LINES);
         switch($lastResult)
         {
-          case "Dorinthea":
-            $health = &GetZone($player, "Health");
-            array_push($health, 20);//TODO: Base on hero health
-            $character = &GetZone($player, "Character");
-            $character = explode(" ", $heroFileArray[0]);//TODO: Support multiple heroes
-            $deck = &GetZone($player, "Deck");
-            $deck = explode(" ", $heroFileArray[1]);//TODO: Support multiple heroes
-            $encounter = &GetZone($player, "Encounter");
-            $encounter[3] = "Dorinthea";
+        case "Dorinthea":
+          ResetHero($player, $lastResult);
             break;
           case "Bravo":
             $health = &GetZone($player, "Health");
@@ -228,6 +221,18 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       default:
         return "NOTSTATIC";
     }
+  }
+  function ResetHero($player, $hero="Dorinthea")
+  {
+  $heroFileArray = file("Heroes/" . $hero . ".txt", FILE_IGNORE_NEW_LINES);
+  $health = &GetZone($player, "Health");
+  array_push($health, 20); //TODO: Base on hero health
+  $character = &GetZone($player, "Character");
+  $character = explode(" ", $heroFileArray[0]); //TODO: Support multiple heroes
+  $deck = &GetZone($player, "Deck");
+  $deck = explode(" ", $heroFileArray[1]); //TODO: Support multiple heroes
+  $encounter = &GetZone($player, "Encounter");
+  $encounter[3] = $hero;
   }
 
 ?>
