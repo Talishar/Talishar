@@ -63,7 +63,7 @@ if ($handle = opendir($path)) {
         deleteDirectory($folder);
         DeleteCache($gameToken);
       }
-      if ($status == 0 && $visibility == "public") {
+      if ($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
         $openGame = new stdClass();
         $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";

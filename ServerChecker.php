@@ -98,7 +98,7 @@ if ($handle = opendir($path)) {
       }
     }
 
-    if ($status == 0 && $visibility == "public") {
+    if ($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
       $p1Hero = GetCachePiece($gameName, 7);
       $formatName = "";
       if ($format == "commoner") $formatName = "Commoner ";
