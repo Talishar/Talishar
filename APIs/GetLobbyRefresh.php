@@ -75,9 +75,10 @@ if ($authKey != $targetAuth) {
 }
 
 if ($kickPlayerTwo) {
-  if($oppStatus != "-1" && ($format == "compcc" || $format == "compblitz"))
+  $numP2Disconnects = IncrementCachePiece($gameName, 11);
+  if($numP2Disconnects >= 3)
   {
-      //This happens when player 2 "dodges" -- add logging?
+    WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.").
   }
   if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
   if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
