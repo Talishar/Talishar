@@ -212,7 +212,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   switch ($cardID) {
     case "DYN001":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKCARD,ARC159");
-      AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("ATTACKWITHIT", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
