@@ -64,6 +64,6 @@ $handler = fopen($filename, "w");
 fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
-WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!0!"); //Initialize SHMOP cache for this game
+WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!0!0!0"); //Initialize SHMOP cache for this game
 
 echo ($gameName);
