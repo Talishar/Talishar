@@ -49,7 +49,7 @@
           unset($options[$found]);
           $options = array_values($options);
         }
-        if(CardType($cardID) == "E")
+        if(CardType($cardID) == "E" || CardType($cardID) == "W")
         {
           $char = &GetZone($playerID, "Character");
           array_push($char, $cardID);
