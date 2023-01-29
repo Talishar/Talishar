@@ -63,34 +63,34 @@ function DYNHasGoAgain($cardID)
 {
   switch ($cardID) {
     //Brute
-    case "DYN009": return true;
-    case "DYN022": case "DYN023": case "DYN024": return true;
+    case "DYN009":
+    case "DYN022": case "DYN023": case "DYN024":
     //Guardian
-    case "DYN028": return true;
+    case "DYN028":
     //Ninja
-    case "DYN049": return true;
-    case "DYN050": case "DYN051": case "DYN052": return true;
-    case "DYN062": case "DYN063": case "DYN064": return true;
-    case "DYN065": return true;
+    case "DYN049":
+    case "DYN050": case "DYN051": case "DYN052":
+    case "DYN062": case "DYN063": case "DYN064":
+    case "DYN065":
     //Warrior
-    case "DYN071": return true;
-    case "DYN076": case "DYN077": case "DYN078": return true;
-		case "DYN082": case "DYN083": case "DYN084": return true;
-		case "DYN085": case "DYN086": case "DYN087": return true;
+    case "DYN071":
+    case "DYN076": case "DYN077": case "DYN078":
+		case "DYN082": case "DYN083": case "DYN084":
+		case "DYN085": case "DYN086": case "DYN087":
     //Mechanologist
-    case "DYN091": return true;
-    case "DYN092": return true;
+    case "DYN091":
+    case "DYN092":
     //Assassin
-    case "DYN115": case "DYN116": return true;
+    case "DYN115": case "DYN116":
     //Ranger
-    case "DYN155": return true;
-		case "DYN168": case "DYN169": case "DYN170": return true;
+    case "DYN155":
+		case "DYN168": case "DYN169": case "DYN170":
     //Runeblade
-		case "DYN185": case "DYN186": case "DYN187": return true;
-    case "DYN188": case "DYN189": case "DYN190": return true;
-    case "DYN209": case "DYN210": case "DYN211": return true;
+		case "DYN185": case "DYN186": case "DYN187":
+    case "DYN188": case "DYN189": case "DYN190":
+    case "DYN209": case "DYN210": case "DYN211":
     //Illusionist
-    case "DYN212": return true;
+    case "DYN212":
     case "DYN230": case "DYN231": case "DYN232": return true;
     default: return false;
   }
@@ -99,10 +99,8 @@ function DYNHasGoAgain($cardID)
 function DYNAbilityHasGoAgain($cardID)
 {
   switch ($cardID) {
-    case "DYN151": return true;
-    case "DYN192": return true;
-    case "DYN240": return true;
-    case "DYN243": return true;
+    case "DYN151": case "DYN192": case "DYN240": case "DYN243": return true;
+    default: return false;
   }
 }
 
@@ -411,16 +409,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PutItemIntoPlayForPlayer("DYN492c", $currentPlayer);//Item
       return "";
     case "DYN095": case "DYN096": case "DYN097":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "DYN119": case "DYN120": case "DYN122":
-    case "DYN124": case "DYN125": case "DYN126":
-    case "DYN127": case "DYN128": case "DYN129":
-    case "DYN133": case "DYN134": case "DYN135":
-    case "DYN136": case "DYN137": case "DYN138": //Contracts visualization
-    case "DYN139": case "DYN140": case "DYN141":
-    case "DYN142": case "DYN143": case "DYN144":
-    case "DYN145": case "DYN146": case "DYN147":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DYN123":
