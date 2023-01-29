@@ -1,17 +1,5 @@
 <?php
 
-  function UPRNinjaCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR046": return "Sword";
-      case "UPR047": return "Arms";
-      case "UPR158": return "Arms";
-      case "UPR159": return "Legs";
-      default: return "";
-    }
-  }
-
   function UPRNinjaPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

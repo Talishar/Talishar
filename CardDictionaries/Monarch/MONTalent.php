@@ -1,20 +1,5 @@
 <?php
 
-  function MONTalentCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON000": return "Landmark";
-      case "MON060": return "Chest";
-      case "MON061": return "Head";
-      case "MON187": return "Chest";
-      case "MON188": return "Head";
-      case "MON219": return "Ally";
-      case "MON220": return "Ally";
-      default: return "";
-    }
-  }
-
   function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts = "")
   {
     global $currentPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAddedToSoul, $combatChain, $CS_PlayIndex;

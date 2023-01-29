@@ -156,45 +156,6 @@
     }
   }
 
-  function CRUCardSubtype($cardID)
-  {
-    switch ($cardID)
-    {
-      case "CRU000": return "Gem";
-      case "CRU004": case "CRU005": return "Claw";
-      case "CRU006": return "Head";
-      case "CRU024": return "Hammer";
-      case "CRU025": return "Arms";
-      case "CRU028": case "CRU029": case "CRU030": case "CRU031": return "Aura";
-      case "CRU038": case "CRU039": case "CRU040": return "Aura";
-      case "CRU049": return "Dagger";
-      case "CRU050": return "Sword";
-      case "CRU051": case "CRU052": return "Dagger";
-      case "CRU053": return "Legs";
-      case "CRU075": return "Aura";
-      case "CRU079": case "CRU080": return "Sword";
-      case "CRU081": return "Chest";
-      case "CRU101": return "Gun";
-      case "CRU102": return "Head";
-      case "CRU104": case "CRU105": return "Item";
-      case "CRU121": return "Bow";
-      case "CRU122": return "Legs";
-      case "CRU123": return "Arrow";
-      case "CRU126": case "CRU127": case "CRU128": return "Trap";
-      case "CRU129": case "CRU130": case "CRU131": return "Arrow";
-      case "CRU132": case "CRU133": case "CRU134": return "Arrow";
-      case "CRU140": return "Sword";
-      case "CRU141": return "Chest";
-      case "CRU144": return "Aura";
-      case "CRU160": return "Staff";
-      case "CRU161": return "Arms";
-      case "CRU177": return "Sword";
-      case "CRU179": return "Arms";
-      case "CRU197": return "Item";
-      default: return "";
-    }
-  }
-
   function CRUHasGoAgain($cardID)
   {
     switch($cardID)

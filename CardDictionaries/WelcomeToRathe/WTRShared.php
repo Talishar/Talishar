@@ -146,42 +146,6 @@ function WTRAbilityCost($cardID)
     }
   }
 
-  function WTRCardSubtype($cardID)
-  {
-    switch ($cardID)
-    {
-      case "WTR003": return "Club";
-      case "WTR004": return "Legs";
-      case "WTR005": return "Chest";
-      case "WTR040": return "Hammer";
-      case "WTR041": return "Chest";
-      case "WTR042": return "Head";
-      case "WTR046": case "WTR047":
-      case "WTR054": case "WTR055": case "WTR056":
-      case "WTR069": case "WTR070": case "WTR071":
-      case "WTR072": case "WTR073": case "WTR074": case "WTR075": return "Aura";
-      case "WTR078": return "Dagger";
-      case "WTR079": return "Head";
-      case "WTR080": return "Arms";
-      case "WTR115": return "Sword";
-      case "WTR116": return "Arms";
-      case "WTR117": return "Legs";
-      case "WTR150": return "Chest";
-      case "WTR151": return "Head";
-      case "WTR152": return "Chest";
-      case "WTR153": return "Arms";
-      case "WTR154": return "Legs";
-      case "WTR155": return "Head";
-      case "WTR156": return "Chest";
-      case "WTR157": return "Arms";
-      case "WTR158": return "Legs";
-      case "WTR162": return "Item";
-      case "WTR170": case "WTR171": case "WTR172": return "Item";
-      case "WTR225": return "Aura";
-      default: return "";
-    }
-  }
-
   function WTRHasGoAgain($cardID)
   {
     switch ($cardID)

@@ -1,24 +1,5 @@
 <?php
 
-  function MONGenericCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON238": return "Chest";
-      case "MON239": return "Arms";
-      case "MON240": return "Legs";
-      case "MON241": return "Head";
-      case "MON242": return "Chest";
-      case "MON243": return "Arms";
-      case "MON244": return "Legs";
-      case "MON302": return "Item";
-      case "MON400": return "Chest";
-      case "MON401": return "Arms";
-      case "MON402": return "Legs";
-      default: return "";
-    }
-  }
-
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
     global $actionPoints, $currentPlayer, $myResources, $theirHand, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $combatChain, $myClassState, $CS_PlayIndex;

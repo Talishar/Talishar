@@ -1,18 +1,5 @@
 <?php
 
-  function MONWarriorCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON031": return "Sword";
-      case "MON105": return "Axe";
-      case "MON106": return "Axe";
-      case "MON107": return "Legs";
-      case "MON108": return "Arms";
-      default: return "";
-    }
-  }
-
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;

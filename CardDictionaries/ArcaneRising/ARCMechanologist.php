@@ -1,18 +1,5 @@
 <?php
 
-  function ARCMechanologistCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC003": return "Pistol";
-      case "ARC004": return "Chest";
-      case "ARC005": return "Legs";
-      case "ARC007": case "ARC010": case "ARC017": case "ARC018": case "ARC019":
-      case "ARC035": case "ARC036": case "ARC037": return "Item";
-      default: return "";
-    }
-  }
-
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBoosted, $actionPoints, $combatChainState, $CS_PlayIndex;

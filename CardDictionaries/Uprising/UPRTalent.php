@@ -1,28 +1,5 @@
 <?php
 
-  function UPRTalentCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR000": return "Gem";
-      case "UPR084": return "Chest";
-      case "UPR085": return "Chest";
-      case "UPR136": return "Head";
-      case "UPR137": return "Head";
-      case "UPR138": return "Aura";
-      case "UPR139": return "Affliction,Aura";
-      case "UPR140": return "Aura";
-      case "UPR182": return "Head";
-      case "UPR183": return "Head";
-      case "UPR184": return "Chest";
-      case "UPR185": return "Arms";
-      case "UPR186": return "Legs";
-      case "UPR190": return "Aura";
-      case "UPR218": case "UPR219": case "UPR220": return "Aura";
-      default: return "";
-    }
-  }
-
   function UPRTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CS_PlayIndex, $CS_NumRedPlayed;
