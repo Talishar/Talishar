@@ -29,13 +29,13 @@
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
-  //GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");
+  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);
 
   fwrite($handler, "?>");
 
   fclose($handler);
 
-  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="")
+  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="", $sparse=false)
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
@@ -44,6 +44,7 @@
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health") $isString = false;
     fwrite($handler, "if(strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
+    if($sparse) fwrite($handler, "switch(\$cardID) {\r\n");
     $trie = [];
     $cardsSeen = [];
     for($i=0; $i<count($cardArray); ++$i)
@@ -102,11 +103,15 @@
           }
         }
         if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
-        if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue) AddToTrie($trie, $cardID, 0, $data);
+        if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue)
+        {
+          if($sparse) fwrite($handler, "case \"" . $cardID . "\": return " . ($isString ? "\"$data\"" : $data) . ";\r\n");
+          else AddToTrie($trie, $cardID, 0, $data);
+        }
       }
     }
-
-    TraverseTrie($trie, "", $handler, $isString, $defaultValue);
+    if($sparse) fwrite($handler, "default: return " . ($isString ? "\"$defaultValue\"" : $defaultValue) . ";}\r\n");
+    else TraverseTrie($trie, "", $handler, $isString, $defaultValue);
 
     fwrite($handler, "}\r\n\r\n");
   }

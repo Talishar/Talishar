@@ -174,6 +174,23 @@ function CardSubType($cardID)
 
 function CharacterHealth($cardID)
 {
+  $set = CardSet($cardID);
+  if($set != "ROG" && $set != "DUM")
+  {
+    $number = intval(substr($cardID, 3));
+    if($number < 400) return GeneratedCharacterHealth($cardID);
+  }
+  switch ($cardID) {
+    case "DUMMY": return 1000;
+    case "ROGUE001": return 6;
+    case "ROGUE003": return 10;
+    case "ROGUE004": return 10;
+    case "ROGUE008": return 20;
+    case "ROGUE006": return 14;
+    default:
+      return 20;
+  }
+  /*
   switch ($cardID) {
     case "DUMMY":
       return 1000;
@@ -230,6 +247,7 @@ function CharacterHealth($cardID)
     default:
       return 20;
   }
+  */
 }
 
 function CharacterIntellect($cardID)
