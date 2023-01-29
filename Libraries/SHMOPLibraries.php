@@ -140,6 +140,12 @@ function GetCachePiece($name, $piece)
   return $cacheArray[$piece];
 }
 
+function IncrementCachePiece($gameName, $piece)
+{
+  $oldVal = GetCachePiece($gameName, $piece);
+  SetCachePiece($gameName, $piece, $oldVal+1);
+}
+
 function GamestateUpdated($gameName)
 {
   global $currentPlayer;
