@@ -92,15 +92,14 @@
         else if($propertyName == "subtype")
         {
           $data = "";
-          for($j=0; $j<count($cardArray[$j]->types); ++$j)
+          for($j=0; $j<count($cardArray[$i]->types); ++$j)
           {
-            if(IsSubtype($cardArray[$i]->types[$j]) && !IsClass($cardArray[$i]->types[$j]) && !IsTalent($cardArray[$i]->types[$j]))
+            if(!IsCardType($cardArray[$i]->types[$j]) && !IsClass($cardArray[$i]->types[$j]) && !IsTalent($cardArray[$i]->types[$j]) && !IsHandedness($cardArray[$i]->types[$j]))
             {
               if($data != "") $data .= ",";
               $data .= $cardArray[$i]->types[$j];
             }
           }
-          if($data != "") echo($data . "<BR>");
         }
         if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
         if($data != "-" && $data != "" && $data != "*" && $data != $defaultValue) AddToTrie($trie, $cardID, 0, $data);
@@ -174,14 +173,14 @@
     return "-";
   }
 
-  function IsSubtype($term)
+  function IsCardType($term)
   {
     switch($term)
     {
       case "Action": case "Attack": case "Defense Reaction": case "Attack Reaction":
       case "Instant": case "Weapon": case "Hero": case "Equipment": case "Token":
-      case "Resource": case "Mentor": case "(1H)": case "(2H)": return false;
-      default: return true;
+      case "Resource": case "Mentor": return true;
+      default: return false;
     }
   }
 
@@ -202,6 +201,16 @@
     switch($term)
     {
       case "Elemental": case "Light": case "Shadow": case "Draconic": return true;
+      case "Ice": case "Lightning": case "Earth": return true;
+      default: return false;
+    }
+  }
+
+  function IsHandedness($term)
+  {
+    switch($term)
+    {
+      case "1H": case "2H": return true;
       default: return false;
     }
   }

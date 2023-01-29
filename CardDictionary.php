@@ -78,6 +78,16 @@ function CardType($cardID)
 function CardSubType($cardID)
 {
   $set = CardSet($cardID);
+  if($set != "ROG" && $set != "DUM")
+  {
+    $number = intval(substr($cardID, 3));
+    if($number < 400) return GeneratedCardSubtype($cardID);
+  }
+  if ($set == "ROG") {
+    return ROGUECardSubtype($cardID);
+  }
+  /*
+  $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") {
     return WTRCardSubtype($cardID);
@@ -137,8 +147,27 @@ function CardSubType($cardID)
   } else if ($set == "ROG") {
     return ROGUECardSubtype($cardID);
   }
+  */
   switch ($cardID) {
     default:
+      case "MON400": return "Chest";
+      case "MON401": return "Arms";
+      case "MON402": return "Legs";
+      case "UPR406": return "Dragon,Ally";
+      case "UPR407": return "Dragon,Ally";
+      case "UPR408": return "Dragon,Ally";
+      case "UPR409": return "Dragon,Ally";
+      case "UPR410": return "Dragon,Ally";
+      case "UPR411": return "Dragon,Ally";
+      case "UPR412": return "Dragon,Ally";
+      case "UPR413": return "Dragon,Ally";
+      case "UPR414": return "Dragon,Ally";
+      case "UPR415": return "Dragon,Ally";
+      case "UPR416": return "Dragon,Ally";
+      case "UPR417": return "Dragon,Ally";
+      case "UPR439": case "UPR440": case "UPR441": return "Ash";
+      case "UPR551": return "Ally";
+      case "DYN612": return "Angel,Ally";
       return "";
   }
 }
