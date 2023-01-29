@@ -63,6 +63,7 @@
           {
             $cardID2 = $cardArray[$i]->printings[$k]->id;
             $set2 = substr($cardID2, 0, 3);
+            if($set2 == "RVD" || $set2 == "DVR") continue;
             if(in_array($set, $originalSets)) { $found = true; break; }
           }
           if($found) continue;

@@ -457,6 +457,8 @@ case "1":
 return "C";
 case "2":
 return "W";
+case "4":
+return "E";
 case "7":
 return "M";
 case "8":
@@ -483,6 +485,8 @@ case "3":
 return "AR";
 case "4":
 return "DR";
+case "7":
+return "R";
 default: return "AA";
 }
 default: return "AA";
@@ -5893,6 +5897,8 @@ case "1":
 return -1;
 case "2":
 return -1;
+case "4":
+return 0;
 default: return 3;
 }
 case "1":
@@ -9081,6 +9087,8 @@ case "1":
 return "Dorinthea, Quicksilver Prodigy";
 case "2":
 return "Dawnblade, Resplendent";
+case "4":
+return "Blossom of Spring";
 case "7":
 return "Hala Goldenhelm";
 case "8":
@@ -9107,6 +9115,8 @@ case "3":
 return "Blade Flash";
 case "4":
 return "Toughen Up";
+case "7":
+return "Titanium Bauble";
 default: return "";
 }
 default: return "";
@@ -13687,6 +13697,8 @@ case "1":
 return 0;
 case "2":
 return 0;
+case "4":
+return 0;
 case "7":
 return 0;
 case "8":
@@ -13708,6 +13720,8 @@ return 3;
 case "3":
 return 3;
 case "4":
+return 3;
+case "7":
 return 3;
 default: return 1;
 }
@@ -20227,6 +20241,8 @@ case "1":
 return "Young";
 case "2":
 return "Sword";
+case "4":
+return "Chest";
 default: return "";
 }
 default: return "";
@@ -21611,8 +21627,6 @@ case "0":
 switch($cardID[4]) {
 case "0":
 switch($cardID[5]) {
-case "4":
-return "Chest";
 case "2":
 return "Club";
 case "3":
