@@ -90,8 +90,9 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
     case 004:
-      if($encounter[3] == "Dorinthea") AddDecisionQueue("BUTTONINPUT", $player, "Cintari_Saber_Background,Dawnblade_Background");
-      if($encounter[3] == "Bravo") AddDecisionQueue("BUTTONINPUT", $player, "Anothos_Background,Titans_Fist_Background");
+      //if($encounter[3] == "Dorinthea") AddDecisionQueue("BUTTONINPUT", $player, "Cintari_Saber_Background,Dawnblade_Background");
+      //if($encounter[3] == "Bravo") AddDecisionQueue("BUTTONINPUT", $player, "Anothos_Background,Titans_Fist_Background");
+      AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       //AddDecisionQueue("SETENCOUNTER", $player, "202-PickMode");
@@ -160,6 +161,22 @@ function EncounterImage()
       return "ELE112_cropped.png";
     default: return "CRU054_cropped.png";
   }
+}
+
+function GetBackgrounds($character)
+{
+  switch($character)
+  {
+    case "Dorinthea": $backgroundChoices = array("Cintari_Saber_Background", "Dawnblade_Background");
+  }
+  $optionOne = rand(0, count($backgroundChoices)-1);
+  $optionTwo = rand(0, count($backgroundChoices)-1);
+  if($optionOne == $optionTwo)
+  {
+    if($optionOne == 0) ++$optionTwo;
+    else --$optionTwo;
+  }
+  return $backgroundChoices[$optionOne] . "," . $backgroundChoices[$optionTwo];
 }
 
 function GetNextEncounter()
