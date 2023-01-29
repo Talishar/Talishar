@@ -10,24 +10,24 @@ include_once '../includes/dbh.inc.php';
 $response = new stdClass();
 
 session_start();
-if(!isset($gameName)) $gameName = $_POST["gameName"];
+if (!isset($gameName)) $gameName = $_POST["gameName"];
 if (!IsGameNameValid($gameName)) {
   $response->error = "Invalid game name.";
-  echo(json_encode($response));
+  echo (json_encode($response));
   exit;
 }
-if(!isset($playerID)) $playerID = intval($_POST["playerID"]);
-if(!isset($deck)) $deck = TryPOST("deck");//This is for limited game modes (see JoinGameInput.php)
-if(!isset($decklink)) $decklink = TryPOST("fabdb", "");//Deck builder decklink
-if(!isset($decksToTry)) $decksToTry = TryPOST("decksToTry");//This is only used if there's no favorite deck or decklink. 1 = ira
-if(!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", "0");//Set this to "on" to save the provided deck link to your favorites
-if(!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0");//This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
-if(!isset($matchup)) $matchup = TryPOST("matchup", "");//The matchup link
+if (!isset($playerID)) $playerID = intval($_POST["playerID"]);
+if (!isset($deck)) $deck = TryPOST("deck"); //This is for limited game modes (see JoinGameInput.php)
+if (!isset($decklink)) $decklink = TryPOST("fabdb", ""); //Deck builder decklink
+if (!isset($decksToTry)) $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite deck or decklink. 1 = ira
+if (!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", "0"); //Set this to "on" to save the provided deck link to your favorites
+if (!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
+if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
 $starterDeck = false;
 
 if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
-  echo(json_encode($response));
+  echo (json_encode($response));
   exit;
 }
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
@@ -46,7 +46,7 @@ if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
 if ($deck == "" && !IsDeckLinkValid($decklink)) {
   $response->error = "Deck URL is not valid: " . $decklink;
-  echo(json_encode($response));
+  echo (json_encode($response));
   exit;
 }
 
@@ -62,7 +62,7 @@ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
     $response->error = "Another player has already joined the game.";
   }
   WriteGameFile();
-  echo(json_encode($response));
+  echo (json_encode($response));
   exit;
 }
 
@@ -102,7 +102,7 @@ if ($decklink != "") {
   if ($apiDeck === FALSE) {
     WriteGameFile();
     $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
-    echo(json_encode($response));
+    echo (json_encode($response));
     LogDeckLoadFailure("API returned no data");
     exit;
   }
@@ -110,14 +110,13 @@ if ($decklink != "") {
   // if has message forbidden error out.
   if ($apiInfo['http_code'] == 403) {
     $response->error = "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
-    echo(json_encode($response));
+    echo (json_encode($response));
     LogDeckLoadFailure("Missing API Key");
     die();
   }
-  if($deckObj == null)
-  {
+  if ($deckObj == null) {
     $response->error = 'Deck object is null. Failed to retrieve deck from API.';
-    echo(json_encode($response));
+    echo (json_encode($response));
     LogDeckLoadFailure("Failed to retrieve deck from API.");
     exit;
   }
@@ -160,10 +159,10 @@ if ($decklink != "") {
         $id = explode("-", $id)[0];
       } else if ($isFaBMeta) {
         $id = $cards[$i]->{'identifier'};
-      } else if(isset($cards[$i]->{'cardIdentifier'})) {
+      } else if (isset($cards[$i]->{'cardIdentifier'})) {
         $id = $cards[$i]->{'cardIdentifier'};
       }
-      if($id == "") continue;
+      if ($id == "") continue;
       $id = GetAltCardID($id);
       $cardType = CardType($id);
       $cardSet = substr($id, 0, 3);
@@ -276,34 +275,34 @@ if ($decklink != "") {
     }
   } else {
     $response->error = "Decklist link invalid.";
-    echo(json_encode($response));
+    echo (json_encode($response));
     LogDeckLoadFailure("Decklist link invalid.");
     exit;
   }
 
   if ($unsupportedCards != "") {
     $response->error = "The following cards are not yet supported: " . $unsupportedCards;
-    echo(json_encode($response));
+    echo (json_encode($response));
     header("Location: MainMenu.php");
     exit;
   }
 
   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
     $response->error = "Young heroes are not legal in Classic Constructed";
-    echo(json_encode($response));
+    echo (json_encode($response));
     header("Location: MainMenu.php");
     exit;
   }
 
   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz")) {
     $response->error = "Adult heroes are not legal in Blitz";
-    echo(json_encode($response));
+    echo (json_encode($response));
     exit;
   }
 
   if ($bannedCard != "") {
     $response->error = "The following cards are banned: " . $bannedCard;
-    echo(json_encode($response));
+    echo (json_encode($response));
     exit;
   }
 
@@ -631,7 +630,9 @@ function IsBanned($cardID, $format)
         case "CRU141":
         case "EVR037":
         case "EVR123": // Aether Wildfire
-        case "UPR113": case "UPR114": case "UPR115": // Aether Icevein
+        case "UPR113":
+        case "UPR114":
+        case "UPR115": // Aether Icevein
         case "UPR139": // Hypothermia
           return true;
         default:
