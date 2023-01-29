@@ -448,7 +448,9 @@ function GetPool($type, $hero, $rarity, $background)
                   "DVR014", "DVR023"
                 );
                 case "Rare": return array(
-                  "WTR173", "WTR174", "WTR175"
+                  "WTR167", "WTR166", "WTR165", "WTR170", "WTR172", "WTR173", "WTR174", "WTR175",
+                  "ARC164", "ARC165", "ARC163", "ARC170", "ARC171", "ARC172",
+                  "CRU183", "CRU184", "CRU185"
                 );
                 case "Majestic": return array(
                   "WTR159", "WTR160",
@@ -464,6 +466,14 @@ function GetPool($type, $hero, $rarity, $background)
         }
       }
     case "Bravo":
+      switch($type){
+        case "Class":
+          switch($background){
+
+          }
+        case "Talent":
+          return(GetPool("Class", $hero, $rarity, $background));
+      }
   }
 }
 ?>
