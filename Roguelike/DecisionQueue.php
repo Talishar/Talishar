@@ -125,14 +125,14 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
       case "BACKGROUND":
+        $deck = & GetZone($player, "Deck");
+        $character = &GetZone($player, "Character");
+        $encounter = &GetZone($player, "Encounter");
         switch($lastResult)
         {
           case "Cintari_Saber_Background":
             //PrependDecisionQueue("CHOOSECARD", $player, "CRU079");
             //PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Saber";
             array_push($character, "CRU079");
             array_push($character, "CRU080");
@@ -140,48 +140,30 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Dawnblade_Background":
             //PrependDecisionQueue("CHOOSECARD", $player, "WTR115");
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Dawnblade";
             array_push($character, "WTR115");
             break;
           case "Hatchets_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Hatchet";
             array_push($character, "MON105");
             array_push($character, "MON106");
             break;
           case "Battleaxe_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Battleaxe";
             array_push($character, "DYN068");
             break;
           case "Anothos_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Anothos";
             array_push($character, "WTR040");
             array_push($deck, "EVR024", "WTR065", "WTR066", "CRU035", "WTR206", "MON293");
             break;
           case "Titans_Fist_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Titans";
             array_push($character, "ELE202");
             array_push($character, "ELE204");
             array_push($deck, "DYN031", "DYN038", "WTR063", "WTR064", "ARC202", "WTR212");
             break;
           case "Sledge_Background":
-            $deck = &GetZone($player, "Deck");
-            $character = &GetZone($player, "Character");
-            $encounter = &GetZone($player, "Encounter");
             $encounter[7] = "Sledge";
             array_push($character, "CRU024");
             array_push($deck, "ELE208", "EVR030", "WTR070", "CRU040", "WTR190", "ARC211");
