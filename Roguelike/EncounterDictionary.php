@@ -167,7 +167,8 @@ function GetBackgrounds($character)
 {
   switch($character)
   {
-    case "Dorinthea": $backgroundChoices = array("Cintari_Saber_Background", "Dawnblade_Background", "Hatchets_Background", "Battleaxe_Background");
+    case "Dorinthea": $backgroundChoices = array("Cintari_Saber_Background", "Dawnblade_Background", "Hatchets_Background", "Battleaxe_Background"); break;
+    case "Bravo": $backgroundChoices = array("Anothos_Background", "Titans_Fist_Background", "Sledge_Background"); break;
   }
   $optionOne = rand(0, count($backgroundChoices)-1);
   $optionTwo = rand(0, count($backgroundChoices)-1);
