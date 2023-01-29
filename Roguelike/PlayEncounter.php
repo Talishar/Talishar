@@ -28,32 +28,85 @@
   $weapon2 = "";
   $weaponSideboard = "";
   $character = $charZone[0];
-  $weapon1 = $charZone[1];
+  //$weapon1 = $charZone[1]; //Old code
   $deckCards = implode(" ", $cards);
 
-  for($i=1; $i<count($charZone); ++$i)
-  {
+  for ($i = 1; $i < count($charZone); ++$i) {
+    $type = CardType($charZone[$i]);
+    switch ($type) {
+      case "E":
+        //We don't need to process equipment here, instead we look for relevant Subtypes
+      break;
+      case "W":
+        if ($weapon1 == "") { //If this is the first weapon read on the file,
+          $weapon1 = $charZone[$i]; // then equip it
+        }
+        elseif(is1H($weapon1) && is1H($charZone[$i])) { //If equipped and current are both 1h,
+          if($weapon2 == "" && $offhand == "") $weapon2 = $charZone[$i];
+          else {
+            if ($weaponSideboard != "")
+            $weaponSideboard .= " ";
+          $weaponSideboard .= $charZone[$i];
+          }
+        }
+        else { //If we have extra weapons, then sideboard them
+          if ($weaponSideboard != "")
+            $weaponSideboard .= " ";
+          $weaponSideboard .= $charZone[$i];
+        }
+       break;
+      default:
+        break;
+    }
     $subtype = CardSubType($charZone[$i]);
-    switch($subtype)
-    {
+    switch ($subtype) {
       case "Head":
-        if($head == "") $head = $charZone[$i];
-        else
-        {
-          if($headSideboard != "") $headSideboard .= " ";
+        if ($head == "")
+          $head = $charZone[$i];
+        else {
+          if ($headSideboard != "")
+            $headSideboard .= " ";
           $headSideboard .= $charZone[$i];
         }
         break;
       case "Chest":
-        if($chest == "") $chest = $charZone[$i];
-        else
-        {
-          if($chestSideboard != "") $chestSideboard .= " ";
+        if ($chest == "")
+          $chest = $charZone[$i];
+        else {
+          if ($chestSideboard != "")
+            $chestSideboard .= " ";
           $chestSideboard .= $charZone[$i];
         }
         break;
-      default: break;
-    }
+      case "Arms":
+        if ($arms == "")
+          $arms = $charZone[$i];
+        else {
+          if ($armsSideboard != "")
+            $armsSideboard .= " ";
+          $armsSideboard .= $charZone[$i];
+        }
+        break;
+      case "Legs":
+       if ($legs == "")
+         $legs = $charZone[$i];
+       else {
+         if ($legsSideboard != "")
+           $legsSideboard .= " ";
+         $legsSideboard .= $charZone[$i];
+       }
+       break;
+     case "Off-Hand":
+       if ($offhand == "")
+         $offhand = $charZone[$i];
+         else {
+         if ($offhandSideboard != "")
+           $offhandSideboard .= " ";
+         $offhandSideboard .= $charZone[$i];
+         }
+     default:
+       break;
+   }
   }
 
     $filename = "./Games/" . $gameName . "/LimitedDeck.txt";
