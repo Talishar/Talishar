@@ -150,12 +150,18 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Hatchets_Background":
             $encounter[7] = "Hatchet";
-            array_push($character, "MON105");
-            array_push($character, "MON106");
+            array_push($character, "MON105"); //Body
+            array_push($character, "MON106"); //Mind
+            array_push($deck, "EVR062"); //Blade Runner (B)
+            array_push($deck, "DYN083"); //Felling Swing (Y)
+            array_push($deck, "EVR066"); //Outland Skirmish (R)
             break;
           case "Battleaxe_Background":
             $encounter[7] = "Battleaxe";
             array_push($character, "DYN068");
+            array_push($deck, "WTR125"); //Overpower (B)
+            array_push($deck, "WTR142"); //Sharpen Steel (Y)
+            array_push($deck, "DYN082"); //Felling Swing (R)
             break;
           case "Anothos_Background":
             $encounter[7] = "Anothos";
