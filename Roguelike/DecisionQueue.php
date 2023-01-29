@@ -157,8 +157,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Titans_Fist_Background":
             $encounter[7] = "Titans";
-            array_push($character, "ELE202");
-            array_push($character, "ELE204");
+            array_push($character, "ELE202", "ELE204"); //Titan's Fist and Rotten Old Buckler
             array_push($deck, "DYN031", "DYN038", "WTR063", "WTR064", "ARC202", "WTR212");
             break;
           case "Sledge_Background":
