@@ -134,14 +134,19 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             //PrependDecisionQueue("CHOOSECARD", $player, "CRU079");
             //PrependDecisionQueue("CHOOSECARD", $player, "CRU080");
             $encounter[7] = "Saber";
-            array_push($character, "CRU079");
-            array_push($character, "CRU080");
-            array_push($deck, "EVR060");
+            array_push($character, "CRU079"); //Saber 1
+            array_push($character, "CRU080"); //Saber 2
+            array_push($deck, "EVR062"); //Blade Runner (B)
+            array_push($deck, "EVR058"); //Slice and Dice (Y)
+            array_push($deck, "EVR066"); //Outland Skirmish (R)
             break;
           case "Dawnblade_Background":
             //PrependDecisionQueue("CHOOSECARD", $player, "WTR115");
             $encounter[7] = "Dawnblade";
             array_push($character, "WTR115");
+            array_push($deck, "WTR125"); //Overpower (B)
+            array_push($deck, "WTR133"); //Ironsong Response (Y)
+            array_push($deck, "MON113"); //Plow Through (R)
             break;
           case "Hatchets_Background":
             $encounter[7] = "Hatchet";
