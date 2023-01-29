@@ -167,7 +167,8 @@ function GetBackgrounds($character)
 {
   switch($character)
   {
-    case "Dorinthea": $backgroundChoices = array("Cintari_Saber_Background", "Dawnblade_Background");
+    case "Dorinthea": $backgroundChoices = array("Cintari_Saber_Background", "Dawnblade_Background", "Hatchets_Background", "Battleaxe_Background"); break;
+    case "Bravo": $backgroundChoices = array("Anothos_Background", "Titans_Fist_Background", "Sledge_Background"); break;
   }
   $optionOne = rand(0, count($backgroundChoices)-1);
   $optionTwo = rand(0, count($backgroundChoices)-1);
@@ -381,6 +382,56 @@ function GetPool($type, $hero, $rarity, $background)
                       "EVR054", "EVR056",
                       "DVR008",
                       "DYN072"
+                    );
+                  }
+                case "Hatchet":
+                  switch($rarity)
+                  {
+                    case "Common": return array(
+                      "WTR132", "WTR133", "WTR134", "WTR135", "WTR136", "WTR137", "WTR138", "WTR139", "WTR140", "WTR141", "WTR142", "WTR143", "WTR144", "WTR145", "WTR146", "WTR147", "WTR148", "WTR149",
+                      "CRU088", "CRU089", "CRU090", "CRU091", "CRU092", "CRU093", "CRU094", "CRU095", "CRU096",
+                      "MON116", "MON117", "MON118",
+                      "EVR060", "EVR061", "EVR062", "EVR063", "EVR064", "EVR065", "EVR066", "EVR067", "EVR068",
+                      "DVR009",
+                      "DYN082", "DYN083", "DYN084"
+                    );
+                    case "Rare": return array(
+                      "WTR123", "WTR124", "WTR125", "WTR126", "WTR127", "WTR128", "WTR129", "WTR130", "WTR131",
+                      "CRU085", "CRU086", "CRU087",
+                      "MON110", "MON111", "MON112", "MON113", "MON114", "MON115",
+                      "DYN073", "DYN074", "DYN075"
+                    );
+                    case "Majestic": return array(
+                      "WTR118", "WTR119", "WTR120", "WTR121", "WTR122",
+                      "CRU083", "CRU084",
+                      "MON109",
+                      "EVR056",
+                      "DYN071"
+                    );
+                  }
+                case "Battleaxe":
+                  switch($rarity)
+                  {
+                    case "Common": return array(
+                      "WTR132", "WTR133", "WTR134", "WTR135", "WTR136", "WTR137", "WTR138", "WTR139", "WTR140", "WTR141", "WTR142", "WTR143", "WTR144", "WTR145", "WTR146", "WTR147", "WTR148", "WTR149",
+                      "CRU088", "CRU089", "CRU090", "CRU091", "CRU092", "CRU093", "CRU094", "CRU095", "CRU096",
+                      "MON116", "MON117", "MON118",
+                      "EVR063", "EVR064", "EVR065",
+                      "DVR009",
+                      "DYN082", "DYN083", "DYN084"
+                    );
+                    case "Rare": return array(
+                      "WTR123", "WTR124", "WTR125", "WTR126", "WTR127", "WTR128", "WTR129", "WTR130", "WTR131",
+                      "CRU085", "CRU086", "CRU087",
+                      "MON110", "MON111", "MON112", "MON113", "MON114", "MON115",
+                      "DYN073", "DYN074", "DYN075"
+                    );
+                    case "Majestic": return array(
+                      "WTR118", "WTR119", "WTR120", "WTR121", "WTR122",
+                      "CRU083", "CRU084",
+                      "MON109",
+                      "EVR054", "EVR056",
+                      "DYN071"
                     );
                   }
               }
