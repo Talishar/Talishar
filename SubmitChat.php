@@ -47,7 +47,7 @@ $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
 $output = "<span style='font-weight:bold; color:<PLAYER" . $playerID . "COLOR>;'>" . $displayName . ": </span>" . $filteredChatText;
 fwrite($handler, $output . "\r\n");
-if($chatText != $filteredChatText)
+if($chatText != $filteredChatText && !isset($_SESSION["isPatron"]))
 {
   fwrite($handler, "<span style='color:red;'>A message from the developers:</span> Talishar is a fan-made project. We spend a lot of time making this site because it makes us happy to bring joy to you all. If you want to see the site continue to be supported, please don't harass each other.\r\n");
 }
