@@ -21901,4 +21901,50 @@ default: return "";
 }
 }
 
+function GeneratedCharacterHealth($cardID) {
+if(strlen($cardID) < 6) return 0;
+if(is_int($cardID)) return 0;
+switch($cardID) {
+case "WTR001": return 40;
+case "CRU001": return 40;
+case "WTR038": return 40;
+case "CRU022": return 40;
+case "WTR076": return 40;
+case "CRU045": return 40;
+case "WTR113": return 40;
+case "CRU076": return 40;
+case "ARC001": return 40;
+case "CRU098": return 40;
+case "ARC038": return 40;
+case "CRU119": return 40;
+case "ARC075": return 40;
+case "CRU138": return 40;
+case "ARC113": return 30;
+case "CRU158": return 30;
+case "ARC114": return 15;
+case "CRU002": return 19;
+case "CRU047": return 17;
+case "MON001": return 40;
+case "MON029": return 40;
+case "MON119": return 40;
+case "MON153": return 40;
+case "MON219": return 6;
+case "MON220": return 6;
+case "ELE001": return 40;
+case "ELE031": return 40;
+case "ELE062": return 40;
+case "EVR017": return 40;
+case "EVR019": return 21;
+case "EVR120": return 18;
+case "UPR103": return 18;
+case "UPR001": return 40;
+case "UPR042": return 1;
+case "UPR044": return 40;
+case "UPR102": return 36;
+case "DYN001": return 15;
+case "DYN025": return 22;
+case "DYN113": return 40;
+default: return 20;}
+}
+
 ?>
