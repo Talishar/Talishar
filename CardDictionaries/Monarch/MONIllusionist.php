@@ -1,20 +1,5 @@
 <?php
 
-  function MONIllusionistCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "MON003": return "Scepter";
-      case "MON005": case "MON006": return "Aura";
-      case "MON011": case "MON012": case "MON013": return "Aura";
-      case "MON088": return "Orb";
-      case "MON089": return "Legs";
-      case "MON090": return "Arms";
-      case "MON104": return "Aura";
-      default: return "";
-    }
-  }
-
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;

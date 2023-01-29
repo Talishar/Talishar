@@ -1,16 +1,5 @@
 <?php
 
-  function ELERunebladeCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE222": case "ELE223": return "Sword";
-      case "ELE224": case "ELE225": return "Legs";
-      case "ELE226": return "Aura";
-      default: return "";
-    }
-  }
-
   function ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $otherPlayer, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;

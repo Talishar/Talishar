@@ -207,38 +207,6 @@
     }
   }
 
-  function EVRCardSubtype($cardID)
-  {
-    switch($cardID)
-    {
-      case "EVR000": return "Gem";
-      case "EVR001": return "Arms";
-      case "EVR018": return "Off-Hand";
-      case "EVR020": return "Chest";
-      case "EVR023": return "Aura";
-      case "EVR037": return "Head";
-      case "EVR053": return "Head";
-      case "EVR069": case "EVR070": case "EVR071": case "EVR072": return "Item";
-      case "EVR086": return "Arms";
-      case "EVR087": return "Bow";
-      case "EVR088": return "Arrow";
-      case "EVR094": case "EVR095": case "EVR096": return "Arrow";
-      case "EVR097": case "EVR098": case "EVR099": return "Arrow";
-      case "EVR103": return "Arms";
-      case "EVR107": case "EVR108": case "EVR109": return "Aura";
-      case "EVR121": return "Staff";
-      case "EVR131": case "EVR132": case "EVR133": return "Aura";
-      case "EVR137": return "Head";
-      case "EVR140": return "Aura";
-      case "EVR141": case "EVR142": case "EVR143": return "Aura";
-      case "EVR155": return "Off-Hand";
-      case "EVR176": case "EVR177": case "EVR178": case "EVR179": case "EVR180": case "EVR181": case "EVR182": case "EVR183":
-      case "EVR184": case "EVR185": case "EVR186": case "EVR187": case "EVR188": case "EVR189": case "EVR190": case "EVR191":
-      case "EVR192": case "EVR193": case "EVR195": return "Item";
-      default: return "";
-    }
-  }
-
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $combatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;

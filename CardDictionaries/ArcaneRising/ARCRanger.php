@@ -1,24 +1,6 @@
 <?php
 
 
-  function ARCRangerCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC040": return "Bow";
-      case "ARC041": return "Head";
-      case "ARC042": return "Arms";
-      case "ARC043": case "ARC045":
-      case "ARC057": case "ARC058": case "ARC059":
-      case "ARC060": case "ARC061": case "ARC062":
-      case "ARC063": case "ARC064": case "ARC065":
-      case "ARC066": case "ARC067": case "ARC068":
-      case "ARC069": case "ARC070": case "ARC071":
-      case "ARC072": case "ARC073": case "ARC074": return "Arrow";
-      default: return "";
-    }
-  }
-
   function ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;

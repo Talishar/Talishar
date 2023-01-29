@@ -1,18 +1,5 @@
 <?php
 
-  function DVRCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "DVR002": return "Sword";
-      case "DVR003": return "Head";
-      case "DVR004": return "Chest";
-      case "DVR005": return "Arms";
-      case "DVR006": return "Legs";
-      default: return "";
-    }
-  }
-
   function DVRHasGoAgain($cardID)
   {
     switch($cardID)

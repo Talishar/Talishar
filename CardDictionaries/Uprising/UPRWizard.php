@@ -1,19 +1,5 @@
 <?php
 
-  function UPRWizardCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "UPR125": return "Arms";
-      case "UPR126": return "Affliction,Aura";
-      case "UPR165": return "Staff";
-      case "UPR166": return "Chest";
-      case "UPR167": return "Chest";
-      case "UPR176": case "UPR177": case "UPR178": return "Aura";
-      default: return "";
-    }
-  }
-
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost;

@@ -1,33 +1,5 @@
 <?php
 
-  function ELETalentCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ELE000": return "Landmark";
-      case "ELE109": return "Aura";
-      case "ELE110": return "Aura";
-      case "ELE111": return "Aura";
-      case "ELE115": return "Head";
-      case "ELE116": return "Head";
-      case "ELE117": return "Aura";
-      case "ELE143": return "Item";
-      case "ELE144": return "Chest";
-      case "ELE145": return "Chest";
-      case "ELE146": return "Aura";
-      case "ELE172": return "Item";
-      case "ELE173": return "Arms";
-      case "ELE174": return "Arms";
-      case "ELE175": return "Aura";
-      case "ELE201": return "Item";
-      case "ELE233": return "Head";
-      case "ELE234": return "Chest";
-      case "ELE235": return "Arms";
-      case "ELE236": return "Legs";
-      default: return "";
-    }
-  }
-
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;

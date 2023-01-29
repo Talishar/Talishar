@@ -86,68 +86,6 @@ function CardSubType($cardID)
   if ($set == "ROG") {
     return ROGUECardSubtype($cardID);
   }
-  /*
-  $set = CardSet($cardID);
-  $class = CardClass($cardID);
-  if ($set == "WTR") {
-    return WTRCardSubtype($cardID);
-  } else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistCardSubType($cardID);
-      case "RANGER":
-        return ARCRangerCardSubType($cardID);
-      case "RUNEBLADE":
-        return ARCRunebladeCardSubType($cardID);
-      case "WIZARD":
-        return ARCWizardCardSubType($cardID);
-      case "GENERIC":
-        return ARCGenericCardSubType($cardID);
-    }
-  } else if ($set == "CRU") {
-    return CRUCardSubtype($cardID);
-  } else if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBruteCardSubType($cardID);
-      case "ILLUSIONIST":
-        return MONIllusionistCardSubType($cardID);
-      case "RUNEBLADE":
-        return MONRunebladeCardSubType($cardID);
-      case "WARRIOR":
-        return MONWarriorCardSubType($cardID);
-      case "GENERIC":
-        return MONGenericCardSubType($cardID);
-      case "NONE":
-        return MONTalentCardSubType($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianCardSubType($cardID);
-      case "RANGER":
-        return ELERangerCardSubType($cardID);
-      case "RUNEBLADE":
-        return ELERunebladeCardSubType($cardID);
-      default:
-        return ELETalentCardSubType($cardID);
-    }
-  } else if ($set == "EVR") {
-    return EVRCardSubtype($cardID);
-  } else if ($set == "UPR") {
-    return UPRCardSubtype($cardID);
-  } else if ($set == "DVR") {
-    return DVRCardSubtype($cardID);
-  } else if ($set == "RVD") {
-    return RVDCardSubtype($cardID);
-  } else if ($set == "DYN") {
-    return DYNCardSubtype($cardID);
-  } else if ($set == "ROG") {
-    return ROGUECardSubtype($cardID);
-  }
-  */
   switch ($cardID) {
     default:
       case "MON400": return "Chest";
@@ -190,64 +128,6 @@ function CharacterHealth($cardID)
     default:
       return 20;
   }
-  /*
-  switch ($cardID) {
-    case "DUMMY":
-      return 1000;
-    case "WTR001":
-    case "WTR038":
-    case "WTR076":
-    case "WTR113":
-      return 40;
-    case "ARC001":
-    case "ARC038":
-    case "ARC075":
-      return 40;
-    case "ARC113":
-      return 30;
-    case "ARC114":
-      return 15;
-    case "CRU002":
-      return 19;
-    case "CRU047":
-      return 17;
-    case "MON001":
-    case "MON029":
-    case "MON119":
-    case "MON153":
-      return 40;
-    case "ELE001":
-    case "ELE031":
-    case "ELE062":
-      return 40;
-    case "EVR017":
-      return 40;
-    case "EVR019":
-      return 21;
-    case "EVR120":
-      return 18;
-    case "UPR001":
-      return 40;
-    case "UPR044":
-      return 40;
-    case "UPR102":
-      return 36;
-    case "UPR103":
-      return 18;
-    case "DYN001":
-      return 15;
-    case "DYN025":
-      return 22;
-    case "DYN113": return 40;
-    case "ROGUE001": return 6;
-    case "ROGUE003": return 10;
-    case "ROGUE004": return 10;
-    case "ROGUE008": return 20;
-    case "ROGUE006": return 14;
-    default:
-      return 20;
-  }
-  */
 }
 
 function CharacterIntellect($cardID)

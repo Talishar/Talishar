@@ -1,17 +1,5 @@
 <?php
 
-
-  function ARCWizardCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC115": return "Staff";
-      case "ARC116": return "Legs";
-      case "ARC117": return "Chest";
-      default: return "";
-    }
-  }
-
   function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;

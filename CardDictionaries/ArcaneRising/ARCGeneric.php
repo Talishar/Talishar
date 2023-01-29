@@ -1,27 +1,6 @@
 <?php
 
 
-  function ARCGenericCardSubType($cardID)
-  {
-    switch($cardID)
-    {
-      case "ARC000": return "Gem";
-      case "ARC150": return "Head";
-      case "ARC151": return "Head";
-      case "ARC152": return "Chest";
-      case "ARC153": return "Arms";
-      case "ARC154": return "Legs";
-      case "ARC155": return "Head";
-      case "ARC156": return "Chest";
-      case "ARC157": return "Arms";
-      case "ARC158": return "Legs";
-      case "ARC162": return "Aura";
-      case "ARC163": return "Item";
-      case "ARC167": case "ARC168": case "ARC169": return "Aura";
-      default: return "";
-    }
-  }
-
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CS_NumMoonWishPlayed;
