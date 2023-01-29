@@ -14,14 +14,13 @@ $deckTestMode = TryPOST("deckTestMode", "");
 $format = TryPOST("format");
 $visibility = TryPOST("visibility");
 $decksToTry = TryPOST("decksToTry");
-$favoriteDeck = TryPOST("favoriteDeck", "0");
+$favoriteDeck = TryPOST("favoriteDeck", false);
 $favoriteDeckLink = TryPOST("favoriteDecks", "0");
 $gameDescription = htmlentities(TryPOST("gameDescription", "Game #"), ENT_QUOTES);
 
-if($favoriteDeckLink != 0)
-{
+if ($favoriteDeckLink != 0) {
   $favDeckArr = explode("<fav>", $favoriteDeckLink);
-  if(count($favDeckArr) == 1) $favoriteDeckLink = $favDeckArr[0];
+  if (count($favDeckArr) == 1) $favoriteDeckLink = $favDeckArr[0];
   else {
     $favoriteDeckIndex = $favDeckArr[0];
     $favoriteDeckLink = $favDeckArr[1];
@@ -38,21 +37,18 @@ if (!isset($_SESSION["userid"])) {
   }
 }
 
-if(isset($_SESSION["userid"]))
-{
+if (isset($_SESSION["userid"])) {
   //Save game creation settings
-  include_once 'includes/functions.inc.php';
-  include_once 'includes/dbh.inc.php';
-  if(isset($favoriteDeckIndex))
-  {
+  include_once '../includes/functions.inc.php';
+  include_once '../includes/dbh.inc.php';
+  if (isset($favoriteDeckIndex)) {
     ChangeSetting("", $SET_FavoriteDeckIndex, $favoriteDeckIndex, $_SESSION["userid"]);
   }
   ChangeSetting("", $SET_Format, FormatCode($format), $_SESSION["userid"]);
   ChangeSetting("", $SET_GameVisibility, ($visibility == "public" ? 1 : 0), $_SESSION["userid"]);
-  if($deckbuilderID != "")
-  {
-    if(str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
-    else if(str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
+  if ($deckbuilderID != "") {
+    if (str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
+    else if (str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
   }
 }
 
@@ -61,10 +57,10 @@ session_write_close();
 $gameName = GetGameCounter("../");
 $response = new stdClass();
 
-if((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, true)) ){
+if ((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, true))) {
 } else {
   $response->error = "Encountered a problem creating a game. Please return to the main menu and try again";
-  echo(json_encode($response));
+  echo (json_encode($response));
   exit;
 }
 
@@ -102,4 +98,3 @@ WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $
 $playerID = 1;
 
 include './JoinGame.php';
-?>
