@@ -24,9 +24,9 @@ function EncounterDescription()
     case 003:
       return "Choose a bounty";
     case 004:
-      return "Insert Flavor Text for Choosing a Background";
+      return "Choose a Background and Fighting Style";
     case 005:
-      return "Insert Flavor Text for Choosing a Starting Bonus";
+      return "Grant yourself a power of your choosing";
     case 020:
       return "You found a campfire. Choose what you want to do.";
 
@@ -71,8 +71,8 @@ function InitializeEncounter($player)
   WriteLog("Encounter[1] = " . $encounter[1]);
   WriteLog("Encounter[2] = " . $encounter[2]);
   WriteLog("Encounter[3] = " . $encounter[3]);
-  WriteLog("Encounter[4] = " . $encounter[4]);*/
-  WriteLog("Encounter[5] = " . $encounter[5]);
+  WriteLog("Encounter[4] = " . $encounter[4]);
+  WriteLog("Encounter[5] = " . $encounter[5]);*/
   switch($encounter[0])
   {
     case 001:
