@@ -56,7 +56,17 @@
         $cardID = $cardArray[$i]->printings[$j]->id;
         $set = substr($cardID, 0, 3);
         if(!in_array($set, $originalSets)) continue;
-        if(($set == "DVR" || $set == "RVD") && count($cardArray[$i]->printings) > 1) continue;
+        if(($set == "DVR" || $set == "RVD"))
+        {
+          $found = false;
+          for($k=$j+1; $k<count($cardArray[$i]->printings); ++$k)
+          {
+            $cardID2 = $cardArray[$i]->printings[$k]->id;
+            $set2 = substr($cardID2, 0, 3);
+            if(in_array($set, $originalSets)) { $found = true; break; }
+          }
+          if($found) continue;
+        }
         $duplicate = false;
         for($k=0; $k<count($cardPrintings); ++$k)
         {
