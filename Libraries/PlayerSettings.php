@@ -460,11 +460,10 @@ function IsTeamCardAdvantage($userID)
     case "Motley":
     case "jimmyhl1329":
     case "Stilltzkin":
-    case "Krav":
-    case "Infamousb":
+    case "krav":
+    case "infamousb":
     case "FatFabJesus":
     case "MisterPNP":
-    case "OotTheMonk":
       return true;
     default:
       break;
