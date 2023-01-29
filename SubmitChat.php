@@ -54,3 +54,4 @@ if($chatText != $filteredChatText && !isset($_SESSION["isPatron"]))
 fclose($handler);
 
 GamestateUpdated($gameName);
+SetCachePiece($gameName, 11, 0);
