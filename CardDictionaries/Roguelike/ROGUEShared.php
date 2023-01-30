@@ -43,7 +43,7 @@ function ROGUEEffectAttackModifier($cardID)
     $cardID = $params[0];
     if (count($params) > 1) $parameter = $params[1];
     switch ($cardID) {
-
+      case "ROGUE008": return 1;
       default: return 0;
     }
 }
@@ -53,7 +53,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
     $params = explode(",", $cardID);
     $cardID = $params[0];
     switch ($cardID) {
-
+        case "ROGUE008": return true;
         default:
             return false;
     }
@@ -84,6 +84,8 @@ function ROGUECardType($cardID)
       case "ROGUE008": return "C";
       case "ROGUE009": return "C";
       case "ROGUE010": return "C";
+
+      case "ROGUE501": return "A";
       default:
         return "";
     }
@@ -102,6 +104,8 @@ function ROGUECardSubtype($cardID)
       case "ROGUE008": return "Ninja";
       case "ROGUE009": return "Ranger";
       case "ROGUE009": return "Guardian";
+
+      case "ROGUE501": return "Power";
       default: return "";
     }
 }
@@ -109,7 +113,7 @@ function ROGUECardSubtype($cardID)
 function ROGUECardCost($cardID)
 {
     switch ($cardID) {
-
+      case "ROGUE501": return 0;
       default: return 0;
     }
 }
@@ -127,6 +131,7 @@ function ROGUEPitchValue($cardID)
       case "ROGUE008": return -1;
       case "ROGUE009": return -1;
       case "ROGUE010": return -1;
+      case "ROGUE501": return 3;
       default: return 3;
     }
 }
@@ -144,6 +149,7 @@ function ROGUEBlockValue($cardID)
       case "ROGUE008": return -1;
       case "ROGUE009": return -1;
       case "ROGUE010": return -1;
+      case "ROGUE501": return -1;
       default:
         return 3;
     }
@@ -169,6 +175,9 @@ function ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCo
         $hand = &GetHand($currentPlayer);
         array_unshift($hand, "ELE191");
         return "";
+      case "ROGUE501":
+        PutPermanentIntoPlay($currentPlayer, $cardID);
+        return "";
       default:
         return "";
     }
@@ -181,3 +190,4 @@ function ROGUEHitEffect($cardID)
         default: break;
     }
 }
+?>

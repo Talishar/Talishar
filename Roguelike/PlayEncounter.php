@@ -144,6 +144,7 @@
       case 104: return "ShockStriker";
       case 106: return "QuickshotNovice";
       case 107: return "RuneScholar";
+      case 108: return "Ira";
       default: return "Woottonhog";
     }
   }

@@ -84,6 +84,22 @@ if (SearchCharacterForCard(2, "DYN026")) {
   WriteLog("When you equip " . CardLink("DYN026", "DYN026") . " it gets two -1 counters.");
 }
 
+//roguelike gamemode powers
+if(false) {
+  $deck = &GetDeck(1);
+  array_unshift($deck, "ROGUE501");
+  $powers = SearchDeck(1, "", "Power");
+  $powersArray = explode(",", $powers);
+  WriteLog($powersArray);
+  WriteLog($deck[$powersArray[0]]);
+  for($i = 0; $i < count($powersArray); ++$i)
+  {
+    PutPermanentIntoPlay(1, $deck[$powersArray[0]]);
+    array_splice($deck, $powersArray[0], 1);
+  }
+  WriteLog($deck[$powers[0]]);
+}
+
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("SHUFFLEDECK", 2, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck
 AddDecisionQueue("DRAWTOINTELLECT", 1, "-"); //CR 2.0 4.1.9 Draw to Intellect
