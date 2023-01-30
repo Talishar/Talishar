@@ -63,12 +63,34 @@ function PermanentBeginEndPhaseEffects()
   global $mainPlayer, $defPlayer;
 
   $permanents = &GetPermanents($mainPlayer);
+  WriteLog("size of zone = " . count($permanents));
+  WriteLog("zone[0] = " . $permanents[0]);
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
         PutPermanentIntoPlay($mainPlayer, "UPR043");
         $remove = 1;
+        break;
+      case "ROGUE501":
+        $deck = &GetDeck($mainPlayer);
+        $discard = &GetDiscard($mainPlayer);
+        WriteLog("size of discard = " . count($discard));
+        WriteLog("discard[0] = " . $discard[0]);
+        WriteLog("discard[1] = " . $discard[1]);
+        for($i = count($discard)-1; $i >= 0; --$i)
+        {
+          array_push($deck, $discard[$i]);
+          unset($discard[$i]);
+        }
+        $destArr = [];
+        while (count($deck) > 0) {
+          $index = GetRandom(0, count($deck) - 1);
+          array_push($destArr, $deck[$index]);
+          unset($deck[$index]);
+          $deck = array_values($deck);
+        }
+        $deck = $destArr;
         break;
       default:
         break;

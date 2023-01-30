@@ -85,15 +85,13 @@ if (SearchCharacterForCard(2, "DYN026")) {
 }
 
 //roguelike gamemode powers
-if(true) {
+if(false) {
   $deck = &GetDeck(1);
-  array_unshift($deck, "ROGUE501");
-  array_unshift($deck, "ROGUE501");
   array_unshift($deck, "ROGUE501");
   $powers = SearchDeck(1, "", "Power");
   $powersArray = explode(",", $powers);
   WriteLog($powersArray);
-  WriteLog($deck[$powersArray[2]]);
+  WriteLog($deck[$powersArray[0]]);
   for($i = 0; $i < count($powersArray); ++$i)
   {
     PutPermanentIntoPlay(1, $deck[$powersArray[0]]);
