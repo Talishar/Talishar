@@ -606,6 +606,7 @@ function GetAltCardID($cardID)
       return "WTR224";
     case "DYN238":
       return "MON401";
+    case "RVD004": return "DVR004";
       // case "DYN000":
       //   return "ARC159";
   }
