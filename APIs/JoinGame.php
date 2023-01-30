@@ -17,12 +17,12 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 if(!isset($playerID)) $playerID = intval($_POST["playerID"]);
-if(!isset($deck)) $deck = TryPOST("deck");
-if(!isset($decklink)) $decklink = TryPOST("fabdb", "");
-if(!isset($decksToTry)) $decksToTry = TryPOST("decksToTry");
-if(!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", "0");
-if(!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0");
-if(!isset($matchup)) $matchup = TryPOST("matchup", "");
+if(!isset($deck)) $deck = TryPOST("deck");//This is for limited game modes (see JoinGameInput.php)
+if(!isset($decklink)) $decklink = TryPOST("fabdb", "");//Deck builder decklink
+if(!isset($decksToTry)) $decksToTry = TryPOST("decksToTry");//This is only used if there's no favorite deck or decklink. 1 = ira
+if(!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", "0");//Set this to "on" to save the provided deck link to your favorites
+if(!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0");//This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
+if(!isset($matchup)) $matchup = TryPOST("matchup", "");//The matchup link
 $starterDeck = false;
 
 if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
