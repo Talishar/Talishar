@@ -49,8 +49,11 @@ function EncounterDescription()
       if($encounter[1] == "BeforeFight") return "You're attacked by a Cloaked Ranger.";
       else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Novice.";
     case 107:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar";
-      else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar";
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar.";
+    case 108:
+      if($encounter[1] == "BeforeFight") return "You come upon Ira. Prepare to fight.";
+      else if($encounter[1] == "AfterFight") return "You defeated Ira.";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -58,6 +61,8 @@ function EncounterDescription()
       return "You found a library. Choose what you want to do.";
     case 203:
       return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
+    case 204:
+      return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
 
     default: return "No encounter text.";
   }
@@ -94,8 +99,8 @@ function InitializeEncounter($player)
       //if($encounter[3] == "Bravo") AddDecisionQueue("BUTTONINPUT", $player, "Anothos_Background,Titans_Fist_Background");
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
-      //AddDecisionQueue("SETENCOUNTER", $player, "202-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
       break;
     case 005:
       AddDecisionQueue("BUTTONINPUT", $player, "Choice_1_to_be_implemented,Choice_2_to_be_implemented");
@@ -124,6 +129,10 @@ function InitializeEncounter($player)
       AddDecisionQueue("VOLTHAVEN", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
+    case 204:
+      AddDecisionQueue("BUTTONINPUT", $player, "Use_Forge,Ask_Legend,Leave");
+      AddDecisionQueue("BLACKSMITH", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
     default: break;
   }
 }
@@ -159,6 +168,10 @@ function EncounterImage()
       return "UPR199_cropped.png";
     case 203:
       return "ELE112_cropped.png";
+    case 204:
+      return "WTR046_cropped.png";
+    case 108:
+      return "CRU046_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
@@ -188,91 +201,69 @@ function GetNextEncounter()
   WriteLog("Encounter[1]: " . $encounter[1]);
   WriteLog("Encounter[2]: " . $encounter[2]);*/
   ++$encounter[2];
-  if($encounter[2] == 3 || $encounter[2] == 5) return GetEasyCombat();
-  else if($encounter[2] == 7 || $encounter[2] == 10) return GetMediumCombat();
-  else if($encounter[2] == 12 || $encounter[2] == 14) return GetHardCombat();
+  if($encounter[2] == 3 || $encounter[2] == 5) return GetCombat("Easy");
+  else if($encounter[2] == 7 || $encounter[2] == 10) return GetCombat("Medium");
+  else if($encounter[2] == 12 || $encounter[2] == 14) return GetCombat("Hard");
   else if($encounter[2] == 2) return "005-PickMode";
   else if($encounter[2] == 17) return "105-BeforeFight";
   else if($encounter[2] == 9 || $encounter[2] == 16) return "020-PickMode";
-  else return GetEvent($encounter);
+  else return GetEvent();
 }
 
-function GetEasyCombat()
+function GetCombat($difficulty)
 {
   $encounter = &GetZone(1, "Encounter");
   $alreadyPicked = explode(",", $encounter[5]);
-  $easyEncounters = array(
-    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
-  );
+  switch($difficulty)
+  {
+    case "Easy": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
+    case "Medium": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
+    case "Hard": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
+  }
   $generatedEncounters = [];
-  for($i = 0; $i < count($easyEncounters); ++$i)
+  for($i = 0; $i < count($potentialEncounters); ++$i)
   {
     $notFound = true;
     for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
     {
-      if($alreadyPicked[$j] == $easyEncounters[$i]) $notFound = false;
+      if($alreadyPicked[$j] == $potentialEncounters[$i]) $notFound = false;
     }
-    if($notFound) array_push($generatedEncounters, $easyEncounters[$i]);
+    if($notFound) array_push($generatedEncounters, $potentialEncounters[$i]);
   }
   //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
-  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
-  return $generatedEncounters[$randomEncounter];
-}
-
-function GetMediumCombat()
-{
-  $encounter = &GetZone(1, "Encounter");
-  $alreadyPicked = explode(",", $encounter[5]);
-  $mediumEncounters = array(
-    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
-  );
-  $generatedEncounters = [];
-  for($i = 0; $i < count($mediumEncounters); ++$i)
-  {
-    $notFound = true;
-    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
-    {
-      if($alreadyPicked[$j] == $mediumEncounters[$i]) $notFound = false;
-    }
-    if($notFound) array_push($generatedEncounters, $mediumEncounters[$i]);
-  }
-  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
-  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
-  return $generatedEncounters[$randomEncounter];
-}
-
-function GetHardCombat()
-{
-  $encounter = &GetZone(1, "Encounter");
-  $alreadyPicked = explode(",", $encounter[5]);
-  $hardEncounters = array(
-    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
-  );
-  $generatedEncounters = [];
-  for($i = 0; $i < count($hardEncounters); ++$i)
-  {
-    $notFound = true;
-    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
-    {
-      if($alreadyPicked[$j] == $hardEncounters[$i]) $notFound = false;
-    }
-    if($notFound) array_push($generatedEncounters, $hardEncounters[$i]);
-  }
-  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
+  $randomEncounter = rand(0, count($generatedEncounters)-1);
   $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
   return $generatedEncounters[$randomEncounter];
 }
 
 function GetEvent()
 {
-  $eventEncounters = array(
-    "201-PickMode", "202-PickMode"
-  );
-  $randomEncounter = rand(0, count($eventEncounters)-1);
-  return $eventEncounters[$randomEncounter];
+  $encounter = &GetZone(1, "Encounter");
+  $alreadyPicked = explode(",", $encounter[5]);
+  $generateRand = rand(1, 100);
+  if($generateRand >= 90) $rarity = "Rare";
+  else if($generateRand >= 60) $rarity = "Uncommon";
+  else $rarity = "Common";
+  switch($rarity)
+  {
+    case "Common": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+    case "Uncommon": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+    case "Rare": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+  }
+  $generatedEncounters = [];
+  for($i = 0; $i < count($potentialEncounters); ++$i)
+  {
+    $notFound = true;
+    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
+    {
+      if($alreadyPicked[$j] == $potentialEncounters[$i]) $notFound = false;
+    }
+    if($notFound) array_push($generatedEncounters, $potentialEncounters[$i]);
+  }
+  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
+  $randomEncounter = rand(0, count($generatedEncounters)-1);
+  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
+  return $generatedEncounters[$randomEncounter];
 }
 
 function GetRandomCards($number)
@@ -292,6 +283,37 @@ function GetRandomCards($number)
   }
   }
   return $rv;
+}
+
+function GetRandomArmor($type)
+{
+  $encounter = &GetZone(1, "Encounter");
+  switch($encounter[3])
+  {
+    case "Dorinthea":
+    {
+      switch($type)
+      {
+        case "Head": $pool = array("UPR183", "WTR151", "MON241", "WTR155", "ARC155", "ELE233", "DYN236", "ARC151", "EVR053"); break;
+        case "Chest": $pool = array("MON238", "DVR004", "ELE234", "WTR152", "MON242", "WTR156", "ARC156", "UPR184", "DYN237", "ARC152", "CRU081"); break;
+        case "Arms": $pool = array("ARC153", "ELE235", "CRU179", "WTR153", "MON243", "WTR157", "ARC157", "UPR185", "DYN238", "MON239", "MON108"); break;
+        case "Legs": $pool = array("MON244", "WTR158", "ARC154", "ARC158", "UPR186", "ELE236", "WTR154", "DYN239", "MON240", "WTR117"); break;
+      }
+      break;
+    }
+    case "Bravo":
+    {
+      switch($type)
+      {
+        case "Head": $pool = array("UPR183", "WTR151", "MON241", "WTR155", "ARC155", "ELE233", "DYN236", "ARC151", "WTR042"); break;
+        case "Chest": $pool = array("MON238", "DVR004", "ELE234", "WTR152", "MON242", "WTR156", "ARC156", "UPR184", "DYN237", "ARC152", "EVR020"); break;
+        case "Arms": $pool = array("ARC153", "ELE235", "CRU179", "WTR153", "MON243", "WTR157", "ARC157", "UPR185", "DYN238", "MON239", "CRU025"); break;
+        case "Legs": $pool = array("MON244", "WTR158", "ARC154", "ARC158", "UPR186", "ELE236", "WTR154", "DYN239", "MON240"); break;
+      }
+      break;
+    }
+  }
+  return $pool[rand(0, count($pool)-1)];
 }
 
 function RandomCard($type)
@@ -460,10 +482,117 @@ function GetPool($type, $hero, $rarity, $background)
                 );
               }
             }
-
         }
       }
     case "Bravo":
+    {
+      switch($type)
+      {
+        case "Class":
+          {
+            switch($background)
+            {
+              case "Anothos":
+                switch($rarity)
+                {
+                  case "Common": return array(
+                    "WTR057", "WTR058", "WTR059", /*"WTR060", "WTR061", "WTR062", */"WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
+                    /*"CRU032", "CRU033", "CRU034", */"CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU042", "CRU043",
+                    "ELE209", "ELE210", "ELE211",
+                    "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
+                  );
+                  case "Rare": return array(
+                    "WTR048", "WTR049", "WTR050", "WTR051", "WTR052", "WTR053", "WTR054", "WTR055", "WTR056",
+                    "CRU029", "CRU030", "CRU031",
+                    "ELE206", "ELE207", "ELE208",
+                    "EVR024", "EVR025", "EVR026",
+                    "DYN033", "DYN034", "DYN035"
+                  );
+                  case "Majestic": return array(
+                    "WTR043", "WTR044", "WTR045", "WTR046", "WTR047",
+                    "CRU026", "CRU027", "CRU028",
+                    "ELE205",
+                    "EVR021", "EVR022", "EVR023",
+                    "DYN028", "DYN029"
+                  );
+                }
+              case "Sledge":
+                switch($rarity)
+                {
+                  case "Common": return array(
+                    "WTR057", "WTR058", "WTR059", /*"WTR060", "WTR061", "WTR062", */"WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
+                    /*"CRU032", "CRU033", "CRU034", */"CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU042", "CRU043",
+                    "ELE209", "ELE210", "ELE211",
+                    "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
+                  );
+                  case "Rare": return array(
+                    "WTR048", "WTR049", "WTR050", "WTR051", "WTR052", "WTR053", "WTR054", "WTR055", "WTR056",
+                    "CRU029", "CRU030", "CRU031",
+                    "ELE206", "ELE207", "ELE208",
+                    "EVR024", "EVR025", "EVR026",
+                    "DYN033", "DYN034", "DYN035"
+                  );
+                  case "Majestic": return array(
+                    "WTR043", "WTR044", "WTR045", "WTR046", "WTR047",
+                    "CRU026", "CRU027", "CRU028",
+                    "ELE205",
+                    "EVR021", "EVR022", "EVR023",
+                    "DYN028", "DYN029"
+                  );
+                }
+              case "Titans":
+                switch($rarity)
+                {
+                  case "Common": return array(
+                    "WTR057", "WTR058", "WTR059", /*"WTR060", "WTR061", "WTR062", */"WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
+                    /*"CRU032", "CRU033", "CRU034", */"CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU042", "CRU043",
+                    "ELE209", "ELE210", "ELE211",
+                    "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
+                    "DYN036", "DYN037", "DYN038", "DYN039", "DYN040", "DYN041", "DYN042", "DYN043", "DYN044"
+                  );
+                  case "Rare": return array(
+                    "WTR048", "WTR049", "WTR050", "WTR051", "WTR052", "WTR053", "WTR054", "WTR055", "WTR056",
+                    "CRU029", "CRU030", "CRU031",
+                    "ELE206", "ELE207", "ELE208",
+                    "EVR024", "EVR025", "EVR026",
+                    "DYN030", "DYN031", "DYN032", "DYN033", "DYN034", "DYN035"
+                  );
+                  case "Majestic": return array(
+                    "WTR043", "WTR044", "WTR045", "WTR046", "WTR047",
+                    "CRU026", "CRU027", "CRU028",
+                    "ELE205",
+                    "EVR021", "EVR022", "EVR023",
+                    "DYN028", "DYN029"
+                  );
+                }
+            }
+          }
+        case "Talent": return GetPool("Class", $hero, $rarity, $background);
+        case "Generic":
+          {
+            switch($rarity)
+            {
+              case "Common": return array(
+                "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214",
+                "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
+                "MON269", "MON270", "MON271",
+                "DVR014", "DVR023"
+              );
+              case "Rare": return array(
+                "WTR173", "WTR174", "WTR175"
+              );
+              case "Majestic": return array(
+                "WTR159", "WTR160",
+                "ARC159",
+                "CRU180", "CRU181", "CRU182",
+                "MON245", "MON246",
+                "EVR156", "EVR157", "EVR160",
+                "UPR187", "UPR188", "UPR189", "UPR190"
+              );
+            }
+          }
+      }
+    }
   }
 }
 ?>
