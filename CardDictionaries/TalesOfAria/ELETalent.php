@@ -146,7 +146,7 @@
       //Lightning
       case "ELE173":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "Makes your next attack action card deal 1 damage if it hits.";
+        return "Makes your next attack action that hits deals 1 damage.";
       case "ELE176":
         if($currentPlayer == $mainPlayer) {++$actionPoints; $rv = "Grants an action point."; }
         return $rv;
