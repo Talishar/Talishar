@@ -464,13 +464,15 @@ function GetPool($type, $hero, $rarity, $background)
               switch($rarity)
               {
                 case "Common": return array(
-                  "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214",
+                  "WTR203", "WTR204", "WTR205", "WTR209", "WTR210", "WTR212", "WTR213", "WTR214",
                   "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
                   "MON269", "MON270", "MON271",
                   "DVR014", "DVR023"
                 );
                 case "Rare": return array(
-                  "WTR173", "WTR174", "WTR175"
+                  "WTR167", "WTR166", "WTR165", "WTR170", "WTR172", "WTR173", "WTR174", "WTR175",
+                  "ARC164", "ARC165", "ARC163", "ARC170", "ARC171", "ARC172",
+                  "CRU183", "CRU184", "CRU185"
                 );
                 case "Majestic": return array(
                   "WTR159", "WTR160",
@@ -485,114 +487,83 @@ function GetPool($type, $hero, $rarity, $background)
         }
       }
     case "Bravo":
-    {
-      switch($type)
-      {
+      switch ($type) {
         case "Class":
-          {
-            switch($background)
-            {
-              case "Anothos":
-                switch($rarity)
-                {
-                  case "Common": return array(
-                    "WTR057", "WTR058", "WTR059", /*"WTR060", "WTR061", "WTR062", */"WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
-                    /*"CRU032", "CRU033", "CRU034", */"CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU042", "CRU043",
-                    "ELE209", "ELE210", "ELE211",
-                    "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
-                  );
-                  case "Rare": return array(
-                    "WTR048", "WTR049", "WTR050", "WTR051", "WTR052", "WTR053", "WTR054", "WTR055", "WTR056",
-                    "CRU029", "CRU030", "CRU031",
-                    "ELE206", "ELE207", "ELE208",
-                    "EVR024", "EVR025", "EVR026",
-                    "DYN033", "DYN034", "DYN035"
-                  );
-                  case "Majestic": return array(
-                    "WTR043", "WTR044", "WTR045", "WTR046", "WTR047",
-                    "CRU026", "CRU027", "CRU028",
-                    "ELE205",
-                    "EVR021", "EVR022", "EVR023",
-                    "DYN028", "DYN029"
-                  );
-                }
-              case "Sledge":
-                switch($rarity)
-                {
-                  case "Common": return array(
-                    "WTR057", "WTR058", "WTR059", /*"WTR060", "WTR061", "WTR062", */"WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
-                    /*"CRU032", "CRU033", "CRU034", */"CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU042", "CRU043",
-                    "ELE209", "ELE210", "ELE211",
-                    "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
-                  );
-                  case "Rare": return array(
-                    "WTR048", "WTR049", "WTR050", "WTR051", "WTR052", "WTR053", "WTR054", "WTR055", "WTR056",
-                    "CRU029", "CRU030", "CRU031",
-                    "ELE206", "ELE207", "ELE208",
-                    "EVR024", "EVR025", "EVR026",
-                    "DYN033", "DYN034", "DYN035"
-                  );
-                  case "Majestic": return array(
-                    "WTR043", "WTR044", "WTR045", "WTR046", "WTR047",
-                    "CRU026", "CRU027", "CRU028",
-                    "ELE205",
-                    "EVR021", "EVR022", "EVR023",
-                    "DYN028", "DYN029"
-                  );
-                }
-              case "Titans":
-                switch($rarity)
-                {
-                  case "Common": return array(
-                    "WTR057", "WTR058", "WTR059", /*"WTR060", "WTR061", "WTR062", */"WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
-                    /*"CRU032", "CRU033", "CRU034", */"CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU042", "CRU043",
-                    "ELE209", "ELE210", "ELE211",
-                    "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
-                    "DYN036", "DYN037", "DYN038", "DYN039", "DYN040", "DYN041", "DYN042", "DYN043", "DYN044"
-                  );
-                  case "Rare": return array(
-                    "WTR048", "WTR049", "WTR050", "WTR051", "WTR052", "WTR053", "WTR054", "WTR055", "WTR056",
-                    "CRU029", "CRU030", "CRU031",
-                    "ELE206", "ELE207", "ELE208",
-                    "EVR024", "EVR025", "EVR026",
-                    "DYN030", "DYN031", "DYN032", "DYN033", "DYN034", "DYN035"
-                  );
-                  case "Majestic": return array(
-                    "WTR043", "WTR044", "WTR045", "WTR046", "WTR047",
-                    "CRU026", "CRU027", "CRU028",
-                    "ELE205",
-                    "EVR021", "EVR022", "EVR023",
-                    "DYN028", "DYN029"
-                  );
-                }
-            }
+          switch ($background) {
+            case "Anothos":
+              switch($rarity){
+                case "Common": return array(
+                  "WTR057", "WTR058", "WTR059", "WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074", 
+                  "CRU032", "CRU033", "CRU034", "CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU041", "CRU043",
+                  "ELE209", "ELE210", "ELE211",
+                  "EVR024", "EVR025", "EVR026", "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
+                );
+                case "Rare": return array(
+                  "WTR045", "WTR046", "WTR048", "WTR049", "WTR050", "WTR051", "WTR054", "WTR055", "WTR056",
+                  "CRU029", "CRU030", "CRU031",
+                  "ELE206", "ELE207", "ELE208", 
+                  "DYN033", "DYN034", "DYN035"
+                );
+                case "Majestic": return array(
+                  "WTR043", "WTR044", "WTR047", 
+                  "CRU026", "CRU027", "CRU028", 
+                  "DYN028", "DYN029", 
+                  "EVR000", "EVR021", "EVR022", "EVR023", 
+                );
+              }
+            case "Titan's Fist":
+              //Off-hand buffers are added to this pool. 
+              switch($rarity){
+                case "Common": return array(
+                  "WTR057", "WTR058", "WTR059", "WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074", 
+                  "CRU032", "CRU033", "CRU034", "CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU041", "CRU043",
+                  "ELE209", "ELE210", "ELE211",
+                  "EVR024", "EVR025", "EVR026", "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
+                  "DYN036", "DYN037", "DYN038", "DYN039", "DYN040", "DYN041", "DYN042", "DYN043", "DYN044"
+                );
+                case "Rare": return array(
+                  "WTR045", "WTR046", "WTR048", "WTR049", "WTR050", "WTR051", "WTR054", "WTR055", "WTR056",
+                  "CRU029", "CRU030", "CRU031",
+                  "ELE206", "ELE207", "ELE208", 
+                  "DYN030", "DYN031", "DYN032", "DYN033", "DYN034", "DYN035"
+                );
+                case "Majestic": return array(
+                  "WTR043", "WTR044", "WTR047", 
+                  "CRU026", "CRU027", "CRU028", 
+                  "DYN028", "DYN029", 
+                  "EVR000", "EVR021", "EVR022", "EVR023"
+                );
+              }
+            case "Sledge":
+              //This should be the same as Anothos, at least for now
+              return GetPool("Class", "Bravo", $rarity, "Anothos");
           }
-        case "Talent": return GetPool("Class", $hero, $rarity, $background);
+        case "Talent":
+          return(GetPool("Class", $hero, $rarity, $background));
         case "Generic":
-          {
             switch($rarity)
-            {
-              case "Common": return array(
-                "WTR203", "WTR204", "WTR205", "WTR212", "WTR213", "WTR214",
-                "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
-                "MON269", "MON270", "MON271",
-                "DVR014", "DVR023"
-              );
-              case "Rare": return array(
-                "WTR173", "WTR174", "WTR175"
-              );
-              case "Majestic": return array(
-                "WTR159", "WTR160",
-                "ARC159",
-                "CRU180", "CRU181", "CRU182",
-                "MON245", "MON246",
-                "EVR156", "EVR157", "EVR160",
-                "UPR187", "UPR188", "UPR189", "UPR190"
-              );
-            }
-          }
+              {
+                case "Common": return array(
+                  "WTR203", "WTR204", "WTR205", "WTR206", "WTR207", "WTR208", "WTR212", "WTR213", "WTR214",
+                  "ARC182", "ARC183", "ARC184", "ARC191", "ARC192", "ARC193",
+                  "MON269", "MON270", "MON271",
+                  "DVR014", "DVR023"
+                );
+                case "Rare": return array(
+                  "WTR167", "WTR166", "WTR165", "WTR170", "WTR172", "WTR173", "WTR174", "WTR175",
+                  "ARC164", "ARC165", "ARC163", "ARC170", "ARC171", "ARC172",
+                  "CRU183", "CRU184", "CRU185"
+                );
+                case "Majestic": return array(
+                  "WTR159", "WTR160",
+                  "ARC159",
+                  "CRU180", "CRU181", "CRU182",
+                  "MON245", "MON246",
+                  "EVR156", "EVR157", "EVR160",
+                  "UPR187", "UPR188", "UPR189", "UPR190"
+                );
+              }
       }
-    }
   }
 }
 ?>
