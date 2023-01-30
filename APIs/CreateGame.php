@@ -8,15 +8,15 @@ include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
-$deck = TryPOST("deck");
-$decklink = TryPOST("fabdb");
-$deckTestMode = TryPOST("deckTestMode", "");
-$format = TryPOST("format");
-$visibility = TryPOST("visibility");
-$decksToTry = TryPOST("decksToTry");
-$favoriteDeck = TryPOST("favoriteDeck", "0");
-$favoriteDeckLink = TryPOST("favoriteDecks", "0");
-$gameDescription = htmlentities(TryPOST("gameDescription", "Game #"), ENT_QUOTES);
+$deck = TryPOST("deck");//This is for limited game modes (see JoinGameInput.php)
+$decklink = TryPOST("fabdb");//Deck builder decklink (any deckbuilder, name comes from when fabdb was the only one)
+$deckTestMode = TryPOST("deckTestMode", "");//If this is populated with ANYTHING, will start a game against the combat dummy
+$format = TryPOST("format");//Format of the game -- see function FormatCode for enum of formats
+$visibility = TryPOST("visibility");//"public" = public game, "private" = private game
+$decksToTry = TryPOST("decksToTry");//This is only used if there's no favorite deck or decklink. 1 = ira
+$favoriteDeck = TryPOST("favoriteDeck", "0");//Set this to "on" to save the provided deck link to your favorites
+$favoriteDeckLink = TryPOST("favoriteDecks", "0");//This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
+$gameDescription = htmlentities(TryPOST("gameDescription", "Game #"), ENT_QUOTES);//Just a string with the game name
 
 if($favoriteDeckLink != 0)
 {
