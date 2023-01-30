@@ -984,6 +984,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ARC160-1", $defPlayer);
+  if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE506", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("EVR186", $defPlayer);
   if ($cardType == "E" && (SearchCurrentTurnEffects("DYN095", $mainPlayer) || SearchCurrentTurnEffects("DYN096", $mainPlayer) || SearchCurrentTurnEffects("DYN097", $mainPlayer))) $blockModifier -= 1;
   if (SearchCurrentTurnEffects("ELE114", $defPlayer) && ($cardType == "AA" || $cardType == "A") && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
@@ -1688,6 +1689,9 @@ function CurrentEffectIntellectModifier()
         case "MON246":
           $intellectModifier += 1;
           break;
+        case "ROGUE505":
+          $intellectModifier += 1;
+          break;
         default:
           break;
       }
@@ -1784,7 +1788,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "ARC047":
       return true;
-    case "ARC160-1":
+    case "ARC160-1": case "ROGUE506":
       return true;
     case "ARC170-1":
     case "ARC171-1":
@@ -2236,6 +2240,7 @@ function OnBlockResolveEffects()
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (SearchCurrentTurnEffects("ARC160-1", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
+    if (SearchCurrentTurnEffects("ROGUE506", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     if (SearchAurasForCard("ELE117", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 3);
     ProcessPhantasmOnBlock($i); // Phantasm should trigger first until we can re-order triggers
   }

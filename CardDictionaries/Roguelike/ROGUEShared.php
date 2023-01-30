@@ -44,6 +44,7 @@ function ROGUEEffectAttackModifier($cardID)
     if (count($params) > 1) $parameter = $params[1];
     switch ($cardID) {
       case "ROGUE008": return 1;
+      case "ROGUE506": return 1;
       default: return 0;
     }
 }
@@ -54,6 +55,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
     $cardID = $params[0];
     switch ($cardID) {
         case "ROGUE008": return true;
+        case "ROGUE506": return CardType($attackID) == "AA";
         default:
             return false;
     }
@@ -105,7 +107,7 @@ function ROGUECardSubtype($cardID)
       case "ROGUE009": return "Ranger";
       case "ROGUE009": return "Guardian";
 
-      case "ROGUE501": return "Power";
+      case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": return "Power";
       default: return "";
     }
 }
