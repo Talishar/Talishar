@@ -49,8 +49,11 @@ function EncounterDescription()
       if($encounter[1] == "BeforeFight") return "You're attacked by a Cloaked Ranger.";
       else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Novice.";
     case 107:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar";
-      else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar";
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar.";
+    case 108:
+      if($encounter[1] == "BeforeFight") return "You come upon Ira. Prepare to fight.";
+      else if($encounter[1] == "AfterFight") return "You defeated Ira.";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -97,7 +100,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
       //AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
-      AddDecisionQueue("SETENCOUNTER", $player, "202-PickMode");
+      AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
       break;
     case 005:
       AddDecisionQueue("BUTTONINPUT", $player, "Choice_1_to_be_implemented,Choice_2_to_be_implemented");
@@ -167,6 +170,8 @@ function EncounterImage()
       return "ELE112_cropped.png";
     case 204:
       return "WTR046_cropped.png";
+    case 108:
+      return "CRU046_cropped.png";
     default: return "CRU054_cropped.png";
   }
 }
@@ -196,91 +201,69 @@ function GetNextEncounter()
   WriteLog("Encounter[1]: " . $encounter[1]);
   WriteLog("Encounter[2]: " . $encounter[2]);*/
   ++$encounter[2];
-  if($encounter[2] == 3 || $encounter[2] == 5) return GetEasyCombat();
-  else if($encounter[2] == 7 || $encounter[2] == 10) return GetMediumCombat();
-  else if($encounter[2] == 12 || $encounter[2] == 14) return GetHardCombat();
+  if($encounter[2] == 3 || $encounter[2] == 5) return GetCombat("Easy");
+  else if($encounter[2] == 7 || $encounter[2] == 10) return GetCombat("Medium");
+  else if($encounter[2] == 12 || $encounter[2] == 14) return GetCombat("Hard");
   else if($encounter[2] == 2) return "005-PickMode";
   else if($encounter[2] == 17) return "105-BeforeFight";
   else if($encounter[2] == 9 || $encounter[2] == 16) return "020-PickMode";
-  else return GetEvent($encounter);
+  else return GetEvent();
 }
 
-function GetEasyCombat()
+function GetCombat($difficulty)
 {
   $encounter = &GetZone(1, "Encounter");
   $alreadyPicked = explode(",", $encounter[5]);
-  $easyEncounters = array(
-    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
-  );
+  switch($difficulty)
+  {
+    case "Easy": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
+    case "Medium": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
+    case "Hard": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
+  }
   $generatedEncounters = [];
-  for($i = 0; $i < count($easyEncounters); ++$i)
+  for($i = 0; $i < count($potentialEncounters); ++$i)
   {
     $notFound = true;
     for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
     {
-      if($alreadyPicked[$j] == $easyEncounters[$i]) $notFound = false;
+      if($alreadyPicked[$j] == $potentialEncounters[$i]) $notFound = false;
     }
-    if($notFound) array_push($generatedEncounters, $easyEncounters[$i]);
+    if($notFound) array_push($generatedEncounters, $potentialEncounters[$i]);
   }
   //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
-  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
-  return $generatedEncounters[$randomEncounter];
-}
-
-function GetMediumCombat()
-{
-  $encounter = &GetZone(1, "Encounter");
-  $alreadyPicked = explode(",", $encounter[5]);
-  $mediumEncounters = array(
-    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
-  );
-  $generatedEncounters = [];
-  for($i = 0; $i < count($mediumEncounters); ++$i)
-  {
-    $notFound = true;
-    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
-    {
-      if($alreadyPicked[$j] == $mediumEncounters[$i]) $notFound = false;
-    }
-    if($notFound) array_push($generatedEncounters, $mediumEncounters[$i]);
-  }
-  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
-  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
-  return $generatedEncounters[$randomEncounter];
-}
-
-function GetHardCombat()
-{
-  $encounter = &GetZone(1, "Encounter");
-  $alreadyPicked = explode(",", $encounter[5]);
-  $hardEncounters = array(
-    "101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"
-  );
-  $generatedEncounters = [];
-  for($i = 0; $i < count($hardEncounters); ++$i)
-  {
-    $notFound = true;
-    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
-    {
-      if($alreadyPicked[$j] == $easyEncounters[$i]) $notFound = false;
-    }
-    if($notFound) array_push($generatedEncounters, $hardEncounters[$i]);
-  }
-  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1); //going to implement  no duplicate encounters later
+  $randomEncounter = rand(0, count($generatedEncounters)-1);
   $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
   return $generatedEncounters[$randomEncounter];
 }
 
 function GetEvent()
 {
-  $eventEncounters = array(
-    "201-PickMode", "202-PickMode"
-  );
-  $randomEncounter = rand(0, count($eventEncounters)-1);
-  return $eventEncounters[$randomEncounter];
+  $encounter = &GetZone(1, "Encounter");
+  $alreadyPicked = explode(",", $encounter[5]);
+  $generateRand = rand(1, 100);
+  if($generateRand >= 90) $rarity = "Rare";
+  else if($generateRand >= 60) $rarity = "Uncommon";
+  else $rarity = "Common";
+  switch($rarity)
+  {
+    case "Common": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+    case "Uncommon": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+    case "Rare": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+  }
+  $generatedEncounters = [];
+  for($i = 0; $i < count($potentialEncounters); ++$i)
+  {
+    $notFound = true;
+    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
+    {
+      if($alreadyPicked[$j] == $potentialEncounters[$i]) $notFound = false;
+    }
+    if($notFound) array_push($generatedEncounters, $potentialEncounters[$i]);
+  }
+  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
+  $randomEncounter = rand(0, count($generatedEncounters)-1);
+  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
+  return $generatedEncounters[$randomEncounter];
 }
 
 function GetRandomCards($number)
