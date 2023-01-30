@@ -63,8 +63,8 @@ function PermanentBeginEndPhaseEffects()
   global $mainPlayer, $defPlayer;
 
   $permanents = &GetPermanents($mainPlayer);
-  WriteLog("size of zone = " . count($permanents));
-  WriteLog("zone[0] = " . $permanents[0]);
+  /*WriteLog("size of zone = " . count($permanents));
+  WriteLog("zone[0] = " . $permanents[0]);*/
   for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
     $remove = 0;
     switch ($permanents[$i]) {
@@ -75,12 +75,23 @@ function PermanentBeginEndPhaseEffects()
       case "ROGUE501":
         $deck = &GetDeck($mainPlayer);
         $discard = &GetDiscard($mainPlayer);
-        WriteLog("size of discard = " . count($discard));
+        $banish = &GetBanish($mainPlayer);
+        /*WriteLog("size of discard = " . count($discard));
         WriteLog("discard[0] = " . $discard[0]);
-        WriteLog("discard[1] = " . $discard[1]);
+        WriteLog("discard[1] = " . $discard[1]);*/
         for($i = count($discard)-1; $i >= 0; --$i)
         {
-          array_push($deck, $discard[$i]);
+          if(rand(0, 1) == 0) array_push($deck, $discard[$i]);
+          else
+          {
+            array_push($banish, $discard[$i]);
+            array_push($banish, "");
+            array_push($banish, GetUniqueId());
+          }
+          /*WriteLog("banish[0] = " . $banish[0]);
+          WriteLog("banish[1] = " . $banish[1]);
+          WriteLog("banish[2] = " . $banish[2]);*/
+
           unset($discard[$i]);
         }
         $destArr = [];
@@ -156,6 +167,55 @@ function PermanentTakeDamageAbilities($player, $damage, $type)
   return $damage;
 }
 
+function PermanentStartTurnAbilities()
+{
+  global $mainPlayer, $defPlayer;
+
+  $permanents = &GetPermanents($mainPlayer);
+  $defPermanents = &GetPermanents($defPlayer);
+  $character = &GetPlayerCharacter($mainPlayer);
+  $hand = &GetHand($mainPlayer);
+  /*WriteLog("size of hand = " . count($hand));
+  WriteLog("hand[0] = " . $hand[0]);*/
+  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    $remove = 0;
+    switch ($permanents[$i]) {
+      case "ROGUE502":
+        array_push($hand, $hand[rand(0, count($hand)-1)]);
+        break;
+      case "ROGUE503":
+        $choices = array("WTR098", "WTR099", "WTR100");
+        array_push($hand, $choices[rand(0, count($choices)-1)]);
+        break;
+      case "ROGUE504":
+        for($j = 0; $j < count($character)-1; ++$j)
+        {
+          //if(CardType($character[$j]) == "W") WriteLog("Found " . $character[$j]);
+          if(CardType($character[$j]) == "W") $character[$j + 3] += 1;
+          //WriteLog("character[" . $j . "] = " . $character[$j]);
+        }
+        break;
+      case "ROGUE505":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE506":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      default:
+        break;
+    }
+  }
+  for ($i = count($defPermanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    $remove = 0;
+    switch ($defPermanents[$i]) {
+      case "ROGUE506":
+        AddCurrentTurnEffect($defPermanents[$i], $defPlayer);
+        break;
+      default:
+        break;
+    }
+  }
+}
 /*
 function DestroyAlly($player, $index)
 {

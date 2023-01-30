@@ -87,7 +87,7 @@ if (SearchCharacterForCard(2, "DYN026")) {
 //roguelike gamemode powers
 if(false) {
   $deck = &GetDeck(1);
-  array_unshift($deck, "ROGUE501");
+  array_unshift($deck, "ROGUE506");
   $powers = SearchDeck(1, "", "Power");
   $powersArray = explode(",", $powers);
   WriteLog($powersArray);
