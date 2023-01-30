@@ -20,7 +20,7 @@ if (!isset($playerID)) $playerID = intval($_POST["playerID"]);
 if (!isset($deck)) $deck = TryPOST("deck"); //This is for limited game modes (see JoinGameInput.php)
 if (!isset($decklink)) $decklink = TryPOST("fabdb", ""); //Deck builder decklink
 if (!isset($decksToTry)) $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite deck or decklink. 1 = ira
-if (!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", "0"); //Set this to "on" to save the provided deck link to your favorites
+if (!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the provided deck link to your favorites
 if (!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
 if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
 $starterDeck = false;
@@ -348,7 +348,7 @@ if ($decklink != "") {
   fwrite($deckFile, $weaponSideboard . "\r\n");
   fwrite($deckFile, $sideboardCards);
   fclose($deckFile);
-  copy($filename, "./Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
+  copy($filename, "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
   if (isset($_SESSION["userid"])) {
     include_once '../includes/functions.inc.php';
@@ -360,7 +360,7 @@ if ($decklink != "") {
     }
   }
 
-  if ($favoriteDeck == "on" && isset($_SESSION["userid"])) {
+  if ($favoriteDeck && isset($_SESSION["userid"])) {
     //Save deck
     include_once '../includes/functions.inc.php';
     include_once "../includes/dbh.inc.php";
@@ -420,6 +420,12 @@ if ($matchup == "") {
     $_SESSION["p2AuthKey"] = $p2Key;
     setcookie("lastAuthKey", $p2Key, time() + 86400, "/", $domain);
   }
+
+  $response->message = "success";
+  $response->gameName = $gameName;
+  $response->playerID = $playerID;
+  $response->authKey = $playerID == 1 ? $p1Key : ($playerID == 2 ? $p2Key : '');
+  echo (json_encode($response));
 }
 
 session_write_close();

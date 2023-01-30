@@ -14,7 +14,7 @@ $deckTestMode = TryPOST("deckTestMode", ""); //If this is populated with ANYTHIN
 $format = TryPOST("format"); //Format of the game -- see function FormatCode for enum of formats
 $visibility = TryPOST("visibility"); //"public" = public game, "private" = private game
 $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite deck or decklink. 1 = ira
-$favoriteDeck = TryPOST("favoriteDeck", "0"); //Set this to "on" to save the provided deck link to your favorites
+$favoriteDeck = TryPOST("favoriteDeck", false); //Set this to "on" to save the provided deck link to your favorites
 $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
 $gameDescription = htmlentities(TryPOST("gameDescription", "Game #"), ENT_QUOTES); //Just a string with the game name
 
