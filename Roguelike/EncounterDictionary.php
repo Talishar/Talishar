@@ -99,8 +99,8 @@ function InitializeEncounter($player)
       //if($encounter[3] == "Bravo") AddDecisionQueue("BUTTONINPUT", $player, "Anothos_Background,Titans_Fist_Background");
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
-      //AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
-      AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      //AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
       break;
     case 005:
       AddDecisionQueue("BUTTONINPUT", $player, "Choice_1_to_be_implemented,Choice_2_to_be_implemented");
