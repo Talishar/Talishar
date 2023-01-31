@@ -145,7 +145,7 @@
       case 106: return "QuickshotNovice";
       case 107: return "RuneScholar";
       case 108: return "Ira";
-      case 113: return "ManOfMomentum";
+      case 113: return "Man of Momentum";
       default: return "Woottonhog";
     }
   }

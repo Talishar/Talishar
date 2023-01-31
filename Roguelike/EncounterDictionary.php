@@ -55,8 +55,8 @@ function EncounterDescription()
       if($encounter[1] == "BeforeFight") return "You come upon Ira. Prepare to fight.";
       else if($encounter[1] == "AfterFight") return "You defeated Ira.";
     case 113:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a cloaked figure wielding two daggers.";
-      else if($encounter[1] == "AfterFight") return "You defeated the cloaked figure.";
+      if($encounter[1] == "BeforeFight") return "You're attacked by a Cloaked Figure wielding two daggers.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Cloaked Figure.";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -218,7 +218,7 @@ function GetCombat($difficulty)
   $alreadyPicked = explode(",", $encounter[5]);
   switch($difficulty)
   {
-    case "Easy": $potentialEncounters = array("101-Fight", /*"102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight", */"113-BeforeFight"); break;
+    case "Easy": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight", "113-BeforeFight"); break;
     case "Medium": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
     case "Hard": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
   }
