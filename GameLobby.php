@@ -454,7 +454,8 @@ $isMobile = IsMobile();
           if (overlay.style.visibility == "hidden") {
             var imageSrc = document.getElementById("DECK-" + count + "-img").src;
             if (returnValue != "") returnValue += ",";
-            returnValue += imageSrc.substring(imageSrc.length - 11).split(".")[0];
+            var splitArr = imageSrc.split("/");
+            returnValue += splitArr[splitArr.length-1].split(".")[0];
           }
           ++count;
           var overlay = document.getElementById("DECK-" + count + "-ovr");
