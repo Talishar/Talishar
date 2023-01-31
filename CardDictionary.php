@@ -34,6 +34,7 @@ include "GeneratedCode/GeneratedCardDictionaries.php";
 
 function CardType($cardID)
 {
+  if(!$cardID) return "";
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM")
   {
