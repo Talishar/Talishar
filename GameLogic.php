@@ -5741,6 +5741,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CARDDISCARDED":
       CardDiscarded($player, $lastResult, $parameter);
       return $lastResult;
+    case "ROGUEMIRRORGAMESTART":
+      WriteLog($lastResult);
+      $deck = &GetDeck($player);
+      for($mirrorAmount = 0; $mirrorAmount < 7; ++$mirrorAmount) { array_unshift($deck, $lastResult); }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

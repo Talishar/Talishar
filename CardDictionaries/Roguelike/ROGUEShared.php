@@ -107,7 +107,15 @@ function ROGUECardSubtype($cardID)
       case "ROGUE009": return "Ranger";
       case "ROGUE009": return "Guardian";
 
-      case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": return "Power";
+      case "ROGUE501": //Broken Hourglass
+      case "ROGUE502": //Perfect Mirror
+      case "ROGUE503": //Scroll of Mastery
+      case "ROGUE504": //Blacksmith's Tongs
+      case "ROGUE505": //Teklo's Cranium
+      case "ROGUE506": //Teachings of War
+      case "ROGUE507": //Merchant's Handbag
+      case "ROGUE508": //Shattered Mirror
+      return "Power";
       default: return "";
     }
 }
@@ -191,5 +199,18 @@ function ROGUEHitEffect($cardID)
 
         default: break;
     }
+}
+
+function ROGUEPowerStart($cardId)
+{
+  global $mainPlayer, $defPlayer;
+  switch($cardId) {
+    case "ROGUE508":
+      $deck = &GetDeck($mainPlayer);
+      
+      AddDecisionQueue("CHOOSEDECK", $mainPlayer, "0,1");
+      AddDecisionQueue("ROGUEMIRRORGAMESTART", $mainPlayer, "0");
+      break;
+  }
 }
 ?>
