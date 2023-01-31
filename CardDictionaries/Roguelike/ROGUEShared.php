@@ -88,6 +88,7 @@ function ROGUECardType($cardID)
       case "ROGUE008": return "C";
       case "ROGUE009": return "C";
       case "ROGUE010": return "C";
+      case "ROGUE013": return "C";
 
       case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": return "A";
       default:
@@ -108,6 +109,7 @@ function ROGUECardSubtype($cardID)
       case "ROGUE008": return "Ninja";
       case "ROGUE009": return "Ranger";
       case "ROGUE009": return "Guardian";
+      case "ROGUE013": return "Ninja";
 
       case "ROGUE501": //Broken Hourglass
       case "ROGUE502": //Perfect Mirror
@@ -145,6 +147,7 @@ function ROGUEPitchValue($cardID)
       case "ROGUE008": return -1;
       case "ROGUE009": return -1;
       case "ROGUE010": return -1;
+      case "ROGUE013": return -1;
       case "ROGUE501": return 3;
       default: return 3;
     }
@@ -163,6 +166,7 @@ function ROGUEBlockValue($cardID)
       case "ROGUE008": return -1;
       case "ROGUE009": return -1;
       case "ROGUE010": return -1;
+      case "ROGUE013": return -1;
       case "ROGUE501": return -1;
       default:
         return 3;

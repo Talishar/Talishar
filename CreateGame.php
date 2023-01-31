@@ -96,7 +96,9 @@ $p2Data = [2];
 if ($deckTestMode != "") {
   $gameStatus = 4; //ReadyToStart
   $opponentDeck = "./Assets/Dummy.txt";
-  switch($deckTestMode)
+  $fileName = "./Roguelike/Encounters/".$deckTestMode.".txt";
+  if(file_exists($fileName)) $opponentDeck = $fileName;
+  /*switch($deckTestMode)
   {
     case "Woottonhog": $opponentDeck = "./Roguelike/Encounters/Woottonhog.txt"; break;
     case "RavenousRabble": $opponentDeck = "./Roguelike/Encounters/RavenousRabble.txt"; break;
@@ -105,8 +107,9 @@ if ($deckTestMode != "") {
     case "QuickshotNovice": $opponentDeck = "./Roguelike/Encounters/QuickshotNovice.txt"; break;
     case "RuneScholar": $opponentDeck = "./Roguelike/Encounters/RuneScholar.txt"; break;
     case "Ira": $opponentDeck = "./Roguelike/Encounters/Ira.txt"; break;
+    case "ManOfMomentum": $opponentDeck = "./Roguelike/Encounters/ManOfMomentum.txt"; break;
     default: break;
-  }
+  }*/
   copy($opponentDeck, "./Games/" . $gameName . "/p2Deck.txt");
 } else {
   $gameStatus = 0; //Initial
