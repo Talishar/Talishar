@@ -47,6 +47,7 @@
       case "ARC010":
         if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if($index == -1) return "";
+        if($index >= count($items)) return "";
         return count($combatChain) > 0 && ClassContains($combatChain[0], "MECHANOLOGIST", $currentPlayer) && CardSubType($combatChain[0]) == "Pistol" && $items[$index + 1] > 0 ? "AR" : "A";
       case "ARC017":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);

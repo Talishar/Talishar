@@ -1230,8 +1230,11 @@ function CanPlayAsInstant($cardID, $index=-1, $from="")
   if($from == "BANISH")
   {
     $banish = GetBanish($currentPlayer);
-    $mod = explode("-", $banish[$index+1])[0];
-    if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
+    if($index < count($banish))
+    {
+      $mod = explode("-", $banish[$index+1])[0];
+      if(($cardType == "I" && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "MON212")) || $mod == "INST" || $mod == "ARC119") return true;
+    }
   }
   if(GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if($cardID == "ELE106" || $cardID == "ELE107" || $cardID == "ELE108") { return PlayerHasFused($currentPlayer); }

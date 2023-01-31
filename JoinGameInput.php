@@ -96,7 +96,8 @@ if ($decklink != "") {
   curl_close($curl);
 
   if ($apiDeck === FALSE) {
-    echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
+    if(is_array($decklink)) echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
+    else echo  '<b>' . "⚠️ Deckbuilder API for this deck returns no data: " . implode("/", $decklink) . '</b>';
     WriteGameFile();
     LogDeckLoadFailure("API returned no data");
     exit;
