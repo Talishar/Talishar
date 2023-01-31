@@ -85,20 +85,25 @@ if (SearchCharacterForCard(2, "DYN026")) {
 }
 
 //roguelike gamemode powers
-if(true) {
+if(CardSet($p2Char[0]) == "ROG") {
   $deck = &GetDeck(1);
-  array_unshift($deck, "ROGUE508");
+  //array_unshift($deck, "ROGUE508");
   $powers = SearchDeck(1, "", "Power");
-  $powersArray = explode(",", $powers);
-  WriteLog($powersArray);
-  WriteLog($deck[$powersArray[0]]);
-  for($i = 0; $i < count($powersArray); ++$i)
-  {
-    PutPermanentIntoPlay(1, $deck[$powersArray[0]]);
-    ROGUEPowerStart($deck[$powersArray[0]]);
-    array_splice($deck, $powersArray[0], 1);
+  //WriteLog(strlen($powers));
+  //WriteLog($powersArray[0]);
+  //WriteLog($powersArray[1]);
+  if(strlen($powers) != 0) {
+    $powersArray = explode(",", $powers);
+    //WriteLog(count($powersArray));
+    for($i = count($powersArray)-1; $i >= 0; --$i)
+    {
+      PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
+      //WriteLog($deck[$powersArray[$i]]);
+      array_splice($deck, $powersArray[$i], 1);
+      ROGUEPowerStart();
+    }
+  //WriteLog($deck[$powers[0]]);
   }
-  WriteLog($deck[$powers[0]]);
 }
 
 AddDecisionQueue("SHUFFLEDECK", 1, "SKIPSEED"); //CR 2.0 4.1.7 Shuffle Deck

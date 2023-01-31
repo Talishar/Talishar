@@ -207,6 +207,10 @@ function PermanentStartTurnAbilities()
         for($j = 0; $j < count($items)-1; ++$j) { if($items[$j] == "DYN243") $found = true; continue; }
         if(!$found) AddDecisionQueue("STARTOFGAMEPUTPLAY", 1, "DYN243");
         break;
+      case "ROGUE509":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        array_unshift($hand, "DYN065");
+        break;
       default:
         break;
     }
