@@ -1623,7 +1623,7 @@ function DoesEffectGrantDominate($cardID)
     case "ELE057":
     case "ELE058":
       return true;
-    case "ELE092-DOMATK":
+    case "ELE092-DOMATK": case "ROGUE513":
       return true;
     case "ELE097":
     case "ELE098":
