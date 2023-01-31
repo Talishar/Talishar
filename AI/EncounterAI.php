@@ -702,13 +702,14 @@ function ActionPriority($cardId, $heroId)
       }
       case "ROGUE013":
         switch($cardId) {
-          case "WTR098": return 1.9;
+          case "WTR098": return 1.8;
           case "WTR099": return 1.4;
           case "WTR100": return 0.3;
-          case "WTR101": return 1.8;
+          case "WTR101": return 1.7;
           case "WTR102": return 1.3;
-          case "WTR107": return 1.7;
+          case "WTR107": return 1.6;
           case "WTR108": return 1.2;
+          case "WTR078": return 1.9;
         }
     default: return 0;
   }
