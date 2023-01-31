@@ -103,8 +103,7 @@ function InitializeEncounter($player)
       //AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
       break;
     case 005:
-      AddDecisionQueue("BUTTONINPUT", $player, "Choice_1_to_be_implemented,Choice_2_to_be_implemented");
-      AddDecisionQueue("BACKGROUND", $player, "-");
+      AddDecisionQueue("CHOOSECARD", $player, "ROGUE510");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
     case 020:
@@ -493,7 +492,7 @@ function GetPool($type, $hero, $rarity, $background)
             case "Anothos":
               switch($rarity){
                 case "Common": return array(
-                  "WTR057", "WTR058", "WTR059", "WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074", 
+                  "WTR057", "WTR058", "WTR059", "WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
                   "CRU032", "CRU033", "CRU034", "CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU041", "CRU043",
                   "ELE209", "ELE210", "ELE211",
                   "EVR024", "EVR025", "EVR026", "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
@@ -501,21 +500,21 @@ function GetPool($type, $hero, $rarity, $background)
                 case "Rare": return array(
                   "WTR045", "WTR046", "WTR048", "WTR049", "WTR050", "WTR051", "WTR054", "WTR055", "WTR056",
                   "CRU029", "CRU030", "CRU031",
-                  "ELE206", "ELE207", "ELE208", 
+                  "ELE206", "ELE207", "ELE208",
                   "DYN033", "DYN034", "DYN035"
                 );
                 case "Majestic": return array(
-                  "WTR043", "WTR044", "WTR047", 
-                  "CRU026", "CRU027", "CRU028", 
-                  "DYN028", "DYN029", 
-                  "EVR000", "EVR021", "EVR022", "EVR023", 
+                  "WTR043", "WTR044", "WTR047",
+                  "CRU026", "CRU027", "CRU028",
+                  "DYN028", "DYN029",
+                  "EVR000", "EVR021", "EVR022", "EVR023",
                 );
               }
             case "Titan's Fist":
-              //Off-hand buffers are added to this pool. 
+              //Off-hand buffers are added to this pool.
               switch($rarity){
                 case "Common": return array(
-                  "WTR057", "WTR058", "WTR059", "WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074", 
+                  "WTR057", "WTR058", "WTR059", "WTR063", "WTR064", "WTR065", "WTR066", "WTR067", "WTR068", "WTR069", "WTR070", "WTR071", "WTR072", "WTR073", "WTR074",
                   "CRU032", "CRU033", "CRU034", "CRU035", "CRU036", "CRU037", "CRU038", "CRU039", "CRU040", "CRU041", "CRU041", "CRU043",
                   "ELE209", "ELE210", "ELE211",
                   "EVR024", "EVR025", "EVR026", "EVR027", "EVR028", "EVR029", "EVR030", "EVR031", "EVR032", "EVR033", "EVR034", "EVR035",
@@ -524,13 +523,13 @@ function GetPool($type, $hero, $rarity, $background)
                 case "Rare": return array(
                   "WTR045", "WTR046", "WTR048", "WTR049", "WTR050", "WTR051", "WTR054", "WTR055", "WTR056",
                   "CRU029", "CRU030", "CRU031",
-                  "ELE206", "ELE207", "ELE208", 
+                  "ELE206", "ELE207", "ELE208",
                   "DYN030", "DYN031", "DYN032", "DYN033", "DYN034", "DYN035"
                 );
                 case "Majestic": return array(
-                  "WTR043", "WTR044", "WTR047", 
-                  "CRU026", "CRU027", "CRU028", 
-                  "DYN028", "DYN029", 
+                  "WTR043", "WTR044", "WTR047",
+                  "CRU026", "CRU027", "CRU028",
+                  "DYN028", "DYN029",
                   "EVR000", "EVR021", "EVR022", "EVR023"
                 );
               }

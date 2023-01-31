@@ -45,6 +45,7 @@ function ROGUEEffectAttackModifier($cardID)
     switch ($cardID) {
       case "ROGUE008": return 1;
       case "ROGUE506": return 1;
+      case "ROGUE509": return 1;
       default: return 0;
     }
 }
@@ -56,6 +57,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
     switch ($cardID) {
         case "ROGUE008": return true;
         case "ROGUE506": return CardType($attackID) == "AA";
+        case "ROGUE509": return $attackID == "DYN065";
         default:
             return false;
     }
@@ -87,7 +89,7 @@ function ROGUECardType($cardID)
       case "ROGUE009": return "C";
       case "ROGUE010": return "C";
 
-      case "ROGUE501": return "A";
+      case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": return "A";
       default:
         return "";
     }
@@ -107,7 +109,17 @@ function ROGUECardSubtype($cardID)
       case "ROGUE009": return "Ranger";
       case "ROGUE009": return "Guardian";
 
-      case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": return "Power";
+      case "ROGUE501": //Broken Hourglass
+      case "ROGUE502": //Perfect Mirror
+      case "ROGUE503": //Scroll of Mastery
+      case "ROGUE504": //Blacksmith's Tongs
+      case "ROGUE505": //Teklo's Cranium
+      case "ROGUE506": //Teachings of War
+      case "ROGUE507": //Merchant's Handbag
+      case "ROGUE508": //Shattered Mirror
+      case "ROGUE509": //Qi Scroll
+      case "ROGUE510": //Survival Kit
+      return "Power";
       default: return "";
     }
 }
@@ -191,5 +203,40 @@ function ROGUEHitEffect($cardID)
 
         default: break;
     }
+}
+
+function ROGUEPowerStart()
+{
+  global $mainPlayer, $defPlayer;
+  $permanents = &GetPermanents($mainPlayer);
+
+  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    $remove = 0;
+    switch ($permanents[$i]) {
+      case "ROGUE508":
+        $deck = &GetDeck($mainPlayer);
+        $optionOne = rand(0, count($deck)-1);
+        $optionTwo = rand(0, count($deck)-1);
+        $optionThree = rand(0, count($deck)-1);
+        if($optionOne == $optionTwo)
+        {
+          if($optionOne == 0) ++$optionTwo;
+          else --$optionTwo;
+        }
+        for($i = 0; $i < 5 && ($optionThree == $optionOne || $optionThree == $optionOne); ++$i)
+        {
+          if($optionThree <= 4) $optionThree += 3;
+          else --$optionThree;
+        }
+        AddDecisionQueue("CHOOSEDECK", $mainPlayer, $optionOne . "," . $optionTwo . "," . $optionThree);
+        AddDecisionQueue("ROGUEMIRRORGAMESTART", $mainPlayer, "0");
+        break;
+      case "ROGUE510":
+        GainHealth(5, $mainPlayer);
+        break;
+      default:
+        break;
+    }
+  }
 }
 ?>
