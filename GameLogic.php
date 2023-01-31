@@ -1572,7 +1572,7 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "ELE034-2":
           return true;
-        case "ELE091-GA":
+        case "ELE091-GA": case "ROGUE512":
           return true;
         case "ELE177":
         case "ELE178":
@@ -1788,7 +1788,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "ARC047":
       return true;
-    case "ARC160-1": case "ROGUE506":
+    case "ARC160-1": case "ROGUE506": case "ROGUE517":
       return true;
     case "ARC170-1":
     case "ARC171-1":
@@ -1847,10 +1847,10 @@ function IsCombatEffectPersistent($cardID)
     case "ELE069":
       return true;
     case "ELE091-BUFF":
-    case "ELE091-GA":
+    case "ELE091-GA": case "ROGUE512":
       return true;
     case "ELE092-DOM":
-    case "ELE092-BUFF":
+    case "ELE092-BUFF": case "ROGUE513":
       return true;
     case "ELE143":
       return true;

@@ -211,6 +211,14 @@ function PermanentStartTurnAbilities()
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         array_unshift($hand, "DYN065");
         break;
+      case "ROGUE511":
+        MayBottomDeckDraw();
+        break;
+      case "ROGUE512": case "ROGUE513":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+      case "ROGUE517":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
       default:
         break;
     }
