@@ -1287,6 +1287,11 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = 1;
           }
           break;
+        case "ROGUE519":
+          if (IsStaticType(CardType($cardID), $from, $cardID)) {
+            $costModifier -= 1;
+          }
+          break;
         default:
           break;
       }
@@ -5745,6 +5750,37 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       //WriteLog($lastResult);
       $deck = &GetDeck($player);
       for($mirrorAmount = 0; $mirrorAmount < 7; ++$mirrorAmount) { array_unshift($deck, $lastResult); }
+      return $lastResult;
+    case "ROGUEMIRRORTURNSTART":
+      //WriteLog($lastResult);
+      $deck = &GetDeck($player);
+      $hand = &GetHand($player);
+      //WriteLog($hand[$lastResult]);
+      //for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { WriteLog("deck[$deckCount] = " . $deck[$deckCount]); }
+      if(count($deck) > 3)
+      {
+        $optionOne = rand(0, count($deck)-1);
+        $optionTwo = rand(0, count($deck)-1);
+        $optionThree = rand(0, count($deck)-1);
+        if($optionOne == $optionTwo)
+        {
+          if($optionOne == 0) ++$optionTwo;
+          else --$optionTwo;
+        }
+        for($i = 0; $i < 5 && ($optionThree == $optionOne || $optionThree == $optionOne); ++$i)
+        {
+          if($optionThree <= 4) $optionThree += 3;
+          else --$optionThree;
+        }
+        $deck[$optionOne] = $hand[$lastResult];
+        $deck[$optionTwo] = $hand[$lastResult];
+        $deck[$optionThree] = $hand[$lastResult];
+      }
+      else
+      {
+        for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { $deck[$deckCount] = $hand[$lastResult]; }
+      }
+      //for($deckCount = 0; $deckCount < count($deck); ++$deckCount) { WriteLog("deck[$deckCount] = " . $deck[$deckCount]); }
       return $lastResult;
     default:
       return "NOTSTATIC";

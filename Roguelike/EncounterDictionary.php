@@ -103,7 +103,7 @@ function InitializeEncounter($player)
       //AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
       break;
     case 005:
-      AddDecisionQueue("CHOOSECARD", $player, "ROGUE517");
+      AddDecisionQueue("CHOOSECARD", $player, "ROGUE519");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
     case 020:

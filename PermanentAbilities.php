@@ -219,6 +219,14 @@ function PermanentStartTurnAbilities()
       case "ROGUE517":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
+      case "ROGUE518":
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "HAND");
+        AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ROGUEMIRRORTURNSTART", $mainPlayer, "0");
+        break;
+      case "ROGUE519":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
       default:
         break;
     }

@@ -99,7 +99,7 @@ function ROGUECardType($cardID)
       case "ROGUE010": return "C";
 
       case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE514":
-      case "ROGUE515": case "ROGUE516": case "ROGUE517": return "A";
+      case "ROGUE515": case "ROGUE516": case "ROGUE517": case "ROGUE518": case "ROGUE519": return "A";
       default:
         return "";
     }
@@ -136,6 +136,17 @@ function ROGUECardSubtype($cardID)
       case "ROGUE515": //Lucky Tooth (not implemented)
       case "ROGUE516": //Mark of Undeath
       case "ROGUE517": //Shamans Skullbone
+      case "ROGUE518": //Wild Mirror
+      case "ROGUE519": //Shard of the Mountain
+      case "ROGUE520": //Blacksmith's Hammer (not implemented)
+      case "ROGUE521": //Solanian Bell (not implemented)
+      case "ROGUE522": //Thieves Tools (not implemented)
+      case "ROGUE523": //Ward of Protection (not implemented)
+      case "ROGUE224": //Gorganian Cipher (not implemented)
+      case "ROGUE524": //Acorn of Korshem (not implemented)
+      case "ROGUE525": //Blacktek Timebomb (not implemented)
+      case "ROGUE526": //Merchant Supply Cart (not implemented)
+      case "ROGUE527": //Sutcliffe's Tome (not implemented)
       return "Power";
       default: return "";
     }
