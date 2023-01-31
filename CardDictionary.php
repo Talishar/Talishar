@@ -78,6 +78,7 @@ function CardType($cardID)
 
 function CardSubType($cardID)
 {
+  if(!$cardID) return "";
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM")
   {
