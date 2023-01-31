@@ -419,6 +419,7 @@ function DynamicCost($cardID)
 
 function PitchValue($cardID)
 {
+  if(!$cardID) return "";
   $set = CardSet($cardID);
   if($set != "ROG" && $set != "DUM")
   {
@@ -439,6 +440,7 @@ function PitchValue($cardID)
 function BlockValue($cardID)
 {
   global $mainPlayer;
+  if(!$cardID) return "";
   $set = CardSet($cardID);
   if($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if($cardID == "EVR138") return FractalReplicationStats("Block");
@@ -463,6 +465,7 @@ function BlockValue($cardID)
 function AttackValue($cardID)
 {
   global $combatChainState, $CCS_NumBoosted, $mainPlayer, $currentPlayer;
+  if(!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
