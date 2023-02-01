@@ -66,6 +66,8 @@ function EncounterDescription()
       return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
     case 204:
       return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
+    case 205:
+      return "You enter a temple. There is an altar that reads \"Offer unto yourself and receive a bountiful blessing.\"";
 
     default: return "No encounter text.";
   }
@@ -135,6 +137,11 @@ function InitializeEncounter($player)
       AddDecisionQueue("BUTTONINPUT", $player, "Use_Forge,Ask_Legend,Leave");
       AddDecisionQueue("BLACKSMITH", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 205:
+      AddDecisionQueue("BUTTONINPUT", $player, "Make_an_Offering,Receive_a_Blessing,Leave");
+      AddDecisionQueue("ENLIGHTENMENT", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
     default: break;
   }
 }
@@ -174,6 +181,8 @@ function EncounterImage()
       return "ELE112_cropped.png";
     case 204:
       return "WTR046_cropped.png";
+    case 205:
+      return "MON081_cropped.png";
     case 108:
       return "CRU046_cropped.png";
     default: return "CRU054_cropped.png";
@@ -220,7 +229,7 @@ function GetCombat($difficulty)
   $alreadyPicked = explode(",", $encounter[5]);
   switch($difficulty)
   {
-    case "Easy": $potentialEncounters = array(/*"101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight", */"113-BeforeFight"); break;
+    case "Easy": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight", "113-BeforeFight"); break;
     case "Medium": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
     case "Hard": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
   }
@@ -250,8 +259,8 @@ function GetEvent()
   else $rarity = "Common";
   switch($rarity)
   {
-    case "Common": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
-    case "Uncommon": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+    case "Common": $potentialEncounters = array("205-PickMode", "204-PickMode"); break;
+    case "Uncommon": $potentialEncounters = array("205-PickMode"); break;
     case "Rare": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
   }
   $generatedEncounters = [];

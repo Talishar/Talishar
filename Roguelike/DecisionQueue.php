@@ -234,6 +234,15 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
         }
         return 1;
+      case "ENLIGHTENMENT":
+        switch($lastResult)
+        {
+          case "Make an Offering":
+            PrependDecisionQueue("REMOVEDECKCARD", $player, "-");
+            break;
+          case "Leave":
+            break;
+        }
       default:
         return "NOTSTATIC";
     }
