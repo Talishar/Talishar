@@ -23,7 +23,6 @@ $response = new stdClass();
 $response->gameName = $gameName;
 $response->authKey = $authKey;
 $response->playerID = $playerID;
-$response->thing = $thing;
 
 echo json_encode($response);
 exit;
