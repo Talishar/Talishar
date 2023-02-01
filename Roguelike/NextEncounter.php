@@ -89,7 +89,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
   // WriteLog("encounter[1]: " . $encounter[1]);
   // WriteLog($encounter[2]);
   // WriteLog("Next encounter[0]: " . GetNextEncounter($encounter[0]));
-  WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
+  // WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
   if(count($myDQ) > 0)
   {
     switch($myDQ[0]){

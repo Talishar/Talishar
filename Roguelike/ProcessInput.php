@@ -64,8 +64,9 @@
           }
           if($myDQ[0] == "REMOVEDECKCARD"){
               $deck = &GetZone($playerID, "Deck");
-             break;
-            }
+              //TODO: GET IT OUT
+              ClearPhase($playerID);
+          }
           ContinueDecisionQueue($playerID, "");
           break;
       }

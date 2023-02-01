@@ -139,7 +139,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
     case 205:
-      AddDecisionQueue("BUTTONINPUT", $player, "Make_an_Offering,Receive_a_Blessing,Leave");
+      AddDecisionQueue("BUTTONINPUT", $player, "Make_a_Small_Offering,Make_a_Sizable_Offering,Make_a_Large_Offering,Quietly_Pray,Leave");
       AddDecisionQueue("ENLIGHTENMENT", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
     default: break;
@@ -298,6 +298,10 @@ function GetRandomCards($number)
   return $rv;
 }
 
+function GetRandomWithRarity($number, $rarity){ //Used for Enlightenment Event
+
+}
+
 function GetRandomArmor($type)
 {
   $encounter = &GetZone(1, "Encounter");
@@ -327,6 +331,13 @@ function GetRandomArmor($type)
     }
   }
   return $pool[rand(0, count($pool)-1)];
+}
+
+function GetRandomDeckCard($player)
+{
+  $deck = &GetZone($player, "Deck");
+  return $deck[rand(0, count($deck) - 1)];
+
 }
 
 function RandomCard($type)
