@@ -227,6 +227,36 @@ function PermanentStartTurnAbilities()
       case "ROGUE519":
         AddCurrentTurnEffect($permanents[$i], $mainPlayer);
         break;
+      case "ROGUE521":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE522":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
+      case "ROGUE525":
+        $resources = &GetResources($mainPlayer);
+        $deck = &GetDeck($mainPlayer);
+        $discard = &GetDiscard($mainPlayer);
+        $resources[0] += ((count($deck) + count($discard) + count($hand)) - (count($deck) + count($discard) + count($hand))%10)/10;
+        break;
+      case "ROGUE526":
+        global $currentTurn;
+        $deckOne = &GetDeck($mainPlayer);
+        $deckTwo = &GetDeck($defPlayer);
+        if($currentTurn == 10) $deckOne = $deckTwo = [];
+        break;
+      case "ROGUE527":
+        $trinkets = array(
+          "WTR162", "WTR170", "WTR171", "WTR172",
+          "ARC163",
+          "MON302",
+          "EVR176", "EVR177", "EVR178", "EVR179", "EVR180", "EVR181", "EVR182", "EVR183", "EVR184", "EVR185", "EVR186", "EVR187", "EVR188", "EVR189", "EVR190", "EVR191", "EVR192", "EVR193"
+        );
+        AddDecisionQueue("STARTOFGAMEPUTPLAY", 1, $trinkets[rand(0, count($trinkets)-1)]);
+        break;
+      case "ROGUE528":
+        AddCurrentTurnEffect($permanents[$i], $mainPlayer);
+        break;
       default:
         break;
     }
@@ -236,6 +266,34 @@ function PermanentStartTurnAbilities()
     switch ($defPermanents[$i]) {
       case "ROGUE506":
         AddCurrentTurnEffect($defPermanents[$i], $defPlayer);
+        break;
+      case "ROGUE523":
+        AddCurrentTurnEffect($defPermanents[$i], $mainPlayer);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function PermanentPlayAbilities($attackID, $from="")
+{
+  global $mainPlayer, $actionPoints;
+  $permanents = &GetPermanents($mainPlayer);
+  $cardType = CardType($attackID);
+  $cardSubType = CardSubType($attackID);
+  $cardPitch = PitchValue($attackID);
+  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+    $remove = 0;
+    switch($permanents[$i]) {
+      case "ROGUE521":
+        if($cardPitch == 2 && $cardType != "AA")
+        {
+          AddCurrentTurnEffect($permanents[$i] . "-NA", $mainPlayer);
+        }
+        break;
+      case "ROGUE528":
+        if($cardType == "A") ++$actionPoints;
         break;
       default:
         break;

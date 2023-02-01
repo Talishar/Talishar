@@ -52,6 +52,9 @@ function ROGUEEffectAttackModifier($cardID)
         if($health <=2) return 2;
         else if($health <=5) return 1;
         else return 0;
+      case "ROGUE521":
+      case "ROGUE521-NA": return 1;
+      case "ROGUE523": return -2;
       default: return 0;
     }
 }
@@ -67,6 +70,10 @@ function ROGUECombatEffectActive($cardID, $attackID)
         case "ROGUE512": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
         case "ROGUE513": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
         case "ROGUE517": return true;
+        case "ROGUE521": return PitchValue($attackID) == 2;
+        case "ROGUE521-NA": return true;
+        case "ROGUE522": return true;
+        case "ROGUE523": return true;
         default:
             return false;
     }
@@ -100,7 +107,8 @@ function ROGUECardType($cardID)
       case "ROGUE013": return "C";
 
       case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE514":
-      case "ROGUE515": case "ROGUE516": case "ROGUE517": case "ROGUE518": case "ROGUE519": return "A";
+      case "ROGUE515": case "ROGUE516": case "ROGUE517": case "ROGUE518": case "ROGUE519": case "ROGUE520": case "ROGUE521": case "ROGUE522": case "ROGUE523": case "ROGUE524": case "ROGUE525": case "ROGUE526": case "ROGUE527": case "ROGUE528":
+      return "A";
       default:
         return "";
     }
@@ -140,15 +148,15 @@ function ROGUECardSubtype($cardID)
       case "ROGUE517": //Shamans Skullbone
       case "ROGUE518": //Wild Mirror
       case "ROGUE519": //Shard of the Mountain
-      case "ROGUE520": //Blacksmith's Hammer (not implemented)
-      case "ROGUE521": //Solanian Bell (not implemented)
-      case "ROGUE522": //Thieves Tools (not implemented)
-      case "ROGUE523": //Ward of Protection (not implemented)
-      case "ROGUE224": //Gorganian Cipher (not implemented)
-      case "ROGUE524": //Acorn of Korshem (not implemented)
-      case "ROGUE525": //Blacktek Timebomb (not implemented)
-      case "ROGUE526": //Merchant Supply Cart (not implemented)
-      case "ROGUE527": //Sutcliffe's Tome (not implemented)
+      case "ROGUE520": //Blacksmith's Hammer (not implemented) (Quesioning how possible this is to implement, gonna ignore for now)
+      case "ROGUE521": //Solanian Bell
+      case "ROGUE522": //Thieves Tools
+      case "ROGUE523": //Ward of Protection
+      case "ROGUE224": //Gorganian Cipher
+      case "ROGUE525": //Acorn of Korshem
+      case "ROGUE526": //Blacktek Timebomb
+      case "ROGUE527": //Merchant Supply Cart
+      case "ROGUE528": //Sutcliffe's Tome
       return "Power";
       default: return "";
     }
@@ -269,6 +277,10 @@ function ROGUEPowerStart()
       case "ROGUE516":
         $health = &GetHealth($mainPlayer);
         if($health <= 2) $health = 20;
+        break;
+      case "ROGUE524":
+        $deck = &GetDeck($mainPlayer);
+        array_unshift($deck, "CRU181", "CRU181", "CRU181");
         break;
       default:
         break;

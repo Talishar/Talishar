@@ -918,6 +918,9 @@ function EffectHitEffect($cardID)
         PlayAura("ARC112", $mainPlayer, $amount, true);
       }
       break;
+    case "ROGUE522":
+      MainDrawCard();
+      break;
     default:
       break;
   }
@@ -1918,6 +1921,8 @@ function IsCombatEffectPersistent($cardID)
     case "DYN145": case "DYN146": case "DYN147":
       return true;
     case "DYN154":
+      return true;
+    case "ROGUE521": case "ROGUE522":
       return true;
     default:
       return false;
