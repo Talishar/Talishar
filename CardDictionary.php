@@ -994,6 +994,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       if (count($layers) != 0 && count($combatChain) == 0) {
         $layerIndex = count($layers) - LayerPieces();
+        if($layers[$layerIndex] == "ENDTURN" || $layers[$layerIndex] == "TRIGGER") return true;
         $abilityType = GetResolvedAbilityType($layers[$layerIndex]);
         $layerSubtype = CardSubType($layers[$layerIndex]);
         return !($weapons == "AURAS"
