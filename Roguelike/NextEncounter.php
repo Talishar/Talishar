@@ -92,7 +92,8 @@ $cardIconTop = intval($cardSize / 4.2); //30
   //WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
   if(count($myDQ) > 0)
   {
-    if($myDQ[0] == "CHOOSECARD")
+    switch($myDQ[0]){
+    case "CHOOSECARD": 
     {
       $options = explode(",", $myDQ[1]);
       //$encounterContent .= "<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>";
@@ -104,8 +105,9 @@ $cardIconTop = intval($cardSize / 4.2); //30
       }
       $encounterContent .= "</div>";
       //$encounterContent .= "<div>";
+      break;
     }
-    else if($myDQ[0] == "BUTTONINPUT")
+    case "BUTTONINPUT":
     {
       $encounterContent = "<div display:inline;'>";
       $options = explode(",", $myDQ[1]);
@@ -114,11 +116,17 @@ $cardIconTop = intval($cardSize / 4.2); //30
       }
       $encounterContent .= "</div>";
       $encounterContent .= "<BR>";
-      //echo CreatePopup("BUTTONINPUT", [], 0, 1, "Choose a button", 1, $content);
+      break;
     }
-    else {
+    case "REMOVEFROMDECK":{
+      //TODO
+      break;
+    }
+    default: {
       $encounterContent .= "Bug. This phase not implemented: " . $myDQ[0];
+      break;
     }
+  }
   }
   else if(GetNextEncounter($encounter[0]) != ""){
     $encounterContent .= "<form style='width:100%;display:inline-block;' action='" . $redirectPath . "/Roguelike/PlayEncounter.php'>";
