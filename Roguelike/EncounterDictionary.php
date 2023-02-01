@@ -24,9 +24,9 @@ function EncounterDescription()
     case 003:
       return "Choose a bounty";
     case 004:
-      return "Choose a Background and Fighting Style";
+      return "Welcome back, oh great hero of Rathe. I presume you come bearing good news? Which bounty can I take the time to cross off of this here bounty board?";
     case 005:
-      return "Grant yourself a power of your choosing";
+      return "And your reward, as promised. I hope you can use one of these to cross another bounty off my board, what do ya say?";
     case 020:
       return "You found a campfire. Choose what you want to do.";
 
@@ -75,12 +75,16 @@ function EncounterDescription()
 function InitializeEncounter($player)
 {
   $encounter = &GetZone($player, "Encounter");
-  /*WriteLog("Encounter[0] = " . $encounter[0]);
+  /*WriteLog("===============================");
+  WriteLog("Encounter[0] = " . $encounter[0]);
   WriteLog("Encounter[1] = " . $encounter[1]);
   WriteLog("Encounter[2] = " . $encounter[2]);
   WriteLog("Encounter[3] = " . $encounter[3]);
   WriteLog("Encounter[4] = " . $encounter[4]);
-  WriteLog("Encounter[5] = " . $encounter[5]);*/
+  WriteLog("Encounter[5] = " . $encounter[5]);
+  WriteLog("Encounter[6] = " . $encounter[6]);
+  WriteLog("Encounter[7] = " . $encounter[7]);
+  WriteLog("===============================");*/
   switch($encounter[0])
   {
     case 001:
@@ -106,7 +110,7 @@ function InitializeEncounter($player)
       //AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
       break;
     case 005:
-      AddDecisionQueue("CHOOSECARD", $player, "ROGUE519");
+      AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
     case 020:
@@ -184,8 +188,8 @@ function GetBackgrounds($character)
 {
   switch($character)
   {
-    case "Dorinthea": $backgroundChoices = array("Cintari_Saber_Background", "Dawnblade_Background", "Hatchets_Background", "Battleaxe_Background"); break;
-    case "Bravo": $backgroundChoices = array("Anothos_Background", "Titans_Fist_Background", "Sledge_Background"); break;
+    case "Dorinthea": $backgroundChoices = array("The_Volcai_Sellsword", "The_Lowly_Solanian", "The_Fierce_Warrior", "Spiders_Deserter"); break;
+    case "Bravo": $backgroundChoices = array("The_Everfest_Showman", "The_Reclusive_Blacksmith", "The_Slumbering_Giant"); break;
   }
   $optionOne = rand(0, count($backgroundChoices)-1);
   $optionTwo = rand(0, count($backgroundChoices)-1);
@@ -211,7 +215,8 @@ function GetNextEncounter()
   else if($encounter[2] == 2) return "005-PickMode";
   else if($encounter[2] == 17) return "105-BeforeFight";
   else if($encounter[2] == 9 || $encounter[2] == 16) return "020-PickMode";
-  else return GetEvent();
+  //else return GetEvent();
+  else return "20" . rand(1, 2) . "-PickMode";
 }
 
 function GetCombat($difficulty)
@@ -220,7 +225,7 @@ function GetCombat($difficulty)
   $alreadyPicked = explode(",", $encounter[5]);
   switch($difficulty)
   {
-    case "Easy": $potentialEncounters = array(/*"101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight", */"113-BeforeFight"); break;
+    case "Easy": $potentialEncounters = array(/*"101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", */"102-BeforeFight", "113-BeforeFight"); break;
     case "Medium": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
     case "Hard": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
   }
@@ -268,6 +273,26 @@ function GetEvent()
   $randomEncounter = rand(0, count($generatedEncounters)-1);
   $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
   return $generatedEncounters[$randomEncounter];
+}
+
+function GetPowers()
+{
+  $common = array("ROGUE507", "ROGUE508", "ROGUE509", "ROGUE510", "ROGUE511", "ROGUE512", "ROGUE513", "ROGUE516", "ROGUE517");
+  $rare = array("ROGUE501", "ROGUE504", "ROGUE518", "ROGUE519", "ROGUE521", "ROGUE522", "ROGUE523", "ROGUE524", "ROGUE525");
+  $majestic = array("ROGUE502", "ROGUE503", "ROGUE505", "ROGUE506", "ROGUE526", "ROGUE527", "ROGUE528");
+  $random = rand(1, 100);
+  if($random >= 90) $choiceOne = $majestic[rand(0, count($majestic)-1)];
+  else if($random >= 60) $choiceOne = $rare[rand(0, count($rare)-1)];
+  else $choiceOne = $common[rand(0, count($common)-1)];
+  $random = rand(1, 100);
+  if($random >= 90) $choiceTwo = $majestic[rand(0, count($majestic)-1)];
+  else if($random >= 60) $choiceTwo = $rare[rand(0, count($rare)-1)];
+  else $choiceTwo = $common[rand(0, count($common)-1)];
+  $random = rand(1, 100);
+  if($random >= 90) $choiceThree = $majestic[rand(0, count($majestic)-1)];
+  else if($random >= 60) $choiceThree = $rare[rand(0, count($rare)-1)];
+  else $choiceThree = $common[rand(0, count($common)-1)];
+  return $choiceOne . "," . $choiceTwo . "," . $choiceThree;
 }
 
 function GetRandomCards($number)

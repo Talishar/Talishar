@@ -120,7 +120,10 @@ function EncounterAI()
               {
                 if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))//Is there enough pitch in hand to play the equipment?
                 {
-                  if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) { $isBowActive = true; }
+                  if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) {
+                    if(count($hand) == 0) continue;
+                    $isBowActive = true;
+                  }
                   ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
                   CacheCombatResult();
                 }
@@ -166,7 +169,10 @@ function EncounterAI()
             {
               if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
               {
-                if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) { $isBowActive = true; }
+                if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) {
+                  if(count($hand) == 0) continue;
+                  $isBowActive = true;
+                }
                 ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
                 CacheCombatResult();
               }

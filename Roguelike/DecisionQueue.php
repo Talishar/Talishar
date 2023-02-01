@@ -149,37 +149,37 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $encounter = &GetZone($player, "Encounter");
         switch($lastResult)
         {
-          case "Cintari_Saber_Background":
+          case "The_Volcai_Sellsword":
             $encounter[7] = "Saber";
             array_push($character, "CRU079", "CRU080"); //Cintari Sabers, both
             array_push($deck, "EVR062", "EVR058", "EVR066"); //Blade Runner B, Slice and Dice Y, Outland Skirmish R
             break;
-          case "Dawnblade_Background":
+          case "The_Lowly_Solanian":
             $encounter[7] = "Dawnblade";
             array_push($character, "WTR115");
-            array_push($deck, "WTR125", "wtr133", "MON113"); //Overpower B, Ironsong Response Y, Plow Through R
+            array_push($deck, "WTR125", "WTR133", "MON113"); //Overpower B, Ironsong Response Y, Plow Through R
             break;
-          case "Hatchets_Background":
+          case "The_Fierce_Warrior":
             $encounter[7] = "Hatchet";
             array_push($character, "MON105", "MON106"); //Body and Mind
             array_push($deck, "EVR062", "DYN083", "EVR066"); //Blade Runner B, Felling Swing y, Outland Skirmish R
             break;
-          case "Battleaxe_Background":
+          case "Spiders_Deserter":
             $encounter[7] = "Battleaxe";
             array_push($character, "DYN068");
             array_push($deck, "WTR125", "WTR142", "DYN082"); //Overpower B, Sharpen Steel Y, Felling Swing R
             break;
-          case "Anothos_Background":
+          case "The_Everfest_Showman":
             $encounter[7] = "Anothos";
             array_push($character, "WTR040");
             array_push($deck, "EVR024", "WTR065", "WTR066", "CRU035", "WTR206", "MON293");
             break;
-          case "Titans_Fist_Background":
+          case "The_Reclusive_Blacksmith":
             $encounter[7] = "Titan's Fist";
             array_push($character, "ELE202", "DYN026"); //Titan's Fist and Seasoned Saviour
             array_push($deck, "DYN031", "DYN038", "WTR063", "WTR064", "ARC202", "WTR212");
             break;
-          case "Sledge_Background":
+          case "The_Slumbering_Giant":
             $encounter[7] = "Sledge";
             array_push($character, "CRU024");
             array_push($deck, "ELE208", "EVR030", "WTR070", "CRU040", "WTR190", "ARC211");
