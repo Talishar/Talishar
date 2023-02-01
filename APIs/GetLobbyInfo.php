@@ -11,8 +11,8 @@ include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
-$thing =
-  file_get_contents('php://input');
+
+$_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];

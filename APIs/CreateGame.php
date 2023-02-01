@@ -8,6 +8,7 @@ include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
+$_POST = json_decode(file_get_contents('php://input'), true);
 $deck = TryPOST("deck"); //This is for limited game modes (see JoinGameInput.php)
 $decklink = TryPOST("fabdb"); //Deck builder decklink (any deckbuilder, name comes from when fabdb was the only one)
 $deckTestMode = TryPOST("deckTestMode", ""); //If this is populated with ANYTHING, will start a game against the combat dummy

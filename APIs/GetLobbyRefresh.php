@@ -7,6 +7,7 @@ include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 
 session_start();
 
+$_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
 $lastUpdate = $_POST["lastUpdate"];

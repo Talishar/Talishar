@@ -10,7 +10,11 @@ include_once '../includes/dbh.inc.php';
 $response = new stdClass();
 
 session_start();
-if (!isset($gameName)) $gameName = $_POST["gameName"];
+if (!isset($gameName))
+{
+  $_POST = json_decode(file_get_contents('php://input'), true);
+  $gameName = $_POST["gameName"];
+}
 if (!IsGameNameValid($gameName)) {
   $response->error = "Invalid game name.";
   echo (json_encode($response));

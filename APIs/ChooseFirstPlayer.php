@@ -4,6 +4,7 @@ include "../WriteLog.php";
 include "../Libraries/HTTPLibraries.php";
 include "../Libraries/SHMOPLibraries.php";
 
+$_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
