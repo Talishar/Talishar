@@ -583,6 +583,16 @@ function BlockPriority($cardId, $heroId)
           case "ARC087": return 0.25;
         }
       }
+      case "ROGUE013":
+        switch($cardId) {
+          case "WTR098": return 1.7;
+          case "WTR099": return 2.2;
+          case "WTR100": return 0.3;
+          case "WTR101": return 11.1;
+          case "WTR102": return 11.2;
+          case "WTR107": return 1.9;
+          case "WTR108": return 2.1;
+        }
     default: return 0;
   }
 }
@@ -690,6 +700,17 @@ function ActionPriority($cardId, $heroId)
           case "ARC087": return 0.7;
         }
       }
+      case "ROGUE013":
+        switch($cardId) {
+          case "WTR098": return 1.8;
+          case "WTR099": return 1.4;
+          case "WTR100": return 0.3;
+          case "WTR101": return 1.7;
+          case "WTR102": return 1.3;
+          case "WTR107": return 1.6;
+          case "WTR108": return 1.2;
+          case "WTR078": return 1.9;
+        }
     default: return 0;
   }
 }
@@ -763,6 +784,7 @@ function ReactionPriority($cardId, $heroId)
           default: return 0;
         }
       }
+      //case "ROGUE013": {} //No reactions, default 0
     default: return 0;
   }
 }
@@ -855,6 +877,16 @@ function PitchPriority($cardId, $heroId)
           case "ARC087": return 2.5;
         }
       }
+      case "ROGUE013":
+        switch($cardId) {
+          case "WTR098": return 0.9;
+          case "WTR099": return 1.9;
+          case "WTR100": return 2.9;
+          case "WTR101": return 0.8;
+          case "WTR102": return 1.8;
+          case "WTR107": return 0.7;
+          case "WTR108": return 1.7;
+        }
     default: return 0;
   }
 }
@@ -939,6 +971,16 @@ function ToArsenalPriority($cardId, $heroId)
           default: return 0;
         }
       }
+      case "ROGUE013":
+        switch($cardId) {
+          case "WTR098": return 1.7;
+          case "WTR099": return 1.3;
+          case "WTR100": return 0.3;
+          case "WTR101": return 1.8;
+          case "WTR102": return 1.2;
+          case "WTR107": return 1.9;
+          case "WTR108": return 1.4;
+        }
     default: return 0;
   }
 }
@@ -1023,6 +1065,16 @@ function FromArsenalActionPriority($cardId, $heroId)
           default: return 0;
         }
       }
+      case "ROGUE013":
+        switch($cardId) {
+          case "WTR098": return 1.9;
+          case "WTR099": return 1.9;
+          case "WTR100": return 0.9;
+          case "WTR101": return 1.9;
+          case "WTR102": return 1.9;
+          case "WTR107": return 1.9;
+          case "WTR108": return 1.9;
+        }
     default: return 0;
   }
 }
@@ -1096,6 +1148,7 @@ function FromArsenalReactionPriority($cardId, $heroId)
           default: return 0;
         }
       }
+      //case "ROGUE013": {return 0;} //No Reactions
     default: return 0;
   }
 }
