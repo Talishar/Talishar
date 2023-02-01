@@ -61,7 +61,6 @@
               }
               ClearPhase($playerID);
               WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
-              break;
           }
           if($myDQ[0] == "REMOVEDECKCARD"){
               $deck = &GetZone($playerID, "Deck");
