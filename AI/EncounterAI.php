@@ -74,6 +74,7 @@ function EncounterAI()
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//AIs turn
       {
+        $cardPlayed = false;
         if(count($hand) > 0) //Are there cards in hand?
         {
           $APV = GenerateAPV($hand, $character);
@@ -131,7 +132,8 @@ function EncounterAI()
               }
             }
           } //NOTE TO SELF: TRY REMOVING THIS NEXT SEGMENT, I DON'T ACTUALLY KNOW IF IT'S NEEDED
-          $alreadyCheckedEquipment = 10.0;
+          if(!IsCardPlayable($hand, $APV, $nextActionIndex) && !IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character) && !IsArsenalPlayable($hand, $arsenal, $arsePV)) PassInput();
+          /*$alreadyCheckedEquipment = 10.0;
           for($i = 0; $i < count($EPV); $i += CharacterPieces())
           {
             if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
@@ -143,7 +145,7 @@ function EncounterAI()
             else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
           }
           if($cardPlayed) continue;
-          PassInput();
+          PassInput();*/
         }
         else //no cards in hand. does the same as above without checking hand
         {
@@ -169,12 +171,10 @@ function EncounterAI()
             {
               if(IsEquipmentPlayable($hand, $EPV, $nextAbilityIndex, $character))
               {
-                if(CardSubtype($character[$nextAbilityIndex]) == "Bow" ) {
-                  if(count($hand) == 0) continue;
-                  $isBowActive = true;
+                if(CardSubtype($character[$nextAbilityIndex]) != "Bow" ) {
+                  ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
+                  CacheCombatResult();
                 }
-                ProcessInput($currentPlayer, 3, "", CharacterPieces(), $nextAbilityIndex, "");
-                CacheCombatResult();
               }
               else $alreadyCheckedEquipment = $EPV[$nextAbilityIndex];
             }
