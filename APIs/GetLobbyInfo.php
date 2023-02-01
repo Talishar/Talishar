@@ -20,12 +20,6 @@ else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["
 else $authKey = TryPOST("authKey");
 
 $response = new stdClass();
-$response->gameName = $gameName;
-$response->authKey = $authKey;
-$response->playerID = $playerID;
-
-echo json_encode($response);
-exit;
 
 session_write_close();
 
@@ -38,10 +32,8 @@ ob_start();
 include "./APIParseGamefile.php";
 ob_end_clean();
 
-
 $yourName = ($playerID == 1 ? $p1uid : $p2uid);
 $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-
 
 $response->badges = [];
 
