@@ -90,6 +90,8 @@ if ($handler) {
     }
   }
 
+  $response->format = $format;
+
   $response->deck->cards = GetArray($handler);
   $response->deck->headSB = GetArray($handler);
   $response->deck->chestSB = GetArray($handler);
