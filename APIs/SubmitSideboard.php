@@ -27,17 +27,19 @@ if ($authKey != $targetAuth) {
 
 $submission = json_decode($submission);
 $character = $submission->hero;
-$hands = implode(" ", $submission->hands);
+if(!isset($submission->hands)) $hands = "";
+else $hands = implode(" ", $submission->hands);
 if($hands != "") $character .= " " . $hands;
-if($submission->head != "") $character .= " " . $submission->head;
-if($submission->chest != "") $character .= " " . $submission->chest;
-if($submission->arms != "") $character .= " " . $submission->arms;
-if($submission->legs != "") $character .= " " . $submission->legs;
+if(isset($submission->head) && $submission->head != "") $character .= " " . $submission->head;
+if(isset($submission->chest) && $submission->chest != "") $character .= " " . $submission->chest;
+if(isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
+if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
 
 $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $deckFile = fopen($filename, "w");
-fwrite($deckFile, implode(" ", $character) . "\r\n");
-fwrite($deckFile, implode(" ", $submission->deck));
+fwrite($deckFile, $character . "\r\n");
+$deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
+fwrite($deckFile, $deck);
 fclose($deckFile);
 
 if ($playerID == 2) {
