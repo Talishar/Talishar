@@ -299,7 +299,24 @@ function GetRandomCards($number)
 }
 
 function GetRandomWithRarity($number, $rarity){ //Used for Enlightenment Event
-
+  $rv = "";
+  $encounter = &GetZone(1, "Encounter");
+  $classPool = GetPool("Class", $encounter[3], $rarity, $encounter[7]);
+  $talentPool = GetPool("Talent", $encounter[3], $rarity, $encounter[7]);
+  $genericPool = GetPool("Generic", $encounter[3], $rarity, $encounter[7]);
+  for($i = 0; $i < $number; ++$i){
+    $seed = rand(0, 3);
+    if($seed < 1){
+      $rv.= $classPool[rand(0, count($classPool) - 1)];
+    }
+    elseif($seed > 2){
+      $rv.= $talentPool[rand(0, count($talentPool) - 1)];
+    }
+    else{
+      $rv.= $genericPool[rand(0, count($genericPool) - 1)];
+    }
+  }
+  return $rv;
 }
 
 function GetRandomArmor($type)
@@ -333,10 +350,14 @@ function GetRandomArmor($type)
   return $pool[rand(0, count($pool)-1)];
 }
 
-function GetRandomDeckCard($player)
+function GetRandomDeckCard($player) //Hardcoded for 4 always
 {
   $deck = &GetZone($player, "Deck");
-  return $deck[rand(0, count($deck) - 1)];
+  $rv = "";
+  for($i = 0; $i < 4; $i++){
+    $rv .= $deck[rand(0, count($deck) - 1)];
+  }
+  return $rv;
 
 }
 

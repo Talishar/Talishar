@@ -49,7 +49,7 @@
             unset($options[$found]);
             $options = array_values($options);
           }
-          if($myDQ[0] == "CHOOSECARD"){
+          if($myDQ[0] == "CHOOSECARD"){ //If we're ADDING cards
               if(CardType($cardID) == "E" || CardType($cardID) == "W")
              {
                 $char = &GetZone($playerID, "Character");
@@ -59,14 +59,15 @@
                 $deck = &GetZone($playerID, "Deck");
                 array_push($deck, $cardID);
               }
-              ClearPhase($playerID);
               WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
           }
-          if($myDQ[0] == "REMOVEDECKCARD"){
+          if($myDQ[0] == "REMOVEDECKCARD"){ //If we're REMOVING cards
               $deck = &GetZone($playerID, "Deck");
-              //TODO: GET IT OUT
-              ClearPhase($playerID);
+              unset($deck[$cardID]);
+              $deck = array_values($deck);
+              WriteLog("You removed " . CardLink($cardID, $cardID) , " from your deck.");
           }
+          ClearPhase($playerID); //Clear the screen and keep going
           ContinueDecisionQueue($playerID, "");
           break;
       }
