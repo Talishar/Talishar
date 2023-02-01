@@ -209,10 +209,10 @@ function GetBackgrounds($character)
 function GetNextEncounter()
 {
   $encounter = &GetZone(1, "Encounter");
-  /*WriteLog("hijacked GetNextEncounter");
-  WriteLog("Encounter[0]: " . $encounter[0]);
-  WriteLog("Encounter[1]: " . $encounter[1]);
-  WriteLog("Encounter[2]: " . $encounter[2]);*/
+  // WriteLog("hijacked GetNextEncounter");
+  // WriteLog("Encounter[0]: " . $encounter[0]);
+  // WriteLog("Encounter[1]: " . $encounter[1]);
+  // WriteLog("Encounter[2]: " . $encounter[2]);
   ++$encounter[2];
   if($encounter[2] == 3 || $encounter[2] == 5) return GetCombat("Easy");
   else if($encounter[2] == 7 || $encounter[2] == 10) return GetCombat("Medium");

@@ -238,11 +238,13 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         switch($lastResult)
         {
           case "Make an Offering":
-            PrependDecisionQueue("REMOVEDECKCARD", $player, "-");
+            $deck = &GetZone($player, "Deck");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, $deck[5]);
             break;
           case "Leave":
             break;
         }
+        return 1;
       default:
         return "NOTSTATIC";
     }

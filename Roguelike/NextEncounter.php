@@ -84,12 +84,12 @@ $cardIconTop = intval($cardSize / 4.2); //30
   $myDQ = &GetZone($playerID, "DecisionQueue");
 
   $encounterContent = "";
-  //WriteLog("playerID: " . $playerID);
-  //WriteLog("encounter[0]: " . $encounter[0]);
-  //WriteLog("encounter[1]: " . $encounter[1]);
-  //WriteLog($encounter[2]);
-  //WriteLog("Next encounter[0]: " . GetNextEncounter($encounter[0]));
-  //WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
+  // WriteLog("playerID: " . $playerID);
+  // WriteLog("encounter[0]: " . $encounter[0]);
+  // WriteLog("encounter[1]: " . $encounter[1]);
+  // WriteLog($encounter[2]);
+  // WriteLog("Next encounter[0]: " . GetNextEncounter($encounter[0]));
+  WriteLog("myDQ: " . $myDQ[0] . ", " . $myDQ[1]);
   if(count($myDQ) > 0)
   {
     switch($myDQ[0]){
@@ -118,8 +118,15 @@ $cardIconTop = intval($cardSize / 4.2); //30
       $encounterContent .= "<BR>";
       break;
     }
-    case "REMOVEFROMDECK":{
-      //TODO
+    case "REMOVEDECKCARD":{
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Remove a card from your deck</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
+      }
+      $encounterContent .= "</div>";
       break;
     }
     default: {
