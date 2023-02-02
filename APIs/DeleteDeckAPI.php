@@ -3,7 +3,8 @@
   include_once "../AccountFiles/AccountSessionAPI.php";
   include_once "../includes/dbh.inc.php";
 
-  $decklink = TryGet("decklink", "");
+  $_POST = json_decode(file_get_contents('php://input'), true);
+  $decklink = $_POST["decklink"];
 
   if(IsUserLoggedIn())
   {
@@ -11,18 +12,19 @@
 
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, "ss", $decklink, LoggedInUser());
+      $userID = LoggedInUser();
+      mysqli_stmt_bind_param($stmt, "ss", $decklink, $userID);
       mysqli_stmt_execute($stmt);
       mysqli_stmt_close($stmt);
     }
 
     mysqli_close($conn);
+
+    $response = new stdClass();
+    $response->message = "Deck deleted successfully.";
+    echo(json_encode($response));
   }
 
-  $response = new stdClass();
-  $response->message = "Deck deleted successfully.";
-  echo(json_encode($response));
-  
   exit;
 
 ?>
