@@ -24,9 +24,9 @@ function EncounterDescription()
     case 003:
       return "Choose a bounty";
     case 004:
-      return "Choose a Background and Fighting Style";
+      return "Welcome back, oh great hero of Rathe. I presume you come bearing good news? Which bounty can I take the time to cross off of this here bounty board?";
     case 005:
-      return "Grant yourself a power of your choosing";
+      return "And your reward, as promised. I hope you can use one of these to cross another bounty off my board, what do ya say?";
     case 020:
       return "You found a campfire. Choose what you want to do.";
 
@@ -68,6 +68,10 @@ function EncounterDescription()
       return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
     case 205:
       return "You enter a temple. There is an altar that reads \"Offer unto yourself and receive a bountiful blessing.\"";
+    case 206:
+      $health = &GetZone(1, "Health");
+      if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
+      else return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game. But it seems you have nothing to offer me, so I must take my leave.'";
 
     default: return "No encounter text.";
   }
@@ -77,12 +81,16 @@ function EncounterDescription()
 function InitializeEncounter($player)
 {
   $encounter = &GetZone($player, "Encounter");
-  /*WriteLog("Encounter[0] = " . $encounter[0]);
+  /*WriteLog("===============================");
+  WriteLog("Encounter[0] = " . $encounter[0]);
   WriteLog("Encounter[1] = " . $encounter[1]);
   WriteLog("Encounter[2] = " . $encounter[2]);
   WriteLog("Encounter[3] = " . $encounter[3]);
   WriteLog("Encounter[4] = " . $encounter[4]);
-  WriteLog("Encounter[5] = " . $encounter[5]);*/
+  WriteLog("Encounter[5] = " . $encounter[5]);
+  WriteLog("Encounter[6] = " . $encounter[6]);
+  WriteLog("Encounter[7] = " . $encounter[7]);
+  WriteLog("===============================");*/
   switch($encounter[0])
   {
     case 001:
@@ -108,7 +116,7 @@ function InitializeEncounter($player)
       //AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
       break;
     case 005:
-      AddDecisionQueue("CHOOSECARD", $player, "ROGUE519");
+      AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
     case 020:
@@ -142,6 +150,13 @@ function InitializeEncounter($player)
       AddDecisionQueue("BUTTONINPUT", $player, "Make_a_Small_Offering,Make_a_Sizable_Offering,Make_a_Large_Offering,Quietly_Pray,Leave");
       AddDecisionQueue("ENLIGHTENMENT", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+    case 206:
+      $health = &GetZone($player, "Health");
+      if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
+      else AddDecisionQueue("BUTTONINPUT", $player, "Leave");
+      AddDecisionQueue("OLDHAG", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
     default: break;
   }
 }
@@ -170,6 +185,8 @@ function EncounterImage()
       return "ELE214_cropped.png";
     case 107:
       return "ARC103_cropped.png";
+    case 108:
+      return "CRU046_cropped.png";
     case 113:
       return "WTR109_cropped.png";
 
@@ -183,8 +200,9 @@ function EncounterImage()
       return "WTR046_cropped.png";
     case 205:
       return "MON081_cropped.png";
-    case 108:
-      return "CRU046_cropped.png";
+    case 206:
+      return "CRU188_cropped.png";
+
     default: return "CRU054_cropped.png";
   }
 }
@@ -193,8 +211,8 @@ function GetBackgrounds($character)
 {
   switch($character)
   {
-    case "Dorinthea": $backgroundChoices = array("Cintari_Saber_Background", "Dawnblade_Background", "Hatchets_Background", "Battleaxe_Background"); break;
-    case "Bravo": $backgroundChoices = array("Anothos_Background", "Titans_Fist_Background", "Sledge_Background"); break;
+    case "Dorinthea": $backgroundChoices = array("The_Volcai_Sellsword", "The_Lowly_Solanian", "The_Fierce_Warrior", "Spiders_Deserter"); break;
+    case "Bravo": $backgroundChoices = array("The_Everfest_Showman", "The_Reclusive_Blacksmith", "The_Slumbering_Giant"); break;
   }
   $optionOne = rand(0, count($backgroundChoices)-1);
   $optionTwo = rand(0, count($backgroundChoices)-1);
@@ -220,7 +238,8 @@ function GetNextEncounter()
   else if($encounter[2] == 2) return "005-PickMode";
   else if($encounter[2] == 17) return "105-BeforeFight";
   else if($encounter[2] == 9 || $encounter[2] == 16) return "020-PickMode";
-  else return GetEvent();
+  //else return GetEvent();
+  else return "20" . rand(1, 2) . "-PickMode";
 }
 
 function GetCombat($difficulty)
@@ -279,10 +298,72 @@ function GetEvent()
   return $generatedEncounters[$randomEncounter];
 }
 
-function GetRandomCards($number)
+function GetPowers()
+{
+  $common = array("ROGUE507", "ROGUE508", "ROGUE509", "ROGUE510", "ROGUE511", "ROGUE512", "ROGUE513", "ROGUE516", "ROGUE517");
+  $rare = array("ROGUE501", "ROGUE504", "ROGUE518", "ROGUE519", "ROGUE521", "ROGUE522", "ROGUE523", "ROGUE524", "ROGUE525");
+  $majestic = array("ROGUE502", "ROGUE503", "ROGUE505", "ROGUE506", "ROGUE526", "ROGUE527", "ROGUE528");
+  $random = rand(1, 100);
+  if($random >= 90) $choiceOne = $majestic[rand(0, count($majestic)-1)];
+  else if($random >= 60) $choiceOne = $rare[rand(0, count($rare)-1)];
+  else $choiceOne = $common[rand(0, count($common)-1)];
+
+  $temp = [];
+  for($i = 0; $i < count($common)-1; ++$i)
+  {
+    if($common[$i] != $choiceOne) array_push($temp, $common[$i]);
+  }
+  $common = $temp; $temp = [];
+  for($i = 0; $i < count($rare)-1; ++$i)
+  {
+    if($rare[$i] != $choiceOne) array_push($temp, $rare[$i]);
+  }
+  $rare = $temp; $temp = [];
+  for($i = 0; $i < count($majestic)-1; ++$i)
+  {
+    if($majestic[$i] != $choiceOne) array_push($temp, $majestic[$i]);
+  }
+  $majestic = $temp;
+
+  $random = rand(1, 100);
+  if($random >= 90) $choiceTwo = $majestic[rand(0, count($majestic)-1)];
+  else if($random >= 60) $choiceTwo = $rare[rand(0, count($rare)-1)];
+  else $choiceTwo = $common[rand(0, count($common)-1)];
+
+  $temp = [];
+  for($i = 0; $i < count($common)-1; ++$i)
+  {
+    if($common[$i] != $choiceOne && $common[$i] != $choiceTwo) array_push($temp, $common[$i]);
+  }
+  $common = $temp; $temp = [];
+  for($i = 0; $i < count($rare)-1; ++$i)
+  {
+    if($rare[$i] != $choiceOne && $rare[$i] != $choiceTwo) array_push($temp, $rare[$i]);
+  }
+  $rare = $temp; $temp = [];
+  for($i = 0; $i < count($majestic)-1; ++$i)
+  {
+    if($majestic[$i] != $choiceOne && $majestic[$i] != $choiceTwo) array_push($temp, $majestic[$i]);
+  }
+  $majestic = $temp;
+
+  $random = rand(1, 100);
+  if($random >= 90) $choiceThree = $majestic[rand(0, count($majestic)-1)];
+  else if($random >= 60) $choiceThree = $rare[rand(0, count($rare)-1)];
+  else $choiceThree = $common[rand(0, count($common)-1)];
+  return $choiceOne . "," . $choiceTwo . "," . $choiceThree;
+}
+
+function GetRandomCards($number, $special = "")
 {
   //Hardcoded for 4. This is currently the only number that ever gets passed.
   $rv = "";
+  if($special == "Elements") {
+    RandomCard("Earth").",".RandomCard("Ice").",".RandomCard("Lightning");
+  }
+  if($special == "Draconic") {
+    RandomCard("Draconic").",".RandomCard("Draconic").",".RandomCard("Draconic").",UPR101";
+  }
   if($number == 4){
     //Current Pulls: Class/Class/Talent/Generic
     return RandomCard("Class").",".RandomCard("Class").",".RandomCard("Talent").",".RandomCard("Generic");
@@ -388,6 +469,60 @@ function RandomCard($type)
 
 function GetPool($type, $hero, $rarity, $background)
 {
+  if($type == "Light")
+  {
+    switch($rarity)
+    {
+      case "Common": return array();
+      case "Rare": return array();
+      case "Majestic": return array();
+    }
+  }
+  if($type == "Shadow")
+  {
+    switch($rarity)
+    {
+      case "Common": return array();
+      case "Rare": return array();
+      case "Majestic": return array();
+    }
+  }
+  if($type == "Earth")
+  {
+    switch($rarity)
+    {
+      case "Common": return array("ELE128", "ELE129", "ELE130", "ELE131", "ELE132", "ELE133", "ELE134", "ELE135", "ELE136", "ELE137", "ELE138", "ELE139");
+      case "Rare": return array("ELE119", "ELE120", "ELE121");
+      case "Majestic": return array("ELE117", "ELE118");
+    }
+  }
+  if($type == "Ice")
+  {
+    switch($rarity)
+    {
+      case "Common": return array("ELE160", "ELE161", "ELE162", "ELE166", "ELE167", "ELE168", "ELE169", "ELE170", "ELE171", "UPR147", "UPR148", "UPR149");
+      case "Rare": return array("ELE148", "ELE149", "ELE150", "ELE151", "ELE152", "ELE153");
+      case "Majestic": return array("ELE147", "UPR138", "UPR139");
+    }
+  }
+  if($type == "Lightning")
+  {
+    switch($rarity)
+    {
+      case "Common": return array("ELE189", "ELE190", "ELE191", "ELE192", "ELE193", "ELE194", "ELE195", "ELE196", "ELE197", "ELE198", "ELE199", "ELE200");
+      case "Rare": return array("ELE177", "ELE178", "ELE179", "ELE181", "ELE182", "ELE183");
+      case "Majestic": return array("ELE175", "ELE176");
+    }
+  }
+  if($type == "Draconic")
+  {
+    switch($rarity)
+    {
+      case "Common":
+      case "Rare": return array("UPR092", "UPR093", "UPR094", "UPR095", "UPR096", "UPR097", "UPR098", "UPR099", "UPR100");
+      case "Majestic": return array("UPR086", "UPR087", "UPR088", "UPR089");
+    }
+  }
   switch($hero)
   {
     case "Dorinthea":
