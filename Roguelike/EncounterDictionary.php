@@ -66,6 +66,8 @@ function EncounterDescription()
       return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
     case 204:
       return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
+    case 205:
+      return "You enter a temple. There is an altar that reads \"Offer unto yourself and receive a bountiful blessing.\"";
     case 206:
       $health = &GetZone(1, "Health");
       if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
@@ -144,6 +146,10 @@ function InitializeEncounter($player)
       AddDecisionQueue("BLACKSMITH", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
+    case 205:
+      AddDecisionQueue("BUTTONINPUT", $player, "Make_a_Small_Offering,Make_a_Sizable_Offering,Make_a_Large_Offering,Quietly_Pray,Leave");
+      AddDecisionQueue("ENLIGHTENMENT", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
     case 206:
       $health = &GetZone($player, "Health");
       if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
@@ -192,6 +198,8 @@ function EncounterImage()
       return "ELE112_cropped.png";
     case 204:
       return "WTR046_cropped.png";
+    case 205:
+      return "MON081_cropped.png";
     case 206:
       return "CRU188_cropped.png";
 
@@ -219,10 +227,10 @@ function GetBackgrounds($character)
 function GetNextEncounter()
 {
   $encounter = &GetZone(1, "Encounter");
-  /*WriteLog("hijacked GetNextEncounter");
-  WriteLog("Encounter[0]: " . $encounter[0]);
-  WriteLog("Encounter[1]: " . $encounter[1]);
-  WriteLog("Encounter[2]: " . $encounter[2]);*/
+  // WriteLog("hijacked GetNextEncounter");
+  // WriteLog("Encounter[0]: " . $encounter[0]);
+  // WriteLog("Encounter[1]: " . $encounter[1]);
+  // WriteLog("Encounter[2]: " . $encounter[2]);
   ++$encounter[2];
   if($encounter[2] == 3 || $encounter[2] == 5) return GetCombat("Easy");
   else if($encounter[2] == 7 || $encounter[2] == 10) return GetCombat("Medium");
@@ -240,7 +248,7 @@ function GetCombat($difficulty)
   $alreadyPicked = explode(",", $encounter[5]);
   switch($difficulty)
   {
-    case "Easy": $potentialEncounters = array(/*"101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", */"106-BeforeFight", "106-BeforeFight"); break;
+    case "Easy": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight", "113-BeforeFight"); break;
     case "Medium": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
     case "Hard": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
   }
@@ -270,8 +278,8 @@ function GetEvent()
   else $rarity = "Common";
   switch($rarity)
   {
-    case "Common": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
-    case "Uncommon": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
+    case "Common": $potentialEncounters = array("205-PickMode", "204-PickMode"); break;
+    case "Uncommon": $potentialEncounters = array("205-PickMode"); break;
     case "Rare": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
   }
   $generatedEncounters = [];
@@ -371,6 +379,27 @@ function GetRandomCards($number, $special = "")
   return $rv;
 }
 
+function GetRandomWithRarity($number, $rarity){ //Used for Enlightenment Event
+  $rv = "";
+  $encounter = &GetZone(1, "Encounter");
+  $classPool = GetPool("Class", $encounter[3], $rarity, $encounter[7]);
+  $talentPool = GetPool("Talent", $encounter[3], $rarity, $encounter[7]);
+  $genericPool = GetPool("Generic", $encounter[3], $rarity, $encounter[7]);
+  for($i = 0; $i < $number; ++$i){
+    $seed = rand(0, 3);
+    if($seed < 1){
+      $rv.= $classPool[rand(0, count($classPool) - 1)];
+    }
+    elseif($seed > 2){
+      $rv.= $talentPool[rand(0, count($talentPool) - 1)];
+    }
+    else{
+      $rv.= $genericPool[rand(0, count($genericPool) - 1)];
+    }
+  }
+  return $rv;
+}
+
 function GetRandomArmor($type)
 {
   $encounter = &GetZone(1, "Encounter");
@@ -400,6 +429,17 @@ function GetRandomArmor($type)
     }
   }
   return $pool[rand(0, count($pool)-1)];
+}
+
+function GetRandomDeckCard($player) //Hardcoded for 4 always
+{
+  $deck = &GetZone($player, "Deck");
+  $rv = "";
+  for($i = 0; $i < 4; $i++){
+    $rv .= $deck[rand(0, count($deck) - 1)];
+  }
+  return $rv;
+
 }
 
 function RandomCard($type)

@@ -33,35 +33,45 @@
   //Now we can process the command
   function ProcessCommand($playerID, $mode, $cardID, $buttonInput)
   {
-    switch($mode) {
-      case 1: //CHOOSECARD
+    switch($mode)
+    {
+      case 1:{ //CHOOSECARD OR REMOVEDECKCARD
         $myDQ = &GetZone($playerID, "DecisionQueue");
-        if($myDQ[0] != "CHOOSECARD") break;
-        $options = explode(",", $myDQ[1]);
-        $found = -1;
-        for($i=0; $i<count($options) && $found == -1; ++$i)
-        {
-          if($cardID == $options[$i]) $found = $i;
-        }
-        if($found >= 0) {
-          //Player actually has the card, now do the effect
-          //First remove it from their hand
-          unset($options[$found]);
-          $options = array_values($options);
-        }
-        if(CardType($cardID) == "E" || CardType($cardID) == "W")
-        {
-          $char = &GetZone($playerID, "Character");
-          array_push($char, $cardID);
-        }
-        else {
-          $deck = &GetZone($playerID, "Deck");
-          array_push($deck, $cardID);
-        }
-        ClearPhase($playerID);
-        WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
-        ContinueDecisionQueue($playerID, "");
-        break;
+          $options = explode(",", $myDQ[1]);
+          $found = -1;
+          for($i=0; $i<count($options) && $found == -1; ++$i)
+          {
+            if($cardID == $options[$i]) $found = $i;
+          }
+          if($found >= 0) {
+            //Player actually has the card, now do the effect
+            //First remove it from their hand
+            unset($options[$found]);
+            $options = array_values($options);
+          }
+          if($myDQ[0] == "CHOOSECARD"){ //If we're ADDING cards
+              if(CardType($cardID) == "E" || CardType($cardID) == "W")
+             {
+                $char = &GetZone($playerID, "Character");
+                array_push($char, $cardID);
+              }
+              else {
+                $deck = &GetZone($playerID, "Deck");
+                array_push($deck, $cardID);
+              }
+              WriteLog("You added " . CardLink($cardID, $cardID) . " to your deck.");
+          }
+          if($myDQ[0] == "REMOVEDECKCARD"){ //If we're REMOVING cards
+              $deck = &GetZone($playerID, "Deck");
+              unset($deck[$cardID]);
+              $deck = array_values($deck);
+              WriteLog("You removed " . CardLink($cardID, $cardID) , " from your deck.");
+          }
+          ClearPhase($playerID); //Clear the screen and keep going
+          ContinueDecisionQueue($playerID, "");
+          break;
+      }
+      
       case 2: //BUTTONINPUT
         ClearPhase($playerID);
         ContinueDecisionQueue($playerID, $buttonInput);
@@ -79,8 +89,10 @@
         $skipWriteGamestate = true;
         WriteLog("Player " . $playerID . " undid their blocks.");
         break;
+      default:
+        break;
+      }
     }
-  }
 
   $changeMade = true;
   while($changeMade)
