@@ -351,7 +351,10 @@ function GetRandomCards($number, $special = "")
   //Hardcoded for 4. This is currently the only number that ever gets passed.
   $rv = "";
   if($special == "Elements") {
-    RandomCard("Ice").",".RandomCard("Lightning").",".RandomCard("Earth");
+    RandomCard("Earth").",".RandomCard("Ice").",".RandomCard("Lightning");
+  }
+  if($special == "Draconic") {
+    RandomCard("Draconic").",".RandomCard("Draconic").",".RandomCard("Draconic").",UPR101";
   }
   if($number == 4){
     //Current Pulls: Class/Class/Talent/Generic
@@ -426,7 +429,25 @@ function RandomCard($type)
 
 function GetPool($type, $hero, $rarity, $background)
 {
-  if($type == "Lightning")
+  if($type == "Light")
+  {
+    switch($rarity)
+    {
+      case "Common": return array();
+      case "Rare": return array();
+      case "Majestic": return array();
+    }
+  }
+  if($type == "Shadow")
+  {
+    switch($rarity)
+    {
+      case "Common": return array();
+      case "Rare": return array();
+      case "Majestic": return array();
+    }
+  }
+  if($type == "Earth")
   {
     switch($rarity)
     {
@@ -451,6 +472,15 @@ function GetPool($type, $hero, $rarity, $background)
       case "Common": return array("ELE189", "ELE190", "ELE191", "ELE192", "ELE193", "ELE194", "ELE195", "ELE196", "ELE197", "ELE198", "ELE199", "ELE200");
       case "Rare": return array("ELE177", "ELE178", "ELE179", "ELE181", "ELE182", "ELE183");
       case "Majestic": return array("ELE175", "ELE176");
+    }
+  }
+  if($type == "Draconic")
+  {
+    switch($rarity)
+    {
+      case "Common":
+      case "Rare": return array("UPR092", "UPR093", "UPR094", "UPR095", "UPR096", "UPR097", "UPR098", "UPR099", "UPR100");
+      case "Majestic": return array("UPR086", "UPR087", "UPR088", "UPR089");
     }
   }
   switch($hero)
