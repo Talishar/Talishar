@@ -706,6 +706,10 @@ function IsBanned($cardID, $format)
         case "MON239":
         case "CRU141":
         case "ELE114":
+        case "MON266": case "MON267": case "MON268":
+        case "ELE003":
+        case "ELE172":
+        case "UPR139":
           return true;
         default:
           return false;
