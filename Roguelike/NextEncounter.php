@@ -93,7 +93,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
   if(count($myDQ) > 0)
   {
     switch($myDQ[0]){
-    case "CHOOSECARD": 
+    case "CHOOSECARD":
     {
       $options = explode(",", $myDQ[1]);
       //$encounterContent .= "<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>";

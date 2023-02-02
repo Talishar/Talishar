@@ -63,15 +63,22 @@
           }
           if($myDQ[0] == "REMOVEDECKCARD"){ //If we're REMOVING cards
               $deck = &GetZone($playerID, "Deck");
-              unset($deck[$cardID]);
-              $deck = array_values($deck);
+              for($i=0; $i<count($deck)-1; ++$i)
+              {
+                if($deck[$i] == $cardID)
+                {
+                  unset($deck[$i]);
+                  $deck = array_values($deck);
+                  continue;
+                }
+              }
               WriteLog("You removed " . CardLink($cardID, $cardID) , " from your deck.");
           }
           ClearPhase($playerID); //Clear the screen and keep going
           ContinueDecisionQueue($playerID, "");
           break;
       }
-      
+
       case 2: //BUTTONINPUT
         ClearPhase($playerID);
         ContinueDecisionQueue($playerID, $buttonInput);
