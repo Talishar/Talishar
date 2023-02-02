@@ -66,6 +66,10 @@ function EncounterDescription()
       return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
     case 204:
       return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
+    case 206:
+      $health = &GetZone(1, "Health");
+      if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
+      else return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game. But it seems you have nothing to offer me, so I must take my leave.'";
 
     default: return "No encounter text.";
   }
@@ -139,6 +143,14 @@ function InitializeEncounter($player)
       AddDecisionQueue("BUTTONINPUT", $player, "Use_Forge,Ask_Legend,Leave");
       AddDecisionQueue("BLACKSMITH", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 206:
+      $health = &GetZone($player, "Health");
+      if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
+      else AddDecisionQueue("BUTTONINPUT", $player, "Leave");
+      AddDecisionQueue("OLDHAG", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
     default: break;
   }
 }
@@ -167,6 +179,8 @@ function EncounterImage()
       return "ELE214_cropped.png";
     case 107:
       return "ARC103_cropped.png";
+    case 108:
+      return "CRU046_cropped.png";
     case 113:
       return "WTR109_cropped.png";
 
@@ -178,8 +192,9 @@ function EncounterImage()
       return "ELE112_cropped.png";
     case 204:
       return "WTR046_cropped.png";
-    case 108:
-      return "CRU046_cropped.png";
+    case 206:
+      return "CRU188_cropped.png";
+
     default: return "CRU054_cropped.png";
   }
 }
@@ -284,10 +299,46 @@ function GetPowers()
   if($random >= 90) $choiceOne = $majestic[rand(0, count($majestic)-1)];
   else if($random >= 60) $choiceOne = $rare[rand(0, count($rare)-1)];
   else $choiceOne = $common[rand(0, count($common)-1)];
+
+  $temp = [];
+  for($i = 0; $i < count($common)-1; ++$i)
+  {
+    if($common[$i] != $choiceOne) array_push($temp, $common[$i]);
+  }
+  $common = $temp; $temp = [];
+  for($i = 0; $i < count($rare)-1; ++$i)
+  {
+    if($rare[$i] != $choiceOne) array_push($temp, $rare[$i]);
+  }
+  $rare = $temp; $temp = [];
+  for($i = 0; $i < count($majestic)-1; ++$i)
+  {
+    if($majestic[$i] != $choiceOne) array_push($temp, $majestic[$i]);
+  }
+  $majestic = $temp;
+
   $random = rand(1, 100);
   if($random >= 90) $choiceTwo = $majestic[rand(0, count($majestic)-1)];
   else if($random >= 60) $choiceTwo = $rare[rand(0, count($rare)-1)];
   else $choiceTwo = $common[rand(0, count($common)-1)];
+
+  $temp = [];
+  for($i = 0; $i < count($common)-1; ++$i)
+  {
+    if($common[$i] != $choiceOne && $common[$i] != $choiceTwo) array_push($temp, $common[$i]);
+  }
+  $common = $temp; $temp = [];
+  for($i = 0; $i < count($rare)-1; ++$i)
+  {
+    if($rare[$i] != $choiceOne && $rare[$i] != $choiceTwo) array_push($temp, $rare[$i]);
+  }
+  $rare = $temp; $temp = [];
+  for($i = 0; $i < count($majestic)-1; ++$i)
+  {
+    if($majestic[$i] != $choiceOne && $majestic[$i] != $choiceTwo) array_push($temp, $majestic[$i]);
+  }
+  $majestic = $temp;
+
   $random = rand(1, 100);
   if($random >= 90) $choiceThree = $majestic[rand(0, count($majestic)-1)];
   else if($random >= 60) $choiceThree = $rare[rand(0, count($rare)-1)];
@@ -295,10 +346,13 @@ function GetPowers()
   return $choiceOne . "," . $choiceTwo . "," . $choiceThree;
 }
 
-function GetRandomCards($number)
+function GetRandomCards($number, $special = "")
 {
   //Hardcoded for 4. This is currently the only number that ever gets passed.
   $rv = "";
+  if($special == "Elements") {
+    RandomCard("Ice").",".RandomCard("Lightning").",".RandomCard("Earth");
+  }
   if($number == 4){
     //Current Pulls: Class/Class/Talent/Generic
     return RandomCard("Class").",".RandomCard("Class").",".RandomCard("Talent").",".RandomCard("Generic");
@@ -372,6 +426,33 @@ function RandomCard($type)
 
 function GetPool($type, $hero, $rarity, $background)
 {
+  if($type == "Lightning")
+  {
+    switch($rarity)
+    {
+      case "Common": return array("ELE128", "ELE129", "ELE130", "ELE131", "ELE132", "ELE133", "ELE134", "ELE135", "ELE136", "ELE137", "ELE138", "ELE139");
+      case "Rare": return array("ELE119", "ELE120", "ELE121");
+      case "Majestic": return array("ELE117", "ELE118");
+    }
+  }
+  if($type == "Ice")
+  {
+    switch($rarity)
+    {
+      case "Common": return array("ELE160", "ELE161", "ELE162", "ELE166", "ELE167", "ELE168", "ELE169", "ELE170", "ELE171", "UPR147", "UPR148", "UPR149");
+      case "Rare": return array("ELE148", "ELE149", "ELE150", "ELE151", "ELE152", "ELE153");
+      case "Majestic": return array("ELE147", "UPR138", "UPR139");
+    }
+  }
+  if($type == "Lightning")
+  {
+    switch($rarity)
+    {
+      case "Common": return array("ELE189", "ELE190", "ELE191", "ELE192", "ELE193", "ELE194", "ELE195", "ELE196", "ELE197", "ELE198", "ELE199", "ELE200");
+      case "Rare": return array("ELE177", "ELE178", "ELE179", "ELE181", "ELE182", "ELE183");
+      case "Majestic": return array("ELE175", "ELE176");
+    }
+  }
   switch($hero)
   {
     case "Dorinthea":
