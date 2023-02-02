@@ -143,6 +143,32 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Leave":
             break;
         }
+      case "OLDHAG":
+        switch($lastResult)
+        {
+          case "Offer_her_1_life":
+            $health = &GetZone($player, "Health");
+            $health[0] += -1;
+            if(rand(1,4) == 3)
+            {
+              WriteLog("You gave the old hag some of your blood. It was enough.");
+              PrependDecisionQueue("CHOOSECARD", $player, GetPowers());
+            }
+            else
+            {
+              WriteLog("You gave the old hag some of your blood, but it wasn't enough.");
+              if($health[0] > 1) {
+                PrependDecisionQueue("OLDHAG", $player, "-");
+                PrependDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
+              }
+              else  {
+                PrependDecisionQueue("OLDHAG", $player, "-");
+                PrependDecisionQueue("BUTTONINPUT", $player, "Leave");
+              }
+            }
+          case "Leave":
+            break;
+        }
       case "BACKGROUND":
         $deck = & GetZone($player, "Deck");
         $character = &GetZone($player, "Character");
@@ -196,7 +222,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Begin_adventure":
             $devTest = false;
-            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "204-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
+            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "206-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
             else AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
             break;
         }
