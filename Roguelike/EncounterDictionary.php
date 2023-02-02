@@ -113,7 +113,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
-      //AddDecisionQueue("SETENCOUNTER", $player, "108-BeforeFight");
+      //AddDecisionQueue("SETENCOUNTER", $player, "205-PickMode");
       break;
     case 005:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
@@ -155,6 +155,10 @@ function InitializeEncounter($player)
       if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
       else AddDecisionQueue("BUTTONINPUT", $player, "Leave");
       AddDecisionQueue("OLDHAG", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      break;
+    case 207:
+      AddDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
       AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
       break;
     default: break;
@@ -386,6 +390,7 @@ function GetRandomWithRarity($number, $rarity){ //Used for Enlightenment Event
   $talentPool = GetPool("Talent", $encounter[3], $rarity, $encounter[7]);
   $genericPool = GetPool("Generic", $encounter[3], $rarity, $encounter[7]);
   for($i = 0; $i < $number; ++$i){
+    if($i != 0) $rv.= ",";
     $seed = rand(0, 3);
     if($seed < 1){
       $rv.= $classPool[rand(0, count($classPool) - 1)];
@@ -434,11 +439,12 @@ function GetRandomArmor($type)
 function GetRandomDeckCard($player) //Hardcoded for 4 always
 {
   $deck = &GetZone($player, "Deck");
-  $rv = "";
+  /*$rv = "";
   for($i = 0; $i < 4; $i++){
-    $rv .= $deck[rand(0, count($deck) - 1)];
+    $rv .= "," . $deck[rand(0, count($deck) - 1)];
   }
-  return $rv;
+  return $rv;*/
+  return $deck[rand(0, count($deck) - 1)].",".$deck[rand(0, count($deck) - 1)].",".$deck[rand(0, count($deck) - 1)].",".$deck[rand(0, count($deck) - 1)];
 
 }
 
