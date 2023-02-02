@@ -559,3 +559,32 @@ function SendEmail($userEmail, $url) {
       echo 'Caught exception: '. $e->getMessage() ."\n";
   }
 }
+
+function SendEmailAPI($userEmail, $url) {
+  include "../APIKeys/APIKeys.php";
+  require '../vendor/autoload.php';
+
+  $email = new Mail();
+  $email->setFrom("no-reply@talishar.net", "No-Reply");
+  $email->setSubject("Talishar Password Reset Link");
+  $email->addTo($userEmail);
+  $email->addContent(
+      "text/html",
+      "
+        <p>
+          We recieved a password reset request. The link to reset your password is below.
+          If you did not make this request, you can ignore this email
+        </p>
+        <p>
+          Here is your password reset link: </br>
+          <a href=$url>Password Reset</a>
+        </p>
+      "
+  );
+  $sendgrid = new \SendGrid($sendgridKey);
+  try {
+      $response = $sendgrid->send($email);
+  } catch (Exception $e) {
+      echo 'Caught exception: '. $e->getMessage() ."\n";
+  }
+}
