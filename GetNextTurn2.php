@@ -310,8 +310,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</span>");
 
   //Deduplicate current turn effects
-  //$friendlyEffectsArr = [];
-  //$opponentEffectsArr = [];
   $friendlyEffects = "";
   $opponentEffects = "";
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
