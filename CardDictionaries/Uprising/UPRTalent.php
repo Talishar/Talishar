@@ -140,9 +140,8 @@
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
         return "Lets you pay 2 to give it +2 power.";
       case "UPR194": case "UPR195": case "UPR196":
-        $rv = "";
-        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); $rv = "Gained 1 health."; }
-        return $rv;
+        if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); }
+        return "";
       case "UPR197": case "UPR198": case "UPR199":
         if($cardID == "UPR197") $numCards = 4;
         else if($cardID == "UPR198") $numCards = 3;
@@ -184,13 +183,12 @@
         else if($cardID == "UPR216") $amount = 2;
         else $amount = 1;
         GainHealth($amount, $currentPlayer);
-        return "Gain $amount health.";
+        return "";
       case "UPR221": case "UPR222": case "UPR223":
         if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
         if(PlayerHasLessHealth($currentPlayer))
         {
           GainHealth(1, $currentPlayer);
-          WriteLog("Gain 1 health from " . CardLink($cardID, $cardID) . ".");
         }
         return "Prevents damage this turn.";
       default: return "";

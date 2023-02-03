@@ -601,7 +601,7 @@
         if($from == "PLAY"){
           GainHealth(2, $currentPlayer);
         }
-        return "Gain 2 health.";
+        return "";
       case "EVR184":
         if($from == "PLAY"){
           LookAtHand($otherPlayer);

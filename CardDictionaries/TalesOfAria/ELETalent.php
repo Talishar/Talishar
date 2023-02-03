@@ -18,9 +18,9 @@
       case "ELE103": case "ELE104": case "ELE105":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "Gives the next attack you Fuse this turn +" . EffectAttackModifier($cardID) . ".";
-      case "ELE106": GainHealth(3, $currentPlayer); return "Rejuvenate gains 3 health.";
-      case "ELE107": GainHealth(2, $currentPlayer); return "Rejuvenate gains 2 health.";
-      case "ELE108": GainHealth(1, $currentPlayer); return "Rejuvenate gains 1 health.";
+      case "ELE106": GainHealth(3, $currentPlayer); return "";
+      case "ELE107": GainHealth(2, $currentPlayer); return "";
+      case "ELE108": GainHealth(1, $currentPlayer); return "";
       case "ELE112":
         if (count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA") {
           AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);

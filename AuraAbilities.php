@@ -313,7 +313,6 @@ function AuraStartTurnAbilities()
         if(PlayerHasLessHealth($mainPlayer))
         {
           GainHealth(2, $mainPlayer);
-          WriteLog("Gained 2 health from Never Yield.");
         }
         if(PlayerHasFewerEquipment($mainPlayer))
         {
@@ -329,7 +328,6 @@ function AuraStartTurnAbilities()
         if ($auras[$i] == "DYN033") $amount = 3;
         else if ($auras[$i] == "DYN034") $amount = 2;
         else $amount = 1;
-        WriteLog(CardLink($auras[$i], $auras[$i]) . " give " . $amount . " health to target hero.");
         GainHealth($amount, $mainPlayer);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
