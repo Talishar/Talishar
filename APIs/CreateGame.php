@@ -66,7 +66,7 @@ $response = new stdClass();
 
 if ((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, true))) {
 } else {
-  $response->error = "Encountered a problem creating a game. Please return to the main menu and try again";
+  $response->error = "Game file could not be created.";
   echo (json_encode($response));
   exit;
 }
