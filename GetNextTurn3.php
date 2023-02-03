@@ -528,52 +528,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->chatLog = JSONLog($gameName, $playerID);
 
   // Deduplicate current turn effects
-  $playerEffectsArr = [];
-  $opponentEffectsArr = [];
+  $playerEffects = array();
+  $opponentEffects = array();
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $arr = &$playerEffectsArr;
-    else $arr = &$opponentEffectsArr;
-    if (!array_key_exists($cardID, $arr)) {
-      $arr[$cardID] = [];
-    }
-    if (!array_key_exists($currentTurnEffects[$i], $arr[$cardID])) $arr[$cardID][$currentTurnEffects[$i]] = 1;
-    else ++$arr[$cardID][$currentTurnEffects[$i]];
-  }
-
-  // Array of opponent effects
-  $opponentEffects = array();
-  foreach ($opponentEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      array_push($opponentEffects, JSONRenderedCard($key, counters: $max));
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        array_push($opponentEffects, JSONRenderedCard($key));
-      }
-    }
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID));
+    else array_push($opponentEffects, JSONRenderedCard($cardID));
   }
   $response->opponentEffects = $opponentEffects;
-
-  // Array of player effects
-  $playerEffects = array();
-  foreach ($playerEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      array_push($playerEffects, JSONRenderedCard($key, counters: $max));
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        array_push($playerEffects, JSONRenderedCard($key));
-      }
-    }
-  }
   $response->playerEffects = $playerEffects;
 
   //Events
@@ -1154,16 +1117,4 @@ function GetPhaseHelptext()
   global $turn;
   $defaultText = "Choose " . TypeToPlay($turn[0]);
   return (GetDQHelpText() != "-" ? implode(" ", explode("_", GetDQHelpText())) : $defaultText);
-}
-
-function IsEffectTileable($cardID)
-{
-  switch ($cardID) {
-    case "WTR075":
-      return true;
-    case "ELE173":
-      return true;
-    default:
-      return false;
-  }
 }
