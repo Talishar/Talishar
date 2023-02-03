@@ -42,6 +42,9 @@ $filteredChatText = str_replace("cock", "****", $filteredChatText);
 $filteredChatText = str_replace("bitch", "****", $filteredChatText);
 $filteredChatText = str_replace("retard", "****", $filteredChatText);
 $filteredChatText = str_replace("idiot", "****", $filteredChatText);
+$filteredChatText = str_replace("faggot", "****", $filteredChatText);
+$filteredChatText = str_replace("kill yourself", "****", $filteredChatText);
+$filteredChatText = str_replace("die in a fire", "****", $filteredChatText);
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
