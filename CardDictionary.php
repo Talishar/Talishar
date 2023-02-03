@@ -653,6 +653,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "On combat chain";
     return false;
   }
+  if($from == "CHAR" && $myCharacter[$index+1] != "2") return false;
   if ($from == "CHAR" && $phase != "B" && $myCharacter[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
