@@ -41,7 +41,8 @@ if (!isset($_SESSION["userid"])) {
 
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
-  echo ("Must be logged in to use create a public multiplayer game.");
+  $response->error = "You must be logged in to use create a public multiplayer game.";
+  echo json_encode($response);
   exit;
 }
 
