@@ -122,6 +122,7 @@ if ($decklink != "") {
     if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
     else if ($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
   }
+  $deckFormat = (isset($deckObj->{'format'}) ? $deckObj->{'format'} : "");
   $cards = $deckObj->{'cards'};
   $deckCards = "";
   $sideboardCards = "";
@@ -369,7 +370,7 @@ if ($decklink != "") {
     //Save deck
     include_once './includes/functions.inc.php';
     include_once "./includes/dbh.inc.php";
-    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character);
+    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character, $deckFormat);
   }
 } else {
   $character = "";

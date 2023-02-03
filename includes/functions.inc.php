@@ -177,16 +177,16 @@ function GetDeckBuilderId($uid, $decklink)
 	return $dbId;
 }
 
-function addFavoriteDeck($userID, $decklink, $deckName, $heroID)
+function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format="")
 {
 	$conn = GetDBConnection();
 	$deckName = implode("", explode("\"", $deckName));
 	$deckName = implode("", explode("'", $deckName));
-	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "'";
-	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero) VALUES (?, ?, ?, ?);";
+	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
+	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero, format) VALUES (?, ?, ?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ssss", $decklink, $userID, $deckName, $heroID);
+		mysqli_stmt_bind_param($stmt, "sssss", $decklink, $userID, $deckName, $heroID, $format);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
