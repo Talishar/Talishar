@@ -47,6 +47,12 @@ if (!isset($_SESSION["userid"])) {
   }
 }
 
+if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
+  //Must be logged in to use matchmaking
+  header("Location: MainMenu.php");
+  exit;
+}
+
 if(isset($_SESSION["userid"]))
 {
   //Save game creation settings
