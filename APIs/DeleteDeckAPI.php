@@ -3,6 +3,8 @@
   include_once "../AccountFiles/AccountSessionAPI.php";
   include_once "../includes/dbh.inc.php";
 
+SetHeaders();
+
   $_POST = json_decode(file_get_contents('php://input'), true);
   $decklink = $_POST["decklink"];
 
@@ -26,5 +28,3 @@
   }
 
   exit;
-
-?>

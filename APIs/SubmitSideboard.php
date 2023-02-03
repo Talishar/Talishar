@@ -3,6 +3,8 @@
 include "../Libraries/HTTPLibraries.php";
 include "../Libraries/SHMOPLibraries.php";
 
+SetHeaders();
+
 
 $response = new stdClass();
 session_start();
