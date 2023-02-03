@@ -287,14 +287,12 @@ if ($decklink != "") {
   if ($unsupportedCards != "") {
     $response->error = "The following cards are not yet supported: " . $unsupportedCards;
     echo (json_encode($response));
-    header("Location: MainMenu.php");
     exit;
   }
 
   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc")) {
     $response->error = "Young heroes are not legal in Classic Constructed";
     echo (json_encode($response));
-    header("Location: MainMenu.php");
     exit;
   }
 
@@ -309,27 +307,6 @@ if ($decklink != "") {
     echo (json_encode($response));
     exit;
   }
-
-  //if($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "livinglegendscc"))
-  /*
-  if ($totalCards < 60  && ($format == "cc" || $format == "compcc")) {
-    $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too few cards (' . $totalCards . ') and is likely for blitz.\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
-    $_SESSION['error'] = '⚠️ The deck link you have entered does not have 40 cards (' . $totalCards . ') and is likely for CC.\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-
-  if ($totalCards > 80  && $format == "compcc") {
-    $_SESSION['error'] = $format . '⚠️ The deck link you have entered has too many cards (' . $totalCards . ').\n\nPlease double-check your decklist link and try again.';
-    header("Location: MainMenu.php");
-    die();
-  }
-  */
 
   //We have the decklist, now write to file
   $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
@@ -433,7 +410,6 @@ if ($matchup == "") {
 }
 
 session_write_close();
-//header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");//Uncomment for testing
 
 
 function ParseDraftFab($deck, $filename)
