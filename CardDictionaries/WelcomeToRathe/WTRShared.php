@@ -459,9 +459,9 @@ function WTRAbilityCost($cardID)
           $actionPoints += 2;
         }
         return "";
-      case "WTR173": GainHealth(3, $currentPlayer); return "Sigil of Solace gained 3 health.";
-      case "WTR174": GainHealth(2, $currentPlayer); return "Sigil of Solace gained 2 health.";
-      case "WTR175": GainHealth(1, $currentPlayer); return "Sigil of Solace gained 1 health.";
+      case "WTR173": GainHealth(3, $currentPlayer); return "";
+      case "WTR174": GainHealth(2, $currentPlayer); return "";
+      case "WTR175": GainHealth(1, $currentPlayer); return "";
       case "WTR182": case "WTR183": case "WTR184":
         PlayMyAura("WTR225");
         return "Creates a Quicken token.";
