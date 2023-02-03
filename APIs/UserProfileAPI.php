@@ -37,17 +37,13 @@ $response->isPatreonLinked = isset($_SESSION["patreonAuthenticated"]);
 echo json_encode($response);
 exit;
 
-if (isset($_SESSION["isPatron"])) {
-  echo ("<div class='ContentWindow' style='width: 50%; left:20px; height: calc(90% - 220px); bottom:20px; overflow-y: scroll;'>");
-  echo ("<h1>Your Record</h1>");
-  $forIndividual = true;
-  include_once "zzGameStats.php";
-  echo ("</div>");
-}
-
-?>
-
-<?php
+// if (isset($_SESSION["isPatron"])) {
+//   echo ("<div class='ContentWindow' style='width: 50%; left:20px; height: calc(90% - 220px); bottom:20px; overflow-y: scroll;'>");
+//   echo ("<h1>Your Record</h1>");
+//   $forIndividual = true;
+//   include_once "zzGameStats.php";
+//   echo ("</div>");
+// }
 
 function PatreonLink()
 {
@@ -65,9 +61,3 @@ function PatreonLink()
   $href .= $scope_parameters;
   return $href;
 }
-?>
-</div>
-
-<?php
-require "Disclaimer.php";
-?>
