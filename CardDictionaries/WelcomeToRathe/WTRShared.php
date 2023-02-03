@@ -395,7 +395,7 @@ function WTRAbilityCost($cardID)
         MyDrawCard();
         $hand = GetHand($currentPlayer); //Get hand size after draw for correct health gain
         if($from == "ARS") GainHealth(count($hand), $currentPlayer);
-        return "Draws 2 cards" . ($from == "ARS" ? " and gained " . count($hand) . " health" : "") . ".";
+        return "";
       case "WTR161":
         if(count(GetDeck($currentPlayer)) == 0) {
           $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
@@ -418,7 +418,6 @@ function WTRAbilityCost($cardID)
           {
             GainHealth(2, $currentPlayer);
             $actionPoints += 1;
-            $rv .= " and gained you 2 health.";
           }
           else if($roll <= 6)
           {
@@ -552,7 +551,7 @@ function WTRAbilityCost($cardID)
     }
     RevealCards($cards, $mainPlayer);//CanReveal called
     GainHealth($lifegain, $mainPlayer);
-    return "Blessing of Deliverance gained " . $lifegain . " life.";
+    return "";
   }
 
   function KatsuHit()

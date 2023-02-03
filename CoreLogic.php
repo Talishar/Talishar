@@ -609,10 +609,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
         MainDrawCard();
         PummelHit();
       }
-      if ($source == "DYN612") {
-        GainHealth($damage, $mainPlayer);
-        WriteLog("Player " . $mainPlayer . " gains " . $damage . " life.", $mainPlayer);
-      }
+      if ($source == "DYN612") GainHealth($damage, $mainPlayer);
     }
 
     AuraDamageTakenAbilities($Auras, $damage);

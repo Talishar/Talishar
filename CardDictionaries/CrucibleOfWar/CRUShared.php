@@ -384,7 +384,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         WriteLog("Player 2 lost a health and gained a copper from Kavdaen");
         if (PlayerHasLessHealth(1)) {
           GainHealth(1, 1);
-          WriteLog("Player 1 gained a health from Kavdaen");
         }
       } else if (PlayerHasLessHealth(2)) {
         LoseHealth(1, 1);
@@ -392,7 +391,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         WriteLog("Player 1 lost a health and gained a copper from Kavdaen");
         if (PlayerHasLessHealth(2)) {
           GainHealth(1, 2);
-          WriteLog("Player 2 gained a health from Kavdaen");
         }
       }
       return "";
