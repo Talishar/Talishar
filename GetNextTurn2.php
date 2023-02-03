@@ -310,61 +310,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo ("</span>");
 
   //Deduplicate current turn effects
-  $friendlyEffectsArr = [];
-  $opponentEffectsArr = [];
+  //$friendlyEffectsArr = [];
+  //$opponentEffectsArr = [];
+  $friendlyEffects = "";
+  $opponentEffects = "";
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $arr = &$friendlyEffectsArr;
-    else $arr = &$opponentEffectsArr;
-    if (!array_key_exists($cardID, $arr)) {
-      $arr[$cardID] = [];
-    }
-    if (!array_key_exists($currentTurnEffects[$i], $arr[$cardID])) $arr[$cardID][$currentTurnEffects[$i]] = 1;
-    else ++$arr[$cardID][$currentTurnEffects[$i]];
-  }
-
-  //Display Current Turn Effects
-  $friendlyEffects = "";
-  $opponentEffects = "";
-  foreach ($friendlyEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
-      $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
-      $effect .= "</div>";
-      $friendlyEffects .= $effect;
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
-        $effect .= Card($key, "crops", 65, 0, 1);
-        $effect .= "</div>";
-        $friendlyEffects .= $effect;
-      }
-    }
-  }
-
-  foreach ($opponentEffectsArr as $key => $effectArr) {
-    $max = 0;
-    foreach ($effectArr as $effectCount) {
-      if ($effectCount > $max) $max = $effectCount;
-    }
-    if (IsEffectTileable($key)) {
-      $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
-      $effect .= Card($key, "crops", 65, 0, 1, counters: $max);
-      $effect .= "</div>";
-      $opponentEffects .= $effect;
-    } else {
-      for ($i = 0; $i < $max; ++$i) {
-        $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid red;'>";
-        $effect .= Card($key, "crops", 65, 0, 1);
-        $effect .= "</div>";
-        $opponentEffects .= $effect;
-      }
-    }
+    $effect = "<div style='width:86px; height:66px; margin:2px; border:2px solid blue;'>";
+    $effect .= Card($cardID, "crops", 65, 0, 1);
+    $effect .= "</div>";
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) $friendlyEffects .= $effect;
+    else $opponentEffects .= $effect;
   }
 
   echo ("<div style='position:fixed; height:100%; width:100px; left:0px; top:0px;'>");
@@ -1483,18 +1440,6 @@ function IsTileable($cardID)
     case "EVR195":
     case "UPR043":
     case "DYN243":
-      return true;
-    default:
-      return false;
-  }
-}
-
-function IsEffectTileable($cardID)
-{
-  switch ($cardID) {
-    case "WTR075":
-      return true;
-    case "ELE173":
       return true;
     default:
       return false;
