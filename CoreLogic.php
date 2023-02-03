@@ -725,8 +725,13 @@ function GainHealth($amount, $player)
   if(SearchCurrentTurnEffects("MON229", $player)) { WriteLog(CardLink("MON229","MON229") . " prevented you from gaining health."); return; }
   if(SearchCharacterForCard($player, "CRU140") || SearchCharacterForCard($otherPlayer, "CRU140"))
   {
-    if($health > $otherHealth) return false;
+    if($health > $otherHealth)
+    {
+      WriteLog("Reaping Blade prevented player " . $player . " from gaining " . $amount . " health.");
+      return false;
+    }
   }
+  WriteLog("Player " . $player . " gained " . $amount . "health.");
   $health += $amount;
   return true;
 }
