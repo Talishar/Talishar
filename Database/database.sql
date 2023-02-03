@@ -33,7 +33,8 @@ CREATE TABLE `favoritedeck` (
   `decklink` varchar(128) NOT NULL,
   `usersId` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
-  `hero` varchar(8) NOT NULL
+  `hero` varchar(8) NOT NULL,
+  `format` varchar(32) DEFAULT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 -- --------------------------------------------------------
 --
