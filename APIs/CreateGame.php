@@ -38,6 +38,12 @@ if (!isset($_SESSION["userid"])) {
   }
 }
 
+if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
+  //Must be logged in to use matchmaking
+  echo("Must be logged in to use create a public multiplayer game.");
+  exit;
+}
+
 if (isset($_SESSION["userid"])) {
   //Save game creation settings
   include_once '../includes/functions.inc.php';
