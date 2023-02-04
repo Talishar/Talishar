@@ -83,8 +83,6 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
 
 if ($playerID == 2) {
   $gameStatus = $MGS_ReadyToStart;
-} else {
-  $gameStatus = $MGS_GameStarted;
 }
 WriteGameFile();
 GamestateUpdated($gameName);

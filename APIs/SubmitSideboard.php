@@ -50,8 +50,6 @@ fclose($deckFile);
 
 if ($playerID == 2) {
   $gameStatus = $MGS_ReadyToStart;
-} else {
-  $gameStatus = $MGS_GameStarted;
 }
 
 $response->status = "OK";
