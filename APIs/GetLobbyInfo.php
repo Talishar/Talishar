@@ -11,6 +11,8 @@ include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
+SetHeaders();
+
 
 $_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = TryPOST("gameName", 0);
@@ -20,12 +22,6 @@ else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["
 else $authKey = TryPOST("authKey");
 
 $response = new stdClass();
-$response->gameName = $gameName;
-$response->authKey = $authKey;
-$response->playerID = $playerID;
-
-echo json_encode($response);
-exit;
 
 session_write_close();
 
@@ -38,10 +34,8 @@ ob_start();
 include "./APIParseGamefile.php";
 ob_end_clean();
 
-
 $yourName = ($playerID == 1 ? $p1uid : $p2uid);
 $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-
 
 $response->badges = [];
 
@@ -97,6 +91,8 @@ if ($handler) {
         break;
     }
   }
+
+  $response->format = $format;
 
   $response->deck->cards = GetArray($handler);
   $response->deck->headSB = GetArray($handler);
