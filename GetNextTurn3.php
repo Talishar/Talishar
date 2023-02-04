@@ -37,6 +37,7 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
+$opponentInactive = false;
 
 $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
@@ -72,6 +73,14 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $lastUpdate = 0;
       $opponentDisconnected = true;
     }
+    //Handle server timeout
+    $lastUpdateTime = $cacheArr[5];
+    if ($currentTime - $lastUpdateTime > 3000 && $cacheArr[11] != "1")//90 seconds
+    {
+      SetCachePiece($gameName, 12, "1");
+      $opponentInactive = true;
+      $lastUpdate = 0;
+    }
   }
   ++$count;
   if ($count == 100) break;
@@ -96,6 +105,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./includes/functions.inc.php";
     PlayerLoseHealth($otherP, GetHealth($otherP));
     include "WriteGamestate.php";
+  }
+  else if($opponentInactive && !IsGameOver()) {
+    $currentPlayerActivity = 2;
+    WriteLog("The current player is inactive.");
+    include "WriteGamestate.php";
+    GamestateUpdated($gameName);
   }
 
   if ($turn[0] == "REMATCH") {

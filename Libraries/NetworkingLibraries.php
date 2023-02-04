@@ -531,22 +531,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
       ProcessDecisionQueue();
       break;
-    case 100005: //Current player inactive
-      if($isSimulation) return;
-      $char = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      if ($char[0] != "DUMMY") {
-        $currentPlayerActivity = 2;
-        WriteLog("The current player is inactive.");
-      }
-      break;
-    case 100006: //Current player active
-      if($isSimulation) return;
-      $char = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      if ($char[0] != "DUMMY") {
-        $currentPlayerActivity = 0;
-        WriteLog("The current player is active again.");
-      }
-      break;
     case 100007: //Claim Victory when opponent is inactive
       if($isSimulation) return;
       if($currentPlayerActivity == 2)
