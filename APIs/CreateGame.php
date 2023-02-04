@@ -7,6 +7,7 @@ include "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
+SetHeaders();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
 $deck = TryPOST("deck"); //This is for limited game modes (see JoinGameInput.php)
@@ -38,9 +39,10 @@ if (!isset($_SESSION["userid"])) {
   }
 }
 
-if($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
+if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
-  echo("Must be logged in to use create a public multiplayer game.");
+  $response->error = "You must be logged in to use create a public multiplayer game.";
+  echo json_encode($response);
   exit;
 }
 
@@ -53,10 +55,10 @@ if (isset($_SESSION["userid"])) {
   }
   ChangeSetting("", $SET_Format, FormatCode($format), $_SESSION["userid"]);
   ChangeSetting("", $SET_GameVisibility, ($visibility == "public" ? 1 : 0), $_SESSION["userid"]);
-  if ($deckbuilderID != "") {
-    if (str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
-    else if (str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
-  }
+  //if ($deckbuilderID != "") {
+  //  if (str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
+  //  else if (str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
+  //}
 }
 
 session_write_close();

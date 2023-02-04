@@ -9,6 +9,9 @@ include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Database/ConnectionManager.php';
 include_once './AccountDatabaseAPI.php';
+include_once '../Libraries/HTTPLibraries.php';
+
+SetHeaders();
 
 
 $_POST = json_decode(file_get_contents('php://input'), true);

@@ -1,6 +1,9 @@
 <?php
 include '../includes/functions.inc.php';
 include '../includes/dbh.inc.php';
+include_once '../Libraries/HTTPLibraries.php';
+
+SetHeaders();
 
 
 $_POST = json_decode(file_get_contents('php://input'), true);

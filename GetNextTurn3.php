@@ -523,6 +523,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerPermanents = $myPermanentsOutput;
 
+  //Landmarks
+  $landmarksOutput = array();
+  for ($i = 0; $i < count($landmarks); $i += LandmarkPieces()) {
+    $type = CardType($landmarks[$i]);
+    $sType = CardSubType($landmarks[$i]);
+    array_push($landmarksOutput, JSONRenderedCard(cardNumber: $landmarks[$i], type: $type, sType: $sType));
+  }
+  $response->landmarks = $landmarksOutput;
+
   // Chat Log
   // TODO: Not have as HTML, have custom string so cards can be parsed the other end safely.
   $response->chatLog = JSONLog($gameName, $playerID);

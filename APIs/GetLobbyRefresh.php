@@ -5,6 +5,8 @@ include '../Libraries/HTTPLibraries.php';
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 
+SetHeaders();
+
 session_start();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
@@ -18,13 +20,16 @@ else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
 session_write_close();
 
 if (!IsGameNameValid($gameName)) {
-  echo(json_encode(new stdClass()));
+  echo (json_encode(new stdClass()));
   exit;
 }
 
-if(!file_exists("../Games/" . $gameName . "/")) { echo(json_encode(new stdClass())); exit; }
+if (!file_exists("../Games/" . $gameName . "/")) {
+  echo (json_encode(new stdClass()));
+  exit;
+}
 
-if($lastUpdate == "NaN") $lastUpdate = 0;
+if ($lastUpdate == "NaN") $lastUpdate = 0;
 if ($lastUpdate > 10000000) $lastUpdate = 0;
 
 
@@ -57,7 +62,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($oppStatus != "-1" && $oppLastTime != "") {
     if (($currentTime - $oppLastTime) > 8000 && $oppStatus == "0") {
-      WriteLog("Player $otherP has disconnected.", path:"../");
+      WriteLog("Player $otherP has disconnected.", path: "../");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
       SetCachePiece($gameName, $otherP + 6, "");
@@ -71,15 +76,14 @@ include "../MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 if ($authKey != $targetAuth) {
-  echo(json_encode(new stdClass()));
+  echo (json_encode(new stdClass()));
   exit;
 }
 
 if ($kickPlayerTwo) {
   $numP2Disconnects = IncrementCachePiece($gameName, 11);
-  if($numP2Disconnects >= 3)
-  {
-    WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.").
+  if ($numP2Disconnects >= 3) {
+    WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
   }
   if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
   if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
@@ -124,10 +128,10 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     fclose($handler);
   }
   $response->theirHero = $otherHero;
-  $response->theirName = CardName($otherHero);
+  $response->theirHeroName = CardName($otherHero);
 
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-  if($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
+  if ($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
   $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID));
   $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
   $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($otherHero) : "");

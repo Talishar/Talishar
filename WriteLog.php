@@ -11,7 +11,7 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./")
   fclose($handler);
 }
 
-function ClearLog()
+function ClearLog($n=20)
 {
   global $gameName;
   /*
@@ -21,7 +21,6 @@ function ClearLog()
   */
 
   $filename = "./Games/" . $gameName . "/gamelog.txt";
-  $n = 20;
   $handle = fopen("./Games/" . $gameName . "/gamelog.txt", "r");
   $lines = array_fill(0, $n-1, '');
   if ($handle) {

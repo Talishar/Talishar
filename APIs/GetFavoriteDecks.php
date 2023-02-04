@@ -5,6 +5,8 @@
   include_once "../includes/dbh.inc.php";
   include_once "../Libraries/PlayerSettings.php";
 
+SetHeaders();
+
   $response = new stdClass();
   $response->favoriteDecks = [];
   if (IsUserLoggedIn()) {
@@ -29,5 +31,3 @@
     }
   }
   echo json_encode($response);
-
-?>
