@@ -32,33 +32,16 @@ function ParseGamestate($useRedis = false)
   $filename = "./Games/" . $gameName . "/gamestate.txt";
 
   $fileTries = 0;
-  $targetTries = ($playerID == 1 ? 5 : 100);
-  $waitTime = ($playerID == 1 ? 100000 : 1000000);
+  $targetTries = ($playerID == 1 ? 10 : 100);
+  $waitTime = 1000000;
   while (!file_exists($filename) && $fileTries < $targetTries) {
-    usleep($waitTime); //100ms
+    usleep($waitTime); //1 second
     ++$fileTries;
   }
   if ($fileTries == $targetTries) {
-    if ($playerID == 1) {
-      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
-      $errorHandler = fopen($errorFileName, "a");
-      date_default_timezone_set('America/Chicago');
-      $errorDate = date('m/d/Y h:i:s a');
-      $errorOutput = "Create game failsafe hit for game $gameName at $errorDate";
-      fwrite($errorHandler, $errorOutput . "\r\n");
-      fclose($errorHandler);
-      include "HostFiles/Redirector.php";
-      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=1");
-    } else {
-      echo ("This game no longer exists on the server. Please go to the main menu and create a new game.");
-      $errorFileName = "./BugReports/CreateGameFailsafe.txt";
-      $errorHandler = fopen($errorFileName, "a");
-      date_default_timezone_set('America/Chicago');
-      $errorDate = date('m/d/Y h:i:s a');
-      $errorOutput = "Final create game error for game $gameName at $errorDate (total failure)";
-      fwrite($errorHandler, $errorOutput . "\r\n");
-      fclose($errorHandler);
-    }
+    $response = new stdClass();
+    $response->error = "Unable to create the game after 10 seconds. Please try again.";
+    echo(json_encode($response));
     exit;
   }
 
