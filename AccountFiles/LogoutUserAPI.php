@@ -1,5 +1,8 @@
 <?php
 include_once './AccountSessionAPI.php';
+include_once '../Libraries/HTTPLibraries.php';
+
+SetHeaders();
 
 ClearLoginSession();
 
