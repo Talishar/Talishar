@@ -265,14 +265,16 @@ function ChangeSetting($player, $setting, $value, $playerId="")
   {
     $settings = &GetSettings($player);
     $settings[$setting] = $value;
-    if($setting == $SET_MuteChat && $value == "1")
+    if($setting == $SET_MuteChat)
     {
-      ClearLog(1);
-      WriteLog("Chat disabled by player " . $player);
-    }
-    else
-    {
-      WriteLog("Chat enabled by player " . $player);
+      if($value == "1")
+      {
+        ClearLog(1);
+        WriteLog("Chat disabled by player " . $player);
+      }
+      else {
+        WriteLog("Chat enabled by player " . $player);
+      }
     }
   }
   if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
