@@ -20,6 +20,10 @@ else if (isset($_GET["authKey"])) $authKey = $_GET["authKey"];
 
 session_write_close();
 
+if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
+
 if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
   header("Location: " . $redirectPath . "/MainMenu.php"); //If the game file happened to get deleted from inactivity, redirect back to the main menu instead of erroring out
   exit;
