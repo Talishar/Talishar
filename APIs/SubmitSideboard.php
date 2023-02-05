@@ -59,7 +59,7 @@ $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 fwrite($deckFile, $deck);
 fclose($deckFile);
 
-if ($playerID == 2) {
+if ($gameStatus < $MGS_ReadyToStart) {
   $gameStatus = $MGS_ReadyToStart;
 }
 else {
