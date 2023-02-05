@@ -129,13 +129,6 @@ else {
   $isReplay = 0;
   WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $currentPlayer . "!" . $isReplay . "!0!0"); //Initialize SHMOP cache for this game
 
-/*
-  $gameStateTries = 0;
-  while (!file_exists($filename) && $gameStateTries < 10) {
-    usleep(100000); //100ms
-    ++$gameStateTries;
-  }
-*/
   ob_start();
   $filename = "../Games/" . $gameName . "/gamestate.txt";
   include "../ParseGamestate.php";
