@@ -74,7 +74,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $opponentDisconnected = true;
     }
     //Handle server timeout
-    $lastUpdateTime = $cacheArr[5];
+    $lastUpdateTime = GetCachePiece($gameName, 6);
     if ($currentTime - $lastUpdateTime > 90000 && GetCachePiece($gameName, 12) != "1")//90 seconds
     {
       SetCachePiece($gameName, 12, "1");
