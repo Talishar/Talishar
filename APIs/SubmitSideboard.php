@@ -117,6 +117,7 @@ else {
 
   //Set up log file
   $filename = "../Games/" . $gameName . "/gamelog.txt";
+  $filepath = "../Games/" . $gameName . "/";
   $handler = fopen($filename, "w");
   fclose($handler);
 

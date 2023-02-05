@@ -8,6 +8,7 @@ function GetStringArray($line)
 }
 
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
+if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
 
 ParseGamestate();
 
@@ -399,8 +400,7 @@ function UpdateMainPlayerGameStateInner()
 
 function MakeGamestateBackup($filename = "gamestateBackup.txt")
 {
-  global $gameName;
-  $filepath = "./Games/" . $gameName . "/";
+  global $filepath;
   if(!file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
   $result = copy($filepath . "gamestate.txt", $filepath . $filename);
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
@@ -408,8 +408,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt")
 {
-  global $gameName, $skipWriteGamestate, $useRedis;
-  $filepath = "./Games/" . $gameName . "/";
+  global $gameName, $skipWriteGamestate, $useRedis, $filepath;
   if($useRedis)
   {
     $gamestate = file_get_contents($filepath . $filename);
@@ -421,8 +420,7 @@ function RevertGamestate($filename = "gamestateBackup.txt")
 
 function MakeStartTurnBackup()
 {
-  global $mainPlayer, $currentTurn, $gameName;
-  $filepath = "./Games/" . $gameName . "/";
+  global $mainPlayer, $currentTurn, $filepath;
   $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
   if (file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
