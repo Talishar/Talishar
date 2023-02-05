@@ -98,15 +98,9 @@ $isReplay = 0;
 WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $currentPlayer . "!" . $isReplay . "!0!0"); //Initialize SHMOP cache for this game
 
 ob_start();
+include "ParseGamestate.php";
 include "StartEffects.php";
 ob_end_clean();
-
-$gameStateTries = 0;
-while (!file_exists($filename) && $gameStateTries < 10) {
-  usleep(100000); //100ms
-  ++$gameStateTries;
-}
-
 //Update the game file to show that the game has started and other players can join to spectate
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();

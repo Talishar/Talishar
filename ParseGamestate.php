@@ -7,7 +7,7 @@ function GetStringArray($line)
   return explode(" ", $line);
 }
 
-
+if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 
 ParseGamestate();
 
@@ -23,13 +23,11 @@ function ParseGamestate($useRedis = false)
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity, $p1PlayerRating, $p2PlayerRating;
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $lastUpdate;
-  global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
+  global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID, $filename;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
   $myStateBuiltFor = -1;
-
-  $filename = "./Games/" . $gameName . "/gamestate.txt";
 
   $fileTries = 0;
   $targetTries = ($playerID == 1 ? 10 : 100);
