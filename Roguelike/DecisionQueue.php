@@ -95,8 +95,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Reflect":
             WriteLog("You reflected on the trials of the day, and may remove a card.");
-            PrependDecisionQueue("REMOVEDECKCARD", $player, "-");
-            PrependDecisionQueue("CHOOSEDECKCARD", $player, "-");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
             break;
           default: break;
         }
@@ -222,7 +221,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Begin_adventure":
             $devTest = false;
-            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "206-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
+            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "202-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
             else AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
             break;
         }
@@ -265,18 +264,18 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         {
           case "Make_a_Small_Offering":
             $deck = &GetZone($player, "Deck");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomWithRarity(4, "Common"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Common"));
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
             break;
           case "Make_a_Sizable_Offering":
             $deck = &GetZone($player, "Deck");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomWithRarity(4, "Rare"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Rare"));
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
             break;
           case "Make_a_Large_Offering":
             $deck = &GetZone($player, "Deck");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomWithRarity(4, "Majestic"));
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Majestic"));
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
