@@ -150,7 +150,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $response->myPriority = false;
 
   $response->isMainGameReady = ($gameStatus == $MGS_ReadyToStart);
-  $response->canSubmitSideboard = true;
+  $response->canSubmitSideboard = ($playerID == 1 ? $p1SideboardSubmitted == "0" : $p2SideboardSubmitted == "0");
 
   echo json_encode($response);
   exit;

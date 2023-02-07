@@ -59,6 +59,9 @@ $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 fwrite($deckFile, $deck);
 fclose($deckFile);
 
+if($playerID == 1) $p1SideboardSubmitted = "1";
+else if($playerID == 2) $p2SideboardSubmitted = "1";
+
 if ($gameStatus < $MGS_ReadyToStart) {
   $gameStatus = $MGS_ReadyToStart;
 }

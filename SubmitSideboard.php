@@ -81,6 +81,9 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
   fclose($deckFile);
 }
 
+if($playerID == 1) $p1SideboardSubmitted = "1";
+else if($playerID == 2) $p2SideboardSubmitted = "1";
+
 if ($playerID == 2) {
   $gameStatus = $MGS_ReadyToStart;
 }
