@@ -51,11 +51,31 @@ if (isset($submission->head) && $submission->head != "") $character .= " " . $su
 if (isset($submission->chest) && $submission->chest != "") $character .= " " . $submission->chest;
 if (isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
 if (isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
+$deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
+
+
+$playerDeck = $submission->deck;
+$deckCount = count($playerDeck);
+if ($deckCount < 60 && ($format == "cc" || $format == "compcc")) {
+  $response->status = "FAIL";
+  $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
+  echo json_encode($response);
+  exit;
+}
+if ($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner")) {
+  $response->status = "FAIL";
+  $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
+  echo json_encode($response);
+  exit;
+}
 
 $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $deckFile = fopen($filename, "w");
 fwrite($deckFile, $character . "\r\n");
-$deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
+
+
+
+
 fwrite($deckFile, $deck);
 fclose($deckFile);
 
