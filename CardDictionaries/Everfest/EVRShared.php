@@ -472,7 +472,7 @@
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIZONEDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "CROWNOFREFLECTION", 1);
-        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         return "Lets you destroy an aura and play a new one.";
