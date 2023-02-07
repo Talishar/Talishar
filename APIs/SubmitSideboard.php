@@ -73,20 +73,14 @@ $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $deckFile = fopen($filename, "w");
 fwrite($deckFile, $character . "\r\n");
 
-
-
-
 fwrite($deckFile, $deck);
 fclose($deckFile);
 
-if($playerID == 1) $p1SideboardSubmitted = "1";
-else if($playerID == 2) $p2SideboardSubmitted = "1";
+if ($playerID == 1) $p1SideboardSubmitted = "1";
+else if ($playerID == 2) $p2SideboardSubmitted = "1";
 
-if ($gameStatus < $MGS_ReadyToStart) {
+if ($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $gameStatus = $MGS_ReadyToStart;
-}
-else {
-
 
   //First initialize the initial state of the game
   $filename = "../Games/" . $gameName . "/gamestate.txt";
@@ -160,7 +154,6 @@ else {
 
   //Update the game file to show that the game has started and other players can join to spectate
   $gameStatus = $MGS_GameStarted;
-
 }
 
 $response->status = "OK";
