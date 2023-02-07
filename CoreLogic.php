@@ -728,7 +728,7 @@ function GainHealth($amount, $player)
       return false;
     }
   }
-  WriteLog("Player " . $player . " gained " . $amount . "health.");
+  WriteLog("Player " . $player . " gained " . $amount . " health.");
   $health += $amount;
   return true;
 }
