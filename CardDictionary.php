@@ -938,6 +938,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return count($mySoul) == 0;
     case "MON029": case "MON030":
       return count($mySoul) == 0 || !HasIncreasedAttack();
+    case "MON033": return count($mySoul) == 0;
     case "MON062":
       return count($mySoul) < 3;
     case "MON084": case "MON085": case "MON086":
