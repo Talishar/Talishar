@@ -124,6 +124,8 @@ $p1id = "-";
 $p2id = "-";
 $hostIP = $_SERVER['REMOTE_ADDR'];
 $p1StartingHealth = $startingHealth;
+$p1SideboardSubmitted = "0";
+$p2SideboardSubmitted = "0";
 
 $filename = "./Games/" . $gameName . "/GameFile.txt";
 $gameFileHandler = fopen($filename, "w");
