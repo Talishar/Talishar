@@ -73,7 +73,9 @@ function OUTAbilityCost($cardID)
     $attackID = $combatChain[0];
     switch ($cardID)
     {
-
+      case "OUT039": case "OUT040": case "OUT041":
+        //PlayAura("ELE111", $defPlayer);//TODO:
+        break;
       default: break;
     }
   }
