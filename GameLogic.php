@@ -89,6 +89,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     return RVDPlayAbility($cardID, $from, $resourcesPaid);
   } else if ($set == "DYN") {
     return DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  } else if ($set == "OUT") {
+    return OUTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   } else {
     return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   }
@@ -99,7 +101,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   }
 }
 
-function ProcessHitEffect($cardID)
+function ct($cardID)
 {
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID) . ".");
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $currentPlayer, $combatChain;
@@ -173,6 +175,8 @@ function ProcessHitEffect($cardID)
     return UPRHitEffect($cardID);
   } else if ($set == "DYN") {
     return DYNHitEffect($cardID);
+  } else if ($set == "OUT") {
+    return OUTHitEffect($cardID);
   }
   switch ($cardID) {
     default:
