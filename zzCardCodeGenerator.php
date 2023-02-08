@@ -1,5 +1,8 @@
 <?php
 
+
+  include './zzImageConverter.php';
+
   $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v5.0.0/json/english/card.json";
   $curl = curl_init();
   $headers = array(
@@ -29,7 +32,7 @@
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
-  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);
+  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);//Also images
 
   fwrite($handler, "?>");
 
@@ -101,6 +104,7 @@
         else if($propertyName == "health")
         {
           $data = $cardArray[$i]->health;
+          CheckImage($cardID);
         }
         else if($propertyName == "subtype")
         {
@@ -231,5 +235,6 @@
       default: return false;
     }
   }
+
 
 ?>
