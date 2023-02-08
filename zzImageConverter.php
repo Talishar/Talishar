@@ -6,7 +6,6 @@ function CheckImage($cardID)
   if(!file_exists($filename))
   {
     $imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
-    if(!file_exists($imageURL)) return;
     echo("Image for " . $cardID . " does not exist.<BR>");
     $handler = fopen($filename, "w");
     $ch = curl_init();
@@ -14,6 +13,7 @@ function CheckImage($cardID)
     curl_setopt($ch, CURLOPT_FILE, $handler);
     curl_exec($ch);
     curl_close($ch);
+    if(filesize($filename) < 10000) { unlink($filename); return; }
     if(file_exists($filename)) echo("Image for " . $cardID . " successfully retrieved.<BR>");
     if(file_exists($filename))
     {
@@ -64,5 +64,6 @@ function CheckImage($cardID)
     }
   }
 }
+
 
 ?>
