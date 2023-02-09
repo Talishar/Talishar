@@ -293,9 +293,16 @@ $isMobile = IsMobile();
         $cardSize = 110;
         $count = 0;
         sort($deck);
+        //WriteLog($roguelikeGameID);
         for ($i = 0; $i < count($deck); ++$i) {
           $id = "DECK-" . $count;
-          echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+          if(!isset($roguelikeGameID)) echo ("<span style='cursor:pointer; padding-bottom:5px; padding-left:3px;' onclick='CardClick(\"" . $id . "\")'>" . Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id) . "</span>");
+          else
+          {
+            //echo ("<div>");
+            echo (Card($deck[$i], "concat", $cardSize, 0, 1, 0, 0, 0, "", $id));
+            //echo ("</div>");
+          }
           ++$count;
         }
         for ($i = 0; $i < count($deckSB); ++$i) {
