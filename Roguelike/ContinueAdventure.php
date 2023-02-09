@@ -18,6 +18,7 @@
   $health[0] = $remainingHealth;
   $encounter = &GetZone($playerID, "Encounter");
   $encounter[1] = "AfterFight";
+  $encounter[9] += 2;
 
   AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));
   AddDecisionQueue("SETENCOUNTER", $playerID, GetNextEncounter($encounter[0]));

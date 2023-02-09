@@ -72,7 +72,55 @@
                   continue;
                 }
               }
-              WriteLog("You removed " . CardLink($cardID, $cardID) , " from your deck.");
+              WriteLog("You removed " . CardLink($cardID, $cardID) . " from your deck.");
+          }
+          if($myDQ[0] == "SHOP"){
+            //WriteLog($cardID);
+            $encounter = &GetZone($playerID, "Encounter");
+            $cost = getShopCost($cardID);
+            //WriteLog("cost: " . $cost . ", total: " . $encounter[9]);
+            if($cardID == "CardBack")
+            {
+              $newShop = $myDQ[1];
+              ClearPhase($playerID); //Clear the screen and keep going
+              ContinueDecisionQueue($playerID, "");
+              PrependDecisionQueue("SHOP", $playerID, $newShop);
+              break;
+            }
+            else if($encounter[9] < $cost)
+            {
+              $newShop = $myDQ[1];
+              WriteLog("You cannot afford to buy " . CardLink($cardID, $cardID) . ".");
+              ClearPhase($playerID); //Clear the screen and keep going
+              ContinueDecisionQueue($playerID, "");
+              PrependDecisionQueue("SHOP", $playerID, $newShop);
+              break;
+            }
+            else
+            {
+              if(CardType($cardID) == "E" || CardType($cardID) == "W")
+              {
+                $char = &GetZone($playerID, "Character");
+                array_push($char, $cardID);
+              }
+              else {
+                $deck = &GetZone($playerID, "Deck");
+                array_push($deck, $cardID);
+              }
+              WriteLog("You spent " . $cost . " gold and added " . CardLink($cardID, $cardID) . " to your deck.");
+              $encounter[9] -= $cost;
+              $newShop = "";
+              for($j=0;$j<count($options);++$j){
+                if($j != 0) $newShop.=",";
+                $newShop.=$options[$j];
+              }
+              $newShop.=",CardBack";
+              //WriteLog($newShop);
+              ClearPhase($playerID); //Clear the screen and keep going
+              ContinueDecisionQueue($playerID, "");
+              PrependDecisionQueue("SHOP", $playerID, $newShop);
+              break;
+            }
           }
           ClearPhase($playerID); //Clear the screen and keep going
           ContinueDecisionQueue($playerID, "");
@@ -80,6 +128,16 @@
       }
 
       case 2: //BUTTONINPUT
+        $myDQ = &GetZone($playerID, "DecisionQueue");
+        if($myDQ[0] == "CHOOSECARD"){
+          if($buttonInput == "Reroll")
+          {
+
+          }
+        }
+        if($myDQ[0] == "SHOP"){
+          //WriteLog($buttonInput);
+        }
         ClearPhase($playerID);
         ContinueDecisionQueue($playerID, $buttonInput);
         break;

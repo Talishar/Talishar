@@ -71,15 +71,25 @@ $cardIconTop = intval($cardSize / 4.2); //30
   echo("<div style='position:absolute; text-align: center; z-index:100; border: 3px solid black; border-radius:5px; left:10px; top:17px; height:calc(95% - 26px); width:14%; background-color:rgba(235, 213, 179, .85);'>");
   echo("<h2 style='width:100%;'>Encounter #" . $encounter[0] . "</h2>");
 
+
   echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, -50%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Life.png'>
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
       text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
       position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $health[0] . "</div></img></span></div>");
+  echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, 70%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Arsenal.png'>
+      <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
+      text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
+      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter[9] . "</div></img></span></div>");
+  /*echo ("<div style='height:6vh; width:100%; z-index:-200;'><span title='Your remaining life' style='top: 10%; left: 50%; text-align: center; transform: translate(-50%, 190%); position:absolute; display:inline-block;'><img style='opacity: 0.9; height:" . $cardIconSize/1.5 . "; width:" . $cardIconSize/1.5 . ";' src='../Images/Intellect.png'>
+      <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
+      text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
+      position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter[10] . "</div></img></span></div>");*/
 
   echo("<center>" . Card($character[0], "../concat", $cardSize, 0, 1) . "</center>");
   echo("<BR>");
 
   echo("<center><div style='cursor:pointer;' onclick='(function(){ document.getElementById(\"myDeckPopup\").style.display = \"inline\";})();'>" . Card("CardBack", "../concat", $cardSize, 0, 1, 0, 0, count($deck)) . "</div></center>");
+
 
   $myDQ = &GetZone($playerID, "DecisionQueue");
 
@@ -127,6 +137,29 @@ $cardIconTop = intval($cardSize / 4.2); //30
         $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, 0, strval($options[$i]));
       }
       $encounterContent .= "</div>";
+      break;
+    }
+    case "SHOP":
+    {
+      $options = explode(",", $myDQ[1]);
+      $encounterContent .= "<h2>Buy cards with gold</h2>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=0; $i<count($options)/2; ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, GetShopCost($options[$i]), strval($options[$i]));
+      }
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div style='display:inline;'>";
+      for($i=count($options)/2; $i<count($options); ++$i)
+      {
+        $encounterContent .= Card($options[$i], "../concat", 150, 1, 1, 0, 0, GetShopCost($options[$i]), strval($options[$i]));
+      }
+      $encounterContent .= "</div><BR>";
+      $encounterContent .= "<div display:inline;'>";
+      //if($encounter[10] > 0) $encounterContent .= CreateButton($playerID, str_replace("_", " ", "Reroll"), 2, strval("Reroll"), "24px");
+      $encounterContent .= CreateButton($playerID, str_replace("_", " ", "Leave"), 2, strval("Leave"), "24px");
+      $encounterContent .= "</div>";
+
       break;
     }
     default: {

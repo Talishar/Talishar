@@ -2,6 +2,7 @@
 
 include "EncounterLogic.php";
 include "EncounterPools.php";
+include "AdventurePools.php";
 
 /*
 Encounter variable
@@ -13,6 +14,9 @@ encounter[4] = Adventure ID
 encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
 encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
 encounter[7] = background chosen
+encounter[8] = adventure difficulty (to be used later)
+encounter[9] = current gold
+encounter[10] = rerolls remaining //TODO: Add in a reroll system
 */
 
 function EncounterDescription()
@@ -27,11 +31,17 @@ function EncounterDescription()
     case 003:
       return "Choose a bounty";
     case 004:
-      return "Welcome back, oh great hero of Rathe. I presume you come bearing good news? Which bounty can I take the time to cross off of this here bounty board?";
+      return "Change your difficulty";
     case 005:
+      return "Welcome back, oh great hero of Rathe. I presume you come bearing good news? Which bounty can I take the time to cross off of this here bounty board?";
+    case 006:
       return "And your reward, as promised. I hope you can use one of these to cross another bounty off my board, what do ya say?";
-    case 020:
+    case 007:
       return "You found a campfire. Choose what you want to do.";
+    case 8:
+      return "You come across a small village. A merchant waves you down.";
+    case 9:
+      return "You come to a crossroads. Which direction will you go?";
 
     case 101:
       if($encounter[1] == "Fight") return "You're attacked by a Woottonhog.";
@@ -97,7 +107,7 @@ function InitializeEncounter($player)
   switch($encounter[0])
   {
     case 001:
-      AddDecisionQueue("BUTTONINPUT", $player, "Change_your_hero,Change_your_bounty,Begin_adventure");
+      AddDecisionQueue("BUTTONINPUT", $player, "Change_your_hero,Change_your_bounty,Change_your_difficulty,Begin_adventure");
       AddDecisionQueue("STARTADVENTURE", $player, "-");
       break;
     case 002:
@@ -111,61 +121,79 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
       break;
     case 004:
+      AddDecisionQueue("BUTTONINPUT", $player, "Normal");
+      AddDecisionQueue("CHOOSEDIFFICULTY", $player, "-");
+      AddDecisionQueue("SETENCOUNTER", $player, "001-PickMode");
+      break;
+    case 005:
       //if($encounter[3] == "Dorinthea") AddDecisionQueue("BUTTONINPUT", $player, "Cintari_Saber_Background,Dawnblade_Background");
       //if($encounter[3] == "Bravo") AddDecisionQueue("BUTTONINPUT", $player, "Anothos_Background,Titans_Fist_Background");
       AddDecisionQueue("BUTTONINPUT", $player, GetBackgrounds($encounter[3]));
       AddDecisionQueue("BACKGROUND", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
-      //AddDecisionQueue("SETENCOUNTER", $player, "207-PickMode");
+      AddDecisionQueue("SETENCOUNTER", $player, "006-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
       break;
-    case 005:
+    case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
       //AddDecisionQueue("SETENCOUNTER", $player, "207-PickMode");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
-    case 020:
+    case 007:
       //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
       AddDecisionQueue("BUTTONINPUT", $player, "Rest,Reflect");
       AddDecisionQueue("CAMPFIRE", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 8:
+      //AddDecisionQueue("BUTTONINPUT", $player, "Rest,Learn,Reflect");
+      AddDecisionQueue("SHOP", $player, GetShop());
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    case 9:
+      AddDecisionQueue("BUTTONINPUT", $player, GetNextEncounter());
+      AddDecisionQueue("CROSSROADS", $player, "-");
       break;
 
     case 201:
       AddDecisionQueue("BUTTONINPUT", $player, "Loot,Pay_Respects");
       AddDecisionQueue("BATTLEFIELD", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 202:
       AddDecisionQueue("BUTTONINPUT", $player, "Search,Leave");
       AddDecisionQueue("LIBRARY", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 203:
       AddDecisionQueue("BUTTONINPUT", $player, "Enter_Stream,Leave");
       AddDecisionQueue("VOLTHAVEN", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 204: //obsolete, doesn't currently work
       AddDecisionQueue("BUTTONINPUT", $player, "Use_Forge,Ask_Legend,Leave");
       AddDecisionQueue("BLACKSMITH", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 205:
       AddDecisionQueue("BUTTONINPUT", $player, "Make_a_Small_Offering,Make_a_Sizable_Offering,Make_a_Large_Offering,Quietly_Pray,Leave");
       AddDecisionQueue("ENLIGHTENMENT", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
     case 206:
       $health = &GetZone($player, "Health");
       if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
       else AddDecisionQueue("BUTTONINPUT", $player, "Leave");
       AddDecisionQueue("OLDHAG", $player, "-");
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 207: //unused, entirely to test out removing cards
       AddDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
-      AddDecisionQueue("SETENCOUNTER", $player, GetNextEncounter($encounter));
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
-    default: break;
+    case 209:
+      AddDecisionQueue("SHOP", $player, GetShop());
+      AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
+    default: WriteLog("We Shouldn't Be Here"); break;
   }
 }
 
@@ -174,10 +202,14 @@ function EncounterImage()
   $encounter = &GetZone(1, "Encounter");
   switch($encounter[0])
   {
-    case 001: case 002: case 003: case 004: case 005:
+    case 001: case 002: case 003: case 004: case 005: case 006:
       return "ROGUELORE001_cropped.png";
-    case 020:
+    case 007:
       return "UPR221_cropped.png";
+    case 8:
+      return "WTR151_cropped.png";
+    case 9:
+      return "EVR100_cropped.png";
 
     case 101:
       return "MON286_cropped.png";

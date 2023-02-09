@@ -77,6 +77,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
         $encounter = &GetZone($player, "Encounter");
         $encounter[0] = $params[0];
         $encounter[1] = $params[1];
+        //WriteLog("Setting Encounter -> " . $encounter[0] . "-" . $encounter[1]);
         InitializeEncounter($player);
         return 1;
       case "CAMPFIRE":
@@ -219,10 +220,25 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Change_your_bounty":
             AddDecisionQueue("SETENCOUNTER", $player, "003-PickMode");
             break;
+          case "Change_your_difficulty":
+            AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
+            break;
           case "Begin_adventure":
             $devTest = false;
             if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "202-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
-            else AddDecisionQueue("SETENCOUNTER", $player, "004-PickMode");
+            else AddDecisionQueue("SETENCOUNTER", $player, "005-PickMode");
+            break;
+          /*case "Shop_Test":
+            AddDecisionQueue("SHOP", $player, "EVR060,DYN073,DYN071,MON107,WTR156,ROGUE501");
+            break;*/
+        }
+        return 1;
+      case "CHOOSEDIFFICULTY":
+        switch($lastResult)
+        {
+          case "Easy":
+          case "Normal":
+          case "hard":
             break;
         }
         return 1;
@@ -287,6 +303,23 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Leave":
               break;
+        }
+        return 1;
+      case "CROSSROADS":
+        switch($lastResult)
+        {
+          case "Go_towards_the_smoke_rising_in_the_distance": //campfire
+            PrependDecisionQueue("SETENCOUNTER", $player, "007-PickMode");
+            break;
+          case "Follow_the_sounds_of_laughter": //shop
+            PrependDecisionQueue("SETENCOUNTER", $player, "008-PickMode");
+            break;
+          case "Explore_some_nearby_ruins": //battlefield
+            PrependDecisionQueue("SETENCOUNTER", $player, "201-PickMode");
+            break;
+          case "Visit_a_local_library": //library
+            PrependDecisionQueue("SETENCOUNTER", $player, "202-PickMode");
+            break;
         }
         return 1;
       default:

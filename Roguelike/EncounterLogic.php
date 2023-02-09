@@ -10,6 +10,9 @@ encounter[4] = Adventure ID
 encounter[5] = A string made up of encounters that have already been visited, looks like "ID-subphase,ID-subphase,ID-subphase,etc."
 encounter[6] = majesticCard% (1-100, the higher it is, the more likely a majestic card is chosen) (Whole code is based off of the Slay the Spire rare card chance)
 encounter[7] = background chosen
+encounter[8] = adventure difficulty (to be used later)
+encounter[9] = current gold
+encounter[10] = rerolls remaining //TODO: Add in a reroll system
 */
 
 function GetOptions($amount, $upperBound, $lowerBound = 0, $step = 1) //amount needs to be less than both upperbound and the amount of options in the pool being chosen from
@@ -35,7 +38,7 @@ function GetBackgrounds($character)
   return $backgroundChoices[$options[0]] . "," . $backgroundChoices[$options[1]];
 }
 
-function GetNextEncounter() //TODO overhaul this whole function and children
+/*function GetNextEncounter($player) //TODO overhaul this whole function and children
 {
   $encounter = &GetZone(1, "Encounter");
   // WriteLog("hijacked GetNextEncounter");
@@ -77,9 +80,9 @@ function GetCombat($difficulty)
   $randomEncounter = rand(0, count($generatedEncounters)-1);
   $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
   return $generatedEncounters[$randomEncounter];
-}
+}*/
 
-function GetEvent()
+/*function GetEvent()
 {
   $encounter = &GetZone(1, "Encounter");
   $alreadyPicked = explode(",", $encounter[5]);
@@ -107,7 +110,7 @@ function GetEvent()
   $randomEncounter = rand(0, count($generatedEncounters)-1);
   $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
   return $generatedEncounters[$randomEncounter];
-}
+}*/
 
 function GetPowers($amount = 3, $special = "-")
 {
@@ -282,5 +285,36 @@ function GetRandomDeckCard($player) //TODO add in a seperate special call to rem
     }
   }
   return $fullList;
+}
+
+function GetShop()
+{
+  $result = [];
+  $pool = GeneratePool($result, "Class");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Class");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Talent");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Generic");
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  $pool = GeneratePool($result, "Generic"); //change to weapon once that is set up
+  array_push($result, $pool[rand(0, count($pool)-1)]);
+  //$pool = GeneratePool($result, "Power");
+  array_push($result, GetPowers(1));
+  $resultStr = "";
+  for($i = 0; $i < count($result); ++$i)
+  {
+    if($i != 0) $resultStr.=",";
+    $resultStr.=$result[$i];
+  }
+  return $resultStr;
+}
+
+function GetShopCost($cardID)
+{
+  if($cardID == "CardBack") return 0;
+  if(CardSubtype($cardID) == "Power") return 3;
+  return 1;
 }
 ?>
