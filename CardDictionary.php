@@ -194,7 +194,7 @@ function CharacterHealth($cardID)
       return 22;
     case "DYN113": return 40;
     case "ROGUE001": return 6;
-    case "ROGUE003": return 12;
+    case "ROGUE003": return 8;
     case "ROGUE004": return 14;
     case "ROGUE008": return 20;
     case "ROGUE006": return 14;

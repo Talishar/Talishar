@@ -326,6 +326,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Take_the_scenic_route_through_the_back_streets":
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); //Stealthy Stabber
             break;
+          case "Venture_into_the_forest_and_attempt_to_sneak_past":
+            PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
             break;
