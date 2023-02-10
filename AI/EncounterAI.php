@@ -589,7 +589,8 @@ function BlockPriority($cardId, $heroId)
           case "ARC087": return 0.25;
         }
       }
-      case "ROGUE013":
+    case "ROGUE013":
+      {
         switch($cardId) {
           case "WTR098": return 1.7;
           case "WTR099": return 2.2;
@@ -599,6 +600,18 @@ function BlockPriority($cardId, $heroId)
           case "WTR107": return 1.9;
           case "WTR108": return 2.1;
         }
+      }
+    case "ROGUE014":
+      {
+        switch($cardId) {
+          case "DYN138": return 10.3;
+          case "DYN126": return 10.3;
+          case "DYN147": return 10.3;
+          case "DYN144": return 10.3;
+          case "DYN122": return 10.2;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -717,6 +730,17 @@ function ActionPriority($cardId, $heroId)
           case "WTR108": return 1.2;
           case "WTR078": return 1.9;
         }
+      case "ROGUE014":
+      {
+        switch($cardId) {
+          case "DYN138": return 0.2;
+          case "DYN126": return 0.2;
+          case "DYN147": return 0.2;
+          case "DYN144": return 0.2;
+          case "DYN122": return 1.9;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -791,6 +815,7 @@ function ReactionPriority($cardId, $heroId)
         }
       }
       //case "ROGUE013": {} //No reactions, default 0
+      //case "ROGUE014": {} //No reactions, default 0
     default: return 0;
   }
 }
@@ -800,7 +825,7 @@ Pitch Priority works out as following:
 0 -> Can't pitch
 0.1 -> 0.9 Red cards, will pitch last
 1.1 -> 1.9 Yellow cards, will pitch second
-2.1 -> 2.9 Blue cards, will pitch third
+2.1 -> 2.9 Blue cards, will pitch first
 NOTE: there is no mechanical differences between 0.x, 1.x, and 2.x. It is entirely seperated for organizational reasons
 */
 
@@ -892,6 +917,16 @@ function PitchPriority($cardId, $heroId)
           case "WTR102": return 1.8;
           case "WTR107": return 0.7;
           case "WTR108": return 1.7;
+        }
+      case "ROGUE014": {
+          switch($cardId) {
+            case "DYN138": return 2.2;
+            case "DYN126": return 2.2;
+            case "DYN147": return 2.2;
+            case "DYN144": return 2.2;
+            case "DYN122": return 2.1;
+            default: return 0;
+          }
         }
     default: return 0;
   }
@@ -987,6 +1022,11 @@ function ToArsenalPriority($cardId, $heroId)
           case "WTR107": return 1.9;
           case "WTR108": return 1.4;
         }
+      case "ROGUE014":
+        switch($cardId){
+          case "DYN122": return 1.2;
+          default: return 1.1;
+        }
     default: return 0;
   }
 }
@@ -1081,6 +1121,17 @@ function FromArsenalActionPriority($cardId, $heroId)
           case "WTR107": return 1.9;
           case "WTR108": return 1.9;
         }
+        case "ROGUE014":
+        {
+          switch($cardId) {  
+            case "DYN138": return 1.0;
+            case "DYN126": return 1.0;
+            case "DYN147": return 1.0;
+            case "DYN144": return 1.0;
+            case "DYN122": return 1.1;
+            default: return 0;
+          }
+        }  
     default: return 0;
   }
 }
@@ -1155,6 +1206,7 @@ function FromArsenalReactionPriority($cardId, $heroId)
         }
       }
       //case "ROGUE013": {return 0;} //No Reactions
+      //case "ROGUE014": return 0; // No Reactions
     default: return 0;
   }
 }

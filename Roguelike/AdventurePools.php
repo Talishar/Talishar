@@ -57,7 +57,7 @@ function GetNextEncounter() //TODO overhaul this whole function and children
 
 function RandomEvent()
 {
-  $commonEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library");
+  $commonEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library", "Enter_a_nearby_Temple");
   $rareEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library");
   $majesticEvents = array("Explore_some_nearby_ruins", "Visit_a_local_library");
   $randEvent = rand(1,100);
@@ -103,7 +103,7 @@ function GetCrossroadsDescription()
             case 5: return "You find yourself in a small town. Something about this town feels unnatural. It unsettles you. What would you like to do?";
             case 7: return "You come to a crossroads. In one direction, you see smoke rising in the distance. In the other, you hear the distant sounds of laughter. Which way would you like to go?";
             case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. Perhaps there's some gold inside, it's certainly worth checking out.";
-            case 9: return "With the great beast felled, you see a pile of treasures within the cave."
+            case 9: return "With the great beast felled, you see a pile of treasures within the cave.";
             case 10: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";
             case 12:
             default: return "You come to a crossroads. Which way would you like to go?";

@@ -281,20 +281,20 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Make_a_Small_Offering":
             $deck = &GetZone($player, "Deck");
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Common"));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
             break;
           case "Make_a_Sizable_Offering":
             $deck = &GetZone($player, "Deck");
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Rare"));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
             break;
           case "Make_a_Large_Offering":
             $deck = &GetZone($player, "Deck");
             PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Majestic"));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
             break;
           case "Quietly_Pray":
             WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 8 health.");
@@ -320,6 +320,13 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Visit_a_local_library": //library
             PrependDecisionQueue("SETENCOUNTER", $player, "202-PickMode");
             break;
+          case "Enter_a_nearby_Temple": //Enlightenment
+            PrependDecisionQueue("SETENCOUNTER", $player, "205-PickMode");
+            break;
+          case "Take_the_scenic_route_through_the_back_streets":
+            PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); //Stealthy Stabber
+          default: //
+            PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
         }
         return 1;
       default:
