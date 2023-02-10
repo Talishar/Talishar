@@ -741,6 +741,16 @@ function ActionPriority($cardId, $heroId)
           default: return 0;
         }
       }
+      case "ROGUE015":
+      {
+        switch($cardId) {
+          case "DYN065": return 1.5;
+          case "WTR218": return 1.8;
+          case "WTR219": return 1.7;
+          case "WTR220": return 1.6;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -1123,7 +1133,7 @@ function FromArsenalActionPriority($cardId, $heroId)
         }
         case "ROGUE014":
         {
-          switch($cardId) {  
+          switch($cardId) {
             case "DYN138": return 1.0;
             case "DYN126": return 1.0;
             case "DYN147": return 1.0;
@@ -1131,7 +1141,7 @@ function FromArsenalActionPriority($cardId, $heroId)
             case "DYN122": return 1.1;
             default: return 0;
           }
-        }  
+        }
     default: return 0;
   }
 }

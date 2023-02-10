@@ -202,6 +202,7 @@ function CharacterHealth($cardID)
     case "ROGUE010": return 14;
     case "ROGUE013": return 14;
     case "ROGUE014": return 6;
+    case "ROGUE015": return 13;
     default:
       return 20;
   }
@@ -229,6 +230,7 @@ function CharacterIntellect($cardID)
     case "ROGUE010": return 3;
     case "ROGUE013": return 4;
     case "ROGUE014": return 3;
+    case "ROGUE015": return 0;
     default:
       return 4;
   }

@@ -73,6 +73,9 @@ function EncounterDescription()
     case 114:
       if($encounter[1] == "BeforeFight") return "You barely notice as a stranger raises a dagger behind your back.";
       else if($encounter[1] == "AfterFight") return "You defended yourself, and defeated the assassin.";
+    case 115:
+      if($encounter[1] == "BeforeFight") return "A graceful figure stands in your way.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -138,7 +141,7 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "207-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -196,7 +199,7 @@ function InitializeEncounter($player)
       AddDecisionQueue("SHOP", $player, GetShop());
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
-    default: WriteLog("We Shouldn't Be Here"); break;
+    default: /*WriteLog("We Shouldn't Be Here");*/ break;
   }
 }
 
@@ -234,6 +237,8 @@ function EncounterImage()
       return "WTR109_cropped.png";
     case 114:
       return "DYN147_cropped.png";
+    case 115:
+      return "CRU057_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";

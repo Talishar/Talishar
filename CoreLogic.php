@@ -618,6 +618,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 
     AuraDamageTakenAbilities($Auras, $damage);
     ItemDamageTakenAbilities($player, $damage);
+    CharacterDamageTakenAbilities($player, $damage);
     // The second condition after the OR is for when Merciful is destroyed, the target is lost for some reason
     if(SearchAuras("MON013", $otherPlayer) && (IsHeroAttackTarget() || !IsAllyAttackTarget() && $source == "MON012")) { LoseHealth(CountAura("MON013", $otherPlayer), $player); WriteLog("Lost 1 health from Ode to Wrath."); }
     $classState[$CS_DamageTaken] += $damage;

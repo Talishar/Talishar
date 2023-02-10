@@ -225,7 +225,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Begin_adventure":
             $devTest = false;
-            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "102-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
+            if($devTest) AddDecisionQueue("SETENCOUNTER", $player, "115-PickMode"); //set the above line to true and the last argument of this to your encounter to test it.
             else AddDecisionQueue("SETENCOUNTER", $player, "005-PickMode");
             break;
           /*case "Shop_Test":

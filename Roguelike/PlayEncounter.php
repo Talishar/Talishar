@@ -147,6 +147,7 @@
       case 108: return "Ira";
       case 113: return "Man of Momentum";
       case 114: return "StealthyStabber";
+      case 115: return "CraneMaster";
       default: return "Woottonhog";
     }
   }
