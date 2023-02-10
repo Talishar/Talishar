@@ -649,6 +649,10 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN148": return 3;
     case "DYN149": return 2;
     case "DYN150": return 1;
+    case "OUT021": case "OUT022": case "OUT023": return 3;
+    case "OUT042": return 3;
+    case "OUT043": return 2;
+    case "OUT044": return 1;
     default:
       return 0;
   }

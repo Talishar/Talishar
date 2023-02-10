@@ -74,14 +74,23 @@ function OUTAbilityCost($cardID)
     $attackID = $combatChain[0];
     switch ($cardID)
     {
+      case "OUT021":
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        break;
+      case "OUT022":
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        break;
+      case "OUT023":
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        break;
       case "OUT024": case "OUT025": case "OUT026":
-        PlayAura($CID_BloodRotPox, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
         break;
       case "OUT036": case "OUT037": case "OUT038":
-        PlayAura($CID_Inertia, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
         break;
       case "OUT039": case "OUT040": case "OUT041":
-        PlayAura($CID_Frailty, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
         break;
       default: break;
     }
