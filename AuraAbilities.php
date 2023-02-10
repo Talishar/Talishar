@@ -417,6 +417,7 @@ function AuraStartTurnAbilities()
 function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
@@ -491,6 +492,33 @@ function AuraBeginEndPhaseAbilities()
         break;
       case "DYN244":
         MyDrawCard();
+        $remove = 1;
+        break;
+      case $CID_BloodRotPox:
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 0, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+        AddDecisionQueue("PASSTAKEDAMAGE", $mainPlayer, 2);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "3", 1);
+        AddDecisionQueue("PITFALLTRAP", $mainPlayer, "-", 1);
+        $remove = 1;
+        break;
+      case $CID_Inertia:
+        $deck = &GetDeck($mainPlayer);
+        $arsenal = &GetArsenal($mainPlayer);
+        while(count($arsenal) > 0)
+        {
+          array_push($deck, $arsenal[0]);
+          RemoveArsenal($mainPlayer, 0);
+        }
+        $hand = &GetHand($mainPlayer);
+        while(count($hand) > 0)
+        {
+          array_push($deck, $hand[0]);
+          RemoveHand($mainPlayer, 0);
+        }
+        $remove = 1;
+        break;
+      case $CID_Frailty:
         $remove = 1;
         break;
       default:

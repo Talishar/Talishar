@@ -32,6 +32,9 @@ include "CardDictionaries/Roguelike/ROGUEShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 
+$CID_BloodRotPox = "LGS125";
+$CID_Frailty = "LGS126";
+$CID_Inertia = "LGS127";
 
 function CardType($cardID)
 {
@@ -70,6 +73,7 @@ function CardType($cardID)
     case "DYN492a": return "W";
     case "DYN492b": return "E";
     case "DYN612": return "-";
+    case "LGS125": case "LGS126": case "LGS127": return "T";
     case "DUMMY":
       return "C";
     default:
@@ -109,6 +113,7 @@ function CardSubType($cardID)
       case "UPR439": case "UPR440": case "UPR441": return "Ash";
       case "UPR551": return "Ally";
       case "DYN612": return "Angel,Ally";
+      case "LGS125": case "LGS126": case "LGS127": return "Aura";
       return "";
   }
 }

@@ -113,18 +113,13 @@ function AddPlayerHand($cardID, $player, $from)
   array_push($hand, $cardID);
 }
 
-function RemoveHand($cardID, $player)
+function RemoveHand($player, $index)
 {
   $hand = &GetHand($player);
-  for ($i = count($hand) - HandPieces(); $i >= 0; $i -= HandPieces()) {
-    if ($hand[$i] == $cardID) {
-      for ($j = $i + HandPieces() - 1; $j >= $i; --$j) {
-        unset($hand[$j]);
-      }
-      $hand = array_values($hand);
-      break;
-    }
+  for ($j = $index + HandPieces() - 1; $j >= $index; --$j) {
+    unset($hand[$j]);
   }
+  $hand = array_values($hand);
 }
 
 function GainResources($player, $amount)
