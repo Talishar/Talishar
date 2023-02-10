@@ -273,7 +273,7 @@ function GetRandomArmor($type) //TODO combine this with GetRandomCards()
 
 function GetRandomDeckCard($player, $special = "") //TODO add in a seperate special call to remove random cards instead of any card and a special call to remove powers.
 {
-  if ($special = "") $special = "ALL"; //Default grabs the whole deck and displays it
+  
   $deck = &GetZone($player, "Deck");
   $fullList = "";
   for($i = 0; $i < count($deck); ++$i)
@@ -285,10 +285,16 @@ function GetRandomDeckCard($player, $special = "") //TODO add in a seperate spec
       $fullList .= $deck[$i];
     }
   }
-  if ($special = "ALL") return $fullList; // By default, this is all we need
-  elseif($special > 0 && $special < count($deck)) {
+
+  if ($special == "") {
+    $special = "ALL"; //This is the default mode
+  }
+  if ($special == "ALL") return $fullList; // By default, this is all we need
+  elseif($special == 4) {
+    $deckNoPowers = explode(",", $fullList);
+    
     $deckIndexes = array("");
-    for ($i = 0; $i < count($deck); $i++){
+    for ($i = 0; $i < count($deckNoPowers); $i++){
       $deckIndexes[$i] = $i; //Fill an array with indexes so we can keep track of which ones have been picked
     }
     $picks = array("");
@@ -301,11 +307,12 @@ function GetRandomDeckCard($player, $special = "") //TODO add in a seperate spec
     $output = "";
     for($i=0; $i< count($picks); $i++){
       if($i != 0) $output .= ",";
-      $output .= $deck[$picks[$i]];
+      $output .= $deckNoPowers[$picks[$i]];
+      WriteLog($output); 
     }
     return $output;
   }
-  WriteLog("Function GetRandomDeckCard failed ot find a case");
+  WriteLog("Function GetRandomDeckCard failed to find a case");
   return "This should never happen";
 }
 
