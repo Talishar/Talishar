@@ -25,23 +25,23 @@ function EncounterDescription()
   switch($encounter[0])
   {
     case 001:
-      return "Welcome to Blackjack's Tavern!";
+      return "Blackjack's Tavern is a lively space. You have been here many times before, and you come today with a purpose. What will you do?";
     case 002:
-      return "Choose your hero";
+      return "A woman at a nearby table calls you over and asks you your name. You are in high spirits today, and give it freely.";
     case 003:
-      return "Choose a bounty";
+      return "You walk over to the bounty board. You see the bounty you are about to turn in, but you also see a few new ones. Which one catches your eye?";
     case 004:
-      return "Change your difficulty";
+      return "The bartender owes you a favor. Perhaps you should cash it in for some refreshments. The strength of the drink may make what's to come more difficult, though, so you choose carefully.";
     case 005:
-      return "Welcome back, oh great hero of Rathe. I presume you come bearing good news? Which bounty can I take the time to cross off of this here bounty board?";
+      return "You approach the man in the corner. He greets you pleasantly. You have just finished a contract, which bounty are you removing from the board?";
     case 006:
-      return "And your reward, as promised. I hope you can use one of these to cross another bounty off my board, what do ya say?";
+      return "The man smiles and hands you your reward. You take it before making your way back out in search of your next bounty.";
     case 007:
       return "You found a campfire. Choose what you want to do.";
     case 8:
       return "You come across a small village. A merchant waves you down.";
     case 9:
-      return "You come to a crossroads. Which direction will you go?";
+      return GetCrossroadsDescription();
 
     case 101:
       if($encounter[1] == "Fight") return "You're attacked by a Woottonhog.";
@@ -209,7 +209,7 @@ function EncounterImage()
     case 8:
       return "WTR151_cropped.png";
     case 9:
-      return "EVR100_cropped.png";
+      return GetCrossroadsImage();
 
     case 101:
       return "MON286_cropped.png";
