@@ -848,7 +848,8 @@ function AuraHitEffects($attackID)
 
 function AuraAttackModifiers($index)
 {
-  global $combatChain;
+  global $combatChain, $combatChainState, $CCS_AttackPlayedFrom;
+  global $CID_Frailty;
   $modifier = 0;
   $player = $combatChain[$index + 1];
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -858,6 +859,11 @@ function AuraAttackModifiers($index)
       case "ELE117":
         if (CardType($combatChain[$index]) == "AA") {
           $modifier += 3;
+        }
+        break;
+      case $CID_Frailty:
+        if (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS") {
+          $modifier -= 1;
         }
         break;
       default:
