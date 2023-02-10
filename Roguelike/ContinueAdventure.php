@@ -21,7 +21,7 @@
   $encounter[9] += 2;
 
   AddDecisionQueue("CHOOSECARD", $playerID, GetRandomCards(4));
-  AddDecisionQueue("SETENCOUNTER", $playerID, GetNextEncounter($encounter[0]));
+  AddDecisionQueue("SETENCOUNTER", $playerID, "009-PickMode");
 
   include "WriteGamestate.php";
 
