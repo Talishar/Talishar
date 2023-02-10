@@ -641,6 +641,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
     case "MYITEMS": $source = &GetItems($player); break;
     case "MYAURAS": $source = &GetAuras($player); break;
   }
+  if($zone == "MYCHAR" && $source[$index+1] == 0) return;
   $cardID = $source[$index];
   $spellVoidAmount = SpellVoidAmount($cardID, $player);
   if($spellVoidAmount > 0)
