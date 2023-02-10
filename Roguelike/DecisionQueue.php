@@ -297,9 +297,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
             break;
           case "Quietly_Pray":
-            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 8 health.");
+            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 7 health.");
             $health = &GetZone($player, "Health");
-            $health[0] += 8;
+            $health[0] += 7;
             break;
           case "Leave":
               break;
@@ -325,8 +325,10 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Take_the_scenic_route_through_the_back_streets":
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); //Stealthy Stabber
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
+            break;
         }
         return 1;
       default:
