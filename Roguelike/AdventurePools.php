@@ -42,14 +42,14 @@ function GetNextEncounter() //TODO overhaul this whole function and children
             case 7: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
             case 8: return "Explore_the_cave"; //Elite
             case 9: return "Search_through_the_treasures"; //Get a power
-            case 10: return CrossroadsDoubleChoice("You_notice_a_mountain_pass_you_can_move_through,A_river_flows_nearby_for_you_to_travel_alongside,A_nearby_town_could_provide_some_directions");//combat choice of X, Y, and Z
+            case 10: return CrossroadsDoubleChoice("Attempt_to_cross_the_river_here,Travel_downstream_to_find_a_bridge,Travel_upstream_to_the_nearest_town");//combat choice of X, Y, and Z
             case 11: return RandomEvent();
-            case 12: //combat choice of X, Y, and Z
+            case 12: return CrossroadsDoubleChoice("You_notice_a_mountain_pass_you_can_move_through,A_river_flows_nearby_for_you_to_travel_alongside,A_nearby_town_could_provide_some_directions");//combat choice of X, Y, and Z
             case 13: return RandomEvent();
-            case 14: //combat choice of X, Y, and Z
+            case 14: return CrossroadsDoubleChoice("Use_the_cover_of_darkness_to_cross,Take_precaution_and_find_a_different_way_across,Brave_the_bridge");//combat choice of X, Y, and Z
             case 15: return RandomEvent();
             case 16: return "Go_towards_the_smoke_rising_in_the_distance,Follow_the_sounds_of_laughter"; //Campfire or a shop
-            case 17: return "Approach_your_destination"; //Elite
+            case 17: return "Approach_your_destination"; //Boss
           }
       }
   }
@@ -104,8 +104,9 @@ function GetCrossroadsDescription()
             case 7: return "You come to a crossroads. In one direction, you see smoke rising in the distance. In the other, you hear the distant sounds of laughter. Which way would you like to go?";
             case 8: return "Off to the side of the road is a small cave. You hear a roar echo from inside. Perhaps there's some gold inside, it's certainly worth checking out.";
             case 9: return "With the great beast felled, you see a pile of treasures within the cave.";
-            case 10: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";
-            case 12:
+            case 10: return "You come upon a great river. It's too wide to cross on your own. What would you like to do?";
+            case 12: return "Before you lies the mountains of Misteria, and within them your goal. Where would you like to go?";
+            case 14: return "As you travel through the mountains, you come upon a rope bridge connecting the mountains. You can sense the end of your journey is approaching. A hooded figure stands on the bridge, waiting.";
             default: return "You come to a crossroads. Which way would you like to go?";
           }
       }
@@ -131,7 +132,9 @@ function GetCrossroadsImage()
               case 5: return "ELE227_cropped.png";
               case 8: return "RVD025_cropped.png";
               case 9: return "EVR184_cropped.png";
-              case 10: return "CRU075_cropped.png";
+              case 10: return "MON240_cropped.png";
+              case 12: return "CRU075_cropped.png";
+              case 14: return "WTR092_cropped.png";
               default: return "EVR100_cropped.png";
 
             }

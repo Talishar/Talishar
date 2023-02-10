@@ -97,5 +97,27 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
   return $damage;
 }
 
+function CharacterDamageTakenAbilities($player, $damage)
+{
+  $char = &GetPlayerCharacter($player);
+  $otherPlayer = $player == 1 ? 1 : 2;
+  for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces())
+  {
+    switch ($char[$i]) {
+      case "ROGUE015":
+        $hand = &GetHand($player);
+        for($j = 0; $j < $damage; ++$j)
+        {
+          $randomNimb = rand(1,3);
+          if($randomNimb == 1) array_unshift($hand, "WTR218");
+          else if($randomNimb == 2) array_unshift($hand, "WTR219");
+          else array_unshift($hand, "WTR220");
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
 
 ?>

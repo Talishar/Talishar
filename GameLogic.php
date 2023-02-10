@@ -2088,6 +2088,14 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("MULTIZONEREMOVE", $mainPlayer, "-", 1);
       }
       break;
+    case "ROGUE015":
+      WriteLog($mainCharacter[$index+1]);
+      if($mainCharacter[$index+1] == 2)
+      {
+        $hand = &GetHand($mainPlayer);
+        array_unshift($hand, "DYN065");
+      }
+      break;
     default:
       break;
   }
