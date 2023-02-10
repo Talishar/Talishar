@@ -323,6 +323,10 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Enter_a_nearby_Temple": //Enlightenment
             PrependDecisionQueue("SETENCOUNTER", $player, "205-PickMode");
             break;
+          case "Take_the_scenic_route_through_the_back_streets":
+            PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); //Stealthy Stabber
+          default: //
+            PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
         }
         return 1;
       default:

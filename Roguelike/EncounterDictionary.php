@@ -70,6 +70,9 @@ function EncounterDescription()
     case 113:
       if($encounter[1] == "BeforeFight") return "You're attacked by a Cloaked Figure wielding two daggers.";
       else if($encounter[1] == "AfterFight") return "You defeated the Cloaked Figure.";
+    case 114:
+      if($encounter[1] == "BeforeFight") return "You barely notice as a stranger raises a dagger behind your back.";
+      else if($encounter[1] == "AfterFight") return "You defended yourself, and defeated the assassin.";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -80,7 +83,7 @@ function EncounterDescription()
     case 204:
       return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
     case 205:
-      return "You enter a temple. There is an altar that reads \"Offer unto yourself and receive a bountiful blessing.\"";
+      return "You enter a temple. There is an altar that reads \"Offer of yourself and receive a bountiful blessing.\"";
     case 206:
       $health = &GetZone(1, "Health");
       if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
@@ -229,6 +232,8 @@ function EncounterImage()
       return "CRU046_cropped.png";
     case 113:
       return "WTR109_cropped.png";
+    case 114:
+      return "DYN147_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";
