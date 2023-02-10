@@ -297,9 +297,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
             break;
           case "Quietly_Pray":
-            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 8 health.");
+            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 7 health.");
             $health = &GetZone($player, "Health");
-            $health[0] += 8;
+            $health[0] += 7;
             break;
           case "Leave":
               break;
