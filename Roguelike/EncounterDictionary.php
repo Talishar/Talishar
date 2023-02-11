@@ -59,8 +59,8 @@ function EncounterDescription()
       if($encounter[1] == "BeforeFight") return "You've finished the game (so far!). If you'd like to help out with adding new encounters/classes, check out our discord! The code is open source and can be found here: https://github.com/Talishar/Talishar/tree/main/Roguelike";
       else if($encounter[1] == "AfterFight") return "You defeated the group of bandits.";
     case 106:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Cloaked Ranger.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Novice.";
+      if($encounter[1] == "BeforeFight") return "You turn to find another way, only to see someone has been following. They knock an arrow, ready to fight.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Apprentice.";
     case 107:
       if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar.";
       else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar.";
@@ -74,7 +74,10 @@ function EncounterDescription()
       if($encounter[1] == "BeforeFight") return "You barely notice as a stranger raises a dagger behind your back.";
       else if($encounter[1] == "AfterFight") return "You defended yourself, and defeated the assassin.";
     case 115:
-      if($encounter[1] == "BeforeFight") return "A graceful figure stands in your way.";
+      if($encounter[1] == "BeforeFight") return "A graceful figure stands atop a spire some distance away. He remains there, as if asking you to make the first move.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
+    case 117:
+      if($encounter[1] == "BeforeFight") return "As night falls around you, you realize you aren't alone. A figure approaches, but does not draw their blade. Yet.";
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
 
     case 201:
@@ -141,7 +144,7 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight");
+      //AddDecisionQueue("SETENCOUNTER", $player, "117-BeforeFight");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -229,7 +232,7 @@ function EncounterImage()
     case 105:
       return "ELE117_cropped.png";
     case 106:
-      return "ELE214_cropped.png";
+      return "ARC072_cropped.png";
     case 107:
       return "ARC103_cropped.png";
     case 108:
@@ -240,6 +243,8 @@ function EncounterImage()
       return "DYN147_cropped.png";
     case 115:
       return "CRU057_cropped.png";
+    case 117:
+      return "EVR038_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";
