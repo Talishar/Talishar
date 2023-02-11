@@ -156,7 +156,7 @@ function ROGUECardSubtype($cardID)
       case "ROGUE521": //Solanian Bell
       case "ROGUE522": //Thieves Tools
       case "ROGUE523": //Ward of Protection
-      case "ROGUE224": //Gorganian Cipher
+      case "ROGUE524": //Gorganian Cipher
       case "ROGUE525": //Acorn of Korshem
       case "ROGUE526": //Blacktek Timebomb
       case "ROGUE527": //Merchant Supply Cart
