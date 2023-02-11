@@ -139,6 +139,7 @@ if ($decklink != "") {
   $armsSideboard = "";
   $legsSideboard = "";
   $offhandSideboard = "";
+  $quiverSideboard = "";
   $unsupportedCards = "";
   $bannedCard = "";
   $character = "";
@@ -147,6 +148,7 @@ if ($decklink != "") {
   $arms = "";
   $legs = "";
   $offhand = "";
+  $quiver = "";
   $weapon1 = "";
   $weapon2 = "";
   $weaponSideboard = "";
@@ -236,6 +238,13 @@ if ($decklink != "") {
                 $offhandSideboard .= $id;
               }
               break;
+            case "Quiver":
+              if ($quiver == "") $quiver = $id;
+              else {
+                if ($quiverSideboard != "") $quiverSideboard .= " ";
+                $quiverSideboard .= $id;
+              }
+              break;
             default:
               break;
           }
@@ -261,6 +270,10 @@ if ($decklink != "") {
             case "Off-Hand":
               if ($offhandSideboard != "") $offhandSideboard .= " ";
               $offhandSideboard .= $id;
+              break;
+            case "Quiver":
+              if ($quiverSideboard != "") $quiverSideboard .= " ";
+              $quiverSideboard .= $id;
               break;
             default:
               break;
@@ -329,7 +342,8 @@ if ($decklink != "") {
   fwrite($deckFile, $legsSideboard . "\r\n");
   fwrite($deckFile, $offhandSideboard . "\r\n");
   fwrite($deckFile, $weaponSideboard . "\r\n");
-  fwrite($deckFile, $sideboardCards);
+  fwrite($deckFile, $sideboardCards . "\r\n");
+  fwrite($deckFile, $quiverSideboard);
   fclose($deckFile);
   copy($filename, "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
