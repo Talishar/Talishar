@@ -1,7 +1,6 @@
 <?php
 
 include 'Libraries/HTTPLibraries.php';
-include 'Classes/Deck.php';
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];

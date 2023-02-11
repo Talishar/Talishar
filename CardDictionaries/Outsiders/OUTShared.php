@@ -59,11 +59,24 @@ function OUTAbilityCost($cardID)
 
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer;
+    global $currentPlayer, $CS_PlayIndex;
     global $CID_Frailty;
     $rv = "";
     switch ($cardID)
     {
+      case "OUT096":
+        $deck = new Deck($currentPlayer);
+        if($deck->Reveal())
+        {
+          $topCard = $deck->Top(remove:true);
+          if(CardSubType($topCard) == "Arrow")
+          {
+            if(!ArsenalFull($currentPlayer)) AddArsenal($topCard, $currentPlayer, "DECK", "DOWN");
+            DestroyCharacter($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
+            $rv = "The top card was an arrow, so Quiver of Rustling Leaves is destroyed.";
+          }
+        }
+        return $rv;
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         if(!ArsenalFull($currentPlayer))
@@ -84,7 +97,7 @@ function OUTAbilityCost($cardID)
         }
         PlayAura("DYN244", $currentPlayer);
         PlayAura($CID_Frailty, $otherPlayer);
-        break;
+        return "";
       default: return "";
     }
   }

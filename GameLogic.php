@@ -10,6 +10,7 @@ include "LandmarkAbilities.php";
 include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
+include "Classes/Deck.php";
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
