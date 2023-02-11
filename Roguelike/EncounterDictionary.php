@@ -181,9 +181,10 @@ function InitializeEncounter($player)
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 205:
-      AddDecisionQueue("BUTTONINPUT", $player, "Make_a_Small_Offering,Make_a_Sizable_Offering,Make_a_Large_Offering,Quietly_Pray,Leave");
+      AddDecisionQueue("BUTTONINPUT", $player, "Make_an_offering,Quietly_Pray,Leave");
       AddDecisionQueue("ENLIGHTENMENT", $player, "-");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
+      break;
     case 206:
       $health = &GetZone($player, "Health");
       if($health[0] > 1) AddDecisionQueue("BUTTONINPUT", $player, "Offer_her_1_life,Leave");
