@@ -2089,11 +2089,20 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "ROGUE015":
-      WriteLog($mainCharacter[$index+1]);
+      //WriteLog($mainCharacter[$index+1]);
       if($mainCharacter[$index+1] == 2)
       {
         $hand = &GetHand($mainPlayer);
         array_unshift($hand, "DYN065");
+      }
+      break;
+    case "ROGUE017":
+      //WriteLog($mainCharacter[$index+1]);
+      if($mainCharacter[$index+1] == 2)
+      {
+        $hand = &GetHand($mainPlayer);
+        array_unshift($hand, "CRU181");
+        MyDrawCard();
       }
       break;
     default:
@@ -2669,6 +2678,13 @@ function MainCharacterHitAbilities()
       case "EVR037":
         if (CardType($attackID) == "AA" && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID);
+        }
+        break;
+      case "ROGUE016":
+        if (CardType($attackID) == "AA")
+        {
+          $deck = &GetDeck($mainPlayer);
+          array_unshift($deck, "ARC069");
         }
         break;
       default:
