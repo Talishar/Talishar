@@ -403,13 +403,13 @@ if ($matchup == "") {
     $_SESSION["p2AuthKey"] = $p2Key;
     setcookie("lastAuthKey", $p2Key, time() + 86400, "/", $domain);
   }
-
-  $response->message = "success";
-  $response->gameName = $gameName;
-  $response->playerID = $playerID;
-  $response->authKey = $playerID == 1 ? $p1Key : ($playerID == 2 ? $p2Key : '');
-  echo (json_encode($response));
 }
+
+$response->message = "success";
+$response->gameName = $gameName;
+$response->playerID = $playerID;
+$response->authKey = $playerID == 1 ? $p1Key : ($playerID == 2 ? $p2Key : '');
+echo (json_encode($response));
 
 session_write_close();
 
