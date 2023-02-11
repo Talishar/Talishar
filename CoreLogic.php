@@ -467,6 +467,13 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
+      case "ROGUE017":
+        if(CardType($cardID) == "AA")
+        {
+          $deck = &GetDeck($currentPlayer);
+          array_unshift($deck, $cardID);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        }
       default:
         break;
     }

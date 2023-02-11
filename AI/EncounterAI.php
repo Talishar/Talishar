@@ -770,6 +770,43 @@ function ActionPriority($cardId, $heroId)
             default: return 0;
           }
         }
+      case "ROGUE017":
+        {
+          switch($cardId)
+          {
+            case "CRU181":
+              global $currentPlayer;
+              $hand = &GetHand($currentPlayer);
+              $arsenal = &GetArsenal($currentPlayer);
+              $grave = &GetDiscard($currentPlayer);
+              $totalTomes = 0;
+              for($i = 0; $i < count($hand); ++$i)
+              {
+                if($hand[$i] == "CRU181") ++$totalTomes;
+              }
+              for($i = 0; $i < count($arsenal); ++$i)
+              {
+                if($arsenal[$i] == "CRU181") ++$totalTomes;
+              }
+              for($i = 0; $i < count($grave); ++$i)
+              {
+                if($grave[$i] == "CRU181") ++$totalTomes;
+              }
+              /*$spentTomes = 0;
+              for($i = 0; $i < count($grave); ++$i)
+              {
+                if($grave[$i] == "CRU181") ++$spentTomes;
+              }
+              if($spentTomes >= 3 || $totalTomes >= 3) return 1.9;*/
+              if($totalTomes >= 3) return 1.9;
+              else return 0;
+            case "EVR041": return 1.7;
+            case "EVR042": return 1.6;
+            case "WTR098": case "EVR044": return 1.5;
+            case "WTR099": case "EVR045": return 1.4;
+            default: return 0;
+          }
+        }
     default: return 0;
   }
 }
@@ -1063,6 +1100,15 @@ function ToArsenalPriority($cardId, $heroId)
           default: return 0;
         }
       }
+      case "ROGUE017":
+        {
+          switch($cardId)
+          {
+            case "CRU181":
+              return 1.9;
+            default: return 0;
+          }
+        }
     default: return 0;
   }
 }
@@ -1178,6 +1224,43 @@ function FromArsenalActionPriority($cardId, $heroId)
             default: return 0;
           }
         }
+        case "ROGUE017":
+          {
+            switch($cardId)
+            {
+              case "CRU181":
+                global $currentPlayer;
+                $hand = &GetHand($currentPlayer);
+                $arsenal = &GetArsenal($currentPlayer);
+                $grave = &GetDiscard($currentPlayer);
+                $totalTomes = 0;
+                for($i = 0; $i < count($hand); ++$i)
+                {
+                  if($hand[$i] == "CRU181") ++$totalTomes;
+                }
+                for($i = 0; $i < count($arsenal); ++$i)
+                {
+                  if($arsenal[$i] == "CRU181") ++$totalTomes;
+                }
+                for($i = 0; $i < count($grave); ++$i)
+                {
+                  if($grave[$i] == "CRU181") ++$totalTomes;
+                }
+                /*$spentTomes = 0;
+                for($i = 0; $i < count($grave); ++$i)
+                {
+                  if($grave[$i] == "CRU181") ++$spentTomes;
+                }
+                if($spentTomes >= 3 || $totalTomes >= 3) return 1.9;*/
+                if($totalTomes >= 3) return 1.9;
+                else return 0;
+              case "EVR041": return 1.7;
+              case "EVR042": return 1.6;
+              case "WTR098": case "EVR044": return 1.5;
+              case "WTR095": case "EVR045": return 1.4;
+              default: return 0;
+            }
+          }
     default: return 0;
   }
 }
