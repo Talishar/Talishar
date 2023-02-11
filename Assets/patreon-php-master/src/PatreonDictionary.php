@@ -46,7 +46,6 @@ enum ContentCreators : string
 
   public function HeroOverlayURL($heroID): string
   {
-    include_once "./CardDictionary.php";
     switch($this->value)
     {
       case "0": //WatchFlake
