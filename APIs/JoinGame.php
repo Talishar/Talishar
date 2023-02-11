@@ -330,6 +330,7 @@ if ($decklink != "") {
   if ($weapon1 != "") $charString .= " " . $weapon1;
   if ($weapon2 != "") $charString .= " " . $weapon2;
   if ($offhand != "") $charString .= " " . $offhand;
+  if ($quiver != "") $charString .= " " . $quiver;
   if ($head != "") $charString .= " " . $head;
   if ($chest != "") $charString .= " " . $chest;
   if ($arms != "") $charString .= " " . $arms;
