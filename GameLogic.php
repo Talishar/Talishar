@@ -1105,6 +1105,8 @@ function SelfCostModifier($cardID)
       $numHypers += CountItem("DYN111", $currentPlayer);
       $numHypers += CountItem("DYN112", $currentPlayer);
       return $numHypers > 0 ? -1 : 0;
+    case "OUT056": case "OUT057": case "OUT058":
+      return (ComboActive($cardID) ? -2 : 0);
     default:
       return 0;
   }

@@ -52,6 +52,7 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
+      case "OUT056": case "OUT057": case "OUT058": return ComboActive($cardID);
       case "OUT160": return true;
       default: return false;
     }

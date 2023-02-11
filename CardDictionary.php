@@ -1876,6 +1876,8 @@ function ComboActive($cardID = "")
     case "DYN056": case "DYN057": case "DYN058":
     case "DYN059": case "DYN060": case "DYN061":
       return $LA == "DYN065";
+    case "OUT056": case "OUT057": case "OUT058":
+      return str_contains(CardName($LA), "Gustwave");
   }
   return false;
 }
