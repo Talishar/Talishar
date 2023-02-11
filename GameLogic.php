@@ -2089,11 +2089,20 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "ROGUE015":
-      WriteLog($mainCharacter[$index+1]);
+      //WriteLog($mainCharacter[$index+1]);
       if($mainCharacter[$index+1] == 2)
       {
         $hand = &GetHand($mainPlayer);
         array_unshift($hand, "DYN065");
+      }
+      break;
+    case "ROGUE017":
+      //WriteLog($mainCharacter[$index+1]);
+      if($mainCharacter[$index+1] == 2)
+      {
+        $hand = &GetHand($mainPlayer);
+        array_unshift($hand, "CRU181");
+        MyDrawCard();
       }
       break;
     default:

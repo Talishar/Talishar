@@ -329,6 +329,9 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Take_precaution_and_find_a_different_way_across": //Crane Master
             PrependDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight");
             break;
+          case "Use_the_cover_of_darkness_to_cross": //Sparrow Master
+            PrependDecisionQueue("SETENCOUNTER", $player, "117-BeforeFight");
+            break;
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
             break;
