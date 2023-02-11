@@ -3,11 +3,11 @@
 include "CardDictionary.php";
 include "CoreLogic.php";
 
-function PummelHit($player = -1)
+function PummelHit($player = -1, $passable = false)
 {
   global $defPlayer;
   if ($player == -1) $player = $defPlayer;
-  AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
   AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);

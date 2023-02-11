@@ -51,7 +51,7 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
-
+      case "OUT160": return true;
       default: return false;
     }
   }
@@ -59,10 +59,31 @@ function OUTAbilityCost($cardID)
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
+    global $CID_Frailty;
     $rv = "";
     switch ($cardID)
     {
-
+      case "OUT160":
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        if(!ArsenalFull($currentPlayer))
+        {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "GYAA");
+          AddDecisionQueue("CHOOSEDISCARD", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
+          AddDecisionQueue("ADDARSENALFACEDOWN", $currentPlayer, "GY", 1);
+          PummelHit($currentPlayer, true);
+        }
+        if(!ArsenalFull($otherPlayer))
+        {
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "GYAA");
+          AddDecisionQueue("CHOOSEDISCARD", $otherPlayer, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEDISCARD", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDARSENALFACEDOWN", $otherPlayer, "GY", 1);
+          PummelHit($otherPlayer, true);
+        }
+        PlayAura("DYN244", $currentPlayer);
+        PlayAura($CID_Frailty, $otherPlayer);
+        break;
       default: return "";
     }
   }

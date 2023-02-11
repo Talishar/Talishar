@@ -534,6 +534,8 @@ function HasGoAgain($cardID)
     return RVDHasGoAgain($cardID);
   } else if ($set == "DYN") {
     return DYNHasGoAgain($cardID);
+  } else if ($set == "OUT") {
+    return OUTHasGoAgain($cardID);
   } else if ($set == "ROG") {
     return ROGUEHasGoAgain($cardID);
   }
