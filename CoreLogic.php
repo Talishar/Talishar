@@ -474,6 +474,13 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           array_unshift($deck, $cardID);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
+      case "ROGUE003":
+        if(CardType($cardID) == "AA")
+        {
+          $deck = &GetDeck($currentPlayer);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        }
+        break;
       default:
         break;
     }
