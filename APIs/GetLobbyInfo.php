@@ -8,7 +8,6 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
-include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
 SetHeaders();
@@ -67,8 +66,10 @@ if ($handler) {
   $response->deck->legs = [];
   $response->deck->offhand = [];
   $response->deck->quiver = [];
+  $response->deck->hands = [];
   for ($i = 1; $i < count($character); ++$i) {
-    switch (CardSubtype($character[$i])) {
+    $subtype = CardSubtype($character[$i]);
+    switch ($subtype) {
       case "Head":
         array_push($response->deck->head, $character[$i]);
         break;
@@ -81,17 +82,16 @@ if ($handler) {
       case "Legs":
         array_push($response->deck->legs, $character[$i]);
         break;
-      case "Off-Hand":
-        array_push($response->deck->offhand, $character[$i]);
-        break;
-      case "Quiver":
-        array_push($response->deck->quiver, $character[$i]);
-        break;
       default:
-        $weapon = new stdClass();
-        $weapon->id = $character[$i];
-        $weapon->is1H = Is1H($weapon->id);
-        array_push($response->deck->weapons, $weapon);
+        $handItem = new stdClass();
+        $handItem->id = $character[$i];
+        $handItem->is1H = Is1H($handItem->id);
+        $numHands = 2;
+        if($subtype == "Quiver") $numHands = 0;
+        else if(Is1H($handItem->id)) $numHands = 1;
+        $handItem->numHands = $numHands;
+        array_push($response->deck->weapons, $handItem);
+        array_push($response->deck->hands, $handItem);
         break;
     }
   }
@@ -114,6 +114,7 @@ if ($handler) {
   }
   $response->deck->cardsSB = GetArray($handler);
   $response->deck->quiverSB = GetArray($handler);
+  $response->deck->handsSB = array_merge($response->deck->weaponSB, $response->deck->offhandSB, $response->deck->quiverSB);
 
   fclose($handler);
 }

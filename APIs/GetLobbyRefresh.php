@@ -1,6 +1,7 @@
 <?php
 
 
+include "../CardDictionary.php";
 include '../Libraries/HTTPLibraries.php';
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
@@ -34,7 +35,6 @@ if ($lastUpdate > 10000000) $lastUpdate = 0;
 
 
 include "../WriteLog.php";
-include "../CardDictionary.php";
 include "../HostFiles/Redirector.php";
 include "../Libraries/UILibraries2.php";
 include "../Libraries/SHMOPLibraries.php";
