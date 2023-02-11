@@ -71,7 +71,7 @@ function OUTAbilityCost($cardID)
           $topCard = $deck->Top(remove:true);
           if(CardSubType($topCard) == "Arrow")
           {
-            if(!ArsenalFull($currentPlayer)) AddArsenal($topCard, $currentPlayer, "DECK", "DOWN");
+            if(!ArsenalFull($currentPlayer)) AddArsenal($topCard, $currentPlayer, "DECK", "UP");
             DestroyCharacter($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
             $rv = "The top card was an arrow, so Quiver of Rustling Leaves is destroyed.";
           }
