@@ -325,8 +325,16 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Take_the_scenic_route_through_the_back_streets":
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); //Stealthy Stabber
+            break;
+          case "Take_precaution_and_find_a_different_way_across": //Crane Master
+            PrependDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight");
+            break;
+          case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
+            PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
+            break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");
+            break;
         }
         return 1;
       default:

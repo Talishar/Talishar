@@ -612,6 +612,15 @@ function BlockPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE016":
+      {
+        switch($cardId) {
+          case "ARC054": case "EVR091": case "EVR100": return 0.2;
+          case "ARC055": case "EVR092": case "EVR101": return 0.4;
+          case "ARC056": case "EVR093": case "EVR102": return 0.6;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -751,6 +760,16 @@ function ActionPriority($cardId, $heroId)
           default: return 0;
         }
       }
+      case "ROGUE016":
+        {
+          switch($cardId) {
+            case "ARC054": case "EVR091": case "EVR100": return 1.9;
+            case "ARC055": case "EVR092": case "EVR101": return 1.8;
+            case "ARC056": case "EVR093": case "EVR102": return 1.7;
+            case "CRU121": return 1.4;
+            default: return 0;
+          }
+        }
     default: return 0;
   }
 }
@@ -1037,6 +1056,13 @@ function ToArsenalPriority($cardId, $heroId)
           case "DYN122": return 1.2;
           default: return 1.1;
         }
+      case "ROGUE016":
+      {
+        switch($cardId) {
+          case "ARC069": return 1.6;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -1139,6 +1165,16 @@ function FromArsenalActionPriority($cardId, $heroId)
             case "DYN147": return 1.0;
             case "DYN144": return 1.0;
             case "DYN122": return 1.1;
+            default: return 0;
+          }
+        }
+        case "ROGUE016":
+        {
+          switch($cardId) {
+            case "ARC069": return 1.6;
+            case "ARC054": case "EVR091": case "EVR100": return 1.9;
+            case "ARC055": case "EVR092": case "EVR101": return 1.8;
+            case "ARC056": case "EVR093": case "EVR102": return 1.7;
             default: return 0;
           }
         }

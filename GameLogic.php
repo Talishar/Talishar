@@ -2671,6 +2671,13 @@ function MainCharacterHitAbilities()
           AddLayer("TRIGGER", $mainPlayer, $characterID);
         }
         break;
+      case "ROGUE016":
+        if (CardType($attackID) == "AA")
+        {
+          $deck = &GetDeck($mainPlayer);
+          array_unshift($deck, "ARC069");
+        }
+        break;
       default:
         break;
     }

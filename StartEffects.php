@@ -64,6 +64,12 @@ if ($p2Char[0] == "UPR044" || $p2Char[0] == "UPR045") {
   }
 }
 
+//Quickshot Apprentice
+if ($p2Char[0] == "ROGUE016") {
+  $p2Hand = &GetHand(2);
+  array_unshift($p2Hand, "ARC069");
+}
+
 //Crown of Dominion
 if(SearchCharacterForCard(1, "DYN234")) {
   AddDecisionQueue("STARTOFGAMEPUTPLAY", 1, "DYN243");
