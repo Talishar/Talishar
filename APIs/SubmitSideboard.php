@@ -47,6 +47,7 @@ $character = $submission->hero;
 if (!isset($submission->hands)) $hands = "";
 else $hands = implode(" ", $submission->hands);
 if ($hands != "") $character .= " " . $hands;
+if (isset($submission->quiver) && $submission->quiver != "") $character .= " " . $submission->quiver;
 if (isset($submission->head) && $submission->head != "") $character .= " " . $submission->head;
 if (isset($submission->chest) && $submission->chest != "") $character .= " " . $submission->chest;
 if (isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;

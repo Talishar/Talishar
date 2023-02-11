@@ -66,6 +66,7 @@ if ($handler) {
   $response->deck->arms = [];
   $response->deck->legs = [];
   $response->deck->offhand = [];
+  $response->deck->quiver = [];
   for ($i = 1; $i < count($character); ++$i) {
     switch (CardSubtype($character[$i])) {
       case "Head":
@@ -82,6 +83,9 @@ if ($handler) {
         break;
       case "Off-Hand":
         array_push($response->deck->offhand, $character[$i]);
+        break;
+      case "Quiver":
+        array_push($response->deck->quiver, $character[$i]);
         break;
       default:
         $weapon = new stdClass();
@@ -109,6 +113,7 @@ if ($handler) {
     array_push($response->deck->weaponSB, $weapon);
   }
   $response->deck->cardsSB = GetArray($handler);
+  $response->deck->quiverSB = GetArray($handler);
 
   fclose($handler);
 }

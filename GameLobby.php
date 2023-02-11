@@ -165,6 +165,7 @@ $isMobile = IsMobile();
     $arms = "";
     $legs = "";
     $offhand = "";
+    $quiver = "";
     for ($i = 1; $i < count($character); ++$i) {
       switch (CardSubtype($character[$i])) {
         case "Head":
@@ -182,6 +183,9 @@ $isMobile = IsMobile();
         case "Off-Hand":
           $offhand = $character[$i];
           break;
+        case "Quiver":
+          $quiver = $character[$i];
+          break;
         default:
           if ($weapons != "") $weapons .= ",";
           $weapons .= $character[$i];
@@ -197,6 +201,7 @@ $isMobile = IsMobile();
     $offhandSB = GetArray($handler);
     $weaponSB = GetArray($handler);
     $deckSB = GetArray($handler);
+    $quiverSB = GetArray($handler);
 
     fclose($handler);
   }
@@ -275,6 +280,7 @@ $isMobile = IsMobile();
             if (isset($weapon1) && isset($weapon2) && isset($weaponSB)) DisplayWeaponRow($weapon1, $weapon2, $weaponSB, "WEAPONS");
           }
           if (isset($offhand) && isset($offhandSB)) DisplayEquipRow($offhand, $offhandSB, "OFFHAND");
+          if (isset($quiver) && isset($quiverSB)) DisplayEquipRow($quiver, $quiverSB, "QUIVER");
 
           ?>
         </table>
@@ -419,13 +425,15 @@ $isMobile = IsMobile();
             return true;
           case "OFFHAND":
             return true;
+          case "QUIVER":
+            return true;
           default:
             return false;
         }
       }
 
       function GetCharacterCards() {
-        var types = ["WEAPONS", "OFFHAND", "HEAD", "CHEST", "ARMS", "LEGS"];
+        var types = ["WEAPONS", "OFFHAND", "QUIVER", "HEAD", "CHEST", "ARMS", "LEGS"];
         var returnValue = "<?php echo(isset($character) ? $character[0] : ""); ?>";
         for (var i = 0; i < types.length; ++i) {
           var selected = GetSelectedEquipType(types[i]);
