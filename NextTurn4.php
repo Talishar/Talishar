@@ -423,7 +423,7 @@
             return (cardSize + 105) + "px";
           case "Legs":
             return "95px";
-          case "Off-Hand":
+          case "Off-Hand": case "Quiver":
             return "calc(50% + " + (cardSize / 2 + 10) + "px)";
         }
       }
@@ -446,7 +446,7 @@
             return (cardSize + 15) + "px";
           case "Legs":
             return "5px";
-          case "Off-Hand":
+          case "Off-Hand": case "Quiver":
             return (cardSize * 2 + 25) + "px";
         }
       }
@@ -469,7 +469,7 @@
             return (cardSize + 15) + "px";
           case "Legs":
             return (cardSize * 2 + 25) + "px";
-          case "Off-Hand":
+          case "Off-Hand": case "Quiver":
             return (cardSize * 2 + 25) + "px";
         }
       }

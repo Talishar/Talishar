@@ -4,6 +4,7 @@ function OUTAbilityCost($cardID)
 {
   switch($cardID)
   {
+    case "OUT096": return 3;
     default: return 0;
   }
 }
@@ -12,7 +13,7 @@ function OUTAbilityCost($cardID)
   {
     switch ($cardID)
     {
-
+      case "OUT096": return "I";
       default: return "";
     }
   }

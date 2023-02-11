@@ -378,7 +378,9 @@ function AbilityCost($cardID)
     return RVDAbilityCost($cardID);
   } else if ($set == "DYN") {
     return DYNAbilityCost($cardID);
-  } else if ($set == "ROG") {
+  } else if ($set == "OUT") {
+    return OUTAbilityCost($cardID);
+  }  else if ($set == "ROG") {
     return ROGUEAbilityCost($cardID);
   }
   return CardCost($cardID);
@@ -585,7 +587,9 @@ function GetAbilityType($cardID, $index = -1, $from="-")
     return RVDAbilityType($cardID, $index);
   } else if ($set == "DYN") {
     return DYNAbilityType($cardID, $index);
-  } else if ($set == "ROG") {
+  } else if ($set == "OUT") {
+    return OUTAbilityType($cardID, $index);
+  }  else if ($set == "ROG") {
     return ROGUEAbilityType($cardID, $index);
   }
   switch ($cardID) {
