@@ -79,6 +79,9 @@ function EncounterDescription()
     case 117:
       if($encounter[1] == "BeforeFight") return "As night falls around you, you realize you aren't alone. A figure approaches, but does not draw their blade. Yet.";
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
+    case 118:
+      if($encounter[1] == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor and glowing green. \"Hail bounty huner. Would you like to spar?\"";
+      else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an impressive match. Thank you for the lessons learned!\"";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -245,6 +248,8 @@ function EncounterImage()
       return "CRU057_cropped.png";
     case 117:
       return "EVR038_cropped.png";
+    case 118:
+      return "ELE082_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";

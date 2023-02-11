@@ -38,80 +38,6 @@ function GetBackgrounds($character)
   return $backgroundChoices[$options[0]] . "," . $backgroundChoices[$options[1]];
 }
 
-/*function GetNextEncounter($player) //TODO overhaul this whole function and children
-{
-  $encounter = &GetZone(1, "Encounter");
-  // WriteLog("hijacked GetNextEncounter");
-  // WriteLog("Encounter[0]: " . $encounter[0]);
-  // WriteLog("Encounter[1]: " . $encounter[1]);
-  // WriteLog("Encounter[2]: " . $encounter[2]);
-  ++$encounter[2];
-  if($encounter[2] == 3 || $encounter[2] == 5) return GetCombat("Easy");
-  else if($encounter[2] == 7 || $encounter[2] == 10) return GetCombat("Medium");
-  else if($encounter[2] == 12 || $encounter[2] == 14) return GetCombat("Hard");
-  else if($encounter[2] == 2) return "005-PickMode";
-  else if($encounter[2] == 17) return "105-BeforeFight";
-  else if($encounter[2] == 9 || $encounter[2] == 16) return "020-PickMode";
-  //else return GetEvent();
-  else return "20" . rand(1, 2) . "-PickMode";
-}
-
-function GetCombat($difficulty)
-{
-  $encounter = &GetZone(1, "Encounter");
-  $alreadyPicked = explode(",", $encounter[5]);
-  switch($difficulty)
-  {
-    case "Easy": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight", "113-BeforeFight"); break;
-    case "Medium": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
-    case "Hard": $potentialEncounters = array("101-Fight", "102-BeforeFight", "103-BeforeFight", "104-BeforeFight", "106-BeforeFight", "107-BeforeFight"); break;
-  }
-  $generatedEncounters = [];
-  for($i = 0; $i < count($potentialEncounters); ++$i)
-  {
-    $notFound = true;
-    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
-    {
-      if($alreadyPicked[$j] == $potentialEncounters[$i]) $notFound = false;
-    }
-    if($notFound) array_push($generatedEncounters, $potentialEncounters[$i]);
-  }
-  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1);
-  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
-  return $generatedEncounters[$randomEncounter];
-}*/
-
-/*function GetEvent()
-{
-  $encounter = &GetZone(1, "Encounter");
-  $alreadyPicked = explode(",", $encounter[5]);
-  $generateRand = rand(1, 100);
-  if($generateRand >= 90) $rarity = "Rare";
-  else if($generateRand >= 60) $rarity = "Uncommon";
-  else $rarity = "Common";
-  switch($rarity)
-  {
-    case "Common": $potentialEncounters = array("205-PickMode", "204-PickMode"); break;
-    case "Uncommon": $potentialEncounters = array("205-PickMode"); break;
-    case "Rare": $potentialEncounters = array("201-PickMode", "202-PickMode"); break;
-  }
-  $generatedEncounters = [];
-  for($i = 0; $i < count($potentialEncounters); ++$i)
-  {
-    $notFound = true;
-    for($j = 0; $j < count($alreadyPicked) && $notFound; ++$j)
-    {
-      if($alreadyPicked[$j] == $potentialEncounters[$i]) $notFound = false;
-    }
-    if($notFound) array_push($generatedEncounters, $potentialEncounters[$i]);
-  }
-  //WriteLog("Amount of encounters to pick from: " . count($generatedEncounters));
-  $randomEncounter = rand(0, count($generatedEncounters)-1);
-  $encounter[5] = $encounter[5] . "," . $generatedEncounters[$randomEncounter];
-  return $generatedEncounters[$randomEncounter];
-}*/
-
 function GetPowers($amount = 3, $special = "-")
 {
   $common = array("ROGUE507", "ROGUE508", "ROGUE509", "ROGUE510", "ROGUE511", "ROGUE512", "ROGUE513", "ROGUE516", "ROGUE517");
@@ -293,7 +219,6 @@ function GetRandomDeckCard($player, $special = "") //TODO add in a seperate spec
   elseif($special == 4) {
     WriteLog($fullList);
     $deckNoPowers = explode(",", $fullList);
-    
     $options = GetOptions(4, 0, count($deckNoPowers) - 1, 1); //If empty cards keep showing up, maybe get rid of the '- 1' in front of count(#deckNoPowers)
     $return = "";
     for($i = 0; $i < count($options); $i++){
