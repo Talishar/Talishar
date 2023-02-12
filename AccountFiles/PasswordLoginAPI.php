@@ -11,8 +11,6 @@ include_once '../Database/ConnectionManager.php';
 include_once './AccountDatabaseAPI.php';
 include_once '../Libraries/HTTPLibraries.php';
 
-error_reporting(E_ALL ^ E_WARNING);
-
 SetHeaders();
 
 

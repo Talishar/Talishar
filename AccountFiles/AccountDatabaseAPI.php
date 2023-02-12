@@ -32,7 +32,7 @@ function PasswordLogin($username, $password, $rememberMe) {
   if($passwordValid)
   {
     session_start();
-		$_SESSION["userid"] = $userData["usersId"];
+		$_SESSION["userid"] = $userData["usersID"];
 		$_SESSION["useruid"] = $userData["usersUid"];
 		$_SESSION["useremail"] = $userData["usersEmail"];
 		$_SESSION["userspwd"] = $userData["usersPwd"];
