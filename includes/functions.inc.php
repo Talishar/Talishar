@@ -195,7 +195,7 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format="")
 
 function LoadFavoriteDecks($userID)
 {
-	if($userID == "") return "";
+	if($userID == "") return [];
 	$conn = GetDBConnection();
 	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
