@@ -11,7 +11,7 @@ include_once '../Database/ConnectionManager.php';
 include_once './AccountDatabaseAPI.php';
 include_once '../Libraries/HTTPLibraries.php';
 
-error_reporting(E_ALL ^ E_WARNING); 
+error_reporting(E_ALL ^ E_WARNING);
 
 SetHeaders();
 
@@ -24,17 +24,17 @@ $rememberMe = isset($_POST["rememberMe"]);
 
 try {
   PasswordLogin($username, $password, $rememberMe, true);
-} catch (\Exception $e) { }
+} catch (\Exception $e) {
+}
 
 
 $response = new stdClass();
 $response->isUserLoggedIn = IsUserLoggedIn();
-if($response->isUserLoggedIn)
-{
+if ($response->isUserLoggedIn) {
   $response->loggedInUserID = LoggedInUser();
   $response->loggedInUserName = LoggedInUserName();
 }
 
-echo(json_encode($response));
+echo (json_encode($response));
 
 exit;
