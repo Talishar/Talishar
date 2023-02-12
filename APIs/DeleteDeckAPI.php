@@ -1,5 +1,6 @@
 <?php
 
+include_once '../Libraries/HTTPLibraries.php';
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
 
