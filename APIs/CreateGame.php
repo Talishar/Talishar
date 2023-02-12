@@ -9,6 +9,8 @@ include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 SetHeaders();
 
+$response = new stdClass();
+
 $_POST = json_decode(file_get_contents('php://input'), true);
 $deck = TryPOST("deck"); //This is for limited game modes (see JoinGameInput.php)
 $decklink = TryPOST("fabdb"); //Deck builder decklink (any deckbuilder, name comes from when fabdb was the only one)
@@ -41,7 +43,7 @@ if (!isset($_SESSION["userid"])) {
 
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
-  $response->error = "You must be logged in to use create a public multiplayer game.";
+  $response->error = "You must be logged in to create a public multiplayer game.";
   echo json_encode($response);
   exit;
 }
@@ -64,7 +66,7 @@ if (isset($_SESSION["userid"])) {
 session_write_close();
 
 $gameName = GetGameCounter("../");
-$response = new stdClass();
+
 
 if ((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, true))) {
 } else {
@@ -77,7 +79,7 @@ $p1Data = [1];
 $p2Data = [2];
 $p1SideboardSubmitted = "0";
 if ($deckTestMode != "") {
-  $gameStatus = 4;//Ready to start
+  $gameStatus = 4; //Ready to start
   $opponentDeck = "../Assets/Dummy.txt";
   copy($opponentDeck, "../Games/" . $gameName . "/p2Deck.txt");
   $p2SideboardSubmitted = "1";
