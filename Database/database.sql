@@ -54,7 +54,7 @@ CREATE TABLE `pwdreset` (
 --
 
 CREATE TABLE `users` (
-  `usersID` int(11) NOT NULL,
+  `usersId` int(11) NOT NULL,
   `usersUid` varchar(128) NOT NULL,
   `usersEmail` varchar(128) NOT NULL,
   `usersPwd` varchar(128) NOT NULL,
