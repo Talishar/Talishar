@@ -70,6 +70,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
   function DecisionQueueStaticEffect($phase, $player, $parameter1, $parameter2, $parameter3, $lastResult)
   {
     global $numPlayers;
+    //WriteLog($phase);
     switch($phase)
     {
       case "SETENCOUNTER":
@@ -278,33 +279,42 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
       case "ENLIGHTENMENT":
         switch($lastResult)
         {
-          case "Make_a_Small_Offering":
-            $deck = &GetZone($player, "Deck");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Common"));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
-            break;
-          case "Make_a_Sizable_Offering":
-            $deck = &GetZone($player, "Deck");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Rare"));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
-            break;
-          case "Make_a_Large_Offering":
-            $deck = &GetZone($player, "Deck");
-            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Majestic"));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
-            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
-            break;
           case "Quietly_Pray":
-            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 8 health.");
+            WriteLog("Your spirit is reinvigorated and your strength is renewed. You gain 7 health.");
             $health = &GetZone($player, "Health");
-            $health[0] += 8;
+            $health[0] += 7;
             break;
           case "Leave":
-              break;
-        }
-        return 1;
+            break;
+          case "Make_an_offering":
+            PrependDecisionQueue("ENLIGHTENMENT", $player, "-");
+            PrependDecisionQueue("BUTTONINPUT", $player, "Make_another_offering,Receive_a_small_blessing");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            break;
+          case "Make_another_offering":
+            PrependDecisionQueue("ENLIGHTENMENT", $player, "-");
+            PrependDecisionQueue("BUTTONINPUT", $player, "Make_a_final_offering,Receive_a_sizable_blessing");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            break;
+          case "Make_a_final_offering":
+            PrependDecisionQueue("ENLIGHTENMENT", $player, "-");
+            PrependDecisionQueue("BUTTONINPUT", $player, "Receive_an_incredible_blessing");
+            PrependDecisionQueue("REMOVEDECKCARD", $player, GetRandomDeckCard($player, 4));
+            break;
+          case "Receive_a_small_blessing":
+            WriteLog("Your charity is recognized. May Sol shine upon you.");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Common"));
+            break;
+          case "Receive_a_sizable_blessing":
+            WriteLog("Your act of selflessness is recognized and celebrated. Contemplate this treasure in your travels.");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Rare"));
+            break;
+          case "Receive_an_incredible_blessing":
+            WriteLog("Your depth of character and virtue is boundless. Please honor the church by carrying it's teaching throughout Rathe.");
+            PrependDecisionQueue("CHOOSECARD", $player, GetRandomCards(4, "ForcedRarity", "Majestic"));
+            break;
+          }
+          return 1;
       case "CROSSROADS":
         switch($lastResult)
         {
@@ -326,6 +336,8 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Take_the_scenic_route_through_the_back_streets":
             PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); //Stealthy Stabber
             break;
+          case "Venture_into_the_forest_and_attempt_to_sneak_past":
+            PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
           case "Take_precaution_and_find_a_different_way_across": //Crane Master
             PrependDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight");
             break;

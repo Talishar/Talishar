@@ -291,26 +291,16 @@ function GetRandomDeckCard($player, $special = "") //TODO add in a seperate spec
   }
   if ($special == "ALL") return $fullList; // By default, this is all we need
   elseif($special == 4) {
+    WriteLog($fullList);
     $deckNoPowers = explode(",", $fullList);
     
-    $deckIndexes = array("");
-    for ($i = 0; $i < count($deckNoPowers); $i++){
-      $deckIndexes[$i] = $i; //Fill an array with indexes so we can keep track of which ones have been picked
+    $options = GetOptions(4, 0, count($deckNoPowers) - 1, 1); //If empty cards keep showing up, maybe get rid of the '- 1' in front of count(#deckNoPowers)
+    $return = "";
+    for($i = 0; $i < count($options); $i++){
+      if($i != 0) $return .= ",";
+      $return .= $deckNoPowers[$options[$i]];
     }
-    $picks = array("");
-    for($i = 0; $i < $special; $i++){
-      $pickedNumber = rand(0, count($deckIndexes));
-      $picks[$i] = $deckIndexes[$pickedNumber];
-      array_splice($deckIndexes, $pickedNumber, 1); //Remove from possible lists
-    }
-    WriteLog($picks);
-    $output = "";
-    for($i=0; $i< count($picks); $i++){
-      if($i != 0) $output .= ",";
-      $output .= $deckNoPowers[$picks[$i]];
-      WriteLog($output); 
-    }
-    return $output;
+    return $return;
   }
   WriteLog("Function GetRandomDeckCard failed to find a case");
   return "This should never happen";
