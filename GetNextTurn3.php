@@ -196,8 +196,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       $borderColor = $combatChain[$i + 1] == $playerID ? 1 : 2;
 
-      $aimCounters = 0;
-      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $aimCounters = 1;
+      $countersMap = new stdClass();
+      if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $countersMap->aim = 1;
 
       $activeChainLink->attackingCard = JSONRenderedCard(
         cardNumber: $combatChain[$i],
@@ -205,8 +205,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         action: $action,
         actionDataOverride: '0',
         borderColor: $borderColor,
-        atkCounters: $aimCounters,
-
+        countersMap: $countersMap,
       );
       continue;
     }
