@@ -170,6 +170,51 @@ function ROGUECardSubtype($cardID)
     }
 }
 
+function ROGUEName($cardID)
+{
+    switch ($cardID) {
+      case "ROGUE501": return "Broken Hourglass";
+      case "ROGUE502": return "Perfect Mirror";
+      case "ROGUE503": return "Scroll of Mastery";
+      case "ROGUE504": return "Blacksmith's Tongs";
+      case "ROGUE505": return "Teklo's Cranium";
+      case "ROGUE506": return "Teachings of War";
+      case "ROGUE507": return "Merchant's Handbag";
+      case "ROGUE508": return "Shattered Mirror";
+      case "ROGUE509": return "Qi Scroll";
+      case "ROGUE510": return "Survival Kit";
+      case "ROGUE511": return "Magnifying Glass";
+      case "ROGUE512": return "Dagger of the Meek";
+      case "ROGUE513": return "Hammer of the Mighty";
+      case "ROGUE514": return "Teklo Power Generator"; //(not implemented)
+      case "ROGUE515": return "Lucky Tooth"; //(not implemented)
+      case "ROGUE516": return "Mark of Undeath";
+      case "ROGUE517": return "Shamans Skullbone";
+      case "ROGUE518": return "Wild Mirror";
+      case "ROGUE519": return "Shard of the Mountain";
+      case "ROGUE520": return "Blacksmith's Hammer"; //(not implemented) (Quesioning how possible this is to implement, gonna ignore for now)
+      case "ROGUE521": return "Solanian Bell";
+      case "ROGUE522": return "Thieves Tools";
+      case "ROGUE523": return "Ward of Protection";
+      case "ROGUE524": return "Gorganian Cipher";
+      case "ROGUE525": return "Acorn of Korshem";
+      case "ROGUE526": return "Blacktek Timebomb";
+      case "ROGUE527": return "Merchant Supply Cart";
+      case "ROGUE528": return "Sutcliffe's Tome";
+      default: return "";
+    }
+}
+
+function ROGUERarity($cardID)
+{
+    switch ($cardID) {
+      case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE516": case "ROGUE517": return "C";
+      case "ROGUE501": case "ROGUE504": case "ROGUE518": case "ROGUE519": case "ROGUE521": case "ROGUE522": case "ROGUE523": case "ROGUE524": case "ROGUE525": return "R";
+      case "ROGUE502": case "ROGUE503": case "ROGUE505": case "ROGUE506": case "ROGUE516": case "ROGUE527": case "ROGUE528": return "M";
+      default: return "";
+    }
+}
+
 function ROGUECardCost($cardID)
 {
     switch ($cardID) {

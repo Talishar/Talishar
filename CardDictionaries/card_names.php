@@ -10,6 +10,9 @@ function CardName($cardID)
       $number = intval(substr($cardID, 3));
       if($number < 400) return GeneratedCardName($cardID);
     }
+    if ($set == "ROG") {
+      return ROGUEName($cardID);
+    }
     switch($cardID)
     {
 		  case "MON400": return "Spell Fray Cloak";
