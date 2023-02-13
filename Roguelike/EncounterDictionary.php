@@ -79,6 +79,9 @@ function EncounterDescription()
     case 117:
       if($encounter[1] == "BeforeFight") return "As night falls around you, you realize you aren't alone. A figure approaches, but does not draw their blade. Yet.";
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
+    case 119:
+      if($encounter[1] == "BeforeFight") return "As you cross the bridge, thunder cracks. A storm begins, and the winds nearly knock you into the chasm below. A figure runs towards you, as though dancing on the rain itself.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -144,7 +147,7 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "209-PickMode");
+      //AddDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -245,6 +248,8 @@ function EncounterImage()
       return "CRU057_cropped.png";
     case 117:
       return "EVR038_cropped.png";
+    case 119:
+      return "CRU055_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";
