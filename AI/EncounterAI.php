@@ -621,6 +621,19 @@ function BlockPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE018":
+      {
+        switch($cardId) {
+          case "ELE094":return 11.1;
+          case "ELE137":return 10.9;
+          case "ELE139":return 10.2;
+          case "ELE128":return 10.7;
+          case "ELE130":return 10.3;
+          case "ELE119":return 10.5;
+          case "ELE121":return 10.4;
+          default: return 0;
+        }
+      }
     default: return 0;
   }
 }
@@ -807,6 +820,19 @@ function ActionPriority($cardId, $heroId)
             default: return 0;
           }
         }
+      case "ROGUE018":
+        {
+          switch($cardId) {
+            case "ELE094": return 1.7;
+            case "ELE137": return 1.9;
+            case "ELE139": return 1.5;
+            case "ELE128": return 1.6;
+            case "ELE130": return 1.1;
+            case "ELE119": 0.5;
+            case "ELE121": 0.4;
+            default: return 0;
+          }
+        }
     default: return 0;
   }
 }
@@ -882,6 +908,7 @@ function ReactionPriority($cardId, $heroId)
       }
       //case "ROGUE013": {} //No reactions, default 0
       //case "ROGUE014": {} //No reactions, default 0
+      //case "ROGUE018": {} //No reactions, default 0
     default: return 0;
   }
 }
@@ -991,6 +1018,19 @@ function PitchPriority($cardId, $heroId)
             case "DYN147": return 2.2;
             case "DYN144": return 2.2;
             case "DYN122": return 2.1;
+            default: return 0;
+          }
+        }
+      case "ROGUE018":
+        {
+          switch($cardId) {
+            case "ELE094": return 0.1;
+            case "ELE137": return 0.8;
+            case "ELE139": return 2.6;
+            case "ELE128": return 0.7;
+            case "ELE130": return 2.5;
+            case "ELE119": return 0.6;
+            case "ELE121": return 2.4;
             default: return 0;
           }
         }
@@ -1106,6 +1146,19 @@ function ToArsenalPriority($cardId, $heroId)
           {
             case "CRU181":
               return 1.9;
+            default: return 0;
+          }
+        }
+        case "ROGUE018":
+        {
+          switch($cardId) {
+            case "ELE094": return 1.8;
+            case "ELE137": return 1.2;
+            case "ELE139": return 0.8;
+            case "ELE128": return 1.8;
+            case "ELE130": return 0.8;
+            case "ELE119": return 1.9;
+            case "ELE121": return 1.1;
             default: return 0;
           }
         }
@@ -1261,6 +1314,12 @@ function FromArsenalActionPriority($cardId, $heroId)
               default: return 0;
             }
           }
+          case "ROGUE018": {
+            switch($cardId){
+            case "ELE094": case "ELE137": case "ELE128": case "ELE119": return 1.9;
+            default: return 1.0;
+            }
+          }
     default: return 0;
   }
 }
@@ -1336,6 +1395,7 @@ function FromArsenalReactionPriority($cardId, $heroId)
       }
       //case "ROGUE013": {return 0;} //No Reactions
       //case "ROGUE014": return 0; // No Reactions
+      //case "ROGUE018": return 0;
     default: return 0;
   }
 }

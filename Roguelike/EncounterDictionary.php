@@ -80,7 +80,7 @@ function EncounterDescription()
       if($encounter[1] == "BeforeFight") return "As night falls around you, you realize you aren't alone. A figure approaches, but does not draw their blade. Yet.";
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
     case 118:
-      if($encounter[1] == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor and glowing green. \"Hail bounty huner. Would you like to spar?\"";
+      if($encounter[1] == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor with a green glimmer. \"Hail, bounty hunter. Would you like to spar?\"";
       else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an impressive match. Thank you for the lessons learned!\"";
 
     case 201:

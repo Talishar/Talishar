@@ -149,6 +149,7 @@
       case 114: return "StealthyStabber";
       case 115: return "CraneMaster";
       case 117: return "SparrowMaster";
+      case 118: return "ExuberantEarthmage";
       default: return "Woottonhog";
     }
   }
