@@ -114,6 +114,9 @@ function CharacterDamageTakenAbilities($player, $damage)
           else array_unshift($hand, "WTR220");
         }
         break;
+      case "ROGUE019":
+        PlayAura("CRU075", $player, 4, false, true);
+        break;
       default:
         break;
     }

@@ -92,8 +92,8 @@ function EncounterAI()
           {
             $nextActionIndex = GetNextAction($APV, $alreadyCheckedHand);
             $nextAbilityIndex = GetNextAbility($EPV, $alreadyCheckedEquipment);
-            //WriteLog($hand[$nextActionIndex] . " " . $APV[$nextActionIndex]);
-            //WriteLog($character[$nextAbilityIndex] . " " . $EPV[$nextActionIndex]);
+            /*WriteLog($hand[$nextActionIndex] . " " . $APV[$nextActionIndex]);
+            WriteLog($character[$nextAbilityIndex] . " " . $EPV[$nextActionIndex]);*/
             if($arsePV >= $EPV[$nextAbilityIndex] && $arsePV >= $APV[$nextActionIndex]) //If the arsenal has the highest priority
             {
               if(IsArsenalPlayable($hand, $arsenal, $arsePV)) //and if it's playable
@@ -804,6 +804,16 @@ function ActionPriority($cardId, $heroId)
             case "EVR042": return 1.6;
             case "WTR098": case "EVR044": return 1.5;
             case "WTR099": case "EVR045": return 1.4;
+            default: return 0;
+          }
+        }
+      case "ROGUE019":
+        {
+          switch($cardId)
+          {
+            case "CRU066": case "CRU067": case "CRU068":
+            case "CRU057": case "CRU058": case "CRU059":
+            case "CRU054": case "CRU056": return 1.9;
             default: return 0;
           }
         }

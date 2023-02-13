@@ -205,6 +205,7 @@ function CharacterHealth($cardID)
     case "ROGUE015": return 13;
     case "ROGUE016": return 8;
     case "ROGUE017": return 20;
+    case "ROGUE019": return 18;
     default:
       return 20;
   }
@@ -235,6 +236,7 @@ function CharacterIntellect($cardID)
     case "ROGUE015": return 0;
     case "ROGUE016": return 3;
     case "ROGUE017": return 0;
+    case "ROGUE019": return 1;
     default:
       return 4;
   }
@@ -2350,5 +2352,18 @@ function HasWard($cardID)
       return true;
     default:
       return false;
+  }
+}
+
+function Rarity($cardID)
+{
+  $set = CardSet($cardID);
+  if($set != "ROG" && $set != "DUM")
+  {
+    $number = intval(substr($cardID, 3));
+    if($number < 400) return GeneratedRarity($cardID);
+  }
+  if ($set == "ROG") {
+    return ROGUERarity($cardID);
   }
 }
