@@ -195,7 +195,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         AbilityPlayableFromCombatChain($combatChain[$i]) &&
         IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
 
-      // TODO: have this 
       // $borderColor = $combatChain[$i + 1] == $playerID ? 1 : 2;
       $borderColor = $action == 21 ? 1 : null;
 
