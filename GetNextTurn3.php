@@ -187,14 +187,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $combatChainReactions = array();
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($i == 0) {
-      // vars for combat chain card
+
+      // vars for active chain link: Is there an action?
       $action = $currentPlayer == $playerID &&
         $turn[0] != "P" &&
         $currentPlayer == $combatChain[$i + 1] &&
         AbilityPlayableFromCombatChain($combatChain[$i]) &&
         IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
 
-      $borderColor = $combatChain[$i + 1] == $playerID ? 1 : 2;
+      // TODO: have this 
+      // $borderColor = $combatChain[$i + 1] == $playerID ? 1 : 2;
+      $borderColor = $action == 21 ? 1 : null;
 
       $countersMap = new stdClass();
       if (SearchCurrentTurnEffects("AIM", $mainPlayer) && CardSubType($combatChain[$i]) == "Arrow") $countersMap->aim = 1;
