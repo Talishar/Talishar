@@ -281,6 +281,7 @@ function CardClass($cardID)
       if ($number >= 171 && $number <= 191) return "RUNEBLADE";
       if ($number >= 192 && $number <= 211) return "WIZARD";
       if ($number >= 212 && $number <= 233) return "ILLUSIONIST";
+      else if ($number == 612) return "ILLUSIONIST";
       else return "GENERIC";
     default:
       return 0;
