@@ -125,6 +125,12 @@ if ($decklink != "") {
     LogDeckLoadFailure("Failed to retrieve deck from API.");
     exit;
   }
+  if(!isset($deckObj->{'name'}))
+  {
+    $response->error = 'Deck is invalid. Failed to retrieve deck from API.';
+    echo (json_encode($response));
+    exit;
+  }
   $deckName = $deckObj->{'name'};
   if (isset($deckObj->{'matchups'})) {
     if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
