@@ -88,6 +88,7 @@ if ($handler) {
         $handItem->is1H = Is1H($handItem->id);
         $numHands = 2;
         if($subtype == "Quiver") $numHands = 0;
+        else if($subtype == "Off-Hand") $numHands = 1;
         else if(Is1H($handItem->id)) $numHands = 1;
         $handItem->numHands = $numHands;
         array_push($response->deck->weapons, $handItem);
