@@ -2733,6 +2733,9 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
         case "EVR055-1":
           $modifier += 1;
           break;
+        case "ROGUE018":
+          $modifier += 1;
+          break;
         default:
           break;
       }
@@ -2759,10 +2762,22 @@ function MainCharacterAttackModifiers($index = -1, $onlyBuffs = false)
           $modifier += 1;
         }
         break;
+      case "ROGUE018":
+        $modifier += 1;
+        break;
       default:
         break;
     }
   }
+  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+    $otherCharacter = &GetPlayerCharacter($otherPlayer);
+    switch($otherCharacter[0]){
+      case "ROGUE018":
+        $modifier += 1;
+        break;
+      default:
+        break;
+    }
   return $modifier;
 }
 

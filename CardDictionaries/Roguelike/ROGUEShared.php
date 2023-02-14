@@ -109,6 +109,7 @@ function ROGUECardType($cardID)
       case "ROGUE015": return "C";
       case "ROGUE016": return "C";
       case "ROGUE017": return "C";
+      case "ROGUE018": return "C";
       case "ROGUE019": return "C";
 
       case "ROGUE501": case "ROGUE502": case "ROGUE503": case "ROGUE504": case "ROGUE505": case "ROGUE506": case "ROGUE507": case "ROGUE508": case "ROGUE509": case "ROGUE510": case "ROGUE511": case "ROGUE512": case "ROGUE513": case "ROGUE514":
@@ -137,6 +138,7 @@ function ROGUECardSubtype($cardID)
       case "ROGUE015": return "Ninja";
       case "ROGUE016": return "Ranger";
       case "ROGUE017": return "Ninja";
+      case "ROGUE018": return "Elemental";
       case "ROGUE019": return "Ninja";
 
       case "ROGUE501": //Broken Hourglass
