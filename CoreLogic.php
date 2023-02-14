@@ -481,6 +481,20 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         break;
+      case "ROGUE019":
+        if($cardID == "CRU066" || $cardID == "CRU067" || $cardID == "CRU068")
+        {
+          $choices = array("CRU057", "CRU058", "CRU059");
+          $hand = &GetHand($currentPlayer);
+          array_unshift($hand, $choices[rand(0, count($choices)-1)]);
+        }
+        else if($cardID == "CRU057" || $cardID == "CRU058" || $cardID == "CRU059")
+        {
+          $choices = array("CRU054", "CRU056");
+          $hand = &GetHand($currentPlayer);
+          array_unshift($hand, $choices[rand(0, count($choices)-1)]);
+        }
+        break;
       default:
         break;
     }

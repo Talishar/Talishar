@@ -29,7 +29,8 @@
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
-  //GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");
+  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20", true);//Also images
+  GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
 
   fwrite($handler, "?>");
 
@@ -48,10 +49,12 @@
     $cardsSeen = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
+      $cardRarity = "NA";
       $cardPrintings = [];
       if($cardArray[$i]->name == "Nitro Mechanoid") continue;//This is due to the data set not yet differentiating faces
       for($j=0; $j<count($cardArray[$i]->printings); ++$j)
       {
+        $cardRarity = $cardArray[$i]->printings[$j]->rarity;
         $cardID = $cardArray[$i]->printings[$j]->id;
         $set = substr($cardID, 0, 3);
         if(!in_array($set, $originalSets)) continue;
@@ -88,6 +91,10 @@
         else if($propertyName == "health")
         {
           $data = $cardArray[$i]->health;
+        }
+        else if($propertyName == "rarity")
+        {
+          $data = $cardRarity;
         }
         else if($propertyName == "subtype")
         {

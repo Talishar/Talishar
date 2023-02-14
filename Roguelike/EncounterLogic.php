@@ -199,7 +199,7 @@ function GetRandomArmor($type) //TODO combine this with GetRandomCards()
 
 function GetRandomDeckCard($player, $special = "") //TODO add in a seperate special call to remove random cards instead of any card and a special call to remove powers.
 {
-  
+
   $deck = &GetZone($player, "Deck");
   $fullList = "";
   for($i = 0; $i < count($deck); ++$i)
@@ -258,7 +258,14 @@ function GetShop()
 function GetShopCost($cardID)
 {
   if($cardID == "CardBack") return 0;
-  if(CardSubtype($cardID) == "Power") return 3;
-  return 1;
+  $cost = 0;
+  switch(Rarity($cardID))
+  {
+    case "C": case "T": $cost = 2; break;
+    case "R": $cost = 4; break;
+    case "S": case "M": $cost = 8; break;
+  }
+  if(CardSubtype($cardID) == "Power") $cost = $cost * 2;
+  return $cost;
 }
 ?>

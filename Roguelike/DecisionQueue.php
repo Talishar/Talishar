@@ -346,9 +346,11 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             break;
           case "Turn_back_and_take_the_long_way_around": //Quickshot Apprentice
             PrependDecisionQueue("SETENCOUNTER", $player, "106-BeforeFight");
-            break;
+            break;s 
           case "Leave_the_town_immediately":
             PrependDecisionQueue("SETENCOUNTER", $player, "118-BeforeFight");
+          case "Brave_the_bridge":
+            PrependDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
             break;
           default: //
             PrependDecisionQueue("SETENCOUNTER", $player, "101-BeforeFight");

@@ -82,6 +82,9 @@ function EncounterDescription()
     case 118:
       if($encounter[1] == "BeforeFight") return "As you travel, you encounter a boisterous traveler wearing leather armor with a green glimmer. \"Hail, bounty hunter. Would you like to spar?\"";
       else if($encounter[1] == "AfterFight") return "\"Wow stranger, that was an impressive match. Thank you for the lessons learned!\"";
+    case 119:
+      if($encounter[1] == "BeforeFight") return "As you cross the bridge, thunder cracks. A storm begins, and the winds nearly knock you into the chasm below. A figure runs towards you, as though dancing on the rain itself.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
 
     case 201:
       return "You found a battlefield. Choose what you want to do.";
@@ -147,7 +150,7 @@ function InitializeEncounter($player)
       break;
     case 006:
       AddDecisionQueue("CHOOSECARD", $player, GetPowers());
-      //AddDecisionQueue("SETENCOUNTER", $player, "117-BeforeFight");
+      //AddDecisionQueue("SETENCOUNTER", $player, "119-BeforeFight");
       AddDecisionQueue("SETENCOUNTER", $player, "009-PickMode");
       break;
     case 007:
@@ -250,6 +253,8 @@ function EncounterImage()
       return "EVR038_cropped.png";
     case 118:
       return "ELE082_cropped.png";
+    case 119:
+      return "CRU055_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";

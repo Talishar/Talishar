@@ -2605,6 +2605,9 @@ function MainCharacterEndTurnAbilities()
           $mainCharacter[$i + 2] = 0;
         }
         break;
+      case "ROGUE019":
+        DiscardRandom($currentPlayer, $cardID);
+        break;
       default:
         break;
     }
