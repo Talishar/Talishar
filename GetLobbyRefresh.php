@@ -151,7 +151,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if($channelLink != "") echo("</a>");
   echo ("</div>");
 
-  echo ("<div id='submitDisplay' style='display:none;'>" . ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none")) . "</div>");
+  $needToSideboard = $gameStatus >= $MGS_P2Sideboard && ($playerID == 1 ? $p1SideboardSubmitted != "1" : $p2SideboardSubmitted != "1");
+  echo ("<div id='submitDisplay' style='display:none;'>" . ($needToSideboard ? "block" : "none") . "</div>");
 
   $icon = "ready.png";
   if ($gameStatus == $MGS_ChooseFirstPlayer) $icon = $playerID == $firstPlayerChooser ? "ready.png" : "notReady.png";

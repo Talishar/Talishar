@@ -62,13 +62,7 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
     header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
     exit;
   }
-  /*
-  if ($numEquip < 1) {
-    WriteLog("Unable to submit player " . $playerID . "'s deck. $numEquip equipment pieces are equipped.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
-    exit;
-  }
-  */
+
   for ($i = $deckCount - 1; $i >= 0; --$i) {
     $cardType = CardType($playerDeck[$i]);
     if ($cardType == "" || $cardType == "C" || $cardType == "E" || $cardType == "W") unset($playerDeck[$i]);
@@ -84,13 +78,15 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
 if($playerID == 1) $p1SideboardSubmitted = "1";
 else if($playerID == 2) $p2SideboardSubmitted = "1";
 
-if ($playerID == 2) {
+$gameStarted = false;
+if ($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $gameStatus = $MGS_ReadyToStart;
+  $gameStarted = true;
 }
 WriteGameFile();
 GamestateUpdated($gameName);
 
-if ($playerID == 1) {
+if ($gameStarted == 1) {
   header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
 } else {
   header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");

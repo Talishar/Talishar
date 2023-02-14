@@ -99,8 +99,11 @@ if ( (!file_exists("Games/$gameName")) && (mkdir("Games/$gameName", 0700, true))
 
 $p1Data = [1];
 $p2Data = [2];
+$p1SideboardSubmitted = "0";
+$p2SideboardSubmitted = "0";
 if ($deckTestMode != "") {
   $gameStatus = 4; //ReadyToStart
+  $p2SideboardSubmitted = "1";
   $opponentDeck = "./Assets/Dummy.txt";
   switch($deckTestMode)
   {
@@ -124,8 +127,6 @@ $p1id = "-";
 $p2id = "-";
 $hostIP = $_SERVER['REMOTE_ADDR'];
 $p1StartingHealth = $startingHealth;
-$p1SideboardSubmitted = "0";
-$p2SideboardSubmitted = "0";
 
 $filename = "./Games/" . $gameName . "/GameFile.txt";
 $gameFileHandler = fopen($filename, "w");
