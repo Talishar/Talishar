@@ -2105,6 +2105,9 @@ function CharacterStartTurnAbility($index)
         MyDrawCard();
       }
       break;
+    case "ROGUE018":
+      PlayAura("ELE109", $mainPlayer);
+      break;
     default:
       break;
   }
