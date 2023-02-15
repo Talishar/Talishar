@@ -22,7 +22,7 @@ if (IsUserLoggedIn()) {
     $selIndex = -1;
     if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
     $response->lastUsedDeckIndex = $selIndex;
-    for ($i = 0; $i < count($favoriteDecks); $i += 3) {
+    for ($i = 0; $i < count($favoriteDecks); $i += 4) {
       $deck = new stdClass();
       $deck->index = $i;
       $deck->key = $i . "<fav>" . $favoriteDecks[$i];

@@ -50,7 +50,7 @@ if (isset($_SESSION["isPatron"])) {
   if (count($favoriteDecks) > 0) {
     echo ("<table>");
     echo ("<tr><td>Hero</td><td>Deck Name</td><td>Delete</td></tr>");
-    for ($i = 0; $i < count($favoriteDecks); $i += 3) {
+    for ($i = 0; $i < count($favoriteDecks); $i += 4) {
       echo ("<tr>");
       echo ("<td>" . CardLink($favoriteDecks[$i + 2], $favoriteDecks[$i + 2], true) . "</td>");
       echo ("<td>" . $favoriteDecks[$i + 1] . "</td>");

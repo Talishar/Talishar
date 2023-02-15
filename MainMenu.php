@@ -90,7 +90,7 @@ if (isset($_SESSION["userid"])) {
     if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
     echo ("<div class='SelectDeckInput'>Favorite Decks: ");
     echo ("<select style='height:34px; width:60%;' name='favoriteDecks' id='favoriteDecks'>");
-    for ($i = 0; $i < count($favoriteDecks); $i += 3) {
+    for ($i = 0; $i < count($favoriteDecks); $i += 4) {
       echo ("<option value='" . $i . "<fav>" . $favoriteDecks[$i] . "'" . ($i == $selIndex ? " selected " : "") . ">" . $favoriteDecks[$i + 1] . "</option>");
     }
     echo ("</select></div>");

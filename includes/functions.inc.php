@@ -197,7 +197,7 @@ function LoadFavoriteDecks($userID)
 {
 	if($userID == "") return [];
 	$conn = GetDBConnection();
-	$sql = "SELECT decklink, name, hero from favoritedeck where usersId=?";
+	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -205,7 +205,7 @@ function LoadFavoriteDecks($userID)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 	  while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			for($i=0;$i<3;++$i) array_push($output, $row[$i]);
+			for($i=0;$i<4;++$i) array_push($output, $row[$i]);
 		}
 		mysqli_stmt_close($stmt);
 	}
