@@ -85,10 +85,12 @@ if ($kickPlayerTwo) {
   if ($numP2Disconnects >= 3) {
     WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
   }
-  if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
-  if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
+  if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("../Games/" . $gameName . "/p2Deck.txt");
+  if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/" . $gameName . "/p2DeckOrig.txt");
   $gameStatus = $MGS_Initial;
   $p2Data = [];
+  $p2uid = "";
+  $p2id = "";
   WriteGameFile();
 }
 
