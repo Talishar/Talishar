@@ -830,6 +830,8 @@ function ActionPriority($cardId, $heroId)
             case "ELE130": return 1.1;
             case "ELE119": 0.5;
             case "ELE121": 0.4;
+          }
+        }
       case "ROGUE019":
         {
           switch($cardId)
