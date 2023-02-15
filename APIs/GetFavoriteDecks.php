@@ -26,7 +26,11 @@ if (IsUserLoggedIn()) {
       $deck = new stdClass();
       $deck->index = $i;
       $deck->key = $i . "<fav>" . $favoriteDecks[$i];
-      $deck->name = $favoriteDecks[$i + 1];
+      $deck->name = $favoriteDecks[$i+1];
+      $deck->hero = $favoriteDecks[$i+2];
+      $deck->format = $favoriteDecks[$i+3];
+      $deck->cardBack = "DEFAULT";
+      $deck->playmat = "DEFAULT";
       array_push($response->favoriteDecks, $deck);
     }
   }
