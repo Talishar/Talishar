@@ -47,8 +47,8 @@ function EncounterDescription()
       if($encounter[1] == "Fight") return "You're attacked by a Woottonhog.";
       else if($encounter[1] == "AfterFight") return "You defeated the Woottonhog.";
     case 102:
-      if($encounter[1] == "BeforeFight") return "You're attacked by a Ravenous Rabble.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Ravenous Rabble.";
+      if($encounter[1] == "BeforeFight") return "While wandering through the woods, you're attacked by a mysterious and deadly looking creature.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Ravenous Rabble. There don't seem to be any other threats in these woods... at least not right now. You continue your trek.";
     case 103:
       if($encounter[1] == "BeforeFight") return "You're attacked by a Barraging Brawnhide.";
       else if($encounter[1] == "AfterFight") return "You defeated the Barraging Brawnhide.";
@@ -85,7 +85,9 @@ function EncounterDescription()
     case 119:
       if($encounter[1] == "BeforeFight") return "As you cross the bridge, thunder cracks. A storm begins, and the winds nearly knock you into the chasm below. A figure runs towards you, as though dancing on the rain itself.";
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
-
+    case 120:
+      if($encounter[1] == "BeforeFight") return "You emerge in the noticeably cleaner streets of Metrix. Just as you're emerging, a mailman sees you and panics, attempting to attack you.";
+      else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless bastard! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
     case 201:
       return "You found a battlefield. Choose what you want to do.";
     case 202:

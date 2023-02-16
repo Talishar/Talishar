@@ -333,11 +333,12 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
           case "Enter_a_nearby_Temple": //Enlightenment
             PrependDecisionQueue("SETENCOUNTER", $player, "205-PickMode");
             break;
-          case "Take_the_scenic_route_through_the_back_streets":
-            PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); //Stealthy Stabber
+          case "Take_the_scenic_route_through_the_back_streets": //Stealthy Stabber
+            PrependDecisionQueue("SETENCOUNTER", $player, "114-BeforeFight"); 
             break;
-          case "Venture_into_the_forest_and_attempt_to_sneak_past":
+          case "Venture_into_the_forest_and_attempt_to_sneak_past": //Ravenous Rabble
             PrependDecisionQueue("SETENCOUNTER", $player, "102-BeforeFight");
+            break;
           case "Take_precaution_and_find_a_different_way_across": //Crane Master
             PrependDecisionQueue("SETENCOUNTER", $player, "115-BeforeFight");
             break;
