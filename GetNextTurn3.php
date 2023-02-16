@@ -297,6 +297,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($opponentBanishArr, JSONRenderedCard($cardID));
   }
   $response->opponentBanish = $opponentBanishArr;
+  if (TalentContains($theirCharacter[0], "SHADOW"))
+  {
+    $response->opponentBloodDebtCount = SearchCount(SearchBanish($otherPlayer, "", "", -1, -1, "", "", true));
+    $response->isOpponentBloodDebtImmune = IsImmuneToBloodDebt($otherPlayer);
+  }
 
   //Now display their character and equipment
   $numWeapons = 0;
@@ -380,6 +385,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($playerBanishArr, JSONRenderedCard($banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerBanish = $playerBanishArr;
+  if (TalentContains($myCharacter[0], "SHADOW"))
+  {
+    $response->myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
+    $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
+  }
 
   //Now display my character and equipment
   $numWeapons = 0;
