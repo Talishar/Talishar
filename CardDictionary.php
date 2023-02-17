@@ -714,7 +714,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($phase != "B" && $phase != "P" && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if ($phase == "M" && $subtype == "Arrow" && $from != "ARS") return false;
-  if (($phase == "D" || $phase == "INSTANT") && $subtype == "Trap" && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC044", $player) && !$isStaticType && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("ARC043", $player) && ($cardType == "A" || $cardType == "AA") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
   if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "A" && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
@@ -932,6 +931,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "CRU125":
       return !HasTakenDamage($player);
+    case "CRU126": case "CRU127": case "CRU128":
+      return $from != "ARS";
     case "CRU143":
       return SearchCount(SearchDiscard($player, "AA", "", -1, -1, "RUNEBLADE")) == 0;
     case "CRU164":

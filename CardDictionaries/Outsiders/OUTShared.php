@@ -60,7 +60,7 @@ function OUTAbilityCost($cardID)
 
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $CS_PlayIndex;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer;
     global $CID_Frailty;
     $rv = "";
     switch ($cardID)
@@ -78,6 +78,16 @@ function OUTAbilityCost($cardID)
           }
         }
         return $rv;
+      case "OUT103":
+        if(DoesAttackHaveGoAgain())
+        {
+          $hand = &GetHand($mainPlayer);
+          $numDraw = count($hand) - 1;
+          DiscardHand($mainPlayer);
+          for($i=0; $i<$numDraw; ++$i) Draw($mainPlayer);
+          WriteLog("Attacker discarded their hand and drew $numDraw cards.");
+        }
+        return "";
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         if(!ArsenalFull($currentPlayer))
