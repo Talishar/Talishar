@@ -3528,6 +3528,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       BanishCardForPlayer($lastResult, $player, "-", $parameter);
       return $lastResult;
     case "MULTIBANISH":
+      if($lastResult == "") return $lastResult;
       $cards = explode(",", $lastResult);
       $params = explode(",", $parameter);
       if(count($params) < 3) array_push($params, "");
@@ -4654,14 +4655,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "INVERTEXISTENCE":
+      if($lastResult == "")
+      {
+        WriteLog("No cards were selected, so Invert Existence did not banish any cards.");
+        return $lastResult;
+      }
       $cards = explode(",", $lastResult);
       $numAA = 0;
       $numNAA = 0;
+      $message = "Invert existence banished ";
       for ($i = 0; $i < count($cards); ++$i) {
         $type = CardType($cards[$i]);
         if ($type == "AA") ++$numAA;
         else if ($type == "A") ++$numNAA;
+        if($i >= 1) $message .= ", ";
+        if($i != 0 && $i == count($cards) - 1) $message .= "and ";
+        $message .= CardLink($cards[$i], $cards[$i]);
       }
+      WriteLog($message . ".");
       if ($numAA == 1 && $numNAA == 1) DealArcane(2, 0, "PLAYCARD", "MON158", true, $player);
       return $lastResult;
     case "ROUSETHEANCIENTS":
