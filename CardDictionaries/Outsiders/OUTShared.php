@@ -99,6 +99,10 @@ function OUTAbilityCost($cardID)
         PlayAura("DYN244", $currentPlayer);
         PlayAura($CID_Frailty, $otherPlayer);
         return "";
+      case "OUT231": case "OUT232": case "OUT233":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        PlayAura("DYN244", $currentPlayer);
+        return "Prevents some of the next combat damage you take this turn.";
       default: return "";
     }
   }
