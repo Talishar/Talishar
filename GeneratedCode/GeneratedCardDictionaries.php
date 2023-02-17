@@ -1959,6 +1959,20 @@ default: return "AA";
 }
 default: return "AA";
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return "I";
+case "2":
+return "I";
+case "3":
+return "I";
+default: return "AA";
+}
+default: return "AA";
+}
 default: return "AA";
 }
 default: return "AA";
@@ -7353,6 +7367,20 @@ default: return 3;
 }
 default: return 3;
 }
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return -1;
+case "2":
+return -1;
+case "3":
+return -1;
+default: return 3;
+}
+default: return 3;
+}
 default: return 3;
 }
 default: return 3;
@@ -8746,9 +8774,9 @@ return "Arakni, Huntsman";
 case "4":
 return "Arakni";
 case "5":
-return "Spider’s Bite";
+return "Spider's Bite";
 case "6":
-return "Spider’s Bite";
+return "Spider's Bite";
 case "7":
 return "Blacktek Whisperers";
 case "8":
@@ -8884,7 +8912,7 @@ return "Cut to the Chase";
 case "1":
 return "Sandscour Greatbow";
 case "2":
-return "Hornet’s Sting";
+return "Hornet's Sting";
 case "3":
 return "Heat Seeker";
 case "4":
@@ -9386,7 +9414,7 @@ return "Anothos";
 case "1":
 return "Tectonic Plating";
 case "2":
-return "Helm of Isen’s Peak";
+return "Helm of Isen's Peak";
 case "3":
 return "Crippling Crush";
 case "4":
@@ -9596,15 +9624,15 @@ return "Steelblade Shunt";
 case "8":
 return "Steelblade Shunt";
 case "9":
-return "Warrior’s Valor";
+return "Warrior's Valor";
 default: return "";
 }
 case "3":
 switch($cardID[5]) {
 case "0":
-return "Warrior’s Valor";
+return "Warrior's Valor";
 case "1":
-return "Warrior’s Valor";
+return "Warrior's Valor";
 case "2":
 return "Ironsong Response";
 case "3":
@@ -9640,19 +9668,19 @@ return "Driving Blade";
 case "6":
 return "Driving Blade";
 case "7":
-return "Nature’s Path Pilgrimage";
+return "Nature's Path Pilgrimage";
 case "8":
-return "Nature’s Path Pilgrimage";
+return "Nature's Path Pilgrimage";
 case "9":
-return "Nature’s Path Pilgrimage";
+return "Nature's Path Pilgrimage";
 default: return "";
 }
 case "5":
 switch($cardID[5]) {
 case "0":
-return "Fyendal’s Spring Tunic";
+return "Fyendal's Spring Tunic";
 case "1":
-return "Hope Merchant’s Hood";
+return "Hope Merchant's Hood";
 case "2":
 return "Heartened Cross Strap";
 case "3":
@@ -10034,7 +10062,7 @@ return "Find Center";
 case "5":
 return "Flood of Force";
 case "6":
-return "Heron’s Flight";
+return "Heron's Flight";
 case "7":
 return "Crane Dance";
 case "8":
@@ -10098,7 +10126,7 @@ switch($cardID[4]) {
 case "7":
 switch($cardID[5]) {
 case "8":
-return "Fyendal’s Spring Tunic";
+return "Fyendal's Spring Tunic";
 case "0":
 return "Foreboding Bolt";
 case "1":
@@ -10116,7 +10144,7 @@ return "Snapback";
 case "7":
 return "Talishar, the Lost Prince";
 case "9":
-return "Gambler’s Gloves";
+return "Gambler's Gloves";
 default: return "";
 }
 case "9":
@@ -10178,11 +10206,11 @@ return "Overblast";
 case "4":
 return "Overblast";
 case "5":
-return "Teklovossen’s Workshop";
+return "Teklovossen's Workshop";
 case "6":
-return "Teklovossen’s Workshop";
+return "Teklovossen's Workshop";
 case "7":
-return "Teklovossen’s Workshop";
+return "Teklovossen's Workshop";
 case "8":
 return "Kavdaen, Trader of Skins";
 default: return "";
@@ -10252,11 +10280,11 @@ return "Meat and Greet";
 case "3":
 return "Meat and Greet";
 case "4":
-return "Sutcliffe’s Research Notes";
+return "Sutcliffe's Research Notes";
 case "5":
-return "Sutcliffe’s Research Notes";
+return "Sutcliffe's Research Notes";
 case "6":
-return "Sutcliffe’s Research Notes";
+return "Sutcliffe's Research Notes";
 default: return "";
 }
 case "4":
@@ -10362,11 +10390,11 @@ return "Honing Hood";
 case "5":
 return "Seek and Destroy";
 case "6":
-return "Bolt’n’ Shot";
+return "Bolt'n' Shot";
 case "7":
-return "Bolt’n’ Shot";
+return "Bolt'n' Shot";
 case "8":
-return "Bolt’n’ Shot";
+return "Bolt'n' Shot";
 case "9":
 return "Over Flex";
 default: return "";
@@ -10382,7 +10410,7 @@ return "Singeing Steelblade";
 case "2":
 return "Singeing Steelblade";
 case "3":
-return "Ragamuffin’s Hat";
+return "Ragamuffin's Hat";
 case "4":
 return "Deep Blue";
 case "5":
@@ -10398,9 +10426,9 @@ return "Electrify";
 case "1":
 return "Amulet of Lightning";
 case "2":
-return "Titan’s Fist";
+return "Titan's Fist";
 case "3":
-return "Rampart of the Ram’s Head";
+return "Rampart of the Ram's Head";
 case "4":
 return "Rotten Old Buckler";
 case "5":
@@ -10428,7 +10456,7 @@ return "Duskblade";
 case "4":
 return "Spellbound Creepers";
 case "5":
-return "Sutcliffe’s Suede Hides";
+return "Sutcliffe's Suede Hides";
 case "6":
 return "Sting of Sorcery";
 case "7":
@@ -10452,7 +10480,7 @@ return "Oldhim, Grandfather of Eternity";
 case "2":
 return "Oldhim";
 case "3":
-return "Winter’s Wail";
+return "Winter's Wail";
 case "4":
 return "Endless Winter";
 case "5":
@@ -10754,15 +10782,15 @@ return "Summerwood Shelter";
 case "7":
 return "Summerwood Shelter";
 case "8":
-return "Autumn’s Touch";
+return "Autumn's Touch";
 case "9":
-return "Autumn’s Touch";
+return "Autumn's Touch";
 default: return "";
 }
 case "3":
 switch($cardID[5]) {
 case "0":
-return "Autumn’s Touch";
+return "Autumn's Touch";
 case "1":
 return "Break Ground";
 case "2":
@@ -10834,11 +10862,11 @@ default: return "";
 case "6":
 switch($cardID[5]) {
 case "0":
-return "Winter’s Grasp";
+return "Winter's Grasp";
 case "1":
-return "Winter’s Grasp";
+return "Winter's Grasp";
 case "2":
-return "Winter’s Grasp";
+return "Winter's Grasp";
 case "3":
 return "Chill to the Bone";
 case "4":
@@ -10852,15 +10880,15 @@ return "Polar Blast";
 case "8":
 return "Polar Blast";
 case "9":
-return "Winter’s Bite";
+return "Winter's Bite";
 default: return "";
 }
 case "7":
 switch($cardID[5]) {
 case "0":
-return "Winter’s Bite";
+return "Winter's Bite";
 case "1":
-return "Winter’s Bite";
+return "Winter's Bite";
 case "2":
 return "Amulet of Ice";
 case "3":
@@ -10910,11 +10938,11 @@ return "Lightning Surge";
 case "1":
 return "Lightning Surge";
 case "2":
-return "Heaven’s Claws";
+return "Heaven's Claws";
 case "3":
-return "Heaven’s Claws";
+return "Heaven's Claws";
 case "4":
-return "Heaven’s Claws";
+return "Heaven's Claws";
 case "5":
 return "Shock Striker";
 case "6":
@@ -11280,7 +11308,7 @@ switch($cardID[5]) {
 case "0":
 return "Iyslander";
 case "1":
-return "Kraken’s Aethervein";
+return "Kraken's Aethervein";
 case "2":
 return "Sigil of Parapets";
 case "3":
@@ -11310,11 +11338,11 @@ return "Pyroglyphic Protection";
 case "3":
 return "Pyroglyphic Protection";
 case "4":
-return "Timekeeper’s Whim";
+return "Timekeeper's Whim";
 case "5":
-return "Timekeeper’s Whim";
+return "Timekeeper's Whim";
 case "6":
-return "Timekeeper’s Whim";
+return "Timekeeper's Whim";
 case "7":
 return "Crown of Reflection";
 case "8":
@@ -11350,7 +11378,7 @@ default: return "";
 case "6":
 switch($cardID[5]) {
 case "0":
-return "This Round’s on Me";
+return "This Round's on Me";
 case "1":
 return "Life of the Party";
 case "2":
@@ -11444,7 +11472,7 @@ return "Katsu";
 case "7":
 return "Benji, the Piercing Wind";
 case "2":
-return "Razor’s Edge";
+return "Razor's Edge";
 default: return "";
 }
 case "8":
@@ -11495,6 +11523,20 @@ case "6":
 switch($cardID[5]) {
 case "0":
 return "Codex of Frailty";
+default: return "";
+}
+default: return "";
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return "Peace of Mind";
+case "2":
+return "Peace of Mind";
+case "3":
+return "Peace of Mind";
 default: return "";
 }
 default: return "";
@@ -11782,7 +11824,7 @@ return "Singe";
 case "2":
 return "Crown of Providence";
 case "3":
-return "Helio’s Mitre";
+return "Helio's Mitre";
 case "4":
 return "Quelling Robe";
 case "5":
@@ -11808,11 +11850,11 @@ return "Flex";
 case "3":
 return "Flex";
 case "4":
-return "Fyendal’s Fighting Spirit";
+return "Fyendal's Fighting Spirit";
 case "5":
-return "Fyendal’s Fighting Spirit";
+return "Fyendal's Fighting Spirit";
 case "6":
-return "Fyendal’s Fighting Spirit";
+return "Fyendal's Fighting Spirit";
 case "7":
 return "Sift";
 case "8":
@@ -12234,7 +12276,7 @@ return "Death Dealer";
 case "1":
 return "Skullbone Crosswrap";
 case "2":
-return "Bull’s Eye Bracers";
+return "Bull's Eye Bracers";
 case "3":
 return "Red in the Ledger";
 case "4":
@@ -12306,11 +12348,11 @@ return "Searing Shot";
 case "1":
 return "Searing Shot";
 case "2":
-return "Sic ‘Em Shot";
+return "Sic 'Em Shot";
 case "3":
-return "Sic ‘Em Shot";
+return "Sic 'Em Shot";
 case "4":
-return "Sic ‘Em Shot";
+return "Sic 'Em Shot";
 case "5":
 return "Viserai, Rune Blood";
 case "6":
@@ -12552,11 +12594,11 @@ return "Plunder Run";
 case "2":
 return "Plunder Run";
 case "3":
-return "Eirina’s Prayer";
+return "Eirina's Prayer";
 case "4":
-return "Eirina’s Prayer";
+return "Eirina's Prayer";
 case "5":
-return "Eirina’s Prayer";
+return "Eirina's Prayer";
 case "6":
 return "Back Alley Breakline";
 case "7":
@@ -12636,9 +12678,9 @@ switch($cardID[5]) {
 case "6":
 return "Cracked Bauble";
 case "0":
-return "Warmonger’s Recital";
+return "Warmonger's Recital";
 case "1":
-return "Warmonger’s Recital";
+return "Warmonger's Recital";
 case "2":
 return "Talisman of Dousing";
 case "3":
@@ -13288,11 +13330,11 @@ default: return "";
 case "6":
 switch($cardID[5]) {
 case "0":
-return "Captain’s Call";
+return "Captain's Call";
 case "1":
-return "Captain’s Call";
+return "Captain's Call";
 case "2":
-return "Captain’s Call";
+return "Captain's Call";
 case "3":
 return "Adrenaline Rush";
 case "4":
@@ -13378,7 +13420,7 @@ return "Minnowism";
 case "8":
 return "Minnowism";
 case "9":
-return "Warmonger’s Recital";
+return "Warmonger's Recital";
 default: return "";
 }
 default: return "";
@@ -13406,7 +13448,7 @@ return "Bone Basher";
 case "3":
 return "Bone Vizier";
 case "7":
-return "Chief Ruk’utan";
+return "Chief Ruk'utan";
 case "9":
 return "Beast Mode";
 default: return "";
@@ -15693,6 +15735,18 @@ case "6":
 switch($cardID[5]) {
 case "0":
 return 2;
+default: return 1;
+}
+default: return 1;
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "2":
+return 2;
+case "3":
+return 3;
 default: return 1;
 }
 default: return 1;
@@ -20218,6 +20272,20 @@ default: return 0;
 case "5":
 switch($cardID[5]) {
 case "6":
+return 2;
+default: return 0;
+}
+default: return 0;
+}
+case "2":
+switch($cardID[4]) {
+case "3":
+switch($cardID[5]) {
+case "1":
+return 2;
+case "2":
+return 2;
+case "3":
 return 2;
 default: return 0;
 }
