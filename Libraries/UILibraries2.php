@@ -67,7 +67,8 @@ function JSONRenderedCard(
   $isFrozen = NULL,
   $gem = NULL,
   $countersMap = new stdClass(), // new object for counters
-  $label = NULL
+  $label = NULL,
+  $facing = NULL
 ) {
   global $playerID;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -123,6 +124,7 @@ function JSONRenderedCard(
     'isFrozen' => $isFrozen,
     'countersMap' => $countersMap,
     'label' => $label,
+    'facing' => $facing,
   ];
 
   if ($gem != NULL) {

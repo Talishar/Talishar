@@ -425,8 +425,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       if ($theirArsenal[$i + 1] == "UP") {
-        array_push($theirArse, JSONRenderedCard(cardNumber: $theirArsenal[$i], controller: ($playerID == 1 ? 2 : 1)));
-      } else array_push($theirArse, (JSONRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1))));
+        array_push($theirArse, JSONRenderedCard(cardNumber: $theirArsenal[$i], controller: ($playerID == 1 ? 2 : 1), facing:$theirArsenal[$i + 1]));
+      } else array_push($theirArse, (JSONRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1), facing:$theirArsenal[$i + 1])));
     }
   }
   $response->opponentArse = $theirArse;
@@ -436,7 +436,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
       if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
-        array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
+        array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2, facing:$myArsenal[$i + 1]));
       } else {
         if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         else $playable = false;
@@ -444,7 +444,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
         $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-        array_push($myArse, JSONRenderedCard(cardNumber: $myArsenal[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction));
+        array_push($myArse, JSONRenderedCard(cardNumber: $myArsenal[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction, facing:$myArsenal[$i + 1]));
       }
     }
   }
