@@ -638,8 +638,9 @@ function BlockPriority($cardId, $heroId)
       {
         switch($cardId) {
           case "EVR075": return 0.2;
-          case "ARC078": return 0.1;
-          default: return 10.2; //All blues that block for 3. All weighted evenly, but tries to hold onto one. 
+          case "ARC028": return 0.1;
+          case "ARC031": case "CRU111": case "CRU108": case "CRU103": case "ARC022": case "ARC013": case "DYN097": case "ARC025": return 10.2; 
+          default: return 0; //All blues that block for 3. All weighted evenly, but tries to hold onto one. 
         }
       }
     default: return 0;
@@ -836,8 +837,9 @@ function ActionPriority($cardId, $heroId)
             case "ELE139": return 1.5;
             case "ELE128": return 1.6;
             case "ELE130": return 1.1;
-            case "ELE119": 0.5;
-            case "ELE121": 0.4;
+            case "ELE119": return 0.5;
+            case "ELE121": return 0.4;
+            default: return 0;
           }
         }
       case "ROGUE019":
@@ -863,6 +865,7 @@ function ActionPriority($cardId, $heroId)
             case "ARC025": return 1.6;
             case "ARC028": return 0.1;
             case "ARC031": return 1.1;
+            default: return 0;
           }
         }
     default: return 0;
@@ -1071,7 +1074,10 @@ function PitchPriority($cardId, $heroId)
         {
           switch($cardId) {
             case "DYN097": case "ARC013": return 2.2;
-            default: return 2.1;
+            case "CRU111": case "CRU108": case "CRU103": case "ARC022": 
+            case "EVR075": case "ARC025": case "ARC028": case "ARC031": 
+              return 2.1;
+            default: return 0;
           }
         }
     default: return 0;
@@ -1206,7 +1212,10 @@ function ToArsenalPriority($cardId, $heroId)
         {
           switch($cardId) {
             case "DYN097": return 2.2;
-            default: return 2.1;
+            case "CRU111": case "CRU108": case "CRU103": case "ARC022": 
+            case "ARC013": case "EVR075": case "ARC025": case "ARC028": case "ARC031": 
+              return 2.1;
+            default: return 0;
           }
         }
     default: return 0;
@@ -1364,11 +1373,15 @@ function FromArsenalActionPriority($cardId, $heroId)
           case "ROGUE018": {
             switch($cardId){
             case "ELE094": case "ELE137": case "ELE128": case "ELE119": return 1.9;
-            default: return 1.0;
+            case "ELE139": case "ELE130": case "ELE121": return 1.1;
+            default: return 0;
             }
           }
           case "ROGUE020": {
-            return 1.9;
+            switch($cardId){
+              case "CRU111": case "CRU108": case "CRU103": case "ARC022": case "ARC013": case "DYN097": case "EVR075": case "ARC025": case "ARC028": case "ARC031": return 1.9;
+              default: return 0;
+            }
           }
     default: return 0;
   }
