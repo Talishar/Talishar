@@ -151,6 +151,7 @@
       case 117: return "SparrowMaster";
       case 118: return "ExuberantEarthmage";
       case 119: return "HeronMaster";
+      case 120: return "CombustibleCourier";
       default: return "Woottonhog";
     }
   }
