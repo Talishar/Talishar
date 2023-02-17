@@ -125,6 +125,8 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   $firstPlayer = 1;
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  $p1SideboardSubmitted = "0";
+  $p2SideboardSubmitted = (IsPlayerAI(2) ? "1" : "0");
   WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   WriteGameFile();
   $turn[0] = "REMATCH";
