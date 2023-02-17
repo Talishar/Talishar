@@ -1951,6 +1951,12 @@ default: return "AA";
 }
 case "1":
 switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "3":
+return "DR";
+default: return "AA";
+}
 case "6":
 switch($cardID[5]) {
 case "0":
@@ -11519,6 +11525,12 @@ default: return "";
 }
 case "1":
 switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "3":
+return "Collapsing Trap";
+default: return "";
+}
 case "6":
 switch($cardID[5]) {
 case "0":
@@ -15731,6 +15743,12 @@ default: return 1;
 }
 case "1":
 switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "3":
+return 3;
+default: return 1;
+}
 case "6":
 switch($cardID[5]) {
 case "0":
@@ -21473,6 +21491,16 @@ default: return "";
 }
 default: return "";
 }
+case "1":
+switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "3":
+return "Trap";
+default: return "";
+}
+default: return "";
+}
 default: return "";
 }
 default: return "";
@@ -23466,6 +23494,12 @@ default: return "C";
 }
 case "1":
 switch($cardID[4]) {
+case "0":
+switch($cardID[5]) {
+case "3":
+return "M";
+default: return "C";
+}
 case "6":
 switch($cardID[5]) {
 case "0":
