@@ -634,6 +634,14 @@ function BlockPriority($cardId, $heroId)
           default: return 0;
         }
       }
+    case "ROGUE020":
+      {
+        switch($cardId) {
+          case "EVR075": return 0.2;
+          case "ARC078": return 0.1;
+          default: return 10.2; //All blues that block for 3. All weighted evenly, but tries to hold onto one. 
+        }
+      }
     default: return 0;
   }
 }
@@ -842,6 +850,21 @@ function ActionPriority($cardId, $heroId)
             default: return 0;
           }
         }
+      case "ROGUE020":
+        {
+          switch($cardId) {
+            case "CRU111": return 1.9;
+            case "CRU108": return 1.2;
+            case "CRU103": return 1.6;
+            case "ARC022": return 1.7;
+            case "ARC013": return 1.5;
+            case "DYN097": return 1.4;
+            case "EVR075": return 0.2;
+            case "ARC025": return 1.6;
+            case "ARC028": return 0.1;
+            case "ARC031": return 1.1;
+          }
+        }
     default: return 0;
   }
 }
@@ -918,6 +941,7 @@ function ReactionPriority($cardId, $heroId)
       //case "ROGUE013": {} //No reactions, default 0
       //case "ROGUE014": {} //No reactions, default 0
       //case "ROGUE018": {} //No reactions, default 0
+      //case "ROGUE020": {} //No reactions, default 0 Wow my encounters are boring lol
     default: return 0;
   }
 }
@@ -1043,6 +1067,12 @@ function PitchPriority($cardId, $heroId)
             default: return 0;
           }
         }
+      case "ROGUE020":
+        {
+          switch($cardId) {
+
+          }
+        }
     default: return 0;
   }
 }
@@ -1158,7 +1188,7 @@ function ToArsenalPriority($cardId, $heroId)
             default: return 0;
           }
         }
-        case "ROGUE018":
+      case "ROGUE018":
         {
           switch($cardId) {
             case "ELE094": return 1.8;
@@ -1169,6 +1199,13 @@ function ToArsenalPriority($cardId, $heroId)
             case "ELE119": return 1.9;
             case "ELE121": return 1.1;
             default: return 0;
+          }
+        }
+      case "ROGUE020":
+        {
+          switch($cardId) {
+            case "DYN097": return 2.2;
+            default: return 2.1;
           }
         }
     default: return 0;
@@ -1329,6 +1366,9 @@ function FromArsenalActionPriority($cardId, $heroId)
             default: return 1.0;
             }
           }
+          case "ROGUE020": {
+            return 1.9;
+          }
     default: return 0;
   }
 }
@@ -1405,6 +1445,7 @@ function FromArsenalReactionPriority($cardId, $heroId)
       //case "ROGUE013": {return 0;} //No Reactions
       //case "ROGUE014": return 0; // No Reactions
       //case "ROGUE018": return 0;
+      //case "ROGUE020": return 0;
     default: return 0;
   }
 }

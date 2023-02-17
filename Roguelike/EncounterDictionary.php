@@ -60,7 +60,7 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "You defeated the group of bandits.";
     case 106:
       if($encounter[1] == "BeforeFight") return "You turn to find another way, only to see someone has been following. They knock an arrow, ready to fight.";
-      else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Apprentice.";
+      else if($encounter[1] == "AfterFight") return "You defeated the Quickshot Apprentice. His bow lies in pieces on the ground. ";
     case 107:
       if($encounter[1] == "BeforeFight") return "You're attacked by a Cursed Scholar.";
       else if($encounter[1] == "AfterFight") return "You defeated the Rune Scholar.";
@@ -88,16 +88,12 @@ function EncounterDescription()
     case 120:
       if($encounter[1] == "BeforeFight") return "You emerge in the noticeably cleaner streets of Metrix. Just as you're emerging, a mailman sees you and panics, attempting to attack you.";
       else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless bastard! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
-    case 201:
-      return "You found a battlefield. Choose what you want to do.";
-    case 202:
-      return "You found a library. Choose what you want to do.";
-    case 203:
-      return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
-    case 204:
-      return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
-    case 205:
-      return "You enter a temple. There is an altar that reads \"Offer of yourself and receive a bountiful blessing.\"";
+    
+      case 201: return "You found a battlefield. Choose what you want to do.";
+    case 202: return "You found a library. Choose what you want to do.";
+    case 203: return "You've stumbled on a city on the boundary between ice and lightning. You hear thunderous cracking; you can't tell which it is from. There's a tantalizing stream of energy that looks invigorating, but it's mixed with frost. You think you can time it right...";
+    case 204: return "You stumble on a great forge, big enough for giants. The giant manning the forge comments on your flimsy armor.";
+    case 205: return "You enter a temple. There is an altar that reads \"Offer of yourself and receive a bountiful blessing.\"";
     case 206:
       $health = &GetZone(1, "Health");
       if($health[0] > 1) return "A witch on the side of the road approaches you. 'No! I don't wish to fight you. I only wish to play a game.'";
@@ -257,6 +253,8 @@ function EncounterImage()
       return "ELE082_cropped.png";
     case 119:
       return "CRU055_cropped.png";
+    case 120:
+      return "CRU110_cropped.png";
 
     case 201:
       return "WTR194_cropped.png";
