@@ -87,7 +87,7 @@ function EncounterDescription()
       else if($encounter[1] == "AfterFight") return "You defeated the Master of the Arts.";
     case 120:
       if($encounter[1] == "BeforeFight") return "You emerge in the noticeably cleaner streets of Metrix. Just as you're emerging, a mailman sees you and panics, attempting to attack you.";
-      else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless bastard! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
+      else if($encounter[1] == "AfterFight") return "You killed a poor mailman. You heartless monster! Oh well, no use dwelling on the past, now that you're out of the city it's time to move towards your objective.";
     
     case 201: return "You found a battlefield. Choose what you want to do.";
     case 202: return "You found a library. Choose what you want to do.";
