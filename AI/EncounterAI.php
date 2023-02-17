@@ -1070,7 +1070,8 @@ function PitchPriority($cardId, $heroId)
       case "ROGUE020":
         {
           switch($cardId) {
-
+            case "DYN097": case "ARC013": return 2.2;
+            default: return 2.1;
           }
         }
     default: return 0;
