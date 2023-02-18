@@ -451,7 +451,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           countersMap: (object) ["counters" => $myArsenal[$i + 3]]
         ));
       } else {
-        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
+        if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         else $playable = false;
         $border =
           CardBorderColor($myArsenal[$i], "ARS", $playable);
