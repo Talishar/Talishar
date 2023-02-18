@@ -655,12 +655,14 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $myAllies = &GetAllies($player);
   $myCharacter = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
+  $banish = &GetBanish($player);
   $restriction = "";
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
   if ($phase == "P" && $from != "HAND") return false;
   if ($phase == "B" && $from == "BANISH") return false;
+  if ($from == "BANISH" && !(PlayableFromBanish($banish[$index]) || AbilityPlayableFromBanish($banish[$index]))) return false;
   if ($phase == "B" && $cardType == "E" && $myCharacter[$index + 6] == 1) {
     $restriction = "On combat chain";
     return false;

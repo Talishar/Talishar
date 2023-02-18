@@ -701,7 +701,7 @@ function BanishUIMinimal($from = "")
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
     } else {
-      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $playerID == $mainPlayer)) {
+      if ($playerID == $mainPlayer && IsPlayable($banish[$i], $turn[0], "BANISH", $i)) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
       } else if ($from != "HAND")
@@ -727,7 +727,7 @@ function TheirBanishUIMinimal($from = "")
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
     } else {
-      if (PlayableFromBanish($banish[$i]) || (AbilityPlayableFromBanish($banish[$i]) && IsPlayable($banish[$i], $turn[0], "BANISH", $i) && $otherPlayer == $mainPlayer)) {
+      if ($otherPlayer == $mainPlayer && IsPlayable($banish[$i], $turn[0], "BANISH", $i)) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
       } else if ($from != "HAND")
