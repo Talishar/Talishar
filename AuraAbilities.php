@@ -495,9 +495,10 @@ function AuraBeginEndPhaseAbilities()
         $remove = 1;
         break;
       case $CID_BloodRotPox:
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 0, 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSTAKEDAMAGE", $mainPlayer, 2);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "3", 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "3", 1);
         AddDecisionQueue("PITFALLTRAP", $mainPlayer, "-", 1);
         $remove = 1;
