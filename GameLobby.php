@@ -65,7 +65,7 @@ $isMobile = IsMobile();
 <head>
   <meta charset="utf-8">
   <title>Talishar</title>
-  <link rel="stylesheet" href="https://unpkg.com/bamboo.css/dist/dark.min.css">
+  <link rel="stylesheet" href="./css/menuStyles.css">
 </head>
 
 <script>

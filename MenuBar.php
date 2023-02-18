@@ -25,7 +25,7 @@ $isMobile = IsMobile();
 <head>
   <title>Talishar</title>
   <link rel="shortcut icon" type="image/png" href="Images/TeenyCoin.png" />
-  <link rel="stylesheet" href="https://unpkg.com/bamboo.css/dist/dark.min.css">
+  <link rel="stylesheet" href="./css/menuStyles.css">
   <style>
     body {
       background-image: url('Images/background_DYN.jpg');
