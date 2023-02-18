@@ -297,8 +297,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($opponentBanishArr, JSONRenderedCard($cardID));
   }
   $response->opponentBanish = $opponentBanishArr;
-  if (TalentContains($theirCharacter[0], "SHADOW"))
-  {
+  if (TalentContains($theirCharacter[0], "SHADOW")) {
     $response->opponentBloodDebtCount = SearchCount(SearchBanish($otherPlayer, "", "", -1, -1, "", "", true));
     $response->isOpponentBloodDebtImmune = IsImmuneToBloodDebt($otherPlayer);
   }
@@ -385,8 +384,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($playerBanishArr, JSONRenderedCard($banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
   }
   $response->playerBanish = $playerBanishArr;
-  if (TalentContains($myCharacter[0], "SHADOW"))
-  {
+  if (TalentContains($myCharacter[0], "SHADOW")) {
     $response->myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
     $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
   }
@@ -425,8 +423,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       if ($theirArsenal[$i + 1] == "UP") {
-        array_push($theirArse, JSONRenderedCard(cardNumber: $theirArsenal[$i], controller: ($playerID == 1 ? 2 : 1), facing:$theirArsenal[$i + 1]));
-      } else array_push($theirArse, (JSONRenderedCard(cardNumber: $TheirCardBack, controller: ($playerID == 1 ? 2 : 1), facing:$theirArsenal[$i + 1])));
+        array_push($theirArse, JSONRenderedCard(
+          cardNumber: $theirArsenal[$i],
+          controller: ($playerID == 1 ? 2 : 1),
+          facing: $theirArsenal[$i + 1],
+          countersMap: (object) ["counters" => $theirArsenal[$i + 3]]
+        ));
+      } else array_push($theirArse, (JSONRenderedCard(
+        cardNumber: $TheirCardBack,
+        controller: ($playerID == 1 ? 2 : 1),
+        facing: $theirArsenal[$i + 1],
+        countersMap: (object) ["counters" => $theirArsenal[$i + 3]]
+      )));
     }
   }
   $response->opponentArse = $theirArse;
@@ -436,15 +444,30 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
       if ($playerID == 3 && $myArsenal[$i + 1] != "UP") {
-        array_push($myArse, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2, facing:$myArsenal[$i + 1]));
+        array_push($myArse, JSONRenderedCard(
+          cardNumber: $MyCardBack,
+          controller: 2,
+          facing: $myArsenal[$i + 1],
+          countersMap: (object) ["counters" => $myArsenal[$i + 3]]
+        ));
       } else {
         if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         else $playable = false;
-        $border = CardBorderColor($myArsenal[$i], "HAND", $playable);
+        $border =
+          CardBorderColor($myArsenal[$i], "ARS", $playable);
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
         $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
-        array_push($myArse, JSONRenderedCard(cardNumber: $myArsenal[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction, facing:$myArsenal[$i + 1], counters:$myArsenal[$i+2]));
+        array_push($myArse, JSONRenderedCard(
+          cardNumber: $myArsenal[$i],
+          action: $actionTypeOut,
+          borderColor: $border,
+          actionDataOverride: $actionDataOverride,
+          controller: $playerID,
+          restriction: $restriction,
+          facing: $myArsenal[$i + 1],
+          countersMap: (object) ["counters" => $myArsenal[$i + 3]]
+        ));
       }
     }
   }
