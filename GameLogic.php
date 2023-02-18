@@ -4713,6 +4713,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $card = array_shift($deck);
       LoseHealth(1, $player);
+      WriteLog("Player " . $player . " lost 1 health.");
       if (AttackValue($card) >= 6) {
         WriteLog(CardLink("CRU007", "CRU007") . " banished " . CardLink($card, $card) . " and was added to hand.");
         BanishCardForPlayer($card, $player, "DECK", "-");
