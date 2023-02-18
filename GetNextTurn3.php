@@ -453,7 +453,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       } else {
         if ($playerID == $currentPlayer) $playable = $turn[0] == "ARS" || IsPlayable($myArsenal[$i], $turn[0], "ARS", -1, $restriction) || ($actionType == 16 && strpos("," . $turn[2] . ",", "," . $i . ",") !== false);
         else $playable = false;
-        $border = CardBorderColor($myArsenal[$i], "HAND", $playable);
+        $border =
+          CardBorderColor($myArsenal[$i], "ARS", $playable);
         $actionTypeOut = (($currentPlayer == $playerID) && $playable == 1 ? 5 : 0);
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
         $actionDataOverride = (($actionType == 16 || $actionType == 27) ? strval($i) : "");
