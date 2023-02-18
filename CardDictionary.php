@@ -722,7 +722,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if (SearchCurrentTurnEffects("DYN154", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
   if (count($combatChain) > 0) if ($combatChain[0] == "MON245" && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
   if (SearchCurrentTurnEffects("MON245", $mainPlayer) && $player == $defPlayer && !ExudeConfidenceReactionsPlayable() && ($abilityType == "I" || $cardType == "I")) return false;
-  if ((((PlayableFromBanish($cardID) || $from != "BANISH") && $cardType == "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
+  if (($cardType == "I" || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if ($from == "CC" && AbilityPlayableFromCombatChain($cardID)) return true;
   if (($cardType == "A" || $cardType == "AA") && $actionPoints < 1) return false;
   switch ($cardType) {
