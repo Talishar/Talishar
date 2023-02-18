@@ -697,15 +697,16 @@ function BanishUIMinimal($from = "")
       if ($rv != "") $rv .= "|";
       if ($playerID == 3) ClientRenderedCard(cardNumber: $MyCardBack, overlay: 1, controller: $playerID);
       else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
-    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-    } else {
-      if ($playerID == $mainPlayer && IsPlayable($banish[$i], $turn[0], "BANISH", $i)) {
+    }
+    else {
+      if ($playerID == $mainPlayer && $action > 0) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
-      } else if ($from != "HAND")
+      }
+      else if ($from != "HAND")
+      {
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0, $border);
+      }
     }
   }
   return $rv;

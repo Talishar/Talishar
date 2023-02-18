@@ -662,7 +662,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $abilityType = GetAbilityType($cardID, $index, $from);
   if ($phase == "P" && $from != "HAND") return false;
   if ($phase == "B" && $from == "BANISH") return false;
-  if ($from == "BANISH" && !(PlayableFromBanish($banish[$index]) || AbilityPlayableFromBanish($banish[$index]))) return false;
+  if ($from == "BANISH" && !(PlayableFromBanish($banish[$index], $banish[$index+1]) || AbilityPlayableFromBanish($banish[$index]))) return false;
   if ($phase == "B" && $cardType == "E" && $myCharacter[$index + 6] == 1) {
     $restriction = "On combat chain";
     return false;
@@ -1972,9 +1972,10 @@ function HasBloodDebt($cardID)
   }
 }
 
-function PlayableFromBanish($cardID)
+function PlayableFromBanish($cardID, $mod="")
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
+  if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   switch ($cardID) {
       //Shadow Brute
     case "MON123":
