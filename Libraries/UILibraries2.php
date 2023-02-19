@@ -699,7 +699,7 @@ function BanishUIMinimal($from = "")
       else $rv .= ClientRenderedCard(cardNumber: $banish[$i], overlay: 1, controller: $playerID);
     }
     else {
-      if ($playerID == $mainPlayer && $action > 0) {
+      if ($action > 0) {
         if ($rv != "") $rv .= "|";
         $rv .= ClientRenderedCard(cardNumber: $banish[$i], action: $action, borderColor: $border, actionDataOverride: strval($i), controller: $playerID);
       }
