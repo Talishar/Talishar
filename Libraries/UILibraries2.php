@@ -724,13 +724,10 @@ function TheirBanishUIMinimal($from = "")
     if ($mod == "INT") {
       if ($rv != "") $rv .= "|";
       $rv .= ClientRenderedCard(cardNumber: $TheirCardBack, overlay: 1, controller: $playerID);
-    } else if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") {
-      if ($rv != "") $rv .= "|";
-      $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
     } else {
-      if ($otherPlayer == $mainPlayer && IsPlayable($banish[$i], $turn[0], "BANISH", $i)) {
+      if ($otherPlayer == $mainPlayer && IsPlayable($banish[$i], $turn[0], "BANISH", $i, $restriction, $otherPlayer)) {
         if ($rv != "") $rv .= "|";
-        $rv .= ClientRenderedCard(cardNumber: $banish[$i], actionDataOverride: strval($i), controller: $otherPlayer);
+        $rv .= ClientRenderedCard(cardNumber: $banish[$i], controller: $otherPlayer);
       } else if ($from != "HAND")
         $rv .= Card($banish[$i], "concat", $size, 0, 1, 0);
     }
