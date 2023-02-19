@@ -372,6 +372,12 @@ if ($decklink != "") {
   }
 }
 
+if (!isset($character) || $character == "") {
+  $response->error = "There is no character. Something went wrong with parsing your deck.";
+  echo (json_encode($response));
+  exit;
+}
+
 if ($matchup == "") {
   if ($playerID == 2) {
 
