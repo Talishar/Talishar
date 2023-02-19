@@ -1975,6 +1975,7 @@ function HasBloodDebt($cardID)
 function PlayableFromBanish($cardID, $mod="")
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
+  $mod = explode("-", $mod)[0];
   if($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119") return true;
   switch ($cardID) {
       //Shadow Brute

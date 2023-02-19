@@ -237,7 +237,7 @@
         $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));//Display banished cards that are playable
       else if($from != "HAND")
       {
-        if(PlayableFromBanish($banish[$i]) || AbilityPlayableFromBanish($banish[$i]))
+        if(PlayableFromBanish($banish[$i], $banish[$i+1]) || AbilityPlayableFromBanish($banish[$i]))
           $rv .= Card($banish[$i], "CardImages", $size, $action, 1, 0, $border, 0, strval($i));
         else
           $rv .= Card($banish[$i], "CardImages", $size, 0, 1, 0, $border);
