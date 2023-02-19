@@ -558,11 +558,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7];
-    if(IsTileable($myAuras[$i]))
-    {
-      if(isset($auraTileMap[$myAuras[$i]])) $gem = $auraTileMap[$myAuras[$i]];
-      else $auraTileMap[$myAuras[$i]] = $gem;
-    }
+    if(isset($auraTileMap[$myAuras[$i]])) $gem = $auraTileMap[$myAuras[$i]];
+    else $auraTileMap[$myAuras[$i]] = $gem;
     array_push($myAurasOutput, JSONRenderedCard(
       cardNumber: $myAuras[$i],
       overlay: ($myAuras[$i + 1] != 2 ? 1 : 0),
@@ -590,11 +587,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
     $gem = $myItems[$i + 5];
-    if(IsTileable($myItems[$i]))
-    {
-      if(isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
-      else $itemTileMap[$myItems[$i]] = $gem;
-    }
+    if(isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
+    else $itemTileMap[$myItems[$i]] = $gem;
     array_push($myItemsOutput, JSONRenderedCard(cardNumber: $myItems[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, overlay: ($myItems[$i + 2] != 2 ? 1 : 0), counters: $myItems[$i + 1], controller: $otherPlayer, type: $type, sType: $sType, gem: $gem, restriction: $restriction));
   }
   $response->playerItems = $myItemsOutput;
@@ -1189,23 +1183,6 @@ function GetZoneTop($zone)
       return (5) . "px";
     case "THEIRPITCH":
       return ($cardSize - 10) . "px";
-  }
-}
-
-function IsTileable($cardID)
-{
-  switch ($cardID) {
-    case "WTR075":
-    case "ARC112":
-    case "CRU197":
-    case "MON186":
-    case "ELE111":
-    case "EVR195":
-    case "UPR043":
-    case "DYN243":
-      return true;
-    default:
-      return false;
   }
 }
 
