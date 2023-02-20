@@ -179,7 +179,8 @@ if ($decklink != "") {
       } else if ($cardType == "C") {
         $character = $id;
       } else if ($cardType == "W") {
-        for ($j = 0; $j < ($count - $numSideboard); ++$j) {
+        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+        for ($j = 0; $j < $numMainBoard; ++$j) {
           if ($weapon1 == "") $weapon1 = $id;
           else if ($weapon2 == "") $weapon2 = $id;
           else {
